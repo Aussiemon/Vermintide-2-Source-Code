@@ -613,6 +613,26 @@ ProfileSynchronizer.get_packed_lobby_profile_slots = function (self)
 	return peers, player_indices
 end
 
+ProfileSynchronizer.set_own_actually_ingame = function (self, actually_ingame)
+	self._state:set_own_actually_ingame(actually_ingame)
+end
+
+ProfileSynchronizer.others_actually_ingame = function (self)
+	local network_state = self._state
+	local own_peer_id = network_state:get_own_peer_id()
+	local peers_with_full_profiles = self:get_peers_with_full_profiles()
+
+	for _, peer in ipairs(peers_with_full_profiles) do
+		local peer_id = peer.peer_id
+
+		if own_peer_id ~= peer_id and not network_state:get_actually_ingame(peer_id) then
+			return false
+		end
+	end
+
+	return true
+end
+
 ProfileSynchronizer.is_free_in_lobby = function (profile_index, lobby_data)
 	local slot_name = lobby_slot_name(profile_index)
 	local owner = lobby_data[slot_name]

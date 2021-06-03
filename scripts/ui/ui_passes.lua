@@ -1717,7 +1717,7 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 		text = Managers.localizer:simple_lookup(input_text)
 	end
 
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local gamepad_active = Managers.input and Managers.input:is_device_active("gamepad")
 	local input_action, input_service_name = nil
 	input_action, INPUT_ACTIONS, input_service_name, INPUT_SERVICE_NAMES = Managers.localizer:get_input_action(text)
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
@@ -1810,6 +1810,13 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 	return text
 end
 
+local BUTTON_COLOR = {
+	0,
+	255,
+	255,
+	255
+}
+
 local function render_buttons_in_text(ui_renderer, text, font_material, font_size, font_name, position, ui_style)
 	if not INPUT_ACTIONS[1] then
 		return text
@@ -1834,15 +1841,9 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 			if not ui_style.skip_button_rendering then
 				if gamepad_active then
 					if button_texture_data then
-						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, {
-							font_size * inv_scale,
-							font_size * inv_scale
-						}, {
-							ui_style.text_color[1],
-							255,
-							255,
-							255
-						}, ui_style.masked, ui_style.saturated)
+						BUTTON_COLOR[1] = ui_style.text_color[1]
+
+						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, Vector2(font_size * inv_scale, font_size * inv_scale), BUTTON_COLOR, ui_style.masked, ui_style.saturated)
 					else
 						local unassigned_button_pos = position + Vector3(length, 0, 0)
 
@@ -1851,16 +1852,9 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 				elseif not keymap_binding or (not unassigned and keymap_binding[1] == "mouse") then
 					if button_texture_data then
 						local height_multiplier = button_texture_data.size[2] / button_texture_data.size[1]
+						BUTTON_COLOR[1] = ui_style.text_color[1]
 
-						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, {
-							font_size * inv_scale,
-							font_size * inv_scale * height_multiplier
-						}, {
-							ui_style.text_color[1],
-							255,
-							255,
-							255
-						}, ui_style.masked, ui_style.saturated)
+						UIRenderer_draw_texture(ui_renderer, button_texture_data.texture, pos, Vector2(font_size * inv_scale, font_size * inv_scale * height_multiplier), BUTTON_COLOR, ui_style.masked, ui_style.saturated)
 					else
 						local unassigned_button_pos = position + Vector3(length, 0, 0)
 

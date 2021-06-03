@@ -162,12 +162,8 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 	local interactor_extension = self.interactor_extension
 	local player_actions_allowed = self.player_actions_allowed
 
-	if player_actions_allowed and CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) then
-		local config = interactor_extension:interaction_config()
-
-		if config.allow_movement then
-			interactor_extension:start_interaction("interacting")
-		end
+	if player_actions_allowed and CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) and interactor_extension:allow_movement_during_interaction() then
+		interactor_extension:start_interaction("interacting")
 	end
 
 	slot14 = Unit.alive(self.vortex_unit) and self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)

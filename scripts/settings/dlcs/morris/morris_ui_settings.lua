@@ -963,6 +963,170 @@ settings.start_game_layout_console_generic_inputs = {
 				description_text = "input_description_close"
 			}
 		}
+	},
+	deus_default_twitch = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 4,
+			description_text = "input_description_connect"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 5,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
+			end
+		}
+	},
+	deus_twitch_buy_connected = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "menu_weave_area_no_wom_button"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 4,
+			description_text = "input_description_disconnect"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 5,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
+			end
+		}
+	},
+	deus_twitch_buy = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "menu_weave_area_no_wom_button"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 4,
+			description_text = "input_description_connect"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 5,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
+			end
+		}
+	},
+	deus_default_twitch_connected = {
+		{
+			input_action = "d_pad",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 4,
+			description_text = "input_description_disconnect"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 5,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
+			end
+		}
+	},
+	deus_default_twitch_client = {
+		{
+			input_action = "back",
+			priority = 1,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 2,
+			description_text = "input_description_connect"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 3,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
+			end
+		}
+	},
+	deus_default_twitch_client_connected = {
+		{
+			input_action = "back",
+			priority = 1,
+			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 2,
+			description_text = "input_description_disconnect"
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 3,
+			description_text = "map_friend_button_tooltip",
+			content_check_function = function ()
+				return not IS_WINDOWS and not Managers.account:offline_mode()
+			end
+		}
 	}
 }
 

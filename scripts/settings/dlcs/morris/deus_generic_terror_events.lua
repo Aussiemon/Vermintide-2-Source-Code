@@ -1382,7 +1382,6 @@ GenericTerrorEvents.deus_skaven_wave_1a = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"skaven_warpfire_thrower",
@@ -1462,7 +1461,6 @@ GenericTerrorEvents.deus_skaven_wave_1a = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_id = "terror_event_special_b",
 		breed_name = {
 			"skaven_warpfire_thrower",
@@ -1614,7 +1612,6 @@ GenericTerrorEvents.deus_skaven_wave_1b = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -1798,7 +1795,6 @@ GenericTerrorEvents.deus_skaven_wave_1c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"skaven_warpfire_thrower",
@@ -2102,7 +2098,6 @@ GenericTerrorEvents.deus_chaos_wave_1a = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"chaos_vortex_sorcerer",
@@ -2123,7 +2118,6 @@ GenericTerrorEvents.deus_chaos_wave_1a = {
 	{
 		"spawn_at_raw",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer"
@@ -2134,8 +2128,7 @@ GenericTerrorEvents.deus_chaos_wave_1a = {
 			harder = 1,
 			cataclysm = 2,
 			normal = 1
-		},
-		difficulty_requirement = CHAMPION
+		}
 	},
 	{
 		"delay",
@@ -2162,14 +2155,6 @@ GenericTerrorEvents.deus_chaos_wave_1a = {
 			return counter.boss <= 0
 		end,
 		duration = SHORT
-	},
-	{
-		"continue_when_spawned_count",
-		s,
-		duration = 120,
-		condition = function (counter)
-			return counter.special <= 1
-		end
 	},
 	{
 		"continue_when_spawned_count",
@@ -2319,7 +2304,6 @@ GenericTerrorEvents.deus_chaos_wave_1b = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"chaos_vortex_sorcerer",
@@ -2333,7 +2317,6 @@ GenericTerrorEvents.deus_chaos_wave_1b = {
 	{
 		"spawn_at_raw",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer"
@@ -2365,14 +2348,6 @@ GenericTerrorEvents.deus_chaos_wave_1b = {
 			return counter.boss <= 0
 		end,
 		duration = SHORT
-	},
-	{
-		"continue_when_spawned_count",
-		s,
-		duration = 120,
-		condition = function (counter)
-			return counter.special <= 1
-		end
 	},
 	{
 		"continue_when_spawned_count",
@@ -3304,9 +3279,8 @@ GenericTerrorEvents.deus_beastmen_wave_1c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
-		breed_name = "beastmen_standard_bearer",
-		spawner_id = "terror_event_special_a"
+		spawner_id = "terror_event_special_a",
+		breed_name = "beastmen_standard_bearer"
 	},
 	{
 		"delay",
@@ -3321,10 +3295,8 @@ GenericTerrorEvents.deus_beastmen_wave_1c = {
 	},
 	{
 		"spawn_at_raw",
-		breed_name = "beastmen_standard_bearer",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "main",
-		difficulty_requirement = CHAMPION
+		breed_name = "beastmen_standard_bearer"
 	},
 	{
 		"event_horde",
@@ -3684,7 +3656,6 @@ GenericTerrorEvents.deus_skaven_wave_2a = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -3855,7 +3826,6 @@ GenericTerrorEvents.deus_skaven_wave_2b = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -3910,7 +3880,6 @@ GenericTerrorEvents.deus_skaven_wave_2b = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -4013,7 +3982,6 @@ GenericTerrorEvents.deus_skaven_wave_2c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -4113,7 +4081,6 @@ GenericTerrorEvents.deus_skaven_wave_2d = {
 	{
 		"spawn_at_raw",
 		breed_name = "skaven_ratling_gunner",
-		spawn_counter_category = "special",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -4160,7 +4127,6 @@ GenericTerrorEvents.deus_skaven_wave_2d = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		spawner_ids = {
 			"terror_event_special_a",
 			"terror_event_special_b"
@@ -4438,7 +4404,6 @@ GenericTerrorEvents.deus_skaven_wave_2f = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"skaven_warpfire_thrower",
@@ -4463,7 +4428,7 @@ GenericTerrorEvents.deus_skaven_wave_2f = {
 		"continue_when_spawned_count",
 		duration = 60,
 		condition = function (counter)
-			return counter.main < 10 and counter.elite < 5 and counter.special < 2
+			return counter.main < 10 and counter.elite < 5
 		end
 	},
 	{
@@ -4482,7 +4447,6 @@ GenericTerrorEvents.deus_skaven_wave_2f = {
 		"spawn_at_raw",
 		minimum_difficulty_tweak = 0,
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"skaven_warpfire_thrower",
 			"skaven_poison_wind_globadier",
@@ -4507,7 +4471,7 @@ GenericTerrorEvents.deus_skaven_wave_2f = {
 		"continue_when_spawned_count",
 		duration = 60,
 		condition = function (counter)
-			return counter.main < 10 and counter.elite < 5 and counter.special < 2
+			return counter.main < 10 and counter.elite < 5
 		end
 	}
 }
@@ -4959,7 +4923,6 @@ GenericTerrorEvents.deus_chaos_wave_2c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"chaos_vortex_sorcerer",
@@ -4981,7 +4944,6 @@ GenericTerrorEvents.deus_chaos_wave_2c = {
 	{
 		"spawn_at_raw",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer"
@@ -5007,14 +4969,6 @@ GenericTerrorEvents.deus_chaos_wave_2c = {
 		duration = SHORT
 	},
 	{
-		"continue_when_spawned_count",
-		s,
-		duration = 120,
-		condition = function (counter)
-			return counter.special <= 1
-		end
-	},
-	{
 		"event_horde",
 		limit_spawners = 2,
 		spawn_counter_category = "main",
@@ -5061,7 +5015,6 @@ GenericTerrorEvents.deus_chaos_wave_2c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"chaos_vortex_sorcerer",
@@ -5083,7 +5036,6 @@ GenericTerrorEvents.deus_chaos_wave_2c = {
 	{
 		"spawn_at_raw",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer"
@@ -5107,14 +5059,6 @@ GenericTerrorEvents.deus_chaos_wave_2c = {
 			return counter.boss <= 0
 		end,
 		duration = SHORT
-	},
-	{
-		"continue_when_spawned_count",
-		s,
-		duration = 60,
-		condition = function (counter)
-			return counter.special <= 1
-		end
 	},
 	{
 		"continue_when_spawned_count",
@@ -5237,7 +5181,6 @@ GenericTerrorEvents.deus_chaos_wave_2d = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"chaos_vortex_sorcerer",
@@ -5259,7 +5202,6 @@ GenericTerrorEvents.deus_chaos_wave_2d = {
 	{
 		"spawn_at_raw",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer"
@@ -5276,14 +5218,6 @@ GenericTerrorEvents.deus_chaos_wave_2d = {
 	{
 		"delay",
 		duration = LONG
-	},
-	{
-		"continue_when_spawned_count",
-		s,
-		duration = 120,
-		condition = function (counter)
-			return counter.special <= 1
-		end
 	},
 	{
 		"continue_when_spawned_count",
@@ -5342,7 +5276,6 @@ GenericTerrorEvents.deus_chaos_wave_2d = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "special",
 		spawner_id = "terror_event_special_a",
 		breed_name = {
 			"chaos_vortex_sorcerer",
@@ -5364,7 +5297,6 @@ GenericTerrorEvents.deus_chaos_wave_2d = {
 	{
 		"spawn_at_raw",
 		spawner_id = "terror_event_special_b",
-		spawn_counter_category = "special",
 		breed_name = {
 			"chaos_vortex_sorcerer",
 			"chaos_corruptor_sorcerer"
@@ -5387,14 +5319,6 @@ GenericTerrorEvents.deus_chaos_wave_2d = {
 		duration = 20,
 		condition = function (counter)
 			return counter.elite <= 2
-		end
-	},
-	{
-		"continue_when_spawned_count",
-		s,
-		duration = 60,
-		condition = function (counter)
-			return counter.special <= 1
 		end
 	},
 	{
@@ -5516,9 +5440,8 @@ GenericTerrorEvents.deus_beastmen_wave_2a = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
-		breed_name = "beastmen_standard_bearer",
-		spawner_id = "terror_event_special_a"
+		spawner_id = "terror_event_special_a",
+		breed_name = "beastmen_standard_bearer"
 	},
 	{
 		"event_horde",
@@ -5885,9 +5808,8 @@ GenericTerrorEvents.deus_beastmen_wave_2c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
-		breed_name = "beastmen_standard_bearer",
-		spawner_id = "terror_event_special_a"
+		spawner_id = "terror_event_special_a",
+		breed_name = "beastmen_standard_bearer"
 	},
 	{
 		"delay",
@@ -5905,7 +5827,6 @@ GenericTerrorEvents.deus_beastmen_wave_2c = {
 	},
 	{
 		"spawn_at_raw",
-		spawn_counter_category = "main",
 		breed_name = "beastmen_standard_bearer",
 		spawner_id = "terror_event_special_b",
 		minimum_difficulty_tweak = 0

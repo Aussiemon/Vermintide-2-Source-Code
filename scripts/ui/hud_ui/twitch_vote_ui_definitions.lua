@@ -1,7 +1,3 @@
-local twitch_size = {
-	72,
-	25.8
-}
 local scenegraph_definition = {
 	root = {
 		is_root = true,
@@ -32,12 +28,12 @@ local scenegraph_definition = {
 		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
-			811,
-			160
+			800,
+			128
 		},
 		position = {
 			0,
-			120,
+			210,
 			1
 		}
 	},
@@ -46,8 +42,8 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			70,
-			70
+			56,
+			56
 		},
 		position = {
 			0,
@@ -60,8 +56,8 @@ local scenegraph_definition = {
 		parent = "vote_icon_rect",
 		horizontal_alignment = "center",
 		size = {
-			60,
-			60
+			56,
+			56
 		},
 		position = {
 			0,
@@ -74,12 +70,12 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			220,
-			30
+			260,
+			42
 		},
 		position = {
 			0,
-			32,
+			30,
 			10
 		}
 	},
@@ -88,8 +84,8 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			60,
-			40
+			48,
+			32
 		},
 		position = {
 			0,
@@ -98,58 +94,58 @@ local scenegraph_definition = {
 		}
 	},
 	portrait_a = {
-		vertical_alignment = "top",
+		vertical_alignment = "center",
 		parent = "base_area",
-		horizontal_alignment = "left",
+		horizontal_alignment = "center",
 		size = {
-			120,
-			90
+			96,
+			72
 		},
 		position = {
-			120,
-			50,
+			-240,
+			52,
 			10
 		}
 	},
 	portrait_b = {
-		vertical_alignment = "top",
+		vertical_alignment = "center",
 		parent = "base_area",
-		horizontal_alignment = "left",
+		horizontal_alignment = "center",
 		size = {
-			120,
-			90
+			96,
+			72
 		},
 		position = {
-			240,
-			50,
+			-144,
+			52,
 			10
 		}
 	},
 	portrait_c = {
-		vertical_alignment = "top",
+		vertical_alignment = "center",
 		parent = "base_area",
-		horizontal_alignment = "right",
+		horizontal_alignment = "center",
 		size = {
-			120,
-			90
+			96,
+			72
 		},
 		position = {
-			-120,
-			50,
+			240,
+			52,
 			10
 		}
 	},
 	portrait_d = {
-		vertical_alignment = "top",
+		vertical_alignment = "center",
 		parent = "base_area",
-		horizontal_alignment = "right",
+		horizontal_alignment = "center",
 		size = {
-			120,
-			90
+			96,
+			72
 		},
 		position = {
-			0,
-			50,
+			336,
+			52,
 			10
 		}
 	},
@@ -158,12 +154,12 @@ local scenegraph_definition = {
 		parent = "portrait_a",
 		horizontal_alignment = "left",
 		size = {
-			60,
-			40
+			48,
+			32
 		},
 		position = {
-			-30,
-			-83,
+			-24,
+			-67,
 			20
 		}
 	},
@@ -172,12 +168,12 @@ local scenegraph_definition = {
 		parent = "portrait_b",
 		horizontal_alignment = "left",
 		size = {
-			60,
-			40
+			48,
+			32
 		},
 		position = {
-			-30,
-			-83,
+			-24,
+			-67,
 			20
 		}
 	},
@@ -186,12 +182,12 @@ local scenegraph_definition = {
 		parent = "portrait_c",
 		horizontal_alignment = "left",
 		size = {
-			60,
-			40
+			48,
+			32
 		},
 		position = {
-			-30,
-			-83,
+			-24,
+			-67,
 			20
 		}
 	},
@@ -200,12 +196,12 @@ local scenegraph_definition = {
 		parent = "portrait_d",
 		horizontal_alignment = "left",
 		size = {
-			60,
-			40
+			48,
+			32
 		},
 		position = {
-			-30,
-			-83,
+			-24,
+			-67,
 			20
 		}
 	},
@@ -214,8 +210,8 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			200,
-			32
+			160,
+			25
 		},
 		position = {
 			0,
@@ -228,8 +224,8 @@ local scenegraph_definition = {
 		parent = "mc_divider",
 		horizontal_alignment = "center",
 		size = {
-			34,
-			34
+			27,
+			27
 		},
 		position = {
 			0,
@@ -242,12 +238,12 @@ local scenegraph_definition = {
 		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
-			811,
-			140
+			650,
+			100
 		},
 		position = {
 			0,
-			200,
+			285,
 			0
 		}
 	},
@@ -256,8 +252,8 @@ local scenegraph_definition = {
 		parent = "result_area",
 		horizontal_alignment = "center",
 		size = {
-			264,
-			32
+			211,
+			25
 		},
 		position = {
 			0,
@@ -270,8 +266,8 @@ local scenegraph_definition = {
 		parent = "mcr_divider",
 		horizontal_alignment = "center",
 		size = {
-			34,
-			34
+			27,
+			27
 		},
 		position = {
 			0,
@@ -284,8 +280,8 @@ local scenegraph_definition = {
 		parent = "result_area",
 		horizontal_alignment = "center",
 		size = {
-			70,
-			70
+			56,
+			56
 		},
 		position = {
 			0,
@@ -298,8 +294,8 @@ local scenegraph_definition = {
 		parent = "result_icon_rect",
 		horizontal_alignment = "center",
 		size = {
-			60,
-			60
+			48,
+			48
 		},
 		position = {
 			0,
@@ -312,11 +308,11 @@ local scenegraph_definition = {
 		parent = "result_area",
 		horizontal_alignment = "center",
 		size = {
-			120,
-			90
+			96,
+			72
 		},
 		position = {
-			60,
+			48,
 			-52,
 			1
 		}
@@ -327,11 +323,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			800,
-			30
+			36
 		},
 		position = {
 			0,
-			32,
+			28,
 			1
 		}
 	},
@@ -341,11 +337,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			800,
-			30
+			36
 		},
 		position = {
 			0,
-			-150,
+			-114,
 			1
 		}
 	},
@@ -354,8 +350,8 @@ local scenegraph_definition = {
 		parent = "result_area",
 		horizontal_alignment = "center",
 		size = {
-			800,
-			30
+			640,
+			24
 		},
 		position = {
 			0,
@@ -368,12 +364,12 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			60,
-			40
+			48,
+			32
 		},
 		position = {
 			0,
-			45,
+			37,
 			10
 		}
 	},
@@ -382,8 +378,8 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			510,
-			40
+			459,
+			36
 		},
 		position = {
 			0,
@@ -396,8 +392,8 @@ local scenegraph_definition = {
 		parent = "base_area",
 		horizontal_alignment = "center",
 		size = {
-			514,
-			42
+			463,
+			38
 		},
 		position = {
 			0,
@@ -414,7 +410,7 @@ local scenegraph_definition = {
 			0
 		},
 		position = {
-			0,
+			-1,
 			0,
 			0
 		}
@@ -424,12 +420,12 @@ local scenegraph_definition = {
 		parent = "result_bar_fg",
 		horizontal_alignment = "center",
 		size = {
-			438,
-			5
+			394,
+			4
 		},
 		position = {
 			0,
-			-5,
+			-6,
 			-1
 		}
 	},
@@ -438,12 +434,12 @@ local scenegraph_definition = {
 		parent = "result_bar_fg",
 		horizontal_alignment = "center",
 		size = {
-			438,
-			40
+			394,
+			36
 		},
 		position = {
 			0,
-			0,
+			-0,
 			-6
 		}
 	},
@@ -452,12 +448,12 @@ local scenegraph_definition = {
 		parent = "result_bar_mid",
 		horizontal_alignment = "center",
 		size = {
-			34,
-			34
+			29,
+			29
 		},
 		position = {
-			0,
-			18,
+			1,
+			16,
 			10
 		}
 	},
@@ -466,8 +462,8 @@ local scenegraph_definition = {
 		parent = "result_bar_mid",
 		horizontal_alignment = "right",
 		size = {
-			219,
-			40
+			197,
+			36
 		},
 		position = {
 			0,
@@ -480,8 +476,8 @@ local scenegraph_definition = {
 		parent = "result_a_bar",
 		horizontal_alignment = "left",
 		size = {
-			40,
-			40
+			36,
+			36
 		},
 		position = {
 			-40,
@@ -494,11 +490,11 @@ local scenegraph_definition = {
 		parent = "result_bar_fg",
 		horizontal_alignment = "left",
 		size = {
-			84,
-			22
+			75,
+			20
 		},
 		position = {
-			-24,
+			-22,
 			-3,
 			8
 		}
@@ -508,12 +504,12 @@ local scenegraph_definition = {
 		parent = "result_bar_mid",
 		horizontal_alignment = "left",
 		size = {
-			219,
-			40
+			197,
+			36
 		},
 		position = {
 			0,
-			0,
+			-0,
 			-2
 		}
 	},
@@ -522,12 +518,12 @@ local scenegraph_definition = {
 		parent = "result_b_bar",
 		horizontal_alignment = "right",
 		size = {
-			40,
-			40
+			36,
+			36
 		},
 		position = {
 			40,
-			0,
+			-0,
 			-1
 		}
 	},
@@ -536,11 +532,11 @@ local scenegraph_definition = {
 		parent = "result_bar_fg",
 		horizontal_alignment = "right",
 		size = {
-			84,
-			22
+			75,
+			20
 		},
 		position = {
-			24,
+			22,
 			-3,
 			8
 		}
@@ -550,11 +546,11 @@ local scenegraph_definition = {
 		parent = "result_bar_fg",
 		horizontal_alignment = "left",
 		size = {
-			60,
-			60
+			48,
+			48
 		},
 		position = {
-			-90,
+			-60,
 			0,
 			-1
 		}
@@ -564,8 +560,8 @@ local scenegraph_definition = {
 		parent = "vote_icon_a",
 		horizontal_alignment = "center",
 		size = {
-			70,
-			70
+			56,
+			56
 		},
 		position = {
 			0,
@@ -578,8 +574,8 @@ local scenegraph_definition = {
 		parent = "vote_icon_a",
 		horizontal_alignment = "left",
 		size = {
-			300,
-			30
+			240,
+			24
 		},
 		position = {
 			0,
@@ -596,8 +592,8 @@ local scenegraph_definition = {
 			30
 		},
 		position = {
-			-233,
-			35,
+			-207,
+			32,
 			10
 		}
 	},
@@ -606,11 +602,11 @@ local scenegraph_definition = {
 		parent = "result_bar_fg",
 		horizontal_alignment = "right",
 		size = {
-			60,
-			60
+			48,
+			48
 		},
 		position = {
-			90,
+			60,
 			0,
 			-1
 		}
@@ -620,8 +616,8 @@ local scenegraph_definition = {
 		parent = "vote_icon_b",
 		horizontal_alignment = "center",
 		size = {
-			70,
-			70
+			56,
+			56
 		},
 		position = {
 			0,
@@ -634,8 +630,8 @@ local scenegraph_definition = {
 		parent = "vote_icon_b",
 		horizontal_alignment = "right",
 		size = {
-			300,
-			30
+			240,
+			24
 		},
 		position = {
 			0,
@@ -652,8 +648,8 @@ local scenegraph_definition = {
 			30
 		},
 		position = {
-			233,
-			35,
+			207,
+			32,
 			10
 		}
 	},
@@ -662,12 +658,12 @@ local scenegraph_definition = {
 		parent = "screen",
 		horizontal_alignment = "center",
 		size = {
-			811,
-			140
+			650,
+			135
 		},
 		position = {
 			0,
-			105,
+			220,
 			0
 		}
 	},
@@ -676,8 +672,8 @@ local scenegraph_definition = {
 		parent = "sv_result_area",
 		horizontal_alignment = "center",
 		size = {
-			264,
-			32
+			211,
+			26
 		},
 		position = {
 			0,
@@ -690,8 +686,8 @@ local scenegraph_definition = {
 		parent = "sv_divider",
 		horizontal_alignment = "center",
 		size = {
-			34,
-			34
+			27,
+			27
 		},
 		position = {
 			0,
@@ -704,8 +700,8 @@ local scenegraph_definition = {
 		parent = "sv_result_area",
 		horizontal_alignment = "center",
 		size = {
-			70,
-			70
+			56,
+			56
 		},
 		position = {
 			0,
@@ -718,8 +714,8 @@ local scenegraph_definition = {
 		parent = "sv_result_icon_rect",
 		horizontal_alignment = "center",
 		size = {
-			60,
-			60
+			48,
+			48
 		},
 		position = {
 			0,
@@ -732,8 +728,8 @@ local scenegraph_definition = {
 		parent = "sv_result_area",
 		horizontal_alignment = "center",
 		size = {
-			800,
-			30
+			640,
+			24
 		},
 		position = {
 			0,
@@ -744,8 +740,8 @@ local scenegraph_definition = {
 }
 
 local function create_masked_portrait_frame(scenegraph_id, frame_settings_name, level_text, scale, retained_mode, portrait_texture, masked_portrait_texture)
-	local widget = UIWidgets.create_portrait_frame(scenegraph_id, frame_settings_name, level_text, scale, retained_mode, portrait_texture)
 	scale = scale or 1
+	local widget = UIWidgets.create_portrait_frame(scenegraph_id, frame_settings_name, level_text, scale, retained_mode, portrait_texture)
 	local passes = widget.element.passes
 	local content = widget.content
 	local style = widget.style
@@ -830,7 +826,7 @@ local hero_vote_text_style = {
 	}
 }
 local vote_text_style = {
-	font_size = 24,
+	font_size = 28,
 	upper_case = true,
 	localize = true,
 	use_shadow = true,
@@ -860,15 +856,16 @@ vote_text_left_style.font_size = 24
 local vote_text_right_style = table.clone(vote_text_style)
 vote_text_right_style.horizontal_alignment = "right"
 vote_text_right_style.font_size = 24
+local portrait_scale = 0.8
 local portrait_glow_style = {
 	offset = {
-		-54,
-		-64,
+		-54 * portrait_scale,
+		-64 * portrait_scale,
 		0
 	},
 	texture_size = {
-		108,
-		130
+		108 * portrait_scale,
+		130 * portrait_scale
 	},
 	color = {
 		255,
@@ -918,12 +915,12 @@ local function create_vertical_window_divider(scenegraph_id, size)
 					6
 				},
 				size = {
-					5,
-					size[2] - 9
+					4,
+					size[2] - 7
 				},
 				texture_tiling_size = {
-					5,
-					size[2] - 9
+					4,
+					size[2] - 7
 				}
 			},
 			edge_holder_top = {
@@ -939,8 +936,8 @@ local function create_vertical_window_divider(scenegraph_id, size)
 					10
 				},
 				size = {
-					17,
-					9
+					14,
+					7
 				}
 			},
 			edge_holder_bottom = {
@@ -956,8 +953,8 @@ local function create_vertical_window_divider(scenegraph_id, size)
 					10
 				},
 				size = {
-					17,
-					9
+					14,
+					7
 				}
 			}
 		},
@@ -1024,10 +1021,10 @@ return {
 				0,
 				0
 			}, "menu_frame_12"),
-			hero_1 = create_masked_portrait_frame("portrait_a", "default", "-", 1, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
-			hero_2 = create_masked_portrait_frame("portrait_b", "default", "-", 1, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
-			hero_3 = create_masked_portrait_frame("portrait_c", "default", "-", 1, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
-			hero_4 = create_masked_portrait_frame("portrait_d", "default", "-", 1, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
+			hero_1 = create_masked_portrait_frame("portrait_a", "default", "-", portrait_scale, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
+			hero_2 = create_masked_portrait_frame("portrait_b", "default", "-", portrait_scale, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
+			hero_3 = create_masked_portrait_frame("portrait_c", "default", "-", portrait_scale, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
+			hero_4 = create_masked_portrait_frame("portrait_d", "default", "-", portrait_scale, nil, "unit_frame_portrait_default", "unit_frame_portrait_default"),
 			hero_glow_1 = UIWidgets.create_texture_with_style("portrait_glow", "portrait_a", portrait_glow_style),
 			hero_glow_2 = UIWidgets.create_texture_with_style("portrait_glow", "portrait_b", portrait_glow_style),
 			hero_glow_3 = UIWidgets.create_texture_with_style("portrait_glow", "portrait_c", portrait_glow_style),
@@ -1046,7 +1043,7 @@ return {
 			result_icon_rect = UIWidgets.create_simple_texture("item_frame", "result_icon_rect"),
 			result_icon = UIWidgets.create_simple_texture("markus_mercenary_crit_chance", "result_icon"),
 			result_text = UIWidgets.create_simple_text("heal_all", "result_text", nil, nil, result_text_style),
-			winner_portrait = UIWidgets.create_portrait_frame("winner_portrait", "hero_selection", "-", 1, nil, "unit_frame_portrait_default"),
+			winner_portrait = UIWidgets.create_portrait_frame("winner_portrait", "hero_selection", "-", portrait_scale, nil, "unit_frame_portrait_default"),
 			winner_text = UIWidgets.create_simple_text("draw", "winner_name", nil, nil, winner_text_style)
 		},
 		standard_vote = {

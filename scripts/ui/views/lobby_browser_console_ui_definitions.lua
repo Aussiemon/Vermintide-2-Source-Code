@@ -577,6 +577,20 @@ local scenegraph_definition = {
 			0
 		}
 	},
+	twitch_logo = {
+		vertical_alignment = "center",
+		parent = "objective_2",
+		horizontal_alignment = "center",
+		size = {
+			130,
+			29
+		},
+		position = {
+			0,
+			15,
+			1
+		}
+	},
 	filter_level_entry_anchor = {
 		vertical_alignment = "top",
 		parent = "filter_base",
@@ -4256,6 +4270,7 @@ local adventure_details_widget_definition = {
 	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
 	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
+	twitch_logo = UIWidgets.create_simple_texture("twitch_logo_new", "twitch_logo"),
 	hero_tabs = UIWidgets.create_icon_selector("details_hero_tabs", {
 		hero_entry_width,
 		hero_entry_height
@@ -4269,6 +4284,7 @@ local deus_details_widget_definition = {
 	level_name = UIWidgets.create_simple_text(" ", "details_level_name", nil, nil, level_name_style),
 	locked_reason = UIWidgets.create_simple_text("tutorial_no_text", "details_locked_reason", nil, nil, locked_reason_style),
 	details_information = create_details_information("details_level_info", "details_game_type", "details_status"),
+	twitch_logo = UIWidgets.create_simple_texture("twitch_logo_new", "twitch_logo"),
 	hero_tabs = UIWidgets.create_icon_selector("details_hero_tabs", {
 		hero_entry_width,
 		hero_entry_height

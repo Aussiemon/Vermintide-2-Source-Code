@@ -5,10 +5,17 @@ ImguiSpawning.init = function (self)
 	self._breed_index = 0
 	self._pickup_names = table.keys(AllPickups)
 	self._pickup_index = 0
+	self._mark_outline_extension = nil
+	self._mark_outline_id = nil
+	self._power_level = 600
 end
 
 ImguiSpawning.update = function (self)
-	return
+	if self._mark_outline_extension then
+		self._mark_outline_extension:remove_outline(self._mark_outline_id)
+
+		self._mark_outline_extension = nil
+	end
 end
 
 local debug_breed = "skaven_clan_rat"
@@ -27,9 +34,7 @@ ImguiSpawning.draw = function (self)
 		local position = Managers.state.conflict:player_aim_raycast(world, false, "filter_ray_horde_spawn")
 
 		if position then
-			local pickup_system = Managers.state.entity:system("pickup_system")
-
-			pickup_system:_debug_spawn_pickup(pickup_name, position)
+			Managers.state.network.network_transmit:send_rpc_server("rpc_spawn_pickup_with_physics", NetworkLookup.pickup_names[pickup_name], position, Quaternion.identity(), NetworkLookup.pickup_spawn_types.dropped)
 		end
 	end
 
@@ -56,11 +61,41 @@ ImguiSpawning.draw = function (self)
 	self._breed_index = Imgui.combo("Breed", self._breed_index, self._breed_names)
 	script_data.disable_ai_perception = Imgui.checkbox("Disable AI perception", script_data.disable_ai_perception or false)
 
+	Imgui.separator()
+
+	if Managers.state and Managers.state.conflict then
+		self._power_level = Imgui.slider_int("Power level", self._power_level, 1, 1000)
+		local world = Application.main_world()
+		local breed, pos, distance, normal, actor = Managers.state.conflict:player_aim_raycast(world, true, "filter_player_ray_projectile")
+
+		Imgui.text("Looking at: " .. ((breed and breed.name) or "n/a"))
+
+		if breed then
+			local unit = Actor.unit(actor)
+			local outline_extension = ALIVE[unit] and ScriptUnit.has_extension(unit, "outline_system")
+
+			if outline_extension then
+				self._mark_outline_extension = outline_extension
+				self._mark_outline_id = outline_extension:add_outline(OutlineSettings.templates.target_ally)
+			end
+		end
+
+		if (Imgui.button("Inflict damage (or mouse middle)", 100, 20) or Mouse.pressed(Mouse.button_id("middle"))) and breed then
+			local unit = Actor.unit(actor)
+
+			DamageUtils.debug_deal_damage(unit, nil, nil, self._power_level)
+		end
+	end
+
 	Imgui.end_window()
 end
 
+ImguiSpawning._clear_outline = function (self)
+	return
+end
+
 ImguiSpawning.is_persistent = function (self)
-	return false
+	return true
 end
 
 return

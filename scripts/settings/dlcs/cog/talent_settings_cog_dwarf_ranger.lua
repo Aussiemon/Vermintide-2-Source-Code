@@ -284,7 +284,10 @@ local talent_buff_templates = {
 				event = "on_hit",
 				max_stacks = 1,
 				client_side = true,
-				valid_buff_types = RangedBuffTypes
+				valid_attack_types = {
+					instant_projectile = true,
+					projectile = true
+				}
 			}
 		}
 	},
@@ -334,7 +337,10 @@ local talent_buff_templates = {
 				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit",
 				event = "on_hit",
-				valid_buff_types = MeleeBuffTypes
+				valid_attack_types = {
+					heavy_attack = true,
+					light_attack = true
+				}
 			}
 		}
 	},

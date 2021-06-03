@@ -61,6 +61,7 @@ WorldMarkerUI.init = function (self, parent, ingame_ui_context)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.input_manager = ingame_ui_context.input_manager
 	self._render_settings = {
+		alpha_multiplier = 1,
 		snap_pixel_positions = false
 	}
 	self._raycast_frame_counter = 0
@@ -424,7 +425,9 @@ WorldMarkerUI.post_update = function (self, dt, t)
 			table.clear(temp_marker_raycast_queue)
 		end
 
-		local alpha_multiplier = render_settings.alpha_multiplier or 1
+		local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+		local is_aiming = status_extension:get_is_aiming()
+		local alpha_multiplier = UIUtils.animate_value(render_settings.alpha_multiplier, dt * 5, is_aiming)
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -452,7 +455,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 				end
 
 				if draw then
-					render_settings.alpha_multiplier = widget.alpha_multiplier or alpha_multiplier
+					render_settings.alpha_multiplier = (widget.alpha_multiplier or 1) * alpha_multiplier
 
 					UIRenderer.draw_widget(ui_renderer, widget)
 				end

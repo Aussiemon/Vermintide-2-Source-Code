@@ -567,6 +567,8 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
 	info_box_widgets_lobbies.info_frame_status_text.content.text = status_text
 	info_box_widgets_servers.info_frame_status_text.content.text = status_text
+	local has_twitch = to_boolean(lobby_data.twitch_enabled)
+	info_box_widgets_lobbies.info_frame_twitch_logo.content.visible = has_twitch
 	local server_info = lobby_data.server_info
 	local is_dedicated_server = server_info ~= nil
 
@@ -668,6 +670,8 @@ StartGameWindowLobbyBrowser._handle_deus_data = function (self, lobby_data)
 	info_box_widgets_lobbies.info_frame_players_text.content.text = num_players_text
 	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
 	info_box_widgets_lobbies.info_frame_status_text.content.text = status_text
+	local has_twitch = to_boolean(lobby_data.twitch_enabled)
+	info_box_widgets_lobbies.info_frame_twitch_logo.content.visible = has_twitch
 	local host = lobby_data.server_name or lobby_data.unique_server_name or lobby_data.name or lobby_data.host
 	info_box_widgets_lobbies.info_frame_host_text.content.text = host or Localize("lb_unknown")
 	self._show_widget_type = "deus"
@@ -1174,7 +1178,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local difficulty_index = self.selected_difficulty_index
 	local difficulty_table = self:_get_difficulties()
 	local difficulty_key = difficulty_table[difficulty_index]
-	local only_show_valid_lobbies = not self._base_widgets_by_name.invalid_checkbox.content.checked
+	local only_show_valid_lobbies = not script_data.show_invalid_lobbies and not self._base_widgets_by_name.invalid_checkbox.content.checked
 	local distance_index = self.selected_distance_index
 	local distance_filter = LobbyAux.map_lobby_distance_filter[distance_index]
 	local show_lobbies_index = self.selected_show_lobbies_index
@@ -1329,6 +1333,7 @@ StartGameWindowLobbyBrowser._on_game_type_stepper_input = function (self, index_
 	self.selected_game_mode_index = new_index
 	self.search_timer = input_delay_before_start_new_search
 	self.selected_level_index = 1
+	self.selected_difficulty_index = 1
 	local level_index = self.selected_level_index
 	local levels_table = self:_get_levels()
 	local level_key = levels_table[level_index]
@@ -1345,7 +1350,7 @@ StartGameWindowLobbyBrowser._on_game_type_stepper_input = function (self, index_
 		stepper_content.button_hotspot_right.disable_button = false
 	end
 
-	local difficulty_index = self.selected_difficulty_index or 1
+	local difficulty_index = self.selected_difficulty_index
 	local difficulty_table = self:_get_difficulties()
 	local difficulty_key = difficulty_table[difficulty_index]
 	local banner_content = self._lobbies_widgets_by_name.difficulty_banner_widget.content

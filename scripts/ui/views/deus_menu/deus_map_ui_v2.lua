@@ -51,12 +51,27 @@ local function update_portrait(widget, frame_name, offset)
 	end
 end
 
-DeusMapUI.init = function (self, ui_renderer)
-	self._ui_renderer = ui_renderer
+DeusMapUI.init = function (self, context)
+	self._context = context
+	self._ui_renderer = context.ui_renderer
 	self._render_content = false
 	self._render_full_screen_rect = false
 
 	self:_create_ui_elements()
+	Managers.state.event:register(self, "ingame_player_list_enabled", "event_ingame_player_list_enabled")
+end
+
+DeusMapUI.event_ingame_player_list_enabled = function (self, enabled)
+	local cursor_widget = self._widgets_by_name.console_cursor
+	local cursor_widget_content = cursor_widget.content
+
+	if enabled then
+		cursor_widget_content.visible = false
+	else
+		cursor_widget_content.visible = true
+
+		Managers.input:enable_gamepad_cursor()
+	end
 end
 
 DeusMapUI._create_ui_elements = function (self)
@@ -233,7 +248,7 @@ DeusMapUI.update_player_data = function (self, player_data)
 			end
 
 			player_texts.content.name_text = data.name or ""
-			player_portrait.style.token_icon.saturated = not not data.vote
+			player_portrait.content.show_token_icon = not data.vote
 
 			if data.profile_index ~= 0 then
 				local profile_data = SPProfiles[data.profile_index]
@@ -351,6 +366,10 @@ DeusMapUI.fade_in = function (self, duration)
 	anim_data.alpha_multiplier_animation_duration = duration
 	anim_data.alpha_multiplier_animation_start_time = nil
 	anim_data.alpha_multiplier_animation_end_time = nil
+end
+
+DeusMapUI.destroy = function (self)
+	Managers.state.event:unregister("ingame_player_list_enabled", self)
 end
 
 return

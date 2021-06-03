@@ -401,7 +401,7 @@ settings.buff_function_templates = {
 			return
 		end
 
-		if Unit.alive(unit) then
+		if ALIVE[unit] then
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 			local heal_amount = buff.bonus
 

@@ -145,8 +145,6 @@ local animation_definitions = {
 				diff_info_style.difficulty_description.text_color[1] = 0
 				diff_info_style.highest_obtainable_level.text_color[1] = 0
 				diff_info_style.difficulty_separator.color[1] = 0
-				diff_info_style.difficulty_lock_text.text_color[1] = 0
-				diff_info_style.dlc_lock_text.text_color[1] = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)

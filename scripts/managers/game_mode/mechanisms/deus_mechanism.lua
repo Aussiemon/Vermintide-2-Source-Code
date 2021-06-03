@@ -125,8 +125,9 @@ local function get_next_level_data(deus_run_controller, in_map)
 	local level_key, environment_variation_id, level_seed = nil
 	local mechanism = "deus"
 	local game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak = nil
+	local extra_packages = {}
 
-	if not deus_run_controller then
+	if not deus_run_controller or deus_run_controller:get_run_ended() then
 		level_key = HUB_LEVEL_NAME
 	elseif in_map then
 		level_key = MAP_LEVEL_NAME
@@ -142,9 +143,17 @@ local function get_next_level_data(deus_run_controller, in_map)
 		difficulty_tweak = get_difficulty_tweak_for_progress(current_run_progress)
 		conflict_settings = current_node.conflict_settings
 		locked_director_functions = nil
+		local curse_name = current_node.curse
+
+		if curse_name then
+			local curse = MutatorTemplates[curse_name]
+			local package_name = curse.package_name
+
+			table.insert(extra_packages, package_name)
+		end
 	end
 
-	return level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak
+	return level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages
 end
 
 DeusMechanism.init = function (self, settings)
@@ -175,7 +184,7 @@ DeusMechanism.network_context_created = function (self, lobby, server_peer_id, o
 	if self._deus_run_controller then
 		Managers.mechanism:manual_end_venture()
 
-		if is_server then
+		if is_server and not self._deus_run_controller:get_run_ended() then
 			self._deus_run_controller:network_context_created(lobby, server_peer_id, own_peer_id, is_server, network_handler)
 		else
 			self._deus_run_controller:destroy()
@@ -222,24 +231,16 @@ DeusMechanism.create_host_migration_info = function (self, gm_event_end_conditio
 
 	if deus_run_controller and new_host then
 		local new_host_peer_id = new_host.peer_id
-		local health_state = deus_run_controller:get_player_health_state(new_host_peer_id, REAL_PLAYER_LOCAL_ID)
+		local profile_index = deus_run_controller:get_player_profile(new_host_peer_id, REAL_PLAYER_LOCAL_ID)
+		local health_state = profile_index ~= 0 and deus_run_controller:get_player_health_state(new_host_peer_id, REAL_PLAYER_LOCAL_ID)
 
 		if health_state ~= "alive" then
 			deus_run_controller = nil
 		end
 	end
 
-	if gm_event_end_conditions_met then
-		local has_next_node = false
-
-		if deus_run_controller then
-			local current_node = deus_run_controller:get_current_node()
-			has_next_node = current_node.next and #current_node.next > 0
-		end
-
-		if gm_event_end_reason == "lost" or not has_next_node then
-			deus_run_controller = nil
-		end
+	if deus_run_controller and deus_run_controller:get_run_ended() then
+		deus_run_controller = nil
 	end
 
 	if deus_run_controller and not new_host then
@@ -250,7 +251,7 @@ DeusMechanism.create_host_migration_info = function (self, gm_event_end_conditio
 	local host_migration_info = {
 		host_to_migrate_to = new_host
 	}
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak = get_next_level_data(deus_run_controller, in_map)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages = get_next_level_data(deus_run_controller, in_map)
 	host_migration_info.level_data = {
 		level_key = level_key,
 		environment_variation_id = environment_variation_id,
@@ -260,7 +261,8 @@ DeusMechanism.create_host_migration_info = function (self, gm_event_end_conditio
 		conflict_settings = conflict_settings,
 		locked_director_functions = locked_director_functions,
 		difficulty = run_difficulty,
-		difficulty_tweak = difficulty_tweak
+		difficulty_tweak = difficulty_tweak,
+		extra_packages = extra_packages
 	}
 	local is_private = network_handler.lobby_client:lobby_data("is_private")
 	local matchmaking_type = nil
@@ -302,10 +304,21 @@ DeusMechanism.unregister_rpcs = function (self)
 	end
 end
 
+DeusMechanism.can_resync_loadout = function (self)
+	local level_transition_handler = Managers.level_transition_handler
+	local game_mode = level_transition_handler:get_current_game_mode()
+
+	if game_mode == "deus" then
+		return self._deus_run_controller ~= nil
+	else
+		return true
+	end
+end
+
 DeusMechanism.update_loadout = function (self)
 	local deus_run_controller = self._deus_run_controller
 
-	if deus_run_controller then
+	if deus_run_controller and not deus_run_controller:get_run_ended() then
 		local own_peer_id = deus_run_controller:get_own_peer_id()
 		local current_profile_index, current_career_index = deus_run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
 
@@ -323,7 +336,7 @@ end
 DeusMechanism._update_career_loadout = function (self, local_player_id, career_name)
 	local deus_run_controller = self._deus_run_controller
 
-	if not deus_run_controller then
+	if not deus_run_controller or deus_run_controller:get_run_ended() then
 		return
 	end
 
@@ -530,6 +543,7 @@ DeusMechanism.game_round_ended = function (self, t, dt, reason, reason_data)
 
 			if reason == "lost" then
 				self:_send_run_tracking_data(game_won)
+				self._deus_run_controller:handle_run_ended()
 
 				next_state = self:_transition_to_inn()
 			elseif game_won then
@@ -553,13 +567,10 @@ DeusMechanism.game_round_ended = function (self, t, dt, reason, reason_data)
 					end
 				else
 					self:_send_run_tracking_data(game_won)
+					self._deus_run_controller:handle_run_ended()
 
 					next_state = self:_transition_to_inn()
 				end
-			else
-				self:_send_run_tracking_data(game_won)
-
-				next_state = self:_transition_to_inn()
 			end
 		end
 	end
@@ -578,9 +589,9 @@ DeusMechanism._transition_next_node = function (self, next_node_key)
 	local current_node = deus_run_controller:get_current_node()
 	local current_node_type = current_node.node_type
 	local in_map = false
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak = get_next_level_data(deus_run_controller, in_map)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages = get_next_level_data(deus_run_controller, in_map)
 
-	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak)
+	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages)
 	level_transition_handler:promote_next_level_data()
 
 	local next_state = node_type_to_state(current_node_type)
@@ -592,9 +603,9 @@ DeusMechanism._transition_map = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local level_transition_handler = Managers.level_transition_handler
 	local in_map = true
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak = get_next_level_data(deus_run_controller, in_map)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages = get_next_level_data(deus_run_controller, in_map)
 
-	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak)
+	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages)
 
 	local next_state = MAP_STATE
 
@@ -605,9 +616,9 @@ DeusMechanism._transition_to_inn = function (self)
 	local level_transition_handler = Managers.level_transition_handler
 	local in_map = false
 	local deus_run_controller = nil
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak = get_next_level_data(deus_run_controller, in_map)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages = get_next_level_data(deus_run_controller, in_map)
 
-	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak)
+	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages)
 
 	self._post_match = true
 
@@ -821,7 +832,7 @@ DeusMechanism.profile_available_for_peer = function (self, profile_synchronizer,
 end
 
 DeusMechanism.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
-	if self._deus_run_controller then
+	if self._deus_run_controller and not self._deus_run_controller:get_run_ended() then
 		self._deus_run_controller:profile_changed(peer_id, local_player_id, profile_index, career_index)
 
 		if peer_id == self._deus_run_controller:get_own_peer_id() and local_player_id == REAL_PLAYER_LOCAL_ID then
@@ -848,9 +859,14 @@ DeusMechanism.allocate_slot = function (self, sender, profile_index)
 	return false
 end
 
-DeusMechanism.sync_mechanism_data = function (self, peer_id)
-	if self._deus_run_controller then
-		local deus_run_controller = self._deus_run_controller
+DeusMechanism.sync_mechanism_data = function (self, peer_id, mechanism_newly_initialized)
+	if not mechanism_newly_initialized then
+		return
+	end
+
+	local deus_run_controller = self._deus_run_controller
+
+	if deus_run_controller and not deus_run_controller:get_run_ended() then
 		local difficulty_id = NetworkLookup.difficulties[deus_run_controller:get_run_difficulty()]
 		local journey_name_id = NetworkLookup.deus_journeys[deus_run_controller:get_journey_name()]
 		local dominant_god_id = NetworkLookup.deus_themes[deus_run_controller:get_dominant_god()]
@@ -907,7 +923,7 @@ DeusMechanism.debug_load_level = function (self, level_name)
 		level_transition_handler:set_next_level(level_name)
 		level_transition_handler:promote_next_level_data()
 	else
-		local run_seed = "DEBUG_SPECIFIC_NODE" .. 0 .. "_" .. level_name .. "SEED" .. 0 .. "SEED_END"
+		local run_seed = "DEBUG_SPECIFIC_NODE" .. (script_data.deus_force_load_run_progress or 0) .. "_" .. level_name .. "SEED" .. 0 .. "SEED_END"
 
 		self:_debug_load_seed(run_seed, script_data.current_difficulty_setting or "normal")
 	end
@@ -1166,7 +1182,7 @@ end
 DeusMechanism._update_current_state = function (self)
 	local new_state = nil
 
-	if not self._deus_run_controller then
+	if not self._deus_run_controller or self._deus_run_controller:get_run_ended() then
 		new_state = HUB_STATE
 	elseif self._deus_run_controller:has_completed_current_node() then
 		new_state = MAP_STATE

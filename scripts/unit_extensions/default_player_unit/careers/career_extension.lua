@@ -19,6 +19,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	local num_abilities = #career_data.activated_ability
 	self._num_abilities = num_abilities
 	self._abilities = {}
+	self._abilities_always_usable_reasons = {}
 
 	for ability_id = 1, num_abilities, 1 do
 		local ability_data = career_data.activated_ability[ability_id]
@@ -69,6 +70,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._num_passive_abilities_update = #self._passive_abilities_update
 	self._ability_always_usable = nil
 
+	self:setup_extra_ability_uses(0, 0, 0, 0)
 	Unit.set_data(unit, "breed", self._breed)
 	fassert(self._breed.hit_zones, "Player Breed '%s' is missing a 'hit_zones' table.", profile.display_name)
 	DamageUtils.create_hit_zone_lookup(unit, self._breed)
@@ -238,10 +240,13 @@ CareerExtension._update_game_object_field = function (self, unit)
 
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
-	local go_id = Managers.state.unit_storage:go_id(unit)
-	ability_percentage = math.clamp(ability_percentage, 0, 1)
 
-	GameSession.set_game_object_field(game, go_id, "ability_percentage", ability_percentage)
+	if game then
+		local go_id = Managers.state.unit_storage:go_id(unit)
+		ability_percentage = math.clamp(ability_percentage, 0, 1)
+
+		GameSession.set_game_object_field(game, go_id, "ability_percentage", ability_percentage)
+	end
 end
 
 CareerExtension.destroy = function (self)
@@ -280,7 +285,26 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 	end
 
 	if ability.is_ready or self._abilities_always_usable then
-		buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
+		local local_players = Managers.player:players_at_peer(Network.peer_id())
+
+		if local_players and unit then
+			for _, player in pairs(local_players) do
+				local player_unit = player.player_unit
+
+				if ALIVE[player_unit] then
+					local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+					if buff_extension then
+						buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
+
+						local local_player = self.player
+						local other_player = player
+
+						Managers.state.achievement:trigger_event("any_ability_used", unit, ability_id, local_player, other_player)
+					end
+				end
+			end
+		end
 	end
 
 	local network_manager = Managers.state.network
@@ -292,13 +316,17 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 		network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
 	end
 
-	local cooldown = math.clamp((ability.cooldown + cost) - refund, 0, ability.max_cooldown)
-	ability.cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
-	ability.cooldown_anim_started = false
-
-	if ability.is_ready or self._abilities_always_usable then
-		buff_extension:trigger_procs("on_ability_cooldown_started")
+	if ability.cooldown <= 0 or cost <= 0 then
+		local cooldown = math.clamp((ability.cooldown + cost) - refund, 0, ability.max_cooldown)
+		ability.cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
+		ability.cooldown_anim_started = false
+	elseif self._extra_ability_uses > 0 then
+		self:modify_extra_ability_uses(-1)
+		buff_extension:trigger_procs("on_extra_ability_consumed", unit)
+		Managers.state.achievement:trigger_event("free_cast_used", unit, unit)
 	end
+
+	buff_extension:trigger_procs("on_ability_cooldown_started")
 
 	ability.cooldown_paused = false
 	ability.is_ready = false
@@ -362,8 +390,74 @@ CareerExtension.set_activated_ability_cooldown_unpaused = function (self, abilit
 	ability.cooldown_paused = false
 end
 
-CareerExtension.set_abilities_always_usable = function (self, value)
-	self._abilities_always_usable = value
+CareerExtension.abilities_always_usable = function (self)
+	return self._abilities_always_usable
+end
+
+CareerExtension.set_abilities_always_usable = function (self, value, reason)
+	if value then
+		self._abilities_always_usable_reasons[reason] = value
+	else
+		self._abilities_always_usable_reasons[reason] = nil
+	end
+
+	self._abilities_always_usable = next(self._abilities_always_usable_reasons) ~= nil
+end
+
+CareerExtension.has_abilities_always_usable_reason = function (self, reason)
+	return self._abilities_always_usable_reasons[reason] ~= nil
+end
+
+CareerExtension.modify_extra_ability_uses = function (self, num)
+	self._extra_ability_uses = math.max(self._extra_ability_uses + num, 0)
+
+	self:set_abilities_always_usable(self._extra_ability_uses > 0, "extra_ability_uses")
+end
+
+CareerExtension.get_extra_ability_uses = function (self)
+	return self._extra_ability_uses, self._extra_ability_uses_max
+end
+
+CareerExtension.get_extra_ability_charge = function (self)
+	return self._extra_ability_use_charge, self._extra_ability_use_required_charge
+end
+
+CareerExtension.modify_extra_ability_charge = function (self, amount)
+	local current_charge = self._extra_ability_use_charge
+
+	if self._extra_ability_uses_max <= self._extra_ability_uses then
+		current_charge = 0
+	else
+		current_charge = math.max(current_charge + amount, 0)
+
+		if self._extra_ability_use_required_charge <= current_charge then
+			current_charge = current_charge - self._extra_ability_use_required_charge
+
+			self:modify_extra_ability_uses(1)
+		end
+	end
+
+	self._extra_ability_use_charge = current_charge
+end
+
+CareerExtension.setup_extra_ability_uses = function (self, current_charge, max_charge, current_extra_uses, max_extra_uses)
+	self._extra_ability_use_charge = math.min(current_charge, max_charge)
+	self._extra_ability_use_required_charge = max_charge
+	self._extra_ability_uses = math.min(current_extra_uses, max_extra_uses)
+	self._extra_ability_uses_max = max_extra_uses
+
+	if self._extra_ability_uses == self._extra_ability_uses_max then
+		self._extra_ability_use_charge = 0
+	end
+end
+
+CareerExtension.update_extra_ability_uses_max = function (self, max_extra_uses)
+	self._extra_ability_uses = math.min(self._extra_ability_uses, max_extra_uses)
+	self._extra_ability_uses_max = max_extra_uses
+
+	if self._extra_ability_uses == self._extra_ability_uses_max then
+		self._extra_ability_use_charge = 0
+	end
 end
 
 CareerExtension.reset_cooldown = function (self, ability_id)
@@ -373,6 +467,13 @@ CareerExtension.reset_cooldown = function (self, ability_id)
 end
 
 CareerExtension.can_use_activated_ability = function (self, ability_id)
+	local network_manager = Managers.state.network
+	local game = network_manager:game()
+
+	if not game then
+		return false
+	end
+
 	ability_id = ability_id or 1
 	local ability = self._abilities[ability_id]
 	local ability_bar_fill = 1 - self:current_ability_cooldown_percentage(ability_id)
@@ -389,7 +490,12 @@ end
 
 CareerExtension.current_ability_cooldown_percentage = function (self, ability_id)
 	local network_manager = Managers.state.network
-	local game = network_manager:game()
+	local game = network_manager and network_manager:game()
+
+	if not game then
+		return 0
+	end
+
 	local go_id = Managers.state.unit_storage:go_id(self._unit)
 
 	return GameSession.game_object_field(game, go_id, "ability_percentage")

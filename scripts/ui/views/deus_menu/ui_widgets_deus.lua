@@ -198,7 +198,7 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 					texture_id = "token_icon",
 					retained_mode = retained_mode,
 					content_check_function = function (content)
-						return content.token_icon
+						return content.token_icon and content.show_token_icon
 					end
 				}
 			}
@@ -895,7 +895,7 @@ end
 
 UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, info_frame_name, top_frame_name, top, icon, icon_size, icon_frame_name, title, info, bottom_panel_size)
 	bottom_panel_size = bottom_panel_size or {
-		400,
+		340,
 		100
 	}
 	local bottom_frame_settings = UIFrameSettings[info_frame_name]
@@ -1266,7 +1266,7 @@ UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, in
 	return widget
 end
 
-UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_offset, background_icon, background_icon_size, background_icon_offset, sub_text, title_text, title_text_color, width, power_up, is_rectangular_icon)
+UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_offset, background_icon, background_icon_size, background_icon_offset, sub_text, title_text, title_text_color, width, power_up, is_rectangular_icon, hide_text)
 	local size = {
 		width,
 		background_icon_size[2]
@@ -1373,22 +1373,34 @@ UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_
 		{
 			style_id = "title_text",
 			pass_type = "text",
-			text_id = "title_text"
+			text_id = "title_text",
+			content_check_function = function (content)
+				return not content.hide_text
+			end
 		},
 		{
 			style_id = "title_text_shadow",
 			pass_type = "text",
-			text_id = "title_text"
+			text_id = "title_text",
+			content_check_function = function (content)
+				return not content.hide_text
+			end
 		},
 		{
 			style_id = "sub_text",
 			pass_type = "text",
-			text_id = "sub_text"
+			text_id = "sub_text",
+			content_check_function = function (content)
+				return not content.hide_text
+			end
 		},
 		{
 			style_id = "sub_text_shadow",
 			pass_type = "text",
-			text_id = "sub_text"
+			text_id = "sub_text",
+			content_check_function = function (content)
+				return not content.hide_text
+			end
 		}
 	}
 	local content = {
@@ -1399,7 +1411,8 @@ UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_
 		sub_text = sub_text,
 		total_widget_size = size,
 		power_up = power_up,
-		is_rectangular_icon = is_rectangular_icon
+		is_rectangular_icon = is_rectangular_icon,
+		hide_text = hide_text
 	}
 	local style = {
 		icon = icon_style,
@@ -3351,7 +3364,7 @@ UIWidgets.create_start_game_deus_gamemode_info_box = function (scenegraph_id, ba
 				word_wrap = true,
 				upper_case = false,
 				localize = false,
-				dynamic_font_size_word_wrap = true,
+				dynamic_font_size_word_wrap = false,
 				font_size = 28,
 				horizontal_alignment = "left",
 				vertical_alignment = "top",

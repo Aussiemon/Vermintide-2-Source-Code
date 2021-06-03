@@ -28,6 +28,7 @@ TalentExtension.extensions_ready = function (self, world, unit)
 
 	self:apply_buffs_from_talents(talent_ids)
 	self:update_talent_weapon_index(talent_ids)
+	self:_broadcast_talents_changed()
 end
 
 TalentExtension.game_object_initialized = function (self, unit, unit_go_id)
@@ -48,6 +49,8 @@ TalentExtension.talents_changed = function (self)
 	if not self.is_server and Managers.state.network:game() then
 		self:_send_rpc_sync_talents(talent_ids)
 	end
+
+	self:_broadcast_talents_changed()
 end
 
 TalentExtension._send_rpc_sync_talents = function (self, talent_ids)
@@ -55,6 +58,7 @@ TalentExtension._send_rpc_sync_talents = function (self, talent_ids)
 	local network_transmit = network_manager.network_transmit
 	local unit_go_id = Managers.state.unit_storage:go_id(self._unit)
 
+	printf("TalentExtension:_send_rpc_sync_talents %d", unit_go_id)
 	network_transmit:send_rpc_server("rpc_sync_talents", unit_go_id, talent_ids)
 end
 
@@ -255,6 +259,14 @@ TalentExtension.get_talent_names = function (self)
 	end
 
 	return talent_names
+end
+
+TalentExtension._broadcast_talents_changed = function (self)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("on_talents_changed", self._unit, self)
+	end
 end
 
 TalentExtension.destroy = function (self)

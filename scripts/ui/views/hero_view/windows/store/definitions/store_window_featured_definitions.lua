@@ -1,4 +1,5 @@
 local console_menu_scenegraphs = UISettings.console_menu_scenegraphs
+local MAX_SLIDESHOW_ITEMS = 10
 local scenegraph_definition = {
 	screen = console_menu_scenegraphs.screen,
 	area = console_menu_scenegraphs.area,
@@ -349,7 +350,7 @@ local function create_slideshow_definition(scenegraph_id, size)
 	}
 	local list_content = content.list_content
 
-	for i = 1, 10, 1 do
+	for i = 1, MAX_SLIDESHOW_ITEMS, 1 do
 		list_content[i] = {
 			background = "store_slideshow_off",
 			icon = "store_slideshow_on",
@@ -647,7 +648,7 @@ local function create_slideshow_definition(scenegraph_id, size)
 	}
 	local item_styles = style.list_style.item_styles
 
-	for i = 1, 10, 1 do
+	for i = 1, MAX_SLIDESHOW_ITEMS, 1 do
 		item_styles[i] = {
 			list_member_offset = {
 				33,
@@ -802,8 +803,46 @@ local animation_definitions = {
 		}
 	}
 }
+local generic_input_actions = {
+	default = {
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_close"
+		}
+	},
+	featured = {
+		{
+			input_action = "trigger_cycle_previous",
+			priority = 1,
+			description_text = "input_description_previous"
+		},
+		{
+			input_action = "trigger_cycle_next",
+			priority = 2,
+			description_text = "input_description_next"
+		},
+		{
+			input_action = "confirm",
+			priority = 3,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 4,
+			description_text = "input_description_close"
+		}
+	}
+}
 
 return {
+	generic_input_actions = generic_input_actions,
+	max_slideshow_items = MAX_SLIDESHOW_ITEMS,
 	widgets = widgets,
 	content_widgets = content_widgets,
 	title_button_definitions = title_button_definitions,

@@ -37,7 +37,7 @@ CommonPopupSettings.scorpion = {
 }
 CommonPopupSettings.lake = {
 	body_text = "upsell_popup_lake_body",
-	title_text = "upsell_popup_lake_title",
+	title_text = "upsell_popup_new_career_title",
 	ok_button_text = "menu_close",
 	button_text = "menu_weave_area_no_lake_button",
 	popup_type = "upsell",
@@ -56,7 +56,7 @@ CommonPopupSettings.lake = {
 }
 CommonPopupSettings.cog = {
 	body_text = "upsell_popup_cog_body",
-	title_text = "upsell_popup_cog_title",
+	title_text = "upsell_popup_new_career_title",
 	ok_button_text = "menu_close",
 	button_text = "upsell_popup_cog_button",
 	popup_type = "upsell",
@@ -69,6 +69,25 @@ CommonPopupSettings.cog = {
 				input_action = "confirm",
 				priority = 1,
 				description_text = "upsell_popup_cog_button"
+			}
+		}
+	}
+}
+CommonPopupSettings.woods = {
+	body_text = "upsell_popup_woods_body",
+	title_text = "upsell_popup_new_career_title",
+	ok_button_text = "menu_close",
+	button_text = "upsell_popup_woods_button",
+	popup_type = "upsell",
+	class_name = "UpsellPopup",
+	background_texture = "woods_upsell_popup_bg",
+	definitions = local_require("scripts/ui/dlc_upsell/upsell_popup_definitions"),
+	input_desc = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 1,
+				description_text = "upsell_popup_woods_button"
 			}
 		}
 	}

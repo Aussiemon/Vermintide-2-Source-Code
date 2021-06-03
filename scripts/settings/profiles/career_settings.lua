@@ -724,6 +724,29 @@ CareerSettings = {
 		is_unlocked_function = local_is_unlocked_function,
 		is_dlc_unlocked = local_is_dlc_unlocked,
 		override_available_for_mechanism = local_override_available_for_mechanism,
+		talent_packages = function (talent_ids, packages_list, is_first_person)
+			local weapon_name = ActivatedAbilitySettings.we_3[1].weapon_name
+			local weapon = ItemMasterList[weapon_name]
+
+			if weapon and weapon.slot_to_use then
+				local item = BackendUtils.get_loadout_item("we_waywatcher", weapon.slot_to_use)
+				local item_data = item and rawget(ItemMasterList, item.key)
+				local item_template_name = item_data and item_data.template
+
+				if not item_template_name or not weapon.valid_templates_to_replace[item_template_name] then
+					local default_item_name = weapon.default_item_to_replace
+					local default_item_data = ItemMasterList[default_item_name]
+					local weapon_template = Weapons[weapon.template]
+					local default_items = BackendUtils.get_item_units(default_item_data)
+					local weapon_packages = WeaponUtils.get_weapon_packages(weapon_template, default_items, is_first_person)
+
+					for j = 1, #weapon_packages, 1 do
+						local package_name = weapon_packages[j]
+						packages_list[package_name] = false
+					end
+				end
+			end
+		end,
 		item_slot_types_by_slot_name = {
 			slot_melee = {
 				"melee"

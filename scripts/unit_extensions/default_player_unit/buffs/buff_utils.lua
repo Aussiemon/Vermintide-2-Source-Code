@@ -153,4 +153,46 @@ BuffUtils.destroy_attached_particles = function (world, fx_ids)
 	end
 end
 
+BuffUtils.create_liquid_forward = function (unit, buff)
+	if ALIVE[unit] then
+		local function safe_navigation_callback()
+			local position = POSITION_LOOKUP[unit]
+
+			if position then
+				local template = buff.template
+				local rotation = Unit.local_rotation(unit, 0)
+				local dir = Quaternion.forward(rotation)
+				local extension_init_data = {
+					area_damage_system = {
+						flow_dir = dir,
+						liquid_template = template.liquid_template,
+						source_unit = unit
+					}
+				}
+				local aoe_unit_name = "units/hub_elements/empty"
+				local liquid_aoe_unit = Managers.state.unit_spawner:spawn_network_unit(aoe_unit_name, "liquid_aoe_unit", extension_init_data, position)
+				local liquid_area_damage_extension = ScriptUnit.extension(liquid_aoe_unit, "area_damage_system")
+
+				liquid_area_damage_extension:ready()
+			end
+		end
+
+		local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+		ai_navigation_system:add_safe_navigation_callback(safe_navigation_callback)
+
+		local fx_name = buff.template.fx_name
+
+		if fx_name then
+			local effect_name_id = NetworkLookup.effects[fx_name]
+			local node_id = 0
+			local position = POSITION_LOOKUP[unit]
+			local rotation_offset = Quaternion.identity()
+			local network_manager = Managers.state.network
+
+			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, position, rotation_offset, false)
+		end
+	end
+end
+
 return

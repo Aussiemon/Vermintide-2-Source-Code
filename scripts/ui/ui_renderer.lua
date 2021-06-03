@@ -536,29 +536,29 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 end
 
 UIRenderer.set_element_visible = function (self, ui_element, visible)
-	local pass_datas = ui_element.pass_data
 	local UIPasses = UIPasses
+	local pass_datas = ui_element.pass_data
+	local element_passes = ui_element.passes
 
-	for i, pass_info in ipairs(ui_element.passes) do
-		repeat
+	for i = 1, #element_passes, 1 do
+		local pass_info = element_passes[i]
+
+		if pass_info.retained_mode then
 			local pass_data = pass_datas[i]
 
-			if pass_info.retained_mode then
-				local visible_previous = pass_data.visible
-				pass_data.visible = visible
-
-				if visible_previous and not visible then
+			if visible ~= pass_data.visible then
+				if visible then
+					pass_data.dirty = true
+				else
 					local pass_type = pass_info.pass_type
 					local ui_pass = UIPasses[pass_type]
 
 					ui_pass.destroy(self, pass_data, pass_info)
-
-					break
-				elseif not visible_previous and visible then
-					pass_data.dirty = true
 				end
+
+				pass_data.visible = visible
 			end
-		until true
+		end
 	end
 end
 
@@ -672,11 +672,11 @@ UIRenderer.draw_triangle = function (self, lower_left_corner, size, ui_style, re
 	end
 
 	if retained_id == true then
-		return Gui.triangle(self.gui_retained, UIScaleVectorToResolution(pos1, nil, true), UIScaleVectorToResolution(pos2, nil, true), UIScaleVectorToResolution(pos3, nil, true), layer, color)
+		return Gui.triangle(self.gui_retained, UIScaleVectorToResolutionRealCoordinates(pos1), UIScaleVectorToResolutionRealCoordinates(pos2), UIScaleVectorToResolutionRealCoordinates(pos3), layer, color)
 	elseif retained_id then
-		return Gui.update_triangle(self.gui_retained, retained_id, UIScaleVectorToResolution(pos1, nil, true), UIScaleVectorToResolution(pos2, nil, true), UIScaleVectorToResolution(pos3, nil, true), layer, color)
+		return Gui.update_triangle(self.gui_retained, retained_id, UIScaleVectorToResolutionRealCoordinates(pos1), UIScaleVectorToResolutionRealCoordinates(pos2), UIScaleVectorToResolutionRealCoordinates(pos3), layer, color)
 	else
-		return Gui.triangle(self.gui, UIScaleVectorToResolution(pos1, nil, true), UIScaleVectorToResolution(pos2, nil, true), UIScaleVectorToResolution(pos3, nil, true), layer, color)
+		return Gui.triangle(self.gui, UIScaleVectorToResolutionRealCoordinates(pos1), UIScaleVectorToResolutionRealCoordinates(pos2), UIScaleVectorToResolutionRealCoordinates(pos3), layer, color)
 	end
 end
 
@@ -1185,11 +1185,12 @@ UIRenderer.draw_text = function (self, text, font_material, font_size, font_name
 		font_name = font_name .. "_offscreen"
 	end
 
-	local flags = 0
+	local flags = Gui.FormatDirectives
 	local font = Fonts[font_name]
+	local font_flags = font and font[4]
 
-	if font then
-		flags = font[4] or 0
+	if font_flags then
+		flags = bit.bor(flags, font_flags)
 	end
 
 	if use_var_args then
@@ -1236,12 +1237,14 @@ UIRenderer.draw_justified_text = function (self, text, font_material, font_size,
 		flags = font[4] or 0
 	end
 
+	local scaled_justify_width = justify_width * RESOLUTION_LOOKUP.scale
+
 	if retained_id == true then
-		return Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, flags, "justify", UIScaleScalarToResolution(justify_width), ...)
+		return Gui.text(self.gui_retained, text, font_material, font_size, font_name, ui_position, color, flags, "justify", scaled_justify_width, ...)
 	elseif retained_id then
-		Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, flags, "justify", UIScaleScalarToResolution(justify_width), ...)
+		Gui.update_text(self.gui_retained, retained_id, text, font_material, font_size, font_name, ui_position, color, flags, "justify", scaled_justify_width, ...)
 	else
-		Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, flags, "justify", UIScaleScalarToResolution(justify_width), ...)
+		Gui.text(self.gui, text, font_material, font_size, font_name, ui_position, color, flags, "justify", scaled_justify_width, ...)
 	end
 end
 
@@ -1252,13 +1255,14 @@ UIRenderer.word_wrap = function (self, text, font_material, size, width, option,
 	local reuse_global_table = true
 	local scale = RESOLUTION_LOOKUP.scale
 	local rows, return_indices = nil
-	local flags = 0
+	local flags = Gui.FormatDirectives
 
 	if optional_font_name then
 		local font = Fonts[optional_font_name]
+		local font_flags = font and font[4]
 
-		if font then
-			flags = font[4] or 0
+		if font[4] then
+			flags = bit.bor(flags, font_flags)
 		end
 	end
 
@@ -1272,7 +1276,7 @@ UIRenderer.word_wrap = function (self, text, font_material, size, width, option,
 end
 
 UIRenderer.text_size = function (self, text, font_material, font_size, ...)
-	local min, max, caret = Gui.text_extents(self.gui, text, font_material, font_size, ...)
+	local min, max, caret = Gui.text_extents(self.gui, text, font_material, font_size, Gui.FormatDirectives, ...)
 	local inv_scaling = RESOLUTION_LOOKUP.inv_scale
 	local width = (max.x + min.x) * inv_scaling
 	local height = (max.y - min.y) * inv_scaling
@@ -1281,7 +1285,7 @@ UIRenderer.text_size = function (self, text, font_material, font_size, ...)
 end
 
 UIRenderer.text_alignment_size = function (self, text, font_material, font_size, ...)
-	local min, max, caret = Gui.text_extents(self.gui, text, font_material, font_size, ...)
+	local min, max, caret = Gui.text_extents(self.gui, text, font_material, font_size, Gui.FormatDirectives, ...)
 	local inv_scaling = RESOLUTION_LOOKUP.inv_scale
 	local width = (max.x + 0) * inv_scaling
 	local height = (max.y - min.y) * inv_scaling
@@ -1529,7 +1533,7 @@ UIRenderer.scaled_font_size_by_area = function (self, text, area_size, style)
 
 	for font_size = style.font_size, 1, -0.5 do
 		local _, font_min, font_max = UIGetFontHeight(gui, font_type, font_size)
-		local texts = Gui.word_wrap(gui, text, font_material, font_size, area_width, " \u3002\uff0c", "-+&/*", "\n", true)
+		local texts = Gui.word_wrap(gui, text, font_material, font_size, area_width, " \u3002\uff0c", "-+&/*", "\n", true, Gui.FormatDirectives)
 		local text_height = math.ceil(1.05 * (font_max - font_min) * #texts)
 
 		if text_height < area_height then
@@ -1604,9 +1608,9 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	local gui = self.gui
 	position = UIScaleVectorToResolution(position)
 	size = UIScaleVectorToResolution(size)
-	texture_size = UIScalePositionTableToResolution(texture_size)
+	texture_size = UIScaleVectorToResolution(texture_size)
 	local layer = position[3]
-	local corner_size_vec = UIScalePositionTableToResolution(texture_sizes.corner)
+	local corner_size_vec = UIScaleVectorToResolution(texture_sizes.corner)
 	local corner_size_x = corner_size_vec[1]
 	local corner_size_y = corner_size_vec[2]
 	local x_pos = position.x
@@ -1659,7 +1663,7 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	end
 
 	if use_tiling then
-		local tile_vertical_size_vec = UIScalePositionTableToResolution(texture_sizes.vertical)
+		local tile_vertical_size_vec = UIScaleVectorToResolution(texture_sizes.vertical)
 		local tile_vertical_size_x = tile_vertical_size_vec[1]
 		local tile_vertical_size_y = tile_vertical_size_vec[2]
 		local bar_height = size[2] - corner_size_y * 2
@@ -1702,7 +1706,7 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 			total_size = total_size - tile_vertical_size_y
 		end
 
-		local tile_horizontal_size_vec = UIScalePositionTableToResolution(texture_sizes.horizontal)
+		local tile_horizontal_size_vec = UIScaleVectorToResolution(texture_sizes.horizontal)
 		local tile_horizontal_size_x = tile_horizontal_size_vec[1]
 		local tile_horizontal_size_y = tile_horizontal_size_vec[2]
 		local bar_width = size[1] - corner_size_x * 2
@@ -1745,7 +1749,7 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 			total_size = total_size - tile_horizontal_size_x
 		end
 	else
-		local tile_vertical_size_vec = UIScalePositionTableToResolution(texture_sizes.vertical)
+		local tile_vertical_size_vec = UIScaleVectorToResolution(texture_sizes.vertical)
 		local tile_vertical_size_x = tile_vertical_size_vec[1]
 		local tile_vertical_size_y = tile_vertical_size_vec[2]
 		local bar_height = size[2] - corner_size_y * 2
@@ -1764,7 +1768,7 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
 		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
 
-		local tile_horizontal_size_vec = UIScalePositionTableToResolution(texture_sizes.horizontal)
+		local tile_horizontal_size_vec = UIScaleVectorToResolution(texture_sizes.horizontal)
 		local tile_horizontal_size_x = tile_horizontal_size_vec[1]
 		local tile_horizontal_size_y = tile_horizontal_size_vec[2]
 		local bar_width = size[1] - corner_size_x * 2

@@ -136,6 +136,13 @@ HeroViewStateKeepDecorations._initialize_simple_decoration_preview = function (s
 	local interactable_unit = self._interactable_unit
 	local hud_text_line_1 = Unit.get_data(interactable_unit, "interaction_data", "hud_text_line_1")
 	local hud_text_line_2 = Unit.get_data(interactable_unit, "interaction_data", "hud_text_line_2")
+	local sound_event = Unit.get_data(interactable_unit, "interaction_data", "sound_event")
+
+	if sound_event and sound_event ~= "" then
+		self._sound_event = sound_event
+		self._sound_event_delay = (self._sound_event and DIALOGUE_DELAY) or nil
+	end
+
 	local title = Localize(hud_text_line_1)
 	local description = Localize(hud_text_line_2)
 
@@ -601,7 +608,7 @@ HeroViewStateKeepDecorations._update_sound_trigger_delay = function (self, dt)
 		self._sound_event_delay = nil
 		local selected_list_index = self._selected_list_index
 
-		if selected_list_index then
+		if self._selected_painting and selected_list_index then
 			local list_widgets = self._list_widgets
 			local selected_widget = list_widgets[selected_list_index]
 			local selected_content = selected_widget.content
@@ -612,6 +619,8 @@ HeroViewStateKeepDecorations._update_sound_trigger_delay = function (self, dt)
 			if sound_event then
 				self:_play_sound(sound_event)
 			end
+		elseif self._sound_event then
+			self:_play_sound(self._sound_event)
 		end
 	else
 		self._sound_event_delay = time

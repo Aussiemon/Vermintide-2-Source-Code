@@ -336,7 +336,7 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 	self._game_round_ended_reason = reason
 	local new_saved_game_mode_data = nil
 	local state = self._state
-	local level_key, conflict_settings, level_seed = nil
+	local level_key, conflict_settings, level_seed, locked_director_functions, difficulty, difficulty_tweak = nil
 
 	if state == "inn" then
 		level_key = Managers.level_transition_handler:get_next_level_key()
@@ -368,6 +368,10 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 			level_key = objective.level_id
 			conflict_settings = objective.conflict_settings
 			level_seed = Managers.mechanism:generate_level_seed()
+			local level_transition_handler = Managers.level_transition_handler
+			difficulty = level_transition_handler:get_current_difficulty()
+			difficulty_tweak = level_transition_handler:get_current_difficulty_tweak()
+			locked_director_functions = level_transition_handler:get_current_locked_director_functions()
 		else
 			level_key = AdventureMechanism.debug_hub_level_key or AdventureMechanism.get_starting_level()
 			self._next_state = "inn"
@@ -382,7 +386,7 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 		self._saved_game_mode_data = new_saved_game_mode_data
 		local environment_variation_id = LevelHelper:get_environment_variation_id(level_key)
 
-		Managers.level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, nil, nil, conflict_settings)
+		Managers.level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, nil, nil, conflict_settings, locked_director_functions, difficulty, difficulty_tweak)
 	elseif reason == "reload" then
 		level_seed = Managers.mechanism:generate_level_seed()
 
@@ -515,7 +519,7 @@ AdventureMechanism.get_state = function (self)
 	return self._state
 end
 
-AdventureMechanism.sync_mechanism_data = function (self, peer_id)
+AdventureMechanism.sync_mechanism_data = function (self, peer_id, mechanism_newly_initialized)
 	local weave_manager = Managers.weave
 
 	if weave_manager then

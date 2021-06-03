@@ -1,13 +1,13 @@
 MorrisBuffTweakData = MorrisBuffTweakData or {
 	friendly_murderer_potion = {
-		range = 10,
+		multiplier = 0.2,
 		duration = 10,
-		bonus = 5
+		range = 10
 	},
 	friendly_murderer_potion_increased = {
-		range = 10,
+		multiplier = 0.5,
 		duration = 15,
-		bonus = 10
+		range = 10
 	},
 	hold_my_beer_potion = {
 		multiplier = 1,
@@ -32,11 +32,11 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		duration = 25
 	},
 	vampiric_draught_potion = {
-		bonus = 5,
+		multiplier = 0.2,
 		duration = 15
 	},
 	vampiric_draught_potion_increased = {
-		bonus = 10,
+		multiplier = 0.5,
 		duration = 25
 	},
 	moot_milk_potion = {

@@ -306,48 +306,6 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	golden_key_area = {
-		vertical_alignment = "bottom",
-		parent = "panel",
-		horizontal_alignment = "right",
-		size = {
-			70,
-			70
-		},
-		position = {
-			-8,
-			0,
-			20
-		}
-	},
-	golden_key_area_frame = {
-		vertical_alignment = "center",
-		parent = "golden_key_area",
-		horizontal_alignment = "center",
-		size = {
-			70,
-			70
-		},
-		position = {
-			0,
-			0,
-			0
-		}
-	},
-	golden_key_icon = {
-		vertical_alignment = "center",
-		parent = "golden_key_area",
-		horizontal_alignment = "center",
-		size = {
-			33,
-			46
-		},
-		position = {
-			-2,
-			0,
-			1
-		}
-	},
 	mark_all_as_seen = {
 		vertical_alignment = "bottom",
 		parent = "panel",
@@ -521,24 +479,7 @@ local top_widgets = {
 		0,
 		-22,
 		0
-	}),
-	golden_key_button = {
-		scenegraph_id = "golden_key_area",
-		element = {
-			passes = {
-				{
-					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				}
-			}
-		},
-		content = {
-			button_hotspot = {
-				disable_button = true
-			}
-		},
-		style = {}
-	}
+	})
 }
 local animation_definitions = {
 	on_enter = {

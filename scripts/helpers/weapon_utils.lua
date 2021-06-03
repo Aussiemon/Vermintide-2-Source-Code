@@ -180,4 +180,10 @@ WeaponUtils.get_used_actions = function (template)
 	return checked_actions, missing_actions
 end
 
+WeaponUtils.is_valid_weapon_override = function (source_slot_data, destination_item_data)
+	local source_slot_weapon_template = source_slot_data and source_slot_data.item_template.name
+
+	return not destination_item_data.valid_templates_to_replace or destination_item_data.valid_templates_to_replace[source_slot_weapon_template]
+end
+
 return

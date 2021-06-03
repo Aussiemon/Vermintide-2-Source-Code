@@ -693,7 +693,8 @@ local CAREER_ID_LOOKUP = {
 	"bw_unchained",
 	"wh_captain",
 	"wh_bountyhunter",
-	"wh_zealot"
+	"wh_zealot",
+	"we_thornsister"
 }
 
 BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, external_cb, result)

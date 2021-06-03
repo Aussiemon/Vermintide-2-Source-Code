@@ -1,30 +1,30 @@
 frames_atlas = {
 	vote_switch_mechanism_morris_background = {
 		size = {
-			1000,
-			1400
+			500,
+			700
 		},
 		uv00 = {
-			0.663086,
-			0.56665
+			0.809082,
+			0.393066
 		},
 		uv11 = {
-			0.907227,
-			0.908447
+			0.931152,
+			0.563965
 		}
 	},
 	vote_switch_mechanism_adventure_background = {
 		size = {
-			1000,
-			1400
+			500,
+			700
 		},
 		uv00 = {
-			0.417969,
-			0.56665
+			0.686035,
+			0.393066
 		},
 		uv11 = {
-			0.662109,
-			0.908447
+			0.808105,
+			0.563965
 		}
 	},
 	vote_expedition_border = {

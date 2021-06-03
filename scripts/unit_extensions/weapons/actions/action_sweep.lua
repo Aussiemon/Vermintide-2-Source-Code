@@ -1116,13 +1116,14 @@ ActionSweep._play_environmental_effect = function (self, weapon_rotation, curren
 end
 
 local sound_events = {
-	axe_2h_hit = "slashing_hit",
+	javelin_stab_hit = "stab_hit",
 	slashing_hit = "slashing_hit",
 	stab_hit = "stab_hit",
-	crowbill_stab_hit = "stab_hit",
 	Play_weapon_fire_torch_flesh_hit = "burning_hit",
-	axe_1h_hit = "slashing_hit",
 	hammer_2h_hit = "blunt_hit",
+	axe_2h_hit = "slashing_hit",
+	crowbill_stab_hit = "stab_hit",
+	axe_1h_hit = "slashing_hit",
 	blunt_hit = "blunt_hit"
 }
 

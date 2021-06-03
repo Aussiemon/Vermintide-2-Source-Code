@@ -13,7 +13,11 @@ Application.warning = function (...)
 end
 
 Application.error = function (...)
-	print_error(format_error_message(...))
+	if Crashify and script_data.testify then
+		Crashify.print_exception("Lua", format_error_message(...))
+	else
+		print_error(format_error_message(...))
+	end
 end
 
 function fassert(condition, message, ...)

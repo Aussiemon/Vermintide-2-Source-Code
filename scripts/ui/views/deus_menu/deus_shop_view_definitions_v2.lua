@@ -77,11 +77,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			full_size[1],
-			full_size[2] * 2
+			full_size[2]
 		},
 		position = {
-			0 + 0.6666666666666666 * radu_offset,
-			540,
+			0,
+			0,
 			3
 		}
 	},
@@ -381,7 +381,7 @@ local scenegraph_definition = {
 	},
 	player_pivot = {
 		vertical_alignment = "top",
-		parent = "screen",
+		parent = "window",
 		horizontal_alignment = "left",
 		size = {
 			0,
@@ -395,7 +395,7 @@ local scenegraph_definition = {
 	},
 	player_1 = {
 		vertical_alignment = "bottom",
-		parent = "screen",
+		parent = "window",
 		horizontal_alignment = "left",
 		size = {
 			0,

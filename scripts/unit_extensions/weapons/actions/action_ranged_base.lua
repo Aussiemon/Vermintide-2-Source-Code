@@ -44,6 +44,10 @@ ActionRangedBase.client_owner_start_action = function (self, new_action, t, chai
 	self._extra_buff_shot = false
 	self._infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 	self._continuous_buff_check = new_action.continuous_buff_check or false
+	self._apply_shot_cost_once = new_action.apply_shot_cost_once or false
+	self._shot_cost_applied = false
+	self._roll_crit_once = new_action.roll_crit_once or false
+	self._crit_applied = false
 
 	if not self.is_bot then
 		local controller_effect = new_action.controller_effects and new_action.controller_effects.start
@@ -130,11 +134,14 @@ ActionRangedBase._start_shooting = function (self, t)
 		current_rotation = self._start_gaze_rotation:unbox()
 	end
 
-	local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
+	if not self._crit_applied or not self._roll_crit_once then
+		local is_critical_strike = ActionUtils.is_critical_strike(owner_unit, current_action, t)
 
-	self:_handle_critical_strike(is_critical_strike, self.buff_extension, self.hud_extension, nil, "on_critical_shot", nil)
+		self:_handle_critical_strike(is_critical_strike, self.buff_extension, self.hud_extension, nil, "on_critical_shot", nil)
 
-	self._is_critical_strike = is_critical_strike
+		self._is_critical_strike = is_critical_strike
+		self._crit_applied = true
+	end
 
 	table.clear(self.shield_users_blocking)
 	self._fire_position:store(current_position)
@@ -148,7 +155,11 @@ ActionRangedBase._start_shooting = function (self, t)
 		end
 	end
 
-	self:apply_shot_cost()
+	if not self._shot_cost_applied or not self._apply_shot_cost_once then
+		self:apply_shot_cost(t)
+
+		self._shot_cost_applied = true
+	end
 
 	self._num_projectiles_spawned = 0
 
@@ -336,11 +347,11 @@ ActionRangedBase.gen_num_shots = function (self)
 	local current_action = self.current_action
 	local ammo_extension = self.ammo_extension
 	local ammo_usage = current_action.ammo_usage or 1
-	local max_ammo_shots = math.floor(ammo_extension:current_ammo() / ammo_usage)
 	local num_shots_total = current_action.num_shots or 1
+	local max_ammo_shots = (ammo_extension and math.floor(ammo_extension:current_ammo() / ammo_usage)) or num_shots_total
 	local projectiles_per_shot = current_action.num_projectiles_per_shot or 1
 
-	if current_action.fire_all_ammo then
+	if ammo_extension and current_action.fire_all_ammo then
 		projectiles_per_shot = projectiles_per_shot * max_ammo_shots
 		num_shots_total = 1
 	else
@@ -350,11 +361,9 @@ ActionRangedBase.gen_num_shots = function (self)
 	return num_shots_total, projectiles_per_shot
 end
 
-ActionRangedBase.apply_shot_cost = function (self)
-	if not self._infinite_ammo and not self._extra_buff_shot then
-		self:_use_ammo()
-		self:_add_overcharge()
-	end
+ActionRangedBase.apply_shot_cost = function (self, t)
+	self:_use_ammo()
+	self:_add_overcharge()
 end
 
 ActionRangedBase._use_ammo = function (self)
@@ -371,6 +380,14 @@ ActionRangedBase._add_overcharge = function (self)
 
 	if overcharge_type then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
+
+		if self._is_critical_strike then
+			local has_crit_perk = self.buff_extension and self.buff_extension:has_buff_perk("no_overcharge_crit")
+
+			if has_crit_perk then
+				overcharge_amount = 0
+			end
+		end
 
 		self.overcharge_extension:add_charge(overcharge_amount)
 	end

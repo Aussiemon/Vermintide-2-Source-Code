@@ -204,6 +204,7 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 	local Unit_set_local_rotation = Unit.set_local_rotation
 	local Unit_local_rotation = Unit.local_rotation
 	local Quaternion_lerp = Quaternion.lerp
+	local VELOCITY_EPSILON_SQ = NetworkConstants.VELOCITY_EPSILON * NetworkConstants.VELOCITY_EPSILON
 	local WALK_THRESHOLD = 0.97
 	local game = data.game
 	local unit_storage = Managers.state.unit_storage
@@ -211,6 +212,7 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 	local traverse_logic = nil
 
 	for unit, extension in pairs(data.other_update_units) do
+		local go_id = unit_storage:go_id(unit)
 		local current_position = Unit.local_position(unit, 0)
 		traverse_logic = traverse_logic or extension:traverse_logic()
 		local wanted_pose = Unit.animation_wanted_root_pose(unit)
@@ -218,7 +220,6 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 		local wanted_rotation = nil
 
 		if extension.has_network_driven_rotation then
-			local go_id = unit_storage:go_id(unit)
 			local yaw = GameSession_game_object_field(game, go_id, "yaw_rot")
 			wanted_rotation = Quaternion(Vector3.up(), yaw)
 		else
@@ -232,8 +233,13 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 			wanted_rotation = Quaternion.multiply(current_rotation, Quaternion(up_vector, yaw_rotation_radians))
 		end
 
-		local wanted_velocity = (wanted_position - current_position) / dt
-		wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
+		local network_velocity = GameSession_game_object_field(game, go_id, "velocity")
+
+		if Vector3_length_squared(network_velocity) < VELOCITY_EPSILON_SQ then
+			network_velocity = Vector3(0, 0, 0)
+		end
+
+		local wanted_velocity = network_velocity
 		local final_position, final_velocity = nil
 		local mover = Unit.mover(unit)
 

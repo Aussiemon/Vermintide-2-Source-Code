@@ -27,6 +27,7 @@ GenericUnitInteractorExtension.init = function (self, extension_init_context, un
 	self.is_server = Managers.player.is_server
 	self.exclusive_interaction_unit = nil
 	self.units_in_range = {}
+	self.units_in_range_back_buffer = {}
 
 	self.interactable_unit_destroy_callback = function (destroyed_interactable_unit)
 		local t = Managers.time:time("game")
@@ -163,7 +164,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			local camera = self:_get_player_camera()
 			local distance_score = math.huge
 			local selected_interaction_unit, selected_interaction_type = nil
-			local new_units_in_range = {}
+			local new_units_in_range = self.units_in_range_back_buffer
 
 			for i = 1, hits_n, 1 do
 				local hit = hits[i]
@@ -231,7 +232,10 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 				end
 			end
 
+			self.units_in_range_back_buffer = self.units_in_range
 			self.units_in_range = new_units_in_range
+
+			table.clear(self.units_in_range_back_buffer)
 
 			if selected_interaction_unit then
 				interaction_context.interactable_unit = selected_interaction_unit
@@ -633,6 +637,13 @@ GenericUnitInteractorExtension.hot_join_sync = function (self, sender)
 	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
 	RPC.rpc_sync_interaction_state(channel_id, unit_id, state_id, interaction_type_id, interactable_unit_id, start_time, duration, is_level_unit)
+end
+
+GenericUnitInteractorExtension.allow_movement_during_interaction = function (self)
+	local interactable_unit = self.interaction_context.interactable_unit
+	local allow_movement = Unit.alive(interactable_unit) and (Unit.get_data(interactable_unit, "interaction_data", "allow_movement") or self:interaction_config().allow_movement)
+
+	return allow_movement
 end
 
 return

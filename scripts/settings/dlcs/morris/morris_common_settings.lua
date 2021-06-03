@@ -8,10 +8,149 @@ settings.unlock_settings = {
 		id = "1592630"
 	}
 }
-settings.unlock_settings_xb1 = {}
-settings.unlock_settings_ps4 = {}
+settings.unlock_settings_xb1 = {
+	morris = {
+		class = "AlwaysUnlocked"
+	},
+	grass = {
+		id = "58375039-3534-3043-C036-354E4233F200",
+		backend_reward_id = "grass",
+		class = "UnlockDlc"
+	},
+	five_career_bundle = {
+		id = "4C344E39-384E-3048-C037-4C4443513000",
+		backend_reward_id = "five_career_bundle",
+		class = "UnlockDlc"
+	},
+	scholar_bundle = {
+		id = "37444E39-4D52-3035-C033-524E56515000",
+		backend_reward_id = "scholar_bundle",
+		class = "UnlockDlc"
+	},
+	ironbreaker_bundle = {
+		id = "544A4E39-434E-3058-C030-384434372500",
+		backend_reward_id = "ironbreaker_bundle",
+		class = "UnlockDlc"
+	},
+	bountyhunter_bundle = {
+		id = "56434E39-3757-304A-C056-524A53367300",
+		backend_reward_id = "bountyhunter_bundle",
+		class = "UnlockDlc"
+	},
+	mercenary_bundle = {
+		id = "43564E39-5853-3037-C04A-505257438800",
+		backend_reward_id = "mercenary_bundle",
+		class = "UnlockDlc"
+	},
+	shade_bundle = {
+		id = "50425039-424A-304A-C031-373454422300",
+		backend_reward_id = "shade_bundle",
+		class = "UnlockDlc"
+	}
+}
+settings.unlock_settings_ps4 = {
+	CUSA13595_00 = {
+		morris = {
+			class = "AlwaysUnlocked"
+		},
+		grass = {
+			id = "d3a78a970d0d40ea8abdded9dd3e8bf3",
+			product_label = "V2USFORGOTTENREL",
+			class = "UnlockDlc",
+			backend_reward_id = "grass"
+		},
+		five_career_bundle = {
+			id = "614a9ea6b2ad44c6834218ee784c5535",
+			product_label = "V2USLOHNERSCOLLE",
+			class = "UnlockDlc",
+			backend_reward_id = "five_career_bundle"
+		},
+		scholar_bundle = {
+			id = "69a59b3b817948b28b4574f9255b68bd",
+			product_label = "V2USLIGHTOFJUDGE",
+			class = "UnlockDlc",
+			backend_reward_id = "scholar_bundle"
+		},
+		ironbreaker_bundle = {
+			id = "878a07aa09394108a0959ae864df5d3f",
+			product_label = "V2USKARAKNORNHOL",
+			class = "UnlockDlc",
+			backend_reward_id = "ironbreaker_bundle"
+		},
+		bountyhunter_bundle = {
+			id = "46725f0f69634f5b9cc49ab9d77f92d0",
+			product_label = "V2USDASHINGROGUE",
+			class = "UnlockDlc",
+			backend_reward_id = "bountyhunter_bundle"
+		},
+		mercenary_bundle = {
+			id = "7b90a25a8e914000847a078da21be54a",
+			product_label = "V2USFLAMBOYANTSE",
+			class = "UnlockDlc",
+			backend_reward_id = "mercenary_bundle"
+		},
+		shade_bundle = {
+			id = "3f020561f477420d812f3281b5e0826f",
+			product_label = "V2USAGENTOFMALEK",
+			class = "UnlockDlc",
+			backend_reward_id = "shade_bundle"
+		}
+	},
+	CUSA13645_00 = {
+		morris = {
+			product_label = "VERMINTIDE2000EU",
+			class = "UnlockGame",
+			service_label = 0
+		},
+		grass = {
+			id = "78047b6b56134b6e86b44903e3bb9468",
+			product_label = "V2EUFORGOTTENREL",
+			class = "UnlockDlc",
+			backend_reward_id = "grass"
+		},
+		five_career_bundle = {
+			id = "aa1ff0f288944f27a73434f9ed93474d",
+			product_label = "V2EULOHNERSCOLLE",
+			class = "UnlockDlc",
+			backend_reward_id = "five_career_bundle"
+		},
+		scholar_bundle = {
+			id = "c8e5abd113d941f687157e3718c1a65c",
+			product_label = "V2EULIGHTOFJUDGE",
+			class = "UnlockDlc",
+			backend_reward_id = "scholar_bundle"
+		},
+		ironbreaker_bundle = {
+			id = "feb6dcf10e4948c893a03ba83a6ae401",
+			product_label = "V2EUKARAKNORNHOL",
+			class = "UnlockDlc",
+			backend_reward_id = "ironbreaker_bundle"
+		},
+		bountyhunter_bundle = {
+			id = "a61971e97ad34fd4b28f8c8b850356fe",
+			product_label = "V2EUDASHINGROGUE",
+			class = "UnlockDlc",
+			backend_reward_id = "bountyhunter_bundle"
+		},
+		mercenary_bundle = {
+			id = "874e8163f0524748b467ea1ac2a1c402",
+			product_label = "V2EUFLAMBOYANTSE",
+			class = "UnlockDlc",
+			backend_reward_id = "mercenary_bundle"
+		},
+		shade_bundle = {
+			id = "4f7781f15dae4dc7ad33953a62259dbc",
+			product_label = "V2EUAGENTOFMALEK",
+			class = "UnlockDlc",
+			backend_reward_id = "shade_bundle"
+		}
+	}
+}
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_morris"
+}
+settings.statistics_util = {
+	"scripts/managers/backend/statistics_util_morris"
 }
 settings.attachment_node_linking = {
 	"scripts/settings/dlcs/morris/attachment_node_linking_morris"
@@ -64,6 +203,11 @@ settings.mutators = {
 	"easier_hordes",
 	"pacing_frozen",
 	"escape"
+}
+settings.mutator_common_settings = {
+	deus = {
+		initial_activation_delay = 10
+	}
 }
 settings.interactions = {
 	"deus_access",
@@ -727,6 +871,16 @@ settings.infinite_burn_dot_lookup = {
 }
 settings.end_view_state = {
 	"scripts/ui/views/level_end/states/end_view_state_summary_deus"
+}
+settings.network_packages = {
+	"resource_packages/mutators/mutator_curse_blood_storm",
+	"resource_packages/mutators/mutator_curse_bolt_of_change",
+	"resource_packages/mutators/mutator_curse_corrupted_flesh",
+	"resource_packages/mutators/mutator_curse_egg_of_tzeentch",
+	"resource_packages/mutators/mutator_curse_greed_pinata",
+	"resource_packages/mutators/mutator_curse_khorne_champions",
+	"resource_packages/mutators/mutator_curse_rotten_miasma",
+	"resource_packages/mutators/mutator_curse_skulls_of_fury"
 }
 settings.loading_tips_file = "scripts/settings/dlcs/morris/morris_loading_tips"
 

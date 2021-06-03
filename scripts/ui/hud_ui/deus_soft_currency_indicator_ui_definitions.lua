@@ -34,10 +34,7 @@ local scenegraph_definition = {
 local function create_coin_widget_definition()
 	local background_texture = "weaves_essence_bar_backdrop"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local background_filled_texture = "weaves_essence_bar_backdrop_highlight"
-	local background_filled_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_filled_texture)
-	local content_multiplier = 0.5
-	local base_height = background_texture_settings.size[2] * content_multiplier
+	local base_height = background_texture_settings.size[2] * 0.5
 	local base_offset_x = background_texture_settings.size[1] * 0.5
 	local base_offset_y = -2
 	local icon_size = {
@@ -59,6 +56,11 @@ local function create_coin_widget_definition()
 
 						return show_background
 					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "background_glow",
+					texture_id = "background_glow"
 				},
 				{
 					pass_type = "texture",
@@ -119,6 +121,7 @@ local function create_coin_widget_definition()
 			coin_icon_fx = "deus_icons_coin_fx",
 			coin_delta = "",
 			coin_icon_bloom = "quest_glow",
+			background_glow = "horizontal_gradient",
 			coin_icon_highlight = "deus_icons_coin_highlight",
 			coins_label = "deus_collect_coins_text",
 			background = background_texture
@@ -132,6 +135,22 @@ local function create_coin_widget_definition()
 					255,
 					255,
 					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			background_glow = {
+				vertical_alignment = "top",
+				horizontal_alignment = "right",
+				texture_size = background_texture_settings.size,
+				color = {
+					0,
+					74,
+					243,
 					255
 				},
 				offset = {
@@ -394,30 +413,25 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, coin_widget, progress, params)
 				local coin_delta_style = coin_widget.style.coin_delta
 				coin_delta_style.offset[2] = coin_delta_style.base_offset[2] + params.delta_dir * (progress - 0.5) * 40
-				local current_alpha = coin_delta_style.text_color[1]
-				local wanted_alpha = 255 * (1 - math.easeInCubic(progress))
-				coin_delta_style.text_color[1] = current_alpha * 0.9 + 0.1 * wanted_alpha
+				coin_delta_style.text_color[1] = math.clamp((255 * (1 - progress)) / 0.8, 0, 255)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
 				coin_widget.style.coin_delta.text_color[1] = 0
 			end
 		},
 		{
-			name = "size",
+			name = "grow",
 			delay = 0.2,
-			duration = 0.8,
+			duration = 0.2,
 			init = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
 				params.icon_size_x = coin_widget.style.coin_icon.texture_size[1]
 				params.icon_size_y = coin_widget.style.coin_icon.texture_size[2]
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, coin_widget, progress, params)
-				local s = 2.3703703703703702 * progress^3 * (1 - progress)
-				local size_multiplier = 1 + 1 * s
+				local s = 1 - (1 - progress) * (1 - progress)
+				local size_multiplier = 1 + 0.5 * s
 				local style = coin_widget.style
 				local coin_count_style = style.coin_count
-				local font_size = (1 + 0.2 * s) * coin_count_style.base_font_size
-				coin_count_style.font_size = font_size
-				coin_widget.style.coin_count_shadow.font_size = font_size
 				local coin_icon_style = style.coin_icon
 				local coin_mask_style = style.coin_icon_mask
 				local coin_bloom_style = style.coin_icon_bloom
@@ -433,9 +447,49 @@ local animation_definitions = {
 			on_complete = NOP
 		},
 		{
-			name = "glow",
+			name = "shrink",
+			delay = 0.4,
+			duration = 0.4,
+			init = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
+				params.icon_size_x = coin_widget.style.coin_icon.texture_size[1]
+				params.icon_size_y = coin_widget.style.coin_icon.texture_size[2]
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, coin_widget, progress, params)
+				local s = 1 - progress * progress
+				local size_multiplier = 1 + 0.5 * s
+				local style = coin_widget.style
+				local coin_count_style = style.coin_count
+				local coin_icon_style = style.coin_icon
+				local coin_mask_style = style.coin_icon_mask
+				local coin_bloom_style = style.coin_icon_bloom
+				local size_x = size_multiplier * params.icon_size_x
+				local size_y = size_multiplier * params.icon_size_y
+				coin_icon_style.texture_size[1] = size_x
+				coin_icon_style.texture_size[2] = size_y
+				coin_mask_style.texture_size[1] = size_x
+				coin_mask_style.texture_size[2] = size_y
+				coin_bloom_style.texture_size[1] = size_multiplier * coin_bloom_style.base_texture_size[1]
+				coin_bloom_style.texture_size[2] = size_multiplier * coin_bloom_style.base_texture_size[2]
+			end,
+			on_complete = NOP
+		},
+		{
+			name = "background_glow",
 			delay = 0,
 			duration = 0.8,
+			init = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, coin_widget, progress, params)
+				local s = 4 * progress * (1 - progress)
+				coin_widget.style.background_glow.color[1] = 96 * s
+			end,
+			on_complete = NOP
+		},
+		{
+			name = "glow",
+			delay = 0.3,
+			duration = 0.4,
 			init = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
 				return
 			end,
@@ -448,8 +502,8 @@ local animation_definitions = {
 		},
 		{
 			name = "reflection",
-			delay = 0.7,
-			duration = 0.7,
+			delay = 0.5,
+			duration = 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
 				return
 			end,

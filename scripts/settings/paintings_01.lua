@@ -1513,6 +1513,96 @@ Paintings.ver_warriors_of_chaos_page_46 = {
 		wood = true
 	}
 }
+Paintings.ver_wood_elves_page_020 = {
+	sound_event = "painting_wood_elves_page_020_description",
+	rarity = "common",
+	display_name = "painting_wood_elves_page_020_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_wood_elves_page_020_description",
+	artist = "painting_wood_elves_page_020_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_wood_elves_page_046 = {
+	sound_event = "painting_wood_elves_page_046_description",
+	rarity = "common",
+	display_name = "painting_wood_elves_page_046_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_wood_elves_page_046_description",
+	artist = "painting_wood_elves_page_046_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_wood_elves_page_052 = {
+	sound_event = "painting_wood_elves_page_052_description",
+	rarity = "common",
+	display_name = "painting_wood_elves_page_052_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_wood_elves_page_052_description",
+	artist = "painting_wood_elves_page_052_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_IP_NK663C_WESpites8 = {
+	sound_event = "painting_IP_NK663C_WESpites8_description",
+	rarity = "common",
+	display_name = "painting_IP_NK663C_WESpites8_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_IP_NK663C_WESpites8_description",
+	artist = "painting_IP_NK663C_WESpites8_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.hor_IP_NK672C_WESpites15 = {
+	sound_event = "painting_IP_NK672C_WESpites15_description",
+	rarity = "common",
+	display_name = "painting_IP_NK672C_WESpites15_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_IP_NK672C_WESpites15_description",
+	artist = "painting_IP_NK672C_WESpites15_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_PD291_WEMage_BW = {
+	sound_event = "painting_PD291_WEMage_BW_description",
+	rarity = "common",
+	display_name = "painting_PD291_WEMage_BW_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_PD291_WEMage_BW_description",
+	artist = "painting_PD291_WEMage_BW_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1555,6 +1645,8 @@ local painting_order = {
 	"hor_dwarfs_page_48",
 	"hor_warriors_of_chaos_page_22",
 	"hor_warriors_of_chaos_page_04",
+	"hor_IP_NK663C_WESpites8",
+	"hor_IP_NK672C_WESpites15",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",
@@ -1617,7 +1709,11 @@ local painting_order = {
 	"ver_dwarfs_page_51",
 	"ver_whf17_masterengineer",
 	"ver_warriors_of_chaos_page_17",
-	"ver_warriors_of_chaos_page_46"
+	"ver_warriors_of_chaos_page_46",
+	"ver_wood_elves_page_020",
+	"ver_wood_elves_page_046",
+	"ver_wood_elves_page_052",
+	"ver_PD291_WEMage_BW"
 }
 PaintingOrder = PaintingOrder or {}
 

@@ -69,7 +69,7 @@ VoteTemplates.deus_settings_vote = {
 				excluded_level_keys = excluded_level_keys
 			}
 
-			if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
+			if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
 				Managers.twitch:disconnect()
 			end
 

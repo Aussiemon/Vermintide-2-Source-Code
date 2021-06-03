@@ -57,8 +57,19 @@ DeusUpgradeWeaponInteractionUI._populate_widget = function (self, interactable_u
 	upgrade_available = weapon_rarity_order < chest_rarity_order
 	local tooltip_widget = self._widgets_by_name.weapon_tooltip
 	local chest_info_widget = self._widgets_by_name.chest_content
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+	local others_actually_ingame = profile_synchronizer:others_actually_ingame()
 
-	if upgrade_available then
+	if not others_actually_ingame then
+		tooltip_widget.content.item = nil
+		chest_info_widget.content.show_coin_icon = false
+		chest_info_widget.content.rarity_text = nil
+		chest_info_widget.content.cost_text = nil
+		chest_info_widget.content.reward_info_text = nil
+		chest_info_widget.content.disabled_text = "reliquary_inactive_due_to_joining_player"
+		self._calculate_offset = false
+	elseif upgrade_available then
 		tooltip_widget.content.item = equipped_item
 		tooltip_widget.content.force_equipped = true
 		tooltip_widget.style.item.draw_end_passes = true
@@ -83,6 +94,7 @@ DeusUpgradeWeaponInteractionUI._populate_widget = function (self, interactable_u
 		chest_info_widget.content.reward_info_text = power_level .. " " .. Localize("deus_weapon_chest_" .. slot_type .. "_weapon_description")
 		chest_info_widget.content.show_coin_icon = true
 		chest_info_widget.content.disabled_text = nil
+		self._calculate_offset = true
 	else
 		tooltip_widget.content.item = nil
 		chest_info_widget.content.show_coin_icon = false
@@ -90,11 +102,15 @@ DeusUpgradeWeaponInteractionUI._populate_widget = function (self, interactable_u
 		chest_info_widget.content.cost_text = nil
 		chest_info_widget.content.reward_info_text = nil
 		chest_info_widget.content.disabled_text = "reliquary_inactive_rarity"
+		self._calculate_offset = false
 	end
 
 	self._current_interactable_unit = interactable_unit
 	self._currently_wielded_slot_name = wielded_slot_name
 	self._soft_currency_amount = soft_currency_amount
+	self._offset[1] = 0
+	self._offset[2] = 0
+	self._offset[3] = 0
 end
 
 DeusUpgradeWeaponInteractionUI._evaluate_interactable = function (self, player_unit)
@@ -105,8 +121,13 @@ DeusUpgradeWeaponInteractionUI._evaluate_interactable = function (self, player_u
 	local interactable_ext = ScriptUnit.extension(player_unit, "interactor_system")
 	local interactable_unit = interactable_ext:interactable_unit()
 	local wielded_slot_name = self:_get_wielded_slot_name()
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+	local others_actually_ingame = profile_synchronizer:others_actually_ingame()
+	local prev_others_actually_ingame = self._others_actually_ingame
+	self._others_actually_ingame = others_actually_ingame
 
-	if self._current_interactable_unit ~= interactable_unit or wielded_slot_name ~= self._currently_wielded_slot_name then
+	if self._current_interactable_unit ~= interactable_unit or wielded_slot_name ~= self._currently_wielded_slot_name or prev_others_actually_ingame ~= others_actually_ingame then
 		if self._current_interactable_unit ~= interactable_unit then
 			self:_start_animation("on_enter")
 		end

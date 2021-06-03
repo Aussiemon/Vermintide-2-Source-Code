@@ -1,4 +1,11 @@
 PlayerProjectileUnitExtension = class(PlayerProjectileUnitExtension)
+local unit_world_rotation = Unit.world_rotation
+local unit_world_position = Unit.world_position
+local quaternion_forward = Quaternion.forward
+local vector3_lerp = Vector3.lerp
+local quaternion_lerp = Quaternion.lerp
+local unit_set_local_position = Unit.set_local_position
+local unit_set_local_rotation = Unit.set_local_rotation
 local DELETION_GRACE_TIMER = 0.3
 
 PlayerProjectileUnitExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -11,6 +18,30 @@ PlayerProjectileUnitExtension.init = function (self, extension_init_context, uni
 	self._owner_player = Managers.player:owner(owner_unit)
 	local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 	self.item_name = item_name
+	local owner_inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
+
+	if owner_inventory_extension then
+		local equipment = owner_inventory_extension:equipment()
+
+		if equipment then
+			local wielded_item_data = equipment.wielded
+
+			if wielded_item_data then
+				local item_units = BackendUtils.get_item_units(wielded_item_data)
+				local is_ammo_weapon = item_units and item_units.is_ammo_weapon
+
+				if is_ammo_weapon then
+					local wielded_item_template = BackendUtils.get_item_template(wielded_item_data)
+					local material_settings = item_units.material_settings or wielded_item_template.material_settings
+
+					if material_settings then
+						GearUtils.apply_material_settings(unit, material_settings)
+					end
+				end
+			end
+		end
+	end
+
 	local item_data = ItemMasterList[item_name]
 	local item_template = BackendUtils.get_item_template(item_data)
 	local item_template_name = extension_init_data.item_template_name
@@ -112,6 +143,15 @@ PlayerProjectileUnitExtension.initialize_projectile = function (self, projectile
 		Unit.set_unit_visibility(unit, false)
 	end
 
+	if projectile_info.anim_blend_settings then
+		local first_person_extension = ScriptUnit.extension(self._owner_unit, "first_person_system")
+		local owner_unit_1p = first_person_extension:get_first_person_unit()
+		local link_node = projectile_info.anim_blend_settings.link_node
+		self._owner_unit_1p = owner_unit_1p
+		self._anim_node_id = (Unit.has_node(owner_unit_1p, link_node) and Unit.node(owner_unit_1p, link_node)) or 0
+		self._anim_blend_enabled = true
+	end
+
 	Unit.flow_event(unit, "lua_projectile_init")
 	self:_handle_critical_strike(unit, self._is_critical_strike)
 	Unit.flow_event(unit, "lua_trail")
@@ -135,12 +175,23 @@ PlayerProjectileUnitExtension.stop = function (self)
 		return
 	end
 
+	local unit = self._projectile_unit
+
+	if self._anim_blend_enabled then
+		self._anim_blend_enabled = false
+		local real_pos = self._locomotion_extension:current_position()
+		local real_rot = self._locomotion_extension:current_rotation()
+
+		unit_set_local_position(unit, 0, real_pos)
+		unit_set_local_rotation(unit, 0, real_rot)
+	end
+
 	local timed_data = self._timed_data
 	local activate_life_time_on_impact = timed_data and timed_data.activate_life_time_on_impact
 
 	if not activate_life_time_on_impact then
 		self:mark_for_deletion()
-		Unit.flow_event(self._projectile_unit, "lua_projectile_end")
+		Unit.flow_event(unit, "lua_projectile_end")
 
 		self.active = false
 	end
@@ -168,6 +219,40 @@ PlayerProjectileUnitExtension.update = function (self, unit, input, _, context, 
 		end
 
 		return
+	end
+
+	if self._anim_blend_enabled then
+		local owner_unit = self._owner_unit_1p
+		local anim_blend_settings = self.projectile_info.anim_blend_settings
+		local blend_time = anim_blend_settings.blend_time
+		local blend_func = anim_blend_settings.blend_func
+		local life_time = self._locomotion_extension.life_time
+		local blend_t = math.min(blend_func(life_time / blend_time), 1)
+
+		if not ALIVE[owner_unit] or blend_t >= 1 then
+			self._anim_blend_enabled = false
+		else
+			local real_pos = self._locomotion_extension:current_position()
+			local real_rot = self._locomotion_extension:current_rotation()
+
+			if real_pos and real_rot then
+				local anim_node = self._anim_node_id
+				local forward_offset = anim_blend_settings.forward_offset
+				local owner_rot = unit_world_rotation(owner_unit, 0)
+				local anim_pos = unit_world_position(owner_unit, anim_node)
+				local pos_offset = quaternion_forward(owner_rot) * forward_offset
+				local blended_pos = vector3_lerp(anim_pos + pos_offset, real_pos, blend_t)
+
+				unit_set_local_position(unit, 0, blended_pos)
+
+				if anim_blend_settings.use_anim_rotation then
+					local anim_rot = unit_world_rotation(owner_unit, anim_node)
+					local blended_rot = quaternion_lerp(anim_rot, real_rot, blend_t)
+
+					unit_set_local_rotation(unit, 0, blended_rot)
+				end
+			end
+		end
 	end
 
 	if self._is_timed then
@@ -1009,6 +1094,7 @@ PlayerProjectileUnitExtension._handle_linking = function (self, impact_data, hit
 
 	if allow_link and impact_data.link then
 		self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, shield_blocked)
+		self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, shield_blocked, impact_data.flow_event_on_init, impact_data.flow_event_on_walls)
 	elseif impact_data.link_pickup then
 		local network_manager = Managers.state.network
 		local hit_unit_id, is_level_unit = network_manager:game_object_or_level_id(hit_unit)
@@ -1052,7 +1138,7 @@ PlayerProjectileUnitExtension._redirect_shield_linking = function (self, hit_uni
 	local hit_inventory_extension = ScriptUnit.extension(hit_unit, "ai_inventory_system")
 	hit_unit = hit_inventory_extension.inventory_item_shield_unit
 	local shield_index = Unit.node(hit_unit, "c_mesh")
-	local shield_origo = Unit.world_position(hit_unit, shield_index) + depth_position_offset
+	local shield_origo = unit_world_position(hit_unit, shield_index) + depth_position_offset
 	local shield_to_projectile_hit = link_position - shield_origo
 	local shield_to_projectile_hit_distance = Vector3.length(shield_to_projectile_hit)
 	local offset_distance = math.min(shield_to_projectile_hit_distance, 0.25)
@@ -1063,7 +1149,7 @@ PlayerProjectileUnitExtension._redirect_shield_linking = function (self, hit_uni
 	return hit_unit, node_index, link_position
 end
 
-PlayerProjectileUnitExtension._link_projectile = function (self, hit_unit, hit_actor, linker_unit_name, hit_position, hit_direction, depth, shield_blocked)
+PlayerProjectileUnitExtension._link_projectile = function (self, hit_unit, hit_actor, linker_unit_name, hit_position, hit_direction, depth, shield_blocked, flow_event_on_init, flow_event_on_walls)
 	local unit_spawner = Managers.state.unit_spawner
 	local projectile_linker_system = self._projectile_linker_system
 	local random_bank = Math.random() * 2.14 - 0.5
@@ -1077,20 +1163,59 @@ PlayerProjectileUnitExtension._link_projectile = function (self, hit_unit, hit_a
 		hit_unit, node_index, link_position = self:_redirect_shield_linking(hit_unit, node_index, link_position, depth_position_offset)
 	end
 
+	local projectile_dummy = nil
+
 	if ScriptUnit.has_extension(hit_unit, "projectile_linker_system") then
-		local projectile_dummy = unit_spawner:spawn_local_unit(linker_unit_name, link_position, link_rotation)
-		local hit_node_rot = Unit.world_rotation(hit_unit, node_index)
-		local hit_node_pos = Unit.world_position(hit_unit, node_index)
+		projectile_dummy = unit_spawner:spawn_local_unit(linker_unit_name, link_position, link_rotation)
+		local hit_node_rot = unit_world_rotation(hit_unit, node_index)
+		local hit_node_pos = unit_world_position(hit_unit, node_index)
 		local rel_pos = link_position - hit_node_pos
-		local offset_position = Vector3(Vector3.dot(Quaternion.right(hit_node_rot), rel_pos), Vector3.dot(Quaternion.forward(hit_node_rot), rel_pos), Vector3.dot(Quaternion.up(hit_node_rot), rel_pos))
+		local offset_position = Vector3(Vector3.dot(Quaternion.right(hit_node_rot), rel_pos), Vector3.dot(quaternion_forward(hit_node_rot), rel_pos), Vector3.dot(Quaternion.up(hit_node_rot), rel_pos))
+
+		if flow_event_on_init then
+			Unit.flow_event(projectile_dummy, flow_event_on_init)
+		end
+
 		local linker_extension = ScriptUnit.extension(hit_unit, "projectile_linker_system")
 
 		linker_extension:link_projectile(projectile_dummy, offset_position, link_rotation, node_index)
 		projectile_linker_system:add_linked_projectile_reference(hit_unit, projectile_dummy)
 	else
-		local projectile_dummy = unit_spawner:spawn_local_unit(linker_unit_name, link_position, link_rotation)
+		projectile_dummy = unit_spawner:spawn_local_unit(linker_unit_name, link_position, link_rotation)
 
 		projectile_linker_system:add_linked_projectile_reference(hit_unit, projectile_dummy)
+
+		if flow_event_on_init then
+			Unit.flow_event(projectile_dummy, flow_event_on_init)
+		end
+
+		if flow_event_on_walls then
+			Unit.flow_event(projectile_dummy, flow_event_on_walls)
+		end
+	end
+
+	local owner_inventory_extension = ScriptUnit.has_extension(self._owner_unit, "inventory_system")
+
+	if owner_inventory_extension then
+		local equipment = owner_inventory_extension:equipment()
+
+		if equipment then
+			local wielded_item_data = equipment.wielded
+
+			if wielded_item_data then
+				local item_units = BackendUtils.get_item_units(wielded_item_data)
+				local is_ammo_weapon = item_units and item_units.is_ammo_weapon
+
+				if is_ammo_weapon then
+					local wielded_item_template = BackendUtils.get_item_template(wielded_item_data)
+					local material_settings = item_units.material_settings or wielded_item_template.material_settings
+
+					if material_settings then
+						GearUtils.apply_material_settings(projectile_dummy, material_settings)
+					end
+				end
+			end
+		end
 	end
 end
 

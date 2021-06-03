@@ -35,6 +35,8 @@ local _tracked_weapon_kill_stats = {
 	}
 }
 
+DLCUtils.dofile_list("statistics_util")
+
 StatisticsUtil.generate_weapon_kill_stats_dlc = function (stat_player, dlc_name, template)
 	for weapon_name, dlcs in pairs(_tracked_weapon_kill_stats) do
 		if table.contains(dlcs, dlc_name) then

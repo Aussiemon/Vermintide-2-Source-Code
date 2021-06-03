@@ -331,7 +331,7 @@ HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
 	end
 
 	if #all_incomplete_but_claimed > 0 then
-		Crashify.print_exception("Challenges incomplete but claimed: " .. table.dump_string(all_incomplete_but_claimed))
+		Crashify.print_exception("HeroViewStateAchievements", "Challenges incomplete but claimed: " .. table.dump_string(all_incomplete_but_claimed))
 	end
 
 	self:_set_summary_achievement_categories_progress(progress_overview)
@@ -1669,6 +1669,7 @@ HeroViewStateAchievements.update = function (self, dt, t)
 				self:_handle_input(dt, t)
 				self:_poll_quest_refresh(dt)
 				self:_poll_rewards(dt)
+				self._quest_manager:update_quests()
 			end
 		end
 

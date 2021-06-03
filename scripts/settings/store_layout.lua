@@ -122,24 +122,55 @@ if not rawget(_G, "StoreLayoutConfig") then
 		display_name = "menu_store_panel_title_cosmetics",
 		item_filter = "item_type ~= bundle"
 	}
-	StoreLayoutConfig.pages.bundles = {
-		sound_event_enter = "Play_hud_store_category_button",
-		layout = "bundle_list",
-		display_name = "menu_store_category_title_bundles",
-		type = "item",
-		item_filter = "item_type == bundle",
-		sort_order = 3,
-		category_button_texture = "store_category_icon_weapons"
-	}
 	local dlc_content = {}
+	local bundle_dlc_content = {}
+	local bundle_lookup_table = {}
 	local platform = PLATFORM
 
 	for _, settings in ipairs(StoreDlcSettings) do
-		local unavailable_platforms = settings.unavailable_platforms
+		local available_platforms = settings.available_platforms
 
-		if not unavailable_platforms or not table.find(unavailable_platforms, platform) then
-			dlc_content[#dlc_content + 1] = settings.dlc_name
+		if not available_platforms or table.find(available_platforms, platform) then
+			if settings.is_bundle then
+				bundle_dlc_content[#bundle_dlc_content + 1] = settings.dlc_name
+				bundle_lookup_table[settings.dlc_name] = settings
+			else
+				dlc_content[#dlc_content + 1] = settings.dlc_name
+			end
 		end
+	end
+
+	if IS_CONSOLE then
+		StoreLayoutConfig.pages.bundles = {
+			sound_event_enter = "Play_hud_store_category_button",
+			layout = "dlc_list",
+			display_name = "menu_store_category_title_bundles",
+			type = "dlc",
+			category_button_texture = "store_category_icon_weapons",
+			sort_order = 3,
+			content = bundle_dlc_content
+		}
+
+		for bundle_dlc_name, dlc_settings in pairs(bundle_lookup_table) do
+			StoreLayoutConfig.pages[bundle_dlc_name] = {
+				layout = "item_list",
+				type = "bundle_items",
+				sort_order = 1,
+				dlc_name = dlc_settings.dlc_name,
+				bundle_contains = dlc_settings.bundle_contains,
+				display_name = dlc_settings.name
+			}
+		end
+	else
+		StoreLayoutConfig.pages.bundles = {
+			sound_event_enter = "Play_hud_store_category_button",
+			layout = "bundle_list",
+			display_name = "menu_store_category_title_bundles",
+			type = "item",
+			item_filter = "item_type == bundle",
+			sort_order = 3,
+			category_button_texture = "store_category_icon_weapons"
+		}
 	end
 
 	StoreLayoutConfig.pages.dlc = {
@@ -362,6 +393,14 @@ if not rawget(_G, "StoreLayoutConfig") then
 		sort_order = 3,
 		category_button_texture = "store_category_icon_sienna_unchained"
 	}
+end
+
+for dlc_name, dlc_settings in pairs(DLCSettings) do
+	local store_layout = dlc_settings.store_layout
+
+	if store_layout then
+		table.append_recursive(StoreLayoutConfig, store_layout)
+	end
 end
 
 local ORDER_RARITY = {

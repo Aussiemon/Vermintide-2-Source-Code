@@ -644,7 +644,6 @@ local movement_threshold_sq = 1
 InteractionDefinitions.smartobject = {
 	config = {
 		show_weapons = true,
-		duration = 0,
 		hold = true,
 		swap_to_3p = false
 	},
@@ -1385,9 +1384,13 @@ InteractionDefinitions.pickup_object = {
 				end
 			end
 
-			if return_value and pickup_settings.type == "ammo" and inventory_extension:has_full_ammo() then
-				fail_reason = "ammo_full"
-				return_value = false
+			if return_value and pickup_settings.type == "ammo" then
+				if inventory_extension:is_ammo_blocked() then
+					return_value = false
+				elseif inventory_extension:has_full_ammo() then
+					fail_reason = "ammo_full"
+					return_value = false
+				end
 			end
 
 			return return_value, fail_reason

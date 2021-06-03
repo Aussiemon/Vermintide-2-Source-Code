@@ -524,6 +524,11 @@ local customizer_data = {
 	drag_scenegraph_id = "interaction"
 }
 local DO_RELOAD = false
+local BASE_OFFSET = {
+	0,
+	0,
+	0
+}
 
 InteractionUI.update = function (self, dt, t, my_player)
 	if DO_RELOAD then
@@ -611,6 +616,13 @@ InteractionUI.update = function (self, dt, t, my_player)
 		self:_animate_out_progress_bar()
 	end
 
+	local interaction_component = self._components[interaction_component]
+
+	if interaction_component then
+		local optional_offset = interaction_component:update(player_unit, dt, t)
+		ui_scenegraph.pivot.local_position = optional_offset or BASE_OFFSET
+	end
+
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
 	if self.draw_interaction_bar or self.interaction_animations.interaction_bar_bg_fade then
@@ -623,11 +635,7 @@ InteractionUI.update = function (self, dt, t, my_player)
 
 	UIRenderer.end_pass(ui_renderer)
 
-	local interaction_component = self._components[interaction_component]
-
-	if interaction_component then
-		interaction_component:update(player_unit, dt, t)
-	end
+	ui_scenegraph.pivot.local_position = BASE_OFFSET
 end
 
 InteractionUI._get_interaction_text = function (self, player_unit, is_channeling)

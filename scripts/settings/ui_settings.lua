@@ -300,23 +300,22 @@ if not UISettings then
 			chaos_vortex = "unit_frame_portrait_enemy_sorcerer_vortex",
 			chaos_zombie = "unit_frame_portrait_enemy_plague_zombie",
 			hero_wh_bountyhunter = "small_unit_frame_portrait_victor_bountyhunter",
-			beastmen_standard_bearer = "unit_frame_portrait_enemy_standard_bearer",
+			skaven_plague_monk = "unit_frame_portrait_enemy_plague_monk",
 			skaven_stormfiend_demo = "unit_frame_portrait_enemy_stormfiend",
 			vs_warpfire_thrower = "unit_frame_portrait_enemy_warpfire",
-			skaven_plague_monk = "unit_frame_portrait_enemy_plague_monk",
 			hero_bw_unchained = "small_unit_frame_portrait_sienna_unchained",
-			hero_we_maidenguard = "small_unit_frame_portrait_kerillian_maidenguard",
 			hero_dr_slayer = "small_unit_frame_portrait_bardin_slayer",
+			hero_we_maidenguard = "small_unit_frame_portrait_kerillian_maidenguard",
 			hero_es_mercenary = "small_unit_frame_portrait_kruber_mercenary",
 			hero_es_huntsman = "small_unit_frame_portrait_kruber_huntsman",
 			hero_es_knight = "small_unit_frame_portrait_kruber_knight",
+			chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
 			chaos_troll = "unit_frame_portrait_enemy_chaos_troll",
 			chaos_spawn = "unit_frame_portrait_enemy_chaos_spawn",
-			chaos_fanatic = "unit_frame_portrait_enemy_fanatic",
+			beastmen_standard_bearer = "unit_frame_portrait_enemy_standard_bearer",
 			chaos_exalted_sorcerer_drachenfels = "unit_frame_portrait_enemy_sorcerer_drachenfels",
 			vs_stormfiend = "unit_frame_portrait_enemy_stormfiend",
 			skaven_storm_vermin = "unit_frame_portrait_enemy_stormvermin",
-			skaven_storm_vermin_warlord = "unit_frame_portrait_enemy_warlord",
 			chaos_marauder = "unit_frame_portrait_enemy_chaos_marauder",
 			vs_corruptor = "unit_frame_portrait_enemy_sorcerer_corruptor",
 			skaven_clan_rat_with_shield = "unit_frame_portrait_enemy_clanrat",
@@ -331,7 +330,7 @@ if not UISettings then
 			chaos_raider = "unit_frame_portrait_enemy_raider",
 			hero_wh_zealot = "small_unit_frame_portrait_victor_zealot",
 			beastmen_bestigor = "unit_frame_portrait_enemy_bestigor",
-			hero_we_4 = "small_unit_frame_portrait_kerillian_thornsister",
+			skaven_storm_vermin_warlord = "unit_frame_portrait_enemy_warlord",
 			skaven_gutter_runner = "unit_frame_portrait_enemy_gutter_runner",
 			vs_vortex_sorcerer = "unit_frame_portrait_enemy_sorcerer_vortex",
 			beastmen_minotaur = "unit_frame_portrait_enemy_minotaur",
@@ -356,6 +355,7 @@ if not UISettings then
 			hero_dr_ranger = "small_unit_frame_portrait_bardin_ranger",
 			vs_packmaster = "unit_frame_portrait_enemy_packmaster",
 			beastmen_ungor = "unit_frame_portrait_enemy_standard_bearer",
+			hero_we_thornsister = "small_unit_frame_portrait_kerillian_thornsister",
 			skaven_grey_seer = "unit_frame_portrait_enemy_rasknitt",
 			chaos_warrior = "unit_frame_portrait_enemy_chaos_warrior",
 			beastmen_ungor_archer = "unit_frame_portrait_enemy_standard_bearer",
@@ -796,6 +796,15 @@ UISettings.item_rarity_textures = {
 	rare = "icon_bg_rare",
 	unique = "icon_bg_unique"
 }
+
+setmetatable(UISettings.item_rarity_textures, {
+	__index = function (self, rarity)
+		Crashify.print_exception("UISettings", "Unknown rarity: " .. tostring(rarity))
+
+		return "icons_placeholder"
+	end
+})
+
 UISettings.item_rarity_order = {
 	common = 6,
 	promo = 1,

@@ -5631,6 +5631,82 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	wh_face = {
+		slot_hat = {
+			{
+				target = 0,
+				source = "a_hat"
+			},
+			{
+				target = "j_head",
+				source = "j_head"
+			},
+			{
+				target = "j_jaw_anim",
+				source = "j_jaw_anim"
+			},
+			{
+				target = "j_chin_amim",
+				source = "j_chin_amim"
+			},
+			{
+				target = "j_lowerlipright1_anim",
+				source = "j_lowerlipright1_anim"
+			},
+			{
+				target = "j_lowerlipleft1_anim",
+				source = "j_lowerlipleft1_anim"
+			},
+			{
+				target = "j_lowerlipcenter_anim",
+				source = "j_lowerlipcenter_anim"
+			},
+			{
+				target = "j_leftcrease_01_anim",
+				source = "j_leftcrease_01_anim"
+			},
+			{
+				target = "j_leftcheek_01_anim",
+				source = "j_leftcheek_01_anim"
+			},
+			{
+				target = "j_leftsnarl_01_anim",
+				source = "j_leftsnarl_01_anim"
+			},
+			{
+				target = "j_rightsnarl_01_anim",
+				source = "j_rightsnarl_01_anim"
+			},
+			{
+				target = "j_rightcheek_03_anim",
+				source = "j_rightcheek_03_anim"
+			},
+			{
+				target = "j_rightcrease_01_anim",
+				source = "j_rightcrease_01_anim"
+			},
+			{
+				target = "j_upperlipright2_anim",
+				source = "j_upperlipright2_anim"
+			},
+			{
+				target = "j_upperlipright1_anim",
+				source = "j_upperlipright1_anim"
+			},
+			{
+				target = "j_upperlipcenter_anim",
+				source = "j_upperlipcenter_anim"
+			},
+			{
+				target = "j_upperlipleft1_anim",
+				source = "j_upperlipleft1_anim"
+			},
+			{
+				target = "j_upperlipleft2_anim",
+				source = "j_upperlipleft2_anim"
+			}
+		}
+	},
 	bw_gate = {
 		slot_hat = {
 			{

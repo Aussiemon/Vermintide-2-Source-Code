@@ -136,11 +136,10 @@ StoreWindowItemDetails._present_item = function (self, item)
 	local item_key = item_data.key
 	local item_rarity = item_data.rarity
 	local item_type = item_data.item_type
+	local can_wield = item_data.can_wield
 	local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
 	local profile = SPProfiles[profile_index]
 	local hero_display_name = profile.character_name
-	local career_settings = CareerSettings[career_name]
-	local career_display_name = career_settings.display_name
 	local sub_title_text = ""
 
 	if item_type == "weapon_skin" then
@@ -150,15 +149,6 @@ StoreWindowItemDetails._present_item = function (self, item)
 	end
 
 	local inventory_icon, display_name, description = UIUtils.get_ui_information_from_item(item)
-	local career_icons = {}
-	local can_wield = item_data.can_wield
-
-	if can_wield then
-		for _, career_name in ipairs(can_wield) do
-			career_icons[#career_icons + 1] = "store_tag_icon_" .. career_name
-		end
-	end
-
 	local title_text_color = Colors.get_color_table_with_alpha(item_rarity, 255)
 
 	self:_setup_career_icons(can_wield)
@@ -208,13 +198,10 @@ StoreWindowItemDetails._setup_career_icons = function (self, careers)
 			offset_x = offset_x + step_size
 			local widget = UIWidget.init(widget_definition)
 			widget.offset[1] = offset_x
-			local title_text = Localize(display_name)
-			local description = Localize("menu_store_product_wieldable_tooltip_desc")
-			local icon = "store_tag_icon_" .. career_name
 			local tooltip_data = widget.content.tooltip
-			tooltip_data.title = title_text
-			tooltip_data.description = description
-			widget.content.icon = icon
+			tooltip_data.title = Localize(display_name)
+			tooltip_data.description = Localize("menu_store_product_wieldable_tooltip_desc")
+			widget.content.icon = settings.store_tag_icon or "store_tag_icon_" .. career_name
 			career_icon_widgets[i] = widget
 		end
 	end

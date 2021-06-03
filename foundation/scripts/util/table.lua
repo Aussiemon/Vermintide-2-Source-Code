@@ -699,6 +699,18 @@ table.filter = function (t, func)
 	return copy
 end
 
+table.filter_to_array = function (t, func)
+	local copy = {}
+
+	for k, v in pairs(t) do
+		if func(v) == true then
+			copy[#copy + 1] = v
+		end
+	end
+
+	return copy
+end
+
 table.get_value_or_last = function (t, index)
 	return t[index] or t[#t]
 end

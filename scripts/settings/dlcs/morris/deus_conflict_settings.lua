@@ -1680,8 +1680,8 @@ SpecialsSettings.deus_beastmen = {
 }
 SpecialsSettings.deus_skaven_beastmen = {
 	spawn_method = "specials_by_slots",
-	disabled = false,
 	max_specials = 2,
+	disabled = false,
 	breeds = {
 		"skaven_gutter_runner",
 		"skaven_pack_master",
@@ -1735,7 +1735,72 @@ SpecialsSettings.deus_skaven_beastmen = {
 		loneliness_value_for_special = 30,
 		distance_until_next_intervention = 30,
 		breeds = {
-			"chaos_corruptor_sorcerer"
+			"skaven_gutter_runner"
+		}
+	},
+	speed_running_intervention = {
+		travel_distance_check_frequency = 10,
+		travel_distance_threshold = 40,
+		time_required_in_pacing_peak_to_ignore_high_intensity = 40,
+		required_time_spent_in_high_threat = 30,
+		chance_of_vector_horde = 0.25,
+		breeds = {
+			"skaven_pack_master",
+			"skaven_gutter_runner",
+			"skaven_warpfire_thrower",
+			"skaven_ratling_gunner"
+		},
+		delay_between_speed_running_intervention_special_spawn = {
+			{
+				15,
+				30
+			},
+			{
+				12,
+				24
+			},
+			{
+				8,
+				18
+			},
+			{
+				5,
+				12
+			}
+		},
+		delay_between_speed_running_intervention_horde_spawn = {
+			8,
+			12
+		},
+		vector_horde_breeds = {
+			"skaven_plague_monk",
+			"beastmen_bestigor",
+			"beastmen_ungor",
+			"beastmen_gor"
+		},
+		vector_horde_config = {
+			skaven_plague_monk = {
+				2,
+				3
+			},
+			beastmen_bestigor = {
+				2,
+				3
+			},
+			beastmen_ungor = {
+				5,
+				8
+			},
+			beastmen_gor = {
+				2,
+				3
+			}
+		},
+		total_travel_distance_scaling_thresholds = {
+			80,
+			160,
+			240,
+			320
 		}
 	},
 	difficulty_overrides = SpecialDifficultyOverrides_skaven_beastmen

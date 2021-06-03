@@ -4028,6 +4028,22 @@ function flow_callback_unattach_unit(params)
 	}
 end
 
+function flow_callback_attach_player_hat(params)
+	return
+end
+
+function flow_callback_remove_player_hat(params)
+	return
+end
+
+function flow_callback_attach_player_item(params)
+	return
+end
+
+function flow_callback_remove_player_items(params)
+	return
+end
+
 function flow_callback_trigger_event_on_attachments(params)
 	local unit_attachments = Unit.get_data(params.unit, "flow_unit_attachments") or {}
 
@@ -4549,6 +4565,13 @@ function flow_callback_set_unit_enabled(params)
 		Unit.enable_animation_state_machine(params.unit)
 	else
 		Unit.set_unit_visibility(params.unit, false)
+
+		local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+		if projectile_linker_system ~= nil then
+			projectile_linker_system:clear_linked_projectiles(params.unit)
+		end
+
 		Unit.disable_physics(params.unit)
 
 		if Unit.has_animation_state_machine(params.unit) then

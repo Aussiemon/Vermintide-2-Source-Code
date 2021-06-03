@@ -181,8 +181,20 @@ local function remove_element_from_array(array, value_to_remove)
 	end
 end
 
-ConflictDirector.alive_specials = function (self)
-	local alive_specials = {}
+ConflictDirector.alive_specials_count = function (self)
+	local count = 0
+
+	for _, special in ipairs(self._alive_specials) do
+		if ALIVE[special] then
+			count = count + 1
+		end
+	end
+
+	return count
+end
+
+ConflictDirector.alive_specials = function (self, optional_table)
+	local alive_specials = optional_table or {}
 
 	for _, special in ipairs(self._alive_specials) do
 		if ALIVE[special] then
@@ -3399,6 +3411,8 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if DebugKeyHandler.key_pressed("t", "test terror", "ai", "left shift") then
+		return
+
 		local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
 
 		if not position then

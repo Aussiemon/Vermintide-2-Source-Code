@@ -1,3 +1,5 @@
+require("scripts/settings/dlcs/morris/tweak_data/buff_tweak_data")
+
 local item_master_list = {
 	dr_deus_01 = {
 		description = "dr_deus_01_description",

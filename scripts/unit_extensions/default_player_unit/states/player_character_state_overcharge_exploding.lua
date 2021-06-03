@@ -29,8 +29,10 @@ PlayerCharacterStateOverchargeExploding.on_enter = function (self, unit, input, 
 	local overcharge_extension = ScriptUnit.extension(unit, "overcharge_system")
 	self.explosion_template = overcharge_extension.explosion_template
 	self.no_forced_movement = overcharge_extension.no_forced_movement
+	self.no_explosion = overcharge_extension.no_explosion
 	self.explosion_time = t + (overcharge_extension.overcharge_explosion_time or 3)
 	self.percent_health_lost = overcharge_extension.percent_health_lost
+	self._explode_vfx_name = overcharge_extension.explode_vfx_name
 	self.walking = false
 	self.falling = false
 end
@@ -86,7 +88,26 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 	local explosion_template = self.explosion_template
 	local scale = 1
 
-	Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, scale, "overcharge", nil, false)
+	if not self.no_explosion then
+		Managers.state.entity:system("area_damage_system"):create_explosion(unit, position, rotation, explosion_template, scale, "overcharge", nil, false)
+	end
+
+	if self._explode_vfx_name then
+		local effect_name = self._explode_vfx_name
+		local effect_name_id = NetworkLookup.effects[effect_name]
+		local game_object_id = NetworkConstants.invalid_game_object_id
+		local node_id = 0
+
+		Managers.state.event:trigger("event_play_particle_effect", effect_name, nil, node_id, POSITION_LOOKUP[unit], rotation, false)
+
+		local network_transmit = Managers.state.network.network_transmit
+
+		if Managers.player.is_server then
+			network_transmit:send_rpc_clients("rpc_play_particle_effect", effect_name_id, game_object_id, node_id, POSITION_LOOKUP[unit], rotation, false)
+		else
+			network_transmit:send_rpc_server("rpc_play_particle_effect", effect_name_id, game_object_id, node_id, POSITION_LOOKUP[unit], rotation, false)
+		end
+	end
 end
 
 PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt, context, t)

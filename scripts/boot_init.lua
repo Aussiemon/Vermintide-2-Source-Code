@@ -86,7 +86,9 @@ if LEVEL_EDITOR_TEST then
 		"resource_packages/decals",
 		"resource_packages/levels/ui_loot_preview",
 		"resource_packages/levels/ui_end_screen",
-		"resource_packages/levels/ui_end_screen_victory"
+		"resource_packages/levels/ui_end_screen_victory",
+		"resource_packages/breeds",
+		"resource_packages/breeds_common_resources"
 	}
 elseif IS_PS4 then
 	GlobalResources = GlobalResources or {
@@ -108,7 +110,9 @@ elseif IS_PS4 then
 		"resource_packages/ingame",
 		"resource_packages/pickups",
 		"resource_packages/projection_decals",
-		"resource_packages/ingame_sounds_honduras"
+		"resource_packages/ingame_sounds_honduras",
+		"resource_packages/breeds",
+		"resource_packages/breeds_common_resources"
 	}
 elseif IS_XB1 then
 	GlobalResources = GlobalResources or {
@@ -130,7 +134,9 @@ elseif IS_XB1 then
 		"resource_packages/ingame",
 		"resource_packages/pickups",
 		"resource_packages/projection_decals",
-		"resource_packages/ingame_sounds_honduras"
+		"resource_packages/ingame_sounds_honduras",
+		"resource_packages/breeds",
+		"resource_packages/breeds_common_resources"
 	}
 else
 	GlobalResources = GlobalResources or {
@@ -153,7 +159,9 @@ else
 		"resource_packages/ingame",
 		"resource_packages/pickups",
 		"resource_packages/projection_decals",
-		"resource_packages/slug_core_materials"
+		"resource_packages/slug_core_materials",
+		"resource_packages/breeds",
+		"resource_packages/breeds_common_resources"
 	}
 end
 

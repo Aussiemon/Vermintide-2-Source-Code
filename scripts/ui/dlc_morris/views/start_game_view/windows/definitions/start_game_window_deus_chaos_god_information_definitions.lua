@@ -183,12 +183,12 @@ local widget = {
 			horizontal_alignment = "center",
 			color = Colors.get_color_table_with_alpha("tzeentch", 0),
 			texture_size = {
-				70,
-				70
+				120,
+				120
 			},
 			offset = {
 				-3,
-				62,
+				95,
 				4
 			}
 		},
@@ -323,7 +323,7 @@ local animation_definitions = {
 				local alpha = 255 * progress
 				style.glow_top.color[1] = alpha
 				style.glow_bottom.color[1] = alpha
-				style.glow_icon.color[1] = progress
+				style.glow_icon.color[1] = alpha
 			end,
 			on_complete = NOP
 		},

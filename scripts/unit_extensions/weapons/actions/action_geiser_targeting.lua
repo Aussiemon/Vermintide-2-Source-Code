@@ -138,7 +138,7 @@ ActionGeiserTargeting.client_owner_post_update = function (self, dt, t, world, c
 			if self.overcharge_extension then
 				local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[current_action.overcharge_type]
 
-				self.overcharge_extension:add_charge(overcharge_amount)
+				self.overcharge_extension:add_charge(overcharge_amount, nil, current_action.overcharge_type)
 			end
 
 			self.overcharge_timer = 0

@@ -23,16 +23,7 @@ HudCustomizer.reset_button = function (ui_renderer)
 		return
 	end
 
-	FatUI.begin_mockup_window("hud_customizer", "HUD Customization", Vector3(75, 880, 995))
-
-	if FatUI.draw_mockup_button("reset", "Reset") then
-		table.clear(offset_registry)
-
-		drag_active = nil
-		drag_hover = nil
-	end
-
-	FatUI.close_mockup_window()
+	error("@TODO: Rewrite")
 end
 
 HudCustomizer.run = function (ui_renderer, ui_scenegraph, customizer_data)

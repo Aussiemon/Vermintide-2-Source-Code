@@ -25,7 +25,7 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local unit_position = Unit.world_position(unit, 0)
 	local above = template.above
 	local below = template.below
-	local position = self:_find_point(unit_position, above, below)
+	local position = self:_find_point(unit_position, above, below) or unit_position
 	local cell_size = template.cell_size
 	local max_liquid = extension_init_data.max_liquid or template.max_liquid or 50
 	local xy_extents = math.min(max_liquid + 10, 50)
@@ -61,6 +61,7 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local fx_name_rim = template.fx_name_rim
 	self._fx_name_rim = fx_name_rim
 	self._fx_name_filled = template.fx_name_filled
+	self._override_fx_life_time = template.override_fx_life_time
 
 	Unit.set_unit_visibility(unit, false)
 
@@ -166,6 +167,11 @@ LiquidAreaDamageExtension._set_active = function (self, real_index)
 	if not script_data.debug_liquid_system and fx_name_filled then
 		local rotation = liquid.rotation:unbox()
 		liquid.fx_id = World.create_particles(self._world, fx_name_filled, position, rotation)
+		local override_life_time = self._override_fx_life_time
+
+		if override_life_time then
+			World.set_particles_life_time(self._world, liquid.fx_id, override_life_time)
+		end
 	else
 		liquid.fx_id = nil
 	end
@@ -247,6 +253,11 @@ LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 
 	if not script_data.debug_liquid_system and fx_name_rim then
 		fx_id = World.create_particles(self._world, fx_name_rim, from, rotation)
+		local override_life_time = self._override_fx_life_time
+
+		if override_life_time then
+			World.set_particles_life_time(self._world, fx_id, override_life_time)
+		end
 	end
 
 	local is_filled = false

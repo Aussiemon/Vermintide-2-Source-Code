@@ -44,7 +44,8 @@ BTSmashDoorAction.enter = function (self, unit, blackboard, t)
 		action = action,
 		entrance_pos = smart_object.entrance_pos,
 		exit_pos = smart_object.exit_pos,
-		exit_lookat_direction = Vector3Box(Vector3.normalize(Vector3.flat(smart_object.exit_pos:unbox() - smart_object.entrance_pos:unbox())))
+		exit_lookat_direction = Vector3Box(Vector3.normalize(Vector3.flat(smart_object.exit_pos:unbox() - smart_object.entrance_pos:unbox()))),
+		start_t = t
 	}
 	blackboard.smash_door.state_machine = StateMachine:new(self, BTSmashDoorAction.StateInit, params)
 	local rotation_speed = action.rotation_speed or 10
@@ -74,9 +75,12 @@ BTSmashDoorAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		if not success then
 			local target_unit = blackboard.smash_door.target_unit
-			local door_extension = ScriptUnit.extension(target_unit, "door_system")
 
-			door_extension:register_breed_failed_leaving_smart_object(unit)
+			if ALIVE[target_unit] then
+				local door_extension = ScriptUnit.extension(target_unit, "door_system")
+
+				door_extension:register_breed_failed_leaving_smart_object(unit)
+			end
 		end
 	end
 
@@ -242,6 +246,7 @@ BTSmashDoorAction.StateAttacking.on_enter = function (self, params)
 	self.unit = params.unit
 	self.action = params.action
 	self.target_unit = target_unit
+	self.start_t = params.start_t
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -268,6 +273,10 @@ BTSmashDoorAction.StateAttacking.update = function (self, dt, t)
 
 	if blackboard.attack_finished then
 		self:attack()
+
+		if door_extension.ai_attack_re_eval_time and t > door_extension.ai_attack_re_eval_time + self.start_t then
+			blackboard.attack_aborted = true
+		end
 	end
 end
 

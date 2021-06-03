@@ -1494,6 +1494,56 @@ DeathReactions.templates = {
 			end
 		}
 	},
+	despawn = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server, death_extension)
+				local data = {
+					despawn_after_time = death_extension.extension_init_data.despawn_after_time or 0,
+					play_effect = death_extension.extension_init_data.play_effect
+				}
+				local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
+
+				projectile_linker_system:clear_linked_projectiles(unit)
+
+				return data, DeathReactions.IS_NOT_DONE
+			end,
+			update = function (unit, dt, context, t, data)
+				if data.despawn_after_time < t then
+					local blackboard = BLACKBOARDS[unit]
+
+					Managers.state.conflict:destroy_unit(unit, blackboard, "death_reaction_despawn")
+
+					if data.play_effect then
+						local effect_pos = POSITION_LOOKUP[unit]
+						local effect_name_id = NetworkLookup.effects[data.play_effect]
+						local node_id = 0
+						local rotation_offset = Quaternion.identity()
+						local network_manager = Managers.state.network
+
+						network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, effect_pos, rotation_offset, false)
+					end
+
+					return DeathReactions.IS_DONE
+				end
+
+				return DeathReactions.IS_NOT_DONE
+			end
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				return
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				return nil, DeathReactions.IS_DONE
+			end,
+			update = function (unit, dt, context, t, data)
+				return
+			end
+		}
+	},
 	killable_projectile = {
 		unit = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -1663,12 +1713,19 @@ DeathReactions.templates = {
 			pre_start = function (unit, context, t, killing_blow)
 				return
 			end,
-			start = function (unit, context, t, killing_blow, is_server)
+			start = function (unit, context, t, killing_blow, is_server, death_extension)
 				local network_time = Managers.state.network:network_time()
+				local die_callback = death_extension.extension_init_data.die_callback
+
+				if die_callback then
+					die_callback()
+				end
+
+				local shrink_and_despawn_time = death_extension.extension_init_data.shrink_and_despawn_time
 				local data = {
-					start_time = network_time
+					start_time = network_time,
+					shrink_and_despawn_time = shrink_and_despawn_time
 				}
-				local death_extension = ScriptUnit.extension(unit, "death_system")
 
 				Unit.set_flow_variable(unit, "current_health", 0)
 				Unit.flow_event(unit, "lua_on_death")
@@ -1740,7 +1797,26 @@ DeathReactions.templates = {
 
 						data.destroyed = true
 					elseif data.destroyed and network_time >= start_time + 0.5 then
-						result = DeathReactions.IS_DONE
+						if data.shrink_and_despawn_time then
+							local scale_unit_extension = ScriptUnit.has_extension(unit, "props_system")
+							local shrinking_state = data.shrinking_state
+
+							if not shrinking_state then
+								data.shrinking_state = "waiting"
+							elseif shrinking_state == "waiting" then
+								if network_time >= start_time + data.shrink_and_despawn_time then
+									scale_unit_extension:setup(1, 0, 0.5)
+
+									data.shrinking_state = "shrinking"
+								end
+							elseif shrinking_state == "shrinking" and scale_unit_extension:scaling_complete() then
+								Managers.state.unit_spawner:mark_for_deletion(unit)
+
+								result = DeathReactions.IS_DONE
+							end
+						else
+							result = DeathReactions.IS_DONE
+						end
 					end
 
 					return result

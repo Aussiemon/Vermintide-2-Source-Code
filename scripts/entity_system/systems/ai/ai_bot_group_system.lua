@@ -1292,10 +1292,14 @@ end
 
 local FALLBACK_OPPORTUNITY_DISTANCE = 40
 local FALLBACK_OPPORTUNITY_DISTANCE_SQ = FALLBACK_OPPORTUNITY_DISTANCE^2
+local alive_specials_table = {}
 
 AIBotGroupSystem._update_opportunity_targets = function (self, dt, t)
 	local conflict_director = Managers.state.conflict
-	local alive_specials = conflict_director:alive_specials()
+
+	table.clear(alive_specials_table)
+
+	local alive_specials = conflict_director:alive_specials(alive_specials_table)
 	local num_alive_specials = #alive_specials
 	local Vector3_distance_squared = Vector3.distance_squared
 	local bot_ai_data = self._bot_ai_data

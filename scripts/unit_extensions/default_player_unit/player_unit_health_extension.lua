@@ -389,7 +389,7 @@ PlayerUnitHealthExtension.apply_client_predicted_damage = function (self, predic
 	return
 end
 
-PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
 	if DamageUtils.is_in_inn then
 		return
 	end
@@ -419,7 +419,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 	fassert(damage_type, "No damage_type!")
 
 	local unit = self.unit
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type)
 
 	if damage_amount == nil then
 		Crashify.print_exception("HealthSystem", "damage_amount is nil in PlayerUnitHealthExtension:add_damage()")
@@ -542,13 +542,14 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local damage_source_id = NetworkLookup.damage_sources[damage_source_name or "n/a"]
 			local hit_ragdoll_actor_id = NetworkLookup.hit_ragdoll_actors[hit_ragdoll_actor or "n/a"]
 			local hit_react_type_id = NetworkLookup.hit_react_types[hit_react_type or "light"]
+			local attack_type_id = NetworkLookup.buff_attack_types[attack_type or "n/a"]
 			is_critical_strike = is_critical_strike or false
 			added_dot = added_dot or false
 			first_hit = first_hit or false
 			total_hits = total_hits or 1
 			backstab_multiplier = backstab_multiplier or 1
 
-			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			self.network_transmit:send_rpc_clients("rpc_add_damage", unit_id, false, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
 		end
 	end
 end
@@ -564,6 +565,8 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 
 		razer_chroma:play_animation("health_potion", false, RAZER_ADD_ANIMATION_TYPE.REPLACE)
 	end
+
+	Managers.state.achievement:trigger_event("register_heal", healer_unit, unit, heal_amount, heal_type)
 
 	if self.is_server then
 		local game = self.game

@@ -28,6 +28,7 @@ ProjectileScriptUnitLocomotionExtension.init = function (self, extension_init_co
 	self.is_husk = not not extension_init_data.is_husk
 	self._last_position = Vector3Box(POSITION_LOOKUP[unit])
 	self._position = Vector3Box(POSITION_LOOKUP[unit])
+	self._rotation = QuaternionBox(Unit.world_rotation(unit, 0))
 	self.is_server = Managers.player.is_server
 	self.stopped = false
 	self.moved = false
@@ -110,6 +111,7 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	self._last_position:store(position)
 	self._position:store(new_position)
 	self.velocity:store(velocity)
+	self._rotation:store(rotation)
 
 	self.moved = true
 	self.t = t
@@ -130,6 +132,10 @@ end
 
 ProjectileScriptUnitLocomotionExtension.current_position = function (self)
 	return self._position:unbox()
+end
+
+ProjectileScriptUnitLocomotionExtension.current_rotation = function (self)
+	return self._rotation:unbox()
 end
 
 ProjectileScriptUnitLocomotionExtension.last_position = function (self)

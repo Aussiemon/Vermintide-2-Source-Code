@@ -10,7 +10,8 @@ local extensions = {
 	"PerlinLightExtension",
 	"BotNavTransitionExtension",
 	"QuestChallengePropExtension",
-	"ThornMutatorExtension"
+	"ThornMutatorExtension",
+	"ScaleUnitExtension"
 }
 
 DLCUtils.append("prop_extension", extensions)

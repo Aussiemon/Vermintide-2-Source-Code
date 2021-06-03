@@ -1,3 +1,4 @@
+require("scripts/managers/game_mode/mutator_common_settings")
 require("scripts/managers/game_mode/mutator_templates")
 
 function mutator_dprint(text, ...)

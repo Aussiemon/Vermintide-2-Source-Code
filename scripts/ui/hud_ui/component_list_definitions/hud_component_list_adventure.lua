@@ -417,18 +417,7 @@ local components = {
 			"realism",
 			"dead",
 			"alive"
-		},
-		validation_function = function (context, is_in_inn)
-			if is_in_inn then
-				return true
-			else
-				local use_twitch_ui = Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())
-
-				if not use_twitch_ui then
-					return true
-				end
-			end
-		end
+		}
 	},
 	{
 		use_hud_scale = true,

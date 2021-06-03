@@ -140,15 +140,17 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local function_result = result.FunctionResult
 	local id = data.id
 	local rewards = function_result.Rewards
-	local items = function_result.Result
-	local consumed_deed_result = function_result.ConsumedDeedResult
 	local experience = function_result.Experience
 	local experience_pool = function_result.ExperiencePool
 	local recent_quickplay_games = function_result.RecentQuickplayGames
-	local essence_rewards = function_result.EssenceRewards
 	local total_essence = function_result.total_essence
 	local vs_profile_data = function_result.vs_profile_data
 	local score_breakdown = function_result.ScoreBreakdown
+	local items = function_result.ItemsGranted or function_result.Result
+	local currency_granted = function_result.CurrencyGranted
+	local essence_rewards = function_result.EssenceRewards
+	local items_revoked = function_result.ItemsRevoked
+	local consumed_deed_result = function_result.ConsumedDeedResult
 	local num_items = #items
 	local win_track_progress = function_result.win_tracks_progress
 	local loot_request = {}
@@ -178,7 +180,13 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		backend_mirror:add_item(backend_id, item)
 	end
 
-	if consumed_deed_result then
+	if items_revoked then
+		for i = 1, #items_revoked, 1 do
+			local item_backend_id = items_revoked[i].ItemInstanceId
+
+			backend_mirror:remove_item(item_backend_id)
+		end
+	elseif consumed_deed_result then
 		local deed_backend_id = consumed_deed_result.ItemInstanceId
 
 		backend_mirror:remove_item(deed_backend_id)
@@ -207,7 +215,17 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		backend_mirror:set_read_only_data("vs_profile_data", vs_profile_data, true)
 	end
 
-	if essence_rewards and #essence_rewards > 0 then
+	if currency_granted then
+		for key, currency_data in pairs(currency_granted) do
+			if key == "ES" then
+				loot_request.essence = currency_data
+
+				backend_mirror:set_essence(currency_data.new_total)
+			else
+				fassert(false, string.format("currency '%s' not supported", key))
+			end
+		end
+	elseif essence_rewards and #essence_rewards > 0 then
 		loot_request.essence = essence_rewards
 		local final_essence_reward = essence_rewards[#essence_rewards]
 		local new_total_essence = final_essence_reward.new_total

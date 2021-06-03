@@ -193,17 +193,6 @@ StoreWindowPanel._update_animations = function (self, dt)
 	self:_update_panel_selection_animation(dt)
 end
 
-StoreWindowPanel._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot or content.button_text
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
 StoreWindowPanel._is_stepper_button_pressed = function (self, widget)
 	local content = widget.content
 	local hotspot_left = content.button_hotspot_left
@@ -220,27 +209,6 @@ StoreWindowPanel._is_stepper_button_pressed = function (self, widget)
 	end
 end
 
-StoreWindowPanel._is_button_hover_enter = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_enter
-end
-
-StoreWindowPanel._is_button_hover_exit = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_exit
-end
-
-StoreWindowPanel._is_button_selected = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.is_selected
-end
-
 StoreWindowPanel._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local widgets_by_name = self._widgets_by_name
@@ -248,26 +216,19 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 	local input_made = false
 	local close_button = widgets_by_name.close_button
 	local back_button = widgets_by_name.back_button
-	local golden_key_button = self._top_widgets_by_name.golden_key_button
 	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
 
-	if self:_is_button_hover_enter(golden_key_button) or self:_is_button_hover_enter(back_button) or self:_is_button_hover_enter(close_button) then
+	if UIUtils.is_button_hover_enter(back_button) or UIUtils.is_button_hover_enter(close_button) then
 		self:_play_sound("Play_hud_hover")
 	end
 
-	if self:_is_button_pressed(golden_key_button) then
-		parent:open_golden_key_popup()
-
-		input_made = true
-	end
-
-	if not input_made and self:_is_button_pressed(close_button) then
+	if not input_made and UIUtils.is_button_pressed(close_button) then
 		parent:close_menu()
 
 		input_made = true
 	end
 
-	if not input_made and self:_is_button_pressed(mark_all_seen_button) then
+	if not input_made and UIUtils.is_button_pressed(mark_all_seen_button) then
 		mark_all_seen_button.content.new = false
 
 		ItemHelper.set_all_shop_item_seen(self._parent.tab_cat)
@@ -284,11 +245,11 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 		local is_selected = widget.content.button_hotspot.is_selected
 
 		if not is_selected or path_length > 1 then
-			if self:_is_button_hover_enter(widget) then
+			if UIUtils.is_button_hover_enter(widget) then
 				self:_play_sound("Play_hud_store_button_hover_category")
 			end
 
-			if self:_is_button_pressed(widget) then
+			if UIUtils.is_button_pressed(widget) then
 				self:_on_panel_button_selected(i)
 
 				input_made = true

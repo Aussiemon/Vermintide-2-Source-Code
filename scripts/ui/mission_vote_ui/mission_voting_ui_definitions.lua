@@ -345,7 +345,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			0,
+			10,
 			2
 		}
 	},
@@ -3509,14 +3509,14 @@ local switch_mechanism_title_text_style = {
 	}
 }
 local switch_mechanism_subtitle_text_style = {
-	font_size = 40,
+	font_size = 32,
 	upper_case = false,
 	localize = true,
 	use_shadow = true,
 	word_wrap = true,
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
-	font_type = "hell_shark_header",
+	font_type = "hell_shark",
 	adventure_text_color = {
 		255,
 		255,
@@ -3542,6 +3542,7 @@ local switch_mechanism_subtitle_text_style = {
 	}
 }
 local switch_mechanism_description_text_style = table.clone(switch_mechanism_subtitle_text_style)
+switch_mechanism_description_text_style.font_size = 32
 local score_text_style = {
 	font_size = 36,
 	upper_case = true,

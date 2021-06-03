@@ -7204,6 +7204,21 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Adds all hat items to your inventory.",
+		setting_name = "Add All Hat Items",
+		category = "Items",
+		func = function ()
+			local item_master_list = ItemMasterList
+			local item_interface = Managers.backend:get_interface("items")
+
+			for key, item in pairs(item_master_list) do
+				if item.slot_type == "hat" then
+					item_interface:award_item(key)
+				end
+			end
+		end
+	},
+	{
 		description = "Lists all items with functionality to add them to inventory.",
 		setting_name = "Add Skin Items",
 		category = "Items",
@@ -7996,6 +8011,23 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "deus_fog_with_no_memory",
 		category = "Deus"
+	},
+	{
+		setting_name = "deus_force_load_run_progress",
+		category = "Deus",
+		description = "override the run progress when using this menu's load level. 900 == 0.9 ",
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			for i = 0, 999, 10 do
+				options[#options + 1] = i
+			end
+
+			table.sort(options)
+
+			options[#options + 1] = "[clear value]"
+		end
 	},
 	{
 		setting_name = "deus_seed",

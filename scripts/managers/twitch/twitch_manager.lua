@@ -28,7 +28,13 @@ TwitchManager.init = function (self)
 	self._game_object_ids = {}
 	self._vote_key_to_go_id = {}
 	self.locked_breed_packages = {}
-	self._rest_interface = (not IS_WINDOWS and Managers.rest_transport) or Managers.curl
+
+	if not IS_WINDOWS then
+		self._rest_interface = Managers.rest_transport
+	else
+		self._rest_interface = Managers.curl
+	end
+
 	local settings = Application.settings()
 	self._twitch_settings = settings.twitch
 
@@ -60,8 +66,19 @@ TwitchManager.init = function (self)
 	self._debug_vote_timer = 0.25
 end
 
-TwitchManager.game_mode_supported = function (self, game_mode)
-	return TwitchSettings.supported_game_modes[game_mode]
+local twitch_difficulty_override = {
+	cataclysm = true,
+	cataclysm_3 = true,
+	cataclysm_2 = true,
+	legend = true
+}
+
+TwitchManager.game_mode_supported = function (self, game_mode, difficulty)
+	local supported = TwitchSettings.supported_game_modes[game_mode] or not not twitch_difficulty_override[difficulty]
+
+	printf("[TwitchManager] game_mode_supported(game_mode=%q, difficulty=%q) => %s", game_mode, difficulty, supported)
+
+	return supported
 end
 
 TwitchManager.stream_type = function (self)
@@ -886,8 +903,8 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 	TwitchSettings.disable_giving_items = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_giving_items or disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
 	TwitchSettings.disable_positive_votes = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
 	TwitchSettings.disable_mutators = Application.user_setting("twitch_disable_mutators")
-	TwitchSettings.spawn_amount_multiplier = math.min(Application.user_setting("twitch_spawn_amount"), 3)
-	TwitchSettings.mutator_duration_multiplier = math.min(Application.user_setting("twitch_mutator_duration"), 3)
+	TwitchSettings.spawn_amount_multiplier = math.clamp(Application.user_setting("twitch_spawn_amount"), 1, 3)
+	TwitchSettings.mutator_duration_multiplier = math.clamp(Application.user_setting("twitch_mutator_duration"), 1, 3)
 	local network_manager = Managers.state.network and Managers.state.network
 	local is_server = network_manager and network_manager.is_server
 
@@ -1375,16 +1392,12 @@ TwitchGameMode.destroy = function (self)
 		debug_print("Destroying Twitch Vote %s", vote_key)
 	end
 
-	local game_mode_manager = Managers.state.game_mode
+	local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
 
-	if game_mode_manager then
-		local enemy_package_loader = Managers.level_transition_handler.enemy_package_loader
+	for breed_name, _ in pairs(self._parent.locked_breed_packages) do
+		enemy_package_loader:unlock_breed_package(breed_name)
 
-		for breed_name, _ in pairs(self._parent.locked_breed_packages) do
-			enemy_package_loader:unlock_breed_package(breed_name)
-
-			self._parent.locked_breed_packages[breed_name] = nil
-		end
+		self._parent.locked_breed_packages[breed_name] = nil
 	end
 
 	if Managers.state and Managers.state.event then

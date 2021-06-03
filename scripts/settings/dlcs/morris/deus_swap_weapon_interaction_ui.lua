@@ -16,6 +16,12 @@ DeusSwapWeaponInteractionUI.init = function (self, parent, ingame_ui_context)
 	self._animations = {}
 	self._type = "melee"
 	self._soft_currency_amount = nil
+	self._offset = {
+		0,
+		0,
+		0
+	}
+	self._calculate_offset = false
 
 	self:_create_ui_elements()
 	Managers.state.event:register(self, "chest_unlock_failed", "chest_unlock_failed")
@@ -55,8 +61,13 @@ DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit
 
 	local interactable_ext = ScriptUnit.extension(player_unit, "interactor_system")
 	local interactable_unit = interactable_ext:interactable_unit()
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+	local others_actually_ingame = profile_synchronizer:others_actually_ingame()
+	local prev_others_actually_ingame = self._others_actually_ingame
+	self._others_actually_ingame = others_actually_ingame
 
-	if self._current_interactable_unit ~= interactable_unit then
+	if self._current_interactable_unit ~= interactable_unit or prev_others_actually_ingame ~= others_actually_ingame then
 		self:_populate_widget(interactable_unit)
 		self:_start_animation("on_enter")
 	else
@@ -129,12 +140,47 @@ DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit
 	chest_info_widget.content.reward_info_text = power_level .. " " .. Localize("deus_weapon_chest_" .. self._type .. "_weapon_description")
 	self._current_interactable_unit = interactable_unit
 	self._soft_currency_amount = soft_currency_amount
+
+	if self._others_actually_ingame then
+		chest_info_widget.content.disabled_text = nil
+		chest_info_widget.content.show_coin_icon = true
+	else
+		tooltip_widget.content.item = nil
+		chest_info_widget.content.show_coin_icon = false
+		chest_info_widget.content.rarity_text = nil
+		chest_info_widget.content.cost_text = nil
+		chest_info_widget.content.reward_info_text = nil
+		chest_info_widget.content.disabled_text = "reliquary_inactive_due_to_joining_player"
+	end
+
+	self._calculate_offset = true
 end
 
 DeusSwapWeaponInteractionUI.update = function (self, player_unit, dt, t)
 	self:_evaluate_interactable(player_unit)
 	self:_update_animations(dt, t)
 	self:_draw(dt, t)
+	self:_update_offset(dt, t)
+
+	return self._offset
+end
+
+DeusSwapWeaponInteractionUI._update_offset = function (self, dt, t)
+	if not self._calculate_offset then
+		return
+	end
+
+	local weapon_tooltip_widget = self._widgets_by_name.weapon_tooltip
+
+	if not weapon_tooltip_widget then
+		return
+	end
+
+	local style = weapon_tooltip_widget.style
+	local item_style = style.item
+	local item_presentation_height = item_style.item_presentation_height
+	self._offset[2] = math.max(item_presentation_height - 300, 0)
+	self._calculate_offset = false
 end
 
 DeusSwapWeaponInteractionUI._update_animations = function (self, dt, t)
@@ -156,6 +202,7 @@ DeusSwapWeaponInteractionUI._draw = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local input_service = Managers.input:get_service("Player")
 	local render_settings = self._render_settings
+	ui_scenegraph.pivot.local_position = self._offset
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 

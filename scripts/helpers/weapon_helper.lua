@@ -352,6 +352,7 @@ end
 
 local GROUND_TARGET_MAX_STEPS = 30
 local GROUND_TARGET_MAX_TIME = 10
+local EPSILON = 0.0001
 
 WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin, velocity, gravity, collision_filter)
 	local time_step = GROUND_TARGET_MAX_TIME / GROUND_TARGET_MAX_STEPS
@@ -380,10 +381,19 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 			end
 
 			if hit_wall or not good_landing then
+				local flat_velocity = Vector3.length(Vector3.flat(velocity))
+
 				for j = 1, GROUND_TARGET_MAX_STEPS, 1 do
 					local step_back_distance = (j == 1 and 0.5) or 1
-					local step_back = Vector3.normalize(hit_position - origin) * step_back_distance
-					local step_back_position = hit_position - step_back
+					local step_back_t = (flat_velocity <= EPSILON and 0) or step_back_distance / flat_velocity
+					local step_back_position = nil
+
+					if step_back_t > 0 then
+						step_back_position = hit_position - velocity * step_back_t - gravity * step_back_t * step_back_t * 0.5
+					else
+						step_back_position = origin
+					end
+
 					local new_result, new_hit_position, _, _, _ = PhysicsWorld.immediate_raycast(physics_world, step_back_position, Vector3.down(), 10, "closest", "collision_filter", collision_filter)
 
 					if new_result then

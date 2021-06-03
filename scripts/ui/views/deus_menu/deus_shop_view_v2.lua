@@ -1002,7 +1002,7 @@ DeusShopView._create_unit_previewer = function (self, widget, unit_name, package
 	World.set_data(world, "avoid_blend", true)
 
 	local preview_position = {
-		0,
+		0.15,
 		2.5,
 		-0.5
 	}

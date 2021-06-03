@@ -91,7 +91,7 @@ NetworkClient.destroy = function (self)
 end
 
 NetworkClient.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
+	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", (IS_XB1 and "rpc_set_migration_host_xbox") or "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
 
 	self._network_event_delegate = network_event_delegate
 
@@ -199,6 +199,21 @@ NetworkClient.rpc_set_migration_host = function (self, channel_id, peer_id, do_m
 	end
 end
 
+NetworkClient.rpc_set_migration_host_xbox = function (self, channel_id, peer_id, do_migrate, session_id, session_template_name)
+	if do_migrate then
+		local player = Managers.player:player_from_peer_id(peer_id)
+		local name = (player and player:name()) or tostring(peer_id)
+		self.host_to_migrate_to = {
+			peer_id = peer_id,
+			name = name,
+			session_id = session_id,
+			session_template_name = session_template_name
+		}
+	else
+		self.host_to_migrate_to = nil
+	end
+end
+
 NetworkClient.rpc_client_update_lobby_data = function (self, channel_id)
 	self.lobby_client:force_update_lobby_data()
 end
@@ -249,7 +264,9 @@ NetworkClient.on_level_loaded = function (self, level_name)
 	if self.state ~= "connecting" then
 		local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
 
-		RPC.rpc_level_loaded(channel_id, NetworkLookup.level_keys[level_name])
+		if channel_id then
+			RPC.rpc_level_loaded(channel_id, NetworkLookup.level_keys[level_name])
+		end
 	else
 		self.loaded_level_name = level_name
 	end
@@ -286,7 +303,7 @@ NetworkClient.update = function (self, dt)
 		local level_transition_handler = Managers.level_transition_handler
 
 		if Managers.level_transition_handler:all_packages_loaded() then
-			network_printf("All level packages loaded!", level_transition_handler:get_current_level_keys())
+			network_printf("All level packages loaded!")
 			self:set_state("loaded")
 			self:on_level_loaded(level_transition_handler:get_current_level_keys())
 		end

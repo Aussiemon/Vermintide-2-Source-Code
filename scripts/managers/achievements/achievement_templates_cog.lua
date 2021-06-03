@@ -468,7 +468,7 @@ achievements.cog_steam_alt = {
 				template_data.shot_counter = 0
 			end
 
-			if template_data.hit_counter >= 30 then
+			if template_data.hit_counter >= 12 then
 				statistics_db:increment_stat(stats_id, "cog_steam_alt")
 			end
 		end
@@ -630,7 +630,7 @@ achievements.cog_chain_headshot = {
 
 					template_data.combo_headshots = template_data.combo_headshots + 1
 
-					if template_data.combo_headshots >= 20 then
+					if template_data.combo_headshots >= 6 then
 						statistics_db:increment_stat(stats_id, "cog_chain_headshot")
 					end
 				end
@@ -897,7 +897,7 @@ achievements.cog_exploding_barrel_kills = {
 
 			kills = kills + 1
 
-			if kills >= 20 then
+			if kills >= 10 then
 				statistics_db:increment_stat(stats_id, stat_name)
 			else
 				statistics_db:set_local_stat("cog_exploding_barrel_kills", kills)
@@ -937,7 +937,7 @@ achievements.cog_long_crank_fire = {
 			local t = Managers.time:time("game")
 			local fire_time = t - fire_start
 
-			if fire_time >= 50 then
+			if fire_time >= 40 then
 				statistics_db:increment_stat(stats_id, "cog_long_crank_fire")
 			end
 		end
@@ -1023,15 +1023,7 @@ local all_challenges = {
 	"cog_exploding_barrel_kills",
 	"cog_long_crank_fire",
 	"cog_missing_cog",
-	"cog_complete_all_helmgart_levels_recruit_dr_engineer",
-	"cog_complete_all_helmgart_levels_veteran_dr_engineer",
-	"cog_complete_all_helmgart_levels_champion_dr_engineer",
-	"cog_complete_all_helmgart_levels_legend_dr_engineer",
 	"cog_complete_100_missions_dr_engineer",
-	"cog_mission_streak_act1_legend_dr_engineer",
-	"cog_mission_streak_act2_legend_dr_engineer",
-	"cog_mission_streak_act3_legend_dr_engineer",
-	"cog_air_bomb",
 	"cog_penta_bomb",
 	"cog_crank_kill",
 	"cog_kill_barrage",

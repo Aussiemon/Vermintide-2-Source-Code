@@ -66,39 +66,35 @@ BackendInterfaceQuestsPlayfab.make_dirty = function (self)
 	self._dirty = true
 end
 
-BackendInterfaceQuestsPlayfab.update = function (self, dt)
-	local request_quest_update = false
-	local daily_update_time = self:get_daily_quest_update_time() - self._quest_timer
+BackendInterfaceQuestsPlayfab.update_quests = function (self)
+	if self._quests_updating then
+		return
+	end
 
-	if daily_update_time < 0 and not self._quests_updating then
-		request_quest_update = true
+	local refresh_quests = false
+	local daily_update_time = self:get_daily_quest_update_time()
+
+	if daily_update_time <= 0 then
+		refresh_quests = true
 	end
 
 	local weekly_update_time = self:get_weekly_quest_update_time()
 
-	if weekly_update_time then
-		weekly_update_time = weekly_update_time - self._quest_timer
-
-		if weekly_update_time < 0 and not self._quests_updating then
-			request_quest_update = true
-		end
+	if weekly_update_time and weekly_update_time <= 0 then
+		refresh_quests = true
 	end
 
 	for key, data in pairs(self._quests.event) do
 		local event_update_time = self:get_time_left_on_event_quest(key)
 
-		if event_update_time then
-			local update_time = self:get_time_left_on_event_quest(key) - self._quest_timer
+		if event_update_time and event_update_time <= 0 then
+			refresh_quests = true
 
-			if update_time < 0 and not self._quests_updating then
-				request_quest_update = true
-
-				break
-			end
+			break
 		end
 	end
 
-	if request_quest_update then
+	if refresh_quests then
 		local request = {
 			FunctionName = "getQuests"
 		}
@@ -109,7 +105,9 @@ BackendInterfaceQuestsPlayfab.update = function (self, dt)
 
 		self._quests_updating = true
 	end
+end
 
+BackendInterfaceQuestsPlayfab.update = function (self, dt)
 	self._quest_timer = self._quest_timer + dt
 end
 

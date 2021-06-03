@@ -7,6 +7,7 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id)
 	self._item_info_by_slot = {}
 	self._equipment_units = {}
 	self._hidden_units = {}
+	self._delayed_material_changes = {}
 	self.character_location = {
 		0,
 		0,
@@ -60,10 +61,47 @@ HeroPreviewer.update = function (self, dt, t)
 end
 
 HeroPreviewer.post_update = function (self, dt)
-	self:_update_units_visibility(dt)
 	self:_handle_hero_spawn_request()
 	self:_poll_hero_package_loading()
 	self:_poll_item_package_loading()
+	self:_update_delayed_material_changes()
+	self:_update_units_visibility(dt)
+end
+
+HeroPreviewer._update_delayed_material_changes = function (self)
+	local character_unit = self.character_unit
+
+	if not Unit.alive(character_unit) then
+		return
+	end
+
+	if not self._delayed_material_changes[character_unit] or self.character_unit_hidden_after_spawn then
+		return
+	end
+
+	local hero_material_changed = false
+	local delayed_material_changes = self._delayed_material_changes[character_unit]
+
+	for i = 1, #delayed_material_changes, 1 do
+		local third_person_changes = delayed_material_changes[i]
+		local flow_unit_attachments = Unit.get_data(character_unit, "flow_unit_attachments") or {}
+
+		for slot_name, material_name in pairs(third_person_changes) do
+			for _, unit in pairs(flow_unit_attachments) do
+				Unit.set_material(unit, slot_name, material_name)
+			end
+
+			Unit.set_material(character_unit, slot_name, material_name)
+
+			hero_material_changed = true
+		end
+	end
+
+	if (hero_material_changed and self._use_highest_mip_levels) or UISettings.wait_for_mip_streaming_character then
+		self:_request_mip_streaming_for_unit(character_unit)
+	end
+
+	self._delayed_material_changes[character_unit] = nil
 end
 
 HeroPreviewer._update_units_visibility = function (self, dt)
@@ -650,17 +688,22 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 		end
 
 		if character_material_changes then
-			local third_person_changes = character_material_changes.third_person
-			local flow_unit_attachments = Unit.get_data(character_unit, "flow_unit_attachments") or {}
+			if self.character_unit_hidden_after_spawn then
+				self._delayed_material_changes[character_unit] = self._delayed_material_changes[character_unit] or {}
+				self._delayed_material_changes[character_unit][#self._delayed_material_changes[character_unit] + 1] = character_material_changes.third_person
+			else
+				local third_person_changes = character_material_changes.third_person
+				local flow_unit_attachments = Unit.get_data(character_unit, "flow_unit_attachments") or {}
 
-			for slot_name, material_name in pairs(third_person_changes) do
-				for _, unit in pairs(flow_unit_attachments) do
-					Unit.set_material(unit, slot_name, material_name)
+				for slot_name, material_name in pairs(third_person_changes) do
+					for _, unit in pairs(flow_unit_attachments) do
+						Unit.set_material(unit, slot_name, material_name)
+					end
+
+					Unit.set_material(character_unit, slot_name, material_name)
+
+					hero_material_changed = true
 				end
-
-				Unit.set_material(character_unit, slot_name, material_name)
-
-				hero_material_changed = true
 			end
 		end
 	end

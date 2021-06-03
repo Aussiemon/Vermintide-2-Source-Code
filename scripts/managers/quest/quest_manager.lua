@@ -447,4 +447,12 @@ QuestManager.time_left_on_event_quest = function (self)
 	return 0
 end
 
+QuestManager.update_quests = function (self)
+	local backend_interface_quests = self._backend_interface_quests
+
+	if backend_interface_quests.update_quests then
+		backend_interface_quests:update_quests()
+	end
+end
+
 return

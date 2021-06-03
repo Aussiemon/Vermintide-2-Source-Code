@@ -1,4 +1,5 @@
 require("scripts/managers/game_mode/mechanisms/deus_weapon_generation")
+require("scripts/settings/dlcs/morris/rarity_settings")
 require("scripts/utils/hash_utils")
 
 local RPCS = {
@@ -34,6 +35,13 @@ local WEAPON_CHEST_TO_SLOTS = {
 		}
 	}
 }
+local LUA_UPDATE_RARITY_EVENTS = {}
+local RaritySettings = RaritySettings
+
+for rarity, _ in pairs(RaritySettings) do
+	LUA_UPDATE_RARITY_EVENTS[rarity] = "lua_update_" .. rarity
+end
+
 DeusChestExtension = class(DeusChestExtension, PickupUnitExtension)
 
 DeusChestExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -82,6 +90,19 @@ DeusChestExtension.unregister_rpcs = function (self)
 end
 
 DeusChestExtension.update = function (self, unit, input, dt, context, t)
+	local player = Managers.player:local_player()
+	local player_unit = player.player_unit
+
+	if not self._inventory_extension or self._player_unit ~= player_unit then
+		self._inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+		self._player = player
+		self._player_unit = player_unit
+	end
+
+	if not player_unit or not ALIVE[player_unit] then
+		return
+	end
+
 	local go_id = self._go_id or Managers.state.unit_storage:go_id(self.unit)
 	local deus_run_controller = self._deus_run_controller
 	local own_peer_id = deus_run_controller:get_own_peer_id()
@@ -163,11 +184,7 @@ DeusChestExtension._update_chest_interaction_time = function (self)
 end
 
 DeusChestExtension.update_upgrade_chest_color = function (self)
-	local player = Managers.player:local_player()
-	local player_unit = player.player_unit
-	self._inventory_extension = self._inventory_extension or ScriptUnit.has_extension(player_unit, "inventory_system")
-
-	if not self._inventory_extension then
+	if self._chest_type ~= DEUS_CHEST_TYPES.upgrade then
 		return
 	end
 
@@ -181,22 +198,26 @@ DeusChestExtension.update_upgrade_chest_color = function (self)
 		return
 	end
 
-	if self._chest_type == DEUS_CHEST_TYPES.upgrade then
-		local wielded_weapon = self:_get_wielded_weapon()
+	local wielded_weapon = self:_get_wielded_weapon()
 
-		if not wielded_weapon then
-			return
-		end
+	if not wielded_weapon then
+		return
+	end
 
-		local rarity_settings = RaritySettings
-		local weapon_rarity_order = rarity_settings[wielded_weapon.rarity].order
-		local chest_rarity_order = rarity_settings[rarity].order
+	local weapon_rarity_order = RaritySettings[wielded_weapon.rarity].order
+	local chest_rarity_order = RaritySettings[rarity].order
+	local event = nil
 
-		if chest_rarity_order <= weapon_rarity_order then
-			Unit.flow_event(self.unit, "lua_interact_disabled")
-		else
-			Unit.flow_event(self.unit, "lua_update_" .. rarity)
-		end
+	if chest_rarity_order <= weapon_rarity_order then
+		event = "lua_interact_disabled"
+	else
+		event = LUA_UPDATE_RARITY_EVENTS[rarity]
+	end
+
+	if not self._prev_update_upgrade_chest_color_event or self._prev_update_upgrade_chest_color_event ~= event then
+		Unit.flow_event(self.unit, event)
+
+		self._prev_update_upgrade_chest_color_event = event
 	end
 end
 
@@ -205,21 +226,14 @@ DeusChestExtension.can_interact = function (self)
 		return false
 	end
 
-	local player_manager = Managers.player
-	local player = player_manager:local_player()
-	local player_unit = player.player_unit
+	local player_unit = self._player_unit
+	local inventory_extension = self._inventory_extension
 
-	if not ALIVE[player_unit] then
+	if not player_unit or not ALIVE[player_unit] or not inventory_extension then
 		return false
 	end
 
-	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
-
-	if not inventory_extension then
-		return false
-	end
-
-	local resyncing_loadout = inventory_extension and inventory_extension:resyncing_loadout()
+	local resyncing_loadout = inventory_extension:resyncing_loadout()
 
 	if resyncing_loadout then
 		return false
@@ -259,21 +273,15 @@ DeusChestExtension.purchase = function (self)
 end
 
 DeusChestExtension._get_wielded_weapon = function (self)
-	local player = Managers.player:local_player()
-	local player_unit = player.player_unit
+	local inventory_extension = self._inventory_extension
 
-	if not self._inventory_extension or self._inventory_extension_player_unit ~= player_unit then
-		self._inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
-		self._inventory_extension_player_unit = player_unit
-	end
-
-	if not self._inventory_extension then
+	if not inventory_extension then
 		return
 	end
 
 	local deus_run_controller = self._deus_run_controller
 	local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
-	local wielded_slot_name = self._inventory_extension:get_wielded_slot_name()
+	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
 	local wielded_weapon = (wielded_slot_name == "slot_melee" and melee_weapon) or ranged_weapon
 
 	return wielded_weapon
@@ -284,11 +292,7 @@ DeusChestExtension.on_interact = function (self)
 		local wielded_weapon = self:_get_wielded_weapon()
 
 		if wielded_weapon and wielded_weapon ~= self._previous_wielded_weapon then
-			local deus_run_controller = self._deus_run_controller
-			local own_peer_id = deus_run_controller:get_own_peer_id()
-			local profile_index, career_index = deus_run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
-
-			self:_generate_upgraded_weapon(wielded_weapon, self._rarity, self._go_id, profile_index, career_index)
+			self:_generate_upgraded_weapon(wielded_weapon, self._rarity, self._go_id, self._profile_index, self._career_index)
 
 			self._previous_wielded_weapon = wielded_weapon
 		end
@@ -429,14 +433,20 @@ local sound_events = {
 }
 
 DeusChestExtension.can_be_unlocked = function (self)
-	local run_controller = self._deus_run_controller
-	local peer_id = run_controller:get_own_peer_id()
-	local soft_currency = self._deus_run_controller:get_player_soft_currency(peer_id)
-	local unlock_cost = self:get_purchase_cost() or math.huge
-	local can_unlock = script_data.unlock_all_deus_chests or unlock_cost <= soft_currency
 	local can_interact = self:can_interact()
 
-	if self._chest_type == DEUS_CHEST_TYPES.upgrade then
+	if not can_interact then
+		return false
+	end
+
+	local run_controller = self._deus_run_controller
+	local own_peer_id = run_controller:get_own_peer_id()
+	local soft_currency = self._deus_run_controller:get_player_soft_currency(own_peer_id)
+	local unlock_cost = self:get_purchase_cost() or math.huge
+	local can_unlock = script_data.unlock_all_deus_chests or unlock_cost <= soft_currency
+	local chest_type = self._chest_type
+
+	if chest_type == DEUS_CHEST_TYPES.upgrade then
 		local wielded_weapon = self:_get_wielded_weapon()
 
 		if wielded_weapon then
@@ -450,7 +460,23 @@ DeusChestExtension.can_be_unlocked = function (self)
 		end
 	end
 
-	return can_unlock and can_interact
+	if not can_unlock then
+		return false
+	end
+
+	local others_actually_ingame = true
+
+	if chest_type ~= DEUS_CHEST_TYPES.power_up then
+		local network_manager = Managers.state.network
+		local profile_synchronizer = network_manager.profile_synchronizer
+		others_actually_ingame = profile_synchronizer:others_actually_ingame()
+	end
+
+	if not others_actually_ingame then
+		return false
+	end
+
+	return true
 end
 
 DeusChestExtension.open_chest = function (self)
@@ -458,21 +484,17 @@ DeusChestExtension.open_chest = function (self)
 
 	if self._chest_type == DEUS_CHEST_TYPES.power_up then
 		local power_up = self._stored_purchase
-		local local_player = Managers.player:local_player()
-		local local_player_id = local_player:local_player_id()
+		local player_unit = self._player_unit
 
 		run_controller:add_power_ups({
 			power_up
-		}, local_player_id)
+		}, REAL_PLAYER_LOCAL_ID)
 
 		local buff_system = Managers.state.entity:system("buff_system")
 		local talent_interface = Managers.backend:get_talents_interface()
 		local deus_backend = Managers.backend:get_interface("deus")
-		local player_unit = local_player.player_unit
-		local profile_index = local_player:profile_index()
-		local career_index = local_player:career_index()
 
-		DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, run_controller, player_unit, profile_index, career_index)
+		DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, run_controller, player_unit, self._profile_index, self._career_index)
 		self:_play_sound(sound_events.unlock_power_up)
 		self:_post_chest_unlock(self._stored_purchase)
 	else
@@ -495,14 +517,12 @@ DeusChestExtension._equip_weapon = function (self, deus_run_controller, new_weap
 	table.dump(new_weapon, "deus_weapon")
 
 	local backend_id = new_weapon.backend_id
-	local player = Managers.player:local_player()
-	local profile_index = player:profile_index()
+	local inventory_extension = self._inventory_extension
+	local profile_index = self._profile_index
 	local profile = SPProfiles[profile_index]
-	local career_index = player:career_index()
+	local career_index = self._career_index
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
-	local player_unit = player.player_unit
-	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	local slot_name = nil
 	local chest_type = self._chest_type
 
@@ -576,6 +596,8 @@ DeusChestExtension._post_chest_unlock = function (self, store_purchase)
 			})
 		end
 	end
+
+	StatisticsUtil.register_open_shrine(self._chest_type)
 end
 
 DeusChestExtension._play_sound = function (self, event)
@@ -583,53 +605,46 @@ DeusChestExtension._play_sound = function (self, event)
 end
 
 DeusChestExtension._update_chest_animation_and_sound_state = function (self, chest_unit)
-	local player = Managers.player:local_player()
+	local player_unit = self._player_unit
+	local local_player_pos = POSITION_LOOKUP[player_unit]
+	local chest_unit_pos = POSITION_LOOKUP[chest_unit]
+	local distance_squared = Vector3.distance_squared(local_player_pos, chest_unit_pos)
+	local interaction_extension = ScriptUnit.extension(player_unit, "interactor_system")
+	local interacting_unit = interaction_extension:interactable_unit()
+	local interacting_with_unit = interacting_unit == chest_unit
+	local animation_state = self._animation_state
+	local sound_state = self._sound_state
+	local sound_state_interact = self._sound_state_interact
 
-	if player then
-		local local_player_unit = player.player_unit
+	if interacting_with_unit then
+		animation_state = "player_interacting"
+		sound_state_interact = "interact_true"
+	elseif distance_squared < RELIQUARY_NEAR_DISTANCE * RELIQUARY_NEAR_DISTANCE then
+		animation_state = "player_near"
+		sound_state = "sound_player_near"
+		sound_state_interact = "interact_false"
+	elseif distance_squared > RELIQUARY_FAR_DISTANCE * RELIQUARY_FAR_DISTANCE then
+		animation_state = "player_far"
+		sound_state = "sound_player_far"
+		sound_state_interact = "interact_false"
+	end
 
-		if ALIVE[local_player_unit] then
-			local local_player_pos = POSITION_LOOKUP[local_player_unit]
-			local chest_unit_pos = POSITION_LOOKUP[chest_unit]
-			local distance_squared = Vector3.distance_squared(local_player_pos, chest_unit_pos)
-			local interaction_extension = ScriptUnit.extension(local_player_unit, "interactor_system")
-			local interacting_unit = interaction_extension:interactable_unit()
-			local interacting_with_unit = interacting_unit == chest_unit
-			local animation_state = self._animation_state
-			local sound_state = self._sound_state
-			local sound_state_interact = self._sound_state_interact
+	if animation_state ~= self._animation_state then
+		self._animation_state = animation_state
 
-			if interacting_with_unit then
-				animation_state = "player_interacting"
-				sound_state_interact = "interact_true"
-			elseif distance_squared < RELIQUARY_NEAR_DISTANCE * RELIQUARY_NEAR_DISTANCE then
-				animation_state = "player_near"
-				sound_state = "sound_player_near"
-				sound_state_interact = "interact_false"
-			elseif distance_squared > RELIQUARY_FAR_DISTANCE * RELIQUARY_FAR_DISTANCE then
-				animation_state = "player_far"
-				sound_state = "sound_player_far"
-				sound_state_interact = "interact_false"
-			end
+		Unit.flow_event(chest_unit, animation_state)
+	end
 
-			if animation_state ~= self._animation_state then
-				self._animation_state = animation_state
+	if sound_state ~= self._sound_state then
+		Unit.flow_event(chest_unit, sound_state)
 
-				Unit.flow_event(chest_unit, animation_state)
-			end
+		self._sound_state = sound_state
+	end
 
-			if sound_state ~= self._sound_state then
-				Unit.flow_event(chest_unit, sound_state)
+	if sound_state_interact ~= self._sound_state_interact then
+		Unit.flow_event(chest_unit, sound_state_interact)
 
-				self._sound_state = sound_state
-			end
-
-			if sound_state_interact ~= self._sound_state_interact then
-				Unit.flow_event(chest_unit, sound_state_interact)
-
-				self._sound_state_interact = sound_state_interact
-			end
-		end
+		self._sound_state_interact = sound_state_interact
 	end
 end
 

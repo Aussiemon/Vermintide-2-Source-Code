@@ -3,6 +3,7 @@ local WANTED_LEDGELATOR_VERSION = "2017.MAY.05.05"
 local extensions = {
 	"NavGraphConnectorExtension",
 	"LevelUnitSmartObjectExtension",
+	"DynamicUnitSmartObjectExtension",
 	"DarkPactClimbingExtension"
 }
 script_data.nav_mesh_debug = script_data.nav_mesh_debug or Development.parameter("nav_mesh_debug")
@@ -82,6 +83,7 @@ NavGraphSystem.init = function (self, context, system_name)
 	self.smart_object_ids = {}
 	self.line_object = World.create_line_object(self.world)
 	self.initialized_unit_nav_graphs = {}
+	self.dynamic_smart_object_index = 1
 end
 
 NavGraphSystem.destroy = function (self)
@@ -254,6 +256,23 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 		end
 	end
 
+	if extension_name == "DynamicUnitSmartObjectExtension" then
+		local smart_object_id = self:_dynamic_unit_smart_object_id(unit)
+		local smart_object = self:smart_object_from_unit_data(unit, smart_object_id)
+		self.smart_objects[smart_object_id] = smart_object
+		self.smart_object_ids[unit] = smart_object_id
+
+		if not self.no_nav_mesh then
+			local function safe_navigation_callback()
+				self:init_nav_graphs(unit, smart_object_id, extension)
+			end
+
+			local ai_navigation_system = Managers.state.entity:system("ai_navigation_system")
+
+			ai_navigation_system:add_safe_navigation_callback(safe_navigation_callback)
+		end
+	end
+
 	if extension_name == "DarkPactClimbingExtension" then
 		local smart_object_index = extension_init_data.smart_object_index
 		local swap = extension_init_data.swap
@@ -273,6 +292,18 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 	return extension
 end
 
+NavGraphSystem.on_remove_extension = function (self, unit, extension_name)
+	NavGraphSystem.super.on_remove_extension(self, unit, extension_name)
+
+	if extension_name == "DynamicUnitSmartObjectExtension" then
+		local id = self.smart_object_ids[unit]
+		self.smart_objects[id] = nil
+		self.smart_object_ids[unit] = nil
+
+		self:remove_nav_graph(unit)
+	end
+end
+
 NavGraphSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name == "DarkPactClimbingExtension" then
 		self._level_jumps_ready = true
@@ -285,6 +316,16 @@ NavGraphSystem._level_unit_smart_object_id = function (self, unit)
 	local smart_object_id = 10000 + unit_level_id
 
 	fassert(not self.smart_objects[smart_object_id], "Smart Object with id %s already registered!", smart_object_id)
+
+	return smart_object_id
+end
+
+NavGraphSystem._dynamic_unit_smart_object_id = function (self, unit)
+	local smart_object_id = 1000000 + self.dynamic_smart_object_index
+
+	fassert(not self.smart_objects[smart_object_id], "Smart Object with id %s already registered!", smart_object_id)
+
+	self.dynamic_smart_object_index = self.dynamic_smart_object_index + 1
 
 	return smart_object_id
 end

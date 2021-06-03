@@ -3782,7 +3782,7 @@ ItemMasterList.dw_2h_axe_skin_05 = {
 	description = "dw_2h_axe_skin_05_description",
 	rarity = "exotic",
 	display_name = "dw_2h_axe_skin_05_name",
-	inventory_icon = "icon_wpn_dw_2h_axe_02_t2",
+	inventory_icon = "icon_wpn_dw_2h_axe_03_t1",
 	slot_type = "weapon_skin",
 	information_text = "information_weapon_skin",
 	right_hand_unit = "units/weapons/player/wpn_dw_2h_axe_03_t1/wpn_dw_2h_axe_03_t1",
@@ -7768,7 +7768,7 @@ ItemMasterList.es_2h_sword_skin_02_runed_01 = {
 }
 ItemMasterList.wh_crossbow_skin_02_runed_01 = {
 	description = "wh_crossbow_skin_02_runed_01_description",
-	rarity = "rare",
+	rarity = "unique",
 	display_name = "wh_crossbow_skin_02_runed_01_name",
 	inventory_icon = "icon_wpn_emp_crossbow_02_t2",
 	slot_type = "weapon_skin",

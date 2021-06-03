@@ -349,18 +349,19 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	end
 
 	if CharacterStateHelper.is_starting_interaction(input_extension, interactor_extension) then
-		local config = interactor_extension:interaction_config()
-
 		interactor_extension:start_interaction("interacting")
 
-		if not config.allow_movement then
-			local params = self.temp_params
-			params.swap_to_3p = config.swap_to_3p
-			params.show_weapons = config.show_weapons
-			params.activate_block = config.activate_block
-
-			csm:change_state("interacting", params)
+		if interactor_extension:allow_movement_during_interaction() then
+			return
 		end
+
+		local config = interactor_extension:interaction_config()
+		local params = self.temp_params
+		params.swap_to_3p = config.swap_to_3p
+		params.show_weapons = config.show_weapons
+		params.activate_block = config.activate_block
+
+		csm:change_state("interacting", params)
 
 		return
 	end
@@ -370,16 +371,17 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, health_extension)
 
 	if CharacterStateHelper.is_interacting(interactor_extension) then
-		local config = interactor_extension:interaction_config()
-
-		if not config.allow_movement then
-			local params = self.temp_params
-			params.swap_to_3p = config.swap_to_3p
-			params.show_weapons = config.show_weapons
-			params.activate_block = config.activate_block
-
-			csm:change_state("interacting", params)
+		if interactor_extension:allow_movement_during_interaction() then
+			return
 		end
+
+		local config = interactor_extension:interaction_config()
+		local params = self.temp_params
+		params.swap_to_3p = config.swap_to_3p
+		params.show_weapons = config.show_weapons
+		params.activate_block = config.activate_block
+
+		csm:change_state("interacting", params)
 
 		return
 	end

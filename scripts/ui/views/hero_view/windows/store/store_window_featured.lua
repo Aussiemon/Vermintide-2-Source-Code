@@ -3,6 +3,8 @@ local widget_definitions = definitions.widgets
 local content_widget_definitions = definitions.content_widgets
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local MAX_SLIDESHOW_ITEMS = definitions.max_slideshow_items
+local generic_input_actions = definitions.generic_input_actions
 local SLIDESHOW_WAIT_TIME = 8
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 StoreWindowFeatured = class(StoreWindowFeatured)
@@ -30,6 +32,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	self._cloned_materials_by_reference = {}
 	self._material_references_to_unload = {}
 	self._is_open = true
+	self._current_read_index = 1
 	local parent = self._parent
 	local path = parent:get_store_path()
 	local path_structure = StoreLayoutConfig.structure
@@ -38,13 +41,13 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	local slideshow_content = current_page.slideshow and table.clone(current_page.slideshow)
 	local grid_content = current_page.grid and table.clone(current_page.grid)
 
-	self:_add_bundle_featured_slideshow_content(slideshow_content)
-
 	if slideshow_content and #slideshow_content == 0 then
 		slideshow_content = self:_get_default_featured_slideshow_content()
 	end
 
+	self:_add_bundle_featured_slideshow_content(slideshow_content)
 	self:_sort_slideshow(slideshow_content)
+	self:_trim_slideshow(slideshow_content)
 
 	if grid_content and #grid_content == 0 then
 		grid_content = self:_get_default_featured_grid_content()
@@ -64,6 +67,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 			}
 		}
 	})
+	self._parent:change_generic_actions(generic_input_actions.featured)
 end
 
 StoreWindowFeatured._start_transition_animation = function (self, animation_name)
@@ -116,6 +120,7 @@ StoreWindowFeatured.on_exit = function (self, params, force_unload)
 
 	self:_reset_cloned_materials()
 	self:_destroy_product_widgets(force_unload)
+	self._parent:change_generic_actions(generic_input_actions.default)
 end
 
 StoreWindowFeatured.update = function (self, dt, t)
@@ -224,7 +229,7 @@ StoreWindowFeatured._handle_input = function (self, dt, t)
 		end
 	end
 
-	self:_handle_slideshow_logic(slideshow_widget, dt)
+	self:_handle_slideshow_logic(slideshow_widget, dt, input_service)
 	self:_animate_grid_entries(dt)
 end
 
@@ -419,11 +424,23 @@ StoreWindowFeatured._sort_slideshow = function (self, slideshow_content)
 	table.sort(slideshow_content, sort_func)
 end
 
+StoreWindowFeatured._trim_slideshow = function (self, slideshow_content)
+	local num_slideshow_items = #slideshow_content
+
+	for i = num_slideshow_items, MAX_SLIDESHOW_ITEMS + 1, -1 do
+		slideshow_content[i] = nil
+	end
+end
+
 StoreWindowFeatured._get_default_featured_slideshow_content = function (self)
 	local default_slideshow_content = {}
+	local platform = PLATFORM
 
 	for index, dlc_settings in ipairs(StoreDlcSettings) do
-		if not dlc_settings.hide_from_slideshow then
+		local available_platforms = dlc_settings.available_platforms
+		local is_available = not available_platforms or table.find(available_platforms, platform)
+
+		if is_available and dlc_settings.show_in_slideshow then
 			default_slideshow_content[#default_slideshow_content + 1] = {
 				product_type = "dlc",
 				texture = dlc_settings.slideshow_texture,
@@ -536,7 +553,10 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 				product = {
 					item = item,
 					type = product_type,
-					product_id = product_id
+					product_id = product_id,
+					settings = {
+						mask_price_strike_through_hack = true
+					}
 				}
 			end
 		end
@@ -696,7 +716,7 @@ StoreWindowFeatured._set_material_diffuse_by_path = function (self, gui, materia
 	end
 end
 
-StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt)
+StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_service)
 	local content = widget.content
 	local style = widget.style
 	local wait_time = content.wait_time
@@ -743,8 +763,25 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt)
 		page_thumb_hotspot.is_selected = i == content.read_index
 	end
 
-	if not thumb_pressed and self:_is_button_pressed(widget) then
-		self:_on_slideshow_pressed(widget)
+	local read_index = self._current_read_index
+
+	if input_service:get("trigger_cycle_next") then
+		read_index = math.min(read_index + 1, num_slideshows)
+	elseif input_service:get("trigger_cycle_previous") then
+		read_index = math.max(read_index - 1, 1)
+	end
+
+	if not thumb_pressed then
+		if self._current_read_index ~= read_index then
+			self:_set_slideshow_selected_read_index(widget, read_index)
+
+			content.progress = 1
+
+			self:_set_slideshow_animation_progress(widget, 1)
+			self:_play_sound("Play_hud_store_button_select")
+		elseif self:_is_button_pressed(widget) then
+			self:_on_slideshow_pressed(widget)
+		end
 	end
 
 	local delay_timer = content.delay_timer
@@ -800,6 +837,7 @@ StoreWindowFeatured._set_slideshow_selected_read_index = function (self, widget,
 	local description = slide_content.description or slide_content.backend_description
 	content.title_text = Localize(header)
 	content.description_text = Localize(description)
+	self._current_read_index = index
 end
 
 StoreWindowFeatured._on_slideshow_pressed = function (self, widget)
@@ -848,10 +886,15 @@ StoreWindowFeatured._on_list_index_pressed = function (self, index)
 	local layout = self._layout
 	local entry = layout[index]
 	local product_id = entry.product_id
+	local featured_type = entry.type
 	local parent = self._parent
-	local item_data = entry.item.data
 
-	ItemHelper.set_shop_item_seen(product_id, item_data.item_type, self._parent.tab_cat, "featured")
+	if featured_type == "item" then
+		local item_data = entry.item.data
+
+		ItemHelper.set_shop_item_seen(product_id, item_data.item_type, self._parent.tab_cat, "featured")
+	end
+
 	parent:go_to_product(product_id)
 end
 

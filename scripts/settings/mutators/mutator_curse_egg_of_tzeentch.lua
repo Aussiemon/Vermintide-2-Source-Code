@@ -10,7 +10,6 @@ local HARD = 3
 local HARDER = 4
 local HARDEST = 5
 local CATACLYSM = 6
-local INITIAL_EGG_SPAWNING_DELAY = 10
 local NEXT_EGG_COOLDOWN = {
 	[NORMAL] = 30,
 	[HARD] = 30,
@@ -137,9 +136,10 @@ local function is_valid_spawn_distance(ahead_player_travel_dist, egg_spawn_dista
 end
 
 return {
-	description = "curse_egg_of_tzeentch_desc",
 	display_name = "curse_egg_of_tzeentch_name",
 	icon = "deus_curse_tzeentch_01",
+	description = "curse_egg_of_tzeentch_desc",
+	package_name = "resource_packages/mutators/mutator_curse_egg_of_tzeentch",
 	client_start_function = function (context, data)
 		data.vfx_ids = {}
 		data.wwise_world = Managers.world:wwise_world(context.world)
@@ -166,7 +166,7 @@ return {
 		boss_settings.disabled = true
 	end,
 	server_players_left_safe_zone = function (context, data)
-		data.timer = INITIAL_EGG_SPAWNING_DELAY
+		data.timer = MutatorCommonSettings.deus.initial_activation_delay
 	end,
 	server_update_function = function (context, data, dt, t)
 		local pacing_frozen = data.conflict_director.pacing:get_state() == "pacing_frozen"

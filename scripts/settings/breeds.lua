@@ -78,6 +78,7 @@ local DEFAULT_NAVTAG_LAYERS = {
 	temporary_wall = 0,
 	planks = 1.5,
 	big_boy_destructible = 0,
+	destructible_wall = 5,
 	ledges_with_fence = 1.5,
 	doors = 1.5,
 	teleporters = 5,

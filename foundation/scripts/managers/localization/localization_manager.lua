@@ -31,18 +31,24 @@ LocalizationManager._setup_localizers = function (self)
 end
 
 LocalizationManager._base_lookup = function (self, text_id)
-	local localizers = self._localizers
+	local text = self._backend_localizations[text_id]
 
-	for ii = 1, #localizers, 1 do
-		local localizer = localizers[ii]
-		local text = Localizer.lookup(localizer, text_id)
+	if text then
+		return text
+	end
+
+	local lookup = Localizer.lookup
+	local localizer_list = self._localizers
+
+	for i = 1, #localizer_list, 1 do
+		text = lookup(localizer_list[i], text_id)
 
 		if text then
 			return text
 		end
 	end
 
-	return self._backend_localizations[text_id]
+	return nil
 end
 
 LocalizationManager.append_backend_localizations = function (self, localizations)

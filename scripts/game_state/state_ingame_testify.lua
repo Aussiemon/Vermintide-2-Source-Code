@@ -51,8 +51,8 @@ local StateInGameTestify = {
 	load_level = function (level_key)
 		Managers.mechanism:debug_load_level(level_key)
 	end,
-	load_level_with_variation = function (weather_variation, state_ingame)
-		local level_transition_handler = state_ingame.level_transition_handler
+	load_level_with_variation = function (weather_variation)
+		local level_transition_handler = Managers.level_transition_handler
 
 		level_transition_handler:set_next_level(weather_variation.level, weather_variation.variation_id)
 		level_transition_handler:promote_next_level_data()
@@ -111,6 +111,15 @@ local StateInGameTestify = {
 	end,
 	disable_bots = function ()
 		script_data.ai_bots_disabled = true
+	end,
+	add_all_hats = function ()
+		for _, entry in ipairs(DebugScreen.console_settings) do
+			if entry.title == "Add All Hat Items" then
+				entry.func()
+
+				return
+			end
+		end
 	end,
 	add_all_weapon_skins = function ()
 		for _, entry in ipairs(DebugScreen.console_settings) do
@@ -216,7 +225,7 @@ local StateInGameTestify = {
 	set_script_data = function (options)
 		table.merge(script_data, options)
 	end,
-	wait_for_weapon_assets_to_be_loaded = function ()
+	wait_for_inventory_to_be_loaded = function ()
 		local player = Managers.player:local_player()
 		local inventory_extension = ScriptUnit.extension(player.player_unit, "inventory_system")
 

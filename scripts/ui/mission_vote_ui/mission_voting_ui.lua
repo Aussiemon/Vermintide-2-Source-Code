@@ -135,6 +135,7 @@ MissionVotingUI.start_vote = function (self, active_voting)
 	self._twitch_mode_enabled = vote_data.twitch_enabled
 	self._matchmaking_type = vote_data.matchmaking_type
 	self._active_mechanism = mechanism
+	self._difficulty = vote_data.difficulty
 
 	if switch_mechanism then
 		self:_set_switch_mechanism_presentation(vote_data)
@@ -729,7 +730,7 @@ MissionVotingUI.draw = function (self, dt)
 		render_settings.snap_pixel_positions = snap_pixel_positions
 	end
 
-	if not self._twitch_mode_enabled and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(self._matchmaking_type) then
+	if not self._twitch_mode_enabled and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(self._matchmaking_type, self._difficulty) then
 		local twitch_widgets_by_name = self._twitch_widgets_by_name
 		local widget = twitch_widgets_by_name.twitch_disclaimer
 

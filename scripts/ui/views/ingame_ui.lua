@@ -39,6 +39,7 @@ local rpcs = {}
 local settings = require("scripts/ui/views/ingame_ui_settings")
 local view_settings = settings.view_settings
 local transitions = settings.transitions
+local ingame_ui_testify = script_data.testify and require("scripts/ui/views/ingame_ui_testify")
 IngameUI = class(IngameUI)
 
 IngameUI.init = function (self, ingame_ui_context)
@@ -86,7 +87,6 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.ingame_hud = IngameHud:new(self, ingame_ui_context)
 	self.last_resolution_x, self.last_resolution_y = Application.resolution()
 
-	InitVideo()
 	self:setup_views(ingame_ui_context)
 
 	self.end_screen = EndScreenUI:new(ingame_ui_context)
@@ -455,7 +455,6 @@ end
 IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self._disable_ingame_ui = disable_ingame_ui
 
-	FatUI.begin_frame(self.ui_renderer.gui, self.wwise_world, dt)
 	self:_update_fade_transition()
 
 	local views = self.views
@@ -608,7 +607,10 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self:_update_chat_ui(dt, t, input_service, end_of_level_ui)
 	self:_render_debug_ui(dt, t)
 	self:_update_fade_transition()
-	FatUI.close_frame()
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(ingame_ui_testify, self)
+	end
 end
 
 IngameUI.disable_ingame_ui = function (self)
@@ -681,8 +683,6 @@ IngameUI._handle_resolution_changes = function (self)
 	local res_y = RESOLUTION_LOOKUP.res_h
 
 	if res_x ~= self.last_resolution_x or res_y ~= self.last_resolution_y then
-		InitVideo()
-
 		self.last_resolution_y = res_y
 		self.last_resolution_x = res_x
 	end

@@ -6,7 +6,7 @@ DeusMapView = class(DeusMapView)
 local INPUT_SERVICE_NAME = "deus_map_input_service_name"
 
 DeusMapView.init = function (self, context)
-	self._ui = DeusMapUI:new(context.ui_renderer)
+	self._ui = DeusMapUI:new(context)
 	self._scene = DeusMapScene:new()
 	self._active = false
 	self._deus_run_controller = context.deus_run_controller
@@ -77,6 +77,7 @@ DeusMapView.destroy = function (self)
 	end
 
 	self._scene:destroy()
+	self._ui:destroy()
 end
 
 DeusMapView.register_rpcs = function (self, network_event_delegate, network_transmit)

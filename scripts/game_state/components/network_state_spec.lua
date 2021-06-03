@@ -81,25 +81,25 @@ local function decode_inventory(compressed_byte_array_string)
 	ByteArray.write_string(byte_array, byte_array_string)
 
 	local index = 1
-	local inventory_id = ByteArray.read_int32(byte_array, index)
-	index = index + 4
-	local inventory_pack_1p_count = ByteArray.read_int32(byte_array, index)
-	index = index + 4
+	local inventory_id = nil
+	inventory_id, index = ByteArray.read_int32(byte_array, index)
+	local inventory_pack_1p_count = nil
+	inventory_pack_1p_count, index = ByteArray.read_int32(byte_array, index)
 	local first_person_packages = {}
 
 	for i = 1, inventory_pack_1p_count, 1 do
-		local network_package = ByteArray.read_int32(byte_array, index)
-		index = index + 4
+		local network_package = nil
+		network_package, index = ByteArray.read_int32(byte_array, index)
 		first_person_packages[NetworkLookup.inventory_packages[network_package]] = false
 	end
 
-	local inventory_pack_3p_count = ByteArray.read_int32(byte_array, index)
-	index = index + 4
+	local inventory_pack_3p_count = nil
+	inventory_pack_3p_count, index = ByteArray.read_int32(byte_array, index)
 	local third_person_packages = {}
 
 	for i = 1, inventory_pack_3p_count, 1 do
-		local network_package = ByteArray.read_int32(byte_array, index)
-		index = index + 4
+		local network_package = nil
+		network_package, index = ByteArray.read_int32(byte_array, index)
 		third_person_packages[NetworkLookup.inventory_packages[network_package]] = false
 	end
 
@@ -139,6 +139,27 @@ local function decode_locked_director_functions(string)
 	end
 
 	return func_array
+end
+
+local function encode_extra_packages(array)
+	local ids_array = {}
+
+	for index, package in ipairs(array) do
+		ids_array[index] = NetworkLookup.network_packages[package]
+	end
+
+	return table.concat(ids_array, ",")
+end
+
+local function decode_extra_packages(string)
+	local id_array = string:split(",")
+	local array = {}
+
+	for index, id in ipairs(id_array) do
+		array[index] = NetworkLookup.network_packages[tonumber(id)]
+	end
+
+	return array
 end
 
 local function encode_lookup(lookup_key)
@@ -240,6 +261,13 @@ local spec = {
 			type = "number",
 			composite_keys = {}
 		},
+		extra_packages = {
+			type = "table",
+			default_value = {},
+			composite_keys = {},
+			encode = encode_extra_packages,
+			decode = decode_extra_packages
+		},
 		mechanism = {
 			type = "string",
 			default_value = "adventure",
@@ -281,6 +309,14 @@ local spec = {
 			composite_keys = {
 				peer_id = true,
 				local_player_id = true
+			}
+		},
+		actually_ingame = {
+			clear_when_peer_id_leaves = true,
+			default_value = false,
+			type = "boolean",
+			composite_keys = {
+				peer_id = true
 			}
 		}
 	}

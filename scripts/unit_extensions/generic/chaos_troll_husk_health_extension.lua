@@ -14,10 +14,7 @@ end
 
 ChaosTrollHuskHealthExtension.set_max_health = function (self, value)
 	ChaosTrollHuskHealthExtension.super.set_max_health(self, value)
-
-	if not self._first_damage_occured then
-		self:_update_health_variables(value)
-	end
+	self:_update_health_variables(value)
 end
 
 ChaosTrollHuskHealthExtension._update_health_variables = function (self, value)
@@ -64,9 +61,9 @@ ChaosTrollHuskHealthExtension.apply_client_predicted_damage = function (self, pr
 	return
 end
 
-ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot)
+ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
 	local unit = self.unit
-	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
+	local damage_table = self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)

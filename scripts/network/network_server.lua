@@ -54,6 +54,10 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 	self.voip = Voip:new(voip_params)
 	self._reserved_slots = {}
 
+	if IS_XB1 then
+		self._host_migration_session_id = Application.guid()
+	end
+
 	if not DEDICATED_SERVER then
 		self.wanted_profile_index = wanted_profile_index or SaveData.wanted_profile_index or 1
 		local profile = SPProfiles[self.wanted_profile_index]
@@ -561,7 +565,14 @@ NetworkServer.game_object_sync_done = function (self, peer_id)
 
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	RPC.rpc_set_migration_host(channel_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false)
+	if IS_XB1 then
+		local session_id = self._host_migration_session_id
+		local session_template_name = self.lobby_host:session_template_name()
+
+		RPC.rpc_set_migration_host_xbox(channel_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false, session_id, session_template_name)
+	else
+		RPC.rpc_set_migration_host(channel_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false)
+	end
 end
 
 NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id)
@@ -756,7 +767,14 @@ NetworkServer.update = function (self, dt)
 		if host_to_migrate_to ~= self.host_to_migrate_to then
 			self.host_to_migrate_to = host_to_migrate_to
 
-			self.network_transmit:send_rpc_clients("rpc_set_migration_host", host_to_migrate_to or "", (host_to_migrate_to and true) or false)
+			if IS_XB1 then
+				local session_id = self._host_migration_session_id
+				local session_template_name = self.lobby_host:session_template_name()
+
+				self.network_transmit:send_rpc_clients("rpc_set_migration_host_xbox", host_to_migrate_to or "", (host_to_migrate_to and true) or false, session_id, session_template_name)
+			else
+				self.network_transmit:send_rpc_clients("rpc_set_migration_host", host_to_migrate_to or "", (host_to_migrate_to and true) or false)
+			end
 		end
 	end
 
@@ -812,7 +830,7 @@ NetworkServer.update = function (self, dt)
 		local lobby_members = self.lobby_host:members()
 
 		if lobby_members then
-			local members = lobby_members:get_members()
+			local members = lobby_members:members_map()
 			local num_members = table.size(members)
 			local lobby_data = self.lobby_host:get_stored_lobby_data()
 

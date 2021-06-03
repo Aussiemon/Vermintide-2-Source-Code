@@ -18,7 +18,8 @@ local CAREER_ID_LOOKUP = {
 	"bw_unchained",
 	"wh_captain",
 	"wh_bountyhunter",
-	"wh_zealot"
+	"wh_zealot",
+	"we_thornsister"
 }
 local REDUCTION_INTERVAL = 80
 local DELAY_MULTIPLIER = 5
@@ -627,6 +628,29 @@ PlayFabMirrorBase.weaves_player_setup_request_cb = function (self, result)
 	self:set_essence(essence)
 	self:set_total_essence(total_essence)
 	self:set_maximum_essence(maximum_essence)
+	self:_fix_total_collected_essence()
+end
+
+PlayFabMirrorBase._fix_total_collected_essence = function (self)
+	local request = {
+		FunctionName = "fixTotalCollectedEssence",
+		FunctionParameter = {}
+	}
+	local success_callback = callback(self, "fix_total_collected_essence_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.fix_total_collected_essence_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local total_essence = function_result.total_essence
+
+	if total_essence then
+		self:set_total_essence(total_essence)
+	end
 
 	if DLCSettings.win_tracks then
 		self:_request_win_tracks()

@@ -227,15 +227,34 @@ CareerAbilityBarUI._update_game_options = function (self)
 		return
 	end
 
-	local use_ps4_icons = UISettings.use_ps4_input_icons
-
-	if self._use_ps4_icons ~= use_ps4_icons then
-		self._use_ps4_icons = use_ps4_icons
-		local widget = self._ability_bar
-		widget.content.icon = (use_ps4_icons and "ps4_button_icon_square") or "xbone_button_icon_x"
-	end
+	self:_update_gamepad_input_button()
 
 	self._game_options_dirty = false
+end
+
+CareerAbilityBarUI._update_gamepad_input_button = function (self)
+	local input_service = Managers.input:get_service("Player")
+	local input_action = "weapon_reload_input"
+	local gamepad_active = true
+	local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
+	local widget = self._ability_bar
+	local style = widget.style
+	local content = widget.content
+
+	if button_texture_data then
+		local texture = button_texture_data.texture
+		content.icon = texture
+		content.input_text = ""
+		local icon_style = style.icon
+		local icon_texture_size = icon_style.texture_size
+		local icon_shadow_style = style.icon_shadow
+		local icon_shadow_texture_size = icon_shadow_style.texture_size
+		local size = button_texture_data.size
+		icon_texture_size[1] = size[1]
+		icon_texture_size[2] = size[2]
+		icon_shadow_texture_size[1] = size[1]
+		icon_shadow_texture_size[2] = size[2]
+	end
 end
 
 return

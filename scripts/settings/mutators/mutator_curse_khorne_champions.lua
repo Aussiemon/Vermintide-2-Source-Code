@@ -1,6 +1,5 @@
 local mutator_base_curse_marked_enemies = require("scripts/settings/mutators/mutator_base_curse_marked_enemies")
-
-return mutator_base_curse_marked_enemies("curse_khorne_champions_name", "curse_khorne_champions_desc", "deus_curse_khorne_01", "curse_khorne_champions_aoe", {
+local mutator = mutator_base_curse_marked_enemies("curse_khorne_champions_name", "curse_khorne_champions_desc", "deus_curse_khorne_01", "curse_khorne_champions_aoe", {
 	normal = {
 		mark_chance = 1,
 		max_marked_enemies = 2
@@ -30,3 +29,6 @@ return mutator_base_curse_marked_enemies("curse_khorne_champions_name", "curse_k
 	skaven_storm_vermin = true,
 	skaven_storm_vermin_champion = true
 })
+mutator.package_name = "resource_packages/mutators/mutator_curse_khorne_champions"
+
+return mutator

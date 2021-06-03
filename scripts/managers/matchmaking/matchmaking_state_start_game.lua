@@ -229,6 +229,11 @@ MatchmakingStateStartGame._setup_lobby_data = function (self)
 					mission_id
 				}
 			end
+		elseif mechanism == "deus" then
+			matchmaking_types = {
+				"deus_quick_game",
+				"deus_custom_game"
+			}
 		else
 			matchmaking_types = {
 				"quick_game",

@@ -60,7 +60,7 @@ StateLoadingRunning._init_network = function (self)
 			local network_handler = self.parent._network_client
 
 			self.parent:setup_chat_manager(lobby_client, lobby_host, peer_id, is_server)
-			self.parent:setup_deed_manager(lobby_client, lobby_host, peer_id, network_handler)
+			self.parent:setup_deed_manager(lobby_client, lobby_host, peer_id, is_server, network_handler)
 			self.parent:setup_enemy_package_loader(lobby_client, lobby_host, peer_id)
 			self.parent:setup_global_managers(lobby_client, lobby_host, peer_id, is_server, network_handler)
 		end

@@ -345,13 +345,21 @@ ItemMasterList.bardin_ranger_career_skill_weapon = {
 	can_wield = {}
 }
 ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
-	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1",
-	template = "kerillian_waywatcher_career_skill_weapon",
-	is_local = true,
-	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3p",
 	slot_to_use = "slot_ranged",
+	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1",
+	is_local = true,
+	template = "kerillian_waywatcher_career_skill_weapon",
+	left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1",
 	rarity = "plentiful",
+	default_item_to_replace = "we_longbow",
+	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_tripple_arrow_t1_3p",
 	can_wield = {},
+	valid_templates_to_replace = {
+		we_deus_01_template_1 = true,
+		shortbow_hagbane_template_1 = true,
+		shortbow_template_1 = true,
+		longbow_template_1 = true
+	},
 	item_units_to_replace = {
 		material_settings = true,
 		left_hand_unit = true,
@@ -359,13 +367,21 @@ ItemMasterList.kerillian_waywatcher_career_skill_weapon = {
 	}
 }
 ItemMasterList.kerillian_waywatcher_career_skill_weapon_piercing_shot = {
+	left_hand_unit = "units/weapons/player/wpn_we_bow_01_t1/wpn_we_bow_01_t1",
 	ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1",
 	is_local = true,
 	template = "kerillian_waywatcher_career_skill_weapon_piercing_shot",
 	slot_to_use = "slot_ranged",
 	rarity = "plentiful",
+	default_item_to_replace = "we_longbow",
 	ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
 	can_wield = {},
+	valid_templates_to_replace = {
+		we_deus_01_template_1 = true,
+		shortbow_hagbane_template_1 = true,
+		shortbow_template_1 = true,
+		longbow_template_1 = true
+	},
 	item_units_to_replace = {
 		material_settings = true,
 		left_hand_unit = true,

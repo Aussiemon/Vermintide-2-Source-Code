@@ -5187,7 +5187,7 @@ UIWidgets.create_simple_rounded_rect = function (scenegraph_id, corner_radius, c
 	}
 end
 
-UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, retained, color, offset, texture_size)
+UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, retained, color, offset, texture_size, disable_with_gamepad)
 	if type(offset) ~= "table" then
 		offset = {
 			0,
@@ -5217,7 +5217,8 @@ UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, reta
 			}
 		},
 		content = {
-			texture_id = texture
+			texture_id = texture,
+			disable_with_gamepad = disable_with_gamepad
 		},
 		style = {
 			texture_id = {
@@ -5707,7 +5708,7 @@ UIWidgets.create_uv_texture_with_style = function (texture, uvs, scenegraph_id, 
 	}
 end
 
-UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_style, optional_font_style, retained)
+UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_style, optional_font_style, retained, disable_with_gamepad)
 	local text_offset = (text_style and text_style.offset) or {
 		0,
 		0,
@@ -5778,7 +5779,8 @@ UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_
 			text = text,
 			original_text = text,
 			color = text_color,
-			use_shadow = (text_style and text_style.use_shadow) or false
+			use_shadow = (text_style and text_style.use_shadow) or false,
+			disable_with_gamepad = disable_with_gamepad
 		},
 		style = {
 			text = text_style,

@@ -143,7 +143,7 @@ ActionGeiser.fire = function (self, reason)
 			overcharge_amount = 0
 		end
 
-		self.overcharge_extension:add_charge(overcharge_amount, charge_value)
+		self.overcharge_extension:add_charge(overcharge_amount, charge_value, overcharge)
 	end
 
 	local fire_sound_event = self.current_action.fire_sound_event

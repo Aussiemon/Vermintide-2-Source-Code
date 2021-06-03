@@ -1108,12 +1108,8 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif self.network_client and self.network_client.state == "denied_enter_game" then
-			if self.network_client.host_to_migrate_to == nil or IS_CONSOLE then
+			if self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "join_lobby_failed"
-
-				if self.network_client.host_to_migrate_to ~= nil and IS_CONSOLE then
-					Application.error("[StateIngame] Consoles doesn't support host migration yet")
-				end
 			else
 				self.exit_type = "perform_host_migration"
 			end
@@ -1138,7 +1134,7 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif self.network_client and self.network_client.state == "lost_connection_to_host" and lobby and lobby:lost_connection_to_lobby() then
-			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform ~= "win32" then
+			if self.network_client == nil or self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "rejoin_party"
 
 				print("Game ended while reconnecting to lobby, restarting to inn.")
@@ -1155,12 +1151,8 @@ StateIngame._check_exit = function (self, t)
 				Managers.transition:show_loading_icon()
 			end
 		elseif (lobby and lobby.state == LobbyState.FAILED) or (self.network_client and self.network_client.state == "lost_connection_to_host") then
-			if self.network_client == nil or self.network_client.host_to_migrate_to == nil or platform ~= "win32" then
+			if self.network_client == nil or self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "lobby_state_failed"
-
-				if self.network_client ~= nil and self.network_client.host_to_migrate_to ~= nil and platform ~= "win32" then
-					Application.error("[StateIngame] Consoles doesn't support host migration yet")
-				end
 			else
 				self.exit_type = "perform_host_migration"
 			end

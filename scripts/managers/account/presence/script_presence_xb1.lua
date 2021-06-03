@@ -65,6 +65,7 @@ end
 local ACTIVE_PRESENCE_DATA = {}
 
 ScriptPresence.update_playing = function (self, user_id)
+	local mechanism_key = Managers.mechanism and Managers.mechanism:current_mechanism_name()
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local current_level = Managers.state.game_mode and Managers.state.game_mode:level_key()
 	local current_difficulty = Managers.state.difficulty and Managers.state.difficulty:get_difficulty()
@@ -94,6 +95,16 @@ ScriptPresence.update_playing = function (self, user_id)
 					presence_string = prefix .. "_" .. "weave_quick_game_" .. current_difficulty
 				else
 					presence_string = "playing_weave"
+				end
+			elseif mechanism_key == "deus" then
+				local state = Managers.mechanism:get_state()
+
+				if state == "map_deus" then
+					presence_string = "chaos_wastes_map"
+				elseif state == "inn_deus" then
+					presence_string = "chaos_wastes_keep"
+				else
+					presence_string = prefix .. "_chaos_wastes_" .. current_difficulty
 				end
 			else
 				presence_string = prefix .. "_" .. current_level .. "_" .. current_difficulty

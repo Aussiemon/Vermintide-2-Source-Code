@@ -253,6 +253,14 @@ DeusRunController.destroy = function (self)
 	self._destroyed = true
 end
 
+DeusRunController.get_run_ended = function (self)
+	return self._run_state:get_run_ended()
+end
+
+DeusRunController.handle_run_ended = function (self)
+	self._run_state:set_run_ended(true)
+end
+
 DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name, dominant_god, initial_own_soft_currency, telemetry_id)
 	self._run_state:set_run_seed(run_seed)
 	self._run_state:set_run_difficulty(difficulty)

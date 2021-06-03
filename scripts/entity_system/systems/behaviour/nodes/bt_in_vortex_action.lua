@@ -23,6 +23,11 @@ BTInVortexAction.enter = function (self, unit, blackboard, t)
 	blackboard.move_state = "idle"
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 	hit_reaction_extension.force_ragdoll_on_death = true
+	local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
+
+	if shield_extension then
+		shield_extension:set_is_blocking(false)
+	end
 end
 
 BTInVortexAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -41,6 +46,12 @@ BTInVortexAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		navigation_extension:set_enabled(true)
 		navigation_extension:reset_destination(POSITION_LOOKUP[unit] or Unit.local_position(unit, 0))
+
+		local shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system")
+
+		if shield_extension then
+			shield_extension:set_is_blocking(true)
+		end
 	end
 
 	blackboard.in_vortex = false
@@ -97,7 +108,9 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 			Unit.set_local_position(unit, 0, nav_position)
 
 			if not blackboard.breed.die_on_vortex_land then
-				Managers.state.network:anim_event(unit, "vortex_landing")
+				local anim_event = (blackboard.sot_landing and "sot_landing") or "vortex_landing"
+
+				Managers.state.network:anim_event(unit, anim_event)
 			end
 
 			blackboard.in_vortex_state = "waiting_to_land"
@@ -105,7 +118,13 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 			local event_data = FrameTable.alloc_table()
 
 			dialogue_input:trigger_networked_dialogue_event("landing", event_data)
-			LocomotionUtils.set_animation_driven_movement(unit, true, true, false)
+
+			if blackboard.thornsister_vortex then
+				blackboard.thornsister_vortex = nil
+				blackboard.thornsister_vortex_ext = nil
+			else
+				LocomotionUtils.set_animation_driven_movement(unit, true, true, false)
+			end
 		end
 	elseif state == "waiting_to_land" then
 		if not blackboard.breed.die_on_vortex_land and blackboard.landing_finished then

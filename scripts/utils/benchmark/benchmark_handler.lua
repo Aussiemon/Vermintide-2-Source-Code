@@ -250,7 +250,7 @@ BenchmarkHandler.update = function (self, dt, t)
 	self:_update_main_path(dt, t, sum)
 end
 
-function get_local_player_unit()
+local function get_local_player_unit()
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player.player_unit
 

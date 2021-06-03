@@ -88,6 +88,41 @@ local function add_journey_complete_challenge(achievements, id, journey_name, di
 	achievements[id] = template
 end
 
+local function add_opened_shrine_challenge(achievements, id, shrine_types, num_shrines_required, icon, dlc, id_xb1, id_ps4)
+	local template = {
+		name = "achv_" .. id .. "_name",
+		desc = "achv_" .. id .. "_desc",
+		icon = icon or "achievement_trophy_" .. id,
+		required_dlc = dlc,
+		ID_XB1 = id_xb1,
+		ID_PS4 = id_ps4,
+		progress = function (statistics_db, stats_id)
+			local count = 0
+
+			for i = 1, #shrine_types, 1 do
+				local shrine_type = shrine_types[i]
+				count = count + statistics_db:get_persistent_stat(stats_id, "opened_shrines", shrine_type)
+			end
+
+			return {
+				count,
+				num_shrines_required
+			}
+		end,
+		completed = function (statistics_db, stats_id)
+			local count = 0
+
+			for i = 1, #shrine_types, 1 do
+				local shrine_type = shrine_types[i]
+				count = count + statistics_db:get_persistent_stat(stats_id, "opened_shrines", shrine_type)
+			end
+
+			return num_shrines_required <= count
+		end
+	}
+	achievements[id] = template
+end
+
 local function add_journey_dominant_god_complete_challenge(achievements, id, dominant_god, difficulty_rank, icon, dlc, id_xb1, id_ps4)
 	local template = {
 		name = "achv_" .. id .. "_name",
@@ -120,11 +155,27 @@ end
 
 local achievements = AchievementTemplates.achievements
 
-add_journey_complete_challenge(achievements, "morris_complete_journey_citadel", "journey_citadel", DifficultySettings.normal.rank, "achievement_morris_citadel", "morris", nil, nil)
-add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_khorne", DEUS_GOD_TYPES.KHORNE, DifficultySettings.normal.rank, "achievement_morris_khorne", "morris", nil, nil)
-add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_nurgle", DEUS_GOD_TYPES.NURGLE, DifficultySettings.normal.rank, "achievement_morris_nurgle", "morris", nil, nil)
-add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_tzeentch", DEUS_GOD_TYPES.TZEENTCH, DifficultySettings.normal.rank, "achievement_morris_tzeentch", "morris", nil, nil)
-add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_slaanesh", DEUS_GOD_TYPES.SLAANESH, DifficultySettings.normal.rank, "achievement_morris_slaanesh", "morris", nil, nil)
+add_journey_complete_challenge(achievements, "morris_complete_journey_citadel", "journey_citadel", DifficultySettings.normal.rank, "achievement_morris_citadel", "morris", 92, "084")
+
+if IS_CONSOLE then
+	add_journey_complete_challenge(achievements, "morris_complete_journey_citadel_champion", "journey_citadel", DifficultySettings.harder.rank, "achievement_morris_citadel", "morris", 93, "085")
+	add_journey_complete_challenge(achievements, "morris_complete_journey_citadel_legend", "journey_citadel", DifficultySettings.hardest.rank, "achievement_morris_citadel", "morris", 94, "086")
+	add_opened_shrine_challenge(achievements, "morris_opened_shrines_swap_weapon", {
+		DEUS_CHEST_TYPES.swap_melee,
+		DEUS_CHEST_TYPES.swap_ranged
+	}, 30, nil, nil, 99, nil)
+	add_opened_shrine_challenge(achievements, "morris_opened_shrines_upgrade", {
+		DEUS_CHEST_TYPES.upgrade
+	}, 20, nil, nil, 100, nil)
+	add_opened_shrine_challenge(achievements, "morris_opened_shrines_power_up", {
+		DEUS_CHEST_TYPES.power_up
+	}, 30, nil, nil, 101, nil)
+end
+
+add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_nurgle", DEUS_GOD_TYPES.NURGLE, DifficultySettings.normal.rank, "achievement_morris_nurgle", "morris", 95, nil)
+add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_khorne", DEUS_GOD_TYPES.KHORNE, DifficultySettings.normal.rank, "achievement_morris_khorne", "morris", 96, nil)
+add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_slaanesh", DEUS_GOD_TYPES.SLAANESH, DifficultySettings.normal.rank, "achievement_morris_slaanesh", "morris", 97, nil)
+add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_tzeentch", DEUS_GOD_TYPES.TZEENTCH, DifficultySettings.normal.rank, "achievement_morris_tzeentch", "morris", 98, nil)
 
 local difficulties = {
 	"harder",

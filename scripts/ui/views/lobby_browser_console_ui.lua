@@ -1528,6 +1528,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		details_information_widget_content.status_id = "lb_unknown"
 	end
 
+	details_widgets.twitch_logo.content.visible = to_boolean(lobby_data and lobby_data.twitch_enabled)
 	self._details_type = "adventure"
 	self._details_filled = true
 end
@@ -1826,6 +1827,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 		details_information_widget_content.status_id = "lb_unknown"
 	end
 
+	details_widgets.twitch_logo.content.visible = to_boolean(lobby_data and lobby_data.twitch_enabled)
 	self._details_type = "deus"
 	self._details_filled = true
 end

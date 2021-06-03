@@ -30,14 +30,20 @@ StateTitleScreen.on_enter = function (self, params)
 		Wwise.set_state("menu_mute_ingame_sounds", "true")
 	end
 
-	if IS_CONSOLE and rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (IS_PS4 or Managers.account:offline_mode()) then
-		if Managers.party:has_party_lobby() then
-			local lobby = Managers.party:steal_lobby()
+	if IS_CONSOLE then
+		Managers.mechanism:destroy()
 
-			LobbyInternal.leave_lobby(lobby)
+		Managers.mechanism = GameMechanismManager:new()
+
+		if rawget(_G, "LobbyInternal") and LobbyInternal.network_initialized() and (IS_PS4 or Managers.account:offline_mode()) then
+			if Managers.party:has_party_lobby() then
+				local lobby = Managers.party:steal_lobby()
+
+				LobbyInternal.leave_lobby(lobby)
+			end
+
+			LobbyInternal.shutdown_client()
 		end
-
-		LobbyInternal.shutdown_client()
 	end
 
 	local loading_context = self.parent.loading_context

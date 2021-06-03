@@ -5,6 +5,7 @@ ActivatedAbilitySettings.dr_4 = {
 		description = "career_active_desc_dr_4",
 		action_name = "action_career_dr_4",
 		display_name = "career_active_name_dr_4",
+		hide_ability_ui_effects = true,
 		cooldown = 60,
 		weapon_name = "bardin_engineer_career_skill_weapon",
 		activatable_on_wield_chain_only = true,

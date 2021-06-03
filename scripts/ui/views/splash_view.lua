@@ -410,7 +410,7 @@ local function create_disclaimer_widget(input)
 						return content.ready
 					end,
 					content_change_function = function (content, style)
-						local gamepad_active = Managers.input:is_device_active("gamepad")
+						local gamepad_active = IS_CONSOLE or Managers.input:is_device_active("gamepad")
 						local time, dt = Managers.time:time_and_delta("main")
 						content.timer = content.timer + dt * 2
 						style.text_color[1] = 128 - math.cos(content.timer) * 127
@@ -868,11 +868,11 @@ SplashView._update_disclaimer = function (self, gui, dt)
 		self._current_widget.style.foreground.color[1] = value
 	elseif timer <= 0.5 then
 		local skip = nil
-		local input_service = self.input_manager:get_service("splash_view")
 
 		if IS_CONSOLE then
 			skip = script_data.skip_splash or self:_get_console_input()
 		else
+			local input_service = self.input_manager:get_service("splash_view")
 			skip = script_data.skip_splash or input_service:get("skip_splash")
 		end
 
@@ -984,7 +984,7 @@ SplashView.update = function (self, dt)
 
 	local w, h = Gui.resolution()
 	local ui_renderer = self.ui_renderer
-	local input_service = (IS_WINDOWS and self.input_manager:get_service("splash_view")) or false
+	local input_service = (IS_WINDOWS and self.input_manager:get_service("splash_view")) or FAKE_INPUT_SERVICE
 
 	UIRenderer.begin_pass(ui_renderer, self.ui_scenegraph, input_service, dt, nil, self.render_settings)
 	UIRenderer.draw_widget(ui_renderer, self.dead_space_filler)

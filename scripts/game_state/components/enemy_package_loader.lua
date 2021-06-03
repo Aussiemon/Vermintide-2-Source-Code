@@ -67,18 +67,13 @@ EnemyPackageLoader.init = function (self)
 	self._breeds_to_load_at_startup = {}
 	self._breed_to_package_name = {}
 	self._package_state = {}
-	self._breed_category_lookup = {}
 	self.breed_loaded_on_all_peers = Script.new_map(96)
 	self.breed_processed = Script.new_map(96)
 	self._currently_loading_breeds = {}
 	self._locked_breeds = {}
 	self.random_director_list = nil
-	self.breed_category_loaded_packages = {}
 
-	self:_create_dynamic_breed_lookups()
-
-	self._dynamic_breed_lookups = table.clone(self._breed_category_lookup)
-	self._dynamic_breed_category_loaded_packages = table.clone(self.breed_category_loaded_packages)
+	self:_reset_dynamic_breed_lookups()
 end
 
 local rpcs = {
@@ -546,7 +541,9 @@ EnemyPackageLoader._create_breed_category_lookup = function (self, breed_list, c
 	end
 end
 
-EnemyPackageLoader._create_dynamic_breed_lookups = function (self)
+EnemyPackageLoader._reset_dynamic_breed_lookups = function (self)
+	self._breed_category_lookup = {}
+	self.breed_category_loaded_packages = {}
 	local breed_categories = EnemyPackageLoaderSettings.categories
 	local num_breed_categories = #breed_categories
 
@@ -562,11 +559,6 @@ EnemyPackageLoader._create_dynamic_breed_lookups = function (self)
 			self:_add_breed_package_name(breeds)
 		end
 	end
-end
-
-EnemyPackageLoader._reset_dynamic_breed_lookups = function (self)
-	self.breed_category_loaded_packages = table.clone(self._dynamic_breed_category_loaded_packages)
-	self._breed_category_lookup = table.clone(self._dynamic_breed_lookups)
 end
 
 function print_breed_hash(t, desc)

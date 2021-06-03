@@ -50,6 +50,32 @@ GearUtils.create_equipment = function (world, slot_name, item_data, unit_1p, uni
 		end
 	end
 
+	local is_ammo_weapon = item_units.is_ammo_weapon
+
+	if is_ammo_weapon then
+		local material_settings = item_units.material_settings or item_template.material_settings
+
+		if material_settings then
+			if right_hand_ammo_unit_3p then
+				GearUtils.apply_material_settings(right_hand_ammo_unit_3p, material_settings)
+			end
+
+			if left_hand_ammo_unit_3p then
+				GearUtils.apply_material_settings(left_hand_ammo_unit_3p, material_settings)
+			end
+
+			if unit_1p then
+				if right_hand_ammo_unit_1p then
+					GearUtils.apply_material_settings(right_hand_ammo_unit_1p, material_settings)
+				end
+
+				if left_hand_ammo_unit_1p then
+					GearUtils.apply_material_settings(left_hand_ammo_unit_1p, material_settings)
+				end
+			end
+		end
+	end
+
 	local slot_data = {
 		id = slot_name,
 		item_data = item_data,
@@ -152,7 +178,7 @@ GearUtils.spawn_inventory_unit = function (world, hand, item_template, item_unit
 	local ammo_unit_name_3p = item_units.ammo_unit_3p
 	local ammo_unit_3p = nil
 
-	if ammo_data and ammo_unit_name then
+	if ammo_data and ammo_data.ammo_hand == hand and ammo_unit_name then
 		local ammo_unit_attachment_node_linking = ammo_data.ammo_unit_attachment_node_linking
 
 		fassert(ammo_unit_attachment_node_linking, "ammo unit: [\"%s\"] defined in weapon without attachment node linking", ammo_unit_name)

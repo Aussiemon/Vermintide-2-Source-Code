@@ -6,6 +6,7 @@ require("scripts/network/lobby_members")
 require("scripts/network_lookup/network_lookup")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.lobby_data_version = 2
 LobbyInternal.TYPE = "psn"
 local USE_C_SERIALIZATION = false
 LobbyInternal.comparison_lookup = {
@@ -44,11 +45,16 @@ LobbyInternal.matchmaking_lobby_data = {
 	network_hash_as_int = {
 		data_type = "integer",
 		id = PsnRoom.SEARCHABLE_INTEGER_ID_7
+	},
+	mechanism = {
+		data_type = "integer",
+		id = PsnRoom.SEARCHABLE_INTEGER_ID_8
 	}
 }
 LobbyInternal.lobby_data_network_lookups = {
 	matchmaking = "lobby_data_values",
 	secondary_region = "matchmaking_regions",
+	mechanism = "mechanism_keys",
 	is_private = "lobby_data_values",
 	matchmaking_type = "matchmaking_types",
 	mission_id = "mission_ids",
@@ -81,6 +87,12 @@ LobbyInternal.key_order = {
 	"power_level",
 	"mechanism"
 }
+LobbyInternal.key_index = {}
+
+for i, key in ipairs(LobbyInternal.key_order) do
+	LobbyInternal.key_index[key] = i
+end
+
 LobbyInternal.default_lobby_data = {
 	is_private = "false",
 	matchmaking_type = "n/a",
@@ -323,6 +335,16 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 
 		if #data_string_table > #LobbyInternal.key_order then
 			t.broken_lobby_data = data_string
+
+			return t, false
+		end
+
+		local my_network_hash = Managers.lobby:network_hash()
+		local index = LobbyInternal.key_index.network_hash
+		local lobby_network_hash = data_string_table[index]
+
+		if lobby_network_hash ~= my_network_hash then
+			t.old_lobby_data = data_string
 
 			return t, false
 		end

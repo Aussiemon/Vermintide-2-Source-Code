@@ -15,6 +15,7 @@ ActionCareerDRRanger.client_owner_start_action = function (self, new_action, t, 
 	self.current_action = new_action
 	self.action_time_started = t
 	self.thrown = nil
+	self._cooldown_started = false
 	local slot = new_action.slot_to_wield
 
 	self.inventory_extension:wield(slot)
@@ -123,8 +124,13 @@ ActionCareerDRRanger.finish = function (self, reason)
 		self:_throw()
 	end
 
+	if not self._cooldown_started then
+		self._cooldown_started = true
+
+		self.career_extension:start_activated_ability_cooldown()
+	end
+
 	self.inventory_extension:wield_previous_non_level_slot()
-	self.career_extension:start_activated_ability_cooldown()
 end
 
 return

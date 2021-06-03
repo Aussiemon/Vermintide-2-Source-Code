@@ -2344,11 +2344,6 @@ end
 
 unit_templates.get_extensions = function (unit_template_name, is_husk, is_server)
 	local extensions, num_extensions = nil
-
-	if unit_template_name == "player_bot_unit" then
-		print("test")
-	end
-
 	local template = unit_templates[unit_template_name]
 
 	if is_husk then

@@ -13,8 +13,11 @@ ActionCatch.client_owner_start_action = function (self, new_action, t, chain_act
 	local catch_time = (new_action.catch_time or 0) * 1 / buffed_anim_time_scale
 	self._catch_time = t + catch_time
 	self._state = "waiting_to_catch"
+	self._should_not_remove = new_action.should_not_remove
 
-	self:_remove_pickup()
+	if not self._should_not_remove then
+		self:_remove_pickup()
+	end
 end
 
 ActionCatch.client_owner_post_update = function (self, dt, t, world, can_damage)

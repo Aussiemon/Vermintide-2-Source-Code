@@ -415,12 +415,6 @@ debug.level_loaded = function (level_name)
 		return false
 	end
 
-	local game_mode_manager = state_managers.game_mode
-
-	if not game_mode_manager then
-		return false
-	end
-
 	local level_transition_handler = Managers.level_transition_handler
 	local level_key = level_transition_handler:get_current_level_key()
 

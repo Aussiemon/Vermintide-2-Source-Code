@@ -1539,6 +1539,80 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0102 = {
+		{
+			texture = "portrait_frame_0102",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0103 = {
+		{
+			texture = "portrait_frame_0103",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0104 = {
+		{
+			texture = "portrait_frame_0104",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_thornsister_01_glow",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		},
+		{
+			texture = "portrait_frame_thornsister_01_effect",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		}
+	},
 	frame_mondstille_01 = {
 		{
 			texture = "portrait_frame_mondstille_01_base",
@@ -1992,6 +2066,18 @@ UIPlayerPortraitFrameSettings = {
 	frame_season_04_tier_4 = {
 		{
 			texture = "portrait_frame_season_04_tier_4",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_skulls_2021 = {
+		{
+			texture = "portrait_frame_skulls2021",
 			layer = 10,
 			color = {
 				255,

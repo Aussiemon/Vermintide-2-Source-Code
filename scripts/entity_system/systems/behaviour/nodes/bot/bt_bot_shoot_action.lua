@@ -110,6 +110,7 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 		aim_data_charged = attack_meta_data.aim_data_charged or attack_meta_data.aim_data or DEFAULT_AIM_DATA,
 		reevaluate_aim_time = t,
 		can_charge_shot = attack_meta_data.can_charge_shot,
+		ignore_disabled_enemies_charged = attack_meta_data.ignore_disabled_enemies_charged,
 		charge_shot_delay = attack_meta_data.charge_shot_delay,
 		fire_input = attack_meta_data.fire_input or "fire",
 		charge_input = attack_meta_data.charge_input or "charge_shot",
@@ -478,6 +479,14 @@ BTBotShootAction._should_charge = function (self, shoot_blackboard, range_square
 
 	if not shoot_blackboard.can_charge_shot or (next_charge_shot_t and t < next_charge_shot_t) then
 		return false
+	end
+
+	if shoot_blackboard.ignore_disabled_enemies_charged then
+		local target_bb = BLACKBOARDS[target_unit]
+
+		if target_bb.in_vortex then
+			return false
+		end
 	end
 
 	local max_range_squared_charged = shoot_blackboard.max_range_squared_charged

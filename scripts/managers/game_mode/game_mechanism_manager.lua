@@ -3,7 +3,7 @@ require("scripts/managers/game_mode/mechanisms/adventure_mechanism")
 MechanismSettings = {
 	adventure = {
 		server_port = 27015,
-		display_name = "tutorial_intro_adventure",
+		display_name = "game_mode_adventure",
 		default_inventory = true,
 		server_universe = "carousel",
 		check_matchmaking_hero_availability = true,
@@ -335,6 +335,16 @@ GameMechanismManager.handle_ingame_exit = function (self, exit_type)
 	end
 end
 
+GameMechanismManager.can_resync_loadout = function (self)
+	local game_mechanism = self._game_mechanism
+
+	if game_mechanism and game_mechanism.can_resync_loadout then
+		return game_mechanism:can_resync_loadout()
+	else
+		return true
+	end
+end
+
 GameMechanismManager.update_loadout = function (self)
 	local game_mechanism = self._game_mechanism
 
@@ -481,9 +491,11 @@ GameMechanismManager.rpc_level_load_started = function (self, channel_id, sessio
 	end
 
 	local peer_initialized_mechanism = network_server:get_peer_initialized_mechanism(peer_id)
+	local mechanism_newly_initialized = peer_initialized_mechanism ~= self._mechanism_key
 
-	if peer_initialized_mechanism ~= self._mechanism_key then
+	if mechanism_newly_initialized then
 		print("Mechanism says: a client has initialized the mechanism!", peer_id)
+		network_server:set_peer_initialized_mechanism(peer_id, self._mechanism_key)
 
 		local state_name = self._game_mechanism:get_state()
 		local settings = MechanismSettings[self._mechanism_key]
@@ -491,10 +503,10 @@ GameMechanismManager.rpc_level_load_started = function (self, channel_id, sessio
 		local state_id = table.find(states, state_name)
 
 		RPC.rpc_set_current_mechanism_state(channel_id, state_id)
+	end
 
-		if self._game_mechanism.sync_mechanism_data then
-			self._game_mechanism:sync_mechanism_data(peer_id)
-		end
+	if self._game_mechanism.sync_mechanism_data then
+		self._game_mechanism:sync_mechanism_data(peer_id, mechanism_newly_initialized)
 	end
 end
 
@@ -642,15 +654,15 @@ GameMechanismManager.profile_changed = function (self, peer_id, local_player_id,
 end
 
 GameMechanismManager.get_players_session_score = function (self, statistics_db, profile_synchronizer, saved_scoreboard_stats)
-	if self._is_server then
-		if self._game_mechanism.get_players_session_score then
-			return self._game_mechanism:get_players_session_score(statistics_db, profile_synchronizer, saved_scoreboard_stats)
-		end
+	local scoreboard = nil
 
-		return ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats)
-	else
-		return self.synced_players_session_score
+	if not self._is_server then
+		scoreboard = self.synced_players_session_score
 	end
+
+	scoreboard = scoreboard or ((not self._game_mechanism.get_players_session_score or self._game_mechanism:get_players_session_score(statistics_db, profile_synchronizer, saved_scoreboard_stats)) and ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats))
+
+	return scoreboard
 end
 
 GameMechanismManager.save_current_score_information = function (self, game_won)

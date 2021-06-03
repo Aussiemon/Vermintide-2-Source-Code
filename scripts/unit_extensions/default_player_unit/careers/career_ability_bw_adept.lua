@@ -330,21 +330,29 @@ CareerAbilityBWAdept._run_ability = function (self)
 		}
 	}
 
-	if talent_extension:has_talent("sienna_adept_ability_trail_double") and (local_player or (is_server and bot_player)) then
-		local buff_extension = self._buff_extension
+	if talent_extension:has_talent("sienna_adept_ability_trail_double") then
+		if local_player or (is_server and bot_player) then
+			local buff_extension = self._buff_extension
 
-		if buff_extension and buff_extension:has_buff_type("sienna_adept_ability_trail_double") then
-			local buff_id = self._double_ability_buff_id
+			if buff_extension then
+				local buff = buff_extension:get_buff_type("sienna_adept_ability_trail_double")
 
-			if buff_id then
-				buff_extension:remove_buff(buff_id)
+				if buff then
+					buff.aborted = true
+
+					buff_extension:remove_buff(buff.id)
+					career_extension:start_activated_ability_cooldown()
+					career_extension:set_abilities_always_usable(false, "sienna_adept_ability_trail_double")
+				else
+					buff_extension:add_buff("sienna_adept_ability_trail_double")
+					career_extension:set_abilities_always_usable(true, "sienna_adept_ability_trail_double")
+				end
 			end
-		elseif buff_extension then
-			self._double_ability_buff_id = buff_extension:add_buff("sienna_adept_ability_trail_double")
 		end
+	else
+		career_extension:start_activated_ability_cooldown()
 	end
 
-	career_extension:start_activated_ability_cooldown()
 	self:_play_vo()
 end
 

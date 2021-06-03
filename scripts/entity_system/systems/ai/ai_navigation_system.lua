@@ -221,6 +221,12 @@ AINavigationSystem.update_destination = function (self, t)
 				if pathfind_was_successful then
 					blackboard.no_path_found = nil
 					extension._failed_move_attempts = 0
+
+					if extension._nav_channel_disabled_on_fail then
+						GwNavBot.set_use_channel(nav_bot, true)
+
+						extension._nav_channel_disabled_on_fail = false
+					end
 				else
 					repath_allowed = false
 					blackboard.no_path_found = true
@@ -243,6 +249,14 @@ AINavigationSystem.update_destination = function (self, t)
 								extension.delayed_max_time = t + RecycleSettings.destroy_no_path_found_time
 							end
 						end
+					end
+
+					local breed = blackboard.breed
+
+					if breed.use_navigation_path_splines then
+						GwNavBot.set_use_channel(nav_bot, false)
+
+						extension._nav_channel_disabled_on_fail = true
 					end
 				end
 			end

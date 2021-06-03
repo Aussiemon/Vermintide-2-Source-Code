@@ -1,10 +1,816 @@
 StoreDlcSettings = {
 	{
-		dlc_name = "grass",
+		name = "store_woods_title",
+		dlc_name = "woods",
+		show_in_slideshow = true,
+		store_page_url = "https://store.steampowered.com/app/1629000",
+		store_texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods",
+		information_text = "store_woods_desc",
+		prio = 4,
+		slideshow_texture = "store_slideshow_dlc_woods",
+		slideshow_text = "store_woods_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/woods/dlc_store_banner_woods",
+		available_platforms = {
+			"win32",
+			"ps4",
+			"xb1"
+		},
+		layout = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/kerillian/we_thornsister"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/dlc_store_logo_woods"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_woods_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_horizontal",
+				settings = {
+					text = "dlc_woods_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		},
+		layout_console = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/kerillian/we_thornsister"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/dlc_store_logo_woods"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_woods_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_horizontal",
+				settings = {
+					text = "dlc_woods_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4x",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_5x",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_6x",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_06_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_06",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_1x",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2x",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_upgrade_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				id = "dlc_feature_3x",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
+		name = "store_woods_upgrade_title",
+		store_page_url = "https://store.steampowered.com/app/1629010",
+		store_texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods",
+		information_text = "store_woods_upgrade_desc",
+		dlc_name = "woods_upgrade",
+		slideshow_texture = "store_slideshow_dlc_woods",
+		slideshow_text = "store_woods_upgrade_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/woods/dlc_store_banner_woods_upgrade",
+		available_platforms = {
+			"win32"
+		},
+		layout = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/kerillian/we_thornsister"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/dlc_store_logo_woods"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_woods_upgrade_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_6",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_06_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_06",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_woods_upgrade_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_upgrade_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_woods_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/woods/slate_woods_upgrade_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/woods/store_dlc_icons_woods"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
+		information_text = "five_career_bundle_0001_desc",
+		name = "five_career_bundle_0001",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0001",
+		optional_dlc_display_name = "five_career_bundle_0001",
+		dlc_name = "five_career_bundle",
+		optional_dlc_subtitle = "five_career_bundle_0001_subtitle",
+		slideshow_text = "five_career_bundle_0001_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_five_career_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_ww_shade_1001",
+			"shade_hat_1002",
+			"skin_wh_bountyhunter_1001",
+			"bountyhunter_hat_1002",
+			"skin_dr_irondrake",
+			"ironbreaker_hat_1004",
+			"skin_es_mercenary_1001",
+			"mercenary_hat_1002",
+			"skin_bw_myrmidia",
+			"scholar_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		},
+		layout_console = {
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_ww_shade_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "shade_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "shade_bundle_01",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "shade_bundle_01_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_dr_irondrake",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "ironbreaker_hat_1004",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "ironbreaker_bundle_01",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "ironbreaker_bundle_01_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_bw_myrmidia",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "scholar_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "pyromancer_bundle_01",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "pyromancer_bundle_01_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_wh_bountyhunter_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "bountyhunter_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "bounty_hunter_bundle_01",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "bounty_hunter_bundle_01_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_es_mercenary_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "mercenary_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "mercenary_bundle_01",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "mercenary_bundle_01_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			}
+		}
+	},
+	{
+		information_text = "shade_bundle_01_desc",
+		name = "shade_bundle_01",
+		slideshow_texture = "store_slideshow_bundle_shade_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_shade_bundle_0001",
+		optional_dlc_display_name = "shade_bundle_01",
+		prio = 2,
+		dlc_name = "shade_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_shade_bundle_0001",
+		optional_dlc_subtitle = "we_shade",
+		slideshow_text = "shade_bundle_01_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_shade_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_ww_shade_1001",
+			"shade_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "bounty_hunter_bundle_01_desc",
+		name = "bounty_hunter_bundle_01",
+		slideshow_texture = "store_slideshow_bundle_bountyhunter_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_bountyhunter_bundle_0001",
+		optional_dlc_display_name = "bounty_hunter_bundle_01",
+		prio = 1,
+		dlc_name = "bountyhunter_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_bountyhunter_bundle_0001",
+		optional_dlc_subtitle = "wh_bountyhunter",
+		slideshow_text = "bounty_hunter_bundle_01_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_bountyhunter_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_wh_bountyhunter_1001",
+			"bountyhunter_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "ironbreaker_bundle_01_desc",
+		name = "ironbreaker_bundle_01",
+		slideshow_texture = "store_slideshow_bundle_ironbreaker_bundle_0001",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_ironbreaker_bundle_0001",
+		optional_dlc_display_name = "ironbreaker_bundle_01",
+		dlc_name = "ironbreaker_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_ironbreaker_bundle_0001",
+		optional_dlc_subtitle = "dr_ironbreaker",
+		slideshow_text = "ironbreaker_bundle_01_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_ironbreaker_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_dr_irondrake",
+			"ironbreaker_hat_1004"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "mercenary_bundle_01_desc",
+		name = "mercenary_bundle_01",
+		slideshow_texture = "store_slideshow_bundle_mercenary_bundle_0001",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_mercenary_bundle_0001",
+		optional_dlc_display_name = "mercenary_bundle_01",
+		dlc_name = "mercenary_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_mercenary_bundle_0001",
+		optional_dlc_subtitle = "es_mercenary",
+		slideshow_text = "mercenary_bundle_01_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_mercenary_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_es_mercenary_1001",
+			"mercenary_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "pyromancer_bundle_01_desc",
+		name = "pyromancer_bundle_01",
+		slideshow_texture = "store_slideshow_bundle_scholar_bundle_0001",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_scholar_bundle_0001",
+		optional_dlc_display_name = "pyromancer_bundle_01",
+		dlc_name = "scholar_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_scholar_bundle_0001",
+		optional_dlc_subtitle = "bw_scholar",
+		slideshow_text = "pyromancer_bundle_01_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_scholar_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_bw_myrmidia",
+			"scholar_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		store_page_url = "https://store.steampowered.com/app/1592630",
 		name = "store_grass_title",
+		prio = 3,
+		show_in_slideshow = true,
 		store_texture_package = "resource_packages/store/dlc_icons/grass/store_dlc_icons_grass",
 		information_text = "store_grass_desc",
-		store_page_url = "https://store.steampowered.com/app/1592630",
+		dlc_name = "grass",
 		slideshow_texture = "store_slideshow_dlc_grass",
 		slideshow_text = "store_grass_desc",
 		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/grass/dlc_store_banner_grass",
@@ -403,13 +1209,11 @@ StoreDlcSettings = {
 		store_texture_package = "resource_packages/store/dlc_icons/cog/store_dlc_icons_cog",
 		information_text = "store_cog_upgrade_desc",
 		dlc_name = "cog_upgrade",
-		hide_from_slideshow = true,
 		slideshow_texture = "store_slideshow_dlc_cog",
 		slideshow_text = "store_cog_upgrade_desc",
 		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/cog/dlc_store_banner_cog_upgrade",
-		unavailable_platforms = {
-			"xb1",
-			"ps4"
+		available_platforms = {
+			"win32"
 		},
 		layout = {
 			{
@@ -779,13 +1583,11 @@ StoreDlcSettings = {
 		store_texture_package = "resource_packages/store/dlc_icons/lake/store_dlc_icons_lake",
 		information_text = "store_lake_upgrade_desc",
 		dlc_name = "lake_upgrade",
-		hide_from_slideshow = true,
 		slideshow_texture = "store_slideshow_dlc_lake",
 		slideshow_text = "store_lake_upgrade_slideshow_desc",
 		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/lake/dlc_store_banner_lake_upgrade",
-		unavailable_platforms = {
-			"xb1",
-			"ps4"
+		available_platforms = {
+			"win32"
 		},
 		layout = {
 			{

@@ -40,6 +40,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	self.my_dodge_jump_override_t = 0
 	self.dodge_cooldown = 0
 	self.dodge_cooldown_delay = 0
+	self.is_aiming = false
 	self.dodge_count = 2
 	self.combo_target_count = 0
 	self.fatigue = 0
@@ -2295,6 +2296,14 @@ GenericStatusExtension.set_in_end_zone = function (self, in_end_zone)
 	end
 
 	self.in_end_zone = in_end_zone
+end
+
+GenericStatusExtension.set_is_aiming = function (self, aiming)
+	self.is_aiming = aiming
+end
+
+GenericStatusExtension.get_is_aiming = function (self)
+	return self.is_aiming
 end
 
 GenericStatusExtension.is_in_end_zone = function (self)

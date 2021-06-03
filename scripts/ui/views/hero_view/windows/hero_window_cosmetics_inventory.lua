@@ -44,6 +44,7 @@ local function item_sort_func(item_1, item_2)
 	end
 end
 
+local hero_window_cosmetics_inventory_testify = script_data.testify and require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_inventory_testify")
 HeroWindowCosmeticsInventory = class(HeroWindowCosmeticsInventory)
 HeroWindowCosmeticsInventory.NAME = "HeroWindowCosmeticsInventory"
 
@@ -149,6 +150,10 @@ HeroWindowCosmeticsInventory.update = function (self, dt, t)
 	self:_update_loadout_sync()
 	self:_update_page_info()
 	self:draw(dt)
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(hero_window_cosmetics_inventory_testify, self)
+	end
 end
 
 HeroWindowCosmeticsInventory.post_update = function (self, dt, t)

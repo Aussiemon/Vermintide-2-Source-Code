@@ -178,23 +178,30 @@ SimpleHuskInventoryExtension.add_equipment = function (self, slot_name, item_nam
 
 	if item_data.slot_to_use then
 		local other_slot_slot_data = self._equipment.slots[item_data.slot_to_use]
-		local item_units = BackendUtils.get_item_units(item_data)
-		local other_slot_item_units = BackendUtils.get_item_units(other_slot_slot_data.item_data, nil, other_slot_slot_data.skin)
+		local override_item_data, override_skin = nil
+
+		if WeaponUtils.is_valid_weapon_override(other_slot_slot_data, item_data) then
+			override_item_data = other_slot_slot_data.item_data
+			override_skin = other_slot_slot_data.skin
+		else
+			local default_item_name = item_data.default_item_to_replace
+			override_item_data = ItemMasterList[default_item_name]
+		end
+
+		local other_slot_item_units = BackendUtils.get_item_units(override_item_data, nil, override_skin)
 		skin_name = nil
 
 		for key, _ in pairs(item_data.item_units_to_replace) do
-			if other_slot_item_units[key] then
-				item_data[key] = other_slot_item_units[key]
-			else
-				item_data[key] = item_units[key]
-			end
+			item_data[key] = other_slot_item_units[key]
 		end
 	end
 
+	local item_template = BackendUtils.get_item_template(item_data)
 	self._equipment.slots[slot_name] = {
 		item_data = item_data,
 		id = slot_name,
-		skin = skin_name
+		skin = skin_name,
+		item_template = item_template
 	}
 end
 
@@ -306,6 +313,7 @@ SimpleHuskInventoryExtension.wield = function (self, slot_name)
 				self:_refresh_buffs(slot_buffs, reason, slot_name)
 			end
 
+			Unit.flow_event(self._unit, "lua_wield")
 			self:start_weapon_fx("wield")
 		end
 	end
@@ -541,7 +549,16 @@ SimpleHuskInventoryExtension._override_career_skill_item_template = function (se
 		local equipment = self._equipment
 		local slots = equipment.slots
 		local override_slot_data = slots[slot_to_use]
-		local override_item_template = self:get_item_template(override_slot_data)
+		local override_item_template = nil
+
+		if WeaponUtils.is_valid_weapon_override(override_slot_data, item_data) then
+			override_item_template = self:get_item_template(override_slot_data)
+		else
+			local default_item_name = item_data.default_item_to_replace
+			local override_item_data = ItemMasterList[default_item_name]
+			override_item_template = Weapons[override_item_data.template]
+		end
+
 		local item_template = BackendUtils.get_item_template(item_data)
 		item_template.left_hand_attachment_node_linking = override_item_template.left_hand_attachment_node_linking
 		item_template.right_hand_attachment_node_linking = override_item_template.right_hand_attachment_node_linking
@@ -602,6 +619,11 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 	local wield_anim = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career, self._career_name)
 
 	if right_hand_weapon_unit_3p or left_hand_weapon_unit_3p then
+		if self:ammo_percentage() == 0 and item_template.wield_anim_no_ammo_on_husk then
+			local wield_anim_no_ammo = get_wield_anim(item_template.wield_anim_no_ammo, item_template.wield_anim_no_ammo_career, self._career_name)
+			wield_anim = wield_anim_no_ammo or wield_anim
+		end
+
 		Unit.flow_event(unit_3p, "lua_wield")
 		Unit.animation_event(unit_3p, wield_anim)
 

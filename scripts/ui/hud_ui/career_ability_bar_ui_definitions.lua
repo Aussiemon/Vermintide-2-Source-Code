@@ -65,16 +65,13 @@ local widget_definitions = {
 					texture_id = "frame"
 				},
 				{
+					pass_type = "texture",
 					style_id = "icon",
 					texture_id = "icon",
-					pass_type = "texture",
 					content_check_function = function (content, style)
 						content.gamepad_active = Managers.input:is_device_active("gamepad")
 
 						return content.gamepad_active
-					end,
-					content_change_function = function (content, style)
-						content.icon = ((PLATFORM == "ps4" or Application.user_setting("gamepad_use_ps4_style_input_icons")) and "ps4_button_icon_square") or "xbone_button_icon_x"
 					end
 				},
 				{
@@ -238,7 +235,7 @@ local widget_definitions = {
 				}
 			},
 			icon = {
-				size = {
+				texture_size = {
 					34,
 					34
 				},
@@ -255,7 +252,7 @@ local widget_definitions = {
 				}
 			},
 			icon_shadow = {
-				size = {
+				texture_size = {
 					34,
 					34
 				},

@@ -396,6 +396,10 @@ EndViewStateSummary._get_essence_earned = function (self)
 		return nil
 	end
 
+	if essence_data.awarded ~= nil then
+		return essence_data.awarded
+	end
+
 	return essence_data[1].awarded
 end
 

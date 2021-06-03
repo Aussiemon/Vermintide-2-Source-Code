@@ -121,11 +121,13 @@ UnitSpawner.breed_in_death_watch = function (self, breed_name)
 	end
 end
 
+local function death_watch_list_sort(a, b)
+	return a.t < b.t
+end
+
 UnitSpawner.update_death_watch_list = function (self)
 	if self.unit_death_watch_list_dirty then
-		table.sort(self.unit_death_watch_list, function (a, b)
-			return a.t < b.t
-		end)
+		table.sort(self.unit_death_watch_list, death_watch_list_sort)
 
 		self.unit_death_watch_list_dirty = false
 	end
@@ -329,16 +331,18 @@ UnitSpawner.spawn_network_unit = function (self, unit_name, unit_template_name, 
 	return unit, go_id
 end
 
-UnitSpawner.request_spawn_network_unit = function (self, template_name, position, rotation, source_unit, state_int)
+UnitSpawner.request_spawn_network_unit = function (self, template_name, position, rotation, source_unit, state_int, group_spawn_index)
+	group_spawn_index = group_spawn_index or 1
+
 	if self.is_server then
 		local spawn_template = SpawnUnitTemplates[template_name]
 
-		spawn_template.spawn_func(source_unit, position, rotation, state_int)
+		spawn_template.spawn_func(source_unit, position, rotation, state_int, group_spawn_index)
 	else
 		local template_id = NetworkLookup.spawn_unit_templates[template_name]
 		local source_unit_id = Managers.state.unit_storage:go_id(source_unit)
 
-		Managers.state.network.network_transmit:send_rpc_server("rpc_request_spawn_network_unit", template_id, position, rotation, source_unit_id, state_int)
+		Managers.state.network.network_transmit:send_rpc_server("rpc_request_spawn_network_unit", template_id, position, rotation, source_unit_id, state_int, group_spawn_index)
 	end
 end
 

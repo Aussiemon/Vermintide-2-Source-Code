@@ -3,6 +3,7 @@ local RPCS = {
 	"rpc_play_2d_audio_event",
 	"rpc_server_audio_event",
 	"rpc_server_audio_event_at_pos",
+	"rpc_server_audio_position_event",
 	"rpc_server_audio_unit_event",
 	"rpc_server_audio_unit_dialogue_event",
 	"rpc_server_audio_unit_param_string_event",

@@ -6,6 +6,7 @@ end
 
 StateLoadingMigrateHost = class(StateLoadingMigrateHost)
 StateLoadingMigrateHost.NAME = "StateLoadingMigrateHost"
+local XB1_WAIT_TIME = 5
 
 StateLoadingMigrateHost.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateLoadingMigrateHost")
@@ -27,6 +28,10 @@ StateLoadingMigrateHost._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
+	if IS_XB1 then
+		Managers.voice_chat:reset()
+	end
+
 	local loading_context = self.parent.parent.loading_context
 	local host_migration_info = loading_context.host_migration_info
 	local host_to_migrate_to = host_migration_info.host_to_migrate_to
@@ -41,7 +46,7 @@ StateLoadingMigrateHost._init_network = function (self)
 			local level_data = host_migration_info.level_data
 			host_migration_info.level_data = nil
 
-			level_transition_handler:set_next_level(level_data.level_key, level_data.environment_variation_id, level_data.level_seed, level_data.mechanism, level_data.game_mode_key, level_data.conflict_settings, level_data.locked_director_functions, level_data.difficulty, level_data.difficulty_tweak)
+			level_transition_handler:set_next_level(level_data.level_key, level_data.environment_variation_id, level_data.level_seed, level_data.mechanism, level_data.game_mode_key, level_data.conflict_settings, level_data.locked_director_functions, level_data.difficulty, level_data.difficulty_tweak, level_data.extra_packages)
 		elseif host_migration_info.level_to_load then
 			local level_to_load = host_migration_info.level_to_load
 
@@ -50,8 +55,28 @@ StateLoadingMigrateHost._init_network = function (self)
 			host_migration_info.level_to_load = nil
 		end
 
-		self.parent:setup_lobby_host(callback(self, "cb_server_created"))
-		self.parent:start_matchmaking()
+		if IS_XB1 then
+			print("#########################################")
+			print("#### SETTING UP HOST MIGRATION LOBBY ####")
+			print("#########################################")
+			print(host_to_migrate_to.session_id, host_to_migrate_to.session_template_name)
+			self.parent:setup_lobby_host(callback(self, "cb_server_created"), nil, host_to_migrate_to.session_id, host_to_migrate_to.session_template_name)
+		else
+			self.parent:setup_lobby_host(callback(self, "cb_server_created"))
+			self.parent:start_matchmaking()
+		end
+	elseif IS_XB1 then
+		print("#################################")
+		print("#### JOINING MIGRATION LOBBY ####")
+		print("#################################")
+		print(host_to_migrate_to.session_id, host_to_migrate_to.session_template_name)
+
+		self.parent.parent.loading_context.join_lobby_data = {
+			name = host_to_migrate_to.session_id,
+			session_template_name = host_to_migrate_to.session_template_name
+		}
+
+		self.parent:setup_join_lobby(XB1_WAIT_TIME)
 	else
 		network_printf("Migrating to host %s, trying to find its lobby...", host_to_migrate_to)
 
@@ -76,6 +101,8 @@ end
 StateLoadingMigrateHost.update = function (self, dt, t)
 	if self._server_created or self._lobby_joined then
 		return StateLoadingRunning
+	elseif IS_XB1 and self.parent:lobby_verified() then
+		return StateLoadingRunning
 	end
 end
 
@@ -85,6 +112,10 @@ end
 
 StateLoadingMigrateHost.cb_server_created = function (self)
 	network_printf("cb_server_created")
+
+	if IS_XB1 then
+		self.parent:start_matchmaking()
+	end
 
 	local lobby_host = self.parent:get_lobby()
 	local stored_lobby_data = lobby_host:get_stored_lobby_data() or {}

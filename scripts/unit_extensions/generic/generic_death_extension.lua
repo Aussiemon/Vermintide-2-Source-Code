@@ -10,6 +10,7 @@ GenericDeathExtension.init = function (self, extension_init_context, unit, exten
 	self.is_alive = true
 	self.unit = unit
 	self.death_reaction_template = extension_init_data.death_reaction_template or Unit.get_data(unit, "death_reaction")
+	self.extension_init_data = extension_init_data
 	self.wall_nail_data = {}
 	self.second_hit_ragdoll = not extension_init_data.disable_second_hit_ragdoll
 

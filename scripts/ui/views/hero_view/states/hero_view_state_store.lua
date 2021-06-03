@@ -145,6 +145,11 @@ HeroViewStateStore.on_enter = function (self, params)
 		self:_start_transition_animation("on_enter", "on_enter")
 	end
 
+	local input_service = self:input_service()
+	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self._ui_top_renderer, input_service, 6, nil, generic_input_actions, true)
+
+	self._menu_input_description:set_input_description(nil)
+
 	local window_params = {
 		wwise_world = self._wwise_world,
 		ingame_ui_context = ingame_ui_context,
@@ -161,11 +166,6 @@ HeroViewStateStore.on_enter = function (self, params)
 	self:play_sound("Play_hud_store_ambience")
 	self:_disable_player_world()
 	self:_enable_store_ui_world()
-
-	local input_service = self:input_service()
-	self._menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self._ui_top_renderer, input_service, 6, nil, generic_input_actions, true)
-
-	self._menu_input_description:set_input_description(nil)
 
 	local backend_store = Managers.backend:get_interface("peddler")
 	local unseen_currency_rewards = backend_store:get_unseen_currency_rewards()
@@ -594,6 +594,10 @@ HeroViewStateStore._get_layout_setting = function (self, index)
 	return self._window_layouts[index]
 end
 
+HeroViewStateStore.page_exists = function (self, page_name)
+	return StoreLayoutConfig.pages[page_name] ~= nil
+end
+
 HeroViewStateStore.go_to_store_path = function (self, path_array)
 	local pages = StoreLayoutConfig.pages
 	local page = pages[path_array[#path_array]]
@@ -625,7 +629,7 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 
 		if not new_path then
 			new_path = table.clone(current_store_path)
-			new_path[#new_path + 1] = "dlc"
+			new_path[#new_path + 1] = (dlc_settings.is_bundle and "bundles") or "dlc"
 		end
 	else
 		local item = self:get_item_by_key(product_id)
@@ -857,20 +861,6 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 
 	self:_update_dlc_purchases()
 
-	local golden_key_popup = self._golden_key_popup
-
-	if golden_key_popup then
-		golden_key_popup:update(input_service, dt, t)
-
-		if golden_key_popup:is_complete() then
-			golden_key_popup:delete()
-
-			self._golden_key_popup = nil
-
-			self:unblock_input()
-		end
-	end
-
 	if self._fail_steam_item_purchase_popup_id then
 		local result = Managers.popup:query_result(self._fail_steam_item_purchase_popup_id)
 
@@ -906,7 +896,7 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 				local ignore_sound_on_close_menu = true
 
 				self:close_menu(ignore_sound_on_close_menu)
-			elseif not self._item_purchase_popup and not self._welcome_popup and not self._golden_key_popup then
+			elseif not self._item_purchase_popup and not self._welcome_popup then
 				self:_handle_input(dt, t)
 			end
 		end
@@ -1242,7 +1232,29 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 					local backend_items = Managers.backend:get_interface("items")
 
 					backend_items:add_steam_items(item_list)
-					self:enqueue_acquired_product(product)
+
+					local bundle_contains = product.item.data.bundle_contains
+
+					if bundle_contains then
+						for _, subitem_steam_itemdefid in ipairs(bundle_contains) do
+							local sub_product_id = SteamitemdefidToMasterList[subitem_steam_itemdefid]
+							local sub_item = ItemMasterList[sub_product_id]
+
+							if item then
+								local sub_product = {
+									type = "bundle_item",
+									item = {
+										data = sub_item
+									},
+									product_id = sub_product_id
+								}
+
+								self:enqueue_acquired_product(sub_product)
+							end
+						end
+					else
+						self:enqueue_acquired_product(product)
+					end
 				else
 					print("[HeroViewState] Purchase steam item: FAILED. result-code:", result)
 
@@ -1282,14 +1294,6 @@ HeroViewStateStore.check_owns_bundle = function (self, backend_items, bundle_con
 	end
 
 	return true
-end
-
-HeroViewStateStore.open_golden_key_popup = function (self)
-	self:play_sound("Play_hud_store_buy_window")
-
-	self._golden_key_popup = StoreGoldenKeyPopup:new(self, self._ui_top_renderer)
-
-	self:block_input()
 end
 
 HeroViewStateStore.enqueue_acquired_product = function (self, product)
@@ -1391,7 +1395,7 @@ HeroViewStateStore.populate_product_widget = function (self, widget, product)
 	local product_id = product.product_id
 	local product_type = product.type
 
-	if product_type == "item" then
+	if product_type == "item" or product_type == "bundle_item" then
 		self:_populate_item_widget(widget, product, product_id)
 	elseif product_type == "dlc" then
 		local dlc_settings = product.dlc_settings
@@ -2216,10 +2220,14 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	local display_name = settings.name
 	local texture = settings.store_banner_texture
 	local dlc_name = settings.dlc_name
-	local item_type = "dlc"
+	local item_type = (settings.is_bundle and "bundle") or "dlc"
 	local currency_type = "SM"
 	local style = widget.style
 	local content = widget.content
+	local optional_name = settings.optional_dlc_display_name
+	local optional_subtitle = settings.optional_dlc_subtitle
+	content.optional_item_name = (optional_name and Localize(optional_name)) or ""
+	content.optional_subtitle = (optional_subtitle and Localize(optional_subtitle)) or ""
 	local price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	local real_currency = true
 
@@ -2233,7 +2241,7 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	content.owned = Managers.unlock:is_dlc_unlocked(dlc_name)
 	local masked = style.icon.masked
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
-	content.type_tag_icon = item_type_icon
+	content.type_tag_icon = (settings.is_bundle and item_type_icon .. "_promo") or item_type_icon
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	local package_name = settings.store_texture_package

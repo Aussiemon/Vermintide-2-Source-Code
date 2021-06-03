@@ -2314,6 +2314,15 @@ Cosmetics = {
 	frame_0101 = {
 		icon = "unit_frame_02"
 	},
+	frame_0102 = {
+		icon = "unit_frame_02"
+	},
+	frame_0103 = {
+		icon = "unit_frame_02"
+	},
+	frame_0104 = {
+		icon = "unit_frame_02"
+	},
 	frame_dev = {
 		icon = "unit_frame_02"
 	},
@@ -2498,6 +2507,9 @@ Cosmetics = {
 		icon = "unit_frame_02"
 	},
 	frame_season_04_tier_4 = {
+		icon = "unit_frame_02"
+	},
+	frame_skulls_2021 = {
 		icon = "unit_frame_02"
 	}
 }

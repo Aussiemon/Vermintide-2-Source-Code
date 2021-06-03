@@ -30,6 +30,7 @@ HuskTalentExtension.set_talent_ids = function (self, talent_ids)
 		self._initial_talent_sync_completed = true
 
 		Managers.state.event:trigger("on_initial_talents_synced", self)
+		Managers.state.event:trigger("on_talents_changed", self._unit, self)
 	end
 end
 

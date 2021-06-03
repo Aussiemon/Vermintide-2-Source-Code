@@ -59,11 +59,10 @@ end
 UIWidget = UIWidget or {}
 
 UIWidget.init = function (widget_definition)
-	local skip_metatable = true
-	local content = table.clone(widget_definition.content, skip_metatable)
-	local style = table.clone(widget_definition.style or {}, skip_metatable)
-	local style_global = table.clone(widget_definition.style_global or {}, skip_metatable)
-	local offset = widget_definition.offset and table.clone(widget_definition.offset, skip_metatable)
+	local content = table.clone(widget_definition.content)
+	local style = table.clone(widget_definition.style or {})
+	local style_global = table.clone(widget_definition.style_global or {})
+	local offset = widget_definition.offset and table.clone(widget_definition.offset)
 
 	return {
 		element = UIElement.init(widget_definition.element, content, style, style_global),
@@ -91,86 +90,5 @@ end
 UIWidget.has_animation = function (widget)
 	return (next(widget.animations) and true) or false
 end
-
-MenuGuiSettings = {
-	button_default = {
-		1,
-		0,
-		1,
-		1
-	},
-	button_mouse_over = {
-		1,
-		0,
-		1.5,
-		1.5
-	},
-	button_mouse_down = {
-		1,
-		0,
-		1.5,
-		1.5
-	},
-	button_disabled = {
-		1,
-		0,
-		0,
-		1
-	},
-	button_disabled_dark = {
-		1,
-		0,
-		0,
-		0.5
-	},
-	text_default = {
-		255,
-		255,
-		255,
-		255
-	},
-	text_mouse_over = {
-		255,
-		255,
-		204,
-		1
-	},
-	text_mouse_down = {
-		255,
-		255,
-		0,
-		0
-	},
-	text_disabled = {
-		192,
-		128,
-		128,
-		128
-	},
-	multiply_color_alpha = function (color, alpha)
-		local a, r, g, b = unpack(color)
-		a = a * alpha
-
-		return Color(a, r, g, b)
-	end,
-	multiply_color = function (color, amount)
-		local a, r, g, b = unpack(color)
-
-		return Color(a, r, g * amount, b * amount)
-	end
-}
-
-local function convert(value)
-	value[1] = value[1] * 255
-	value[2] = (value[2] % 360 * 256) / 360
-	value[3] = (value[3] * 255) / 4
-	value[4] = (value[4] * 255) / 4
-end
-
-convert(MenuGuiSettings.button_default)
-convert(MenuGuiSettings.button_mouse_over)
-convert(MenuGuiSettings.button_mouse_down)
-convert(MenuGuiSettings.button_disabled)
-convert(MenuGuiSettings.button_disabled_dark)
 
 return

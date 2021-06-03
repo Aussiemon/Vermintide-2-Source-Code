@@ -298,6 +298,10 @@ AINavigationExtension.get_max_speed = function (self)
 end
 
 AINavigationExtension.set_navbot_position = function (self, position)
+	if self._nav_bot == nil then
+		return
+	end
+
 	GwNavBot.update_position(self._nav_bot, position)
 end
 

@@ -176,6 +176,12 @@ BotActions.default = {
 				action = "aim_at_target"
 			}
 		},
+		we_thornsister = {
+			activation = {
+				action = "aim_at_target",
+				fast_aim = true
+			}
+		},
 		wh_captain = {
 			activation = {}
 		},

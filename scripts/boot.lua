@@ -61,6 +61,9 @@ local function foundation_require(path, ...)
 	end
 end
 
+print("Active feature-flags:")
+print("FEATURE_thornsister")
+print("")
 require("scripts/settings/dlc_settings")
 require("scripts/helpers/dlc_utils")
 
@@ -139,15 +142,16 @@ Boot.setup = function (self)
 		"resource_packages/strings",
 		"resource_packages/foundation_scripts",
 		"resource_packages/game_scripts",
-		"backend/local_backend/local_backend",
 		"resource_packages/level_scripts",
 		"resource_packages/levels/debug_levels",
 		"resource_packages/levels/benchmark_levels",
-		"resource_packages/levels/honduras_levels",
-		"resource_packages/fat_ui",
-		"resource_packages/breeds",
-		"resource_packages/breeds_common_resources"
+		"resource_packages/levels/honduras_levels"
 	}
+
+	if IS_WINDOWS then
+		Boot.startup_packages[#Boot.startup_packages + 1] = "backend/local_backend/local_backend"
+	end
+
 	local handles = {}
 
 	for _, package_name in ipairs(Boot.startup_packages) do
@@ -359,23 +363,26 @@ Boot.booting_update = function (self, dt)
 		local done = Managers.package:update()
 
 		if done then
-			DLCUtils.require_list("additional_settings")
-			DLCUtils.merge("script_data", script_data)
-			Game:require_game_scripts()
+			Boot.startup_state = "done_loading_dlcs"
+			Boot.disable_loading_bar = true
+		end
+	elseif Boot.startup_state == "done_loading_dlcs" then
+		DLCUtils.require_list("additional_settings")
+		DLCUtils.merge("script_data", script_data)
+		Game:require_game_scripts()
 
-			local require_end = os.clock()
+		local require_end = os.clock()
 
-			if IS_WINDOWS then
-				game_require("managers", "mod/mod_manager")
+		if IS_WINDOWS then
+			game_require("managers", "mod/mod_manager")
 
-				Managers.mod = ModManager:new(Boot.gui)
-				Boot.startup_state = "loading_mods"
-			elseif IS_LINUX then
-				Managers.mod = MockClass:new()
-				Boot.startup_state = "ready"
-			else
-				Boot.startup_state = "ready"
-			end
+			Managers.mod = ModManager:new(Boot.gui)
+			Boot.startup_state = "loading_mods"
+		elseif IS_LINUX then
+			Managers.mod = MockClass:new()
+			Boot.startup_state = "ready"
+		else
+			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "loading_mods" then
 		Managers.mod:update(dt)
@@ -559,12 +566,39 @@ function create_startup_world()
 	Viewport.set_data(Boot.viewport, "camera", camera)
 
 	Boot.gui = World.create_screen_gui(Boot.world, "immediate")
+	Boot.bar_timer = 0
 end
 
 function update_startup_world(dt)
 	local w, h = Application.resolution()
 
 	Gui.rect(Boot.gui, Vector3(0, 0, 0), Vector2(w, h), Color(255, 0, 0, 0))
+
+	if IS_CONSOLE and not Boot.disable_loading_bar then
+		local function clamp(value, min, max)
+			if max < value then
+				return max
+			elseif value < min then
+				return min
+			else
+				return value
+			end
+		end
+
+		Boot.bar_timer = (Boot.bar_timer + dt) % 2
+		local w, h = Gui.resolution()
+		local scale = w / 1920
+		local size = Vector2(120 * scale, 13 * scale)
+		local width = 1 * scale
+		local bar_value = clamp(Boot.bar_timer, 0, 1)
+		bar_value = bar_value * bar_value * bar_value
+		local alpha = clamp(2 - Boot.bar_timer, 0, 1)
+
+		Gui.rect(Boot.gui, Vector3(w - 200 * scale, 50 * scale, 900), size)
+		Gui.rect(Boot.gui, Vector3(w - 200 * scale + width, 50 * scale + width, 901), Vector2(size[1] - width * 2, size[2] - width * 2), Color(0, 0, 0))
+		Gui.rect(Boot.gui, Vector3(w - 200 * scale + width * 3, 50 * scale + width * 4, 902), Vector2((size[1] - width * 6) * bar_value, size[2] - width * 8), Color(alpha * 255, 255, 255, 255))
+	end
+
 	World.update_scene(Boot.world, dt)
 end
 
@@ -811,8 +845,7 @@ Boot.game_update = function (self, real_world_dt)
 	end
 
 	self._machine:post_update(dt)
-	FrameTable.swap_tables()
-	FrameTable.clear_tables()
+	FrameTable.swap_and_clear()
 
 	if self.quit_game then
 		Boot.is_controlled_exit = true
@@ -1286,7 +1319,7 @@ end
 Game.require_game_scripts = function (self)
 	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "deadlock_stack", "benchmark/benchmark_handler")
 	game_require("settings", "version_settings")
-	game_require("ui", "fat_ui/fat_ui", "views/show_cursor_stack", "ui_fonts")
+	game_require("ui", "views/show_cursor_stack", "ui_fonts")
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")

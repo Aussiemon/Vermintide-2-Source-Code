@@ -74,17 +74,10 @@ local shared_state_spec = {
 SharedState.validate_spec(shared_state_spec)
 
 local PACKAGE_MANAGER_REFERENCE_NAME = "DeusChestPreloadSystem"
-local DEUS_CHEST_PRELOAD_AMOUNT = 0
-
-if IS_WINDOWS then
-	DEUS_CHEST_PRELOAD_AMOUNT = 3
-elseif IS_XB1 or IS_PS4 then
-	DEUS_CHEST_PRELOAD_AMOUNT = 0
-end
-
+local DEUS_CHEST_PRELOAD_AMOUNT = 1
 local DEUS_CHEST_CHECK_RANGE = 50
-local DEUS_CHEST_FETCH_RESULTS = {}
 local UPDATE_FREQUENCY = 5
+local DEUS_CHEST_FETCH_RESULTS = {}
 
 DeusChestPreloadSystem.init = function (self, context, system_name, extensions)
 	DeusChestPreloadSystem.super.init(self, context, system_name, extensions)
@@ -103,6 +96,82 @@ DeusChestPreloadSystem.init = function (self, context, system_name, extensions)
 	local network_event_delegate = context.network_event_delegate
 
 	self._shared_state:register_rpcs(network_event_delegate)
+	self:_setup_weapon_preload_settings()
+end
+
+DeusChestPreloadSystem._setup_weapon_preload_settings = function (self)
+	local success = false
+	local platform_type = nil
+	local deus_weapon_preload_settings = Managers.backend:get_deus_weapon_preload_settings()
+
+	if IS_XB1 then
+		platform_type = XboxOne.console_type_string()
+		local settings = deus_weapon_preload_settings[platform_type]
+		local default_settings = deus_weapon_preload_settings.default
+
+		if settings then
+			print(string.format("[DeusChestPreloadSystem] Loading weapon preload settings for platform: %q", platform_type))
+			table.dump(settings, "WEAPON_PRELOAD_SETTINGS", 2)
+
+			self._deus_chest_preload_amount = settings.deus_chest_preload_amount
+			self._deus_chest_check_range = settings.deus_chest_check_range
+			self._deus_chest_update_frequency = settings.deus_chest_update_frequency
+			success = true
+		elseif default_settings then
+			print(string.format("[DeusChestPreloadSystem] Failed getting weapon preload settings for platform: %q --> using default settings for %q", platform_type, PLATFORM))
+			table.dump(default_settings, "WEAPON_PRELOAD_SETTINGS", 2)
+
+			self._deus_chest_preload_amount = default_settings.deus_chest_preload_amount
+			self._deus_chest_check_range = default_settings.deus_chest_check_range
+			self._deus_chest_update_frequency = default_settings.deus_chest_update_frequency
+			success = true
+		end
+	elseif IS_PS4 then
+		local platform_type = (PS4.is_pro() and "ps4_pro") or "ps4"
+		local settings = deus_weapon_preload_settings[platform_type]
+		local default_settings = deus_weapon_preload_settings.default
+
+		if settings then
+			print(string.format("[DeusChestPreloadSystem] Loading weapon preload settings for platform: %q", platform_type))
+			table.dump(settings, "WEAPON_PRELOAD_SETTINGS", 2)
+
+			self._deus_chest_preload_amount = settings.deus_chest_preload_amount
+			self._deus_chest_check_range = settings.deus_chest_check_range
+			self._deus_chest_update_frequency = settings.deus_chest_update_frequency
+			success = true
+		elseif default_settings then
+			print(string.format("[DeusChestPreloadSystem] Failed getting weapon preload settings for platform: %q --> using default settings for %q", platform_type, PLATFORM))
+			table.dump(default_settings, "WEAPON_PRELOAD_SETTINGS", 2)
+
+			self._deus_chest_preload_amount = default_settings.deus_chest_preload_amount
+			self._deus_chest_check_range = default_settings.deus_chest_check_range
+			self._deus_chest_update_frequency = default_settings.deus_chest_update_frequency
+			success = true
+		end
+	elseif deus_weapon_preload_settings then
+		local settings = deus_weapon_preload_settings.default
+
+		if settings then
+			print(string.format("[DeusChestPreloadSystem] Loading weapon preload settings for platform: %q", PLATFORM))
+			table.dump(settings, "WEAPON_PRELOAD_SETTINGS", 2)
+
+			self._deus_chest_preload_amount = settings.deus_chest_preload_amount
+			self._deus_chest_check_range = settings.deus_chest_check_range
+			self._deus_chest_update_frequency = settings.deus_chest_update_frequency
+		end
+	end
+
+	if not success then
+		print(string.format("[DeusChestPreloadSystem] Couldn't find settings for platform: %q --> Using fallback settings", PLATFORM))
+
+		self._deus_chest_preload_amount = DEUS_CHEST_PRELOAD_AMOUNT
+		self._deus_chest_check_range = DEUS_CHEST_CHECK_RANGE
+		self._deus_chest_update_frequency = UPDATE_FREQUENCY
+	end
+
+	fassert(self._deus_chest_preload_amount, "[DeusChestPreloadSystem] Missing weapon preload settings for chest_preload_amount")
+	fassert(self._deus_chest_check_range, "[DeusChestPreloadSystem] Missing weapon preload settings for chest_range_check")
+	fassert(self._deus_chest_update_frequency, "[DeusChestPreloadSystem] Missing weapon preload settings for chest_update_frequency")
 end
 
 DeusChestPreloadSystem.destroy = function (self)
@@ -121,11 +190,11 @@ local all_needed_packages = {}
 local packages_to_remove = {}
 
 DeusChestPreloadSystem.update = function (self, context, t)
-	if DEUS_CHEST_PRELOAD_AMOUNT == 0 then
+	if self._deus_chest_preload_amount == 0 then
 		return
 	end
 
-	self._timer = self._timer or t + UPDATE_FREQUENCY
+	self._timer = self._timer or t + self._deus_chest_update_frequency
 
 	if t <= self._timer then
 		return
@@ -148,8 +217,8 @@ DeusChestPreloadSystem.update = function (self, context, t)
 	table.clear(all_needed_packages)
 
 	local local_player_position = POSITION_LOOKUP[local_player_unit]
-	local num_deus_chests = Broadphase.query(self._broadphase, local_player_position, DEUS_CHEST_CHECK_RANGE, DEUS_CHEST_FETCH_RESULTS)
-	num_deus_chests = math.min(num_deus_chests, DEUS_CHEST_PRELOAD_AMOUNT)
+	local num_deus_chests = Broadphase.query(self._broadphase, local_player_position, self._deus_chest_check_range, DEUS_CHEST_FETCH_RESULTS)
+	num_deus_chests = math.min(num_deus_chests, self._deus_chest_preload_amount)
 	local deus_chest_to_extension = self._deus_chest_to_extension
 
 	for i = 1, num_deus_chests, 1 do
@@ -216,7 +285,7 @@ DeusChestPreloadSystem.update = function (self, context, t)
 		end
 	end
 
-	self._timer = t + UPDATE_FREQUENCY
+	self._timer = t + self._deus_chest_update_frequency
 end
 
 DeusChestPreloadSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)

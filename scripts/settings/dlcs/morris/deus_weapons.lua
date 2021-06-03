@@ -268,6 +268,12 @@ DeusWeapons = DeusWeapons or {
 		base_item = "dr_steam_pistol",
 		property_table_name = "deus_ranged_ammo"
 	},
+	deus_we_javelin = {
+		base_item = "we_javelin"
+	},
+	deus_we_life_staff = {
+		base_item = "we_life_staff"
+	},
 	deus_wh_fencing_sword_unique1 = {
 		base_item = "wh_fencing_sword",
 		archetypes = {
@@ -1444,6 +1450,10 @@ DeusDefaultLoadout = DeusDefaultLoadout or {
 		slot_ranged = "deus_we_deus_01",
 		slot_melee = "deus_we_1h_sword"
 	},
+	we_thornsister = {
+		slot_ranged = "deus_we_life_staff",
+		slot_melee = "deus_we_1h_sword"
+	},
 	es_huntsman = {
 		slot_ranged = "deus_es_handgun",
 		slot_melee = "deus_es_2h_sword"
@@ -1519,6 +1529,7 @@ DeusStartingWeaponTypeMapping = DeusStartingWeaponTypeMapping or {
 	we_2h_axe = "deus_we_2h_axe",
 	bw_skullstaff_flamethrower = "deus_bw_skullstaff_flamethrower",
 	es_2h_sword_executioner = "deus_es_2h_sword_executioner",
+	we_life_staff = "deus_we_life_staff",
 	we_dual_wield_swords = "deus_we_dual_wield_swords",
 	bw_skullstaff_beam = "deus_bw_skullstaff_beam",
 	dr_2h_axe = "deus_dr_2h_axe",
@@ -1526,6 +1537,7 @@ DeusStartingWeaponTypeMapping = DeusStartingWeaponTypeMapping or {
 	bw_1h_flail_flaming = "deus_bw_1h_flail_flaming",
 	dr_shield_hammer = "deus_dr_shield_hammer",
 	es_2h_sword = "deus_es_2h_sword",
+	we_javelin = "deus_we_javelin",
 	wh_crossbow = "deus_wh_crossbow",
 	dr_steam_pistol = "deus_dr_steam_pistol",
 	wh_crossbow_repeater = "deus_wh_crossbow_repeater",
@@ -1974,6 +1986,18 @@ DeusWeaponGroups = DeusWeaponGroups or {
 		slot_type = "ranged",
 		can_wield = ItemMasterList.dr_steam_pistol.can_wield,
 		items_per_rarity = {}
+	},
+	we_javelin = {
+		default = "deus_we_javelin",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.we_javelin.can_wield,
+		items_per_rarity = {}
+	},
+	we_life_staff = {
+		default = "deus_we_life_staff",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.we_life_staff.can_wield,
+		items_per_rarity = {}
 	}
 }
 DeusWeaponArchetypes = DeusWeaponArchetypes or {
@@ -2379,13 +2403,6 @@ if DLCSettings.cog then
 		"dr_drakegun",
 		"dr_drake_pistol"
 	}, "dr_engineer")
-end
-
-if DLCSettings.woods then
-	add_career_to_weapon_group({
-		"we_1h_sword",
-		"we_longbow"
-	}, "we_4")
 end
 
 if DLCSettings.bless then

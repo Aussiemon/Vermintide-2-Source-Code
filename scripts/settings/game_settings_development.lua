@@ -76,6 +76,7 @@ if Development.parameter("force_debug_disabled") then
 	script_data.debug_enabled = false
 end
 
+local test_backend = Development.parameter("test_backend")
 local settings = script_data.settings
 
 print("settings.steam: " .. tostring(settings.steam))

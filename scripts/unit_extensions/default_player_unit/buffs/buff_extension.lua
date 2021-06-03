@@ -5,7 +5,7 @@ require("scripts/helpers/pseudo_random_distribution")
 local bpc = dofile("scripts/settings/bpc")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
-buff_extension_function_params = buff_extension_function_params or {}
+buff_extension_function_params = buff_extension_function_params or Script.new_map(15)
 local E = 0.001
 
 BuffExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -451,8 +451,9 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 	local unit = self._unit
 	local num_buffs = #buffs
 	local i = 1
+	local buff_extension_function_params = buff_extension_function_params
 
-	while num_buffs >= i do
+	while i <= num_buffs do
 		local buff = buffs[i]
 		local template = buff.template
 		local end_time = buff.duration and buff.start_time + buff.duration
@@ -470,7 +471,13 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 			if template.buff_after_delay and not buff.aborted then
 				local delayed_buff_name = buff.delayed_buff_name
 
-				self:add_buff(delayed_buff_name)
+				if buff.delayed_buff_params then
+					local delayed_buff_params = buff.delayed_buff_params
+
+					self:add_buff(delayed_buff_name, delayed_buff_params)
+				else
+					self:add_buff(delayed_buff_name)
+				end
 			end
 		else
 			local update_func = template.update_func
@@ -478,7 +485,12 @@ BuffExtension.update = function (self, unit, input, dt, context, t)
 			if update_func then
 				local next_update_t = buff._next_update_t
 
-				if not next_update_t or next_update_t < t then
+				if not next_update_t then
+					next_update_t = t + (buff.template.update_start_delay or 0)
+					buff._next_update_t = next_update_t
+				end
+
+				if not next_update_t or next_update_t <= t then
 					local time_into_buff = t - buff.start_time
 					local time_left_on_buff = end_time and end_time - t
 					buff_extension_function_params.time_into_buff = time_into_buff
@@ -522,7 +534,7 @@ BuffExtension.update_stat_buff = function (self, stat_buff_type, difference, ind
 	end
 end
 
-BuffExtension.remove_buff = function (self, id, buff_type)
+BuffExtension.remove_buff = function (self, id, buff_type, delayed)
 	local buffs = self._buffs
 	local num_buffs = #buffs
 	local end_time = Managers.time:time("game")
@@ -540,11 +552,16 @@ BuffExtension.remove_buff = function (self, id, buff_type)
 		buff_extension_function_params.attacker_unit = buff.attacker_unit
 
 		if (id and buff.id == id) or (buff.parent_id and id and buff.parent_id == id) or (buff_type and buff.buff_type == buff_type) then
-			self:_remove_sub_buff(buff, i, buff_extension_function_params)
+			if delayed then
+				buff.duration = 0
+				i = i + 1
+			else
+				self:_remove_sub_buff(buff, i, buff_extension_function_params)
 
-			local new_buff_count = #buffs
-			num_buffs_removed = num_buffs_removed + num_buffs - new_buff_count
-			num_buffs = new_buff_count
+				local new_buff_count = #buffs
+				num_buffs_removed = num_buffs_removed + num_buffs - new_buff_count
+				num_buffs = new_buff_count
+			end
 		else
 			i = i + 1
 		end
@@ -608,6 +625,8 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	end
 
 	table.remove(self._buffs, index)
+
+	buff.is_stale = true
 
 	if #self._buffs == 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(self._unit, false)
@@ -719,6 +738,21 @@ BuffExtension.get_buff_type = function (self, buff_type)
 	return nil
 end
 
+BuffExtension.get_buff_by_id = function (self, buff_id)
+	local buffs = self._buffs
+	local num_buffs = #buffs
+
+	for i = 1, num_buffs, 1 do
+		local buff = buffs[i]
+
+		if buff.id == buff_id then
+			return buff
+		end
+	end
+
+	return nil
+end
+
 BuffExtension.has_buff_type = function (self, buff_type)
 	local buffs = self._buffs
 	local num_buffs = #buffs
@@ -740,10 +774,13 @@ BuffExtension.has_buff_perk = function (self, perk_name)
 
 	for i = 1, num_buffs, 1 do
 		local buff = buffs[i]
-		local buff_template = buff.template
 
-		if buff_template.perk == perk_name then
-			return true
+		if not buff.aborted then
+			local buff_template = buff.template
+
+			if buff_template.perk == perk_name then
+				return true
+			end
 		end
 	end
 
@@ -757,10 +794,13 @@ BuffExtension.num_buff_perk = function (self, perk_name)
 
 	for i = 1, num_buffs, 1 do
 		local buff = buffs[i]
-		local buff_template = buff.template
 
-		if buff_template.perk == perk_name then
-			num_buff_perk = num_buff_perk + 1
+		if not buff.aborted then
+			local buff_template = buff.template
+
+			if buff_template.perk == perk_name then
+				num_buff_perk = num_buff_perk + 1
+			end
 		end
 	end
 

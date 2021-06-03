@@ -47,6 +47,8 @@ ModManager.init = function (self, boot_gui)
 		end
 	end
 
+	require("scripts/managers/mod/mod_shim")
+
 	if self:_has_enabled_mods(in_modded_realm) and Application.bundled() then
 		self:print("info", "Scanning for mods...")
 		self:_start_scan()

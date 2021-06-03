@@ -1887,6 +1887,68 @@ Missions.crawl_into_the_portal = {
 	mission_template_name = "goal",
 	text = "mission_crawl_into_the_portal"
 }
+Missions.level_trail_mission_01 = {
+	mission_template_name = "goal",
+	text = "FIND THE LOST CARAVAN"
+}
+Missions.level_trail_mission_02 = {
+	mission_template_name = "goal",
+	text = "FREE THE WAGON"
+}
+Missions.level_trail_mission_03 = {
+	mission_template_name = "goal",
+	text = "ESCORT THE WAGON TO THE VILLAGE"
+}
+Missions.level_trail_mission_04 = {
+	mission_template_name = "goal",
+	text = "PASS THE RAVINE"
+}
+Missions.level_trail_mission_05 = {
+	mission_template_name = "goal",
+	text = "ESCORT THE WAGON TO THE VILLAGE"
+}
+Missions.level_trail_mission_06 = {
+	text = "REPAIR THE MECHANISM",
+	mission_template_name = "collect",
+	collect_amount = 2
+}
+Missions.level_trail_mission_07 = {
+	mission_template_name = "goal",
+	text = "ESCORT THE WAGON TO THE VILLAGE"
+}
+Missions.level_trail_mission_08 = {
+	mission_template_name = "goal",
+	text = "DEFEAT THE BRIDGE GUARDIAN"
+}
+Missions.level_trail_mission_09 = {
+	mission_template_name = "goal",
+	text = "ESCORT THE WAGON TO THE VILLAGE"
+}
+Missions.level_trail_mission_10 = {
+	mission_template_name = "goal",
+	text = "MAKE YOUR PRESENCE KNOWN TO THE VILLAGERS"
+}
+Missions.wizards_tower_top_tower = {
+	mission_template_name = "goal",
+	text = "mission_wizards_tower_top_tower"
+}
+Missions.wizards_tower_wards = {
+	mission_template_name = "goal",
+	text = "mission_wizards_tower_wards"
+}
+Missions.wizards_tower_old_brewery = {
+	mission_template_name = "goal",
+	text = "mission_wizards_trail_old_brewery"
+}
+Missions.wizards_tower_old_brewery = {
+	mission_template_name = "goal",
+	text = "mission_wizards_tower_old_brewery"
+}
+Missions.wizards_tower_cauldron = {
+	text = "mission_wizards_tower_cauldron",
+	mission_template_name = "collect",
+	collect_amount = 3
+}
 Missions.keep_enter_portal = {
 	mission_template_name = "goal",
 	text = "mission_keep_enter_portal"

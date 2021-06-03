@@ -2232,8 +2232,11 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	end
 
 	ShowCursorStack.update_clip_cursor()
-	print("[OptionsView] Triggering `on_game_options_changed`")
-	Managers.state.event:trigger("on_game_options_changed")
+
+	if Managers.state.event then
+		print("[OptionsView] Triggering `on_game_options_changed`")
+		Managers.state.event:trigger("on_game_options_changed")
+	end
 end
 
 OptionsView.apply_bot_spawn_priority_changes = function (self, new_priority_order, show_popup)

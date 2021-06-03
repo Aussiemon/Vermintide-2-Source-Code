@@ -47,4 +47,15 @@ for _, hero in ipairs(SPProfilesAbbreviation) do
 	end
 end
 
+player.opened_shrines = {}
+
+for _, chest_type in pairs(DEUS_CHEST_TYPES) do
+	local database_name = chest_type .. "_shrine_opened"
+	player.opened_shrines[chest_type] = {
+		value = 0,
+		source = "player_data",
+		database_name = database_name
+	}
+end
+
 return

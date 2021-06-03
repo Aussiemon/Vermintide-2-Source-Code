@@ -177,7 +177,9 @@ local rat_data = {
 		planks = 1.5,
 		bot_ratling_gun_fire = 5,
 		doors = 1.5,
+		destructible_wall = 0,
 		bot_poison_wind = 5,
+		temporary_wall = 0,
 		fire_grenade = 5
 	}
 }

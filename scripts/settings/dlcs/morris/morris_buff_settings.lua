@@ -424,6 +424,12 @@ dlc_settings.buff_function_templates = {
 		end
 	end,
 	apply_screenspace_fx = function (unit, buff, params, world)
+		local is_local_unit = is_local(unit)
+
+		if not is_local_unit then
+			return
+		end
+
 		if not buff.fx_id then
 			local fx = World.create_particles(world, buff.template.screenspace_fx, Vector3(0, 0, 0))
 			buff.fx_id = fx
@@ -784,14 +790,14 @@ dlc_settings.buff_function_templates = {
 		local career_extension = ScriptUnit.extension(unit, "career_system")
 
 		if career_extension then
-			career_extension:set_abilities_always_usable(true)
+			career_extension:set_abilities_always_usable(true, "active_ability_for_coins")
 		end
 	end,
 	remove_active_ability_for_coins = function (unit, buff, params)
 		local career_extension = ScriptUnit.extension(unit, "career_system")
 
 		if career_extension then
-			career_extension:set_abilities_always_usable(nil)
+			career_extension:set_abilities_always_usable(false, "active_ability_for_coins")
 		end
 	end,
 	apply_max_health_buff_for_ai = function (unit, buff, params)
@@ -1360,16 +1366,17 @@ dlc_settings.proc_functions = {
 			end
 		end
 	end,
-	vampiric_heal = function (player, buff, params)
+	vampiric_heal = function (player, buff, params, world, param_order)
 		local player_unit = player.player_unit
 
 		if ALIVE[player_unit] and is_server() then
-			local heal_amount = buff.bonus
+			local damage = params[param_order.damage_amount]
+			local heal_amount = damage * buff.multiplier
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "health_regen")
 		end
 	end,
-	friendly_murder = function (player, buff, params)
+	friendly_murder = function (player, buff, params, world, param_order)
 		local player_unit = player.player_unit
 
 		if ALIVE[player_unit] and is_server() then
@@ -1378,6 +1385,8 @@ dlc_settings.proc_functions = {
 			local range_squared = range * range
 			local side = Managers.state.side.side_by_unit[player_unit]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+			local damage = params[param_order.damage_amount]
+			local heal_amount = damage * buff.multiplier
 
 			for i = 1, #player_and_bot_units, 1 do
 				local healed_unit = player_and_bot_units[i]
@@ -1387,7 +1396,7 @@ dlc_settings.proc_functions = {
 					local distance_squared = Vector3.distance_squared(healer_position, unit_position)
 
 					if distance_squared < range_squared then
-						DamageUtils.heal_network(healed_unit, player_unit, buff.bonus, "health_regen")
+						DamageUtils.heal_network(healed_unit, player_unit, heal_amount, "health_regen")
 					end
 				end
 			end
@@ -1702,23 +1711,15 @@ dlc_settings.proc_functions = {
 			return
 		end
 
-		local killing_blow = params[1]
-		local master_list_key = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
+		local killing_blow_data = params[1]
 
-		if not master_list_key then
+		if not killing_blow_data then
 			return
 		end
 
-		local master_list_data = rawget(ItemMasterList, master_list_key)
+		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not master_list_data then
-			return
-		end
-
-		local slot_type = master_list_data.slot_type
-		local is_melee = slot_type == "melee"
-
-		if not is_melee then
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 			return
 		end
 
@@ -1853,39 +1854,47 @@ dlc_settings.proc_functions = {
 		end
 	end,
 	chance_free_potion_use = function (player, buff, params)
-		local chance = 1 / buff.template.chance
-		local rand = math.random(1, chance)
+		local player_unit = player.player_unit
 
-		if rand == 1 then
-			local player_unit = player.player_unit
-			local inventory_extension = player_unit and ScriptUnit.has_extension(player_unit, "inventory_system")
+		if not player_unit then
+			return
+		end
 
-			if inventory_extension then
-				local potion_buffs = {}
-				local slot_name = "slot_potion"
-				local item_data = inventory_extension:get_item_data(slot_name)
+		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local proc_chance = buff.template.chance
+		local proc_name = buff.template.name
 
-				if item_data then
-					local item_template = BackendUtils.get_item_template(item_data)
-					local potion_buff = item_template.actions.action_one.default.buff_template
-					potion_buffs[#potion_buffs + 1] = potion_buff
-					local additional_items = inventory_extension:get_additional_items(slot_name)
+		if not buff_extension:has_procced(proc_chance, proc_name) then
+			return
+		end
 
-					if additional_items then
-						for _, additional_item_data in pairs(additional_items) do
-							local additional_item_template = BackendUtils.get_item_template(additional_item_data)
-							local additional_potion_buff = additional_item_template.actions.action_one.default.buff_template
-							potion_buffs[#potion_buffs + 1] = additional_potion_buff
-						end
+		local inventory_extension = player_unit and ScriptUnit.has_extension(player_unit, "inventory_system")
+
+		if inventory_extension then
+			local potion_buffs = {}
+			local slot_name = "slot_potion"
+			local item_data = inventory_extension:get_item_data(slot_name)
+
+			if item_data then
+				local item_template = BackendUtils.get_item_template(item_data)
+				local potion_buff = item_template.actions.action_one.default.buff_template
+				potion_buffs[#potion_buffs + 1] = potion_buff
+				local additional_items = inventory_extension:get_additional_items(slot_name)
+
+				if additional_items then
+					for _, additional_item_data in pairs(additional_items) do
+						local additional_item_template = BackendUtils.get_item_template(additional_item_data)
+						local additional_potion_buff = additional_item_template.actions.action_one.default.buff_template
+						potion_buffs[#potion_buffs + 1] = additional_potion_buff
 					end
 				end
+			end
 
-				if #potion_buffs > 0 then
-					local random_buff = potion_buffs[math.random(1, #potion_buffs)]
-					local buff_system = Managers.state.entity:system("buff_system")
+			if #potion_buffs > 0 then
+				local random_buff = potion_buffs[math.random(1, #potion_buffs)]
+				local buff_system = Managers.state.entity:system("buff_system")
 
-					buff_system:add_buff(player_unit, random_buff, player_unit, false)
-				end
+				buff_system:add_buff(player_unit, random_buff, player_unit, false)
 			end
 		end
 	end,
@@ -1907,10 +1916,10 @@ dlc_settings.proc_functions = {
 	end,
 	explosion_on_damage_dealt = function (player, buff, params, world)
 		local buff_template = buff.template
-		local valid_buff_types = buff_template.valid_buff_types
-		local buff_type = params[5]
+		local attack_type = params[2]
+		local valid_attack_types = buff_template.valid_attack_types
 
-		if valid_buff_types and not valid_buff_types[buff_type] then
+		if valid_attack_types and not valid_attack_types[attack_type] then
 			return
 		end
 
@@ -2021,16 +2030,15 @@ dlc_settings.proc_functions = {
 				return
 			end
 
-			local master_list_data = rawget(ItemMasterList, damage_source)
+			local killing_blow_data = params[1]
 
-			if not master_list_data then
+			if not killing_blow_data then
 				return
 			end
 
-			local slot_type = master_list_data.slot_type
-			local is_melee = slot_type == "melee"
+			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-			if not is_melee then
+			if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 				return
 			end
 
@@ -2159,9 +2167,9 @@ dlc_settings.proc_functions = {
 		if is_server() then
 			local player_unit = player.player_unit
 			local target_num = params[4]
-			local buff_type = params[5] == "MELEE_1H" or params[5] == "MELEE_2H"
+			local attack_type = params[2] == "light_attack" or params[5] == "heavy_attack"
 
-			if target_num <= 1 and buff_type then
+			if target_num <= 1 and attack_type then
 				local template = buff.template
 				local damage_to_deal = template.damage_to_deal
 
@@ -2176,9 +2184,9 @@ dlc_settings.proc_functions = {
 			local target_num = params[4]
 			local template = buff.template
 			local targets_to_hit = template.targets_to_hit
-			local buff_type = params[5] == "MELEE_1H" or params[5] == "MELEE_2H"
+			local attack_type = params[2] == "light_attack" or params[5] == "heavy_attack"
 
-			if targets_to_hit <= target_num and buff_type then
+			if targets_to_hit <= target_num and attack_type then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local buff_to_add = template.buff_to_add
 
@@ -2223,17 +2231,16 @@ dlc_settings.proc_functions = {
 		local attacked_unit = params[param_order.attacked_unit]
 
 		if ALIVE[player_unit] and ALIVE[attacked_unit] then
-			local buff_tempalte = buff.template
-			local damage_amount = params[param_order.damage_amount]
-			local buff_type = params[param_order.buff_attack_type]
-			local valid_buff_types = buff_tempalte.valid_buff_types
+			local buff_template = buff.template
+			local attack_type = params[param_order.buff_attack_type]
+			local valid_attack_types = buff_template.valid_attack_types
 
-			if valid_buff_types and valid_buff_types[buff_type] then
+			if valid_attack_types and valid_attack_types[attack_type] then
 				local proc_mod_table = params[param_order.PROC_MODIFIABLE]
 				local target_health_extension = ScriptUnit.has_extension(attacked_unit, "health_system")
 
 				if target_health_extension and target_health_extension:current_health_percent() >= 1 then
-					proc_mod_table.damage_amount = proc_mod_table.damage_amount * buff_tempalte.damage_mult
+					proc_mod_table.damage_amount = proc_mod_table.damage_amount * buff_template.damage_mult
 				end
 			end
 		end
@@ -2255,9 +2262,13 @@ dlc_settings.proc_functions = {
 	end,
 	triple_melee_headshot_power_counter = function (player, buff, params, world)
 		local hit_zone = params[3]
-		local ranged = params[5] == "RANGED"
+		local attack_type = params[2]
 
-		if hit_zone == "head" and not ranged then
+		if attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
+			return
+		end
+
+		if hit_zone == "head" then
 			buff.stacks = (buff.stacks and buff.stacks + 1) or 1
 
 			if buff.template.hits <= buff.stacks then
@@ -2280,31 +2291,36 @@ dlc_settings.proc_functions = {
 			return
 		end
 
-		local killing_blow = params[1]
-		local damage_source = killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME]
-		local master_list_item = rawget(ItemMasterList, damage_source)
-		local is_melee = master_list_item and master_list_item.slot_type == "melee"
+		local killing_blow_data = params[1]
 
-		if is_melee then
-			local t = Managers.time:time("game")
-			buff.kills = buff.kills or {}
-			buff.kills[#buff.kills + 1] = t + buff.template.time
+		if not killing_blow_data then
+			return
+		end
 
-			if buff.template.kills <= #buff.kills then
-				local player_unit = player.player_unit
-				local buff_system = Managers.state.entity:system("buff_system")
-				local buff_to_add = buff.template.buff_to_add
+		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-				buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+			return
+		end
 
-				local sound_event = "hud_gameplay_stance_smiter_buff"
-				local sound_event_two = "Play_potion_morris_effect_end"
+		local t = Managers.time:time("game")
+		buff.kills = buff.kills or {}
+		buff.kills[#buff.kills + 1] = t + buff.template.time
 
-				WwiseUtils.trigger_unit_event(world, sound_event, player_unit, 0)
-				WwiseUtils.trigger_unit_event(world, sound_event_two, player_unit, 0)
+		if buff.template.kills <= #buff.kills then
+			local player_unit = player.player_unit
+			local buff_system = Managers.state.entity:system("buff_system")
+			local buff_to_add = buff.template.buff_to_add
 
-				buff.kills = {}
-			end
+			buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+
+			local sound_event = "hud_gameplay_stance_smiter_buff"
+			local sound_event_two = "Play_potion_morris_effect_end"
+
+			WwiseUtils.trigger_unit_event(world, sound_event, player_unit, 0)
+			WwiseUtils.trigger_unit_event(world, sound_event_two, player_unit, 0)
+
+			buff.kills = {}
 		end
 	end,
 	transfer_temp_health_at_full = function (player, buff, params, world)
@@ -2928,14 +2944,14 @@ dlc_settings.buff_templates = {
 			{
 				icon = "potion_vampiric_draught",
 				name = "vampiric_draught_potion_heal",
-				refresh_durations = true,
 				buff_func = "vampiric_heal",
-				event = "on_kill",
+				event = "on_damage_dealt",
 				remove_buff_func = "remove_deus_potion_buff",
+				refresh_durations = true,
 				event_buff = true,
 				max_stacks = 1,
 				duration = MorrisBuffTweakData.vampiric_draught_potion.duration,
-				bonus = MorrisBuffTweakData.vampiric_draught_potion.bonus
+				multiplier = MorrisBuffTweakData.vampiric_draught_potion.multiplier
 			}
 		}
 	},
@@ -2944,14 +2960,14 @@ dlc_settings.buff_templates = {
 			{
 				icon = "potion_vampiric_draught",
 				name = "vampiric_draught_potion_heal_increased",
-				refresh_durations = true,
 				buff_func = "vampiric_heal",
-				event = "on_kill",
+				event = "on_damage_dealt",
 				remove_buff_func = "remove_deus_potion_buff",
+				refresh_durations = true,
 				event_buff = true,
 				max_stacks = 1,
 				duration = MorrisBuffTweakData.vampiric_draught_potion_increased.duration,
-				bonus = MorrisBuffTweakData.vampiric_draught_potion_increased.bonus
+				multiplier = MorrisBuffTweakData.vampiric_draught_potion_increased.multiplier
 			}
 		}
 	},
@@ -3060,14 +3076,14 @@ dlc_settings.buff_templates = {
 			{
 				name = "friendly_murderer_potion",
 				buff_func = "friendly_murder",
-				event = "on_kill",
+				event = "on_damage_dealt",
 				remove_buff_func = "remove_deus_potion_buff",
 				refresh_durations = true,
 				event_buff = true,
 				max_stacks = 1,
 				icon = "potion_friendly_murderer",
 				duration = MorrisBuffTweakData.friendly_murderer_potion.duration,
-				bonus = MorrisBuffTweakData.friendly_murderer_potion.bonus,
+				multiplier = MorrisBuffTweakData.friendly_murderer_potion.multiplier,
 				range = MorrisBuffTweakData.friendly_murderer_potion.range
 			}
 		}
@@ -3077,14 +3093,14 @@ dlc_settings.buff_templates = {
 			{
 				name = "friendly_murderer_potion_increased",
 				buff_func = "friendly_murder",
-				event = "on_kill",
+				event = "on_damage_dealt",
 				remove_buff_func = "remove_deus_potion_buff",
 				refresh_durations = true,
 				event_buff = true,
 				max_stacks = 1,
 				icon = "potion_friendly_murderer",
 				duration = MorrisBuffTweakData.friendly_murderer_potion_increased.duration,
-				bonus = MorrisBuffTweakData.friendly_murderer_potion_increased.bonus,
+				multiplier = MorrisBuffTweakData.friendly_murderer_potion_increased.multiplier,
 				range = MorrisBuffTweakData.friendly_murderer_potion_increased.range
 			}
 		}

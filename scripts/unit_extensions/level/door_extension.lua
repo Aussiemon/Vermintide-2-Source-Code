@@ -12,6 +12,7 @@ DoorExtension.init = function (self, extension_init_context, unit, extension_ini
 	self.is_umbra_gate = Unit.get_data(unit, "umbra_gate")
 	local move_to_exit_when_opened = Unit.get_data(unit, "move_to_exit_when_opened")
 	self.move_to_exit_when_opened = move_to_exit_when_opened == nil or move_to_exit_when_opened
+	self.ai_attack_re_eval_time = Unit.get_data(unit, "ai_attack_re_eval_time")
 	local door_state = Unit.get_data(unit, "door_state")
 	self.current_state = (door_state == 0 and "open_forward") or (door_state == 1 and "closed") or (door_state == 2 and "open_backward")
 	self.animation_flow_events = {
@@ -69,14 +70,20 @@ DoorExtension.update_nav_obstacles = function (self)
 	end
 
 	if not obstacles[current_state] and clip_nav ~= false then
-		local unit = self.unit
-		local nav_world = GLOBAL_AI_NAVWORLD
-		local obstacle, transform = NavigationUtils.create_exclusive_box_obstacle_from_unit_data(nav_world, unit)
+		local no_obstacle = Unit.get_data(unit, "navtag_volume", "no_obstacle")
 
-		GwNavBoxObstacle.add_to_world(obstacle)
-		GwNavBoxObstacle.set_transform(obstacle, transform)
+		if not no_obstacle then
+			local unit = self.unit
+			local nav_world = GLOBAL_AI_NAVWORLD
+			local obstacle, transform = NavigationUtils.create_exclusive_box_obstacle_from_unit_data(nav_world, unit)
 
-		obstacles[current_state] = obstacle
+			if obstacle then
+				GwNavBoxObstacle.add_to_world(obstacle)
+				GwNavBoxObstacle.set_transform(obstacle, transform)
+
+				obstacles[current_state] = obstacle
+			end
+		end
 	end
 
 	for obstacle_state, obstacle in pairs(obstacles) do
@@ -218,11 +225,14 @@ end
 DoorExtension.hot_join_sync = function (self, sender)
 	local level = LevelHelper:current_level(self.world)
 	local level_index = Level.unit_index(level, self.unit)
-	local door_state = self.current_state
-	local door_state_id = NetworkLookup.door_states[door_state]
-	local channel_id = PEER_ID_TO_CHANNEL[sender]
 
-	RPC.rpc_sync_door_state(channel_id, level_index, door_state_id)
+	if level_index then
+		local door_state = self.current_state
+		local door_state_id = NetworkLookup.door_states[door_state]
+		local channel_id = PEER_ID_TO_CHANNEL[sender]
+
+		RPC.rpc_sync_door_state(channel_id, level_index, door_state_id)
+	end
 end
 
 DoorExtension.destroy = function (self)

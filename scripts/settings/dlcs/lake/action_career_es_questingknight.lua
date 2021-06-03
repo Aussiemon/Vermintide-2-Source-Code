@@ -16,6 +16,7 @@ ActionCareerESQuestingKnight.client_owner_start_action = function (self, new_act
 
 	self._combo_no_wield = new_action.combo_no_wield or false
 	self._hit_fx_triggered = false
+	self._cooldown_started = false
 
 	self:_play_vo()
 	self:_play_vfx()
@@ -57,7 +58,12 @@ ActionCareerESQuestingKnight.finish = function (self, reason, data)
 
 		local career_extension = self.career_extension
 
-		career_extension:start_activated_ability_cooldown()
+		if not self._cooldown_started then
+			self._cooldown_started = true
+
+			career_extension:start_activated_ability_cooldown()
+		end
+
 		self.inventory_extension:wield_previous_non_level_slot()
 	end
 end

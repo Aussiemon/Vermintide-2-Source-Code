@@ -616,6 +616,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	lobby_info_box_twitch_logo = {
+		vertical_alignment = "center",
+		parent = "lobby_info_box_status_servers",
+		horizontal_alignment = "center",
+		size = {
+			130,
+			29
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	},
 	lobby_info_box_info_frame_servers = {
 		vertical_alignment = "center",
 		parent = "lobby_info_frame",
@@ -2214,7 +2228,8 @@ local widgets = {
 		info_frame_status_title = UIWidgets.create_simple_text(Localize("lb_status") .. ":", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_style),
 		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_title_style),
-		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style)
+		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style),
+		info_frame_twitch_logo = UIWidgets.create_simple_texture("twitch_logo_new", "lobby_info_box_twitch_logo", nil, nil, nil, nil)
 	},
 	lobby_info_box_lobbies = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_lobbies", scenegraph_definition.lobby_info_box_info_frame_lobbies.size, window_frame, 5),
@@ -2229,7 +2244,8 @@ local widgets = {
 		info_frame_status_title = UIWidgets.create_simple_text(Localize("lb_status") .. ":", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_title_style),
 		info_frame_status_text = UIWidgets.create_simple_text("Started", "lobby_info_box_status_lobbies", nil, nil, info_frame_text_style),
 		info_frame_game_type_title = UIWidgets.create_simple_text(Localize("lb_game_type") .. ":", "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_title_style),
-		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style)
+		info_frame_game_type_text = UIWidgets.create_simple_text(Localize("lb_game_type_none"), "lobby_info_box_game_type_lobbies", nil, nil, info_frame_text_style),
+		info_frame_twitch_logo = UIWidgets.create_simple_texture("twitch_logo_new", "lobby_info_box_twitch_logo", nil, nil, nil, nil)
 	},
 	lobby_info_box_servers = {
 		info_frame = UIWidgets.create_frame("lobby_info_box_info_frame_servers", scenegraph_definition.lobby_info_box_info_frame_servers.size, window_frame, 5),

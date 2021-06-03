@@ -204,6 +204,11 @@ local spec = {
 			type = "string",
 			composite_keys = {}
 		},
+		run_ended = {
+			default_value = false,
+			type = "boolean",
+			composite_keys = {}
+		},
 		completed_level_count = {
 			default_value = 0,
 			type = "number",

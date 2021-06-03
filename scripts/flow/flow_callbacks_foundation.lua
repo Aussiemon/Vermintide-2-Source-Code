@@ -1,7 +1,6 @@
 require("foundation/scripts/util/table")
 require("scripts/settings/attachment_node_linking")
 require("scripts/settings/ai_inventory_templates")
-require("scripts/settings/equipment/item_master_list_editor")
 
 local unit_alive = Unit.alive
 
@@ -537,84 +536,100 @@ function flow_callback_attach_player_item(params)
 
 	local parent_unit = params.unit
 	local world = Unit.world(parent_unit)
-	local item_table = ItemMasterList
-	local item = item_table[params.item]
 
-	if item ~= nil then
-		if params.career_filter and not table.is_empty(item.can_wield) and not table.find(item.can_wield, params.career_filter) then
-			print("SKIPPED ITEM! Career " .. params.career_filter .. " can't wield " .. params.item)
-			table.dump(item.can_wield)
+	if ItemMasterList ~= nil then
+		local item_table = ItemMasterList
+		local item = item_table[params.item]
 
-			return
-		end
+		if item ~= nil then
+			if params.career_filter and not table.is_empty(item.can_wield) and not table.find(item.can_wield, params.career_filter) then
+				print("SKIPPED ITEM! Career " .. params.career_filter .. " can't wield " .. params.item)
+				table.dump(item.can_wield)
 
-		if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" then
-			local weapon_template = Weapons[item.template]
-
-			if item.right_hand_unit ~= nil then
-				item_unit = attach_player_item(parent_unit, item.right_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+				return
 			end
 
-			if item.left_hand_unit ~= nil then
-				if item.left_hand_unit ~= item.ammo_unit then
-					item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.left_hand_attachment_node_linking.third_person, params.unwielded)
+			if item.slot_type == "melee" or item.slot_type == "ranged" or item.slot_type == "weapon_skin" then
+				if Weapons ~= nil then
+					local weapon_template = Weapons[item.template]
+
+					if item.right_hand_unit ~= nil then
+						item_unit = attach_player_item(parent_unit, item.right_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+					end
+
+					if item.left_hand_unit ~= nil then
+						if item.left_hand_unit ~= item.ammo_unit then
+							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.left_hand_attachment_node_linking.third_person, params.unwielded)
+						else
+							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+						end
+					end
+
+					if weapon_template.ammo_data ~= nil and weapon_template.actions.action_one.default.projectile_info ~= nil then
+						local projectile_units = ProjectileUnits
+
+						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
+							item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, params.unwielded)
+						end
+					end
+
+					if weapon_template.wield_anim ~= nil and not params.skip_wield_anim then
+						Unit.animation_event(parent_unit, weapon_template.wield_anim)
+					end
 				else
-					item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+					print("SKIPPED PLAYER WEAPON: Missing Weapons table")
 				end
-			end
+			elseif item.slot_type == "hat" then
+				if item.unit ~= nil then
+					if Attachments ~= nil then
+						local hat_template = Attachments[item.template]
+						item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, params.unwielded)
+						equip_event = Unit.get_data(item_unit, "equip_event") or hat_template.show_attachments_event or nil
+						material_switches = nil
 
-			if weapon_template.ammo_data ~= nil and weapon_template.actions.action_one.default.projectile_info ~= nil then
-				local projectile_units = ProjectileUnits
-
-				if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
-					item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, params.unwielded)
-				end
-			end
-
-			if weapon_template.wield_anim ~= nil and not params.skip_wield_anim then
-				Unit.animation_event(parent_unit, weapon_template.wield_anim)
-			end
-		elseif item.slot_type == "hat" then
-			local hat_template = Attachments[item.template]
-
-			if item.unit ~= nil then
-				item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, params.unwielded)
-				equip_event = Unit.get_data(item_unit, "equip_event") or hat_template.show_attachments_event or nil
-				material_switches = nil
-
-				if hat_template.character_material_changes ~= nil then
-					material_switches = hat_template.character_material_changes.third_person
-				end
-
-				local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
-
-				for _, attached_unit in pairs(flow_unit_attachments) do
-					if equip_event then
-						Unit.flow_event(attached_unit, equip_event)
-					end
-
-					if material_switches ~= nil then
-						for slot_name, material_name in pairs(material_switches) do
-							Unit.set_material(attached_unit, slot_name, material_name)
+						if hat_template.character_material_changes ~= nil then
+							material_switches = hat_template.character_material_changes.third_person
 						end
-					end
-				end
-			end
-		elseif item.slot_type == "skin" then
-			local skin_template = Cosmetics[item.temporary_template]
 
-			if skin_template.material_changes ~= nil then
-				local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+						local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
 
-				if flow_unit_attachments then
-					for slot_name, material_name in pairs(skin_template.material_changes.third_person) do
 						for _, attached_unit in pairs(flow_unit_attachments) do
-							Unit.set_material(attached_unit, slot_name, material_name)
+							if equip_event then
+								Unit.flow_event(attached_unit, equip_event)
+							end
+
+							if material_switches ~= nil then
+								for slot_name, material_name in pairs(material_switches) do
+									Unit.set_material(attached_unit, slot_name, material_name)
+								end
+							end
+						end
+					else
+						print("SKIPPED PLAYER ATTACHMENT: Missing Attachments table")
+					end
+				end
+			elseif item.slot_type == "skin" then
+				if Cosmetics ~= nil then
+					local skin_template = Cosmetics[item.temporary_template]
+
+					if skin_template.material_changes ~= nil then
+						local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+
+						if flow_unit_attachments then
+							for slot_name, material_name in pairs(skin_template.material_changes.third_person) do
+								for _, attached_unit in pairs(flow_unit_attachments) do
+									Unit.set_material(attached_unit, slot_name, material_name)
+								end
+							end
 						end
 					end
+				else
+					print("SKIPPED PLAYER COSMETICS: Missing Cosmetics table")
 				end
 			end
 		end
+	else
+		print("SKIPPED PLAYER INVENTORY: Missing ItemMasterList table")
 	end
 end
 

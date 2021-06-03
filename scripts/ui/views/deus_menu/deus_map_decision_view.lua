@@ -333,8 +333,17 @@ DeusMapDecisionView._node_pressed = function (self, node_key)
 	end
 
 	if previous_node_key == node_key then
-		self._scene:select_node(current_node_key, SOUND_EVENTS.token_move)
-		self._shared_state:set_own(self._shared_state:get_key("vote"), "")
+		if Managers.input:is_device_active("gamepad") then
+			self._scene:select_node(current_node_key, SOUND_EVENTS.token_move)
+			self._shared_state:set_own(self._shared_state:get_key("vote"), "")
+		else
+			self._scene:select_node(previous_node_key, SOUND_EVENTS.token_move)
+			self._shared_state:set_own(self._shared_state:get_key("vote"), previous_node_key)
+
+			for _, next in ipairs(node.next) do
+				self._scene:highlight_edge(previous_node_key, next)
+			end
+		end
 	else
 		self._scene:select_node(node_key, SOUND_EVENTS.token_move)
 		self._shared_state:set_own(self._shared_state:get_key("vote"), node_key)

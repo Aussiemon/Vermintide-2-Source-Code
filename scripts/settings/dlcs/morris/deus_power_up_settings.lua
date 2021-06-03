@@ -1973,8 +1973,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					event = "on_hit",
 					explosion_template = "deus_ranged_crit_explosion",
 					event_buff = true,
-					valid_buff_types = {
-						RANGED = true
+					valid_attack_types = {
+						instant_projectile = true,
+						projectile = true
 					},
 					power_scale = power_up_tweak_data.deus_ranged_crit_explosion.multiplier
 				}
@@ -2233,9 +2234,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					event = "on_player_damage_dealt",
 					authority = "server",
 					damage_mult = power_up_tweak_data.deus_target_full_health_damage_mult.baked_multiplier,
-					valid_buff_types = {
-						MELEE_1H = true,
-						MELEE_2H = true
+					valid_attack_types = {
+						heavy_attack = true,
+						light_attack = true
 					}
 				}
 			}
@@ -3118,6 +3119,16 @@ DeusPowerUpIncompatibilityPairs = DeusPowerUpIncompatibilityPairs or {
 			"talent_6_3"
 		}
 	},
+	we_thornsister = {
+		{
+			"talent_6_1",
+			"talent_6_2"
+		},
+		{
+			"talent_6_2",
+			"talent_6_3"
+		}
+	},
 	es_huntsman = {
 		{
 			"talent_6_2",
@@ -3247,6 +3258,11 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 		talent_3_3 = true,
 		talent_3_2 = true
 	},
+	we_thornsister = {
+		talent_3_1 = true,
+		talent_3_3 = true,
+		talent_3_2 = true
+	},
 	es_huntsman = {
 		talent_3_1 = true,
 		talent_3_3 = true,
@@ -3264,15 +3280,18 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 	},
 	es_questingknight = {
 		deus_ammo_pickup_heal = true,
-		deus_ammo_pickup_range_pen = true,
-		deus_extra_shot = true,
+		talent_4_2 = true,
+		talent_3_1 = true,
 		heal_on_dot_damage_dealt = true,
 		deus_ranged_crit_explosion = true,
 		deus_ammo_pickup_reload_speed = true,
 		talent_3_2 = true,
-		talent_3_1 = true,
+		deus_extra_shot = true,
+		deus_ammo_pickup_range_pen = true,
 		deus_consumable_extra_shot = true,
-		talent_3_3 = true
+		talent_4_1 = true,
+		talent_3_3 = true,
+		talent_4_3 = true
 	}
 }
 DeusPowerUpAvailabilityTypes = DeusPowerUpAvailabilityTypes or {

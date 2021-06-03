@@ -4404,9 +4404,10 @@ DamageProfileTemplates.poison_direct = {
 	}
 }
 DamageProfileTemplates.poison_aoe = {
-	no_friendly_fire = true,
 	is_dot = true,
+	charge_value = "aoe",
 	require_damage_for_dot = true,
+	no_friendly_fire = true,
 	no_stagger_damage_reduction_ranged = true,
 	no_stagger = false,
 	armor_modifier = {
@@ -4924,6 +4925,7 @@ for name, damage_profile in pairs(DamageProfileTemplates) do
 	end
 
 	fassert(damage_profile.default_target, "damage profile [\"%s\"] missing default_target", name)
+	fassert(damage_profile.charge_value, "damage profile [\"%s\"] missing charge_value", name)
 
 	if type(damage_profile.critical_strike) == "string" then
 		local template = PowerLevelTemplates[damage_profile.critical_strike]

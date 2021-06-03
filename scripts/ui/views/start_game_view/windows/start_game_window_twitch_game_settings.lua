@@ -279,7 +279,7 @@ StartGameWindowTwitchGameSettings._update_additional_options = function (self, f
 	local strict_matchmaking_enabled = false
 	local twitch_active = Managers.twitch and Managers.twitch:is_connected()
 	local lobby = self._network_lobby
-	local num_members = #lobby:members():get_members()
+	local num_members = lobby:members():get_member_count()
 	local is_alone = num_members == 1
 
 	if force_update or is_alone ~= self._is_alone or private_enabled ~= self._private_enabled or always_host_enabled ~= self._always_host_enabled or strict_matchmaking_enabled ~= self._strict_matchmaking_enabled or twitch_active ~= self._twitch_active then

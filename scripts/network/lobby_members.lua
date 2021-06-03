@@ -4,15 +4,19 @@ LobbyMembers.init = function (self, lobby)
 	self.lobby = lobby
 	self.members_joined = {}
 	self.members_left = {}
-	local members = lobby:members()
-	local my_members = {}
+	local current_members, member_count = lobby:members()
+	member_count = member_count or #current_members
+	self._member_buffer = current_members
+	self.member_count = member_count
+	local member_map = {}
 
-	for i, peer_id in ipairs(members) do
-		my_members[peer_id] = true
+	for i = 1, member_count, 1 do
+		local peer_id = current_members[i]
+		member_map[peer_id] = true
 		self.members_joined[i] = peer_id
 	end
 
-	self.members = my_members
+	self.members = member_map
 	self._members_changed = true
 
 	if IS_CONSOLE and not Managers.account:offline_mode() then
@@ -31,10 +35,23 @@ LobbyMembers.update = function (self)
 	table.clear(members_joined)
 	table.clear(members_left)
 
-	local current_members = self.lobby:members()
+	local member_buffer = self._member_buffer
+
+	table.clear(member_buffer)
+
+	local current_members, member_count = self.lobby:members(member_buffer)
+
+	if not member_count then
+		self._member_buffer = current_members
+		member_count = #current_members
+	end
+
+	self.member_count = member_count
 	local members = self.members
 
-	for i, peer_id in ipairs(current_members) do
+	for i = 1, member_count, 1 do
+		local peer_id = current_members[i]
+
 		if members[peer_id] == nil then
 			members_joined[#members_joined + 1] = peer_id
 
@@ -87,7 +104,11 @@ LobbyMembers.get_members_joined = function (self)
 end
 
 LobbyMembers.get_members = function (self)
-	return self.lobby:members()
+	return self._member_buffer
+end
+
+LobbyMembers.get_member_count = function (self)
+	return self.member_count
 end
 
 LobbyMembers.members_map = function (self)

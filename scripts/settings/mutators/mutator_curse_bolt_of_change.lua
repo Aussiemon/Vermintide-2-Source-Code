@@ -1,6 +1,7 @@
 local base_lighting_strike = require("scripts/settings/mutators/mutator_lightning_strike")
 local bolt_of_change = table.clone(base_lighting_strike)
 local STOP_SPAWN_DISTANCE = 5
+bolt_of_change.package_name = "resource_packages/mutators/mutator_curse_bolt_of_change"
 bolt_of_change.display_name = "curse_bolt_of_change_name"
 bolt_of_change.description = "curse_bolt_of_change_desc"
 bolt_of_change.icon = "deus_curse_tzeentch_01"
@@ -435,7 +436,7 @@ local function table_next_random_value(seed, t)
 end
 
 local function get_num_specials(conflict_director, spawn_queue)
-	local specials_spawned_by_bolt = #conflict_director:alive_specials()
+	local specials_spawned_by_bolt = conflict_director:alive_specials_count()
 
 	for _, spawn_queue_entry in ipairs(spawn_queue) do
 		local breed = spawn_queue_entry.breed

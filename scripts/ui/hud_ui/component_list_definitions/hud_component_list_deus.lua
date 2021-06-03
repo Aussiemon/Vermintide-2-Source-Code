@@ -11,17 +11,6 @@ local deus_components = {
 	},
 	{
 		use_hud_scale = true,
-		class_name = "DeusInspectView",
-		filename = "scripts/ui/views/deus_menu/deus_inspect_view",
-		visibility_groups = {
-			"deus_inspect",
-			"game_mode_disable_hud",
-			"dead",
-			"alive"
-		}
-	},
-	{
-		use_hud_scale = true,
 		class_name = "DeusRunStatsView",
 		filename = "scripts/ui/views/deus_menu/deus_run_stats_view",
 		visibility_groups = {
@@ -44,16 +33,6 @@ local deus_visibility_groups = {
 		order = 7,
 		validation_function = function (ingame_hud)
 			local component = ingame_hud:component("DeusRunStatsView")
-			local is_active = component and component:is_ui_active()
-
-			return is_active
-		end
-	},
-	{
-		name = "deus_inspect",
-		order = 8,
-		validation_function = function (ingame_hud)
-			local component = ingame_hud:component("DeusInspectView")
 			local is_active = component and component:is_ui_active()
 
 			return is_active

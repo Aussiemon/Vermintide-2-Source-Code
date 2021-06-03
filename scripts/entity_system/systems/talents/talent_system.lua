@@ -30,6 +30,7 @@ end
 
 TalentSystem.rpc_sync_talents = function (self, channel_id, unit_game_object_id, talent_ids)
 	fassert(self.is_server, "Server should be the only one receiving talent syncs")
+	printf("TalentSystem:rpc_sync_talents %d %d", channel_id, unit_game_object_id)
 
 	local unit = self.unit_storage:unit(unit_game_object_id)
 	local talent_extension = ScriptUnit.extension(unit, "talent_system")

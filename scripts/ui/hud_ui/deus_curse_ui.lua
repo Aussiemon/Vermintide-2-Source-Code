@@ -3,7 +3,7 @@ local animation_definitions = definitions.animation_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local scenegraph_methods = definitions.scenegraph_methods
 local text_background_width = definitions.text_background_width
-local CURSE_DISPLAY_TIME = 8
+local CURSE_INITIAL_ACTIVATION_DELAY_DIFF = -2
 DeusCurseUI = class(DeusCurseUI)
 
 DeusCurseUI.init = function (self, parent, ingame_ui_context)
@@ -102,7 +102,8 @@ end
 DeusCurseUI.show_curse_info = function (self, theme, curse)
 	local game_mode_manager = Managers.state.game_mode
 	local round_started = game_mode_manager:is_round_started()
-	self._timer = (round_started and CURSE_DISPLAY_TIME) or math.huge
+	local display_time = self:_get_display_time()
+	self._timer = (round_started and display_time) or math.huge
 	local mutator_data = MutatorTemplates[curse]
 	local curse_name = Localize(mutator_data.display_name)
 	local curse_description = Localize(mutator_data.description)
@@ -148,7 +149,7 @@ DeusCurseUI._update_description_widget = function (self, title_text, curse_name,
 end
 
 DeusCurseUI.on_round_started = function (self)
-	self._timer = CURSE_DISPLAY_TIME
+	self._timer = self:_get_display_time()
 end
 
 DeusCurseUI.draw = function (self, dt)
@@ -184,6 +185,10 @@ DeusCurseUI.update_animations = function (self, dt)
 			animations[animation_name] = nil
 		end
 	end
+end
+
+DeusCurseUI._get_display_time = function (self)
+	return MutatorCommonSettings.deus.initial_activation_delay + CURSE_INITIAL_ACTIVATION_DELAY_DIFF
 end
 
 DeusCurseUI._clear_animations = function (self)

@@ -232,7 +232,8 @@ local CAREER_ID_LOOKUP = {
 	"bw_unchained",
 	"wh_captain",
 	"wh_bountyhunter",
-	"wh_zealot"
+	"wh_zealot",
+	"we_thornsister"
 }
 
 BackendUtils.calculate_weave_score = function (tier, score, career_name)

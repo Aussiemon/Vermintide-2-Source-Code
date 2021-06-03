@@ -68,6 +68,7 @@ DeathSystem._cleanup_extension = function (self, unit, extension_name)
 	end
 
 	extension.death_has_started = false
+	extension.extension_init_data = nil
 	self.unit_extensions[unit] = nil
 	self.death_reactions_to_start[unit] = nil
 	self.active_reactions[extension.network_type][extension.death_reaction_template][unit] = nil
@@ -102,7 +103,7 @@ local function start_death_reaction(unit, death_extension, killing_blow, active_
 	local network_type = death_extension.network_type
 	local death_reaction_template = death_extension.death_reaction_template
 	local death_reaction = DeathReactions.templates[death_reaction_template][network_type]
-	local death_reaction_data, death_is_done = death_reaction.start(unit, context, t, killing_blow, is_server)
+	local death_reaction_data, death_is_done = death_reaction.start(unit, context, t, killing_blow, is_server, death_extension)
 
 	if death_is_done == DeathReactions.IS_DONE then
 		Unit.flow_event(unit, "lua_dead")
@@ -233,6 +234,7 @@ DeathSystem._create_dummy_killing_blow = function (self, unit, damage_type)
 	killing_blow[DamageDataIndex.CRITICAL_HIT] = false
 	killing_blow[DamageDataIndex.FIRST_HIT] = true
 	killing_blow[DamageDataIndex.TOTAL_HITS] = 1
+	killing_blow[DamageDataIndex.ATTACK_TYPE] = "n/a"
 	killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = 1
 
 	return killing_blow

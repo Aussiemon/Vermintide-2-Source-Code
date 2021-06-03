@@ -35,12 +35,16 @@ VoiceChatXboxOneManager.reset = function (self)
 	self._has_local_user = false
 end
 
+VoiceChatXboxOneManager.clear_dangling_remote_users = function (self)
+	VoiceChat.clear_dangling_remote_users()
+end
+
 VoiceChatXboxOneManager.initiated = function (self)
 	return self._has_local_user
 end
 
 VoiceChatXboxOneManager.add_local_user = function (self)
-	if not self._bandwidth_disabled and not self._has_local_user and Managers.account:has_privilege(UserPrivilege.COMMUNICATION_VOICE_INGAME) and Application.user_setting("voip_is_enabled") then
+	if not self._bandwidth_disabled and not self._has_local_user and Managers.account:has_privilege(UserPrivilege.COMMUNICATION_VOICE_INGAME) then
 		local user_id = Managers.account:user_id()
 		self._has_local_user = true
 
@@ -92,6 +96,10 @@ VoiceChatXboxOneManager.remove_remote_user = function (self, xuid)
 end
 
 VoiceChatXboxOneManager.set_enabled = function (self, enabled)
+	print("[VoiceChatXboxOneManager] Temporarily turned off ability to turn voice chat ON/OFF")
+
+	return
+
 	if enabled then
 		self:add_local_user()
 	else

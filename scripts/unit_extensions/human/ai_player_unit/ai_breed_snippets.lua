@@ -1090,6 +1090,10 @@ AiBreedSnippets.reward_boss_kill_loot = function (unit, blackboard)
 		return
 	end
 
+	if blackboard.deny_kill_loot then
+		return
+	end
+
 	local nav_world = blackboard.nav_world
 	local position = POSITION_LOOKUP[unit]
 	local below = 1

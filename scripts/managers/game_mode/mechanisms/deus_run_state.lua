@@ -70,6 +70,14 @@ DeusRunState.get_weapon_group_whitelist = function (self)
 	return self._weapon_group_whitelist
 end
 
+DeusRunState.set_run_ended = function (self, value)
+	self._shared_state:set_server(self._shared_state:get_key("run_ended"), value)
+end
+
+DeusRunState.get_run_ended = function (self)
+	return self._shared_state:get_server(self._shared_state:get_key("run_ended"))
+end
+
 DeusRunState.set_run_seed = function (self, run_seed)
 	self._run_seed = run_seed
 end

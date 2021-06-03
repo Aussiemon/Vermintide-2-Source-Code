@@ -318,7 +318,7 @@ HealthSystem.update_debug = function (self)
 	end
 end
 
-HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, victim_unit_is_level_unit, attacker_unit_go_id, attacker_is_level_unit, source_attacker_unit_go_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
 	fassert(not self.is_server, "Tried sending rpc_add_damage to something other than client")
 
 	local victim_unit = nil
@@ -348,6 +348,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 	local damage_source_name = NetworkLookup.damage_sources[damage_source_id]
 	local hit_ragdoll_actor = NetworkLookup.hit_ragdoll_actors[hit_ragdoll_actor_id]
 	local hit_react_type = NetworkLookup.hit_react_types[hit_react_type_id]
+	local attack_type = NetworkLookup.buff_attack_types[attack_type_id]
 	local attacker_unit_alive = Unit.alive(attacker_unit)
 	local victim_health_extension = self.unit_extensions[victim_unit]
 	local buff_extension = ScriptUnit.has_extension(source_attacker_unit, "buff_system")
@@ -357,7 +358,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 	end
 
 	if damage_type ~= "sync_health" then
-		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
 	end
 
 	if victim_health_extension:is_alive() and is_dead then
@@ -377,6 +378,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 		killing_blow[DamageDataIndex.CRITICAL_HIT] = is_critical_strike
 		killing_blow[DamageDataIndex.FIRST_HIT] = first_hit
 		killing_blow[DamageDataIndex.TOTAL_HITS] = total_hits
+		killing_blow[DamageDataIndex.ATTACK_TYPE] = attack_type
 		killing_blow[DamageDataIndex.BACKSTAB_MULTIPLIER] = backstab_multiplier
 		local death_system = Managers.state.entity:system("death_system")
 

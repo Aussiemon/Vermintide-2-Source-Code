@@ -17,5 +17,11 @@ EnergyData.we_shade = {
 	depletion_cooldown = 5,
 	recharge_rate = 1.5
 }
+EnergyData.we_thornsister = {
+	recharge_delay = 0.2,
+	max_value = 25,
+	depletion_cooldown = 5,
+	recharge_rate = 1.5
+}
 
 return

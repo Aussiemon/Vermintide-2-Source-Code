@@ -793,7 +793,7 @@ local widget_definitions_by_state = {
 			content = {
 				frame = "menu_frame_16_white",
 				frame_write_mask = "diagonal_center_fade_write_mask",
-				description_text = "Item added to your inventory",
+				description_text = "inventory_item_added",
 				text = "menu_store_purchase_confirmation_approved"
 			},
 			style = {
@@ -892,7 +892,7 @@ local widget_definitions_by_state = {
 				description_text = {
 					font_size = 20,
 					upper_case = true,
-					localize = false,
+					localize = true,
 					horizontal_alignment = "center",
 					vertical_alignment = "top",
 					font_type = "hell_shark",

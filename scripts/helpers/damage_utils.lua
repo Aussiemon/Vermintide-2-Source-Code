@@ -1233,6 +1233,11 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 								in_range = modified_radius * modified_radius <= Vector3.length_squared(delta_pos)
 							end
 
+							if in_cone and explosion_right_scaling then
+								local modified_radius = math.lerp(radius, radius * explosion_right_scaling, 1 - math.abs(Vector3.dot(direction, explosion_right_scaling)))
+								in_range = modified_radius * modified_radius <= Vector3.length_squared(delta_pos)
+							end
+
 							if in_cone and in_range then
 								PhysicsWorld.prepare_actors_for_raycast(physics_world, impact_position, direction, 0.1)
 
@@ -1294,6 +1299,8 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 
 		local area_damage_system = Managers.state.entity:system("area_damage_system")
 		local target_number = 0
+		local hit_sound_cap = explosion_data.hit_sound_event_cap or num_hits
+		local hit_sound_count = 0
 
 		for i = 1, num_hits, 1 do
 			local hit_actor = aoe_target_array[i]
@@ -1394,10 +1401,12 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 					buff_system:add_buff(hit_unit, explosion_data.enemy_debuff, hit_unit, false)
 				end
 
-				if explosion_data.hit_sound_event then
+				if explosion_data.hit_sound_event and hit_sound_count < hit_sound_cap then
 					local audio_system = Managers.state.entity:system("audio_system")
 
 					audio_system:play_audio_unit_event(explosion_data.hit_sound_event, hit_unit)
+
+					hit_sound_count = hit_sound_count + 1
 				end
 
 				if explosion_data.catapult_players and DamageUtils.is_player_unit(hit_unit) then
@@ -1651,7 +1660,7 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 			damage_type = (victim_unit == attacked_unit and damage_type) or "buff"
 			local health_extension = ScriptUnit.extension(victim_unit, "health_system")
 
-			health_extension:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			health_extension:add_damage(attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, buff_attack_type, backstab_multiplier)
 
 			if not health_extension:is_alive() then
 				Managers.state.unit_spawner:prioritize_death_watch_unit(attacked_unit, t)
@@ -1725,8 +1734,9 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 	hit_position = NetworkUtils.network_clamp_position(hit_position)
 	local buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
 	local hit_unit_health_extension = ScriptUnit.extension(hit_unit, "health_system")
+	local source_buff_extension = source_attacker_unit and ScriptUnit.has_extension(source_attacker_unit, "buff_system")
 
-	if buff_extension and hit_unit_health_extension:is_alive() then
+	if (buff_extension or source_buff_extension) and hit_unit_health_extension:is_alive() then
 		local item_data = rawget(ItemMasterList, damage_source)
 		local weapon_template_name = item_data and item_data.template
 		local buff_type = "other"
@@ -1739,9 +1749,10 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 		end
 
 		ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount = damage_amount
+		local buff_extension = buff_extension or source_buff_extension
 
-		buff_extension:trigger_procs("on_player_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, damage_source, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
-		buff_extension:trigger_procs("on_damage_dealt", hit_unit, attacker_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, buff_type, target_index, damage_source, damage_type, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
+		buff_extension:trigger_procs("on_player_damage_dealt", hit_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, charge_value, target_index, damage_source, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
+		buff_extension:trigger_procs("on_damage_dealt", hit_unit, attacker_unit, damage_amount, hit_zone_name, no_crit_headshot_damage, is_critical_strike, charge_value, target_index, damage_source, damage_type, first_hit, ON_DAMAGE_DEALT_PROC_MODIFIABLE)
 
 		damage_amount = ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount
 	end
@@ -1759,7 +1770,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 				local num_calls = math.floor(damage_amount / max_network_damage)
 
 				for _ = 1, num_calls, 1 do
-					target_health_extension:add_damage(attacker_unit, max_network_damage, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+					target_health_extension:add_damage(attacker_unit, max_network_damage, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, charge_value, backstab_multiplier)
 				end
 
 				local remaining_damage_amount = damage_amount - max_network_damage * num_calls
@@ -1768,7 +1779,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 
 			local networkified_damage_amount = DamageUtils.networkify_damage(damage_amount)
 
-			target_health_extension:add_damage(attacker_unit, networkified_damage_amount, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+			target_health_extension:add_damage(attacker_unit, networkified_damage_amount, hit_zone_name, damage_type, hit_position, attack_direction, damage_source, hit_ragdoll_actor, source_attacker_unit, nil, is_critical_strike, added_dot, first_hit, total_hits, charge_value, backstab_multiplier)
 
 			if not target_health_extension:is_alive() then
 				Managers.state.unit_spawner:prioritize_death_watch_unit(hit_unit, t)
@@ -2181,7 +2192,7 @@ DamageUtils.apply_damage_to_overcharge = function (unit, damage)
 	local overcharge_extension = ScriptUnit.has_extension(unit, "overcharge_system")
 
 	if overcharge_extension then
-		overcharge_extension:add_charge(damage)
+		overcharge_extension:add_charge(damage, nil, "damage_to_overcharge")
 	end
 end
 

@@ -1,3 +1,4 @@
+require("scripts/utils/strict_table")
 require("scripts/settings/player_unit_damage_settings")
 require("scripts/settings/equipment/weapons")
 
@@ -211,6 +212,7 @@ ProcEvents = {
 	"on_charge_finished",
 	"on_ability_recharged",
 	"on_ability_cooldown_started",
+	"on_extra_ability_consumed",
 	"on_gromril_armour_removed"
 }
 
@@ -405,19 +407,16 @@ ProcFunctions = {
 				return
 			end
 
-			local slot_type = get_killing_blow_slot_type(params)
-			local is_melee = slot_type == "melee"
+			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-			if not is_melee then
-				return
-			end
+			if attack_type and (attack_type == "light_attack" or attack_type == "heavy_attack") then
+				local breed = params[2]
 
-			local breed = params[2]
+				if breed and not breed.is_hero then
+					local heal_amount = breed.bloodlust_health or 0
 
-			if breed and not breed.is_hero then
-				local heal_amount = breed.bloodlust_health or 0
-
-				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+					DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
+				end
 			end
 		end
 	end,
@@ -432,7 +431,7 @@ ProcFunctions = {
 		local hit_unit = params[1]
 		local hit_zone_name = params[3]
 		local target_number = params[4]
-		local buff_type = params[5]
+		local attack_type = params[2]
 		local critical_hit = params[6]
 		local breed = AiUtils.unit_breed(hit_unit)
 
@@ -441,7 +440,7 @@ ProcFunctions = {
 			has_procced = false
 		end
 
-		if Unit.alive(player_unit) and breed and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") and not has_procced then
+		if ALIVE[player_unit] and breed and (attack_type == "light_attack" or attack_type == "heavy_attack") and not has_procced then
 			if hit_zone_name == "head" or hit_zone_name == "neck" or hit_zone_name == "weakspot" then
 				buff.has_procced = true
 
@@ -465,9 +464,9 @@ ProcFunctions = {
 		if ALIVE[player_unit] then
 			local hit_unit = params[1]
 			local damage_profile = params[2]
+			local attack_type = damage_profile.charge_value
 			local stagger_value = params[6]
 			local stagger_type = params[4]
-			local buff_type = params[7]
 			local target_index = params[8]
 			local breed = AiUtils.unit_breed(hit_unit)
 			local multiplier = buff.multiplier
@@ -479,9 +478,7 @@ ProcFunctions = {
 				heal_amount = 0.6
 			end
 
-			print(target_index)
-
-			if target_index and target_index < 5 and breed and not breed.is_hero and (buff_type == "MELEE_1H" or buff_type == "MELEE_2H") then
+			if target_index and target_index < 5 and breed and not breed.is_hero and (attack_type == "light_attack" or attack_type == "heavy_attack" or attack_type == "action_push") then
 				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
 			end
 		end
@@ -497,9 +494,9 @@ ProcFunctions = {
 			return
 		end
 
-		local buff_type = params[param_order.buff_attack_type]
+		local attack_type = params[param_order.buff_attack_type]
 
-		if buff_type ~= "MELEE_1H" and buff_type ~= "MELEE_2H" then
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 			return
 		end
 
@@ -855,10 +852,15 @@ ProcFunctions = {
 			return
 		end
 
-		local slot_type = get_killing_blow_slot_type(params)
-		local is_melee = slot_type == "melee"
+		local killing_blow_data = params[1]
 
-		if not is_melee then
+		if not killing_blow_data then
+			return
+		end
+
+		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
+
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 			return
 		end
 
@@ -1113,12 +1115,13 @@ ProcFunctions = {
 	ranged_crits_increase_dmg_vs_armour_type = function (player, buff, params)
 		local player_unit = player.player_unit
 		local target_unit = params[1]
+		local attack_type = params[2]
 		local hit_zone_name = nil
 		local breed = AiUtils.unit_breed(target_unit)
 		local dummy_unit_armor = Unit.get_data(target_unit, "armor")
 		local armor_type = ActionUtils.get_target_armor(hit_zone_name, breed, dummy_unit_armor)
 
-		if Unit.alive(player_unit) then
+		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe") and ALIVE[player_unit] then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
 			if armor_type == 1 then
@@ -1714,11 +1717,13 @@ ProcFunctions = {
 		local hit_unit_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
 		local player_unit_buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
-		if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") and target_number == 1 then
-			player_unit_buff_extension:add_buff("consecutive_shot_buff")
-		end
+		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe") then
+			if hit_unit_buff_extension:has_buff_type("consecutive_shot_debuff") and target_number == 1 then
+				player_unit_buff_extension:add_buff("consecutive_shot_buff")
+			end
 
-		hit_unit_buff_extension:add_buff("consecutive_shot_debuff")
+			hit_unit_buff_extension:add_buff("consecutive_shot_debuff")
+		end
 	end,
 	block_increase_enemy_damage_taken = function (player, buff, params)
 		local attacking_unit = params[1]
@@ -1764,10 +1769,10 @@ ProcFunctions = {
 			end
 
 			local buff_template = buff.template
-			local valid_buff_types = buff_template.valid_buff_types
-			local buff_type = params[5]
+			local valid_attack_types = buff_template.valid_attack_types
+			local attack_type = params[2]
 
-			if valid_buff_types and not valid_buff_types[buff_type] then
+			if valid_attack_types and not valid_attack_types[attack_type] then
 				return
 			end
 
@@ -2207,9 +2212,9 @@ ProcFunctions = {
 	add_buff_on_ranged_headshot = function (player, buff, params)
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) then
+		if ALIVE[player_unit] then
 			local hit_zone = params[3]
-			local buff_type = params[5] == "MELEE_1H" or params[5] == "MELEE_2H"
+			local buff_type = params[2] == "light_attack" or params[2] == "heavy_attack"
 
 			if hit_zone and (hit_zone == "head" or hit_zone == "neck") and not buff_type then
 				local buff_template = buff.template
@@ -2893,9 +2898,9 @@ ProcFunctions = {
 			return
 		end
 
-		local hit_data = params[5]
+		local attack_type = params[2]
 
-		if not hit_data or hit_data == "n/a" then
+		if not attack_type then
 			return
 		end
 
@@ -2904,7 +2909,7 @@ ProcFunctions = {
 		local is_melee = false
 		local is_ranged = false
 
-		if hit_data == "RANGED" then
+		if attack_type == "projectile" or attack_type == "instant_projectile" then
 			local t = Managers.time:time("game")
 
 			if not buff.t then
@@ -2918,7 +2923,7 @@ ProcFunctions = {
 			buff.t = t
 			is_ranged = true
 			buff_name = buff_template.melee_buff
-		elseif hit_data == "MELEE_1H" or hit_data == "MELEE_2H" then
+		elseif attack_type == "light_attack" or attack_type == "heavy_attack" then
 			local target_number = params[4]
 
 			if target_number > 1 then
@@ -3219,10 +3224,9 @@ ProcFunctions = {
 			return
 		end
 
-		local slot_type = get_killing_blow_slot_type(params)
-		local is_melee = slot_type == "melee"
+		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not is_melee then
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 			return
 		end
 
@@ -3322,6 +3326,12 @@ ProcFunctions = {
 		local hit_zone_name = params[3]
 
 		if Unit.alive(player_unit) and hit_zone_name == "head" and (attack_type == "instant_projectile" or attack_type == "projectile") then
+			local ranged_buff_type = params[5]
+
+			if ranged_buff_type and ranged_buff_type == "RANGED_ABILITY" then
+				return
+			end
+
 			local weapon_slot = "slot_ranged"
 			local ammo_amount = buff.bonus
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
@@ -3662,10 +3672,15 @@ ProcFunctions = {
 			return
 		end
 
-		local slot_type = get_killing_blow_slot_type(params)
-		local is_melee = slot_type == "melee"
+		local killing_blow_data = params[1]
 
-		if not is_melee then
+		if not killing_blow_data then
+			return
+		end
+
+		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
+
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 			return
 		end
 
@@ -3700,8 +3715,9 @@ ProcFunctions = {
 	end,
 	reduce_activated_ability_cooldown_with_internal_cooldown_on_crit = function (player, buff, params)
 		local player_unit = player.player_unit
+		local attack_type = params[2]
 
-		if Unit.alive(player_unit) then
+		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe") and ALIVE[player_unit] then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local buff_to_add = buff_template.buff_to_add
@@ -3753,7 +3769,7 @@ ProcFunctions = {
 	remove_victor_bountyhunter_passive_crit_buff = function (player, buff, params)
 		local player_unit = player.player_unit
 		local action_type = params[1]
-		local melee_action = action_type == "sweep" or action_type == "push_stagger"
+		local melee_action = action_type == "sweep" or action_type == "push_stagger" or action_type == "shield_slam"
 
 		if Unit.alive(player_unit) then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
@@ -3957,17 +3973,9 @@ ProcFunctions = {
 			return
 		end
 
-		local damage_type = killing_blow_data[DamageDataIndex.DAMAGE_TYPE]
-		local rapier_pistol = damage_type == "shot_carbine"
+		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if rapier_pistol then
-			return
-		end
-
-		local slot_type = get_killing_blow_slot_type(params)
-		local is_melee = slot_type == "melee"
-
-		if not is_melee then
+		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
 			return
 		end
 
@@ -4006,14 +4014,14 @@ ProcFunctions = {
 		local required_weapon_type = buff_data.weapon_type
 
 		if required_weapon_type then
-			local slot_type = get_killing_blow_slot_type(params)
+			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-			if slot_type == "melee" then
-				local damage_type = killing_blow_data[DamageDataIndex.DAMAGE_TYPE]
-
-				if damage_type == "shot_carbine" then
-					slot_type = "ranged"
+			if required_weapon_type == "melee" then
+				if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+					return
 				end
+			elseif required_weapon_type == "ranged" and (not attack_type or (attack_type ~= "instant_projectile" and attack_type ~= "projectile")) then
+				return
 			end
 
 			if slot_type ~= required_weapon_type then

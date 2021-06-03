@@ -113,18 +113,24 @@ local function verify_stock_item(item_master_list_data)
 		return false
 	end
 
-	local steam_itemdefid = item_master_list_data.steam_itemdefid
-	local has_platform_id = steam_itemdefid ~= nil
+	local has_platform_id = nil
 
-	if has_platform_id then
-		local platform_id_approved = false
+	if IS_CONSOLE then
+		return true
+	else
+		local steam_itemdefid = item_master_list_data.steam_itemdefid
+		has_platform_id = steam_itemdefid ~= nil
 
-		if steam_itemdefid and HAS_STEAM then
-			platform_id_approved = true
-		end
+		if has_platform_id then
+			local platform_id_approved = false
 
-		if not platform_id_approved then
-			return false
+			if steam_itemdefid and HAS_STEAM then
+				platform_id_approved = true
+			end
+
+			if not platform_id_approved then
+				return false
+			end
 		end
 	end
 

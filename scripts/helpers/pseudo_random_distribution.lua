@@ -1,19 +1,20 @@
 PseudoRandomDistribution = PseudoRandomDistribution or {}
 local p2c = nil
-local math_random = math.random
 
-PseudoRandomDistribution.flip_coin = function (state, proc_chance, mixture_weight)
+PseudoRandomDistribution.flip_coin = function (state, proc_chance)
 	if proc_chance >= 1 then
 		return true, state
 	elseif proc_chance <= 0 then
 		return false, state
 	end
 
-	if mixture_weight and mixture_weight <= math_random() then
+	local c = p2c[math.floor(proc_chance * 100)]
+	local math_random = math.random
+
+	if math_random() < c then
 		return math_random() < proc_chance, state
 	end
 
-	local c = p2c[math.floor(proc_chance * 100)]
 	local n = state or math.floor(proc_chance / c)
 
 	if math_random() < n * c then

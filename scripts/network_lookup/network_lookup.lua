@@ -491,7 +491,8 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_01_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
-	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps"
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps",
+	"units/props/nurgle_liquid_blob/nurgle_liquid_blob_01"
 }
 
 DLCUtils.append("husk_lookup", NetworkLookup.husks)
@@ -747,7 +748,8 @@ NetworkLookup.buff_attack_types = {
 	"instant_projectile",
 	"grenade",
 	"ability",
-	"wind_mutator"
+	"wind_mutator",
+	"action_push"
 }
 local anims_temp = {}
 local actions_temp = {}
@@ -1215,7 +1217,9 @@ NetworkLookup.effects = {
 	"fx/chr_grey_seer_lightning_hit_02",
 	"fx/chr_chaos_sorcerer_boss_projectile_flies_impact",
 	"fx/drachenfels_flies_impact",
-	"fx/drachenfels_boss_teleport_enter"
+	"fx/drachenfels_boss_teleport_enter",
+	"fx/mutator_death_03",
+	"fx/wpnfx_poison_wind_globe_impact_death_01"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -1539,7 +1543,8 @@ NetworkLookup.sound_events = {
 	"Play_wpn_engineer_pistol_spinning_loop",
 	"Play_wpn_engineer_pistol_spinning_start",
 	"Play_wpn_engineer_pistol_spinning_stop",
-	"Stop_wpn_engineer_pistol_spinning_loop"
+	"Stop_wpn_engineer_pistol_spinning_loop",
+	"Play_mutator_enemy_split_large"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -2174,6 +2179,10 @@ local career_packages = dofile("scripts/network_lookup/career_package_list")
 
 table.append(NetworkLookup.inventory_packages, career_packages)
 DLCUtils.append("inventory_package_list", NetworkLookup.inventory_packages)
+
+NetworkLookup.network_packages = {}
+
+DLCUtils.append("network_packages", NetworkLookup.network_packages)
 
 local NETWORK_LOOKUP_DUPLICATES_ALLOWED = {
 	locations = true

@@ -367,4 +367,8 @@ DeusMapUI.fade_in = function (self, duration)
 	fade_in(self._ui_data, duration)
 end
 
+DeusMapUI.destroy = function (self)
+	return
+end
+
 return

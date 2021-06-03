@@ -153,4 +153,8 @@ CommonPopup.should_show = function (self)
 	return not self._is_visible
 end
 
+CommonPopup.is_popup_showing = function (self)
+	return self._is_visible
+end
+
 return

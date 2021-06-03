@@ -9,20 +9,28 @@ local ByteArray = {
 		local third_byte = bit.rshift(bit.band(value, 16711680), 16)
 		local fourth_byte = bit.rshift(bit.band(value, 4278190080.0), 24)
 		array[index] = first_byte
-		array[index + 1] = second_byte
-		array[index + 2] = third_byte
-		array[index + 3] = fourth_byte
+		index = index + 1
+		array[index] = second_byte
+		index = index + 1
+		array[index] = third_byte
+		index = index + 1
+		array[index] = fourth_byte
+		index = index + 1
 
-		return array
+		return array, index
 	end,
 	read_int32 = function (array, index)
 		index = index or 1
 		local first_byte = array[index]
-		local second_byte = bit.lshift(array[index + 1], 8)
-		local third_byte = bit.lshift(array[index + 2], 16)
-		local fourth_byte = bit.lshift(array[index + 3], 24)
+		index = index + 1
+		local second_byte = bit.lshift(array[index], 8)
+		index = index + 1
+		local third_byte = bit.lshift(array[index], 16)
+		index = index + 1
+		local fourth_byte = bit.lshift(array[index], 24)
+		index = index + 1
 
-		return bit.bor(first_byte, second_byte, third_byte, fourth_byte)
+		return bit.bor(first_byte, second_byte, third_byte, fourth_byte), index
 	end,
 	read_string = function (array, start_index, end_index)
 		start_index = start_index or 1
@@ -33,7 +41,7 @@ local ByteArray = {
 			char_array[#char_array + 1] = string.char(array[i])
 		end
 
-		return table.concat(char_array)
+		return table.concat(char_array), end_index + 1
 	end,
 	write_string = function (array, str, start_index, str_start_index, str_end_index)
 		start_index = start_index or 1
@@ -44,7 +52,7 @@ local ByteArray = {
 			array[(start_index + i) - 1] = string.byte(str, i)
 		end
 
-		return array
+		return array, str_end_index + 1
 	end
 }
 

@@ -4,6 +4,7 @@ local font = "arial"
 local font_mtrl = "materials/fonts/" .. font
 local font_height = 22
 local COLUMN_SPACING = 10
+local max_display_items = 20
 
 DebugListPicker.init = function (self, list, save_data_name, max_cols_seen)
 	self.pick_list = list
@@ -171,7 +172,7 @@ DebugListPicker.update = function (self, t, dt)
 		local res_x = RESOLUTION_LOOKUP.res_w
 		local res_y = RESOLUTION_LOOKUP.res_h
 		local opacity = 0.85
-		local height = self.max_height * self.max_rows
+		local height = self.font_size * (max_display_items + 1) + COLUMN_SPACING
 		local col_text = ""
 		local header_color = nil
 		local base_header_color = Color(200, 100, 0)
@@ -197,8 +198,11 @@ DebugListPicker.update = function (self, t, dt)
 			text_position.x = text_position.x + text_width
 		end
 
-		for i = 1, #column, 1 do
-			local item_pos = upper_pos - Vector3(0, i * font_height, 0)
+		local start_idx = math.clamp(self.row_index - max_display_items + 1, 1, #column)
+		local end_idx = math.min(#column, max_display_items) + start_idx - 1
+
+		for i = start_idx, end_idx, 1 do
+			local item_pos = upper_pos - Vector3(0, (i - start_idx + 1) * font_height, 0)
 
 			if i == self.row_index then
 				Gui.text(self.gui, " > " .. column[i][1]:upper(), self.font_mtrl, self.font_size, self.font, item_pos, Color(200, 200, 200))

@@ -192,6 +192,8 @@ BoonManager.on_round_start = function (self, network_event_delegate, event_manag
 	event_manager:register(self, "on_player_joined_party", "on_player_joined_party")
 	event_manager:register(self, "on_player_left_party", "on_player_left_party")
 	event_manager:register(self, "on_clean_up_server_controlled_buffs", "on_clean_up_server_controlled_buffs")
+	event_manager:register(self, "on_bot_added", "on_bot_added")
+	event_manager:register(self, "on_bot_removed", "on_bot_removed")
 	self:register_rpcs(network_event_delegate)
 end
 
@@ -205,6 +207,8 @@ BoonManager.on_round_end = function (self)
 	event_manager:unregister("on_player_left_party", self)
 	event_manager:unregister("on_player_joined_party", self)
 	event_manager:unregister("new_player_unit", self)
+	event_manager:unregister("on_bot_added", self)
+	event_manager:unregister("on_bot_removed", self)
 
 	local boons = self._boons
 
@@ -251,6 +255,14 @@ end
 
 BoonManager.on_player_left_party = function (self, peer_id, local_player_id, party_id, slot_id_player)
 	self:_deactivate_player_boons(peer_id, local_player_id)
+end
+
+BoonManager.on_bot_added = function (self, bot_player)
+	self:_activate_player_boons(bot_player:network_id(), bot_player:local_player_id())
+end
+
+BoonManager.on_bot_removed = function (self, bot_player)
+	self:_deactivate_player_boons(bot_player:network_id(), bot_player:local_player_id())
 end
 
 BoonManager.on_clean_up_server_controlled_buffs = function (self, unit)

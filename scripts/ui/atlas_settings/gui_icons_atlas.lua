@@ -5,6 +5,286 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
+			0.721191,
+			0.493164
+		},
+		uv11 = {
+			0.740723,
+			0.532227
+		}
+	},
+	bardin_engineer_pump_max_exhaustion_buff_icon = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.721191,
+			0.452148
+		},
+		uv11 = {
+			0.740723,
+			0.491211
+		}
+	},
+	buff_icon_carrying_barrel = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.967285,
+			0.411133
+		},
+		uv11 = {
+			0.986816,
+			0.450195
+		}
+	},
+	buff_icon_grimoire_health_debuff = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.946777,
+			0.411133
+		},
+		uv11 = {
+			0.966309,
+			0.450195
+		}
+	},
+	buff_icon_mutator_icon_drunk = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.92627,
+			0.411133
+		},
+		uv11 = {
+			0.945801,
+			0.450195
+		}
+	},
+	buff_icon_mutator_icon_slayer_curse = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.905762,
+			0.411133
+		},
+		uv11 = {
+			0.925293,
+			0.450195
+		}
+	},
+	buff_icon_mutator_ticking_bomb = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.885254,
+			0.411133
+		},
+		uv11 = {
+			0.904785,
+			0.450195
+		}
+	},
+	debuff_icon_mutator_icon_drunk = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.864746,
+			0.411133
+		},
+		uv11 = {
+			0.884277,
+			0.450195
+		}
+	},
+	deus_defense = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.844238,
+			0.411133
+		},
+		uv11 = {
+			0.86377,
+			0.450195
+		}
+	},
+	deus_healing = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.82373,
+			0.411133
+		},
+		uv11 = {
+			0.843262,
+			0.450195
+		}
+	},
+	deus_offense = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.803223,
+			0.411133
+		},
+		uv11 = {
+			0.822754,
+			0.450195
+		}
+	},
+	deus_utils = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.782715,
+			0.411133
+		},
+		uv11 = {
+			0.802246,
+			0.450195
+		}
+	},
+	deus_icon_always_blocking_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.762207,
+			0.411133
+		},
+		uv11 = {
+			0.781738,
+			0.450195
+		}
+	},
+	deus_icon_ammo_pickup_give_allies_ammo = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.741699,
+			0.411133
+		},
+		uv11 = {
+			0.76123,
+			0.450195
+		}
+	},
+	deus_icon_ammo_pickup_heal = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.721191,
+			0.411133
+		},
+		uv11 = {
+			0.740723,
+			0.450195
+		}
+	},
+	deus_icon_ammo_pickup_range_pen = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.944336
+		},
+		uv11 = {
+			0.720215,
+			0.983398
+		}
+	},
+	deus_icon_ammo_pickup_reload_speed = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.90332
+		},
+		uv11 = {
+			0.720215,
+			0.942383
+		}
+	},
+	deus_icon_attack_speed_per_cooldown = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.862305
+		},
+		uv11 = {
+			0.720215,
+			0.901367
+		}
+	},
+	deus_icon_barrel_power = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.821289
+		},
+		uv11 = {
+			0.720215,
+			0.860352
+		}
+	},
+	deus_icon_big_swing_stagger = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.780273
+		},
+		uv11 = {
+			0.720215,
+			0.819336
+		}
+	},
+	deus_icon_block_procs_parry = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.700684,
 			0.739258
 		},
@@ -13,7 +293,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	bardin_engineer_pump_max_exhaustion_buff_icon = {
+	deus_icon_collateral_damage_on_melee_killing_blow = {
 		size = {
 			80,
 			80
@@ -27,7 +307,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	buff_icon_carrying_barrel = {
+	deus_icon_consumable_extra_shot = {
 		size = {
 			80,
 			80
@@ -41,7 +321,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	buff_icon_grimoire_health_debuff = {
+	deus_icon_cooldown_on_friendly_ability = {
 		size = {
 			80,
 			80
@@ -55,7 +335,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	buff_icon_mutator_icon_drunk = {
+	deus_icon_cooldown_regen = {
 		size = {
 			80,
 			80
@@ -69,7 +349,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	buff_icon_mutator_icon_slayer_curse = {
+	deus_icon_cooldown_reg_not_hit = {
 		size = {
 			80,
 			80
@@ -83,7 +363,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	buff_icon_mutator_ticking_bomb = {
+	deus_icon_crit_chain_lightning = {
 		size = {
 			80,
 			80
@@ -97,7 +377,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	debuff_icon_mutator_icon_drunk = {
+	deus_icon_crit_on_damage_taken = {
 		size = {
 			80,
 			80
@@ -111,7 +391,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	deus_defense = {
+	deus_icon_damage_reduction_on_incapacitated = {
 		size = {
 			80,
 			80
@@ -125,7 +405,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	deus_healing = {
+	deus_icon_extra_shot = {
 		size = {
 			80,
 			80
@@ -139,7 +419,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_offense = {
+	deus_icon_extra_stamina = {
 		size = {
 			80,
 			80
@@ -153,7 +433,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_utils = {
+	deus_icon_free_potion_use_on_ability = {
 		size = {
 			80,
 			80
@@ -167,7 +447,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_always_blocking_01 = {
+	deus_icon_grenade_multi_throw = {
 		size = {
 			80,
 			80
@@ -181,7 +461,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_ammo_pickup_give_allies_ammo = {
+	deus_icon_guard_aura_check = {
 		size = {
 			80,
 			80
@@ -195,7 +475,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_ammo_pickup_heal = {
+	deus_icon_health_regeneration = {
 		size = {
 			80,
 			80
@@ -209,7 +489,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_ammo_pickup_range_pen = {
+	deus_increased_healing_taken = {
 		size = {
 			80,
 			80
@@ -223,7 +503,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_ammo_pickup_reload_speed = {
+	deus_infinite_dodges = {
 		size = {
 			80,
 			80
@@ -237,7 +517,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_attack_speed_per_cooldown = {
+	deus_knockdown_damage_immunity_aura = {
 		size = {
 			80,
 			80
@@ -251,7 +531,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_barrel_power = {
+	deus_max_health = {
 		size = {
 			80,
 			80
@@ -265,7 +545,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_big_swing_stagger = {
+	deus_more_head_less_body_damage = {
 		size = {
 			80,
 			80
@@ -279,7 +559,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_block_procs_parry = {
+	deus_parry_damage_immune = {
 		size = {
 			80,
 			80
@@ -293,7 +573,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_collateral_damage_on_melee_killing_blow = {
+	deus_powerup_attack_speed = {
 		size = {
 			80,
 			80
@@ -307,7 +587,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_consumable_extra_shot = {
+	deus_push_charge = {
 		size = {
 			80,
 			80
@@ -321,7 +601,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_icon_cooldown_on_friendly_ability = {
+	deus_push_cost_reduction = {
 		size = {
 			80,
 			80
@@ -335,7 +615,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	deus_icon_cooldown_regen = {
+	deus_push_increased_cleave = {
 		size = {
 			80,
 			80
@@ -349,7 +629,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	deus_icon_cooldown_reg_not_hit = {
+	deus_ranged_crit_explosion = {
 		size = {
 			80,
 			80
@@ -363,7 +643,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	deus_icon_crit_chain_lightning = {
+	deus_reckless_swings = {
 		size = {
 			80,
 			80
@@ -377,7 +657,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	deus_icon_crit_on_damage_taken = {
+	deus_revive_regen = {
 		size = {
 			80,
 			80
@@ -391,7 +671,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	deus_icon_damage_reduction_on_incapacitated = {
+	deus_second_wind = {
 		size = {
 			80,
 			80
@@ -405,7 +685,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	deus_icon_extra_shot = {
+	deus_skill_on_special_kill = {
 		size = {
 			80,
 			80
@@ -419,7 +699,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	deus_icon_extra_stamina = {
+	deus_standing_still_damage_reduction = {
 		size = {
 			80,
 			80
@@ -433,7 +713,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	deus_icon_free_potion_use_on_ability = {
+	deus_target_full_health_damage_mult = {
 		size = {
 			80,
 			80
@@ -447,7 +727,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	deus_icon_grenade_multi_throw = {
+	deus_uninterruptable_attacks = {
 		size = {
 			80,
 			80
@@ -461,7 +741,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	deus_icon_guard_aura_check = {
+	drop_item_on_ability_use = {
 		size = {
 			80,
 			80
@@ -475,7 +755,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	deus_icon_health_regeneration = {
+	explosive_kills_on_elite_kills = {
 		size = {
 			80,
 			80
@@ -489,7 +769,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	deus_increased_healing_taken = {
+	friendly_cooldown_on_ability = {
 		size = {
 			80,
 			80
@@ -503,7 +783,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	deus_infinite_dodges = {
+	heal_on_dot_damage_dealt = {
 		size = {
 			80,
 			80
@@ -517,7 +797,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	deus_knockdown_damage_immunity_aura = {
+	last_player_standing_power_reg = {
 		size = {
 			80,
 			80
@@ -531,298 +811,18 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	deus_max_health = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.967285,
-			0.329102
-		},
-		uv11 = {
-			0.986816,
-			0.368164
-		}
-	},
-	deus_more_head_less_body_damage = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.946777,
-			0.329102
-		},
-		uv11 = {
-			0.966309,
-			0.368164
-		}
-	},
-	deus_parry_damage_immune = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.92627,
-			0.329102
-		},
-		uv11 = {
-			0.945801,
-			0.368164
-		}
-	},
-	deus_powerup_attack_speed = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.905762,
-			0.329102
-		},
-		uv11 = {
-			0.925293,
-			0.368164
-		}
-	},
-	deus_push_charge = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.885254,
-			0.329102
-		},
-		uv11 = {
-			0.904785,
-			0.368164
-		}
-	},
-	deus_push_cost_reduction = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.864746,
-			0.329102
-		},
-		uv11 = {
-			0.884277,
-			0.368164
-		}
-	},
-	deus_push_increased_cleave = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.844238,
-			0.329102
-		},
-		uv11 = {
-			0.86377,
-			0.368164
-		}
-	},
-	deus_ranged_crit_explosion = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.82373,
-			0.329102
-		},
-		uv11 = {
-			0.843262,
-			0.368164
-		}
-	},
-	deus_reckless_swings = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.803223,
-			0.329102
-		},
-		uv11 = {
-			0.822754,
-			0.368164
-		}
-	},
-	deus_revive_regen = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.782715,
-			0.329102
-		},
-		uv11 = {
-			0.802246,
-			0.368164
-		}
-	},
-	deus_second_wind = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.762207,
-			0.329102
-		},
-		uv11 = {
-			0.781738,
-			0.368164
-		}
-	},
-	deus_skill_on_special_kill = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.741699,
-			0.329102
-		},
-		uv11 = {
-			0.76123,
-			0.368164
-		}
-	},
-	deus_standing_still_damage_reduction = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.721191,
-			0.329102
-		},
-		uv11 = {
-			0.740723,
-			0.368164
-		}
-	},
-	deus_target_full_health_damage_mult = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.700684,
-			0.329102
-		},
-		uv11 = {
-			0.720215,
-			0.368164
-		}
-	},
-	deus_uninterruptable_attacks = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.680176,
-			0.329102
-		},
-		uv11 = {
-			0.699707,
-			0.368164
-		}
-	},
-	drop_item_on_ability_use = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.659668,
-			0.930664
-		},
-		uv11 = {
-			0.679199,
-			0.969727
-		}
-	},
-	explosive_kills_on_elite_kills = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.659668,
-			0.889648
-		},
-		uv11 = {
-			0.679199,
-			0.928711
-		}
-	},
-	friendly_cooldown_on_ability = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.659668,
-			0.848633
-		},
-		uv11 = {
-			0.679199,
-			0.887695
-		}
-	},
-	heal_on_dot_damage_dealt = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.659668,
-			0.807617
-		},
-		uv11 = {
-			0.679199,
-			0.84668
-		}
-	},
-	last_player_standing_power_reg = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.659668,
-			0.766602
-		},
-		uv11 = {
-			0.679199,
-			0.805664
-		}
-	},
 	melee_killing_spree_speed = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.725586
+			0.960449,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.764648
+			0.97998,
+			0.368164
 		}
 	},
 	movement_speed_on_active_ability_use = {
@@ -831,12 +831,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.68457
+			0.939941,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.723633
+			0.959473,
+			0.368164
 		}
 	},
 	transfer_temp_health_at_full = {
@@ -845,12 +845,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.643555
+			0.919434,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.682617
+			0.938965,
+			0.368164
 		}
 	},
 	triple_melee_headshot_power = {
@@ -859,12 +859,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.602539
+			0.898926,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.641602
+			0.918457,
+			0.368164
 		}
 	},
 	activated_ability_kerillian_shade = {
@@ -873,12 +873,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.561523
+			0.878418,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.600586
+			0.897949,
+			0.368164
 		}
 	},
 	activated_ability_markus_knight = {
@@ -887,12 +887,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.520508
+			0.85791,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.55957
+			0.877441,
+			0.368164
 		}
 	},
 	boon_icon_01_damage_reduced = {
@@ -901,12 +901,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.479492
+			0.837402,
+			0.329102
 		},
 		uv11 = {
-			0.679199,
-			0.518555
+			0.856934,
+			0.368164
 		}
 	},
 	boon_icon_02_damage_increased = {
@@ -985,12 +985,12 @@ icons_atlas = {
 			66
 		},
 		uv00 = {
-			0.659668,
-			0.445313
+			0.820313,
+			0.329102
 		},
 		uv11 = {
-			0.675781,
-			0.477539
+			0.836426,
+			0.361328
 		}
 	},
 	buff_frame_bad = {
@@ -999,15 +999,295 @@ icons_atlas = {
 			66
 		},
 		uv00 = {
+			0.803223,
+			0.329102
+		},
+		uv11 = {
+			0.819336,
+			0.361328
+		}
+	},
+	convocation_debuff = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.782715,
+			0.329102
+		},
+		uv11 = {
+			0.802246,
+			0.368164
+		}
+	},
+	human_shield = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.762207,
+			0.329102
+		},
+		uv11 = {
+			0.781738,
+			0.368164
+		}
+	},
+	markus_knight_increased_hit_stagger = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.741699,
+			0.329102
+		},
+		uv11 = {
+			0.76123,
+			0.368164
+		}
+	},
+	markus_knight_increased_targets = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.721191,
+			0.329102
+		},
+		uv11 = {
+			0.740723,
+			0.368164
+		}
+	},
+	markus_knight_max_stamina = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.329102
+		},
+		uv11 = {
+			0.720215,
+			0.368164
+		}
+	},
+	markus_knight_push_increase = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.680176,
+			0.329102
+		},
+		uv11 = {
+			0.699707,
+			0.368164
+		}
+	},
+	markus_knight_reduced_damage_on_low_health = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.944336
+		},
+		uv11 = {
+			0.679199,
+			0.983398
+		}
+	},
+	passive_bonus_kerillian_shade = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.90332
+		},
+		uv11 = {
+			0.679199,
+			0.942383
+		}
+	},
+	passive_bonus_markus_knight = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.862305
+		},
+		uv11 = {
+			0.679199,
+			0.901367
+		}
+	},
+	passive_bonus_victor_zealot = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.821289
+		},
+		uv11 = {
+			0.679199,
+			0.860352
+		}
+	},
+	potion_buff_01 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.780273
+		},
+		uv11 = {
+			0.679199,
+			0.819336
+		}
+	},
+	potion_buff_02 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.739258
+		},
+		uv11 = {
+			0.679199,
+			0.77832
+		}
+	},
+	potion_buff_03 = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.698242
+		},
+		uv11 = {
+			0.679199,
+			0.737305
+		}
+	},
+	talent_ability_bw = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.657227
+		},
+		uv11 = {
+			0.679199,
+			0.696289
+		}
+	},
+	talent_ability_cooldown = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.616211
+		},
+		uv11 = {
+			0.679199,
+			0.655273
+		}
+	},
+	talent_damage_dwarf = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.575195
+		},
+		uv11 = {
+			0.679199,
+			0.614258
+		}
+	},
+	talent_damage_human = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.53418
+		},
+		uv11 = {
+			0.679199,
+			0.573242
+		}
+	},
+	talent_defence_dwarf = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.493164
+		},
+		uv11 = {
+			0.679199,
+			0.532227
+		}
+	},
+	talent_heal_on_kill = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.452148
+		},
+		uv11 = {
+			0.679199,
+			0.491211
+		}
+	},
+	talent_max_health_dwarf = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
 			0.659668,
 			0.411133
 		},
 		uv11 = {
-			0.675781,
-			0.443359
+			0.679199,
+			0.450195
 		}
 	},
-	convocation_debuff = {
+	talent_max_health_human = {
 		size = {
 			80,
 			80
@@ -1021,7 +1301,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	human_shield = {
+	talent_max_stamina = {
 		size = {
 			80,
 			80
@@ -1035,7 +1315,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	markus_knight_increased_hit_stagger = {
+	talent_melee_dwarf = {
 		size = {
 			80,
 			80
@@ -1049,7 +1329,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	markus_knight_increased_targets = {
+	talent_movement_speed = {
 		size = {
 			80,
 			80
@@ -1061,286 +1341,6 @@ icons_atlas = {
 		uv11 = {
 			0.966309,
 			0.327148
-		}
-	},
-	markus_knight_max_stamina = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.92627,
-			0.288086
-		},
-		uv11 = {
-			0.945801,
-			0.327148
-		}
-	},
-	markus_knight_push_increase = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.905762,
-			0.288086
-		},
-		uv11 = {
-			0.925293,
-			0.327148
-		}
-	},
-	markus_knight_reduced_damage_on_low_health = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.885254,
-			0.288086
-		},
-		uv11 = {
-			0.904785,
-			0.327148
-		}
-	},
-	passive_bonus_kerillian_shade = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.864746,
-			0.288086
-		},
-		uv11 = {
-			0.884277,
-			0.327148
-		}
-	},
-	passive_bonus_markus_knight = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.844238,
-			0.288086
-		},
-		uv11 = {
-			0.86377,
-			0.327148
-		}
-	},
-	passive_bonus_victor_zealot = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.82373,
-			0.288086
-		},
-		uv11 = {
-			0.843262,
-			0.327148
-		}
-	},
-	potion_buff_01 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.803223,
-			0.288086
-		},
-		uv11 = {
-			0.822754,
-			0.327148
-		}
-	},
-	potion_buff_02 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.782715,
-			0.288086
-		},
-		uv11 = {
-			0.802246,
-			0.327148
-		}
-	},
-	potion_buff_03 = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.762207,
-			0.288086
-		},
-		uv11 = {
-			0.781738,
-			0.327148
-		}
-	},
-	talent_ability_bw = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.741699,
-			0.288086
-		},
-		uv11 = {
-			0.76123,
-			0.327148
-		}
-	},
-	talent_ability_cooldown = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.721191,
-			0.288086
-		},
-		uv11 = {
-			0.740723,
-			0.327148
-		}
-	},
-	talent_damage_dwarf = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.700684,
-			0.288086
-		},
-		uv11 = {
-			0.720215,
-			0.327148
-		}
-	},
-	talent_damage_human = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.680176,
-			0.288086
-		},
-		uv11 = {
-			0.699707,
-			0.327148
-		}
-	},
-	talent_defence_dwarf = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.659668,
-			0.288086
-		},
-		uv11 = {
-			0.679199,
-			0.327148
-		}
-	},
-	talent_heal_on_kill = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.63916,
-			0.944336
-		},
-		uv11 = {
-			0.658691,
-			0.983398
-		}
-	},
-	talent_max_health_dwarf = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.63916,
-			0.90332
-		},
-		uv11 = {
-			0.658691,
-			0.942383
-		}
-	},
-	talent_max_health_human = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.63916,
-			0.862305
-		},
-		uv11 = {
-			0.658691,
-			0.901367
-		}
-	},
-	talent_max_stamina = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.63916,
-			0.821289
-		},
-		uv11 = {
-			0.658691,
-			0.860352
-		}
-	},
-	talent_melee_dwarf = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.63916,
-			0.780273
-		},
-		uv11 = {
-			0.658691,
-			0.819336
-		}
-	},
-	talent_movement_speed = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.63916,
-			0.739258
-		},
-		uv11 = {
-			0.658691,
-			0.77832
 		}
 	},
 	talent_push_damage = {
@@ -1363,12 +1363,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.698242
+			0.92627,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.737305
+			0.945801,
+			0.327148
 		}
 	},
 	talent_ranged_damage_dwarf = {
@@ -1377,12 +1377,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.657227
+			0.905762,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.696289
+			0.925293,
+			0.327148
 		}
 	},
 	talent_shield_dwarf = {
@@ -1391,12 +1391,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.616211
+			0.885254,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.655273
+			0.904785,
+			0.327148
 		}
 	},
 	talent_stamina_regen = {
@@ -1405,12 +1405,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.575195
+			0.864746,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.614258
+			0.884277,
+			0.327148
 		}
 	},
 	talent_wound_enemy = {
@@ -1419,12 +1419,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.53418
+			0.844238,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.573242
+			0.86377,
+			0.327148
 		}
 	},
 	troll_vomit_debuff = {
@@ -1433,12 +1433,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.493164
+			0.82373,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.532227
+			0.843262,
+			0.327148
 		}
 	},
 	kerillian03 = {
@@ -1447,12 +1447,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.452148
+			0.803223,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.491211
+			0.822754,
+			0.327148
 		}
 	},
 	kerillian03a = {
@@ -1461,12 +1461,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.411133
+			0.782715,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.450195
+			0.802246,
+			0.327148
 		}
 	},
 	kruber_06 = {
@@ -1475,12 +1475,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.370117
+			0.762207,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.40918
+			0.781738,
+			0.327148
 		}
 	},
 	kruber_06a = {
@@ -1489,12 +1489,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.329102
+			0.741699,
+			0.288086
 		},
 		uv11 = {
-			0.658691,
-			0.368164
+			0.76123,
+			0.327148
 		}
 	},
 	talent_icon_ironbreaker = {
@@ -1573,11 +1573,11 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
+			0.721191,
 			0.288086
 		},
 		uv11 = {
-			0.658691,
+			0.740723,
 			0.327148
 		}
 	},
@@ -1587,12 +1587,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.967285,
-			0.24707
+			0.700684,
+			0.288086
 		},
 		uv11 = {
-			0.986816,
-			0.286133
+			0.720215,
+			0.327148
 		}
 	},
 	bardin_engineer_fast_ability_charge = {
@@ -1601,12 +1601,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.946777,
-			0.24707
+			0.680176,
+			0.288086
 		},
 		uv11 = {
-			0.966309,
-			0.286133
+			0.699707,
+			0.327148
 		}
 	},
 	bardin_engineer_heal_share = {
@@ -1615,12 +1615,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.92627,
-			0.24707
+			0.659668,
+			0.288086
 		},
 		uv11 = {
-			0.945801,
-			0.286133
+			0.679199,
+			0.327148
 		}
 	},
 	bardin_engineer_increased_ability_bar = {
@@ -1629,12 +1629,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.905762,
-			0.24707
+			0.63916,
+			0.944336
 		},
 		uv11 = {
-			0.925293,
-			0.286133
+			0.658691,
+			0.983398
 		}
 	},
 	bardin_engineer_linesman_unbalance = {
@@ -1643,12 +1643,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.885254,
-			0.24707
+			0.63916,
+			0.90332
 		},
 		uv11 = {
-			0.904785,
-			0.286133
+			0.658691,
+			0.942383
 		}
 	},
 	bardin_engineer_melee_power_free_shot = {
@@ -1657,12 +1657,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.864746,
-			0.24707
+			0.63916,
+			0.862305
 		},
 		uv11 = {
-			0.884277,
-			0.286133
+			0.658691,
+			0.901367
 		}
 	},
 	bardin_engineer_no_overheat_explosion = {
@@ -1671,12 +1671,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.844238,
-			0.24707
+			0.63916,
+			0.821289
 		},
 		uv11 = {
-			0.86377,
-			0.286133
+			0.658691,
+			0.860352
 		}
 	},
 	bardin_engineer_party_ability_charge = {
@@ -1685,12 +1685,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.82373,
-			0.24707
+			0.63916,
+			0.780273
 		},
 		uv11 = {
-			0.843262,
-			0.286133
+			0.658691,
+			0.819336
 		}
 	},
 	bardin_engineer_passive = {
@@ -1699,12 +1699,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.803223,
-			0.24707
+			0.63916,
+			0.739258
 		},
 		uv11 = {
-			0.822754,
-			0.286133
+			0.658691,
+			0.77832
 		}
 	},
 	bardin_engineer_passive_ability_charge = {
@@ -1713,12 +1713,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.782715,
-			0.24707
+			0.63916,
+			0.698242
 		},
 		uv11 = {
-			0.802246,
-			0.286133
+			0.658691,
+			0.737305
 		}
 	},
 	bardin_engineer_power_level_unbalance = {
@@ -1727,12 +1727,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.762207,
-			0.24707
+			0.63916,
+			0.657227
 		},
 		uv11 = {
-			0.781738,
-			0.286133
+			0.658691,
+			0.696289
 		}
 	},
 	bardin_engineer_ranged_crit_count = {
@@ -1741,12 +1741,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.741699,
-			0.24707
+			0.63916,
+			0.616211
 		},
 		uv11 = {
-			0.76123,
-			0.286133
+			0.658691,
+			0.655273
 		}
 	},
 	bardin_engineer_ranged_pierce = {
@@ -1755,12 +1755,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.721191,
-			0.24707
+			0.63916,
+			0.575195
 		},
 		uv11 = {
-			0.740723,
-			0.286133
+			0.658691,
+			0.614258
 		}
 	},
 	bardin_engineer_reaper = {
@@ -1769,12 +1769,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.700684,
-			0.24707
+			0.63916,
+			0.53418
 		},
 		uv11 = {
-			0.720215,
-			0.286133
+			0.658691,
+			0.573242
 		}
 	},
 	bardin_engineer_reduced_ability_fire_slowdown = {
@@ -1783,12 +1783,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.680176,
-			0.24707
+			0.63916,
+			0.493164
 		},
 		uv11 = {
-			0.699707,
-			0.286133
+			0.658691,
+			0.532227
 		}
 	},
 	bardin_engineer_stacking_damage_reduction = {
@@ -1797,12 +1797,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.24707
+			0.63916,
+			0.452148
 		},
 		uv11 = {
-			0.679199,
-			0.286133
+			0.658691,
+			0.491211
 		}
 	},
 	bardin_engineer_tank_unbalance = {
@@ -1812,11 +1812,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.63916,
-			0.24707
+			0.411133
 		},
 		uv11 = {
 			0.658691,
-			0.286133
+			0.450195
 		}
 	},
 	bardin_engineer_upgraded_grenades = {
@@ -1825,12 +1825,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.944336
+			0.63916,
+			0.370117
 		},
 		uv11 = {
-			0.638184,
-			0.983398
+			0.658691,
+			0.40918
 		}
 	},
 	bardin_engineer_vanguard = {
@@ -1839,12 +1839,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.90332
+			0.63916,
+			0.329102
 		},
 		uv11 = {
-			0.638184,
-			0.942383
+			0.658691,
+			0.368164
 		}
 	},
 	bardin_ironbreaker_activated_ability = {
@@ -1853,12 +1853,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.862305
+			0.63916,
+			0.288086
 		},
 		uv11 = {
-			0.638184,
-			0.901367
+			0.658691,
+			0.327148
 		}
 	},
 	bardin_ironbreaker_activated_ability_duration = {
@@ -1867,12 +1867,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.821289
+			0.967285,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.860352
+			0.986816,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_activated_ability_taunt_bosses = {
@@ -1881,12 +1881,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.780273
+			0.946777,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.819336
+			0.966309,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_activated_ability_taunt_range = {
@@ -1895,12 +1895,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.739258
+			0.92627,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.77832
+			0.945801,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_bloodlust = {
@@ -1909,12 +1909,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.698242
+			0.905762,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.737305
+			0.925293,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_buff_defense_on_revived_target = {
@@ -1923,12 +1923,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.657227
+			0.885254,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.696289
+			0.904785,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_conqueror = {
@@ -1937,12 +1937,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.616211
+			0.864746,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.655273
+			0.884277,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_gromril_armour = {
@@ -1951,12 +1951,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.575195
+			0.844238,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.614258
+			0.86377,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_gromril_armour_heal = {
@@ -1965,12 +1965,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.53418
+			0.82373,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.573242
+			0.843262,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_max_gromril_delay = {
@@ -1979,12 +1979,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.493164
+			0.803223,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.532227
+			0.822754,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_max_health = {
@@ -1993,12 +1993,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.452148
+			0.782715,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.491211
+			0.802246,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_max_stamina = {
@@ -2007,12 +2007,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.411133
+			0.762207,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.450195
+			0.781738,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_push_arc = {
@@ -2021,12 +2021,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.370117
+			0.741699,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.40918
+			0.76123,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_reduced_overcharge = {
@@ -2035,12 +2035,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.329102
+			0.721191,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.368164
+			0.740723,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_regen_stamina_on_charged_attacks = {
@@ -2049,12 +2049,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.288086
+			0.700684,
+			0.24707
 		},
 		uv11 = {
-			0.638184,
-			0.327148
+			0.720215,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_regrowth = {
@@ -2063,11 +2063,11 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
+			0.680176,
 			0.24707
 		},
 		uv11 = {
-			0.638184,
+			0.699707,
 			0.286133
 		}
 	},
@@ -2077,12 +2077,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.967285,
-			0.206055
+			0.659668,
+			0.24707
 		},
 		uv11 = {
-			0.986816,
-			0.245117
+			0.679199,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_activated_ability_power_buff_allies = {
@@ -2091,12 +2091,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.946777,
-			0.206055
+			0.63916,
+			0.24707
 		},
 		uv11 = {
-			0.966309,
-			0.245117
+			0.658691,
+			0.286133
 		}
 	},
 	bardin_ironbreaker_activated_ability_taunt_range_and_duration = {
@@ -2105,12 +2105,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.92627,
-			0.206055
+			0.618652,
+			0.944336
 		},
 		uv11 = {
-			0.945801,
-			0.245117
+			0.638184,
+			0.983398
 		}
 	},
 	bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina = {
@@ -2119,12 +2119,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.905762,
-			0.206055
+			0.618652,
+			0.90332
 		},
 		uv11 = {
-			0.925293,
-			0.245117
+			0.638184,
+			0.942383
 		}
 	},
 	bardin_ironbreaker_gromril_stagger = {
@@ -2133,12 +2133,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.885254,
-			0.206055
+			0.618652,
+			0.862305
 		},
 		uv11 = {
-			0.904785,
-			0.245117
+			0.638184,
+			0.901367
 		}
 	},
 	bardin_ironbreaker_increased_overcharge_increased_range_power = {
@@ -2147,12 +2147,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.864746,
-			0.206055
+			0.618652,
+			0.821289
 		},
 		uv11 = {
-			0.884277,
-			0.245117
+			0.638184,
+			0.860352
 		}
 	},
 	bardin_ironbreaker_power_level_unbalance = {
@@ -2161,12 +2161,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.844238,
-			0.206055
+			0.618652,
+			0.780273
 		},
 		uv11 = {
-			0.86377,
-			0.245117
+			0.638184,
+			0.819336
 		}
 	},
 	bardin_ironbreaker_power_on_blocked_attacks = {
@@ -2175,12 +2175,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.82373,
-			0.206055
+			0.618652,
+			0.739258
 		},
 		uv11 = {
-			0.843262,
-			0.245117
+			0.638184,
+			0.77832
 		}
 	},
 	bardin_ironbreaker_power_on_nearby_allies2 = {
@@ -2189,12 +2189,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.803223,
-			0.206055
+			0.618652,
+			0.698242
 		},
 		uv11 = {
-			0.822754,
-			0.245117
+			0.638184,
+			0.737305
 		}
 	},
 	bardin_ironbreaker_regen_stamina_on_block_broken = {
@@ -2203,12 +2203,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.782715,
-			0.206055
+			0.618652,
+			0.657227
 		},
 		uv11 = {
-			0.802246,
-			0.245117
+			0.638184,
+			0.696289
 		}
 	},
 	bardin_ironbreaker_smiter_unbalance = {
@@ -2217,12 +2217,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.762207,
-			0.206055
+			0.618652,
+			0.616211
 		},
 		uv11 = {
-			0.781738,
-			0.245117
+			0.638184,
+			0.655273
 		}
 	},
 	bardin_ironbreaker_tank_unbalance = {
@@ -2231,12 +2231,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.741699,
-			0.206055
+			0.618652,
+			0.575195
 		},
 		uv11 = {
-			0.76123,
-			0.245117
+			0.638184,
+			0.614258
 		}
 	},
 	bardin_ranger_activated_ability = {
@@ -2245,12 +2245,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.721191,
-			0.206055
+			0.618652,
+			0.53418
 		},
 		uv11 = {
-			0.740723,
-			0.245117
+			0.638184,
+			0.573242
 		}
 	},
 	bardin_ranger_activated_ability_cooldown = {
@@ -2259,12 +2259,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.700684,
-			0.206055
+			0.618652,
+			0.493164
 		},
 		uv11 = {
-			0.720215,
-			0.245117
+			0.638184,
+			0.532227
 		}
 	},
 	bardin_ranger_activated_ability_duration = {
@@ -2273,12 +2273,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.680176,
-			0.206055
+			0.618652,
+			0.452148
 		},
 		uv11 = {
-			0.699707,
-			0.245117
+			0.638184,
+			0.491211
 		}
 	},
 	bardin_ranger_activated_ability_heal = {
@@ -2287,12 +2287,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.206055
+			0.618652,
+			0.411133
 		},
 		uv11 = {
-			0.679199,
-			0.245117
+			0.638184,
+			0.450195
 		}
 	},
 	bardin_ranger_attack_speed = {
@@ -2301,12 +2301,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.206055
+			0.618652,
+			0.370117
 		},
 		uv11 = {
-			0.658691,
-			0.245117
+			0.638184,
+			0.40918
 		}
 	},
 	bardin_ranger_bloodlust = {
@@ -2316,11 +2316,11 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.618652,
-			0.206055
+			0.329102
 		},
 		uv11 = {
 			0.638184,
-			0.245117
+			0.368164
 		}
 	},
 	bardin_ranger_conqueror = {
@@ -2329,12 +2329,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.944336
+			0.618652,
+			0.288086
 		},
 		uv11 = {
-			0.617676,
-			0.983398
+			0.638184,
+			0.327148
 		}
 	},
 	bardin_ranger_healing_received = {
@@ -2343,12 +2343,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.90332
+			0.618652,
+			0.24707
 		},
 		uv11 = {
-			0.617676,
-			0.942383
+			0.638184,
+			0.286133
 		}
 	},
 	bardin_ranger_increased_defence_on_disabled = {
@@ -2357,12 +2357,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.862305
+			0.967285,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.901367
+			0.986816,
+			0.245117
 		}
 	},
 	bardin_ranger_increased_melee_damage_on_no_ammo = {
@@ -2371,12 +2371,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.821289
+			0.946777,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.860352
+			0.966309,
+			0.245117
 		}
 	},
 	bardin_ranger_movement_speed = {
@@ -2385,12 +2385,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.780273
+			0.92627,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.819336
+			0.945801,
+			0.245117
 		}
 	},
 	bardin_ranger_not_used_1 = {
@@ -2399,12 +2399,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.739258
+			0.905762,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.77832
+			0.925293,
+			0.245117
 		}
 	},
 	bardin_ranger_not_used_2 = {
@@ -2413,12 +2413,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.698242
+			0.885254,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.737305
+			0.904785,
+			0.245117
 		}
 	},
 	bardin_ranger_not_used_3 = {
@@ -2427,12 +2427,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.657227
+			0.864746,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.696289
+			0.884277,
+			0.245117
 		}
 	},
 	bardin_ranger_not_used_4 = {
@@ -2441,12 +2441,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.616211
+			0.844238,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.655273
+			0.86377,
+			0.245117
 		}
 	},
 	bardin_ranger_passive = {
@@ -2455,12 +2455,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.575195
+			0.82373,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.614258
+			0.843262,
+			0.245117
 		}
 	},
 	bardin_ranger_passive_improved_ammo = {
@@ -2469,12 +2469,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.53418
+			0.803223,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.573242
+			0.822754,
+			0.245117
 		}
 	},
 	bardin_ranger_passive_spawn_healing_draught = {
@@ -2483,12 +2483,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.493164
+			0.782715,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.532227
+			0.802246,
+			0.245117
 		}
 	},
 	bardin_ranger_passive_spawn_potions = {
@@ -2497,12 +2497,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.452148
+			0.762207,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.491211
+			0.781738,
+			0.245117
 		}
 	},
 	bardin_ranger_reduced_spread = {
@@ -2511,12 +2511,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.411133
+			0.741699,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.450195
+			0.76123,
+			0.245117
 		}
 	},
 	bardin_ranger_regrowth = {
@@ -2525,12 +2525,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.370117
+			0.721191,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.40918
+			0.740723,
+			0.245117
 		}
 	},
 	bardin_ranger_ability_free_grenade = {
@@ -2539,12 +2539,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.329102
+			0.700684,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.368164
+			0.720215,
+			0.245117
 		}
 	},
 	bardin_ranger_activated_ability_stealth_outside_of_smoke = {
@@ -2553,12 +2553,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.288086
+			0.680176,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.327148
+			0.699707,
+			0.245117
 		}
 	},
 	bardin_ranger_cooldown_on_reload = {
@@ -2567,12 +2567,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
-			0.24707
+			0.659668,
+			0.206055
 		},
 		uv11 = {
-			0.617676,
-			0.286133
+			0.679199,
+			0.245117
 		}
 	},
 	bardin_ranger_linesman_unbalance = {
@@ -2581,11 +2581,11 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.598145,
+			0.63916,
 			0.206055
 		},
 		uv11 = {
-			0.617676,
+			0.658691,
 			0.245117
 		}
 	},
@@ -2595,12 +2595,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.967285,
-			0.165039
+			0.618652,
+			0.206055
 		},
 		uv11 = {
-			0.986816,
-			0.204102
+			0.638184,
+			0.245117
 		}
 	},
 	bardin_ranger_passive_spawn_potions_or_bombs = {
@@ -2609,12 +2609,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.946777,
-			0.165039
+			0.598145,
+			0.944336
 		},
 		uv11 = {
-			0.966309,
-			0.204102
+			0.617676,
+			0.983398
 		}
 	},
 	bardin_ranger_power_level_unbalance = {
@@ -2623,12 +2623,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.92627,
-			0.165039
+			0.598145,
+			0.90332
 		},
 		uv11 = {
-			0.945801,
-			0.204102
+			0.617676,
+			0.942383
 		}
 	},
 	bardin_ranger_reduced_damage_taken_headshot = {
@@ -2637,12 +2637,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.905762,
-			0.165039
+			0.598145,
+			0.862305
 		},
 		uv11 = {
-			0.925293,
-			0.204102
+			0.617676,
+			0.901367
 		}
 	},
 	bardin_ranger_reload_speed_on_multi_hit = {
@@ -2651,12 +2651,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.885254,
-			0.165039
+			0.598145,
+			0.821289
 		},
 		uv11 = {
-			0.904785,
-			0.204102
+			0.617676,
+			0.860352
 		}
 	},
 	bardin_ranger_tank_unbalance = {
@@ -2665,12 +2665,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.864746,
-			0.165039
+			0.598145,
+			0.780273
 		},
 		uv11 = {
-			0.884277,
-			0.204102
+			0.617676,
+			0.819336
 		}
 	},
 	bardin_slayer_activated_ability = {
@@ -2679,12 +2679,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.844238,
-			0.165039
+			0.598145,
+			0.739258
 		},
 		uv11 = {
-			0.86377,
-			0.204102
+			0.617676,
+			0.77832
 		}
 	},
 	bardin_slayer_activated_ability_impact_damage = {
@@ -2693,12 +2693,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.82373,
-			0.165039
+			0.598145,
+			0.698242
 		},
 		uv11 = {
-			0.843262,
-			0.204102
+			0.617676,
+			0.737305
 		}
 	},
 	bardin_slayer_activated_ability_movement = {
@@ -2707,12 +2707,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.803223,
-			0.165039
+			0.598145,
+			0.657227
 		},
 		uv11 = {
-			0.822754,
-			0.204102
+			0.617676,
+			0.696289
 		}
 	},
 	bardin_slayer_activated_ability_uninterruptible = {
@@ -2721,12 +2721,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.782715,
-			0.165039
+			0.598145,
+			0.616211
 		},
 		uv11 = {
-			0.802246,
-			0.204102
+			0.617676,
+			0.655273
 		}
 	},
 	bardin_slayer_bloodlust = {
@@ -2735,12 +2735,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.762207,
-			0.165039
+			0.598145,
+			0.575195
 		},
 		uv11 = {
-			0.781738,
-			0.204102
+			0.617676,
+			0.614258
 		}
 	},
 	bardin_slayer_conqueror = {
@@ -2749,12 +2749,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.741699,
-			0.165039
+			0.598145,
+			0.53418
 		},
 		uv11 = {
-			0.76123,
-			0.204102
+			0.617676,
+			0.573242
 		}
 	},
 	bardin_slayer_crit_chance = {
@@ -2763,12 +2763,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.721191,
-			0.165039
+			0.598145,
+			0.493164
 		},
 		uv11 = {
-			0.740723,
-			0.204102
+			0.617676,
+			0.532227
 		}
 	},
 	bardin_slayer_damage_taken_capped = {
@@ -2777,12 +2777,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.700684,
-			0.165039
+			0.598145,
+			0.452148
 		},
 		uv11 = {
-			0.720215,
-			0.204102
+			0.617676,
+			0.491211
 		}
 	},
 	bardin_slayer_debuff_defence_on_crit = {
@@ -2791,12 +2791,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.680176,
-			0.165039
+			0.598145,
+			0.411133
 		},
 		uv11 = {
-			0.699707,
-			0.204102
+			0.617676,
+			0.450195
 		}
 	},
 	bardin_slayer_dodge_range = {
@@ -2805,12 +2805,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.659668,
-			0.165039
+			0.598145,
+			0.370117
 		},
 		uv11 = {
-			0.679199,
-			0.204102
+			0.617676,
+			0.40918
 		}
 	},
 	bardin_slayer_max_health = {
@@ -2819,12 +2819,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.63916,
-			0.165039
+			0.598145,
+			0.329102
 		},
 		uv11 = {
-			0.658691,
-			0.204102
+			0.617676,
+			0.368164
 		}
 	},
 	bardin_slayer_movement_speed = {
@@ -2833,12 +2833,12 @@ icons_atlas = {
 			80
 		},
 		uv00 = {
-			0.618652,
-			0.165039
+			0.598145,
+			0.288086
 		},
 		uv11 = {
-			0.638184,
-			0.204102
+			0.617676,
+			0.327148
 		}
 	},
 	bardin_slayer_passive = {
@@ -2848,6 +2848,286 @@ icons_atlas = {
 		},
 		uv00 = {
 			0.598145,
+			0.24707
+		},
+		uv11 = {
+			0.617676,
+			0.286133
+		}
+	},
+	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.598145,
+			0.206055
+		},
+		uv11 = {
+			0.617676,
+			0.245117
+		}
+	},
+	bardin_slayer_passive_stacking_damage_buff_grants_defence = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.967285,
+			0.165039
+		},
+		uv11 = {
+			0.986816,
+			0.204102
+		}
+	},
+	bardin_slayer_passive_stacking_damage_buff_increased_duration = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.946777,
+			0.165039
+		},
+		uv11 = {
+			0.966309,
+			0.204102
+		}
+	},
+	bardin_slayer_regrowth = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.92627,
+			0.165039
+		},
+		uv11 = {
+			0.945801,
+			0.204102
+		}
+	},
+	bardin_slayer_activated_ability_leap_damage = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.905762,
+			0.165039
+		},
+		uv11 = {
+			0.925293,
+			0.204102
+		}
+	},
+	bardin_slayer_activated_ability_leap_range = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.885254,
+			0.165039
+		},
+		uv11 = {
+			0.904785,
+			0.204102
+		}
+	},
+	bardin_slayer_attack_speed_on_double_one_handed_weapons = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.864746,
+			0.165039
+		},
+		uv11 = {
+			0.884277,
+			0.204102
+		}
+	},
+	bardin_slayer_damage_reduction_on_melee_charge_action = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.844238,
+			0.165039
+		},
+		uv11 = {
+			0.86377,
+			0.204102
+		}
+	},
+	bardin_slayer_linesman_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.82373,
+			0.165039
+		},
+		uv11 = {
+			0.843262,
+			0.204102
+		}
+	},
+	bardin_slayer_passive_increased_max_stacks = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.803223,
+			0.165039
+		},
+		uv11 = {
+			0.822754,
+			0.204102
+		}
+	},
+	bardin_slayer_passive_movement_speed = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.782715,
+			0.165039
+		},
+		uv11 = {
+			0.802246,
+			0.204102
+		}
+	},
+	bardin_slayer_power_level_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.762207,
+			0.165039
+		},
+		uv11 = {
+			0.781738,
+			0.204102
+		}
+	},
+	bardin_slayer_power_on_double_two_handed_weapons = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.741699,
+			0.165039
+		},
+		uv11 = {
+			0.76123,
+			0.204102
+		}
+	},
+	bardin_slayer_push_on_dodge = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.721191,
+			0.165039
+		},
+		uv11 = {
+			0.740723,
+			0.204102
+		}
+	},
+	bardin_slayer_smiter_unbalance = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.700684,
+			0.165039
+		},
+		uv11 = {
+			0.720215,
+			0.204102
+		}
+	},
+	kerillian_maidenguard_activated_ability = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.680176,
+			0.165039
+		},
+		uv11 = {
+			0.699707,
+			0.204102
+		}
+	},
+	kerillian_maidenguard_activated_ability_cooldown = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.659668,
+			0.165039
+		},
+		uv11 = {
+			0.679199,
+			0.204102
+		}
+	},
+	kerillian_maidenguard_activated_ability_damage = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.63916,
+			0.165039
+		},
+		uv11 = {
+			0.658691,
+			0.204102
+		}
+	},
+	kerillian_maidenguard_activated_ability_invis_duration = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.618652,
+			0.165039
+		},
+		uv11 = {
+			0.638184,
+			0.204102
+		}
+	},
+	kerillian_maidenguard_bloodlust = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.598145,
 			0.165039
 		},
 		uv11 = {
@@ -2855,7 +3135,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	bardin_slayer_passive_cooldown_reduction_on_max_stacks = {
+	kerillian_maidenguard_conqueror = {
 		size = {
 			80,
 			80
@@ -2869,7 +3149,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	bardin_slayer_passive_stacking_damage_buff_grants_defence = {
+	kerillian_maidenguard_damage_reduction_on_last_standing = {
 		size = {
 			80,
 			80
@@ -2883,7 +3163,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	bardin_slayer_passive_stacking_damage_buff_increased_duration = {
+	kerillian_maidenguard_improved_dodge = {
 		size = {
 			80,
 			80
@@ -2897,7 +3177,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	bardin_slayer_regrowth = {
+	kerillian_maidenguard_improved_stamina_regen = {
 		size = {
 			80,
 			80
@@ -2911,7 +3191,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	bardin_slayer_activated_ability_leap_damage = {
+	kerillian_maidenguard_max_ammo = {
 		size = {
 			80,
 			80
@@ -2925,7 +3205,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	bardin_slayer_activated_ability_leap_range = {
+	kerillian_maidenguard_max_stamina = {
 		size = {
 			80,
 			80
@@ -2939,7 +3219,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	bardin_slayer_attack_speed_on_double_one_handed_weapons = {
+	kerillian_maidenguard_movement_speed = {
 		size = {
 			80,
 			80
@@ -2953,7 +3233,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	bardin_slayer_damage_reduction_on_melee_charge_action = {
+	kerillian_maidenguard_passive = {
 		size = {
 			80,
 			80
@@ -2967,7 +3247,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	bardin_slayer_linesman_unbalance = {
+	kerillian_maidenguard_push_arc = {
 		size = {
 			80,
 			80
@@ -2981,7 +3261,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	bardin_slayer_passive_increased_max_stacks = {
+	kerillian_maidenguard_regrowth = {
 		size = {
 			80,
 			80
@@ -2995,7 +3275,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	bardin_slayer_passive_movement_speed = {
+	kerillian_maidenguard_remove_wounded_on_boss_death = {
 		size = {
 			80,
 			80
@@ -3009,7 +3289,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	bardin_slayer_power_level_unbalance = {
+	kerillian_maidenguard_slower_heavy_hits = {
 		size = {
 			80,
 			80
@@ -3023,7 +3303,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	bardin_slayer_power_on_double_two_handed_weapons = {
+	kerillian_maidenguard_activated_ability_buff_on_enemy_hit = {
 		size = {
 			80,
 			80
@@ -3037,7 +3317,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	bardin_slayer_push_on_dodge = {
+	kerillian_maidenguard_block_cost = {
 		size = {
 			80,
 			80
@@ -3051,7 +3331,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	bardin_slayer_smiter_unbalance = {
+	kerillian_maidenguard_cooldown_on_nearby_allies = {
 		size = {
 			80,
 			80
@@ -3065,7 +3345,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	kerillian_maidenguard_activated_ability = {
+	kerillian_maidenguard_crit_chance = {
 		size = {
 			80,
 			80
@@ -3079,7 +3359,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	kerillian_maidenguard_activated_ability_cooldown = {
+	kerillian_maidenguard_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -3093,7 +3373,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_maidenguard_activated_ability_damage = {
+	kerillian_maidenguard_passive_attack_speed_on_dodge = {
 		size = {
 			80,
 			80
@@ -3107,7 +3387,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_maidenguard_activated_ability_invis_duration = {
+	kerillian_maidenguard_passive_noclip_dodge = {
 		size = {
 			80,
 			80
@@ -3121,7 +3401,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_maidenguard_bloodlust = {
+	kerillian_maidenguard_power_level_on_unharmed = {
 		size = {
 			80,
 			80
@@ -3135,7 +3415,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_maidenguard_conqueror = {
+	kerillian_maidenguard_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -3149,7 +3429,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_damage_reduction_on_last_standing = {
+	kerillian_maidenguard_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -3163,7 +3443,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_improved_dodge = {
+	kerillian_shade_activated_ability = {
 		size = {
 			80,
 			80
@@ -3177,7 +3457,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_improved_stamina_regen = {
+	kerillian_shade_activated_ability_cooldown = {
 		size = {
 			80,
 			80
@@ -3191,7 +3471,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_max_ammo = {
+	kerillian_shade_activated_ability_duration = {
 		size = {
 			80,
 			80
@@ -3205,7 +3485,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_max_stamina = {
+	kerillian_shade_activated_ability_no_break_on_ranged = {
 		size = {
 			80,
 			80
@@ -3219,7 +3499,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_movement_speed = {
+	kerillian_shade_attack_speed = {
 		size = {
 			80,
 			80
@@ -3233,7 +3513,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_passive = {
+	kerillian_shade_backstabs_replenishes_ammunition = {
 		size = {
 			80,
 			80
@@ -3247,7 +3527,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_push_arc = {
+	kerillian_shade_bloodlust = {
 		size = {
 			80,
 			80
@@ -3261,7 +3541,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_regrowth = {
+	kerillian_shade_conqueror = {
 		size = {
 			80,
 			80
@@ -3275,7 +3555,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_remove_wounded_on_boss_death = {
+	kerillian_shade_debuff_defence_on_disabler = {
 		size = {
 			80,
 			80
@@ -3289,7 +3569,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_slower_heavy_hits = {
+	kerillian_shade_dodge_range = {
 		size = {
 			80,
 			80
@@ -3303,7 +3583,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_activated_ability_buff_on_enemy_hit = {
+	kerillian_shade_increased_damage_on_grimoire_picked_up = {
 		size = {
 			80,
 			80
@@ -3317,7 +3597,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_block_cost = {
+	kerillian_shade_movement_speed = {
 		size = {
 			80,
 			80
@@ -3331,7 +3611,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_cooldown_on_nearby_allies = {
+	kerillian_shade_passive = {
 		size = {
 			80,
 			80
@@ -3345,7 +3625,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_crit_chance = {
+	kerillian_shade_passive_improved = {
 		size = {
 			80,
 			80
@@ -3359,7 +3639,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_linesman_unbalance = {
+	kerillian_shade_regrowth = {
 		size = {
 			80,
 			80
@@ -3373,7 +3653,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_passive_attack_speed_on_dodge = {
+	kerillian_shade_stamina_regen = {
 		size = {
 			80,
 			80
@@ -3387,7 +3667,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_passive_noclip_dodge = {
+	kerillian_shade_wider_backstab_angle = {
 		size = {
 			80,
 			80
@@ -3401,7 +3681,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_power_level_on_unharmed = {
+	kerillian_shade_activated_ability_dash = {
 		size = {
 			80,
 			80
@@ -3415,7 +3695,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_maidenguard_power_level_unbalance = {
+	kerillian_shade_activated_ability_quick_cooldown = {
 		size = {
 			80,
 			80
@@ -3429,7 +3709,7 @@ icons_atlas = {
 			0.983398
 		}
 	},
-	kerillian_maidenguard_smiter_unbalance = {
+	kerillian_shade_activated_ability_restealth = {
 		size = {
 			80,
 			80
@@ -3443,7 +3723,7 @@ icons_atlas = {
 			0.942383
 		}
 	},
-	kerillian_shade_activated_ability = {
+	kerillian_shade_damage_reduction_on_critical_hit = {
 		size = {
 			80,
 			80
@@ -3457,7 +3737,7 @@ icons_atlas = {
 			0.901367
 		}
 	},
-	kerillian_shade_activated_ability_cooldown = {
+	kerillian_shade_increased_critical_strike_damage = {
 		size = {
 			80,
 			80
@@ -3471,7 +3751,7 @@ icons_atlas = {
 			0.860352
 		}
 	},
-	kerillian_shade_activated_ability_duration = {
+	kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy = {
 		size = {
 			80,
 			80
@@ -3485,7 +3765,7 @@ icons_atlas = {
 			0.819336
 		}
 	},
-	kerillian_shade_activated_ability_no_break_on_ranged = {
+	kerillian_shade_movement_speed_on_critical_hit = {
 		size = {
 			80,
 			80
@@ -3499,7 +3779,7 @@ icons_atlas = {
 			0.77832
 		}
 	},
-	kerillian_shade_attack_speed = {
+	kerillian_shade_ninja_unbalance = {
 		size = {
 			80,
 			80
@@ -3513,7 +3793,7 @@ icons_atlas = {
 			0.737305
 		}
 	},
-	kerillian_shade_backstabs_replenishes_ammunition = {
+	kerillian_shade_passive_stealth_on_backstab_kill = {
 		size = {
 			80,
 			80
@@ -3527,7 +3807,7 @@ icons_atlas = {
 			0.696289
 		}
 	},
-	kerillian_shade_bloodlust = {
+	kerillian_shade_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -3541,7 +3821,7 @@ icons_atlas = {
 			0.655273
 		}
 	},
-	kerillian_shade_conqueror = {
+	kerillian_shade_smiter_unbalance = {
 		size = {
 			80,
 			80
@@ -3555,7 +3835,7 @@ icons_atlas = {
 			0.614258
 		}
 	},
-	kerillian_shade_debuff_defence_on_disabler = {
+	kerillian_shade_stacking_headshot_damage_on_headshot = {
 		size = {
 			80,
 			80
@@ -3569,7 +3849,7 @@ icons_atlas = {
 			0.573242
 		}
 	},
-	kerillian_shade_dodge_range = {
+	kerillian_thornsister_activated_ability = {
 		size = {
 			80,
 			80
@@ -3583,7 +3863,7 @@ icons_atlas = {
 			0.532227
 		}
 	},
-	kerillian_shade_increased_damage_on_grimoire_picked_up = {
+	kerillian_thornsister_attack_speed_on_full = {
 		size = {
 			80,
 			80
@@ -3597,7 +3877,7 @@ icons_atlas = {
 			0.491211
 		}
 	},
-	kerillian_shade_movement_speed = {
+	kerillian_thornsister_avatar = {
 		size = {
 			80,
 			80
@@ -3611,7 +3891,7 @@ icons_atlas = {
 			0.450195
 		}
 	},
-	kerillian_shade_passive = {
+	kerillian_thornsister_big_push = {
 		size = {
 			80,
 			80
@@ -3625,7 +3905,7 @@ icons_atlas = {
 			0.40918
 		}
 	},
-	kerillian_shade_passive_improved = {
+	kerillian_thornsister_bloodlust = {
 		size = {
 			80,
 			80
@@ -3639,7 +3919,7 @@ icons_atlas = {
 			0.368164
 		}
 	},
-	kerillian_shade_regrowth = {
+	kerillian_thornsister_crit_big_bleed = {
 		size = {
 			80,
 			80
@@ -3653,7 +3933,7 @@ icons_atlas = {
 			0.327148
 		}
 	},
-	kerillian_shade_stamina_regen = {
+	kerillian_thornsister_crit_on_any_ability = {
 		size = {
 			80,
 			80
@@ -3667,7 +3947,7 @@ icons_atlas = {
 			0.286133
 		}
 	},
-	kerillian_shade_wider_backstab_angle = {
+	kerillian_thornsister_debuff_wall = {
 		size = {
 			80,
 			80
@@ -3681,7 +3961,7 @@ icons_atlas = {
 			0.245117
 		}
 	},
-	kerillian_shade_activated_ability_dash = {
+	kerillian_thornsister_double_passive = {
 		size = {
 			80,
 			80
@@ -3695,7 +3975,7 @@ icons_atlas = {
 			0.204102
 		}
 	},
-	kerillian_shade_activated_ability_quick_cooldown = {
+	kerillian_thornsister_explosive_wall = {
 		size = {
 			80,
 			80
@@ -3709,7 +3989,7 @@ icons_atlas = {
 			0.163086
 		}
 	},
-	kerillian_shade_activated_ability_restealth = {
+	kerillian_thornsister_free_throw = {
 		size = {
 			80,
 			80
@@ -3723,7 +4003,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_damage_reduction_on_critical_hit = {
+	kerillian_thornsister_healing_wall = {
 		size = {
 			80,
 			80
@@ -3737,7 +4017,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_increased_critical_strike_damage = {
+	kerillian_thornsister_heal_share = {
 		size = {
 			80,
 			80
@@ -3751,7 +4031,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_increased_damage_on_poisoned_or_bleeding_enemy = {
+	kerillian_thornsister_linesman_unbalance = {
 		size = {
 			80,
 			80
@@ -3765,7 +4045,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_movement_speed_on_critical_hit = {
+	kerillian_thornsister_passive = {
 		size = {
 			80,
 			80
@@ -3779,7 +4059,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_ninja_unbalance = {
+	kerillian_thornsister_power_level_unbalance = {
 		size = {
 			80,
 			80
@@ -3793,7 +4073,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_passive_stealth_on_backstab_kill = {
+	kerillian_thornsister_power_on_health_gain = {
 		size = {
 			80,
 			80
@@ -3807,7 +4087,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_power_level_unbalance = {
+	kerillian_thornsister_reduce_passive_on_elite = {
 		size = {
 			80,
 			80
@@ -3821,7 +4101,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_smiter_unbalance = {
+	kerillian_thornsister_regrowth = {
 		size = {
 			80,
 			80
@@ -3835,7 +4115,7 @@ icons_atlas = {
 			0.12207
 		}
 	},
-	kerillian_shade_stacking_headshot_damage_on_headshot = {
+	kerillian_thornsister_smiter_unbalance = {
 		size = {
 			80,
 			80

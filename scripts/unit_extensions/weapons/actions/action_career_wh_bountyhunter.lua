@@ -26,13 +26,26 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 	ActionCareerWHBountyhunter.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	self:_play_vo()
 
-	local career_extension = self.career_extension
-
-	career_extension:start_activated_ability_cooldown()
-
+	self.start_activated_ability_cooldown_t = 0.1
 	local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")
 
 	inventory_extension:check_and_drop_pickups("career_ability")
+end
+
+ActionCareerWHBountyhunter.client_owner_post_update = function (self, dt, ...)
+	if self.start_activated_ability_cooldown_t then
+		self.start_activated_ability_cooldown_t = self.start_activated_ability_cooldown_t - dt
+
+		if self.start_activated_ability_cooldown_t <= 0 then
+			local career_extension = self.career_extension
+
+			career_extension:start_activated_ability_cooldown()
+
+			self.start_activated_ability_cooldown_t = nil
+		end
+	end
+
+	ActionCareerWHBountyhunter.super.client_owner_post_update(self, dt, ...)
 end
 
 ActionCareerWHBountyhunter.finish = function (self, reason)

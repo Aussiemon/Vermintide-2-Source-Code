@@ -469,16 +469,21 @@ PartyManager.remove_peer_from_party = function (self, peer_id, local_player_id, 
 	end
 end
 
+local player_statuses = {}
+
 PartyManager.get_players_in_party = function (self, party_id)
-	local player_statuses = {}
+	table.clear(player_statuses)
+
+	local index = 0
 
 	for unique_id, status in pairs(self._player_statuses) do
 		if status.party_id == party_id then
-			table.insert(player_statuses, status)
+			index = index + 1
+			player_statuses[index] = status
 		end
 	end
 
-	return player_statuses
+	return player_statuses, index
 end
 
 PartyManager._find_slot_index = function (party, slot_id)

@@ -26,8 +26,8 @@ LevelTransitionHandler.init = function (self)
 	self.loaded_levels = {}
 	self.enemy_package_loader = EnemyPackageLoader:new()
 	self._network_state = nil
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak = nil
-	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = nil
+	level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(level_key, level_seed, environment_variation_id, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages)
 	local default_level_data = {
 		level_transition_type = "load_next_level",
 		level_key = level_key,
@@ -38,7 +38,8 @@ LevelTransitionHandler.init = function (self)
 		conflict_director = conflict_director,
 		locked_director_functions = locked_director_functions,
 		difficulty = difficulty,
-		difficulty_tweak = difficulty_tweak
+		difficulty_tweak = difficulty_tweak,
+		extra_packages = extra_packages
 	}
 	self._offline_level_data = table.clone(default_level_data)
 	self._offline_level_data.level_session_id = math.random_seed()
@@ -55,7 +56,7 @@ LevelTransitionHandler.register_network_state = function (self, network_state)
 	local offline_level_data = self._offline_level_data
 
 	if network_state:is_server() then
-		network_state:set_level_data(offline_level_data.level_key, offline_level_data.environment_variation_id, offline_level_data.level_seed, offline_level_data.mechanism, offline_level_data.game_mode, offline_level_data.conflict_director, offline_level_data.locked_director_functions, offline_level_data.difficulty, offline_level_data.difficulty_tweak, offline_level_data.level_session_id, offline_level_data.level_transition_type)
+		network_state:set_level_data(offline_level_data.level_key, offline_level_data.environment_variation_id, offline_level_data.level_seed, offline_level_data.mechanism, offline_level_data.game_mode, offline_level_data.conflict_director, offline_level_data.locked_director_functions, offline_level_data.difficulty, offline_level_data.difficulty_tweak, offline_level_data.level_session_id, offline_level_data.level_transition_type, offline_level_data.extra_packages)
 	end
 
 	self._offline_level_data = nil
@@ -87,7 +88,7 @@ LevelTransitionHandler.reload_level = function (self, optional_checkpoint_data, 
 	self._checkpoint_data = optional_checkpoint_data
 	local level_transition_type = "reload_level"
 
-	self:_set_next_level(level_transition_type, self:get_current_level_key(), self:get_current_environment_variation_id(), optional_level_seed or self:get_current_level_seed(), self:get_current_mechanism(), self:get_current_game_mode(), self:get_current_conflict_director(), self:get_current_locked_director_functions(), self:get_current_difficulty(), self:get_current_difficulty_tweak())
+	self:_set_next_level(level_transition_type, self:get_current_level_key(), self:get_current_environment_variation_id(), optional_level_seed or self:get_current_level_seed(), self:get_current_mechanism(), self:get_current_game_mode(), self:get_current_conflict_director(), self:get_current_locked_director_functions(), self:get_current_difficulty(), self:get_current_difficulty_tweak(), self:get_current_extra_packages())
 end
 
 LevelTransitionHandler.get_checkpoint_data = function (self)
@@ -137,7 +138,7 @@ LevelTransitionHandler.promote_next_level_data = function (self)
 	print("promote_next_level_data")
 
 	if self._network_state then
-		self._network_state:set_level_data(self._next_level_data.level_key, self._next_level_data.environment_variation_id, self._next_level_data.level_seed, self._next_level_data.mechanism, self._next_level_data.game_mode, self._next_level_data.conflict_director, self._next_level_data.locked_director_functions, self._next_level_data.difficulty, self._next_level_data.difficulty_tweak, self._next_level_data.level_session_id, self._next_level_data.level_transition_type)
+		self._network_state:set_level_data(self._next_level_data.level_key, self._next_level_data.environment_variation_id, self._next_level_data.level_seed, self._next_level_data.mechanism, self._next_level_data.game_mode, self._next_level_data.conflict_director, self._next_level_data.locked_director_functions, self._next_level_data.difficulty, self._next_level_data.difficulty_tweak, self._next_level_data.level_session_id, self._next_level_data.level_transition_type, self._next_level_data.extra_packages)
 	else
 		self._offline_level_data = self._next_level_data
 	end
@@ -151,6 +152,7 @@ end
 
 LevelTransitionHandler.load_current_level = function (self)
 	local new_level_key = self:get_current_level_key()
+	local extra_packages = self:get_current_extra_packages()
 	local new_environment_variation_id = self:get_current_environment_variation_id()
 	local new_loaded_level_session_id = self:get_current_level_session_id()
 
@@ -168,13 +170,14 @@ LevelTransitionHandler.load_current_level = function (self)
 	local is_not_loaded = not self:_level_packages_loaded(new_level_key)
 
 	if currently_loaded_level_key ~= new_level_key or currently_loaded_environment_variation_id ~= new_environment_variation_id or (is_not_loading and is_not_loaded) then
-		self:_load_level_packages(new_level_key)
+		self:_load_level_packages(new_level_key, extra_packages)
 
 		local level_settings = LevelSettings[new_level_key]
 		local packages = level_settings.packages
 
 		dprint("loading level: %q", new_level_key)
 		dprint("loading packages: %s", table.tostring(packages))
+		dprint("loading extra packages: %s", table.tostring(extra_packages))
 
 		self.loading_packages[new_level_key] = true
 		self._has_loaded_all_packages = false
@@ -224,10 +227,10 @@ LevelTransitionHandler.clear_next_level = function (self)
 	self._next_level_data = nil
 end
 
-LevelTransitionHandler.set_next_level = function (self, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak)
+LevelTransitionHandler.set_next_level = function (self, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages)
 	local level_transition_type = "load_next_level"
 
-	self:_set_next_level(level_transition_type, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak)
+	self:_set_next_level(level_transition_type, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages)
 end
 
 LevelTransitionHandler.get_next_level_key = function (self)
@@ -310,6 +313,10 @@ LevelTransitionHandler.get_current_difficulty_tweak = function (self)
 	return (self._network_state and self._network_state:get_difficulty_tweak()) or self._offline_level_data.difficulty_tweak
 end
 
+LevelTransitionHandler.get_current_extra_packages = function (self)
+	return (self._network_state and self._network_state:get_extra_packages()) or self._offline_level_data.extra_packages
+end
+
 LevelTransitionHandler.get_current_mechanism = function (self)
 	return (self._network_state and self._network_state:get_mechanism()) or self._offline_level_data.mechanism
 end
@@ -330,13 +337,13 @@ LevelTransitionHandler.all_packages_loaded = function (self)
 	return not self:needs_level_load() and self._has_loaded_all_packages == true
 end
 
-LevelTransitionHandler._set_next_level = function (self, level_transition_type, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak)
+LevelTransitionHandler._set_next_level = function (self, level_transition_type, optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages)
 	fassert(not self._network_state or self._network_state:is_server(), "only the server handles next level logic")
 
-	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak = LevelTransitionHandler.apply_defaults_to_level_data(optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, extra_packages = LevelTransitionHandler.apply_defaults_to_level_data(optional_level_key, optional_environment_variation_id, optional_level_seed, optional_mechanism, optional_game_mode, optional_conflict_director, optional_locked_director_functions, optional_difficulty, optional_difficulty_tweak, optional_extra_packages)
 	local new_level_session_id = math.random_seed()
 
-	print("set_next_level( lvl:%s, mc:%s, gm:%s, env:%s, seed:%d, conflict:%s, lckd_director_funcs:{%s}, diff:%s diff_tweak:%d id:%d lt:%s)", tostring(level_key), mechanism, game_mode, tostring(environment_variation_id), level_seed, conflict_director, table.concat(locked_director_functions, ","), difficulty, difficulty_tweak, new_level_session_id, level_transition_type)
+	print("set_next_level( lvl:%s, mc:%s, gm:%s, env:%s, seed:%d, conflict:%s, lckd_director_funcs:{%s}, diff:%s, diff_tweak:%d, id:%d, lt:%s, extra_packages:%s)", tostring(level_key), mechanism, game_mode, tostring(environment_variation_id), level_seed, conflict_director, table.concat(locked_director_functions, ","), difficulty, difficulty_tweak, new_level_session_id, level_transition_type, table.tostring(extra_packages))
 
 	self._next_level_data = {
 		level_key = level_key,
@@ -349,16 +356,24 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 		difficulty = difficulty,
 		difficulty_tweak = difficulty_tweak,
 		level_session_id = new_level_session_id,
-		level_transition_type = level_transition_type
+		level_transition_type = level_transition_type,
+		extra_packages = extra_packages
 	}
 end
 
-LevelTransitionHandler._load_level_packages = function (self, level_key)
+LevelTransitionHandler._load_level_packages = function (self, level_key, extra_packages)
 	local async = true
 	local package_manager = Managers.package
 	local reference_name = level_key
 	local settings = LevelSettings[level_key]
-	local packages = settings.packages
+	local packages = table.clone(settings.packages)
+
+	if #extra_packages > 0 then
+		fassert(self._extra_packages == nil, "Trying to load level before releasing previous one properly. _extra_packages have not been unloaded.")
+		table.append(packages, extra_packages)
+
+		self._extra_packages = extra_packages
+	end
 
 	if packages then
 		for i = 1, #packages, 1 do
@@ -373,7 +388,14 @@ LevelTransitionHandler._unload_level_packages = function (self, level_key)
 	local reference_name = level_key
 	local package_manager = Managers.package
 	local settings = LevelSettings[level_key]
-	local packages = settings.packages
+	local packages = table.clone(settings.packages)
+
+	if self._extra_packages then
+		dprint("unloading extra packages: %s", table.tostring(self._extra_packages))
+		table.append(packages, self._extra_packages)
+
+		self._extra_packages = nil
+	end
 
 	if packages then
 		for i = #packages, 1, -1 do
@@ -405,7 +427,7 @@ LevelTransitionHandler._level_packages_loaded = function (self, level_key)
 	return true
 end
 
-LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak)
+LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, optional_extra_packages)
 	if not mechanism then
 		if level_key then
 			local level_settings = LevelSettings[level_key]
@@ -430,8 +452,9 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 	difficulty = script_data.current_difficulty_setting or difficulty or "normal"
 	difficulty_tweak = script_data.current_difficulty_tweak_setting or difficulty_tweak or 0
 	level_seed = level_seed or 0
+	optional_extra_packages = optional_extra_packages or {}
 
-	return level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak
+	return level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, optional_extra_packages
 end
 
 LevelTransitionHandler._update_debug = function (self)

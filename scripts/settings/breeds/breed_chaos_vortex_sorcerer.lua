@@ -1,9 +1,10 @@
 local breed_data = {
-	is_always_spawnable = true,
+	controllable = true,
 	has_inventory = true,
-	behavior = "chaos_vortex_sorcerer",
-	no_stagger_duration = true,
 	perception = "perception_all_seeing",
+	no_stagger_duration = true,
+	behavior = "chaos_vortex_sorcerer",
+	is_always_spawnable = true,
 	target_selection = "pick_closest_vortex_target",
 	base_unit = "units/beings/enemies/chaos_vortex_sorcerer/chr_chaos_vortex_sorcerer",
 	animation_sync_rpc = "rpc_sync_anim_state_7",
@@ -36,6 +37,101 @@ local breed_data = {
 	disabled = Development.setting("disable_vortex_sorcerer") or false,
 	hitzone_multiplier_types = {
 		head = "headshot"
+	},
+	hit_zones = {
+		head = {
+			prio = 1,
+			actors = {
+				"c_head"
+			},
+			push_actors = {
+				"j_head",
+				"j_spine1"
+			}
+		},
+		neck = {
+			prio = 1,
+			actors = {
+				"c_neck"
+			},
+			push_actors = {
+				"j_head",
+				"j_spine1"
+			}
+		},
+		torso = {
+			prio = 2,
+			actors = {
+				"c_hips",
+				"c_spine",
+				"c_spine1",
+				"c_leftshoulder",
+				"c_rightshoulder"
+			},
+			push_actors = {
+				"j_spine1"
+			}
+		},
+		left_arm = {
+			prio = 3,
+			actors = {
+				"c_leftarm",
+				"c_leftforearm",
+				"c_lefthand"
+			},
+			push_actors = {
+				"j_spine1"
+			}
+		},
+		right_arm = {
+			prio = 3,
+			actors = {
+				"c_rightarm",
+				"c_rightforearm",
+				"c_righthand"
+			},
+			push_actors = {
+				"j_spine1"
+			}
+		},
+		left_leg = {
+			prio = 3,
+			actors = {
+				"c_leftupleg",
+				"c_leftleg",
+				"c_leftfoot",
+				"c_lefttoebase"
+			},
+			push_actors = {
+				"j_leftfoot",
+				"j_rightfoot",
+				"j_hips"
+			}
+		},
+		right_leg = {
+			prio = 3,
+			actors = {
+				"c_rightupleg",
+				"c_rightleg",
+				"c_rightfoot",
+				"c_righttoebase"
+			},
+			push_actors = {
+				"j_leftfoot",
+				"j_rightfoot",
+				"j_hips"
+			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
+		},
+		afro = {
+			prio = 5,
+			actors = {
+				"h_afro"
+			}
+		}
 	},
 	custom_death_enter_function = function (unit, killer_unit, damage_type, death_hit_zone, t, damage_source)
 		local blackboard = BLACKBOARDS[unit]

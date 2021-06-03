@@ -60,6 +60,19 @@ CommonPopupHandler.queue_popup = function (self, ui_popup)
 	self._popup_ids = self._popup_ids + 1
 	local popup_id = tostring(self._popup_ids)
 	ui_popup.popup_id = popup_id
+
+	if n_popups > 1 then
+		local previous_popup_showing = popups[n_popups - 1]:is_popup_showing()
+
+		if previous_popup_showing then
+			table.insert(popups, 1, ui_popup)
+
+			self._popups = popups
+
+			return popup_id
+		end
+	end
+
 	popups[n_popups] = ui_popup
 	self._popups = popups
 

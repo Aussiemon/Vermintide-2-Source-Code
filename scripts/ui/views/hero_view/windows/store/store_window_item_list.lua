@@ -339,6 +339,24 @@ StoreWindowItemList._update_item_list = function (self)
 				}
 			end
 		end
+	elseif product_type == "bundle_items" then
+		local bundle_contains = current_page.bundle_contains
+
+		for _, item_key in pairs(bundle_contains) do
+			local item = ItemMasterList[item_key]
+			layout[#layout + 1] = {
+				type = "item",
+				item = {
+					dlc_name = current_page.dlc_name,
+					data = item
+				},
+				product_id = item.key,
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			}
+		end
 	end
 
 	self._layout = layout

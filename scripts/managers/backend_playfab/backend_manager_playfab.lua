@@ -1385,6 +1385,30 @@ BackendManagerPlayFab.get_level_variation_data = function (self)
 	return decoded_level_variation_data or EMPTY_TABLE
 end
 
+BackendManagerPlayFab.get_deus_weapon_preload_settings = function (self)
+	if not self._backend_mirror then
+		return EMPTY_TABLE
+	end
+
+	local title_data = self._backend_mirror:get_title_data()
+	local deus_weapon_preload_settings = title_data.deus_weapon_preload_settings
+	local decoded_deus_weapon_preload_settings = deus_weapon_preload_settings and cjson.decode(deus_weapon_preload_settings)
+
+	return decoded_deus_weapon_preload_settings or EMPTY_TABLE
+end
+
+BackendManagerPlayFab.get_title_settings = function (self)
+	if not self._backend_mirror then
+		return EMPTY_TABLE
+	end
+
+	local title_data = self._backend_mirror:get_title_data()
+	local title_settings = title_data.title_settings
+	local decoded_title_settings = title_settings and cjson.decode(title_settings)
+
+	return decoded_title_settings or EMPTY_TABLE
+end
+
 BackendManagerPlayFab.dlc_unlocked_at_signin = function (self, dlc_name)
 	if IS_WINDOWS or IS_LINUX or not self._backend_mirror then
 		return true

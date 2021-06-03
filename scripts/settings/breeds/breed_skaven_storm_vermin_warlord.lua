@@ -370,6 +370,22 @@ local breed_data = {
 		j_rightforearm = 0.2,
 		j_tail2 = 0.05
 	},
+	allowed_layers = {
+		end_zone = 0,
+		ledges = 1.5,
+		barrel_explosion = 10,
+		jumps = 1.5,
+		bot_ratling_gun_fire = 3,
+		temporary_wall = 1,
+		planks = 1.5,
+		big_boy_destructible = 0,
+		destructible_wall = 0,
+		ledges_with_fence = 1.5,
+		doors = 1.5,
+		teleporters = 5,
+		bot_poison_wind = 1.5,
+		fire_grenade = 10
+	},
 	difficulty_kill_achievements = {
 		"kill_skaven_storm_vermin_warlord_difficulty_rank",
 		"kill_skaven_storm_vermin_warlord_scorpion_hardest"

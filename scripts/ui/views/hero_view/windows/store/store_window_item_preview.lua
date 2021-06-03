@@ -601,21 +601,36 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 
 	local special_press = input_service:get("special_1_press")
 
-	if (self:_is_button_pressed(details_button) or special_press) and self:_detailed_view_available() then
-		self:_play_sound("Play_hud_select")
-
+	if self:_is_button_pressed(details_button) or special_press then
 		local path = parent:get_store_path()
 		local new_path = table.clone(path)
 
-		if path[#path] == "item_details" then
-			new_path[#new_path] = nil
+		if self:_detailed_view_available() then
+			self:_play_sound("Play_hud_select")
+
+			if path[#path] == "item_details" then
+				new_path[#new_path] = nil
+			else
+				new_path[#new_path + 1] = "item_details"
+			end
+
+			parent:go_to_store_path(new_path)
+
+			input_handled = true
 		else
-			new_path[#new_path + 1] = "item_details"
+			local selected_product = self._selected_product
+			local product_id = selected_product.product_id
+
+			if self._parent:page_exists(product_id) then
+				self:_play_sound("Play_hud_select")
+
+				new_path[#new_path + 1] = product_id
+
+				parent:go_to_store_path(new_path)
+
+				input_handled = true
+			end
 		end
-
-		parent:go_to_store_path(new_path)
-
-		input_handled = true
 	end
 
 	return input_handled, input_hovered
@@ -840,6 +855,93 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 	end
 end
 
+StoreWindowItemPreview._create_dlc_bundle_layout = function (self, settings, product_id)
+	local bundle_contains = settings.bundle_contains
+	local bundle_desc = settings.information_text
+	local layout = {}
+
+	if settings.store_bundle_big_image then
+		layout[#layout + 1] = {
+			id = "dlc_feature_1",
+			type = "big_image",
+			settings = {
+				text = "",
+				localize = false,
+				show_frame = true,
+				texture_path = settings.store_bundle_big_image,
+				texture_package = settings.store_texture_package,
+				image_size = {
+					800,
+					592
+				}
+			}
+		}
+	end
+
+	layout[#layout + 1] = {
+		type = "spacing"
+	}
+	layout[#layout + 1] = {
+		type = "divider_horizontal"
+	}
+	layout[#layout + 1] = {
+		type = "spacing"
+	}
+	layout[#layout + 1] = {
+		type = "header_text",
+		settings = {
+			text = "menu_store_dlc_title_including",
+			localize = true
+		}
+	}
+	local item_row = #layout + 1
+	local num_items = #bundle_contains
+
+	if num_items == 2 then
+		layout[item_row] = {
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		}
+		item_row = item_row + 1
+	end
+
+	for i = 1, #bundle_contains, 1 do
+		local item_key = bundle_contains[i]
+		layout[(item_row + i) - 1] = {
+			type = "bundle_item",
+			id = item_key,
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		}
+	end
+
+	layout[#layout + 1] = {
+		type = "body_text",
+		settings = {
+			localize = true,
+			text = bundle_desc
+		}
+	}
+	layout[#layout + 1] = {
+		type = "spacing"
+	}
+	layout[#layout + 1] = {
+		type = "divider_horizontal"
+	}
+	layout[#layout + 1] = {
+		type = "spacing"
+	}
+
+	return layout
+end
+
 StoreWindowItemPreview._create_item_bundle_layout_with_items = function (self, item_preview_layout, steam_itemdefid, item_data)
 	local bundle_contains = item_data.bundle_contains
 	local layout = {}
@@ -1001,6 +1103,10 @@ StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 		self._current_generic_input_action = "dlc_preview_owned"
 
 		self._parent:change_generic_actions(generic_input_actions.dlc_preview_owned)
+	elseif settings.is_bundle then
+		self._current_generic_input_action = "dlc_bundle_purchase"
+
+		self._parent:change_generic_actions(generic_input_actions.dlc_bundle_purchase)
 	else
 		self._current_generic_input_action = "dlc_preview_purchase"
 
@@ -1009,6 +1115,10 @@ StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 
 	local is_console = not IS_WINDOWS
 	local layout = (is_console and settings.layout_console) or settings.layout
+
+	if not layout and settings.is_bundle then
+		layout = self:_create_dlc_bundle_layout(settings, product_id)
+	end
 
 	self:_dlc_component_layout(layout)
 end
@@ -2106,6 +2216,19 @@ StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 			if item then
 				product = {
 					item = item,
+					type = product_type,
+					product_id = product_id,
+					settings = product_data.settings
+				}
+			end
+		elseif product_type == "bundle_item" then
+			local item = ItemMasterList[product_id]
+
+			if item then
+				product = {
+					item = {
+						data = item
+					},
 					type = product_type,
 					product_id = product_id,
 					settings = product_data.settings

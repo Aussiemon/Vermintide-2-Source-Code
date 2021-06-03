@@ -58,6 +58,8 @@ HeroWindowWeaveForgeWeapons.on_enter = function (self, params, offset)
 	local weapon_crafting_tutorial_completed = WeaveOnboardingUtils.tutorial_completed(ui_onboarding_state, WeaveUITutorials.equip_weapon)
 	self._crafting_tutorial = not weapon_crafting_tutorial_completed
 
+	self:_update_button_visibility()
+
 	if self._crafting_tutorial then
 		local widgets_by_name = self._widgets_by_name
 		local unlock_button = widgets_by_name.unlock_button
@@ -371,6 +373,15 @@ HeroWindowWeaveForgeWeapons.update = function (self, dt, t)
 			self._unlock_item_response = nil
 		end
 	end
+end
+
+HeroWindowWeaveForgeWeapons._update_button_visibility = function (self)
+	local equip_button = self._widgets_by_name.equip_button
+	local equip_button_content = equip_button.content
+	local customize_button = self._widgets_by_name.customize_button
+	local customize_button_content = customize_button.content
+	equip_button_content.visible = not self._crafting_tutorial
+	customize_button_content.visible = not self._crafting_tutorial
 end
 
 HeroWindowWeaveForgeWeapons.post_update = function (self, dt, t)
@@ -744,7 +755,7 @@ HeroWindowWeaveForgeWeapons._present_item = function (self, item_key, activate_s
 	if not item then
 		local current_essence_amount = backend_interface_weaves:get_essence()
 		local essence_cost = backend_interface_weaves:magic_item_cost(item_key)
-		local can_afford = essence_cost and essence_cost <= current_essence_amount
+		local can_afford = essence_cost <= current_essence_amount
 
 		self:_set_essence_upgrade_cost(essence_cost, can_afford)
 	end
@@ -783,7 +794,7 @@ HeroWindowWeaveForgeWeapons._set_essence_upgrade_cost = function (self, essence_
 		local value_string = UIUtils.comma_value(essence_cost)
 		button_text = Localize("menu_weave_forge_unlock_weapon_button") .. " " .. value_string
 	else
-		button_text = "Error: Not found in backend"
+		button_text = Localize("backend_err_playfab")
 	end
 
 	local ui_renderer = self._ui_top_renderer
@@ -843,6 +854,8 @@ HeroWindowWeaveForgeWeapons._unlock_item_cb = function (self, success)
 		local unlock_button = widgets_by_name.unlock_button
 		unlock_button.content.highlighted = false
 		self._ui_animations.unlock_button_pulse = nil
+
+		self:_update_button_visibility()
 	end
 
 	self:_setup_weapon_list()

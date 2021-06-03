@@ -710,9 +710,10 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_activated_ability_power_buff = {
 		buffs = {
 			{
-				refresh_durations = true,
+				max_stacks = 1,
 				icon = "bardin_ironbreaker_activated_ability_power_buff_allies",
-				stat_buff = "power_level"
+				stat_buff = "power_level",
+				refresh_durations = true
 			}
 		}
 	},

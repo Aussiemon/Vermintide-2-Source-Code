@@ -223,7 +223,9 @@ ImguiBuffsDebug._update_controls = function (self)
 		if Imgui.button("Add with buff system", 200, 20) then
 			local buff_to_add = self._filtered_buff_list[self._selected_buff_id]
 
-			self:_add_buff_with_buff_system(buff_to_add)
+			if buff_to_add then
+				self:_add_buff_with_buff_system(buff_to_add)
+			end
 		end
 
 		Imgui.dummy(10, 10)
@@ -399,13 +401,24 @@ ImguiBuffsDebug._refresh_unit_list = function (self)
 		end
 	end
 
-	local broadphase_query = {}
+	if Unit.alive(script_data.debug_unit) then
+		local ai_unit = script_data.debug_unit
 
-	AiUtils.broadphase_query(position, 10, broadphase_query)
-
-	for _, ai_unit in ipairs(broadphase_query) do
 		table.insert(self._unit_names, Unit.debug_name(ai_unit))
 		table.insert(self._units, ai_unit)
+
+		self._selected_unit = #self._unit_names
+
+		self:_initialize_unit(ai_unit)
+	else
+		local broadphase_query = {}
+
+		AiUtils.broadphase_query(position, 10, broadphase_query)
+
+		for _, ai_unit in ipairs(broadphase_query) do
+			table.insert(self._unit_names, Unit.debug_name(ai_unit))
+			table.insert(self._units, ai_unit)
+		end
 	end
 end
 

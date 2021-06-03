@@ -524,10 +524,10 @@ UIUtils.create_widgets = function (widget_definitions, widgets, widgets_by_name)
 	return widgets, widgets_by_name
 end
 
-UIUtils.destroy_widgets = function (widget_list)
+UIUtils.destroy_widgets = function (ui_renderer, widget_list)
 	local destroy = UIWidget.destroy
 
-	for _, widget in pairs(widgets) do
+	for _, widget in pairs(widget_list) do
 		destroy(ui_renderer, widget)
 	end
 end

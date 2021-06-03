@@ -272,6 +272,8 @@ UIWidgets.create_store_category_entry_definition = function (scenegraph_id, size
 	return widget
 end
 
+local dummy_table = {}
+
 UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, product)
 	local frame_name = "menu_frame_16"
 	local frame_settings = UIFrameSettings[frame_name]
@@ -281,6 +283,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 	local pulse_frame_name = "frame_outer_glow_04_big"
 	local pulse_frame_settings = UIFrameSettings[pulse_frame_name]
 	local pulse_frame_spacing = pulse_frame_settings.texture_sizes.horizontal[2]
+	local settings = product.settings or dummy_table
 	local widget = {
 		element = {}
 	}
@@ -571,24 +574,24 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 	}
 	local content = {
 		expire_time_icon = "store_icon_hourglass",
-		price_icon = "store_icon_currency_ingame",
 		old_price = false,
 		price_strike_through = "shop_bundle_line",
-		background_price_center = "store_thumbnail_pricetag_middle",
-		price_text_now = "-",
 		has_expire_date = false,
-		hide_price = false,
+		draw_price_icon = true,
+		optional_subtitle = "",
+		price_text_now = "-",
 		owned_icon = "store_owned_sigil",
 		optional_item_name = "",
-		console_first_price_text = "",
+		price_icon = "store_icon_currency_ingame",
+		background_price_center = "store_thumbnail_pricetag_middle",
 		price_text = "-",
+		console_first_price_text = "",
 		console_third_price_text = "",
-		show_secondary_stroke = false,
 		show_ps4_plus = false,
 		price_text_before = "-",
-		draw_price_icon = true,
 		type_tag_icon = "store_tag_icon_dlc",
 		discount = false,
+		show_secondary_stroke = false,
 		show_third_stroke = false,
 		loading_icon = "loot_loading",
 		new_marker = "list_item_tag_new",
@@ -598,15 +601,16 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		limited_time = false,
 		owned = false,
 		console_secondary_price_text = "",
-		optional_subtitle = "",
+		hide_price = false,
 		owned_icon_bg = "store_owned_ribbon",
 		background_price_right = "store_thumbnail_pricetag_right",
 		discount_bg = "store_thumbnail_sale",
 		timer_icon = "store_owned_sigil",
 		psplus_icon = "psplus_logo",
-		hide_new = product.settings and product.settings.hide_new,
+		hide_new = settings.hide_new,
 		item_key = product.product_id,
 		hotspot = {},
+		masked_price_strike_through = not settings.mask_price_strike_through_hack,
 		discont_number_icons = {},
 		rect = (masked and "rect_masked") or "simple_rect_texture",
 		frame = frame_settings.texture,
@@ -750,6 +754,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			vertical_alignment = "top",
 			horizontal_alignment = "left",
 			angle = -0.17,
+			masked = content.masked_price_strike_through,
 			pivot = {
 				0,
 				0

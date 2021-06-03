@@ -9,7 +9,9 @@ require("scripts/network_lookup/network_lookup")
 require("scripts/network/voice_chat_xb1")
 
 LobbyInternal = LobbyInternal or {}
+LobbyInternal.lobby_data_version = 2
 LobbyInternal.TYPE = "xboxlive"
+LobbyInternal.WEAVE_HOPPER_NAME = "weave_find_group_hopper"
 LobbyInternal.HOPPER_NAME = "safe_profiles_hopper"
 LobbyInternal.SESSION_TEMPLATE_NAME = "new_default_game"
 LobbyInternal.SMARTMATCH_SESSION_TEMPLATE_NAME = "ticket_default"
@@ -32,9 +34,9 @@ LobbyInternal.init_client = function (network_options)
 	GameSettingsDevelopment.set_ignored_rpc_logs()
 end
 
-LobbyInternal.create_lobby = function (network_options)
-	local name = Application.guid()
-	local session_template_name = LobbyInternal.SESSION_TEMPLATE_NAME
+LobbyInternal.create_lobby = function (network_options, lobby_session_name, lobby_session_template)
+	local name = lobby_session_name or Application.guid()
+	local session_template_name = lobby_session_template or LobbyInternal.SESSION_TEMPLATE_NAME
 	local session_id = Network.create_multiplayer_session_host(Managers.account:user_id(), name, session_template_name, {
 		"server_name:" .. name
 	})
@@ -206,6 +208,14 @@ local HOPPER_PARAMS_LUT = {
 		"profiles",
 		"network_hash",
 		"matchmaking_types"
+	},
+	weave_find_group_hopper = {
+		"difficulty",
+		"powerlevel",
+		"profiles",
+		"network_hash",
+		"matchmaking_types",
+		"weave_index"
 	}
 }
 local HOPPER_PARAM_TYPE_LUT = {
@@ -231,6 +241,7 @@ XboxLiveLobby.init = function (self, session_id, unique_server_name, session_tem
 	self._data.session_template_name = session_template_name
 	self._hopper_name = LobbyInternal.HOPPER_NAME
 	self._session_name = unique_server_name or "missing session name"
+	self._session_template_name = session_template_name
 	self._smartmatch_ticket_params = {}
 	self._activity_set = false
 	self._data_needs_update = false
@@ -639,6 +650,10 @@ end
 
 XboxLiveLobby.session_id = function (self)
 	return self._session_id
+end
+
+XboxLiveLobby.session_template_name = function (self)
+	return self._session_template_name
 end
 
 XboxLiveLobby.leave = function (self)

@@ -130,7 +130,7 @@ TestCases.run_through_level = function (case_settings, skip_cinematic)
 		local main_path_point = 0
 		local total_main_path_distance = Snippets.total_main_path_distance()
 		local last_player_teleportation_time = os.clock()
-		local player_teleportation_speed_factor = 2
+		local player_teleportation_speed_factor = 2 * GLOBAL_TIME_SCALE
 		local measurement_count = 0
 		local number_of_measurements = 3
 		local main_path_increments = (total_main_path_distance - 10) / (number_of_measurements - 1)
@@ -234,7 +234,7 @@ TestCases.run_through_weave = function (case_settings)
 		local main_path_point = 0
 		local total_main_path_distance = Snippets.total_main_path_distance()
 		local last_player_teleportation_time = os.clock()
-		local player_teleportation_speed_factor = 1
+		local player_teleportation_speed_factor = 1 * GLOBAL_TIME_SCALE
 		local measurement_count = 0
 		local number_of_measurements = 3
 		local main_path_increments = (total_main_path_distance - 10) / (number_of_measurements - 1)
@@ -392,12 +392,16 @@ TestCases.load_level_environment_variations = function (level_key)
 	end)
 end
 
-TestCases.measure_performance = function (level_key)
+TestCases.measure_performance = function (level_key, skip_cinematic)
 	Testify:run_case(function ()
 		Snippets.disable_ai()
 		Snippets.disable_level_intro_dialogue()
 		Snippets.load_level(level_key)
-		Snippets.wait_for_cutscene_to_finish()
+
+		if not skip_cinematic then
+			Snippets.wait_for_cutscene_to_finish()
+		end
+
 		Snippets.set_telemetry_settings({
 			send = true
 		})
@@ -444,6 +448,10 @@ TestCases.measure_performance = function (level_key)
 	end)
 end
 
+TestCases.measure_deus_performance = function (level_key)
+	TestCases.measure_performance(level_key, true)
+end
+
 TestCases.run_through_deus_level = function (case_settings)
 	TestCases.run_through_level(case_settings, true)
 end
@@ -465,10 +473,6 @@ TestCases.run_through_deus_level_terror_event = function (level_key, terror_even
 			infinite_ammo = true,
 			power_level_override = 1600,
 			only_allowed_terror_event = terror_event_name
-		})
-		Snippets.add_buffs_to_heroes({
-			"ledge_rescue",
-			"bad_breath"
 		})
 
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
@@ -506,6 +510,10 @@ TestCases.run_through_deus_level_terror_event = function (level_key, terror_even
 			timer = timer + dt
 		end
 
+		Snippets.add_buffs_to_heroes({
+			"ledge_rescue",
+			"bad_breath"
+		})
 		Snippets.start_terror_event(terror_event_name)
 
 		local terror_event_triggered_time = os.clock()
@@ -572,7 +580,7 @@ TestCases.run_through_pvp_level = function (case_settings)
 		local main_path_point = 0
 		local total_main_path_distance = Snippets.total_main_path_distance()
 		local last_player_teleportation_time = os.clock()
-		local player_teleportation_speed_factor = 2
+		local player_teleportation_speed_factor = 2 * GLOBAL_TIME_SCALE
 		local measurement_count = 0
 		local number_of_measurements = 3
 		local main_path_increments = (total_main_path_distance - 10) / (number_of_measurements - 1)
@@ -835,6 +843,26 @@ TestCases.equip_deus_power_ups = function (case_settings)
 		local result = string.format("All %s power-ups were test", power_up_type)
 
 		return result
+	end)
+end
+
+TestCases.equip_hats = function ()
+	Testify:run_case(function (dt, t)
+		Snippets.load_level("inn_level")
+		Snippets.add_all_hats()
+
+		local profiles = Snippets.request_profiles("heroes")
+
+		for _, profile in ipairs(profiles) do
+			for _, career_name in ipairs(profile.careers) do
+				Snippets.set_player_profile(profile.name, career_name)
+				Snippets.wait_for_players_inventory_ready()
+				Snippets.open_hero_view()
+				Snippets.open_cosmetics_inventory()
+				Snippets.equip_hats()
+				Snippets.close_hero_view()
+			end
+		end
 	end)
 end
 

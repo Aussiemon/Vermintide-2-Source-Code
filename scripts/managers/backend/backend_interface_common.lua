@@ -282,6 +282,7 @@ local filter_macros = {
 	can_wield_we_waywatcher = make_filter_macro_can_wield_career("we_waywatcher"),
 	can_wield_we_maidenguard = make_filter_macro_can_wield_career("we_maidenguard"),
 	can_wield_we_shade = make_filter_macro_can_wield_career("we_shade"),
+	can_wield_we_thornsister = make_filter_macro_can_wield_career("we_thornsister"),
 	player_owns_item_key = function (item, backend_id)
 		local item_data = item.data
 		local backend_items = Managers.backend:get_interface("items")

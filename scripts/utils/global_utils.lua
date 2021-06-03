@@ -25,8 +25,8 @@ end
 function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	local w, h = Application.resolution()
 	local resolution_modified = w ~= resolution_lookup.res_w or h ~= resolution_lookup.res_h
-	local width_scale = w / UIResolutionWidthFragments()
-	local height_scale = h / UIResolutionHeightFragments()
+	local width_scale = w / 1920
+	local height_scale = h / 1080
 	local scale = math.min(width_scale, height_scale)
 
 	if Application.user_setting("hud_clamp_ui_scaling") then
@@ -46,9 +46,6 @@ function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	if resolution_modified or scale_modified or force_update then
 		resolution_lookup.res_w = w
 		resolution_lookup.res_h = h
-
-		AccomodateViewport()
-
 		resolution_lookup.scale = scale
 		resolution_lookup.inv_scale = 1 / scale
 	end

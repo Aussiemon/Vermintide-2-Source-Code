@@ -1300,6 +1300,29 @@ local generic_input_actions = {
 			priority = 6,
 			description_text = "input_description_back"
 		}
+	},
+	dlc_bundle_purchase = {
+		{
+			input_action = "confirm",
+			priority = 2,
+			description_text = (IS_WINDOWS and "interaction_action_unlock") or "dlc1_4_input_description_storepage"
+		},
+		{
+			input_action = "special_1",
+			priority = 4,
+			description_text = "input_description_view_content"
+		},
+		{
+			input_action = "right_stick",
+			priority = 5,
+			description_text = "input_description_scroll_details",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "back",
+			priority = 6,
+			description_text = "input_description_back"
+		}
 	}
 }
 

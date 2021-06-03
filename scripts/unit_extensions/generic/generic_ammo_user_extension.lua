@@ -34,6 +34,7 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._unwield_when_out_of_ammo = ammo_data.unwield_when_out_of_ammo
 	self._ammo_type = ammo_data.ammo_type or "default"
 	self._ammo_kind = ammo_data.ammo_kind or "default"
+	self._block_ammo_pickup = ammo_data.block_ammo_pickup or false
 	self._play_reload_animation = true
 	self._reload_event = extension_init_data.reload_event
 	self.pickup_reload_event_1p = extension_init_data.pickup_reload_event_1p
@@ -524,6 +525,10 @@ end
 
 GenericAmmoUserExtension.ammo_kind = function (self)
 	return self._ammo_kind
+end
+
+GenericAmmoUserExtension.ammo_blocked = function (self)
+	return self._block_ammo_pickup
 end
 
 GenericAmmoUserExtension.instant_reload = function (self, bonus_ammo, reload_anim_event)

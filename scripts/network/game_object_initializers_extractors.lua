@@ -1829,13 +1829,15 @@ go_type_table = {
 		standard_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local health_extension = ScriptUnit.has_extension(unit, "health_system")
 			local standard_extension = ScriptUnit.extension(unit, "ai_supplementary_system")
+			local ping_extension = ScriptUnit.extension(unit, "ping_system")
 			local data_table = {
 				go_type = NetworkLookup.go_types.standard_unit,
 				husk_unit = NetworkLookup.husks[unit_name],
 				position = Unit.local_position(unit, 0),
 				rotation = Unit.local_rotation(unit, 0),
 				health = health_extension:get_max_health(),
-				standard_template_id = NetworkLookup.standard_templates[standard_extension.standard_template_name]
+				standard_template_id = NetworkLookup.standard_templates[standard_extension.standard_template_name],
+				always_pingable = ping_extension.always_pingable
 			}
 
 			return data_table
@@ -2173,7 +2175,11 @@ go_type_table = {
 					death_reaction_template = "player",
 					is_husk = true
 				},
-				inventory_system = {},
+				inventory_system = {
+					id = go_id,
+					game = game_session,
+					player = player
+				},
 				hit_reaction_system = {
 					is_husk = true,
 					hit_reaction_template = "player"
@@ -4308,6 +4314,7 @@ go_type_table = {
 			local health = GameSession.game_object_field(game_session, go_id, "health")
 			local unit_template_name = "standard_unit"
 			local standard_template_name = GameSession.game_object_field(game_session, go_id, "standard_template_id")
+			local always_pingable = GameSession.game_object_field(game_session, go_id, "always_pingable")
 			local extension_init_data = {
 				health_system = {
 					health = health
@@ -4318,6 +4325,9 @@ go_type_table = {
 				},
 				ai_supplementary_system = {
 					standard_template_name = NetworkLookup.standard_templates[standard_template_name]
+				},
+				ping_system = {
+					always_pingable = always_pingable
 				}
 			}
 

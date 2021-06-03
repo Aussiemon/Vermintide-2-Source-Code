@@ -1137,11 +1137,11 @@ Colors.color_definitions = {
 		99,
 		192
 	},
-	we_4 = {
+	we_thornsister = {
 		ALPHA,
-		113,
-		113,
-		66
+		64,
+		194,
+		176
 	},
 	es_mercenary = {
 		ALPHA,
@@ -1537,6 +1537,13 @@ Colors.copy_no_alpha_to = function (dst, src)
 	dst[2] = src[2]
 	dst[3] = src[3]
 	dst[4] = src[4]
+end
+
+Colors.set = function (dst, a, r, g, b)
+	dst[1] = a
+	dst[2] = r
+	dst[3] = g
+	dst[4] = b
 end
 
 Colors.lerp_color_tables = function (color1, color2, t, out)

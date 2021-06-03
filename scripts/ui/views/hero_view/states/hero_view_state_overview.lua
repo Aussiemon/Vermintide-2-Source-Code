@@ -34,6 +34,7 @@ local rarity_index = {
 	rare = 3,
 	unique = 5
 }
+local hero_view_state_overview_testify = script_data.testify and require("scripts/ui/views/hero_view/states/hero_view_state_overview_testify")
 HeroViewStateOverview = class(HeroViewStateOverview)
 HeroViewStateOverview.NAME = "HeroViewStateOverview"
 
@@ -521,6 +522,10 @@ HeroViewStateOverview.update = function (self, dt, t)
 
 	self:_update_transition_timer(dt)
 	self:_windows_update(dt, t)
+
+	if script_data.testify then
+		Testify:poll_requests_through_handler(hero_view_state_overview_testify, self)
+	end
 
 	local transitioning = self.parent:transitioning()
 	local wanted_state = self:_wanted_state()

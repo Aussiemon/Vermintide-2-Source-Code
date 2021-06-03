@@ -1,6 +1,5 @@
 local mutator_base_curse_marked_enemies = require("scripts/settings/mutators/mutator_base_curse_marked_enemies")
-
-return mutator_base_curse_marked_enemies("curse_corrupted_flesh_name", "curse_corrupted_flesh_desc", "deus_curse_nurgle_01", "mark_of_nurgle", {
+local mutator = mutator_base_curse_marked_enemies("curse_corrupted_flesh_name", "curse_corrupted_flesh_desc", "deus_curse_nurgle_01", "mark_of_nurgle", {
 	normal = {
 		mark_chance = 0.3,
 		max_marked_enemies = 2
@@ -40,3 +39,6 @@ return mutator_base_curse_marked_enemies("curse_corrupted_flesh_name", "curse_co
 	beastmen_gor = true,
 	skaven_storm_vermin_champion = true
 })
+mutator.package_name = "resource_packages/mutators/mutator_curse_corrupted_flesh"
+
+return mutator

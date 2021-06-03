@@ -637,7 +637,8 @@ BTChargeAttackAction._check_wall_collision = function (self, unit, blackboard, d
 
 	local ray_start = Vector3(from.x, from.y, z)
 	local ray_end = Vector3(to.x, to.y, z2)
-	local ray_can_go = GwNavQueries.raycango(nav_world, ray_start, ray_end)
+	local traverse_logic = blackboard.navigation_extension:traverse_logic()
+	local ray_can_go = GwNavQueries.raycango(nav_world, ray_start, ray_end, traverse_logic)
 
 	return not ray_can_go
 end
@@ -825,7 +826,7 @@ BTChargeAttackAction._run_charging = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	self:_check_unit_and_wall_collision(unit, blackboard, dt, true)
+	self:_check_unit_and_wall_collision(unit, blackboard, dt, false)
 
 	local distance_to_target = Vector3.distance(self_position, extrapolated_position)
 
@@ -910,7 +911,7 @@ BTChargeAttackAction._run_lunge = function (self, unit, blackboard, t, dt)
 	end
 
 	if not blackboard.anim_cb_disable_charge_collision then
-		self:_check_unit_and_wall_collision(unit, blackboard, dt, not blackboard.stop_lunge_rotation)
+		self:_check_unit_and_wall_collision(unit, blackboard, dt, false)
 
 		if not blackboard.triggered_dodge_sound then
 			local target_status_ext = ScriptUnit.extension(blackboard.attacking_target, "status_system")

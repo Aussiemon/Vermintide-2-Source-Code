@@ -201,6 +201,17 @@ DLCSettings = DLCSettings or {
 			sound = "scripts/settings/dlcs/cog/cog_sound_settings",
 			achievements = "scripts/settings/dlcs/cog/cog_achievements_settings"
 		}
+	},
+	woods = {
+		package_name = "resource_packages/dlcs/woods",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/woods/woods_equipment_settings",
+			ai = "scripts/settings/dlcs/woods/woods_ai_settings",
+			common = "scripts/settings/dlcs/woods/woods_common_settings",
+			buff = "scripts/settings/dlcs/woods/buff_settings_woods",
+			sound = "scripts/settings/dlcs/woods/woods_sound_settings",
+			achievements = "scripts/settings/dlcs/woods/woods_achievements_settings"
+		}
 	}
 }
 

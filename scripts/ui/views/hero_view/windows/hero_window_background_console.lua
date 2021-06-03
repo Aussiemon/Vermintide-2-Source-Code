@@ -247,16 +247,6 @@ HeroWindowBackgroundConsole.update = function (self, dt, t)
 		local disable_hero_unit_input = statistics_activate
 
 		self.world_previewer:update(dt, t, disable_hero_unit_input)
-
-		local layout_name = self.parent:get_layout_name()
-
-		if layout_name ~= self._current_layout_name then
-			self._current_layout_name = layout_name
-
-			self:_update_object_sets(layout_name)
-			self:_update_level_events(layout_name)
-			self:_update_character_visibility(layout_name)
-		end
 	end
 end
 
@@ -317,6 +307,16 @@ HeroWindowBackgroundConsole.post_update = function (self, dt, t)
 	end
 
 	if self.world_previewer then
+		local layout_name = self.parent:get_layout_name()
+
+		if layout_name ~= self._current_layout_name then
+			self._current_layout_name = layout_name
+
+			self:_update_object_sets(layout_name)
+			self:_update_level_events(layout_name)
+			self:_update_character_visibility(layout_name)
+		end
+
 		if self.hero_unit_spawned then
 			self:_update_skin_sync()
 			self:_update_loadout_sync()

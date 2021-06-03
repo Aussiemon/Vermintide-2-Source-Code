@@ -84,6 +84,11 @@ BreedBehaviors.chaos_warrior = {
 		name = "spawn"
 	},
 	{
+		"BTInVortexAction",
+		condition = "in_vortex",
+		name = "in_vortex"
+	},
+	{
 		"BTFallAction",
 		condition = "is_falling",
 		name = "falling"

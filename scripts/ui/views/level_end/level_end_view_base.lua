@@ -199,8 +199,6 @@ LevelEndViewBase.update = function (self, dt, t)
 		return
 	end
 
-	FatUI.begin_frame(self.ui_renderer.gui, self.wwise_world, dt, t)
-
 	local active_camera_shakes = self._active_camera_shakes
 
 	if active_camera_shakes then
@@ -257,8 +255,6 @@ LevelEndViewBase.update = function (self, dt, t)
 			end
 		end
 	end
-
-	FatUI.close_frame()
 end
 
 LevelEndViewBase.transitioning = function (self)

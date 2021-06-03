@@ -4105,7 +4105,7 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	sienna_adept_double_trail_talent_start_ability_cooldown_add = function (unit, buff, params)
-		if ALIVE[unit] and is_local(unit) then
+		if ALIVE[unit] and not buff.aborted and is_local(unit) then
 			local buff_extension = ScriptUnit.extension(unit, "buff_system")
 			local buff_to_add = buff.template.buff_to_add
 
@@ -4113,12 +4113,15 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	sienna_adept_double_trail_talent_start_ability_cooldown = function (unit, buff, params)
-		if ALIVE[unit] and is_local(unit) then
+		if ALIVE[unit] and not buff._already_removed and is_local(unit) then
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
+			career_extension:set_abilities_always_usable(false, "sienna_adept_ability_trail_double")
 			career_extension:stop_ability("cooldown_triggered")
 			career_extension:start_activated_ability_cooldown()
 		end
+
+		buff._already_removed = true
 	end,
 	end_sienna_unchained_activated_ability = function (unit, buff, params)
 		if is_local(unit) then

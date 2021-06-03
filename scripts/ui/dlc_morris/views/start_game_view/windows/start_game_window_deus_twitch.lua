@@ -496,8 +496,6 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 			end
 		end
 
-		self:_update_gamemode_info_text(input_service)
-
 		local upsell_button = self._widgets_by_name.upsell_button
 
 		if UIUtils.is_button_pressed(upsell_button) then
@@ -522,16 +520,14 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 		end
 	end
 
+	self:_update_gamemode_info_text(input_service)
 	self:_handle_twitch_login_input(dt, t, input_service)
 end
 
 StartGameWindowDeusTwitch._update_input_description = function (self, dt, t)
-	local previous_input_description_connected = self._input_description_connected
 	local connected = Managers.twitch and Managers.twitch:is_connected()
 
-	if connected ~= previous_input_description_connected then
-		self:_set_input_description(connected)
-	end
+	self:_set_input_description(connected)
 end
 
 StartGameWindowDeusTwitch._update_modifiers = function (self, dt, t)
@@ -845,14 +841,18 @@ end
 StartGameWindowDeusTwitch._set_input_description = function (self, connected)
 	if self._is_server then
 		if connected then
-			self._parent:change_generic_actions("default_twitch_connected")
+			local input_actions = (self._dlc_locked and "deus_twitch_buy_connected") or "deus_default_twitch_connected"
+
+			self._parent:change_generic_actions(input_actions)
 		else
-			self._parent:change_generic_actions("default_twitch")
+			local input_actions = (self._dlc_locked and "deus_twitch_buy") or "deus_default_twitch"
+
+			self._parent:change_generic_actions(input_actions)
 		end
 	elseif connected then
-		self._parent:change_generic_actions("default_twitch_client_connected")
+		self._parent:change_generic_actions("deus_default_twitch_client_connected")
 	else
-		self._parent:change_generic_actions("default_twitch_client")
+		self._parent:change_generic_actions("deus_default_twitch_client")
 	end
 
 	self._input_description_connected = connected

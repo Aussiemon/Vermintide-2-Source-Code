@@ -164,7 +164,7 @@ TwitchVoteTemplates.twitch_no_overcharge_no_ammo_reloads = {
 					local left_hand_ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system")
 					local ammo_extension = right_hand_ammo_extension or left_hand_ammo_extension
 
-					if ammo_extension then
+					if ammo_extension and not inventory_extension:is_ammo_blocked() then
 						ammo_extension:add_ammo(ammo_amount)
 					end
 				end

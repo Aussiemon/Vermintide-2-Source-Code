@@ -42,9 +42,11 @@ TutorialUI.init = function (self, parent, ingame_ui_context)
 		to = Localize("interaction_to")
 	}
 	self.render_settings = {
+		alpha_multiplier = 1,
 		snap_pixel_positions = false
 	}
 	self.tooltip_animations = {}
+	self.tooltip_alpha_multiplier = 1
 	self.info_slate_entries = {}
 	self.unused_info_slate_entry_scenegraphs = {}
 	self.info_slate_widgets = {}
@@ -281,10 +283,15 @@ TutorialUI.post_update = function (self, dt, t)
 
 	if self._visible and not script_data.disable_tutorial_ui then
 		local first_person_extension = self:get_player_first_person_extension()
+		local render_settings = self.render_settings
 
-		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, self.render_settings)
+		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 		if first_person_extension.first_person_mode then
+			local alpha_multiplier = render_settings.alpha_multiplier
+			local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
+			local is_not_aiming = not status_extension:get_is_aiming()
+			render_settings.alpha_multiplier = alpha_multiplier * math.max(0.25, UIUtils.animate_value(self.tooltip_alpha_multiplier, dt * 5, is_not_aiming))
 			local objective_tooltip_widget_holders = self.objective_tooltip_widget_holders
 
 			for i = 1, definitions.NUMBER_OF_OBJECTIVE_TOOLTIPS, 1 do
@@ -294,6 +301,9 @@ TutorialUI.post_update = function (self, dt, t)
 					UIRenderer.draw_widget(ui_renderer, widget_holder.widget)
 				end
 			end
+
+			self.tooltip_alpha_multiplier = render_settings.alpha_multiplier
+			render_settings.alpha_multiplier = alpha_multiplier
 		end
 
 		if self.active_tooltip_widget and tooltip_tutorial then

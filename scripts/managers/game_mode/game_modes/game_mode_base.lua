@@ -73,7 +73,7 @@ end
 
 GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career_index)
 	local local_peer_id = Network.peer_id()
-	local local_player_id = Managers.player:next_available_local_player_id(local_peer_id)
+	local local_player_id = Managers.player:next_available_local_player_id(local_peer_id, profile_index)
 	local slot_id = nil
 	local is_bot = true
 

@@ -6,6 +6,7 @@ ConflictUtils = {}
 local ConflictUtils = ConflictUtils
 local distance_squared = Vector3.distance_squared
 local math_random = Math.random
+local quaternion_look = Quaternion.look
 
 ConflictUtils.random_interval = function (numbers)
 	if type(numbers) == "table" then
@@ -1249,6 +1250,91 @@ ConflictUtils.generate_conflict_director_locked_functions = function (level_key)
 	end
 
 	return locked_director_functions
+end
+
+ConflictUtils.teleport_ai_unit = function (unit, teleport_position, play_sound, play_effect)
+	if teleport_position then
+		local blackboard = BLACKBOARDS[unit]
+
+		if ALIVE[unit] then
+			local navigation_extension = blackboard.navigation_extension
+
+			navigation_extension:set_navbot_position(teleport_position)
+
+			local locomotion_extension = blackboard.locomotion_extension
+
+			locomotion_extension:teleport_to(teleport_position)
+			Managers.state.entity:system("ai_bot_group_system"):enemy_teleported(unit, teleport_position)
+		end
+
+		local ping_system = Managers.state.entity:system("ping_system")
+
+		ping_system:remove_ping_from_unit(unit)
+
+		if play_sound then
+			local audio_system_extension = Managers.state.entity:system("audio_system")
+
+			audio_system_extension:play_audio_unit_event(play_sound, unit)
+		end
+
+		if play_effect then
+			local effect_name_id = NetworkLookup.effects[play_effect]
+			local node_id = 0
+			local rotation_offset = Quaternion.identity()
+			local unit_pos = POSITION_LOOKUP[unit]
+			local network_manager = Managers.state.network
+
+			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, unit_pos, rotation_offset, false)
+			network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, teleport_position, rotation_offset, false)
+		end
+	end
+end
+
+ConflictUtils.look_at_position_flat = function (source_pos, target_pos)
+	local look_at_direction_flat = Vector3.flat(target_pos - source_pos)
+	local look_at_direction_flat_normalized = Vector3.normalize(look_at_direction_flat)
+	local wanted_rot = quaternion_look(look_at_direction_flat_normalized, Vector3.up())
+
+	return wanted_rot
+end
+
+ConflictUtils.get_closest_position = function (pos, pos_list)
+	local min_dist = math.huge
+	local closest_pos = nil
+
+	for i = 1, #pos_list, 1 do
+		local check_pos = pos_list[i]
+		local dist = distance_squared(pos, check_pos)
+
+		if dist < min_dist then
+			min_dist = dist
+			closest_pos = check_pos
+		end
+	end
+
+	return closest_pos, min_dist
+end
+
+ConflictUtils.override_extension_init_data = function (breed, extension_init_data, optional_data)
+	local override_extension_init_data = optional_data.extension_init_data
+
+	if override_extension_init_data then
+		for system_name, data in pairs(override_extension_init_data) do
+			table.merge(extension_init_data[system_name], data)
+		end
+	end
+end
+
+ConflictUtils.apply_breed_variant = function (unit, breed, optional_data)
+	local variant_data = optional_data.variant_data
+	local buff_system = Managers.state.entity:system("buff_system")
+	local buffs = variant_data.buffs
+
+	for i = 1, #buffs, 1 do
+		local buff_name = buffs[i]
+
+		buff_system:add_buff(unit, buff_name, unit, true)
+	end
 end
 
 return

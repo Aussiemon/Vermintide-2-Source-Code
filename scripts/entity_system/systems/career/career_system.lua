@@ -128,13 +128,28 @@ CareerSystem.rpc_reduce_activated_ability_cooldown_percent = function (self, sen
 end
 
 CareerSystem.rpc_ability_activated = function (self, channel_id, unit_game_object_id, ability_id)
-	local local_player = Managers.player:local_player()
-	local local_player_unit = local_player.player_unit
-	local buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
 	local unit = self.unit_storage:unit(unit_game_object_id)
+	local local_players = Managers.player:players_at_peer(Network.peer_id())
 
-	if unit and local_player_unit and buff_extension then
-		buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
+	if local_players and unit then
+		for _, player in pairs(local_players) do
+			local player_unit = player.player_unit
+
+			if ALIVE[player_unit] then
+				local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+				if buff_extension then
+					buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
+					Managers.state.achievement:trigger_event("any_ability_used", unit, ability_id)
+				end
+			end
+		end
+	end
+
+	local units_buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+	if units_buff_extension then
+		units_buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
 	end
 
 	if self.is_server then

@@ -27,10 +27,7 @@ end
 
 ChaosTrollHealthExtension.set_max_health = function (self, value)
 	ChaosTrollHealthExtension.super.set_max_health(self, value)
-
-	if not self._first_damage_occured then
-		self:_update_health_variables(value)
-	end
+	self:_update_health_variables(value)
 end
 
 ChaosTrollHealthExtension._update_health_variables = function (self, new_original_health)
@@ -119,8 +116,8 @@ ChaosTrollHealthExtension.apply_client_predicted_damage = function (self, predic
 	return
 end
 
-ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
-	ChaosTrollHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
+ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
+	ChaosTrollHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
 
 	self._first_damage_occured = true
 
@@ -181,7 +178,7 @@ ChaosTrollHealthExtension.set_downed_finished = function (self)
 			self.respawn_hp_min = new_health * action.respawn_hp_min_percent
 			self.go_down_health = new_health * action.become_downed_hp_percent
 
-			self:set_max_health(new_health)
+			ChaosTrollHealthExtension.super.set_max_health(self, new_health)
 
 			self.damage = 0
 		end
@@ -216,8 +213,9 @@ ChaosTrollHealthExtension.sync_health_to_clients = function (self)
 	local state_id = NetworkLookup.health_statuses[self.state]
 	local is_level_unit = false
 	local set_max_health = false
+	local damage = math.max(0, self.damage)
 
-	self.network_transmit:send_rpc_clients("rpc_sync_damage_taken", self._game_object_id, is_level_unit, set_max_health, self.damage, state_id)
+	self.network_transmit:send_rpc_clients("rpc_sync_damage_taken", self._game_object_id, is_level_unit, set_max_health, damage, state_id)
 end
 
 ChaosTrollHealthExtension.min_health_reached = function (self)

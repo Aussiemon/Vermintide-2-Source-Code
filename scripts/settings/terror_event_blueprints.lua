@@ -1,3 +1,4 @@
+require("scripts/settings/terror_events/terror_event_utils")
 require("scripts/settings/terror_events/terror_events_generic")
 
 WeightedRandomTerrorEvents = {}

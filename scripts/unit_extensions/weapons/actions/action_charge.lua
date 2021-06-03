@@ -186,7 +186,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 					overcharge_amount = PlayerUnitStatusSettings.overcharge_values.drakegun_charging
 				end
 
-				self.overcharge_extension:add_charge(overcharge_amount)
+				self.overcharge_extension:add_charge(overcharge_amount, nil, overcharge_type)
 
 				self.total_overcharge_added = self.total_overcharge_added + overcharge_amount
 			end

@@ -9,6 +9,30 @@ PlayerProjectileHuskExtension.init = function (self, extension_init_context, uni
 	self._owner_unit = owner_unit
 	self._owner_player = Managers.player:owner(owner_unit)
 	self.item_name = item_name
+	local owner_inventory_extension = ScriptUnit.has_extension(owner_unit, "inventory_system")
+
+	if owner_inventory_extension then
+		local equipment = owner_inventory_extension:equipment()
+
+		if equipment then
+			local wielded_item_data = equipment.wielded
+
+			if wielded_item_data then
+				local item_units = BackendUtils.get_item_units(wielded_item_data)
+				local is_ammo_weapon = item_units and item_units.is_ammo_weapon
+
+				if is_ammo_weapon then
+					local wielded_item_template = BackendUtils.get_item_template(wielded_item_data)
+					local material_settings = item_units.material_settings or wielded_item_template.material_settings
+
+					if material_settings then
+						GearUtils.apply_material_settings(unit, material_settings)
+					end
+				end
+			end
+		end
+	end
+
 	local item_data = ItemMasterList[item_name]
 	local item_template = BackendUtils.get_item_template(item_data)
 	local item_template_name = extension_init_data.item_template_name
@@ -610,6 +634,17 @@ PlayerProjectileHuskExtension._handle_linking = function (self, impact_data, hit
 		return
 	end
 
+	local allow_link = true
+	local unit_data_allow_link = Unit.get_data(hit_unit, "allow_link")
+
+	if unit_data_allow_link ~= nil then
+		allow_link = unit_data_allow_link
+	end
+
+	if not allow_link then
+		return
+	end
+
 	local projectile_info = self.projectile_info
 	local projectile_units = self:_get_projectile_units_names(projectile_info)
 	local dummy_linker_unit_name = projectile_units.dummy_linker_unit_name
@@ -654,9 +689,9 @@ PlayerProjectileHuskExtension._link_projectile = function (self, hit_unit, hit_a
 	local depth_position_offset = normalized_direction * depth
 	local link_position = hit_position + depth_position_offset
 	local link_rotation = Quaternion.multiply(Quaternion.look(normalized_direction), Quaternion(Vector3.forward(), random_bank))
-	local node_index = Actor.node(hit_actor)
 
 	if ScriptUnit.has_extension(hit_unit, "projectile_linker_system") then
+		local node_index = Actor.node(hit_actor)
 		local projectile_dummy = unit_spawner:spawn_local_unit(linker_unit_name, link_position, link_rotation)
 		local hit_node_rot = Unit.world_rotation(hit_unit, node_index)
 		local hit_node_pos = Unit.world_position(hit_unit, node_index)

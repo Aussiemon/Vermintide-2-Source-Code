@@ -1,14 +1,14 @@
 local DEFAULT_BOSS_RANGE = {
 	{
-		max = 80,
-		min = 40
+		max = 104,
+		min = 43
 	},
 	{
-		max = 76,
-		min = 36
+		max = 90,
+		min = 37
 	},
 	{
-		max = 72,
+		max = 78,
 		min = 32
 	},
 	{
@@ -18,16 +18,16 @@ local DEFAULT_BOSS_RANGE = {
 }
 local DEFAULT_RANGE = {
 	{
-		max = 44,
+		max = 59,
+		min = 28
+	},
+	{
+		max = 51,
 		min = 24
 	},
 	{
-		max = 42,
-		min = 22
-	},
-	{
-		max = 40,
-		min = 20
+		max = 44,
+		min = 21
 	},
 	{
 		max = 38,

@@ -219,6 +219,7 @@ StateInGameRunning.on_enter = function (self, params)
 
 	if self.is_in_inn then
 		Managers.state.achievement:setup_achievement_data()
+		Managers.state.quest:update_quests()
 	end
 
 	Managers.state.achievement:setup_incompleted_achievements()
@@ -1036,6 +1037,10 @@ StateInGameRunning.trigger_xbox_multiplayer_round_end_events = function (self)
 end
 
 StateInGameRunning.on_exit = function (self)
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+
+	profile_synchronizer:set_own_actually_ingame(false)
 	self.free_flight_manager:set_teleport_override(nil)
 
 	self.parent = nil
@@ -1278,6 +1283,13 @@ StateInGameRunning._game_actually_starts = function (self)
 	if Testify:poll_request("wait_for_level_loaded") then
 		Testify:respond_to_request("wait_for_level_loaded")
 	end
+
+	local network_manager = Managers.state.network
+	local profile_synchronizer = network_manager.profile_synchronizer
+
+	profile_synchronizer:set_own_actually_ingame(true)
+
+	self._game_started_timestamp = os.time(os.date("*t"))
 end
 
 local afk_warn_timer = 120

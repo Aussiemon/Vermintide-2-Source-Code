@@ -1,6 +1,6 @@
 local damage_templates = {
 	questing_knight_career_sword = {
-		charge_value = "ability",
+		charge_value = "heavy_attack",
 		is_explosion = true,
 		shield_break = true,
 		critical_strike = {
@@ -55,7 +55,7 @@ local damage_templates = {
 		}
 	},
 	questing_knight_career_sword_stab = {
-		charge_value = "ability",
+		charge_value = "heavy_attack",
 		is_explosion = true,
 		shield_break = true,
 		critical_strike = {
@@ -110,7 +110,7 @@ local damage_templates = {
 		}
 	},
 	questing_knight_career_sword_tank = {
-		charge_value = "ability",
+		charge_value = "heavy_attack",
 		is_explosion = true,
 		shield_break = true,
 		critical_strike = {

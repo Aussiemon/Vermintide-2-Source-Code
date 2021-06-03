@@ -378,6 +378,7 @@ DeusSpawning._spawn_player = function (self, status)
 		local ability_cooldown_perentage = data.ability_cooldown_percentage or 1
 		local ability_cooldown_percent_int = math.floor(ability_cooldown_perentage * 100)
 
+		printf("rpc_to_client_spawn_player %s %d", tostring(peer_id), local_player_id)
 		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
 	end
 

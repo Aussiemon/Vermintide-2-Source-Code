@@ -480,10 +480,10 @@ local terror_event_blueprints = {
 			"spawn_special",
 			breed_name = "skaven_poison_wind_globadier",
 			difficulty_amount = {
-				hardest = 2,
+				hardest = 1,
 				hard = 1,
-				harder = 2,
-				cataclysm = 2,
+				harder = 1,
+				cataclysm = 1,
 				normal = 1
 			}
 		},
@@ -492,12 +492,6 @@ local terror_event_blueprints = {
 			breed_name = "skaven_pack_master",
 			amount = 1,
 			difficulty_requirement = HARDEST
-		},
-		{
-			"spawn_special",
-			breed_name = "skaven_gutter_runner",
-			amount = 1,
-			difficulty_requirement = CATACLYSM
 		},
 		{
 			"delay",
@@ -528,10 +522,10 @@ local terror_event_blueprints = {
 			"spawn_special",
 			breed_name = "skaven_warpfire_thrower",
 			difficulty_amount = {
-				hardest = 2,
+				hardest = 1,
 				hard = 1,
-				harder = 2,
-				cataclysm = 2,
+				harder = 1,
+				cataclysm = 1,
 				normal = 1
 			}
 		},
@@ -539,12 +533,6 @@ local terror_event_blueprints = {
 			"spawn_special",
 			amount = 1,
 			breed_name = "skaven_gutter_runner"
-		},
-		{
-			"spawn_special",
-			breed_name = "chaos_vortex_sorcerer",
-			amount = 1,
-			difficulty_requirement = HARDEST
 		},
 		{
 			"delay",
@@ -575,10 +563,10 @@ local terror_event_blueprints = {
 			"spawn_special",
 			breed_name = "skaven_ratling_gunner",
 			difficulty_amount = {
-				hardest = 2,
+				hardest = 1,
 				hard = 1,
-				harder = 2,
-				cataclysm = 2,
+				harder = 1,
+				cataclysm = 1,
 				normal = 1
 			}
 		},

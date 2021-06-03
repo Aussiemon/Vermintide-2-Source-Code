@@ -320,15 +320,21 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		first_person_extension:set_weapon_sway_settings(current_action_settings.weapon_sway_settings)
 
-		if not chain_action and current_action_settings.aim_at_gaze_setting and ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
-			local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
+		if not chain_action and current_action_settings.aim_at_gaze_setting then
+			local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 
-			eyetracking_extension:set_is_aiming(true)
+			status_extension:set_is_aiming(true)
 
-			if eyetracking_extension:get_is_feature_enabled("tobii_aim_at_gaze") then
-				local gaze_rotation = eyetracking_extension:gaze_rotation()
+			if ScriptUnit.has_extension(owner_unit, "eyetracking_system") then
+				local eyetracking_extension = ScriptUnit.extension(owner_unit, "eyetracking_system")
 
-				first_person_extension:force_look_rotation(gaze_rotation, 1)
+				eyetracking_extension:set_is_aiming(true)
+
+				if eyetracking_extension:get_is_feature_enabled("tobii_aim_at_gaze") then
+					local gaze_rotation = eyetracking_extension:gaze_rotation()
+
+					first_person_extension:force_look_rotation(gaze_rotation, 1)
+				end
 			end
 		end
 
@@ -390,8 +396,10 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		if self.ammo_extension then
 			if self.ammo_extension:total_remaining_ammo() == 0 then
 				event = (skin_data and skin_data.anim_event_no_ammo_left) or current_action_settings.anim_event_no_ammo_left or event
+				event_3p = (skin_data and skin_data.anim_event_no_ammo_left_3p) or current_action_settings.anim_event_no_ammo_left_3p or event_3p
 			elseif self.ammo_extension:total_remaining_ammo() == 1 then
 				event = (skin_data and skin_data.anim_event_last_ammo) or current_action_settings.anim_event_last_ammo or event
+				event_3p = (skin_data and skin_data.anim_event_last_ammo_3p) or current_action_settings.anim_event_last_ammo_3p or event_3p
 			end
 		end
 
@@ -515,6 +523,12 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 			eyetracking_extension:set_is_aiming(false)
 			eyetracking_extension:set_aim_at_gaze_cancelled(false)
 		end
+	end
+
+	if reason == "hold_input_released" then
+		local status_extension = ScriptUnit.has_extension(self.owner_unit, "status_system")
+
+		status_extension:set_is_aiming(false)
 	end
 
 	local buff_data = current_action_settings.buff_data

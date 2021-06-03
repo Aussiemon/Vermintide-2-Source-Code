@@ -67,6 +67,7 @@ ActionChargedProjectile.client_owner_start_action = function (self, new_action, 
 	if is_grenade then
 		self._extra_grenades = self.owner_buff_extension:apply_buffs_to_value(0, "grenade_extra_shot")
 		self._grenade_thrown = false
+		self._free_grenade = false
 	end
 
 	self._is_grenade = is_grenade
@@ -97,6 +98,7 @@ end
 ActionChargedProjectile._shoot = function (self, t)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
+	local swap_weapon_on_shot = false
 	local overcharge_type = current_action.overcharge_type
 
 	if overcharge_type and not self.extra_buff_shot then
@@ -119,16 +121,19 @@ ActionChargedProjectile._shoot = function (self, t)
 
 	if self._is_grenade then
 		local ammo_usage = self.current_action.ammo_usage
-		local _, free_grenade_proc = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
-		local free_grenade_perk = self.owner_buff_extension:has_buff_perk("free_grenade")
-		local should_use_ammo = not free_grenade_proc and not free_grenade_perk and not extra_shot_procced
 
-		if should_use_ammo then
-			self.ammo_extension:use_ammo(ammo_usage)
-		elseif not extra_shot_procced then
-			local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+		if not self._grenade_thrown then
+			local _, free_grenade_proc = self.owner_buff_extension:apply_buffs_to_value(0, "not_consume_grenade")
+			local free_grenade_perk = self.owner_buff_extension:has_buff_perk("free_grenade")
+			self._free_grenade = free_grenade_proc or free_grenade_perk
+		end
 
-			inventory_extension:wield_previous_weapon()
+		if not extra_shot_procced then
+			if not self._free_grenade then
+				self.ammo_extension:use_ammo(ammo_usage)
+			end
+
+			swap_weapon_on_shot = true
 		end
 
 		if not self._grenade_thrown then
@@ -270,6 +275,12 @@ ActionChargedProjectile._shoot = function (self, t)
 		event_data.item_type = projectile_info.pickup_name
 
 		dialogue_input:trigger_networked_dialogue_event("throwing_item", event_data)
+	end
+
+	if swap_weapon_on_shot then
+		local inventory_extension = ScriptUnit.extension(owner_unit, "inventory_system")
+
+		inventory_extension:wield_previous_weapon()
 	end
 end
 

@@ -307,6 +307,8 @@ local breed_data = {
 		bot_ratling_gun_fire = 15,
 		jumps = 1.5,
 		big_boy_destructible = 1.5,
+		temporary_wall = 0,
+		destructible_wall = 5,
 		ledges_with_fence = 1.5,
 		doors = 1.5,
 		teleporters = 5,
@@ -335,7 +337,23 @@ local breed_data = {
 }
 Breeds.chaos_spawn = table.create_copy(Breeds.chaos_spawn, breed_data)
 local breed_data_norsca = {
-	combat_music_state = "champion_chaos_exalted_norsca"
+	combat_music_state = "champion_chaos_exalted_norsca",
+	allowed_layers = {
+		end_zone = 0,
+		ledges = 1.5,
+		barrel_explosion = 10,
+		jumps = 1.5,
+		bot_ratling_gun_fire = 3,
+		temporary_wall = 1,
+		planks = 1.5,
+		big_boy_destructible = 0,
+		destructible_wall = 0,
+		ledges_with_fence = 1.5,
+		doors = 1.5,
+		teleporters = 5,
+		bot_poison_wind = 1.5,
+		fire_grenade = 10
+	}
 }
 
 for key, value in pairs(breed_data) do

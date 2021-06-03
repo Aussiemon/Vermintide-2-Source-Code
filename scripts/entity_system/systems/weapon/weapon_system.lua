@@ -18,7 +18,8 @@ local RPCS = {
 	"rpc_end_geiser",
 	"rpc_weapon_blood",
 	"rpc_play_fx",
-	"rpc_change_single_weapon_state"
+	"rpc_change_single_weapon_state",
+	"rpc_summon_vortex"
 }
 local extensions = {
 	"WeaponUnitExtension",
@@ -634,6 +635,24 @@ WeaponSystem.rpc_end_flamethrower = function (self, channel_id, unit_id)
 
 				self.network_transmit:send_rpc_clients_except("rpc_end_flamethrower", peer_id, unit_id)
 			end
+		end
+	end
+end
+
+WeaponSystem.rpc_summon_vortex = function (self, channel_id, owner_unit_id, target_unit_id)
+	if not LEVEL_EDITOR_TEST then
+		local world = self.world
+		local unit = self.unit_storage:unit(owner_unit_id)
+		local target_unit = self.unit_storage:unit(target_unit_id)
+		local bb = BLACKBOARDS[target_unit]
+		local vext = bb and bb.thornsister_vortex_ext
+
+		if vext then
+			vext:refresh_duration()
+		else
+			local storm_spawn_position = POSITION_LOOKUP[target_unit]
+
+			Managers.state.unit_spawner:request_spawn_network_unit("vortex_unit", storm_spawn_position, Quaternion.identity(), unit, 0)
 		end
 	end
 end

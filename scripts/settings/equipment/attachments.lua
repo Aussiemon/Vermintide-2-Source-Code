@@ -69,6 +69,34 @@ local wh_hats_skinned = {
 	buffs = {}
 }
 Attachments.wh_hats_skinned = table.clone(wh_hats_skinned)
+local wh_face = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.wh_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.wh_face = table.clone(wh_face)
+local wh_face_no_hair = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.wh_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_face_00",
+		third_person = {
+			mtr_head = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_face_00"
+		}
+	}
+}
+Attachments.wh_face_no_hair = table.clone(wh_face_no_hair)
 local wh_hats_no_ears = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -304,6 +332,17 @@ local ww_hat = {
 	buffs = {}
 }
 Attachments.ww_hat = table.clone(ww_hat)
+local ww_hat_no_hood = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_head_no_hood",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.ww_hat_no_hood = table.clone(ww_hat_no_hood)
 local ww_hat_no_face = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

@@ -372,7 +372,7 @@ VoteTemplates = {
 					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
 					Managers.twitch:disconnect()
 				end
 
@@ -544,7 +544,7 @@ VoteTemplates = {
 					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
 					Managers.twitch:disconnect()
 				end
 
@@ -667,7 +667,7 @@ VoteTemplates = {
 					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
 					Managers.twitch:disconnect()
 				end
 

@@ -7,6 +7,12 @@ require("scripts/managers/player/player_sync_data")
 
 PlayerManager = class(PlayerManager)
 PlayerManager.MAX_PLAYERS = 4
+local BOT_LOCAL_ID_TABLE = {}
+
+for i = 1, #SPProfiles, 1 do
+	local profile = SPProfiles[i]
+	BOT_LOCAL_ID_TABLE[profile.index] = i + 1
+end
 
 PlayerManager.init = function (self)
 	self._players = {}
@@ -455,11 +461,21 @@ PlayerManager.party_leader_player = function (self)
 	end
 end
 
-PlayerManager.next_available_local_player_id = function (self, peer_id)
+PlayerManager.next_available_local_player_id = function (self, peer_id, profile_index)
 	local i = 2
 	local player_table = self._players_by_peer[peer_id]
 
 	if player_table then
+		if profile_index then
+			local local_id = BOT_LOCAL_ID_TABLE[profile_index]
+
+			if local_id and not player_table[local_id] then
+				return local_id
+			end
+
+			Application.warning("[PlayerManager:next_available_local_player_id] static bot local id [%d] for profile [%s] is already in use, falling back to random one.", local_id, tostring(profile_index))
+		end
+
 		while player_table[i] do
 			i = i + 1
 		end

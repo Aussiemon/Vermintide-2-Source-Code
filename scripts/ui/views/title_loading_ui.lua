@@ -6,6 +6,7 @@ local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_ov
 local penny_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_penny_intro")
 local cog_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_cog_intro")
 local morris_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_morris_intro")
+local woods_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_woods_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -810,7 +811,7 @@ local dynamic_range_widget_definitions = {
 	description = UIWidgets.create_simple_text("startup_settings_dynamic_range_desc", "gamma_info_text", nil, nil, description_text_style)
 }
 local done_button = UIWidgets.create_default_button("apply_button", scenegraph_definition.apply_button.size, nil, nil, Localize("input_description_confirm"))
-first_time_video = {
+local first_time_video = {
 	video_name = "video/vermintide_2_prologue_intro",
 	sound_start = "vermintide_2_prologue_intro",
 	scenegraph_id = "splash_video",
@@ -818,7 +819,7 @@ first_time_video = {
 	sound_stop = "Stop_vermintide_2_prologue_intro",
 	subtitle_template_settings = first_time_video_subtitle_settings
 }
-cog_intro_video = {
+local dlc_intro_video = {
 	video_name = "video/vermintide_2_morris_intro",
 	sound_start = "Play_MORRIS_INTRO_FINAL_AUDIO",
 	scenegraph_id = "splash_video",
@@ -906,7 +907,14 @@ TitleLoadingUI.init = function (self, world, params, force_done)
 	Framerate.set_low_power()
 
 	if not params.is_prologue then
-		first_time_video = cog_intro_video
+		first_time_video = dlc_intro_video
+	end
+
+	local title_settings = Managers.backend:get_title_settings()
+
+	if title_settings and title_settings.video_override then
+		first_time_video = title_settings.video_override
+		first_time_video.subtitle_template_settings = local_require(first_time_video.subtitle_template_settings_path)
 	end
 
 	self.render_settings = {

@@ -12,7 +12,9 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 		planks = 1,
 		bot_ratling_gun_fire = 1,
 		doors = 1,
+		destructible_wall = 0,
 		bot_poison_wind = 1,
+		temporary_wall = 0,
 		fire_grenade = 1
 	}
 	local navtag_layer_cost_table = GwNavTagLayerCostTable.create()

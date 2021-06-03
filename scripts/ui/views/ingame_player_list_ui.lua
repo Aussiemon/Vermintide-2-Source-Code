@@ -65,6 +65,7 @@ IngamePlayerListUI.init = function (self, parent, ingame_ui_context)
 	self.num_players = 0
 	self.players = {}
 	self.active = false
+	self._client_duplicate_removed = false
 
 	self:create_ui_elements()
 
@@ -879,6 +880,8 @@ IngamePlayerListUI.set_active = function (self, active)
 
 		self.cursor_active = false
 	end
+
+	Managers.state.event:trigger("ingame_player_list_enabled", active)
 end
 
 IngamePlayerListUI._update_fade_in_duration = function (self, dt)
@@ -930,9 +933,16 @@ IngamePlayerListUI.update_player_list = function (self, dt)
 		local peer_id = data.peer_id
 		local ui_id = data.ui_id
 		local player = player_manager:player_from_peer_id(peer_id, data.local_player_id)
+		local has_client_duplicate, duplicate_index = self:_has_client_duplicate(players, peer_id)
 
-		if not player or temp_players[ui_id] then
-			table.remove(players, i)
+		if not player or has_client_duplicate or temp_players[ui_id] then
+			if duplicate_index then
+				table.remove(players, duplicate_index)
+
+				self._client_duplicate_removed = true
+			else
+				table.remove(players, i)
+			end
 
 			update_widgets = true
 			removed_players = removed_players + 1
@@ -1166,6 +1176,40 @@ end
 
 IngamePlayerListUI.event_weave_objective_synced = function (self)
 	self:_setup_weave_display_info()
+end
+
+IngamePlayerListUI._has_client_duplicate = function (self, player_list, peer_id)
+	local occurences = 0
+	local duplicate_index = 0
+	local duplicate_found = false
+
+	if self._client_duplicate_removed then
+		return false
+	end
+
+	for i = 1, #player_list, 1 do
+		local data = player_list[i]
+
+		if not data.is_server and not data.is_bot_player and not duplicate_found then
+			if data.peer_id == peer_id then
+				occurences = occurences + 1
+			end
+
+			if occurences >= 2 then
+				duplicate_found = true
+
+				break
+			end
+		end
+
+		duplicate_index = (occurences < 2 and i) or 1
+	end
+
+	if duplicate_found then
+		return true, duplicate_index
+	else
+		return false
+	end
 end
 
 return

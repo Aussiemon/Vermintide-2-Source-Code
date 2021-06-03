@@ -156,7 +156,7 @@ UITooltipPasses = {
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			local alpha_multiplier = pass_data.alpha_multiplier
-			local alpha = 125 * alpha_multiplier
+			local alpha = 210 * alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_texture_name = data.frame_name
 			local frame_settings = UIFrameSettings[frame_texture_name]

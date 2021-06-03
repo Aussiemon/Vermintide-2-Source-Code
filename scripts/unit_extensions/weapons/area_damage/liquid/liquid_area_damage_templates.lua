@@ -765,6 +765,34 @@ LiquidAreaDamageTemplates = {
 			self._firing_time_deadline = t + firing_time
 		end
 	end,
+	nurgle_noxious_init = function (self, t)
+		local unit = self._source_attacker_unit
+
+		if AiUtils.unit_alive(unit) then
+			local world = self._world
+			local node = Unit.node(unit, "j_spine")
+			local pos = Unit.world_position(unit, node)
+			local rotation = nil
+
+			if self._flow_dir then
+				local dir = self._flow_dir:unbox()
+				rotation = Quaternion.look(dir, Vector3.up())
+			else
+				rotation = Quaternion.identity()
+			end
+
+			local vomit_unit_name = "units/weapons/enemy/wpn_troll_vomit/wpn_troll_vomit"
+			local unit_spawner = Managers.state.unit_spawner
+			local vomit_unit = unit_spawner:spawn_local_unit(vomit_unit_name, pos, nil, nil)
+
+			World.link_unit(world, vomit_unit, unit, node)
+			Unit.set_local_scale(vomit_unit, 0, Vector3(0.6, 0.6, 0.6))
+			Unit.flow_event(vomit_unit, "fade_in")
+
+			self._vomit_unit = vomit_unit
+			self._firing_time_deadline = t + 1
+		end
+	end,
 	bile_troll_vomit_update = function (self, t, dt)
 		local vomit_unit = self._vomit_unit
 		local troll_unit = self._source_attacker_unit

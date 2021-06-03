@@ -5,6 +5,7 @@ local BOT_THREAT_AREA_W = 3
 local BOT_THREAT_AREA_H = 2
 local BOT_THREAT_AREA_D = 6
 local MAX_SHOTS_PER_FRAME = 3
+local FREE_ABILITY_AMMO_TIME = 10
 local unit_animation_set_variable = Unit.animation_set_variable
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_flow_event = Unit.flow_event
@@ -22,6 +23,7 @@ ActionCareerDREngineer.init = function (self, world, item_name, is_server, owner
 	self._barrel_spin_anim_var_1p = Unit.animation_find_variable(first_person_unit, "barrel_spin_speed")
 	self._time_to_shoot = 0
 	self._last_avoidance_t = 0
+	self._free_ammo_t = 0
 	self._ranged_attack = true
 end
 
@@ -160,8 +162,12 @@ ActionCareerDREngineer.gen_num_shots = function (self)
 	return 1, 1
 end
 
-ActionCareerDREngineer.apply_shot_cost = function (self)
-	if not self.buff_extension or not self.buff_extension:has_buff_perk("free_ability") then
+ActionCareerDREngineer.apply_shot_cost = function (self, t)
+	self:_fake_activate_ability(t)
+
+	local should_consume_ammo = self._free_ammo_t < t
+
+	if should_consume_ammo then
 		local projectiles_per_shot = self._num_projectiles_per_shot
 
 		if self.extra_buff_shot then
@@ -171,14 +177,6 @@ ActionCareerDREngineer.apply_shot_cost = function (self)
 		self.career_extension:reduce_activated_ability_cooldown(-self._shot_cost * projectiles_per_shot)
 
 		self.extra_buff_shot = false
-	end
-
-	self._ammo_expended = self._ammo_expended + self._shot_cost * self._num_projectiles_per_shot
-
-	if self.buff_extension and self._ammo_expended > self.career_extension:get_max_ability_cooldown() / 2 then
-		self.buff_extension:trigger_procs("on_ability_cooldown_started")
-
-		self._ammo_expended = 0
 	end
 end
 
@@ -247,6 +245,26 @@ ActionCareerDREngineer._update_bot_avoidance = function (self, t)
 			local network_transmit = network_manager.network_transmit
 
 			network_transmit:send_rpc_server("rpc_bot_create_threat_oobb", threat_position, threat_rotation, threat_size, BOT_THREAT_DURATION)
+		end
+	end
+end
+
+ActionCareerDREngineer._fake_activate_ability = function (self, t)
+	local buff_extension = self.buff_extension
+
+	if buff_extension then
+		self._ammo_expended = self._ammo_expended + self._shot_cost * self._num_projectiles_per_shot
+
+		if buff_extension:has_buff_perk("free_ability") then
+			buff_extension:trigger_procs("on_ability_activated", self.owner_unit, 1)
+			buff_extension:trigger_procs("on_ability_cooldown_started")
+
+			self._free_ammo_t = t + FREE_ABILITY_AMMO_TIME
+		elseif self._ammo_expended > self.career_extension:get_max_ability_cooldown() / 2 then
+			buff_extension:trigger_procs("on_ability_activated", self.owner_unit, 1)
+			buff_extension:trigger_procs("on_ability_cooldown_started")
+
+			self._ammo_expended = 0
 		end
 	end
 end

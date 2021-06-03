@@ -88,7 +88,7 @@ RewardPopupUI.update = function (self, dt)
 	if not self._speed_up_popup then
 		local input_service = self.input_manager:get_service(INPUT_SERVICE_NAME)
 
-		if input_service:get("toggle_menu", true) or input_service:get("back", true) or input_service:get("skip_pressed", true) then
+		if input_service:get("speed_up_popup_pressed", true) then
 			self._speed_up_popup = true
 		end
 	end
@@ -317,7 +317,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local backend_id = value.backend_id
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(backend_id)
-		local rarity = item.rarity
+		local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
 		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
 		local style = widget.style.texture_id
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(inventory_icon)
@@ -329,7 +329,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local backend_id = value.backend_id
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(backend_id)
-		local rarity = item.rarity
+		local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
 		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
 		local style = widget.style.texture_id
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(inventory_icon)
@@ -414,7 +414,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local backend_id = value.backend_id
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(backend_id)
-		local rarity = item.rarity
+		local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
 		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
 		local style = widget.style.texture_id
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(inventory_icon)

@@ -167,6 +167,10 @@ StateLoading._setup_input = function (self)
 	input_manager:map_device_to_service("ingame_menu", "keyboard")
 	input_manager:map_device_to_service("ingame_menu", "mouse")
 	input_manager:map_device_to_service("ingame_menu", "gamepad")
+	input_manager:create_input_service("deus_run_stats_view", "IngameMenuKeymaps", "IngameMenuFilters")
+	input_manager:map_device_to_service("deus_run_stats_view", "keyboard")
+	input_manager:map_device_to_service("deus_run_stats_view", "mouse")
+	input_manager:map_device_to_service("deus_run_stats_view", "gamepad")
 end
 
 StateLoading._parse_loading_context = function (self)
@@ -915,7 +919,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 		local new_lobby_state = self._lobby_client.state
 
 		if not self._lobby_verified and self._lobby_client:is_joined() then
-			self:_verify_joined_lobby()
+			self:_verify_joined_lobby(dt, t)
 		elseif self._lobby_client:failed() and not self._popup_id then
 			self:_destroy_lobby_client()
 			self:create_popup("failure_start_join_server", "popup_error_topic", "restart_as_server", "menu_accept")
@@ -923,14 +927,19 @@ StateLoading._update_lobbies = function (self, dt, t)
 		end
 	end
 
-	if IS_XB1 and self._waiting_for_cleanup and Managers.account:all_lobbies_freed() then
-		self:setup_join_lobby()
+	if IS_XB1 and self._waiting_for_cleanup and Managers.account:all_lobbies_freed() and self._cleanup_wait_time < t then
+		self._cleanup_done_func()
 
 		self._waiting_for_cleanup = nil
+		self._cleanup_done_func = nil
 	end
 end
 
-StateLoading._verify_joined_lobby = function (self)
+StateLoading._verify_joined_lobby = function (self, dt, t)
+	if IS_XB1 and not self:_update_xbox_lobby_data(dt, t) then
+		return
+	end
+
 	local host = self._lobby_client:lobby_host()
 	local lobby_data = self._lobby_client:get_stored_lobby_data()
 	local lobby_id = lobby_data.id
@@ -1039,7 +1048,38 @@ StateLoading._verify_joined_lobby = function (self)
 		end
 
 		self._lobby_verified = true
+	elseif IS_XB1 then
+		self._xbox_lobby_data_state = "SET_COOLDOWN"
 	end
+end
+
+local XBOX_LOBBY_DATA_WAIT_TIME = 4
+
+StateLoading._update_xbox_lobby_data = function (self, dt, t)
+	local state = self._xbox_lobby_data_state
+
+	if state == "SET_COOLDOWN" then
+		self._xbox_lobby_cooldown = t + XBOX_LOBBY_DATA_WAIT_TIME
+		state = "WAIT_FOR_COOLDOWN"
+	elseif state == "WAIT_FOR_COOLDOWN" then
+		if self._xbox_lobby_cooldown < t then
+			state = "UPDATE_LOBBY_DATA"
+		end
+	elseif state == "UPDATE_LOBBY_DATA" then
+		self._lobby_client:force_update_lobby_data()
+
+		state = "WAIT_FOR_LOBBY_UPDATE"
+	elseif state == "WAIT_FOR_LOBBY_UPDATE" and not self._lobby_client:is_updating_lobby_data() then
+		state = "DONE"
+	end
+
+	self._xbox_lobby_data_state = state or "DONE"
+
+	return state == "DONE"
+end
+
+StateLoading.lobby_verified = function (self)
+	return self._lobby_verified
 end
 
 StateLoading._destroy_lobby_client = function (self)
@@ -1648,7 +1688,6 @@ StateLoading.on_exit = function (self, application_shutdown)
 	end
 
 	if self._ingame_level_object then
-		Level.finish_spawn_time_sliced(self._ingame_level_object)
 		Level.trigger_level_shutdown(self._ingame_level_object)
 		ScriptWorld.destroy_level_from_reference(self._ingame_world_object, self._ingame_level_object)
 
@@ -1864,7 +1903,7 @@ StateLoading._update_loadout_resync = function (self)
 	if state == states.WAIT_FOR_LEVEL_LOAD then
 	end
 
-	if state == states.CHECK_RESYNC and self:has_joined() then
+	if state == states.CHECK_RESYNC and self:has_joined() and Managers.mechanism:can_resync_loadout() then
 		local level_transition_handler = Managers.level_transition_handler
 		local level_key = level_transition_handler:get_current_level_key()
 		local game_mode = level_transition_handler:get_current_game_mode()
@@ -2104,9 +2143,12 @@ StateLoading.waiting_for_cleanup = function (self)
 	return self._waiting_for_cleanup
 end
 
-StateLoading.setup_join_lobby = function (self)
-	if IS_XB1 and not Managers.account:all_lobbies_freed() then
+StateLoading.setup_join_lobby = function (self, optional_wait_time)
+	if IS_XB1 and (not Managers.account:all_lobbies_freed() or optional_wait_time) then
 		self._waiting_for_cleanup = true
+		self._cleanup_done_func = callback(self, "setup_join_lobby")
+		local time = Managers.time:time("main")
+		self._cleanup_wait_time = time + (optional_wait_time or 0)
 
 		return
 	end
@@ -2183,7 +2225,15 @@ StateLoading.setup_lobby_finder = function (self, lobby_joined_callback, lobby_t
 	return self._lobby_finder
 end
 
-StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platform_lobby)
+StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platform_lobby, xbox_lobby_session_name, xbox_session_template_name)
+	if IS_XB1 and not Managers.account:all_lobbies_freed() then
+		self._waiting_for_cleanup = true
+		self._cleanup_done_func = callback(self, "setup_lobby_host", wait_for_joined_callback, platform_lobby, xbox_lobby_session_name, xbox_session_template_name)
+		self._cleanup_wait_time = 0
+
+		return
+	end
+
 	local loading_context = self.parent.loading_context
 
 	assert(not loading_context.profile_synchronizer)
@@ -2195,11 +2245,15 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 
 	printf("StateLoading:setup_lobby_host - creating lobby_host with network_options: %s platform_lobby: %s", network_options_info, platform_lobby_info)
 
-	self._lobby_host = LobbyHost:new(network_options, platform_lobby)
+	self._lobby_host = LobbyHost:new(network_options, platform_lobby, xbox_lobby_session_name, xbox_session_template_name)
 	local level_transition_handler = Managers.level_transition_handler
 
 	if not level_transition_handler:has_next_level() then
-		level_transition_handler:set_next_level(Managers.mechanism:default_level_key())
+		local level_key = Managers.mechanism:default_level_key()
+		local level_settings = rawget(LevelSettings, level_key)
+		local conflict_settings = level_settings and level_settings.conflict_settings
+
+		level_transition_handler:set_next_level(Managers.mechanism:default_level_key(), nil, nil, nil, nil, conflict_settings)
 	end
 
 	level_transition_handler:promote_next_level_data()
@@ -2427,25 +2481,32 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 	if self._lobby_host then
 		local lobby_host = self._lobby_host
 		local stored_lobby_host_data = lobby_host:get_stored_lobby_data() or {}
-		local matchmaking_type = (stored_lobby_host_data.matchmaking_type and NetworkLookup.matchmaking_types[tonumber(stored_lobby_host_data.matchmaking_type)]) or "n/a"
+		local matchmaking_type = nil
+
+		if IS_PS4 then
+			matchmaking_type = stored_lobby_host_data.matchmaking_type or "n/a"
+		else
+			matchmaking_type = (stored_lobby_host_data.matchmaking_type and NetworkLookup.matchmaking_types[tonumber(stored_lobby_host_data.matchmaking_type)]) or "n/a"
+		end
 
 		if matchmaking_type ~= "weave" then
 			stored_lobby_host_data.mission_id = level_key
-			stored_lobby_host_data.matchmaking = stored_lobby_host_data.matchmaking or "true"
-			local level_setting = LevelSettings[level_key]
+		end
 
-			if level_setting.hub_level then
-				stored_lobby_host_data.matchmaking = "false"
-				stored_lobby_host_data.matchmaking_type = (IS_PS4 and "n/a") or NetworkLookup.matchmaking_types["n/a"]
-				stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
-				stored_lobby_host_data.selected_mission_id = level_key
-			end
+		stored_lobby_host_data.matchmaking = stored_lobby_host_data.matchmaking or "true"
+		local level_setting = LevelSettings[level_key]
 
-			if level_key == "prologue" then
-				stored_lobby_host_data.matchmaking = "false"
-				stored_lobby_host_data.matchmaking_type = (IS_PS4 and "tutorial") or NetworkLookup.matchmaking_types.tutorial
-				stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
-			end
+		if level_setting.hub_level then
+			stored_lobby_host_data.matchmaking = "false"
+			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "n/a") or NetworkLookup.matchmaking_types["n/a"]
+			stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
+			stored_lobby_host_data.selected_mission_id = level_key
+		end
+
+		if level_key == "prologue" then
+			stored_lobby_host_data.matchmaking = "false"
+			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "tutorial") or NetworkLookup.matchmaking_types.tutorial
+			stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
 		end
 
 		if IS_PS4 then
@@ -2459,7 +2520,7 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 
 		if weave_name then
 			stored_lobby_host_data.mission_id = weave_name
-			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "weave") or NetworkLookup.matchmaking_types.weave
+			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "custom") or NetworkLookup.matchmaking_types.custom
 		elseif Managers.level_transition_handler:get_current_mechanism() == "versus" then
 			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "versus") or NetworkLookup.matchmaking_types.versus
 		elseif Development.parameter("auto_host_level") then

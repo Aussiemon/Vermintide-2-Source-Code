@@ -45,8 +45,9 @@ BTBotActivateAbilityAction.enter = function (self, unit, blackboard, t)
 	if activate_ability_data.activation.action == "aim_at_target" then
 		local aim_position = activate_ability_data.aim_position:unbox()
 		local input_extension = blackboard.input_extension
+		local soft_aim = not ability_action_data.fast_aim
 
-		input_extension:set_aiming(true, true, false)
+		input_extension:set_aiming(true, soft_aim, false)
 		input_extension:set_aim_position(aim_position)
 	end
 end

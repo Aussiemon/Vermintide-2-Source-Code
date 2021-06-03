@@ -239,7 +239,7 @@ end
 
 BTConditions.at_door_smartobject = function (blackboard)
 	local smart_object_type = blackboard.next_smart_object_data.smart_object_type
-	local is_smart_object_door = smart_object_type == "doors" or smart_object_type == "planks" or smart_object_type == "big_boy_destructible"
+	local is_smart_object_door = smart_object_type == "doors" or smart_object_type == "planks" or smart_object_type == "big_boy_destructible" or smart_object_type == "destructible_wall"
 	local is_smashing_door = blackboard.is_smashing_door
 	local is_scurrying_under_door = blackboard.is_scurrying_under_door
 

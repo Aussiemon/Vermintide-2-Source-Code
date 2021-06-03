@@ -1992,7 +1992,8 @@ HeroViewStateLoot._animate_reward_options_entry = function (self, dt)
 end
 
 HeroViewStateLoot.set_reward_options_height_progress = function (self, progress)
-	local w, h = UIResolution()
+	local w = RESOLUTION_LOOKUP.res_w
+	local h = RESOLUTION_LOOKUP.res_h
 	local progress_1 = math.min(progress * 1.1, 1)
 	local progress_2 = math.min(progress * 1.3, 1)
 	local progress_3 = progress

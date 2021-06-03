@@ -1096,22 +1096,23 @@ for i = 1, #profiles, 1 do
 	local profile_index = FindProfileIndex(profiles[i])
 
 	for career_index, career in pairs(SPProfiles[profile_index].careers) do
-		local mapped_career_name = CareerNameAchievementMapping[career.display_name]
-		local id = "scorpion_weaves_complete_" .. career.display_name .. "_season_1"
+		local career_name = career.name
+		local mapped_career_name = CareerNameAchievementMapping[career_name]
+		local id = "scorpion_weaves_complete_" .. career_name .. "_season_1"
 		AchievementTemplates.achievements[id] = {
 			required_dlc = "scorpion",
 			name = "achv_scorpion_weaves_complete_" .. mapped_career_name .. "_season_1_name",
 			desc = "achv_scorpion_weaves_complete_" .. mapped_career_name .. "_season_1_desc",
 			icon = "achievement_trophy_scorpion_weaves_complete_" .. mapped_career_name .. "_season_1",
 			completed = function (statistics_db, stats_id)
-				local stat_name = "weaves_complete_" .. career.display_name .. "_season_1"
+				local stat_name = "weaves_complete_" .. career_name .. "_season_1"
 				local amount_of_weaves = 40
 				local completed = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name)
 
 				return amount_of_weaves <= completed
 			end,
 			progress = function (statistics_db, stats_id)
-				local stat_name = "weaves_complete_" .. career.display_name .. "_season_1"
+				local stat_name = "weaves_complete_" .. career_name .. "_season_1"
 				local amount_of_weaves = 40
 				local completed = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name)
 
@@ -1121,18 +1122,18 @@ for i = 1, #profiles, 1 do
 				}
 			end
 		}
-		id = "scorpion_weaves_rainbow_" .. career.display_name .. "_season_1"
+		id = "scorpion_weaves_rainbow_" .. career_name .. "_season_1"
 		AchievementTemplates.achievements[id] = {
 			required_dlc = "scorpion",
 			name = "achv_scorpion_weaves_rainbow_" .. mapped_career_name .. "_season_1_name",
 			desc = "achv_scorpion_weaves_rainbow_" .. mapped_career_name .. "_season_1_desc",
 			icon = "achievement_trophy_scorpion_weaves_rainbow_" .. mapped_career_name .. "_season_1",
 			completed = function (statistics_db, stats_id)
-				return _weave_completed_career_rainbow(statistics_db, stats_id, career.display_name)
+				return _weave_completed_career_rainbow(statistics_db, stats_id, career_name)
 			end,
 			progress = function (statistics_db, stats_id)
 				local total_winds = #WeaveSettings.winds
-				local _, amount_finished = _weave_completed_career_rainbow(statistics_db, stats_id, career.display_name)
+				local _, amount_finished = _weave_completed_career_rainbow(statistics_db, stats_id, career_name)
 
 				return {
 					amount_finished,

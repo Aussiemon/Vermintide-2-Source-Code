@@ -470,6 +470,11 @@ local function _calculate_closest_target_with_spillover_score(ai_unit, target_un
 	end
 
 	local target_unit_position = POSITION_LOOKUP[target_unit]
+
+	if not target_unit_position then
+		return
+	end
+
 	local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
 	local should_check_los = not target_current or (group_targets and not group_targets[target_unit])
 

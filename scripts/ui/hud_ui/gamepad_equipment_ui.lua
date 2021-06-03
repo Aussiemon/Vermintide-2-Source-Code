@@ -1287,28 +1287,31 @@ GamePadEquipmentUI._update_game_options = function (self)
 		return
 	end
 
-	local use_ps4_icons = UISettings.use_ps4_input_icons
-
-	if self._use_ps4_icons ~= use_ps4_icons then
-		self._use_ps4_icons = use_ps4_icons
-		local button_texture_data = nil
-
-		if use_ps4_icons then
-			button_texture_data = ButtonTextureByName("square", "ps4")
-		else
-			button_texture_data = ButtonTextureByName("x", "xb1")
-		end
-
-		local widget = self._widgets_by_name.engineer_base
-		widget.content.reload_button_id = button_texture_data.texture
-		widget.style.reload_button.texture_size = button_texture_data.size
-
-		self:_set_widget_dirty(widget)
-	end
+	self:_update_gamepad_input_button()
+	self:event_input_changed()
 
 	self._game_options_dirty = false
+end
 
-	self:event_input_changed()
+GamePadEquipmentUI._update_gamepad_input_button = function (self)
+	local input_service = Managers.input:get_service("Player")
+	local input_action = "weapon_reload_input"
+	local gamepad_active = true
+	local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
+	local widget = self._widgets_by_name.engineer_base
+	local style = widget.style
+	local content = widget.content
+
+	if button_texture_data then
+		local texture = button_texture_data.texture
+		content.reload_button_id = texture
+		content.input_text = ""
+		local reload_button_style = style.reload_button
+		local reload_button_texture_size = reload_button_style.texture_size
+		local size = button_texture_data.size
+		reload_button_texture_size[1] = size[1]
+		reload_button_texture_size[2] = size[2]
+	end
 end
 
 GamePadEquipmentUI._handle_gamepad = function (self)

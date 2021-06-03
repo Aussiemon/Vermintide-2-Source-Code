@@ -67,7 +67,7 @@ TrainingDummyHealthExtension.apply_client_predicted_damage = function (self, pre
 	return
 end
 
-TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
@@ -117,6 +117,7 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 		local damage_source_id = NetworkLookup.damage_sources[damage_source_name or "n/a"]
 		local hit_ragdoll_actor_id = NetworkLookup.hit_ragdoll_actors[hit_ragdoll_actor or "n/a"]
 		local hit_react_type_id = NetworkLookup.hit_react_types[hit_react_type or "light"]
+		local attack_type_id = NetworkLookup.buff_attack_types[attack_type or "n/a"]
 		local source_attacker_unit_id = NetworkConstants.invalid_game_object_id
 		local network_transmit = self.network_transmit
 		local is_dead = self.dead or false
@@ -126,7 +127,7 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 		total_hits = total_hits or 0
 		backstab_multiplier = backstab_multiplier or 1
 
-		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
+		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
 	end
 end
 

@@ -34,7 +34,7 @@ local Snippets = {
 	end,
 	player_wield_weapon = function (weapon)
 		Testify:make_request("player_wield_weapon", weapon)
-		Testify:make_request("wait_for_weapon_assets_to_be_loaded")
+		Testify:make_request("wait_for_inventory_to_be_loaded")
 	end,
 	bot_wield_weapon = function (weapon)
 		Testify:make_request("bot_wield_weapon", weapon)
@@ -54,6 +54,9 @@ local Snippets = {
 		Testify:make_request("disable_bots")
 		Testify:make_request("enable_bots")
 		Testify:make_request("wait_for_bots_to_spawn")
+	end,
+	add_all_hats = function ()
+		Testify:make_request("add_all_hats")
 	end,
 	add_all_weapon_skins = function ()
 		Testify:make_request("add_all_weapon_skins")
@@ -282,6 +285,61 @@ local Snippets = {
 	end,
 	fail_test = function (message)
 		Testify:make_request("fail_test", message)
+	end,
+	transition_with_fade = function (params)
+		Testify:make_request("transition_with_fade", params)
+	end,
+	open_hero_view = function ()
+		local params = {
+			transition = "hero_view_force",
+			transition_params = {
+				menu_state_name = "overview"
+			}
+		}
+
+		Snippets.transition_with_fade(params)
+		Testify:make_request("wait_for_hero_view")
+	end,
+	close_hero_view = function ()
+		Testify:make_request("close_hero_view")
+	end,
+	set_hero_window_layout = function (index)
+		Testify:make_request("set_hero_window_layout", index)
+	end,
+	wait_for_cosmetics_inventory_window = function ()
+		Testify:make_request("wait_for_cosmetics_inventory_window")
+	end,
+	open_cosmetics_inventory = function ()
+		Snippets.set_hero_window_layout(4)
+		Snippets.wait_for_cosmetics_inventory_window()
+	end,
+	set_slot_hotspot_on_right_click = function (params)
+		Testify:make_request("set_slot_hotspot_on_right_click", params)
+	end,
+	equip_hats = function ()
+		local item_grid = Testify:make_request("get_hero_window_cosmetics_inventory_item_grid")
+		local content = item_grid._widget.content
+		local rows = content.rows
+		local columns = content.columns
+
+		for i = 1, rows, 1 do
+			for j = 1, columns, 1 do
+				local name_suffix = "_" .. i .. "_" .. j
+				local hotspot_name = "hotspot" .. name_suffix
+				local slot_hotspot = content[hotspot_name]
+				local reserved = slot_hotspot.reserved
+				local unwieldable = slot_hotspot.unwieldable
+
+				if not reserved and not unwieldable then
+					local params = {
+						value = true,
+						hotspot_name = hotspot_name
+					}
+
+					Snippets.set_slot_hotspot_on_right_click(params)
+				end
+			end
+		end
 	end,
 	memory_usage = function (index)
 		Testify:make_request("memory_usage", index)

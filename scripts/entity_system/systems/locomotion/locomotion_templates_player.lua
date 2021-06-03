@@ -108,6 +108,9 @@ end
 local MAX_TIME_SINCE_LAST_DOWN_COLLIDE = 0.2
 
 T.update_movement = function (data, t, dt)
+	local world = Managers.world:world("level_world")
+	local physics_world = World.get_data(world, "physics_world")
+
 	for unit, extension in pairs(data.all_update_units) do
 		extension.IS_NEW_FRAME = false
 		local collide = Mover.collides_down(Unit.mover(unit))
@@ -125,7 +128,6 @@ T.update_movement = function (data, t, dt)
 		local rotation = Quaternion.look(Vector3(0, 0, 1))
 
 		if on_ground then
-			local physics_world = World.physics_world(Unit.world(unit))
 			local hits, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", POSITION_LOOKUP[unit], "rotation", rotation, "size", size, "collision_filter", extension._default_mover_filter)
 			extension.on_ground = num_hits > 0 or (Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0)
 		else

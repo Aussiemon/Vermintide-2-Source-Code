@@ -4,26 +4,122 @@ local breed_data = {
 	unit_template = "ai_unit_chaos_corruptor_sorcerer",
 	no_stagger_duration = true,
 	race = "chaos",
-	death_sound_event = "chaos_sorcerer_corrupt_death",
 	animation_sync_rpc = "rpc_sync_anim_state_8",
 	perception = "perception_pack_master",
 	is_always_spawnable = true,
+	controllable = true,
 	debug_spawn_category = "Specials",
 	stagger_threshold_light = 0.5,
 	weapon_reach = 15,
+	death_sound_event = "chaos_sorcerer_corrupt_death",
 	is_of_interest_func = "is_of_interest_to_corruptor",
-	armor_category = 1,
 	perception_continuous = "SET_TO_NIL",
 	behavior = "chaos_corruptor_sorcerer",
 	base_unit = "units/beings/enemies/chaos_sorcerer_corruptor/chr_chaos_sorcerer_corruptor",
 	dialogue_source_name = "chaos_corruptor_sorcerer",
 	threat_value = 8,
+	armor_category = 1,
 	max_health = BreedTweaks.max_health.corruptor_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.chaos_special,
 	stagger_duration = BreedTweaks.stagger_duration.sorcerer,
 	diff_stagger_resist = BreedTweaks.diff_stagger_resist.sorcerer,
 	hitzone_multiplier_types = {
 		head = "headshot"
+	},
+	hit_zones = {
+		head = {
+			prio = 1,
+			actors = {
+				"c_head"
+			},
+			push_actors = {
+				"j_head",
+				"j_spine1"
+			}
+		},
+		neck = {
+			prio = 1,
+			actors = {
+				"c_neck"
+			},
+			push_actors = {
+				"j_head",
+				"j_spine1"
+			}
+		},
+		torso = {
+			prio = 2,
+			actors = {
+				"c_hips",
+				"c_spine",
+				"c_spine1",
+				"c_leftshoulder",
+				"c_rightshoulder"
+			},
+			push_actors = {
+				"j_spine1"
+			}
+		},
+		left_arm = {
+			prio = 3,
+			actors = {
+				"c_leftarm",
+				"c_leftforearm",
+				"c_lefthand"
+			},
+			push_actors = {
+				"j_spine1"
+			}
+		},
+		right_arm = {
+			prio = 3,
+			actors = {
+				"c_rightarm",
+				"c_rightforearm",
+				"c_righthand"
+			},
+			push_actors = {
+				"j_spine1"
+			}
+		},
+		left_leg = {
+			prio = 3,
+			actors = {
+				"c_leftupleg",
+				"c_leftleg",
+				"c_leftfoot",
+				"c_lefttoebase"
+			},
+			push_actors = {
+				"j_leftfoot",
+				"j_rightfoot",
+				"j_hips"
+			}
+		},
+		right_leg = {
+			prio = 3,
+			actors = {
+				"c_rightupleg",
+				"c_rightleg",
+				"c_rightfoot",
+				"c_righttoebase"
+			},
+			push_actors = {
+				"j_leftfoot",
+				"j_rightfoot",
+				"j_hips"
+			}
+		},
+		full = {
+			prio = 4,
+			actors = {}
+		},
+		afro = {
+			prio = 5,
+			actors = {
+				"h_afro"
+			}
+		}
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_plague_sorcerer_spawn,
 	target_player_sound_events = {

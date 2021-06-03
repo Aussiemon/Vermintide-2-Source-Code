@@ -5,7 +5,6 @@ local UISceneGraph = UISceneGraph
 local Vector2 = Vector2
 local Vector3 = Vector3
 local RESOLUTION_LOOKUP = RESOLUTION_LOOKUP
-local UIResolutionWidthFragments = UIResolutionWidthFragments
 local Application = Application
 local fassert = fassert
 local ZERO_VECTOR3 = {
@@ -166,7 +165,7 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 	local h = RESOLUTION_LOOKUP.res_h
 	local scale = RESOLUTION_LOOKUP.scale
 	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	local root_scale_x = w / (UIResolutionWidthFragments() * scale)
+	local root_scale_x = w / (1920 * scale)
 	local root_scale_y = UISettings.root_scale[2]
 
 	for i = 1, #scenegraph, 1 do
@@ -283,7 +282,7 @@ UISceneGraph.get_size_scaled = function (scenegraph, node_name, optional_scale)
 			inverse_scale = inverse_scale / optional_scale
 		end
 
-		return Vector2((w * inverse_scale) / UIResolutionWidthFragments() * size[1], h * inverse_scale * UISettings.root_scale[2])
+		return Vector2((w * inverse_scale) / 1920 * size[1], h * inverse_scale * UISettings.root_scale[2])
 	end
 
 	local scale_mode = node.scale

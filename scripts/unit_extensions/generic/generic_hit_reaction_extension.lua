@@ -430,7 +430,11 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local damage_type = effect_biggest_hit[DamageDataIndex.DAMAGE_TYPE]
 	local hit_zone = parameters.hit_zone
 
-	fassert(breed_data.hit_zones[hit_zone], "error no hitzone in breed that matches hitzone: %s", hit_zone)
+	if not breed_data.hit_zones[hit_zone] then
+		print("Error no hitzone in breed that matches hitzone:", hit_zone)
+
+		return
+	end
 
 	local actors = breed_data.hit_zones and breed_data.hit_zones[hit_zone].actors
 	local death_ext = self.death_extension

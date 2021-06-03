@@ -263,40 +263,55 @@ InventorySystem.rpc_add_equipment = function (self, channel_id, go_id, slot_id, 
 	end
 
 	local unit = self.unit_storage:unit(go_id)
-	local slot_name = NetworkLookup.equipment_slots[slot_id]
-	local item_name = NetworkLookup.item_names[item_name_id]
-	local skin_name = NetworkLookup.weapon_skins[weapon_skin_id]
 
-	if skin_name == "n/a" then
-		skin_name = nil
+	if unit == nil or not ALIVE[unit] then
+		return
 	end
 
-	local inventory = ScriptUnit.extension(unit, "inventory_system")
+	local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
 
-	inventory:add_equipment(slot_name, item_name, skin_name)
+	if inventory_extension then
+		local slot_name = NetworkLookup.equipment_slots[slot_id]
+		local item_name = NetworkLookup.item_names[item_name_id]
+		local skin_name = NetworkLookup.weapon_skins[weapon_skin_id]
+
+		if skin_name == "n/a" then
+			skin_name = nil
+		end
+
+		inventory_extension:add_equipment(slot_name, item_name, skin_name)
+	end
 end
 
 InventorySystem.rpc_add_inventory_slot_item = function (self, channel_id, go_id, slot_id, item_name_id, weapon_skin_id)
 	local unit = self.unit_storage:unit(go_id)
-	local slot_name = NetworkLookup.equipment_slots[slot_id]
-	local item_name = NetworkLookup.item_names[item_name_id]
-	local item_data = ItemMasterList[item_name]
-	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
-	inventory_extension:destroy_slot(slot_name)
-	inventory_extension:add_equipment(slot_name, item_data)
-
-	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
-
-	if wielded_slot_name == slot_name then
-		CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
-		inventory_extension:wield(slot_name)
+	if unit == nil or not ALIVE[unit] then
+		return
 	end
 
-	if self.is_server then
-		self.network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
-	else
-		self.network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
+	local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+
+	if inventory_extension then
+		local slot_name = NetworkLookup.equipment_slots[slot_id]
+		local item_name = NetworkLookup.item_names[item_name_id]
+		local item_data = ItemMasterList[item_name]
+
+		inventory_extension:destroy_slot(slot_name)
+		inventory_extension:add_equipment(slot_name, item_data)
+
+		local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+
+		if wielded_slot_name == slot_name then
+			CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+			inventory_extension:wield(slot_name)
+		end
+
+		if self.is_server then
+			self.network_transmit:send_rpc_clients("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
+		else
+			self.network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_name_id, weapon_skin_id)
+		end
 	end
 end
 

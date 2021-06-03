@@ -59,6 +59,13 @@ PlayerUnitEnergyExtension._update_events = function (self)
 end
 
 PlayerUnitEnergyExtension.update = function (self, unit, input, dt, context, t)
+	local buff_extension = ALIVE[unit] and ScriptUnit.has_extension(unit, "buff_system")
+
+	if buff_extension and buff_extension:has_buff_type("twitch_no_overcharge_no_ammo_reloads") then
+		self._energy = self._max_energy
+		self._depletion_cooldown_timer = 0
+	end
+
 	if self:_is_recharging() then
 		self:_process_recharge(dt, t)
 	end
@@ -73,6 +80,12 @@ end
 
 PlayerUnitEnergyExtension.drain = function (self, amount)
 	assert(amount >= 0, "Use add_energy()")
+
+	local buff_extension = ScriptUnit.has_extension(self.unit, "buff_system")
+
+	if buff_extension and buff_extension:has_buff_perk("infinite_ammo") then
+		amount = 0
+	end
 
 	local energy = self._energy
 	local new_energy_amount = energy - amount

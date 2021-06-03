@@ -193,62 +193,6 @@ local scenegraph_definition = {
 			1
 		}
 	},
-	player_status_4 = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			30,
-			30
-		},
-		position = {
-			-18,
-			15,
-			10
-		}
-	},
-	player_status_3 = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			30,
-			30
-		},
-		position = {
-			-45,
-			12,
-			10
-		}
-	},
-	player_status_2 = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			30,
-			30
-		},
-		position = {
-			-71,
-			22,
-			10
-		}
-	},
-	player_status_1 = {
-		vertical_alignment = "bottom",
-		parent = "window",
-		horizontal_alignment = "right",
-		size = {
-			30,
-			30
-		},
-		position = {
-			-89,
-			43,
-			10
-		}
-	},
 	timer_bg = {
 		vertical_alignment = "top",
 		parent = "detailed_info_box",
@@ -438,8 +382,9 @@ cancel_input_text_style.text_color = Colors.get_color_table_with_alpha("font_tit
 local cancel_text_style = table.clone(cancel_input_text_style)
 cancel_text_style.text_color = Colors.get_color_table_with_alpha("white", 255)
 
-local function create_status_widget(texture, scenegraph_id)
+local function create_status_widget(texture, offset)
 	return {
+		scenegraph_id = "window",
 		element = {
 			passes = {
 				{
@@ -447,7 +392,7 @@ local function create_status_widget(texture, scenegraph_id)
 					pass_type = "texture",
 					texture_id = "texture_id",
 					content_check_function = function (content)
-						return content.is_connecting or content.is_connected
+						return true
 					end,
 					content_change_function = function (content, style, animations, dt)
 						local color = style.color
@@ -471,6 +416,12 @@ local function create_status_widget(texture, scenegraph_id)
 		},
 		style = {
 			texture_id = {
+				vertical_alignment = "botom",
+				horizontal_alignment = "right",
+				texture_size = {
+					30,
+					30
+				},
 				color = {
 					255,
 					255,
@@ -478,18 +429,12 @@ local function create_status_widget(texture, scenegraph_id)
 					255
 				},
 				offset = {
-					0,
-					0,
-					0
+					offset[1] or 0,
+					offset[2] or 0,
+					offset[3] or 0
 				}
 			}
-		},
-		offset = {
-			0,
-			0,
-			0
-		},
-		scenegraph_id = scenegraph_id
+		}
 	}
 end
 
@@ -502,10 +447,22 @@ local widget_definitions = {
 	}, "loading_status_frame"),
 	window_hotspot = UIWidgets.create_simple_hotspot("window"),
 	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, matchmaking_status_text_style),
-	player_status_1 = create_status_widget("matchmaking_light_02", "player_status_1"),
-	player_status_2 = create_status_widget("matchmaking_light_02", "player_status_2"),
-	player_status_3 = create_status_widget("matchmaking_light_02", "player_status_3"),
-	player_status_4 = create_status_widget("matchmaking_light_02", "player_status_4")
+	player_status_1 = create_status_widget("matchmaking_light_02", {
+		-89,
+		43
+	}),
+	player_status_2 = create_status_widget("matchmaking_light_02", {
+		-71,
+		22
+	}),
+	player_status_3 = create_status_widget("matchmaking_light_02", {
+		-45,
+		12
+	}),
+	player_status_4 = create_status_widget("matchmaking_light_02", {
+		-18,
+		15
+	})
 }
 local widget_detail_definitions = {
 	detailed_info_box_frame = UIWidgets.create_frame("detailed_info_box", scenegraph_definition.detailed_info_box.size, "menu_frame_09", 1),
@@ -550,10 +507,22 @@ local deus_widget_definitions = {
 	}),
 	window_hotspot = UIWidgets.create_simple_hotspot("window"),
 	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, deus_matchmaking_status_text_style),
-	player_status_1 = create_status_widget("matchmaking_light_02", "player_status_1"),
-	player_status_2 = create_status_widget("matchmaking_light_02", "player_status_2"),
-	player_status_3 = create_status_widget("matchmaking_light_02", "player_status_3"),
-	player_status_4 = create_status_widget("matchmaking_light_02", "player_status_4")
+	player_status_1 = create_status_widget("matchmaking_light_02", {
+		-87,
+		46
+	}),
+	player_status_2 = create_status_widget("matchmaking_light_02", {
+		-70,
+		25
+	}),
+	player_status_3 = create_status_widget("matchmaking_light_02", {
+		-44,
+		15
+	}),
+	player_status_4 = create_status_widget("matchmaking_light_02", {
+		-17,
+		19
+	})
 }
 local deus_widget_detail_definitions = {
 	detailed_info_box = UIWidgets.create_simple_texture("matchmaking_animated_panel", "detailed_info_box", false, false, nil, {

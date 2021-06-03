@@ -14,6 +14,7 @@ BotNavTransitionManager.TRANSITION_LAYERS = {
 	barrel_explosion = 50,
 	bot_damage_drops = 10,
 	bot_jumps = 1,
+	temporary_wall = 1,
 	bot_leap_of_faith = 3,
 	bot_ratling_gun_fire = 30,
 	doors = 0.1,

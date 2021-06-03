@@ -154,6 +154,12 @@ NetworkState.get_difficulty_tweak = function (self)
 	return self._shared_state:get_server(key)
 end
 
+NetworkState.get_extra_packages = function (self)
+	local key = self._shared_state:get_key("extra_packages")
+
+	return self._shared_state:get_server(key)
+end
+
 NetworkState.get_mechanism = function (self)
 	local key = self._shared_state:get_key("mechanism")
 
@@ -172,7 +178,7 @@ NetworkState.get_level_transition_type = function (self)
 	return self._shared_state:get_server(key)
 end
 
-NetworkState.set_level_data = function (self, level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, level_session_id, level_transition_type)
+NetworkState.set_level_data = function (self, level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, level_session_id, level_transition_type, extra_packages)
 	local shared_state = self._shared_state
 
 	shared_state:start_atomic_set_server("set_level_data")
@@ -187,6 +193,7 @@ NetworkState.set_level_data = function (self, level_key, environment_variation_i
 	shared_state:set_server(shared_state:get_key("difficulty_tweak"), difficulty_tweak)
 	shared_state:set_server(shared_state:get_key("level_session_id"), level_session_id)
 	shared_state:set_server(shared_state:get_key("level_transition_type"), level_transition_type)
+	shared_state:set_server(shared_state:get_key("extra_packages"), extra_packages)
 	shared_state:end_atomic_set_server("set_level_data")
 end
 
@@ -311,6 +318,18 @@ NetworkState.delete_profile_data = function (self, peer_id, local_player_id)
 	local key = self._shared_state:get_key("full_profile_peers")
 
 	self._shared_state:set_server(key, new_full_profile_peers)
+end
+
+NetworkState.get_actually_ingame = function (self, peer_id)
+	local key = self._shared_state:get_key("actually_ingame", peer_id)
+
+	return self._shared_state:get_peer(peer_id, key)
+end
+
+NetworkState.set_own_actually_ingame = function (self, actually_ingame)
+	local key = self._shared_state:get_key("actually_ingame", self._own_peer_id)
+
+	self._shared_state:set_peer(self._own_peer_id, key, actually_ingame)
 end
 
 return
