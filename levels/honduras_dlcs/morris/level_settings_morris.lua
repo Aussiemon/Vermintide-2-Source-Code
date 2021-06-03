@@ -88,7 +88,7 @@ end
 for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 	for _, theme_name in ipairs(settings.themes) do
 		for _, path in ipairs(settings.paths) do
-			settings_clone = table.clone(settings)
+			local settings_clone = table.clone(settings)
 			local permutation_name = theme_name .. "_path" .. path
 			local permutation_key = level_key .. "_" .. permutation_name
 			settings_clone.level_name = "levels/honduras_dlcs/morris/" .. level_key .. "/generated/" .. permutation_name .. "/world"

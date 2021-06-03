@@ -1417,639 +1417,639 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pdr_morris_level_conversations_slaanesh_thirtyone_01 = {
+		pwh_morris_level_conversations_slaanesh_thirtyone_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_slaanesh_thirtyone_01"
-			},
-			sound_events_duration = {
-				[1.0] = 3.1492917537689
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_slaanesh_thirtyone_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pdr_morris_level_conversations_nurgle_twentynine_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_02"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0793957710266
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pbw_morris_level_conversations_khorne_twentyfour_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_khorne_twentyfour_01"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1674790382385
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_khorne_twentyfour_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pbw_morris_level_conversations_tzeentch_twentysix_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_02"
-			},
-			sound_events_duration = {
-				[1.0] = 7.9500832557678
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_nurgle_twentyeight_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_01"
-			},
-			sound_events_duration = {
-				[1.0] = 8.7251253128052
-			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			sound_events = {
+				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_01"
+			},
 			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_01"
+				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0671458244324
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			}
 		},
 		pes_morris_level_conversations_slaanesh_thirty_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
 			sound_events = {
+				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_01"
+			},
+			localization_strings = {
 				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_01"
 			},
 			sound_events_duration = {
 				[1.0] = 6.2740001678467
 			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_01"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			}
 		},
-		pwe_morris_level_conversations_khorne_twentyfive_01 = {
+		pbw_morris_level_conversations_khorne_twentyfour_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_01"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0829792022705
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwh_morris_level_conversations_slaanesh_thirtyone_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6515207290649
-			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwh_morris_level_conversations_slaanesh_thirtyone_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_01"
+				[1.0] = "pbw_morris_level_conversations_khorne_twentyfour_01"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_level_conversations_khorne_twentyfour_01"
 			},
 			sound_events_duration = {
-				[1.0] = 7.0671458244324
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_level_conversations_khorne_twentyfive_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_02"
-			},
-			sound_events_duration = {
-				[1.0] = 5.4178333282471
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_level_conversations_slaanesh_thirty_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_01"
-			},
-			sound_events_duration = {
-				[1.0] = 5.7202706336975
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pdr_morris_level_conversations_khorne_twentyfour_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_02"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3144373893738
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_level_conversations_nurgle_twentyeight_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_02"
-			},
-			sound_events_duration = {
-				[1.0] = 1.4549791812897
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_slaanesh_thirty_03 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_03"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2461874485016
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_slaanesh_thirty_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5013542175293
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_nurgle_twentynine_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6536667346954
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_level_conversations_nurgle_twentyeight_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_01"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7229166030884
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pbw_morris_level_conversations_tzeentch_twentyseven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentyseven_01"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2238335609436
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentyseven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_nurgle_twentynine_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_01"
-			},
-			sound_events_duration = {
-				[1.0] = 1.6353332996368
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pbw_morris_level_conversations_tzeentch_twentysix_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_01"
-			},
-			sound_events_duration = {
-				[1.0] = 7.106062412262
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_khorne_twentyfive_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_01"
-			},
-			sound_events_duration = {
-				[1.0] = 1.2056875228882
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pdr_morris_level_conversations_khorne_twentyfour_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_01"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4539375305176
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pdr_morris_level_conversations_nurgle_twentynine_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_01"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3611040115356
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_01"
+				[1.0] = 5.1674790382385
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			}
 		},
 		pdr_morris_level_conversations_tzeentch_twentyseven_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
 			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_tzeentch_twentyseven_01"
+			},
+			localization_strings = {
 				[1.0] = "pdr_morris_level_conversations_tzeentch_twentyseven_01"
 			},
 			sound_events_duration = {
 				[1.0] = 8.3637294769287
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pdr_morris_level_conversations_khorne_twentyfour_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_02"
 			},
 			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_tzeentch_twentyseven_01"
+				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3144373893738
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pbw_morris_level_conversations_tzeentch_twentysix_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_02"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.9500832557678
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_slaanesh_thirty_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_03"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_03"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2461874485016
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwh_morris_level_conversations_slaanesh_thirtyone_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_02"
+			},
+			localization_strings = {
+				[1.0] = "pwh_morris_level_conversations_slaanesh_thirtyone_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6515207290649
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pdr_morris_level_conversations_slaanesh_thirtyone_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_slaanesh_thirtyone_01"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_level_conversations_slaanesh_thirtyone_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1492917537689
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			}
 		},
 		pwh_morris_level_conversations_tzeentch_twentysix_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
 			sound_events = {
+				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_01"
+			},
+			localization_strings = {
 				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_01"
 			},
 			sound_events_duration = {
 				[1.0] = 3.7522916793823
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwh_morris_level_conversations_tzeentch_twentysix_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_02"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2571249008179
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_nurgle_twentyeight_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2034375667572
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_khorne_twentyfive_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1561458110809
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			}
 		},
 		pwe_morris_level_conversations_slaanesh_thirty_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_morris_level_banter_themed",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_02"
-			},
-			sound_events_duration = {
-				[1.0] = 1.1140625476837
-			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_02"
+			},
 			localization_strings = {
 				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.114041686058
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_nurgle_twentynine_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6536667346954
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwe_morris_level_conversations_khorne_twentyfive_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_01"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0829582214356
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwe_morris_level_conversations_slaanesh_thirty_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_01"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_slaanesh_thirty_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7202501296997
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_nurgle_twentyeight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_01"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.7251253128052
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pdr_morris_level_conversations_nurgle_twentynine_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_02"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0793957710266
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pbw_morris_level_conversations_tzeentch_twentysix_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_01"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_level_conversations_tzeentch_twentysix_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.106062412262
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_khorne_twentyfive_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1561458110809
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_nurgle_twentyeight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentyeight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2034375667572
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwe_morris_level_conversations_nurgle_twentyeight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_02"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.454958319664
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwe_morris_level_conversations_nurgle_twentyeight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_01"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_nurgle_twentyeight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.722895860672
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pdr_morris_level_conversations_khorne_twentyfour_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_01"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_level_conversations_khorne_twentyfour_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4539375305176
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_khorne_twentyfive_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_01"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_khorne_twentyfive_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.2056875228882
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwh_morris_level_conversations_tzeentch_twentysix_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_02"
+			},
+			localization_strings = {
+				[1.0] = "pwh_morris_level_conversations_tzeentch_twentysix_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2571249008179
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pbw_morris_level_conversations_tzeentch_twentyseven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_level_conversations_tzeentch_twentyseven_01"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_level_conversations_tzeentch_twentyseven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2238335609436
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pwe_morris_level_conversations_khorne_twentyfive_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_02"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_khorne_twentyfive_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4178123474121
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pdr_morris_level_conversations_nurgle_twentynine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_01"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_level_conversations_nurgle_twentynine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3611040115356
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_nurgle_twentynine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_01"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_nurgle_twentynine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.6353332996368
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_level_conversations_slaanesh_thirty_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_level_banter_themed",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_slaanesh_thirty_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5013542175293
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"

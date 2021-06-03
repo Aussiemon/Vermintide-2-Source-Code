@@ -1,7 +1,7 @@
 local smart_objects = {
 	["9a172a95-7458-4779-9306-e0fb4a581adc"] = {
 		{
-			smart_object_index = 432,
+			smart_object_index = 475,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -24,7 +24,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 433,
+			smart_object_index = 476,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -49,7 +49,7 @@ local smart_objects = {
 	},
 	["2949a10f-240c-445d-a60d-df54bfff1f20"] = {
 		{
-			smart_object_index = 246,
+			smart_object_index = 264,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -74,7 +74,7 @@ local smart_objects = {
 	},
 	["c3216966-e5ee-4e8a-80f2-b892ddbd63d2"] = {
 		{
-			smart_object_index = 212,
+			smart_object_index = 216,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -97,7 +97,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 213,
+			smart_object_index = 217,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -120,7 +120,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 214,
+			smart_object_index = 218,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -145,7 +145,7 @@ local smart_objects = {
 	},
 	["9add61b8-02a2-440b-86ae-355f1c4473f8"] = {
 		{
-			smart_object_index = 34,
+			smart_object_index = 31,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -169,7 +169,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 35,
+			smart_object_index = 32,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -195,7 +195,7 @@ local smart_objects = {
 	},
 	["1889e39d-2abd-4d92-9538-0672ca690431"] = {
 		{
-			smart_object_index = 831,
+			smart_object_index = 837,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -218,7 +218,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 832,
+			smart_object_index = 838,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -243,7 +243,7 @@ local smart_objects = {
 	},
 	["cf52fad5-4cd3-442d-94ed-a3c93215473e"] = {
 		{
-			smart_object_index = 247,
+			smart_object_index = 265,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -266,7 +266,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 248,
+			smart_object_index = 266,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -289,7 +289,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 249,
+			smart_object_index = 267,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -314,7 +314,7 @@ local smart_objects = {
 	},
 	["4a03b2d8-250f-4f40-bafb-10484c565777"] = {
 		{
-			smart_object_index = 256,
+			smart_object_index = 566,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -337,7 +337,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 257,
+			smart_object_index = 567,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -360,7 +360,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 258,
+			smart_object_index = 568,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -385,7 +385,7 @@ local smart_objects = {
 	},
 	["afc66c23-adf1-4065-bfcc-c5fac6fdbef8"] = {
 		{
-			smart_object_index = 755,
+			smart_object_index = 483,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -408,7 +408,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 756,
+			smart_object_index = 484,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -431,7 +431,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 757,
+			smart_object_index = 485,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -454,7 +454,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 758,
+			smart_object_index = 486,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -479,7 +479,7 @@ local smart_objects = {
 	},
 	["88bc6561-5d2b-460f-b8dd-209de90e6e31"] = {
 		{
-			smart_object_index = 157,
+			smart_object_index = 165,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -502,7 +502,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 158,
+			smart_object_index = 166,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -525,7 +525,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 159,
+			smart_object_index = 167,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -548,7 +548,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 160,
+			smart_object_index = 168,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.875002384185791,
@@ -566,7 +566,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 161,
+			smart_object_index = 169,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -589,7 +589,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 162,
+			smart_object_index = 170,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.6250063180923462,
@@ -609,7 +609,7 @@ local smart_objects = {
 	},
 	["4a8acc53-9d30-4582-80d8-d617ee9e2607"] = {
 		{
-			smart_object_index = 406,
+			smart_object_index = 433,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -633,7 +633,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 407,
+			smart_object_index = 434,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -659,7 +659,7 @@ local smart_objects = {
 	},
 	["4e6c1e92-c13f-47d6-b860-764b934ff6ae"] = {
 		{
-			smart_object_index = 674,
+			smart_object_index = 678,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -682,7 +682,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 675,
+			smart_object_index = 679,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -707,7 +707,7 @@ local smart_objects = {
 	},
 	["1f6f1405-0735-4c41-aadd-8453fd918f09"] = {
 		{
-			smart_object_index = 801,
+			smart_object_index = 810,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -730,7 +730,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 802,
+			smart_object_index = 811,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -753,7 +753,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 803,
+			smart_object_index = 812,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -776,7 +776,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 804,
+			smart_object_index = 813,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -801,7 +801,7 @@ local smart_objects = {
 	},
 	["8cc8a97b-34ce-4eed-9723-4dad896d4aaa"] = {
 		{
-			smart_object_index = 436,
+			smart_object_index = 477,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -824,7 +824,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 437,
+			smart_object_index = 478,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -849,7 +849,7 @@ local smart_objects = {
 	},
 	["38e20b21-3866-47c7-b02a-01a8b6a35542"] = {
 		{
-			smart_object_index = 746,
+			smart_object_index = 765,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -873,7 +873,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 747,
+			smart_object_index = 766,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -897,7 +897,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 748,
+			smart_object_index = 767,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -923,7 +923,7 @@ local smart_objects = {
 	},
 	["31e67cc9-6d53-49c2-9ef4-1e632d7e208f"] = {
 		{
-			smart_object_index = 525,
+			smart_object_index = 552,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -947,7 +947,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 526,
+			smart_object_index = 553,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -971,7 +971,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 527,
+			smart_object_index = 554,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -995,7 +995,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 528,
+			smart_object_index = 555,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1021,7 +1021,7 @@ local smart_objects = {
 	},
 	["0f17215c-65fd-4db9-adcc-2af8bd7abcec"] = {
 		{
-			smart_object_index = 817,
+			smart_object_index = 826,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1045,7 +1045,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 818,
+			smart_object_index = 827,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1071,7 +1071,7 @@ local smart_objects = {
 	},
 	["4a964fb6-7d4e-41b4-a28d-e343b3758003"] = {
 		{
-			smart_object_index = 163,
+			smart_object_index = 171,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1094,7 +1094,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 164,
+			smart_object_index = 172,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1119,7 +1119,7 @@ local smart_objects = {
 	},
 	["4a192b87-6cda-487c-8744-58300ce7fdf0"] = {
 		{
-			smart_object_index = 484,
+			smart_object_index = 523,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1143,7 +1143,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 485,
+			smart_object_index = 524,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1169,7 +1169,7 @@ local smart_objects = {
 	},
 	["43f3e931-fa01-4808-9834-8a6aa25e7e47"] = {
 		{
-			smart_object_index = 663,
+			smart_object_index = 900,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1193,7 +1193,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 664,
+			smart_object_index = 901,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1217,7 +1217,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 665,
+			smart_object_index = 902,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1243,7 +1243,7 @@ local smart_objects = {
 	},
 	["ffc62de0-70d0-4480-8032-06685f662c64"] = {
 		{
-			smart_object_index = 187,
+			smart_object_index = 366,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -1266,7 +1266,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 188,
+			smart_object_index = 367,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -1289,7 +1289,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 189,
+			smart_object_index = 368,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -1314,7 +1314,7 @@ local smart_objects = {
 	},
 	["9604ccb4-0054-4855-8624-f4c1d669fefa"] = {
 		{
-			smart_object_index = 252,
+			smart_object_index = 272,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -1337,7 +1337,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 253,
+			smart_object_index = 273,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1360,7 +1360,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 254,
+			smart_object_index = 274,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1383,7 +1383,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 255,
+			smart_object_index = 275,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1408,7 +1408,7 @@ local smart_objects = {
 	},
 	["75216922-94e0-4ae0-93fd-780fb709cf43"] = {
 		{
-			smart_object_index = 36,
+			smart_object_index = 35,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1432,7 +1432,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 37,
+			smart_object_index = 36,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1456,7 +1456,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 38,
+			smart_object_index = 37,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1480,7 +1480,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 39,
+			smart_object_index = 38,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1504,7 +1504,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 40,
+			smart_object_index = 39,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1530,7 +1530,7 @@ local smart_objects = {
 	},
 	["777dc7f7-57f4-4cb6-b561-26487a6ab9a8"] = {
 		{
-			smart_object_index = 542,
+			smart_object_index = 572,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1554,7 +1554,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 543,
+			smart_object_index = 573,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -1580,7 +1580,7 @@ local smart_objects = {
 	},
 	["f5a38173-99c2-46b9-9d9c-08a61d480bfe"] = {
 		{
-			smart_object_index = 742,
+			smart_object_index = 757,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1603,7 +1603,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 743,
+			smart_object_index = 758,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1626,7 +1626,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 744,
+			smart_object_index = 759,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1649,7 +1649,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 745,
+			smart_object_index = 760,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1674,7 +1674,7 @@ local smart_objects = {
 	},
 	["b0937f82-4304-413f-a3c4-3ab4a47cfb21"] = {
 		{
-			smart_object_index = 41,
+			smart_object_index = 40,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1698,7 +1698,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 42,
+			smart_object_index = 41,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1722,7 +1722,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 43,
+			smart_object_index = 42,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1748,7 +1748,7 @@ local smart_objects = {
 	},
 	["da013c64-0068-489f-92f3-85a89b0e4c00"] = {
 		{
-			smart_object_index = 165,
+			smart_object_index = 173,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1771,7 +1771,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 166,
+			smart_object_index = 174,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1796,7 +1796,7 @@ local smart_objects = {
 	},
 	["c5984908-028c-478f-8eca-09cd23bbada5"] = {
 		{
-			smart_object_index = 259,
+			smart_object_index = 278,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1819,7 +1819,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 260,
+			smart_object_index = 279,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1842,7 +1842,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 261,
+			smart_object_index = 280,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1865,7 +1865,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 262,
+			smart_object_index = 281,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1888,7 +1888,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 263,
+			smart_object_index = 282,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1911,7 +1911,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 264,
+			smart_object_index = 283,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -1936,7 +1936,7 @@ local smart_objects = {
 	},
 	["b4dc8452-76de-481b-a9dd-4828f65a7aaf"] = {
 		{
-			smart_object_index = 408,
+			smart_object_index = 437,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1960,7 +1960,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 409,
+			smart_object_index = 438,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -1986,7 +1986,7 @@ local smart_objects = {
 	},
 	["fae342ab-6725-475b-9966-34242d5a2b9b"] = {
 		{
-			smart_object_index = 346,
+			smart_object_index = 360,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2009,7 +2009,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 347,
+			smart_object_index = 361,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2032,7 +2032,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 348,
+			smart_object_index = 362,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2055,7 +2055,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 349,
+			smart_object_index = 363,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2080,7 +2080,7 @@ local smart_objects = {
 	},
 	["26e92957-eb85-4f04-8e10-0fe80fc2114f"] = {
 		{
-			smart_object_index = 410,
+			smart_object_index = 439,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2103,7 +2103,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 411,
+			smart_object_index = 440,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2126,7 +2126,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 412,
+			smart_object_index = 441,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2151,7 +2151,7 @@ local smart_objects = {
 	},
 	["eb70a104-b79b-478b-bb34-dd31cfea44ea"] = {
 		{
-			smart_object_index = 749,
+			smart_object_index = 768,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2175,7 +2175,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 750,
+			smart_object_index = 769,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2199,7 +2199,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 751,
+			smart_object_index = 770,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2223,7 +2223,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 752,
+			smart_object_index = 771,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2249,7 +2249,7 @@ local smart_objects = {
 	},
 	["4ba8c302-8dc0-400c-b403-272528b46f7d"] = {
 		{
-			smart_object_index = 170,
+			smart_object_index = 175,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2272,7 +2272,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 171,
+			smart_object_index = 176,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2295,7 +2295,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 172,
+			smart_object_index = 177,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2318,7 +2318,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 173,
+			smart_object_index = 178,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2343,7 +2343,7 @@ local smart_objects = {
 	},
 	["0cb2c81e-569b-4afb-81de-0862b08a077e"] = {
 		{
-			smart_object_index = 552,
+			smart_object_index = 564,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2366,7 +2366,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 553,
+			smart_object_index = 565,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2391,7 +2391,7 @@ local smart_objects = {
 	},
 	["7988da62-f9d4-4b3a-ba36-87f466d14d6b"] = {
 		{
-			smart_object_index = 438,
+			smart_object_index = 479,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2414,7 +2414,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 439,
+			smart_object_index = 480,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2437,7 +2437,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 440,
+			smart_object_index = 481,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2460,7 +2460,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 441,
+			smart_object_index = 482,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2485,7 +2485,7 @@ local smart_objects = {
 	},
 	["1614fc8c-9e94-4a95-9c70-57aca6ded53f"] = {
 		{
-			smart_object_index = 703,
+			smart_object_index = 714,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2509,7 +2509,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 704,
+			smart_object_index = 715,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2533,7 +2533,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 705,
+			smart_object_index = 716,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2557,7 +2557,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 706,
+			smart_object_index = 717,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2581,7 +2581,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 707,
+			smart_object_index = 718,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2605,80 +2605,57 @@ local smart_objects = {
 			}
 		}
 	},
-	["fb40832a-737d-41c0-b2cf-97edc67842c2"] = {
+	["cf6541c6-c98e-4911-afd7-de9e97b1c526"] = {
 		{
-			smart_object_index = 174,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					335.3786926269531,
-					-18.151079177856445,
-					104.67737579345703
-				}
-			},
-			pos1 = {
-				336.1451110839844,
-				-17.508718490600586,
-				104.5155258178711
-			},
-			pos2 = {
-				334.6122741699219,
-				-18.793338775634766,
-				101.10353088378906
-			}
-		},
-		{
-			smart_object_index = 175,
+			smart_object_index = 190,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					334.8841857910156,
-					-17.56104278564453,
-					104.69956970214844
+					56.08381652832031,
+					-6.53397798538208,
+					98.5493392944336
 				}
 			},
 			pos1 = {
-				335.6506042480469,
-				-16.918704986572266,
-				104.56168365478516
+				55.66459274291992,
+				-7.441856861114502,
+				98.63086700439453
 			},
 			pos2 = {
-				334.1177978515625,
-				-18.20330238342285,
-				101.56761932373047
+				56.5030403137207,
+				-5.626097679138184,
+				94.61015319824219
 			}
 		},
 		{
-			smart_object_index = 176,
+			smart_object_index = 191,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					334.3896789550781,
-					-16.971004486083984,
-					104.72176361083984
+					56.99169158935547,
+					-6.953198432922363,
+					98.5493392944336
 				}
 			},
 			pos1 = {
-				335.1560974121094,
-				-16.328659057617188,
-				104.53594970703125
+				56.572471618652344,
+				-7.86107873916626,
+				98.61883544921875
 			},
 			pos2 = {
-				333.6232604980469,
-				-17.61326026916504,
-				101.85221862792969
+				57.410911560058594,
+				-6.045318126678467,
+				94.60477447509766
 			}
 		}
 	},
 	["a21ab1b4-afe7-40f9-aea3-b44ee1dbebb6"] = {
 		{
-			smart_object_index = 753,
+			smart_object_index = 772,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2702,7 +2679,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 754,
+			smart_object_index = 773,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2728,7 +2705,7 @@ local smart_objects = {
 	},
 	["ad21d94e-292d-4228-a0a0-4f465e063149"] = {
 		{
-			smart_object_index = 613,
+			smart_object_index = 587,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2751,7 +2728,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 614,
+			smart_object_index = 588,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2774,7 +2751,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 615,
+			smart_object_index = 589,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -2799,7 +2776,7 @@ local smart_objects = {
 	},
 	["0fb3ae48-e5bb-405f-8386-1b92718eb6a7"] = {
 		{
-			smart_object_index = 124,
+			smart_object_index = 129,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2823,7 +2800,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 125,
+			smart_object_index = 130,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2849,7 +2826,7 @@ local smart_objects = {
 	},
 	["2e6d27d4-3d1b-40fd-8c56-ba00703ba260"] = {
 		{
-			smart_object_index = 708,
+			smart_object_index = 719,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2873,7 +2850,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 709,
+			smart_object_index = 720,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2948,7 +2925,7 @@ local smart_objects = {
 	},
 	["45cd5406-3ef1-4075-928e-8989703f2b5c"] = {
 		{
-			smart_object_index = 44,
+			smart_object_index = 43,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2972,7 +2949,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 45,
+			smart_object_index = 44,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -2998,7 +2975,7 @@ local smart_objects = {
 	},
 	["7d5784a3-50c8-4d1e-8b1f-1cb79861824b"] = {
 		{
-			smart_object_index = 269,
+			smart_object_index = 284,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3021,7 +2998,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 270,
+			smart_object_index = 285,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3044,7 +3021,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 271,
+			smart_object_index = 286,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3069,7 +3046,7 @@ local smart_objects = {
 	},
 	["cb585040-4c61-4a6f-b33a-c31d7cf74046"] = {
 		{
-			smart_object_index = 681,
+			smart_object_index = 685,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -3093,57 +3070,80 @@ local smart_objects = {
 			}
 		}
 	},
-	["c438633a-d89f-429f-a324-65ad62dbddb3"] = {
+	["4fa43ded-a82f-466e-b872-3ef44d77d3a1"] = {
 		{
-			smart_object_index = 413,
+			smart_object_index = 45,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					78.00889587402344,
-					-13.491741180419922,
-					93.2945556640625
+					387.4453125,
+					-123.59355926513672,
+					99.05220794677734
 				}
 			},
 			pos1 = {
-				77.22624206542969,
-				-14.114192008972168,
-				93.27130126953125
+				388.4136657714844,
+				-123.34415435791016,
+				98.85247039794922
 			},
 			pos2 = {
-				78.79156494140625,
-				-12.869293212890625,
-				90.70204162597656
+				386.47686767578125,
+				-123.84297180175781,
+				95.8936996459961
 			}
 		},
 		{
-			smart_object_index = 414,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 46,
+			smart_object_type = "ledges",
 			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					78.61944580078125,
-					-14.259441375732422,
-					93.15796661376953
+					387.22308349609375,
+					-122.73065185546875,
+					99.13936614990234
 				}
 			},
 			pos1 = {
-				77.8367919921875,
-				-14.881893157958984,
-				93.09386444091797
+				388.19146728515625,
+				-122.48123931884766,
+				98.88774108886719
 			},
 			pos2 = {
-				79.40210723876953,
-				-13.63699722290039,
-				90.52070617675781
+				386.254638671875,
+				-122.98004913330078,
+				95.93560028076172
+			}
+		},
+		{
+			smart_object_index = 47,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					387.0008544921875,
+					-121.86773681640625,
+					99.22651672363281
+				}
+			},
+			pos1 = {
+				387.96923828125,
+				-121.61833190917969,
+				98.98110961914062
+			},
+			pos2 = {
+				386.03240966796875,
+				-122.11709594726562,
+				96.06558990478516
 			}
 		}
 	},
 	["4828cc55-5db1-48b3-85f4-5d1e886a9d9c"] = {
 		{
-			smart_object_index = 86,
+			smart_object_index = 82,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -3166,7 +3166,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 87,
+			smart_object_index = 83,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -3189,7 +3189,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 88,
+			smart_object_index = 84,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -3213,154 +3213,154 @@ local smart_objects = {
 			}
 		}
 	},
-	["856aed5d-c4cd-45c0-a477-b9167518dc0e"] = {
+	["74aeaa14-a95c-4050-baab-6e42551ae460"] = {
 		{
-			smart_object_index = 179,
+			smart_object_index = 160,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					308.7188415527344,
-					-11.491837501525879,
-					95.49566650390625
+					158.58721923828125,
+					142.02774047851562,
+					115.99467468261719
 				}
 			},
 			pos1 = {
-				308.663330078125,
-				-12.490318298339844,
-				95.60814666748047
+				159.52072143554688,
+				142.38633728027344,
+				116.41315460205078
 			},
 			pos2 = {
-				308.7743835449219,
-				-10.493363380432129,
-				92.36346435546875
+				157.65379333496094,
+				141.66909790039062,
+				106.40485382080078
 			}
 		},
 		{
-			smart_object_index = 180,
+			smart_object_index = 161,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					309.45025634765625,
-					-11.532513618469238,
-					95.53307342529297
+					158.83348083496094,
+					141.38677978515625,
+					115.99467468261719
 				}
 			},
 			pos1 = {
-				309.3947448730469,
-				-12.530988693237305,
-				95.61087036132812
+				159.76698303222656,
+				141.74537658691406,
+				116.22635650634766
 			},
 			pos2 = {
-				309.5058288574219,
-				-10.534032821655273,
-				92.39418029785156
+				157.90005493164062,
+				141.02813720703125,
+				106.29552459716797
 			}
 		},
 		{
-			smart_object_index = 181,
+			smart_object_index = 162,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					310.1816711425781,
-					-11.573189735412598,
-					95.57048034667969
+					159.07972717285156,
+					140.7458038330078,
+					115.99467468261719
 				}
 			},
 			pos1 = {
-				310.1261901855469,
-				-12.571666717529297,
-				95.61546325683594
+				160.0132293701172,
+				141.10440063476562,
+				116.05850219726562
 			},
 			pos2 = {
-				310.2372131347656,
-				-10.574718475341797,
-				92.4384765625
+				158.1462860107422,
+				140.38714599609375,
+				106.13037109375
 			}
 		}
 	},
-	["3262b02d-b041-4809-8e2c-c2299d9724f9"] = {
+	["0874cfde-efae-413d-b55d-3619a3ec19c5"] = {
 		{
-			smart_object_index = 219,
+			smart_object_index = 287,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					366.5538330078125,
-					-38.6121826171875,
-					110.12999725341797
+					96.09126281738281,
+					5.882216453552246,
+					95.92765045166016
 				}
 			},
 			pos1 = {
-				367.2304992675781,
-				-39.34845733642578,
-				109.97994995117188
+				96.90277099609375,
+				6.4665327072143555,
+				95.94147491455078
 			},
 			pos2 = {
-				365.877197265625,
-				-37.87590026855469,
-				98.87866973876953
+				95.27973937988281,
+				5.297887802124023,
+				91.60851287841797
 			}
 		},
 		{
-			smart_object_index = 220,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 288,
+			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					367.01031494140625,
-					-38.192630767822266,
-					110.12999725341797
+					95.79358673095703,
+					6.295630931854248,
+					96.015380859375
 				}
 			},
 			pos1 = {
-				367.6869812011719,
-				-38.92893600463867,
-				110.00190734863281
+				96.60509490966797,
+				6.879946708679199,
+				96.02973175048828
 			},
 			pos2 = {
-				366.3336181640625,
-				-37.45634460449219,
-				98.87866973876953
+				94.98206329345703,
+				5.711297035217285,
+				91.60909271240234
 			}
 		},
 		{
-			smart_object_index = 221,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 289,
+			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					367.466796875,
-					-37.77307891845703,
-					110.12998962402344
+					95.49591064453125,
+					6.70904541015625,
+					96.10311126708984
 				}
 			},
 			pos1 = {
-				368.1434326171875,
-				-38.509376525878906,
-				110.03732299804688
+				96.30742645263672,
+				7.293367385864258,
+				96.11492156982422
 			},
 			pos2 = {
-				366.79010009765625,
-				-37.03681945800781,
-				98.87866973876953
+				94.68439483642578,
+				6.124714374542236,
+				91.62168884277344
 			}
 		}
 	},
 	["d8e652de-dc0f-4560-816c-2c64254ff736"] = {
 		{
-			smart_object_index = 354,
+			smart_object_index = 369,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3383,7 +3383,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 355,
+			smart_object_index = 370,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3406,7 +3406,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 356,
+			smart_object_index = 371,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3429,7 +3429,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 357,
+			smart_object_index = 372,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3454,7 +3454,7 @@ local smart_objects = {
 	},
 	["0abe86a9-bd47-4fd1-ab3f-478b1d49a12b"] = {
 		{
-			smart_object_index = 126,
+			smart_object_index = 131,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3477,7 +3477,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 127,
+			smart_object_index = 132,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3500,7 +3500,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 128,
+			smart_object_index = 133,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3525,7 +3525,7 @@ local smart_objects = {
 	},
 	["f7e9da94-34f3-4b25-b90e-bacd3779ab3e"] = {
 		{
-			smart_object_index = 370,
+			smart_object_index = 387,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -3549,7 +3549,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 371,
+			smart_object_index = 388,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -3573,7 +3573,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 372,
+			smart_object_index = 389,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -3597,7 +3597,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 373,
+			smart_object_index = 390,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -3621,7 +3621,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 374,
+			smart_object_index = 391,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -3647,7 +3647,7 @@ local smart_objects = {
 	},
 	["abc979b0-514c-47df-9170-aab72ffa9d91"] = {
 		{
-			smart_object_index = 129,
+			smart_object_index = 134,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3670,7 +3670,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 130,
+			smart_object_index = 135,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3693,7 +3693,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 131,
+			smart_object_index = 136,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3716,7 +3716,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 132,
+			smart_object_index = 137,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3739,7 +3739,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 133,
+			smart_object_index = 138,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3762,7 +3762,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 134,
+			smart_object_index = 139,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3785,7 +3785,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 135,
+			smart_object_index = 140,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3808,7 +3808,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 136,
+			smart_object_index = 141,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3831,7 +3831,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 137,
+			smart_object_index = 142,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3854,7 +3854,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 138,
+			smart_object_index = 143,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3877,7 +3877,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 139,
+			smart_object_index = 144,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3900,7 +3900,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 140,
+			smart_object_index = 145,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3925,7 +3925,7 @@ local smart_objects = {
 	},
 	["bede8144-e98f-4f68-b5ff-7c3d0ee228e3"] = {
 		{
-			smart_object_index = 633,
+			smart_object_index = 640,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -3948,7 +3948,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 634,
+			smart_object_index = 641,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4042,7 +4042,76 @@ local smart_objects = {
 			}
 		}
 	},
-	["fac2f90b-9056-4516-ba05-8b0fb42adc8a"] = {
+	["e532347e-3a3a-493c-af6e-5bb885ffdf61"] = {
+		{
+			smart_object_index = 347,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					442.20635986328125,
+					118.11207580566406,
+					118.9807357788086
+				}
+			},
+			pos1 = {
+				442.9093017578125,
+				118.82347106933594,
+				118.40983581542969
+			},
+			pos2 = {
+				441.5034484863281,
+				117.40072631835938,
+				116.16961669921875
+			}
+		},
+		{
+			smart_object_index = 348,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					441.692626953125,
+					118.61968994140625,
+					119.00251007080078
+				}
+			},
+			pos1 = {
+				442.3955383300781,
+				119.33106994628906,
+				118.41526794433594
+			},
+			pos2 = {
+				440.9897155761719,
+				117.90835571289062,
+				116.28165435791016
+			}
+		},
+		{
+			smart_object_index = 349,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					441.17889404296875,
+					119.12728881835938,
+					119.02428436279297
+				}
+			},
+			pos1 = {
+				441.8818359375,
+				119.83869934082031,
+				118.41767120361328
+			},
+			pos2 = {
+				440.4759521484375,
+				118.41596221923828,
+				116.36687469482422
+			}
+		},
 		{
 			smart_object_index = 350,
 			smart_object_type = "ledges",
@@ -4050,49 +4119,26 @@ local smart_objects = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					227.8822021484375,
-					139.40354919433594,
-					98.6011962890625
+					440.6651306152344,
+					119.63489532470703,
+					119.04605865478516
 				}
 			},
 			pos1 = {
-				228.67532348632812,
-				140.0126190185547,
-				98.04499053955078
+				441.3680725097656,
+				120.34628295898438,
+				118.42374420166016
 			},
 			pos2 = {
-				227.08908081054688,
-				138.7944793701172,
-				97.19955444335938
-			}
-		},
-		{
-			smart_object_index = 351,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					228.37718200683594,
-					138.75900268554688,
-					98.6011962890625
-				}
-			},
-			pos1 = {
-				229.17030334472656,
-				139.3680877685547,
-				98.10884857177734
-			},
-			pos2 = {
-				227.5840606689453,
-				138.14991760253906,
-				97.0824203491211
+				439.9621887207031,
+				118.9235610961914,
+				116.43920135498047
 			}
 		}
 	},
 	["4505c940-3e52-469b-8466-faa37e8d1cb0"] = {
 		{
-			smart_object_index = 52,
+			smart_object_index = 48,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4115,7 +4161,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 53,
+			smart_object_index = 49,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4138,7 +4184,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 54,
+			smart_object_index = 50,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4163,7 +4209,7 @@ local smart_objects = {
 	},
 	["119cb496-07c8-4a29-a02a-b070f056a780"] = {
 		{
-			smart_object_index = 279,
+			smart_object_index = 292,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4186,7 +4232,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 280,
+			smart_object_index = 293,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4209,7 +4255,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 281,
+			smart_object_index = 294,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4234,7 +4280,7 @@ local smart_objects = {
 	},
 	["60480130-0aae-4576-901e-ade7eb6793f4"] = {
 		{
-			smart_object_index = 786,
+			smart_object_index = 795,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -4258,7 +4304,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 787,
+			smart_object_index = 796,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -4282,7 +4328,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 788,
+			smart_object_index = 797,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -4308,7 +4354,7 @@ local smart_objects = {
 	},
 	["0bb9f70c-4a57-4eb3-8c19-80b2bfedaf15"] = {
 		{
-			smart_object_index = 833,
+			smart_object_index = 839,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4331,7 +4377,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 834,
+			smart_object_index = 840,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4354,7 +4400,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 835,
+			smart_object_index = 841,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.7500075101852417,
@@ -4372,7 +4418,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 836,
+			smart_object_index = 842,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4395,7 +4441,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 837,
+			smart_object_index = 843,
 			smart_object_type = "jumps",
 			data = {
 				scale = 2.000011920928955,
@@ -4413,7 +4459,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 838,
+			smart_object_index = 844,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4436,7 +4482,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 839,
+			smart_object_index = 845,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4459,7 +4505,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 840,
+			smart_object_index = 846,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4482,7 +4528,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 841,
+			smart_object_index = 847,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4505,7 +4551,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 842,
+			smart_object_index = 848,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4528,7 +4574,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 843,
+			smart_object_index = 849,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4551,7 +4597,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 844,
+			smart_object_index = 850,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4574,128 +4620,128 @@ local smart_objects = {
 			}
 		}
 	},
-	["393ed034-01b0-4a56-9cdc-5203d4c92d3f"] = {
+	["d73d0b89-5b7e-45ea-8a3f-d6c0b3dd6eb2"] = {
 		{
-			smart_object_index = 352,
-			smart_object_type = "ledges",
+			smart_object_index = 774,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					299.7319030761719,
-					-0.058986082673072815,
-					94.96599578857422
+					373.1003112792969,
+					50.37531661987305,
+					100.31411743164062
 				}
 			},
 			pos1 = {
-				299.8189392089844,
-				0.9372276067733765,
-				94.83921813964844
+				373.88232421875,
+				49.752159118652344,
+				100.17272186279297
 			},
 			pos2 = {
-				299.644775390625,
-				-1.0551910400390625,
-				90.63580322265625
+				372.318115234375,
+				50.99856948852539,
+				97.9320068359375
 			}
 		},
 		{
-			smart_object_index = 353,
-			smart_object_type = "ledges",
+			smart_object_index = 775,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					298.7357482910156,
-					0.028168080374598503,
-					94.96600341796875
+					373.48553466796875,
+					50.858726501464844,
+					100.30015563964844
 				}
 			},
 			pos1 = {
-				298.82281494140625,
-				1.024378776550293,
-				94.93843078613281
+				374.26751708984375,
+				50.235565185546875,
+				100.13103485107422
 			},
 			pos2 = {
-				298.6485595703125,
-				-0.968017578125,
-				90.60932922363281
+				372.7033386230469,
+				51.48197555541992,
+				97.92070770263672
+			}
+		},
+		{
+			smart_object_index = 776,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					373.87078857421875,
+					51.34213638305664,
+					100.28619384765625
+				}
+			},
+			pos1 = {
+				374.65277099609375,
+				50.71897506713867,
+				100.11027526855469
+			},
+			pos2 = {
+				373.0885925292969,
+				51.965354919433594,
+				97.90058135986328
 			}
 		}
 	},
-	["0a0ec269-804d-4a96-b400-21e34d9a8634"] = {
+	["380fe591-04d8-42a0-9c72-24340ea03e94"] = {
 		{
-			smart_object_index = 765,
+			smart_object_index = 356,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					67.49728393554688,
-					-23.005796432495117,
-					98.75665283203125
+					306.82794189453125,
+					-1.7322255373001099,
+					94.87699890136719
 				}
 			},
 			pos1 = {
-				67.115478515625,
-				-23.930055618286133,
-				98.57149505615234
+				307.0866394042969,
+				-0.7662756443023682,
+				94.72425842285156
 			},
 			pos2 = {
-				67.87909698486328,
-				-22.081533432006836,
-				94.25703430175781
+				306.569091796875,
+				-2.6981201171875,
+				91.48560333251953
 			}
 		},
 		{
-			smart_object_index = 766,
+			smart_object_index = 357,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					68.18560791015625,
-					-23.290136337280273,
-					98.75664520263672
+					305.862060546875,
+					-1.4734104871749878,
+					94.87699890136719
 				}
 			},
 			pos1 = {
-				67.80380249023438,
-				-24.214397430419922,
-				98.59048461914062
+				306.12078857421875,
+				-0.5074691772460938,
+				94.94477081298828
 			},
 			pos2 = {
-				68.56741333007812,
-				-22.365873336791992,
-				94.30467987060547
-			}
-		},
-		{
-			smart_object_index = 767,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					68.87393951416016,
-					-23.57447624206543,
-					98.75665283203125
-				}
-			},
-			pos1 = {
-				68.49213409423828,
-				-24.498737335205078,
-				98.59916687011719
-			},
-			pos2 = {
-				69.25574493408203,
-				-22.650211334228516,
-				94.35356140136719
+				305.603271484375,
+				-2.4393310546875,
+				91.27159881591797
 			}
 		}
 	},
 	["bb85ac90-e415-416e-82aa-5acbbb49f457"] = {
 		{
-			smart_object_index = 781,
+			smart_object_index = 532,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4718,7 +4764,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 782,
+			smart_object_index = 533,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4741,7 +4787,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 783,
+			smart_object_index = 534,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4766,7 +4812,7 @@ local smart_objects = {
 	},
 	["2ecc8f13-4f6a-40bf-ae16-a5cd9adcee35"] = {
 		{
-			smart_object_index = 483,
+			smart_object_index = 537,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4791,7 +4837,7 @@ local smart_objects = {
 	},
 	["3716e600-40bc-4755-98d8-6b94365d9fca"] = {
 		{
-			smart_object_index = 446,
+			smart_object_index = 491,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4814,7 +4860,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 447,
+			smart_object_index = 492,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -4839,7 +4885,7 @@ local smart_objects = {
 	},
 	["ebbca444-d677-4ce8-a8f6-af2e73ff1d56"] = {
 		{
-			smart_object_index = 554,
+			smart_object_index = 584,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4862,7 +4908,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 555,
+			smart_object_index = 585,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4885,7 +4931,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 556,
+			smart_object_index = 586,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4910,7 +4956,7 @@ local smart_objects = {
 	},
 	["b266a2c3-ff0f-4b6d-8fe2-5930bbc4c259"] = {
 		{
-			smart_object_index = 282,
+			smart_object_index = 295,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4933,7 +4979,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 283,
+			smart_object_index = 296,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -4958,7 +5004,7 @@ local smart_objects = {
 	},
 	["8544175b-e2e6-4247-ad73-f3bade5b678d"] = {
 		{
-			smart_object_index = 624,
+			smart_object_index = 631,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -4982,7 +5028,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 625,
+			smart_object_index = 632,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5006,7 +5052,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 626,
+			smart_object_index = 633,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5032,7 +5078,7 @@ local smart_objects = {
 	},
 	["44b3b7de-08a4-4165-bb46-5679a58f6ff0"] = {
 		{
-			smart_object_index = 465,
+			smart_object_index = 233,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5055,7 +5101,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 466,
+			smart_object_index = 234,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5078,7 +5124,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 467,
+			smart_object_index = 235,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5103,7 +5149,7 @@ local smart_objects = {
 	},
 	["f3eb4148-5d22-404d-bdb8-4caf6f5326ca"] = {
 		{
-			smart_object_index = 456,
+			smart_object_index = 435,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5126,7 +5172,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 457,
+			smart_object_index = 436,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5149,190 +5195,80 @@ local smart_objects = {
 			}
 		}
 	},
-	["9281d274-e322-4c41-a8c7-7ba591be4292"] = {
+	["7d380cba-5fcc-4111-a486-b1c87125b408"] = {
 		{
-			smart_object_index = 768,
+			smart_object_index = 644,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					214.48715209960938,
-					14.758856773376465,
-					94.38029479980469
+					371.94012451171875,
+					56.97182083129883,
+					97.87115478515625
 				}
 			},
 			pos1 = {
-				213.94432067871094,
-				13.919008255004883,
-				94.33234405517578
+				372.2507629394531,
+				56.02136993408203,
+				97.8209228515625
 			},
 			pos2 = {
-				215.030029296875,
-				15.59869384765625,
-				90.633544921875
+				371.6293029785156,
+				57.922332763671875,
+				95.18762969970703
 			}
 		},
 		{
-			smart_object_index = 769,
+			smart_object_index = 645,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					215.200927734375,
-					14.297538757324219,
-					94.36617279052734
+					372.52789306640625,
+					57.163997650146484,
+					97.866943359375
 				}
 			},
 			pos1 = {
-				214.65809631347656,
-				13.457691192626953,
-				94.31468200683594
+				372.8385009765625,
+				56.21355056762695,
+				97.82076263427734
 			},
 			pos2 = {
-				215.7437744140625,
-				15.13739013671875,
-				90.65113067626953
+				372.2170715332031,
+				58.11451721191406,
+				95.17217254638672
 			}
 		},
 		{
-			smart_object_index = 770,
+			smart_object_index = 646,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					215.91468811035156,
-					13.836219787597656,
-					94.35205078125
+					373.11566162109375,
+					57.356170654296875,
+					97.86273193359375
 				}
 			},
 			pos1 = {
-				215.37184143066406,
-				12.996376037597656,
-				94.296875
+				373.42626953125,
+				56.40571212768555,
+				97.82481384277344
 			},
 			pos2 = {
-				216.45751953125,
-				14.67608642578125,
-				90.63754272460938
-			}
-		},
-		{
-			smart_object_index = 771,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					216.6284637451172,
-					13.374902725219727,
-					94.33792877197266
-				}
-			},
-			pos1 = {
-				216.0856170654297,
-				12.535058975219727,
-				94.27735900878906
-			},
-			pos2 = {
-				217.1712646484375,
-				14.21478271484375,
-				90.65579223632812
-			}
-		},
-		{
-			smart_object_index = 772,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					217.34222412109375,
-					12.91358470916748,
-					94.32380676269531
-				}
-			},
-			pos1 = {
-				216.79940795898438,
-				12.07373332977295,
-				94.25746154785156
-			},
-			pos2 = {
-				217.885009765625,
-				13.75341796875,
-				90.69110107421875
-			}
-		},
-		{
-			smart_object_index = 773,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					218.05599975585938,
-					12.452266693115234,
-					94.30968475341797
-				}
-			},
-			pos1 = {
-				217.51316833496094,
-				11.61242389678955,
-				94.24112701416016
-			},
-			pos2 = {
-				218.598876953125,
-				13.2921142578125,
-				90.70001983642578
-			}
-		},
-		{
-			smart_object_index = 774,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					218.769775390625,
-					11.990947723388672,
-					94.29556274414062
-				}
-			},
-			pos1 = {
-				218.22694396972656,
-				11.151106834411621,
-				94.2267074584961
-			},
-			pos2 = {
-				219.3126220703125,
-				12.830810546875,
-				90.73845672607422
-			}
-		},
-		{
-			smart_object_index = 775,
-			smart_object_type = "jumps",
-			data = {
-				scale = 2.0000040531158447,
-				flat_jump_distance = 8.000016212463379
-			},
-			pos1 = {
-				218.22694396972656,
-				11.151106834411621,
-				94.20453643798828
-			},
-			pos2 = {
-				222.56948852539062,
-				17.86992835998535,
-				93.20516967773438
+				372.8048400878906,
+				58.306678771972656,
+				95.2028579711914
 			}
 		}
 	},
 	["f3a468fb-7a09-4857-9188-83b0479810d5"] = {
 		{
-			smart_object_index = 535,
+			smart_object_index = 576,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5355,7 +5291,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 536,
+			smart_object_index = 577,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5378,7 +5314,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 537,
+			smart_object_index = 578,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5401,7 +5337,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 538,
+			smart_object_index = 579,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5426,7 +5362,7 @@ local smart_objects = {
 	},
 	["4fde3555-600d-4dd0-8d80-aa429525311c"] = {
 		{
-			smart_object_index = 638,
+			smart_object_index = 647,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5450,7 +5386,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 639,
+			smart_object_index = 648,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5474,7 +5410,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 640,
+			smart_object_index = 649,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5500,7 +5436,7 @@ local smart_objects = {
 	},
 	["233ce8c6-e32e-46a3-a386-3d7442ecb45d"] = {
 		{
-			smart_object_index = 182,
+			smart_object_index = 187,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5523,7 +5459,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 183,
+			smart_object_index = 188,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5546,7 +5482,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 184,
+			smart_object_index = 189,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5571,7 +5507,7 @@ local smart_objects = {
 	},
 	["cdb0bf21-f3d4-4814-8b9a-9559a6b879da"] = {
 		{
-			smart_object_index = 241,
+			smart_object_index = 311,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5594,7 +5530,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 242,
+			smart_object_index = 312,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -5619,7 +5555,7 @@ local smart_objects = {
 	},
 	["0f111cec-3788-4f24-a0f0-448eba5053e7"] = {
 		{
-			smart_object_index = 31,
+			smart_object_index = 399,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5643,7 +5579,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 32,
+			smart_object_index = 400,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5667,7 +5603,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 33,
+			smart_object_index = 401,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5693,7 +5629,7 @@ local smart_objects = {
 	},
 	["bef6b007-f965-4f8d-8a04-ba2aabbb755c"] = {
 		{
-			smart_object_index = 848,
+			smart_object_index = 854,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5716,7 +5652,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 849,
+			smart_object_index = 855,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5739,7 +5675,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 850,
+			smart_object_index = 856,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5881,7 +5817,7 @@ local smart_objects = {
 	},
 	["681b0072-c070-4d5f-92d6-f09eb90c9e74"] = {
 		{
-			smart_object_index = 851,
+			smart_object_index = 857,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5904,7 +5840,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 852,
+			smart_object_index = 858,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5927,7 +5863,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 853,
+			smart_object_index = 859,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5950,7 +5886,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 854,
+			smart_object_index = 860,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -5975,7 +5911,7 @@ local smart_objects = {
 	},
 	["07cdeb98-5abb-4e79-89a9-73e6c0b27254"] = {
 		{
-			smart_object_index = 146,
+			smart_object_index = 761,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -5999,7 +5935,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 147,
+			smart_object_index = 762,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6023,7 +5959,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 148,
+			smart_object_index = 763,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6047,7 +5983,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 149,
+			smart_object_index = 764,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6073,7 +6009,7 @@ local smart_objects = {
 	},
 	["5b38b3c6-6a28-4310-811f-6b738591a7a5"] = {
 		{
-			smart_object_index = 560,
+			smart_object_index = 590,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6097,7 +6033,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 561,
+			smart_object_index = 591,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6121,7 +6057,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 562,
+			smart_object_index = 592,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6145,7 +6081,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 563,
+			smart_object_index = 593,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6169,7 +6105,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 564,
+			smart_object_index = 594,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.3750030994415283,
@@ -6189,7 +6125,7 @@ local smart_objects = {
 	},
 	["3ec47d4f-4a34-4785-b4e2-a7dcf28f8542"] = {
 		{
-			smart_object_index = 778,
+			smart_object_index = 788,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6213,7 +6149,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 779,
+			smart_object_index = 789,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6237,7 +6173,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 780,
+			smart_object_index = 790,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -6263,7 +6199,7 @@ local smart_objects = {
 	},
 	["3b6d70fb-3edf-46cd-90a1-2dd5ab9a02ef"] = {
 		{
-			smart_object_index = 529,
+			smart_object_index = 562,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6286,7 +6222,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 530,
+			smart_object_index = 563,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6311,7 +6247,7 @@ local smart_objects = {
 	},
 	["39484967-92b2-4f37-871f-abd18db4aa1d"] = {
 		{
-			smart_object_index = 284,
+			smart_object_index = 297,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6334,7 +6270,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 285,
+			smart_object_index = 298,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.999995470046997,
@@ -6352,7 +6288,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 286,
+			smart_object_index = 299,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6375,7 +6311,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 287,
+			smart_object_index = 300,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6398,7 +6334,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 288,
+			smart_object_index = 301,
 			smart_object_type = "jumps",
 			data = {
 				scale = 2.0000011920928955,
@@ -6416,7 +6352,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 289,
+			smart_object_index = 302,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -6439,7 +6375,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 290,
+			smart_object_index = 303,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -6464,7 +6400,7 @@ local smart_objects = {
 	},
 	["0702dd39-0d60-4227-ab23-78c966ba7f9e"] = {
 		{
-			smart_object_index = 712,
+			smart_object_index = 727,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6487,7 +6423,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 713,
+			smart_object_index = 728,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -6512,7 +6448,7 @@ local smart_objects = {
 	},
 	["48c3ac80-64d9-485e-b200-ce8592998e51"] = {
 		{
-			smart_object_index = 222,
+			smart_object_index = 236,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6535,7 +6471,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 223,
+			smart_object_index = 237,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6558,7 +6494,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 224,
+			smart_object_index = 238,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -6583,7 +6519,7 @@ local smart_objects = {
 	},
 	["68965ba4-4172-4663-b4a7-efbff15f9094"] = {
 		{
-			smart_object_index = 729,
+			smart_object_index = 744,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6607,7 +6543,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 730,
+			smart_object_index = 745,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6631,7 +6567,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 731,
+			smart_object_index = 746,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6657,7 +6593,7 @@ local smart_objects = {
 	},
 	["f99d70b0-7e74-48f1-8945-6bd6f4cac519"] = {
 		{
-			smart_object_index = 291,
+			smart_object_index = 304,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6681,7 +6617,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 292,
+			smart_object_index = 305,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6705,7 +6641,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 293,
+			smart_object_index = 306,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -6729,7 +6665,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 294,
+			smart_object_index = 307,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6755,7 +6691,7 @@ local smart_objects = {
 	},
 	["3ef61be8-f82c-4884-8b83-98fe4f7c4fa4"] = {
 		{
-			smart_object_index = 295,
+			smart_object_index = 308,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6778,7 +6714,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 296,
+			smart_object_index = 309,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6801,7 +6737,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 297,
+			smart_object_index = 310,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -6826,7 +6762,7 @@ local smart_objects = {
 	},
 	["5bdf5757-3a98-40a2-bf92-df2f50267b7b"] = {
 		{
-			smart_object_index = 573,
+			smart_object_index = 508,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6850,7 +6786,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 574,
+			smart_object_index = 509,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6874,7 +6810,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 575,
+			smart_object_index = 510,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6898,7 +6834,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 576,
+			smart_object_index = 511,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -6922,7 +6858,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 577,
+			smart_object_index = 512,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6946,7 +6882,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 578,
+			smart_object_index = 513,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6970,7 +6906,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 579,
+			smart_object_index = 514,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -6996,7 +6932,7 @@ local smart_objects = {
 	},
 	["ef3aedff-9676-4e03-87dc-04b7a17bd807"] = {
 		{
-			smart_object_index = 616,
+			smart_object_index = 607,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7019,7 +6955,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 617,
+			smart_object_index = 608,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7042,7 +6978,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 618,
+			smart_object_index = 609,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7065,7 +7001,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 619,
+			smart_object_index = 610,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7090,7 +7026,7 @@ local smart_objects = {
 	},
 	["651c210d-8a00-4113-8c0e-d22682423fab"] = {
 		{
-			smart_object_index = 57,
+			smart_object_index = 53,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7113,7 +7049,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 58,
+			smart_object_index = 54,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7136,7 +7072,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 59,
+			smart_object_index = 55,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7161,7 +7097,7 @@ local smart_objects = {
 	},
 	["51a4a572-01ed-4af2-b462-01de7b2a522b"] = {
 		{
-			smart_object_index = 298,
+			smart_object_index = 313,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7184,7 +7120,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 299,
+			smart_object_index = 314,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7207,7 +7143,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 300,
+			smart_object_index = 315,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7232,7 +7168,7 @@ local smart_objects = {
 	},
 	["642a0eff-0678-4771-883f-ae41e1d6a7a6"] = {
 		{
-			smart_object_index = 228,
+			smart_object_index = 242,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7256,7 +7192,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 229,
+			smart_object_index = 243,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7282,7 +7218,7 @@ local smart_objects = {
 	},
 	["1fb7c63a-ee27-49c0-991c-e4315ada7a57"] = {
 		{
-			smart_object_index = 565,
+			smart_object_index = 595,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7306,7 +7242,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 566,
+			smart_object_index = 596,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7329,7 +7265,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 567,
+			smart_object_index = 597,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7354,7 +7290,7 @@ local smart_objects = {
 	},
 	["4d2de4a1-2739-4f08-8145-5bf6eb9de438"] = {
 		{
-			smart_object_index = 477,
+			smart_object_index = 461,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7378,7 +7314,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 478,
+			smart_object_index = 462,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7402,7 +7338,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 479,
+			smart_object_index = 463,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7426,7 +7362,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 480,
+			smart_object_index = 464,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7452,7 +7388,7 @@ local smart_objects = {
 	},
 	["61a1965a-327d-4c03-b86e-3b506c6b0c4d"] = {
 		{
-			smart_object_index = 714,
+			smart_object_index = 731,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7475,7 +7411,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 715,
+			smart_object_index = 732,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7500,7 +7436,7 @@ local smart_objects = {
 	},
 	["00bc9797-0c1e-4c71-a1f5-7bc3a52b5bd3"] = {
 		{
-			smart_object_index = 678,
+			smart_object_index = 682,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -7524,7 +7460,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 679,
+			smart_object_index = 683,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -7548,7 +7484,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 680,
+			smart_object_index = 684,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -7574,7 +7510,7 @@ local smart_objects = {
 	},
 	["ad625b21-727f-43c0-bdc2-a021ba576c5a"] = {
 		{
-			smart_object_index = 518,
+			smart_object_index = 147,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7597,7 +7533,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 519,
+			smart_object_index = 148,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7620,7 +7556,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 520,
+			smart_object_index = 149,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7645,7 +7581,7 @@ local smart_objects = {
 	},
 	["38b7dc7a-892b-4b30-baa7-5ff9463b53d2"] = {
 		{
-			smart_object_index = 230,
+			smart_object_index = 244,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7668,7 +7604,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 231,
+			smart_object_index = 245,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7693,7 +7629,7 @@ local smart_objects = {
 	},
 	["63c7f17d-cdca-420d-9b1a-3bdd4e1d72f4"] = {
 		{
-			smart_object_index = 303,
+			smart_object_index = 33,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -7717,7 +7653,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 304,
+			smart_object_index = 34,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7743,7 +7679,7 @@ local smart_objects = {
 	},
 	["5fe8b862-d1a1-4290-b8ee-409955b6f8e3"] = {
 		{
-			smart_object_index = 531,
+			smart_object_index = 580,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7767,7 +7703,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 532,
+			smart_object_index = 581,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.7500251531600952,
@@ -7785,7 +7721,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 533,
+			smart_object_index = 582,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -7809,7 +7745,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 534,
+			smart_object_index = 583,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.7500240802764893,
@@ -7827,103 +7763,82 @@ local smart_objects = {
 			}
 		}
 	},
-	["191e029e-3c35-418e-8e68-f367863510c9"] = {
+	["8a743aec-6aa8-40e7-9e25-5e9c5dac935f"] = {
 		{
-			smart_object_index = 855,
+			smart_object_index = 444,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					215.53819274902344,
-					17.808889389038086,
-					93.53412628173828
+					193.88751220703125,
+					31.985088348388672,
+					95.85120391845703
 				}
 			},
 			pos1 = {
-				214.7421875,
-				18.414196014404297,
-				93.43978118896484
+				193.64784240722656,
+				32.955894470214844,
+				96.0370101928711
 			},
 			pos2 = {
-				216.3341064453125,
-				17.203582763671875,
-				90.45121765136719
+				194.127197265625,
+				31.01422119140625,
+				90.9659423828125
 			}
 		},
 		{
-			smart_object_index = 856,
+			smart_object_index = 445,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					214.97576904296875,
-					17.069284439086914,
-					93.63470458984375
+					193.40208435058594,
+					31.865245819091797,
+					95.85120391845703
 				}
 			},
 			pos1 = {
-				214.17977905273438,
-				17.67460823059082,
-				93.55938720703125
+				193.16241455078125,
+				32.836055755615234,
+				96.03192901611328
 			},
 			pos2 = {
-				215.771728515625,
-				16.4639892578125,
-				90.53521728515625
+				193.641845703125,
+				30.8944091796875,
+				91.04643249511719
 			}
 		},
 		{
-			smart_object_index = 857,
+			smart_object_index = 446,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					214.413330078125,
-					16.329679489135742,
-					93.73529052734375
+					192.91665649414062,
+					31.745403289794922,
+					95.85120391845703
 				}
 			},
 			pos1 = {
-				213.61734008789062,
-				16.93499755859375,
-				93.68058013916016
+				192.67698669433594,
+				32.716209411621094,
+				96.02692413330078
 			},
 			pos2 = {
-				215.2093505859375,
-				15.724365234375,
-				90.61705780029297
-			}
-		},
-		{
-			smart_object_index = 858,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					213.85089111328125,
-					15.590075492858887,
-					93.83586883544922
-				}
-			},
-			pos1 = {
-				213.0548858642578,
-				16.195404052734375,
-				93.81867980957031
-			},
-			pos2 = {
-				214.6468505859375,
-				14.984771728515625,
-				90.69526672363281
+				193.1563720703125,
+				30.7745361328125,
+				91.1270980834961
 			}
 		}
 	},
 	["e902c658-f874-41bb-81a1-de6188ee15ac"] = {
 		{
-			smart_object_index = 232,
+			smart_object_index = 246,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7946,7 +7861,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 233,
+			smart_object_index = 247,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7969,7 +7884,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 234,
+			smart_object_index = 248,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -7994,7 +7909,7 @@ local smart_objects = {
 	},
 	["7b648258-653d-4ea2-a8aa-b33b6f23fdec"] = {
 		{
-			smart_object_index = 382,
+			smart_object_index = 394,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8017,7 +7932,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 383,
+			smart_object_index = 395,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8040,7 +7955,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 384,
+			smart_object_index = 396,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8063,7 +7978,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 385,
+			smart_object_index = 397,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8086,7 +8001,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 386,
+			smart_object_index = 398,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8111,7 +8026,7 @@ local smart_objects = {
 	},
 	["7e957fda-d802-47ee-86b0-50a9d99a3c4e"] = {
 		{
-			smart_object_index = 458,
+			smart_object_index = 501,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8134,7 +8049,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 459,
+			smart_object_index = 502,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8157,7 +8072,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 460,
+			smart_object_index = 503,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8182,7 +8097,7 @@ local smart_objects = {
 	},
 	["dcdd55db-32ee-49d2-adcf-c2dd59caf465"] = {
 		{
-			smart_object_index = 360,
+			smart_object_index = 402,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8205,7 +8120,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 361,
+			smart_object_index = 403,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8228,7 +8143,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 362,
+			smart_object_index = 404,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8251,7 +8166,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 363,
+			smart_object_index = 405,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8276,7 +8191,7 @@ local smart_objects = {
 	},
 	["9b3cc217-374a-41bf-869d-9e1519ca76ad"] = {
 		{
-			smart_object_index = 461,
+			smart_object_index = 504,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -8300,7 +8215,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 462,
+			smart_object_index = 505,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -8326,7 +8241,7 @@ local smart_objects = {
 	},
 	["e0a5ba4c-db14-4709-b980-3865698bf243"] = {
 		{
-			smart_object_index = 611,
+			smart_object_index = 625,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8349,7 +8264,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 612,
+			smart_object_index = 626,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8374,7 +8289,7 @@ local smart_objects = {
 	},
 	["31e8d326-0f40-426d-9454-64e793b5ad1d"] = {
 		{
-			smart_object_index = 60,
+			smart_object_index = 56,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8397,7 +8312,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 61,
+			smart_object_index = 57,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8420,7 +8335,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 62,
+			smart_object_index = 58,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8445,7 +8360,7 @@ local smart_objects = {
 	},
 	["cf888c98-29de-48ba-a675-3f11699589e3"] = {
 		{
-			smart_object_index = 92,
+			smart_object_index = 91,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8468,7 +8383,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 93,
+			smart_object_index = 92,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8493,7 +8408,7 @@ local smart_objects = {
 	},
 	["9e28da72-cb47-4f3a-b9c6-69572bbcd6bd"] = {
 		{
-			smart_object_index = 309,
+			smart_object_index = 316,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8516,7 +8431,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 310,
+			smart_object_index = 317,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8541,7 +8456,7 @@ local smart_objects = {
 	},
 	["bc80fc71-9901-45c3-8fdb-97195f3c7238"] = {
 		{
-			smart_object_index = 63,
+			smart_object_index = 59,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -8565,7 +8480,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 64,
+			smart_object_index = 60,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -8591,7 +8506,7 @@ local smart_objects = {
 	},
 	["80b2d062-18bf-4fd2-a89e-e42a14fabe14"] = {
 		{
-			smart_object_index = 498,
+			smart_object_index = 543,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8614,7 +8529,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 499,
+			smart_object_index = 544,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8637,7 +8552,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 500,
+			smart_object_index = 545,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8660,7 +8575,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 501,
+			smart_object_index = 546,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8683,7 +8598,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 502,
+			smart_object_index = 547,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8708,7 +8623,7 @@ local smart_objects = {
 	},
 	["5de801b5-438d-4a15-bff2-ebfc8282bc11"] = {
 		{
-			smart_object_index = 643,
+			smart_object_index = 650,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8731,7 +8646,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 644,
+			smart_object_index = 651,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8754,7 +8669,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 645,
+			smart_object_index = 652,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8779,7 +8694,7 @@ local smart_objects = {
 	},
 	["577e132f-9ef0-4332-97a3-ef08172f7149"] = {
 		{
-			smart_object_index = 463,
+			smart_object_index = 506,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8802,7 +8717,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 464,
+			smart_object_index = 507,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -8827,7 +8742,7 @@ local smart_objects = {
 	},
 	["567a912c-87ba-4f40-b0fc-495a87a9b11c"] = {
 		{
-			smart_object_index = 185,
+			smart_object_index = 192,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -8851,7 +8766,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 186,
+			smart_object_index = 193,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -8877,7 +8792,7 @@ local smart_objects = {
 	},
 	["ba46552e-936a-4bb8-9066-78371c856bd3"] = {
 		{
-			smart_object_index = 235,
+			smart_object_index = 249,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -8901,7 +8816,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 236,
+			smart_object_index = 250,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -8927,7 +8842,7 @@ local smart_objects = {
 	},
 	["29484b52-283c-4dea-8cee-89883336473e"] = {
 		{
-			smart_object_index = 49,
+			smart_object_index = 344,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8950,7 +8865,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 50,
+			smart_object_index = 345,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8973,7 +8888,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 51,
+			smart_object_index = 346,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -8998,7 +8913,7 @@ local smart_objects = {
 	},
 	["40daf690-de7f-4074-89e2-e3872a396d09"] = {
 		{
-			smart_object_index = 595,
+			smart_object_index = 428,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9021,7 +8936,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 596,
+			smart_object_index = 429,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9044,7 +8959,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 597,
+			smart_object_index = 430,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9067,7 +8982,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 598,
+			smart_object_index = 431,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9090,7 +9005,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 599,
+			smart_object_index = 432,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9115,7 +9030,7 @@ local smart_objects = {
 	},
 	["43d65a49-4db7-40b3-a570-a37422a46dc1"] = {
 		{
-			smart_object_index = 580,
+			smart_object_index = 602,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9138,7 +9053,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 581,
+			smart_object_index = 603,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9161,7 +9076,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 582,
+			smart_object_index = 604,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9186,7 +9101,7 @@ local smart_objects = {
 	},
 	["5248a7c5-977d-455b-9bd1-d0dcb87c2473"] = {
 		{
-			smart_object_index = 65,
+			smart_object_index = 61,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9209,7 +9124,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 66,
+			smart_object_index = 62,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9232,7 +9147,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 67,
+			smart_object_index = 63,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9255,7 +9170,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 68,
+			smart_object_index = 64,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9278,7 +9193,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 69,
+			smart_object_index = 65,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9301,7 +9216,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 70,
+			smart_object_index = 66,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9326,7 +9241,7 @@ local smart_objects = {
 	},
 	["ee0d5d06-f0ca-4c91-84b5-b18fc588212b"] = {
 		{
-			smart_object_index = 682,
+			smart_object_index = 694,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9349,7 +9264,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 683,
+			smart_object_index = 695,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9372,7 +9287,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 684,
+			smart_object_index = 696,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9397,7 +9312,7 @@ local smart_objects = {
 	},
 	["b9d10adc-2cbb-4394-b9cd-32dbc5a918e8"] = {
 		{
-			smart_object_index = 726,
+			smart_object_index = 741,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9420,7 +9335,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 727,
+			smart_object_index = 742,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9443,7 +9358,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 728,
+			smart_object_index = 743,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9468,7 +9383,7 @@ local smart_objects = {
 	},
 	["6cecdd53-9733-49a4-ba99-20bdf32ea5db"] = {
 		{
-			smart_object_index = 142,
+			smart_object_index = 153,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9491,7 +9406,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 143,
+			smart_object_index = 154,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9516,7 +9431,7 @@ local smart_objects = {
 	},
 	["fc8350f2-9a10-47c6-8ec0-d0a7b71df213"] = {
 		{
-			smart_object_index = 685,
+			smart_object_index = 697,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -9539,7 +9454,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 686,
+			smart_object_index = 698,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -9564,7 +9479,7 @@ local smart_objects = {
 	},
 	["997540d0-08b3-42b2-8b1e-6a54233c8e83"] = {
 		{
-			smart_object_index = 190,
+			smart_object_index = 194,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9587,7 +9502,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 191,
+			smart_object_index = 195,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -9659,57 +9574,80 @@ local smart_objects = {
 			}
 		}
 	},
-	["1f5c3dc9-e1d5-445e-8955-87d283908544"] = {
+	["4da5ec85-8d6a-4693-bdb3-01cc75f7db6a"] = {
 		{
-			smart_object_index = 55,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 93,
+			smart_object_type = "ledges",
 			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					371.5848388671875,
-					23.960798263549805,
-					110.58097839355469
+					373.1651306152344,
+					88.25146484375,
+					99.31791687011719
 				}
 			},
 			pos1 = {
-				372.5613708496094,
-				23.74556541442871,
-				110.36956787109375
+				374.12017822265625,
+				87.95538330078125,
+				99.51224517822266
 			},
 			pos2 = {
-				370.6082763671875,
-				24.175901412963867,
-				108.37020111083984
+				372.21002197265625,
+				88.5475845336914,
+				95.87696075439453
 			}
 		},
 		{
-			smart_object_index = 56,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 94,
+			smart_object_type = "ledges",
 			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					371.6058349609375,
-					24.056058883666992,
-					110.58097839355469
+					373.3500671386719,
+					88.84784698486328,
+					99.32958221435547
 				}
 			},
 			pos1 = {
-				372.5823669433594,
-				23.840835571289062,
-				110.36927032470703
+				374.3051452636719,
+				88.55178833007812,
+				99.51742553710938
 			},
 			pos2 = {
-				370.6292724609375,
-				24.271162033081055,
-				108.3627700805664
+				372.39495849609375,
+				89.14395141601562,
+				95.98795318603516
+			}
+		},
+		{
+			smart_object_index = 95,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					373.53497314453125,
+					89.44422912597656,
+					99.34124755859375
+				}
+			},
+			pos1 = {
+				374.49005126953125,
+				89.14816284179688,
+				99.51390075683594
+			},
+			pos2 = {
+				372.57989501953125,
+				89.74034881591797,
+				96.11808013916016
 			}
 		}
 	},
 	["44fb8af5-bdb3-4ed7-9125-2bba423a1df1"] = {
 		{
-			smart_object_index = 192,
+			smart_object_index = 196,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -9733,7 +9671,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 193,
+			smart_object_index = 197,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -9759,7 +9697,7 @@ local smart_objects = {
 	},
 	["368101a1-18b5-48b5-b2d9-8ff8785c2b87"] = {
 		{
-			smart_object_index = 546,
+			smart_object_index = 276,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9782,7 +9720,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 547,
+			smart_object_index = 277,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9807,7 +9745,7 @@ local smart_objects = {
 	},
 	["4625876d-fd27-4fae-ba08-6132e9433a63"] = {
 		{
-			smart_object_index = 417,
+			smart_object_index = 627,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9830,7 +9768,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 418,
+			smart_object_index = 628,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9853,7 +9791,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 419,
+			smart_object_index = 629,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9876,7 +9814,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 420,
+			smart_object_index = 630,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -9899,149 +9837,59 @@ local smart_objects = {
 			}
 		}
 	},
-	["b32311d9-042f-44b8-9860-2864218ac772"] = {
+	["92492292-b3d9-46a9-b4df-02fe525dcb68"] = {
 		{
-			smart_object_index = 364,
+			smart_object_index = 198,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					60.06757736206055,
-					-1.6090959310531616,
-					100.03695678710938
+					334.41436767578125,
+					-76.150146484375,
+					101.02085876464844
 				}
 			},
 			pos1 = {
-				60.41852951049805,
-				-0.672698438167572,
-				99.82596588134766
+				335.3743896484375,
+				-75.87056732177734,
+				100.71775817871094
 			},
 			pos2 = {
-				59.71663284301758,
-				-2.545498847961426,
-				95.26043701171875
+				333.45416259765625,
+				-76.42967987060547,
+				95.10256958007812
 			}
 		},
 		{
-			smart_object_index = 365,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					59.14480209350586,
-					-1.2632540464401245,
-					100.16486358642578
-				}
-			},
-			pos1 = {
-				59.495750427246094,
-				-0.326856791973114,
-				100.09162139892578
-			},
-			pos2 = {
-				58.79385757446289,
-				-2.199650764465332,
-				95.25390625
-			}
-		},
-		{
-			smart_object_index = 366,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					58.222023010253906,
-					-0.9174119234085083,
-					100.29277038574219
-				}
-			},
-			pos1 = {
-				58.57297134399414,
-				0.0189894437789917,
-				100.20675659179688
-			},
-			pos2 = {
-				57.87107849121094,
-				-1.8538126945495605,
-				95.24549102783203
-			}
-		},
-		{
-			smart_object_index = 367,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					57.29924774169922,
-					-0.5715699195861816,
-					100.42068481445312
-				}
-			},
-			pos1 = {
-				57.65019607543945,
-				0.36483025550842285,
-				100.2817611694336
-			},
-			pos2 = {
-				56.94829559326172,
-				-1.5079724788665771,
-				95.2887191772461
-			}
-		},
-		{
-			smart_object_index = 368,
+			smart_object_index = 199,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					56.37647247314453,
-					-0.22572799026966095,
-					100.54859161376953
+					334.2998046875,
+					-75.75654602050781,
+					101.05781555175781
 				}
 			},
 			pos1 = {
-				56.727420806884766,
-				0.7106717228889465,
-				100.38549041748047
+				335.2598571777344,
+				-75.47696685791016,
+				100.71459197998047
 			},
 			pos2 = {
-				56.02552032470703,
-				-1.1621274948120117,
-				95.37687683105469
-			}
-		},
-		{
-			smart_object_index = 369,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					55.45369338989258,
-					0.12011399865150452,
-					100.67649841308594
-				}
-			},
-			pos1 = {
-				55.80464172363281,
-				1.0565142631530762,
-				100.48904418945312
-			},
-			pos2 = {
-				55.10274124145508,
-				-0.8162864446640015,
-				95.5084457397461
+				333.3396301269531,
+				-76.03607177734375,
+				95.20270538330078
 			}
 		}
 	},
 	["4b1af556-2294-4e2e-9ef3-556fe3e54427"] = {
 		{
-			smart_object_index = 887,
+			smart_object_index = 96,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10064,7 +9912,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 888,
+			smart_object_index = 97,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10087,7 +9935,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 889,
+			smart_object_index = 98,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10112,7 +9960,7 @@ local smart_objects = {
 	},
 	["b50c064e-6ec9-4725-a956-f1f31bdc3cbf"] = {
 		{
-			smart_object_index = 687,
+			smart_object_index = 699,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -10136,7 +9984,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 688,
+			smart_object_index = 700,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10162,7 +10010,7 @@ local smart_objects = {
 	},
 	["96cfaf91-77e2-4163-9827-de190f7d897f"] = {
 		{
-			smart_object_index = 862,
+			smart_object_index = 868,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10186,7 +10034,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 863,
+			smart_object_index = 869,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10210,7 +10058,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 864,
+			smart_object_index = 870,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10234,7 +10082,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 865,
+			smart_object_index = 871,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -10260,7 +10108,7 @@ local smart_objects = {
 	},
 	["6d01d5a1-d2eb-4b04-aa92-5948e4c68a6f"] = {
 		{
-			smart_object_index = 591,
+			smart_object_index = 605,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10283,7 +10131,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 592,
+			smart_object_index = 606,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10306,57 +10154,83 @@ local smart_objects = {
 			}
 		}
 	},
-	["b9b85a52-d3bf-4568-94e5-e093d809ca6a"] = {
+	["266c8593-7692-4e44-b6d6-e8e4311a7ffa"] = {
 		{
-			smart_object_index = 97,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					75.43645477294922,
-					-19.446401596069336,
-					94.09859466552734
-				}
-			},
-			pos1 = {
-				74.4379653930664,
-				-19.50080108642578,
-				93.9401626586914
-			},
-			pos2 = {
-				76.43498992919922,
-				-19.39200782775879,
-				92.75749969482422
-			}
-		},
-		{
-			smart_object_index = 98,
+			smart_object_index = 701,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					75.48926544189453,
-					-20.415834426879883,
-					94.2661361694336
+					402.9017639160156,
+					60.13739776611328,
+					119.59761047363281
 				}
 			},
 			pos1 = {
-				74.49077606201172,
-				-20.47023582458496,
-				94.05553436279297
+				403.901611328125,
+				60.11906051635742,
+				119.60933685302734
 			},
 			pos2 = {
-				76.48779296875,
-				-20.3614444732666,
-				92.70410919189453
+				401.9019775390625,
+				60.15576171875,
+				114.31010437011719
+			}
+		},
+		{
+			smart_object_index = 702,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					402.9170837402344,
+					60.97208786010742,
+					119.6265640258789
+				}
+			},
+			pos1 = {
+				403.91693115234375,
+				60.953758239746094,
+				119.62206268310547
+			},
+			pos2 = {
+				401.917236328125,
+				60.99041748046875,
+				114.25904083251953
+			}
+		},
+		{
+			smart_object_index = 703,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					402.932373046875,
+					61.80677032470703,
+					119.655517578125
+				}
+			},
+			pos1 = {
+				403.9322204589844,
+				61.78842544555664,
+				119.67219543457031
+			},
+			pos2 = {
+				401.9326171875,
+				61.82513427734375,
+				114.19830322265625
 			}
 		}
 	},
 	["3912b4d4-b4a6-4ac5-b633-b460777a135f"] = {
 		{
-			smart_object_index = 313,
+			smart_object_index = 322,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10379,7 +10253,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 314,
+			smart_object_index = 323,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10402,7 +10276,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 315,
+			smart_object_index = 324,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10427,7 +10301,7 @@ local smart_objects = {
 	},
 	["433a7b20-6301-4ea9-bb8c-e7abdedc6a7b"] = {
 		{
-			smart_object_index = 196,
+			smart_object_index = 200,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10450,7 +10324,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 197,
+			smart_object_index = 201,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10473,7 +10347,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 198,
+			smart_object_index = 202,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10498,7 +10372,7 @@ local smart_objects = {
 	},
 	["7f3b693e-24be-484c-bcd6-d2d038cd6c74"] = {
 		{
-			smart_object_index = 421,
+			smart_object_index = 449,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10524,7 +10398,7 @@ local smart_objects = {
 	},
 	["fb3f9542-165d-433f-b500-9c7fbce3a06b"] = {
 		{
-			smart_object_index = 732,
+			smart_object_index = 747,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10547,7 +10421,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 733,
+			smart_object_index = 748,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10570,7 +10444,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 734,
+			smart_object_index = 749,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10593,7 +10467,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 735,
+			smart_object_index = 750,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -10616,7 +10490,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 736,
+			smart_object_index = 751,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -10641,7 +10515,7 @@ local smart_objects = {
 	},
 	["0ebcd59f-f889-4b36-903f-ccb4d78f2d92"] = {
 		{
-			smart_object_index = 859,
+			smart_object_index = 865,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10664,7 +10538,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 860,
+			smart_object_index = 866,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10687,7 +10561,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 861,
+			smart_object_index = 867,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10712,7 +10586,7 @@ local smart_objects = {
 	},
 	["5e075ca1-f9a7-4a76-945e-c9bb48826ed9"] = {
 		{
-			smart_object_index = 101,
+			smart_object_index = 103,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10736,7 +10610,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 102,
+			smart_object_index = 104,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10760,7 +10634,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 103,
+			smart_object_index = 105,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -10786,7 +10660,7 @@ local smart_objects = {
 	},
 	["f5226781-3ff6-4e0a-8a8c-7064fb7621ed"] = {
 		{
-			smart_object_index = 550,
+			smart_object_index = 574,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10809,7 +10683,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 551,
+			smart_object_index = 575,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10834,7 +10708,7 @@ local smart_objects = {
 	},
 	["d7e1a916-3c06-4931-91e3-51e4d1a56fef"] = {
 		{
-			smart_object_index = 737,
+			smart_object_index = 752,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10857,7 +10731,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 738,
+			smart_object_index = 753,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10880,7 +10754,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 739,
+			smart_object_index = 754,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10905,7 +10779,7 @@ local smart_objects = {
 	},
 	["4514f05f-d976-4bae-925b-fe07dd50a464"] = {
 		{
-			smart_object_index = 320,
+			smart_object_index = 325,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10928,7 +10802,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 321,
+			smart_object_index = 326,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10953,7 +10827,7 @@ local smart_objects = {
 	},
 	["9007653d-5835-4f2c-86bd-c8485aa1fc2b"] = {
 		{
-			smart_object_index = 322,
+			smart_object_index = 327,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -10976,7 +10850,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 323,
+			smart_object_index = 328,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11001,7 +10875,7 @@ local smart_objects = {
 	},
 	["2f8effeb-41f3-4622-9f0a-584eb60d24d0"] = {
 		{
-			smart_object_index = 71,
+			smart_object_index = 67,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11025,7 +10899,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 72,
+			smart_object_index = 68,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11049,103 +10923,83 @@ local smart_objects = {
 			}
 		}
 	},
-	["ba5bea84-0dee-4955-b2ef-53a131b65649"] = {
+	["56a6c2e4-a675-4d9a-b213-8101f080c4f9"] = {
 		{
-			smart_object_index = 305,
+			smart_object_index = 106,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					230.9136505126953,
-					24.5303955078125,
-					92.45199584960938
+					374.2450256347656,
+					41.35267639160156,
+					98.66998291015625
 				}
 			},
 			pos1 = {
-				230.6548309326172,
-				23.564462661743164,
-				91.95642852783203
+				375.2333984375,
+				41.20038986206055,
+				98.72964477539062
 			},
 			pos2 = {
-				231.1724853515625,
-				25.496337890625,
-				90.23796844482422
+				373.256591796875,
+				41.50493240356445,
+				93.40888214111328
 			}
 		},
 		{
-			smart_object_index = 306,
+			smart_object_index = 107,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					231.81851196289062,
-					24.287940979003906,
-					92.45199584960938
+					374.385498046875,
+					42.26441192626953,
+					98.66997528076172
 				}
 			},
 			pos1 = {
-				231.5596923828125,
-				23.322006225585938,
-				92.00836181640625
+				375.3738708496094,
+				42.11213302612305,
+				98.73304748535156
 			},
 			pos2 = {
-				232.07733154296875,
-				25.25390625,
-				90.23819732666016
+				373.3970947265625,
+				42.41667556762695,
+				93.49714660644531
 			}
 		},
 		{
-			smart_object_index = 307,
+			smart_object_index = 108,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					232.72335815429688,
-					24.045482635498047,
-					92.45199584960938
+					374.5259704589844,
+					43.1761474609375,
+					98.66998291015625
 				}
 			},
 			pos1 = {
-				232.46453857421875,
-				23.079551696777344,
-				92.00133514404297
+				375.51434326171875,
+				43.02386474609375,
+				98.73456573486328
 			},
 			pos2 = {
-				232.982177734375,
-				25.01141357421875,
-				90.22919464111328
-			}
-		},
-		{
-			smart_object_index = 308,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					233.6282196044922,
-					23.803028106689453,
-					92.45199584960938
-				}
-			},
-			pos1 = {
-				233.36941528320312,
-				22.83708953857422,
-				91.99317932128906
-			},
-			pos2 = {
-				233.8870849609375,
-				24.76898193359375,
-				90.22924041748047
+				373.53759765625,
+				43.32841491699219,
+				93.56380462646484
 			}
 		}
 	},
 	["8430d551-c110-4c06-b84f-170672cb427b"] = {
 		{
-			smart_object_index = 871,
+			smart_object_index = 874,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11168,7 +11022,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 872,
+			smart_object_index = 875,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11191,7 +11045,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 873,
+			smart_object_index = 876,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11214,7 +11068,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 874,
+			smart_object_index = 877,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11237,7 +11091,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 875,
+			smart_object_index = 878,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -11262,7 +11116,7 @@ local smart_objects = {
 	},
 	["0003f84e-2098-4f32-88b4-6fa6c899f604"] = {
 		{
-			smart_object_index = 107,
+			smart_object_index = 112,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11285,7 +11139,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 108,
+			smart_object_index = 113,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11308,7 +11162,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 109,
+			smart_object_index = 114,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11331,7 +11185,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 110,
+			smart_object_index = 115,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11356,7 +11210,7 @@ local smart_objects = {
 	},
 	["0eae1465-89c5-400c-bea5-89115a361d81"] = {
 		{
-			smart_object_index = 336,
+			smart_object_index = 341,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11379,7 +11233,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 337,
+			smart_object_index = 342,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11402,7 +11256,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 338,
+			smart_object_index = 343,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11501,7 +11355,7 @@ local smart_objects = {
 	},
 	["ba37bd6b-27cf-485f-bc23-e87f44bc4bfc"] = {
 		{
-			smart_object_index = 468,
+			smart_object_index = 515,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11525,7 +11379,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 469,
+			smart_object_index = 516,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11549,7 +11403,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 470,
+			smart_object_index = 517,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11573,80 +11427,218 @@ local smart_objects = {
 			}
 		}
 	},
-	["80881d67-4eb5-4019-bcfb-e30fc9b074b6"] = {
+	["a0203891-cd4e-4fb8-968f-be170d80f67e"] = {
 		{
-			smart_object_index = 471,
+			smart_object_index = 611,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					318.64404296875,
-					-5.158016204833984,
-					97.93791198730469
+					250.0767822265625,
+					111.02985382080078,
+					94.26544189453125
 				}
 			},
 			pos1 = {
-				319.6384582519531,
-				-5.263945579528809,
-				97.55899810791016
+				250.110107421875,
+				112.02930450439453,
+				94.0379638671875
 			},
 			pos2 = {
-				317.649658203125,
-				-5.052095890045166,
-				95.30150604248047
+				250.0434112548828,
+				110.0304183959961,
+				91.42595672607422
 			}
 		},
 		{
-			smart_object_index = 472,
+			smart_object_index = 612,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					318.7188720703125,
-					-4.455732822418213,
-					97.9177474975586
+					249.1922149658203,
+					111.059326171875,
+					94.29888916015625
 				}
 			},
 			pos1 = {
-				319.7132873535156,
-				-4.561662673950195,
-				97.5837173461914
+				249.22555541992188,
+				112.05877685546875,
+				94.16714477539062
 			},
 			pos2 = {
-				317.7244873046875,
-				-4.349818706512451,
-				95.29106140136719
+				249.15882873535156,
+				110.05989837646484,
+				91.25098419189453
 			}
 		},
 		{
-			smart_object_index = 473,
+			smart_object_index = 613,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					318.7936706542969,
-					-3.7534499168395996,
-					97.8975830078125
+					248.30764770507812,
+					111.08881378173828,
+					94.33233642578125
 				}
 			},
 			pos1 = {
-				319.7880859375,
-				-3.859379768371582,
-				97.63748931884766
+				248.3409881591797,
+				112.08827209472656,
+				94.20941925048828
 			},
 			pos2 = {
-				317.7992858886719,
-				-3.6475272178649902,
-				95.28060913085938
+				248.2742919921875,
+				110.08938598632812,
+				91.04390716552734
+			}
+		},
+		{
+			smart_object_index = 614,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					247.42306518554688,
+					111.11830139160156,
+					94.36578369140625
+				}
+			},
+			pos1 = {
+				247.45639038085938,
+				112.11775207519531,
+				94.2481918334961
+			},
+			pos2 = {
+				247.38967895507812,
+				110.11885833740234,
+				90.82948303222656
+			}
+		},
+		{
+			smart_object_index = 615,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					246.5384979248047,
+					111.14778137207031,
+					94.39923095703125
+				}
+			},
+			pos1 = {
+				246.5718231201172,
+				112.1472396850586,
+				94.28548431396484
+			},
+			pos2 = {
+				246.505126953125,
+				110.14835357666016,
+				90.44292449951172
+			}
+		},
+		{
+			smart_object_index = 616,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					245.6539306640625,
+					111.17726135253906,
+					94.43267822265625
+				}
+			},
+			pos1 = {
+				245.687255859375,
+				112.17671203613281,
+				94.32075500488281
+			},
+			pos2 = {
+				245.62060546875,
+				110.17779541015625,
+				90.02461242675781
+			}
+		},
+		{
+			smart_object_index = 617,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					244.7693634033203,
+					111.20674133300781,
+					94.46612548828125
+				}
+			},
+			pos1 = {
+				244.8026885986328,
+				112.20619201660156,
+				94.3551254272461
+			},
+			pos2 = {
+				244.73614501953125,
+				110.20733642578125,
+				89.92771911621094
+			}
+		},
+		{
+			smart_object_index = 618,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					243.88478088378906,
+					111.2362289428711,
+					94.49957275390625
+				}
+			},
+			pos1 = {
+				243.91810607910156,
+				112.23568725585938,
+				94.38932800292969
+			},
+			pos2 = {
+				243.8514404296875,
+				110.23678588867188,
+				89.8497543334961
+			}
+		},
+		{
+			smart_object_index = 619,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					243.00021362304688,
+					111.26571655273438,
+					94.53302764892578
+				}
+			},
+			pos1 = {
+				243.03353881835938,
+				112.26516723632812,
+				94.52102661132812
+			},
+			pos2 = {
+				242.96697998046875,
+				110.26629638671875,
+				89.81307983398438
 			}
 		}
 	},
 	["e51e5d17-16c1-4de4-b3cd-0d45a0276baa"] = {
 		{
-			smart_object_index = 609,
+			smart_object_index = 620,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11669,7 +11661,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 610,
+			smart_object_index = 621,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11694,7 +11686,7 @@ local smart_objects = {
 	},
 	["3f22eae0-fd24-4707-ab78-13a9bb65ea37"] = {
 		{
-			smart_object_index = 380,
+			smart_object_index = 392,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11717,7 +11709,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 381,
+			smart_object_index = 393,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11742,7 +11734,7 @@ local smart_objects = {
 	},
 	["2495314d-ab28-4c6f-9b91-14d7018abb67"] = {
 		{
-			smart_object_index = 73,
+			smart_object_index = 69,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11765,7 +11757,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 74,
+			smart_object_index = 70,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11788,7 +11780,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 75,
+			smart_object_index = 71,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11813,7 +11805,7 @@ local smart_objects = {
 	},
 	["720751d8-1a0f-488a-b16f-c070842b3927"] = {
 		{
-			smart_object_index = 652,
+			smart_object_index = 659,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11837,7 +11829,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 653,
+			smart_object_index = 660,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11861,7 +11853,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 654,
+			smart_object_index = 661,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -11887,7 +11879,7 @@ local smart_objects = {
 	},
 	["4c6154fa-42ad-4a22-8347-bd5eedf4ba5f"] = {
 		{
-			smart_object_index = 740,
+			smart_object_index = 755,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11910,7 +11902,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 741,
+			smart_object_index = 756,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -11933,59 +11925,80 @@ local smart_objects = {
 			}
 		}
 	},
-	["06c16d5e-09ec-40cd-8a5f-07a2d33d52b4"] = {
+	["a5780d21-baa4-47aa-a555-05ae587e8270"] = {
 		{
-			smart_object_index = 422,
+			smart_object_index = 205,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					103.5438003540039,
-					-4.616175651550293,
-					99.14600372314453
+					356.95330810546875,
+					-85.0499496459961,
+					103.11540222167969
 				}
 			},
 			pos1 = {
-				104.2462387084961,
-				-3.904405117034912,
-				98.80830383300781
+				356.6961364746094,
+				-86.01631927490234,
+				103.19803619384766
 			},
 			pos2 = {
-				102.84136962890625,
-				-5.327946186065674,
-				92.28630828857422
+				357.21044921875,
+				-84.08358001708984,
+				101.46720123291016
 			}
 		},
 		{
-			smart_object_index = 423,
+			smart_object_index = 206,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					103.19013977050781,
-					-4.2671661376953125,
-					99.14997100830078
+					357.6792297363281,
+					-85.24313354492188,
+					103.11921691894531
 				}
 			},
 			pos1 = {
-				103.89257049560547,
-				-3.555396318435669,
-				98.81184387207031
+				357.42205810546875,
+				-86.20951080322266,
+				103.18521881103516
 			},
 			pos2 = {
-				102.48770904541016,
-				-4.978937149047852,
-				92.24197387695312
+				357.9363708496094,
+				-84.2767562866211,
+				101.4900131225586
+			}
+		},
+		{
+			smart_object_index = 207,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					358.4051513671875,
+					-85.43631744384766,
+					103.12303161621094
+				}
+			},
+			pos1 = {
+				358.1479797363281,
+				-86.4026870727539,
+				103.15337371826172
+			},
+			pos2 = {
+				358.66229248046875,
+				-84.46994018554688,
+				101.50212860107422
 			}
 		}
 	},
 	["062b3433-2e70-4ad5-bd3f-734947f09547"] = {
 		{
-			smart_object_index = 424,
+			smart_object_index = 452,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12008,7 +12021,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 425,
+			smart_object_index = 453,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12033,7 +12046,7 @@ local smart_objects = {
 	},
 	["43eb3e02-2773-4c0a-aa44-92885e5709d3"] = {
 		{
-			smart_object_index = 655,
+			smart_object_index = 662,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12056,7 +12069,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 656,
+			smart_object_index = 663,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12079,7 +12092,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 657,
+			smart_object_index = 664,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12102,7 +12115,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 658,
+			smart_object_index = 665,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12127,7 +12140,7 @@ local smart_objects = {
 	},
 	["b2461bf8-cc89-49d1-a303-353496d93828"] = {
 		{
-			smart_object_index = 144,
+			smart_object_index = 270,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -12150,7 +12163,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 145,
+			smart_object_index = 271,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -12175,7 +12188,7 @@ local smart_objects = {
 	},
 	["0e8ff790-501f-4844-9384-94eff188f1e8"] = {
 		{
-			smart_object_index = 620,
+			smart_object_index = 598,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12198,7 +12211,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 621,
+			smart_object_index = 599,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12221,7 +12234,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 622,
+			smart_object_index = 600,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12244,7 +12257,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 623,
+			smart_object_index = 601,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12269,7 +12282,7 @@ local smart_objects = {
 	},
 	["50d78f20-0af5-47a3-a351-6134f11beb00"] = {
 		{
-			smart_object_index = 111,
+			smart_object_index = 116,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12292,7 +12305,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 112,
+			smart_object_index = 117,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12415,7 +12428,7 @@ local smart_objects = {
 	},
 	["05ff1dc7-2896-428d-bf94-eb6053f85dd4"] = {
 		{
-			smart_object_index = 659,
+			smart_object_index = 666,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12438,7 +12451,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 660,
+			smart_object_index = 667,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12461,7 +12474,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 661,
+			smart_object_index = 668,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12484,7 +12497,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 662,
+			smart_object_index = 669,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12555,424 +12568,320 @@ local smart_objects = {
 			}
 		}
 	},
-	["ede40604-0e93-4a25-8ada-dd9780ef372d"] = {
+	["1f5c3dc9-e1d5-445e-8955-87d283908544"] = {
 		{
-			smart_object_index = 204,
-			smart_object_type = "ledges",
+			smart_object_index = 375,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					214.31781005859375,
-					160.25729370117188,
-					105.76476287841797
+					371.5848388671875,
+					23.960798263549805,
+					110.58097839355469
 				}
 			},
 			pos1 = {
-				213.49034118652344,
-				159.69580078125,
-				105.91799926757812
+				372.5613708496094,
+				23.74556541442871,
+				110.36956787109375
 			},
 			pos2 = {
-				215.1453094482422,
-				160.8188018798828,
-				97.02835845947266
+				370.6082763671875,
+				24.175901412963867,
+				108.37020111083984
 			}
 		},
 		{
-			smart_object_index = 205,
-			smart_object_type = "ledges",
+			smart_object_index = 376,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					214.65744018554688,
-					159.75677490234375,
-					105.74201202392578
+					371.6058349609375,
+					24.056058883666992,
+					110.58097839355469
 				}
 			},
 			pos1 = {
-				213.82997131347656,
-				159.19529724121094,
-				105.90190124511719
+				372.5823669433594,
+				23.840835571289062,
+				110.36927032470703
 			},
 			pos2 = {
-				215.48495483398438,
-				160.31829833984375,
-				96.91371154785156
+				370.6292724609375,
+				24.271162033081055,
+				108.3627700805664
 			}
 		}
 	},
-	["d1830cab-665a-4979-8bba-37a118b4e725"] = {
+	["983a88ec-c895-4c00-9e35-e6e410bf1102"] = {
 		{
-			smart_object_index = 583,
+			smart_object_index = 447,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					227.25308227539062,
-					118.53115844726562,
-					98.96529388427734
+					318.35272216796875,
+					-42.909690856933594,
+					101.58329772949219
 				}
 			},
 			pos1 = {
-				227.1614532470703,
-				117.53532409667969,
-				98.98545837402344
+				319.0195617675781,
+				-42.16445541381836,
+				101.16358184814453
 			},
 			pos2 = {
-				227.3447265625,
-				119.52694702148438,
-				89.83428955078125
+				317.6859130859375,
+				-43.65493392944336,
+				98.47148895263672
 			}
 		},
 		{
-			smart_object_index = 584,
+			smart_object_index = 448,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					228.0462188720703,
-					118.45817565917969,
-					98.96528625488281
+					318.03289794921875,
+					-42.623538970947266,
+					101.6175537109375
 				}
 			},
 			pos1 = {
-				227.95458984375,
-				117.46233367919922,
-				98.94928741455078
+				318.69970703125,
+				-41.87831115722656,
+				101.16195678710938
 			},
 			pos2 = {
-				228.13787841796875,
-				119.4539794921875,
-				89.83103942871094
-			}
-		},
-		{
-			smart_object_index = 585,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					228.83935546875,
-					118.38517761230469,
-					98.96528625488281
-				}
-			},
-			pos1 = {
-				228.7477264404297,
-				117.38933563232422,
-				98.9128646850586
-			},
-			pos2 = {
-				228.93096923828125,
-				119.38095092773438,
-				89.83118438720703
-			}
-		},
-		{
-			smart_object_index = 586,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					229.63250732421875,
-					118.31217956542969,
-					98.96528625488281
-				}
-			},
-			pos1 = {
-				229.5408935546875,
-				117.31633758544922,
-				98.8754653930664
-			},
-			pos2 = {
-				229.72412109375,
-				119.30795288085938,
-				89.83102416992188
-			}
-		},
-		{
-			smart_object_index = 587,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					230.42562866210938,
-					118.23919677734375,
-					98.96528625488281
-				}
-			},
-			pos1 = {
-				230.33399963378906,
-				117.24335479736328,
-				98.83793640136719
-			},
-			pos2 = {
-				230.51727294921875,
-				119.2349853515625,
-				89.82991790771484
+				317.3660583496094,
+				-43.3687858581543,
+				98.639892578125
 			}
 		}
 	},
-	["12480a00-e252-44c0-b879-61aede1fb338"] = {
+	["fb40832a-737d-41c0-b2cf-97edc67842c2"] = {
 		{
-			smart_object_index = 503,
-			smart_object_type = "ledges",
+			smart_object_index = 179,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					75.8148193359375,
-					-26.292644500732422,
-					98.62161254882812
+					335.3786926269531,
+					-18.151079177856445,
+					104.67737579345703
 				}
 			},
 			pos1 = {
-				74.88355255126953,
-				-26.656970977783203,
-				98.51251983642578
+				336.1451110839844,
+				-17.508718490600586,
+				104.5155258178711
 			},
 			pos2 = {
-				76.74610137939453,
-				-25.92831039428711,
-				92.0196533203125
+				334.6122741699219,
+				-18.793338775634766,
+				101.10353088378906
 			}
 		},
 		{
-			smart_object_index = 504,
+			smart_object_index = 180,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					76.05877685546875,
-					-26.916208267211914,
-					98.62161254882812
+					334.8841857910156,
+					-17.56104278564453,
+					104.69956970214844
 				}
 			},
 			pos1 = {
-				75.12751007080078,
-				-27.28053092956543,
-				98.514892578125
+				335.6506042480469,
+				-16.918704986572266,
+				104.56168365478516
 			},
 			pos2 = {
-				76.99005889892578,
-				-26.551877975463867,
-				92.0030746459961
+				334.1177978515625,
+				-18.20330238342285,
+				101.56761932373047
 			}
 		},
 		{
-			smart_object_index = 505,
+			smart_object_index = 181,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					76.30272674560547,
-					-27.539772033691406,
-					98.62161254882812
+					334.3896789550781,
+					-16.971004486083984,
+					104.72176361083984
 				}
 			},
 			pos1 = {
-				75.3714599609375,
-				-27.904094696044922,
-				98.51895141601562
+				335.1560974121094,
+				-16.328659057617188,
+				104.53594970703125
 			},
 			pos2 = {
-				77.2340087890625,
-				-27.175434112548828,
-				91.99224853515625
-			}
-		},
-		{
-			smart_object_index = 506,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					76.54667663574219,
-					-28.16333770751953,
-					98.62161254882812
-				}
-			},
-			pos1 = {
-				75.61540985107422,
-				-28.527660369873047,
-				98.5221176147461
-			},
-			pos2 = {
-				77.47795867919922,
-				-27.799007415771484,
-				91.95626068115234
+				333.6232604980469,
+				-17.61326026916504,
+				101.85221862792969
 			}
 		}
 	},
-	["74aeaa14-a95c-4050-baab-6e42551ae460"] = {
+	["3953904c-1de6-4733-8834-a42a5059840a"] = {
 		{
-			smart_object_index = 890,
+			smart_object_index = 830,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					158.58721923828125,
-					142.02774047851562,
-					115.99467468261719
+					266.5466003417969,
+					-16.931949615478516,
+					101.6719970703125
 				}
 			},
 			pos1 = {
-				159.52072143554688,
-				142.38633728027344,
-				116.41315460205078
+				265.79937744140625,
+				-16.26736068725586,
+				101.93746948242188
 			},
 			pos2 = {
-				157.65379333496094,
-				141.66909790039062,
-				106.40485382080078
+				267.29376220703125,
+				-17.59658432006836,
+				93.2900619506836
 			}
 		},
 		{
-			smart_object_index = 891,
+			smart_object_index = 831,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					158.83348083496094,
-					141.38677978515625,
-					115.99467468261719
+					267.2112121582031,
+					-16.18478012084961,
+					101.6719970703125
 				}
 			},
 			pos1 = {
-				159.76698303222656,
-				141.74537658691406,
-				116.22635650634766
+				266.4639892578125,
+				-15.520190238952637,
+				101.8830795288086
 			},
 			pos2 = {
-				157.90005493164062,
-				141.02813720703125,
-				106.29552459716797
-			}
-		},
-		{
-			smart_object_index = 892,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					159.07972717285156,
-					140.7458038330078,
-					115.99467468261719
-				}
-			},
-			pos1 = {
-				160.0132293701172,
-				141.10440063476562,
-				116.05850219726562
-			},
-			pos2 = {
-				158.1462860107422,
-				140.38714599609375,
-				106.13037109375
+				267.9583740234375,
+				-16.849430084228516,
+				93.3301773071289
 			}
 		}
 	},
-	["522fe133-6053-4814-8879-0b41144db5cf"] = {
+	["d00ef981-24d1-4a38-acee-da60aabd4ab7"] = {
 		{
-			smart_object_index = 76,
-			smart_object_type = "ledges",
+			smart_object_index = 493,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					244.75558471679688,
-					-13.60261058807373,
-					102.07404327392578
+					415.6430969238281,
+					-149.6243438720703,
+					101.67898559570312
 				}
 			},
 			pos1 = {
-				245.6977996826172,
-				-13.267562866210938,
-				102.22041320800781
+				416.5038757324219,
+				-149.11550903320312,
+				101.42181396484375
 			},
 			pos2 = {
-				243.8134002685547,
-				-13.937663078308105,
-				99.14994812011719
+				414.7822265625,
+				-150.13314819335938,
+				97.2696762084961
 			}
 		},
 		{
-			smart_object_index = 77,
-			smart_object_type = "ledges",
+			smart_object_index = 494,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					244.5880584716797,
-					-13.131509780883789,
-					102.07404327392578
+					416.00347900390625,
+					-150.2340545654297,
+					101.62821197509766
 				}
 			},
 			pos1 = {
-				245.53028869628906,
-				-12.796462059020996,
-				102.21963500976562
+				416.8642578125,
+				-149.7252197265625,
+				101.43314361572266
 			},
 			pos2 = {
-				243.64585876464844,
-				-13.46656608581543,
-				99.23312377929688
+				415.14263916015625,
+				-150.7428741455078,
+				97.20903015136719
 			}
 		},
 		{
-			smart_object_index = 78,
+			smart_object_index = 495,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					244.4205322265625,
-					-12.660408973693848,
-					102.07404327392578
+					416.3638916015625,
+					-150.84376525878906,
+					101.57744598388672
 				}
 			},
 			pos1 = {
-				245.36276245117188,
-				-12.325368881225586,
-				102.21794128417969
+				417.22467041015625,
+				-150.3349151611328,
+				101.41246032714844
 			},
 			pos2 = {
-				243.4783477783203,
-				-12.99545955657959,
-				99.26192474365234
+				415.5030212402344,
+				-151.35256958007812,
+				97.1579360961914
+			}
+		},
+		{
+			smart_object_index = 496,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					416.7242431640625,
+					-151.45347595214844,
+					101.52667236328125
+				}
+			},
+			pos1 = {
+				417.5850524902344,
+				-150.9446258544922,
+				101.41216278076172
+			},
+			pos2 = {
+				415.8634033203125,
+				-151.96229553222656,
+				97.11570739746094
 			}
 		}
 	},
 	["2c2386b2-335e-421d-bdea-9ba368a1689a"] = {
 		{
-			smart_object_index = 689,
+			smart_object_index = 704,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -12995,7 +12904,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 690,
+			smart_object_index = 705,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13018,7 +12927,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 691,
+			smart_object_index = 706,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13041,126 +12950,9 @@ local smart_objects = {
 			}
 		}
 	},
-	["2be0c0bf-7092-43ad-88d0-cf6b4115690c"] = {
-		{
-			smart_object_index = 826,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					94.92231750488281,
-					12.561708450317383,
-					100.62907409667969
-				}
-			},
-			pos1 = {
-				95.19364166259766,
-				13.52416706085205,
-				100.64720916748047
-			},
-			pos2 = {
-				94.65097045898438,
-				11.599215507507324,
-				97.27062225341797
-			}
-		},
-		{
-			smart_object_index = 827,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					94.09648132324219,
-					12.794530868530273,
-					100.6084213256836
-				}
-			},
-			pos1 = {
-				94.36781311035156,
-				13.756988525390625,
-				100.66719818115234
-			},
-			pos2 = {
-				93.82513427734375,
-				11.832043647766113,
-				97.14136505126953
-			}
-		},
-		{
-			smart_object_index = 828,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					93.2706298828125,
-					13.027353286743164,
-					100.5877685546875
-				}
-			},
-			pos1 = {
-				93.54196166992188,
-				13.989813804626465,
-				100.60789489746094
-			},
-			pos2 = {
-				92.99930572509766,
-				12.06486701965332,
-				97.10127258300781
-			}
-		},
-		{
-			smart_object_index = 829,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					92.44477844238281,
-					13.260175704956055,
-					100.5671157836914
-				}
-			},
-			pos1 = {
-				92.71611022949219,
-				14.222634315490723,
-				100.54327392578125
-			},
-			pos2 = {
-				92.17344665527344,
-				12.29769229888916,
-				97.09009552001953
-			}
-		},
-		{
-			smart_object_index = 830,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					91.61893463134766,
-					13.492998123168945,
-					100.54646301269531
-				}
-			},
-			pos1 = {
-				91.89026641845703,
-				14.455453872680664,
-				100.49922180175781
-			},
-			pos2 = {
-				91.34760284423828,
-				12.530513763427734,
-				97.08760833740234
-			}
-		}
-	},
 	["f41b7641-1435-44dd-b885-3272c404d1bf"] = {
 		{
-			smart_object_index = 869,
+			smart_object_index = 872,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13183,7 +12975,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 870,
+			smart_object_index = 873,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13206,82 +12998,177 @@ local smart_objects = {
 			}
 		}
 	},
-	["8a743aec-6aa8-40e7-9e25-5e9c5dac935f"] = {
+	["191e029e-3c35-418e-8e68-f367863510c9"] = {
 		{
-			smart_object_index = 866,
+			smart_object_index = 861,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					215.53819274902344,
+					17.808889389038086,
+					93.53412628173828
+				}
+			},
+			pos1 = {
+				214.7421875,
+				18.414196014404297,
+				93.43978118896484
+			},
+			pos2 = {
+				216.3341064453125,
+				17.203582763671875,
+				90.45121765136719
+			}
+		},
+		{
+			smart_object_index = 862,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					214.97576904296875,
+					17.069284439086914,
+					93.63470458984375
+				}
+			},
+			pos1 = {
+				214.17977905273438,
+				17.67460823059082,
+				93.55938720703125
+			},
+			pos2 = {
+				215.771728515625,
+				16.4639892578125,
+				90.53521728515625
+			}
+		},
+		{
+			smart_object_index = 863,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					214.413330078125,
+					16.329679489135742,
+					93.73529052734375
+				}
+			},
+			pos1 = {
+				213.61734008789062,
+				16.93499755859375,
+				93.68058013916016
+			},
+			pos2 = {
+				215.2093505859375,
+				15.724365234375,
+				90.61705780029297
+			}
+		},
+		{
+			smart_object_index = 864,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					213.85089111328125,
+					15.590075492858887,
+					93.83586883544922
+				}
+			},
+			pos1 = {
+				213.0548858642578,
+				16.195404052734375,
+				93.81867980957031
+			},
+			pos2 = {
+				214.6468505859375,
+				14.984771728515625,
+				90.69526672363281
+			}
+		}
+	},
+	["64bc2257-9189-4bf3-89f9-6883274790a4"] = {
+		{
+			smart_object_index = 851,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					193.88751220703125,
-					31.985088348388672,
-					95.85120391845703
+					299.77587890625,
+					54.809226989746094,
+					105.31015014648438
 				}
 			},
 			pos1 = {
-				193.64784240722656,
-				32.955894470214844,
-				96.0370101928711
+				300.6091613769531,
+				54.256351470947266,
+				104.92146301269531
 			},
 			pos2 = {
-				194.127197265625,
-				31.01422119140625,
-				90.9659423828125
+				298.9425964355469,
+				55.362091064453125,
+				97.49722290039062
 			}
 		},
 		{
-			smart_object_index = 867,
+			smart_object_index = 852,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					193.40208435058594,
-					31.865245819091797,
-					95.85120391845703
+					300.091064453125,
+					55.28426742553711,
+					105.31779479980469
 				}
 			},
 			pos1 = {
-				193.16241455078125,
-				32.836055755615234,
-				96.03192901611328
+				300.92437744140625,
+				54.731388092041016,
+				104.92910766601562
 			},
 			pos2 = {
-				193.641845703125,
-				30.8944091796875,
-				91.04643249511719
+				299.2577819824219,
+				55.837127685546875,
+				97.41907501220703
 			}
 		},
 		{
-			smart_object_index = 868,
+			smart_object_index = 853,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					192.91665649414062,
-					31.745403289794922,
-					95.85120391845703
+					300.40625,
+					55.759307861328125,
+					105.325439453125
 				}
 			},
 			pos1 = {
-				192.67698669433594,
-				32.716209411621094,
-				96.02692413330078
+				301.2395324707031,
+				55.206417083740234,
+				104.68962860107422
 			},
 			pos2 = {
-				193.1563720703125,
-				30.7745361328125,
-				91.1270980834961
+				299.5729675292969,
+				56.312156677246094,
+				97.33946990966797
 			}
 		}
 	},
 	["43969fd2-adf7-4f71-9b7f-432733453ab2"] = {
 		{
-			smart_object_index = 481,
+			smart_object_index = 521,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13304,7 +13191,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 482,
+			smart_object_index = 522,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13329,7 +13216,7 @@ local smart_objects = {
 	},
 	["b5a0f1a6-9b8b-41fc-a5c8-9d35e82a8b60"] = {
 		{
-			smart_object_index = 324,
+			smart_object_index = 329,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13353,7 +13240,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 325,
+			smart_object_index = 330,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13377,7 +13264,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 326,
+			smart_object_index = 331,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13401,7 +13288,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 327,
+			smart_object_index = 332,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13425,7 +13312,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 328,
+			smart_object_index = 333,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13449,83 +13336,126 @@ local smart_objects = {
 			}
 		}
 	},
-	["64bc2257-9189-4bf3-89f9-6883274790a4"] = {
+	["2be0c0bf-7092-43ad-88d0-cf6b4115690c"] = {
 		{
-			smart_object_index = 845,
+			smart_object_index = 832,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					299.77587890625,
-					54.809226989746094,
-					105.31015014648438
+					94.92231750488281,
+					12.561708450317383,
+					100.62907409667969
 				}
 			},
 			pos1 = {
-				300.6091613769531,
-				54.256351470947266,
-				104.92146301269531
+				95.19364166259766,
+				13.52416706085205,
+				100.64720916748047
 			},
 			pos2 = {
-				298.9425964355469,
-				55.362091064453125,
-				97.49722290039062
+				94.65097045898438,
+				11.599215507507324,
+				97.27062225341797
 			}
 		},
 		{
-			smart_object_index = 846,
+			smart_object_index = 833,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					300.091064453125,
-					55.28426742553711,
-					105.31779479980469
+					94.09648132324219,
+					12.794530868530273,
+					100.6084213256836
 				}
 			},
 			pos1 = {
-				300.92437744140625,
-				54.731388092041016,
-				104.92910766601562
+				94.36781311035156,
+				13.756988525390625,
+				100.66719818115234
 			},
 			pos2 = {
-				299.2577819824219,
-				55.837127685546875,
-				97.41907501220703
+				93.82513427734375,
+				11.832043647766113,
+				97.14136505126953
 			}
 		},
 		{
-			smart_object_index = 847,
+			smart_object_index = 834,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					300.40625,
-					55.759307861328125,
-					105.325439453125
+					93.2706298828125,
+					13.027353286743164,
+					100.5877685546875
 				}
 			},
 			pos1 = {
-				301.2395324707031,
-				55.206417083740234,
-				104.68962860107422
+				93.54196166992188,
+				13.989813804626465,
+				100.60789489746094
 			},
 			pos2 = {
-				299.5729675292969,
-				56.312156677246094,
-				97.33946990966797
+				92.99930572509766,
+				12.06486701965332,
+				97.10127258300781
+			}
+		},
+		{
+			smart_object_index = 835,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					92.44477844238281,
+					13.260175704956055,
+					100.5671157836914
+				}
+			},
+			pos1 = {
+				92.71611022949219,
+				14.222634315490723,
+				100.54327392578125
+			},
+			pos2 = {
+				92.17344665527344,
+				12.29769229888916,
+				97.09009552001953
+			}
+		},
+		{
+			smart_object_index = 836,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					91.61893463134766,
+					13.492998123168945,
+					100.54646301269531
+				}
+			},
+			pos1 = {
+				91.89026641845703,
+				14.455453872680664,
+				100.49922180175781
+			},
+			pos2 = {
+				91.34760284423828,
+				12.530513763427734,
+				97.08760833740234
 			}
 		}
 	},
 	["8e088aa0-5dda-4439-ba17-5ffd2768e9f8"] = {
 		{
-			smart_object_index = 795,
+			smart_object_index = 804,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13549,7 +13479,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 796,
+			smart_object_index = 805,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13573,7 +13503,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 797,
+			smart_object_index = 806,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13597,7 +13527,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 798,
+			smart_object_index = 807,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13623,7 +13553,7 @@ local smart_objects = {
 	},
 	["798dc5c1-302a-44c9-a27d-1e5fbec4653a"] = {
 		{
-			smart_object_index = 876,
+			smart_object_index = 879,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13646,7 +13576,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 877,
+			smart_object_index = 880,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.7499932050704956,
@@ -13664,7 +13594,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 878,
+			smart_object_index = 881,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13687,7 +13617,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 879,
+			smart_object_index = 882,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.3749924898147583,
@@ -13705,7 +13635,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 880,
+			smart_object_index = 883,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13728,7 +13658,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 881,
+			smart_object_index = 884,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.4999881982803345,
@@ -13746,7 +13676,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 882,
+			smart_object_index = 885,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13769,7 +13699,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 883,
+			smart_object_index = 886,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.6249867677688599,
@@ -13787,7 +13717,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 884,
+			smart_object_index = 887,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13810,7 +13740,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 885,
+			smart_object_index = 888,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13833,7 +13763,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 886,
+			smart_object_index = 889,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13858,7 +13788,7 @@ local smart_objects = {
 	},
 	["10071c2f-4f71-4ed2-8735-eed360178bc1"] = {
 		{
-			smart_object_index = 491,
+			smart_object_index = 569,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13882,7 +13812,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 492,
+			smart_object_index = 570,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13906,7 +13836,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 493,
+			smart_object_index = 571,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -13932,7 +13862,7 @@ local smart_objects = {
 	},
 	["ed1aca3a-dc98-486f-8bdb-e39382d0cd74"] = {
 		{
-			smart_object_index = 588,
+			smart_object_index = 622,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13955,7 +13885,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 589,
+			smart_object_index = 623,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -13978,7 +13908,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 590,
+			smart_object_index = 624,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -14001,204 +13931,59 @@ local smart_objects = {
 			}
 		}
 	},
-	["c1ce4266-d70d-4fd5-b403-6c6618535b3b"] = {
+	["ede40604-0e93-4a25-8ada-dd9780ef372d"] = {
 		{
-			smart_object_index = 79,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					345.84521484375,
-					0.4336788058280945,
-					104.55245208740234
-				}
-			},
-			pos1 = {
-				345.8605651855469,
-				1.433572769165039,
-				104.07353973388672
-			},
-			pos2 = {
-				345.829833984375,
-				-0.5661940574645996,
-				102.11396789550781
-			}
-		},
-		{
-			smart_object_index = 80,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					344.9859924316406,
-					0.4468989968299866,
-					104.57528686523438
-				}
-			},
-			pos1 = {
-				345.0013732910156,
-				1.4467887878417969,
-				104.12560272216797
-			},
-			pos2 = {
-				344.9706115722656,
-				-0.5529727935791016,
-				102.02970886230469
-			}
-		},
-		{
-			smart_object_index = 81,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					344.12677001953125,
-					0.46011918783187866,
-					104.5981216430664
-				}
-			},
-			pos1 = {
-				344.1421203613281,
-				1.460000991821289,
-				104.18383026123047
-			},
-			pos2 = {
-				344.1113586425781,
-				-0.539757251739502,
-				101.92041778564453
-			}
-		}
-	},
-	["266c8593-7692-4e44-b6d6-e8e4311a7ffa"] = {
-		{
-			smart_object_index = 823,
+			smart_object_index = 208,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					402.9017639160156,
-					60.13739776611328,
-					119.59761047363281
+					214.31781005859375,
+					160.25729370117188,
+					105.76476287841797
 				}
 			},
 			pos1 = {
-				403.901611328125,
-				60.11906051635742,
-				119.60933685302734
+				213.49034118652344,
+				159.69580078125,
+				105.91799926757812
 			},
 			pos2 = {
-				401.9019775390625,
-				60.15576171875,
-				114.31010437011719
+				215.1453094482422,
+				160.8188018798828,
+				97.02835845947266
 			}
 		},
 		{
-			smart_object_index = 824,
+			smart_object_index = 209,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					402.9170837402344,
-					60.97208786010742,
-					119.6265640258789
+					214.65744018554688,
+					159.75677490234375,
+					105.74201202392578
 				}
 			},
 			pos1 = {
-				403.91693115234375,
-				60.953758239746094,
-				119.62206268310547
+				213.82997131347656,
+				159.19529724121094,
+				105.90190124511719
 			},
 			pos2 = {
-				401.917236328125,
-				60.99041748046875,
-				114.25904083251953
-			}
-		},
-		{
-			smart_object_index = 825,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					402.932373046875,
-					61.80677032470703,
-					119.655517578125
-				}
-			},
-			pos1 = {
-				403.9322204589844,
-				61.78842544555664,
-				119.67219543457031
-			},
-			pos2 = {
-				401.9326171875,
-				61.82513427734375,
-				114.19830322265625
-			}
-		}
-	},
-	["3953904c-1de6-4733-8834-a42a5059840a"] = {
-		{
-			smart_object_index = 821,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					266.5466003417969,
-					-16.931949615478516,
-					101.6719970703125
-				}
-			},
-			pos1 = {
-				265.79937744140625,
-				-16.26736068725586,
-				101.93746948242188
-			},
-			pos2 = {
-				267.29376220703125,
-				-17.59658432006836,
-				93.2900619506836
-			}
-		},
-		{
-			smart_object_index = 822,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					267.2112121582031,
-					-16.18478012084961,
-					101.6719970703125
-				}
-			},
-			pos1 = {
-				266.4639892578125,
-				-15.520190238952637,
-				101.8830795288086
-			},
-			pos2 = {
-				267.9583740234375,
-				-16.849430084228516,
-				93.3301773071289
+				215.48495483398438,
+				160.31829833984375,
+				96.91371154785156
 			}
 		}
 	},
 	["b09cbabf-5076-4b30-8d5c-2141d7080fe2"] = {
 		{
-			smart_object_index = 819,
+			smart_object_index = 828,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -14221,7 +14006,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 820,
+			smart_object_index = 829,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14247,7 +14032,7 @@ local smart_objects = {
 	},
 	["d57a0a9b-4f28-467d-b37c-2db0eff51426"] = {
 		{
-			smart_object_index = 723,
+			smart_object_index = 738,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14270,7 +14055,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 724,
+			smart_object_index = 739,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14293,7 +14078,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 725,
+			smart_object_index = 740,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14316,57 +14101,131 @@ local smart_objects = {
 			}
 		}
 	},
-	["44ff002e-94a5-4643-b667-b75d633fa8da"] = {
+	["d1830cab-665a-4979-8bba-37a118b4e725"] = {
 		{
-			smart_object_index = 358,
+			smart_object_index = 689,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					303.80560302734375,
-					6.061115264892578,
-					95.36699676513672
+					227.25308227539062,
+					118.53115844726562,
+					98.96529388427734
 				}
 			},
 			pos1 = {
-				304.0644836425781,
-				7.027107238769531,
-				95.18486022949219
+				227.1614532470703,
+				117.53532409667969,
+				98.98545837402344
 			},
 			pos2 = {
-				303.5467834472656,
-				5.095227241516113,
-				91.04975891113281
+				227.3447265625,
+				119.52694702148438,
+				89.83428955078125
 			}
 		},
 		{
-			smart_object_index = 359,
+			smart_object_index = 690,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					302.8396911621094,
-					6.3199310302734375,
-					95.36699676513672
+					228.0462188720703,
+					118.45817565917969,
+					98.96528625488281
 				}
 			},
 			pos1 = {
-				303.0985412597656,
-				7.285934925079346,
-				95.36640930175781
+				227.95458984375,
+				117.46233367919922,
+				98.94928741455078
 			},
 			pos2 = {
-				302.58074951171875,
-				5.35402774810791,
-				90.88529968261719
+				228.13787841796875,
+				119.4539794921875,
+				89.83103942871094
+			}
+		},
+		{
+			smart_object_index = 691,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					228.83935546875,
+					118.38517761230469,
+					98.96528625488281
+				}
+			},
+			pos1 = {
+				228.7477264404297,
+				117.38933563232422,
+				98.9128646850586
+			},
+			pos2 = {
+				228.93096923828125,
+				119.38095092773438,
+				89.83118438720703
+			}
+		},
+		{
+			smart_object_index = 692,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					229.63250732421875,
+					118.31217956542969,
+					98.96528625488281
+				}
+			},
+			pos1 = {
+				229.5408935546875,
+				117.31633758544922,
+				98.8754653930664
+			},
+			pos2 = {
+				229.72412109375,
+				119.30795288085938,
+				89.83102416992188
+			}
+		},
+		{
+			smart_object_index = 693,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					230.42562866210938,
+					118.23919677734375,
+					98.96528625488281
+				}
+			},
+			pos1 = {
+				230.33399963378906,
+				117.24335479736328,
+				98.83793640136719
+			},
+			pos2 = {
+				230.51727294921875,
+				119.2349853515625,
+				89.82991790771484
 			}
 		}
 	},
 	["69ebac58-a98e-47be-b911-79c7536a066f"] = {
 		{
-			smart_object_index = 805,
+			smart_object_index = 814,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14390,7 +14249,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 806,
+			smart_object_index = 815,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14416,7 +14275,7 @@ local smart_objects = {
 	},
 	["b9e83c3a-37ae-4d10-8a38-69fae6eb90a3"] = {
 		{
-			smart_object_index = 799,
+			smart_object_index = 808,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14439,7 +14298,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 800,
+			smart_object_index = 809,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -14464,7 +14323,7 @@ local smart_objects = {
 	},
 	["b1e0e884-661d-4070-9101-b0df64674a93"] = {
 		{
-			smart_object_index = 792,
+			smart_object_index = 801,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -14487,7 +14346,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 793,
+			smart_object_index = 802,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14510,7 +14369,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 794,
+			smart_object_index = 803,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14533,103 +14392,9 @@ local smart_objects = {
 			}
 		}
 	},
-	["7b663cd7-9e11-4dba-a1c5-590c099d1d74"] = {
-		{
-			smart_object_index = 329,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					155.24935913085938,
-					136.365966796875,
-					108.88042449951172
-				}
-			},
-			pos1 = {
-				154.24954223632812,
-				136.34385681152344,
-				108.82206726074219
-			},
-			pos2 = {
-				156.24913024902344,
-				136.3880157470703,
-				105.75448608398438
-			}
-		},
-		{
-			smart_object_index = 330,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					155.2699737548828,
-					135.43255615234375,
-					109.14645385742188
-				}
-			},
-			pos1 = {
-				154.27015686035156,
-				135.41043090820312,
-				109.14073181152344
-			},
-			pos2 = {
-				156.2697296142578,
-				135.45468139648438,
-				105.49551391601562
-			}
-		},
-		{
-			smart_object_index = 331,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					155.2905731201172,
-					134.49916076660156,
-					109.41248321533203
-				}
-			},
-			pos1 = {
-				154.29075622558594,
-				134.47705078125,
-				109.55415344238281
-			},
-			pos2 = {
-				156.2903594970703,
-				134.5212860107422,
-				105.31315612792969
-			}
-		},
-		{
-			smart_object_index = 332,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					155.31118774414062,
-					133.56576538085938,
-					109.67851257324219
-				}
-			},
-			pos1 = {
-				154.3113555908203,
-				133.5436553955078,
-				109.88886260986328
-			},
-			pos2 = {
-				156.31094360351562,
-				133.58786010742188,
-				105.16295623779297
-			}
-		}
-	},
 	["8b57bb98-7691-45b1-9715-09261789926f"] = {
 		{
-			smart_object_index = 789,
+			smart_object_index = 798,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14652,7 +14417,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 790,
+			smart_object_index = 799,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14675,7 +14440,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 791,
+			smart_object_index = 800,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -14698,9 +14463,199 @@ local smart_objects = {
 			}
 		}
 	},
+	["fac2f90b-9056-4516-ba05-8b0fb42adc8a"] = {
+		{
+			smart_object_index = 793,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					227.8822021484375,
+					139.40354919433594,
+					98.6011962890625
+				}
+			},
+			pos1 = {
+				228.67532348632812,
+				140.0126190185547,
+				98.04499053955078
+			},
+			pos2 = {
+				227.08908081054688,
+				138.7944793701172,
+				97.19955444335938
+			}
+		},
+		{
+			smart_object_index = 794,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					228.37718200683594,
+					138.75900268554688,
+					98.6011962890625
+				}
+			},
+			pos1 = {
+				229.17030334472656,
+				139.3680877685547,
+				98.10884857177734
+			},
+			pos2 = {
+				227.5840606689453,
+				138.14991760253906,
+				97.0824203491211
+			}
+		}
+	},
+	["7b663cd7-9e11-4dba-a1c5-590c099d1d74"] = {
+		{
+			smart_object_index = 334,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					155.24935913085938,
+					136.365966796875,
+					108.88042449951172
+				}
+			},
+			pos1 = {
+				154.24954223632812,
+				136.34385681152344,
+				108.82206726074219
+			},
+			pos2 = {
+				156.24913024902344,
+				136.3880157470703,
+				105.75448608398438
+			}
+		},
+		{
+			smart_object_index = 335,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					155.2699737548828,
+					135.43255615234375,
+					109.14645385742188
+				}
+			},
+			pos1 = {
+				154.27015686035156,
+				135.41043090820312,
+				109.14073181152344
+			},
+			pos2 = {
+				156.2697296142578,
+				135.45468139648438,
+				105.49551391601562
+			}
+		},
+		{
+			smart_object_index = 336,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					155.2905731201172,
+					134.49916076660156,
+					109.41248321533203
+				}
+			},
+			pos1 = {
+				154.29075622558594,
+				134.47705078125,
+				109.55415344238281
+			},
+			pos2 = {
+				156.2903594970703,
+				134.5212860107422,
+				105.31315612792969
+			}
+		},
+		{
+			smart_object_index = 337,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					155.31118774414062,
+					133.56576538085938,
+					109.67851257324219
+				}
+			},
+			pos1 = {
+				154.3113555908203,
+				133.5436553955078,
+				109.88886260986328
+			},
+			pos2 = {
+				156.31094360351562,
+				133.58786010742188,
+				105.16295623779297
+			}
+		}
+	},
+	["d91a58aa-fa05-4763-8e5a-99d841efb340"] = {
+		{
+			smart_object_index = 791,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					288.7321472167969,
+					123.58345031738281,
+					93.95123291015625
+				}
+			},
+			pos1 = {
+				289.3195495605469,
+				124.39275360107422,
+				94.38446807861328
+			},
+			pos2 = {
+				288.144775390625,
+				122.774169921875,
+				89.48355102539062
+			}
+		},
+		{
+			smart_object_index = 792,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					288.69384765625,
+					123.61125183105469,
+					93.9511947631836
+				}
+			},
+			pos1 = {
+				289.2812194824219,
+				124.42054748535156,
+				94.38605499267578
+			},
+			pos2 = {
+				288.1064453125,
+				122.80197143554688,
+				89.48316955566406
+			}
+		}
+	},
 	["54d03115-5bd1-4299-8e20-f517fbc2ed15"] = {
 		{
-			smart_object_index = 237,
+			smart_object_index = 253,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14724,7 +14679,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 238,
+			smart_object_index = 254,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14748,7 +14703,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 239,
+			smart_object_index = 255,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14772,7 +14727,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 240,
+			smart_object_index = 256,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14796,7 +14751,99 @@ local smart_objects = {
 			}
 		}
 	},
-	["d91a58aa-fa05-4763-8e5a-99d841efb340"] = {
+	["9281d274-e322-4c41-a8c7-7ba591be4292"] = {
+		{
+			smart_object_index = 780,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					214.48715209960938,
+					14.758856773376465,
+					94.38029479980469
+				}
+			},
+			pos1 = {
+				213.94432067871094,
+				13.919008255004883,
+				94.33234405517578
+			},
+			pos2 = {
+				215.030029296875,
+				15.59869384765625,
+				90.633544921875
+			}
+		},
+		{
+			smart_object_index = 781,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					215.200927734375,
+					14.297538757324219,
+					94.36617279052734
+				}
+			},
+			pos1 = {
+				214.65809631347656,
+				13.457691192626953,
+				94.31468200683594
+			},
+			pos2 = {
+				215.7437744140625,
+				15.13739013671875,
+				90.65113067626953
+			}
+		},
+		{
+			smart_object_index = 782,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					215.91468811035156,
+					13.836219787597656,
+					94.35205078125
+				}
+			},
+			pos1 = {
+				215.37184143066406,
+				12.996376037597656,
+				94.296875
+			},
+			pos2 = {
+				216.45751953125,
+				14.67608642578125,
+				90.63754272460938
+			}
+		},
+		{
+			smart_object_index = 783,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					216.6284637451172,
+					13.374902725219727,
+					94.33792877197266
+				}
+			},
+			pos1 = {
+				216.0856170654297,
+				12.535058975219727,
+				94.27735900878906
+			},
+			pos2 = {
+				217.1712646484375,
+				14.21478271484375,
+				90.65579223632812
+			}
+		},
 		{
 			smart_object_index = 784,
 			smart_object_type = "ledges",
@@ -14804,20 +14851,20 @@ local smart_objects = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					288.7321472167969,
-					123.58345031738281,
-					93.95123291015625
+					217.34222412109375,
+					12.91358470916748,
+					94.32380676269531
 				}
 			},
 			pos1 = {
-				289.3195495605469,
-				124.39275360107422,
-				94.38446807861328
+				216.79940795898438,
+				12.07373332977295,
+				94.25746154785156
 			},
 			pos2 = {
-				288.144775390625,
-				122.774169921875,
-				89.48355102539062
+				217.885009765625,
+				13.75341796875,
+				90.69110107421875
 			}
 		},
 		{
@@ -14827,97 +14874,138 @@ local smart_objects = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					288.69384765625,
-					123.61125183105469,
-					93.9511947631836
+					218.05599975585938,
+					12.452266693115234,
+					94.30968475341797
 				}
 			},
 			pos1 = {
-				289.2812194824219,
-				124.42054748535156,
-				94.38605499267578
+				217.51316833496094,
+				11.61242389678955,
+				94.24112701416016
 			},
 			pos2 = {
-				288.1064453125,
-				122.80197143554688,
-				89.48316955566406
+				218.598876953125,
+				13.2921142578125,
+				90.70001983642578
+			}
+		},
+		{
+			smart_object_index = 786,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					218.769775390625,
+					11.990947723388672,
+					94.29556274414062
+				}
+			},
+			pos1 = {
+				218.22694396972656,
+				11.151106834411621,
+				94.2267074584961
+			},
+			pos2 = {
+				219.3126220703125,
+				12.830810546875,
+				90.73845672607422
+			}
+		},
+		{
+			smart_object_index = 787,
+			smart_object_type = "jumps",
+			data = {
+				scale = 2.0000040531158447,
+				flat_jump_distance = 8.000016212463379
+			},
+			pos1 = {
+				218.22694396972656,
+				11.151106834411621,
+				94.20453643798828
+			},
+			pos2 = {
+				222.56948852539062,
+				17.86992835998535,
+				93.20516967773438
 			}
 		}
 	},
-	["d73d0b89-5b7e-45ea-8a3f-d6c0b3dd6eb2"] = {
+	["0a0ec269-804d-4a96-b400-21e34d9a8634"] = {
 		{
-			smart_object_index = 762,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 777,
+			smart_object_type = "ledges",
 			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					373.1003112792969,
-					50.37531661987305,
-					100.31411743164062
+					67.49728393554688,
+					-23.005796432495117,
+					98.75665283203125
 				}
 			},
 			pos1 = {
-				373.88232421875,
-				49.752159118652344,
-				100.17272186279297
+				67.115478515625,
+				-23.930055618286133,
+				98.57149505615234
 			},
 			pos2 = {
-				372.318115234375,
-				50.99856948852539,
-				97.9320068359375
+				67.87909698486328,
+				-22.081533432006836,
+				94.25703430175781
 			}
 		},
 		{
-			smart_object_index = 763,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 778,
+			smart_object_type = "ledges",
 			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					373.48553466796875,
-					50.858726501464844,
-					100.30015563964844
+					68.18560791015625,
+					-23.290136337280273,
+					98.75664520263672
 				}
 			},
 			pos1 = {
-				374.26751708984375,
-				50.235565185546875,
-				100.13103485107422
+				67.80380249023438,
+				-24.214397430419922,
+				98.59048461914062
 			},
 			pos2 = {
-				372.7033386230469,
-				51.48197555541992,
-				97.92070770263672
+				68.56741333007812,
+				-22.365873336791992,
+				94.30467987060547
 			}
 		},
 		{
-			smart_object_index = 764,
-			smart_object_type = "ledges_with_fence",
+			smart_object_index = 779,
+			smart_object_type = "ledges",
 			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
+				is_on_edge = true,
+				is_on_small_fence = false,
 				ledge_position = {
-					373.87078857421875,
-					51.34213638305664,
-					100.28619384765625
+					68.87393951416016,
+					-23.57447624206543,
+					98.75665283203125
 				}
 			},
 			pos1 = {
-				374.65277099609375,
-				50.71897506713867,
-				100.11027526855469
+				68.49213409423828,
+				-24.498737335205078,
+				98.59916687011719
 			},
 			pos2 = {
-				373.0885925292969,
-				51.965354919433594,
-				97.90058135986328
+				69.25574493408203,
+				-22.650211334228516,
+				94.35356140136719
 			}
 		}
 	},
 	["2ffa0ffc-9481-462a-8faa-bafae02da877"] = {
 		{
-			smart_object_index = 810,
+			smart_object_index = 819,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14941,7 +15029,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 811,
+			smart_object_index = 820,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14965,7 +15053,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 812,
+			smart_object_index = 821,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -14989,7 +15077,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 813,
+			smart_object_index = 822,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15013,7 +15101,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 814,
+			smart_object_index = 823,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15037,7 +15125,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 815,
+			smart_object_index = 824,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15061,7 +15149,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 816,
+			smart_object_index = 825,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15087,7 +15175,7 @@ local smart_objects = {
 	},
 	["7091b046-1c6d-41cf-9d66-5822b19a7024"] = {
 		{
-			smart_object_index = 641,
+			smart_object_index = 725,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -15110,7 +15198,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 642,
+			smart_object_index = 726,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -15135,7 +15223,7 @@ local smart_objects = {
 	},
 	["3093c6ea-ba69-46a3-9e95-794067c3b633"] = {
 		{
-			smart_object_index = 716,
+			smart_object_index = 733,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15159,7 +15247,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 717,
+			smart_object_index = 734,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15183,7 +15271,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 718,
+			smart_object_index = 735,
 			smart_object_type = "jumps",
 			data = {
 				scale = 2.000004768371582,
@@ -15201,7 +15289,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 719,
+			smart_object_index = 736,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15225,7 +15313,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 720,
+			smart_object_index = 737,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.9999992847442627,
@@ -15245,7 +15333,7 @@ local smart_objects = {
 	},
 	["c73b202e-ff28-44e1-abe3-38be8b9770d7"] = {
 		{
-			smart_object_index = 692,
+			smart_object_index = 707,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -15268,7 +15356,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 693,
+			smart_object_index = 708,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -15291,7 +15379,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 694,
+			smart_object_index = 709,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -15314,7 +15402,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 695,
+			smart_object_index = 710,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -15337,9 +15425,293 @@ local smart_objects = {
 			}
 		}
 	},
+	["c67696c1-0eb1-4d13-b767-b331a10e1276"] = {
+		{
+			smart_object_index = 729,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					259.4227294921875,
+					103.02303314208984,
+					96.8675765991211
+				}
+			},
+			pos1 = {
+				260.1833801269531,
+				102.37390899658203,
+				96.78780364990234
+			},
+			pos2 = {
+				258.6620788574219,
+				103.67219543457031,
+				92.73815155029297
+			}
+		},
+		{
+			smart_object_index = 730,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					260.0718994140625,
+					103.78367614746094,
+					96.8675765991211
+				}
+			},
+			pos1 = {
+				260.8325500488281,
+				103.1345443725586,
+				96.83636474609375
+			},
+			pos2 = {
+				259.311279296875,
+				104.4328384399414,
+				92.78775024414062
+			}
+		}
+	},
+	["13a8c51c-b81c-4117-a645-3ad6f7bd3a9e"] = {
+		{
+			smart_object_index = 465,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					302.76519775390625,
+					113.93411254882812,
+					103.25569152832031
+				}
+			},
+			pos1 = {
+				303.7561950683594,
+				114.06848907470703,
+				103.14594268798828
+			},
+			pos2 = {
+				301.7742919921875,
+				113.79976654052734,
+				98.27117919921875
+			}
+		},
+		{
+			smart_object_index = 466,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					302.65521240234375,
+					114.74522399902344,
+					103.26611328125
+				}
+			},
+			pos1 = {
+				303.64617919921875,
+				114.87960052490234,
+				103.17124938964844
+			},
+			pos2 = {
+				301.664306640625,
+				114.61088562011719,
+				98.41455078125
+			}
+		},
+		{
+			smart_object_index = 467,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					302.5452575683594,
+					115.55633544921875,
+					103.27652740478516
+				}
+			},
+			pos1 = {
+				303.5362548828125,
+				115.69070434570312,
+				103.16859436035156
+			},
+			pos2 = {
+				301.5543212890625,
+				115.42198944091797,
+				98.5346908569336
+			}
+		},
+		{
+			smart_object_index = 468,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					302.4352722167969,
+					116.36746215820312,
+					103.28694915771484
+				}
+			},
+			pos1 = {
+				303.42626953125,
+				116.5018310546875,
+				103.16981506347656
+			},
+			pos2 = {
+				301.4443664550781,
+				116.23311614990234,
+				98.54176330566406
+			}
+		},
+		{
+			smart_object_index = 469,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					302.3252868652344,
+					117.17857360839844,
+					103.29736328125
+				}
+			},
+			pos1 = {
+				303.3163146972656,
+				117.31294250488281,
+				103.21186065673828
+			},
+			pos2 = {
+				301.3343811035156,
+				117.04423522949219,
+				98.52189636230469
+			}
+		},
+		{
+			smart_object_index = 470,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					302.2153015136719,
+					117.98968505859375,
+					103.30778503417969
+				}
+			},
+			pos1 = {
+				303.206298828125,
+				118.12406158447266,
+				103.22296142578125
+			},
+			pos2 = {
+				301.2243957519531,
+				117.85533905029297,
+				98.4913101196289
+			}
+		}
+	},
+	["8c641015-089e-4422-a59c-29779ad63af7"] = {
+		{
+			smart_object_index = 222,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					289.7044677734375,
+					-4.404911518096924,
+					92.754638671875
+				}
+			},
+			pos1 = {
+				289.9663391113281,
+				-3.4398186206817627,
+				92.82194519042969
+			},
+			pos2 = {
+				289.44256591796875,
+				-5.3699951171875,
+				90.89185333251953
+			}
+		},
+		{
+			smart_object_index = 223,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					289.17974853515625,
+					-4.2625203132629395,
+					92.70745849609375
+				}
+			},
+			pos1 = {
+				289.441650390625,
+				-3.297431707382202,
+				92.81891632080078
+			},
+			pos2 = {
+				288.9178466796875,
+				-5.2276153564453125,
+				90.92103576660156
+			}
+		}
+	},
+	["599bc6f6-d090-48c3-ab16-c3e7c2e48c22"] = {
+		{
+			smart_object_index = 670,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					281.8245849609375,
+					-18.49188995361328,
+					93.40940856933594
+				}
+			},
+			pos1 = {
+				280.8835754394531,
+				-18.830198287963867,
+				93.30781555175781
+			},
+			pos2 = {
+				282.7656555175781,
+				-18.153593063354492,
+				91.01580810546875
+			}
+		},
+		{
+			smart_object_index = 671,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					282.11175537109375,
+					-19.290739059448242,
+					93.40995788574219
+				}
+			},
+			pos1 = {
+				281.17071533203125,
+				-19.629037857055664,
+				93.163818359375
+			},
+			pos2 = {
+				283.05279541015625,
+				-18.95243263244629,
+				91.00704956054688
+			}
+		}
+	},
 	["37cc5222-6880-49b2-9e41-ede93318bdd9"] = {
 		{
-			smart_object_index = 99,
+			smart_object_index = 101,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15363,7 +15735,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 100,
+			smart_object_index = 102,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -15387,506 +15759,178 @@ local smart_objects = {
 			}
 		}
 	},
-	["13a8c51c-b81c-4117-a645-3ad6f7bd3a9e"] = {
+	["12480a00-e252-44c0-b879-61aede1fb338"] = {
 		{
-			smart_object_index = 512,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					302.76519775390625,
-					113.93411254882812,
-					103.25569152832031
-				}
-			},
-			pos1 = {
-				303.7561950683594,
-				114.06848907470703,
-				103.14594268798828
-			},
-			pos2 = {
-				301.7742919921875,
-				113.79976654052734,
-				98.27117919921875
-			}
-		},
-		{
-			smart_object_index = 513,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					302.65521240234375,
-					114.74522399902344,
-					103.26611328125
-				}
-			},
-			pos1 = {
-				303.64617919921875,
-				114.87960052490234,
-				103.17124938964844
-			},
-			pos2 = {
-				301.664306640625,
-				114.61088562011719,
-				98.41455078125
-			}
-		},
-		{
-			smart_object_index = 514,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					302.5452575683594,
-					115.55633544921875,
-					103.27652740478516
-				}
-			},
-			pos1 = {
-				303.5362548828125,
-				115.69070434570312,
-				103.16859436035156
-			},
-			pos2 = {
-				301.5543212890625,
-				115.42198944091797,
-				98.5346908569336
-			}
-		},
-		{
-			smart_object_index = 515,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					302.4352722167969,
-					116.36746215820312,
-					103.28694915771484
-				}
-			},
-			pos1 = {
-				303.42626953125,
-				116.5018310546875,
-				103.16981506347656
-			},
-			pos2 = {
-				301.4443664550781,
-				116.23311614990234,
-				98.54176330566406
-			}
-		},
-		{
-			smart_object_index = 516,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					302.3252868652344,
-					117.17857360839844,
-					103.29736328125
-				}
-			},
-			pos1 = {
-				303.3163146972656,
-				117.31294250488281,
-				103.21186065673828
-			},
-			pos2 = {
-				301.3343811035156,
-				117.04423522949219,
-				98.52189636230469
-			}
-		},
-		{
-			smart_object_index = 517,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					302.2153015136719,
-					117.98968505859375,
-					103.30778503417969
-				}
-			},
-			pos1 = {
-				303.206298828125,
-				118.12406158447266,
-				103.22296142578125
-			},
-			pos2 = {
-				301.2243957519531,
-				117.85533905029297,
-				98.4913101196289
-			}
-		}
-	},
-	["4b4f067c-08dd-4bd4-be22-e4877797bc89"] = {
-		{
-			smart_object_index = 16,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					365.7122802734375,
-					25.051794052124023,
-					108.69413757324219
-				}
-			},
-			pos1 = {
-				365.88885498046875,
-				24.06747055053711,
-				108.60501861572266
-			},
-			pos2 = {
-				365.53564453125,
-				26.036100387573242,
-				105.8546142578125
-			}
-		},
-		{
-			smart_object_index = 17,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					366.3279113769531,
-					25.16226577758789,
-					108.63652038574219
-				}
-			},
-			pos1 = {
-				366.5045166015625,
-				24.177955627441406,
-				108.5752182006836
-			},
-			pos2 = {
-				366.1512756347656,
-				26.146574020385742,
-				105.80509185791016
-			}
-		},
-		{
-			smart_object_index = 18,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					366.94354248046875,
-					25.27273941040039,
-					108.57890319824219
-				}
-			},
-			pos1 = {
-				367.1201171875,
-				24.288414001464844,
-				108.53850555419922
-			},
-			pos2 = {
-				366.76690673828125,
-				26.25706672668457,
-				105.7499771118164
-			}
-		}
-	},
-	["599bc6f6-d090-48c3-ab16-c3e7c2e48c22"] = {
-		{
-			smart_object_index = 666,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					281.8245849609375,
-					-18.49188995361328,
-					93.40940856933594
-				}
-			},
-			pos1 = {
-				280.8835754394531,
-				-18.830198287963867,
-				93.30781555175781
-			},
-			pos2 = {
-				282.7656555175781,
-				-18.153593063354492,
-				91.01580810546875
-			}
-		},
-		{
-			smart_object_index = 667,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					282.11175537109375,
-					-19.290739059448242,
-					93.40995788574219
-				}
-			},
-			pos1 = {
-				281.17071533203125,
-				-19.629037857055664,
-				93.163818359375
-			},
-			pos2 = {
-				283.05279541015625,
-				-18.95243263244629,
-				91.00704956054688
-			}
-		}
-	},
-	["92492292-b3d9-46a9-b4df-02fe525dcb68"] = {
-		{
-			smart_object_index = 194,
+			smart_object_index = 257,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					334.41436767578125,
-					-76.150146484375,
-					101.02085876464844
+					75.8148193359375,
+					-26.292644500732422,
+					98.62161254882812
 				}
 			},
 			pos1 = {
-				335.3743896484375,
-				-75.87056732177734,
-				100.71775817871094
+				74.88355255126953,
+				-26.656970977783203,
+				98.51251983642578
 			},
 			pos2 = {
-				333.45416259765625,
-				-76.42967987060547,
-				95.10256958007812
+				76.74610137939453,
+				-25.92831039428711,
+				92.0196533203125
 			}
 		},
 		{
-			smart_object_index = 195,
+			smart_object_index = 258,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					334.2998046875,
-					-75.75654602050781,
-					101.05781555175781
+					76.05877685546875,
+					-26.916208267211914,
+					98.62161254882812
 				}
 			},
 			pos1 = {
-				335.2598571777344,
-				-75.47696685791016,
-				100.71459197998047
+				75.12751007080078,
+				-27.28053092956543,
+				98.514892578125
 			},
 			pos2 = {
-				333.3396301269531,
-				-76.03607177734375,
-				95.20270538330078
+				76.99005889892578,
+				-26.551877975463867,
+				92.0030746459961
+			}
+		},
+		{
+			smart_object_index = 259,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					76.30272674560547,
+					-27.539772033691406,
+					98.62161254882812
+				}
+			},
+			pos1 = {
+				75.3714599609375,
+				-27.904094696044922,
+				98.51895141601562
+			},
+			pos2 = {
+				77.2340087890625,
+				-27.175434112548828,
+				91.99224853515625
+			}
+		},
+		{
+			smart_object_index = 260,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					76.54667663574219,
+					-28.16333770751953,
+					98.62161254882812
+				}
+			},
+			pos1 = {
+				75.61540985107422,
+				-28.527660369873047,
+				98.5221176147461
+			},
+			pos2 = {
+				77.47795867919922,
+				-27.799007415771484,
+				91.95626068115234
 			}
 		}
 	},
-	["d00ef981-24d1-4a38-acee-da60aabd4ab7"] = {
+	["affb302c-b6a4-4cf3-9008-5bbd21abf142"] = {
 		{
-			smart_object_index = 275,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					415.6430969238281,
-					-149.6243438720703,
-					101.67898559570312
-				}
-			},
-			pos1 = {
-				416.5038757324219,
-				-149.11550903320312,
-				101.42181396484375
-			},
-			pos2 = {
-				414.7822265625,
-				-150.13314819335938,
-				97.2696762084961
-			}
-		},
-		{
-			smart_object_index = 276,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					416.00347900390625,
-					-150.2340545654297,
-					101.62821197509766
-				}
-			},
-			pos1 = {
-				416.8642578125,
-				-149.7252197265625,
-				101.43314361572266
-			},
-			pos2 = {
-				415.14263916015625,
-				-150.7428741455078,
-				97.20903015136719
-			}
-		},
-		{
-			smart_object_index = 277,
+			smart_object_index = 126,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					416.3638916015625,
-					-150.84376525878906,
-					101.57744598388672
+					220.3332977294922,
+					133.4342803955078,
+					95.80999755859375
 				}
 			},
 			pos1 = {
-				417.22467041015625,
-				-150.3349151611328,
-				101.41246032714844
+				221.30841064453125,
+				133.65565490722656,
+				95.19135284423828
 			},
 			pos2 = {
-				415.5030212402344,
-				-151.35256958007812,
-				97.1579360961914
+				219.35801696777344,
+				133.21290588378906,
+				91.05359649658203
 			}
 		},
 		{
-			smart_object_index = 278,
+			smart_object_index = 127,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					416.7242431640625,
-					-151.45347595214844,
-					101.52667236328125
+					220.1371307373047,
+					134.2982635498047,
+					95.80999755859375
 				}
 			},
 			pos1 = {
-				417.5850524902344,
-				-150.9446258544922,
-				101.41216278076172
+				221.1122283935547,
+				134.51962280273438,
+				95.32328796386719
 			},
 			pos2 = {
-				415.8634033203125,
-				-151.96229553222656,
-				97.11570739746094
-			}
-		}
-	},
-	["c2c7a205-0c8e-4f2c-9eb8-6dfa1a81854b"] = {
-		{
-			smart_object_index = 208,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					305.68316650390625,
-					-11.78017520904541,
-					95.46685791015625
-				}
-			},
-			pos1 = {
-				305.8953857421875,
-				-12.757423400878906,
-				95.61856079101562
-			},
-			pos2 = {
-				305.4709777832031,
-				-10.802936553955078,
-				92.15426635742188
+				219.161865234375,
+				134.076904296875,
+				91.19580078125
 			}
 		},
 		{
-			smart_object_index = 209,
+			smart_object_index = 128,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					306.34295654296875,
-					-11.63690185546875,
-					95.46235656738281
+					219.9409637451172,
+					135.1622314453125,
+					95.80999755859375
 				}
 			},
 			pos1 = {
-				306.5552062988281,
-				-12.61414909362793,
-				95.61650848388672
+				220.91604614257812,
+				135.3835906982422,
+				95.47213745117188
 			},
 			pos2 = {
-				306.1307678222656,
-				-10.659662246704102,
-				92.2110595703125
-			}
-		},
-		{
-			smart_object_index = 210,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					307.0027770996094,
-					-11.493629455566406,
-					95.45787048339844
-				}
-			},
-			pos1 = {
-				307.21502685546875,
-				-12.470869064331055,
-				95.61244201660156
-			},
-			pos2 = {
-				306.7906188964844,
-				-10.516387939453125,
-				92.25402069091797
-			}
-		},
-		{
-			smart_object_index = 211,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					307.66259765625,
-					-11.350356101989746,
-					95.45337677001953
-				}
-			},
-			pos1 = {
-				307.87481689453125,
-				-12.32760238647461,
-				95.60748291015625
-			},
-			pos2 = {
-				307.4504089355469,
-				-10.373122215270996,
-				92.2972640991211
+				218.96568298339844,
+				134.9408721923828,
+				91.35309600830078
 			}
 		}
 	},
 	["3f7c6ce4-85d4-47d6-ba52-c8a43f3d3abb"] = {
 		{
-			smart_object_index = 206,
+			smart_object_index = 210,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -15910,7 +15954,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 207,
+			smart_object_index = 211,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -15934,57 +15978,157 @@ local smart_objects = {
 			}
 		}
 	},
-	["37c3f179-cdf3-460e-8c5d-1199af63e26a"] = {
+	["1467f3d9-de0a-47d3-a192-03e8639fbeb6"] = {
 		{
-			smart_object_index = 84,
+			smart_object_index = 239,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					306.5935974121094,
-					-50.95365524291992,
-					99.24205017089844
+					202.33799743652344,
+					-15.727167129516602,
+					100.5595703125
 				}
 			},
 			pos1 = {
-				305.7977294921875,
-				-50.34809112548828,
-				99.00064086914062
+				201.4864044189453,
+				-15.20296859741211,
+				100.38042449951172
 			},
 			pos2 = {
-				307.389404296875,
-				-51.55921936035156,
-				94.01509857177734
+				203.18951416015625,
+				-16.251388549804688,
+				91.87835693359375
 			}
 		},
 		{
-			smart_object_index = 85,
+			smart_object_index = 240,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					306.36468505859375,
-					-51.25446319580078,
-					99.21205139160156
+					201.8503875732422,
+					-16.519325256347656,
+					100.39083862304688
 				}
 			},
 			pos1 = {
-				305.5688171386719,
-				-50.64891815185547,
-				98.93155670166016
+				200.99879455566406,
+				-15.995123863220215,
+				100.2050552368164
 			},
 			pos2 = {
-				307.1605224609375,
-				-51.86003112792969,
-				94.01362609863281
+				202.701904296875,
+				-17.043533325195312,
+				91.9515151977539
+			}
+		},
+		{
+			smart_object_index = 241,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					201.36276245117188,
+					-17.311481475830078,
+					100.22210693359375
+				}
+			},
+			pos1 = {
+				200.5111541748047,
+				-16.78727149963379,
+				100.02833557128906
+			},
+			pos2 = {
+				202.21435546875,
+				-17.835708618164062,
+				92.01423645019531
+			}
+		}
+	},
+	["3262b02d-b041-4809-8e2c-c2299d9724f9"] = {
+		{
+			smart_object_index = 230,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					366.5538330078125,
+					-38.6121826171875,
+					110.12999725341797
+				}
+			},
+			pos1 = {
+				367.2304992675781,
+				-39.34845733642578,
+				109.97994995117188
+			},
+			pos2 = {
+				365.877197265625,
+				-37.87590026855469,
+				98.87866973876953
+			}
+		},
+		{
+			smart_object_index = 231,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					367.01031494140625,
+					-38.192630767822266,
+					110.12999725341797
+				}
+			},
+			pos1 = {
+				367.6869812011719,
+				-38.92893600463867,
+				110.00190734863281
+			},
+			pos2 = {
+				366.3336181640625,
+				-37.45634460449219,
+				98.87866973876953
+			}
+		},
+		{
+			smart_object_index = 232,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					367.466796875,
+					-37.77307891845703,
+					110.12998962402344
+				}
+			},
+			pos1 = {
+				368.1434326171875,
+				-38.509376525878906,
+				110.03732299804688
+			},
+			pos2 = {
+				366.79010009765625,
+				-37.03681945800781,
+				98.87866973876953
 			}
 		}
 	},
 	["40a24df3-4820-440b-92fc-e80c03a1eb3f"] = {
 		{
-			smart_object_index = 199,
+			smart_object_index = 203,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -16008,7 +16152,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 200,
+			smart_object_index = 204,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -16031,59 +16175,9 @@ local smart_objects = {
 			}
 		}
 	},
-	["005f8c82-4465-4e77-961c-8f92984ab2de"] = {
-		{
-			smart_object_index = 177,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					262.536865234375,
-					-26.588733673095703,
-					96.63449096679688
-				}
-			},
-			pos1 = {
-				262.0723876953125,
-				-27.47433090209961,
-				96.68536376953125
-			},
-			pos2 = {
-				263.0013427734375,
-				-25.703125,
-				91.3331298828125
-			}
-		},
-		{
-			smart_object_index = 178,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					263.1572265625,
-					-26.914104461669922,
-					96.62179565429688
-				}
-			},
-			pos1 = {
-				262.6927490234375,
-				-27.799699783325195,
-				96.6499252319336
-			},
-			pos2 = {
-				263.6217041015625,
-				-26.028549194335938,
-				91.2822494506836
-			}
-		}
-	},
 	["cd07064f-0346-479e-b957-868515db7838"] = {
 		{
-			smart_object_index = 333,
+			smart_object_index = 338,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -16106,7 +16200,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 334,
+			smart_object_index = 339,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -16129,7 +16223,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 335,
+			smart_object_index = 340,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -16152,103 +16246,78 @@ local smart_objects = {
 			}
 		}
 	},
-	["380fe591-04d8-42a0-9c72-24340ea03e94"] = {
+	["c872f1f9-b5bc-4e0b-b00e-06f13ee050c6"] = {
 		{
-			smart_object_index = 344,
+			smart_object_index = 656,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					306.82794189453125,
-					-1.7322255373001099,
-					94.87699890136719
+					197.46730041503906,
+					-14.590204238891602,
+					99.56831359863281
 				}
 			},
 			pos1 = {
-				307.0866394042969,
-				-0.7662756443023682,
-				94.72425842285156
+				198.28485107421875,
+				-15.166033744812012,
+				99.63235473632812
 			},
 			pos2 = {
-				306.569091796875,
-				-2.6981201171875,
-				91.48560333251953
+				196.64974975585938,
+				-14.014331817626953,
+				94.8428726196289
 			}
 		},
 		{
-			smart_object_index = 345,
+			smart_object_index = 657,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					305.862060546875,
-					-1.4734104871749878,
-					94.87699890136719
+					198.02963256835938,
+					-13.791787147521973,
+					99.73860931396484
 				}
 			},
 			pos1 = {
-				306.12078857421875,
-				-0.5074691772460938,
-				94.94477081298828
+				198.84719848632812,
+				-14.367623329162598,
+				99.82469940185547
 			},
 			pos2 = {
-				305.603271484375,
-				-2.4393310546875,
-				91.27159881591797
-			}
-		}
-	},
-	["46ae37a8-3031-4994-9b10-001c3e2df31a"] = {
-		{
-			smart_object_index = 113,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					254.0292510986328,
-					41.37204360961914,
-					98.6269760131836
-				}
-			},
-			pos1 = {
-				253.76593017578125,
-				42.336734771728516,
-				98.34651947021484
-			},
-			pos2 = {
-				254.29258728027344,
-				40.40736389160156,
-				94.70967102050781
+				197.21206665039062,
+				-13.215913772583008,
+				95.09129333496094
 			}
 		},
 		{
-			smart_object_index = 114,
+			smart_object_index = 658,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					253.409912109375,
-					41.20298767089844,
-					98.62698364257812
+					198.5919647216797,
+					-12.993370056152344,
+					99.90890502929688
 				}
 			},
 			pos1 = {
-				253.14659118652344,
-				42.167694091796875,
-				98.34651947021484
+				199.4095458984375,
+				-13.569208145141602,
+				100.01554870605469
 			},
 			pos2 = {
-				253.67323303222656,
-				40.238311767578125,
-				94.67317962646484
+				197.77439880371094,
+				-12.417497634887695,
+				95.17780303955078
 			}
 		}
 	},
-	["a39f369c-1db3-4709-97f8-f69ebe839365"] = {
+	["62f5407e-ad01-4f03-be73-ce021ffff7d2"] = {
 		{
 			smart_object_index = 150,
 			smart_object_type = "ledges",
@@ -16257,20 +16326,20 @@ local smart_objects = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					302.10845947265625,
-					71.87165832519531,
-					98.94021606445312
+					357.202392578125,
+					-82.98806762695312,
+					101.59004974365234
 				}
 			},
 			pos1 = {
-				301.8631286621094,
-				72.8411865234375,
-				98.94070434570312
+				357.0208740234375,
+				-83.97146606445312,
+				101.45911407470703
 			},
 			pos2 = {
-				302.353759765625,
-				70.90216827392578,
-				91.34310150146484
+				357.3839111328125,
+				-82.00469970703125,
+				95.30646514892578
 			}
 		},
 		{
@@ -16281,99 +16350,169 @@ local smart_objects = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					301.21923828125,
-					71.64665985107422,
-					98.90538024902344
+					357.9411315917969,
+					-83.12440490722656,
+					101.59396362304688
 				}
 			},
 			pos1 = {
-				300.9739074707031,
-				72.61618041992188,
-				98.91673278808594
+				357.75958251953125,
+				-84.1077880859375,
+				101.47944641113281
 			},
 			pos2 = {
-				301.46453857421875,
-				70.67716979980469,
-				90.9932861328125
+				358.12261962890625,
+				-82.14103698730469,
+				95.3336410522461
+			}
+		},
+		{
+			smart_object_index = 152,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					358.6798400878906,
+					-83.2607421875,
+					101.59788513183594
+				}
+			},
+			pos1 = {
+				358.4983215332031,
+				-84.24412536621094,
+				101.4869384765625
+			},
+			pos2 = {
+				358.861328125,
+				-82.27735900878906,
+				95.3614273071289
 			}
 		}
 	},
-	["3e0de798-e3c5-45be-a422-bb32c7ddc955"] = {
+	["c1ce4266-d70d-4fd5-b403-6c6618535b3b"] = {
 		{
-			smart_object_index = 104,
+			smart_object_index = 75,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					308.94622802734375,
-					-26.314285278320312,
-					100.53490447998047
+					345.84521484375,
+					0.4336788058280945,
+					104.55245208740234
 				}
 			},
 			pos1 = {
-				308.7362976074219,
-				-27.2919864654541,
-				100.50428009033203
+				345.8605651855469,
+				1.433572769165039,
+				104.07353973388672
 			},
 			pos2 = {
-				309.1561279296875,
-				-25.336578369140625,
-				95.4427719116211
+				345.829833984375,
+				-0.5661940574645996,
+				102.11396789550781
 			}
 		},
 		{
-			smart_object_index = 105,
+			smart_object_index = 76,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					309.45880126953125,
-					-26.424341201782227,
-					100.5550308227539
+					344.9859924316406,
+					0.4468989968299866,
+					104.57528686523438
 				}
 			},
 			pos1 = {
-				309.2488708496094,
-				-27.402042388916016,
-				100.47662353515625
+				345.0013732910156,
+				1.4467887878417969,
+				104.12560272216797
 			},
 			pos2 = {
-				309.668701171875,
-				-25.446640014648438,
-				95.38394165039062
+				344.9706115722656,
+				-0.5529727935791016,
+				102.02970886230469
 			}
 		},
 		{
-			smart_object_index = 106,
+			smart_object_index = 77,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					309.97137451171875,
-					-26.53439712524414,
-					100.57515716552734
+					344.12677001953125,
+					0.46011918783187866,
+					104.5981216430664
 				}
 			},
 			pos1 = {
-				309.7614440917969,
-				-27.51209831237793,
-				100.44583892822266
+				344.1421203613281,
+				1.460000991821289,
+				104.18383026123047
 			},
 			pos2 = {
-				310.18121337890625,
-				-25.556671142578125,
-				95.32232666015625
+				344.1113586425781,
+				-0.539757251739502,
+				101.92041778564453
+			}
+		}
+	},
+	["e0407d11-cea0-42db-9bd3-7a65a3cadd6c"] = {
+		{
+			smart_object_index = 14,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					226.2266387939453,
+					136.06744384765625,
+					96.73697662353516
+				}
+			},
+			pos1 = {
+				226.0736846923828,
+				137.05567932128906,
+				96.82293701171875
+			},
+			pos2 = {
+				226.37957763671875,
+				135.0792236328125,
+				94.89066314697266
+			}
+		},
+		{
+			smart_object_index = 15,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					227.21487426757812,
+					136.22036743164062,
+					96.73697662353516
+				}
+			},
+			pos1 = {
+				227.06192016601562,
+				137.20860290527344,
+				96.91278076171875
+			},
+			pos2 = {
+				227.3677978515625,
+				135.23211669921875,
+				94.893798828125
 			}
 		}
 	},
 	["0a444a28-1178-42f4-a12f-38cbcbe91b30"] = {
 		{
-			smart_object_index = 893,
+			smart_object_index = 890,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16397,7 +16536,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 894,
+			smart_object_index = 891,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16421,7 +16560,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 895,
+			smart_object_index = 892,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16447,7 +16586,7 @@ local smart_objects = {
 	},
 	["986a50fc-5950-4bfe-b473-ec73ac23b5ab"] = {
 		{
-			smart_object_index = 82,
+			smart_object_index = 78,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -16470,7 +16609,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 83,
+			smart_object_index = 79,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -16493,130 +16632,153 @@ local smart_objects = {
 			}
 		}
 	},
-	["affb302c-b6a4-4cf3-9008-5bbd21abf142"] = {
+	["3e0de798-e3c5-45be-a422-bb32c7ddc955"] = {
 		{
-			smart_object_index = 121,
+			smart_object_index = 109,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					220.3332977294922,
-					133.4342803955078,
-					95.80999755859375
+					308.94622802734375,
+					-26.314285278320312,
+					100.53490447998047
 				}
 			},
 			pos1 = {
-				221.30841064453125,
-				133.65565490722656,
-				95.19135284423828
+				308.7362976074219,
+				-27.2919864654541,
+				100.50428009033203
 			},
 			pos2 = {
-				219.35801696777344,
-				133.21290588378906,
-				91.05359649658203
+				309.1561279296875,
+				-25.336578369140625,
+				95.4427719116211
 			}
 		},
 		{
-			smart_object_index = 122,
+			smart_object_index = 110,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					220.1371307373047,
-					134.2982635498047,
-					95.80999755859375
+					309.45880126953125,
+					-26.424341201782227,
+					100.5550308227539
 				}
 			},
 			pos1 = {
-				221.1122283935547,
-				134.51962280273438,
-				95.32328796386719
+				309.2488708496094,
+				-27.402042388916016,
+				100.47662353515625
 			},
 			pos2 = {
-				219.161865234375,
-				134.076904296875,
-				91.19580078125
+				309.668701171875,
+				-25.446640014648438,
+				95.38394165039062
 			}
 		},
 		{
-			smart_object_index = 123,
+			smart_object_index = 111,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					219.9409637451172,
-					135.1622314453125,
-					95.80999755859375
+					309.97137451171875,
+					-26.53439712524414,
+					100.57515716552734
 				}
 			},
 			pos1 = {
-				220.91604614257812,
-				135.3835906982422,
-				95.47213745117188
+				309.7614440917969,
+				-27.51209831237793,
+				100.44583892822266
 			},
 			pos2 = {
-				218.96568298339844,
-				134.9408721923828,
-				91.35309600830078
+				310.18121337890625,
+				-25.556671142578125,
+				95.32232666015625
 			}
 		}
 	},
-	["e7ec8d39-1393-4060-8b7c-21a15e86033f"] = {
+	["856aed5d-c4cd-45c0-a477-b9167518dc0e"] = {
 		{
-			smart_object_index = 544,
+			smart_object_index = 184,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					276.7347717285156,
-					88.96311950683594,
-					98.89404296875
+					308.7188415527344,
+					-11.491837501525879,
+					95.49566650390625
 				}
 			},
 			pos1 = {
-				276.7716064453125,
-				89.96247100830078,
-				98.78058624267578
+				308.663330078125,
+				-12.490318298339844,
+				95.60814666748047
 			},
 			pos2 = {
-				276.6978759765625,
-				87.9637222290039,
-				91.39566802978516
+				308.7743835449219,
+				-10.493363380432129,
+				92.36346435546875
 			}
 		},
 		{
-			smart_object_index = 545,
+			smart_object_index = 185,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					276.3457946777344,
-					88.97747039794922,
-					98.88946533203125
+					309.45025634765625,
+					-11.532513618469238,
+					95.53307342529297
 				}
 			},
 			pos1 = {
-				276.3826599121094,
-				89.97682189941406,
-				98.76253509521484
+				309.3947448730469,
+				-12.530988693237305,
+				95.61087036132812
 			},
 			pos2 = {
-				276.3089599609375,
-				87.9781494140625,
-				91.32230377197266
+				309.5058288574219,
+				-10.534032821655273,
+				92.39418029785156
+			}
+		},
+		{
+			smart_object_index = 186,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					310.1816711425781,
+					-11.573189735412598,
+					95.57048034667969
+				}
+			},
+			pos1 = {
+				310.1261901855469,
+				-12.571666717529297,
+				95.61546325683594
+			},
+			pos2 = {
+				310.2372131347656,
+				-10.574718475341797,
+				92.4384765625
 			}
 		}
 	},
 	["ce825f03-2aa7-46bb-8d15-ebb5babaf469"] = {
 		{
-			smart_object_index = 394,
+			smart_object_index = 416,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16640,7 +16802,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 395,
+			smart_object_index = 417,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16664,7 +16826,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 396,
+			smart_object_index = 418,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16688,7 +16850,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 397,
+			smart_object_index = 419,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -16709,225 +16871,6 @@ local smart_objects = {
 				247.89735412597656,
 				8.972932815551758,
 				90.9112548828125
-			}
-		}
-	},
-	["4da5ec85-8d6a-4693-bdb3-01cc75f7db6a"] = {
-		{
-			smart_object_index = 94,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					373.1651306152344,
-					88.25146484375,
-					99.31791687011719
-				}
-			},
-			pos1 = {
-				374.12017822265625,
-				87.95538330078125,
-				99.51224517822266
-			},
-			pos2 = {
-				372.21002197265625,
-				88.5475845336914,
-				95.87696075439453
-			}
-		},
-		{
-			smart_object_index = 95,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					373.3500671386719,
-					88.84784698486328,
-					99.32958221435547
-				}
-			},
-			pos1 = {
-				374.3051452636719,
-				88.55178833007812,
-				99.51742553710938
-			},
-			pos2 = {
-				372.39495849609375,
-				89.14395141601562,
-				95.98795318603516
-			}
-		},
-		{
-			smart_object_index = 96,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					373.53497314453125,
-					89.44422912597656,
-					99.34124755859375
-				}
-			},
-			pos1 = {
-				374.49005126953125,
-				89.14816284179688,
-				99.51390075683594
-			},
-			pos2 = {
-				372.57989501953125,
-				89.74034881591797,
-				96.11808013916016
-			}
-		}
-	},
-	["8406e269-ba27-4379-bb2d-733564fb1053"] = {
-		{
-			smart_object_index = 696,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					262.37872314453125,
-					-21.124351501464844,
-					102.2945785522461
-				}
-			},
-			pos1 = {
-				261.72894287109375,
-				-20.36423110961914,
-				101.83367919921875
-			},
-			pos2 = {
-				263.0284423828125,
-				-21.884521484375,
-				91.08258056640625
-			}
-		},
-		{
-			smart_object_index = 697,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					263.06732177734375,
-					-20.535776138305664,
-					102.3200454711914
-				}
-			},
-			pos1 = {
-				262.41754150390625,
-				-19.77564811706543,
-				101.8690185546875
-			},
-			pos2 = {
-				263.717041015625,
-				-21.295913696289062,
-				91.05729675292969
-			}
-		},
-		{
-			smart_object_index = 698,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					263.75592041015625,
-					-19.947200775146484,
-					102.34551239013672
-				}
-			},
-			pos1 = {
-				263.10614013671875,
-				-19.187076568603516,
-				101.90435791015625
-			},
-			pos2 = {
-				264.4056396484375,
-				-20.70733642578125,
-				91.02936553955078
-			}
-		}
-	},
-	["72169834-d3b3-4f89-8fb3-848ada09c9f9"] = {
-		{
-			smart_object_index = 488,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					320.9255676269531,
-					-51.70851135253906,
-					100.73216247558594
-				}
-			},
-			pos1 = {
-				321.3548889160156,
-				-50.80534362792969,
-				100.45457458496094
-			},
-			pos2 = {
-				320.49615478515625,
-				-52.61164855957031,
-				94.55644226074219
-			}
-		},
-		{
-			smart_object_index = 489,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					320.4579162597656,
-					-51.48617172241211,
-					100.64071655273438
-				}
-			},
-			pos1 = {
-				320.88726806640625,
-				-50.58301544189453,
-				100.38195037841797
-			},
-			pos2 = {
-				320.028564453125,
-				-52.38929748535156,
-				94.51744842529297
-			}
-		},
-		{
-			smart_object_index = 490,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					319.9902648925781,
-					-51.26382827758789,
-					100.54927062988281
-				}
-			},
-			pos1 = {
-				320.4195861816406,
-				-50.36066818237305,
-				100.30885314941406
-			},
-			pos2 = {
-				319.5609130859375,
-				-52.16697692871094,
-				94.48101043701172
 			}
 		}
 	},
@@ -17002,228 +16945,513 @@ local smart_objects = {
 			}
 		}
 	},
-	["1467f3d9-de0a-47d3-a192-03e8639fbeb6"] = {
+	["8406e269-ba27-4379-bb2d-733564fb1053"] = {
 		{
-			smart_object_index = 225,
+			smart_object_index = 711,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					202.33799743652344,
-					-15.727167129516602,
-					100.5595703125
+					262.37872314453125,
+					-21.124351501464844,
+					102.2945785522461
 				}
 			},
 			pos1 = {
-				201.4864044189453,
-				-15.20296859741211,
-				100.38042449951172
+				261.72894287109375,
+				-20.36423110961914,
+				101.83367919921875
 			},
 			pos2 = {
-				203.18951416015625,
-				-16.251388549804688,
-				91.87835693359375
+				263.0284423828125,
+				-21.884521484375,
+				91.08258056640625
 			}
 		},
 		{
-			smart_object_index = 226,
+			smart_object_index = 712,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					201.8503875732422,
-					-16.519325256347656,
-					100.39083862304688
+					263.06732177734375,
+					-20.535776138305664,
+					102.3200454711914
 				}
 			},
 			pos1 = {
-				200.99879455566406,
-				-15.995123863220215,
-				100.2050552368164
+				262.41754150390625,
+				-19.77564811706543,
+				101.8690185546875
 			},
 			pos2 = {
-				202.701904296875,
-				-17.043533325195312,
-				91.9515151977539
+				263.717041015625,
+				-21.295913696289062,
+				91.05729675292969
 			}
 		},
 		{
-			smart_object_index = 227,
+			smart_object_index = 713,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					201.36276245117188,
-					-17.311481475830078,
-					100.22210693359375
+					263.75592041015625,
+					-19.947200775146484,
+					102.34551239013672
 				}
 			},
 			pos1 = {
-				200.5111541748047,
-				-16.78727149963379,
-				100.02833557128906
+				263.10614013671875,
+				-19.187076568603516,
+				101.90435791015625
 			},
 			pos2 = {
-				202.21435546875,
-				-17.835708618164062,
-				92.01423645019531
+				264.4056396484375,
+				-20.70733642578125,
+				91.02936553955078
 			}
 		}
 	},
-	["62f5407e-ad01-4f03-be73-ce021ffff7d2"] = {
+	["72169834-d3b3-4f89-8fb3-848ada09c9f9"] = {
 		{
-			smart_object_index = 759,
+			smart_object_index = 525,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					357.202392578125,
-					-82.98806762695312,
-					101.59004974365234
+					320.9255676269531,
+					-51.70851135253906,
+					100.73216247558594
 				}
 			},
 			pos1 = {
-				357.0208740234375,
-				-83.97146606445312,
-				101.45911407470703
+				321.3548889160156,
+				-50.80534362792969,
+				100.45457458496094
 			},
 			pos2 = {
-				357.3839111328125,
-				-82.00469970703125,
-				95.30646514892578
+				320.49615478515625,
+				-52.61164855957031,
+				94.55644226074219
 			}
 		},
 		{
-			smart_object_index = 760,
+			smart_object_index = 526,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					357.9411315917969,
-					-83.12440490722656,
-					101.59396362304688
+					320.4579162597656,
+					-51.48617172241211,
+					100.64071655273438
 				}
 			},
 			pos1 = {
-				357.75958251953125,
-				-84.1077880859375,
-				101.47944641113281
+				320.88726806640625,
+				-50.58301544189453,
+				100.38195037841797
 			},
 			pos2 = {
-				358.12261962890625,
-				-82.14103698730469,
-				95.3336410522461
+				320.028564453125,
+				-52.38929748535156,
+				94.51744842529297
 			}
 		},
 		{
-			smart_object_index = 761,
+			smart_object_index = 527,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					358.6798400878906,
-					-83.2607421875,
-					101.59788513183594
+					319.9902648925781,
+					-51.26382827758789,
+					100.54927062988281
 				}
 			},
 			pos1 = {
-				358.4983215332031,
-				-84.24412536621094,
-				101.4869384765625
+				320.4195861816406,
+				-50.36066818237305,
+				100.30885314941406
 			},
 			pos2 = {
-				358.861328125,
-				-82.27735900878906,
-				95.3614273071289
+				319.5609130859375,
+				-52.16697692871094,
+				94.48101043701172
 			}
 		}
 	},
-	["0c201768-1768-43c3-a869-2742a53a6a60"] = {
+	["518a85b8-2f2b-4a5e-9bd5-7ef620e26996"] = {
 		{
-			smart_object_index = 89,
+			smart_object_index = 497,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					276.47454833984375,
-					93.57850646972656,
-					100.80596160888672
+					299.84033203125,
+					-25.40430450439453,
+					100.70497131347656
 				}
 			},
 			pos1 = {
-				277.47454833984375,
-				93.57795715332031,
-				100.0401840209961
+				299.7763671875,
+				-26.402246475219727,
+				100.3833999633789
 			},
 			pos2 = {
-				275.47454833984375,
-				93.57908630371094,
-				98.79960632324219
+				299.904296875,
+				-24.406410217285156,
+				95.0140151977539
 			}
 		},
 		{
-			smart_object_index = 90,
+			smart_object_index = 498,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					276.4750061035156,
-					94.40577697753906,
-					100.825927734375
+					300.58941650390625,
+					-25.452312469482422,
+					100.71446228027344
 				}
 			},
 			pos1 = {
-				277.4750061035156,
-				94.40522766113281,
-				99.99341583251953
+				300.52545166015625,
+				-26.45025062561035,
+				100.41825866699219
 			},
 			pos2 = {
-				275.47503662109375,
-				94.40637969970703,
-				98.8127212524414
+				300.6533203125,
+				-24.454345703125,
+				95.11341094970703
 			}
 		},
 		{
-			smart_object_index = 91,
+			smart_object_index = 499,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					301.3385314941406,
+					-25.500320434570312,
+					100.72395324707031
+				}
+			},
+			pos1 = {
+				301.2745666503906,
+				-26.498260498046875,
+				100.42523193359375
+			},
+			pos2 = {
+				301.4024658203125,
+				-24.50238037109375,
+				95.23278045654297
+			}
+		},
+		{
+			smart_object_index = 500,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					302.087646484375,
+					-25.548328399658203,
+					100.73344421386719
+				}
+			},
+			pos1 = {
+				302.023681640625,
+				-26.5462646484375,
+				100.44157409667969
+			},
+			pos2 = {
+				302.151611328125,
+				-24.5504150390625,
+				95.36186981201172
+			}
+		}
+	},
+	["46ae37a8-3031-4994-9b10-001c3e2df31a"] = {
+		{
+			smart_object_index = 118,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					276.4754638671875,
-					95.2330551147461,
-					100.84590148925781
+					254.0292510986328,
+					41.37204360961914,
+					98.6269760131836
 				}
 			},
 			pos1 = {
-				277.4754638671875,
-				95.23251342773438,
-				99.95014190673828
+				253.76593017578125,
+				42.336734771728516,
+				98.34651947021484
 			},
 			pos2 = {
-				275.4754638671875,
-				95.23365020751953,
-				98.82223510742188
+				254.29258728027344,
+				40.40736389160156,
+				94.70967102050781
+			}
+		},
+		{
+			smart_object_index = 119,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					253.409912109375,
+					41.20298767089844,
+					98.62698364257812
+				}
+			},
+			pos1 = {
+				253.14659118652344,
+				42.167694091796875,
+				98.34651947021484
+			},
+			pos2 = {
+				253.67323303222656,
+				40.238311767578125,
+				94.67317962646484
+			}
+		}
+	},
+	["40189220-d5cf-45ad-a4db-92d431dd5f17"] = {
+		{
+			smart_object_index = 120,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					268.3277893066406,
+					-21.14283561706543,
+					93.63346862792969
+				}
+			},
+			pos1 = {
+				269.0308837890625,
+				-20.43179702758789,
+				93.03467559814453
+			},
+			pos2 = {
+				267.6246337890625,
+				-21.8538818359375,
+				91.05846405029297
+			}
+		},
+		{
+			smart_object_index = 121,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					269.01214599609375,
+					-21.819551467895508,
+					93.57395935058594
+				}
+			},
+			pos1 = {
+				269.7152404785156,
+				-21.108501434326172,
+				93.05115509033203
+			},
+			pos2 = {
+				268.30902099609375,
+				-22.530624389648438,
+				91.0650405883789
+			}
+		},
+		{
+			smart_object_index = 122,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					269.696533203125,
+					-22.49626922607422,
+					93.51445007324219
+				}
+			},
+			pos1 = {
+				270.3996276855469,
+				-21.78523063659668,
+				93.01912689208984
+			},
+			pos2 = {
+				268.993408203125,
+				-23.20733642578125,
+				91.07469940185547
+			}
+		},
+		{
+			smart_object_index = 123,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					270.380859375,
+					-23.17298126220703,
+					93.45492553710938
+				}
+			},
+			pos1 = {
+				271.0839538574219,
+				-22.46194076538086,
+				92.98881530761719
+			},
+			pos2 = {
+				269.677734375,
+				-23.884033203125,
+				91.0843505859375
+			}
+		},
+		{
+			smart_object_index = 124,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					271.06524658203125,
+					-23.84969711303711,
+					93.39541625976562
+				}
+			},
+			pos1 = {
+				271.7683410644531,
+				-23.138648986816406,
+				92.99181365966797
+			},
+			pos2 = {
+				270.36212158203125,
+				-24.56072998046875,
+				91.08367919921875
+			}
+		},
+		{
+			smart_object_index = 125,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					271.7496032714844,
+					-24.52641487121582,
+					93.33589935302734
+				}
+			},
+			pos1 = {
+				272.45269775390625,
+				-23.81537437438965,
+				93.02869415283203
+			},
+			pos2 = {
+				271.0465087890625,
+				-25.237472534179688,
+				91.06673431396484
+			}
+		}
+	},
+	["4b4f067c-08dd-4bd4-be22-e4877797bc89"] = {
+		{
+			smart_object_index = 16,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					365.7122802734375,
+					25.051794052124023,
+					108.69413757324219
+				}
+			},
+			pos1 = {
+				365.88885498046875,
+				24.06747055053711,
+				108.60501861572266
+			},
+			pos2 = {
+				365.53564453125,
+				26.036100387573242,
+				105.8546142578125
+			}
+		},
+		{
+			smart_object_index = 17,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					366.3279113769531,
+					25.16226577758789,
+					108.63652038574219
+				}
+			},
+			pos1 = {
+				366.5045166015625,
+				24.177955627441406,
+				108.5752182006836
+			},
+			pos2 = {
+				366.1512756347656,
+				26.146574020385742,
+				105.80509185791016
+			}
+		},
+		{
+			smart_object_index = 18,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					366.94354248046875,
+					25.27273941040039,
+					108.57890319824219
+				}
+			},
+			pos1 = {
+				367.1201171875,
+				24.288414001464844,
+				108.53850555419922
+			},
+			pos2 = {
+				366.76690673828125,
+				26.25706672668457,
+				105.7499771118164
 			}
 		}
 	},
 	["59c694d6-4c24-4397-9aa5-0226a954ac07"] = {
 		{
-			smart_object_index = 428,
+			smart_object_index = 471,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17246,7 +17474,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 429,
+			smart_object_index = 472,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.8749749660491943,
@@ -17264,7 +17492,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 430,
+			smart_object_index = 473,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17287,7 +17515,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 431,
+			smart_object_index = 474,
 			smart_object_type = "jumps",
 			data = {
 				scale = 1.8749788999557495,
@@ -17307,7 +17535,7 @@ local smart_objects = {
 	},
 	["198f28a0-aa19-4a14-835c-6aa573211129"] = {
 		{
-			smart_object_index = 896,
+			smart_object_index = 893,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17330,7 +17558,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 897,
+			smart_object_index = 894,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17355,7 +17583,7 @@ local smart_objects = {
 	},
 	["d2e79f07-5e38-4670-8c2c-dbf54af7c94f"] = {
 		{
-			smart_object_index = 152,
+			smart_object_index = 157,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17378,7 +17606,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 153,
+			smart_object_index = 158,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -17401,7 +17629,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 154,
+			smart_object_index = 159,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17426,7 +17654,7 @@ local smart_objects = {
 	},
 	["8d51e5dd-c409-4f89-a5a2-bf690743f2f5"] = {
 		{
-			smart_object_index = 721,
+			smart_object_index = 642,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17449,7 +17677,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 722,
+			smart_object_index = 643,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -17474,7 +17702,7 @@ local smart_objects = {
 	},
 	["30caf950-3b51-4aff-ab8c-afa52fad0aab"] = {
 		{
-			smart_object_index = 699,
+			smart_object_index = 721,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -17498,7 +17726,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 700,
+			smart_object_index = 722,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -17522,7 +17750,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 701,
+			smart_object_index = 723,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -17546,7 +17774,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 702,
+			smart_object_index = 724,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -17570,173 +17798,794 @@ local smart_objects = {
 			}
 		}
 	},
-	["8c641015-089e-4422-a59c-29779ad63af7"] = {
+	["0c201768-1768-43c3-a869-2742a53a6a60"] = {
 		{
-			smart_object_index = 215,
+			smart_object_index = 88,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					289.7044677734375,
-					-4.404911518096924,
-					92.754638671875
+					276.47454833984375,
+					93.57850646972656,
+					100.80596160888672
 				}
 			},
 			pos1 = {
-				289.9663391113281,
-				-3.4398186206817627,
-				92.82194519042969
+				277.47454833984375,
+				93.57795715332031,
+				100.0401840209961
 			},
 			pos2 = {
-				289.44256591796875,
-				-5.3699951171875,
-				90.89185333251953
+				275.47454833984375,
+				93.57908630371094,
+				98.79960632324219
 			}
 		},
 		{
-			smart_object_index = 216,
+			smart_object_index = 89,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					289.17974853515625,
-					-4.2625203132629395,
-					92.70745849609375
+					276.4750061035156,
+					94.40577697753906,
+					100.825927734375
 				}
 			},
 			pos1 = {
-				289.441650390625,
-				-3.297431707382202,
-				92.81891632080078
+				277.4750061035156,
+				94.40522766113281,
+				99.99341583251953
 			},
 			pos2 = {
-				288.9178466796875,
-				-5.2276153564453125,
-				90.92103576660156
+				275.47503662109375,
+				94.40637969970703,
+				98.8127212524414
+			}
+		},
+		{
+			smart_object_index = 90,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					276.4754638671875,
+					95.2330551147461,
+					100.84590148925781
+				}
+			},
+			pos1 = {
+				277.4754638671875,
+				95.23251342773438,
+				99.95014190673828
+			},
+			pos2 = {
+				275.4754638671875,
+				95.23365020751953,
+				98.82223510742188
 			}
 		}
 	},
-	["2d819750-7650-41f9-acbd-cb0afc305491"] = {
+	["a0751afb-7374-41b5-b906-cace62bba61f"] = {
 		{
-			smart_object_index = 389,
+			smart_object_index = 318,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					102.21270751953125,
-					-1.968947172164917,
-					99.19682312011719
+					30.56093978881836,
+					-116.33035278320312,
+					97.479736328125
 				}
 			},
 			pos1 = {
-				103.20832824707031,
-				-1.875280737876892,
-				98.88456726074219
+				29.766983032226562,
+				-116.93827819824219,
+				97.20306396484375
 			},
 			pos2 = {
-				101.21709442138672,
-				-2.0626134872436523,
-				92.05083465576172
+				31.35492706298828,
+				-115.72241973876953,
+				91.31816101074219
 			}
 		},
 		{
-			smart_object_index = 390,
+			smart_object_index = 319,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					102.13302612304688,
-					-1.1220202445983887,
-					99.28614044189453
+					31.008865356445312,
+					-116.91536712646484,
+					97.479736328125
 				}
 			},
 			pos1 = {
-				103.12864685058594,
-				-1.0283530950546265,
-				98.96388244628906
+				30.21490478515625,
+				-117.52328491210938,
+				97.20851135253906
 			},
 			pos2 = {
-				101.13741302490234,
-				-1.2156848907470703,
-				92.03018951416016
+				31.802852630615234,
+				-116.30743408203125,
+				91.36436462402344
+			}
+		}
+	},
+	["97a4882e-8de9-40b1-a59b-294f0d160fb2"] = {
+		{
+			smart_object_index = 528,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					388.8340759277344,
+					-126.96123504638672,
+					98.92610931396484
+				}
+			},
+			pos1 = {
+				389.7690124511719,
+				-126.6065673828125,
+				98.76229858398438
+			},
+			pos2 = {
+				387.8990478515625,
+				-127.31590270996094,
+				96.04753112792969
 			}
 		},
 		{
-			smart_object_index = 391,
+			smart_object_index = 529,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					102.0533447265625,
-					-0.2750930190086365,
-					99.37547302246094
+					388.5372314453125,
+					-126.1787109375,
+					98.94459533691406
 				}
 			},
 			pos1 = {
-				103.04896545410156,
-				-0.18142639100551605,
-				99.00365447998047
+				389.47216796875,
+				-125.82402038574219,
+				98.77201080322266
 			},
 			pos2 = {
-				101.05773162841797,
-				-0.3687598705291748,
-				92.13883972167969
+				387.6022033691406,
+				-126.53338623046875,
+				96.07014465332031
 			}
 		},
 		{
-			smart_object_index = 392,
+			smart_object_index = 530,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					101.97366333007812,
-					0.5718340873718262,
-					99.46480560302734
+					388.2403869628906,
+					-125.39619445800781,
+					98.96308898925781
 				}
 			},
 			pos1 = {
-				102.96927642822266,
-				0.6655023097991943,
-				99.04417419433594
+				389.1753234863281,
+				-125.04154205322266,
+				98.82662963867188
 			},
 			pos2 = {
-				100.9780502319336,
-				0.4781680107116699,
-				92.3055191040039
+				387.30535888671875,
+				-125.75086212158203,
+				96.0395736694336
 			}
 		},
 		{
-			smart_object_index = 393,
+			smart_object_index = 531,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					387.94354248046875,
+					-124.6136703491211,
+					98.9815673828125
+				}
+			},
+			pos1 = {
+				388.87847900390625,
+				-124.25896453857422,
+				98.84144592285156
+			},
+			pos2 = {
+				387.00848388671875,
+				-124.96833038330078,
+				95.99030303955078
+			}
+		}
+	},
+	["3e279e94-9453-4061-bc9b-bb8ad728400b"] = {
+		{
+			smart_object_index = 672,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					374.5077209472656,
+					32.2216796875,
+					104.76388549804688
+				}
+			},
+			pos1 = {
+				373.6650390625,
+				31.683137893676758,
+				104.74148559570312
+			},
+			pos2 = {
+				375.3503112792969,
+				32.760189056396484,
+				102.87248229980469
+			}
+		},
+		{
+			smart_object_index = 673,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					374.78497314453125,
+					31.78785514831543,
+					104.67967224121094
+				}
+			},
+			pos1 = {
+				373.9422912597656,
+				31.24932861328125,
+				104.68733978271484
+			},
+			pos2 = {
+				375.6275634765625,
+				32.32636260986328,
+				102.88025665283203
+			}
+		},
+		{
+			smart_object_index = 674,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					375.062255859375,
+					31.354034423828125,
+					104.595458984375
+				}
+			},
+			pos1 = {
+				374.2195739746094,
+				30.81550407409668,
+				104.63643646240234
+			},
+			pos2 = {
+				375.9048156738281,
+				31.892536163330078,
+				102.91111755371094
+			}
+		}
+	},
+	["2ca75119-9cd0-41e5-ab49-12d49bfa6929"] = {
+		{
+			smart_object_index = 895,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					101.89398956298828,
-					1.4187612533569336,
-					99.55413055419922
+					106.49726867675781,
+					-13.147785186767578,
+					97.96355438232422
 				}
 			},
 			pos1 = {
-				102.88961791992188,
-				1.5124279260635376,
-				99.08317565917969
+				107.49353790283203,
+				-13.061251640319824,
+				98.01026153564453
 			},
 			pos2 = {
-				100.89836883544922,
-				1.3250980377197266,
-				92.58147430419922
+				105.50103759765625,
+				-13.234343528747559,
+				93.02680206298828
+			}
+		},
+		{
+			smart_object_index = 896,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					106.41914367675781,
+					-12.24829387664795,
+					97.75672912597656
+				}
+			},
+			pos1 = {
+				107.4154052734375,
+				-12.161760330200195,
+				97.84898376464844
+			},
+			pos2 = {
+				105.42291259765625,
+				-12.334850311279297,
+				92.86285400390625
+			}
+		},
+		{
+			smart_object_index = 897,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					106.34100341796875,
+					-11.34880256652832,
+					97.54989624023438
+				}
+			},
+			pos1 = {
+				107.33726501464844,
+				-11.26226806640625,
+				97.58613586425781
+			},
+			pos2 = {
+				105.34477233886719,
+				-11.43536376953125,
+				92.68762969970703
+			}
+		},
+		{
+			smart_object_index = 898,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					106.26286315917969,
+					-10.449311256408691,
+					97.34306335449219
+				}
+			},
+			pos1 = {
+				107.25911712646484,
+				-10.362772941589355,
+				97.3367919921875
+			},
+			pos2 = {
+				105.26659393310547,
+				-10.535852432250977,
+				92.62440490722656
+			}
+		},
+		{
+			smart_object_index = 899,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					106.18472290039062,
+					-9.549819946289062,
+					97.13623809814453
+				}
+			},
+			pos1 = {
+				107.18098449707031,
+				-9.463285446166992,
+				97.12882995605469
+			},
+			pos2 = {
+				105.18846893310547,
+				-9.636363983154297,
+				92.56838989257812
+			}
+		}
+	},
+	["c4ffdc3e-b950-41dc-9f78-97450e8d8ab1"] = {
+		{
+			smart_object_index = 51,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					76.98091888427734,
+					-11.086038589477539,
+					93.56854248046875
+				}
+			},
+			pos1 = {
+				75.98124694824219,
+				-11.060548782348633,
+				93.37440490722656
+			},
+			pos2 = {
+				77.9805908203125,
+				-11.11151123046875,
+				91.05914306640625
+			}
+		},
+		{
+			smart_object_index = 52,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					76.95542907714844,
+					-12.085708618164062,
+					93.566650390625
+				}
+			},
+			pos1 = {
+				75.95576477050781,
+				-12.060221672058105,
+				93.37701416015625
+			},
+			pos2 = {
+				77.955078125,
+				-12.1112060546875,
+				90.99650573730469
+			}
+		}
+	},
+	["44ff002e-94a5-4643-b667-b75d633fa8da"] = {
+		{
+			smart_object_index = 377,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					303.80560302734375,
+					6.061115264892578,
+					95.36699676513672
+				}
+			},
+			pos1 = {
+				304.0644836425781,
+				7.027107238769531,
+				95.18486022949219
+			},
+			pos2 = {
+				303.5467834472656,
+				5.095227241516113,
+				91.04975891113281
+			}
+		},
+		{
+			smart_object_index = 378,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					302.8396911621094,
+					6.3199310302734375,
+					95.36699676513672
+				}
+			},
+			pos1 = {
+				303.0985412597656,
+				7.285934925079346,
+				95.36640930175781
+			},
+			pos2 = {
+				302.58074951171875,
+				5.35402774810791,
+				90.88529968261719
+			}
+		}
+	},
+	["b7dc8924-f868-41e6-876c-b8e247e2d5c4"] = {
+		{
+			smart_object_index = 406,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					82.17283630371094,
+					7.614672660827637,
+					99.19026184082031
+				}
+			},
+			pos1 = {
+				81.2130355834961,
+				7.895314693450928,
+				98.98930358886719
+			},
+			pos2 = {
+				83.13265991210938,
+				7.334029674530029,
+				91.77515411376953
+			}
+		},
+		{
+			smart_object_index = 407,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					81.9505615234375,
+					6.854464054107666,
+					99.19707489013672
+				}
+			},
+			pos1 = {
+				80.99075317382812,
+				7.135101318359375,
+				98.95813751220703
+			},
+			pos2 = {
+				82.9103775024414,
+				6.573821067810059,
+				91.6684799194336
+			}
+		},
+		{
+			smart_object_index = 408,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					81.72828674316406,
+					6.0942559242248535,
+					99.20388793945312
+				}
+			},
+			pos1 = {
+				80.76847839355469,
+				6.3748931884765625,
+				99.0138168334961
+			},
+			pos2 = {
+				82.68810272216797,
+				5.813612461090088,
+				91.5584716796875
+			}
+		},
+		{
+			smart_object_index = 409,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					81.50601196289062,
+					5.334047317504883,
+					99.210693359375
+				}
+			},
+			pos1 = {
+				80.54620361328125,
+				5.614686012268066,
+				99.00376892089844
+			},
+			pos2 = {
+				82.46583557128906,
+				5.053402900695801,
+				91.45056915283203
+			}
+		},
+		{
+			smart_object_index = 410,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					81.28373718261719,
+					4.57383918762207,
+					99.21751403808594
+				}
+			},
+			pos1 = {
+				80.32392883300781,
+				4.8544769287109375,
+				98.94721221923828
+			},
+			pos2 = {
+				82.24356079101562,
+				4.2931976318359375,
+				91.34136962890625
+			}
+		}
+	},
+	["f6b62f34-0746-4099-896b-e7fc0fca97dd"] = {
+		{
+			smart_object_index = 686,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					453.0745544433594,
+					91.99179077148438,
+					120.09672546386719
+				}
+			},
+			pos1 = {
+				454.0199279785156,
+				92.31819915771484,
+				120.07322692871094
+			},
+			pos2 = {
+				452.12945556640625,
+				91.6653823852539,
+				118.19499206542969
+			}
+		},
+		{
+			smart_object_index = 687,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					452.8482360839844,
+					92.64733123779297,
+					120.08647155761719
+				}
+			},
+			pos1 = {
+				453.7935791015625,
+				92.97373962402344,
+				120.10037994384766
+			},
+			pos2 = {
+				451.9031677246094,
+				92.32095336914062,
+				118.20679473876953
+			}
+		},
+		{
+			smart_object_index = 688,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					452.6219177246094,
+					93.30287170410156,
+					120.07621765136719
+				}
+			},
+			pos1 = {
+				453.5672912597656,
+				93.62928009033203,
+				120.11759948730469
+			},
+			pos2 = {
+				451.6768493652344,
+				92.97648620605469,
+				118.21859741210938
+			}
+		}
+	},
+	["de279705-23d6-498b-a3d9-6abcc58db0f9"] = {
+		{
+			smart_object_index = 420,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					325.8851318359375,
+					-36.90132522583008,
+					102.43428802490234
+				}
+			},
+			pos1 = {
+				325.1983947753906,
+				-36.17445755004883,
+				102.1749496459961
+			},
+			pos2 = {
+				326.57183837890625,
+				-37.628204345703125,
+				95.6821060180664
+			}
+		},
+		{
+			smart_object_index = 421,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					325.17462158203125,
+					-37.57265853881836,
+					102.33226013183594
+				}
+			},
+			pos1 = {
+				324.4878845214844,
+				-36.84577560424805,
+				102.0157699584961
+			},
+			pos2 = {
+				325.8614501953125,
+				-38.299560546875,
+				95.70240783691406
+			}
+		},
+		{
+			smart_object_index = 422,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					324.46405029296875,
+					-38.24399185180664,
+					102.23020935058594
+				}
+			},
+			pos1 = {
+				323.7773132324219,
+				-37.517120361328125,
+				101.85694122314453
+			},
+			pos2 = {
+				325.1507568359375,
+				-38.97088623046875,
+				95.65750122070312
+			}
+		},
+		{
+			smart_object_index = 423,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					323.7535095214844,
+					-38.91532516479492,
+					102.128173828125
+				}
+			},
+			pos1 = {
+				323.0667724609375,
+				-38.188446044921875,
+				101.69730377197266
+			},
+			pos2 = {
+				324.4403076171875,
+				-39.6422119140625,
+				95.58444213867188
 			}
 		}
 	},
@@ -17811,246 +18660,103 @@ local smart_objects = {
 			}
 		}
 	},
-	["3e279e94-9453-4061-bc9b-bb8ad728400b"] = {
+	["c2c7a205-0c8e-4f2c-9eb8-6dfa1a81854b"] = {
 		{
-			smart_object_index = 668,
+			smart_object_index = 212,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					374.5077209472656,
-					32.2216796875,
-					104.76388549804688
+					305.68316650390625,
+					-11.78017520904541,
+					95.46685791015625
 				}
 			},
 			pos1 = {
-				373.6650390625,
-				31.683137893676758,
-				104.74148559570312
+				305.8953857421875,
+				-12.757423400878906,
+				95.61856079101562
 			},
 			pos2 = {
-				375.3503112792969,
-				32.760189056396484,
-				102.87248229980469
+				305.4709777832031,
+				-10.802936553955078,
+				92.15426635742188
 			}
 		},
 		{
-			smart_object_index = 669,
+			smart_object_index = 213,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					374.78497314453125,
-					31.78785514831543,
-					104.67967224121094
+					306.34295654296875,
+					-11.63690185546875,
+					95.46235656738281
 				}
 			},
 			pos1 = {
-				373.9422912597656,
-				31.24932861328125,
-				104.68733978271484
+				306.5552062988281,
+				-12.61414909362793,
+				95.61650848388672
 			},
 			pos2 = {
-				375.6275634765625,
-				32.32636260986328,
-				102.88025665283203
+				306.1307678222656,
+				-10.659662246704102,
+				92.2110595703125
 			}
 		},
 		{
-			smart_object_index = 670,
+			smart_object_index = 214,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					375.062255859375,
-					31.354034423828125,
-					104.595458984375
+					307.0027770996094,
+					-11.493629455566406,
+					95.45787048339844
 				}
 			},
 			pos1 = {
-				374.2195739746094,
-				30.81550407409668,
-				104.63643646240234
+				307.21502685546875,
+				-12.470869064331055,
+				95.61244201660156
 			},
 			pos2 = {
-				375.9048156738281,
-				31.892536163330078,
-				102.91111755371094
-			}
-		}
-	},
-	["2ca75119-9cd0-41e5-ab49-12d49bfa6929"] = {
-		{
-			smart_object_index = 898,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					106.49726867675781,
-					-13.147785186767578,
-					97.96355438232422
-				}
-			},
-			pos1 = {
-				107.49353790283203,
-				-13.061251640319824,
-				98.01026153564453
-			},
-			pos2 = {
-				105.50103759765625,
-				-13.234343528747559,
-				93.02680206298828
+				306.7906188964844,
+				-10.516387939453125,
+				92.25402069091797
 			}
 		},
 		{
-			smart_object_index = 899,
+			smart_object_index = 215,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					106.41914367675781,
-					-12.24829387664795,
-					97.75672912597656
+					307.66259765625,
+					-11.350356101989746,
+					95.45337677001953
 				}
 			},
 			pos1 = {
-				107.4154052734375,
-				-12.161760330200195,
-				97.84898376464844
+				307.87481689453125,
+				-12.32760238647461,
+				95.60748291015625
 			},
 			pos2 = {
-				105.42291259765625,
-				-12.334850311279297,
-				92.86285400390625
-			}
-		},
-		{
-			smart_object_index = 900,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					106.34100341796875,
-					-11.34880256652832,
-					97.54989624023438
-				}
-			},
-			pos1 = {
-				107.33726501464844,
-				-11.26226806640625,
-				97.58613586425781
-			},
-			pos2 = {
-				105.34477233886719,
-				-11.43536376953125,
-				92.68762969970703
-			}
-		},
-		{
-			smart_object_index = 901,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					106.26286315917969,
-					-10.449311256408691,
-					97.34306335449219
-				}
-			},
-			pos1 = {
-				107.25911712646484,
-				-10.362772941589355,
-				97.3367919921875
-			},
-			pos2 = {
-				105.26659393310547,
-				-10.535852432250977,
-				92.62440490722656
-			}
-		},
-		{
-			smart_object_index = 902,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					106.18472290039062,
-					-9.549819946289062,
-					97.13623809814453
-				}
-			},
-			pos1 = {
-				107.18098449707031,
-				-9.463285446166992,
-				97.12882995605469
-			},
-			pos2 = {
-				105.18846893310547,
-				-9.636363983154297,
-				92.56838989257812
-			}
-		}
-	},
-	["c4ffdc3e-b950-41dc-9f78-97450e8d8ab1"] = {
-		{
-			smart_object_index = 593,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					76.98091888427734,
-					-11.086038589477539,
-					93.56854248046875
-				}
-			},
-			pos1 = {
-				75.98124694824219,
-				-11.060548782348633,
-				93.37440490722656
-			},
-			pos2 = {
-				77.9805908203125,
-				-11.11151123046875,
-				91.05914306640625
-			}
-		},
-		{
-			smart_object_index = 594,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					76.95542907714844,
-					-12.085708618164062,
-					93.566650390625
-				}
-			},
-			pos1 = {
-				75.95576477050781,
-				-12.060221672058105,
-				93.37701416015625
-			},
-			pos2 = {
-				77.955078125,
-				-12.1112060546875,
-				90.99650573730469
+				307.4504089355469,
+				-10.373122215270996,
+				92.2972640991211
 			}
 		}
 	},
 	["87e02b09-a3be-4e91-88e4-76f5a0ab50a1"] = {
 		{
-			smart_object_index = 539,
+			smart_object_index = 85,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -18073,7 +18779,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 540,
+			smart_object_index = 86,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -18096,7 +18802,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 541,
+			smart_object_index = 87,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -18119,632 +18825,57 @@ local smart_objects = {
 			}
 		}
 	},
-	["b7dc8924-f868-41e6-876c-b8e247e2d5c4"] = {
+	["37c3f179-cdf3-460e-8c5d-1199af63e26a"] = {
 		{
-			smart_object_index = 375,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					82.17283630371094,
-					7.614672660827637,
-					99.19026184082031
-				}
-			},
-			pos1 = {
-				81.2130355834961,
-				7.895314693450928,
-				98.98930358886719
-			},
-			pos2 = {
-				83.13265991210938,
-				7.334029674530029,
-				91.77515411376953
-			}
-		},
-		{
-			smart_object_index = 376,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					81.9505615234375,
-					6.854464054107666,
-					99.19707489013672
-				}
-			},
-			pos1 = {
-				80.99075317382812,
-				7.135101318359375,
-				98.95813751220703
-			},
-			pos2 = {
-				82.9103775024414,
-				6.573821067810059,
-				91.6684799194336
-			}
-		},
-		{
-			smart_object_index = 377,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					81.72828674316406,
-					6.0942559242248535,
-					99.20388793945312
-				}
-			},
-			pos1 = {
-				80.76847839355469,
-				6.3748931884765625,
-				99.0138168334961
-			},
-			pos2 = {
-				82.68810272216797,
-				5.813612461090088,
-				91.5584716796875
-			}
-		},
-		{
-			smart_object_index = 378,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					81.50601196289062,
-					5.334047317504883,
-					99.210693359375
-				}
-			},
-			pos1 = {
-				80.54620361328125,
-				5.614686012268066,
-				99.00376892089844
-			},
-			pos2 = {
-				82.46583557128906,
-				5.053402900695801,
-				91.45056915283203
-			}
-		},
-		{
-			smart_object_index = 379,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					81.28373718261719,
-					4.57383918762207,
-					99.21751403808594
-				}
-			},
-			pos1 = {
-				80.32392883300781,
-				4.8544769287109375,
-				98.94721221923828
-			},
-			pos2 = {
-				82.24356079101562,
-				4.2931976318359375,
-				91.34136962890625
-			}
-		}
-	},
-	["f6b62f34-0746-4099-896b-e7fc0fca97dd"] = {
-		{
-			smart_object_index = 167,
+			smart_object_index = 80,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					453.0745544433594,
-					91.99179077148438,
-					120.09672546386719
+					306.5935974121094,
+					-50.95365524291992,
+					99.24205017089844
 				}
 			},
 			pos1 = {
-				454.0199279785156,
-				92.31819915771484,
-				120.07322692871094
+				305.7977294921875,
+				-50.34809112548828,
+				99.00064086914062
 			},
 			pos2 = {
-				452.12945556640625,
-				91.6653823852539,
-				118.19499206542969
+				307.389404296875,
+				-51.55921936035156,
+				94.01509857177734
 			}
 		},
 		{
-			smart_object_index = 168,
+			smart_object_index = 81,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					452.8482360839844,
-					92.64733123779297,
-					120.08647155761719
+					306.36468505859375,
+					-51.25446319580078,
+					99.21205139160156
 				}
 			},
 			pos1 = {
-				453.7935791015625,
-				92.97373962402344,
-				120.10037994384766
+				305.5688171386719,
+				-50.64891815185547,
+				98.93155670166016
 			},
 			pos2 = {
-				451.9031677246094,
-				92.32095336914062,
-				118.20679473876953
-			}
-		},
-		{
-			smart_object_index = 169,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					452.6219177246094,
-					93.30287170410156,
-					120.07621765136719
-				}
-			},
-			pos1 = {
-				453.5672912597656,
-				93.62928009033203,
-				120.11759948730469
-			},
-			pos2 = {
-				451.6768493652344,
-				92.97648620605469,
-				118.21859741210938
-			}
-		}
-	},
-	["de279705-23d6-498b-a3d9-6abcc58db0f9"] = {
-		{
-			smart_object_index = 398,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					325.8851318359375,
-					-36.90132522583008,
-					102.43428802490234
-				}
-			},
-			pos1 = {
-				325.1983947753906,
-				-36.17445755004883,
-				102.1749496459961
-			},
-			pos2 = {
-				326.57183837890625,
-				-37.628204345703125,
-				95.6821060180664
-			}
-		},
-		{
-			smart_object_index = 399,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					325.17462158203125,
-					-37.57265853881836,
-					102.33226013183594
-				}
-			},
-			pos1 = {
-				324.4878845214844,
-				-36.84577560424805,
-				102.0157699584961
-			},
-			pos2 = {
-				325.8614501953125,
-				-38.299560546875,
-				95.70240783691406
-			}
-		},
-		{
-			smart_object_index = 400,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					324.46405029296875,
-					-38.24399185180664,
-					102.23020935058594
-				}
-			},
-			pos1 = {
-				323.7773132324219,
-				-37.517120361328125,
-				101.85694122314453
-			},
-			pos2 = {
-				325.1507568359375,
-				-38.97088623046875,
-				95.65750122070312
-			}
-		},
-		{
-			smart_object_index = 401,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					323.7535095214844,
-					-38.91532516479492,
-					102.128173828125
-				}
-			},
-			pos1 = {
-				323.0667724609375,
-				-38.188446044921875,
-				101.69730377197266
-			},
-			pos2 = {
-				324.4403076171875,
-				-39.6422119140625,
-				95.58444213867188
-			}
-		}
-	},
-	["a0751afb-7374-41b5-b906-cace62bba61f"] = {
-		{
-			smart_object_index = 311,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					30.56093978881836,
-					-116.33035278320312,
-					97.479736328125
-				}
-			},
-			pos1 = {
-				29.766983032226562,
-				-116.93827819824219,
-				97.20306396484375
-			},
-			pos2 = {
-				31.35492706298828,
-				-115.72241973876953,
-				91.31816101074219
-			}
-		},
-		{
-			smart_object_index = 312,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					31.008865356445312,
-					-116.91536712646484,
-					97.479736328125
-				}
-			},
-			pos1 = {
-				30.21490478515625,
-				-117.52328491210938,
-				97.20851135253906
-			},
-			pos2 = {
-				31.802852630615234,
-				-116.30743408203125,
-				91.36436462402344
-			}
-		}
-	},
-	["97a4882e-8de9-40b1-a59b-294f0d160fb2"] = {
-		{
-			smart_object_index = 494,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					388.8340759277344,
-					-126.96123504638672,
-					98.92610931396484
-				}
-			},
-			pos1 = {
-				389.7690124511719,
-				-126.6065673828125,
-				98.76229858398438
-			},
-			pos2 = {
-				387.8990478515625,
-				-127.31590270996094,
-				96.04753112792969
-			}
-		},
-		{
-			smart_object_index = 495,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					388.5372314453125,
-					-126.1787109375,
-					98.94459533691406
-				}
-			},
-			pos1 = {
-				389.47216796875,
-				-125.82402038574219,
-				98.77201080322266
-			},
-			pos2 = {
-				387.6022033691406,
-				-126.53338623046875,
-				96.07014465332031
-			}
-		},
-		{
-			smart_object_index = 496,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					388.2403869628906,
-					-125.39619445800781,
-					98.96308898925781
-				}
-			},
-			pos1 = {
-				389.1753234863281,
-				-125.04154205322266,
-				98.82662963867188
-			},
-			pos2 = {
-				387.30535888671875,
-				-125.75086212158203,
-				96.0395736694336
-			}
-		},
-		{
-			smart_object_index = 497,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					387.94354248046875,
-					-124.6136703491211,
-					98.9815673828125
-				}
-			},
-			pos1 = {
-				388.87847900390625,
-				-124.25896453857422,
-				98.84144592285156
-			},
-			pos2 = {
-				387.00848388671875,
-				-124.96833038330078,
-				95.99030303955078
-			}
-		}
-	},
-	["a416437b-dbc7-44f7-87a5-ffc9c153dccf"] = {
-		{
-			smart_object_index = 426,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					98.33599853515625,
-					0.987650990486145,
-					92.68411254882812
-				}
-			},
-			pos1 = {
-				99.31702423095703,
-				1.1815096139907837,
-				92.64669799804688
-			},
-			pos2 = {
-				97.35496520996094,
-				0.793795108795166,
-				91.53070831298828
-			}
-		},
-		{
-			smart_object_index = 427,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					98.16061401367188,
-					1.8752410411834717,
-					92.97379302978516
-				}
-			},
-			pos1 = {
-				99.14163970947266,
-				2.0690979957580566,
-				92.92251586914062
-			},
-			pos2 = {
-				97.17957305908203,
-				1.6813836097717285,
-				91.57222747802734
-			}
-		}
-	},
-	["40189220-d5cf-45ad-a4db-92d431dd5f17"] = {
-		{
-			smart_object_index = 115,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					268.3277893066406,
-					-21.14283561706543,
-					93.63346862792969
-				}
-			},
-			pos1 = {
-				269.0308837890625,
-				-20.43179702758789,
-				93.03467559814453
-			},
-			pos2 = {
-				267.6246337890625,
-				-21.8538818359375,
-				91.05846405029297
-			}
-		},
-		{
-			smart_object_index = 116,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					269.01214599609375,
-					-21.819551467895508,
-					93.57395935058594
-				}
-			},
-			pos1 = {
-				269.7152404785156,
-				-21.108501434326172,
-				93.05115509033203
-			},
-			pos2 = {
-				268.30902099609375,
-				-22.530624389648438,
-				91.0650405883789
-			}
-		},
-		{
-			smart_object_index = 117,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					269.696533203125,
-					-22.49626922607422,
-					93.51445007324219
-				}
-			},
-			pos1 = {
-				270.3996276855469,
-				-21.78523063659668,
-				93.01912689208984
-			},
-			pos2 = {
-				268.993408203125,
-				-23.20733642578125,
-				91.07469940185547
-			}
-		},
-		{
-			smart_object_index = 118,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					270.380859375,
-					-23.17298126220703,
-					93.45492553710938
-				}
-			},
-			pos1 = {
-				271.0839538574219,
-				-22.46194076538086,
-				92.98881530761719
-			},
-			pos2 = {
-				269.677734375,
-				-23.884033203125,
-				91.0843505859375
-			}
-		},
-		{
-			smart_object_index = 119,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					271.06524658203125,
-					-23.84969711303711,
-					93.39541625976562
-				}
-			},
-			pos1 = {
-				271.7683410644531,
-				-23.138648986816406,
-				92.99181365966797
-			},
-			pos2 = {
-				270.36212158203125,
-				-24.56072998046875,
-				91.08367919921875
-			}
-		},
-		{
-			smart_object_index = 120,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					271.7496032714844,
-					-24.52641487121582,
-					93.33589935302734
-				}
-			},
-			pos1 = {
-				272.45269775390625,
-				-23.81537437438965,
-				93.02869415283203
-			},
-			pos2 = {
-				271.0465087890625,
-				-25.237472534179688,
-				91.06673431396484
+				307.1605224609375,
+				-51.86003112792969,
+				94.01362609863281
 			}
 		}
 	},
 	["3a85871a-f999-4bf0-8d3b-f8d439b5d5a1"] = {
 		{
-			smart_object_index = 387,
+			smart_object_index = 379,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -18768,7 +18899,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 388,
+			smart_object_index = 380,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -18792,103 +18923,59 @@ local smart_objects = {
 			}
 		}
 	},
-	["12d7c635-2738-45b6-a789-94ca67cea909"] = {
+	["a39f369c-1db3-4709-97f8-f69ebe839365"] = {
 		{
-			smart_object_index = 448,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					357.0799865722656,
-					-66.29544067382812,
-					104.7704849243164
-				}
-			},
-			pos1 = {
-				356.9986877441406,
-				-65.29883575439453,
-				104.56056213378906
-			},
-			pos2 = {
-				357.1612854003906,
-				-67.29212951660156,
-				102.5922622680664
-			}
-		},
-		{
-			smart_object_index = 449,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					356.26898193359375,
-					-66.36157989501953,
-					104.74777221679688
-				}
-			},
-			pos1 = {
-				356.1877136230469,
-				-65.36495971679688,
-				104.52991485595703
-			},
-			pos2 = {
-				356.3502502441406,
-				-67.3582763671875,
-				102.47652435302734
-			}
-		},
-		{
-			smart_object_index = 450,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					355.45794677734375,
-					-66.42772674560547,
-					104.72505950927734
-				}
-			},
-			pos1 = {
-				355.3766784667969,
-				-65.43112182617188,
-				104.49954223632812
-			},
-			pos2 = {
-				355.5391845703125,
-				-67.4244384765625,
-				102.4062728881836
-			}
-		},
-		{
-			smart_object_index = 451,
+			smart_object_index = 155,
 			smart_object_type = "ledges",
 			data = {
+				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					354.6469421386719,
-					-66.49386596679688,
-					104.70234680175781
+					302.10845947265625,
+					71.87165832519531,
+					98.94021606445312
 				}
 			},
 			pos1 = {
-				354.5656433105469,
-				-65.49726104736328,
-				104.44342041015625
+				301.8631286621094,
+				72.8411865234375,
+				98.94070434570312
 			},
 			pos2 = {
-				354.72821044921875,
-				-67.49058532714844,
-				102.46245574951172
+				302.353759765625,
+				70.90216827392578,
+				91.34310150146484
+			}
+		},
+		{
+			smart_object_index = 156,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					301.21923828125,
+					71.64665985107422,
+					98.90538024902344
+				}
+			},
+			pos1 = {
+				300.9739074707031,
+				72.61618041992188,
+				98.91673278808594
+			},
+			pos2 = {
+				301.46453857421875,
+				70.67716979980469,
+				90.9932861328125
 			}
 		}
 	},
 	["28c4d502-e895-45bb-aafa-7f5fabb1ad74"] = {
 		{
-			smart_object_index = 807,
+			smart_object_index = 816,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -18911,7 +18998,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 808,
+			smart_object_index = 817,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -18934,7 +19021,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 809,
+			smart_object_index = 818,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -18959,7 +19046,7 @@ local smart_objects = {
 	},
 	["20c869dd-63dd-4bd8-a452-9dd0e018f60c"] = {
 		{
-			smart_object_index = 710,
+			smart_object_index = 358,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -18982,7 +19069,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 711,
+			smart_object_index = 359,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -19005,9 +19092,586 @@ local smart_objects = {
 			}
 		}
 	},
+	["06c16d5e-09ec-40cd-8a5f-07a2d33d52b4"] = {
+		{
+			smart_object_index = 450,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					103.5438003540039,
+					-4.616175651550293,
+					99.14600372314453
+				}
+			},
+			pos1 = {
+				104.2462387084961,
+				-3.904405117034912,
+				98.80830383300781
+			},
+			pos2 = {
+				102.84136962890625,
+				-5.327946186065674,
+				92.28630828857422
+			}
+		},
+		{
+			smart_object_index = 451,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					103.19013977050781,
+					-4.2671661376953125,
+					99.14997100830078
+				}
+			},
+			pos1 = {
+				103.89257049560547,
+				-3.555396318435669,
+				98.81184387207031
+			},
+			pos2 = {
+				102.48770904541016,
+				-4.978937149047852,
+				92.24197387695312
+			}
+		}
+	},
+	["b62d08c2-bd0c-4b19-a13c-8d955848d0b2"] = {
+		{
+			smart_object_index = 454,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					338.43634033203125,
+					91.26165771484375,
+					99.23853302001953
+				}
+			},
+			pos1 = {
+				337.45703125,
+				91.4638671875,
+				99.20635223388672
+			},
+			pos2 = {
+				339.4155578613281,
+				91.05941772460938,
+				95.62210845947266
+			}
+		},
+		{
+			smart_object_index = 455,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					338.27655029296875,
+					90.4879150390625,
+					99.23311614990234
+				}
+			},
+			pos1 = {
+				337.2972412109375,
+				90.69013977050781,
+				99.21585845947266
+			},
+			pos2 = {
+				339.2557678222656,
+				90.28568267822266,
+				95.37152862548828
+			}
+		},
+		{
+			smart_object_index = 456,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					338.1167907714844,
+					89.71417999267578,
+					99.22771453857422
+				}
+			},
+			pos1 = {
+				337.1374816894531,
+				89.91639709472656,
+				99.23491668701172
+			},
+			pos2 = {
+				339.0960388183594,
+				89.51194763183594,
+				95.1310043334961
+			}
+		},
+		{
+			smart_object_index = 457,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					337.95703125,
+					88.94044494628906,
+					99.22230529785156
+				}
+			},
+			pos1 = {
+				336.97772216796875,
+				89.14265441894531,
+				99.23743438720703
+			},
+			pos2 = {
+				338.9362487792969,
+				88.73822021484375,
+				94.89009857177734
+			}
+		},
+		{
+			smart_object_index = 458,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					337.7972412109375,
+					88.16670227050781,
+					99.2168960571289
+				}
+			},
+			pos1 = {
+				336.8179626464844,
+				88.368896484375,
+				99.17789459228516
+			},
+			pos2 = {
+				338.7764587402344,
+				87.9644775390625,
+				94.65168762207031
+			}
+		}
+	},
+	["a416437b-dbc7-44f7-87a5-ffc9c153dccf"] = {
+		{
+			smart_object_index = 459,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					98.33599853515625,
+					0.987650990486145,
+					92.68411254882812
+				}
+			},
+			pos1 = {
+				99.31702423095703,
+				1.1815096139907837,
+				92.64669799804688
+			},
+			pos2 = {
+				97.35496520996094,
+				0.793795108795166,
+				91.53070831298828
+			}
+		},
+		{
+			smart_object_index = 460,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					98.16061401367188,
+					1.8752410411834717,
+					92.97379302978516
+				}
+			},
+			pos1 = {
+				99.14163970947266,
+				2.0690979957580566,
+				92.92251586914062
+			},
+			pos2 = {
+				97.17957305908203,
+				1.6813836097717285,
+				91.57222747802734
+			}
+		}
+	},
+	["48f3d186-b012-4c9a-b0e9-3f611ca9474f"] = {
+		{
+			smart_object_index = 373,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					9.102699279785156,
+					-99.60674285888672,
+					94.26789093017578
+				}
+			},
+			pos1 = {
+				8.103557586669922,
+				-99.56537628173828,
+				93.90481567382812
+			},
+			pos2 = {
+				10.101844787597656,
+				-99.64807891845703,
+				89.96666717529297
+			}
+		},
+		{
+			smart_object_index = 374,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					9.078025817871094,
+					-100.2031478881836,
+					94.26789093017578
+				}
+			},
+			pos1 = {
+				8.07888126373291,
+				-100.16179656982422,
+				93.99711608886719
+			},
+			pos2 = {
+				10.077171325683594,
+				-100.2444839477539,
+				90.22268676757812
+			}
+		}
+	},
+	["2e6b0555-b20a-410d-80f7-d6c1000234a3"] = {
+		{
+			smart_object_index = 487,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					448.5600280761719,
+					92.74767303466797,
+					122.92207336425781
+				}
+			},
+			pos1 = {
+				448.2214660644531,
+				93.68865203857422,
+				122.94219970703125
+			},
+			pos2 = {
+				448.8987121582031,
+				91.80669403076172,
+				118.27638244628906
+			}
+		},
+		{
+			smart_object_index = 488,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					449.316162109375,
+					93.01972961425781,
+					122.90065002441406
+				}
+			},
+			pos1 = {
+				448.9775695800781,
+				93.9606704711914,
+				123.00334930419922
+			},
+			pos2 = {
+				449.6548767089844,
+				92.07872772216797,
+				118.27983856201172
+			}
+		},
+		{
+			smart_object_index = 489,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					450.072265625,
+					93.2917709350586,
+					122.87921905517578
+				}
+			},
+			pos1 = {
+				449.7336730957031,
+				94.23272705078125,
+				123.02587127685547
+			},
+			pos2 = {
+				450.4109802246094,
+				92.35077667236328,
+				118.26165008544922
+			}
+		},
+		{
+			smart_object_index = 490,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					450.8283996582031,
+					93.56382751464844,
+					122.85779571533203
+				}
+			},
+			pos1 = {
+				450.4898376464844,
+				94.50480651855469,
+				122.99952697753906
+			},
+			pos2 = {
+				451.1671142578125,
+				92.6228256225586,
+				118.2356948852539
+			}
+		}
+	},
+	["c6a835c1-7445-499d-814d-f9a83578f908"] = {
+		{
+			smart_object_index = 290,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					80.07659912109375,
+					-4.330393314361572,
+					93.37226867675781
+				}
+			},
+			pos1 = {
+				79.09325408935547,
+				-4.1486334800720215,
+				93.08832550048828
+			},
+			pos2 = {
+				81.0599365234375,
+				-4.51214599609375,
+				90.84668731689453
+			}
+		},
+		{
+			smart_object_index = 291,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					79.89485168457031,
+					-5.313684940338135,
+					93.3795394897461
+				}
+			},
+			pos1 = {
+				78.91150665283203,
+				-5.131921291351318,
+				93.10003662109375
+			},
+			pos2 = {
+				80.878173828125,
+				-5.4954376220703125,
+				90.79444122314453
+			}
+		}
+	},
+	["e7ec8d39-1393-4060-8b7c-21a15e86033f"] = {
+		{
+			smart_object_index = 560,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					276.7347717285156,
+					88.96311950683594,
+					98.89404296875
+				}
+			},
+			pos1 = {
+				276.7716064453125,
+				89.96247100830078,
+				98.78058624267578
+			},
+			pos2 = {
+				276.6978759765625,
+				87.9637222290039,
+				91.39566802978516
+			}
+		},
+		{
+			smart_object_index = 561,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					276.3457946777344,
+					88.97747039794922,
+					98.88946533203125
+				}
+			},
+			pos1 = {
+				276.3826599121094,
+				89.97682189941406,
+				98.76253509521484
+			},
+			pos2 = {
+				276.3089599609375,
+				87.9781494140625,
+				91.32230377197266
+			}
+		}
+	},
+	["2d819750-7650-41f9-acbd-cb0afc305491"] = {
+		{
+			smart_object_index = 411,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					102.21270751953125,
+					-1.968947172164917,
+					99.19682312011719
+				}
+			},
+			pos1 = {
+				103.20832824707031,
+				-1.875280737876892,
+				98.88456726074219
+			},
+			pos2 = {
+				101.21709442138672,
+				-2.0626134872436523,
+				92.05083465576172
+			}
+		},
+		{
+			smart_object_index = 412,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					102.13302612304688,
+					-1.1220202445983887,
+					99.28614044189453
+				}
+			},
+			pos1 = {
+				103.12864685058594,
+				-1.0283530950546265,
+				98.96388244628906
+			},
+			pos2 = {
+				101.13741302490234,
+				-1.2156848907470703,
+				92.03018951416016
+			}
+		},
+		{
+			smart_object_index = 413,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					102.0533447265625,
+					-0.2750930190086365,
+					99.37547302246094
+				}
+			},
+			pos1 = {
+				103.04896545410156,
+				-0.18142639100551605,
+				99.00365447998047
+			},
+			pos2 = {
+				101.05773162841797,
+				-0.3687598705291748,
+				92.13883972167969
+			}
+		},
+		{
+			smart_object_index = 414,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					101.97366333007812,
+					0.5718340873718262,
+					99.46480560302734
+				}
+			},
+			pos1 = {
+				102.96927642822266,
+				0.6655023097991943,
+				99.04417419433594
+			},
+			pos2 = {
+				100.9780502319336,
+				0.4781680107116699,
+				92.3055191040039
+			}
+		},
+		{
+			smart_object_index = 415,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					101.89398956298828,
+					1.4187612533569336,
+					99.55413055419922
+				}
+			},
+			pos1 = {
+				102.88961791992188,
+				1.5124279260635376,
+				99.08317565917969
+			},
+			pos2 = {
+				100.89836883544922,
+				1.3250980377197266,
+				92.58147430419922
+			}
+		}
+	},
 	["2b6993a2-7cd0-4f3e-a75e-f1d77a9a3842"] = {
 		{
-			smart_object_index = 486,
+			smart_object_index = 535,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19031,7 +19695,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 487,
+			smart_object_index = 536,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19055,225 +19719,9 @@ local smart_objects = {
 			}
 		}
 	},
-	["983a88ec-c895-4c00-9e35-e6e410bf1102"] = {
-		{
-			smart_object_index = 415,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					318.35272216796875,
-					-42.909690856933594,
-					101.58329772949219
-				}
-			},
-			pos1 = {
-				319.0195617675781,
-				-42.16445541381836,
-				101.16358184814453
-			},
-			pos2 = {
-				317.6859130859375,
-				-43.65493392944336,
-				98.47148895263672
-			}
-		},
-		{
-			smart_object_index = 416,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					318.03289794921875,
-					-42.623538970947266,
-					101.6175537109375
-				}
-			},
-			pos1 = {
-				318.69970703125,
-				-41.87831115722656,
-				101.16195678710938
-			},
-			pos2 = {
-				317.3660583496094,
-				-43.3687858581543,
-				98.639892578125
-			}
-		}
-	},
-	["518a85b8-2f2b-4a5e-9bd5-7ef620e26996"] = {
-		{
-			smart_object_index = 452,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					299.84033203125,
-					-25.40430450439453,
-					100.70497131347656
-				}
-			},
-			pos1 = {
-				299.7763671875,
-				-26.402246475219727,
-				100.3833999633789
-			},
-			pos2 = {
-				299.904296875,
-				-24.406410217285156,
-				95.0140151977539
-			}
-		},
-		{
-			smart_object_index = 453,
-			smart_object_type = "ledges",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					300.58941650390625,
-					-25.452312469482422,
-					100.71446228027344
-				}
-			},
-			pos1 = {
-				300.52545166015625,
-				-26.45025062561035,
-				100.41825866699219
-			},
-			pos2 = {
-				300.6533203125,
-				-24.454345703125,
-				95.11341094970703
-			}
-		},
-		{
-			smart_object_index = 454,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_bidirectional = false,
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					301.3385314941406,
-					-25.500320434570312,
-					100.72395324707031
-				}
-			},
-			pos1 = {
-				301.2745666503906,
-				-26.498260498046875,
-				100.42523193359375
-			},
-			pos2 = {
-				301.4024658203125,
-				-24.50238037109375,
-				95.23278045654297
-			}
-		},
-		{
-			smart_object_index = 455,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					302.087646484375,
-					-25.548328399658203,
-					100.73344421386719
-				}
-			},
-			pos1 = {
-				302.023681640625,
-				-26.5462646484375,
-				100.44157409667969
-			},
-			pos2 = {
-				302.151611328125,
-				-24.5504150390625,
-				95.36186981201172
-			}
-		}
-	},
-	["7d380cba-5fcc-4111-a486-b1c87125b408"] = {
-		{
-			smart_object_index = 635,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					371.94012451171875,
-					56.97182083129883,
-					97.87115478515625
-				}
-			},
-			pos1 = {
-				372.2507629394531,
-				56.02136993408203,
-				97.8209228515625
-			},
-			pos2 = {
-				371.6293029785156,
-				57.922332763671875,
-				95.18762969970703
-			}
-		},
-		{
-			smart_object_index = 636,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					372.52789306640625,
-					57.163997650146484,
-					97.866943359375
-				}
-			},
-			pos1 = {
-				372.8385009765625,
-				56.21355056762695,
-				97.82076263427734
-			},
-			pos2 = {
-				372.2170715332031,
-				58.11451721191406,
-				95.17217254638672
-			}
-		},
-		{
-			smart_object_index = 637,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					373.11566162109375,
-					57.356170654296875,
-					97.86273193359375
-				}
-			},
-			pos1 = {
-				373.42626953125,
-				56.40571212768555,
-				97.82481384277344
-			},
-			pos2 = {
-				372.8048400878906,
-				58.306678771972656,
-				95.2028579711914
-			}
-		}
-	},
 	["ac6c2774-6c5c-40c3-96e4-0b6b8a5f72c6"] = {
 		{
-			smart_object_index = 507,
+			smart_object_index = 538,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -19296,7 +19744,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 508,
+			smart_object_index = 539,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -19319,7 +19767,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 509,
+			smart_object_index = 540,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -19342,7 +19790,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 510,
+			smart_object_index = 541,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -19365,7 +19813,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 511,
+			smart_object_index = 542,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -19388,57 +19836,9 @@ local smart_objects = {
 			}
 		}
 	},
-	["c6a835c1-7445-499d-814d-f9a83578f908"] = {
-		{
-			smart_object_index = 301,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					80.07659912109375,
-					-4.330393314361572,
-					93.37226867675781
-				}
-			},
-			pos1 = {
-				79.09325408935547,
-				-4.1486334800720215,
-				93.08832550048828
-			},
-			pos2 = {
-				81.0599365234375,
-				-4.51214599609375,
-				90.84668731689453
-			}
-		},
-		{
-			smart_object_index = 302,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					79.89485168457031,
-					-5.313684940338135,
-					93.3795394897461
-				}
-			},
-			pos1 = {
-				78.91150665283203,
-				-5.131921291351318,
-				93.10003662109375
-			},
-			pos2 = {
-				80.878173828125,
-				-5.4954376220703125,
-				90.79444122314453
-			}
-		}
-	},
 	["66f719fa-7ac7-439a-b720-e359e56f959d"] = {
 		{
-			smart_object_index = 521,
+			smart_object_index = 548,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19462,7 +19862,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 522,
+			smart_object_index = 549,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19486,7 +19886,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 523,
+			smart_object_index = 550,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19510,7 +19910,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 524,
+			smart_object_index = 551,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19534,392 +19934,243 @@ local smart_objects = {
 			}
 		}
 	},
-	["6b848c2b-ba88-4c09-af7a-6dd7319ab186"] = {
+	["12d7c635-2738-45b6-a789-94ca67cea909"] = {
 		{
-			smart_object_index = 265,
+			smart_object_index = 556,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
 				is_on_small_fence = true,
 				ledge_position = {
-					94.39352416992188,
-					-14.902350425720215,
-					91.66600799560547
+					357.0799865722656,
+					-66.29544067382812,
+					104.7704849243164
 				}
 			},
 			pos1 = {
-				94.15933990478516,
-				-15.874552726745605,
-				91.56969451904297
+				356.9986877441406,
+				-65.29883575439453,
+				104.56056213378906
 			},
 			pos2 = {
-				94.62769317626953,
-				-13.930182456970215,
-				90.73711395263672
+				357.1612854003906,
+				-67.29212951660156,
+				102.5922622680664
 			}
 		},
-		{
-			smart_object_index = 266,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					95.36572265625,
-					-15.136531829833984,
-					91.666015625
-				}
-			},
-			pos1 = {
-				95.13153839111328,
-				-16.108734130859375,
-				91.60367584228516
-			},
-			pos2 = {
-				95.59989166259766,
-				-14.164365768432617,
-				90.78175354003906
-			}
-		}
-	},
-	["e0407d11-cea0-42db-9bd3-7a65a3cadd6c"] = {
-		{
-			smart_object_index = 14,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					226.2266387939453,
-					136.06744384765625,
-					96.73697662353516
-				}
-			},
-			pos1 = {
-				226.0736846923828,
-				137.05567932128906,
-				96.82293701171875
-			},
-			pos2 = {
-				226.37957763671875,
-				135.0792236328125,
-				94.89066314697266
-			}
-		},
-		{
-			smart_object_index = 15,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					227.21487426757812,
-					136.22036743164062,
-					96.73697662353516
-				}
-			},
-			pos1 = {
-				227.06192016601562,
-				137.20860290527344,
-				96.91278076171875
-			},
-			pos2 = {
-				227.3677978515625,
-				135.23211669921875,
-				94.893798828125
-			}
-		}
-	},
-	["cf6541c6-c98e-4911-afd7-de9e97b1c526"] = {
-		{
-			smart_object_index = 548,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					56.08381652832031,
-					-6.53397798538208,
-					98.5493392944336
-				}
-			},
-			pos1 = {
-				55.66459274291992,
-				-7.441856861114502,
-				98.63086700439453
-			},
-			pos2 = {
-				56.5030403137207,
-				-5.626097679138184,
-				94.61015319824219
-			}
-		},
-		{
-			smart_object_index = 549,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					56.99169158935547,
-					-6.953198432922363,
-					98.5493392944336
-				}
-			},
-			pos1 = {
-				56.572471618652344,
-				-7.86107873916626,
-				98.61883544921875
-			},
-			pos2 = {
-				57.410911560058594,
-				-6.045318126678467,
-				94.60477447509766
-			}
-		}
-	},
-	["56a6c2e4-a675-4d9a-b213-8101f080c4f9"] = {
 		{
 			smart_object_index = 557,
-			smart_object_type = "ledges",
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					374.2450256347656,
-					41.35267639160156,
-					98.66998291015625
+					356.26898193359375,
+					-66.36157989501953,
+					104.74777221679688
 				}
 			},
 			pos1 = {
-				375.2333984375,
-				41.20038986206055,
-				98.72964477539062
+				356.1877136230469,
+				-65.36495971679688,
+				104.52991485595703
 			},
 			pos2 = {
-				373.256591796875,
-				41.50493240356445,
-				93.40888214111328
+				356.3502502441406,
+				-67.3582763671875,
+				102.47652435302734
 			}
 		},
 		{
 			smart_object_index = 558,
-			smart_object_type = "ledges",
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_bidirectional = false,
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					374.385498046875,
-					42.26441192626953,
-					98.66997528076172
+					355.45794677734375,
+					-66.42772674560547,
+					104.72505950927734
 				}
 			},
 			pos1 = {
-				375.3738708496094,
-				42.11213302612305,
-				98.73304748535156
+				355.3766784667969,
+				-65.43112182617188,
+				104.49954223632812
 			},
 			pos2 = {
-				373.3970947265625,
-				42.41667556762695,
-				93.49714660644531
+				355.5391845703125,
+				-67.4244384765625,
+				102.4062728881836
 			}
 		},
 		{
 			smart_object_index = 559,
 			smart_object_type = "ledges",
 			data = {
-				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					374.5259704589844,
-					43.1761474609375,
-					98.66998291015625
+					354.6469421386719,
+					-66.49386596679688,
+					104.70234680175781
 				}
 			},
 			pos1 = {
-				375.51434326171875,
-				43.02386474609375,
-				98.73456573486328
+				354.5656433105469,
+				-65.49726104736328,
+				104.44342041015625
 			},
 			pos2 = {
-				373.53759765625,
-				43.32841491699219,
-				93.56380462646484
+				354.72821044921875,
+				-67.49058532714844,
+				102.46245574951172
 			}
 		}
 	},
-	["48f3d186-b012-4c9a-b0e9-3f611ca9474f"] = {
+	["b32311d9-042f-44b8-9860-2864218ac772"] = {
 		{
-			smart_object_index = 434,
+			smart_object_index = 381,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					9.102699279785156,
-					-99.60674285888672,
-					94.26789093017578
+					60.06757736206055,
+					-1.6090959310531616,
+					100.03695678710938
 				}
 			},
 			pos1 = {
-				8.103557586669922,
-				-99.56537628173828,
-				93.90481567382812
+				60.41852951049805,
+				-0.672698438167572,
+				99.82596588134766
 			},
 			pos2 = {
-				10.101844787597656,
-				-99.64807891845703,
-				89.96666717529297
+				59.71663284301758,
+				-2.545498847961426,
+				95.26043701171875
 			}
 		},
 		{
-			smart_object_index = 435,
-			smart_object_type = "ledges",
+			smart_object_index = 382,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					9.078025817871094,
-					-100.2031478881836,
-					94.26789093017578
+					59.14480209350586,
+					-1.2632540464401245,
+					100.16486358642578
 				}
 			},
 			pos1 = {
-				8.07888126373291,
-				-100.16179656982422,
-				93.99711608886719
+				59.495750427246094,
+				-0.326856791973114,
+				100.09162139892578
 			},
 			pos2 = {
-				10.077171325683594,
-				-100.2444839477539,
-				90.22268676757812
-			}
-		}
-	},
-	["b62d08c2-bd0c-4b19-a13c-8d955848d0b2"] = {
-		{
-			smart_object_index = 568,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					338.43634033203125,
-					91.26165771484375,
-					99.23853302001953
-				}
-			},
-			pos1 = {
-				337.45703125,
-				91.4638671875,
-				99.20635223388672
-			},
-			pos2 = {
-				339.4155578613281,
-				91.05941772460938,
-				95.62210845947266
+				58.79385757446289,
+				-2.199650764465332,
+				95.25390625
 			}
 		},
 		{
-			smart_object_index = 569,
-			smart_object_type = "ledges",
+			smart_object_index = 383,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					338.27655029296875,
-					90.4879150390625,
-					99.23311614990234
+					58.222023010253906,
+					-0.9174119234085083,
+					100.29277038574219
 				}
 			},
 			pos1 = {
-				337.2972412109375,
-				90.69013977050781,
-				99.21585845947266
+				58.57297134399414,
+				0.0189894437789917,
+				100.20675659179688
 			},
 			pos2 = {
-				339.2557678222656,
-				90.28568267822266,
-				95.37152862548828
+				57.87107849121094,
+				-1.8538126945495605,
+				95.24549102783203
 			}
 		},
 		{
-			smart_object_index = 570,
-			smart_object_type = "ledges",
+			smart_object_index = 384,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					338.1167907714844,
-					89.71417999267578,
-					99.22771453857422
+					57.29924774169922,
+					-0.5715699195861816,
+					100.42068481445312
 				}
 			},
 			pos1 = {
-				337.1374816894531,
-				89.91639709472656,
-				99.23491668701172
+				57.65019607543945,
+				0.36483025550842285,
+				100.2817611694336
 			},
 			pos2 = {
-				339.0960388183594,
-				89.51194763183594,
-				95.1310043334961
+				56.94829559326172,
+				-1.5079724788665771,
+				95.2887191772461
 			}
 		},
 		{
-			smart_object_index = 571,
+			smart_object_index = 385,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					337.95703125,
-					88.94044494628906,
-					99.22230529785156
+					56.37647247314453,
+					-0.22572799026966095,
+					100.54859161376953
 				}
 			},
 			pos1 = {
-				336.97772216796875,
-				89.14265441894531,
-				99.23743438720703
+				56.727420806884766,
+				0.7106717228889465,
+				100.38549041748047
 			},
 			pos2 = {
-				338.9362487792969,
-				88.73822021484375,
-				94.89009857177734
+				56.02552032470703,
+				-1.1621274948120117,
+				95.37687683105469
 			}
 		},
 		{
-			smart_object_index = 572,
+			smart_object_index = 386,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					337.7972412109375,
-					88.16670227050781,
-					99.2168960571289
+					55.45369338989258,
+					0.12011399865150452,
+					100.67649841308594
 				}
 			},
 			pos1 = {
-				336.8179626464844,
-				88.368896484375,
-				99.17789459228516
+				55.80464172363281,
+				1.0565142631530762,
+				100.48904418945312
 			},
 			pos2 = {
-				338.7764587402344,
-				87.9644775390625,
-				94.65168762207031
+				55.10274124145508,
+				-0.8162864446640015,
+				95.5084457397461
 			}
 		}
 	},
 	["9719bb11-2658-4805-b16a-f17e4e77a99d"] = {
 		{
-			smart_object_index = 402,
+			smart_object_index = 424,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19943,7 +20194,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 403,
+			smart_object_index = 425,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -19967,7 +20218,126 @@ local smart_objects = {
 			}
 		}
 	},
-	["2e6b0555-b20a-410d-80f7-d6c1000234a3"] = {
+	["393ed034-01b0-4a56-9cdc-5203d4c92d3f"] = {
+		{
+			smart_object_index = 364,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					299.7319030761719,
+					-0.058986082673072815,
+					94.96599578857422
+				}
+			},
+			pos1 = {
+				299.8189392089844,
+				0.9372276067733765,
+				94.83921813964844
+			},
+			pos2 = {
+				299.644775390625,
+				-1.0551910400390625,
+				90.63580322265625
+			}
+		},
+		{
+			smart_object_index = 365,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					298.7357482910156,
+					0.028168080374598503,
+					94.96600341796875
+				}
+			},
+			pos1 = {
+				298.82281494140625,
+				1.024378776550293,
+				94.93843078613281
+			},
+			pos2 = {
+				298.6485595703125,
+				-0.968017578125,
+				90.60932922363281
+			}
+		}
+	},
+	["522fe133-6053-4814-8879-0b41144db5cf"] = {
+		{
+			smart_object_index = 72,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					244.75558471679688,
+					-13.60261058807373,
+					102.07404327392578
+				}
+			},
+			pos1 = {
+				245.6977996826172,
+				-13.267562866210938,
+				102.22041320800781
+			},
+			pos2 = {
+				243.8134002685547,
+				-13.937663078308105,
+				99.14994812011719
+			}
+		},
+		{
+			smart_object_index = 73,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					244.5880584716797,
+					-13.131509780883789,
+					102.07404327392578
+				}
+			},
+			pos1 = {
+				245.53028869628906,
+				-12.796462059020996,
+				102.21963500976562
+			},
+			pos2 = {
+				243.64585876464844,
+				-13.46656608581543,
+				99.23312377929688
+			}
+		},
+		{
+			smart_object_index = 74,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					244.4205322265625,
+					-12.660408973693848,
+					102.07404327392578
+				}
+			},
+			pos1 = {
+				245.36276245117188,
+				-12.325368881225586,
+				102.21794128417969
+			},
+			pos2 = {
+				243.4783477783203,
+				-12.99545955657959,
+				99.26192474365234
+			}
+		}
+	},
+	["c438633a-d89f-429f-a324-65ad62dbddb3"] = {
 		{
 			smart_object_index = 442,
 			smart_object_type = "ledges",
@@ -19975,423 +20345,49 @@ local smart_objects = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					448.5600280761719,
-					92.74767303466797,
-					122.92207336425781
+					78.00889587402344,
+					-13.491741180419922,
+					93.2945556640625
 				}
 			},
 			pos1 = {
-				448.2214660644531,
-				93.68865203857422,
-				122.94219970703125
+				77.22624206542969,
+				-14.114192008972168,
+				93.27130126953125
 			},
 			pos2 = {
-				448.8987121582031,
-				91.80669403076172,
-				118.27638244628906
+				78.79156494140625,
+				-12.869293212890625,
+				90.70204162597656
 			}
 		},
 		{
 			smart_object_index = 443,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					449.316162109375,
-					93.01972961425781,
-					122.90065002441406
-				}
-			},
-			pos1 = {
-				448.9775695800781,
-				93.9606704711914,
-				123.00334930419922
-			},
-			pos2 = {
-				449.6548767089844,
-				92.07872772216797,
-				118.27983856201172
-			}
-		},
-		{
-			smart_object_index = 444,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					450.072265625,
-					93.2917709350586,
-					122.87921905517578
-				}
-			},
-			pos1 = {
-				449.7336730957031,
-				94.23272705078125,
-				123.02587127685547
-			},
-			pos2 = {
-				450.4109802246094,
-				92.35077667236328,
-				118.26165008544922
-			}
-		},
-		{
-			smart_object_index = 445,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					450.8283996582031,
-					93.56382751464844,
-					122.85779571533203
-				}
-			},
-			pos1 = {
-				450.4898376464844,
-				94.50480651855469,
-				122.99952697753906
-			},
-			pos2 = {
-				451.1671142578125,
-				92.6228256225586,
-				118.2356948852539
-			}
-		}
-	},
-	["035951a1-b80a-4858-b2a6-978fd49d1302"] = {
-		{
-			smart_object_index = 141,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
 				is_on_small_fence = true,
 				ledge_position = {
-					199.04595947265625,
-					1.600052833557129,
-					100.22103118896484
+					78.61944580078125,
+					-14.259441375732422,
+					93.15796661376953
 				}
 			},
 			pos1 = {
-				199.80101013183594,
-				0.9444609880447388,
-				100.41172790527344
+				77.8367919921875,
+				-14.881893157958984,
+				93.09386444091797
 			},
 			pos2 = {
-				198.29087829589844,
-				2.2556889057159424,
-				96.72447967529297
-			}
-		}
-	},
-	["a0203891-cd4e-4fb8-968f-be170d80f67e"] = {
-		{
-			smart_object_index = 600,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					250.0767822265625,
-					111.02985382080078,
-					94.26544189453125
-				}
-			},
-			pos1 = {
-				250.110107421875,
-				112.02930450439453,
-				94.0379638671875
-			},
-			pos2 = {
-				250.0434112548828,
-				110.0304183959961,
-				91.42595672607422
-			}
-		},
-		{
-			smart_object_index = 601,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					249.1922149658203,
-					111.059326171875,
-					94.29888916015625
-				}
-			},
-			pos1 = {
-				249.22555541992188,
-				112.05877685546875,
-				94.16714477539062
-			},
-			pos2 = {
-				249.15882873535156,
-				110.05989837646484,
-				91.25098419189453
-			}
-		},
-		{
-			smart_object_index = 602,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					248.30764770507812,
-					111.08881378173828,
-					94.33233642578125
-				}
-			},
-			pos1 = {
-				248.3409881591797,
-				112.08827209472656,
-				94.20941925048828
-			},
-			pos2 = {
-				248.2742919921875,
-				110.08938598632812,
-				91.04390716552734
-			}
-		},
-		{
-			smart_object_index = 603,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					247.42306518554688,
-					111.11830139160156,
-					94.36578369140625
-				}
-			},
-			pos1 = {
-				247.45639038085938,
-				112.11775207519531,
-				94.2481918334961
-			},
-			pos2 = {
-				247.38967895507812,
-				110.11885833740234,
-				90.82948303222656
-			}
-		},
-		{
-			smart_object_index = 604,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					246.5384979248047,
-					111.14778137207031,
-					94.39923095703125
-				}
-			},
-			pos1 = {
-				246.5718231201172,
-				112.1472396850586,
-				94.28548431396484
-			},
-			pos2 = {
-				246.505126953125,
-				110.14835357666016,
-				90.44292449951172
-			}
-		},
-		{
-			smart_object_index = 605,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					245.6539306640625,
-					111.17726135253906,
-					94.43267822265625
-				}
-			},
-			pos1 = {
-				245.687255859375,
-				112.17671203613281,
-				94.32075500488281
-			},
-			pos2 = {
-				245.62060546875,
-				110.17779541015625,
-				90.02461242675781
-			}
-		},
-		{
-			smart_object_index = 606,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					244.7693634033203,
-					111.20674133300781,
-					94.46612548828125
-				}
-			},
-			pos1 = {
-				244.8026885986328,
-				112.20619201660156,
-				94.3551254272461
-			},
-			pos2 = {
-				244.73614501953125,
-				110.20733642578125,
-				89.92771911621094
-			}
-		},
-		{
-			smart_object_index = 607,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					243.88478088378906,
-					111.2362289428711,
-					94.49957275390625
-				}
-			},
-			pos1 = {
-				243.91810607910156,
-				112.23568725585938,
-				94.38932800292969
-			},
-			pos2 = {
-				243.8514404296875,
-				110.23678588867188,
-				89.8497543334961
-			}
-		},
-		{
-			smart_object_index = 608,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					243.00021362304688,
-					111.26571655273438,
-					94.53302764892578
-				}
-			},
-			pos1 = {
-				243.03353881835938,
-				112.26516723632812,
-				94.52102661132812
-			},
-			pos2 = {
-				242.96697998046875,
-				110.26629638671875,
-				89.81307983398438
-			}
-		}
-	},
-	["e532347e-3a3a-493c-af6e-5bb885ffdf61"] = {
-		{
-			smart_object_index = 316,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					442.20635986328125,
-					118.11207580566406,
-					118.9807357788086
-				}
-			},
-			pos1 = {
-				442.9093017578125,
-				118.82347106933594,
-				118.40983581542969
-			},
-			pos2 = {
-				441.5034484863281,
-				117.40072631835938,
-				116.16961669921875
-			}
-		},
-		{
-			smart_object_index = 317,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					441.692626953125,
-					118.61968994140625,
-					119.00251007080078
-				}
-			},
-			pos1 = {
-				442.3955383300781,
-				119.33106994628906,
-				118.41526794433594
-			},
-			pos2 = {
-				440.9897155761719,
-				117.90835571289062,
-				116.28165435791016
-			}
-		},
-		{
-			smart_object_index = 318,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					441.17889404296875,
-					119.12728881835938,
-					119.02428436279297
-				}
-			},
-			pos1 = {
-				441.8818359375,
-				119.83869934082031,
-				118.41767120361328
-			},
-			pos2 = {
-				440.4759521484375,
-				118.41596221923828,
-				116.36687469482422
-			}
-		},
-		{
-			smart_object_index = 319,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					440.6651306152344,
-					119.63489532470703,
-					119.04605865478516
-				}
-			},
-			pos1 = {
-				441.3680725097656,
-				120.34628295898438,
-				118.42374420166016
-			},
-			pos2 = {
-				439.9621887207031,
-				118.9235610961914,
-				116.43920135498047
+				79.40210723876953,
+				-13.63699722290039,
+				90.52070617675781
 			}
 		}
 	},
 	["0bbefac0-cf1f-48a6-b08e-04cd71f0497c"] = {
 		{
-			smart_object_index = 627,
+			smart_object_index = 634,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -20414,7 +20410,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 628,
+			smart_object_index = 635,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -20439,7 +20435,7 @@ local smart_objects = {
 	},
 	["10d7746d-fce5-42c6-aeb0-c479eb8f00e5"] = {
 		{
-			smart_object_index = 629,
+			smart_object_index = 636,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -20463,7 +20459,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 630,
+			smart_object_index = 637,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -20487,7 +20483,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 631,
+			smart_object_index = 638,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -20511,7 +20507,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 632,
+			smart_object_index = 639,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -20535,9 +20531,80 @@ local smart_objects = {
 			}
 		}
 	},
+	["01bdc0d6-3c22-49f8-8d6a-9e0e0b3cd34e"] = {
+		{
+			smart_object_index = 653,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					297.8529052734375,
+					95.55451202392578,
+					98.78988647460938
+				}
+			},
+			pos1 = {
+				298.6392822265625,
+				96.17223358154297,
+				98.76605987548828
+			},
+			pos2 = {
+				297.0665283203125,
+				94.9367904663086,
+				96.63799285888672
+			}
+		},
+		{
+			smart_object_index = 654,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					297.4917297363281,
+					96.01427459716797,
+					98.8066635131836
+				}
+			},
+			pos1 = {
+				298.2781066894531,
+				96.63200378417969,
+				98.77046203613281
+			},
+			pos2 = {
+				296.705322265625,
+				95.39654541015625,
+				96.64765167236328
+			}
+		},
+		{
+			smart_object_index = 655,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					297.13055419921875,
+					96.47402954101562,
+					98.82344055175781
+				}
+			},
+			pos1 = {
+				297.91693115234375,
+				97.09175872802734,
+				98.7939682006836
+			},
+			pos2 = {
+				296.34417724609375,
+				95.85630798339844,
+				96.68450927734375
+			}
+		}
+	},
 	["b75ea5fc-6817-4bf4-b206-61d5d5792691"] = {
 		{
-			smart_object_index = 155,
+			smart_object_index = 163,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -20561,7 +20628,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 156,
+			smart_object_index = 164,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -20585,414 +20652,130 @@ local smart_objects = {
 			}
 		}
 	},
-	["0874cfde-efae-413d-b55d-3619a3ec19c5"] = {
+	["80881d67-4eb5-4019-bcfb-e30fc9b074b6"] = {
 		{
-			smart_object_index = 272,
+			smart_object_index = 518,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					96.09126281738281,
-					5.882216453552246,
-					95.92765045166016
+					318.64404296875,
+					-5.158016204833984,
+					97.93791198730469
 				}
 			},
 			pos1 = {
-				96.90277099609375,
-				6.4665327072143555,
-				95.94147491455078
+				319.6384582519531,
+				-5.263945579528809,
+				97.55899810791016
 			},
 			pos2 = {
-				95.27973937988281,
-				5.297887802124023,
-				91.60851287841797
+				317.649658203125,
+				-5.052095890045166,
+				95.30150604248047
 			}
 		},
 		{
-			smart_object_index = 273,
+			smart_object_index = 519,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					95.79358673095703,
-					6.295630931854248,
-					96.015380859375
+					318.7188720703125,
+					-4.455732822418213,
+					97.9177474975586
 				}
 			},
 			pos1 = {
-				96.60509490966797,
-				6.879946708679199,
-				96.02973175048828
+				319.7132873535156,
+				-4.561662673950195,
+				97.5837173461914
 			},
 			pos2 = {
-				94.98206329345703,
-				5.711297035217285,
-				91.60909271240234
+				317.7244873046875,
+				-4.349818706512451,
+				95.29106140136719
 			}
 		},
 		{
-			smart_object_index = 274,
+			smart_object_index = 520,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					95.49591064453125,
-					6.70904541015625,
-					96.10311126708984
+					318.7936706542969,
+					-3.7534499168395996,
+					97.8975830078125
 				}
 			},
 			pos1 = {
-				96.30742645263672,
-				7.293367385864258,
-				96.11492156982422
+				319.7880859375,
+				-3.859379768371582,
+				97.63748931884766
 			},
 			pos2 = {
-				94.68439483642578,
-				6.124714374542236,
-				91.62168884277344
+				317.7992858886719,
+				-3.6475272178649902,
+				95.28060913085938
 			}
 		}
 	},
-	["a5780d21-baa4-47aa-a555-05ae587e8270"] = {
+	["005f8c82-4465-4e77-961c-8f92984ab2de"] = {
 		{
-			smart_object_index = 201,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					356.95330810546875,
-					-85.0499496459961,
-					103.11540222167969
-				}
-			},
-			pos1 = {
-				356.6961364746094,
-				-86.01631927490234,
-				103.19803619384766
-			},
-			pos2 = {
-				357.21044921875,
-				-84.08358001708984,
-				101.46720123291016
-			}
-		},
-		{
-			smart_object_index = 202,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					357.6792297363281,
-					-85.24313354492188,
-					103.11921691894531
-				}
-			},
-			pos1 = {
-				357.42205810546875,
-				-86.20951080322266,
-				103.18521881103516
-			},
-			pos2 = {
-				357.9363708496094,
-				-84.2767562866211,
-				101.4900131225586
-			}
-		},
-		{
-			smart_object_index = 203,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					358.4051513671875,
-					-85.43631744384766,
-					103.12303161621094
-				}
-			},
-			pos1 = {
-				358.1479797363281,
-				-86.4026870727539,
-				103.15337371826172
-			},
-			pos2 = {
-				358.66229248046875,
-				-84.46994018554688,
-				101.50212860107422
-			}
-		}
-	},
-	["01bdc0d6-3c22-49f8-8d6a-9e0e0b3cd34e"] = {
-		{
-			smart_object_index = 646,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					297.8529052734375,
-					95.55451202392578,
-					98.78988647460938
-				}
-			},
-			pos1 = {
-				298.6392822265625,
-				96.17223358154297,
-				98.76605987548828
-			},
-			pos2 = {
-				297.0665283203125,
-				94.9367904663086,
-				96.63799285888672
-			}
-		},
-		{
-			smart_object_index = 647,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					297.4917297363281,
-					96.01427459716797,
-					98.8066635131836
-				}
-			},
-			pos1 = {
-				298.2781066894531,
-				96.63200378417969,
-				98.77046203613281
-			},
-			pos2 = {
-				296.705322265625,
-				95.39654541015625,
-				96.64765167236328
-			}
-		},
-		{
-			smart_object_index = 648,
-			smart_object_type = "ledges_with_fence",
-			data = {
-				is_on_edge = false,
-				is_on_small_fence = true,
-				ledge_position = {
-					297.13055419921875,
-					96.47402954101562,
-					98.82344055175781
-				}
-			},
-			pos1 = {
-				297.91693115234375,
-				97.09175872802734,
-				98.7939682006836
-			},
-			pos2 = {
-				296.34417724609375,
-				95.85630798339844,
-				96.68450927734375
-			}
-		}
-	},
-	["c872f1f9-b5bc-4e0b-b00e-06f13ee050c6"] = {
-		{
-			smart_object_index = 649,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					197.46730041503906,
-					-14.590204238891602,
-					99.56831359863281
-				}
-			},
-			pos1 = {
-				198.28485107421875,
-				-15.166033744812012,
-				99.63235473632812
-			},
-			pos2 = {
-				196.64974975585938,
-				-14.014331817626953,
-				94.8428726196289
-			}
-		},
-		{
-			smart_object_index = 650,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					198.02963256835938,
-					-13.791787147521973,
-					99.73860931396484
-				}
-			},
-			pos1 = {
-				198.84719848632812,
-				-14.367623329162598,
-				99.82469940185547
-			},
-			pos2 = {
-				197.21206665039062,
-				-13.215913772583008,
-				95.09129333496094
-			}
-		},
-		{
-			smart_object_index = 651,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					198.5919647216797,
-					-12.993370056152344,
-					99.90890502929688
-				}
-			},
-			pos1 = {
-				199.4095458984375,
-				-13.569208145141602,
-				100.01554870605469
-			},
-			pos2 = {
-				197.77439880371094,
-				-12.417497634887695,
-				95.17780303955078
-			}
-		}
-	},
-	["4fa43ded-a82f-466e-b872-3ef44d77d3a1"] = {
-		{
-			smart_object_index = 46,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					387.4453125,
-					-123.59355926513672,
-					99.05220794677734
-				}
-			},
-			pos1 = {
-				388.4136657714844,
-				-123.34415435791016,
-				98.85247039794922
-			},
-			pos2 = {
-				386.47686767578125,
-				-123.84297180175781,
-				95.8936996459961
-			}
-		},
-		{
-			smart_object_index = 47,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					387.22308349609375,
-					-122.73065185546875,
-					99.13936614990234
-				}
-			},
-			pos1 = {
-				388.19146728515625,
-				-122.48123931884766,
-				98.88774108886719
-			},
-			pos2 = {
-				386.254638671875,
-				-122.98004913330078,
-				95.93560028076172
-			}
-		},
-		{
-			smart_object_index = 48,
-			smart_object_type = "ledges",
-			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
-				ledge_position = {
-					387.0008544921875,
-					-121.86773681640625,
-					99.22651672363281
-				}
-			},
-			pos1 = {
-				387.96923828125,
-				-121.61833190917969,
-				98.98110961914062
-			},
-			pos2 = {
-				386.03240966796875,
-				-122.11709594726562,
-				96.06558990478516
-			}
-		}
-	},
-	["f7f9afd6-4ef3-4043-a669-3cc15af085e9"] = {
-		{
-			smart_object_index = 676,
+			smart_object_index = 182,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					296.7746887207031,
-					115.22784423828125,
-					98.08186340332031
+					262.536865234375,
+					-26.588733673095703,
+					96.63449096679688
 				}
 			},
 			pos1 = {
-				297.2704772949219,
-				116.09632873535156,
-				98.3891372680664
+				262.0723876953125,
+				-27.47433090209961,
+				96.68536376953125
 			},
 			pos2 = {
-				296.2789306640625,
-				114.359375,
-				89.75367736816406
+				263.0013427734375,
+				-25.703125,
+				91.3331298828125
 			}
 		},
 		{
-			smart_object_index = 677,
+			smart_object_index = 183,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					295.9340515136719,
-					115.70773315429688,
-					98.06613159179688
+					263.1572265625,
+					-26.914104461669922,
+					96.62179565429688
 				}
 			},
 			pos1 = {
-				296.4298095703125,
-				116.57621002197266,
-				98.36351776123047
+				262.6927490234375,
+				-27.799699783325195,
+				96.6499252319336
 			},
 			pos2 = {
-				295.43829345703125,
-				114.83929443359375,
-				89.58615112304688
+				263.6217041015625,
+				-26.028549194335938,
+				91.2822494506836
 			}
 		}
 	},
 	["d5109bb1-4f19-48f4-ac42-7562d8551116"] = {
 		{
-			smart_object_index = 217,
+			smart_object_index = 228,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21016,7 +20799,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 218,
+			smart_object_index = 229,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21040,9 +20823,178 @@ local smart_objects = {
 			}
 		}
 	},
+	["035951a1-b80a-4858-b2a6-978fd49d1302"] = {
+		{
+			smart_object_index = 146,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					199.04595947265625,
+					1.600052833557129,
+					100.22103118896484
+				}
+			},
+			pos1 = {
+				199.80101013183594,
+				0.9444609880447388,
+				100.41172790527344
+			},
+			pos2 = {
+				198.29087829589844,
+				2.2556889057159424,
+				96.72447967529297
+			}
+		}
+	},
+	["ba5bea84-0dee-4955-b2ef-53a131b65649"] = {
+		{
+			smart_object_index = 224,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					230.9136505126953,
+					24.5303955078125,
+					92.45199584960938
+				}
+			},
+			pos1 = {
+				230.6548309326172,
+				23.564462661743164,
+				91.95642852783203
+			},
+			pos2 = {
+				231.1724853515625,
+				25.496337890625,
+				90.23796844482422
+			}
+		},
+		{
+			smart_object_index = 225,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					231.81851196289062,
+					24.287940979003906,
+					92.45199584960938
+				}
+			},
+			pos1 = {
+				231.5596923828125,
+				23.322006225585938,
+				92.00836181640625
+			},
+			pos2 = {
+				232.07733154296875,
+				25.25390625,
+				90.23819732666016
+			}
+		},
+		{
+			smart_object_index = 226,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					232.72335815429688,
+					24.045482635498047,
+					92.45199584960938
+				}
+			},
+			pos1 = {
+				232.46453857421875,
+				23.079551696777344,
+				92.00133514404297
+			},
+			pos2 = {
+				232.982177734375,
+				25.01141357421875,
+				90.22919464111328
+			}
+		},
+		{
+			smart_object_index = 227,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					233.6282196044922,
+					23.803028106689453,
+					92.45199584960938
+				}
+			},
+			pos1 = {
+				233.36941528320312,
+				22.83708953857422,
+				91.99317932128906
+			},
+			pos2 = {
+				233.8870849609375,
+				24.76898193359375,
+				90.22924041748047
+			}
+		}
+	},
+	["f7f9afd6-4ef3-4043-a669-3cc15af085e9"] = {
+		{
+			smart_object_index = 680,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					296.7746887207031,
+					115.22784423828125,
+					98.08186340332031
+				}
+			},
+			pos1 = {
+				297.2704772949219,
+				116.09632873535156,
+				98.3891372680664
+			},
+			pos2 = {
+				296.2789306640625,
+				114.359375,
+				89.75367736816406
+			}
+		},
+		{
+			smart_object_index = 681,
+			smart_object_type = "ledges",
+			data = {
+				is_bidirectional = false,
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					295.9340515136719,
+					115.70773315429688,
+					98.06613159179688
+				}
+			},
+			pos1 = {
+				296.4298095703125,
+				116.57621002197266,
+				98.36351776123047
+			},
+			pos2 = {
+				295.43829345703125,
+				114.83929443359375,
+				89.58615112304688
+			}
+		}
+	},
 	["20005b7c-e180-46b1-b043-f903c60b3668"] = {
 		{
-			smart_object_index = 474,
+			smart_object_index = 219,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21066,7 +21018,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 475,
+			smart_object_index = 220,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21090,7 +21042,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 476,
+			smart_object_index = 221,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21116,7 +21068,7 @@ local smart_objects = {
 	},
 	["897cd1bb-c0cf-4e1e-84cc-fc70076126a3"] = {
 		{
-			smart_object_index = 250,
+			smart_object_index = 251,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -21140,7 +21092,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 251,
+			smart_object_index = 252,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_bidirectional = false,
@@ -21164,9 +21116,57 @@ local smart_objects = {
 			}
 		}
 	},
+	["6b848c2b-ba88-4c09-af7a-6dd7319ab186"] = {
+		{
+			smart_object_index = 268,
+			smart_object_type = "ledges_with_fence",
+			data = {
+				is_on_edge = false,
+				is_on_small_fence = true,
+				ledge_position = {
+					94.39352416992188,
+					-14.902350425720215,
+					91.66600799560547
+				}
+			},
+			pos1 = {
+				94.15933990478516,
+				-15.874552726745605,
+				91.56969451904297
+			},
+			pos2 = {
+				94.62769317626953,
+				-13.930182456970215,
+				90.73711395263672
+			}
+		},
+		{
+			smart_object_index = 269,
+			smart_object_type = "ledges",
+			data = {
+				is_on_edge = true,
+				is_on_small_fence = false,
+				ledge_position = {
+					95.36572265625,
+					-15.136531829833984,
+					91.666015625
+				}
+			},
+			pos1 = {
+				95.13153839111328,
+				-16.108734130859375,
+				91.60367584228516
+			},
+			pos2 = {
+				95.59989166259766,
+				-14.164365768432617,
+				90.78175354003906
+			}
+		}
+	},
 	["4aab034d-6867-4609-9be8-23b7b014f940"] = {
 		{
-			smart_object_index = 404,
+			smart_object_index = 426,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21189,7 +21189,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 405,
+			smart_object_index = 427,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21212,57 +21212,57 @@ local smart_objects = {
 			}
 		}
 	},
-	["c67696c1-0eb1-4d13-b767-b331a10e1276"] = {
+	["b9b85a52-d3bf-4568-94e5-e093d809ca6a"] = {
 		{
-			smart_object_index = 267,
-			smart_object_type = "ledges",
+			smart_object_index = 99,
+			smart_object_type = "ledges_with_fence",
 			data = {
-				is_on_edge = true,
-				is_on_small_fence = false,
+				is_on_edge = false,
+				is_on_small_fence = true,
 				ledge_position = {
-					259.4227294921875,
-					103.02303314208984,
-					96.8675765991211
+					75.43645477294922,
+					-19.446401596069336,
+					94.09859466552734
 				}
 			},
 			pos1 = {
-				260.1833801269531,
-				102.37390899658203,
-				96.78780364990234
+				74.4379653930664,
+				-19.50080108642578,
+				93.9401626586914
 			},
 			pos2 = {
-				258.6620788574219,
-				103.67219543457031,
-				92.73815155029297
+				76.43498992919922,
+				-19.39200782775879,
+				92.75749969482422
 			}
 		},
 		{
-			smart_object_index = 268,
+			smart_object_index = 100,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
 				is_on_small_fence = false,
 				ledge_position = {
-					260.0718994140625,
-					103.78367614746094,
-					96.8675765991211
+					75.48926544189453,
+					-20.415834426879883,
+					94.2661361694336
 				}
 			},
 			pos1 = {
-				260.8325500488281,
-				103.1345443725586,
-				96.83636474609375
+				74.49077606201172,
+				-20.47023582458496,
+				94.05553436279297
 			},
 			pos2 = {
-				259.311279296875,
-				104.4328384399414,
-				92.78775024414062
+				76.48779296875,
+				-20.3614444732666,
+				92.70410919189453
 			}
 		}
 	},
 	["a9626ac5-1042-4066-95af-91b67dbc3afb"] = {
 		{
-			smart_object_index = 243,
+			smart_object_index = 261,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -21285,7 +21285,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 244,
+			smart_object_index = 262,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21308,7 +21308,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 245,
+			smart_object_index = 263,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21333,7 +21333,7 @@ local smart_objects = {
 	},
 	["da5ab2b0-17df-41f3-9743-d51ace024a3b"] = {
 		{
-			smart_object_index = 671,
+			smart_object_index = 675,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21356,7 +21356,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 672,
+			smart_object_index = 676,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21379,7 +21379,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 673,
+			smart_object_index = 677,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,
@@ -21404,7 +21404,7 @@ local smart_objects = {
 	},
 	["9d0550d0-dc29-4a38-971d-744db81c8c29"] = {
 		{
-			smart_object_index = 339,
+			smart_object_index = 351,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21428,7 +21428,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 340,
+			smart_object_index = 352,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21452,7 +21452,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 341,
+			smart_object_index = 353,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21476,7 +21476,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 342,
+			smart_object_index = 354,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21500,7 +21500,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 343,
+			smart_object_index = 355,
 			smart_object_type = "ledges",
 			data = {
 				is_bidirectional = false,
@@ -21526,7 +21526,7 @@ local smart_objects = {
 	},
 	["5dd60f79-89a2-4a10-83c3-dd8d6ad9ff91"] = {
 		{
-			smart_object_index = 776,
+			smart_object_index = 320,
 			smart_object_type = "ledges",
 			data = {
 				is_on_edge = true,
@@ -21549,7 +21549,7 @@ local smart_objects = {
 			}
 		},
 		{
-			smart_object_index = 777,
+			smart_object_index = 321,
 			smart_object_type = "ledges_with_fence",
 			data = {
 				is_on_edge = false,

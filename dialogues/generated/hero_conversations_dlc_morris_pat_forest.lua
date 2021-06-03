@@ -1100,93 +1100,26 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pdr_morris_forest_beacons = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pdr_morris_forest_beacons_01",
-				"pdr_morris_forest_beacons_02",
-				"pdr_morris_forest_beacons_03",
-				"pdr_morris_forest_beacons_04"
-			},
-			sound_events_duration = {
-				4.1300835609436,
-				3.8546042442322,
-				4.0797710418701,
-				3.6292917728424
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_forest_beacons_01",
-				"pdr_morris_forest_beacons_02",
-				"pdr_morris_forest_beacons_03",
-				"pdr_morris_forest_beacons_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_forest_mine = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_forest_mine_01",
-				"pwe_morris_forest_mine_02",
-				"pwe_morris_forest_mine_03",
-				"pwe_morris_forest_mine_04"
-			},
-			sound_events_duration = {
-				2.8664374351502,
-				3.4249792098999,
-				4.7889790534973,
-				3.2803750038147
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_forest_mine_01",
-				"pwe_morris_forest_mine_02",
-				"pwe_morris_forest_mine_03",
-				"pwe_morris_forest_mine_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
 		pwh_morris_forest_skulls = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pwh_morris_forest_skulls_01",
+				"pwh_morris_forest_skulls_02",
+				"pwh_morris_forest_skulls_03",
+				"pwh_morris_forest_skulls_04"
+			},
+			localization_strings = {
 				"pwh_morris_forest_skulls_01",
 				"pwh_morris_forest_skulls_02",
 				"pwh_morris_forest_skulls_03",
@@ -1198,135 +1131,7 @@ return function ()
 				4.9475626945496,
 				5.4028749465942
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_forest_skulls_01",
-				"pwh_morris_forest_skulls_02",
-				"pwh_morris_forest_skulls_03",
-				"pwh_morris_forest_skulls_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_forest_beacons = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_forest_beacons_01",
-				"pwe_morris_forest_beacons_02",
-				"pwe_morris_forest_beacons_03",
-				"pwe_morris_forest_beacons_04"
-			},
-			sound_events_duration = {
-				4.8373332023621,
-				5.816520690918,
-				3.9366250038147,
-				3.8963124752045
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_forest_beacons_01",
-				"pwe_morris_forest_beacons_02",
-				"pwe_morris_forest_beacons_03",
-				"pwe_morris_forest_beacons_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_forest_skulls = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_forest_skulls_01",
-				"pes_morris_forest_skulls_02",
-				"pes_morris_forest_skulls_03",
-				"pes_morris_forest_skulls_04"
-			},
-			sound_events_duration = {
-				4.8775835037231,
-				4.1124377250671,
-				4.203125,
-				3.6649792194366
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_forest_skulls_01",
-				"pes_morris_forest_skulls_02",
-				"pes_morris_forest_skulls_03",
-				"pes_morris_forest_skulls_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_forest_skulls = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_forest_skulls_01",
-				"pbw_morris_forest_skulls_02",
-				"pbw_morris_forest_skulls_03",
-				"pbw_morris_forest_skulls_04"
-			},
-			sound_events_duration = {
-				3.9222707748413,
-				3.4333124160767,
-				3.9297082424164,
-				3.9055416584015
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_forest_skulls_01",
-				"pbw_morris_forest_skulls_02",
-				"pbw_morris_forest_skulls_03",
-				"pbw_morris_forest_skulls_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1335,14 +1140,25 @@ return function ()
 			}
 		},
 		pwe_morris_forest_river = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pwe_morris_forest_river_01",
+				"pwe_morris_forest_river_02",
+				"pwe_morris_forest_river_03",
+				"pwe_morris_forest_river_04"
+			},
+			localization_strings = {
 				"pwe_morris_forest_river_01",
 				"pwe_morris_forest_river_02",
 				"pwe_morris_forest_river_03",
@@ -1352,371 +1168,9 @@ return function ()
 				2.3531041145325,
 				3.624041557312,
 				2.3709583282471,
-				2.139708340168
+				2.1396979093552
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_forest_river_01",
-				"pwe_morris_forest_river_02",
-				"pwe_morris_forest_river_03",
-				"pwe_morris_forest_river_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_forest_beacons = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_forest_beacons_01",
-				"pwh_morris_forest_beacons_02",
-				"pwh_morris_forest_beacons_03",
-				"pwh_morris_forest_beacons_04"
-			},
-			sound_events_duration = {
-				4.0973334312439,
-				5.0934376716614,
-				2.9523124694824,
-				4.7038331031799
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_forest_beacons_01",
-				"pwh_morris_forest_beacons_02",
-				"pwh_morris_forest_beacons_03",
-				"pwh_morris_forest_beacons_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_forest_beacons = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_forest_beacons_01",
-				"pbw_morris_forest_beacons_02",
-				"pbw_morris_forest_beacons_03",
-				"pbw_morris_forest_beacons_04"
-			},
-			sound_events_duration = {
-				2.5586667060852,
-				2.9077708721161,
-				3.681583404541,
-				4.4273543357849
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_forest_beacons_01",
-				"pbw_morris_forest_beacons_02",
-				"pbw_morris_forest_beacons_03",
-				"pbw_morris_forest_beacons_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_forest_river = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_forest_river_01",
-				"pwh_morris_forest_river_02",
-				"pwh_morris_forest_river_03",
-				"pwh_morris_forest_river_04"
-			},
-			sound_events_duration = {
-				1.426916718483,
-				3.8411667346954,
-				2.220624923706,
-				3.947562456131
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_forest_river_01",
-				"pwh_morris_forest_river_02",
-				"pwh_morris_forest_river_03",
-				"pwh_morris_forest_river_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_forest_chaos_star = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_forest_chaos_star_01",
-				"pwh_morris_forest_chaos_star_02",
-				"pwh_morris_forest_chaos_star_03",
-				"pwh_morris_forest_chaos_star_04"
-			},
-			sound_events_duration = {
-				4.3227915763855,
-				4.1078748703003,
-				2.6555209159851,
-				5.2102918624878
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_forest_chaos_star_01",
-				"pwh_morris_forest_chaos_star_02",
-				"pwh_morris_forest_chaos_star_03",
-				"pwh_morris_forest_chaos_star_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_forest_river = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_forest_river_01",
-				"pbw_morris_forest_river_02",
-				"pbw_morris_forest_river_03",
-				"pbw_morris_forest_river_04"
-			},
-			sound_events_duration = {
-				1.936979174614,
-				3.1557500362396,
-				4.5122289657593,
-				2.4852917194366
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_forest_river_01",
-				"pbw_morris_forest_river_02",
-				"pbw_morris_forest_river_03",
-				"pbw_morris_forest_river_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_forest_river = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_forest_river_01",
-				"pes_morris_forest_river_02",
-				"pes_morris_forest_river_03",
-				"pes_morris_forest_river_04"
-			},
-			sound_events_duration = {
-				1.8237916231155,
-				2.9606459140778,
-				1.7102082967758,
-				3.1477291584015
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_forest_river_01",
-				"pes_morris_forest_river_02",
-				"pes_morris_forest_river_03",
-				"pes_morris_forest_river_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_forest_beacons = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_forest_beacons_01",
-				"pes_morris_forest_beacons_02",
-				"pes_morris_forest_beacons_03",
-				"pes_morris_forest_beacons_04"
-			},
-			sound_events_duration = {
-				4.4790625572205,
-				2.6101458072662,
-				2.9400832653046,
-				2.4631667137146
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_forest_beacons_01",
-				"pes_morris_forest_beacons_02",
-				"pes_morris_forest_beacons_03",
-				"pes_morris_forest_beacons_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_forest_mine = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_forest_mine_01",
-				"pes_morris_forest_mine_02",
-				"pes_morris_forest_mine_03",
-				"pes_morris_forest_mine_04"
-			},
-			sound_events_duration = {
-				1.2732917070389,
-				2.9045207500458,
-				1.7422292232513,
-				3.4395000934601
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_forest_mine_01",
-				"pes_morris_forest_mine_02",
-				"pes_morris_forest_mine_03",
-				"pes_morris_forest_mine_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_forest_chaos_star = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_forest_chaos_star_01",
-				"pes_morris_forest_chaos_star_02",
-				"pes_morris_forest_chaos_star_03",
-				"pes_morris_forest_chaos_star_04"
-			},
-			sound_events_duration = {
-				2.8299791812897,
-				4.0529165267944,
-				4.7990627288818,
-				3.106166601181
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_forest_chaos_star_01",
-				"pes_morris_forest_chaos_star_02",
-				"pes_morris_forest_chaos_star_03",
-				"pes_morris_forest_chaos_star_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1725,14 +1179,25 @@ return function ()
 			}
 		},
 		pwe_morris_forest_chaos_star = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pwe_morris_forest_chaos_star_01",
+				"pwe_morris_forest_chaos_star_02",
+				"pwe_morris_forest_chaos_star_03",
+				"pwe_morris_forest_chaos_star_04"
+			},
+			localization_strings = {
 				"pwe_morris_forest_chaos_star_01",
 				"pwe_morris_forest_chaos_star_02",
 				"pwe_morris_forest_chaos_star_03",
@@ -1744,18 +1209,7 @@ return function ()
 				5.1692914962769,
 				5.3422498703003
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_forest_chaos_star_01",
-				"pwe_morris_forest_chaos_star_02",
-				"pwe_morris_forest_chaos_star_03",
-				"pwe_morris_forest_chaos_star_04"
-			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1763,38 +1217,38 @@ return function ()
 				"dialogue_talk"
 			}
 		},
-		pwe_morris_forest_skulls = {
-			randomize_indexes_n = 0,
+		pbw_morris_forest_beacons = {
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_forest_skulls_01",
-				"pwe_morris_forest_skulls_02",
-				"pwe_morris_forest_skulls_03",
-				"pwe_morris_forest_skulls_04"
-			},
-			sound_events_duration = {
-				5.4506874084473,
-				3.153062582016,
-				3.9600625038147,
-				4.1498956680298
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pwe_morris_forest_skulls_01",
-				"pwe_morris_forest_skulls_02",
-				"pwe_morris_forest_skulls_03",
-				"pwe_morris_forest_skulls_04"
+			sound_events = {
+				"pbw_morris_forest_beacons_01",
+				"pbw_morris_forest_beacons_02",
+				"pbw_morris_forest_beacons_03",
+				"pbw_morris_forest_beacons_04"
 			},
+			localization_strings = {
+				"pbw_morris_forest_beacons_01",
+				"pbw_morris_forest_beacons_02",
+				"pbw_morris_forest_beacons_03",
+				"pbw_morris_forest_beacons_04"
+			},
+			sound_events_duration = {
+				2.5586667060852,
+				2.9077708721161,
+				3.681583404541,
+				4.4273543357849
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1802,155 +1256,38 @@ return function ()
 				"dialogue_talk"
 			}
 		},
-		pdr_morris_forest_chaos_star = {
-			randomize_indexes_n = 0,
+		pwh_morris_forest_beacons = {
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pdr_morris_forest_chaos_star_01",
-				"pdr_morris_forest_chaos_star_02",
-				"pdr_morris_forest_chaos_star_03",
-				"pdr_morris_forest_chaos_star_04"
-			},
-			sound_events_duration = {
-				3.8779165744781,
-				2.4876248836517,
-				4.0248332023621,
-				2.1322500705719
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pdr_morris_forest_chaos_star_01",
-				"pdr_morris_forest_chaos_star_02",
-				"pdr_morris_forest_chaos_star_03",
-				"pdr_morris_forest_chaos_star_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_forest_skulls = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
 			sound_events = {
-				"pdr_morris_forest_skulls_01",
-				"pdr_morris_forest_skulls_02",
-				"pdr_morris_forest_skulls_03",
-				"pdr_morris_forest_skulls_04"
+				"pwh_morris_forest_beacons_01",
+				"pwh_morris_forest_beacons_02",
+				"pwh_morris_forest_beacons_03",
+				"pwh_morris_forest_beacons_04"
+			},
+			localization_strings = {
+				"pwh_morris_forest_beacons_01",
+				"pwh_morris_forest_beacons_02",
+				"pwh_morris_forest_beacons_03",
+				"pwh_morris_forest_beacons_04"
 			},
 			sound_events_duration = {
-				1.7386875152588,
-				3.8082082271576,
-				5.2282085418701,
-				2.2489166259766
+				4.0973334312439,
+				5.0934376716614,
+				2.9523124694824,
+				4.7038331031799
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_forest_skulls_01",
-				"pdr_morris_forest_skulls_02",
-				"pdr_morris_forest_skulls_03",
-				"pdr_morris_forest_skulls_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_forest_chaos_star = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_forest_chaos_star_01",
-				"pbw_morris_forest_chaos_star_02",
-				"pbw_morris_forest_chaos_star_03",
-				"pbw_morris_forest_chaos_star_04"
-			},
-			sound_events_duration = {
-				4.6887707710266,
-				5.7220001220703,
-				3.4945833683014,
-				3.7216041088104
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_forest_chaos_star_01",
-				"pbw_morris_forest_chaos_star_02",
-				"pbw_morris_forest_chaos_star_03",
-				"pbw_morris_forest_chaos_star_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_forest_mine = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_forest",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_forest_mine_01",
-				"pbw_morris_forest_mine_02",
-				"pbw_morris_forest_mine_03",
-				"pbw_morris_forest_mine_04"
-			},
-			sound_events_duration = {
-				2.0871458053589,
-				4.5999999046326,
-				3.8619582653046,
-				2.9277083873749
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_forest_mine_01",
-				"pbw_morris_forest_mine_02",
-				"pbw_morris_forest_mine_03",
-				"pbw_morris_forest_mine_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1959,14 +1296,25 @@ return function ()
 			}
 		},
 		pdr_morris_forest_mine = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pdr_morris_forest_mine_01",
+				"pdr_morris_forest_mine_02",
+				"pdr_morris_forest_mine_03",
+				"pdr_morris_forest_mine_04"
+			},
+			localization_strings = {
 				"pdr_morris_forest_mine_01",
 				"pdr_morris_forest_mine_02",
 				"pdr_morris_forest_mine_03",
@@ -1978,18 +1326,592 @@ return function ()
 				3.3955624103546,
 				3.891562461853
 			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pdr_morris_forest_skulls = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pdr_morris_forest_mine_01",
-				"pdr_morris_forest_mine_02",
-				"pdr_morris_forest_mine_03",
-				"pdr_morris_forest_mine_04"
+			sound_events = {
+				"pdr_morris_forest_skulls_01",
+				"pdr_morris_forest_skulls_02",
+				"pdr_morris_forest_skulls_03",
+				"pdr_morris_forest_skulls_04"
 			},
+			localization_strings = {
+				"pdr_morris_forest_skulls_01",
+				"pdr_morris_forest_skulls_02",
+				"pdr_morris_forest_skulls_03",
+				"pdr_morris_forest_skulls_04"
+			},
+			sound_events_duration = {
+				1.7386875152588,
+				3.8082082271576,
+				5.2282085418701,
+				2.2489166259766
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_forest_river = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_forest_river_01",
+				"pes_morris_forest_river_02",
+				"pes_morris_forest_river_03",
+				"pes_morris_forest_river_04"
+			},
+			localization_strings = {
+				"pes_morris_forest_river_01",
+				"pes_morris_forest_river_02",
+				"pes_morris_forest_river_03",
+				"pes_morris_forest_river_04"
+			},
+			sound_events_duration = {
+				1.8237916231155,
+				2.9606459140778,
+				1.7102082967758,
+				3.1477291584015
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_forest_beacons = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_forest_beacons_01",
+				"pes_morris_forest_beacons_02",
+				"pes_morris_forest_beacons_03",
+				"pes_morris_forest_beacons_04"
+			},
+			localization_strings = {
+				"pes_morris_forest_beacons_01",
+				"pes_morris_forest_beacons_02",
+				"pes_morris_forest_beacons_03",
+				"pes_morris_forest_beacons_04"
+			},
+			sound_events_duration = {
+				4.4790625572205,
+				2.6101458072662,
+				2.9400832653046,
+				2.4631667137146
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pbw_morris_forest_river = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pbw_morris_forest_river_01",
+				"pbw_morris_forest_river_02",
+				"pbw_morris_forest_river_03",
+				"pbw_morris_forest_river_04"
+			},
+			localization_strings = {
+				"pbw_morris_forest_river_01",
+				"pbw_morris_forest_river_02",
+				"pbw_morris_forest_river_03",
+				"pbw_morris_forest_river_04"
+			},
+			sound_events_duration = {
+				1.936979174614,
+				3.1557500362396,
+				4.5122289657593,
+				2.4852917194366
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_forest_skulls = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_forest_skulls_01",
+				"pes_morris_forest_skulls_02",
+				"pes_morris_forest_skulls_03",
+				"pes_morris_forest_skulls_04"
+			},
+			localization_strings = {
+				"pes_morris_forest_skulls_01",
+				"pes_morris_forest_skulls_02",
+				"pes_morris_forest_skulls_03",
+				"pes_morris_forest_skulls_04"
+			},
+			sound_events_duration = {
+				4.8775835037231,
+				4.1124377250671,
+				4.203125,
+				3.6649792194366
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwh_morris_forest_river = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwh_morris_forest_river_01",
+				"pwh_morris_forest_river_02",
+				"pwh_morris_forest_river_03",
+				"pwh_morris_forest_river_04"
+			},
+			localization_strings = {
+				"pwh_morris_forest_river_01",
+				"pwh_morris_forest_river_02",
+				"pwh_morris_forest_river_03",
+				"pwh_morris_forest_river_04"
+			},
+			sound_events_duration = {
+				1.426916718483,
+				3.8411667346954,
+				2.220624923706,
+				3.947562456131
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_forest_mine = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_forest_mine_01",
+				"pes_morris_forest_mine_02",
+				"pes_morris_forest_mine_03",
+				"pes_morris_forest_mine_04"
+			},
+			localization_strings = {
+				"pes_morris_forest_mine_01",
+				"pes_morris_forest_mine_02",
+				"pes_morris_forest_mine_03",
+				"pes_morris_forest_mine_04"
+			},
+			sound_events_duration = {
+				1.2732917070389,
+				2.9045207500458,
+				1.7422292232513,
+				3.4395000934601
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwh_morris_forest_chaos_star = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwh_morris_forest_chaos_star_01",
+				"pwh_morris_forest_chaos_star_02",
+				"pwh_morris_forest_chaos_star_03",
+				"pwh_morris_forest_chaos_star_04"
+			},
+			localization_strings = {
+				"pwh_morris_forest_chaos_star_01",
+				"pwh_morris_forest_chaos_star_02",
+				"pwh_morris_forest_chaos_star_03",
+				"pwh_morris_forest_chaos_star_04"
+			},
+			sound_events_duration = {
+				4.3227915763855,
+				4.1078748703003,
+				2.6555209159851,
+				5.2102918624878
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_forest_chaos_star = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_forest_chaos_star_01",
+				"pes_morris_forest_chaos_star_02",
+				"pes_morris_forest_chaos_star_03",
+				"pes_morris_forest_chaos_star_04"
+			},
+			localization_strings = {
+				"pes_morris_forest_chaos_star_01",
+				"pes_morris_forest_chaos_star_02",
+				"pes_morris_forest_chaos_star_03",
+				"pes_morris_forest_chaos_star_04"
+			},
+			sound_events_duration = {
+				2.8299791812897,
+				4.0529165267944,
+				4.7990627288818,
+				3.106166601181
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pdr_morris_forest_chaos_star = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pdr_morris_forest_chaos_star_01",
+				"pdr_morris_forest_chaos_star_02",
+				"pdr_morris_forest_chaos_star_03",
+				"pdr_morris_forest_chaos_star_04"
+			},
+			localization_strings = {
+				"pdr_morris_forest_chaos_star_01",
+				"pdr_morris_forest_chaos_star_02",
+				"pdr_morris_forest_chaos_star_03",
+				"pdr_morris_forest_chaos_star_04"
+			},
+			sound_events_duration = {
+				3.8779165744781,
+				2.4876248836517,
+				4.0248332023621,
+				2.1322500705719
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwe_morris_forest_mine = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwe_morris_forest_mine_01",
+				"pwe_morris_forest_mine_02",
+				"pwe_morris_forest_mine_03",
+				"pwe_morris_forest_mine_04"
+			},
+			localization_strings = {
+				"pwe_morris_forest_mine_01",
+				"pwe_morris_forest_mine_02",
+				"pwe_morris_forest_mine_03",
+				"pwe_morris_forest_mine_04"
+			},
+			sound_events_duration = {
+				2.8664374351502,
+				3.4249792098999,
+				4.7889790534973,
+				3.2803750038147
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwe_morris_forest_skulls = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwe_morris_forest_skulls_01",
+				"pwe_morris_forest_skulls_02",
+				"pwe_morris_forest_skulls_03",
+				"pwe_morris_forest_skulls_04"
+			},
+			localization_strings = {
+				"pwe_morris_forest_skulls_01",
+				"pwe_morris_forest_skulls_02",
+				"pwe_morris_forest_skulls_03",
+				"pwe_morris_forest_skulls_04"
+			},
+			sound_events_duration = {
+				5.4506874084473,
+				3.153062582016,
+				3.9600625038147,
+				4.1498956680298
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pbw_morris_forest_chaos_star = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pbw_morris_forest_chaos_star_01",
+				"pbw_morris_forest_chaos_star_02",
+				"pbw_morris_forest_chaos_star_03",
+				"pbw_morris_forest_chaos_star_04"
+			},
+			localization_strings = {
+				"pbw_morris_forest_chaos_star_01",
+				"pbw_morris_forest_chaos_star_02",
+				"pbw_morris_forest_chaos_star_03",
+				"pbw_morris_forest_chaos_star_04"
+			},
+			sound_events_duration = {
+				4.6887707710266,
+				5.7220001220703,
+				3.4945833683014,
+				3.7216041088104
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pbw_morris_forest_skulls = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pbw_morris_forest_skulls_01",
+				"pbw_morris_forest_skulls_02",
+				"pbw_morris_forest_skulls_03",
+				"pbw_morris_forest_skulls_04"
+			},
+			localization_strings = {
+				"pbw_morris_forest_skulls_01",
+				"pbw_morris_forest_skulls_02",
+				"pbw_morris_forest_skulls_03",
+				"pbw_morris_forest_skulls_04"
+			},
+			sound_events_duration = {
+				3.9222707748413,
+				3.4333124160767,
+				3.9297082424164,
+				3.9055416584015
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pbw_morris_forest_mine = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pbw_morris_forest_mine_01",
+				"pbw_morris_forest_mine_02",
+				"pbw_morris_forest_mine_03",
+				"pbw_morris_forest_mine_04"
+			},
+			localization_strings = {
+				"pbw_morris_forest_mine_01",
+				"pbw_morris_forest_mine_02",
+				"pbw_morris_forest_mine_03",
+				"pbw_morris_forest_mine_04"
+			},
+			sound_events_duration = {
+				2.0871458053589,
+				4.5999999046326,
+				3.8619582653046,
+				2.9277083873749
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1998,14 +1920,25 @@ return function ()
 			}
 		},
 		pwh_morris_forest_mine = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pwh_morris_forest_mine_01",
+				"pwh_morris_forest_mine_02",
+				"pwh_morris_forest_mine_03",
+				"pwh_morris_forest_mine_04"
+			},
+			localization_strings = {
 				"pwh_morris_forest_mine_01",
 				"pwh_morris_forest_mine_02",
 				"pwh_morris_forest_mine_03",
@@ -2017,18 +1950,85 @@ return function ()
 				1.1893124580383,
 				2.0569999217987
 			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwe_morris_forest_beacons = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pwh_morris_forest_mine_01",
-				"pwh_morris_forest_mine_02",
-				"pwh_morris_forest_mine_03",
-				"pwh_morris_forest_mine_04"
+			sound_events = {
+				"pwe_morris_forest_beacons_01",
+				"pwe_morris_forest_beacons_02",
+				"pwe_morris_forest_beacons_03",
+				"pwe_morris_forest_beacons_04"
 			},
+			localization_strings = {
+				"pwe_morris_forest_beacons_01",
+				"pwe_morris_forest_beacons_02",
+				"pwe_morris_forest_beacons_03",
+				"pwe_morris_forest_beacons_04"
+			},
+			sound_events_duration = {
+				4.8373332023621,
+				5.816520690918,
+				3.9366250038147,
+				3.8963124752045
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pdr_morris_forest_beacons = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_forest",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pdr_morris_forest_beacons_01",
+				"pdr_morris_forest_beacons_02",
+				"pdr_morris_forest_beacons_03",
+				"pdr_morris_forest_beacons_04"
+			},
+			localization_strings = {
+				"pdr_morris_forest_beacons_01",
+				"pdr_morris_forest_beacons_02",
+				"pdr_morris_forest_beacons_03",
+				"pdr_morris_forest_beacons_04"
+			},
+			sound_events_duration = {
+				4.1300835609436,
+				3.8546042442322,
+				4.0797710418701,
+				3.6292917728424
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -2037,14 +2037,25 @@ return function ()
 			}
 		},
 		pdr_morris_forest_river = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_forest",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pdr_morris_forest_river_01",
+				"pdr_morris_forest_river_02",
+				"pdr_morris_forest_river_03",
+				"pdr_morris_forest_river_04"
+			},
+			localization_strings = {
 				"pdr_morris_forest_river_01",
 				"pdr_morris_forest_river_02",
 				"pdr_morris_forest_river_03",
@@ -2056,18 +2067,7 @@ return function ()
 				1.6824375391007,
 				2.5715000629425
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_forest_river_01",
-				"pdr_morris_forest_river_02",
-				"pdr_morris_forest_river_03",
-				"pdr_morris_forest_river_04"
-			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",

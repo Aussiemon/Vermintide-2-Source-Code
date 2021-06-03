@@ -316,6 +316,11 @@ return function ()
 				"level_skittergate_gate_activated",
 				OP.ADD,
 				1
+			},
+			{
+				"faction_memory",
+				"time_since_alone",
+				OP.TIMESET
 			}
 		}
 	})
@@ -360,6 +365,11 @@ return function ()
 				"level_skittergate_enter_gate",
 				OP.ADD,
 				1
+			},
+			{
+				"faction_memory",
+				"time_since_alone",
+				OP.TIMESET
 			}
 		}
 	})
@@ -1038,6 +1048,11 @@ return function ()
 				"skittergate_run_for_the_gate",
 				OP.ADD,
 				1
+			},
+			{
+				"faction_memory",
+				"time_since_alone",
+				OP.TIMESET
 			}
 		}
 	})
@@ -1082,6 +1097,11 @@ return function ()
 				"skittergate_through the gate",
 				OP.ADD,
 				1
+			},
+			{
+				"faction_memory",
+				"time_since_alone",
+				OP.TIMESET
 			}
 		}
 	})
@@ -1530,25 +1550,25 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pes_level_skittergate_ships_01 = {
+		pes_level_skittergate_docks_gate_01 = {
+			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
+			sound_events_duration = {
+				1.752312541008,
+				1.5260624885559,
+				2.2672290802002,
+				2.2885208129883
 			},
 			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_ships_01",
-				"pes_level_skittergate_ships_02",
-				"pes_level_skittergate_ships_03",
-				"pes_level_skittergate_ships_04"
+			localization_strings = {
+				"pes_level_skittergate_docks_gate_01",
+				"pes_level_skittergate_docks_gate_02",
+				"pes_level_skittergate_docks_gate_03",
+				"pes_level_skittergate_docks_gate_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -1556,1133 +1576,1031 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_ships_01",
-				"pes_level_skittergate_ships_02",
-				"pes_level_skittergate_ships_03",
-				"pes_level_skittergate_ships_04"
+			sound_events = {
+				"pes_level_skittergate_docks_gate_01",
+				"pes_level_skittergate_docks_gate_02",
+				"pes_level_skittergate_docks_gate_03",
+				"pes_level_skittergate_docks_gate_04"
 			},
-			sound_events_duration = {
-				4.6101460456848,
-				5.9388127326965,
-				4.6111459732056,
-				5.5834374427795
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			}
 		},
-		pes_level_skittergate_searching_gatekeeper_01 = {
-			face_animations_n = 3,
+		pes_level_skittergate_get_back_to_gate_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
 			database = "empire_soldier_skittergate",
-			sound_events_n = 3,
 			randomize_indexes_n = 0,
 			category = "level_talk",
-			dialogue_animations_n = 3,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear"
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.215437412262,
+				5.5808124542236,
+				3.4525833129883,
+				7.1918334960938
 			},
 			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_searching_gatekeeper_02",
-				"pes_level_skittergate_searching_gatekeeper_03",
-				"pes_level_skittergate_searching_gatekeeper_04"
+			localization_strings = {
+				"pes_level_skittergate_get_back_to_gate_01",
+				"pes_level_skittergate_get_back_to_gate_02",
+				"pes_level_skittergate_get_back_to_gate_03",
+				"pes_level_skittergate_get_back_to_gate_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
+				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_searching_gatekeeper_02",
-				"pes_level_skittergate_searching_gatekeeper_03",
-				"pes_level_skittergate_searching_gatekeeper_04"
+			sound_events = {
+				"pes_level_skittergate_get_back_to_gate_01",
+				"pes_level_skittergate_get_back_to_gate_02",
+				"pes_level_skittergate_get_back_to_gate_03",
+				"pes_level_skittergate_get_back_to_gate_04"
 			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_skittergate_intro_c = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
 			sound_events_duration = {
-				5.5653748512268,
-				5.6082706451416,
-				8.858229637146
+				[1.0] = 8.1386461257935,
+				[2.0] = 6.9005832672119
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_skittergate_intro_c_01",
+				[2.0] = "pes_skittergate_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pes_skittergate_intro_c_01",
+				[2.0] = "pes_skittergate_intro_c_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			}
+		},
+		pes_level_skittergate_through_the_gate = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				5.7315831184387,
+				5.7245001792908,
+				2.4726667404175,
+				4.8563332557678
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_through_the_gate_01",
+				"pes_level_skittergate_through_the_gate_02",
+				"pes_level_skittergate_through_the_gate_03",
+				"pes_level_skittergate_through_the_gate_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_through_the_gate_01",
+				"pes_level_skittergate_through_the_gate_02",
+				"pes_level_skittergate_through_the_gate_03",
+				"pes_level_skittergate_through_the_gate_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_cave_entrance_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				5.8038539886475,
+				6.0452499389648,
+				6.0810832977295,
+				8.1394376754761
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_cave_entrance_01",
+				"pes_level_skittergate_cave_entrance_02",
+				"pes_level_skittergate_cave_entrance_03",
+				"pes_level_skittergate_cave_entrance_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_cave_entrance_01",
+				"pes_level_skittergate_cave_entrance_02",
+				"pes_level_skittergate_cave_entrance_03",
+				"pes_level_skittergate_cave_entrance_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			}
+		},
+		pes_skittergate_intro_b = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events_duration = {
+				[1.0] = 4.0071457624435,
+				[2.0] = 6.542396068573
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_skittergate_intro_b_01",
+				[2.0] = "pes_skittergate_intro_b_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pes_skittergate_intro_b_01",
+				[2.0] = "pes_skittergate_intro_b_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			}
+		},
+		pes_level_skittergate_activate_gate_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.4832916259766,
+				2.0632290840149,
+				2.0641875267029,
+				5.0130834579468
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_activate_gate_01",
+				"pes_level_skittergate_activate_gate_02",
+				"pes_level_skittergate_activate_gate_03",
+				"pes_level_skittergate_activate_gate_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_activate_gate_01",
+				"pes_level_skittergate_activate_gate_02",
+				"pes_level_skittergate_activate_gate_03",
+				"pes_level_skittergate_activate_gate_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			}
 		},
 		pes_level_skittergate_vacated_area_01 = {
+			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_vacated_area_01",
-				"pes_level_skittergate_vacated_area_02",
-				"pes_level_skittergate_vacated_area_03",
-				"pes_level_skittergate_vacated_area_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_vacated_area_01",
-				"pes_level_skittergate_vacated_area_02",
-				"pes_level_skittergate_vacated_area_03",
-				"pes_level_skittergate_vacated_area_04"
-			},
 			sound_events_duration = {
 				7.0909790992737,
 				3.2482917308807,
 				5.0854997634888,
 				7.1284165382385
-			}
-		},
-		pes_level_skittergate_rasknitt_dismounted_one = {
-			face_animations_n = 5,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 5,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 5,
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
 			},
 			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_rasknitt_dismounted_one_01",
-				"pes_level_skittergate_rasknitt_dismounted_one_02",
-				"pes_level_skittergate_rasknitt_dismounted_one_03",
-				"pes_level_skittergate_rasknitt_dismounted_one_04",
-				"pes_level_skittergate_rasknitt_dismounted_one_05"
+			localization_strings = {
+				"pes_level_skittergate_vacated_area_01",
+				"pes_level_skittergate_vacated_area_02",
+				"pes_level_skittergate_vacated_area_03",
+				"pes_level_skittergate_vacated_area_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_vacated_area_01",
+				"pes_level_skittergate_vacated_area_02",
+				"pes_level_skittergate_vacated_area_03",
+				"pes_level_skittergate_vacated_area_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_enter_gate_01 = {
+			sound_events_n = 3,
+			face_animations_n = 3,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 3,
+			sound_events_duration = {
+				6.757791519165,
+				6.6448540687561,
+				9.4201874732971
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_enter_gate_01",
+				"pes_level_skittergate_enter_gate_02",
+				"pes_level_skittergate_enter_gate_03"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_rasknitt_dismounted_one_01",
-				"pes_level_skittergate_rasknitt_dismounted_one_02",
-				"pes_level_skittergate_rasknitt_dismounted_one_03",
-				"pes_level_skittergate_rasknitt_dismounted_one_04",
-				"pes_level_skittergate_rasknitt_dismounted_one_05"
+			sound_events = {
+				"pes_level_skittergate_enter_gate_01",
+				"pes_level_skittergate_enter_gate_02",
+				"pes_level_skittergate_enter_gate_03"
 			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_welcome_to_norsca_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				5.1255831718445,
+				3.5598332881927,
+				3.984833240509,
+				4.840416431427
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_welcome_to_norsca_01",
+				"pes_level_skittergate_welcome_to_norsca_02",
+				"pes_level_skittergate_welcome_to_norsca_03",
+				"pes_level_skittergate_welcome_to_norsca_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_welcome_to_norsca_01",
+				"pes_level_skittergate_welcome_to_norsca_02",
+				"pes_level_skittergate_welcome_to_norsca_03",
+				"pes_level_skittergate_welcome_to_norsca_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_rasknitt_interrupt_and_focus = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.6574373245239,
+				4.8136458396912,
+				5.3481664657593,
+				2.798299074173
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_01",
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_02",
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_03",
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_01",
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_02",
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_03",
+				"pes_level_skittergate_rasknitt_interrupt_and_focus_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			}
+		},
+		pes_level_skittergate_activate_gate_01a = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				2.7992916107178,
+				2.7801249027252,
+				1.9106458425522,
+				4.055145740509
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_activate_gate_01a",
+				"pes_level_skittergate_activate_gate_02a",
+				"pes_level_skittergate_activate_gate_03a",
+				"pes_level_skittergate_activate_gate_04a"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_activate_gate_01a",
+				"pes_level_skittergate_activate_gate_02a",
+				"pes_level_skittergate_activate_gate_03a",
+				"pes_level_skittergate_activate_gate_04a"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_back_home_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				6.057760477066,
+				7.8987083435059,
+				8.8136143684387,
+				6.7352917194366
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_back_home_01",
+				"pes_level_skittergate_back_home_02",
+				"pes_level_skittergate_back_home_03",
+				"pes_level_skittergate_back_home_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_back_home_01",
+				"pes_level_skittergate_back_home_02",
+				"pes_level_skittergate_back_home_03",
+				"pes_level_skittergate_back_home_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_gatekeeper_death_01 = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events_duration = {
+				[1.0] = 7.1191458702087,
+				[2.0] = 10.024333000183
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_level_skittergate_gatekeeper_death_01",
+				[2.0] = "pes_level_skittergate_gatekeeper_death_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			sound_events = {
+				[1.0] = "pes_level_skittergate_gatekeeper_death_01",
+				[2.0] = "pes_level_skittergate_gatekeeper_death_02"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			}
+		},
+		pes_level_skittergate_get_down_to_the_cooling_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.9199166297913,
+				9.5280208587647,
+				6.0271248817444,
+				7.6088123321533
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_get_down_to_the_cooling_01",
+				"pes_level_skittergate_get_down_to_the_cooling_02",
+				"pes_level_skittergate_get_down_to_the_cooling_03",
+				"pes_level_skittergate_get_down_to_the_cooling_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_get_down_to_the_cooling_01",
+				"pes_level_skittergate_get_down_to_the_cooling_02",
+				"pes_level_skittergate_get_down_to_the_cooling_03",
+				"pes_level_skittergate_get_down_to_the_cooling_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_elevator_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				2.4436666965485,
+				2.7229583263397,
+				2.3743541240692,
+				2.7011249065399
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_elevator_01",
+				"pes_level_skittergate_elevator_02",
+				"pes_level_skittergate_elevator_03",
+				"pes_level_skittergate_elevator_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_level_skittergate_elevator_01",
+				"pes_level_skittergate_elevator_02",
+				"pes_level_skittergate_elevator_03",
+				"pes_level_skittergate_elevator_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			}
+		},
+		pes_level_skittergate_crater_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.2477188110352,
+				4.8223543167114,
+				5.9200000762939,
+				4.9219164848328
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_crater_01",
+				"pes_level_skittergate_crater_02",
+				"pes_level_skittergate_crater_03",
+				"pes_level_skittergate_crater_04"
+			},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_level_skittergate_crater_01",
+				"pes_level_skittergate_crater_02",
+				"pes_level_skittergate_crater_03",
+				"pes_level_skittergate_crater_04"
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			}
+		},
+		pes_level_skittergate_skittergate_found_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				8.7996664047241,
+				5.1175622940064,
+				5.7709271907806,
+				3.7657499313355
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_skittergate_found_01",
+				"pes_level_skittergate_skittergate_found_02",
+				"pes_level_skittergate_skittergate_found_03",
+				"pes_level_skittergate_skittergate_found_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_skittergate_found_01",
+				"pes_level_skittergate_skittergate_found_02",
+				"pes_level_skittergate_skittergate_found_03",
+				"pes_level_skittergate_skittergate_found_04"
+			},
+			face_animations = {
+				"face_angry",
+				"face_angry",
+				"face_angry",
+				"face_angry"
+			}
+		},
+		pes_level_skittergate_run_for_the_gate_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.4699685573578,
+				5.0454168319702,
+				5.8103542327881,
+				3.5176665782928
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_run_for_the_gate_01",
+				"pes_level_skittergate_run_for_the_gate_02",
+				"pes_level_skittergate_run_for_the_gate_03",
+				"pes_level_skittergate_run_for_the_gate_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_run_for_the_gate_01",
+				"pes_level_skittergate_run_for_the_gate_02",
+				"pes_level_skittergate_run_for_the_gate_03",
+				"pes_level_skittergate_run_for_the_gate_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_start_up_gate_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				5.3534374237061,
+				5.2471876144409,
+				4.6067500114441,
+				7.0168123245239
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_start_up_gate_01",
+				"pes_level_skittergate_start_up_gate_02",
+				"pes_level_skittergate_start_up_gate_03",
+				"pes_level_skittergate_start_up_gate_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_start_up_gate_01",
+				"pes_level_skittergate_start_up_gate_02",
+				"pes_level_skittergate_start_up_gate_03",
+				"pes_level_skittergate_start_up_gate_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_rasknitt_death_rattler_invulnerable = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				1.8351442813873,
+				2.9949791431427,
+				1.4763073921204,
+				2.0460455417633
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_01",
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_02",
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_03",
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_01",
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_02",
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_03",
+				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_04"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			}
+		},
+		pes_level_skittergate_gate_activated_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				1.2578542232513,
+				1.3960000276566,
+				4.2662291526794,
+				7.2976040840149
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_gate_activated_01",
+				"pes_level_skittergate_gate_activated_02",
+				"pes_level_skittergate_gate_activated_03",
+				"pes_level_skittergate_gate_activated_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_gate_activated_01",
+				"pes_level_skittergate_gate_activated_02",
+				"pes_level_skittergate_gate_activated_03",
+				"pes_level_skittergate_gate_activated_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_rasknitt_stormfiend_dead = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 2,
+			sound_events_duration = {
+				[1.0] = 3.4039423465729,
+				[2.0] = 4.8903956413269
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_01",
+				[2.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_01",
+				[2.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			}
+		},
+		pes_skittergate_intro_a = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events_duration = {
+				[1.0] = 10.730020523071,
+				[2.0] = 5.8164167404175
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_skittergate_intro_a_01",
+				[2.0] = "pes_skittergate_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pes_skittergate_intro_a_01",
+				[2.0] = "pes_skittergate_intro_a_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			}
+		},
+		pes_level_skittergate_contol_panel_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				2.4373750686645,
+				2.139687538147,
+				4.3291039466858,
+				4.2793960571289
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_contol_panel_01",
+				"pes_level_skittergate_contol_panel_02",
+				"pes_level_skittergate_contol_panel_03",
+				"pes_level_skittergate_contol_panel_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_contol_panel_01",
+				"pes_level_skittergate_contol_panel_02",
+				"pes_level_skittergate_contol_panel_03",
+				"pes_level_skittergate_contol_panel_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_arrive_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				3.9333230257034,
+				6.9627914428711,
+				6.9086456298828,
+				5.6033644676208
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_arrive_01",
+				"pes_level_skittergate_arrive_02",
+				"pes_level_skittergate_arrive_03",
+				"pes_level_skittergate_arrive_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_arrive_01",
+				"pes_level_skittergate_arrive_02",
+				"pes_level_skittergate_arrive_03",
+				"pes_level_skittergate_arrive_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_rasknitt_gate_reply = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "boss_reaction_talk",
+			dialogue_animations_n = 2,
+			sound_events_duration = {
+				[1.0] = 12.306937217712,
+				[2.0] = 18.573291778564
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_level_skittergate_rasknitt_gate_reply_01",
+				[2.0] = "pes_level_skittergate_rasknitt_gate_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			sound_events = {
+				[1.0] = "pes_level_skittergate_rasknitt_gate_reply_01",
+				[2.0] = "pes_level_skittergate_rasknitt_gate_reply_02"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			}
+		},
+		pes_level_skittergate_rasknitt_dismounted_one = {
+			sound_events_n = 5,
+			face_animations_n = 5,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "player_alerts_boss",
+			dialogue_animations_n = 5,
 			sound_events_duration = {
 				5.0854997634888,
 				3.1330208778381,
 				1.7418972253799,
 				2.6458299160004,
 				2.1754553318024
-			}
-		},
-		pes_level_skittergate_BOOM_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
 			},
 			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_BOOM_01",
-				"pes_level_skittergate_BOOM_02",
-				"pes_level_skittergate_BOOM_03",
-				"pes_level_skittergate_BOOM_04"
+			localization_strings = {
+				"pes_level_skittergate_rasknitt_dismounted_one_01",
+				"pes_level_skittergate_rasknitt_dismounted_one_02",
+				"pes_level_skittergate_rasknitt_dismounted_one_03",
+				"pes_level_skittergate_rasknitt_dismounted_one_04",
+				"pes_level_skittergate_rasknitt_dismounted_one_05"
 			},
 			dialogue_animations = {
+				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_BOOM_01",
-				"pes_level_skittergate_BOOM_02",
-				"pes_level_skittergate_BOOM_03",
-				"pes_level_skittergate_BOOM_04"
-			},
-			sound_events_duration = {
-				2.5648748874664,
-				2.2272291183472,
-				3.0944479703903,
-				2.2611875534058
-			}
-		},
-		pes_level_skittergate_gatekeeper_death_01 = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			randomize_indexes = {},
 			sound_events = {
-				[1.0] = "pes_level_skittergate_gatekeeper_death_01",
-				[2.0] = "pes_level_skittergate_gatekeeper_death_02"
+				"pes_level_skittergate_rasknitt_dismounted_one_01",
+				"pes_level_skittergate_rasknitt_dismounted_one_02",
+				"pes_level_skittergate_rasknitt_dismounted_one_03",
+				"pes_level_skittergate_rasknitt_dismounted_one_04",
+				"pes_level_skittergate_rasknitt_dismounted_one_05"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_skittergate_gatekeeper_death_01",
-				[2.0] = "pes_level_skittergate_gatekeeper_death_02"
-			},
-			sound_events_duration = {
-				[1.0] = 7.1191458702087,
-				[2.0] = 10.024333000183
-			}
-		},
-		pes_level_skittergate_vista_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_vista_01",
-				"pes_level_skittergate_vista_02",
-				"pes_level_skittergate_vista_03",
-				"pes_level_skittergate_vista_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_vista_01",
-				"pes_level_skittergate_vista_02",
-				"pes_level_skittergate_vista_03",
-				"pes_level_skittergate_vista_04"
-			},
-			sound_events_duration = {
-				6.0601353645325,
-				6.2232084274292,
-				5.5924272537231,
-				7.1179585456848
-			}
-		},
-		pes_skittergate_intro_a = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				[1.0] = "pes_skittergate_intro_a_01",
-				[2.0] = "pes_skittergate_intro_a_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			localization_strings = {
-				[1.0] = "pes_skittergate_intro_a_01",
-				[2.0] = "pes_skittergate_intro_a_02"
-			},
-			sound_events_duration = {
-				[1.0] = 10.730020523071,
-				[2.0] = 5.8164167404175
-			}
-		},
-		pes_level_skittergate_activate_gate_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_activate_gate_01",
-				"pes_level_skittergate_activate_gate_02",
-				"pes_level_skittergate_activate_gate_03",
-				"pes_level_skittergate_activate_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_activate_gate_01",
-				"pes_level_skittergate_activate_gate_02",
-				"pes_level_skittergate_activate_gate_03",
-				"pes_level_skittergate_activate_gate_04"
-			},
-			sound_events_duration = {
-				4.4832916259766,
-				2.0632290840149,
-				2.0641875267029,
-				5.0130834579468
-			}
-		},
-		pes_level_skittergate_gatekeeper_appear_01 = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				[1.0] = "pes_level_skittergate_gatekeeper_appear_03",
-				[2.0] = "pes_level_skittergate_gatekeeper_appear_04"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_skittergate_gatekeeper_appear_03",
-				[2.0] = "pes_level_skittergate_gatekeeper_appear_04"
-			},
-			sound_events_duration = {
-				[1.0] = 9.6544370651245,
-				[2.0] = 7.6788749694824
-			}
-		},
-		pes_level_skittergate_through_the_gate = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_through_the_gate_01",
-				"pes_level_skittergate_through_the_gate_02",
-				"pes_level_skittergate_through_the_gate_03",
-				"pes_level_skittergate_through_the_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_through_the_gate_01",
-				"pes_level_skittergate_through_the_gate_02",
-				"pes_level_skittergate_through_the_gate_03",
-				"pes_level_skittergate_through_the_gate_04"
-			},
-			sound_events_duration = {
-				5.7315831184387,
-				5.7245001792908,
-				2.4726667404175,
-				4.8563332557678
-			}
-		},
-		pes_level_skittergate_rasknitt_interrupt_and_focus = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 4,
-			face_animations = {
+				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_01",
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_02",
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_03",
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_01",
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_02",
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_03",
-				"pes_level_skittergate_rasknitt_interrupt_and_focus_04"
-			},
-			sound_events_duration = {
-				4.6574373245239,
-				4.8136458396912,
-				5.3481664657593,
-				2.798299074173
-			}
-		},
-		pes_level_skittergate_cave_entrance_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_cave_entrance_01",
-				"pes_level_skittergate_cave_entrance_02",
-				"pes_level_skittergate_cave_entrance_03",
-				"pes_level_skittergate_cave_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_cave_entrance_01",
-				"pes_level_skittergate_cave_entrance_02",
-				"pes_level_skittergate_cave_entrance_03",
-				"pes_level_skittergate_cave_entrance_04"
-			},
-			sound_events_duration = {
-				5.8038539886475,
-				6.0452499389648,
-				6.0810832977295,
-				8.1394376754761
-			}
-		},
-		pes_level_skittergate_spotting_docks_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_spotting_docks_01",
-				"pes_level_skittergate_spotting_docks_02",
-				"pes_level_skittergate_spotting_docks_03",
-				"pes_level_skittergate_spotting_docks_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_spotting_docks_01",
-				"pes_level_skittergate_spotting_docks_02",
-				"pes_level_skittergate_spotting_docks_03",
-				"pes_level_skittergate_spotting_docks_04"
-			},
-			sound_events_duration = {
-				1.7991042137146,
-				1.93649995327,
-				1.868124961853,
-				1.987625002861
-			}
-		},
-		pes_level_skittergate_docks_gate_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_docks_gate_01",
-				"pes_level_skittergate_docks_gate_02",
-				"pes_level_skittergate_docks_gate_03",
-				"pes_level_skittergate_docks_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_docks_gate_01",
-				"pes_level_skittergate_docks_gate_02",
-				"pes_level_skittergate_docks_gate_03",
-				"pes_level_skittergate_docks_gate_04"
-			},
-			sound_events_duration = {
-				1.752312541008,
-				1.5260624885559,
-				2.2672290802002,
-				2.2885208129883
-			}
-		},
-		pes_level_skittergate_enter_gate_01 = {
-			face_animations_n = 3,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 3,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 3,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_enter_gate_01",
-				"pes_level_skittergate_enter_gate_02",
-				"pes_level_skittergate_enter_gate_03"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_enter_gate_01",
-				"pes_level_skittergate_enter_gate_02",
-				"pes_level_skittergate_enter_gate_03"
-			},
-			sound_events_duration = {
-				6.757791519165,
-				6.6448540687561,
-				9.4201874732971
-			}
-		},
-		pes_level_skittergate_rasknitt_death_rattler_invulnerable = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_01",
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_02",
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_03",
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_01",
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_02",
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_03",
-				"pes_level_skittergate_rasknitt_death_rattler_invulnerable_04"
-			},
-			sound_events_duration = {
-				1.8351442813873,
-				2.9949791431427,
-				1.4763073921204,
-				2.0460455417633
-			}
-		},
-		pes_level_skittergate_run_for_the_gate_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_run_for_the_gate_01",
-				"pes_level_skittergate_run_for_the_gate_02",
-				"pes_level_skittergate_run_for_the_gate_03",
-				"pes_level_skittergate_run_for_the_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_run_for_the_gate_01",
-				"pes_level_skittergate_run_for_the_gate_02",
-				"pes_level_skittergate_run_for_the_gate_03",
-				"pes_level_skittergate_run_for_the_gate_04"
-			},
-			sound_events_duration = {
-				4.4699685573578,
-				5.0454168319702,
-				5.8103542327881,
-				3.5176665782928
-			}
-		},
-		pes_level_skittergate_get_down_to_the_cooling_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_get_down_to_the_cooling_01",
-				"pes_level_skittergate_get_down_to_the_cooling_02",
-				"pes_level_skittergate_get_down_to_the_cooling_03",
-				"pes_level_skittergate_get_down_to_the_cooling_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_get_down_to_the_cooling_01",
-				"pes_level_skittergate_get_down_to_the_cooling_02",
-				"pes_level_skittergate_get_down_to_the_cooling_03",
-				"pes_level_skittergate_get_down_to_the_cooling_04"
-			},
-			sound_events_duration = {
-				4.9199166297913,
-				9.5280208587647,
-				6.0271248817444,
-				7.6088123321533
-			}
-		},
-		pes_level_skittergate_get_back_to_gate_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_get_back_to_gate_01",
-				"pes_level_skittergate_get_back_to_gate_02",
-				"pes_level_skittergate_get_back_to_gate_03",
-				"pes_level_skittergate_get_back_to_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_get_back_to_gate_01",
-				"pes_level_skittergate_get_back_to_gate_02",
-				"pes_level_skittergate_get_back_to_gate_03",
-				"pes_level_skittergate_get_back_to_gate_04"
-			},
-			sound_events_duration = {
-				4.215437412262,
-				5.5808124542236,
-				3.4525833129883,
-				7.1918334960938
-			}
-		},
-		pes_level_skittergate_rasknitt_gate_reply = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "boss_reaction_talk",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				[1.0] = "pes_level_skittergate_rasknitt_gate_reply_01",
-				[2.0] = "pes_level_skittergate_rasknitt_gate_reply_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_skittergate_rasknitt_gate_reply_01",
-				[2.0] = "pes_level_skittergate_rasknitt_gate_reply_02"
-			},
-			sound_events_duration = {
-				[1.0] = 12.306937217712,
-				[2.0] = 18.573291778564
-			}
-		},
-		pes_level_skittergate_elevator_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_elevator_01",
-				"pes_level_skittergate_elevator_02",
-				"pes_level_skittergate_elevator_03",
-				"pes_level_skittergate_elevator_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			localization_strings = {
-				"pes_level_skittergate_elevator_01",
-				"pes_level_skittergate_elevator_02",
-				"pes_level_skittergate_elevator_03",
-				"pes_level_skittergate_elevator_04"
-			},
-			sound_events_duration = {
-				2.4436666965485,
-				2.7229583263397,
-				2.3743541240692,
-				2.7011249065399
-			}
-		},
-		pes_level_skittergate_contol_panel_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_contol_panel_01",
-				"pes_level_skittergate_contol_panel_02",
-				"pes_level_skittergate_contol_panel_03",
-				"pes_level_skittergate_contol_panel_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_contol_panel_01",
-				"pes_level_skittergate_contol_panel_02",
-				"pes_level_skittergate_contol_panel_03",
-				"pes_level_skittergate_contol_panel_04"
-			},
-			sound_events_duration = {
-				2.4373750686645,
-				2.139687538147,
-				4.3291039466858,
-				4.2793960571289
-			}
-		},
-		pes_level_skittergate_welcome_to_norsca_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_welcome_to_norsca_01",
-				"pes_level_skittergate_welcome_to_norsca_02",
-				"pes_level_skittergate_welcome_to_norsca_03",
-				"pes_level_skittergate_welcome_to_norsca_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_welcome_to_norsca_01",
-				"pes_level_skittergate_welcome_to_norsca_02",
-				"pes_level_skittergate_welcome_to_norsca_03",
-				"pes_level_skittergate_welcome_to_norsca_04"
-			},
-			sound_events_duration = {
-				5.1255831718445,
-				3.5598332881927,
-				3.984833240509,
-				4.840416431427
-			}
-		},
-		pes_skittergate_intro_b = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				[1.0] = "pes_skittergate_intro_b_01",
-				[2.0] = "pes_skittergate_intro_b_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			localization_strings = {
-				[1.0] = "pes_skittergate_intro_b_01",
-				[2.0] = "pes_skittergate_intro_b_02"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0071457624435,
-				[2.0] = 6.542396068573
-			}
-		},
-		pes_skittergate_intro_c = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				[1.0] = "pes_skittergate_intro_c_01",
-				[2.0] = "pes_skittergate_intro_c_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			localization_strings = {
-				[1.0] = "pes_skittergate_intro_c_01",
-				[2.0] = "pes_skittergate_intro_c_02"
-			},
-			sound_events_duration = {
-				[1.0] = 8.1386461257935,
-				[2.0] = 6.9005832672119
-			}
-		},
-		pes_level_skittergate_rasknitt_stormfiend_dead = {
-			face_animations_n = 2,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "player_alerts_boss",
-			dialogue_animations_n = 2,
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				[1.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_01",
-				[2.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			localization_strings = {
-				[1.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_01",
-				[2.0] = "pes_level_skittergate_rasknitt_stormfiend_dead_02"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4039423465729,
-				[2.0] = 4.8903956413269
-			}
-		},
-		pes_level_skittergate_back_home_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_back_home_01",
-				"pes_level_skittergate_back_home_02",
-				"pes_level_skittergate_back_home_03",
-				"pes_level_skittergate_back_home_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_back_home_01",
-				"pes_level_skittergate_back_home_02",
-				"pes_level_skittergate_back_home_03",
-				"pes_level_skittergate_back_home_04"
-			},
-			sound_events_duration = {
-				6.057760477066,
-				7.8987083435059,
-				8.8136143684387,
-				6.7352917194366
-			}
-		},
-		pes_level_skittergate_activate_gate_01a = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_activate_gate_01a",
-				"pes_level_skittergate_activate_gate_02a",
-				"pes_level_skittergate_activate_gate_03a",
-				"pes_level_skittergate_activate_gate_04a"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_activate_gate_01a",
-				"pes_level_skittergate_activate_gate_02a",
-				"pes_level_skittergate_activate_gate_03a",
-				"pes_level_skittergate_activate_gate_04a"
-			},
-			sound_events_duration = {
-				2.7992916107178,
-				2.7801249027252,
-				1.9106458425522,
-				4.055145740509
-			}
-		},
-		pes_level_skittergate_skittergate_found_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_angry",
-				"face_angry",
-				"face_angry",
-				"face_angry"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_skittergate_found_01",
-				"pes_level_skittergate_skittergate_found_02",
-				"pes_level_skittergate_skittergate_found_03",
-				"pes_level_skittergate_skittergate_found_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_skittergate_found_01",
-				"pes_level_skittergate_skittergate_found_02",
-				"pes_level_skittergate_skittergate_found_03",
-				"pes_level_skittergate_skittergate_found_04"
-			},
-			sound_events_duration = {
-				8.7996664047241,
-				5.1175622940064,
-				5.7709271907806,
-				3.7657499313355
 			}
 		},
 		pes_level_skittergate_sabotage_cooling_01 = {
+			sound_events_n = 4,
 			face_animations_n = 4,
 			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
-			},
-			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_sabotage_cooling_01",
-				"pes_level_skittergate_sabotage_cooling_02",
-				"pes_level_skittergate_sabotage_cooling_03",
-				"pes_level_skittergate_sabotage_cooling_04"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			localization_strings = {
-				"pes_level_skittergate_sabotage_cooling_01",
-				"pes_level_skittergate_sabotage_cooling_02",
-				"pes_level_skittergate_sabotage_cooling_03",
-				"pes_level_skittergate_sabotage_cooling_04"
-			},
 			sound_events_duration = {
 				4.489812374115,
 				4.3012709617615,
 				3.217916727066,
 				3.8402917385101
-			}
-		},
-		pes_level_skittergate_gate_activated_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_fear",
-				"face_fear",
-				"face_fear",
-				"face_fear"
 			},
 			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_gate_activated_01",
-				"pes_level_skittergate_gate_activated_02",
-				"pes_level_skittergate_gate_activated_03",
-				"pes_level_skittergate_gate_activated_04"
+			localization_strings = {
+				"pes_level_skittergate_sabotage_cooling_01",
+				"pes_level_skittergate_sabotage_cooling_02",
+				"pes_level_skittergate_sabotage_cooling_03",
+				"pes_level_skittergate_sabotage_cooling_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -2690,77 +2608,67 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_gate_activated_01",
-				"pes_level_skittergate_gate_activated_02",
-				"pes_level_skittergate_gate_activated_03",
-				"pes_level_skittergate_gate_activated_04"
-			},
-			sound_events_duration = {
-				1.2578542232513,
-				1.3960000276566,
-				4.2662291526794,
-				7.2976040840149
-			}
-		},
-		pes_level_skittergate_crater_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			randomize_indexes = {},
 			sound_events = {
-				"pes_level_skittergate_crater_01",
-				"pes_level_skittergate_crater_02",
-				"pes_level_skittergate_crater_03",
-				"pes_level_skittergate_crater_04"
+				"pes_level_skittergate_sabotage_cooling_01",
+				"pes_level_skittergate_sabotage_cooling_02",
+				"pes_level_skittergate_sabotage_cooling_03",
+				"pes_level_skittergate_sabotage_cooling_04"
 			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			localization_strings = {
-				"pes_level_skittergate_crater_01",
-				"pes_level_skittergate_crater_02",
-				"pes_level_skittergate_crater_03",
-				"pes_level_skittergate_crater_04"
-			},
-			sound_events_duration = {
-				4.2477188110352,
-				4.8223543167114,
-				5.9200000762939,
-				4.9219164848328
-			}
-		},
-		pes_level_skittergate_arrive_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			}
+		},
+		pes_level_skittergate_gatekeeper_appear_01 = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events_duration = {
+				[1.0] = 9.6544370651245,
+				[2.0] = 7.6788749694824
 			},
 			randomize_indexes = {},
+			localization_strings = {
+				[1.0] = "pes_level_skittergate_gatekeeper_appear_03",
+				[2.0] = "pes_level_skittergate_gatekeeper_appear_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
 			sound_events = {
-				"pes_level_skittergate_arrive_01",
-				"pes_level_skittergate_arrive_02",
-				"pes_level_skittergate_arrive_03",
-				"pes_level_skittergate_arrive_04"
+				[1.0] = "pes_level_skittergate_gatekeeper_appear_03",
+				[2.0] = "pes_level_skittergate_gatekeeper_appear_04"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			}
+		},
+		pes_level_skittergate_vista_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				6.0601353645325,
+				6.2232084274292,
+				5.5924272537231,
+				7.1179585456848
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_vista_01",
+				"pes_level_skittergate_vista_02",
+				"pes_level_skittergate_vista_03",
+				"pes_level_skittergate_vista_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -2768,38 +2676,38 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_arrive_01",
-				"pes_level_skittergate_arrive_02",
-				"pes_level_skittergate_arrive_03",
-				"pes_level_skittergate_arrive_04"
+			sound_events = {
+				"pes_level_skittergate_vista_01",
+				"pes_level_skittergate_vista_02",
+				"pes_level_skittergate_vista_03",
+				"pes_level_skittergate_vista_04"
 			},
-			sound_events_duration = {
-				3.9333230257034,
-				6.9627914428711,
-				6.9086456298828,
-				5.6033644676208
-			}
-		},
-		pes_level_skittergate_start_up_gate_01 = {
-			face_animations_n = 4,
-			database = "empire_soldier_skittergate",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			face_animations = {
 				"face_fear",
 				"face_fear",
 				"face_fear",
 				"face_fear"
+			}
+		},
+		pes_level_skittergate_BOOM_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				2.5648748874664,
+				2.2272291183472,
+				3.0944479703903,
+				2.2611875534058
 			},
 			randomize_indexes = {},
-			sound_events = {
-				"pes_level_skittergate_start_up_gate_01",
-				"pes_level_skittergate_start_up_gate_02",
-				"pes_level_skittergate_start_up_gate_03",
-				"pes_level_skittergate_start_up_gate_04"
+			localization_strings = {
+				"pes_level_skittergate_BOOM_01",
+				"pes_level_skittergate_BOOM_02",
+				"pes_level_skittergate_BOOM_03",
+				"pes_level_skittergate_BOOM_04"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -2807,17 +2715,129 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout"
 			},
-			localization_strings = {
-				"pes_level_skittergate_start_up_gate_01",
-				"pes_level_skittergate_start_up_gate_02",
-				"pes_level_skittergate_start_up_gate_03",
-				"pes_level_skittergate_start_up_gate_04"
+			sound_events = {
+				"pes_level_skittergate_BOOM_01",
+				"pes_level_skittergate_BOOM_02",
+				"pes_level_skittergate_BOOM_03",
+				"pes_level_skittergate_BOOM_04"
 			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_spotting_docks_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			sound_events_duration = {
-				5.3534374237061,
-				5.2471876144409,
-				4.6067500114441,
-				7.0168123245239
+				1.7991042137146,
+				1.93649995327,
+				1.868124961853,
+				1.987625002861
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_spotting_docks_01",
+				"pes_level_skittergate_spotting_docks_02",
+				"pes_level_skittergate_spotting_docks_03",
+				"pes_level_skittergate_spotting_docks_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_spotting_docks_01",
+				"pes_level_skittergate_spotting_docks_02",
+				"pes_level_skittergate_spotting_docks_03",
+				"pes_level_skittergate_spotting_docks_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_ships_01 = {
+			sound_events_n = 4,
+			face_animations_n = 4,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			sound_events_duration = {
+				4.6101460456848,
+				5.9388127326965,
+				4.6111459732056,
+				5.5834374427795
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_ships_01",
+				"pes_level_skittergate_ships_02",
+				"pes_level_skittergate_ships_03",
+				"pes_level_skittergate_ships_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_ships_01",
+				"pes_level_skittergate_ships_02",
+				"pes_level_skittergate_ships_03",
+				"pes_level_skittergate_ships_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear",
+				"face_fear"
+			}
+		},
+		pes_level_skittergate_searching_gatekeeper_01 = {
+			sound_events_n = 3,
+			face_animations_n = 3,
+			database = "empire_soldier_skittergate",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 3,
+			sound_events_duration = {
+				5.5653748512268,
+				5.6082706451416,
+				8.858229637146
+			},
+			randomize_indexes = {},
+			localization_strings = {
+				"pes_level_skittergate_searching_gatekeeper_02",
+				"pes_level_skittergate_searching_gatekeeper_03",
+				"pes_level_skittergate_searching_gatekeeper_04"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			sound_events = {
+				"pes_level_skittergate_searching_gatekeeper_02",
+				"pes_level_skittergate_searching_gatekeeper_03",
+				"pes_level_skittergate_searching_gatekeeper_04"
+			},
+			face_animations = {
+				"face_fear",
+				"face_fear",
+				"face_fear"
 			}
 		}
 	})

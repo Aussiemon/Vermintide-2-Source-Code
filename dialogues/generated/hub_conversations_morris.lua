@@ -798,78 +798,20 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_morris_hub_conversation_one_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_hub_conversation_one_c_01",
-				[2.0] = "pwe_morris_hub_conversation_one_c_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4623334407806,
-				[2.0] = 4.048770904541
-			},
-			sound_events = {
-				[1.0] = "pwe_morris_hub_conversation_one_c_01",
-				[2.0] = "pwe_morris_hub_conversation_one_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_morris_hub_conversation_one_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_hub_conversation_one_c_01",
-				[2.0] = "pwh_morris_hub_conversation_one_c_02"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3605418205261,
-				[2.0] = 5.5029792785644
-			},
-			sound_events = {
-				[1.0] = "pwh_morris_hub_conversation_one_c_01",
-				[2.0] = "pwh_morris_hub_conversation_one_c_02"
-			},
-			randomize_indexes = {}
-		},
 		pwe_morris_hub_conversation_one_b = {
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "hub_conversations_morris",
 			sound_events_n = 2,
+			randomize_indexes_n = 0,
 			category = "story_talk_keep",
 			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_hub_conversation_one_b_01",
+				[2.0] = "pwe_morris_hub_conversation_one_b_02"
 			},
 			localization_strings = {
 				[1.0] = "pwe_morris_hub_conversation_one_b_01",
@@ -879,26 +821,26 @@ return function ()
 				[1.0] = 4.983895778656,
 				[2.0] = 3.9909167289734
 			},
-			sound_events = {
-				[1.0] = "pwe_morris_hub_conversation_one_b_01",
-				[2.0] = "pwe_morris_hub_conversation_one_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_morris_hub_conversation_one_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
-			},
+			}
+		},
+		pwh_morris_hub_conversation_one_b = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pwh_morris_hub_conversation_one_b_01",
+				[2.0] = "pwh_morris_hub_conversation_one_b_02"
 			},
 			localization_strings = {
 				[1.0] = "pwh_morris_hub_conversation_one_b_01",
@@ -908,201 +850,11 @@ return function ()
 				[1.0] = 6.930145740509,
 				[2.0] = 7.5941667556763
 			},
-			sound_events = {
-				[1.0] = "pwh_morris_hub_conversation_one_b_01",
-				[2.0] = "pwh_morris_hub_conversation_one_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_morris_hub_conversation_one_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_hub_conversation_one_c_01",
-				[2.0] = "pdr_morris_hub_conversation_one_c_02"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7303333282471,
-				[2.0] = 3.35972905159
-			},
-			sound_events = {
-				[1.0] = "pdr_morris_hub_conversation_one_c_01",
-				[2.0] = "pdr_morris_hub_conversation_one_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pwh_morris_saltzpyre_monologue = {
-			randomize_indexes_n = 0,
-			face_animations_n = 11,
-			database = "hub_conversations_morris",
-			sound_events_n = 11,
-			category = "story_talk_keep",
-			dialogue_animations_n = 11,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			localization_strings = {
-				"pwh_morris_saltzpyre_monologue_01",
-				"pwh_morris_saltzpyre_monologue_02",
-				"pwh_morris_saltzpyre_monologue_03",
-				"pwh_morris_saltzpyre_monologue_04",
-				"pwh_morris_saltzpyre_monologue_05",
-				"pwh_morris_saltzpyre_monologue_06",
-				"pwh_morris_saltzpyre_monologue_07",
-				"pwh_morris_saltzpyre_monologue_08",
-				"pwh_morris_saltzpyre_monologue_09",
-				"pwh_morris_saltzpyre_monologue_10",
-				"pwh_morris_saltzpyre_monologue_11"
-			},
-			sound_events_duration = {
-				12.836833000183,
-				10.173542022705,
-				11.336062431335,
-				11.800229072571,
-				13.083541870117,
-				10.855375289917,
-				11.673146247864,
-				13.101499557495,
-				14.055062294006,
-				12.624771118164,
-				4.5355625152588
-			},
-			sound_events = {
-				"pwh_morris_saltzpyre_monologue_01",
-				"pwh_morris_saltzpyre_monologue_02",
-				"pwh_morris_saltzpyre_monologue_03",
-				"pwh_morris_saltzpyre_monologue_04",
-				"pwh_morris_saltzpyre_monologue_05",
-				"pwh_morris_saltzpyre_monologue_06",
-				"pwh_morris_saltzpyre_monologue_07",
-				"pwh_morris_saltzpyre_monologue_08",
-				"pwh_morris_saltzpyre_monologue_09",
-				"pwh_morris_saltzpyre_monologue_10",
-				"pwh_morris_saltzpyre_monologue_11"
-			},
-			randomize_indexes = {}
-		},
-		pwh_morris_hub_conversation_one_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_hub_conversation_one_a_01",
-				[2.0] = "pwh_morris_hub_conversation_one_a_02"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2901668548584,
-				[2.0] = 4.3963127136231
-			},
-			sound_events = {
-				[1.0] = "pwh_morris_hub_conversation_one_a_01",
-				[2.0] = "pwh_morris_hub_conversation_one_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pdr_morris_hub_conversation_one_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_hub_conversation_one_b_01",
-				[2.0] = "pdr_morris_hub_conversation_one_b_02"
-			},
-			sound_events_duration = {
-				[1.0] = 4.0275831222534,
-				[2.0] = 3.4693958759308
-			},
-			sound_events = {
-				[1.0] = "pdr_morris_hub_conversation_one_b_01",
-				[2.0] = "pdr_morris_hub_conversation_one_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_morris_hub_conversation_one_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_hub_conversation_one_b_01",
-				[2.0] = "pes_morris_hub_conversation_one_b_02"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2262916564941,
-				[2.0] = 4.025812625885
-			},
-			sound_events = {
-				[1.0] = "pes_morris_hub_conversation_one_b_01",
-				[2.0] = "pes_morris_hub_conversation_one_b_02"
-			},
-			randomize_indexes = {}
+			}
 		},
 		nik_morris_idle_01 = {
 			randomize_indexes_n = 0,
@@ -1112,28 +864,6 @@ return function ()
 			sound_distance = 15,
 			category = "story_talk_keep",
 			dialogue_animations_n = 20,
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			},
 			face_animations = {
 				"face_neutral",
 				"face_neutral",
@@ -1155,6 +885,28 @@ return function ()
 				"face_neutral",
 				"face_neutral",
 				"face_neutral"
+			},
+			sound_events = {
+				"nik_morris_idle_01",
+				"nik_morris_idle_02",
+				"nik_morris_idle_03",
+				"nik_morris_idle_04",
+				"nik_morris_idle_05",
+				"nik_morris_idle_06",
+				"nik_morris_idle_07",
+				"nik_morris_idle_08",
+				"nik_morris_idle_09",
+				"nik_morris_idle_10",
+				"nik_morris_idle_11",
+				"nik_morris_idle_12",
+				"nik_morris_idle_13",
+				"nik_morris_idle_14",
+				"nik_morris_idle_15",
+				"nik_morris_idle_16",
+				"nik_morris_idle_17",
+				"nik_morris_idle_18",
+				"nik_morris_idle_19",
+				"nik_morris_idle_20"
 			},
 			localization_strings = {
 				"nik_morris_idle_01",
@@ -1200,160 +952,102 @@ return function ()
 				6.106062412262,
 				5.681583404541
 			},
-			sound_events = {
-				"nik_morris_idle_01",
-				"nik_morris_idle_02",
-				"nik_morris_idle_03",
-				"nik_morris_idle_04",
-				"nik_morris_idle_05",
-				"nik_morris_idle_06",
-				"nik_morris_idle_07",
-				"nik_morris_idle_08",
-				"nik_morris_idle_09",
-				"nik_morris_idle_10",
-				"nik_morris_idle_11",
-				"nik_morris_idle_12",
-				"nik_morris_idle_13",
-				"nik_morris_idle_14",
-				"nik_morris_idle_15",
-				"nik_morris_idle_16",
-				"nik_morris_idle_17",
-				"nik_morris_idle_18",
-				"nik_morris_idle_19",
-				"nik_morris_idle_20"
-			},
-			randomize_indexes = {}
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
 		},
-		pdr_morris_hub_conversation_one_a = {
-			randomize_indexes_n = 0,
+		pwe_morris_hub_conversation_one_c = {
 			face_animations_n = 2,
 			database = "hub_conversations_morris",
 			sound_events_n = 2,
+			randomize_indexes_n = 0,
 			category = "story_talk_keep",
 			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events = {
+				[1.0] = "pwe_morris_hub_conversation_one_c_01",
+				[2.0] = "pwe_morris_hub_conversation_one_c_02"
+			},
 			localization_strings = {
-				[1.0] = "pdr_morris_hub_conversation_one_a_01",
-				[2.0] = "pdr_morris_hub_conversation_one_a_02"
+				[1.0] = "pwe_morris_hub_conversation_one_c_01",
+				[2.0] = "pwe_morris_hub_conversation_one_c_02"
 			},
 			sound_events_duration = {
-				[1.0] = 3.6872498989105,
-				[2.0] = 4.6014375686645
+				[1.0] = 2.4623334407806,
+				[2.0] = 4.048770904541
 			},
-			sound_events = {
-				[1.0] = "pdr_morris_hub_conversation_one_a_01",
-				[2.0] = "pdr_morris_hub_conversation_one_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_morris_hub_conversation_one_b = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
-			},
+			}
+		},
+		pwh_morris_hub_conversation_one_c = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events = {
+				[1.0] = "pwh_morris_hub_conversation_one_c_01",
+				[2.0] = "pwh_morris_hub_conversation_one_c_02"
+			},
 			localization_strings = {
-				[1.0] = "pbw_morris_hub_conversation_one_b_01",
-				[2.0] = "pbw_morris_hub_conversation_one_b_02"
+				[1.0] = "pwh_morris_hub_conversation_one_c_01",
+				[2.0] = "pwh_morris_hub_conversation_one_c_02"
 			},
 			sound_events_duration = {
-				[1.0] = 4.7663540840149,
-				[2.0] = 5.4693541526794
+				[1.0] = 4.3605418205261,
+				[2.0] = 5.5029792785644
 			},
-			sound_events = {
-				[1.0] = "pbw_morris_hub_conversation_one_b_01",
-				[2.0] = "pbw_morris_hub_conversation_one_b_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_morris_hub_conversation_one_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_hub_conversation_one_a_01",
-				[2.0] = "pes_morris_hub_conversation_one_a_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5063750743866,
-				[2.0] = 2.9255623817444
-			},
-			sound_events = {
-				[1.0] = "pes_morris_hub_conversation_one_a_01",
-				[2.0] = "pes_morris_hub_conversation_one_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pbw_morris_hub_conversation_one_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			localization_strings = {
-				[1.0] = "pbw_morris_hub_conversation_one_c_01",
-				[2.0] = "pbw_morris_hub_conversation_one_c_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9101874828339,
-				[2.0] = 4.4816875457764
-			},
-			sound_events = {
-				[1.0] = "pbw_morris_hub_conversation_one_c_01",
-				[2.0] = "pbw_morris_hub_conversation_one_c_02"
-			},
-			randomize_indexes = {}
+			}
 		},
 		pbw_morris_hub_conversation_one_a = {
-			randomize_indexes_n = 0,
 			face_animations_n = 2,
 			database = "hub_conversations_morris",
 			sound_events_n = 2,
+			randomize_indexes_n = 0,
 			category = "story_talk_keep",
 			dialogue_animations_n = 2,
-			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_hub_conversation_one_a_01",
+				[2.0] = "pbw_morris_hub_conversation_one_a_02"
 			},
 			localization_strings = {
 				[1.0] = "pbw_morris_hub_conversation_one_a_01",
@@ -1363,26 +1057,216 @@ return function ()
 				[1.0] = 4.2449584007263,
 				[2.0] = 3.6178750991821
 			},
-			sound_events = {
-				[1.0] = "pbw_morris_hub_conversation_one_a_01",
-				[2.0] = "pbw_morris_hub_conversation_one_a_02"
-			},
-			randomize_indexes = {}
-		},
-		pes_morris_hub_conversation_one_c = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
-			},
+			}
+		},
+		pdr_morris_hub_conversation_one_a = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_hub_conversation_one_a_01",
+				[2.0] = "pdr_morris_hub_conversation_one_a_02"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_hub_conversation_one_a_01",
+				[2.0] = "pdr_morris_hub_conversation_one_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6872498989105,
+				[2.0] = 4.6014375686645
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_hub_conversation_one_a = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_hub_conversation_one_a_01",
+				[2.0] = "pes_morris_hub_conversation_one_a_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_hub_conversation_one_a_01",
+				[2.0] = "pes_morris_hub_conversation_one_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5063750743866,
+				[2.0] = 2.9255623817444
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pdr_morris_hub_conversation_one_b = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_hub_conversation_one_b_01",
+				[2.0] = "pdr_morris_hub_conversation_one_b_02"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_hub_conversation_one_b_01",
+				[2.0] = "pdr_morris_hub_conversation_one_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.0275831222534,
+				[2.0] = 3.4693958759308
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pes_morris_hub_conversation_one_b = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_hub_conversation_one_b_01",
+				[2.0] = "pes_morris_hub_conversation_one_b_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_hub_conversation_one_b_01",
+				[2.0] = "pes_morris_hub_conversation_one_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2262916564941,
+				[2.0] = 4.025812625885
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pwh_morris_saltzpyre_monologue = {
+			face_animations_n = 11,
+			database = "hub_conversations_morris",
+			sound_events_n = 11,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 11,
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
+			},
+			sound_events = {
+				"pwh_morris_saltzpyre_monologue_01",
+				"pwh_morris_saltzpyre_monologue_02",
+				"pwh_morris_saltzpyre_monologue_03",
+				"pwh_morris_saltzpyre_monologue_04",
+				"pwh_morris_saltzpyre_monologue_05",
+				"pwh_morris_saltzpyre_monologue_06",
+				"pwh_morris_saltzpyre_monologue_07",
+				"pwh_morris_saltzpyre_monologue_08",
+				"pwh_morris_saltzpyre_monologue_09",
+				"pwh_morris_saltzpyre_monologue_10",
+				"pwh_morris_saltzpyre_monologue_11"
+			},
+			localization_strings = {
+				"pwh_morris_saltzpyre_monologue_01",
+				"pwh_morris_saltzpyre_monologue_02",
+				"pwh_morris_saltzpyre_monologue_03",
+				"pwh_morris_saltzpyre_monologue_04",
+				"pwh_morris_saltzpyre_monologue_05",
+				"pwh_morris_saltzpyre_monologue_06",
+				"pwh_morris_saltzpyre_monologue_07",
+				"pwh_morris_saltzpyre_monologue_08",
+				"pwh_morris_saltzpyre_monologue_09",
+				"pwh_morris_saltzpyre_monologue_10",
+				"pwh_morris_saltzpyre_monologue_11"
+			},
+			sound_events_duration = {
+				12.836833000183,
+				10.173542022705,
+				11.336062431335,
+				11.800229072571,
+				13.083541870117,
+				10.855375289917,
+				11.673146247864,
+				13.101499557495,
+				14.055062294006,
+				12.624771118164,
+				4.5355625152588
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_hub_conversation_one_c = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_hub_conversation_one_c_01",
+				[2.0] = "pes_morris_hub_conversation_one_c_02"
 			},
 			localization_strings = {
 				[1.0] = "pes_morris_hub_conversation_one_c_01",
@@ -1392,26 +1276,84 @@ return function ()
 				[1.0] = 2.2161667346954,
 				[2.0] = 4.6671667098999
 			},
-			sound_events = {
-				[1.0] = "pes_morris_hub_conversation_one_c_01",
-				[2.0] = "pes_morris_hub_conversation_one_c_02"
-			},
-			randomize_indexes = {}
-		},
-		pwe_morris_hub_conversation_one_a = {
-			randomize_indexes_n = 0,
-			face_animations_n = 2,
-			database = "hub_conversations_morris",
-			sound_events_n = 2,
-			category = "story_talk_keep",
-			dialogue_animations_n = 2,
+			randomize_indexes = {},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk",
 				[2.0] = "dialogue_talk"
-			},
+			}
+		},
+		pdr_morris_hub_conversation_one_c = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_hub_conversation_one_c_01",
+				[2.0] = "pdr_morris_hub_conversation_one_c_02"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_hub_conversation_one_c_01",
+				[2.0] = "pdr_morris_hub_conversation_one_c_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7303333282471,
+				[2.0] = 3.35972905159
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pbw_morris_hub_conversation_one_b = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_hub_conversation_one_b_01",
+				[2.0] = "pbw_morris_hub_conversation_one_b_02"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_hub_conversation_one_b_01",
+				[2.0] = "pbw_morris_hub_conversation_one_b_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7663540840149,
+				[2.0] = 5.4693541526794
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pwe_morris_hub_conversation_one_a = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_hub_conversation_one_a_01",
+				[2.0] = "pwe_morris_hub_conversation_one_a_02"
 			},
 			localization_strings = {
 				[1.0] = "pwe_morris_hub_conversation_one_a_01",
@@ -1421,11 +1363,69 @@ return function ()
 				[1.0] = 4.1728749275208,
 				[2.0] = 4.8879790306091
 			},
-			sound_events = {
-				[1.0] = "pwe_morris_hub_conversation_one_a_01",
-				[2.0] = "pwe_morris_hub_conversation_one_a_02"
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pwh_morris_hub_conversation_one_a = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
-			randomize_indexes = {}
+			sound_events = {
+				[1.0] = "pwh_morris_hub_conversation_one_a_01",
+				[2.0] = "pwh_morris_hub_conversation_one_a_02"
+			},
+			localization_strings = {
+				[1.0] = "pwh_morris_hub_conversation_one_a_01",
+				[2.0] = "pwh_morris_hub_conversation_one_a_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2901668548584,
+				[2.0] = 4.3963127136231
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
+		},
+		pbw_morris_hub_conversation_one_c = {
+			face_animations_n = 2,
+			database = "hub_conversations_morris",
+			sound_events_n = 2,
+			randomize_indexes_n = 0,
+			category = "story_talk_keep",
+			dialogue_animations_n = 2,
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_hub_conversation_one_c_01",
+				[2.0] = "pbw_morris_hub_conversation_one_c_02"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_hub_conversation_one_c_01",
+				[2.0] = "pbw_morris_hub_conversation_one_c_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9101874828339,
+				[2.0] = 4.4816875457764
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			}
 		}
 	})
 end

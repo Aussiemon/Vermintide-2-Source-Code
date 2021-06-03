@@ -1100,288 +1100,26 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pdr_morris_mines_entrance = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pdr_morris_mines_entrance_01",
-				"pdr_morris_mines_entrance_02",
-				"pdr_morris_mines_entrance_03",
-				"pdr_morris_mines_entrance_04"
-			},
-			sound_events_duration = {
-				5.7811460494995,
-				2.4988124370575,
-				5.6678957939148,
-				2.8780832290649
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_mines_entrance_01",
-				"pdr_morris_mines_entrance_02",
-				"pdr_morris_mines_entrance_03",
-				"pdr_morris_mines_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mines_poison = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_mines_poison_01",
-				"pwe_morris_mines_poison_02",
-				"pwe_morris_mines_poison_03",
-				"pwe_morris_mines_poison_04"
-			},
-			sound_events_duration = {
-				3.100250005722,
-				3.2377707958221,
-				4.107958316803,
-				4.1996250152588
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_mines_poison_01",
-				"pwe_morris_mines_poison_02",
-				"pwe_morris_mines_poison_03",
-				"pwe_morris_mines_poison_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mines_passageways = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_mines_passageways_01",
-				"pwh_morris_mines_passageways_02",
-				"pwh_morris_mines_passageways_03",
-				"pwh_morris_mines_passageways_04"
-			},
-			sound_events_duration = {
-				2.9272916316986,
-				2.6038541793823,
-				4.5447707176208,
-				3.0439791679382
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_mines_passageways_01",
-				"pwh_morris_mines_passageways_02",
-				"pwh_morris_mines_passageways_03",
-				"pwh_morris_mines_passageways_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_mines_settlement = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pdr_morris_mines_settlement_01",
-				"pdr_morris_mines_settlement_02",
-				"pdr_morris_mines_settlement_03",
-				"pdr_morris_mines_settlement_04"
-			},
-			sound_events_duration = {
-				3.3284375667572,
-				5.6958541870117,
-				3.0571665763855,
-				2.9761874675751
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_mines_settlement_01",
-				"pdr_morris_mines_settlement_02",
-				"pdr_morris_mines_settlement_03",
-				"pdr_morris_mines_settlement_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mines_poison = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_mines_poison_01",
-				"pes_morris_mines_poison_02",
-				"pes_morris_mines_poison_03",
-				"pes_morris_mines_poison_04"
-			},
-			sound_events_duration = {
-				2.068062543869,
-				3.0740833282471,
-				2.212249994278,
-				2.0742499828339
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_mines_poison_01",
-				"pes_morris_mines_poison_02",
-				"pes_morris_mines_poison_03",
-				"pes_morris_mines_poison_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mines_settlement = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_mines_settlement_01",
-				"pwh_morris_mines_settlement_02",
-				"pwh_morris_mines_settlement_03",
-				"pwh_morris_mines_settlement_04"
-			},
-			sound_events_duration = {
-				2.716854095459,
-				4.7067499160767,
-				4.9828748703003,
-				4.4557709693909
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_mines_settlement_01",
-				"pwh_morris_mines_settlement_02",
-				"pwh_morris_mines_settlement_03",
-				"pwh_morris_mines_settlement_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mines_passageways = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_mines_passageways_01",
-				"pwe_morris_mines_passageways_02",
-				"pwe_morris_mines_passageways_03",
-				"pwe_morris_mines_passageways_04"
-			},
-			sound_events_duration = {
-				2.9829375743866,
-				4.2074165344238,
-				4.605583190918,
-				4.5548958778381
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_mines_passageways_01",
-				"pwe_morris_mines_passageways_02",
-				"pwe_morris_mines_passageways_03",
-				"pwe_morris_mines_passageways_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
 		pbw_morris_mines_settlement = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pbw_morris_mines_settlement_01",
+				"pbw_morris_mines_settlement_02",
+				"pbw_morris_mines_settlement_03",
+				"pbw_morris_mines_settlement_04"
+			},
+			localization_strings = {
 				"pbw_morris_mines_settlement_01",
 				"pbw_morris_mines_settlement_02",
 				"pbw_morris_mines_settlement_03",
@@ -1393,369 +1131,7 @@ return function ()
 				3.4035625457764,
 				3.796875
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_mines_settlement_01",
-				"pbw_morris_mines_settlement_02",
-				"pbw_morris_mines_settlement_03",
-				"pbw_morris_mines_settlement_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mines_settlement = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_mines_settlement_01",
-				"pes_morris_mines_settlement_02",
-				"pes_morris_mines_settlement_03",
-				"pes_morris_mines_settlement_04"
-			},
-			sound_events_duration = {
-				1.9978958368301,
-				2.6237916946411,
-				3.7999999523163,
-				1.9737708568573
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_mines_settlement_01",
-				"pes_morris_mines_settlement_02",
-				"pes_morris_mines_settlement_03",
-				"pes_morris_mines_settlement_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_mines_passageways = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_mines_passageways_01",
-				"pbw_morris_mines_passageways_02",
-				"pbw_morris_mines_passageways_03",
-				"pbw_morris_mines_passageways_04"
-			},
-			sound_events_duration = {
-				2.3249790668488,
-				3.5515832901001,
-				2.3700416088104,
-				4.9975624084473
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_mines_passageways_01",
-				"pbw_morris_mines_passageways_02",
-				"pbw_morris_mines_passageways_03",
-				"pbw_morris_mines_passageways_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mines_entrance = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_mines_entrance_01",
-				"pwh_morris_mines_entrance_02",
-				"pwh_morris_mines_entrance_03",
-				"pwh_morris_mines_entrance_04"
-			},
-			sound_events_duration = {
-				1.9726874828339,
-				3.617645740509,
-				2.8975417613983,
-				4.0549583435059
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_mines_entrance_01",
-				"pwh_morris_mines_entrance_02",
-				"pwh_morris_mines_entrance_03",
-				"pwh_morris_mines_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_mines_closed_gate = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pdr_morris_mines_closed_gate_01",
-				"pdr_morris_mines_closed_gate_02",
-				"pdr_morris_mines_closed_gate_03",
-				"pdr_morris_mines_closed_gate_04"
-			},
-			sound_events_duration = {
-				1.7530208826065,
-				2.1031041145325,
-				4.0898542404175,
-				2.7968542575836
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_mines_closed_gate_01",
-				"pdr_morris_mines_closed_gate_02",
-				"pdr_morris_mines_closed_gate_03",
-				"pdr_morris_mines_closed_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mines_closed_gate = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_mines_closed_gate_01",
-				"pes_morris_mines_closed_gate_02",
-				"pes_morris_mines_closed_gate_03",
-				"pes_morris_mines_closed_gate_04"
-			},
-			sound_events_duration = {
-				2.5961666107178,
-				2.6681249141693,
-				3.1296665668488,
-				2.8923749923706
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_mines_closed_gate_01",
-				"pes_morris_mines_closed_gate_02",
-				"pes_morris_mines_closed_gate_03",
-				"pes_morris_mines_closed_gate_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mines_passageways = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_mines_passageways_01",
-				"pes_morris_mines_passageways_02",
-				"pes_morris_mines_passageways_03",
-				"pes_morris_mines_passageways_04"
-			},
-			sound_events_duration = {
-				1.5792917013168,
-				2.1907708644867,
-				2.6388125419617,
-				1.4223958253861
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_mines_passageways_01",
-				"pes_morris_mines_passageways_02",
-				"pes_morris_mines_passageways_03",
-				"pes_morris_mines_passageways_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mines_poison = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_mines_poison_01",
-				"pwh_morris_mines_poison_02",
-				"pwh_morris_mines_poison_03",
-				"pwh_morris_mines_poison_04"
-			},
-			sound_events_duration = {
-				3.067479133606,
-				2.0118958950043,
-				3.3675000667572,
-				2.8074791431427
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwh_morris_mines_poison_01",
-				"pwh_morris_mines_poison_02",
-				"pwh_morris_mines_poison_03",
-				"pwh_morris_mines_poison_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mines_entrance = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pes_morris_mines_entrance_01",
-				"pes_morris_mines_entrance_02",
-				"pes_morris_mines_entrance_03",
-				"pes_morris_mines_entrance_04"
-			},
-			sound_events_duration = {
-				3.145124912262,
-				2.0366666316986,
-				4.0223331451416,
-				4.2326664924622
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pes_morris_mines_entrance_01",
-				"pes_morris_mines_entrance_02",
-				"pes_morris_mines_entrance_03",
-				"pes_morris_mines_entrance_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mines_entrance = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_mines_entrance_01",
-				"pwe_morris_mines_entrance_02",
-				"pwe_morris_mines_entrance_03",
-				"pwe_morris_mines_entrance_04"
-			},
-			sound_events_duration = {
-				1.5918542146683,
-				3.8015415668488,
-				2.9405417442322,
-				3.983895778656
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_mines_entrance_01",
-				"pwe_morris_mines_entrance_02",
-				"pwe_morris_mines_entrance_03",
-				"pwe_morris_mines_entrance_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1764,14 +1140,25 @@ return function ()
 			}
 		},
 		pdr_morris_mines_passageways = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pdr_morris_mines_passageways_01",
+				"pdr_morris_mines_passageways_02",
+				"pdr_morris_mines_passageways_03",
+				"pdr_morris_mines_passageways_04"
+			},
+			localization_strings = {
 				"pdr_morris_mines_passageways_01",
 				"pdr_morris_mines_passageways_02",
 				"pdr_morris_mines_passageways_03",
@@ -1783,18 +1170,7 @@ return function ()
 				4.864812374115,
 				3.4365208148956
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pdr_morris_mines_passageways_01",
-				"pdr_morris_mines_passageways_02",
-				"pdr_morris_mines_passageways_03",
-				"pdr_morris_mines_passageways_04"
-			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1802,38 +1178,38 @@ return function ()
 				"dialogue_talk"
 			}
 		},
-		pbw_morris_mines_closed_gate = {
-			randomize_indexes_n = 0,
+		pwh_morris_mines_entrance = {
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pbw_morris_mines_closed_gate_01",
-				"pbw_morris_mines_closed_gate_02",
-				"pbw_morris_mines_closed_gate_03",
-				"pbw_morris_mines_closed_gate_04"
-			},
-			sound_events_duration = {
-				2.9781041145325,
-				4.9072289466858,
-				2.4359166622162,
-				5.4326248168945
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pbw_morris_mines_closed_gate_01",
-				"pbw_morris_mines_closed_gate_02",
-				"pbw_morris_mines_closed_gate_03",
-				"pbw_morris_mines_closed_gate_04"
+			sound_events = {
+				"pwh_morris_mines_entrance_01",
+				"pwh_morris_mines_entrance_02",
+				"pwh_morris_mines_entrance_03",
+				"pwh_morris_mines_entrance_04"
 			},
+			localization_strings = {
+				"pwh_morris_mines_entrance_01",
+				"pwh_morris_mines_entrance_02",
+				"pwh_morris_mines_entrance_03",
+				"pwh_morris_mines_entrance_04"
+			},
+			sound_events_duration = {
+				1.9726874828339,
+				3.617645740509,
+				2.8975417613983,
+				4.0549583435059
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1841,38 +1217,77 @@ return function ()
 				"dialogue_talk"
 			}
 		},
-		pwh_morris_mines_closed_gate = {
-			randomize_indexes_n = 0,
+		pwe_morris_mines_closed_gate = {
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			sound_events = {
-				"pwh_morris_mines_closed_gate_01",
-				"pwh_morris_mines_closed_gate_02",
-				"pwh_morris_mines_closed_gate_03",
-				"pwh_morris_mines_closed_gate_04"
-			},
-			sound_events_duration = {
-				3.8648540973663,
-				3.5075209140778,
-				4.6507501602173,
-				2.6743750572205
-			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pwh_morris_mines_closed_gate_01",
-				"pwh_morris_mines_closed_gate_02",
-				"pwh_morris_mines_closed_gate_03",
-				"pwh_morris_mines_closed_gate_04"
+			sound_events = {
+				"pwe_morris_mines_closed_gate_01",
+				"pwe_morris_mines_closed_gate_02",
+				"pwe_morris_mines_closed_gate_03",
+				"pwe_morris_mines_closed_gate_04"
 			},
+			localization_strings = {
+				"pwe_morris_mines_closed_gate_01",
+				"pwe_morris_mines_closed_gate_02",
+				"pwe_morris_mines_closed_gate_03",
+				"pwe_morris_mines_closed_gate_04"
+			},
+			sound_events_duration = {
+				2.2965624332428,
+				2.0751249194145,
+				3.9026665687561,
+				3.7144792079926
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_mines_entrance = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_mines_entrance_01",
+				"pes_morris_mines_entrance_02",
+				"pes_morris_mines_entrance_03",
+				"pes_morris_mines_entrance_04"
+			},
+			localization_strings = {
+				"pes_morris_mines_entrance_01",
+				"pes_morris_mines_entrance_02",
+				"pes_morris_mines_entrance_03",
+				"pes_morris_mines_entrance_04"
+			},
+			sound_events_duration = {
+				3.145124912262,
+				2.0366666316986,
+				4.0223331451416,
+				4.2326664924622
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1881,14 +1296,25 @@ return function ()
 			}
 		},
 		pbw_morris_mines_entrance = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pbw_morris_mines_entrance_01",
+				"pbw_morris_mines_entrance_02",
+				"pbw_morris_mines_entrance_03",
+				"pbw_morris_mines_entrance_04"
+			},
+			localization_strings = {
 				"pbw_morris_mines_entrance_01",
 				"pbw_morris_mines_entrance_02",
 				"pbw_morris_mines_entrance_03",
@@ -1900,18 +1326,124 @@ return function ()
 				3.1318957805634,
 				3.4313333034515
 			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_mines_settlement = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pbw_morris_mines_entrance_01",
-				"pbw_morris_mines_entrance_02",
-				"pbw_morris_mines_entrance_03",
-				"pbw_morris_mines_entrance_04"
+			sound_events = {
+				"pes_morris_mines_settlement_01",
+				"pes_morris_mines_settlement_02",
+				"pes_morris_mines_settlement_03",
+				"pes_morris_mines_settlement_04"
 			},
+			localization_strings = {
+				"pes_morris_mines_settlement_01",
+				"pes_morris_mines_settlement_02",
+				"pes_morris_mines_settlement_03",
+				"pes_morris_mines_settlement_04"
+			},
+			sound_events_duration = {
+				1.9978958368301,
+				2.6237916946411,
+				3.7999999523163,
+				1.9737708568573
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwh_morris_mines_passageways = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwh_morris_mines_passageways_01",
+				"pwh_morris_mines_passageways_02",
+				"pwh_morris_mines_passageways_03",
+				"pwh_morris_mines_passageways_04"
+			},
+			localization_strings = {
+				"pwh_morris_mines_passageways_01",
+				"pwh_morris_mines_passageways_02",
+				"pwh_morris_mines_passageways_03",
+				"pwh_morris_mines_passageways_04"
+			},
+			sound_events_duration = {
+				2.9272916316986,
+				2.6038541793823,
+				4.5447707176208,
+				3.0439791679382
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_mines_poison = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_mines_poison_01",
+				"pes_morris_mines_poison_02",
+				"pes_morris_mines_poison_03",
+				"pes_morris_mines_poison_04"
+			},
+			localization_strings = {
+				"pes_morris_mines_poison_01",
+				"pes_morris_mines_poison_02",
+				"pes_morris_mines_poison_03",
+				"pes_morris_mines_poison_04"
+			},
+			sound_events_duration = {
+				2.068062543869,
+				3.0740833282471,
+				2.212249994278,
+				2.0742499828339
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1920,14 +1452,25 @@ return function ()
 			}
 		},
 		pwe_morris_mines_settlement = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pwe_morris_mines_settlement_01",
+				"pwe_morris_mines_settlement_02",
+				"pwe_morris_mines_settlement_03",
+				"pwe_morris_mines_settlement_04"
+			},
+			localization_strings = {
 				"pwe_morris_mines_settlement_01",
 				"pwe_morris_mines_settlement_02",
 				"pwe_morris_mines_settlement_03",
@@ -1939,18 +1482,202 @@ return function ()
 				5.7091460227966,
 				3.5677396059036
 			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwe_morris_mines_poison = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pwe_morris_mines_settlement_01",
-				"pwe_morris_mines_settlement_02",
-				"pwe_morris_mines_settlement_03",
-				"pwe_morris_mines_settlement_04"
+			sound_events = {
+				"pwe_morris_mines_poison_01",
+				"pwe_morris_mines_poison_02",
+				"pwe_morris_mines_poison_03",
+				"pwe_morris_mines_poison_04"
 			},
+			localization_strings = {
+				"pwe_morris_mines_poison_01",
+				"pwe_morris_mines_poison_02",
+				"pwe_morris_mines_poison_03",
+				"pwe_morris_mines_poison_04"
+			},
+			sound_events_duration = {
+				3.100250005722,
+				3.2377707958221,
+				4.107958316803,
+				4.1996250152588
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pbw_morris_mines_closed_gate = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pbw_morris_mines_closed_gate_01",
+				"pbw_morris_mines_closed_gate_02",
+				"pbw_morris_mines_closed_gate_03",
+				"pbw_morris_mines_closed_gate_04"
+			},
+			localization_strings = {
+				"pbw_morris_mines_closed_gate_01",
+				"pbw_morris_mines_closed_gate_02",
+				"pbw_morris_mines_closed_gate_03",
+				"pbw_morris_mines_closed_gate_04"
+			},
+			sound_events_duration = {
+				2.9781041145325,
+				4.9072289466858,
+				2.4359166622162,
+				5.4326248168945
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pdr_morris_mines_entrance = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pdr_morris_mines_entrance_01",
+				"pdr_morris_mines_entrance_02",
+				"pdr_morris_mines_entrance_03",
+				"pdr_morris_mines_entrance_04"
+			},
+			localization_strings = {
+				"pdr_morris_mines_entrance_01",
+				"pdr_morris_mines_entrance_02",
+				"pdr_morris_mines_entrance_03",
+				"pdr_morris_mines_entrance_04"
+			},
+			sound_events_duration = {
+				5.7811460494995,
+				2.4988124370575,
+				5.6678957939148,
+				2.8780832290649
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_mines_passageways = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_mines_passageways_01",
+				"pes_morris_mines_passageways_02",
+				"pes_morris_mines_passageways_03",
+				"pes_morris_mines_passageways_04"
+			},
+			localization_strings = {
+				"pes_morris_mines_passageways_01",
+				"pes_morris_mines_passageways_02",
+				"pes_morris_mines_passageways_03",
+				"pes_morris_mines_passageways_04"
+			},
+			sound_events_duration = {
+				1.5792917013168,
+				2.1907708644867,
+				2.6388125419617,
+				1.4223958253861
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwh_morris_mines_poison = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwh_morris_mines_poison_01",
+				"pwh_morris_mines_poison_02",
+				"pwh_morris_mines_poison_03",
+				"pwh_morris_mines_poison_04"
+			},
+			localization_strings = {
+				"pwh_morris_mines_poison_01",
+				"pwh_morris_mines_poison_02",
+				"pwh_morris_mines_poison_03",
+				"pwh_morris_mines_poison_04"
+			},
+			sound_events_duration = {
+				3.067479133606,
+				2.0118958950043,
+				3.3675000667572,
+				2.8074791431427
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -1959,14 +1686,25 @@ return function ()
 			}
 		},
 		pbw_morris_mines_poison = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pbw_morris_mines_poison_01",
+				"pbw_morris_mines_poison_02",
+				"pbw_morris_mines_poison_03",
+				"pbw_morris_mines_poison_04"
+			},
+			localization_strings = {
 				"pbw_morris_mines_poison_01",
 				"pbw_morris_mines_poison_02",
 				"pbw_morris_mines_poison_03",
@@ -1978,57 +1716,7 @@ return function ()
 				2.8672709465027,
 				2.2756042480469
 			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pbw_morris_mines_poison_01",
-				"pbw_morris_mines_poison_02",
-				"pbw_morris_mines_poison_03",
-				"pbw_morris_mines_poison_04"
-			},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mines_closed_gate = {
-			randomize_indexes_n = 0,
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_pat_mines",
-			sound_events_n = 4,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			randomize_indexes = {},
-			sound_events = {
-				"pwe_morris_mines_closed_gate_01",
-				"pwe_morris_mines_closed_gate_02",
-				"pwe_morris_mines_closed_gate_03",
-				"pwe_morris_mines_closed_gate_04"
-			},
-			sound_events_duration = {
-				2.2965624332428,
-				2.0751353502274,
-				3.9026665687561,
-				3.7144792079926
-			},
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			localization_strings = {
-				"pwe_morris_mines_closed_gate_01",
-				"pwe_morris_mines_closed_gate_02",
-				"pwe_morris_mines_closed_gate_03",
-				"pwe_morris_mines_closed_gate_04"
-			},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
@@ -2037,14 +1725,25 @@ return function ()
 			}
 		},
 		pdr_morris_mines_poison = {
-			randomize_indexes_n = 0,
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_pat_mines",
 			sound_events_n = 4,
+			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
 			sound_events = {
+				"pdr_morris_mines_poison_01",
+				"pdr_morris_mines_poison_02",
+				"pdr_morris_mines_poison_03",
+				"pdr_morris_mines_poison_04"
+			},
+			localization_strings = {
 				"pdr_morris_mines_poison_01",
 				"pdr_morris_mines_poison_02",
 				"pdr_morris_mines_poison_03",
@@ -2056,18 +1755,319 @@ return function ()
 				3.413104057312,
 				3.6773333549499
 			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwh_morris_mines_closed_gate = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			localization_strings = {
-				"pdr_morris_mines_poison_01",
-				"pdr_morris_mines_poison_02",
-				"pdr_morris_mines_poison_03",
-				"pdr_morris_mines_poison_04"
+			sound_events = {
+				"pwh_morris_mines_closed_gate_01",
+				"pwh_morris_mines_closed_gate_02",
+				"pwh_morris_mines_closed_gate_03",
+				"pwh_morris_mines_closed_gate_04"
 			},
+			localization_strings = {
+				"pwh_morris_mines_closed_gate_01",
+				"pwh_morris_mines_closed_gate_02",
+				"pwh_morris_mines_closed_gate_03",
+				"pwh_morris_mines_closed_gate_04"
+			},
+			sound_events_duration = {
+				3.8648540973663,
+				3.5075209140778,
+				4.6507501602173,
+				2.6743750572205
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwe_morris_mines_entrance = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwe_morris_mines_entrance_01",
+				"pwe_morris_mines_entrance_02",
+				"pwe_morris_mines_entrance_03",
+				"pwe_morris_mines_entrance_04"
+			},
+			localization_strings = {
+				"pwe_morris_mines_entrance_01",
+				"pwe_morris_mines_entrance_02",
+				"pwe_morris_mines_entrance_03",
+				"pwe_morris_mines_entrance_04"
+			},
+			sound_events_duration = {
+				1.5918542146683,
+				3.8015415668488,
+				2.9405521154404,
+				3.983895778656
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwe_morris_mines_passageways = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwe_morris_mines_passageways_01",
+				"pwe_morris_mines_passageways_02",
+				"pwe_morris_mines_passageways_03",
+				"pwe_morris_mines_passageways_04"
+			},
+			localization_strings = {
+				"pwe_morris_mines_passageways_01",
+				"pwe_morris_mines_passageways_02",
+				"pwe_morris_mines_passageways_03",
+				"pwe_morris_mines_passageways_04"
+			},
+			sound_events_duration = {
+				2.9829375743866,
+				4.2074165344238,
+				4.605583190918,
+				4.5548958778381
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pdr_morris_mines_closed_gate = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pdr_morris_mines_closed_gate_01",
+				"pdr_morris_mines_closed_gate_02",
+				"pdr_morris_mines_closed_gate_03",
+				"pdr_morris_mines_closed_gate_04"
+			},
+			localization_strings = {
+				"pdr_morris_mines_closed_gate_01",
+				"pdr_morris_mines_closed_gate_02",
+				"pdr_morris_mines_closed_gate_03",
+				"pdr_morris_mines_closed_gate_04"
+			},
+			sound_events_duration = {
+				1.7530208826065,
+				2.1031041145325,
+				4.0898542404175,
+				2.7968542575836
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pwh_morris_mines_settlement = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pwh_morris_mines_settlement_01",
+				"pwh_morris_mines_settlement_02",
+				"pwh_morris_mines_settlement_03",
+				"pwh_morris_mines_settlement_04"
+			},
+			localization_strings = {
+				"pwh_morris_mines_settlement_01",
+				"pwh_morris_mines_settlement_02",
+				"pwh_morris_mines_settlement_03",
+				"pwh_morris_mines_settlement_04"
+			},
+			sound_events_duration = {
+				2.716854095459,
+				4.7067499160767,
+				4.9828748703003,
+				4.4557709693909
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pbw_morris_mines_passageways = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pbw_morris_mines_passageways_01",
+				"pbw_morris_mines_passageways_02",
+				"pbw_morris_mines_passageways_03",
+				"pbw_morris_mines_passageways_04"
+			},
+			localization_strings = {
+				"pbw_morris_mines_passageways_01",
+				"pbw_morris_mines_passageways_02",
+				"pbw_morris_mines_passageways_03",
+				"pbw_morris_mines_passageways_04"
+			},
+			sound_events_duration = {
+				2.3249790668488,
+				3.5515832901001,
+				2.3700416088104,
+				4.9975624084473
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pdr_morris_mines_settlement = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pdr_morris_mines_settlement_01",
+				"pdr_morris_mines_settlement_02",
+				"pdr_morris_mines_settlement_03",
+				"pdr_morris_mines_settlement_04"
+			},
+			localization_strings = {
+				"pdr_morris_mines_settlement_01",
+				"pdr_morris_mines_settlement_02",
+				"pdr_morris_mines_settlement_03",
+				"pdr_morris_mines_settlement_04"
+			},
+			sound_events_duration = {
+				3.3284375667572,
+				5.6958541870117,
+				3.0571665763855,
+				2.9761874675751
+			},
+			randomize_indexes = {},
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			}
+		},
+		pes_morris_mines_closed_gate = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_pat_mines",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			sound_events = {
+				"pes_morris_mines_closed_gate_01",
+				"pes_morris_mines_closed_gate_02",
+				"pes_morris_mines_closed_gate_03",
+				"pes_morris_mines_closed_gate_04"
+			},
+			localization_strings = {
+				"pes_morris_mines_closed_gate_01",
+				"pes_morris_mines_closed_gate_02",
+				"pes_morris_mines_closed_gate_03",
+				"pes_morris_mines_closed_gate_04"
+			},
+			sound_events_duration = {
+				2.5961666107178,
+				2.6681249141693,
+				3.1296665668488,
+				2.8923749923706
+			},
+			randomize_indexes = {},
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",

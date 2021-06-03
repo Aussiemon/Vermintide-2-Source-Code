@@ -93,6 +93,7 @@ assert(DialogueLookup[DialogueLookup_n + 92] == nil)
 assert(DialogueLookup[DialogueLookup_n + 93] == nil)
 assert(DialogueLookup[DialogueLookup_n + 94] == nil)
 assert(DialogueLookup[DialogueLookup_n + 95] == nil)
+assert(DialogueLookup[DialogueLookup_n + 96] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pwh_morris_extra_one_01"
 DialogueLookup[DialogueLookup_n + 2] = "pes_morris_extra_one_01"
@@ -189,6 +190,7 @@ DialogueLookup[DialogueLookup_n + 92] = "pes_morris_extra_eighteen_01"
 DialogueLookup[DialogueLookup_n + 93] = "pwe_morris_extra_eighteen_01"
 DialogueLookup[DialogueLookup_n + 94] = "pes_morris_extra_eighteen_02"
 DialogueLookup[DialogueLookup_n + 95] = "pbw_morris_extra_eighteen_01"
-DialogueLookup_n = DialogueLookup_n + 95
+DialogueLookup[DialogueLookup_n + 96] = "pdr_morris_bardin_song"
+DialogueLookup_n = DialogueLookup_n + 96
 
 return

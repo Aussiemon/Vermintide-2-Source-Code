@@ -54,6 +54,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -168,6 +174,12 @@ return function ()
 				OP.TIMEDIFF,
 				OP.GT,
 				120
+			},
+			{
+				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
 			},
 			{
 				"faction_memory",
@@ -362,6 +374,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -550,6 +568,12 @@ return function ()
 				OP.TIMEDIFF,
 				OP.GT,
 				120
+			},
+			{
+				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
 			},
 			{
 				"faction_memory",
@@ -744,6 +768,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -932,6 +962,12 @@ return function ()
 				OP.TIMEDIFF,
 				OP.GT,
 				120
+			},
+			{
+				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
 			},
 			{
 				"faction_memory",
@@ -1126,6 +1162,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -1277,6 +1319,12 @@ return function ()
 				OP.TIMEDIFF,
 				OP.GT,
 				120
+			},
+			{
+				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
 			},
 			{
 				"faction_memory",
@@ -1471,6 +1519,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -1628,6 +1682,12 @@ return function ()
 				OP.TIMEDIFF,
 				OP.GT,
 				120
+			},
+			{
+				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
 			},
 			{
 				"faction_memory",
@@ -1828,6 +1888,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -2025,6 +2091,12 @@ return function ()
 			},
 			{
 				"faction_memory",
+				"castle_vo_find_a_way_up",
+				OP.EQ,
+				1
+			},
+			{
+				"faction_memory",
 				"castle_vo_approaching_throne_room",
 				OP.EQ,
 				0
@@ -2162,972 +2234,972 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pes_castle_conversation_twelve_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_twelve_02"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_twelve_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2791042327881
-			}
-		},
-		pes_castle_conversation_two_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_two_02"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_two_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4886040687561
-			}
-		},
-		pwe_castle_conversation_eleven_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_eleven_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_eleven_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0758957862854
-			}
-		},
-		pwe_castle_conversation_eleven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_eleven_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_eleven_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2543125152588
-			}
-		},
-		pwe_castle_conversation_three_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_three_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_three_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 0.81195831298828
-			}
-		},
-		pdr_castle_conversation_seven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_castle_conversation_seven_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_castle_conversation_seven_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.176854133606
-			}
-		},
-		pes_castle_conversation_two_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_two_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_two_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7310833930969
-			}
-		},
-		pwh_castle_conversation_twelve_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_twelve_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_twelve_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8931040763855
-			}
-		},
-		pes_castle_conversation_ten_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_ten_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_ten_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2825520634651
-			}
-		},
-		pes_castle_conversation_eight_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_eight_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_eight_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.520124912262
-			}
-		},
-		pwh_castle_conversation_five_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_five_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_five_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.9850206375122
-			}
-		},
-		pes_castle_conversation_twelve_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_twelve_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_twelve_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.0163750648499
-			}
-		},
-		pwh_castle_conversation_four_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_four_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_four_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 8.2908954620361
-			}
-		},
-		pwh_castle_conversation_ten_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_ten_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_ten_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.5076665878296
-			}
-		},
-		pwe_castle_conversation_five_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_five_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_five_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.0054998397827
-			}
-		},
-		pdr_castle_conversation_nine_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_castle_conversation_nine_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_castle_conversation_nine_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.011125087738
-			}
-		},
-		pwe_castle_conversation_three_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_three_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_three_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8888957500458
-			}
-		},
-		pbw_castle_conversation_twelve_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_twelve_01"
-			},
-			sound_events = {
-				[1.0] = "pbw_castle_conversation_twelve_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.1307916641235
-			}
-		},
-		pes_castle_conversation_three_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_three_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_three_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 1.7854791879654
-			}
-		},
-		pwh_castle_conversation_eight_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_eight_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_eight_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7152500152588
-			}
-		},
-		pwh_castle_conversation_eleven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_eleven_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_eleven_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 1.9296875
-			}
-		},
-		pdr_castle_conversation_eleven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_castle_conversation_eleven_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_castle_conversation_eleven_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2667293548584
-			}
-		},
-		pwh_castle_conversation_ten_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_ten_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_ten_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1597917079926
-			}
-		},
-		pbw_castle_conversation_six_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_six_01"
-			},
-			sound_events = {
-				[1.0] = "pbw_castle_conversation_six_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.7494583129883
-			}
-		},
-		pbw_castle_conversation_nine_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_nine_01"
-			},
-			sound_events = {
-				[1.0] = "pbw_castle_conversation_nine_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2841668128967
-			}
-		},
-		pbw_castle_conversation_nine_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_nine_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_castle_conversation_nine_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0107707977295
-			}
-		},
-		pdr_castle_conversation_seven_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_castle_conversation_seven_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_castle_conversation_seven_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.9878749847412
-			}
-		},
-		pwh_castle_conversation_eight_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_eight_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_eight_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1067707538605
-			}
-		},
-		pwe_castle_conversation_two_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_two_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_two_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3880624771118
-			}
-		},
-		pwh_castle_conversation_five_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_five_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_five_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4943957328796
-			}
-		},
-		pes_castle_conversation_eight_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_eight_02"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_eight_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.7464165687561
-			}
-		},
-		pwh_castle_conversation_four_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_castle_conversation_four_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_castle_conversation_four_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 1.5106041431427
-			}
-		},
-		pbw_castle_conversation_four_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_four_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_castle_conversation_four_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1587290763855
-			}
-		},
-		pes_castle_conversation_three_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_three_02"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_three_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.1702291965485
-			}
-		},
 		pes_castle_conversation_six_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_six_02"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_six_02"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_six_02"
 			},
 			sound_events_duration = {
 				[1.0] = 0.91431248188019
-			}
-		},
-		pwe_castle_conversation_ten_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_ten_01"
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_ten_01"
-			},
+				[1.0] = "pes_castle_conversation_six_02"
+			}
+		},
+		pwh_castle_conversation_five_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
-			sound_events_duration = {
-				[1.0] = 3.0736665725708
-			}
-		},
-		pes_castle_conversation_one_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pes_castle_conversation_one_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_one_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
+				[1.0] = "pwh_castle_conversation_five_02"
 			},
 			sound_events_duration = {
-				[1.0] = 2.3467707633972
-			}
-		},
-		pbw_castle_conversation_four_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_four_01"
+				[1.0] = 4.4943957328796
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_four_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 9.0182085037231
+				[1.0] = "pwh_castle_conversation_five_02"
 			}
 		},
-		pwe_castle_conversation_five_02 = {
+		pwh_castle_conversation_four_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_five_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_castle_conversation_five_02"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_four_02"
+			},
 			sound_events_duration = {
-				[1.0] = 8.2855834960938
+				[1.0] = 1.5106041431427
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_four_02"
 			}
 		},
 		pes_castle_conversation_six_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_castle_conversation_six_01"
-			},
-			sound_events = {
-				[1.0] = "pes_castle_conversation_six_01"
-			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_six_01"
+			},
 			sound_events_duration = {
 				[1.0] = 4.5153751373291
-			}
-		},
-		pwe_castle_conversation_two_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_castle_conversation_two_02"
 			},
 			sound_events = {
-				[1.0] = "pwe_castle_conversation_two_02"
+				[1.0] = "pes_castle_conversation_six_01"
+			}
+		},
+		pes_castle_conversation_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_one_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3467707633972
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_one_01"
+			}
+		},
+		pbw_castle_conversation_six_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
-			sound_events_duration = {
-				[1.0] = 4.4278960227966
-			}
-		},
-		pwh_castle_conversation_seven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pwh_castle_conversation_seven_01"
+				[1.0] = "pbw_castle_conversation_six_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.7494583129883
 			},
 			sound_events = {
-				[1.0] = "pwh_castle_conversation_seven_01"
-			},
+				[1.0] = "pbw_castle_conversation_six_01"
+			}
+		},
+		pwh_castle_conversation_twelve_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
-			sound_events_duration = {
-				[1.0] = 9.3860626220703
-			}
-		},
-		pbw_castle_conversation_one_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
 			localization_strings = {
-				[1.0] = "pbw_castle_conversation_one_01"
+				[1.0] = "pwh_castle_conversation_twelve_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8931040763855
 			},
 			sound_events = {
-				[1.0] = "pbw_castle_conversation_one_01"
-			},
+				[1.0] = "pwh_castle_conversation_twelve_01"
+			}
+		},
+		pwe_castle_conversation_five_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_five_02"
+			},
 			sound_events_duration = {
-				[1.0] = 2.4232499599457
+				[1.0] = 8.2855834960938
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_five_02"
+			}
+		},
+		pes_castle_conversation_twelve_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_twelve_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0163750648499
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_twelve_01"
+			}
+		},
+		pwe_castle_conversation_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_three_01"
+			},
+			sound_events_duration = {
+				[1.0] = 0.81195831298828
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_three_01"
+			}
+		},
+		pbw_castle_conversation_twelve_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_twelve_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1307916641235
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_twelve_01"
+			}
+		},
+		pdr_castle_conversation_seven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pdr_castle_conversation_seven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.9878749847412
+			},
+			sound_events = {
+				[1.0] = "pdr_castle_conversation_seven_02"
+			}
+		},
+		pes_castle_conversation_twelve_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_twelve_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2791042327881
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_twelve_02"
+			}
+		},
+		pes_castle_conversation_eight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_eight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7464165687561
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_eight_02"
+			}
+		},
+		pwe_castle_conversation_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0736665725708
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_ten_01"
 			}
 		},
 		pbw_castle_conversation_six_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_dlc_drachenfels_castle",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_castle_conversation_six_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_castle_conversation_six_02"
-			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_six_02"
+			},
 			sound_events_duration = {
 				[1.0] = 3.9466874599457
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_six_02"
+			}
+		},
+		pwe_castle_conversation_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_eleven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0758957862854
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_eleven_02"
+			}
+		},
+		pes_castle_conversation_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_eight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.520124912262
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_eight_01"
+			}
+		},
+		pwe_castle_conversation_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_three_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8888957500458
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_three_02"
+			}
+		},
+		pwh_castle_conversation_seven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_seven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 9.3860626220703
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_seven_01"
+			}
+		},
+		pwh_castle_conversation_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9296875
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_eleven_01"
+			}
+		},
+		pbw_castle_conversation_four_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_four_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1587290763855
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_four_02"
+			}
+		},
+		pwe_castle_conversation_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2543125152588
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_eleven_01"
+			}
+		},
+		pwh_castle_conversation_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_ten_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1597917079926
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_ten_02"
+			}
+		},
+		pdr_castle_conversation_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pdr_castle_conversation_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2667293548584
+			},
+			sound_events = {
+				[1.0] = "pdr_castle_conversation_eleven_01"
+			}
+		},
+		pwh_castle_conversation_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5076665878296
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_ten_01"
+			}
+		},
+		pbw_castle_conversation_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_four_01"
+			},
+			sound_events_duration = {
+				[1.0] = 9.0182085037231
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_four_01"
+			}
+		},
+		pes_castle_conversation_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_three_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.7854791879654
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_three_01"
+			}
+		},
+		pes_castle_conversation_two_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_two_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4886040687561
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_two_02"
+			}
+		},
+		pes_castle_conversation_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_two_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7310833930969
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_two_01"
+			}
+		},
+		pes_castle_conversation_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2825520634651
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_ten_01"
+			}
+		},
+		pbw_castle_conversation_nine_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_nine_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0107707977295
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_nine_02"
+			}
+		},
+		pwh_castle_conversation_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_five_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9850206375122
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_five_01"
+			}
+		},
+		pdr_castle_conversation_nine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pdr_castle_conversation_nine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.011125087738
+			},
+			sound_events = {
+				[1.0] = "pdr_castle_conversation_nine_01"
+			}
+		},
+		pwe_castle_conversation_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_five_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0054998397827
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_five_01"
+			}
+		},
+		pwh_castle_conversation_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_eight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7152500152588
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_eight_01"
+			}
+		},
+		pwe_castle_conversation_two_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_two_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4278960227966
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_two_02"
+			}
+		},
+		pwe_castle_conversation_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwe_castle_conversation_two_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3880624771118
+			},
+			sound_events = {
+				[1.0] = "pwe_castle_conversation_two_01"
+			}
+		},
+		pbw_castle_conversation_nine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_nine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2841668128967
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_nine_01"
+			}
+		},
+		pwh_castle_conversation_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_four_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2908954620361
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_four_01"
+			}
+		},
+		pbw_castle_conversation_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pbw_castle_conversation_one_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4232499599457
+			},
+			sound_events = {
+				[1.0] = "pbw_castle_conversation_one_01"
+			}
+		},
+		pes_castle_conversation_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pes_castle_conversation_three_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.1702291965485
+			},
+			sound_events = {
+				[1.0] = "pes_castle_conversation_three_02"
+			}
+		},
+		pdr_castle_conversation_seven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pdr_castle_conversation_seven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.176854133606
+			},
+			sound_events = {
+				[1.0] = "pdr_castle_conversation_seven_01"
+			}
+		},
+		pwh_castle_conversation_eight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_drachenfels_castle",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			localization_strings = {
+				[1.0] = "pwh_castle_conversation_eight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1067707538605
+			},
+			sound_events = {
+				[1.0] = "pwh_castle_conversation_eight_02"
 			}
 		}
 	})

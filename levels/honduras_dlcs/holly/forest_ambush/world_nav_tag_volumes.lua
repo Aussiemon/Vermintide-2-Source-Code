@@ -1172,7 +1172,7 @@ local nav_tag_volumes = {
 	},
 	volume_no_spawn = {
 		delay_nav_tag_volume_creation = true,
-		alt_max = 3.9484453201293945,
+		alt_max = 13.663393020629883,
 		alt_min = -2.577425003051758,
 		layer_name = "NO_SPAWN",
 		color = {
