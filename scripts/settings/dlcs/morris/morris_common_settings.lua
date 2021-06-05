@@ -176,7 +176,6 @@ settings.mutators = {
 	"curse_abundance_of_life",
 	"curse_greed_pinata",
 	"curse_egg_of_tzeentch",
-	"blessing_of_power",
 	"blessing_of_shallya",
 	"blessing_of_grimnir",
 	"blessing_of_isha",

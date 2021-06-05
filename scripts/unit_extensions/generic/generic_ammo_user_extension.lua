@@ -95,6 +95,8 @@ GenericAmmoUserExtension.destroy = function (self)
 end
 
 GenericAmmoUserExtension.reset = function (self)
+	local no_ammo = self._initialized and self:total_remaining_ammo() == 0
+
 	if self._ammo_immediately_available then
 		self._current_ammo = self._start_ammo
 	else
@@ -105,6 +107,16 @@ GenericAmmoUserExtension.reset = function (self)
 	self._shots_fired = 0
 
 	self:_update_anim_ammo()
+
+	if no_ammo then
+		local inventory_extension = ScriptUnit.has_extension(self.owner_unit, "inventory_system")
+
+		if inventory_extension and self.slot_name == inventory_extension:get_wielded_slot_name() then
+			self:instant_reload(true, self._no_ammo_reload_event)
+		end
+	end
+
+	self._initialized = true
 end
 
 GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)

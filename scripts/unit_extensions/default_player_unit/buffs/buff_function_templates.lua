@@ -4063,6 +4063,13 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 	end,
+	victor_bountyhunter_activated_ability_railgun_delayed = function (unit, buff, params)
+		if ALIVE[unit] then
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:reduce_activated_ability_cooldown_percent(buff.multiplier)
+		end
+	end,
 	enter_sienna_unchained_activated_ability = function (unit, buff, params)
 		local go_id = Managers.state.unit_storage:go_id(unit)
 		local network_manager = Managers.state.network

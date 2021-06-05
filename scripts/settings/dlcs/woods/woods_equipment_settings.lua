@@ -359,6 +359,9 @@ settings.vortex_templates = {
 			8,
 			8
 		},
+		reduce_duration_per_breed = {
+			chaos_warrior = 0.5
+		},
 		damage = {
 			5,
 			3,

@@ -408,6 +408,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			if infinite_ammo then
 				event = (skin_data and skin_data.anim_event_infinite_ammo) or current_action_settings.anim_event_infinite_ammo or event
+				event_3p = (skin_data and skin_data.anim_event_infinite_ammo_3p) or current_action_settings.anim_event_infinite_ammo_3p or event_3p
 			end
 		end
 

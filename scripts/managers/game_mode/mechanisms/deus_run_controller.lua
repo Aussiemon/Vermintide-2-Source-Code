@@ -17,7 +17,7 @@ local RPCS = {
 	"rpc_deus_save_loadout",
 	"rpc_deus_add_power_ups",
 	"rpc_deus_set_initial_soft_currency",
-	"rpc_deus_set_initial_talents",
+	"rpc_deus_set_initial_setup",
 	"rpc_deus_chest_unlocked",
 	"rpc_deus_soft_currency_picked_up"
 }
@@ -278,10 +278,21 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 
 	local own_peer_id = self._run_state:get_own_peer_id()
 	local profile_index, career_index = self._run_state:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
-	local profile = SPProfiles[profile_index]
-	local career_name = profile and profile.careers[career_index].name
-	local initial_talents = self._run_state:get_own_initial_talents()
-	local initial_talents_for_career = initial_talents[career_name]
+	local melee_item_string, ranged_item_string, initial_talents_for_career = nil
+
+	if profile_index ~= 0 then
+		local profile = SPProfiles[profile_index]
+		local career_name = profile.careers[career_index].name
+		local initial_talents = self._run_state:get_own_initial_talents()
+		initial_talents_for_career = initial_talents[career_name]
+		local initial_loadout = self._run_state:get_own_initial_loadout()
+		local initial_loadout_for_career = initial_loadout[career_name]
+		local melee_item = initial_loadout_for_career.slot_melee
+		local ranged_item = initial_loadout_for_career.slot_ranged
+		melee_item_string = DeusWeaponGeneration.serialize_weapon(melee_item)
+		ranged_item_string = DeusWeaponGeneration.serialize_weapon(ranged_item)
+	end
+
 	local run_id = self._run_state:get_run_id()
 
 	if self._run_state:is_server() then
@@ -290,6 +301,7 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 
 		if profile_index ~= 0 then
 			self:_add_initial_talents_as_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
+			self:_add_initial_weapons_to_loadout(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 			self._run_state:set_profile_initialized(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
 		end
 
@@ -303,7 +315,8 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 
 		if profile_index ~= 0 and not self._run_state:get_profile_initialized(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index) then
 			self:_add_initial_talents_as_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
-			RPC.rpc_deus_set_initial_talents(server_channel_id, profile_index, career_index, initial_talents_for_career)
+			self:_add_initial_weapons_to_loadout(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
+			RPC.rpc_deus_set_initial_setup(server_channel_id, profile_index, career_index, initial_talents_for_career, melee_item_string, ranged_item_string)
 		end
 	end
 
@@ -348,11 +361,12 @@ DeusRunController.rpc_deus_set_initial_soft_currency = function (self, sender_ch
 	end
 end
 
-DeusRunController.rpc_deus_set_initial_talents = function (self, sender_channel_id, profile_index, career_index, initial_talents_for_career)
+DeusRunController.rpc_deus_set_initial_setup = function (self, sender_channel_id, profile_index, career_index, initial_talents_for_career, melee_item_string, ranged_item_string)
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
 
 	if not self._run_state:get_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index) then
 		self:_add_initial_talents_as_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
+		self:_add_initial_weapons_to_loadout(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 		self._run_state:set_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
 	end
 end
@@ -370,8 +384,15 @@ DeusRunController.profile_changed = function (self, peer_id, local_player_id, pr
 	local profile = SPProfiles[profile_index]
 	local career_name = profile.careers[career_index].name
 	local initial_talents_for_career = initial_talents[career_name]
+	local initial_loadout = self._run_state:get_own_initial_loadout()
+	local initial_loadout_for_career = initial_loadout[career_name]
+	local melee_item = initial_loadout_for_career.slot_melee
+	local ranged_item = initial_loadout_for_career.slot_ranged
+	local melee_item_string = DeusWeaponGeneration.serialize_weapon(melee_item)
+	local ranged_item_string = DeusWeaponGeneration.serialize_weapon(ranged_item)
 
 	self:_add_initial_talents_as_power_ups(peer_id, local_player_id, profile_index, career_index, initial_talents_for_career)
+	self:_add_initial_weapons_to_loadout(peer_id, local_player_id, profile_index, career_index, melee_item_string, ranged_item_string)
 
 	if self._run_state:is_server() then
 		fassert(profile_index ~= 0, "the host must have a profile assigned already")
@@ -380,7 +401,7 @@ DeusRunController.profile_changed = function (self, peer_id, local_player_id, pr
 		local server_peer_id = self._run_state:get_server_peer_id()
 		local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
 
-		RPC.rpc_deus_set_initial_talents(server_channel_id, profile_index, career_index, initial_talents_for_career)
+		RPC.rpc_deus_set_initial_setup(server_channel_id, profile_index, career_index, initial_talents_for_career, melee_item_string, ranged_item_string)
 	end
 end
 
@@ -402,6 +423,11 @@ DeusRunController._add_initial_talents_as_power_ups = function (self, peer_id, l
 
 	table.append(new_power_ups, talent_power_ups)
 	self._run_state:set_player_power_ups(peer_id, local_player_id, profile_index, career_index, new_power_ups)
+end
+
+DeusRunController._add_initial_weapons_to_loadout = function (self, peer_id, local_player_id, profile_index, career_index, melee_item_string, ranged_item_string)
+	self._run_state:set_player_loadout(peer_id, local_player_id, profile_index, career_index, "slot_melee", melee_item_string)
+	self._run_state:set_player_loadout(peer_id, local_player_id, profile_index, career_index, "slot_ranged", ranged_item_string)
 end
 
 DeusRunController.get_run_id = function (self)
@@ -700,13 +726,8 @@ DeusRunController.get_own_loadout = function (self)
 	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
 	local melee_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
 	local ranged_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged")
-	local melee_item = melee_item_string and DeusWeaponGeneration.deserialize_weapon(melee_item_string)
-	local ranged_item = ranged_item_string and DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
-	local initial_loadout = self._run_state:get_own_initial_loadout()
-	local profile = SPProfiles[profile_index]
-	local career_name = profile.careers[career_index].name
-	melee_item = melee_item or initial_loadout[career_name].slot_melee
-	ranged_item = ranged_item or initial_loadout[career_name].slot_ranged
+	local melee_item = DeusWeaponGeneration.deserialize_weapon(melee_item_string)
+	local ranged_item = DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
 
 	return melee_item, ranged_item
 end
@@ -1121,9 +1142,8 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 		return false
 	end
 
-	local grant_item = blessing_data.grant_item
-
-	if grant_item then
+	if blessing_data.grant_item then
+		local grant_item = blessing_data.grant_item
 		local item_name = grant_item.item_name
 		local slot_name = grant_item.slot_name
 		local profile_index, career_index = self._run_state:get_player_profile(buyer, REAL_PLAYER_LOCAL_ID)
@@ -1192,6 +1212,36 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 				self._run_state:set_player_consumable_healthkit_slot(buyer, REAL_PLAYER_LOCAL_ID, profile_index, career_index, item_name)
 			else
 				add_to_additional_items()
+			end
+		end
+	elseif blessing_data.improve_all_weapons then
+		local power_level_table = blessing_data.improve_all_weapons
+		local difficulty = self._run_state:get_run_difficulty()
+		local difficulty_settings = DifficultySettings[difficulty]
+		local difficulty_rank = difficulty_settings.rank
+		local power_level = power_level_table[difficulty_rank] or power_level_table[DifficultySettings.normal.rank]
+		local peers = self._network_handler:get_peers()
+
+		for i = 1, #peers, 1 do
+			local peer_id = peers[i]
+			local profile_index, career_index = self._run_state:get_player_profile(peer_id, REAL_PLAYER_LOCAL_ID)
+			local melee_item_string = self._run_state:get_player_loadout(peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
+			local ranged_item_string = self._run_state:get_player_loadout(peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged")
+
+			if melee_item_string then
+				local melee_item = DeusWeaponGeneration.deserialize_weapon(melee_item_string)
+				melee_item.power_level = melee_item.power_level + power_level
+				melee_item_string = DeusWeaponGeneration.serialize_weapon(melee_item)
+
+				self._run_state:set_player_loadout(peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee", melee_item_string)
+			end
+
+			if ranged_item_string then
+				local ranged_item = DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
+				ranged_item.power_level = ranged_item.power_level + power_level
+				ranged_item_string = DeusWeaponGeneration.serialize_weapon(ranged_item)
+
+				self._run_state:set_player_loadout(peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged", ranged_item_string)
 			end
 		end
 	end

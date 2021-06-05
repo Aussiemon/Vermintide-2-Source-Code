@@ -1269,11 +1269,13 @@ GamePadEquipmentUI._handle_gamepad_activity = function (self)
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 
+			self:_update_gamepad_input_button()
 			self:event_input_changed()
 		end
 	elseif self.gamepad_active_last_frame or force_update then
 		self.gamepad_active_last_frame = false
 
+		self:_update_gamepad_input_button()
 		self:event_input_changed()
 	end
 end
@@ -1296,13 +1298,14 @@ end
 GamePadEquipmentUI._update_gamepad_input_button = function (self)
 	local input_service = Managers.input:get_service("Player")
 	local input_action = "weapon_reload_input"
-	local gamepad_active = true
-	local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(input_service, input_action, gamepad_active)
+	local fake_gamepad_active = true
+	local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(input_service, input_action, fake_gamepad_active)
 	local widget = self._widgets_by_name.engineer_base
 	local style = widget.style
 	local content = widget.content
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if button_texture_data then
+	if button_texture_data and gamepad_active then
 		local texture = button_texture_data.texture
 		content.reload_button_id = texture
 		content.input_text = ""
@@ -1311,6 +1314,14 @@ GamePadEquipmentUI._update_gamepad_input_button = function (self)
 		local size = button_texture_data.size
 		reload_button_texture_size[1] = size[1]
 		reload_button_texture_size[2] = size[2]
+	else
+		local max_length = 40
+		local input_action = "weapon_reload"
+		local keymap_binding = input_service:get_keymapping(input_action, PLATFORM)
+		local key_index = keymap_binding[2]
+		local input_style = style.input_text
+		local input_text = Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
+		content.input_text = UIRenderer.crop_text_width(self.ui_renderer, input_text, max_length, input_style)
 	end
 end
 

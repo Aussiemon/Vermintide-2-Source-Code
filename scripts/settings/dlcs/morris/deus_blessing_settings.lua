@@ -1,15 +1,25 @@
 require("scripts/settings/dlcs/morris/deus_cost_settings")
 
+local NORMAL = 2
+local HARD = 3
+local HARDER = 4
+local HARDEST = 5
+local CATACLYSM = 6
+local POWER_LEVEL_BONUSES = {
+	[NORMAL] = 50,
+	[HARD] = 50,
+	[HARDER] = 50,
+	[HARDEST] = 50,
+	[CATACLYSM] = 50
+}
 DeusBlessingSettings = DeusBlessingSettings or {
 	blessing_of_power = {
 		description = "blessing_of_power_desc",
-		lifetime = 1,
 		display_name = "blessing_of_power_name",
+		lifetime = 1,
 		icon = "blessing_power_01",
 		shop_icon = "blessing_power_02",
-		mutators = {
-			"blessing_of_power"
-		}
+		improve_all_weapons = POWER_LEVEL_BONUSES
 	},
 	blessing_of_shallya = {
 		description = "blessing_of_shallya_desc",

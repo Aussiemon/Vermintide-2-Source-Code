@@ -140,10 +140,32 @@ SummonedVortexExtension.extensions_ready = function (self, world, unit)
 end
 
 SummonedVortexExtension.refresh_duration = function (self)
+	local vortex_data = self.vortex_data
+
+	if not vortex_data then
+		return
+	end
+
+	local ai_units_inside = vortex_data.ai_units_inside
 	local vortex_template = self.vortex_template
-	local time_manager = Managers.time
-	local t = time_manager:time("game")
-	self.vortex_data.time_of_death = t + ConflictUtils.random_interval(vortex_template.time_of_life)
+	local t = Managers.time:time("game")
+	local life_time = ConflictUtils.random_interval(vortex_template.time_of_life)
+	local found_multiplier = false
+
+	for ai_unit, _ in pairs(ai_units_inside) do
+		if ALIVE[ai_unit] then
+			local breed_name = BLACKBOARDS[ai_unit].breed.name
+			local reduce_duration_per_breed = vortex_template.reduce_duration_per_breed
+			local multiplier = (reduce_duration_per_breed and reduce_duration_per_breed[breed_name]) or 1
+			local time_to_add = math.clamp(life_time * multiplier, 0, math.huge)
+			self.vortex_data.time_of_death = t + time_to_add
+			found_multiplier = true
+		end
+	end
+
+	if not found_multiplier then
+		self.vortex_data.time_of_death = t + life_time
+	end
 end
 
 SummonedVortexExtension.destroy = function (self)
@@ -400,6 +422,13 @@ SummonedVortexExtension._update_attract_outside_ai = function (self, vortex_data
 							if sot_landing_breeds[breed_name] then
 								target_blackboard.sot_landing = true
 							end
+
+							local t = Managers.time:time("game")
+							local life_time = ConflictUtils.random_interval(vortex_template.time_of_life)
+							local reduce_duration_per_breed = vortex_template.reduce_duration_per_breed
+							local multiplier = (reduce_duration_per_breed and reduce_duration_per_breed[breed_name]) or 1
+							local time_to_add = math.clamp(life_time * multiplier, 0, math.huge)
+							self.vortex_data.time_of_death = t + time_to_add
 
 							Managers.state.achievement:trigger_event("vortex_caught_unit", self._owner_unit, ai_unit)
 

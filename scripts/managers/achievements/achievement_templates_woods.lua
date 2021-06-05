@@ -510,6 +510,15 @@ achievements.woods_ability_combo = {
 			return
 		end
 
+		local level_transition_handler = Managers.level_transition_handler
+		local level_key = level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+		local is_hub_level = level_settings and level_settings.hub_level
+
+		if is_hub_level then
+			return
+		end
+
 		local t = Managers.time:time("game")
 
 		if not template_data.use_times then
@@ -602,11 +611,11 @@ achievements.woods_wall_block_ratling = {
 
 		return {
 			completed,
-			1500
+			500
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return statistics_db:get_persistent_stat(stats_id, "woods_ratling_shots_soaked") > 1500
+		return statistics_db:get_persistent_stat(stats_id, "woods_ratling_shots_soaked") > 500
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local local_player_unit = Managers.player:local_player().player_unit

@@ -55,10 +55,11 @@ local function create_ability_widget()
 					pass_type = "texture",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
+						content.gamepad_active = Managers.input:is_device_active("gamepad")
+
 						return (not content.on_cooldown or content.usable) and not content.hide_effect
 					end,
 					content_change_function = function (content, style)
-						content.gamepad_active = Managers.input:is_device_active("gamepad")
 						local player = Managers.player:local_player()
 						local player_unit = player and player.player_unit
 
@@ -108,7 +109,7 @@ local function create_ability_widget()
 					text_id = "input_text",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return ((not content.on_cooldown or content.always_show_activated_ability_input or content.usable) and not content.gamepad_active) or content.usable
+						return (not content.on_cooldown or content.always_show_activated_ability_input or content.usable or content.usable) and not content.gamepad_active
 					end
 				},
 				{
@@ -117,7 +118,7 @@ local function create_ability_widget()
 					text_id = "input_text",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return ((not content.on_cooldown or content.always_show_activated_ability_input or content.usable) and not content.gamepad_active) or content.usable
+						return (not content.on_cooldown or content.always_show_activated_ability_input or content.usable or content.usable) and not content.gamepad_active
 					end
 				}
 			}

@@ -3626,7 +3626,7 @@ ProcFunctions = {
 	victor_bounty_hunter_reduce_activated_ability_cooldown_railgun = function (player, buff, params)
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) then
+		if ALIVE[player_unit] then
 			local hit_zone = params[3]
 			local target_number = params[4]
 			local buff_type = params[5]
@@ -3636,9 +3636,10 @@ ProcFunctions = {
 			end
 
 			if buff.can_trigger and buff_type == "RANGED_ABILITY" and (hit_zone == "head" or hit_zone == "neck") then
-				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+				local buff_to_add = buff.template.buff_to_add
 
-				career_extension:reduce_activated_ability_cooldown_percent(buff.multiplier)
+				buff_extension:add_buff(buff_to_add)
 
 				buff.can_trigger = false
 			end

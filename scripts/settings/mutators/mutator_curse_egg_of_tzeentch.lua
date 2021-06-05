@@ -39,6 +39,7 @@ local SOUND_EVENTS = {
 	ALERT_HIGH = "Play_curse_egg_of_tzeentch_alert_high"
 }
 local VFX_EGG_EXPLOSION = "fx/magic_wind_essence_explosion_02"
+local EGG_MISSION_NAME = "egg_of_tzeentch"
 local EGG_UNIT_TEMPLATE = "egg_of_tzeentch_unit"
 local EGG_UNIT_NAME = "units/props/egg_of_tzeentch"
 local EGG_EXTENSION_INIT_DATA = {
@@ -95,13 +96,15 @@ local function spawn_egg_on_path(conflict_director, unit_spawner, nav_world, mis
 
 	local random_rotation_rad = math.random() * math.pi * 2
 	local rotation = Quaternion.from_elements(0, 0, random_rotation_rad, 0)
+	local egg_unit = unit_spawner:spawn_network_unit(EGG_UNIT_NAME, EGG_UNIT_TEMPLATE, extension_init_data, nav_position, rotation)
 
-	unit_spawner:spawn_network_unit(EGG_UNIT_NAME, EGG_UNIT_TEMPLATE, extension_init_data, nav_position, rotation)
 	mission_system:request_mission("egg_of_tzeentch")
 
 	local audio_system = Managers.state.entity:system("audio_system")
 
 	audio_system:play_2d_audio_event(SOUND_EVENTS.ALERT_LOW)
+
+	return egg_unit
 end
 
 local function is_valid_spawn_distance(ahead_player_travel_dist, egg_spawn_distance, ahead_peak_distance, peaks)
@@ -169,6 +172,24 @@ return {
 		data.timer = MutatorCommonSettings.deus.initial_activation_delay
 	end,
 	server_update_function = function (context, data, dt, t)
+		if not data.timer then
+			local mission_system = data.mission_system
+			local active_missions = mission_system:get_missions()
+			local num_missions = table.size(active_missions)
+
+			if num_missions >= 2 and mission_system:has_active_mission(EGG_MISSION_NAME) then
+				mission_system:end_mission(EGG_MISSION_NAME, true)
+
+				if ALIVE[data.egg_unit] then
+					data.unit_spawner:mark_for_deletion(data.egg_unit)
+
+					data.alert_timer = nil
+					data.alert_high_triggered = false
+					data.alert_medium_triggered = false
+				end
+			end
+		end
+
 		local pacing_frozen = data.conflict_director.pacing:get_state() == "pacing_frozen"
 		local mission_system = data.mission_system
 		local active_missions = mission_system:get_missions()
@@ -221,6 +242,11 @@ return {
 		local conflict_director = data.conflict_director
 		local main_path_info = conflict_director.main_path_info
 		local ahead_player_info = conflict_director.main_path_player_info[main_path_info.ahead_unit]
+
+		if not ahead_player_info then
+			return
+		end
+
 		local ahead_player_travel_dist = ahead_player_info.travel_dist
 		local egg_spawn_distance = egg_mission.distance + ahead_player_travel_dist
 		local ahead_peak_distance = egg_mission.ahead_peak_distance
@@ -250,18 +276,16 @@ return {
 		data.alert_timer = egg_hatch_time
 		data.alert_high_triggered = false
 		data.alert_medium_triggered = false
-
-		spawn_egg_on_path(conflict_director, data.unit_spawner, data.nav_world, data.mission_system, egg_extension_init_data, egg_spawn_distance)
+		data.egg_unit = spawn_egg_on_path(conflict_director, data.unit_spawner, data.nav_world, data.mission_system, egg_extension_init_data, egg_spawn_distance)
 	end,
 	server_level_object_killed_function = function (context, data, killed_unit)
 		if Unit.is_a(killed_unit, EGG_UNIT_NAME) then
 			data.template.on_egg_destroyed(data, killed_unit)
 
 			local mission_system = data.mission_system
-			local mission_name = "egg_of_tzeentch"
 
-			if mission_system:has_active_mission(mission_name) then
-				mission_system:end_mission(mission_name, true)
+			if mission_system:has_active_mission(EGG_MISSION_NAME) then
+				mission_system:end_mission(EGG_MISSION_NAME, true)
 			end
 
 			local player_unit = DialogueSystem:get_random_player()

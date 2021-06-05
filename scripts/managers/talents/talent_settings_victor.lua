@@ -941,8 +941,18 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_hit",
+				buff_to_add = "victor_bountyhunter_activated_ability_railgun_delayed_add",
 				event_buff = true,
 				buff_func = "victor_bounty_hunter_reduce_activated_ability_cooldown_railgun"
+			}
+		}
+	},
+	victor_bountyhunter_activated_ability_railgun_delayed_add = {
+		buffs = {
+			{
+				remove_buff_func = "victor_bountyhunter_activated_ability_railgun_delayed",
+				duration = 0.15,
+				multiplier = 0.4
 			}
 		}
 	},

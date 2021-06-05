@@ -298,8 +298,9 @@ GamePadAbilityUI._set_input = function (self, widget, input_action)
 	local input_style = style.input_text
 	local ui_renderer = self._ui_renderer
 	content.input_action = input_action
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if texture_data then
+	if texture_data and gamepad_active then
 		local texture = texture_data.texture
 		content.activate_ability_id = texture
 		content.input_text = ""

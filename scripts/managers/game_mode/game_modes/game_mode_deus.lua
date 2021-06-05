@@ -398,7 +398,7 @@ GameModeDeus._get_first_available_bot_profile = function (self)
 	local hero_experience = hero_attributes:get(display_name, "experience") or 0
 	local hero_level = ExperienceSettings.get_level(hero_experience)
 
-	if not career or career:is_unlocked_function(display_name, hero_level) then
+	if not career or not career:is_unlocked_function(display_name, hero_level) then
 		career_index = 1
 
 		hero_attributes:set(display_name, "career", career_index)

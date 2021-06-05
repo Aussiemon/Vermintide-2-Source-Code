@@ -47,13 +47,15 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		return false
 	end
 
+	local hide_effects = self._hide_effects
 	local career_extension = ScriptUnit.extension(player_unit, "career_system")
 	local career_name = career_extension:career_name()
 
 	if self._career_name ~= career_name then
 		local career_settings = CareerSettings[career_name]
 		local ability_1 = career_settings.activated_ability[1]
-		self._hide_effects = ability_1.hide_ability_ui_effects
+		hide_effects = ability_1.hide_ability_ui_effects
+		self._hide_effects = hide_effects
 		self._career_name = career_name
 	end
 
@@ -80,6 +82,7 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		thornsister_style.ability_effect_top_right.color[1] = effect_alpha
 		thornsister_style.ability_effect_left.color[1] = effect_alpha
 		thornsister_style.ability_effect_top_left.color[1] = effect_alpha
+		hide_effects = true
 	end
 
 	if can_use_ability then
@@ -88,7 +91,7 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		local pulse_progress = 0.5 + 0.5 * math.sin(t * 5)
 		local effect_alpha = math.min(style.ability_effect_left.color[1] + dt * 200, 255)
 
-		if self._hide_effects then
+		if hide_effects then
 			effect_alpha = 0
 			pulse_progress = 0.5
 		end
