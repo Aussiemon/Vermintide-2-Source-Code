@@ -31,7 +31,8 @@ local vote_requests = {
 			strict_matchmaking = params.strict_matchmaking,
 			excluded_level_keys = params.excluded_level_keys,
 			matchmaking_type = params.matchmaking_type,
-			mechanism = params.mechanism
+			mechanism = params.mechanism,
+			vote_type = params.request_type
 		}
 		local vote_template = "game_settings_vote"
 
@@ -51,7 +52,8 @@ local vote_requests = {
 			difficulty = difficulty,
 			excluded_level_keys = params.excluded_level_keys,
 			matchmaking_type = params.matchmaking_type,
-			mechanism = params.mechanism
+			mechanism = params.mechanism,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("game_settings_deed_vote", vote_data, Network.peer_id())
@@ -69,7 +71,8 @@ local vote_requests = {
 			event_data = params.event_data,
 			excluded_level_keys = params.excluded_level_keys,
 			matchmaking_type = params.matchmaking_type,
-			mechanism = params.mechanism
+			mechanism = params.mechanism,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("game_settings_event_vote", vote_data, Network.peer_id())
@@ -83,7 +86,8 @@ local vote_requests = {
 			private_game = params.private_game,
 			always_host = params.always_host,
 			matchmaking_type = params.matchmaking_type,
-			mechanism = params.mechanism
+			mechanism = params.mechanism,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("game_settings_weave_quick_play_vote", vote_data, Network.peer_id())
@@ -99,7 +103,8 @@ local vote_requests = {
 			private_game = params.private_game,
 			always_host = params.always_host,
 			matchmaking_type = params.matchmaking_type,
-			mechanism = params.mechanism
+			mechanism = params.mechanism,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("game_settings_weave_vote", vote_data, Network.peer_id())

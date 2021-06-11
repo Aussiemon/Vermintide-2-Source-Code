@@ -358,6 +358,7 @@ VoteTemplates = {
 				local matchmaking_type = data.matchmaking_type
 				local excluded_level_keys = data.excluded_level_keys
 				local mechanism = data.mechanism
+				local vote_type = data.vote_type
 				local search_config = {
 					dedicated_server = false,
 					join_method = "solo",
@@ -372,7 +373,7 @@ VoteTemplates = {
 					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
 					Managers.twitch:disconnect()
 				end
 
@@ -533,6 +534,7 @@ VoteTemplates = {
 				local quick_game = false
 				local matchmaking_type = "deed"
 				local mechanism = data.mechanism
+				local vote_type = data.vote_type
 				local search_config = {
 					dedicated_server = false,
 					join_method = "solo",
@@ -544,7 +546,7 @@ VoteTemplates = {
 					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
 					Managers.twitch:disconnect()
 				end
 
@@ -656,6 +658,7 @@ VoteTemplates = {
 				local quick_game = false
 				local matchmaking_type = "event"
 				local mechanism = data.mechanism
+				local vote_type = data.vote_type
 				local search_config = {
 					dedicated_server = false,
 					join_method = "solo",
@@ -667,7 +670,7 @@ VoteTemplates = {
 					mechanism = mechanism
 				}
 
-				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
+				if (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
 					Managers.twitch:disconnect()
 				end
 

@@ -393,7 +393,7 @@ StateLoading.setup_loading_view = function (self, level_key)
 		if level_settings.game_mode == "weave" then
 			local weave_name = (self._lobby_client and self._lobby_client:lobby_data("selected_mission_id")) or weave_name
 
-			if not weave_name or weave_name == "false" then
+			if not weave_name or weave_name == "false" or not WeaveSettings.templates[weave_name] then
 				if IS_XB1 and not self._lobby_client:is_updating_lobby_data() then
 					self._lobby_client:force_update_lobby_data()
 				end

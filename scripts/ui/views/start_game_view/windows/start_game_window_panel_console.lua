@@ -419,6 +419,14 @@ StartGameWindowPanelConsole._weave_disable_function = function (self)
 	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("weave")
 end
 
+StartGameWindowPanelConsole._deus_quickplay_disable_function = function (self)
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("deus_quickplay")
+end
+
+StartGameWindowPanelConsole._deus_custom_disable_function = function (self)
+	return self:_is_in_quickplay_weave_menu() or not self:_is_supported_with_twitch("deus_custom")
+end
+
 StartGameWindowPanelConsole._streaming_disable_function = function (self)
 	if self:_is_in_quickplay_weave_menu() then
 		return true

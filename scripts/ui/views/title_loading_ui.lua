@@ -820,12 +820,12 @@ local first_time_video = {
 	subtitle_template_settings = first_time_video_subtitle_settings
 }
 local dlc_intro_video = {
-	video_name = "video/vermintide_2_morris_intro",
-	sound_start = "Play_MORRIS_INTRO_FINAL_AUDIO",
+	video_name = "video/vermintide_2_woods_intro",
+	sound_start = "Play_vermintide_2_woods_intro",
 	scenegraph_id = "splash_video",
-	material_name = "vermintide_2_morris_intro",
-	sound_stop = "Stop_MORRIS_INTRO_FINAL_AUDIO",
-	subtitle_template_settings = morris_intro_video_subtitle_settings
+	material_name = "vermintide_2_woods_intro",
+	sound_stop = "Stop_vermintide_2_woods_intro",
+	subtitle_template_settings = woods_intro_video_subtitle_settings
 }
 
 local function get_slider_progress(min, max, value)

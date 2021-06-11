@@ -53,6 +53,7 @@ VoteTemplates.deus_settings_vote = {
 			local strict_matchmaking = data.strict_matchmaking
 			local matchmaking_type = data.matchmaking_type
 			local excluded_level_keys = data.excluded_level_keys
+			local vote_type = data.vote_type
 			local search_config = {
 				any_level = true,
 				dedicated_servers = false,
@@ -69,7 +70,7 @@ VoteTemplates.deus_settings_vote = {
 				excluded_level_keys = excluded_level_keys
 			}
 
-			if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(matchmaking_type, difficulty) then
+			if Managers.twitch and (Managers.twitch:is_connecting() or Managers.twitch:is_connected()) and not Managers.twitch:game_mode_supported(vote_type, difficulty) then
 				Managers.twitch:disconnect()
 			end
 

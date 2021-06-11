@@ -1037,6 +1037,14 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 		},
 		{
 			pass_type = "texture",
+			style_id = "loading_frame",
+			texture_id = "loading_frame",
+			content_check_function = function (content)
+				return not content.is_bought and not content.button_hotspot.disable_button
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "icon_discount_frame",
 			texture_id = "icon_discount_frame",
 			content_check_function = function (content)
@@ -1232,20 +1240,22 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 		}
 	}
 	local content = {
-		title_text = "",
+		price_icon = "deus_icons_coin",
+		icon_discount_frame = "menu_frame_12_gold",
+		loading_frame = "deus_shop_square_gradient",
+		icon_hover_frame = "frame_outer_glow_04",
 		icon_background = "button_frame_01",
 		is_bought = false,
-		price_icon = "deus_icons_coin",
-		price_text = "0",
+		title_text = "",
 		icon_bought_frame = "frame_outer_glow_04_big",
 		icon = "icon_property_attack_speed",
-		max_value_text = "20%",
 		current_value_text = "10%",
 		has_discount = false,
+		max_value_text = "20%",
 		sub_text = "",
+		price_text = "0",
 		rarity_text = "",
-		icon_discount_frame = "menu_frame_12_gold",
-		icon_hover_frame = "frame_outer_glow_04",
+		has_buying_animation_played = false,
 		button_hotspot = {},
 		background = {
 			texture_id = "shrine_blessing_bg",
@@ -1313,6 +1323,26 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			texture_size = {
 				158,
 				158
+			}
+		},
+		loading_frame = {
+			vertical_alignment = "center",
+			horizontal_alignment = "left",
+			masked = masked,
+			color = {
+				0,
+				255,
+				152,
+				15
+			},
+			offset = {
+				-6,
+				0,
+				3
+			},
+			texture_size = {
+				92,
+				92
 			}
 		},
 		icon_discount_frame = {
@@ -1766,6 +1796,14 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 		},
 		{
 			pass_type = "texture",
+			style_id = "loading_frame",
+			texture_id = "loading_frame",
+			content_check_function = function (content)
+				return not content.is_bought and not content.button_hotspot.disable_button
+			end
+		},
+		{
+			pass_type = "texture",
 			style_id = "icon_hover_frame",
 			texture_id = "icon_hover_frame"
 		},
@@ -1927,17 +1965,19 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 		}
 	}
 	local content = {
-		is_bought = false,
-		title_text = "",
-		icon_background = "button_round_bg",
 		price_icon = "deus_icons_coin",
-		player_name_text = "",
+		loading_frame = "deus_shop_circular_gradient",
+		icon_background = "button_round_bg",
+		icon_hover_frame = "button_round_highlight",
+		title_text = "",
+		sub_text = "",
 		icon_bought_frame = "button_round_bought",
+		player_name_text = "",
 		icon = "blessing_abundance_02",
 		character_portrait = "unit_frame_portrait_default",
 		price_text = "9001",
-		sub_text = "",
-		icon_hover_frame = "button_round_highlight",
+		is_bought = false,
+		has_buying_animation_played = false,
 		button_hotspot = {},
 		background = {
 			texture_id = "shrine_blessing_bg",
@@ -2018,6 +2058,26 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			texture_size = {
 				190,
 				190
+			}
+		},
+		loading_frame = {
+			vertical_alignment = "center",
+			horizontal_alignment = "right",
+			masked = masked,
+			color = {
+				0,
+				255,
+				152,
+				15
+			},
+			offset = {
+				9,
+				0,
+				3
+			},
+			texture_size = {
+				110,
+				110
 			}
 		},
 		icon_hover_frame = {
@@ -2636,6 +2696,71 @@ for i = 1, player_amount, 1 do
 	player_widgets[text_scenegraph_id] = text_widget
 end
 
+animations_definitions = {
+	flash_icon = {
+		{
+			name = "flash_icon",
+			start_progress = 0,
+			end_progress = 1,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				widgets.content.has_buying_animation_played = true
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local style = widgets.style
+				local flash_value = 60 * math.sin(10 * Managers.time:time("ui"))
+				style.icon.color[2] = 152 - flash_value
+				style.icon.color[3] = 152 - flash_value
+				style.icon.color[4] = 152 - flash_value
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				local style = widgets.style
+				style.icon.color[2] = 255
+				style.icon.color[3] = 255
+				style.icon.color[4] = 255
+			end
+		}
+	}
+}
+local interaction_data = {
+	interaction_started = false,
+	purchase_duration = 0.4,
+	interaction_ongoing = false,
+	progress = 0,
+	interaction_successful = false
+}
+local purchase_interaction = {
+	start = function (interaction_data, t)
+		interaction_data.done_time = t + interaction_data.purchase_duration
+		interaction_data.interaction_started = true
+		interaction_data.interaction_successful = false
+	end,
+	update = function (interaction_data, t)
+		local time_left = math.max(interaction_data.done_time - t, 0)
+		local progress = 1 - math.min(time_left / interaction_data.purchase_duration, 1)
+		interaction_data.progress = progress
+
+		if interaction_data.interaction_started and interaction_data.done_time and interaction_data.interaction_ongoing and time_left <= 0 then
+			interaction_data.interaction_successful = true
+
+			return true
+		end
+
+		return false
+	end,
+	successful = function (interaction_data)
+		if interaction_data.interaction_successful then
+			interaction_data.done_time = nil
+			interaction_data.interaction_started = false
+			interaction_data.interaction_ongoing = false
+		end
+	end,
+	abort = function (interaction_data)
+		interaction_data.done_time = nil
+		interaction_data.interaction_started = false
+		interaction_data.interaction_ongoing = false
+	end
+}
+
 return {
 	scenegraph_definition = scenegraph_definition,
 	widgets = widgets,
@@ -2647,5 +2772,8 @@ return {
 	single_price_offset = {
 		0,
 		-22
-	}
+	},
+	interaction_data = interaction_data,
+	purchase_interaction = purchase_interaction,
+	animations_definitions = animations_definitions
 }

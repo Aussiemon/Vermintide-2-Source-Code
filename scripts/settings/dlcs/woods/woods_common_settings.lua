@@ -59,7 +59,9 @@ settings.anim_lookup = {
 	"attack_chain_03",
 	"attack_throw_last",
 	"overcharge_end",
-	"sot_landing"
+	"sot_landing",
+	"to_javelin",
+	"to_javelin_noammo"
 }
 settings.effects = {
 	"fx/magic_thorn_sister_finger_trail",

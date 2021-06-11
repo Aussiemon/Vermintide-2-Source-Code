@@ -1,6 +1,8 @@
 require("scripts/network/shared_state")
 
 local definitions = local_require("scripts/ui/views/deus_menu/deus_shop_view_definitions_v2")
+local interaction_data = definitions.interaction_data
+local purchase_interaction = definitions.purchase_interaction
 local WITCH_HUNTER = 1
 local BRIGHT_WIZARD = 2
 local DWARF_RANGER = 3
@@ -219,6 +221,7 @@ end
 
 DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, blessings, background_unit_settings)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+	self._ui_animator = UIAnimator:new(self.ui_scenegraph, definitions.animations_definitions)
 	local widgets = {}
 	local widgets_by_name = {}
 
@@ -382,6 +385,7 @@ DeusShopView.update = function (self, dt, t)
 
 	self:_update_player_data()
 	self:_update_background_animations(dt)
+	self:_update_animations(dt)
 	self:_draw(dt, t)
 end
 
@@ -389,6 +393,12 @@ DeusShopView.post_update = function (self, dt, t)
 	if self._unit_previewer then
 		self._unit_previewer:post_update(dt, t)
 	end
+end
+
+DeusShopView._update_animations = function (self, dt)
+	local ui_animator = self._ui_animator
+
+	ui_animator:update(dt)
 end
 
 DeusShopView.destroy_idol = function (self)
@@ -527,7 +537,7 @@ DeusShopView._update_during_selecting = function (self, dt, t)
 	end
 
 	self:_update_shop_widgets()
-	self:_handle_input()
+	self:_handle_input(dt, t)
 end
 
 DeusShopView._update_during_finishing = function (self, dt, t)
@@ -538,7 +548,7 @@ DeusShopView._update_during_finishing = function (self, dt, t)
 	widgets_by_name.timer_text.content.text = nil
 
 	self:_update_shop_widgets()
-	self:_handle_input()
+	self:_handle_input(dt, t)
 end
 
 DeusShopView._update_shop_widgets = function (self)
@@ -652,28 +662,8 @@ DeusShopView._release_input = function (self, ignore_cursor_stack)
 	end
 end
 
-DeusShopView._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-DeusShopView._is_button_hovered = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_hover_enter then
-		return true
-	end
-end
-
 DeusShopView._update_button_hover_sound = function (self, widget)
-	if self:_is_button_hovered(widget) then
+	if UIUtils.is_button_hover_enter(widget) then
 		self:_play_sound(SOUND_EVENTS.button_hover)
 	end
 end
@@ -686,18 +676,41 @@ DeusShopView._on_power_up_bought = function (self, power_up, discount)
 	self._deus_run_controller:shop_buy_power_up(power_up, discount)
 end
 
-DeusShopView._handle_input = function (self)
+DeusShopView._handle_input = function (self, dt, t)
 	local shop_items = self._shop_items
 
 	for _, power_up_data in ipairs(shop_items.power_ups) do
 		local widget = power_up_data.widget
+		local purchase_done = false
 
-		if self:_is_button_pressed(widget) then
+		if UIUtils.is_button_held(widget) and not widget.content.is_bought then
+			if not interaction_data.interaction_started then
+				purchase_interaction.start(interaction_data, t)
+
+				self._purchasing_power_up_name = power_up_data.power_up.name
+			end
+
+			interaction_data.interaction_ongoing = true
+			local purchase_progress = 255 * interaction_data.progress
+			widget.style.loading_frame.color[1] = purchase_progress
+			purchase_done = purchase_interaction.update(interaction_data, t)
+		elseif self._purchasing_power_up_name and power_up_data.power_up.name == self._purchasing_power_up_name then
+			interaction_data.interaction_ongoing = false
+			widget.style.loading_frame.color[1] = 0
+			self._purchasing_power_up_name = nil
+
+			purchase_interaction.abort(interaction_data)
+		end
+
+		if purchase_done then
 			local power_up = power_up_data.power_up
 			local discount = power_up_data.discount
 
 			self:_on_power_up_bought(power_up, discount or 0)
 			self:_play_sound(SOUND_EVENTS.power_up_bought)
+			purchase_interaction.successful(interaction_data)
+
+			self._purchasing_power_up_name = nil
 		end
 
 		self:_update_button_hover_sound(widget)
@@ -705,10 +718,33 @@ DeusShopView._handle_input = function (self)
 
 	for _, blessing_data in ipairs(shop_items.blessings) do
 		local widget = blessing_data.widget
+		local purchase_done = false
 
-		if self:_is_button_pressed(widget) then
+		if UIUtils.is_button_held(widget) and not widget.content.is_bought then
+			if not interaction_data.interaction_started then
+				purchase_interaction.start(interaction_data, t)
+
+				self._purchasing_blessing_name = blessing_data.blessing_name
+			end
+
+			interaction_data.interaction_ongoing = true
+			local purchase_progress = 255 * interaction_data.progress
+			widget.style.loading_frame.color[1] = purchase_progress
+			purchase_done = purchase_interaction.update(interaction_data, t)
+		elseif self._purchasing_blessing_name and blessing_data.blessing_name == self._purchasing_blessing_name then
+			interaction_data.interaction_ongoing = false
+			widget.style.loading_frame.color[1] = 0
+			self._purchasing_blessing_name = nil
+
+			purchase_interaction.abort(interaction_data)
+		end
+
+		if purchase_done then
 			self:_on_blessing_bought(blessing_data.blessing_name)
 			self:_play_sound(SOUND_EVENTS.blessing_bought)
+			purchase_interaction.successful(interaction_data)
+
+			self._purchasing_blessing_name = nil
 		end
 
 		self:_update_button_hover_sound(widget)
@@ -718,7 +754,7 @@ DeusShopView._handle_input = function (self)
 
 	self:_update_button_hover_sound(widgets_by_name.ready_button)
 
-	if self:_is_button_pressed(widgets_by_name.ready_button) then
+	if UIUtils.is_button_pressed(widgets_by_name.ready_button) then
 		local key = self._shared_state:get_key("peer_state")
 
 		self._shared_state:set_own(key, peer_states.DONE_BUYING)
@@ -891,8 +927,11 @@ DeusShopView._animate_shop_item_widget = function (self, dt, widget)
 	local hotspot = content.hotspot or content.button_hotspot
 	local is_hover = hotspot.is_hover
 	local is_bought = content.is_bought
+	local is_held = hotspot.is_held
+	local has_buying_animation_played = content.has_buying_animation_played
 	local is_selected = hotspot.is_selected
 	local hover_progress = hotspot.hover_progress or 0
+	local background_hover_progress = hotspot.hover_progress or 0
 	local highlight_progress = hotspot.highlight_progress or 0
 	local selection_progress = hotspot.selection_progress or 0
 	local speed = 15
@@ -901,11 +940,19 @@ DeusShopView._animate_shop_item_widget = function (self, dt, widget)
 		is_hover = false
 	end
 
-	if is_hover then
+	if is_hover and not is_held then
 		hover_progress = math.min(hover_progress + dt * speed, 1)
+		background_hover_progress = math.max(hover_progress - dt * speed, 1)
+	elseif is_hover and is_held then
+		hover_progress = math.max(hover_progress - dt * speed, 0)
+		background_hover_progress = math.max(hover_progress - dt * speed, 1)
 	else
 		hover_progress = math.max(hover_progress - dt * speed, 0)
+		background_hover_progress = math.max(hover_progress - dt * speed, 0)
 	end
+
+	style.icon_hover_frame.color[1] = 255 * hover_progress
+	style.hover.color[1] = 255 * background_hover_progress
 
 	if is_bought then
 		highlight_progress = math.min(highlight_progress + dt * speed, 1)
@@ -919,6 +966,18 @@ DeusShopView._animate_shop_item_widget = function (self, dt, widget)
 		selection_progress = math.max(selection_progress - dt * speed, 0)
 	end
 
+	if is_bought and not has_buying_animation_played then
+		self._ui_animator:start_animation("flash_icon", widget, definitions.scenegraph_definition)
+	end
+
+	if is_bought and not has_buying_animation_played then
+		self._ui_animator:start_animation("flash_icon", widget, definitions.scenegraph_definition)
+	end
+
+	if is_bought and not has_buying_animation_played then
+		self._ui_animator:start_animation("flash_icon", widget, definitions.scenegraph_definition)
+	end
+
 	local bought_glow_style_ids = content.bought_glow_style_ids
 
 	if bought_glow_style_ids then
@@ -927,8 +986,6 @@ DeusShopView._animate_shop_item_widget = function (self, dt, widget)
 		end
 	end
 
-	style.hover.color[1] = 255 * hover_progress
-	style.icon_hover_frame.color[1] = 255 * hover_progress
 	local value_progress = hotspot.value_progress or 0
 	value_progress = math.max(value_progress - dt * speed, 0)
 

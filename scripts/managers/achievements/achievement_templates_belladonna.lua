@@ -33,7 +33,9 @@ AchievementTemplates.achievements.scorpion_keep_standard_bearer_alive = {
 	name = "achv_scorpion_keep_standard_bearer_alive_name",
 	display_completion_ui = true,
 	icon = "achievement_trophy_scorpion_keep_standard_bearer_alive",
-	desc = "achv_scorpion_keep_standard_bearer_alive_desc",
+	desc = function ()
+		return string.format(Localize("achv_scorpion_keep_standard_bearer_alive_desc"), QuestSettings.standard_bearer_alive_seconds)
+	end,
 	completed = function (statistics_db, stats_id)
 		return statistics_db:get_persistent_stat(stats_id, "scorpion_keep_standard_bearer_alive") > 0
 	end

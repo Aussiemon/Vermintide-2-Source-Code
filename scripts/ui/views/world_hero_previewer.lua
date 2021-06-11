@@ -21,6 +21,7 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id)
 	self.character_rotation = 0
 	self.unique_id = unique_id
 	self._session_id = 0
+	self._requested_mip_streaming_units = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
 end
@@ -32,6 +33,7 @@ HeroPreviewer.destroy = function (self)
 end
 
 HeroPreviewer.on_enter = function (self, world)
+	table.clear(self._requested_mip_streaming_units)
 	table.clear(self._hidden_units)
 
 	self.world = world
@@ -61,11 +63,35 @@ HeroPreviewer.update = function (self, dt, t)
 end
 
 HeroPreviewer.post_update = function (self, dt)
+	self:_update_units_visibility(dt)
 	self:_handle_hero_spawn_request()
 	self:_poll_hero_package_loading()
 	self:_poll_item_package_loading()
 	self:_update_delayed_material_changes()
-	self:_update_units_visibility(dt)
+end
+
+HeroPreviewer._update_unit_mip_streaming = function (self)
+	local mip_streaming_completed = true
+	local num_units_handled = 0
+	local requested_mip_streaming_units = self._requested_mip_streaming_units
+
+	for unit, _ in pairs(requested_mip_streaming_units) do
+		local unit_mip_streaming_completed = Renderer.is_all_mips_loaded_for_unit(unit)
+
+		if unit_mip_streaming_completed then
+			requested_mip_streaming_units[unit] = nil
+		else
+			mip_streaming_completed = false
+		end
+
+		num_units_handled = num_units_handled + 1
+	end
+
+	if not mip_streaming_completed then
+		return true
+	elseif num_units_handled > 0 then
+		Renderer.set_automatic_streaming(true)
+	end
 end
 
 HeroPreviewer._update_delayed_material_changes = function (self)
@@ -104,10 +130,25 @@ HeroPreviewer._update_delayed_material_changes = function (self)
 	self._delayed_material_changes[character_unit] = nil
 end
 
+HeroPreviewer._request_mip_streaming_for_unit = function (self, unit)
+	local requested_mip_streaming_units = self._requested_mip_streaming_units
+	requested_mip_streaming_units[unit] = true
+
+	Renderer.set_automatic_streaming(false)
+
+	for requested_unit, _ in pairs(requested_mip_streaming_units) do
+		Renderer.request_to_stream_all_mips_for_unit(requested_unit)
+	end
+end
+
 HeroPreviewer._update_units_visibility = function (self, dt)
 	local items_loaded = self:_is_all_items_loaded()
 
 	if not items_loaded then
+		return
+	end
+
+	if self:_update_unit_mip_streaming() then
 		return
 	end
 
@@ -759,6 +800,7 @@ end
 HeroPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 	local world = self.world
 	local hidden_units = self._hidden_units
+	local requested_mip_streaming_units = self._requested_mip_streaming_units
 	local item_info_by_slot = self._item_info_by_slot
 	local data = item_info_by_slot[slot_type]
 	local spawn_data = data.spawn_data
@@ -774,6 +816,7 @@ HeroPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 
 					if old_unit_right ~= nil then
 						hidden_units[old_unit_right] = nil
+						requested_mip_streaming_units[old_unit_right] = nil
 
 						World.destroy_unit(world, old_unit_right)
 
@@ -786,6 +829,7 @@ HeroPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 
 					if old_unit_left ~= nil then
 						hidden_units[old_unit_left] = nil
+						requested_mip_streaming_units[old_unit_left] = nil
 
 						World.destroy_unit(world, old_unit_left)
 
@@ -797,6 +841,7 @@ HeroPreviewer._destroy_item_units_by_slot = function (self, slot_type)
 
 				if old_unit ~= nil then
 					hidden_units[old_unit] = nil
+					requested_mip_streaming_units[old_unit] = nil
 
 					World.destroy_unit(world, old_unit)
 
@@ -908,6 +953,8 @@ HeroPreviewer._unload_item_packages_by_slot = function (self, slot_type)
 end
 
 HeroPreviewer.clear_units = function (self)
+	table.clear(self._requested_mip_streaming_units)
+
 	local world = self.world
 
 	for i = 1, 6, 1 do

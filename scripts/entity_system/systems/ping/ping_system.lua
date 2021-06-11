@@ -299,7 +299,8 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 		event_text = text
 
 		if text_func and pinged_unit then
-			event_text, localization_parameters = text_func(pinged_unit, social_wheel_event_settings)
+			local do_localize = false
+			event_text, localization_parameters = text_func(pinged_unit, social_wheel_event_settings, do_localize)
 		end
 
 		if not event_text and chat_messages then

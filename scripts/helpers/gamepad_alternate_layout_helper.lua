@@ -2209,6 +2209,132 @@ elseif IS_PS4 then
 			ps4 = keymap_override_7
 		}
 	}
+	local keymap_override_9 = table.clone(DefaultPlayerControllerKeymaps)
+	keymap_override_9.action_one = {
+		"gamepad",
+		"r1",
+		"pressed"
+	}
+	keymap_override_9.action_one_hold = {
+		"gamepad",
+		"r1",
+		"held"
+	}
+	keymap_override_9.action_one_release = {
+		"gamepad",
+		"r1",
+		"released"
+	}
+	keymap_override_9.action_two = {
+		"gamepad",
+		"l1",
+		"pressed"
+	}
+	keymap_override_9.action_two_hold = {
+		"gamepad",
+		"l1",
+		"held"
+	}
+	keymap_override_9.action_two_release = {
+		"gamepad",
+		"l1",
+		"released"
+	}
+	keymap_override_9.action_one_softbutton_gamepad = {
+		"gamepad",
+		"r1",
+		"soft_button"
+	}
+	keymap_override_9.action_inspect = {
+		"gamepad",
+		"r3",
+		"pressed"
+	}
+	keymap_override_9.action_inspect_hold = {
+		"gamepad",
+		"r3",
+		"held"
+	}
+	keymap_override_9.action_inspect_release = {
+		"gamepad",
+		"r3",
+		"released"
+	}
+	keymap_override_9.action_three = {
+		"gamepad",
+		"b",
+		"pressed"
+	}
+	keymap_override_9.action_three_hold = {
+		"gamepad",
+		"b",
+		"held"
+	}
+	keymap_override_9.action_three_release = {
+		"gamepad",
+		"b",
+		"released"
+	}
+	keymap_override_9.ability = {
+		"gamepad",
+		"l2",
+		"pressed"
+	}
+	keymap_override_9.ability_hold = {
+		"gamepad",
+		"l2",
+		"held"
+	}
+	keymap_override_9.ability_release = {
+		"gamepad",
+		"l2",
+		"released"
+	}
+	keymap_override_9.dodge_1 = {
+		"gamepad",
+		"r2",
+		"held"
+	}
+	keymap_override_9.crouch = {
+		"gamepad",
+		"r3",
+		"pressed"
+	}
+	keymap_override_9.crouching = {
+		"gamepad",
+		"r3",
+		"held"
+	}
+	keymap_override_9.ping = {
+		"gamepad",
+		"l3",
+		"pressed"
+	}
+	keymap_override_9.ping_hold = {
+		"gamepad",
+		"l3",
+		"held"
+	}
+	keymap_override_9.ability = {
+		"gamepad",
+		"l2",
+		"pressed"
+	}
+	keymap_override_9.ability_hold = {
+		"gamepad",
+		"l2",
+		"held"
+	}
+	keymap_override_9.ability_release = {
+		"gamepad",
+		"l2",
+		"released"
+	}
+	KeymapOverride9 = {
+		PlayerControllerKeymaps = {
+			ps4 = keymap_override_9
+		}
+	}
 	local keymap_override_left = table.clone(DefaultPlayerControllerKeymaps)
 	keymap_override_left.look_raw_controller = {
 		"gamepad",
@@ -2682,6 +2808,117 @@ elseif IS_PS4 then
 	KeymapOverride8 = {
 		PlayerControllerKeymaps = {
 			ps4 = keymap_override_8
+		}
+	}
+	local keymap_override_10 = table.clone(keymap_override_left)
+	keymap_override_10.action_one = {
+		"gamepad",
+		"l1",
+		"pressed"
+	}
+	keymap_override_10.action_one_hold = {
+		"gamepad",
+		"l1",
+		"held"
+	}
+	keymap_override_10.action_one_release = {
+		"gamepad",
+		"l1",
+		"released"
+	}
+	keymap_override_10.action_two = {
+		"gamepad",
+		"r1",
+		"pressed"
+	}
+	keymap_override_10.action_two_hold = {
+		"gamepad",
+		"r1",
+		"held"
+	}
+	keymap_override_10.action_two_release = {
+		"gamepad",
+		"r1",
+		"released"
+	}
+	keymap_override_10.action_one_softbutton_gamepad = {
+		"gamepad",
+		"l1",
+		"soft_button"
+	}
+	keymap_override_10.action_three = {
+		"gamepad",
+		"l3",
+		"pressed"
+	}
+	keymap_override_10.action_three_hold = {
+		"gamepad",
+		"l3",
+		"held"
+	}
+	keymap_override_10.action_three_release = {
+		"gamepad",
+		"l3",
+		"released"
+	}
+	keymap_override_10.ability = {
+		"gamepad",
+		"r2",
+		"pressed"
+	}
+	keymap_override_10.ability_hold = {
+		"gamepad",
+		"r2",
+		"held"
+	}
+	keymap_override_10.ability_release = {
+		"gamepad",
+		"r2",
+		"released"
+	}
+	keymap_override_10.dodge_1 = {
+		"gamepad",
+		"b",
+		"held"
+	}
+	keymap_override_10.crouch = {
+		"gamepad",
+		"r3",
+		"pressed"
+	}
+	keymap_override_10.crouching = {
+		"gamepad",
+		"r3",
+		"held"
+	}
+	keymap_override_10.ping = {
+		"gamepad",
+		"l2",
+		"pressed"
+	}
+	keymap_override_10.ping_hold = {
+		"gamepad",
+		"l2",
+		"held"
+	}
+	keymap_override_10.ability = {
+		"gamepad",
+		"r2",
+		"pressed"
+	}
+	keymap_override_10.ability_hold = {
+		"gamepad",
+		"r2",
+		"held"
+	}
+	keymap_override_10.ability_release = {
+		"gamepad",
+		"r2",
+		"released"
+	}
+	KeymapOverride10 = {
+		PlayerControllerKeymaps = {
+			ps4 = keymap_override_10
 		}
 	}
 end

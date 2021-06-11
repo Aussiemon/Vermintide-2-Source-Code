@@ -38,7 +38,7 @@ local buff_tweak_data = {
 		max_stacks = 1
 	},
 	kerillian_thorn_sister_avatar_buff_1 = {
-		duration = 15
+		duration = 10
 	},
 	kerillian_thorn_sister_reduce_passive_on_elite = {
 		time_removed_per_kill = 1
@@ -95,9 +95,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				buff_to_add = "kerillian_thorn_sister_passive_healing_received_aura_buff",
+				range = 100,
+				remove_buff_func = "remove_aura_buff",
 				update_func = "activate_buff_on_distance",
-				perk = "overcharge_no_slow",
-				range = 100
+				perk = "overcharge_no_slow"
 			}
 		}
 	},
@@ -114,6 +115,7 @@ local talent_buff_templates = {
 			{
 				buff_to_add = "kerillian_thorn_sister_passive_temp_health_funnel_aura_buff",
 				update_func = "activate_buff_on_distance",
+				remove_buff_func = "remove_aura_buff",
 				range = 100
 			}
 		}
@@ -268,8 +270,7 @@ local talent_buff_templates = {
 						"kerillian_thorn_sister_avatar_buff_1",
 						"kerillian_thorn_sister_avatar_buff_2",
 						"kerillian_thorn_sister_avatar_buff_3",
-						"kerillian_thorn_sister_avatar_buff_4",
-						"kerillian_thorn_sister_avatar_buff_5"
+						"kerillian_thorn_sister_avatar_buff_4"
 					}
 				}
 			}
@@ -287,7 +288,17 @@ local talent_buff_templates = {
 				continuous_effect = "fx/thornsister_avatar_screenspace_loop",
 				max_stacks = 1,
 				icon = "kerillian_thornsister_avatar",
-				priority_buff = true
+				priority_buff = true,
+				particles = {
+					{
+						orphaned_policy = "stop",
+						first_person = false,
+						third_person = true,
+						effect = "fx/thornsister_avatar_3p",
+						continuous = true,
+						destroy_policy = "stop"
+					}
+				}
 			}
 		}
 	},
@@ -295,11 +306,11 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				refresh_durations = true,
-				multiplier = 1.3,
+				multiplier = 1.2,
 				remove_buff_func = "remove_movement_buff",
 				max_stacks = 1,
-				duration = 15,
 				apply_buff_func = "apply_movement_buff",
+				duration = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -310,10 +321,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				refresh_durations = true,
-				multiplier = 0.5,
+				multiplier = 0.2,
 				stat_buff = "power_level",
 				max_stacks = 1,
-				duration = 15
+				duration = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration
 			}
 		}
 	},
@@ -321,21 +332,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				refresh_durations = true,
-				stat_buff = "critical_strike_chance",
-				max_stacks = 1,
-				duration = 15,
-				bonus = 0.2
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar_buff_5 = {
-		buffs = {
-			{
-				refresh_durations = true,
-				multiplier = 0.4,
+				multiplier = 0.2,
 				stat_buff = "critical_strike_effectiveness",
 				max_stacks = 1,
-				duration = 15
+				duration = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration
 			}
 		}
 	},

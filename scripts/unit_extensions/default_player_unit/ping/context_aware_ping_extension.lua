@@ -258,7 +258,7 @@ local INDEX_ACTOR = 4
 ContextAwarePingExtension._check_raycast = function (self, unit)
 	local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = nil
 
-	if self._status_extension:is_disabled() then
+	if self._status_extension:is_disabled() and Managers.mechanism:current_mechanism_name() == "versus" then
 		ping_unit = unit
 	else
 		local darkness_system = Managers.state.entity:system("darkness_system")

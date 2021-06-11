@@ -1171,8 +1171,9 @@ PlayerProjectileUnitExtension._link_projectile = function (self, hit_unit, hit_a
 		local hit_node_pos = unit_world_position(hit_unit, node_index)
 		local rel_pos = link_position - hit_node_pos
 		local offset_position = Vector3(Vector3.dot(Quaternion.right(hit_node_rot), rel_pos), Vector3.dot(quaternion_forward(hit_node_rot), rel_pos), Vector3.dot(Quaternion.up(hit_node_rot), rel_pos))
+		local has_breed = Unit.has_data(hit_unit, "breed")
 
-		if flow_event_on_init then
+		if flow_event_on_init and has_breed then
 			Unit.flow_event(projectile_dummy, flow_event_on_init)
 		end
 

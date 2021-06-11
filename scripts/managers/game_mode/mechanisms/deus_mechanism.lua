@@ -80,7 +80,8 @@ local vote_requests = {
 			private_game = params.private_game,
 			always_host = params.always_host,
 			strict_matchmaking = params.strict_matchmaking,
-			matchmaking_type = params.matchmaking_type
+			matchmaking_type = params.matchmaking_type,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("deus_settings_vote", vote_data, Network.peer_id())
@@ -95,7 +96,8 @@ local vote_requests = {
 			always_host = params.always_host,
 			strict_matchmaking = params.strict_matchmaking,
 			dominant_god = params.dominant_god,
-			matchmaking_type = params.matchmaking_type
+			matchmaking_type = params.matchmaking_type,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("deus_settings_vote", vote_data, Network.peer_id())
@@ -110,7 +112,8 @@ local vote_requests = {
 			always_host = params.always_host,
 			strict_matchmaking = params.strict_matchmaking,
 			dominant_god = params.dominant_god,
-			matchmaking_type = params.matchmaking_type
+			matchmaking_type = params.matchmaking_type,
+			vote_type = params.request_type
 		}
 
 		Managers.state.voting:request_vote("deus_settings_vote", vote_data, Network.peer_id())
@@ -461,7 +464,8 @@ DeusMechanism.request_vote = function (self, params)
 		strict_matchmaking = params.strict_matchmaking,
 		dominant_god = params.dominant_god,
 		matchmaking_type = params.matchmaking_type,
-		mechanism = params.mechanism
+		mechanism = params.mechanism,
+		vote_type = params.request_type
 	}
 
 	Managers.state.voting:request_vote("deus_settings_vote", vote_data, Network.peer_id())

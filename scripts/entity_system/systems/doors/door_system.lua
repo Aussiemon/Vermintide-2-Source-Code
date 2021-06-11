@@ -117,9 +117,29 @@ DoorSystem.update = function (self, context, t)
 						local heath_extension = ScriptUnit.has_extension(unit, "health_system")
 
 						if heath_extension and heath_extension:is_alive() then
-							should_open = false
+							local blackboard = BLACKBOARDS[unit]
+							local breed = blackboard.breed
+							local is_boss = breed and breed.boss
 
-							break
+							if is_boss then
+								local last_damage_taken_t = heath_extension:last_damage_t() or t
+								local last_damage_interval = 60
+								local not_damaged = t > last_damage_taken_t + last_damage_interval
+								local navigation_extension = blackboard.navigation_extension
+								local path_found = navigation_extension and navigation_extension:is_following_path()
+
+								if not_damaged and not path_found then
+									should_open = true
+								else
+									should_open = false
+
+									break
+								end
+							else
+								should_open = false
+
+								break
+							end
 						end
 					end
 

@@ -2167,7 +2167,7 @@ dlc_settings.proc_functions = {
 		if is_server() then
 			local player_unit = player.player_unit
 			local target_num = params[4]
-			local attack_type = params[2] == "light_attack" or params[5] == "heavy_attack"
+			local attack_type = params[2] == "light_attack" or params[2] == "heavy_attack"
 
 			if target_num <= 1 and attack_type then
 				local template = buff.template

@@ -2,16 +2,20 @@ require("scripts/settings/profiles/sp_profiles")
 
 local NUM_HERO_PROFILES = #PROFILES_BY_AFFILIATION.heroes
 local PACKAGE_MANAGER_REFERENCE_NAME = "ProfileSynchronizer"
-local global_print = print
+local global_printf = printf
 
-local function dprint(...)
+local function dprintf(...)
 	if script_data.profile_synchronizer_debug_logging then
-		global_print("[ProfileSynchronizer] ", ...)
+		local message = sprintf(...)
+
+		global_printf("[ProfileSynchronizer] %s", message)
 	end
 end
 
-local function print(...)
-	global_print("[ProfileSynchronizer] ", ...)
+local function printf(...)
+	local message = sprintf(...)
+
+	global_printf("[ProfileSynchronizer] %s", message)
 end
 
 local function join_lobby_entry(peer_id, local_player_index)
@@ -135,7 +139,7 @@ local function update_inventory_data(state, peer_id, local_player_id, profile_in
 	return inventory_id
 end
 
-local function are_all_synced_for_peer(state, peer_id, local_player_id, profile_index, career_index, ignore_loading_peers)
+local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_loading_peers)
 	local inventory_data = state:get_inventory_data(peer_id, local_player_id)
 	local inventory_id = inventory_data.inventory_id
 
@@ -146,13 +150,15 @@ local function are_all_synced_for_peer(state, peer_id, local_player_id, profile_
 	local peers_with_full_profiles = state:get_peers_with_full_profiles()
 
 	for _, other_peer in ipairs(peers_with_full_profiles) do
-		local other_peer_id = other_peer.peer_id
+		if not other_peer.is_bot then
+			local other_peer_id = other_peer.peer_id
 
-		if not ignore_loading_peers or state:is_peer_ingame(other_peer_id) then
-			local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
+			if not ignore_loading_peers or state:is_peer_ingame(other_peer_id) then
+				local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
 
-			if inventory_id ~= loaded_inventory_id then
-				return false
+				if inventory_id ~= loaded_inventory_id then
+					return false
+				end
 			end
 		end
 	end
@@ -166,9 +172,7 @@ local function are_all_synced(state, ignore_loading_peers)
 	for _, peer in ipairs(peers_with_full_profiles) do
 		local peer_id = peer.peer_id
 		local local_player_id = peer.local_player_id
-		local profile_index = peer.profile_index
-		local career_index = peer.career_index
-		local peer_all_synced = are_all_synced_for_peer(state, peer_id, local_player_id, profile_index, career_index, ignore_loading_peers)
+		local peer_all_synced = are_all_synced_for_peer(state, peer_id, local_player_id, ignore_loading_peers)
 
 		if not peer_all_synced then
 			return false
@@ -297,8 +301,8 @@ end
 
 ProfileSynchronizer.hot_join_sync = function (self, peer_id)
 	fassert(self._state:is_server(), "only for the server")
-	print(sprintf("Peer %s entered session", peer_id))
-	print(sprintf("Running hot_join_sync for peer %s", peer_id))
+	printf("Peer %s entered session", peer_id)
+	printf("Running hot_join_sync for peer %s", peer_id)
 
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 	local peers_with_full_profiles = self._state:get_peers_with_full_profiles()
@@ -316,7 +320,7 @@ end
 
 ProfileSynchronizer.clear_peer_data = function (self, peer_id)
 	fassert(self._state:is_server(), "only for the server")
-	print(sprintf("Peer %s left session", peer_id))
+	printf("Peer %s left session", peer_id)
 	self:_unassign_profiles_of_peer(peer_id)
 	self:_clear_profile_index_reservation(peer_id)
 	self:_sync_lobby_data()
@@ -338,7 +342,7 @@ ProfileSynchronizer.try_reserve_profile_for_peer = function (self, peer_id, prof
 	end
 
 	if reserver_peer == nil then
-		print(sprintf("Reserving profile index %d to peer %s", profile_index, peer_id))
+		printf("Reserving profile index %d to peer %s", profile_index, peer_id)
 		self:_clear_profile_index_reservation(peer_id)
 		self._state:set_profile_index_reservation(profile_index, peer_id)
 		self:_sync_lobby_data()
@@ -380,7 +384,7 @@ ProfileSynchronizer.assign_full_profile = function (self, peer_id, local_player_
 	local state = self._state
 
 	fassert(state:is_server(), "Should only be called on server.")
-	print(sprintf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index))
+	printf("Assigning peer(%s:%s) to profile(%s) career(%s)", peer_id, local_player_id, profile_index, career_index)
 	self:_unassign_profiles_of_peer(peer_id, local_player_id)
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
@@ -460,7 +464,6 @@ ProfileSynchronizer._all_synced_for_peer = function (self, peer_id, local_player
 	local cached_data_result_key = 2
 
 	if not cached_data or cached_data[cached_data_revision_key] ~= current_revision then
-		local ignore_loading_peers = true
 		local result = are_all_synced_for_peer(self._state, peer_id, local_player_id, ignore_loading_peers)
 		cached_data = {
 			current_revision,
@@ -492,7 +495,7 @@ ProfileSynchronizer.is_peer_all_synced = function (self, peer_id)
 end
 
 ProfileSynchronizer.resync_loadout = function (self, peer_id, local_player_id)
-	print(sprintf("Resyncing loadout of peer(%s:%s)", peer_id, local_player_id))
+	printf("Resyncing loadout of peer(%s:%s)", peer_id, local_player_id)
 
 	local profile_index, career_index = self:profile_by_peer(peer_id, local_player_id)
 
@@ -500,12 +503,12 @@ ProfileSynchronizer.resync_loadout = function (self, peer_id, local_player_id)
 end
 
 ProfileSynchronizer.rpc_assign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index, is_bot)
-	print(sprintf("rpc_assign_peer_to_profile peer_id:%s local_player_id:%d profile_index:%d career_index:%d is_bot:%s", peer_id, local_player_id, profile_index, career_index, (is_bot and "true") or "false"))
+	printf("rpc_assign_peer_to_profile peer_id:%s local_player_id:%d profile_index:%d career_index:%d is_bot:%s", peer_id, local_player_id, profile_index, career_index, (is_bot and "true") or "false")
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
 	if not status then
-		print("rpc_assign_peer_to_profile called without status available in party manager. Ignoring it")
+		printf("rpc_assign_peer_to_profile called without status available in party manager. Ignoring it")
 
 		return
 	end
@@ -577,8 +580,6 @@ ProfileSynchronizer._sync_lobby_data = function (self)
 		local peer_id = self._state:get_profile_index_reservation(profile_index)
 		local key = lobby_slot_name(profile_index)
 
-		dprint("Write lobby data %s = %s", key, peer_id)
-
 		if not peer_id then
 			lobby_data[key] = INVALID_OWNER
 		else
@@ -604,8 +605,6 @@ ProfileSynchronizer.get_packed_lobby_profile_slots = function (self)
 			peers[#peers + 1] = peer_id
 			player_indices[#player_indices + 1] = 1
 		end
-
-		dprint("Packing slot %d as %s:%d", profile_index, peers[#peers], player_indices[#player_indices])
 	end
 
 	fassert(#peers == #player_indices)
@@ -648,8 +647,6 @@ ProfileSynchronizer.unpack_lobby_profile_slots = function (peer_ids, player_indi
 		local peer_id = peer_ids[profile_index]
 		local local_player_id = player_indices[profile_index]
 		lobby_data[slot_name] = join_lobby_entry(peer_id, local_player_id)
-
-		dprint(sprintf("Unpacking slot %d as %s:%d", profile_index, peer_id, local_player_id))
 	end
 end
 

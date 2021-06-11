@@ -1318,9 +1318,16 @@ GamePadEquipmentUI._update_gamepad_input_button = function (self)
 		local max_length = 40
 		local input_action = "weapon_reload"
 		local keymap_binding = input_service:get_keymapping(input_action, PLATFORM)
+		local device_type = keymap_binding[1]
 		local key_index = keymap_binding[2]
 		local input_style = style.input_text
-		local input_text = Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
+		local input_text = ""
+
+		if key_index ~= UNASSIGNED_KEY then
+			local device = (device_type == "mouse" and Mouse) or Keyboard
+			input_text = device.button_locale_name(key_index) or device.button_name(key_index) or Localize("lb_unknown")
+		end
+
 		content.input_text = UIRenderer.crop_text_width(self.ui_renderer, input_text, max_length, input_style)
 	end
 end

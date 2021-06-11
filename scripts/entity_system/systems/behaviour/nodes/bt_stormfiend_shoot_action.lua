@@ -283,12 +283,15 @@ end
 
 BTStormfiendShootAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	local data = blackboard.shoot_data
+	local network_manager = Managers.state.network
 
 	if data.aim_constraint_animations then
-		local network_manager = Managers.state.network
 		local aim_constraint_animation = data.aim_constraint_animations.off
 
 		network_manager:anim_event(unit, aim_constraint_animation)
+	else
+		network_manager:anim_event(unit, "aim_at_right_off")
+		network_manager:anim_event(unit, "aim_at_left_off")
 	end
 
 	self:_stop_beam_sfx(unit, blackboard, data)
@@ -379,9 +382,15 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 		if blackboard.attack_finished then
 			blackboard.attack_finished = nil
 			local network_manager = Managers.state.network
-			local aim_constraint_animation = data.aim_constraint_animations.off
 
-			network_manager:anim_event(unit, aim_constraint_animation)
+			if data.aim_constraint_animations then
+				local aim_constraint_animation = data.aim_constraint_animations.off
+
+				network_manager:anim_event(unit, aim_constraint_animation)
+			else
+				network_manager:anim_event(unit, "aim_at_right_off")
+				network_manager:anim_event(unit, "aim_at_left_off")
+			end
 
 			data.aim_constraint_animations = nil
 		end

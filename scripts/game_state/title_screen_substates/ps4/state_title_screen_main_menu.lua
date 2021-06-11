@@ -802,7 +802,7 @@ StateTitleScreenMainMenu._signin_to_backend = function (self)
 		Managers.rest_transport = Managers.rest_transport_offline
 		Managers.backend = BackendManagerPlayFab:new("ScriptBackendPlayFabPS4", mirror, "DataServerQueue")
 
-		Managers.backend:signin("")
+		Managers.backend:signin()
 	else
 		print("Using Online Backend")
 		Managers.account:set_offline_mode(false)

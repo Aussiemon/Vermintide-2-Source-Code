@@ -18,12 +18,48 @@ TwitchSettings = TwitchSettings or {
 		default_vote_e_str = "#e"
 	},
 	supported_game_modes = {
-		twitch = true,
-		deed = true,
-		adventure = true,
-		lobby_browser = true,
-		event = true,
-		custom = true
+		ps4 = {
+			weave_quick_play = false,
+			deed = false,
+			deus_twitch = true,
+			adventure_mode = false,
+			event = false,
+			deus_custom = false,
+			deus_quickplay = false,
+			custom = false,
+			weave = false,
+			adventure = true,
+			twitch = true,
+			versus = false
+		},
+		xb1 = {
+			weave_quick_play = false,
+			deed = false,
+			deus_twitch = true,
+			adventure_mode = false,
+			event = false,
+			deus_custom = false,
+			deus_quickplay = false,
+			custom = false,
+			weave = false,
+			adventure = true,
+			twitch = true,
+			versus = false
+		},
+		win32 = {
+			weave_quick_play = true,
+			deed = true,
+			deus_twitch = true,
+			adventure_mode = true,
+			event = true,
+			deus_custom = true,
+			deus_quickplay = true,
+			custom = true,
+			weave = true,
+			adventure = true,
+			twitch = true,
+			versus = true
+		}
 	},
 	positive_vote_options = table.enum("enable_positive_votes", "disable_giving_items", "disable_positive_votes")
 }
@@ -113,7 +149,9 @@ for _, dlc in pairs(DLCSettings) do
 		local dlc_supported_game_modes = dlc_twitch_settings.supported_game_modes
 
 		if dlc_supported_game_modes then
-			table.merge(TwitchSettings.supported_game_modes, dlc_supported_game_modes)
+			for platform, settings in pairs(TwitchSettings.supported_game_modes) do
+				table.merge(settings, dlc_supported_game_modes)
+			end
 		end
 
 		local dlc_vote_whitelists = dlc_twitch_settings.vote_whitelists

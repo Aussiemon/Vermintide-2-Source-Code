@@ -238,13 +238,14 @@ PlayerProjectileHuskExtension.impact_dynamic = function (self, hit_unit, hit_pos
 			self:hit_player(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, ranged_boost_curve_multiplier)
 		end
 	else
-		local hit_something_else = not Managers.state.side.side_by_unit[hit_unit]
+		local network_manager = Managers.state.network
+		local go_id, is_level_unit = network_manager:game_object_or_level_id(hit_unit)
 
-		if Unit.get_data(hit_unit, "is_dummy") then
+		if is_level_unit or Unit.get_data(hit_unit, "is_dummy") then
 			local level_index = nil
 
 			self:hit_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, level_index, has_ranged_boost, ranged_boost_curve_multiplier)
-		elseif hit_something_else then
+		elseif not is_level_unit then
 			self:hit_non_level_unit(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, self._hit_units, ranged_boost_curve_multiplier)
 		end
 	end
@@ -591,7 +592,11 @@ PlayerProjectileHuskExtension.hit_non_level_unit = function (self, impact_data, 
 	end
 
 	if stop_impacts then
-		self:stop()
+		if self._num_additional_penetrations > 0 then
+			self._num_additional_penetrations = self._num_additional_penetrations - 1
+		else
+			self:stop()
+		end
 	end
 end
 

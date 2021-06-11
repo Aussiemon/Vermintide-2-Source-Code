@@ -59,14 +59,17 @@ SummonedVortexHuskExtension.init = function (self, extension_init_context, unit,
 end
 
 SummonedVortexHuskExtension.extensions_ready = function (self, world, unit)
-	WwiseUtils.trigger_unit_event(world, "Play_enemy_sorcerer_vortex_loop", unit)
+	local start_sound_event_name = self.vortex_template.start_sound_event_name or "Play_enemy_sorcerer_vortex_loop"
+
+	WwiseUtils.trigger_unit_event(world, start_sound_event_name, unit)
 end
 
 SummonedVortexHuskExtension.destroy = function (self)
 	local world = self.world
 	local unit = self.unit
+	local stop_sound_event_name = self.vortex_template.stop_sound_event_name or "Stop_enemy_sorcerer_vortex_loop"
 
-	WwiseUtils.trigger_unit_event(world, "Stop_enemy_sorcerer_vortex_loop", unit)
+	WwiseUtils.trigger_unit_event(world, stop_sound_event_name, unit)
 
 	local inner_decal_unit = self._inner_decal_unit
 

@@ -2013,7 +2013,7 @@ UIPasses.text = {
 			local max_texts = ui_content.max_texts or #texts
 			local num_texts = math.min(#texts - (text_start_index - 1), max_texts)
 			local inv_scale = RESOLUTION_LOOKUP.inv_scale
-			local full_font_height = (font_max - font_min) * inv_scale
+			local full_font_height = (font_max - font_min) * inv_scale * (ui_style.font_height_multiplier or 1)
 			local text_offset = Vector3(0, (ui_style.grow_downward and full_font_height) or -full_font_height, 0)
 
 			if ui_style.dynamic_height then

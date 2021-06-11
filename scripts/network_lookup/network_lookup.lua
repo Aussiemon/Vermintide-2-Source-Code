@@ -1139,6 +1139,7 @@ NetworkLookup.level_keys = create_lookup({
 	"n/a"
 }, LevelSettings)
 NetworkLookup.mission_ids = create_lookup({
+	"weave_any",
 	"next_level",
 	"n/a"
 }, LevelSettings)

@@ -337,17 +337,23 @@ GamePadAbilityUI._get_input_texture_data = function (self, input_action)
 		prefix_text = "matchmaking_prefix_hold"
 	end
 
-	if device_type == "keyboard" then
-		return nil, Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index), prefix_text
-	elseif device_type == "mouse" then
-		local button_texture_data = ButtonTextureByName(device_type .. "_" .. key_index, platform)
+	if key_index ~= UNASSIGNED_KEY then
+		if device_type == "keyboard" then
+			if type(key_index) == "number" then
+				return nil, Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index), prefix_text
+			else
+				return nil, Localize(key_index), prefix_text
+			end
+		elseif device_type == "mouse" then
+			local button_texture_data = ButtonTextureByName(device_type .. "_" .. key_index, platform)
 
-		return button_texture_data, Mouse.button_name(key_index), prefix_text
-	elseif device_type == "gamepad" then
-		local button_name = Pad1.button_name(key_index)
-		local button_texture_data = ButtonTextureByName(button_name, platform)
+			return button_texture_data, Mouse.button_name(key_index), prefix_text
+		elseif device_type == "gamepad" then
+			local button_name = Pad1.button_name(key_index)
+			local button_texture_data = ButtonTextureByName(button_name, platform)
 
-		return button_texture_data, button_name, prefix_text
+			return button_texture_data, button_name, prefix_text
+		end
 	end
 
 	return nil, ""

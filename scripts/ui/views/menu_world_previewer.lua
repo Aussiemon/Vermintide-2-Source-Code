@@ -46,7 +46,6 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 	self.input_manager = ingame_ui_context.input_manager
 	self.ui_renderer = ingame_ui_context.ui_renderer
 	self._character_camera_positions = optional_camera_character_positions or camera_position_by_character
-	self._requested_mip_streaming_units = {}
 	local player_manager = Managers.player
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
@@ -88,7 +87,6 @@ MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 	local preview_pass_data = viewport_widget.element.pass_data[1]
 
 	MenuWorldPreviewer.super.on_enter(self, preview_pass_data.world)
-	table.clear(self._requested_mip_streaming_units)
 
 	self.level = preview_pass_data.level
 	self.viewport = preview_pass_data.viewport
@@ -224,46 +222,7 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 		return
 	end
 
-	if self:_update_unit_mip_streaming() then
-		return
-	end
-
 	MenuWorldPreviewer.super._update_units_visibility(self, dt)
-end
-
-MenuWorldPreviewer._update_unit_mip_streaming = function (self)
-	local mip_streaming_completed = true
-	local num_units_handled = 0
-	local requested_mip_streaming_units = self._requested_mip_streaming_units
-
-	for unit, _ in pairs(requested_mip_streaming_units) do
-		local unit_mip_streaming_completed = Renderer.is_all_mips_loaded_for_unit(unit)
-
-		if unit_mip_streaming_completed then
-			requested_mip_streaming_units[unit] = nil
-		else
-			mip_streaming_completed = false
-		end
-
-		num_units_handled = num_units_handled + 1
-	end
-
-	if not mip_streaming_completed then
-		return true
-	elseif num_units_handled > 0 then
-		Renderer.set_automatic_streaming(true)
-	end
-end
-
-MenuWorldPreviewer._request_mip_streaming_for_unit = function (self, unit)
-	local requested_mip_streaming_units = self._requested_mip_streaming_units
-	requested_mip_streaming_units[unit] = true
-
-	Renderer.set_automatic_streaming(false)
-
-	for requested_unit, _ in pairs(requested_mip_streaming_units) do
-		Renderer.request_to_stream_all_mips_for_unit(requested_unit)
-	end
 end
 
 MenuWorldPreviewer._set_character_visibility = function (self, visible)
@@ -659,7 +618,6 @@ end
 
 MenuWorldPreviewer.clear_units = function (self, reset_camera)
 	MenuWorldPreviewer.super.clear_units(self)
-	table.clear(self._requested_mip_streaming_units)
 
 	if reset_camera then
 		local default_animation_data = self._default_animation_data

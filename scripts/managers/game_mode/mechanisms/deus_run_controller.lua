@@ -724,12 +724,24 @@ end
 DeusRunController.get_own_loadout = function (self)
 	local local_peer_id = self._run_state:get_own_peer_id()
 	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
-	local melee_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
-	local ranged_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged")
-	local melee_item = DeusWeaponGeneration.deserialize_weapon(melee_item_string)
-	local ranged_item = DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
 
-	return melee_item, ranged_item
+	if self._destroyed then
+		local profile = SPProfiles[profile_index]
+		local career_name = profile.careers[career_index].name
+		local initial_loadout = self._run_state:get_own_initial_loadout()
+		local initial_loadout_for_career = initial_loadout[career_name]
+		local melee_item = initial_loadout_for_career.slot_melee
+		local ranged_item = initial_loadout_for_career.slot_ranged
+
+		return melee_item, ranged_item
+	else
+		local melee_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
+		local ranged_item_string = self._run_state:get_player_loadout(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_ranged")
+		local melee_item = DeusWeaponGeneration.deserialize_weapon(melee_item_string)
+		local ranged_item = DeusWeaponGeneration.deserialize_weapon(ranged_item_string)
+
+		return melee_item, ranged_item
+	end
 end
 
 DeusRunController.get_loadout = function (self, peer_id, local_player_id, profile_index, career_index)

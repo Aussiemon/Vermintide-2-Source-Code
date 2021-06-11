@@ -1619,6 +1619,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			word_wrap = true,
 			upper_case = false,
 			font_size = 18,
+			font_height_multiplier = 0.9,
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			font_type = (masked and "hell_shark_masked") or "hell_shark",
@@ -1630,13 +1631,14 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				150,
 				5,
-				9
+				12
 			}
 		},
 		description_shadow = {
 			word_wrap = true,
 			upper_case = false,
 			font_size = 18,
+			font_height_multiplier = 0.9,
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			font_type = (masked and "hell_shark_masked") or "hell_shark",
@@ -1648,7 +1650,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			offset = {
 				152,
 				3,
-				8
+				11
 			}
 		},
 		title = {

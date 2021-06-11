@@ -1,6 +1,7 @@
 require("scripts/utils/hash_utils")
 
 SharedState = class(SharedState)
+script_data.shared_state_debug = true
 local RPCS = {
 	"rpc_shared_state_set_server_int",
 	"rpc_shared_state_set_server_string",
@@ -255,9 +256,19 @@ local function printable_value(value)
 	end
 end
 
-local function dprint(...)
+local global_printf = printf
+
+local function printf(...)
+	local message = sprintf(...)
+
+	global_printf("[SharedState] %s", message)
+end
+
+local function dprintf(...)
 	if script_data.shared_state_debug then
-		print("[SharedState] ", ...)
+		local message = sprintf(...)
+
+		printf("[SharedState] %s", message)
 	end
 end
 
@@ -364,7 +375,7 @@ SharedState.clear_peer_data = function (self, peer_id)
 		return
 	end
 
-	dprint(sprintf("%s: <clear_peer_data> %s", self._original_context, peer_id))
+	dprintf("%s: <clear_peer_data> %s", self._original_context, peer_id)
 	self:_clear_peer_id_data(peer_id)
 
 	if self._network_server then
@@ -459,7 +470,7 @@ SharedState.set_peer = function (self, owner, key, value)
 	set(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, value)
 
 	if owner == self._peer_id then
-		dprint(sprintf("%s: <set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value)))
+		dprintf("%s: <set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
 
 		local encoder = self._spec.peer[key.key_type].encode
 		local encoded_value = (encoder and encoder(value)) or value
@@ -482,7 +493,7 @@ SharedState.set_peer = function (self, owner, key, value)
 			send_set_peer_rpc(channel_id, self._context, self._peer_id, self._key_type_lookup[key.key_type], key.peer_id, key.local_player_id, key.profile_index, key.career_index, encoded_value)
 		end
 	else
-		dprint(sprintf("%s: <set prediction %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value)))
+		dprintf("%s: <set prediction %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
 	end
 
 	self:_increment_revision()
@@ -494,7 +505,7 @@ SharedState.start_atomic_set_server = function (self, name)
 	self._current_start_atomic_set_server = name
 
 	if self._is_server then
-		dprint(sprintf("%s: <atomic_set_server start> name:%s", self._original_context, name))
+		dprintf("%s: <atomic_set_server start> name:%s", self._original_context, name)
 
 		if self._network_server then
 			local connected_peers = self._network_server:get_peers()
@@ -508,7 +519,7 @@ SharedState.start_atomic_set_server = function (self, name)
 			end
 		end
 	else
-		dprint(sprintf("%s: <atomic_set_server start prediction> name:%s", self._original_context, name))
+		dprintf("%s: <atomic_set_server start prediction> name:%s", self._original_context, name)
 	end
 end
 
@@ -516,7 +527,7 @@ SharedState.end_atomic_set_server = function (self, name)
 	fassert(self._current_start_atomic_set_server == name, "mismatched end_atomic_set_server(%s) and start_atomic_set_server(%s)", name, self._current_start_atomic_set_server)
 
 	if self._is_server then
-		dprint(sprintf("%s: <atomic_set_server end> name:%s", self._original_context, name))
+		dprintf("%s: <atomic_set_server end> name:%s", self._original_context, name)
 
 		if self._network_server then
 			local connected_peers = self._network_server:get_peers()
@@ -530,7 +541,7 @@ SharedState.end_atomic_set_server = function (self, name)
 			end
 		end
 	else
-		dprint(sprintf("%s: <atomic_set_server end prediction> name:%s", self._original_context, name))
+		dprintf("%s: <atomic_set_server end prediction> name:%s", self._original_context, name)
 	end
 
 	self._current_start_atomic_set_server = nil
@@ -547,7 +558,7 @@ SharedState.set_server = function (self, key, value)
 	set_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, value)
 
 	if self._is_server then
-		dprint(sprintf("%s: <set server> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value)))
+		dprintf("%s: <set server> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
 
 		local encoder = self._spec.server[key.key_type].encode
 		local encoded_value = (encoder and encoder(value)) or value
@@ -564,7 +575,7 @@ SharedState.set_server = function (self, key, value)
 			end
 		end
 	else
-		dprint(sprintf("%s: <set server prediction> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value)))
+		dprintf("%s: <set server prediction> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
 	end
 
 	self:_increment_revision()
@@ -773,7 +784,7 @@ SharedState.rpc_shared_state_client_left = function (self, channel_id, context, 
 		return
 	end
 
-	dprint(sprintf("%s: <rpc client left> %s", self._original_context, peer_id))
+	dprintf("%s: <rpc client left> %s", self._original_context, peer_id)
 	self:_clear_peer_id_data(peer_id)
 end
 
@@ -782,7 +793,7 @@ SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup
 	local decoder = self._spec.peer[key_type].decode
 	local value = (decoder and decoder(encoded_value)) or encoded_value
 
-	dprint(sprintf("%s: <rpc set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value)))
+	dprintf("%s: <rpc set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
 	set(self._peer_state, owner, key_type, peer_id, local_player_id, profile_index, career_index, value)
 
 	if self._is_server then
@@ -824,7 +835,7 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 	local decoder = self._spec.server[key_type].decode
 	local value = (decoder and decoder(encoded_value)) or encoded_value
 
-	dprint(sprintf("%s: <rpc set server> %s:%s:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value)))
+	dprintf("%s: <rpc set server> %s:%s:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
 	set_server(self._server_state, key_type, peer_id, local_player_id, profile_index, career_index, value)
 	self:_increment_revision()
 end
@@ -883,7 +894,7 @@ SharedState._increment_revision = function (self)
 	self._revision = self._revision + 1
 
 	if self._revision == revision then
-		dprint(sprintf("%s: revision reset back to zero", self._original_context))
+		dprintf("%s: revision reset back to zero", self._original_context)
 
 		self._revision = 0
 	end

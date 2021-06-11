@@ -58,6 +58,7 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self._health_clamp_min = nil
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
+	self._last_damage_t = nil
 	self._damage_cap_per_hit = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit") or self.health
 end
 
@@ -263,6 +264,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
 	self._recent_damage_source_name = damage_source_name
+	self._last_damage_t = Managers.time:time("game")
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
@@ -379,6 +381,10 @@ end
 
 GenericHealthExtension.recently_damaged = function (self)
 	return self._recent_damage_type, self._recent_hit_react_type
+end
+
+GenericHealthExtension.last_damage_t = function (self)
+	return self._last_damage_t
 end
 
 GenericHealthExtension.get_is_invincible = function (self)

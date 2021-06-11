@@ -950,9 +950,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_activated_ability_railgun_delayed_add = {
 		buffs = {
 			{
-				remove_buff_func = "victor_bountyhunter_activated_ability_railgun_delayed",
+				max_stacks = 2,
 				duration = 0.15,
-				multiplier = 0.4
+				multiplier = 0.4,
+				remove_buff_func = "victor_bountyhunter_activated_ability_railgun_delayed"
 			}
 		}
 	},

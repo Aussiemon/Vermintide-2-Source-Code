@@ -1406,7 +1406,7 @@ weapon_template.ammo_data = {
 	max_ammo = 3,
 	reload_on_ammo_pickup = true,
 	reload_time = 0,
-	ammo_kind = "thrown",
+	ammo_kind = "thrown_javelin",
 	ammo_unit_attachment_node_linking = AttachmentNodeLinking.polearm
 }
 weapon_template.attack_meta_data = {

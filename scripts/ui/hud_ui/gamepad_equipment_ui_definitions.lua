@@ -1497,9 +1497,15 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 
 						local device_type = keymap_binding[1]
 						local key_index = keymap_binding[2]
-						local key_action_type = keymap_binding[3]
-						local is_button_unassigned = key_index == UNASSIGNED_KEY
-						content.input_text = string.upper((is_button_unassigned and "") or Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index))
+						local input_text = ""
+
+						if key_index ~= UNASSIGNED_KEY then
+							local device = (device_type == "mouse" and Mouse) or Keyboard
+							input_text = device.button_locale_name(key_index) or device.button_name(key_index) or Localize("lb_unknown")
+							input_text = Utf8.upper(input_text)
+						end
+
+						content.input_text = input_text
 					end
 				},
 				{

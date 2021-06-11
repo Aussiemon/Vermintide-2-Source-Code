@@ -179,6 +179,13 @@ DeusSwapWeaponInteractionUI._update_offset = function (self, dt, t)
 	local style = weapon_tooltip_widget.style
 	local item_style = style.item
 	local item_presentation_height = item_style.item_presentation_height
+
+	if not item_presentation_height then
+		print("[DeusSwapWeaponInteractionUI] Tried to calculate the item height to early. We require the tooltip to be rendered at least once before this can be calculated")
+
+		return
+	end
+
 	self._offset[2] = math.max(item_presentation_height - 300, 0)
 	self._calculate_offset = false
 end

@@ -204,11 +204,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = {
 			career_info_size[1] + 20,
-			860
+			885
 		},
 		position = {
 			-50,
-			-100,
+			-75,
 			1
 		}
 	},

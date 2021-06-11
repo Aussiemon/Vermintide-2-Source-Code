@@ -937,6 +937,21 @@ StateIngame.update = function (self, dt, main_t)
 	self._fps_reporter:update(dt, t)
 	self._ping_reporter:update(dt, t)
 	self:_update_onclose_check(dt, t)
+
+	if script_data.debug_enabled then
+		Managers.state.debug:update(dt, t)
+		Debug.update(t, dt)
+		VisualAssertLog.update(dt)
+
+		local debug_input_service = self.input_manager:get_service("DebugMenu")
+
+		DebugScreen.update(dt, t, debug_input_service, self.input_manager)
+		DebugKeyHandler.render()
+		DebugKeyHandler.frame_clear()
+		FunctionCallProfiler.render()
+		PoolTableVisualizer.render(t)
+	end
+
 	self:_generate_ingame_clock()
 	self._camera_carrier:update(dt)
 

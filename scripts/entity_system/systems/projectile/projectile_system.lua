@@ -1200,6 +1200,16 @@ ProjectileSystem._link_projectile = function (self, hit_data, projectile_linker_
 	local depth = projectile_linker_data.depth or 0.15
 	local depth_offset = projectile_linker_data.depth_offset or 0.15
 	local linker_unit_name = projectile_linker_data.unit
+	local allow_link = true
+	local unit_data_allow_link = Unit.get_data(hit_unit, "allow_link")
+
+	if unit_data_allow_link ~= nil then
+		allow_link = unit_data_allow_link
+	end
+
+	if not allow_link then
+		return
+	end
 
 	if projectile_linker_data.broken_units then
 		local broken_chance = Math.random()

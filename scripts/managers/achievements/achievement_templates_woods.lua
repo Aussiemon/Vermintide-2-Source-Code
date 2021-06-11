@@ -323,6 +323,15 @@ achievements.woods_heal_grind = {
 			return
 		end
 
+		local level_transition_handler = Managers.level_transition_handler
+		local level_key = level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+		local is_hub_level = level_settings and level_settings.hub_level
+
+		if is_hub_level then
+			return
+		end
+
 		local career_extension = ScriptUnit.has_extension(healing_unit, "career_system")
 
 		if not career_extension or career_extension:career_name() ~= "we_thornsister" then
@@ -361,6 +370,15 @@ achievements.woods_bleed_grind = {
 		local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
 
 		if not damage_type or damage_type ~= "bleed" then
+			return
+		end
+
+		local level_transition_handler = Managers.level_transition_handler
+		local level_key = level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+		local is_hub_level = level_settings and level_settings.hub_level
+
+		if is_hub_level then
 			return
 		end
 
@@ -772,9 +790,8 @@ achievements.woods_wall_kill_gutter = {
 		local victim_unit = event_data[register_kill_victim_unit]
 		local bb = BLACKBOARDS[victim_unit]
 		local jump_data = bb.jump_data
-		local node_name = bb.btnode_name
 
-		if node_name and node_name == "crazy_jump" and jump_data and jump_data.state and jump_data.state == "in_air" then
+		if jump_data and (jump_data.state == "in_air" or jump_data.state == "in_air_no_target" or jump_data.state == "snapping") then
 			rpc_increment_stat(attacker_unit, "woods_wall_kill_gutter")
 		end
 	end
@@ -876,21 +893,32 @@ achievements.woods_free_ability_grind = {
 		}
 	end,
 	completed = function (statistics_db, stats_id, template_data)
-		return statistics_db:get_persistent_stat(stats_id, "woods_free_abilities_used") > 50
+		return statistics_db:get_persistent_stat(stats_id, "woods_free_abilities_used") >= 50
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
-		if not Managers.state.network.is_server then
+		local buffing_unit = event_data[2]
+		local local_player_unit = Managers.player:local_player().player_unit
+
+		if buffing_unit ~= local_player_unit then
 			return
 		end
 
-		local buffing_unit = event_data[2]
+		local level_transition_handler = Managers.level_transition_handler
+		local level_key = level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+		local is_hub_level = level_settings and level_settings.hub_level
+
+		if is_hub_level then
+			return
+		end
+
 		local career_extension = ScriptUnit.has_extension(buffing_unit, "career_system")
 
 		if not career_extension or career_extension:career_name() ~= "we_thornsister" then
 			return
 		end
 
-		rpc_increment_stat(buffing_unit, "woods_free_abilities_used")
+		statistics_db:increment_stat(stats_id, "woods_free_abilities_used")
 	end
 }
 local act_1_levels = GameActs.act_1
@@ -901,7 +929,8 @@ local difficulties = {
 	"normal",
 	"hard",
 	"harder",
-	"hardest"
+	"hardest",
+	"cataclysm"
 }
 
 for i = 1, #difficulties, 1 do
