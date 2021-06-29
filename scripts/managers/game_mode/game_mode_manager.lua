@@ -570,7 +570,7 @@ GameModeManager.disable_lose_condition = function (self)
 end
 
 GameModeManager.complete_level = function (self)
-	print("Complete level triggered.")
+	print("Complete level triggered. Stacktrace: " .. Script.callstack())
 	self._game_mode:complete_level(self._level_key)
 	self._game_mode:trigger_end_level_area_events()
 end

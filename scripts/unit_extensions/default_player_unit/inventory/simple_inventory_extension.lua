@@ -306,36 +306,58 @@ SimpleInventoryExtension.add_equipment_by_category = function (self, category)
 			if item then
 				item_data = table.clone(item.data)
 				item_data.backend_id = item.backend_id
-			else
-				local item_name = self.initial_inventory[slot_name]
-				item_data = rawget(ItemMasterList, item_name)
 
-				if not item_data then
-					break
-				end
-			end
+				if item.backend_id then
+					local item_name = self.initial_inventory[slot_name]
+					item_data = rawget(ItemMasterList, item_name)
 
-			if item_data.slot_to_use then
-				local override_slot_data = self._equipment.slots[item_data.slot_to_use]
+					if not item_data then
+						local backend_id = BackendUtils.get_loadout_item_id(career_name, slot_name)
+						local backend_id_string = (backend_id and tostring(backend_id)) or "No backend ID"
+						local item_string = "No item"
 
-				if not override_slot_data then
-					break
-				end
+						if backend_id then
+							local backend_items = Managers.backend:get_interface("items")
+							local item = backend_items:get_item_from_id(backend_id)
+							item_string = (item and item.name) or "Item exists"
+						end
 
-				local override_item_data = nil
+						local loadout_interface_override = Managers.backend._current_loadout_interface_override
+						local loadout_interface_override_string = loadout_interface_override or "No override"
 
-				if WeaponUtils.is_valid_weapon_override(override_slot_data, item_data) then
-					override_item_data = override_slot_data.item_data
+						printf("self.initial_inventory: \n%s", table.tostring(self.initial_inventory))
+						printf([[
+Tried add_equipment_by_category for category <%s> for career <%s> at slot <%s>.
+ BackendUtils.get_loadout_item didnt return a item.
+ backend_id_string: %s
+ item_string: %s
+ loadout_interface_override_string: %s
+]], category, career_name, slot_name, backend_id_string, item_string, loadout_interface_override_string)
+					end
 				else
-					local default_item_name = item_data.default_item_to_replace
-					override_item_data = ItemMasterList[default_item_name]
+					if item_data.slot_to_use then
+						local override_slot_data = self._equipment.slots[item_data.slot_to_use]
+
+						if not override_slot_data then
+							break
+						end
+
+						local override_item_data = nil
+
+						if WeaponUtils.is_valid_weapon_override(override_slot_data, item_data) then
+							override_item_data = override_slot_data.item_data
+						else
+							local default_item_name = item_data.default_item_to_replace
+							override_item_data = ItemMasterList[default_item_name]
+						end
+
+						item_data.left_hand_unit = override_item_data.left_hand_unit
+						item_data.right_hand_unit = override_item_data.right_hand_unit
+					end
+
+					self:add_equipment(slot_name, item_data, nil, nil, self.initial_ammo_percent[slot_name])
 				end
-
-				item_data.left_hand_unit = override_item_data.left_hand_unit
-				item_data.right_hand_unit = override_item_data.right_hand_unit
 			end
-
-			self:add_equipment(slot_name, item_data, nil, nil, self.initial_ammo_percent[slot_name])
 		until true
 	end
 end

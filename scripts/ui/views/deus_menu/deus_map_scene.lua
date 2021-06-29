@@ -467,6 +467,10 @@ DeusMapScene.on_enter = function (self, graph_data, input_service, node_pressed_
 	self._level_ref_values = get_level_ref_values(self._level)
 	self._graph_data = graph_data
 	self._nodes_to_units, self._edges_to_units, self._profile_index_to_token = spawn_graph_units(self._world, self._level_ref_values, graph_data)
+	local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+	local traversed_nodes = deus_run_controller:get_traversed_nodes()
+
+	print("self._edges_to_units:%s\ntraversed_nodes:%s\ngraph:%s", table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data))
 
 	for profile_index, _ in pairs(self._profile_index_to_token) do
 		self:_hide_token(profile_index)
@@ -771,12 +775,36 @@ end
 DeusMapScene.highlight_edge = function (self, from, to)
 	local unit = self._edges_to_units[from][to]
 
+	if not unit then
+		local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+		local traversed_nodes = deus_run_controller:get_traversed_nodes()
+		local graph_data = deus_run_controller:get_graph_data()
+
+		ferror([[
+edge from<%s> to<%s> doesn't exist! 
+self._edges_to_units:%s
+traversed_nodes:%s
+graph:%s]], from, to, table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data))
+	end
+
 	Unit.set_data(unit, "highlighted", true)
 	Unit.flow_event(unit, "update_visuals")
 end
 
 DeusMapScene.unhighlight_edge = function (self, from, to)
 	local unit = self._edges_to_units[from][to]
+
+	if not unit then
+		local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+		local traversed_nodes = deus_run_controller:get_traversed_nodes()
+		local graph_data = deus_run_controller:get_graph_data()
+
+		ferror([[
+edge from<%s> to<%s> doesn't exist! 
+self._edges_to_units:%s
+traversed_nodes:%s
+graph:%s]], from, to, table.tostring(self._edges_to_units), table.tostring(traversed_nodes), table.tostring(graph_data))
+	end
 
 	Unit.set_data(unit, "highlighted", false)
 	Unit.flow_event(unit, "update_visuals")
