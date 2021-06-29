@@ -293,17 +293,17 @@ if IS_WINDOWS then
 	}
 	keymap_override_9.action_two = {
 		"gamepad",
-		"left_shoulder",
+		"left_trigger",
 		"pressed"
 	}
 	keymap_override_9.action_two_hold = {
 		"gamepad",
-		"left_shoulder",
+		"left_trigger",
 		"held"
 	}
 	keymap_override_9.action_two_release = {
 		"gamepad",
-		"left_shoulder",
+		"left_trigger",
 		"released"
 	}
 	keymap_override_9.action_one_softbutton_gamepad = {
@@ -328,47 +328,47 @@ if IS_WINDOWS then
 	}
 	keymap_override_9.action_three = {
 		"gamepad",
-		"b",
+		"right_thumb",
 		"pressed"
 	}
 	keymap_override_9.action_three_hold = {
 		"gamepad",
-		"b",
+		"right_thumb",
 		"held"
 	}
 	keymap_override_9.action_three_release = {
 		"gamepad",
-		"b",
+		"right_thumb",
 		"released"
 	}
 	keymap_override_9.ability = {
 		"gamepad",
-		"left_trigger",
+		"right_trigger",
 		"pressed"
 	}
 	keymap_override_9.ability_hold = {
 		"gamepad",
-		"left_trigger",
+		"right_trigger",
 		"held"
 	}
 	keymap_override_9.ability_release = {
 		"gamepad",
-		"left_trigger",
+		"right_trigger",
 		"released"
 	}
 	keymap_override_9.dodge_1 = {
 		"gamepad",
-		"right_trigger",
+		"left_shoulder",
 		"held"
 	}
 	keymap_override_9.crouch = {
 		"gamepad",
-		"right_thumb",
+		"b",
 		"pressed"
 	}
 	keymap_override_9.crouching = {
 		"gamepad",
-		"right_thumb",
+		"b",
 		"held"
 	}
 	keymap_override_9.ping = {
@@ -380,21 +380,6 @@ if IS_WINDOWS then
 		"gamepad",
 		"left_thumb",
 		"held"
-	}
-	keymap_override_9.ability = {
-		"gamepad",
-		"left_trigger",
-		"pressed"
-	}
-	keymap_override_9.ability_hold = {
-		"gamepad",
-		"left_trigger",
-		"held"
-	}
-	keymap_override_9.ability_release = {
-		"gamepad",
-		"left_trigger",
-		"released"
 	}
 	KeymapOverride9 = {
 		PlayerControllerKeymaps = {
@@ -894,23 +879,38 @@ if IS_WINDOWS then
 	}
 	keymap_override_10.action_two = {
 		"gamepad",
-		"right_shoulder",
+		"right_trigger",
 		"pressed"
 	}
 	keymap_override_10.action_two_hold = {
 		"gamepad",
-		"right_shoulder",
+		"right_trigger",
 		"held"
 	}
 	keymap_override_10.action_two_release = {
 		"gamepad",
-		"right_shoulder",
+		"right_trigger",
 		"released"
 	}
 	keymap_override_10.action_one_softbutton_gamepad = {
 		"gamepad",
 		"left_shoulder",
 		"soft_button"
+	}
+	keymap_override_10.action_inspect = {
+		"gamepad",
+		"left_thumb",
+		"pressed"
+	}
+	keymap_override_10.action_inspect_hold = {
+		"gamepad",
+		"left_thumb",
+		"held"
+	}
+	keymap_override_10.action_inspect_release = {
+		"gamepad",
+		"left_thumb",
+		"released"
 	}
 	keymap_override_10.action_three = {
 		"gamepad",
@@ -929,58 +929,43 @@ if IS_WINDOWS then
 	}
 	keymap_override_10.ability = {
 		"gamepad",
-		"right_trigger",
+		"left_trigger",
 		"pressed"
 	}
 	keymap_override_10.ability_hold = {
 		"gamepad",
-		"right_trigger",
+		"left_trigger",
 		"held"
 	}
 	keymap_override_10.ability_release = {
 		"gamepad",
-		"right_trigger",
+		"left_trigger",
 		"released"
 	}
 	keymap_override_10.dodge_1 = {
 		"gamepad",
-		"b",
+		"right_shoulder",
 		"held"
 	}
 	keymap_override_10.crouch = {
 		"gamepad",
-		"right_thumb",
+		"b",
 		"pressed"
 	}
 	keymap_override_10.crouching = {
 		"gamepad",
-		"right_thumb",
+		"b",
 		"held"
 	}
 	keymap_override_10.ping = {
 		"gamepad",
-		"left_trigger",
+		"right_thumb",
 		"pressed"
 	}
 	keymap_override_10.ping_hold = {
 		"gamepad",
-		"left_trigger",
+		"right_thumb",
 		"held"
-	}
-	keymap_override_10.ability = {
-		"gamepad",
-		"right_trigger",
-		"pressed"
-	}
-	keymap_override_10.ability_hold = {
-		"gamepad",
-		"right_trigger",
-		"held"
-	}
-	keymap_override_10.ability_release = {
-		"gamepad",
-		"right_trigger",
-		"released"
 	}
 	KeymapOverride10 = {
 		PlayerControllerKeymaps = {
@@ -1828,7 +1813,7 @@ elseif IS_XB1 then
 		"left_thumb",
 		"pressed"
 	}
-	keymap_override_8.ction_three_hold = {
+	keymap_override_8.action_three_hold = {
 		"gamepad",
 		"left_thumb",
 		"held"
@@ -1861,23 +1846,38 @@ elseif IS_XB1 then
 	}
 	keymap_override_10.action_two = {
 		"gamepad",
-		"right_shoulder",
+		"right_trigger",
 		"pressed"
 	}
 	keymap_override_10.action_two_hold = {
 		"gamepad",
-		"right_shoulder",
+		"right_trigger",
 		"held"
 	}
 	keymap_override_10.action_two_release = {
 		"gamepad",
-		"right_shoulder",
+		"right_trigger",
 		"released"
 	}
 	keymap_override_10.action_one_softbutton_gamepad = {
 		"gamepad",
 		"left_shoulder",
 		"soft_button"
+	}
+	keymap_override_10.action_inspect = {
+		"gamepad",
+		"left_thumb",
+		"pressed"
+	}
+	keymap_override_10.action_inspect_hold = {
+		"gamepad",
+		"left_thumb",
+		"held"
+	}
+	keymap_override_10.action_inspect_release = {
+		"gamepad",
+		"left_thumb",
+		"released"
 	}
 	keymap_override_10.action_three = {
 		"gamepad",
@@ -1896,58 +1896,43 @@ elseif IS_XB1 then
 	}
 	keymap_override_10.ability = {
 		"gamepad",
-		"right_trigger",
+		"left_trigger",
 		"pressed"
 	}
 	keymap_override_10.ability_hold = {
 		"gamepad",
-		"right_trigger",
+		"left_trigger",
 		"held"
 	}
 	keymap_override_10.ability_release = {
 		"gamepad",
-		"right_trigger",
+		"left_trigger",
 		"released"
 	}
 	keymap_override_10.dodge_1 = {
 		"gamepad",
-		"b",
+		"right_shoulder",
 		"held"
 	}
 	keymap_override_10.crouch = {
 		"gamepad",
-		"right_thumb",
+		"b",
 		"pressed"
 	}
 	keymap_override_10.crouching = {
 		"gamepad",
-		"right_thumb",
+		"b",
 		"held"
 	}
 	keymap_override_10.ping = {
 		"gamepad",
-		"left_trigger",
+		"right_thumb",
 		"pressed"
 	}
 	keymap_override_10.ping_hold = {
 		"gamepad",
-		"left_trigger",
+		"right_thumb",
 		"held"
-	}
-	keymap_override_10.ability = {
-		"gamepad",
-		"right_trigger",
-		"pressed"
-	}
-	keymap_override_10.ability_hold = {
-		"gamepad",
-		"right_trigger",
-		"held"
-	}
-	keymap_override_10.ability_release = {
-		"gamepad",
-		"right_trigger",
-		"released"
 	}
 	KeymapOverride10 = {
 		PlayerControllerKeymaps = {
@@ -2227,17 +2212,17 @@ elseif IS_PS4 then
 	}
 	keymap_override_9.action_two = {
 		"gamepad",
-		"l1",
+		"l2",
 		"pressed"
 	}
 	keymap_override_9.action_two_hold = {
 		"gamepad",
-		"l1",
+		"l2",
 		"held"
 	}
 	keymap_override_9.action_two_release = {
 		"gamepad",
-		"l1",
+		"l2",
 		"released"
 	}
 	keymap_override_9.action_one_softbutton_gamepad = {
@@ -2262,47 +2247,47 @@ elseif IS_PS4 then
 	}
 	keymap_override_9.action_three = {
 		"gamepad",
-		"b",
+		"r3",
 		"pressed"
 	}
 	keymap_override_9.action_three_hold = {
 		"gamepad",
-		"b",
+		"r3",
 		"held"
 	}
 	keymap_override_9.action_three_release = {
 		"gamepad",
-		"b",
+		"r3",
 		"released"
 	}
 	keymap_override_9.ability = {
 		"gamepad",
-		"l2",
+		"r2",
 		"pressed"
 	}
 	keymap_override_9.ability_hold = {
 		"gamepad",
-		"l2",
+		"r2",
 		"held"
 	}
 	keymap_override_9.ability_release = {
 		"gamepad",
-		"l2",
+		"r2",
 		"released"
 	}
 	keymap_override_9.dodge_1 = {
 		"gamepad",
-		"r2",
+		"l1",
 		"held"
 	}
 	keymap_override_9.crouch = {
 		"gamepad",
-		"r3",
+		"circle",
 		"pressed"
 	}
 	keymap_override_9.crouching = {
 		"gamepad",
-		"r3",
+		"circle",
 		"held"
 	}
 	keymap_override_9.ping = {
@@ -2314,21 +2299,6 @@ elseif IS_PS4 then
 		"gamepad",
 		"l3",
 		"held"
-	}
-	keymap_override_9.ability = {
-		"gamepad",
-		"l2",
-		"pressed"
-	}
-	keymap_override_9.ability_hold = {
-		"gamepad",
-		"l2",
-		"held"
-	}
-	keymap_override_9.ability_release = {
-		"gamepad",
-		"l2",
-		"released"
 	}
 	KeymapOverride9 = {
 		PlayerControllerKeymaps = {
@@ -2828,23 +2798,38 @@ elseif IS_PS4 then
 	}
 	keymap_override_10.action_two = {
 		"gamepad",
-		"r1",
+		"r2",
 		"pressed"
 	}
 	keymap_override_10.action_two_hold = {
 		"gamepad",
-		"r1",
+		"r2",
 		"held"
 	}
 	keymap_override_10.action_two_release = {
 		"gamepad",
-		"r1",
+		"r2",
 		"released"
 	}
 	keymap_override_10.action_one_softbutton_gamepad = {
 		"gamepad",
 		"l1",
 		"soft_button"
+	}
+	keymap_override_10.action_inspect = {
+		"gamepad",
+		"l3",
+		"pressed"
+	}
+	keymap_override_10.action_inspect_hold = {
+		"gamepad",
+		"l3",
+		"held"
+	}
+	keymap_override_10.action_inspect_release = {
+		"gamepad",
+		"l3",
+		"released"
 	}
 	keymap_override_10.action_three = {
 		"gamepad",
@@ -2863,62 +2848,47 @@ elseif IS_PS4 then
 	}
 	keymap_override_10.ability = {
 		"gamepad",
-		"r2",
+		"l2",
 		"pressed"
 	}
 	keymap_override_10.ability_hold = {
 		"gamepad",
-		"r2",
+		"l2",
 		"held"
 	}
 	keymap_override_10.ability_release = {
 		"gamepad",
-		"r2",
+		"l2",
 		"released"
 	}
 	keymap_override_10.dodge_1 = {
 		"gamepad",
-		"b",
+		"r1",
 		"held"
 	}
 	keymap_override_10.crouch = {
 		"gamepad",
-		"r3",
+		"circle",
 		"pressed"
 	}
 	keymap_override_10.crouching = {
 		"gamepad",
-		"r3",
+		"circle",
 		"held"
 	}
 	keymap_override_10.ping = {
 		"gamepad",
-		"l2",
+		"r3",
 		"pressed"
 	}
 	keymap_override_10.ping_hold = {
 		"gamepad",
-		"l2",
+		"r3",
 		"held"
-	}
-	keymap_override_10.ability = {
-		"gamepad",
-		"r2",
-		"pressed"
-	}
-	keymap_override_10.ability_hold = {
-		"gamepad",
-		"r2",
-		"held"
-	}
-	keymap_override_10.ability_release = {
-		"gamepad",
-		"r2",
-		"released"
 	}
 	KeymapOverride10 = {
 		PlayerControllerKeymaps = {
-			ps4 = keymap_override_10
+			xb1 = keymap_override_10
 		}
 	}
 end
@@ -2970,22 +2940,21 @@ if IS_WINDOWS then
 	AlternatateGamepadSettings = {
 		default = {
 			ignore_gamepad_action_names = {
-				active_ability_left_pressed = true,
+				action_two_hold = true,
 				dodge_2 = true,
 				next_observer_target = true,
-				dodge_1 = true,
+				active_ability_right_pressed = true,
 				action_one_release = true,
 				active_ability_right_held = true,
-				action_three_hold = true,
-				interacting = true,
 				wield_switch_1 = true,
+				interacting = true,
+				action_three_hold = true,
 				action_three_release = true,
 				previous_observer_target = true,
 				ghost_mode_exit = true,
 				crouching = true,
 				move_left_pressed = true,
 				ability_release = true,
-				action_two_hold = true,
 				ghost_mode_enter = true,
 				action_two_release = true,
 				action_one_mouse = true,
@@ -2996,7 +2965,7 @@ if IS_WINDOWS then
 				wield_switch_2 = true,
 				active_ability_right_release = true,
 				action_inspect_hold = true,
-				active_ability_right_pressed = true,
+				active_ability_left_pressed = true,
 				active_ability_left_held = true,
 				action_one_hold = true,
 				ping_release = true,
@@ -3005,7 +2974,11 @@ if IS_WINDOWS then
 				ability_hold = true,
 				weapon_reload_hold_input_input = true
 			},
-			replace_gamepad_action_names = {},
+			replace_gamepad_action_names = {
+				dodge_1 = "mission_objective_prologue_dodge",
+				jump_1 = "mission_objective_prologue_jumping",
+				ping = "lb_ping"
+			},
 			default_gamepad_actions_by_key = {
 				ls = "move_controller",
 				start = "toggle_menu",
@@ -3016,41 +2989,44 @@ if IS_WINDOWS then
 		},
 		left_handed = {
 			ignore_gamepad_action_names = {
-				active_ability_left_pressed = true,
-				dodge_2 = true,
-				action_two_hold = true,
-				dodge_1 = true,
-				wield_switch_1 = true,
-				active_ability_right_held = true,
+				action_two_release = true,
+				weapon_reload_hold_input = true,
+				previous_observer_target = true,
 				action_three_hold = true,
-				action_one_release = true,
 				interacting = true,
+				action_one_release = true,
+				wield_switch_1 = true,
+				dodge_2 = true,
+				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
 				ghost_mode_exit = true,
 				crouching = true,
 				move_left_pressed = true,
-				ability_release = true,
-				ghost_mode_enter = true,
-				action_two_release = true,
-				action_one_mouse = true,
-				action_inspect_release = true,
-				wield_switch = true,
-				active_ability_left_release = true,
-				weapon_reload_hold_input = true,
-				wield_switch_2 = true,
-				active_ability_right_release = true,
 				action_inspect_hold = true,
-				active_ability_right_pressed = true,
+				action_two_hold = true,
+				active_ability_left_pressed = true,
 				active_ability_left_held = true,
+				action_one_mouse = true,
 				action_one_hold = true,
+				active_ability_right_held = true,
+				active_ability_left_release = true,
 				ping_release = true,
 				ping_hold = true,
+				ability_release = true,
 				action_one_softbutton_gamepad = true,
 				ability_hold = true,
-				previous_observer_target = true
+				active_ability_right_release = true,
+				ghost_mode_enter = true,
+				action_inspect_release = true,
+				active_ability_right_pressed = true,
+				wield_switch = true
 			},
-			replace_gamepad_action_names = {},
+			replace_gamepad_action_names = {
+				dodge_1 = "mission_objective_prologue_dodge",
+				jump_1 = "mission_objective_prologue_jumping",
+				ping = "lb_ping"
+			},
 			default_gamepad_actions_by_key = {
 				ls = "look_raw_controller",
 				start = "toggle_menu",
@@ -3067,11 +3043,11 @@ elseif IS_XB1 then
 				action_two_release = true,
 				weapon_reload_hold_input = true,
 				action_three_hold = true,
-				dodge_1 = true,
 				interacting = true,
+				dodge_2 = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				dodge_2 = true,
+				active_ability_right_pressed = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -3084,19 +3060,20 @@ elseif IS_XB1 then
 				active_ability_left_held = true,
 				action_one_mouse = true,
 				action_one_hold = true,
-				active_ability_right_held = true,
 				active_ability_left_release = true,
+				active_ability_right_release = true,
 				ping_release = true,
 				ability_release = true,
-				active_ability_right_release = true,
+				ghost_mode_enter = true,
 				action_one_softbutton_gamepad = true,
 				ability_hold = true,
-				ghost_mode_enter = true,
-				active_ability_right_pressed = true,
+				active_ability_right_held = true,
 				action_inspect_release = true,
 				previous_observer_target = true
 			},
 			replace_gamepad_action_names = {
+				dodge_1 = "mission_objective_prologue_dodge",
+				jump_1 = "mission_objective_prologue_jumping",
 				ping = "lb_ping"
 			},
 			default_gamepad_actions_by_key = {
@@ -3112,11 +3089,11 @@ elseif IS_XB1 then
 				action_two_release = true,
 				weapon_reload_hold_input = true,
 				previous_observer_target = true,
-				dodge_1 = true,
+				action_three_hold = true,
 				interacting = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				action_three_hold = true,
+				dodge_2 = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -3129,20 +3106,21 @@ elseif IS_XB1 then
 				active_ability_left_held = true,
 				action_one_mouse = true,
 				action_one_hold = true,
-				active_ability_right_pressed = true,
 				active_ability_right_held = true,
+				active_ability_left_release = true,
 				ping_release = true,
-				active_ability_right_release = true,
 				ability_release = true,
+				active_ability_right_release = true,
 				action_one_softbutton_gamepad = true,
 				ability_hold = true,
-				active_ability_left_release = true,
 				ghost_mode_enter = true,
+				active_ability_right_pressed = true,
 				action_inspect_release = true,
-				dodge_2 = true,
 				wield_switch = true
 			},
 			replace_gamepad_action_names = {
+				dodge_1 = "mission_objective_prologue_dodge",
+				jump_1 = "mission_objective_prologue_jumping",
 				ping = "lb_ping"
 			},
 			default_gamepad_actions_by_key = {
@@ -3161,11 +3139,11 @@ elseif IS_PS4 then
 				action_two_release = true,
 				weapon_reload_hold_input = true,
 				action_three_hold = true,
-				dodge_1 = true,
 				interacting = true,
+				dodge_2 = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				dodge_2 = true,
+				active_ability_right_pressed = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -3178,19 +3156,20 @@ elseif IS_PS4 then
 				active_ability_left_held = true,
 				action_one_mouse = true,
 				action_one_hold = true,
-				active_ability_right_held = true,
 				active_ability_left_release = true,
+				active_ability_right_release = true,
 				ping_release = true,
 				ability_release = true,
-				active_ability_right_release = true,
+				ghost_mode_enter = true,
 				action_one_softbutton_gamepad = true,
 				ability_hold = true,
-				ghost_mode_enter = true,
-				active_ability_right_pressed = true,
+				active_ability_right_held = true,
 				action_inspect_release = true,
 				previous_observer_target = true
 			},
 			replace_gamepad_action_names = {
+				dodge_1 = "mission_objective_prologue_dodge",
+				jump_1 = "mission_objective_prologue_jumping",
 				ping = "lb_ping"
 			},
 			default_gamepad_actions_by_key = {
@@ -3206,11 +3185,11 @@ elseif IS_PS4 then
 				action_two_release = true,
 				weapon_reload_hold_input = true,
 				previous_observer_target = true,
-				dodge_1 = true,
+				action_three_hold = true,
 				interacting = true,
 				action_one_release = true,
 				wield_switch_1 = true,
-				action_three_hold = true,
+				dodge_2 = true,
 				wield_switch_2 = true,
 				action_three_release = true,
 				next_observer_target = true,
@@ -3223,20 +3202,21 @@ elseif IS_PS4 then
 				active_ability_left_held = true,
 				action_one_mouse = true,
 				action_one_hold = true,
-				active_ability_right_pressed = true,
 				active_ability_right_held = true,
+				active_ability_left_release = true,
 				ping_release = true,
-				active_ability_right_release = true,
 				ability_release = true,
+				active_ability_right_release = true,
 				action_one_softbutton_gamepad = true,
 				ability_hold = true,
-				active_ability_left_release = true,
 				ghost_mode_enter = true,
+				active_ability_right_pressed = true,
 				action_inspect_release = true,
-				dodge_2 = true,
 				wield_switch = true
 			},
 			replace_gamepad_action_names = {
+				dodge_1 = "mission_objective_prologue_dodge",
+				jump_1 = "mission_objective_prologue_jumping",
 				ping = "lb_ping"
 			},
 			default_gamepad_actions_by_key = {

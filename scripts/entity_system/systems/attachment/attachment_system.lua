@@ -22,6 +22,8 @@ AttachmentSystem.init = function (self, entity_system_creation_context, system_n
 end
 
 AttachmentSystem.update = function (self, context, t)
+	AttachmentSystem.super.update(self, context, t)
+
 	if self._delayed_create_attachment_params then
 		local params = self._delayed_create_attachment_params
 		local unit_storage = self.unit_storage

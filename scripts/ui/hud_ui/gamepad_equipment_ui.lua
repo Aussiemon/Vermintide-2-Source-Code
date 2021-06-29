@@ -1299,7 +1299,7 @@ GamePadEquipmentUI._update_gamepad_input_button = function (self)
 	local input_service = Managers.input:get_service("Player")
 	local input_action = "weapon_reload_input"
 	local fake_gamepad_active = true
-	local button_texture_data, button_name, keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(input_service, input_action, fake_gamepad_active)
+	local button_texture_data, button_name, gamepad_keymap_binding, unassigned = UISettings.get_gamepad_input_texture_data(input_service, input_action, fake_gamepad_active)
 	local widget = self._widgets_by_name.engineer_base
 	local style = widget.style
 	local content = widget.content
@@ -1317,18 +1317,23 @@ GamePadEquipmentUI._update_gamepad_input_button = function (self)
 	else
 		local max_length = 40
 		local input_action = "weapon_reload"
-		local keymap_binding = input_service:get_keymapping(input_action, PLATFORM)
-		local device_type = keymap_binding[1]
-		local key_index = keymap_binding[2]
-		local input_style = style.input_text
-		local input_text = ""
+		local keymap_binding = input_service:get_keymapping(input_action, "win32")
 
-		if key_index ~= UNASSIGNED_KEY then
-			local device = (device_type == "mouse" and Mouse) or Keyboard
-			input_text = device.button_locale_name(key_index) or device.button_name(key_index) or Localize("lb_unknown")
+		if not keymap_binding then
+			content.input_text = UIRenderer.crop_text_width(self.ui_renderer, Localize("unassigned_keymap"), max_length, input_style)
+		else
+			local device_type = keymap_binding[1]
+			local key_index = keymap_binding[2]
+			local input_style = style.input_text
+			local input_text = ""
+
+			if key_index ~= UNASSIGNED_KEY then
+				local device = (device_type == "mouse" and Mouse) or Keyboard
+				input_text = device.button_locale_name(key_index) or device.button_name(key_index) or Localize("lb_unknown")
+			end
+
+			content.input_text = UIRenderer.crop_text_width(self.ui_renderer, input_text, max_length, input_style)
 		end
-
-		content.input_text = UIRenderer.crop_text_width(self.ui_renderer, input_text, max_length, input_style)
 	end
 end
 

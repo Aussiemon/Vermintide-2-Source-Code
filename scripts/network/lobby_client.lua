@@ -26,7 +26,7 @@ LobbyClient.destroy = function (self)
 		CHANNEL_TO_PEER_ID[channel_id] = nil
 	end
 
-	if IS_PS4 then
+	if IS_PS4 and self._host_peer_id then
 		QoSVoiceChat.close_voip_channel_by_peer_id(LobbyInternal.client, self._host_peer_id)
 	end
 

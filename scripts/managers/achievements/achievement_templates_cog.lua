@@ -280,11 +280,13 @@ achievements.cog_all_kill_barrage = {
 	end
 }
 achievements.cog_climb_kill = {
-	name = "achv_cog_climb_kill_name",
-	desc = "achv_cog_climb_kill_desc",
-	display_completion_ui = true,
-	icon = "achievement_trophy_cog_climb_kill",
 	required_dlc = "cog",
+	name = "achv_cog_climb_kill_name",
+	display_completion_ui = true,
+	desc = "achv_cog_climb_kill_desc",
+	required_career = "dr_engineer",
+	icon = "achievement_trophy_cog_climb_kill",
+	always_run = true,
 	events = {
 		"register_kill"
 	},

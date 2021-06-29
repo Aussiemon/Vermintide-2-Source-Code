@@ -98,9 +98,7 @@ settings.unlock_settings_ps4 = {
 	},
 	CUSA13645_00 = {
 		morris = {
-			product_label = "VERMINTIDE2000EU",
-			class = "UnlockGame",
-			service_label = 0
+			class = "AlwaysUnlocked"
 		},
 		grass = {
 			id = "78047b6b56134b6e86b44903e3bb9468",

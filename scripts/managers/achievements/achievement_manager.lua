@@ -44,6 +44,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	self._templates = {}
 	self._unlocked_achievements = {}
 	self._unlock_tasks = {}
+	self._available_careers = {}
 	self._achievement_data = {}
 	self._incompleted_achievements = {}
 	local backend_interface_loot = Managers.backend:get_interface("loot")
@@ -113,12 +114,39 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 	local unlocked_achievements = self._unlocked_achievements
 
 	if template_list then
-		local player = Managers.player:local_player()
-		local stats_id = player:stats_id()
+		local local_player = Managers.player:local_player()
+		local stats_id = local_player:stats_id()
 		local statistics_db = self._statistics_db
 
+		table.clear(self._available_careers)
+
+		local available_careers = self._available_careers
+		local player_manager = Managers.player
+		local human_players = player_manager:human_players()
+
+		if human_players then
+			for _, player in pairs(human_players) do
+				local profile_index = player._profile_index
+				profile_index = profile_index or (owner_player and owner_player:profile_index())
+
+				if profile_index then
+					local profile = SPProfiles[profile_index]
+					local career = profile and profile.careers[player._career_index]
+
+					if career then
+						available_careers[career.display_name] = true
+					end
+				end
+			end
+		end
+
 		for _, template in ipairs(template_list) do
-			if not unlocked_achievements[template.id] then
+			local completed = unlocked_achievements[template.id]
+			local required_career = template.required_career
+			local required_career_in_play = not required_career or available_careers[required_career]
+			local always_run = template.always_run
+
+			if required_career_in_play and (not completed or always_run) then
 				template.on_event(statistics_db, stats_id, template_event_data[template.id], event_name, {
 					...
 				})

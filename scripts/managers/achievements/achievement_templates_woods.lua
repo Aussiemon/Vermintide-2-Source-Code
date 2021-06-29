@@ -178,12 +178,14 @@ achievements.woods_wall_kill_grind = {
 	end
 }
 achievements.woods_lifted_kill = {
+	required_dlc = "woods",
 	name = "achv_woods_lifted_kill_name",
 	required_dlc_extra = "woods",
-	desc = "achv_woods_lifted_kill_desc",
 	display_completion_ui = true,
+	desc = "achv_woods_lifted_kill_desc",
+	required_career = "we_thornsister",
 	icon = "achievement_trophy_thornsister_ancients_vengeful_embrace",
-	required_dlc = "woods",
+	always_run = true,
 	events = {
 		"register_kill"
 	},
@@ -229,12 +231,14 @@ achievements.woods_lifted_kill = {
 	end
 }
 achievements.woods_triple_lift = {
+	required_dlc = "woods",
 	name = "achv_woods_triple_lift_name",
 	required_dlc_extra = "woods",
-	desc = "achv_woods_triple_lift_desc",
 	display_completion_ui = true,
+	desc = "achv_woods_triple_lift_desc",
+	required_career = "we_thornsister",
 	icon = "achievement_trophy_thornsister_away_with_the_faeries",
-	required_dlc = "woods",
+	always_run = true,
 	events = {
 		"vortex_caught_unit"
 	},
@@ -399,12 +403,14 @@ achievements.woods_bleed_grind = {
 	end
 }
 achievements.woods_chaos_pinata = {
+	required_dlc = "woods",
 	name = "achv_woods_chaos_pinata_name",
 	required_dlc_extra = "woods",
-	desc = "achv_woods_chaos_pinata_desc",
 	display_completion_ui = true,
+	desc = "achv_woods_chaos_pinata_desc",
+	required_career = "we_thornsister",
 	icon = "achievement_trophy_thornsister_together_we",
-	required_dlc = "woods",
+	always_run = true,
 	events = {
 		"vortex_caught_unit",
 		"register_damage",
@@ -750,12 +756,14 @@ achievements.woods_bleed_boss = {
 	end
 }
 achievements.woods_wall_kill_gutter = {
+	required_dlc = "woods",
 	name = "achv_woods_wall_kill_gutter_name",
 	required_dlc_extra = "woods",
-	desc = "achv_woods_wall_kill_gutter_desc",
 	display_completion_ui = true,
+	desc = "achv_woods_wall_kill_gutter_desc",
+	required_career = "we_thornsister",
 	icon = "achievement_trophy_thornsister_shall_not_pass",
-	required_dlc = "woods",
+	always_run = true,
 	events = {
 		"register_kill"
 	},
@@ -797,12 +805,14 @@ achievements.woods_wall_kill_gutter = {
 	end
 }
 achievements.woods_wall_dual_save = {
+	required_dlc = "woods",
 	name = "achv_woods_wall_dual_save_name",
 	required_dlc_extra = "woods",
-	desc = "achv_woods_wall_dual_save_desc",
 	display_completion_ui = true,
+	desc = "achv_woods_wall_dual_save_desc",
+	required_career = "we_thornsister",
 	icon = "achievement_trophy_thornsister_thorny_rescue",
-	required_dlc = "woods",
+	always_run = true,
 	events = {
 		"register_damage"
 	},
@@ -875,12 +885,14 @@ achievements.woods_wall_dual_save = {
 	end
 }
 achievements.woods_free_ability_grind = {
+	required_dlc = "woods",
 	name = "achv_woods_free_ability_grind_name",
 	required_dlc_extra = "woods",
-	desc = "achv_woods_free_ability_grind_desc",
 	display_completion_ui = true,
+	desc = "achv_woods_free_ability_grind_desc",
+	required_career = "we_thornsister",
 	icon = "achievement_trophy_thornsister_weaves_bounty",
-	required_dlc = "woods",
+	always_run = true,
 	events = {
 		"free_cast_used"
 	},
