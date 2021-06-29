@@ -113,7 +113,6 @@ AIDebugger.update = function (self, t, dt)
 		self:update_ingame_selection(false)
 
 		self.hint_time_when_key_handle_visible = t
-		self.key_handler_visible = nil
 
 		if script_data.ai_debugger_freeflight_only then
 			return

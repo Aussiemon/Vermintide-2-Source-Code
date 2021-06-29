@@ -83,11 +83,10 @@ return {
 			local pickup_settings = AllPickups[pickup_name]
 			local slot_name = pickup_settings.slot_name
 			local item_name = pickup_settings.item_name
-			local item_data = ItemMasterList[item_name]
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 
 			inventory_extension:destroy_slot(slot_name)
-			inventory_extension:add_equipment(slot_name, item_data)
+			inventory_extension:add_equipment(slot_name, item_name)
 
 			local network_manager = Managers.state.network
 			local network_transmit = network_manager.network_transmit

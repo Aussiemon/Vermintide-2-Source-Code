@@ -480,7 +480,7 @@ local scenegraph_definition = {
 			36
 		},
 		position = {
-			-40,
+			-36,
 			0,
 			-1
 		}
@@ -522,7 +522,7 @@ local scenegraph_definition = {
 			36
 		},
 		position = {
-			40,
+			36,
 			-0,
 			-1
 		}

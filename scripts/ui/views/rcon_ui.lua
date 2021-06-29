@@ -135,6 +135,8 @@ RconUI._update_input = function (self, dt, input_service, menu_active, menu_inpu
 			self._input_index = 1
 			self._input_mode = "insert"
 		elseif self._input_index <= MAX_CHARS then
+			Managers.chat:block_chat_input_for_one_frame()
+
 			local keystrokes = Keyboard.keystrokes()
 			local ctrl_button_index = Keyboard.button_index("left ctrl")
 			local ctrl_held = Keyboard.pressed(ctrl_button_index) or Keyboard.button(ctrl_button_index) > 0

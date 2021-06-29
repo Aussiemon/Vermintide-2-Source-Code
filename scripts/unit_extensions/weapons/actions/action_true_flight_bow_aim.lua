@@ -215,7 +215,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			end
 		end
 
-		if current_action.aim_sticky_target_size and current_target and self._is_sticky_target and higest_priority <= self._current_target_priority then
+		if current_action.aim_sticky_target_size and POSITION_LOOKUP[current_target] and self._is_sticky_target and higest_priority <= self._current_target_priority then
 			local old_target_distance_sq = vector3_distance_squared(POSITION_LOOKUP[current_target], player_position)
 			local new_target_distance_sq = (hit_unit and vector3_distance_squared(POSITION_LOOKUP[hit_unit], player_position)) or math.huge
 

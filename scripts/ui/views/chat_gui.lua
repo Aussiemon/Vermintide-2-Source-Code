@@ -507,6 +507,10 @@ ChatGui._hide_cursor = function (self)
 	end
 end
 
+ChatGui.block_chat_input_for_one_frame = function (self)
+	self._block_keystrokes = true
+end
+
 ChatGui._update_input = function (self, input_service, menu_input_service, dt, no_unblock, chat_enabled)
 	local input_manager = self.input_manager
 	local chat_focused = self.chat_focused
@@ -523,7 +527,8 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		self.block_chat_activation_hack = self.block_chat_activation_hack + dt
 	end
 
-	local block_chat_activation = self.block_chat_activation_hack < 0.2 or not Managers.chat:is_chat_enabled()
+	local block_chat_activation = self.block_chat_activation_hack < 0.2 or not Managers.chat:is_chat_enabled() or self._block_keystrokes
+	self._block_keystrokes = false
 
 	if chat_closed then
 		local alt_chat_input = input_service:get("execute_alt_chat_input")

@@ -553,7 +553,7 @@ IngamePlayerListUI.update_player_information = function (self)
 		local resync_player_level = player_data.resync_player_level
 
 		if resync_player_level then
-			local player_level = ExperienceSettings.get_player_level(player)
+			local player_level = ExperienceSettings.get_player_level(player) or Managers.mechanism:get_player_level_fallback(player)
 
 			if player_level then
 				player_data.level = player_level

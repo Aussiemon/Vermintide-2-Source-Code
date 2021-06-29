@@ -9,6 +9,7 @@ RemotePlayer.init = function (self, network_manager, peer, player_controlled, is
 	self._ui_id = ui_id
 	self._observed_player_id = nil
 	self._account_id = account_id
+	self._debug_name = Localize("tutorial_no_text")
 	self.owned_units = {}
 	self.game_object_id = nil
 	self._unique_id = unique_id
@@ -177,8 +178,13 @@ RemotePlayer.name = function (self)
 			return self._cached_name
 		end
 
-		name = Managers.state.network:lobby():user_name(self:network_id()) or "Remote #" .. tostring(self.peer_id:sub(-3, -1))
-		self._cached_name = name
+		local lobby = Managers.state.network:lobby()
+		local network_id = self:network_id()
+
+		if lobby and lobby.user_name and network_id then
+			name = lobby:user_name(network_id)
+			self._cached_name = name or "Remote #" .. tostring(network_id:sub(-3, -1))
+		end
 	elseif Managers.game_server then
 		if self._cached_name then
 			return self._cached_name

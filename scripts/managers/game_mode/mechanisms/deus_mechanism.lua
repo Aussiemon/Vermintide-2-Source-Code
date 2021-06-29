@@ -187,7 +187,10 @@ DeusMechanism.network_context_created = function (self, lobby, server_peer_id, o
 	if self._deus_run_controller then
 		Managers.mechanism:manual_end_venture()
 
-		if is_server and not self._deus_run_controller:get_run_ended() then
+		local current_level = Managers.level_transition_handler:get_current_level_key()
+		local level_settings = LevelSettings[current_level]
+
+		if is_server and not self._deus_run_controller:get_run_ended() and not level_settings.hub_level then
 			self._deus_run_controller:network_context_created(lobby, server_peer_id, own_peer_id, is_server, network_handler)
 		else
 			self._deus_run_controller:destroy()
@@ -440,7 +443,7 @@ DeusMechanism.get_end_of_level_extra_mission_results = function (self)
 end
 
 DeusMechanism.get_players_session_score = function (self, statistics_db, profile_synchronizer, saved_scoreboard_stats)
-	return self._deus_run_controller:get_scoreboard()
+	return self._deus_run_controller and self._deus_run_controller:get_scoreboard()
 end
 
 DeusMechanism.on_final_round_won = function (self, statistics_db, stats_id)
@@ -1202,6 +1205,14 @@ DeusMechanism._update_current_state = function (self)
 
 	Managers.mechanism:choose_next_state(new_state)
 	Managers.mechanism:progress_state()
+end
+
+DeusMechanism.get_player_level_fallback = function (self, player)
+	if self._deus_run_controller and player then
+		local peer_id = player.peer_id
+
+		return self._deus_run_controller:get_player_level(peer_id)
+	end
 end
 
 DeusMechanism.get_starting_level = function ()

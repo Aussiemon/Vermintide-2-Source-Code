@@ -104,11 +104,8 @@ CareerAbilityBarUI.update = function (self, dt, t, player)
 		self:_create_ui_elements()
 	end
 
-	local ui_scenegraph = self._ui_scenegraph
 	local input_manager = self._input_manager
-	local input_service = input_manager:get_service("ingame_menu")
 	local gamepad_active = (input_manager:is_device_active("gamepad") or UISettings.use_gamepad_hud_layout == "always") and UISettings.use_gamepad_hud_layout ~= "never"
-	local actual_player = (self._is_spectator and self._spectated_player) or player
 
 	if not gamepad_active then
 		return
@@ -116,7 +113,19 @@ CareerAbilityBarUI.update = function (self, dt, t, player)
 
 	self:_update_game_options()
 
-	if self:_update_career_ability(actual_player, dt) then
+	local actual_player = (self._is_spectator and self._spectated_player) or player
+	local is_dirty = self:_update_career_ability(actual_player, dt)
+	local has_twitch = Managers.twitch:is_activated()
+
+	if has_twitch ~= self._has_twitch then
+		self._ability_bar.offset[2] = (has_twitch and 100) or 0
+		self._has_twitch = has_twitch
+		is_dirty = true
+	end
+
+	if is_dirty then
+		local ui_scenegraph = self._ui_scenegraph
+		local input_service = input_manager:get_service("ingame_menu")
 		local parent = self._parent
 		local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
 

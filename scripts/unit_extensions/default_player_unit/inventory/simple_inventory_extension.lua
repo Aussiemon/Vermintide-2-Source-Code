@@ -673,7 +673,15 @@ SimpleInventoryExtension.has_inventory_item = function (self, slot_name, item_na
 	return false
 end
 
-SimpleInventoryExtension.add_equipment = function (self, slot_name, item_data, unit_template, extra_extension_data, ammo_percent)
+SimpleInventoryExtension.add_equipment = function (self, slot_name, item_name, unit_template, extra_extension_data, ammo_percent)
+	local item_data = nil
+
+	if type(item_name) == "string" then
+		item_data = ItemMasterList[item_name]
+	else
+		item_data = item_name
+	end
+
 	local world = self._world
 	local equipment = self._equipment
 	local unit_1p = self._first_person_unit

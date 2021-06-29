@@ -5200,16 +5200,11 @@ UITooltipPasses = {
 			end
 
 			if item_skin then
-				local matching_item_key = item_data.matching_item_key
-				local matching_item_data = matching_item_key and ItemMasterList[matching_item_key]
-
-				if matching_item_data then
-					local matching_item_type = matching_item_data.item_type
-					content.text = Localize(matching_item_type) .. content.sufix_text
-				else
-					content.text = "n/a" .. content.sufix_text
-				end
-
+				local skin_item_name = WeaponSkins.matching_weapon_skin_item_key(item_skin)
+				local base_item_name = skin_item_name and string.match(skin_item_name, "^([%w_]+)_skin$")
+				local base_item = rawget(ItemMasterList, base_item_name)
+				local base_item_type = (base_item and base_item.item_type) or "lb_unknown"
+				content.text = Localize(base_item_type) .. content.sufix_text
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]

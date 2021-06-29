@@ -140,7 +140,7 @@ OverchargeData.we_thornsister = {
 	lockout_overcharge_decay_rate = 4,
 	explode_vfx_name = "fx/thornsister_overcharge_explosion_3p",
 	overcharge_ui = {
-		material = "overcharge_bar_1",
+		material = "overcharge_bar",
 		color_normal = {
 			255,
 			180,

@@ -284,54 +284,42 @@ end
 
 HeroViewStateAchievements._setup_achievement_progress_overview = function (self)
 	local achievement_manager = self._achievement_manager
-	local loot_interface = Managers.backend:get_interface("loot")
 
-	local function gather_category_progress(category, amount, amount_completed, incomplete_but_claimed)
+	local function gather_category_progress(category, amount, amount_claimed)
 		if category.entries then
 			local entries = category.entries
 
 			for _, achievement_id in ipairs(entries) do
 				amount = amount + 1
 
-				if achievement_manager:get_data_by_id(achievement_id).completed then
-					amount_completed = amount_completed + 1
-				elseif loot_interface:achievement_rewards_claimed(achievement_id) then
-					incomplete_but_claimed[#incomplete_but_claimed + 1] = achievement_id
+				if achievement_manager:get_data_by_id(achievement_id).claimed then
+					amount_claimed = amount_claimed + 1
 				end
 			end
 		end
 
 		if category.categories then
 			for _, category_category in ipairs(category.categories) do
-				amount, amount_completed, incomplete_but_claimed = gather_category_progress(category_category, amount, amount_completed, incomplete_but_claimed)
+				amount, amount_claimed = gather_category_progress(category_category, amount, amount_claimed)
 			end
 		end
 
-		return amount, amount_completed, incomplete_but_claimed
+		return amount, amount_claimed
 	end
 
 	local progress_overview = {}
 	local achievement_outline = achievement_manager:outline()
-	local all_incomplete_but_claimed = {}
 
 	for i, category in ipairs(achievement_outline.categories) do
 		if category.present_progression then
 			local category_progress_data = {
 				display_name = category.name
 			}
-			local amount, amount_completed, current_incomplete_but_claimed = gather_category_progress(category, 0, 0, {})
+			local amount, amount_claimed = gather_category_progress(category, 0, 0)
 			category_progress_data.amount = amount
-			category_progress_data.amount_completed = amount_completed
+			category_progress_data.amount_claimed = amount_claimed
 			progress_overview[i] = category_progress_data
-
-			if #current_incomplete_but_claimed > 0 then
-				table.append(all_incomplete_but_claimed, current_incomplete_but_claimed)
-			end
 		end
-	end
-
-	if #all_incomplete_but_claimed > 0 then
-		Crashify.print_exception("HeroViewStateAchievements", "Challenges incomplete but claimed: " .. table.dump_string(all_incomplete_but_claimed))
 	end
 
 	self:_set_summary_achievement_categories_progress(progress_overview)
@@ -2246,9 +2234,9 @@ HeroViewStateAchievements._set_summary_achievement_categories_progress = functio
 	for index, data in ipairs(progress_data) do
 		local display_name = data.display_name
 		local amount = data.amount
-		local amount_completed = data.amount_completed
-		local progress = amount_completed / amount
-		local value_text = tostring(amount_completed) .. "/" .. tostring(amount)
+		local amount_claimed = data.amount_claimed
+		local progress = amount_claimed / amount
+		local value_text = tostring(amount_claimed) .. "/" .. tostring(amount)
 		local title_text = Localize(display_name)
 		local widget_name = name .. tostring(index)
 		local widget = summary_widgets_by_name[widget_name]

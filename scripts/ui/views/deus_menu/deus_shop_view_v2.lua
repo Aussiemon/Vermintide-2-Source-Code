@@ -80,54 +80,6 @@ local function get_color_for_consumable_item(item_key)
 	return (item_key and UISettings.inventory_consumable_slot_colors[item_key]) or default_color
 end
 
-local function update_portrait(widget, frame_name, offset)
-	local frame_settings = UIPlayerPortraitFrameSettings[frame_name] or UIPlayerPortraitFrameSettings.default
-
-	for index, frame_data in ipairs(frame_settings) do
-		local name = "texture_" .. index
-		local texture_name = frame_data.texture or "icons_placeholder"
-		local size = nil
-
-		if UIAtlasHelper.has_atlas_settings_by_texture_name(texture_name) then
-			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
-			size = texture_settings.size
-		else
-			size = frame_data.size
-		end
-
-		size = (size and table.clone(size)) or {
-			0,
-			0
-		}
-		offset = (offset and table.clone(offset)) or {
-			0,
-			0,
-			0
-		}
-
-		if frame_data.offset then
-			offset[1] = offset[1] + frame_data.offset[1]
-			offset[2] = offset[2] + frame_data.offset[2]
-			offset[3] = offset[3] + frame_data.offset[3]
-		end
-
-		offset[1] = -(size[1] / 2) + offset[1]
-		offset[2] = offset[2]
-		offset[3] = frame_data.layer or 0
-		widget.content[name] = texture_name
-		widget.style[name] = {
-			color = frame_data.color or {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = offset,
-			size = size
-		}
-	end
-end
-
 DeusShopView.init = function (self, context)
 	local input_service_name = "deus_shop_view"
 	local input_manager = context.input_manager
@@ -303,6 +255,7 @@ DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, ble
 		}
 	end
 
+	local blessing_frame_widgets = {}
 	local num_blessings = #blessings
 
 	for i = 1, num_blessings, 1 do
@@ -319,6 +272,22 @@ DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, ble
 			0
 		}
 		local blessing_name = blessings[i]
+		local widget_offset = widget.offset
+		local relative_offset = {
+			541,
+			75,
+			10
+		}
+		local frame_offset = {
+			widget_offset[1] + relative_offset[1],
+			widget_offset[2] + relative_offset[2],
+			widget_offset[3] + relative_offset[3]
+		}
+		local frame_widget_definition = definitions.create_blessing_portraits_frame("blessing_root", "default", "-", false, frame_offset)
+		local frame_widget = UIWidget.init(frame_widget_definition)
+		widget.content.frame_index = i
+		blessing_frame_widgets[#blessing_frame_widgets + 1] = frame_widget
+		widgets_by_name[blessing_name .. "_portrait_frame_" .. i] = frame_widget
 
 		self:_init_blessing_widget(widget, blessing_name)
 
@@ -331,6 +300,29 @@ DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, ble
 		}
 	end
 
+	local peers = self._deus_run_controller:get_peers()
+	local portrait_frame_widgets = {}
+
+	for i = 1, 4, 1 do
+		local name = "player_portrait_frame_" .. i
+		local widget_definition, widget = nil
+
+		if peers[i] then
+			local profile_index, career_index = self._deus_run_controller:get_player_profile(peers[i], REAL_PLAYER_LOCAL_ID)
+			local level_text = self._deus_run_controller:get_player_level(peers[i], profile_index) or "n/a"
+			local frame_settings_name = self._deus_run_controller:get_player_frame(peers[i], profile_index, career_index)
+			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_portrait_" .. i, frame_settings_name, level_text, false)
+		else
+			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_portrait_" .. i, "default", " ", false)
+		end
+
+		widget = UIWidget.init(widget_definition)
+		portrait_frame_widgets[#portrait_frame_widgets + 1] = widget
+		widgets_by_name[name] = widget
+	end
+
+	self._blessing_frame_widgets = blessing_frame_widgets
+	self._portrait_frame_widgets = portrait_frame_widgets
 	self._shop_items = shop_items
 	self._shop_item_widgets = shop_item_widgets
 	self._widgets = widgets
@@ -415,6 +407,13 @@ end
 
 DeusShopView.destroy = function (self)
 	self:destroy_idol()
+
+	local state = self._shared_state:get_server(self._shared_state:get_key("shop_state"))
+
+	if state ~= states.FINISHED and state ~= states.INITIALIZED then
+		self:_release_input()
+	end
+
 	self._shared_state:destroy()
 
 	self._shared_state = nil
@@ -600,13 +599,22 @@ DeusShopView._update_shop_widgets = function (self)
 				local name = self._deus_run_controller:get_player_name(buyer)
 				local level = self._deus_run_controller:get_player_level(buyer, profile_index)
 				local frame = self._deus_run_controller:get_player_frame(buyer, profile_index, career_index)
-				local offset = {
+				local widget_offset = widget.offset
+				local relative_offset = {
 					541,
 					75,
 					10
 				}
+				local frame_offset = {
+					widget_offset[1] + relative_offset[1],
+					widget_offset[2] + relative_offset[2],
+					widget_offset[3] + relative_offset[3]
+				}
+				local blessing_portrait_frame = self._blessing_frame_widgets[content.frame_index]
 
-				update_portrait(widget, frame, offset)
+				if blessing_portrait_frame.content.frame_settings_name ~= frame or blessing_portrait_frame.content.level ~= level then
+					self:_update_blessing_portrait_frame(frame, tostring(level), blessing_name, content.frame_index, frame_offset, content.is_bought)
+				end
 
 				content.player_name_text = name
 				content.character_portrait = career_data.portrait_image
@@ -825,6 +833,21 @@ DeusShopView._update_player_data = function (self)
 	self:_update_player_portraits(player_data)
 end
 
+DeusShopView._update_portrait_frame = function (self, frame_name, level_text, index)
+	local new_frame_widget_definition = UIWidgets.deus_create_player_portraits_frame("player_portrait_" .. index, frame_name, level_text, false)
+	local new_frame_widget = UIWidget.init(new_frame_widget_definition)
+	self._portrait_frame_widgets[index] = new_frame_widget
+	self._widgets_by_name["player_portrait_frame_" .. index] = new_frame_widget
+end
+
+DeusShopView._update_blessing_portrait_frame = function (self, frame_name, level_text, blessing_name, index, offset, is_bought)
+	local new_frame_widget_definition = definitions.create_blessing_portraits_frame("blessing_root", frame_name, level_text, false, offset)
+	local new_frame_widget = UIWidget.init(new_frame_widget_definition)
+	new_frame_widget.content.is_bought = is_bought
+	self._blessing_frame_widgets[index] = new_frame_widget
+	self._widgets_by_name[blessing_name .. "_portrait_frame_" .. index] = new_frame_widget
+end
+
 DeusShopView._update_player_portraits = function (self, player_data)
 	local widgets_by_name = self._widgets_by_name
 	local ready_button_tokens = widgets_by_name.ready_button_tokens
@@ -833,16 +856,24 @@ DeusShopView._update_player_portraits = function (self, player_data)
 		local data = player_data[i]
 		local player_portrait = widgets_by_name["player_portrait_" .. i]
 		local player_texts = widgets_by_name["player_texts_" .. i]
+		local player_portrait_frame = widgets_by_name["player_portrait_frame_" .. i]
 		local should_be_visible = not not data
 		player_portrait.content.visible = should_be_visible
 		player_texts.content.visible = should_be_visible
+		player_portrait_frame.content.visible = should_be_visible
 		local token_icon_name = "token_icon_" .. i
 		ready_button_tokens.content[token_icon_name] = nil
 
 		if should_be_visible then
-			update_portrait(player_portrait, data.frame)
+			local frame_settings_name = data.frame or "default"
+			local level = data.level or "-"
 
-			player_portrait.content.level = data.level or "-"
+			if player_portrait_frame.content.frame_settings_name ~= frame_settings_name or player_portrait_frame.content.level ~= level then
+				self:_update_portrait_frame(frame_settings_name, level, i)
+
+				player_portrait_frame.content.level = level
+			end
+
 			player_texts.content.name_text = data.name or ""
 			player_texts.content.coins_text = string.format("%d", data.soft_currency or 0)
 			player_portrait.style.token_icon.saturated = data.peer_state == peer_states.DONE_BUYING
@@ -1048,6 +1079,13 @@ DeusShopView._draw = function (self, dt)
 		render_settings.snap_pixel_positions = snap_pixel_positions
 	end
 
+	local protrait_frame_widgets = self._portrait_frame_widgets
+
+	UIRenderer.draw_all_widgets(ui_renderer, protrait_frame_widgets)
+
+	local blessing_frame_widgets = self._blessing_frame_widgets
+
+	UIRenderer.draw_all_widgets(ui_renderer, blessing_frame_widgets)
 	UIRenderer.end_pass(ui_renderer)
 end
 

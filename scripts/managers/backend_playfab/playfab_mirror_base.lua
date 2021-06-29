@@ -248,6 +248,7 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 		if item_type == "keep_decoration_painting" then
 			local reward = {
 				reward_type = "keep_decoration_painting",
+				rewarded_from = item.Data.rewarded_from,
 				keep_decoration_name = item_id
 			}
 			unseen_rewards[#unseen_rewards + 1] = reward

@@ -132,8 +132,14 @@ ImguiManager.add_gui = function (self, gui_class, category, name, enabled)
 	end
 
 	local category_table = self._guis[category]
+	local index = 1
+	local max_index = #category_table
 
-	table.insert(category_table, {
+	while index <= max_index and category_table[index].name < name do
+		index = index + 1
+	end
+
+	table.insert(category_table, index, {
 		gui = gui,
 		name = name,
 		enabled = enabled

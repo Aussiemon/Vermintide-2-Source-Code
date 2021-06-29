@@ -68,8 +68,6 @@ GamePadAbilityUI._sync_ability_cooldown = function (self)
 
 	self._ability_usable = career_extension:can_use_activated_ability()
 
-	self:_update_thornsister_passive(career_extension)
-
 	if ability_cooldown then
 		local cooldown_fraction = ability_cooldown / max_cooldown
 		local update = cooldown_fraction ~= self._current_cooldown_fraction
@@ -80,7 +78,15 @@ GamePadAbilityUI._sync_ability_cooldown = function (self)
 	end
 end
 
-GamePadAbilityUI._update_thornsister_passive = function (self, career_extension)
+GamePadAbilityUI._update_thornsister_passive = function (self)
+	local player = self._player
+	local player_unit = player.player_unit
+
+	if not player_unit then
+		return
+	end
+
+	local career_extension = ScriptUnit.extension(player_unit, "career_system")
 	local widgets_by_name = self._widgets_by_name
 	local thornsister_widget = widgets_by_name.thornsister_passive
 	local thornsister_content = thornsister_widget.content
@@ -97,7 +103,8 @@ GamePadAbilityUI._update_thornsister_passive = function (self, career_extension)
 		ability_content.hide_effect = has_thornsister_passive
 
 		self:_set_widget_dirty(ability_widget)
-		self:set_dirty()
+
+		return true
 	end
 end
 
@@ -204,6 +211,10 @@ GamePadAbilityUI.update = function (self, dt, t)
 		self:_setup_activated_ability()
 	else
 		local dirty = false
+
+		if self:_update_thornsister_passive() then
+			dirty = true
+		end
 
 		if self._current_cooldown_fraction == 0 or self._ability_usable then
 			dirty = self:_update_ability_animations(dt, t)

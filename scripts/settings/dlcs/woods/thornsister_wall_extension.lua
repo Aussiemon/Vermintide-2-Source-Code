@@ -61,11 +61,11 @@ ThornSisterWallExtension.trigger_area_damage = function (self)
 end
 
 ThornSisterWallExtension.despawn = function (self)
-	local do_explosion = self._is_server and self._is_explosive_wall and not self._chain_kill
+	local owner_unit = self._owner_unit
+	local do_explosion = self._is_server and self._is_explosive_wall and not self._chain_kill and ALIVE[owner_unit]
 	local segment_count = 1
 	local average_position = Vector3.zero()
 	average_position = average_position + POSITION_LOOKUP[self._unit]
-	local owner_unit = self._owner_unit
 	local all_thorn_walls = Managers.state.entity:get_entities("ThornSisterWallExtension")
 
 	if all_thorn_walls then

@@ -140,9 +140,7 @@ local widget_definitions = {
 			}
 		},
 		content = {
-			bar_2 = "overcharge_bar_2",
 			input_text = "",
-			bar_3 = "overcharge_bar_3",
 			bar_1 = "active_ability_bar",
 			icon = "xbone_button_icon_x",
 			bar_fg = "overcharge_frame",
@@ -323,6 +321,11 @@ local widget_definitions = {
 					3
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	}
 }

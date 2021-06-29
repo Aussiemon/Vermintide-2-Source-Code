@@ -623,7 +623,20 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 		},
 		scenegraph_id = scenegraph_id
 	}
-	frame_settings_name = frame_settings_name or "default"
+
+	return widget
+end
+
+UIWidgets.deus_create_player_portraits_frame = function (scenegraph_id, frame_settings_name, level_text, retained_mode, offset)
+	local retained_mode = retained_mode
+	local scenegraph_id = scenegraph_id
+	local widget = {
+		element = {
+			passes = {}
+		},
+		content = {},
+		style = {}
+	}
 	local frame_settings = UIPlayerPortraitFrameSettings[frame_settings_name]
 	local default_color = {
 		255,
@@ -631,7 +644,7 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 		255,
 		255
 	}
-	local default_offset = {
+	local default_offset = offset or {
 		0,
 		0,
 		0
@@ -654,10 +667,20 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 			0,
 			0
 		}
-		local offset = table.clone(data.offset or default_offset)
-		offset[1] = -(size[1] / 2) + offset[1]
-		offset[2] = offset[2]
-		offset[3] = data.layer or 0
+		local offset = {}
+
+		if data.offset then
+			offset = table.clone(data.offset)
+			offset[1] = default_offset[1] + -(size[1] / 2) + offset[1]
+			offset[2] = default_offset[2] + 60 + offset[2]
+			offset[3] = data.layer or 0
+		else
+			offset = table.clone(default_offset)
+			offset[1] = -(size[1] / 2) + offset[1]
+			offset[2] = offset[2]
+			offset[3] = data.layer or 0
+		end
+
 		widget.element.passes[#widget.element.passes + 1] = {
 			pass_type = "texture",
 			texture_id = name,
@@ -697,6 +720,7 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 		text_color = Colors.get_color_table_with_alpha("white", 255),
 		offset = level_offset
 	}
+	widget.scenegraph_id = scenegraph_id
 
 	return widget
 end

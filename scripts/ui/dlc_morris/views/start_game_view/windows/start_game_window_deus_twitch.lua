@@ -206,6 +206,8 @@ StartGameWindowDeusTwitch._handle_twitch_login_input = function (self, dt, t, in
 
 					self:set_input_blocked(false)
 				else
+					Managers.chat:block_chat_input_for_one_frame()
+
 					local keystrokes = Keyboard.keystrokes()
 					frame_widget_content.twitch_name, frame_widget_content.caret_index = KeystrokeHelper.parse_strokes(frame_widget_content.twitch_name, frame_widget_content.caret_index, "insert", keystrokes)
 

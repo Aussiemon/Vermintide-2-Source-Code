@@ -3,7 +3,7 @@ require("scripts/ui/views/deus_menu/deus_map_view")
 require("scripts/settings/dlcs/morris/deus_map_visibility_settings")
 
 DeusMapDecisionView = class(DeusMapDecisionView, DeusMapView)
-local START_COUNTDOWN = 30
+local START_COUNTDOWN = 5
 local VOTING_COUNTDOWN = 30
 local VOTING_FINISHING_COUNTDOWN = 5
 local FINAL_COUNTDOWN = 3

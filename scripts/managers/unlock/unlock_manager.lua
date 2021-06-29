@@ -10,7 +10,12 @@ UnlockManager = class(UnlockManager)
 UnlockManager.init = function (self)
 	self:_init_unlocks()
 
-	self._state = "handle_reminder_popup"
+	if IS_WINDOWS then
+		self._state = "handle_reminder_popup"
+	else
+		self._state = "query_unlocked"
+	end
+
 	self._query_unlocked_index = 0
 	self._dlc_status_changed = nil
 	self._update_unlocks = false

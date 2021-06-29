@@ -48,7 +48,16 @@ EnergyBarUI.create_ui_elements = function (self)
 end
 
 EnergyBarUI.update = function (self, dt, t, player)
-	if self:_update_energy(player, dt) then
+	local is_dirty = self:_update_energy(player, dt)
+	local has_twitch = Managers.twitch:is_activated()
+
+	if has_twitch ~= self._has_twitch then
+		self.charge_bar.offset[2] = (has_twitch and 100) or 0
+		self._has_twitch = has_twitch
+		is_dirty = true
+	end
+
+	if is_dirty then
 		local ui_scenegraph = self.ui_scenegraph
 		local input_manager = self.input_manager
 		local input_service = input_manager:get_service("ingame_menu")

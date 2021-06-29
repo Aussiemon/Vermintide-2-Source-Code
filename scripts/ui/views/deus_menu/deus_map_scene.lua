@@ -578,8 +578,10 @@ DeusMapScene._update_cursor = function (self, gamepad_active)
 	local cursor = self._input_service:get("cursor") or NilCursor
 	local cursor_position = nil
 
-	if gamepad_active then
-		cursor_position = UIScaleVectorToResolution(cursor)
+	if IS_XB1 and not gamepad_active then
+		cursor_position = Vector3(cursor[1], 1080 - cursor[2], cursor[3])
+	elseif gamepad_active then
+		cursor_position = UIInverseScaleVectorToResolution(cursor)
 	else
 		cursor_position = cursor
 	end

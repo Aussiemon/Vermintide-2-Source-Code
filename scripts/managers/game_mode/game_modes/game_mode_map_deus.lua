@@ -134,6 +134,19 @@ GameModeMapDeus.local_player_game_starts = function (self, player, loading_conte
 	end
 
 	self._shared_state:full_sync()
+
+	local profile_index = player:profile_index()
+	local career_index = player:career_index()
+
+	CosmeticUtils.sync_local_player_cosmetics(player, profile_index, career_index)
+end
+
+GameModeMapDeus.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
+	if peer_id == self._own_peer_id then
+		local player = Managers.player:player(peer_id, local_player_id)
+
+		CosmeticUtils.sync_local_player_cosmetics(player, profile_index, career_index)
+	end
 end
 
 GameModeMapDeus.update = function (self, t, dt)

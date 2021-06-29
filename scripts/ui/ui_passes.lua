@@ -4672,6 +4672,9 @@ UIPasses.keystrokes = {
 			local caret_index = ui_content.caret_index
 			local input_mode = ui_content.input_mode
 			local max_length = ui_content.max_length
+
+			Managers.chat:block_chat_input_for_one_frame()
+
 			local keystrokes = Keyboard.keystrokes()
 			local new_input_text, new_caret_index, new_input_mode = KeystrokeHelper.parse_strokes(input_text, caret_index, input_mode, keystrokes, max_length)
 			ui_content[pass_data.input_text_id] = new_input_text

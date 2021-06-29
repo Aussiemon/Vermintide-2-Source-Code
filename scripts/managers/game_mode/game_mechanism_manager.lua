@@ -660,7 +660,7 @@ GameMechanismManager.get_players_session_score = function (self, statistics_db, 
 		scoreboard = self.synced_players_session_score
 	end
 
-	scoreboard = scoreboard or ((not self._game_mechanism.get_players_session_score or self._game_mechanism:get_players_session_score(statistics_db, profile_synchronizer, saved_scoreboard_stats)) and ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats))
+	scoreboard = scoreboard or scoreboard or ScoreboardHelper.get_grouped_topic_statistics(statistics_db, profile_synchronizer, saved_scoreboard_stats)
 
 	return scoreboard
 end
@@ -936,9 +936,9 @@ GameMechanismManager.rpc_sync_players_session_score = function (self, channel_id
 
 	if self._game_mechanism.get_players_session_score then
 		unsynced_players_session_score = self._game_mechanism:get_players_session_score(statistics_db, self._profile_synchronizer)
-	else
-		unsynced_players_session_score = ScoreboardHelper.get_grouped_topic_statistics(statistics_db, self._profile_synchronizer)
 	end
+
+	unsynced_players_session_score = unsynced_players_session_score or ScoreboardHelper.get_grouped_topic_statistics(statistics_db, self._profile_synchronizer)
 
 	if ScoreboardHelper.num_stats_per_player ~= num_stats_per_player then
 		Crashify.print_exception("GameMechanismManager", "rpc_sync_players_session_score received with mismatching stats_per_player count, probably the host was modded. Ignoring the host score and using client's.")
@@ -1053,6 +1053,12 @@ end
 GameMechanismManager.override_hub_level = function (self, new_hub_level_key)
 	if self._game_mechanism and self._game_mechanism.override_hub_level then
 		self._game_mechanism:override_hub_level(new_hub_level_key)
+	end
+end
+
+GameMechanismManager.get_player_level_fallback = function (self, player)
+	if self._game_mechanism and self._game_mechanism.get_player_level_fallback then
+		return self._game_mechanism:get_player_level_fallback(player)
 	end
 end
 

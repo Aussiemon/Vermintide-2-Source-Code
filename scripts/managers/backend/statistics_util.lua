@@ -225,6 +225,15 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 
 			if master_list_item then
 				local slot_type = master_list_item.slot_type
+				local attack_type = damage_data[DamageDataIndex.ATTACK_TYPE]
+
+				if attack_type then
+					if attack_type == "heavy_attack" or attack_type == "light_attack" then
+						slot_type = "melee"
+					else
+						slot_type = "ranged"
+					end
+				end
 
 				if not slot_type then
 					local weapon_template_name = master_list_item.template

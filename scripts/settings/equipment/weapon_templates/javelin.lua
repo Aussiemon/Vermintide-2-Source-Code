@@ -294,16 +294,16 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "javelin_stab_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
 			width_mod = 20,
-			damage_profile = "medium_javelin_smiter_stab",
+			use_precision_sweep = true,
 			hit_shield_stop_anim = "attack_hit_shield",
-			aim_assist_ramp_multiplier = 0.5,
+			damage_profile = "medium_javelin_smiter_stab",
 			hit_effect = "melee_hit_sword_1h",
+			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.2,
 			impact_sound_event = "javelin_stab_hit",
+			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.8,
 			range_mod_add = 0.25,
@@ -328,6 +328,11 @@ weapon_template.actions = {
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -437,16 +442,16 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "javelin_stab_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
 			width_mod = 20,
-			damage_profile = "medium_javelin_smiter_stab",
+			use_precision_sweep = true,
 			hit_shield_stop_anim = "attack_hit_shield",
-			aim_assist_ramp_multiplier = 0.5,
+			damage_profile = "medium_javelin_smiter_stab",
 			hit_effect = "melee_hit_sword_1h",
+			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.16,
 			impact_sound_event = "javelin_stab_hit",
+			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.8,
 			range_mod_add = 0.25,
@@ -471,6 +476,11 @@ weapon_template.actions = {
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -579,16 +589,16 @@ weapon_template.actions = {
 			kind = "sweep",
 			no_damage_impact_sound_event = "javelin_stab_hit_armour",
 			additional_critical_strike_chance = 0,
-			use_precision_sweep = true,
 			width_mod = 20,
-			damage_profile = "heavy_javelin_smiter_stab_bleed",
+			use_precision_sweep = true,
 			hit_shield_stop_anim = "attack_hit_shield",
-			aim_assist_ramp_multiplier = 0.5,
+			damage_profile = "heavy_javelin_smiter_stab_bleed",
 			hit_effect = "melee_hit_sword_1h",
+			aim_assist_ramp_multiplier = 0.5,
 			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.1,
 			damage_window_end = 0.16,
 			impact_sound_event = "javelin_stab_hit",
+			aim_assist_ramp_decay_delay = 0.1,
 			anim_end_event = "attack_finished",
 			dedicated_target_range = 2.8,
 			range_mod_add = 0.25,
@@ -613,6 +623,11 @@ weapon_template.actions = {
 					buff_name = "planted_fast_decrease_movement"
 				}
 			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",

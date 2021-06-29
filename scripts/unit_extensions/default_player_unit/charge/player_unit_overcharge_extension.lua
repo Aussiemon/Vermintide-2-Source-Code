@@ -190,6 +190,9 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 		local vent_amount = self.overcharge_value * self.original_max_value / 80 * vent_speed
 		local current_overcharge_value = self.overcharge_value
 		local new_overcharge_value = current_overcharge_value - vent_amount
+
+		self:_update_overcharge_buff_state(current_overcharge_value, new_overcharge_value)
+
 		self.overcharge_value = new_overcharge_value
 		self.vent_damage_pool = self.vent_damage_pool + vent_amount * 2
 
@@ -272,19 +275,8 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			end
 
 			local new_overcharge_value = math.min(math.max(0, value), self.max_value)
-			local old_state = self:_overcharge_value_state(self.overcharge_value)
-			local new_state = self:_overcharge_value_state(new_overcharge_value)
-			local entered_new_state = old_state ~= new_state
 
-			if entered_new_state then
-				self:_update_overcharge_buff(new_state)
-
-				local state_settings = self._overcharge_states[new_state]
-
-				if state_settings then
-					self:_trigger_controller_effect("rumble", state_settings.controller_effect)
-				end
-			end
+			self:_update_overcharge_buff_state(self.overcharge_value, new_overcharge_value)
 
 			self.overcharge_value = new_overcharge_value
 		end
@@ -609,6 +601,22 @@ PlayerUnitOverchargeExtension._update_screen_effect = function (self, overcharge
 		self:_destroy_screen_space_particles(self.critical_onscreen_particles_id)
 
 		self.critical_onscreen_particles_id = nil
+	end
+end
+
+PlayerUnitOverchargeExtension._update_overcharge_buff_state = function (self, old_overcharge_value, new_overcharge_value)
+	local old_state = self:_overcharge_value_state(old_overcharge_value)
+	local new_state = self:_overcharge_value_state(new_overcharge_value)
+	local entered_new_state = old_state ~= new_state
+
+	if entered_new_state then
+		self:_update_overcharge_buff(new_state)
+
+		local state_settings = self._overcharge_states[new_state]
+
+		if state_settings then
+			self:_trigger_controller_effect("rumble", state_settings.controller_effect)
+		end
 	end
 end
 

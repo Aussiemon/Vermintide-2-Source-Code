@@ -23,6 +23,7 @@ ActionCareerWHBountyhunter.client_owner_start_action = function (self, new_actio
 		action_init_data.lower_barrel = "shotgun"
 	end
 
+	self.career_extension:reduce_activated_ability_cooldown_percent(-1)
 	ActionCareerWHBountyhunter.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	self:_play_vo()
 
@@ -37,9 +38,7 @@ ActionCareerWHBountyhunter.client_owner_post_update = function (self, dt, ...)
 		self.start_activated_ability_cooldown_t = self.start_activated_ability_cooldown_t - dt
 
 		if self.start_activated_ability_cooldown_t <= 0 then
-			local career_extension = self.career_extension
-
-			career_extension:start_activated_ability_cooldown()
+			self.career_extension:start_activated_ability_cooldown(1, 0, 0)
 
 			self.start_activated_ability_cooldown_t = nil
 		end

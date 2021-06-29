@@ -1137,6 +1137,13 @@ end
 
 TerrorEventMixer.start_random_event = function (event_chunk_name)
 	local level_transition_handler = Managers.level_transition_handler
+
+	if level_transition_handler:needs_level_load() then
+		print("TerrorEventMixer.start_random_event:", event_chunk_name, " ignored because game is transitioning away.")
+
+		return
+	end
+
 	local level_key = level_transition_handler:get_current_level_keys()
 	local event_chunk = WeightedRandomTerrorEvents[level_key][event_chunk_name]
 

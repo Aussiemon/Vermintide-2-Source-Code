@@ -274,7 +274,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 					local potion = data.consumables.slot_potion
 					local grenade = data.consumables.slot_grenade
 
-					self:_respawn_player(player, profile_index, career_index, respawn_unit, health_kit, potion, grenade, additional_items)
+					self:_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items)
 				else
 					local respawn_unit_id = Managers.state.network:level_object_id(respawn_unit_to_use)
 					local network_consumables = SpawningHelper.netpack_consumables(data.consumables)

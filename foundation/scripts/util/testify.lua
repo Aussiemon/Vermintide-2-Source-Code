@@ -88,6 +88,9 @@ Testify = {
 			self._requests[key] = nil
 		end
 	end,
+	print_test_case_marker = function (self)
+		print("<<testify>>test case<</testify>>")
+	end,
 	inspect = function (self)
 		printf("[Testify] Test case running? %s", self._thread ~= nil)
 		table.dump(self._requests, "[Testify] Requests", 2)

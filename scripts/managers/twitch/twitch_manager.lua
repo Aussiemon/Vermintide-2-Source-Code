@@ -61,23 +61,21 @@ TwitchManager.init = function (self)
 	TwitchSettings.disable_giving_items = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_giving_items or disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
 	TwitchSettings.disable_positive_votes = disable_positive_votes_setting == TwitchSettings.positive_vote_options.disable_positive_votes
 	TwitchSettings.disable_mutators = Application.user_setting("twitch_disable_mutators")
-	TwitchSettings.spawn_amount_multiplier = math.min(Application.user_setting("twitch_spawn_amount"), 3)
-	TwitchSettings.mutator_duration_multiplier = math.min(Application.user_setting("twitch_mutator_duration"), 3)
+	TwitchSettings.spawn_amount_multiplier = math.clamp(Application.user_setting("twitch_spawn_amount"), 1, 3)
+	TwitchSettings.mutator_duration_multiplier = math.clamp(Application.user_setting("twitch_mutator_duration"), 1, 3)
 	self._debug_vote_timer = 0.25
 end
 
 local twitch_difficulty_override = {
 	cataclysm = true,
 	cataclysm_3 = true,
-	cataclysm_2 = true,
-	legend = true
+	hardest = true,
+	cataclysm_2 = true
 }
 
 TwitchManager.game_mode_supported = function (self, game_mode, difficulty)
 	local supported_game_modes = TwitchSettings.supported_game_modes[PLATFORM]
 	local supported = supported_game_modes[game_mode] or not not twitch_difficulty_override[difficulty]
-
-	printf("[TwitchManager] game_mode_supported(game_mode=%q, difficulty=%q) => %s", game_mode, difficulty, supported)
 
 	return supported
 end

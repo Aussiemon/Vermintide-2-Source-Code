@@ -5,7 +5,7 @@ local accepted_slots = {
 	slot_melee = true
 }
 local DEFAULT_UI_DATA = {
-	material = "overcharge_bar_1",
+	material = "overcharge_bar",
 	color_normal = {
 		255,
 		255,
@@ -151,7 +151,16 @@ OverchargeBarUI.update = function (self, dt, t, player)
 		UISceneGraph.update_scenegraph(ui_scenegraph)
 	end
 
-	if self:_update_overcharge(actual_player, dt) then
+	local is_dirty = self:_update_overcharge(actual_player, dt)
+	local has_twitch = Managers.twitch:is_activated()
+
+	if has_twitch ~= self._has_twitch then
+		self.charge_bar.offset[2] = (has_twitch and 100) or 0
+		self._has_twitch = has_twitch
+		is_dirty = true
+	end
+
+	if is_dirty then
 		local parent = self._parent
 		local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
 

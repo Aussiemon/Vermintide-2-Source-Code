@@ -1,61 +1,15 @@
 require("scripts/helpers/ui_atlas_helper")
 
 DeusMapUI = class(DeusMapUI)
+local REAL_PLAYER_LOCAL_ID = 1
 local definitions = local_require("scripts/ui/views/deus_menu/deus_map_ui_definitions_v2")
-
-local function update_portrait(widget, frame_name, offset)
-	local frame_settings = UIPlayerPortraitFrameSettings[frame_name] or UIPlayerPortraitFrameSettings.default
-
-	for index, frame_data in ipairs(frame_settings) do
-		local name = "texture_" .. index
-		local texture_name = frame_data.texture or "icons_placeholder"
-		local size = nil
-
-		if UIAtlasHelper.has_atlas_settings_by_texture_name(texture_name) then
-			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
-			size = texture_settings.size
-		else
-			size = frame_data.size
-		end
-
-		size = (size and table.clone(size)) or {
-			0,
-			0
-		}
-		offset = (offset and table.clone(offset)) or {
-			0,
-			0,
-			0
-		}
-
-		if frame_data.offset then
-			offset[1] = offset[1] + frame_data.offset[1]
-			offset[2] = offset[2] + frame_data.offset[2]
-			offset[3] = offset[3] + frame_data.offset[3]
-		end
-
-		offset[1] = -(size[1] / 2) + offset[1]
-		offset[2] = offset[2]
-		offset[3] = frame_data.layer or 0
-		widget.content[name] = texture_name
-		widget.style[name] = {
-			color = frame_data.color or {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = offset,
-			size = size
-		}
-	end
-end
 
 DeusMapUI.init = function (self, context)
 	self._context = context
 	self._ui_renderer = context.ui_renderer
 	self._render_content = false
 	self._render_full_screen_rect = false
+	self._deus_run_controller = context.deus_run_controller
 
 	self:_create_ui_elements()
 	Managers.state.event:register(self, "ingame_player_list_enabled", "event_ingame_player_list_enabled")
@@ -85,6 +39,29 @@ DeusMapUI._create_ui_elements = function (self)
 	local anim_data = {
 		alpha_multiplier = 1
 	}
+	local widgets = {}
+	local peers = self._deus_run_controller:get_peers()
+	local portrait_frame_widgets = {}
+
+	for i = 1, 4, 1 do
+		local name = "player_portrait_frame_" .. i
+		local widget_definition, widget = nil
+
+		if peers[i] then
+			local profile_index, career_index = self._deus_run_controller:get_player_profile(peers[i], REAL_PLAYER_LOCAL_ID)
+			local level_text = self._deus_run_controller:get_player_level(peers[i], profile_index) or "-"
+			local frame_settings_name = self._deus_run_controller:get_player_frame(peers[i], profile_index, career_index)
+			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. i .. "_portrait", frame_settings_name, level_text, false)
+		else
+			widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. i .. "_portrait", "default", " ", false)
+		end
+
+		widget = UIWidget.init(widget_definition)
+		portrait_frame_widgets[#portrait_frame_widgets + 1] = widget
+		widgets_by_name[name] = widget
+	end
+
+	self._portrait_frame_widgets = portrait_frame_widgets
 	self._ui_scenegraph = ui_scenegraph
 	self._widgets_by_name = widgets_by_name
 	self._anim_data = anim_data
@@ -224,6 +201,13 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 	content_node_info.frame_settings_name = (selected and "menu_frame_12_gold") or "menu_frame_12"
 end
 
+DeusMapUI._update_portrait_frame = function (self, frame_name, level_text, index)
+	local new_frame_widget_definition = UIWidgets.deus_create_player_portraits_frame("player_" .. index .. "_portrait", frame_name, level_text, false)
+	local new_frame_widget = UIWidget.init(new_frame_widget_definition)
+	self._portrait_frame_widgets[index] = new_frame_widget
+	self._widgets_by_name["player_portrait_frame_" .. index] = new_frame_widget
+end
+
 DeusMapUI.update_player_data = function (self, player_data)
 	self._player_data = player_data
 	local ui_renderer = self._ui_renderer
@@ -233,18 +217,20 @@ DeusMapUI.update_player_data = function (self, player_data)
 		local data = player_data[i]
 		local player_portrait = widgets_by_name["player_" .. i .. "_portrait"]
 		local player_texts = widgets_by_name["player_" .. i .. "_texts"]
+		local player_portrait_frame = widgets_by_name["player_portrait_frame_" .. i]
 		local should_be_visible = not not data
 		player_portrait.content.visible = should_be_visible
 		player_texts.content.visible = should_be_visible
+		player_portrait_frame.content.visible = should_be_visible
 
 		if should_be_visible then
 			local frame_settings_name = data.frame or "default"
 			local level = data.level or "-"
 
-			if player_portrait.content.frame_settings_name ~= frame_settings_name or player_portrait.content.level ~= level then
-				update_portrait(player_portrait, frame_settings_name)
+			if player_portrait_frame.content.frame_settings_name ~= frame_settings_name or player_portrait_frame.content.level ~= level then
+				self:_update_portrait_frame(frame_settings_name, level, i)
 
-				player_portrait.content.level = level
+				player_portrait_frame.content.level = level
 			end
 
 			player_texts.content.name_text = data.name or ""

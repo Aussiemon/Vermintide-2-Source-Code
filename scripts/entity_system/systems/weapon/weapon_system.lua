@@ -645,14 +645,19 @@ WeaponSystem.rpc_summon_vortex = function (self, channel_id, owner_unit_id, targ
 		local unit = self.unit_storage:unit(owner_unit_id)
 		local target_unit = self.unit_storage:unit(target_unit_id)
 		local bb = BLACKBOARDS[target_unit]
-		local vext = bb and bb.thornsister_vortex_ext
 
-		if vext then
-			vext:refresh_duration()
-		else
-			local storm_spawn_position = POSITION_LOOKUP[target_unit]
+		if bb then
+			local vext = bb.thornsister_vortex_ext
 
-			Managers.state.unit_spawner:request_spawn_network_unit("vortex_unit", storm_spawn_position, Quaternion.identity(), unit, 0)
+			if vext then
+				vext:refresh_duration()
+			else
+				local storm_spawn_position = POSITION_LOOKUP[target_unit]
+
+				if storm_spawn_position then
+					Managers.state.unit_spawner:request_spawn_network_unit("vortex_unit", storm_spawn_position, Quaternion.identity(), unit, 0)
+				end
+			end
 		end
 	end
 end

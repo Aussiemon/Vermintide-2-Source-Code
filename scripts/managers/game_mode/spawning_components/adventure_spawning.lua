@@ -1,6 +1,7 @@
 require("scripts/managers/spawn/respawn_handler")
 require("scripts/managers/game_mode/spawning_components/spawning_helper")
 
+local REAL_PLAYER_LOCAL_ID = 1
 AdventureSpawning = class(AdventureSpawning)
 
 AdventureSpawning.init = function (self, profile_synchronizer, side, is_server, network_server, saved_game_mode_data)
@@ -287,12 +288,25 @@ end
 
 AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
 	if self._spawning then
+		local own_peer_id = Network.peer_id()
+		local local_player_is_ready = false
+
 		for i = 1, #occupied_slots, 1 do
 			local status = occupied_slots[i]
+			local other_peer_id = status.peer_id
+			local other_local_player_id = status.local_player_id
 
-			if not self._profile_synchronizer:all_synced_for_peer(status.peer_id, status.local_player_id) then
+			if not self._profile_synchronizer:all_synced_for_peer(other_peer_id, other_local_player_id) then
 				return
 			end
+
+			if other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID then
+				local_player_is_ready = true
+			end
+		end
+
+		if not local_player_is_ready then
+			return
 		end
 
 		local network_server = self._network_server

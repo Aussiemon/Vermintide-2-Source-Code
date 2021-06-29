@@ -197,6 +197,10 @@ SocialWheelPriority = {
 				return false
 			end
 
+			if target_player.player_unit == player.player_unit then
+				return false
+			end
+
 			local player_side = Managers.state.side.side_by_unit[player.player_unit]
 
 			if player_side:name() ~= "heroes" then

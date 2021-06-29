@@ -2238,85 +2238,6 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 		0
 	}
 	widget.scenegraph_id = scenegraph_id
-	local default_color = {
-		255,
-		255,
-		255,
-		255
-	}
-
-	for index, data in ipairs(UIPlayerPortraitFrameSettings.default) do
-		local name = "texture_" .. index
-		local texture_name = data.texture or "icons_placeholder"
-		local size = nil
-
-		if UIAtlasHelper.has_atlas_settings_by_texture_name(texture_name) then
-			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
-			size = texture_settings.size
-		else
-			size = data.size
-		end
-
-		size = (size and table.clone(size)) or {
-			0,
-			0
-		}
-		local offset = table.clone(portrait_offset)
-
-		if data.offset then
-			offset[1] = offset[1] + data.offset[1]
-			offset[2] = offset[2] + data.offset[2]
-			offset[3] = offset[3] + data.offset[3]
-		end
-
-		offset[1] = -(size[1] / 2) + offset[1]
-		offset[2] = offset[2]
-		offset[3] = data.layer or 0
-		widget.element.passes[#widget.element.passes + 1] = {
-			pass_type = "texture",
-			texture_id = name,
-			style_id = name,
-			content_check_function = function (content)
-				return content.is_bought
-			end
-		}
-		widget.content[name] = texture_name
-		widget.style[name] = {
-			color = data.color or default_color,
-			offset = offset,
-			size = size,
-			content_check_function = function (content)
-				return content.is_bought
-			end
-		}
-	end
-
-	local level_name = "level"
-	widget.element.passes[#widget.element.passes + 1] = {
-		pass_type = "text",
-		text_id = level_name,
-		style_id = level_name,
-		content_check_function = function (content)
-			return content.is_bought
-		end
-	}
-	widget.content[level_name] = "-"
-	widget.style[level_name] = {
-		vertical_alignment = "center",
-		font_type = "hell_shark",
-		font_size = 12,
-		horizontal_alignment = "center",
-		text_color = Colors.get_color_table_with_alpha("white", 255),
-		offset = {
-			portrait_offset[1] + 30,
-			portrait_offset[2] - 4,
-			portrait_offset[3] + 1
-		},
-		size = {
-			30,
-			20
-		}
-	}
 
 	return widget
 end
@@ -2696,6 +2617,115 @@ for i = 1, player_amount, 1 do
 	player_widgets[text_scenegraph_id] = text_widget
 end
 
+local function create_blessing_portraits_frame(scenegraph_id, frame_settings_name, level_text, retained_mode, offset)
+	local retained_mode = retained_mode
+	local scenegraph_id = scenegraph_id
+	local widget = {
+		element = {
+			passes = {}
+		},
+		content = {},
+		style = {}
+	}
+	local frame_settings = UIPlayerPortraitFrameSettings[frame_settings_name]
+	local default_color = {
+		255,
+		255,
+		255,
+		255
+	}
+	local default_offset = offset or {
+		0,
+		0,
+		0
+	}
+	widget.content.frame_settings_name = frame_settings_name
+	widget.content.is_bought = false
+
+	for index, data in ipairs(frame_settings) do
+		local name = "texture_" .. index
+		local texture_name = data.texture or "icons_placeholder"
+		local size = nil
+
+		if UIAtlasHelper.has_atlas_settings_by_texture_name(texture_name) then
+			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
+			size = texture_settings.size
+		else
+			size = data.size
+		end
+
+		size = (size and table.clone(size)) or {
+			0,
+			0
+		}
+		local offset = {}
+
+		if data.offset then
+			offset = table.clone(data.offset)
+			offset[1] = default_offset[1] + -(size[1] / 2) + offset[1]
+			offset[2] = default_offset[2] + 60 + offset[2]
+			offset[3] = data.layer or 0
+		else
+			offset = table.clone(default_offset)
+			offset[1] = -(size[1] / 2) + offset[1]
+			offset[2] = offset[2]
+			offset[3] = data.layer or 0
+		end
+
+		widget.element.passes[#widget.element.passes + 1] = {
+			pass_type = "texture",
+			texture_id = name,
+			style_id = name,
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.is_bought
+			end
+		}
+		widget.content[name] = texture_name
+		widget.style[name] = {
+			color = data.color or default_color,
+			offset = offset,
+			size = size
+		}
+	end
+
+	local portrait_size = {
+		portrait_size[1],
+		portrait_size[2]
+	}
+	local level_offset = {
+		default_offset[1] - 15,
+		default_offset[2],
+		default_offset[3] + 1
+	}
+	local level_name = "level"
+	widget.element.passes[#widget.element.passes + 1] = {
+		pass_type = "text",
+		text_id = level_name,
+		style_id = level_name,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.is_bought
+		end
+	}
+	widget.content[level_name] = level_text
+	widget.style[level_name] = {
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		font_size = 12,
+		horizontal_alignment = "center",
+		text_color = Colors.get_color_table_with_alpha("white", 255),
+		offset = level_offset,
+		size = {
+			30,
+			20
+		}
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
+
 animations_definitions = {
 	flash_icon = {
 		{
@@ -2766,6 +2796,7 @@ return {
 	widgets = widgets,
 	top_widgets = top_widgets,
 	player_widgets = player_widgets,
+	create_blessing_portraits_frame = create_blessing_portraits_frame,
 	create_power_up_shop_item = create_power_up_shop_item,
 	create_blessing_shop_item = create_blessing_shop_item,
 	discount_text_color = Colors.get_color_table_with_alpha("yellow", 255),

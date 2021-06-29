@@ -351,6 +351,11 @@ local function _calculate_horde_pick_closest_target_with_spillover_score(target_
 	end
 
 	local target_unit_position = POSITION_LOOKUP[target_unit]
+
+	if not target_unit_position then
+		return
+	end
+
 	local distance_sq = Vector3.distance_squared(ai_unit_position, target_unit_position)
 	local aggro_extension = ScriptUnit.extension(target_unit, "aggro_system")
 	local aggro_modifier = aggro_extension.aggro_modifier

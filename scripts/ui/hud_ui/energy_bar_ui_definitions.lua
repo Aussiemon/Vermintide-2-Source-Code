@@ -15,18 +15,6 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	screen = {
-		scale = "fit",
-		position = {
-			0,
-			0,
-			UILayer.hud_inventory
-		},
-		size = {
-			1920,
-			1080
-		}
-	},
 	screen_bottom_pivot = {
 		parent = "screen",
 		position = {
@@ -46,7 +34,7 @@ local scenegraph_definition = {
 		size = charge_bar_size,
 		position = {
 			0,
-			-220,
+			-180,
 			1
 		}
 	}
@@ -99,10 +87,8 @@ local widget_definitions = {
 			}
 		},
 		content = {
-			bar_3 = "overcharge_bar_3",
-			bar_2 = "overcharge_bar_2",
-			bar_1 = "overcharge_bar_1",
 			icon = "tabs_icon_all_selected",
+			bar_1 = "energy_bar",
 			bar_fg = "overcharge_frame",
 			size = {
 				charge_bar_size[1] - 6,
@@ -255,6 +241,11 @@ local widget_definitions = {
 					charge_bar_size[2] - 6
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	}
 }

@@ -356,6 +356,10 @@ ChatManager.set_input_manager = function (self, input_manager)
 	self.chat_gui:set_input_manager(input_manager)
 end
 
+ChatManager.block_chat_input_for_one_frame = function (self)
+	self.chat_gui:block_chat_input_for_one_frame()
+end
+
 ChatManager.register_network_event_delegate = function (self, network_event_delegate)
 	network_event_delegate:register(self, "rpc_chat_message")
 
