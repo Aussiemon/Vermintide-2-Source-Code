@@ -221,9 +221,21 @@ UIRenderer.script_draw_bitmap_3d = function (gui, render_settings, material, tm,
 	end
 end
 
+UIRenderer._injected_material_sets = {}
+
+local function inject_materials(i, ...)
+	local material = UIRenderer._injected_material_sets[i]
+
+	if material then
+		return "material", material, inject_materials(i + 1, ...)
+	end
+
+	return ...
+end
+
 UIRenderer.create = function (world, ...)
-	local gui = World.create_screen_gui(world, "immediate", ...)
-	local gui_retained = World.create_screen_gui(world, ...)
+	local gui = World.create_screen_gui(world, "immediate", inject_materials(1, ...))
+	local gui_retained = World.create_screen_gui(world, inject_materials(1, ...))
 
 	return UIRenderer.create_ui_renderer(world, gui, gui_retained)
 end
@@ -385,7 +397,7 @@ UIRenderer.draw_widget = function (self, ui_widget)
 	local animations = ui_widget.animations
 
 	if animations then
-		for ui_animation, _ in pairs(animations) do
+		for ui_animation in pairs(animations) do
 			UIAnimation.update(ui_animation, self.dt)
 
 			if UIAnimation.completed(ui_animation) then
@@ -397,10 +409,21 @@ UIRenderer.draw_widget = function (self, ui_widget)
 	UIRenderer.draw_element(self, ui_widget.element, ui_widget.style, ui_widget.style_global, ui_widget.scenegraph_id, ui_widget.content, animations, ui_widget.offset)
 end
 
+local DUMMY = {
+	alpha_multiplier = 1
+}
+
 UIRenderer.draw_all_widgets = function (self, widget_list)
+	local render_settings = self.render_settings or DUMMY
+	local base_alpha_multiplier = render_settings.alpha_multiplier or 1
+
 	for _, ui_widget in pairs(widget_list) do
+		render_settings.alpha_multiplier = (ui_widget.content.alpha_multiplier or 1) * base_alpha_multiplier
+
 		UIRenderer.draw_widget(self, ui_widget)
 	end
+
+	render_settings.alpha_multiplier = base_alpha_multiplier
 end
 
 UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global, scenegraph_id, ui_content, ui_animations, offset)
@@ -460,8 +483,6 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 
 		local style_id = pass_info.style_id
 		local style_data = (style_id and ui_style[style_id]) or ui_style
-
-		assert(not style_id or (style_id and style_data), "No style data for style with id %s", style_id)
 
 		if ui_style[style_id] then
 			style_data.parent = ui_style

@@ -80,6 +80,7 @@ GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career
 	Managers.party:assign_peer_to_party(local_peer_id, local_player_id, party_id, slot_id, is_bot)
 
 	local profile = SPProfiles[profile_index]
+	local career_index = self:_verify_career(profile_index, career_index)
 	local bot_player = Managers.player:add_bot_player(profile.display_name, local_peer_id, "default", profile_index, career_index, local_player_id)
 
 	bot_player:create_game_object()
@@ -92,6 +93,22 @@ GameModeBase._add_bot_to_party = function (self, party_id, profile_index, career
 	end
 
 	return bot_player
+end
+
+GameModeBase._verify_career = function (self, profile_index, career_index)
+	local profile = SPProfiles[profile_index]
+	local careers = profile and profile.careers
+	local career = careers and careers[career_index]
+	local career_unlocked, reason, dlc_name = career:is_unlocked_function(profile.display_name, ExperienceSettings.max_level)
+
+	if not career_unlocked then
+		Application.warning("############################################################################################")
+		Application.warning("[GameModeBase] Selected career for bot is not unlocked -> Defaulting to default career")
+		Application.warning(string.format("Profile: %q - Career: %q - Reason: %q - DLC: %q", (profile and profile.display_name) or profile_index, (career and Localize(career.display_name)) or career_index, (reason and Localize(reason)) or "-", tostring(dlc_name)))
+		Application.warning("############################################################################################")
+	end
+
+	return (career_unlocked and career_index) or 1
 end
 
 GameModeBase._remove_bot_instant = function (self, bot_player)
@@ -211,15 +228,48 @@ GameModeBase.hot_join_sync = function (self, sender)
 end
 
 GameModeBase.mutators = function (self)
-	local game_mode_event_data = Managers.matchmaking and Managers.matchmaking:game_mode_event_data()
+	local deed_mutators = Managers.deed:mutators()
 
-	if game_mode_event_data then
-		local mutators = game_mode_event_data.mutators
-
-		return mutators
-	else
-		return Managers.deed:mutators()
+	if deed_mutators then
+		return table.clone(deed_mutators)
 	end
+
+	local mutators_list = {}
+	local weekly_events_game_mode_data = Managers.matchmaking and Managers.matchmaking:game_mode_event_data()
+
+	if weekly_events_game_mode_data and weekly_events_game_mode_data.mutators then
+		table.append(mutators_list, weekly_events_game_mode_data.mutators)
+	end
+
+	local level_setting = LevelSettings[self._level_key]
+	local is_hub_level = level_setting and level_setting.hub_level
+
+	if not is_hub_level then
+		local live_event_interface = Managers.backend:get_interface("live_events")
+		local special_events = live_event_interface:get_special_events()
+
+		if special_events then
+			for i = 1, #special_events, 1 do
+				local special_event_data = special_events[i]
+				local valid_levels = special_event_data.level_keys
+
+				if not valid_levels or table.contains(valid_levels, self._level_key) or #valid_levels == 0 then
+					local weekly_override_type = special_event_data.weekly_event
+
+					if weekly_override_type then
+						if weekly_override_type == "override" then
+							table.clear(mutators_list)
+							table.append(mutators_list, special_event_data.mutators)
+						elseif weekly_override_type == "append" then
+							table.append(mutators_list, special_event_data.mutators)
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return mutators_list
 end
 
 GameModeBase.spawning_update = function (self)

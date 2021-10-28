@@ -5172,15 +5172,6 @@ IngameMenuFilters = {
 				button_1 = "execute_login_1",
 				button_2 = "execute_login_2"
 			}
-		},
-		speed_up_popup_pressed = {
-			filter_type = "or",
-			input_mappings = {
-				button_2 = "back",
-				button_3 = "skip_pressed",
-				button_1 = "toggle_menu",
-				button_4 = "left_press"
-			}
 		}
 	},
 	xb1 = InputUtils.keymaps_key_approved("xb1") and {

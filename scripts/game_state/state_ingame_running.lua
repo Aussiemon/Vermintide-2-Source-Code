@@ -99,6 +99,7 @@ StateInGameRunning.on_enter = function (self, params)
 	event_manager:register(self, "checkpoint_vote_cancelled", "on_checkpoint_vote_cancelled")
 	event_manager:register(self, "conflict_director_setup_done", "event_conflict_director_setup_done")
 	event_manager:register(self, "close_ingame_menu", "event_close_ingame_menu")
+	event_manager:register(self, "end_screen_ui_complete", "event_end_screen_ui_complete")
 
 	if IS_PS4 then
 		event_manager:register(self, "realtime_multiplay", "event_realtime_multiplay")
@@ -162,22 +163,27 @@ StateInGameRunning.on_enter = function (self, params)
 		dice_keeper = params.dice_keeper
 	}
 	DamageUtils.is_in_inn = params.is_in_inn
+	local loading_context = self.parent.parent.loading_context
 	self.ingame_ui_context = ingame_ui_context
 
 	if not script_data["-no-rendering"] then
-		self:create_ingame_ui(ingame_ui_context)
+		Managers.ui:create_ingame_ui(ingame_ui_context, loading_context.subtitle_gui)
+
+		loading_context.subtitle_gui = nil
 	end
 
-	local loading_context = self.parent.parent.loading_context
 	loading_context.play_end_of_level_game = nil
-	self._loading_subtitle_gui = loading_context.subtitle_gui
-	loading_context.subtitle_gui = nil
 	self.game_mode_key = Managers.state.game_mode:game_mode_key()
 	local quickplay_bonus = loading_context.quickplay_bonus or loading_context.local_quickplay_bonus
 
 	if not quickplay_bonus and self.game_mode_key == "weave" then
 		local lobby = (self.is_server and self._lobby_host) or self._lobby_client
 		quickplay_bonus = lobby:lobby_data("quick_game") == "true"
+	end
+
+	if self.game_mode_key == "weave" then
+		self._saved_scoreboard_stats = self.parent.parent.loading_context.saved_scoreboard_stats
+		self.parent.parent.loading_context.saved_scoreboard_stats = nil
 	end
 
 	self.rewards = Rewards:new(level_key, self.game_mode_key, quickplay_bonus)
@@ -189,12 +195,6 @@ StateInGameRunning.on_enter = function (self, params)
 	end
 
 	params.dice_keeper = nil
-	local gdc_build = Development.parameter("gdc")
-
-	if gdc_build then
-		LevelHelper:flow_event(self.world, "gdc_build")
-	end
-
 	self.mood_timers = {}
 
 	self:setup_mood_blackboard()
@@ -214,7 +214,8 @@ StateInGameRunning.on_enter = function (self, params)
 	end
 
 	if Development.parameter("attract_mode") then
-		self._benchmark_handler = BenchmarkHandler:new(self.ingame_ui, self.world)
+		local ingame_ui = Managers.ui:temporary_get_ingame_ui_called_from_state_ingame_running()
+		self._benchmark_handler = BenchmarkHandler:new(ingame_ui, self.world)
 	end
 
 	if self.is_in_inn then
@@ -229,39 +230,12 @@ StateInGameRunning.on_enter = function (self, params)
 	self._transitioned_from_black_screen = false
 end
 
-StateInGameRunning.create_ingame_ui = function (self, ingame_ui_context)
-	if self.ingame_ui then
-		self.ingame_ui:destroy()
-	end
-
-	self.ingame_ui = IngameUI:new(ingame_ui_context)
-	local matchmaking = Managers.matchmaking
-
-	matchmaking:set_ingame_ui(self.ingame_ui)
-
-	local unlock_manager = Managers.unlock
-
-	unlock_manager:set_ingame_ui(self.ingame_ui)
-
-	if not matchmaking.popup_handler then
-		matchmaking:set_popup_profile_picker(self.ingame_ui.popup_profile_picker)
-		matchmaking:set_popup_handler(self.ingame_ui.popup_handler)
-	end
-end
-
 StateInGameRunning._setup_end_of_level_UI = function (self)
 	if script_data.disable_end_screens then
 		Managers.state.network.network_transmit:send_rpc_server("rpc_is_ready_for_transition")
 	elseif not Managers.state.game_mode:setting("skip_level_end_view") then
-		local saved_scoreboard_stats = nil
 		local game_won = not self.game_lost
 		local game_mode_key = Managers.state.game_mode:game_mode_key()
-
-		if game_mode_key == "weave" then
-			saved_scoreboard_stats = self.parent.parent.loading_context.saved_scoreboard_stats
-			self.parent.parent.loading_context.saved_scoreboard_stats = nil
-		end
-
 		local hero_name = nil
 		local peer_id = Network.peer_id()
 		local local_player_id = self.local_player_id
@@ -287,7 +261,7 @@ StateInGameRunning._setup_end_of_level_UI = function (self)
 		}
 
 		if self.is_server then
-			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, saved_scoreboard_stats)
+			local players_session_score = Managers.mechanism:get_players_session_score(self.statistics_db, self.profile_synchronizer, self._saved_scoreboard_stats)
 
 			Managers.mechanism:sync_players_session_score(self.statistics_db, self.profile_synchronizer, players_session_score)
 
@@ -432,11 +406,7 @@ StateInGameRunning.wanted_transition = function (self)
 		return
 	end
 
-	local wanted_transition, data = nil
-
-	if self.ingame_ui then
-		wanted_transition, data = self.ingame_ui:get_transition()
-	end
+	local wanted_transition, data = Managers.ui:get_transition()
 
 	if wanted_transition then
 		mm_printf("Doing transition %s from UI", wanted_transition)
@@ -485,11 +455,9 @@ StateInGameRunning.wanted_transition = function (self)
 	return wanted_transition, data
 end
 
-StateInGameRunning.on_end_screen_ui_complete = function (self)
+StateInGameRunning.event_end_screen_ui_complete = function (self)
 	Managers.state.conflict:destroy_all_units()
-
-	self.end_screen_ui_done = true
-	self.waiting_for_transition = true
+	Managers.ui:set_ingame_ui_enabled(false)
 
 	if Managers.state.network:game() then
 		Managers.state.network.network_transmit:send_rpc_server("rpc_is_ready_for_transition")
@@ -510,7 +478,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 	local game_mode_key = self.game_mode_key
 	local is_quickplay = self.is_quickplay
 	local game_won, game_lost = Managers.state.game_mode:evaluate_end_condition_outcome(reason, player)
-	local ingame_ui = self.ingame_ui
+	local ingame_ui = Managers.ui:temporary_get_ingame_ui_called_from_state_ingame_running()
 	local stats_id = player:stats_id()
 	local statistics_db = self.statistics_db
 	local previous_completed_difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_key) or 0
@@ -624,8 +592,6 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 				StatisticsUtil.register_complete_level(statistics_db, game_mode_key)
 			end
-
-			stats_interface:save()
 		else
 			is_final_objective = true
 		end
@@ -691,12 +657,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 
 	local backend_manager = Managers.backend
 
-	if backend_manager:is_local() then
-		backend_manager:commit(true)
-		callback()
-	else
-		backend_manager:commit(true, callback)
-	end
+	backend_manager:commit(true, callback)
 
 	self.game_lost = game_lost
 
@@ -818,7 +779,7 @@ StateInGameRunning.update = function (self, dt, t)
 		self.checkpoint_vote_cancelled = nil
 	end
 
-	local ingame_ui = self.ingame_ui
+	local ingame_ui = Managers.ui:temporary_get_ingame_ui_called_from_state_ingame_running()
 
 	if ingame_ui then
 		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
@@ -873,17 +834,11 @@ StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
 end
 
 StateInGameRunning.disable_ui = function (self)
-	local ingame_ui = self.ingame_ui
-
-	if ingame_ui then
-		ingame_ui:suspend_active_view()
-	end
-
-	self._disable_ui = true
+	Managers.ui:set_ingame_ui_enabled(false)
 end
 
 StateInGameRunning.event_close_ingame_menu = function (self)
-	local ingame_ui = self.ingame_ui
+	local ingame_ui = Managers.ui:temporary_get_ingame_ui_called_from_state_ingame_running()
 
 	if ingame_ui then
 		ingame_ui:suspend_active_view()
@@ -896,51 +851,6 @@ StateInGameRunning.event_realtime_multiplay = function (self, active)
 	end
 
 	Managers.account:set_realtime_multiplay(active)
-end
-
-StateInGameRunning.update_ui = function (self)
-	if self._disable_ui then
-		return
-	end
-
-	if not self._ui_update_initialized then
-		self._ui_update_initialized = true
-
-		return
-	end
-
-	if not self.ingame_ui then
-		return
-	end
-
-	local t, dt = Managers.time:time_and_delta("ui")
-	local disable_ingame_ui = script_data.disable_ui or DebugScreen.active or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
-	local ingame_ui = self.ingame_ui
-	local level_end_view_wrapper = self._level_end_view_wrapper
-	local level_end_view = level_end_view_wrapper and level_end_view_wrapper:level_end_view()
-
-	ingame_ui:update(dt, t, disable_ingame_ui, level_end_view)
-
-	local loading_subtitle_gui = self._loading_subtitle_gui
-
-	if loading_subtitle_gui then
-		ingame_ui:update_loading_subtitle_gui(loading_subtitle_gui, dt)
-
-		if loading_subtitle_gui:is_complete() then
-			self._loading_subtitle_gui = nil
-		end
-	end
-
-	local end_screen_active = ingame_ui:end_screen_active()
-	local end_screen_completed = ingame_ui:end_screen_completed()
-	local checkpoint_available = self.checkpoint_available
-	local end_screen_closed = self.end_screen_ui_done
-
-	if end_screen_active and end_screen_completed and not checkpoint_available and not end_screen_closed then
-		self:on_end_screen_ui_complete()
-	end
-
-	self._t = t
 end
 
 StateInGameRunning.cb_loading_view_fade_in_done = function (self)
@@ -993,9 +903,7 @@ StateInGameRunning.post_update = function (self, dt, t)
 	local level_end_view_wrapper = self._level_end_view_wrapper
 	local disable_ingame_ui = script_data.disable_ui or level_end_view_wrapper ~= nil or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
 
-	if self.ingame_ui then
-		self.ingame_ui:post_update(dt, t, disable_ingame_ui)
-	end
+	Managers.ui:post_update(dt, t, disable_ingame_ui)
 
 	if level_end_view_wrapper then
 		level_end_view_wrapper:update(dt, t)
@@ -1019,12 +927,6 @@ StateInGameRunning.post_update = function (self, dt, t)
 		end
 
 		self._game_started_current_frame = false
-	end
-end
-
-StateInGameRunning.post_render = function (self)
-	if self.ingame_ui then
-		self.ingame_ui:post_render()
 	end
 end
 
@@ -1063,13 +965,7 @@ StateInGameRunning.on_exit = function (self)
 		Managers.account:set_realtime_multiplay(false)
 	end
 
-	if self.ingame_ui then
-		self.ingame_ui:destroy()
-
-		self.ingame_ui = nil
-
-		Managers.unlock:set_ingame_ui(nil)
-	end
+	Managers.ui:destroy_ingame_ui()
 
 	if self.loading_view then
 		self.loading_view:destroy()
@@ -1280,16 +1176,16 @@ StateInGameRunning._game_actually_starts = function (self)
 		end
 	end
 
-	if Testify:poll_request("wait_for_level_loaded") then
-		Testify:respond_to_request("wait_for_level_loaded")
-	end
-
 	local network_manager = Managers.state.network
 	local profile_synchronizer = network_manager.profile_synchronizer
 
 	profile_synchronizer:set_own_actually_ingame(true)
 
 	self._game_started_timestamp = os.time(os.date("*t"))
+
+	if IS_WINDOWS then
+		Managers.account:update_presence()
+	end
 end
 
 local afk_warn_timer = 120
@@ -1421,6 +1317,10 @@ StateInGameRunning._kick_afk_player = function (self)
 	self:rpc_trigger_local_afk_system_message(channel_id, message_id, peer_id)
 
 	self.afk_kick = true
+end
+
+StateInGameRunning.transitioned_from_black_screen = function (self)
+	return self._transitioned_from_black_screen
 end
 
 StateInGameRunning.rpc_follow_to_lobby = function (self, channel_id, lobby_type, lobby_to_join)

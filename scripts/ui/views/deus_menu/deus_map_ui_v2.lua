@@ -153,11 +153,11 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 	local content_node_info = widget.content.node_info
 
 	if level then
-		content_node_info.title = Localize(level .. "_title")
-		content_node_info.description = Localize(level .. "_desc")
+		content_node_info.none_modifier_info.title = Localize(level .. "_title")
+		content_node_info.none_modifier_info.description = Localize(level .. "_desc")
 	else
-		content_node_info.title = Localize("undiscovered_level_title")
-		content_node_info.description = Localize("undiscovered_level_desc")
+		content_node_info.none_modifier_info.title = Localize("undiscovered_level_title")
+		content_node_info.none_modifier_info.description = Localize("undiscovered_level_desc")
 	end
 
 	if not theme or theme == "wastes" then
@@ -180,8 +180,11 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 	end
 
 	if terror_event_power_up then
-		local power_up = table.clone(DeusPowerUpTemplates[terror_event_power_up])
-		widget.content.node_info.terror_event_power_up_text = DeusPowerUpUtils.get_power_up_name_text(terror_event_power_up, power_up.talent_index, power_up.talent_tier, profile_index, career_index)
+		local power_up = DeusPowerUpTemplates[terror_event_power_up]
+		local power_up_text_name = DeusPowerUpUtils.get_power_up_name_text(terror_event_power_up, power_up.talent_index, power_up.talent_tier, profile_index, career_index)
+		local suffix = Localize("terror_event_power_up_prefix_suffix")
+		local terror_event_power_up_text = string.format(suffix, power_up_text_name)
+		widget.content.node_info.terror_event_power_up_text = terror_event_power_up_text
 		widget.content.node_info.terror_event_power_up_icon = power_up.icon
 	else
 		content_node_info.terror_event_power_up_text = ""
@@ -197,7 +200,7 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 		content_node_info.breed_text = ""
 	end
 
-	content_node_info.click_to_vote = (selectable and "deus_map_node_info_click_to_vote") or ""
+	content_node_info.none_modifier_info.click_to_vote = (selectable and "deus_map_node_info_click_to_vote") or ""
 	content_node_info.frame_settings_name = (selected and "menu_frame_12_gold") or "menu_frame_12"
 end
 

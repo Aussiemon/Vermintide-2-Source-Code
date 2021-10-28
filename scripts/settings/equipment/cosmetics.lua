@@ -2323,6 +2323,21 @@ Cosmetics = {
 	frame_0104 = {
 		icon = "unit_frame_02"
 	},
+	frame_0105 = {
+		icon = "unit_frame_02"
+	},
+	frame_0106 = {
+		icon = "unit_frame_02"
+	},
+	frame_0107 = {
+		icon = "unit_frame_02"
+	},
+	frame_0108 = {
+		icon = "unit_frame_02"
+	},
+	frame_0109 = {
+		icon = "unit_frame_02"
+	},
 	frame_dev = {
 		icon = "unit_frame_02"
 	},

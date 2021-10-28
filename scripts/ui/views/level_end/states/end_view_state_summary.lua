@@ -66,6 +66,10 @@ EndViewStateSummary.on_enter = function (self, params)
 
 	self._experience_presentation_completed = nil
 
+	if IS_WINDOWS then
+		self:_set_player_count_presence(context)
+	end
+
 	self:_play_sound("play_gui_mission_summary_appear")
 end
 
@@ -583,6 +587,22 @@ end
 
 EndViewStateSummary._play_sound = function (self, event)
 	self.parent:play_sound(event)
+end
+
+EndViewStateSummary._set_player_count_presence = function (self, context)
+	local players_session_score = context.players_session_score
+	local num_human_players = 0
+
+	for stats_id, player_data in pairs(players_session_score) do
+		local peer_id = player_data.peer_id
+		local is_player_controlled = player_data.is_player_controlled
+
+		if peer_id and is_player_controlled then
+			num_human_players = num_human_players + 1
+		end
+	end
+
+	Presence.set_presence("steam_player_group_size", num_human_players)
 end
 
 return

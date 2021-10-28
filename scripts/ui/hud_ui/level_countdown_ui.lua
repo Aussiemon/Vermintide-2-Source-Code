@@ -132,9 +132,7 @@ LevelCountdownUI.play_sound = function (self, event)
 end
 
 LevelCountdownUI.destroy = function (self)
-	if self._waystone_unit then
-		self:set_waystone_activation(false)
-	end
+	Managers.state.event:trigger("activate_waystone_portal", nil)
 end
 
 LevelCountdownUI._get_start_time = function (self)
@@ -162,42 +160,6 @@ LevelCountdownUI._get_active_waystone_extension = function (self)
 			return extension
 		end
 	end
-end
-
-LevelCountdownUI.set_waystone_activation = function (self, enable, optional_waystone_type)
-	self._waystone_unit = LevelCountdownUI.set_waystone_activation_without_ui(enable, optional_waystone_type)
-end
-
-LevelCountdownUI.set_waystone_activation_without_ui = function (enable, optional_waystone_type)
-	local waystone_unit = nil
-	local entity_system = Managers.state.entity
-
-	if not entity_system then
-		return
-	end
-
-	local extension_data = Managers.state.entity:get_entities("EndZoneExtension")
-
-	for unit, extension in pairs(extension_data) do
-		local waystone_type = Unit.get_data(unit, "waystone_type")
-
-		if waystone_type then
-			if enable then
-				if waystone_type == optional_waystone_type then
-					Unit.flow_event(unit, "activate")
-					fassert(waystone_unit == nil, "[LevelCountdownUI] - Found multiple waystone units with the same type: %s", tostring(waystone_type))
-
-					waystone_unit = unit
-				else
-					Unit.flow_event(unit, "deactivate")
-				end
-			else
-				Unit.flow_event(unit, "deactivate")
-			end
-		end
-	end
-
-	return waystone_unit
 end
 
 return

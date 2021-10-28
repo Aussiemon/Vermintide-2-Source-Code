@@ -126,6 +126,11 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 	end
 
 	CosmeticUtils.update_cosmetic_slot(self._player, slot_name, item_data.name)
+
+	local backend_interface_items = Managers.backend:get_interface("items")
+	local item = backend_interface_items:get_item_from_id(backend_id)
+
+	LoadoutUtils.sync_loadout_slot(self._player, slot_name, item)
 end
 
 PlayerUnitAttachmentExtension.remove_attachment = function (self, slot_name)

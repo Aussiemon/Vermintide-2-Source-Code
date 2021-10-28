@@ -392,7 +392,7 @@ local function create_status_widget(texture, offset)
 					pass_type = "texture",
 					texture_id = "texture_id",
 					content_check_function = function (content)
-						return true
+						return content.is_connecting or content.is_connected
 					end,
 					content_change_function = function (content, style, animations, dt)
 						local color = style.color

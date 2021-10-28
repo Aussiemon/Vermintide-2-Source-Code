@@ -100,10 +100,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 	self._recent_hit_react_type = hit_react_type
 
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
-
-	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
-		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
-	end
+	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 
 	if not self:get_is_invincible() and not self.dead then
 		local internal_damage_amount = (did_damage and self.insta_explode and self.health) or 0

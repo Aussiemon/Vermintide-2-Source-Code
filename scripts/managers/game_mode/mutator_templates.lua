@@ -487,6 +487,14 @@ for name, template in pairs(mutator_settings) do
 		template.client.ai_spawned_function = default_ai_spawned_function_client
 	end
 
+	if template.server_pre_update_function then
+		template.server.pre_update = template.server_pre_update_function
+	end
+
+	if template.client_pre_update_function then
+		template.client.pre_update = template.client_pre_update_function
+	end
+
 	if template.server_update_function then
 		template.server.update = template.server_update_function
 	end

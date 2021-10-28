@@ -402,7 +402,7 @@ PassiveAbilitySettings = {
 		perks = {
 			{
 				display_name = "career_passive_name_wh_1b",
-				description = "career_passive_desc_wh_1b"
+				description = "career_passive_desc_dr_2c"
 			},
 			{
 				display_name = "career_passive_name_wh_1c",

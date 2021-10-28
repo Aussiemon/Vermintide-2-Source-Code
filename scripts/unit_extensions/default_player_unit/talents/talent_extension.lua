@@ -66,6 +66,24 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 	local hero_name = self._hero_name
 	local buff_extension = self.buff_extension
 	local player = self.player
+	local talent_buff_ids = self._talent_buff_ids
+	local sub_buffs_per_talent = {}
+
+	for i = 1, #talent_buff_ids, 1 do
+		local id = talent_buff_ids[i]
+		local buff = buff_extension:get_buff_by_id(id)
+
+		if buff and buff.template.restore_sub_buffs then
+			local num_sub_buffs = buff_extension:num_sub_buffs(id)
+
+			if num_sub_buffs > 0 then
+				sub_buffs_per_talent[buff.buff_type] = {
+					num_buffs = num_sub_buffs,
+					buff_name = buff.template.buff_to_add
+				}
+			end
+		end
+	end
 
 	self:_clear_buffs_from_talents()
 
@@ -73,7 +91,6 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 		return
 	end
 
-	local talent_buff_ids = self._talent_buff_ids
 	local is_server_bot = self.is_server and player.bot_player
 	local talents = Talents[hero_name]
 
@@ -96,6 +113,16 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 					for j = 1, num_buffs, 1 do
 						local buff_template = buffs[j]
 						local id = buff_extension:add_buff(buff_template)
+						local sub_buffs = sub_buffs_per_talent[buff_template]
+
+						if sub_buffs then
+							for k = 1, sub_buffs.num_buffs, 1 do
+								buff_extension:add_buff(sub_buffs.buff_name, {
+									attacker_unit = player.player_unit
+								})
+							end
+						end
+
 						talent_buff_ids[#talent_buff_ids + 1] = id
 					end
 				end

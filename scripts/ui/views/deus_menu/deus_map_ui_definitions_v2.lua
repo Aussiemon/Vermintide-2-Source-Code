@@ -570,32 +570,40 @@ local function create_node_info_widget(scenegraph_id)
 					content_id = "node_info",
 					sub_passes = {
 						{
-							style_id = "title",
-							pass_type = "text",
-							text_id = "title"
-						},
-						{
-							style_id = "click_to_vote",
-							pass_type = "text",
-							text_id = "click_to_vote",
-							content_check_function = function (content)
-								return content.click_to_vote ~= ""
-							end
-						},
-						{
-							pass_type = "texture",
-							style_id = "pre_description_divider",
-							texture_id = "pre_description_divider"
-						},
-						{
-							style_id = "description",
-							pass_type = "text",
-							text_id = "description"
-						},
-						{
-							pass_type = "texture",
-							style_id = "post_description_divider",
-							texture_id = "post_description_divider"
+							style_id = "none_modifier_info",
+							pass_type = "auto_layout",
+							text_id = "none_modifier_info",
+							content_id = "none_modifier_info",
+							sub_passes = {
+								{
+									style_id = "title",
+									pass_type = "text",
+									text_id = "title"
+								},
+								{
+									style_id = "click_to_vote",
+									pass_type = "text",
+									text_id = "click_to_vote",
+									content_check_function = function (content)
+										return content.click_to_vote ~= ""
+									end
+								},
+								{
+									pass_type = "texture",
+									style_id = "pre_description_divider",
+									texture_id = "pre_description_divider"
+								},
+								{
+									style_id = "description",
+									pass_type = "text",
+									text_id = "description"
+								},
+								{
+									pass_type = "texture",
+									style_id = "post_description_divider",
+									texture_id = "post_description_divider"
+								}
+							}
 						},
 						{
 							style_id = "curse_section",
@@ -736,18 +744,20 @@ local function create_node_info_widget(scenegraph_id)
 		},
 		content = {
 			node_info = {
-				description = "description",
 				terror_event_power_up_text = "terror_event_power_up_text",
 				curse_icon = "deus_icons_map_khorne",
 				frame_settings_name = "menu_frame_12",
-				title = "title",
 				breed_text = "breed_text",
-				breed_icon = "mutator_icon_elite_run",
-				terror_event_power_up_icon = "mutator_icon_elite_run",
 				curse_text = "curse_text",
-				pre_description_divider = "weave_forge_slot_divider_tooltip",
-				post_description_divider = "weave_forge_slot_divider_tooltip",
-				click_to_vote = "click_to_vote",
+				terror_event_power_up_icon = "mutator_icon_elite_run",
+				breed_icon = "mutator_icon_elite_run",
+				none_modifier_info = {
+					description = "description",
+					post_description_divider = "weave_forge_slot_divider_tooltip",
+					pre_description_divider = "weave_forge_slot_divider_tooltip",
+					title = "title",
+					click_to_vote = "click_to_vote"
+				},
 				minor_modifier_1_section = {
 					text = "minor_modifier_text",
 					icon = "trinket_increase_grenade_radius"
@@ -778,118 +788,125 @@ local function create_node_info_widget(scenegraph_id)
 					left = 50,
 					right = 50
 				},
-				title = {
-					font_size = 28,
+				none_modifier_info = {
+					layout_delta_y = -1,
+					layout_delta_x = 0,
 					horizontal_alignment = "center",
-					localize = false,
-					word_wrap = true,
 					vertical_alignment = "bottom",
 					dynamic_size = true,
-					font_type = "hell_shark_header",
-					text_color = Colors.get_color_table_with_alpha("font_title", 255),
-					offset = {
-						0,
-						0,
-						0
+					title = {
+						font_size = 28,
+						horizontal_alignment = "center",
+						localize = false,
+						word_wrap = true,
+						vertical_alignment = "bottom",
+						dynamic_size = true,
+						font_type = "hell_shark_header",
+						text_color = Colors.get_color_table_with_alpha("font_title", 255),
+						offset = {
+							0,
+							0,
+							0
+						},
+						size = {
+							300,
+							0
+						}
 					},
-					size = {
-						300,
-						0
-					}
-				},
-				click_to_vote = {
-					font_size = 18,
-					horizontal_alignment = "center",
-					localize = true,
-					word_wrap = true,
-					vertical_alignment = "bottom",
-					dynamic_size = true,
-					font_type = "hell_shark",
-					text_color = Colors.get_color_table_with_alpha("font_default", 255),
-					offset = {
-						0,
-						0,
-						0
+					click_to_vote = {
+						font_size = 18,
+						horizontal_alignment = "center",
+						localize = true,
+						word_wrap = true,
+						vertical_alignment = "bottom",
+						dynamic_size = true,
+						font_type = "hell_shark",
+						text_color = Colors.get_color_table_with_alpha("font_default", 255),
+						offset = {
+							0,
+							0,
+							0
+						},
+						size = {
+							300,
+							0
+						}
 					},
-					size = {
-						300,
-						0
-					}
-				},
-				pre_description_divider = {
-					layout_bottom_padding = 4,
-					layout_top_padding = 4,
-					horizontal_alignment = "center",
-					height_margin = 5,
-					vertical_alignment = "bottom",
-					texture_size = {
-						200,
-						3
+					pre_description_divider = {
+						layout_bottom_padding = 4,
+						layout_top_padding = 4,
+						horizontal_alignment = "center",
+						height_margin = 5,
+						vertical_alignment = "bottom",
+						texture_size = {
+							200,
+							3
+						},
+						color = {
+							255,
+							255,
+							255,
+							255
+						},
+						offset = {
+							0,
+							0,
+							0
+						},
+						size = {
+							300,
+							3
+						}
 					},
-					color = {
-						255,
-						255,
-						255,
-						255
+					description = {
+						font_size = 18,
+						horizontal_alignment = "center",
+						localize = false,
+						word_wrap = true,
+						vertical_alignment = "center",
+						dynamic_size = true,
+						font_type = "hell_shark",
+						text_color = {
+							255,
+							120,
+							120,
+							120
+						},
+						offset = {
+							0,
+							0,
+							0
+						},
+						size = {
+							300,
+							0
+						}
 					},
-					offset = {
-						0,
-						0,
-						0
-					},
-					size = {
-						300,
-						3
-					}
-				},
-				description = {
-					font_size = 18,
-					horizontal_alignment = "center",
-					localize = false,
-					word_wrap = true,
-					vertical_alignment = "center",
-					dynamic_size = true,
-					font_type = "hell_shark",
-					text_color = {
-						255,
-						120,
-						120,
-						120
-					},
-					offset = {
-						0,
-						0,
-						0
-					},
-					size = {
-						300,
-						0
-					}
-				},
-				post_description_divider = {
-					layout_bottom_padding = 4,
-					layout_top_padding = 4,
-					horizontal_alignment = "center",
-					height_margin = 5,
-					vertical_alignment = "center",
-					texture_size = {
-						200,
-						3
-					},
-					color = {
-						255,
-						255,
-						255,
-						255
-					},
-					offset = {
-						0,
-						0,
-						0
-					},
-					size = {
-						300,
-						3
+					post_description_divider = {
+						layout_bottom_padding = 4,
+						layout_top_padding = 4,
+						horizontal_alignment = "center",
+						height_margin = 5,
+						vertical_alignment = "center",
+						texture_size = {
+							200,
+							3
+						},
+						color = {
+							255,
+							255,
+							255,
+							255
+						},
+						offset = {
+							0,
+							0,
+							0
+						},
+						size = {
+							300,
+							3
+						}
 					}
 				},
 				curse_section = {
@@ -923,10 +940,11 @@ local function create_node_info_widget(scenegraph_id)
 						}
 					},
 					curse_text = {
-						word_wrap = false,
-						horizontal_alignment = "left",
-						localize = false,
 						font_size = 20,
+						word_wrap = false,
+						localize = false,
+						dynamic_width = true,
+						horizontal_alignment = "left",
 						vertical_alignment = "center",
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -972,10 +990,11 @@ local function create_node_info_widget(scenegraph_id)
 						}
 					},
 					text = {
-						word_wrap = false,
-						horizontal_alignment = "left",
-						localize = false,
 						font_size = 20,
+						word_wrap = false,
+						localize = false,
+						dynamic_width = true,
+						horizontal_alignment = "left",
 						vertical_alignment = "center",
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1021,10 +1040,11 @@ local function create_node_info_widget(scenegraph_id)
 						}
 					},
 					breed_text = {
-						word_wrap = false,
-						horizontal_alignment = "left",
-						localize = false,
 						font_size = 20,
+						word_wrap = false,
+						localize = false,
+						dynamic_width = true,
+						horizontal_alignment = "left",
 						vertical_alignment = "center",
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1070,10 +1090,11 @@ local function create_node_info_widget(scenegraph_id)
 						}
 					},
 					terror_event_power_up_text = {
-						word_wrap = false,
-						horizontal_alignment = "left",
-						localize = false,
 						font_size = 20,
+						word_wrap = false,
+						localize = false,
+						dynamic_width = true,
+						horizontal_alignment = "left",
 						vertical_alignment = "center",
 						font_type = "hell_shark",
 						text_color = Colors.get_color_table_with_alpha("font_default", 255),

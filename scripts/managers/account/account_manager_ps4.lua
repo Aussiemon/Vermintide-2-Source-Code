@@ -960,8 +960,18 @@ AccountManager.cancel_all_popups = function (self)
 	return
 end
 
+AccountManager.update_presence = function (self)
+	return
+end
+
 AccountManager.should_throttle = function (self)
-	return true
+	if PS4.is_ps5() then
+		return false
+	elseif PS4.is_pro() then
+		return true
+	else
+		return true
+	end
 end
 
 return

@@ -162,6 +162,8 @@ LevelTransitionHandler.load_current_level = function (self)
 	local currently_loaded_level_key = self._currently_loaded_level_key
 	local currently_loaded_environment_variation_id = self._currently_loaded_environment_variation_id
 
+	self:_release_extra_packages(currently_loaded_level_key)
+
 	if currently_loaded_level_key and new_level_key ~= currently_loaded_level_key then
 		self:_release_level_resources(currently_loaded_level_key)
 	end
@@ -169,8 +171,10 @@ LevelTransitionHandler.load_current_level = function (self)
 	local is_not_loading = not self.loading_packages[new_level_key]
 	local is_not_loaded = not self:_level_packages_loaded(new_level_key)
 
+	self:_load_extra_packages(new_level_key, extra_packages)
+
 	if currently_loaded_level_key ~= new_level_key or currently_loaded_environment_variation_id ~= new_environment_variation_id or (is_not_loading and is_not_loaded) then
-		self:_load_level_packages(new_level_key, extra_packages)
+		self:_load_level_packages(new_level_key)
 
 		local level_settings = LevelSettings[new_level_key]
 		local packages = level_settings.packages
@@ -193,6 +197,7 @@ LevelTransitionHandler.release_level_resources = function (self, level_key)
 		return
 	end
 
+	self:_release_extra_packages(level_key)
 	self:_release_level_resources(level_key)
 end
 
@@ -211,6 +216,44 @@ LevelTransitionHandler._release_level_resources = function (self, level_key)
 		end
 
 		self.loaded_levels[level_key] = false
+	end
+end
+
+LevelTransitionHandler._load_extra_packages = function (self, level_key, extra_packages)
+	if extra_packages and #extra_packages > 0 then
+		fassert(self._extra_packages == nil, "Trying to load level before releasing previous one properly. _extra_packages have not been unloaded.")
+
+		self._extra_packages = extra_packages
+		local async = true
+		local reference_name = level_key
+		local package_manager = Managers.package
+
+		for i = 1, #extra_packages, 1 do
+			local package_path = extra_packages[i]
+
+			package_manager:load(package_path, reference_name, nil, async)
+		end
+	end
+end
+
+LevelTransitionHandler._release_extra_packages = function (self, level_key)
+	local reference_name = level_key
+	local extra_level_packages = self._extra_packages
+
+	if extra_level_packages then
+		dprint("unloading extra packages: %s", table.tostring(extra_level_packages))
+
+		local package_manager = Managers.package
+
+		for i = #extra_level_packages, 1, -1 do
+			local package_path = extra_level_packages[i]
+
+			if package_manager:has_loaded(package_path, reference_name) or package_manager:is_loading(package_path) then
+				package_manager:unload(package_path, reference_name)
+			end
+		end
+
+		self._extra_packages = nil
 	end
 end
 
@@ -361,19 +404,12 @@ LevelTransitionHandler._set_next_level = function (self, level_transition_type, 
 	}
 end
 
-LevelTransitionHandler._load_level_packages = function (self, level_key, extra_packages)
+LevelTransitionHandler._load_level_packages = function (self, level_key)
 	local async = true
 	local package_manager = Managers.package
 	local reference_name = level_key
 	local settings = LevelSettings[level_key]
 	local packages = table.clone(settings.packages)
-
-	if #extra_packages > 0 then
-		fassert(self._extra_packages == nil, "Trying to load level before releasing previous one properly. _extra_packages have not been unloaded.")
-		table.append(packages, extra_packages)
-
-		self._extra_packages = extra_packages
-	end
 
 	if packages then
 		for i = 1, #packages, 1 do
@@ -389,13 +425,6 @@ LevelTransitionHandler._unload_level_packages = function (self, level_key)
 	local package_manager = Managers.package
 	local settings = LevelSettings[level_key]
 	local packages = table.clone(settings.packages)
-
-	if self._extra_packages then
-		dprint("unloading extra packages: %s", table.tostring(self._extra_packages))
-		table.append(packages, self._extra_packages)
-
-		self._extra_packages = nil
-	end
 
 	if packages then
 		for i = #packages, 1, -1 do
@@ -466,6 +495,16 @@ LevelTransitionHandler._update_debug = function (self)
 		end
 
 		Debug.text("Level Seed: %d", level_seed or -1)
+	end
+end
+
+LevelTransitionHandler.in_hub_level = function (self)
+	local level_key = self:get_current_level_key()
+
+	if level_key then
+		local level_settings = LevelSettings[level_key]
+
+		return level_settings.hub_level
 	end
 end
 

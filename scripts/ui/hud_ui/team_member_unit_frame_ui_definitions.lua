@@ -225,12 +225,12 @@ local function create_static_widget()
 			},
 			host_icon = {
 				size = {
-					18,
-					14
+					40,
+					40
 				},
 				offset = {
-					-50,
-					10,
+					-65,
+					-2,
 					50
 				},
 				color = {
@@ -1178,7 +1178,6 @@ local function create_dynamic_health_widget()
 				},
 				{
 					pass_type = "texture",
-					style_id = "portrait_icon",
 					texture_id = "portrait_icon",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)

@@ -106,6 +106,10 @@ return {
 			return
 		end
 
+		if not DamageUtils.is_player_unit(attacker_unit) then
+			return
+		end
+
 		local breed = Unit.get_data(hit_unit, "breed")
 
 		if breed.boss then

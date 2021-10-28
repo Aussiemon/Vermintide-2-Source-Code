@@ -1397,8 +1397,6 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 		"material",
 		"materials/ui/ui_1080p_menu_single_textures",
 		"material",
-		"materials/ui/ui_1080p_store_menu",
-		"material",
 		"materials/ui/ui_1080p_common",
 		"material",
 		"materials/fonts/gw_fonts"

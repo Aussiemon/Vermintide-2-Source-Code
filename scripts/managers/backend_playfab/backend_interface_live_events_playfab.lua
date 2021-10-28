@@ -7,8 +7,17 @@ BackendInterfaceLiveEventsPlayfab.init = function (self, backend_mirror)
 	self._last_id = 0
 	self._live_events = {}
 	self._completed_live_event_requests = {}
-	local live_events_string = Managers.backend:get_title_data("live_events")
-	self._live_events = (live_events_string and cjson.decode(live_events_string)) or {}
+	local backend_manager = Managers.backend
+	local live_events_string = backend_manager:get_title_data("live_events_v2") or backend_manager:get_title_data("live_events")
+	local live_events = (live_events_string and cjson.decode(live_events_string)) or {}
+
+	if is_array(live_events) then
+		self._live_events = {
+			weekly_events = live_events
+		}
+	else
+		self._live_events = live_events
+	end
 end
 
 BackendInterfaceLiveEventsPlayfab.ready = function (self)
@@ -50,7 +59,14 @@ BackendInterfaceLiveEventsPlayfab.request_live_events_cb = function (self, id, r
 		live_events = cjson.decode(live_events_json)
 	end
 
-	self._live_events = live_events
+	if is_array(live_events) then
+		self._live_events = {
+			weekly_events = live_events
+		}
+	else
+		self._live_events = live_events
+	end
+
 	self._completed_live_event_requests[id] = true
 end
 
@@ -60,15 +76,19 @@ BackendInterfaceLiveEventsPlayfab.live_events_request_complete = function (self,
 	return complete
 end
 
-BackendInterfaceLiveEventsPlayfab.get_live_events = function (self)
-	return self._live_events
+BackendInterfaceLiveEventsPlayfab.get_weekly_events = function (self)
+	return self._live_events.weekly_events
 end
 
-BackendInterfaceLiveEventsPlayfab.get_game_mode_data = function (self)
-	local live_events = self._live_events
+BackendInterfaceLiveEventsPlayfab.get_special_events = function (self)
+	return self._live_events.special_events
+end
 
-	for i = 1, #live_events, 1 do
-		local event = live_events[i]
+BackendInterfaceLiveEventsPlayfab.get_weekly_events_game_mode_data = function (self)
+	local weekly_event_data = self._live_events.weekly_events
+
+	for i = 1, #weekly_event_data, 1 do
+		local event = weekly_event_data[i]
 
 		if event.game_mode_data then
 			return event.game_mode_data

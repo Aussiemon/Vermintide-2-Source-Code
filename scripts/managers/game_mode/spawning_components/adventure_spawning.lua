@@ -500,8 +500,8 @@ end
 AdventureSpawning.get_spawn_point = function (self)
 	local default_state = "default"
 	local came_from_mechanism = Managers.mechanism:get_last_mechanism_switch()
-	local prior_state = came_from_mechanism or Managers.mechanism:get_prior_state() or default_state
-	local spawn_points = self._spawn_points[prior_state] or self._spawn_points[default_state]
+	local prior_state = Managers.mechanism:get_prior_state() or default_state
+	local spawn_points = self._spawn_points[prior_state] or self._spawn_points[came_from_mechanism] or self._spawn_points[default_state]
 	self._num_spawn_points_used = self._num_spawn_points_used + 1
 
 	if self._num_spawn_points_used > #spawn_points then

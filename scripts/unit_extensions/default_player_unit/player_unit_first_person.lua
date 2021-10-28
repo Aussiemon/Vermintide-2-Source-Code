@@ -2,6 +2,14 @@ local player_unit_first_person_testify = script_data.testify and require("script
 PlayerUnitFirstPerson = class(PlayerUnitFirstPerson)
 script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion") or true
 local unit_alive = Unit.alive
+local MOUSE_SCALE = 0.001
+local DEFAULT_WEAPON_SWAY_SETTINGS = {
+	recentering_lerp_speed = 2,
+	camera_look_sensitivity = 1,
+	sway_range = 1,
+	look_sensitivity = 0.6,
+	lerp_speed = math.huge
+}
 
 PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, extension_init_data)
 	self.world = extension_init_context.world
@@ -95,6 +103,7 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 	self._look_delta_x = 0
 	self._look_target_y = 0
 	self._look_target_x = 0
+	self._look_sensitivity = 1
 
 	Managers.state.event:register(self, "on_game_options_changed", "_set_game_options_dirty")
 	self:update_game_options()
@@ -510,7 +519,9 @@ PlayerUnitFirstPerson.update_rotation = function (self, t, dt)
 		local rotation = self.look_rotation:unbox()
 		local look_delta = self.look_delta:unbox()
 		self.has_look_delta = false
-		local look_rotation = self:calculate_look_rotation(rotation, look_delta)
+		local weapon_sway_settings = self._weapon_sway_settings or DEFAULT_WEAPON_SWAY_SETTINGS
+		local camera_look_sensitivity = weapon_sway_settings.camera_look_sensitivity or 1
+		local look_rotation = self:calculate_look_rotation(rotation, look_delta * camera_look_sensitivity)
 
 		if aim_assist_unit and Managers.input:is_device_active("gamepad") then
 			look_rotation = self:calculate_aim_assisted_rotation(look_rotation, aim_assist_data, look_delta, dt)
@@ -758,14 +769,16 @@ end
 
 PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override, unarmed)
 	if not self.debug_first_person_mode and (override or not Development.parameter("third_person_mode") or not Development.parameter("attract_mode")) then
-		Unit.set_unit_visibility(self.unit, not active)
+		if self.first_person_mode ~= active then
+			Unit.set_unit_visibility(self.unit, not active)
 
-		for k, v in pairs(self.flow_unit_attachments) do
-			Unit.set_unit_visibility(v, not active)
-		end
+			for k, v in pairs(self.flow_unit_attachments) do
+				Unit.set_unit_visibility(v, not active)
+			end
 
-		if not self.tutorial_first_person then
-			Unit.set_unit_visibility(self.first_person_attachment_unit, active)
+			if not self.tutorial_first_person then
+				Unit.set_unit_visibility(self.first_person_attachment_unit, active)
+			end
 		end
 
 		if active then
@@ -936,6 +949,10 @@ PlayerUnitFirstPerson.stop_spawning_screen_particles = function (self, id)
 end
 
 PlayerUnitFirstPerson.destroy_screen_particles = function (self, id)
+	if Development.parameter("screen_space_player_camera_reactions") == false then
+		return
+	end
+
 	World.destroy_particles(self.world, id)
 end
 
@@ -1220,13 +1237,18 @@ local weapon_sway_lerp_variables = {
 		0.05
 	}
 }
-local MOUSE_SCALE = 0.001
-local DEFAULT_WEAPON_SWAY_SETTINGS = {
-	look_sensitivity = 0.6,
-	recentering_lerp_speed = 2,
-	sway_range = 1,
-	lerp_speed = math.huge
-}
+local math_min = math.min
+local math_max = math.max
+local math_lerp = math.lerp
+local math_clamp = math.clamp
+
+function bi_clamp(val, min, max)
+	if max < min then
+		return math_max(max, math_min(min, val))
+	else
+		return math_max(min, math_min(max, val))
+	end
+end
 
 PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	local weapon_sway_settings = self._weapon_sway_settings or DEFAULT_WEAPON_SWAY_SETTINGS
@@ -1237,12 +1259,14 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	local look_delta = mouse_input + move_controller_input * dt
 	local look_target_x = self._look_target_x + look_delta.x * weapon_sway_settings.look_sensitivity
 	local look_target_y = self._look_target_y + look_delta.y * weapon_sway_settings.look_sensitivity
-	local lerp_speed = math.min(weapon_sway_settings.lerp_speed * dt, 1)
-	local look_delta_x = math.lerp(self._look_delta_x, look_target_x, lerp_speed)
-	local look_delta_y = math.lerp(self._look_delta_y, look_target_y, lerp_speed)
+	local lerp_speed = math_min(weapon_sway_settings.lerp_speed * dt, 1)
+	local look_delta_x = math_lerp(self._look_delta_x, look_target_x, lerp_speed)
+	local look_delta_y = math_lerp(self._look_delta_y, look_target_y, lerp_speed)
 	local sway_range = weapon_sway_settings.sway_range
-	look_delta_x = math.clamp(look_delta_x, -sway_range, sway_range)
-	look_delta_y = math.clamp(look_delta_y, -sway_range, sway_range)
+	look_delta_x = math_clamp(look_delta_x, -sway_range, sway_range)
+	look_delta_y = math_clamp(look_delta_y, -sway_range, sway_range)
+	self._look_delta_x = look_delta_x
+	self._look_delta_y = look_delta_y
 	local look_delta_x_variable = Unit.animation_find_variable(self.first_person_unit, "look_delta_x")
 
 	if look_delta_x_variable then
@@ -1255,11 +1279,37 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 		Unit.animation_set_variable(self.first_person_unit, look_delta_y_variable, look_delta_y)
 	end
 
-	local recentering_lerp_speed = math.min(weapon_sway_settings.recentering_lerp_speed * dt, 1)
-	self._look_target_x = math.clamp(math.lerp(look_target_x, 0, recentering_lerp_speed), -sway_range, sway_range)
-	self._look_target_y = math.clamp(math.lerp(look_target_y, 0, recentering_lerp_speed), -sway_range, sway_range)
-	self._look_delta_x = look_delta_x
-	self._look_delta_y = look_delta_y
+	local world_look_delta_y_variable = Unit.animation_find_variable(self.first_person_unit, "world_look_delta_y")
+
+	if world_look_delta_y_variable then
+		local rotation = self.look_rotation:unbox()
+		local world_look_delta_y = math.clamp(Quaternion.pitch(rotation) / self.MAX_MIN_PITCH, -1, 1)
+
+		Unit.animation_set_variable(self.first_person_unit, world_look_delta_y_variable, world_look_delta_y)
+	end
+
+	if weapon_sway_settings.recenter_acc then
+		local recenter_acc = weapon_sway_settings.recenter_acc
+		local recetner_dampening = weapon_sway_settings.recetner_dampening or 1
+		local recenter_max_vel = weapon_sway_settings.recenter_max_vel or 10
+		local recenter_vel_x = self._look_target_recentering_vel_x or 0
+		local recenter_vel_y = self._look_target_recentering_vel_y or 0
+		recenter_vel_x = recenter_vel_x - bi_clamp(recenter_vel_x * recetner_dampening * dt, -recenter_vel_x, recenter_vel_x)
+		recenter_vel_y = recenter_vel_y - bi_clamp(recenter_vel_y * recetner_dampening * dt, -recenter_vel_y, recenter_vel_y)
+		recenter_vel_x = recenter_vel_x + look_delta.x * weapon_sway_settings.look_sensitivity
+		recenter_vel_y = recenter_vel_y + look_delta.y * weapon_sway_settings.look_sensitivity
+		recenter_vel_x = math_clamp(recenter_vel_x - look_target_x * recenter_acc * dt, -recenter_max_vel, recenter_max_vel)
+		recenter_vel_y = math_clamp(recenter_vel_y - look_target_y * recenter_acc * dt, -recenter_max_vel, recenter_max_vel)
+		self._look_target_recentering_vel_x = recenter_vel_x
+		self._look_target_recentering_vel_y = recenter_vel_y
+		self._look_target_x = math_clamp(look_target_x + recenter_vel_x * dt, -sway_range, sway_range)
+		self._look_target_y = math_clamp(look_target_y + recenter_vel_y * dt, -sway_range, sway_range)
+	else
+		local recentering_lerp_speed = math_min((weapon_sway_settings.recentering_lerp_speed or 2) * dt, 1)
+		self._look_target_x = math_clamp(math_lerp(look_target_x, 0, recentering_lerp_speed), -sway_range, sway_range)
+		self._look_target_y = math_clamp(math_lerp(look_target_y, 0, recentering_lerp_speed), -sway_range, sway_range)
+	end
+
 	local move_input = Vector3.normalize(move_mouse_input + move_controller_input)
 	local move_x = math.round(2 * move_input.x) * 0.5
 	local move_y = math.round(2 * move_input.y) * 0.5

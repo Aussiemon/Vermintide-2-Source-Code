@@ -591,6 +591,10 @@ function flow_callback_attach_player_item(params)
 							material_switches = hat_template.character_material_changes.third_person
 						end
 
+						if equip_event then
+							Unit.flow_event(parent_unit, equip_event)
+						end
+
 						local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
 
 						for _, attached_unit in pairs(flow_unit_attachments) do

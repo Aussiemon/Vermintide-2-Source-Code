@@ -90,7 +90,7 @@ local function clean_inventory(items, loadout, whitelist)
 		for slot, backend_id in pairs(slots) do
 			if slot == "backend_id" then
 			elseif not items[backend_id] then
-				ScriptApplication.send_to_crashify("BackendInterfaceItem", "Tried to equip item not found in items list, clearing slot. Profile: %q, Backend id: %d, Slot: %q", profile_name, backend_id, slot)
+				Crashify.print_exception("BackendInterfaceItem", "Tried to equip item not found in items list, clearing slot. Profile: %q, Backend id: %d, Slot: %q", profile_name, backend_id, slot)
 				BackendItem.set_loadout_item(nil, loadout[profile_name].backend_id, slot)
 
 				slots[slot] = nil
@@ -102,7 +102,7 @@ local function clean_inventory(items, loadout, whitelist)
 					}
 				end
 			elseif missing_items and missing_items[backend_id] then
-				ScriptApplication.send_to_crashify("BackendInterfaceItem", "Tried to equip item not found in ItemMasterList, clearing slot. Profile: %q, Item: %q, Backend id: %d, Slot: %q", profile_name, missing_items[backend_id], backend_id, slot)
+				Crashify.print_exception("BackendInterfaceItem", "Tried to equip item not found in ItemMasterList, clearing slot. Profile: %q, Item: %q, Backend id: %d, Slot: %q", profile_name, missing_items[backend_id], backend_id, slot)
 				BackendItem.set_loadout_item(nil, loadout[profile_name].backend_id, slot)
 
 				slots[slot] = nil
@@ -119,7 +119,7 @@ local function clean_inventory(items, loadout, whitelist)
 
 	if missing_items then
 		for backend_id, key in pairs(missing_items) do
-			ScriptApplication.send_to_crashify("BackendInterfaceItem", "Missing item %q in backend, removing it. Backend id: %q", key, backend_id)
+			Crashify.print_exception("BackendInterfaceItem", "Missing item %q in backend, removing it. Backend id: %q", key, backend_id)
 
 			items[backend_id] = nil
 		end
@@ -131,7 +131,7 @@ local function clean_inventory(items, loadout, whitelist)
 		local backend_id = find_item_for_slot(items, profile_name, slot)
 
 		if backend_id then
-			ScriptApplication.send_to_crashify("BackendInterfaceItem", "Slot %q was empty, putting item %d in it", slot, backend_id)
+			Crashify.print_exception("BackendInterfaceItem", "Slot %q was empty, putting item %d in it", slot, backend_id)
 			BackendItem.set_loadout_item(backend_id, loadout[profile_name].backend_id, slot)
 
 			empty_must_have_slots[index] = nil
@@ -424,7 +424,7 @@ end
 
 BackendInterfaceItem.get_item_from_id = function (self, backend_id)
 	if backend_id == 0 then
-		ScriptApplication.send_to_crashify("BackendInterfaceItem", "Tried to get item from backend_id 0")
+		Crashify.print_exception("BackendInterfaceItem", "Tried to get item from backend_id 0")
 	end
 
 	local items = self._backend_items:get_all_backend_items()
@@ -750,7 +750,7 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 				attachment_extension:create_attachment_in_slot(slot, backend_id)
 			end
 
-			ScriptApplication.send_to_crashify("BackendInterfaceItem", "Slot %q was empty, putting item %d in it", slot, backend_id)
+			Crashify.print_exception("BackendInterfaceItem", "Slot %q was empty, putting item %d in it", slot, backend_id)
 			BackendItem.set_loadout_item(backend_id, loadout[profile_name].backend_id, slot)
 
 			empty_must_have_slots[index] = nil

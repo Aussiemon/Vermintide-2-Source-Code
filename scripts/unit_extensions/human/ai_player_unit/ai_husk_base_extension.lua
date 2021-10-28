@@ -24,6 +24,7 @@ AiHuskBaseExtension.init = function (self, extension_init_context, unit, extensi
 
 	local side_id = extension_init_data.side_id
 	self._side_id = side_id
+	self.attributes = nil
 end
 
 AiHuskBaseExtension.extensions_ready = function (self, world, unit)
@@ -54,6 +55,10 @@ AiHuskBaseExtension.unfreeze = function (self, unit, data)
 	self._side_id = side_id
 
 	Managers.state.side:add_unit_to_side(unit, side_id)
+
+	if self.attributes then
+		table.clear(self.attributes)
+	end
 
 	local run_on_husk_spawn = self._breed.run_on_husk_spawn
 

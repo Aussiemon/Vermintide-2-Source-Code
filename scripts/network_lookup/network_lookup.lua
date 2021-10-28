@@ -492,7 +492,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_01_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps",
-	"units/props/nurgle_liquid_blob/nurgle_liquid_blob_01"
+	"units/props/nurgle_liquid_blob/nurgle_liquid_blob_dynamic"
 }
 
 DLCUtils.append("husk_lookup", NetworkLookup.husks)
@@ -542,6 +542,7 @@ NetworkLookup.go_types = {
 	"ai_true_flight_projectile_unit_without_raycast",
 	"prop_unit",
 	"positioned_prop_unit",
+	"positioned_blob_unit",
 	"objective_unit",
 	"standard_unit",
 	"overpowering_blob_unit",
@@ -568,6 +569,7 @@ NetworkLookup.go_types = {
 	"lure_unit",
 	"pickup_training_dummy_unit",
 	"keep_decoration_painting",
+	"keep_decoration_trophy",
 	"weave",
 	"timed_explosion_unit",
 	"progress_timer",
@@ -750,6 +752,17 @@ NetworkLookup.buff_attack_types = {
 	"ability",
 	"wind_mutator",
 	"action_push"
+}
+NetworkLookup.keep_decoration_trophies = {
+	"hub_trophy_empty",
+	"hub_trophy_holly",
+	"hub_trophy_skarrik",
+	"hub_trophy_bugman",
+	"hub_trophy_bodvarr",
+	"hub_trophy_burblespue",
+	"hub_trophy_nurgloth",
+	"hub_trophy_bogenhafen",
+	"hub_trophy_rasknitt"
 }
 local anims_temp = {}
 local actions_temp = {}
@@ -1066,6 +1079,10 @@ NetworkLookup.buff_templates = create_lookup({
 NetworkLookup.group_buff_templates = create_lookup({
 	"n/a"
 }, GroupBuffTemplates)
+NetworkLookup.traits = create_lookup({}, WeaponTraits.traits)
+NetworkLookup.traits = create_lookup(NetworkLookup.traits, WeaveTraits.traits)
+NetworkLookup.properties = create_lookup({}, WeaponProperties.properties)
+NetworkLookup.properties = create_lookup(NetworkLookup.properties, WeaveProperties.properties)
 NetworkLookup.buff_data_types = {
 	"n/a",
 	"variable_value",
@@ -1220,6 +1237,7 @@ NetworkLookup.effects = {
 	"fx/drachenfels_flies_impact",
 	"fx/drachenfels_boss_teleport_enter",
 	"fx/mutator_death_03",
+	"fx/torch_07_nurgle",
 	"fx/wpnfx_poison_wind_globe_impact_death_01"
 }
 
@@ -2079,7 +2097,10 @@ NetworkLookup.connection_states = {
 	"disconnecting",
 	"disconnected"
 }
-NetworkLookup.rarities = create_lookup({}, RaritySettings)
+NetworkLookup.rarities = create_lookup({
+	"default",
+	"magic"
+}, RaritySettings)
 NetworkLookup.bot_orders = create_lookup({}, AIBotGroupSystem.bot_orders)
 NetworkLookup.twitch_vote_templates = create_lookup({
 	"draw",
@@ -2150,6 +2171,14 @@ NetworkLookup.mission_names = create_lookup({}, Missions)
 NetworkLookup.projectile_gravity_settings = create_lookup({}, ProjectileGravitySettings)
 NetworkLookup.voting_types = create_lookup({}, VoteTemplates)
 NetworkLookup.session_stats = create_lookup({}, StatisticsDefinitions.session)
+local attributes = {}
+
+for _, category in pairs(AttributeDefinition) do
+	create_lookup(attributes, category)
+end
+
+NetworkLookup.attributes = attributes
+NetworkLookup.attribute_categories = create_lookup({}, AttributeDefinition)
 local flow_events = {}
 
 for level_key, terror_events in pairs(TerrorEventBlueprints) do

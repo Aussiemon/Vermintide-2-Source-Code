@@ -12,8 +12,6 @@ local UI_RENDERER_MATERIALS = {
 	"material",
 	"materials/ui/ui_1080p_menu_single_textures",
 	"material",
-	"materials/ui/ui_1080p_store_menu",
-	"material",
 	"materials/ui/ui_1080p_common",
 	"material",
 	"materials/fonts/gw_fonts",
@@ -149,6 +147,12 @@ GameModeMapDeus.profile_changed = function (self, peer_id, local_player_id, prof
 	end
 end
 
+local EMPTY_TABLE = {}
+
+GameModeMapDeus.mutators = function (self)
+	return EMPTY_TABLE
+end
+
 GameModeMapDeus.update = function (self, t, dt)
 	local server_state = self._shared_state:get_server(self._shared_state:get_key("state"))
 	local own_state = self._shared_state:get_own(self._shared_state:get_key("state"))
@@ -180,10 +184,12 @@ GameModeMapDeus.update = function (self, t, dt)
 	if own_state ~= server_state then
 		if server_state == states.MAP_DECISION then
 			self._ui_done = false
-			local transition = "close_active"
-			local transition_func_name = "ui_event_transition_with_fade"
 
-			Managers.state.event:trigger(transition_func_name, transition, {}, FADE_DURATION, FADE_DURATION)
+			Managers.ui:handle_transition("close_active", {
+				use_fade = true,
+				fade_in_speed = FADE_DURATION,
+				fade_out_speed = FADE_DURATION
+			})
 
 			local transition_params = {
 				finish_cb = function (data)
@@ -202,10 +208,12 @@ GameModeMapDeus.update = function (self, t, dt)
 		elseif server_state == states.WAITING_FOR_PLAYERS_AFTER_MAP_DECISION then
 		elseif server_state == states.SHOP then
 			self._ui_done = false
-			local transition = "close_active"
-			local transition_func_name = "ui_event_transition_with_fade"
 
-			Managers.state.event:trigger(transition_func_name, transition, {}, FADE_DURATION, FADE_DURATION)
+			Managers.ui:handle_transition("close_active", {
+				use_fade = true,
+				fade_in_speed = FADE_DURATION,
+				fade_out_speed = FADE_DURATION
+			})
 
 			local transition_params = {
 				finish_cb = function ()
@@ -284,10 +292,9 @@ GameModeMapDeus.server_update = function (self, t, dt)
 			local new_node = graph[self._node_decided]
 
 			if new_node.node_type == "shop" then
-				self._deus_run_controller:set_current_node_key(self._node_decided)
-
 				self._shop_view_finished = nil
 
+				self._deus_run_controller:handle_shrine_entered(self._node_decided)
 				self._shared_state:set_server(self._shared_state:get_key("state"), states.SHOP)
 			else
 				self._shared_state:set_server(self._shared_state:get_key("state"), states.FINISHING)
@@ -295,7 +302,6 @@ GameModeMapDeus.server_update = function (self, t, dt)
 		end
 	elseif current_state == states.SHOP then
 		if self._shop_view_finished then
-			self._deus_run_controller:handle_shrine_completed()
 			self._shared_state:set_server(self._shared_state:get_key("state"), states.WAITING_FOR_PLAYERS_AFTER_SHOP)
 		end
 	elseif current_state == states.WAITING_FOR_PLAYERS_AFTER_SHOP then

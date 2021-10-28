@@ -230,7 +230,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 	local push_units_data = attack.push_units_in_the_way
 
 	if push_units_data then
-		BTMeleeOverlapAttackAction:push_close_units(unit, blackboard, t, push_units_data)
+		self:push_close_units(unit, blackboard, t, push_units_data)
 	end
 
 	local bot_threats = attack.bot_threats and (attack.bot_threats[attack_anim] or (attack.bot_threats[1] and attack.bot_threats))
@@ -467,7 +467,7 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 		local push_units_data_continuous = attack.push_units_in_the_way_continuous
 
 		if push_units_data_continuous then
-			BTMeleeOverlapAttackAction:push_close_units(unit, blackboard, t, push_units_data_continuous)
+			self:push_close_units(unit, blackboard, t, push_units_data_continuous)
 		end
 
 		local create_bot_threat_at_t = blackboard.create_bot_threat_at_t

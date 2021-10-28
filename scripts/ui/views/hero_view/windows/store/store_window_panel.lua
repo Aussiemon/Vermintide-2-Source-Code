@@ -1,7 +1,6 @@
 local definitions = local_require("scripts/ui/views/hero_view/windows/store/definitions/store_window_panel_definitions")
 local widget_definitions = definitions.widgets
 local top_widget_definitions = definitions.top_widgets
-local title_button_definitions = definitions.title_button_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
 local INPUT_ACTION_NEXT = "cycle_next"
@@ -27,28 +26,8 @@ end
 
 StoreWindowPanel._create_ui_elements = function (self, params, offset)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
-	local top_widgets = {}
-	local top_widgets_by_name = {}
-
-	for name, widget_definition in pairs(top_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		top_widgets[#top_widgets + 1] = widget
-		top_widgets_by_name[name] = widget
-	end
-
-	self._top_widgets = top_widgets
-	self._top_widgets_by_name = top_widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
+	self._top_widgets, self._top_widgets_by_name = UIUtils.create_widgets(top_widget_definitions)
 	local title_button_widgets = {}
 	local layout_settings = self._layout_settings
 	local window_layouts = layout_settings.window_layouts
@@ -104,8 +83,7 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 	self.tab_cat = tab_cat
 	self._ui_scenegraph.panel_entry_area.size[1] = total_length
 	self._title_button_widgets = title_button_widgets
-	local widgets_by_name = self._widgets_by_name
-	local mark_all_seen_button = widgets_by_name.mark_all_seen_button
+	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
 	mark_all_seen_button.content.new = true
 	mark_all_seen_button.style.new_marker.offset = {
 		-80,
@@ -180,10 +158,11 @@ StoreWindowPanel._update_animations = function (self, dt)
 		sum_unseen = sum_unseen + num_unseen
 	end
 
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
 	local mark_all_shown = sum_unseen > 0
-	mark_all_seen_button.content.visible = mark_all_shown
-	mark_all_seen_button.content.enabled = mark_all_shown
+	mark_all_seen_button.content.visible = not gamepad_active and mark_all_shown
+	mark_all_seen_button.content.enabled = not gamepad_active and mark_all_shown
 	local widgets_by_name = self._widgets_by_name
 	local back_button = widgets_by_name.back_button
 	local close_button = widgets_by_name.close_button
@@ -216,7 +195,7 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 	local input_made = false
 	local close_button = widgets_by_name.close_button
 	local back_button = widgets_by_name.back_button
-	local mark_all_seen_button = self._widgets_by_name.mark_all_seen_button
+	local mark_all_seen_button = widgets_by_name.mark_all_seen_button
 
 	if UIUtils.is_button_hover_enter(back_button) or UIUtils.is_button_hover_enter(close_button) then
 		self:_play_sound("Play_hud_hover")
@@ -322,27 +301,16 @@ StoreWindowPanel._draw = function (self, dt)
 	local render_settings = self._render_settings
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
-
-	for _, widget in ipairs(self._widgets) do
-		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
-	for _, widget in ipairs(self._title_button_widgets) do
-		UIRenderer.draw_widget(ui_renderer, widget)
-	end
-
+	UIRenderer.draw_all_widgets(ui_renderer, self._widgets)
+	UIRenderer.draw_all_widgets(ui_renderer, self._title_button_widgets)
 	UIRenderer.end_pass(ui_renderer)
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
-
-	for _, widget in ipairs(self._top_widgets) do
-		UIRenderer.draw_widget(ui_top_renderer, widget)
-	end
-
+	UIRenderer.draw_all_widgets(ui_top_renderer, self._top_widgets)
 	UIRenderer.end_pass(ui_top_renderer)
 end
 
 StoreWindowPanel._play_sound = function (self, event)
-	self._parent:play_sound(event)
+	return self._parent:play_sound(event)
 end
 
 StoreWindowPanel._setup_input_buttons = function (self)
@@ -436,7 +404,7 @@ StoreWindowPanel._get_text_width = function (self, text_style, text)
 
 	local ui_renderer = self._ui_renderer
 	local font, scaled_font_size = UIFontByResolution(text_style)
-	local text_width, text_height, min = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
+	local text_width = UIRenderer.text_size(ui_renderer, text, font[1], scaled_font_size)
 
 	return text_width
 end
@@ -458,31 +426,11 @@ StoreWindowPanel._animate_title_entry = function (self, widget, dt)
 	local selection_progress = hotspot.selection_progress or 0
 	local speed = 8
 	local input_speed = 20
-
-	if input_pressed then
-		input_progress = math.min(input_progress + dt * input_speed, 1)
-	else
-		input_progress = math.max(input_progress - dt * input_speed, 0)
-	end
-
-	local input_easing_out_progress = math.easeOutCubic(input_progress)
-	local input_easing_in_progress = math.easeInCubic(input_progress)
-
-	if is_hover then
-		hover_progress = math.min(hover_progress + dt * speed, 1)
-	else
-		hover_progress = math.max(hover_progress - dt * speed, 0)
-	end
-
+	input_progress = UIUtils.animate_value(input_progress, dt * input_speed, input_pressed)
+	hover_progress = UIUtils.animate_value(hover_progress, dt * speed, is_hover)
+	selection_progress = UIUtils.animate_value(selection_progress, dt * speed, is_selected)
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
-
-	if is_selected then
-		selection_progress = math.min(selection_progress + dt * speed, 1)
-	else
-		selection_progress = math.max(selection_progress - dt * speed, 0)
-	end
-
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
 	local select_easing_in_progress = math.easeInCubic(selection_progress)
 	local combined_progress = math.max(hover_progress, selection_progress)
@@ -520,31 +468,11 @@ StoreWindowPanel._animate_back_button = function (self, widget, dt)
 	local selection_progress = hotspot.selection_progress or 0
 	local speed = 8
 	local input_speed = 20
-
-	if input_pressed then
-		input_progress = math.min(input_progress + dt * input_speed, 1)
-	else
-		input_progress = math.max(input_progress - dt * input_speed, 0)
-	end
-
-	local input_easing_out_progress = math.easeOutCubic(input_progress)
-	local input_easing_in_progress = math.easeInCubic(input_progress)
-
-	if is_hover then
-		hover_progress = math.min(hover_progress + dt * speed, 1)
-	else
-		hover_progress = math.max(hover_progress - dt * speed, 0)
-	end
-
+	input_progress = UIUtils.animate_value(input_progress, dt * input_speed, input_pressed)
+	hover_progress = UIUtils.animate_value(hover_progress, dt * speed, is_hover)
+	selection_progress = UIUtils.animate_value(selection_progress, dt * speed, is_selected)
 	local hover_easing_out_progress = math.easeOutCubic(hover_progress)
 	local hover_easing_in_progress = math.easeInCubic(hover_progress)
-
-	if is_selected then
-		selection_progress = math.min(selection_progress + dt * speed, 1)
-	else
-		selection_progress = math.max(selection_progress - dt * speed, 0)
-	end
-
 	local select_easing_out_progress = math.easeOutCubic(selection_progress)
 	local select_easing_in_progress = math.easeInCubic(selection_progress)
 	local combined_progress = math.max(hover_progress, selection_progress)

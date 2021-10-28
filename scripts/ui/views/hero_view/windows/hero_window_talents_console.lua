@@ -240,8 +240,14 @@ HeroWindowTalentsConsole._handle_gamepad_input = function (self, dt, t)
 			self:_play_sound("play_gui_talents_selection_hover")
 		end
 
-		if input_service:get("confirm", true) and self:_can_press_talent(focused_row, focused_column) then
-			self:_set_talent_selected(focused_row, focused_column)
+		local can_press, is_selected = self:_can_press_talent(focused_row, focused_column)
+
+		if can_press then
+			if not is_selected and input_service:get("confirm", true) then
+				self:_set_talent_selected(focused_row, focused_column)
+			elseif input_service:get("refresh", true) then
+				self:_set_talent_selected(focused_row, 0)
+			end
 		end
 	end
 end
@@ -454,24 +460,11 @@ end
 
 HeroWindowTalentsConsole._can_press_talent = function (self, row, column)
 	local widgets_by_name = self._widgets_by_name
+	local widget = widgets_by_name["talent_row_" .. row]
+	local content = widget.content
+	local hotspot = content["hotspot_" .. column]
 
-	for i = 1, NumTalentRows, 1 do
-		local widget = widgets_by_name["talent_row_" .. i]
-
-		if widget then
-			local content = widget.content
-
-			for j = 1, NumTalentColumns, 1 do
-				local name_suffix = "_" .. tostring(j)
-				local hotspot_name = "hotspot" .. name_suffix
-				local hotspot = content[hotspot_name]
-
-				if row == i and column == j then
-					return not hotspot.disabled and not hotspot.is_selected
-				end
-			end
-		end
-	end
+	return not hotspot.disabled, hotspot.is_selected
 end
 
 HeroWindowTalentsConsole._is_talent_pressed = function (self)
@@ -488,8 +481,12 @@ HeroWindowTalentsConsole._is_talent_pressed = function (self)
 				local hotspot_name = "hotspot" .. name_suffix
 				local hotspot = content[hotspot_name]
 
-				if hotspot.on_pressed and not hotspot.disabled and not hotspot.is_selected then
-					return i, j
+				if not hotspot.disabled then
+					if hotspot.on_pressed and not hotspot.is_selected then
+						return i, j
+					elseif hotspot.on_right_click then
+						return i, 0
+					end
 				end
 			end
 		end

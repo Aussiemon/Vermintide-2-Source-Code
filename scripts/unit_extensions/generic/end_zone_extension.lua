@@ -57,6 +57,27 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	end
 end
 
+EndZoneExtension.extensions_ready = function (self)
+	Managers.state.event:register(self, "activate_waystone_portal", "activate_waystone_portal")
+end
+
+EndZoneExtension.destroy = function (self)
+	Managers.state.event:unregister("activate_waystone_portal", self)
+end
+
+EndZoneExtension.activate_waystone_portal = function (self, wanted_waystone_type)
+	local unit = self._unit
+	local waystone_type = Unit.get_data(unit, "waystone_type")
+
+	if not waystone_type then
+		return
+	end
+
+	local event = (waystone_type == wanted_waystone_type and "activate") or "deactivate"
+
+	Unit.flow_event(unit, event)
+end
+
 EndZoneExtension.rpc_activate_end_zone = function (self, channel_id, waystone_type, activate, wind_name_id, activation_name)
 	if waystone_type ~= self._waystone_type then
 		return

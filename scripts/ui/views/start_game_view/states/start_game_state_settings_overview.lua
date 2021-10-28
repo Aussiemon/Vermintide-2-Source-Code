@@ -512,7 +512,7 @@ end
 
 StartGameStateSettingsOverview.is_weekly_event_active = function (self)
 	local live_event_interface = Managers.backend:get_interface("live_events")
-	local game_mode_data = live_event_interface:get_game_mode_data()
+	local game_mode_data = live_event_interface:get_weekly_events_game_mode_data()
 
 	return game_mode_data ~= nil
 end
@@ -1016,7 +1016,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		self.parent:start_game(params)
 	elseif vote_type == "event" then
 		local live_event_interface = Managers.backend:get_interface("live_events")
-		local game_mode_data = live_event_interface:get_game_mode_data()
+		local game_mode_data = live_event_interface:get_weekly_events_game_mode_data()
 		local event_data = {
 			mutators = game_mode_data.mutators
 		}

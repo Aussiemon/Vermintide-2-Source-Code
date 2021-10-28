@@ -304,11 +304,20 @@ StartGameWindowMutatorGridConsole._update_selected_item_backend_id = function (s
 				parent:set_selected_heroic_deed_backend_id(first_item.backend_id)
 			end
 		end
-	elseif self._selected_backend_id then
-		parent:set_selected_heroic_deed_backend_id(nil)
-		item_grid:set_backend_id_selected(nil)
+	else
+		local item = item_grid:get_item_hovered()
+		local backend_id = item and item.backend_id
 
-		self._selected_backend_id = nil
+		if backend_id ~= self._selected_backend_id then
+			self._selected_backend_id = backend_id
+
+			parent:set_selected_heroic_deed_backend_id(backend_id)
+		elseif not backend_id then
+			parent:set_selected_heroic_deed_backend_id(nil)
+			item_grid:set_backend_id_selected(nil)
+
+			self._selected_backend_id = nil
+		end
 	end
 end
 

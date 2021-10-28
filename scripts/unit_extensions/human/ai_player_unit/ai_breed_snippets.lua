@@ -40,11 +40,8 @@ local function setup_start_angry(unit, blackboard, conflict_director)
 	local breed = blackboard.breed
 	local ai_simple = ScriptUnit.extension(unit, "ai_system")
 	local behind_door = blackboard.optional_spawn_data.spawn_behind_door
-	local starting_sleepy = math.random() < breed.chance_of_starting_sleepy
 
-	if behind_door or starting_sleepy then
-		local ai_simple = ScriptUnit.extension(unit, "ai_system")
-
+	if behind_door then
 		ai_simple:set_perception(breed.perception, breed.target_selection)
 
 		local main_paths = conflict_director.main_path_info.main_paths
@@ -57,8 +54,6 @@ local function setup_start_angry(unit, blackboard, conflict_director)
 			travel_dist = travel_dist
 		}
 	else
-		local ai_simple = ScriptUnit.extension(unit, "ai_system")
-
 		ai_simple:set_perception(breed.perception, breed.target_selection_angry)
 		conflict_director:add_angry_boss(1, blackboard)
 

@@ -42,6 +42,7 @@ GameModeSettings.map_deus.display_name = "gm_morris_map_deus"
 GameModeSettings.map_deus.disable_difficulty_spawning_items = true
 GameModeSettings.map_deus.player_damage_forbidden = true
 GameModeSettings.map_deus.cap_power_level = false
+GameModeSettings.map_deus.allow_unspawned_players_in_tab_menu = true
 GameModeSettings.map_deus.end_mission_rewards = true
 GameModeSettings.map_deus.hide_difficulty = true
 GameModeSettings.map_deus.use_keep_decorations = true

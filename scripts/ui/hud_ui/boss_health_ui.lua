@@ -48,13 +48,10 @@ BossHealthUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(definitions.widgets) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
+	local bar_widget_def = definitions.widget_create_func()
+	local bar_widget = UIWidget.init(bar_widget_def)
+	widgets[#widgets + 1] = bar_widget
+	widgets_by_name.bar = bar_widget
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 	local game_mode_manager = Managers.state.game_mode
@@ -65,11 +62,129 @@ BossHealthUI.create_ui_elements = function (self)
 	end
 end
 
-BossHealthUI._set_portrait_by_breed = function (self, breed_name)
+BossHealthUI._set_portrait_and_title = function (self, marked, breed_name, title)
 	local portrait_texture = breed_textures[breed_name] or "icons_placeholder"
 	local bar_widget = self._widgets_by_name.bar
-	bar_widget.content.title_text = Localize(breed_name)
+
+	if marked then
+		bar_widget.content.title_text = "{#grad(true);color(255,125,80,255);color2(234,77,29,255)}" .. Utf8.upper(title)
+	else
+		bar_widget.content.title_text = Utf8.upper(Localize(title))
+	end
+
 	bar_widget.content.portrait = portrait_texture
+end
+
+local skull_dividers = {
+	"skull_divider1",
+	"skull_divider2",
+	false,
+	"skull_divider3",
+	"skull_divider4",
+	false
+}
+local small_style = {
+	font_size = 16,
+	upper_case = true,
+	font_type = "hell_shark",
+	divider_icon_width = 22
+}
+local large_style = {
+	upper_case = true,
+	divider_icon_width = 22,
+	font_size = 20,
+	font_type = "hell_shark",
+	fallback_style = small_style
+}
+
+BossHealthUI._generate_attributes = function (self, attributes, widget, current_style, max_row_width)
+	local font_size = current_style.font_size
+	local j = 1
+	local skull_divider_index = 0
+	local text_x_start = 4
+	local x = text_x_start
+	local y = -40
+	local divider_spacing_in_pixels = 24
+	local divider_move_x = (divider_spacing_in_pixels - current_style.divider_icon_width) / 2
+
+	for id, value in pairs(attributes) do
+		if id then
+			local content = widget.content
+			local text_id = "attribute_text" .. j
+			local style = widget.style[text_id]
+
+			if not style then
+				return true
+			end
+
+			local data = BreedEnhancements.boss[id]
+			local text = "{#grad(true);color(242,226,187,255);color2(255,125,80,255)}" .. Utf8.upper(Localize(data.display_name))
+			local pixel_width = UIUtils.get_text_width(self.ui_renderer, current_style, text)
+			style.offset[1] = x
+			style.font_size = font_size
+			style.text_color = data.text_color
+			x = x + pixel_width
+			local skull_divider_id = skull_dividers[j]
+
+			if skull_divider_id then
+				local skull_divider_style = widget.style[skull_divider_id]
+				skull_divider_style.offset[1] = x + divider_move_x
+				skull_divider_style.offset[2] = y - 13
+				x = x + divider_spacing_in_pixels
+			elseif current_style.fallback_style and max_row_width < x then
+				return false, current_style.fallback_style
+			end
+
+			content[text_id] = text
+			content.attributes[j] = true
+			j = j + 1
+
+			if j == 4 then
+				x = text_x_start
+				y = -56
+			end
+		end
+	end
+
+	local bg_style = widget.style.lower_marked_bg
+
+	if j <= 4 then
+		bg_style.offset[2] = (-83 + current_style.font_size) - 4
+	else
+		bg_style.offset[2] = -83
+	end
+
+	return true
+end
+
+BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, unit, breed_name)
+	if not ALIVE[unit] then
+		return
+	end
+
+	local ai_system = Managers.state.entity:system("ai_system")
+	local attributes = ai_system:get_attributes(unit)
+	local widget = self._widgets_by_name.bar
+
+	table.clear(widget.content.attributes)
+
+	local grudge_marked = attributes.grudge_marked
+
+	if grudge_marked then
+		local max_row_width = 430
+		local done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, large_style, max_row_width)
+
+		while not done do
+			done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, fallback_style, max_row_width)
+		end
+
+		local magic_number = grudge_marked.name_index
+		local enemy_name = TerrorEventUtils.get_grudge_marked_name(breed_name, magic_number)
+
+		self:_set_portrait_and_title(true, breed_name, enemy_name)
+	else
+		self:_set_portrait_and_title(false, breed_name, breed_name)
+	end
 end
 
 local customizer_data = {
@@ -166,7 +281,7 @@ BossHealthUI.event_show_boss_health_bar = function (self, unit)
 			self._switch_healthbars = self._boss_unit and unit ~= self._boss_unit
 			self._breed_name = breed_name
 
-			self:_set_portrait_by_breed(breed_name)
+			self:_update_enemy_portrait_name_and_attributes(unit, breed_name)
 
 			self.render_settings.alpha_multiplier = (not self._boss_unit and 0) or self.render_settings.alpha_multiplier
 			self._boss_unit = unit

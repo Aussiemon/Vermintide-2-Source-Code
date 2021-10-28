@@ -5011,10 +5011,10 @@ OfflineBackendTitleInternalData.Store = {
 		SegmentOverrides = {},
 		MarketingData = {
 			Metadata = {
+				uploaded = "2021-08-18 00:07:08 UTC",
 				setup = {
-					timestamp = "2020-08-18T10:11:28Z",
-					uploaded = "2020-09-01 00:07:07 UTC",
-					path = "store/schedule/2020-09-01.txt"
+					timestamp = "2020-08-18T10:11:38Z",
+					path = "store/schedule/2021-08-17.txt"
 				}
 			}
 		}

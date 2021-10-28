@@ -147,4 +147,6 @@ AIGroupTemplates.spawn_test = {
 	end
 }
 
+DLCUtils.merge("ai_group_templates", AIGroupTemplates)
+
 return

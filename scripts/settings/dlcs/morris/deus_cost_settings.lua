@@ -25,25 +25,115 @@ DeusCostSettings = DeusCostSettings or {
 	deus_chest = {
 		power_up = 200,
 		swap_ranged = {
-			common = 40,
-			plentiful = 0,
-			exotic = 120,
-			rare = 80,
-			unique = 160
+			plentiful = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			common = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			rare = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			exotic = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			unique = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			}
 		},
 		swap_melee = {
-			common = 40,
-			plentiful = 0,
-			exotic = 120,
-			rare = 80,
-			unique = 160
+			plentiful = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			common = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			rare = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			exotic = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			},
+			unique = {
+				common = 40,
+				plentiful = 0,
+				exotic = 120,
+				rare = 80,
+				unique = 160
+			}
 		},
 		upgrade = {
-			common = 80,
-			plentiful = 0,
-			exotic = 240,
-			rare = 160,
-			unique = 320
+			plentiful = {
+				common = 80,
+				plentiful = 0,
+				exotic = 240,
+				rare = 160,
+				unique = 320
+			},
+			common = {
+				common = 80,
+				plentiful = 0,
+				exotic = 240,
+				rare = 160,
+				unique = 320
+			},
+			rare = {
+				common = 80,
+				plentiful = 0,
+				exotic = 240,
+				rare = 160,
+				unique = 320
+			},
+			exotic = {
+				common = 80,
+				plentiful = 0,
+				exotic = 240,
+				rare = 160,
+				unique = 320
+			},
+			unique = {
+				common = 80,
+				plentiful = 0,
+				exotic = 240,
+				rare = 160,
+				unique = 320
+			}
 		}
 	}
 }

@@ -492,6 +492,11 @@ local function create_hero_icon_widget(scenegraph_id, size)
 			taken_texture = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					3
+				},
 				texture_size = {
 					100,
 					100
@@ -500,12 +505,22 @@ local function create_hero_icon_widget(scenegraph_id, size)
 			glow = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
+				offset = {
+					0,
+					0,
+					1
+				},
 				texture_size = {
 					1.9074074074074074 * size[1],
 					1.9074074074074074 * size[1]
 				}
 			},
 			icon = {
+				offset = {
+					0,
+					0,
+					2
+				},
 				color = {
 					230,
 					255,

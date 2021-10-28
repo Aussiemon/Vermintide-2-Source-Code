@@ -27,21 +27,8 @@ table.append(components, adventure_settings.components)
 table.append(components, common_settings.components)
 table.append(components, deus_components)
 
-local deus_visibility_groups = {
-	{
-		name = "deus_run_stats",
-		order = 7,
-		validation_function = function (ingame_hud)
-			local component = ingame_hud:component("DeusRunStatsView")
-			local is_active = component and component:is_ui_active()
-
-			return is_active
-		end
-	}
-}
 local visibility_groups = {}
 
-table.append(visibility_groups, deus_visibility_groups)
 table.append(visibility_groups, common_settings.visibility_groups)
 table.append(visibility_groups, adventure_settings.visibility_groups)
 

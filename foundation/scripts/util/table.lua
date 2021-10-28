@@ -181,7 +181,7 @@ end
 table.find_by_key = function (t, search_key, search_value)
 	for key, value in pairs(t) do
 		if value[search_key] == search_value then
-			return key
+			return key, value
 		end
 	end
 
@@ -750,6 +750,22 @@ table.random = function (t)
 	local index = math.random(1, #t)
 
 	return t[index]
+end
+
+table.recursive_readonlytable = function (t)
+	setmetatable(t, {
+		__newindex = function (table, key, value)
+			error("Trying to modify read only table. (debug only assert)")
+		end
+	})
+
+	for _, value in pairs(t) do
+		local type = type(value)
+
+		if type == "table" then
+			table.recursive_readonlytable(value)
+		end
+	end
 end
 
 return

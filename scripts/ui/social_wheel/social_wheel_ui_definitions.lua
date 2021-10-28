@@ -441,7 +441,8 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 					-82,
 					1
 				}
-			}
+			},
+			bg_top_right = {}
 		},
 		offset = {
 			dir[1] * size[1],

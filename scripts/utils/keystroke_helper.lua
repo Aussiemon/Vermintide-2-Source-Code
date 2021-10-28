@@ -110,23 +110,29 @@ KeystrokeHelper[Keyboard.DELETE] = function (text_table, index, mode)
 	return index, mode
 end
 
+local clipboard_table = {}
+
 KeystrokeHelper[Keyboard.F9] = function (text_table, index, mode, max_length)
-	local clipboard = string.gsub(Clipboard.get() or "", "[^ -~]+", "")
-	local n = #clipboard
+	local clipboard = Clipboard.get() or ""
+
+	if not Utf8.valid(clipboard) then
+		clipboard = string.gsub(clipboard, "[^ -~]+", "")
+	end
+
+	table.clear(clipboard_table)
+	KeystrokeHelper._build_utf8_table(clipboard, clipboard_table)
+
+	local n = #clipboard_table
 
 	if max_length then
 		n = math.min(n, max_length - #text_table)
 	end
 
-	index = index - 1
-	local insert = table.insert
-	local sub = string.sub
-
 	for i = 1, n, 1 do
-		insert(text_table, index + i, sub(clipboard, i, i))
+		text_table[#text_table + 1] = clipboard_table[i]
 	end
 
-	return index + n + 1, mode
+	return index + n, mode
 end
 
 return

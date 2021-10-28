@@ -31,8 +31,10 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local xy_extents = math.min(max_liquid + 10, 50)
 	self._grid = HexGrid:new(position, xy_extents, 10, cell_size, 1)
 	local t = Managers.time:time("game")
-	self._next_pulse = t
-	self._time_to_remove = t + template.time_of_life
+	local delay = template.delay or 0
+	self._next_pulse = t + delay
+	self._time_to_start = t + delay
+	self._time_to_remove = t + template.time_of_life + delay
 	self._spread_function = LiquidAreaDamageTemplates[template.liquid_spread_function]
 	local buff_system = entity_manager:system("buff_system")
 	self._buff_system = buff_system
@@ -61,12 +63,14 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	local fx_name_rim = template.fx_name_rim
 	self._fx_name_rim = fx_name_rim
 	self._fx_name_filled = template.fx_name_filled
+	self._fx_name_start_delayed = template.fx_name_start_delayed
 	self._override_fx_life_time = template.override_fx_life_time
 
 	Unit.set_unit_visibility(unit, false)
 
 	local sfx_name_start = template.sfx_name_start
 	self._sfx_name_start = sfx_name_start
+	self._sfx_name_start_delayed = template.sfx_name_start_delayed
 	self._sfx_name_stop = template.sfx_name_stop
 	local flat_flow_dir = Vector3.flat(extension_init_data.flow_dir)
 	local starting_angle = math.atan2(flat_flow_dir.y, flat_flow_dir.x)
@@ -79,6 +83,7 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	self._affected_player_units = {}
 	self._source_attacker_unit = extension_init_data.source_unit or unit
 	self._done = false
+	self._started = delay <= 0
 	self.source_attacker_unit_data = {}
 	local source_attacker_unit_data = self.source_attacker_unit_data
 	local source_attacker_unit = self._source_attacker_unit
@@ -401,6 +406,25 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 
 	table.clear(remove_list)
 	table.clear(add_list)
+
+	if not self._started then
+		if t < self._time_to_start then
+			return
+		end
+
+		self._started = true
+
+		if self._sfx_name_start_delayed then
+			WwiseUtils.trigger_unit_event(self._world, self._sfx_name_start_delayed, self._unit, 0)
+		end
+
+		if self._fx_name_start_delayed then
+			local position = Unit.world_position(unit, 0)
+			local rotation = Unit.world_rotation(unit, 0)
+
+			World.create_particles(self._world, self._fx_name_start_delayed, position, rotation)
+		end
+	end
 
 	if self._time_to_remove < t then
 		Managers.state.unit_spawner:mark_for_deletion(self._unit)

@@ -118,7 +118,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_info_size[1] - 110,
-			career_info_size[2] - 90
+			career_info_size[2] - 40
 		},
 		position = {
 			90,
@@ -213,7 +213,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		size = {
 			career_info_size[1] - 110,
-			career_info_size[2] - 90
+			career_info_size[2] - 40
 		},
 		position = {
 			90,
@@ -448,10 +448,11 @@ local title_text_style = {
 	}
 }
 local description_text_style = {
-	word_wrap = true,
 	font_size = 18,
-	localize = false,
 	use_shadow = true,
+	localize = false,
+	dynamic_font_size_word_wrap = true,
+	word_wrap = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
 	font_type = "hell_shark",
@@ -743,7 +744,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		style[background_name] = {
 			size = button_size,
 			color = {
-				100,
+				(IS_WINDOWS and 165) or 100,
 				0,
 				0,
 				0
@@ -1274,8 +1275,13 @@ local generic_input_actions = {
 			description_text = "input_description_select"
 		},
 		{
-			input_action = "back",
+			input_action = "refresh",
 			priority = 3,
+			description_text = "input_description_remove"
+		},
+		{
+			input_action = "back",
+			priority = 4,
 			description_text = "input_description_close"
 		}
 	}

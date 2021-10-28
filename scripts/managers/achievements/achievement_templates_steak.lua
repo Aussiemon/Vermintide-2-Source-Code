@@ -1,4 +1,4 @@
-local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
+local check_level_difficulty = AchievementTemplateHelper.check_level_difficulty
 AchievementTemplates.achievements.scorpion_bardin_weapon_unlock = {
 	required_dlc = "scorpion",
 	name = "achv_scorpion_bardin_weapon_unlock_name",
@@ -135,9 +135,7 @@ AchievementTemplates.achievements.scorpion_complete_crater_recruit = {
 		local diff = DifficultySettings.normal.rank
 		local unlocked = false
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.crater.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.crater.level_id, diff) then
 			unlocked = true
 		end
 
@@ -153,9 +151,7 @@ AchievementTemplates.achievements.scorpion_complete_crater_veteran = {
 		local diff = DifficultySettings.hard.rank
 		local unlocked = false
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.crater.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.crater.level_id, diff) then
 			unlocked = true
 		end
 
@@ -171,9 +167,7 @@ AchievementTemplates.achievements.scorpion_complete_crater_champion = {
 		local diff = DifficultySettings.harder.rank
 		local unlocked = false
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.crater.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.crater.level_id, diff) then
 			unlocked = true
 		end
 
@@ -189,9 +183,7 @@ AchievementTemplates.achievements.scorpion_complete_crater_legend = {
 		local diff = DifficultySettings.hardest.rank
 		local unlocked = false
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.crater.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.crater.level_id, diff) then
 			unlocked = true
 		end
 
@@ -207,9 +199,7 @@ AchievementTemplates.achievements.scorpion_complete_crater_cataclysm = {
 		local diff = DifficultySettings.cataclysm.rank
 		local unlocked = false
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.crater.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.crater.level_id, diff) then
 			unlocked = true
 		end
 

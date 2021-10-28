@@ -1,11 +1,9 @@
 local settings = DLCSettings.morris
 settings.backend_interfaces = {
 	deus = {
-		playfab_file = "scripts/managers/backend_playfab/backend_interface_deus_playfab",
 		ignore_on_dedicated_server = true,
-		local_class = "BackendInterfaceDeusLocal",
-		playfab_class = "BackendInterfaceDeusPlayFab",
-		local_file = "backend/local_backend/backend_interface_deus_local"
+		playfab_file = "scripts/managers/backend_playfab/backend_interface_deus_playfab",
+		playfab_class = "BackendInterfaceDeusPlayFab"
 	}
 }
 settings.offline_backend_title_data = {

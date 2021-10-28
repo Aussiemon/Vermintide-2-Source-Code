@@ -255,7 +255,7 @@ LimitedItemTrackSystem.on_add_extension = function (self, world, unit, extension
 				local item = spawner_extension.items[extension.id]
 
 				if item and type(item) ~= "boolean" then
-					ScriptApplication.send_to_crashify("LimitedItemTrackSystem", "Added limited unit with occupied id")
+					Crashify.print_exception("LimitedItemTrackSystem", "Added limited unit with occupied id")
 				end
 
 				if spawner_extension:is_transformed(extension.id) then

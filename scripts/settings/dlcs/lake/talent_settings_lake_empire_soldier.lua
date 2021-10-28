@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	markus_questing_knight_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -66,7 +67,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -75,7 +75,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -101,29 +100,27 @@ local talent_buff_templates = {
 	markus_questing_knight_perk_power_block = {
 		buffs = {
 			{
-				perk = "power_block"
+				perk = buff_perks.power_block
 			}
 		}
 	},
 	markus_questing_knight_vanguard = {
 		buffs = {
 			{
-				name = "vanguard",
-				event_buff = true,
-				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing"
+				name = "vanguard",
+				buff_func = "heal_stagger_targets_on_melee",
+				perk = buff_perks.tank_healing
 			}
 		}
 	},
 	markus_questing_knight_bloodlust = {
 		buffs = {
 			{
-				name = "bloodlust",
-				event_buff = true,
-				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing"
+				name = "bloodlust",
+				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
@@ -132,7 +129,6 @@ local talent_buff_templates = {
 			{
 				event = "on_healed_consumeable",
 				name = "conqueror",
-				event_buff = true,
 				buff_func = "heal_other_players_percent_at_range"
 			}
 		}
@@ -150,7 +146,6 @@ local talent_buff_templates = {
 			{
 				event = "on_player_damage_dealt",
 				name = "markus_questing_knight_crit_can_insta_kill",
-				event_buff = true,
 				buff_func = "check_for_instantly_killing_crit"
 			}
 		}
@@ -158,11 +153,10 @@ local talent_buff_templates = {
 	markus_questing_knight_kills_buff_power_stacking = {
 		buffs = {
 			{
-				buff_to_add = "markus_questing_knight_kills_buff_power_stacking_buff",
+				event = "on_kill",
 				name = "markus_questing_knight_kills_buff_power_stacking",
-				event_buff = true,
-				buff_func = "add_buff",
-				event = "on_kill"
+				buff_to_add = "markus_questing_knight_kills_buff_power_stacking_buff",
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -181,7 +175,6 @@ local talent_buff_templates = {
 			{
 				event = "on_damage_taken",
 				buff_to_add = "markus_questing_knight_health_refund_over_time_delayed_heal",
-				event_buff = true,
 				buff_func = "add_heal_percent_of_damage_taken_over_time_buff"
 			}
 		}
@@ -201,7 +194,6 @@ local talent_buff_templates = {
 			{
 				event = "on_timed_block",
 				buff_to_add = "markus_questing_knight_parry_increased_power_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -234,7 +226,6 @@ local talent_buff_templates = {
 			{
 				event = "on_kill",
 				buff_to_add = "markus_questing_knight_ability_buff_on_kill_movement_speed",
-				event_buff = true,
 				buff_func = "markus_questing_knight_ability_kill_buff_func"
 			}
 		}

@@ -37,7 +37,7 @@ end
 
 local extension_update = {}
 
-DLCUtils.merge("pickup_system_extension_update", extension_update)
+DLCUtils.append("pickup_system_extension_update", extension_update)
 
 PickupSystem.init = function (self, context, system_name)
 	PickupSystem.super.init(self, context, system_name, extensions)

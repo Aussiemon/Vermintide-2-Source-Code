@@ -132,7 +132,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 			waystone_type = 3
 		end
 
-		self._matchmaking_manager:activate_waystone_portal(true, waystone_type)
+		self._matchmaking_manager:activate_waystone_portal(waystone_type)
 	end
 end
 

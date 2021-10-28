@@ -1,6 +1,7 @@
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
 BuffFunctionTemplates = BuffFunctionTemplates or {}
+local unit_is_frozen = Unit.is_frozen
 
 local function get_variable(path_to_movement_setting_to_modify, unit)
 	fassert(#path_to_movement_setting_to_modify > 0, "movement_setting_exists needs at least a movement_setting_to_modify")
@@ -338,6 +339,11 @@ BuffFunctionTemplates.functions = {
 			local heal_amount = buff_template.heal
 			local heal_type = buff_template.heal_type or "health_regen"
 			local side = Managers.state.side.side_by_unit[unit]
+
+			if not side then
+				return
+			end
+
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 			for i = 1, #player_and_bot_units, 1 do
@@ -594,6 +600,10 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	remove_dot_damage = function (unit, buff, params)
+		if unit_is_frozen(unit) then
+			return
+		end
+
 		local end_flow_event = buff.template.end_flow_event
 
 		if end_flow_event then
@@ -1196,6 +1206,24 @@ BuffFunctionTemplates.functions = {
 			local source_unit = liquid_extension:get_source_attacker_unit()
 			local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
 			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+
+			if ALIVE[source_unit] then
+				local source_buff_extension = ScriptUnit.has_extension(source_unit, "buff_system")
+
+				if source_buff_extension then
+					if type(buff.damage) == "table" then
+						local damage_table = table.clone(buff.damage)
+
+						for key, val in pairs(damage_table) do
+							damage_table[key] = source_buff_extension:apply_buffs_to_value(val, "damage_dealt")
+						end
+
+						buff.damage = damage_table
+					else
+						buff.damage = source_buff_extension:apply_buffs_to_value(buff.damage, "damage_dealt")
+					end
+				end
+			end
 		end
 
 		buff.warpfire_next_t = params.t + 0.1
@@ -1563,6 +1591,11 @@ BuffFunctionTemplates.functions = {
 				if health_extension:is_alive() and not status_extension:is_knocked_down() and not status_extension:is_assisted_respawning() then
 					if talent_extension:has_talent("kerillian_waywatcher_group_regen", "wood_elf", true) then
 						local side = Managers.state.side.side_by_unit[unit]
+
+						if not side then
+							return
+						end
+
 						local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
 						for i = 1, #player_and_bot_units, 1 do
@@ -1958,7 +1991,7 @@ BuffFunctionTemplates.functions = {
 
 						local buff_system = Managers.state.entity:system("buff_system")
 						local server_buff_ids = buff.server_buff_ids
-						num_stacks = math.min(#server_buff_ids, num_stacks)
+						num_stacks = (server_buff_ids and math.min(#server_buff_ids, num_stacks)) or 0
 
 						for i = 1, num_stacks, 1 do
 							local buff_to_remove = table.remove(server_buff_ids)
@@ -2162,6 +2195,10 @@ BuffFunctionTemplates.functions = {
 			return
 		end
 
+		if not ALIVE[unit] then
+			return
+		end
+
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 		local buff_system = Managers.state.entity:system("buff_system")
 		local template = buff.template
@@ -2171,10 +2208,10 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local max_stacks = template.max_stacks
 		local side = Managers.state.side.side_by_unit[unit]
-		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+		local player_and_bot_units = side and side.PLAYER_AND_BOT_UNITS
 		local own_position = POSITION_LOOKUP[unit]
 		local num_nearby_allies = 0
-		local allies = #player_and_bot_units
+		local allies = (player_and_bot_units and #player_and_bot_units) or 0
 
 		for i = 1, allies, 1 do
 			local ally_unit = player_and_bot_units[i]
@@ -2523,6 +2560,11 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 
@@ -2600,6 +2642,11 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local max_stacks = template.max_stacks
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local own_position = POSITION_LOOKUP[owner_unit]
 		local num_nearby_allies = 0
@@ -2685,6 +2732,11 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local distance_squared = math.huge
@@ -2871,6 +2923,11 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local closest_player = nil
@@ -2916,6 +2973,11 @@ BuffFunctionTemplates.functions = {
 		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[owner_unit]
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
@@ -2960,9 +3022,13 @@ BuffFunctionTemplates.functions = {
 			return
 		end
 
+		if not ALIVE[owner_unit] then
+			return
+		end
+
 		local side = Managers.state.side.side_by_unit[owner_unit]
-		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
-		local num_units = #player_and_bot_units
+		local player_and_bot_units = side and side.PLAYER_AND_BOT_UNITS
+		local num_units = (player_and_bot_units and #player_and_bot_units) or 0
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local buff_system = Managers.state.entity:system("buff_system")
 		local template = buff.template
@@ -3003,6 +3069,11 @@ BuffFunctionTemplates.functions = {
 		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[owner_unit]
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local buff_to_add = "kerillian_maidenguard_passive_stamina_regen_buff"
@@ -3189,6 +3260,11 @@ BuffFunctionTemplates.functions = {
 		local activation_bonus = template.activation_bonus
 		local stat_buff_index = template.stat_buff
 		local side = Managers.state.side.side_by_unit[unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local owner_unit = nil
@@ -3236,6 +3312,11 @@ BuffFunctionTemplates.functions = {
 		local activation_multiplier = template.activation_multiplier
 		local stat_buff_index = template.stat_buff
 		local side = Managers.state.side.side_by_unit[unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local owner_unit = nil
@@ -3284,6 +3365,11 @@ BuffFunctionTemplates.functions = {
 	activate_buff_on_last_standing = function (unit, buff, params)
 		local template = buff.template
 		local side = Managers.state.side.side_by_unit[unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local buff_to_add = template.buff_to_add
@@ -4583,6 +4669,11 @@ BuffFunctionTemplates.functions = {
 		end
 
 		local side = Managers.state.side.side_by_unit[owner_unit]
+
+		if not side then
+			return
+		end
+
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 		local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
@@ -5115,5 +5206,19 @@ BuffFunctionTemplates.functions.update_charging_action_lerp_movement_buff = func
 end
 
 DLCUtils.merge("buff_function_templates", BuffFunctionTemplates.functions)
+
+BuffFunctionTemplates.functions.ai_update_max_health = function (unit, buff, params)
+	if is_server() then
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+		if buff_extension and health_extension then
+			local base_health = health_extension.unmodified_max_health
+			local max_health = math.max(buff_extension:apply_buffs_to_value(base_health, "max_health"), 0.25)
+
+			health_extension:set_max_health(max_health)
+		end
+	end
+end
 
 return

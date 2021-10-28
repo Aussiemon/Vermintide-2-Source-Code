@@ -15,7 +15,6 @@ settings.talent_settings = {
 settings.profile_files = {
 	"scripts/settings/dlcs/lake/lake_profiles"
 }
-settings.local_backend_data = "scripts/settings/dlcs/lake/local_backend_data_lake"
 settings.challenge_categories = {
 	"questing_knight"
 }

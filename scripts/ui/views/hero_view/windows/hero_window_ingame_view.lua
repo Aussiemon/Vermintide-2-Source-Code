@@ -39,7 +39,7 @@ HeroWindowIngameView.on_enter = function (self, params, offset)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
-	self.layout_logic = IngameViewLayoutLogic:new(ingame_ui_context, layout_definitions.menu_layouts, layout_definitions.full_access_layout)
+	self.layout_logic = IngameViewLayoutLogic:new(ingame_ui_context, params, layout_definitions.menu_layouts, layout_definitions.full_access_layout)
 
 	self.layout_logic:update()
 

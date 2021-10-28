@@ -249,26 +249,17 @@ MatchmakingManager.setup_post_init_data = function (self, post_init_data)
 	self:_update_power_level(0)
 end
 
-MatchmakingManager.set_ingame_ui = function (self, ingame_ui)
-	self._ingame_ui = ingame_ui
-	self.params.ingame_ui = ingame_ui
-end
-
 MatchmakingManager.waystone_is_active = function (self)
 	return self._waystone_is_active or false, self._waystone_type or 0
 end
 
-MatchmakingManager.activate_waystone_portal = function (self, enable, waystone_type)
-	self._waystone_is_active = enable
+MatchmakingManager.activate_waystone_portal = function (self, waystone_type)
+	self._waystone_is_active = waystone_type ~= nil
 	self._waystone_type = waystone_type
-	local ingame_ui = self._ingame_ui
-	local ingame_hud = ingame_ui and ingame_ui.ingame_hud
-	local countdown_ui = ingame_hud and ingame_hud:component("LevelCountdownUI")
+	local event_manager = Managers.state.event
 
-	if countdown_ui then
-		countdown_ui:set_waystone_activation(enable, waystone_type)
-	elseif DEDICATED_SERVER then
-		LevelCountdownUI.set_waystone_activation_without_ui(enable, waystone_type)
+	if event_manager then
+		event_manager:trigger("activate_waystone_portal", waystone_type)
 	end
 end
 
@@ -548,18 +539,6 @@ end
 
 MatchmakingManager.state = function (self)
 	return self._state
-end
-
-MatchmakingManager.set_popup_profile_picker = function (self, popup_profile_picker)
-	self.params.popup_profile_picker = popup_profile_picker
-end
-
-MatchmakingManager.set_popup_handler = function (self, popup_handler)
-	self.params.popup_handler = popup_handler
-end
-
-MatchmakingManager.is_join_popup_visible = function (self)
-	return self._ingame_ui and self._ingame_ui:unavailable_hero_popup_active()
 end
 
 MatchmakingManager.gather_party_unlocked_journeys = function (self)
@@ -1044,8 +1023,10 @@ MatchmakingManager.cancel_matchmaking = function (self)
 			self._state._lobby_unclaimed = nil
 		end
 
-		if self._ingame_ui and self._ingame_ui:unavailable_hero_popup_active() then
-			self._ingame_ui:hide_unavailable_hero_popup()
+		local ui_manager = Managers.ui
+
+		if ui_manager:get_active_popup("profile_picker") then
+			ui_manager:close_popup("profile_picker")
 		end
 
 		self:_change_state(MatchmakingStateIdle, self.params, self.state_context, "cancel_matchmaking")
@@ -1872,7 +1853,9 @@ MatchmakingManager.cancel_join_lobby = function (self, reason, reason_variable)
 
 		Managers.simple_popup:queue_popup(text, Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 	elseif reason ~= "cancelled" then
-		Managers.simple_popup:queue_popup(Localize(reason), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
+		local status_message = "matchmaking_status_join_game_failed_" .. reason
+
+		Managers.simple_popup:queue_popup(Localize(status_message), Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
 	end
 end
 

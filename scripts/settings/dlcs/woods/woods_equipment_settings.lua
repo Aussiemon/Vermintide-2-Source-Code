@@ -230,13 +230,15 @@ settings.explosion_templates = {
 			no_prop_damage = true,
 			hit_sound_event_cap = 3,
 			always_hurt_players = false,
-			enemy_debuff = "kerillian_thorn_sister_debuff_wall_buff",
 			alert_enemies = true,
 			sound_event_name = "career_ability_kerillian_sister_wall_poison_disappear",
 			damage_profile = "ability_push",
 			alert_enemies_radius = 10,
 			ignore_attacker_unit = true,
-			explosion_forward_scaling = 0.7
+			explosion_forward_scaling = 0.7,
+			enemy_debuff = {
+				"kerillian_thorn_sister_debuff_wall_buff"
+			}
 		}
 	},
 	we_thornsister_career_skill_stagger_spell = {

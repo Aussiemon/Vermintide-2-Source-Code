@@ -7,11 +7,11 @@ WeaponMaterialSettingsTemplates.purple_glow = {
 		type = "vector3"
 	}
 }
-WeaponMaterialSettingsTemplates.white_glow = {
+WeaponMaterialSettingsTemplates.golden_glow = {
 	rune_emissive_color = {
-		y = 9,
-		z = 9,
-		x = 9,
+		y = 5,
+		z = 1.5,
+		x = 8,
 		type = "vector3"
 	}
 }

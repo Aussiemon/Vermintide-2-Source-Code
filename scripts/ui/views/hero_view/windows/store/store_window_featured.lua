@@ -45,7 +45,6 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 		slideshow_content = self:_get_default_featured_slideshow_content()
 	end
 
-	self:_add_bundle_featured_slideshow_content(slideshow_content)
 	self:_sort_slideshow(slideshow_content)
 	self:_trim_slideshow(slideshow_content)
 
@@ -84,28 +83,8 @@ end
 
 StoreWindowFeatured._create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
-	local content_widgets = {}
-	local content_widgets_by_name = {}
-
-	for name, widget_definition in pairs(content_widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		content_widgets[#content_widgets + 1] = widget
-		content_widgets_by_name[name] = widget
-	end
-
-	self._content_widgets = content_widgets
-	self._content_widgets_by_name = content_widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
+	self._content_widgets, self._content_widgets_by_name = UIUtils.create_widgets(content_widget_definitions)
 
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 
@@ -155,49 +134,6 @@ StoreWindowFeatured._update_animations = function (self, dt)
 			animations[animation_name] = nil
 		end
 	end
-end
-
-StoreWindowFeatured._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot or content.hotspot
-
-	if hotspot.on_pressed then
-		hotspot.on_pressed = false
-
-		return true
-	end
-end
-
-StoreWindowFeatured._is_button_released = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot or content.hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
-end
-
-StoreWindowFeatured._is_button_hover_enter = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_enter
-end
-
-StoreWindowFeatured._is_button_hover_exit = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.on_hover_exit
-end
-
-StoreWindowFeatured._is_button_selected = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	return hotspot.is_selected
 end
 
 StoreWindowFeatured._handle_input = function (self, dt, t)
@@ -432,59 +368,43 @@ StoreWindowFeatured._trim_slideshow = function (self, slideshow_content)
 	end
 end
 
-StoreWindowFeatured._get_default_featured_slideshow_content = function (self)
-	local default_slideshow_content = {}
-	local platform = PLATFORM
-
-	for index, dlc_settings in ipairs(StoreDlcSettings) do
-		local available_platforms = dlc_settings.available_platforms
-		local is_available = not available_platforms or table.find(available_platforms, platform)
-
-		if is_available and dlc_settings.show_in_slideshow then
-			default_slideshow_content[#default_slideshow_content + 1] = {
-				product_type = "dlc",
-				texture = dlc_settings.slideshow_texture,
-				description = dlc_settings.slideshow_text,
-				header = dlc_settings.name,
-				product_id = dlc_settings.dlc_name,
-				prio = dlc_settings.prio or 0
+StoreWindowFeatured._append_filtered_slideshow_content = function (self, slideshow_content, product_type, settings_table, check_function)
+	for index, settings in ipairs(settings_table) do
+		if settings.show_in_slideshow and check_function(settings) then
+			slideshow_content[#slideshow_content + 1] = {
+				texture = settings.slideshow_texture,
+				description = settings.slideshow_text,
+				header = settings.name,
+				product_id = settings.dlc_name or settings.item_key,
+				product_type = product_type,
+				prio = settings.prio or 0
 			}
 		end
 	end
-
-	return default_slideshow_content
 end
 
-StoreWindowFeatured._add_bundle_featured_slideshow_content = function (self, slideshow_content)
-	if not IS_WINDOWS then
-		return
-	end
+StoreWindowFeatured._get_default_featured_slideshow_content = function (self)
+	local slideshow_content = {}
+	local platform = PLATFORM
+
+	self:_append_filtered_slideshow_content(slideshow_content, "dlc", StoreDlcSettings, function (settings)
+		local available_platforms = settings.available_platforms
+
+		return not available_platforms or table.find(available_platforms, platform)
+	end)
 
 	local backend_store = Managers.backend:get_interface("peddler")
 
-	if not backend_store.get_steam_item_price then
-		return
+	if HAS_STEAM and backend_store.is_purchaseable then
+		self:_append_filtered_slideshow_content(slideshow_content, "item", StoreBundleFeaturedSettings, function (settings)
+			local item_key = settings.item_key
+			local item_data = ItemMasterList[item_key]
+
+			return backend_store:is_purchaseable(item_data.steam_itemdefid)
+		end)
 	end
 
-	for index, settings in ipairs(StoreBundleFeaturedSettings) do
-		local item_key = settings.item_key
-		local item_data = ItemMasterList[item_key]
-
-		if item_data then
-			local item_in_store = backend_store:get_steam_item_price(item_data.steam_itemdefid)
-
-			if item_in_store and not settings.hide_from_slideshow then
-				slideshow_content[#slideshow_content + 1] = {
-					product_type = "item",
-					texture = settings.slideshow_texture,
-					description = settings.description_text,
-					header = settings.header,
-					product_id = item_key,
-					prio = settings.prio or 0
-				}
-			end
-		end
-	end
+	return slideshow_content
 end
 
 StoreWindowFeatured._get_default_featured_grid_content = function (self)
@@ -779,8 +699,14 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 
 			self:_set_slideshow_animation_progress(widget, 1)
 			self:_play_sound("Play_hud_store_button_select")
-		elseif self:_is_button_pressed(widget) then
-			self:_on_slideshow_pressed(widget)
+		else
+			local hotspot = widget.content.button_hotspot or widget.content.hotspot
+
+			if hotspot and hotspot.on_pressed then
+				hotspot.on_pressed = false
+
+				self:_on_slideshow_pressed(widget)
+			end
 		end
 	end
 

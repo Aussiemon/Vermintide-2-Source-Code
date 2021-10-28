@@ -55,7 +55,16 @@ local function create_default_target(position, rotation)
 end
 
 local function get_path_position()
-	local path_position = MainPathUtils.get_main_path_point_between_players():unbox()
+	local conflict_director = Managers.state.conflict
+	local main_paths = conflict_director.level_analysis:get_main_paths()
+
+	if not main_paths then
+		return nil
+	end
+
+	local main_path_info = conflict_director.main_path_info
+	local main_path_player_info = conflict_director.main_path_player_info
+	local path_position = MainPathUtils.get_main_path_point_between_players(main_paths, main_path_info, main_path_player_info):unbox()
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	local position = LocomotionUtils.pos_on_mesh(nav_world, path_position)
 

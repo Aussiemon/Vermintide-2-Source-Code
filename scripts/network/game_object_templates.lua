@@ -433,6 +433,13 @@ local game_object_templates = {
 		syncs_rotation = true,
 		game_object_destroyed_func_name = "game_object_destroyed_network_unit"
 	},
+	positioned_blob_unit = {
+		game_object_created_func_name = "game_object_created_network_unit",
+		syncs_position = true,
+		syncs_rotation = true,
+		game_object_destroyed_func_name = "game_object_destroyed_network_unit",
+		is_level_unit = false
+	},
 	destructible_objective_unit = {
 		game_object_created_func_name = "game_object_created_network_unit",
 		syncs_position = true,
@@ -535,6 +542,10 @@ local game_object_templates = {
 		is_level_unit = false
 	},
 	keep_decoration_painting = {
+		game_object_created_func_name = "game_object_created_keep_decoration",
+		game_object_destroyed_func_name = "game_object_destroyed_keep_decoration"
+	},
+	keep_decoration_trophy = {
 		game_object_created_func_name = "game_object_created_keep_decoration",
 		game_object_destroyed_func_name = "game_object_destroyed_keep_decoration"
 	},

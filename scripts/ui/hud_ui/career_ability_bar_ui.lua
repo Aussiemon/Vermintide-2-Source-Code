@@ -118,7 +118,7 @@ CareerAbilityBarUI.update = function (self, dt, t, player)
 	local has_twitch = Managers.twitch:is_activated()
 
 	if has_twitch ~= self._has_twitch then
-		self._ability_bar.offset[2] = (has_twitch and 100) or 0
+		self._ability_bar.offset[2] = (has_twitch and 140) or 0
 		self._has_twitch = has_twitch
 		is_dirty = true
 	end

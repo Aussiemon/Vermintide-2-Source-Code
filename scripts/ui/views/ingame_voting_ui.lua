@@ -138,6 +138,7 @@ IngameVotingUI.start_vote = function (self, active_voting)
 	self.option_yes.content.result_text = tostring(0)
 	self.option_no.content.result_text = tostring(0)
 	self.gamepad_active = self.input_manager:is_device_active("gamepad")
+	self._is_window_minimized = Window.is_minimized()
 	self.vote_successful = nil
 
 	self:play_sound("play_gui_ban_popup")
@@ -306,6 +307,26 @@ IngameVotingUI.update = function (self, dt, t)
 					self:setup_option_input(self.option_no, vote_options[2])
 
 					self.gamepad_active = gamepad_active
+				end
+			end
+		end
+
+		if self._is_window_minimized then
+			local force_update = true
+
+			UPDATE_RESOLUTION_LOOKUP(force_update)
+
+			self._is_window_minimized = Window.is_minimized()
+
+			if not self._is_window_minimized then
+				local active_voting = voting_manager.active_voting
+				local vote_template = active_voting and active_voting.template
+
+				if vote_template then
+					local vote_options = vote_template.vote_options
+
+					self:setup_option_input(self.option_yes, vote_options[1])
+					self:setup_option_input(self.option_no, vote_options[2])
 				end
 			end
 		end

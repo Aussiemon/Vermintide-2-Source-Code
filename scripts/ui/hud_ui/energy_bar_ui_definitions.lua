@@ -34,7 +34,7 @@ local scenegraph_definition = {
 		size = charge_bar_size,
 		position = {
 			0,
-			-180,
+			-220,
 			1
 		}
 	}

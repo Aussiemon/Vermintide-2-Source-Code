@@ -1,6 +1,7 @@
 local definitions = local_require("scripts/ui/hud_ui/gamepad_equipment_ui_definitions")
 local scenegraph_definition = definitions.scenegraph_definition
 local inventory_slot_backgrounds = definitions.inventory_slot_backgrounds
+local animation_definitions = definitions.animations_definitions
 GamePadEquipmentUI = class(GamePadEquipmentUI)
 local AMMO_PRESENTATION_DURATION = 2
 local slot_size = definitions.slot_size
@@ -45,6 +46,7 @@ GamePadEquipmentUI.init = function (self, parent, ingame_ui_context)
 	local player = ingame_ui_context.player
 	self.player = player
 	self._game_options_dirty = true
+	self._reload_attempts = 0
 
 	self:_create_ui_elements()
 
@@ -113,6 +115,7 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 	self._unused_widgets = unused_widgets
 	self._slot_widgets = slot_widgets
 	self._career_widgets = career_widgets
+	self._ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 	local extra_storage_icon_widgets = {}
 
 	for i, widget_def in ipairs(definitions.extra_storage_icon_definitions) do
@@ -131,6 +134,7 @@ GamePadEquipmentUI._create_ui_elements = function (self)
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 	self:event_input_changed()
+	self:_set_widget_visibility(self._ammo_widgets_by_name.reload_tip_text, false)
 	self:set_visible(true)
 	self:set_dirty()
 
@@ -1152,6 +1156,9 @@ GamePadEquipmentUI.destroy = function (self)
 	event_manager:unregister("input_changed", self)
 	event_manager:unregister("swap_equipment_from_storage", self)
 	event_manager:unregister("on_game_options_changed", self)
+
+	self._ui_animator = nil
+
 	self:set_visible(false)
 	print("[GamePadEquipmentUI] - Destroy")
 end
@@ -1212,8 +1219,10 @@ GamePadEquipmentUI.update = function (self, dt, t)
 
 	self:_handle_resolution_modified()
 	self:_sync_player_equipment()
+	self:_show_hold_to_reload(t)
 	self:_handle_gamepad_activity()
 	self:draw(dt)
+	self._ui_animator:update(dt)
 end
 
 GamePadEquipmentUI._handle_career_change = function (self)
@@ -1569,6 +1578,121 @@ GamePadEquipmentUI._apply_crosshair_position = function (self, x, y)
 	end
 
 	return dirty
+end
+
+GamePadEquipmentUI._show_hold_to_reload = function (self, t)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" then
+		return
+	end
+
+	local player = (self._is_spectator and self._spectated_player) or self.player
+	local player_unit = player.player_unit
+
+	if not player_unit then
+		return
+	end
+
+	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
+	local equipment = inventory_extension:equipment()
+	local wielded_slot = equipment.wielded_slot
+	local is_wielding_special_weapon = false
+	local slot_data, item_data, item_template = nil
+
+	for _, temp_slot_data in pairs(equipment.slots) do
+		local temp_item_data = temp_slot_data.item_data
+		local temp_item_template = BackendUtils.get_item_template(temp_item_data)
+
+		if temp_slot_data.id == wielded_slot then
+			local unique_ammo_type = temp_item_template.ammo_data and temp_item_template.ammo_data.unique_ammo_type
+
+			if unique_ammo_type then
+				slot_data = temp_slot_data
+				item_data = temp_item_data
+				item_template = temp_item_template
+				is_wielding_special_weapon = true
+			end
+		end
+	end
+
+	if not item_data or not slot_data or not item_template then
+		return
+	end
+
+	local ammo_count, remaining_ammo, using_single_clip = self:_get_ammunition_count(slot_data.left_unit_1p, slot_data.right_unit_1p, item_template)
+	local input_action = (gamepad_active and "weapon_reload_hold_input") or "weapon_reload_hold"
+	local reload_tip_widget = self._ammo_widgets_by_name.reload_tip_text
+	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
+	local alpha = reload_tip_widget.style.text.text_color[1]
+	local format_color = string.format("{#color(193,91,36, %d)}", alpha)
+	local key_text = (gamepad_active and string.format("$KEY;Player__%s:", input_action)) or input_text
+	reload_tip_widget.content.text = string.format(Localize("reload_tip"), format_color, key_text, "{#reset()}")
+	local full_clip = ammo_count + remaining_ammo == item_template.ammo_data.max_ammo
+
+	if is_wielding_special_weapon and not full_clip then
+		if self._reload_attempts >= 3 then
+			self._reload_tip_text_shown = true
+
+			if not self._reload_tip_anim or self._ui_animator:is_animation_completed(self._reload_tip_anim) then
+				self._reload_tip_anim = self._ui_animator:start_animation("show_reload_tip", reload_tip_widget, scenegraph_definition)
+			end
+		end
+
+		self:_update_reload_ui_state(t, item_template)
+	end
+
+	self:_set_widget_dirty(reload_tip_widget)
+end
+
+GamePadEquipmentUI._update_reload_ui_state = function (self, t, item_template)
+	local reload_tip_widget = self._ammo_widgets_by_name.reload_tip_text
+
+	if not reload_tip_widget then
+		return
+	end
+
+	local input_service = Managers.input:get_service("Player")
+	local listening_duration = 5
+	local gamepad_active = Managers.input:is_device_active("gamepad") or not IS_WINDOWS
+	local input_action = (gamepad_active and "weapon_reload_hold_input") or "weapon_reload_hold"
+
+	if input_service:get(input_action) then
+		if not self._ui_animator:is_animation_completed(self._reload_tip_anim) then
+			return
+		end
+
+		if not self._listening_timer_start then
+			self._listening_timer_start = t
+		end
+
+		if not self._reload_start_time then
+			self._reload_start_time = t
+		end
+	else
+		local reload_time = item_template.actions.weapon_reload.default.anim_time_scale
+		local failed_reload = self._reload_start_time and reload_time > t - self._reload_start_time
+
+		if failed_reload then
+			self._reload_attempts = self._reload_attempts + 1
+		end
+
+		if self._reload_start_time then
+			self._reload_start_time = nil
+		end
+	end
+
+	local end_time = 0
+
+	if self._listening_timer_start then
+		end_time = self._listening_timer_start + listening_duration
+	end
+
+	if (end_time ~= 0 and end_time < t) or self._reload_tip_text_shown then
+		self._listening_timer_start = nil
+		self._reload_attempts = 0
+		self._reload_tip_text_shown = false
+	end
 end
 
 return

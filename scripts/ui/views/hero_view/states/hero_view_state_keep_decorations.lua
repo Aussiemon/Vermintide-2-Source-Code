@@ -53,6 +53,20 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 	local state_params = params.state_params
 	local interactable_unit = state_params.interactable_unit
 	self._interactable_unit = interactable_unit
+	self._type = state_params.type
+
+	if self._type == "painting" then
+		self._default_table = DefaultPaintings
+		self._main_table = Paintings
+		self._ordered_table = PaintingOrder
+		self._empty_decoration_name = "hon_none"
+	elseif self._type == "trophy" then
+		self._default_table = DefaultTrophies
+		self._main_table = Trophies
+		self._ordered_table = TrophyOrder
+		self._empty_decoration_name = "hub_trophy_empty"
+	end
+
 	local camera_interaction_name = Unit.get_data(interactable_unit, "interaction_data", "camera_interaction_name")
 	local hide_character = Unit.get_data(interactable_unit, "interaction_data", "hide_character")
 	self._hide_character = hide_character
@@ -93,19 +107,19 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 
 	if decoration_settings_key then
 		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
-		local selected_painting = keep_decoration_extension:get_selected_painting()
+		local selected_decoration = keep_decoration_extension:get_selected_decoration()
 		self._keep_decoration_extension = keep_decoration_extension
 		local view_only = Unit.get_data(interactable_unit, "interaction_data", "view_only") or not self._is_server
 
 		if view_only then
-			self:_set_info_by_painting_key(selected_painting, false)
+			self:_set_info_by_decoration_key(selected_decoration, false)
 		else
 			self._customizable_decoration = true
-			local list_entries = self:_setup_paintings_list()
+			local list_entries = self:_setup_decorations_list()
 			local start_index = 1
 
-			if not table.contains(DefaultPaintings, selected_painting) then
-				start_index = table.find(list_entries, selected_painting)
+			if not table.contains(self._default_table, selected_decoration) then
+				start_index = table.find(list_entries, selected_decoration)
 			end
 
 			self:_on_list_index_selected(start_index)
@@ -285,7 +299,10 @@ HeroViewStateKeepDecorations.update = function (self, dt, t)
 
 	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 
-	self:_update_client_paintings(dt)
+	if self._type == "painting" then
+		self:_update_client_paintings(dt)
+	end
+
 	self:_update_sound_trigger_delay(dt)
 	self:_update_scroll_position()
 	self:draw(input_service, dt)
@@ -314,21 +331,21 @@ HeroViewStateKeepDecorations.update = function (self, dt, t)
 end
 
 HeroViewStateKeepDecorations._update_client_paintings = function (self, dt)
-	if not Unit.alive(self._interactable_unit) or not self._keep_decoration_extension or not self._keep_decoration_extension.get_selected_painting then
+	if not Unit.alive(self._interactable_unit) or not self._keep_decoration_extension or not self._keep_decoration_extension.get_selected_decoration then
 		return
 	end
 
 	if self._is_server then
-		local painting = self._keep_decoration_extension:get_selected_painting()
+		local decoration = self._keep_decoration_extension:get_selected_decoration()
 
-		if painting == "hidden" then
+		if decoration == "hidden" then
 			self:close_menu()
 		end
 	else
-		local painting = self._keep_decoration_extension:get_selected_painting()
+		local decoration = self._keep_decoration_extension:get_selected_decoration()
 
-		if painting ~= self._selected_painting then
-			self:_set_info_by_painting_key(painting, false)
+		if decoration ~= self._selected_decoration then
+			self:_set_info_by_decoration_key(decoration, false)
 		end
 	end
 end
@@ -411,21 +428,20 @@ HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 	end
 
 	if self._customizable_decoration then
-		local decoration_system = self._decoration_system
 		local interactable_unit = self._interactable_unit
 
 		if self:_is_button_pressed(confirm_button) or input_service:get("confirm") then
 			local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 
-			if self._selected_equipped_painting then
-				keep_decoration_extension:unequip_painting()
+			if self._selected_equipped_decoration then
+				keep_decoration_extension:unequip_decoration()
 				self:_play_sound("Play_hud_select")
 				self:close_menu()
 			else
 				keep_decoration_extension:confirm_selection()
 				self:_play_sound("hud_add_painting")
 
-				self._selected_equipped_painting = true
+				self._selected_equipped_decoration = true
 
 				self:_update_confirm_button()
 				self:_update_equipped_widget()
@@ -577,14 +593,14 @@ HeroViewStateKeepDecorations.input_blocked = function (self)
 	return self._input_blocked
 end
 
-HeroViewStateKeepDecorations._set_info_by_painting_key = function (self, key, locked)
-	local settings = Paintings[key]
+HeroViewStateKeepDecorations._set_info_by_decoration_key = function (self, key, locked)
+	local settings = self._main_table[key]
 	local display_name = settings.display_name
 	local description = settings.description
 	local artist = settings.artist
 	local description_text = (locked and Localize("interaction_unavailable")) or Localize(description)
 	local artist_text = (artist and not locked and Localize(artist)) or ""
-	self._selected_painting = key
+	self._selected_decoration = key
 
 	self:_set_info_texts(Localize(display_name), description_text, artist_text)
 	self:_play_sound("Stop_all_keep_decorations_desc_vo")
@@ -608,12 +624,12 @@ HeroViewStateKeepDecorations._update_sound_trigger_delay = function (self, dt)
 		self._sound_event_delay = nil
 		local selected_list_index = self._selected_list_index
 
-		if self._selected_painting and selected_list_index then
+		if self._selected_decoration and selected_list_index then
 			local list_widgets = self._list_widgets
 			local selected_widget = list_widgets[selected_list_index]
 			local selected_content = selected_widget.content
 			local selected_key = selected_content.key
-			local settings = Paintings[selected_key]
+			local settings = self._main_table[selected_key]
 			local sound_event = settings.sound_event
 
 			if sound_event then
@@ -628,10 +644,10 @@ HeroViewStateKeepDecorations._update_sound_trigger_delay = function (self, dt)
 end
 
 HeroViewStateKeepDecorations._update_confirm_button = function (self)
-	local selected_equipped_painting = self._selected_equipped_painting == true
+	local selected_equipped_decoration = self._selected_equipped_decoration == true
 	local button = self._widgets_by_name.confirm_button
 
-	if selected_equipped_painting then
+	if selected_equipped_decoration then
 		button.content.title_text = Localize("input_description_remove")
 	else
 		button.content.title_text = Localize("menu_settings_apply")
@@ -641,7 +657,7 @@ end
 HeroViewStateKeepDecorations._on_list_index_selected = function (self, index, scrollbar_animation_percentage)
 	local interactable_unit = self._interactable_unit
 	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
-	local equipped_painting = keep_decoration_extension:get_selected_painting()
+	local equipped_decoration = keep_decoration_extension:get_selected_decoration()
 	local list_widgets = self._list_widgets
 
 	if not index or index > #list_widgets then
@@ -660,19 +676,19 @@ HeroViewStateKeepDecorations._on_list_index_selected = function (self, index, sc
 
 	local locked = selected_content.locked
 
-	self:_set_info_by_painting_key(selected_key, locked)
+	self:_set_info_by_decoration_key(selected_key, locked)
 
 	if locked then
-		keep_decoration_extension:painting_selected("hor_none")
+		keep_decoration_extension:decoration_selected(self._empty_decoration_name)
 	else
-		keep_decoration_extension:painting_selected(selected_key)
+		keep_decoration_extension:decoration_selected(selected_key)
 	end
 
-	self._selected_equipped_painting = equipped_painting == selected_key
+	self._selected_equipped_decoration = equipped_decoration == selected_key
 
 	self:_update_confirm_button()
 
-	local input_action_key = (self._selected_equipped_painting and "remove") or "default"
+	local input_action_key = (self._selected_equipped_decoration and "remove") or "default"
 
 	self._menu_input_description:set_input_description(input_action_key and input_actions[input_action_key])
 
@@ -809,7 +825,7 @@ HeroViewStateKeepDecorations._populate_list = function (self, layout)
 		content.key = key
 		content.locked = locked
 		content.new = new
-		content.in_use = decoration_system:is_painting_in_use(key)
+		content.in_use = decoration_system:is_decoration_in_use(key)
 	end
 
 	self._list_widgets = widgets
@@ -849,13 +865,13 @@ end
 HeroViewStateKeepDecorations._update_equipped_widget = function (self)
 	local interactable_unit = self._interactable_unit
 	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
-	local equipped_painting = keep_decoration_extension:get_selected_painting()
+	local equipped_decoration = keep_decoration_extension:get_selected_decoration()
 	local decoration_system = self._decoration_system
 
 	for _, list_widget in pairs(self._list_widgets) do
 		local key = list_widget.content.key
-		list_widget.content.in_use = decoration_system:is_painting_in_use(key)
-		list_widget.content.equipped = equipped_painting == key
+		list_widget.content.in_use = decoration_system:is_decoration_in_use(key)
+		list_widget.content.equipped = equipped_decoration == key
 	end
 end
 
@@ -1064,36 +1080,39 @@ HeroViewStateKeepDecorations._list_index_pressed = function (self)
 	end
 end
 
-HeroViewStateKeepDecorations._setup_paintings_list = function (self)
+HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 	local backend_interface = self._keep_decoration_backend_interface
-	local unlocked_paintings = (backend_interface and backend_interface:get_unlocked_keep_decorations()) or {}
+	local unlocked_decorations = (backend_interface and backend_interface:get_unlocked_keep_decorations()) or {}
 	local entries = {}
 
-	for _, key in ipairs(PaintingOrder) do
-		if not table.contains(DefaultPaintings, key) then
-			local settings = Paintings[key]
-			local unlocked = table.contains(unlocked_paintings, key)
-			local display_name = Localize(settings.display_name)
+	for _, key in ipairs(self._ordered_table) do
+		if not table.contains(self._default_table, key) then
+			local settings = self._main_table[key]
 
-			if unlocked then
-				entries[#entries + 1] = {
-					key = key,
-					display_name = display_name
-				}
+			if settings then
+				local unlocked = table.contains(unlocked_decorations, key)
+				local display_name = Localize(settings.display_name)
+
+				if unlocked then
+					entries[#entries + 1] = {
+						key = key,
+						display_name = display_name
+					}
+				end
 			end
 		end
 	end
 
-	local new_painting_order = {}
+	local new_order = {}
 
 	for _, table in ipairs(entries) do
-		new_painting_order[#new_painting_order + 1] = table.key
+		new_order[#new_order + 1] = table.key
 	end
 
 	self:_populate_list(entries)
 	self:_update_equipped_widget()
 
-	return new_painting_order
+	return new_order
 end
 
 HeroViewStateKeepDecorations._animate_list_entries = function (self, dt, is_list_hovered)

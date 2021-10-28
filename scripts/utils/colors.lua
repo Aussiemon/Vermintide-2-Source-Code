@@ -1089,7 +1089,7 @@ Colors.color_definitions = {
 		197,
 		174
 	},
-	wh_4 = {
+	wh_priest = {
 		ALPHA,
 		230,
 		184,
@@ -1599,6 +1599,23 @@ Colors.hsl2rgb = function (h, s, l)
 	local floor = math.floor
 
 	return floor(r * 255 + 0.5), floor(g * 255 + 0.5), floor(b * 255 + 0.5)
+end
+
+local DARKEN_FACTOR = 0.7
+
+Colors.darker = function (col, k)
+	k = DARKEN_FACTOR^(k or 1)
+	col[4] = col[4] * k
+	col[3] = col[3] * k
+	col[2] = col[2] * k
+end
+
+Colors.brighter = function (col, k)
+	return Colors.darker(col, -k)
+end
+
+Colors.luminance = function (col)
+	return 0.2126 * col[2] + 0.7152 * col[3] + 0.0722 * col[4]
 end
 
 return

@@ -128,7 +128,7 @@ local function is_valid_player_and_target_unit_exclude_local_player(player_profi
 	local pickup_extension = ScriptUnit.extension(target_unit, "pickup_system")
 	local settings = pickup_extension:get_pickup_settings()
 
-	if is_bot and settings.slot_name == "slot_level_event" then
+	if is_bot and (settings.slot_name == "slot_level_event" or settings.disallow_bot_pickup) then
 		return false
 	else
 		return true

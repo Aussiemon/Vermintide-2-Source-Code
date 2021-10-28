@@ -17,7 +17,7 @@ end
 
 MatchmakingStateWaitForCountdown.on_exit = function (self)
 	if not self._wait_to_start_game then
-		Managers.matchmaking:activate_waystone_portal(false)
+		Managers.matchmaking:activate_waystone_portal(nil)
 	end
 end
 

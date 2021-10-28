@@ -79,7 +79,8 @@ settings.pickups = {
 			item_name = "deus_soft_currency",
 			unit_name = "units/props/deus_pickups/deus_loot_pyramide_01",
 			unit_template_name = "pickup_unit",
-			hud_description = "deus_soft_currency_hud_desc",
+			hud_description = "deus_soft_currency_item_desc",
+			disallow_bot_pickup = true,
 			on_pick_up_func = function (world, interactor_unit, is_server, interactable_unit)
 				local game_mode = Managers.state.game_mode:game_mode()
 

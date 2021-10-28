@@ -44,7 +44,7 @@ NewsTickerManager._load = function (self, url, callback)
 		local curl_token = CurlToken:new(token)
 
 		Managers.token:register_token(curl_token, callback)
-	elseif script_data.enable_console_news_ticker then
+	else
 		local message = Http.get_uri(self._server_name, 80, url)
 
 		if message then
@@ -69,13 +69,6 @@ NewsTickerManager._load = function (self, url, callback)
 			end
 		end
 
-		local info = {
-			done = true,
-			data = ""
-		}
-
-		callback(info)
-	else
 		local info = {
 			done = true,
 			data = ""

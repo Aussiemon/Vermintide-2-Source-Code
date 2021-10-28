@@ -1,4 +1,5 @@
 CareerExtension = class(CareerExtension)
+local ABILITY_READY_ANTI_SPAM_DELAY = 1
 
 CareerExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
@@ -20,6 +21,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._num_abilities = num_abilities
 	self._abilities = {}
 	self._abilities_always_usable_reasons = {}
+	self._last_ability_ready_t = 0
 
 	for ability_id = 1, num_abilities, 1 do
 		local ability_data = career_data.activated_ability[ability_id]
@@ -187,7 +189,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 					ability.is_ready = true
 				end
 
-				self:run_ability_ready_feedback(i)
+				self:_run_ability_ready_feedback(i, t)
 			end
 		end
 	end
@@ -267,7 +269,7 @@ CareerExtension.get_activated_ability_data = function (self, ability_id)
 	return activated_ability_data
 end
 
-CareerExtension.start_activated_ability_cooldown = function (self, ability_id, refund_percent, modified_cost)
+CareerExtension.start_activated_ability_cooldown = function (self, ability_id, refund_percent, modified_cost, ignore_ability_readiness)
 	ability_id = ability_id or 1
 	local ability = self._abilities[ability_id]
 	local refund = ability.max_cooldown * ability.cost * (refund_percent or 0)
@@ -284,7 +286,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 		cost = 0
 	end
 
-	if ability.is_ready or self._abilities_always_usable then
+	if ability.is_ready or self._abilities_always_usable or ignore_ability_readiness then
 		local local_players = Managers.player:players_at_peer(Network.peer_id())
 
 		if local_players and unit then
@@ -316,7 +318,9 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 		network_manager.network_transmit:send_rpc_server("rpc_ability_activated", unit_id, ability_id)
 	end
 
-	if ability.cooldown <= 0 or cost <= 0 then
+	local min_cooldown = ability.max_cooldown * (1 - ability.cost)
+
+	if ability.cooldown <= min_cooldown or cost <= 0 then
 		local cooldown = math.clamp((ability.cooldown + cost) - refund, 0, ability.max_cooldown)
 		ability.cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
 		ability.cooldown_anim_started = false
@@ -572,29 +576,23 @@ CareerExtension.get_career_power_level = function (self)
 	local player = self.player
 	local career_name = self._career_name
 	local profile_name = self._profile_name
+	local power_level = MIN_POWER_LEVEL
 
 	if player.bot_player then
-		local player_manager = Managers.player
-		local leader_player = player_manager:party_leader_player()
+		local leader_player = Managers.player:party_leader_player()
 
 		if leader_player then
-			if DEDICATED_SERVER then
-				local power_level = leader_player:get_data("power_level")
-
-				if power_level then
-					return power_level
-				end
-			else
-				local leader_profile_display_name = leader_player:profile_display_name()
-				local leader_career_name = leader_player:career_name()
-				profile_name = leader_profile_display_name or profile_name
-				career_name = leader_career_name or career_name
-			end
+			player = leader_player
 		end
 	end
 
+	if player.remote then
+		power_level = player:get_data("power_level")
+	else
+		power_level = BackendUtils.get_total_power_level(profile_name, career_name)
+	end
+
 	local buff_extension = self._buff_extension
-	local power_level = BackendUtils.get_total_power_level(profile_name, career_name)
 
 	if buff_extension then
 		power_level = buff_extension:apply_buffs_to_value(power_level, "flat_power_level")
@@ -621,7 +619,7 @@ CareerExtension.ability_amount = function (self)
 	return self._num_abilities
 end
 
-CareerExtension.run_ability_ready_feedback = function (self, ability_id)
+CareerExtension._run_ability_ready_feedback = function (self, ability_id, t)
 	local ability = self._abilities[ability_id]
 
 	if ability and ability.activated_ability and ability.activated_ability.ability_ready then
@@ -630,7 +628,11 @@ CareerExtension.run_ability_ready_feedback = function (self, ability_id)
 		local first_person_extension = self._first_person_extension
 
 		if first_person_extension then
-			first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
+			if t > self._last_ability_ready_t + ABILITY_READY_ANTI_SPAM_DELAY then
+				first_person_extension:play_hud_sound_event("Play_hud_ability_ready")
+			end
+
+			self._last_ability_ready_t = t
 		end
 	end
 end

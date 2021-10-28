@@ -1,25 +1,20 @@
 local quest_templates = require("scripts/managers/quest/quest_templates")
 local outline = require("scripts/managers/quest/quest_outline")
-local quest_keys = {
-	daily = {
-		"daily_quest_1",
-		"daily_quest_2",
-		"daily_quest_3"
-	},
-	weekly = {
-		"weekly_quest_1",
-		"weekly_quest_2",
-		"weekly_quest_3",
-		"weekly_quest_4",
-		"weekly_quest_5",
-		"weekly_quest_6"
-	},
-	event = {
-		"event_quest_1",
-		"event_quest_2",
-		"event_quest_3"
-	}
-}
+local quest_keys = {}
+local quest_rules = QuestSettings.rules
+
+for quest_type, data in pairs(quest_rules) do
+	local stat_prefix = string.format("%s_quest", quest_type)
+	local quests = {}
+
+	for i = 1, data.max_quests, 1 do
+		local quest_name = string.format("%s_%d", stat_prefix, i)
+		quests[#quests + 1] = quest_name
+	end
+
+	quest_keys[quest_type] = quests
+end
+
 QuestManager = class(QuestManager)
 
 QuestManager.init = function (self, statistics_db)
@@ -28,6 +23,8 @@ QuestManager.init = function (self, statistics_db)
 	self._backend_interface_quests = backend_interface_quests
 
 	Managers.state.event:register(self, "event_stat_incremented", "event_stat_incremented")
+	Managers.state.event:register(self, "on_achievement_event", "on_achievement_event")
+	self:on_quests_updated()
 end
 
 QuestManager.event_stat_incremented = function (self, stats_id, ...)
@@ -46,6 +43,31 @@ QuestManager.event_stat_incremented = function (self, stats_id, ...)
 
 	if event_quests then
 		self:_increment_quest_stats(event_quests, stats_id, ...)
+	end
+end
+
+QuestManager.on_achievement_event = function (self, event_name, event_data)
+	local quests = self._backend_interface_quests:get_quests()
+	local event_quests = quests.event
+	local templates = quest_templates.quests
+	local statistics_db = self._statistics_db
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+	local event_mappings = self._quest_event_mapping
+	local registered_quests = event_mappings[event_name]
+
+	if registered_quests then
+		for i = 1, #registered_quests, 1 do
+			local quest_key = registered_quests[i]
+			local quest_data = event_quests[quest_key]
+
+			if quest_data and not quest_data.completed then
+				local quest_name = quest_data.name
+				local template = templates[quest_name]
+
+				template.on_event(statistics_db, stats_id, nil, event_name, event_data, quest_key)
+			end
+		end
 	end
 end
 
@@ -219,7 +241,9 @@ end
 QuestManager.get_data_by_id = function (self, quest_id)
 	local backend_interface_quests = self._backend_interface_quests
 	local quest_key = backend_interface_quests:get_quest_key(quest_id)
-	local quest_data = quest_templates.quests[quest_id]
+	local templates = quest_templates.quests
+	local quest_data = templates[quest_id]
+	local claimed_quests = backend_interface_quests:get_claimed_event_quests()
 
 	fassert(quest_key, "Trying to fetch data for quest %q not found in user's quest list.", quest_id)
 	fassert(quest_data, "Quest %q does not exist in quest_templates.", quest_id)
@@ -265,19 +289,19 @@ QuestManager.get_data_by_id = function (self, quest_id)
 	if type(quest_data.completed) == "boolean" then
 		completed = quest_data.completed
 	elseif type(quest_data.completed) == "function" then
-		completed = quest_data.completed(self._statistics_db, stats_id, quest_key)
+		completed = quest_data.completed(self._statistics_db, stats_id, quest_key, templates, claimed_quests)
 	end
 
 	if type(quest_data.progress) == "table" then
 		progress = quest_data.progress
 	elseif type(quest_data.progress) == "function" then
-		progress = quest_data.progress(self._statistics_db, stats_id, quest_key)
+		progress = quest_data.progress(self._statistics_db, stats_id, quest_key, templates, claimed_quests)
 	end
 
 	if type(quest_data.requirements) == "table" then
 		requirements = quest_data.requirements
 	elseif type(quest_data.requirements) == "function" then
-		requirements = quest_data.requirements(self._statistics_db, stats_id, quest_key)
+		requirements = quest_data.requirements(self._statistics_db, stats_id, quest_key, templates, claimed_quests)
 	end
 
 	if requirements then
@@ -429,7 +453,7 @@ QuestManager.time_left_on_event_quest = function (self)
 	local quests = backend_interface_quests:get_quests()
 	local event_quests = quests.event
 
-	if event_quests then
+	if event_quests and not table.is_empty(event_quests) then
 		local keys = quest_keys.event
 
 		for i = 1, #keys, 1 do
@@ -451,8 +475,33 @@ QuestManager.update_quests = function (self)
 	local backend_interface_quests = self._backend_interface_quests
 
 	if backend_interface_quests.update_quests then
-		backend_interface_quests:update_quests()
+		backend_interface_quests:update_quests(callback(self, "on_quests_updated"))
 	end
+end
+
+local EMPTY_TABLE = {}
+
+QuestManager.on_quests_updated = function (self)
+	local quest_event_mapping = {}
+	local quests = self._backend_interface_quests:get_quests()
+	local event_quests = quests.event or EMPTY_TABLE
+	local templates = quest_templates.quests
+
+	for quest_key, quest_data in pairs(event_quests) do
+		local quest_name = quest_data.name
+		local template = templates[quest_name]
+		local events = template and template.events
+
+		if events then
+			for i = 1, #events, 1 do
+				local event_name = events[i]
+				quest_event_mapping[event_name] = quest_event_mapping[event_name] or {}
+				quest_event_mapping[event_name][#quest_event_mapping[event_name] + 1] = quest_key
+			end
+		end
+	end
+
+	self._quest_event_mapping = quest_event_mapping
 end
 
 return

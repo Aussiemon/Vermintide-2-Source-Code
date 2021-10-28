@@ -116,76 +116,6 @@ local scenegraph_definition = {
 			15,
 			-1
 		}
-	},
-	skull_center = {
-		vertical_alignment = "center",
-		parent = "fence",
-		horizontal_alignment = "center",
-		size = {
-			502,
-			249
-		},
-		position = {
-			0,
-			15,
-			1
-		}
-	}
-}
-local rect_color = {
-	200,
-	10,
-	10,
-	10
-}
-local title_text_style = {
-	word_wrap = true,
-	upper_case = false,
-	localize = false,
-	use_shadow = true,
-	font_size = 64,
-	horizontal_alignment = "left",
-	vertical_alignment = "bottom",
-	dynamic_font_size = false,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local sub_title_text_style = {
-	word_wrap = false,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	font_size = 28,
-	horizontal_alignment = "left",
-	vertical_alignment = "center",
-	dynamic_font_size = false,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local description_text_style = {
-	font_size = 20,
-	upper_case = false,
-	localize = false,
-	use_shadow = true,
-	word_wrap = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "top",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
 	}
 }
 
@@ -749,8 +679,7 @@ local widgets = {
 			0,
 			1
 		}
-	}, "skull_back_left"),
-	skull_center = UIWidgets.create_simple_texture("store_fence_skulls_center", "skull_center")
+	}, "skull_back_left")
 }
 local animation_definitions = {
 	on_enter = {

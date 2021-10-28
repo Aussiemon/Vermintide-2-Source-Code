@@ -289,8 +289,8 @@ BTConditions.at_three_fifths_health = function (blackboard)
 	return blackboard.current_health_percent <= 0.6
 end
 
-BTConditions.at_one_health = function (blackboard)
-	return blackboard.current_health == 1
+BTConditions.less_than_one_health = function (blackboard)
+	return blackboard.current_health <= 1
 end
 
 BTConditions.can_transition_half_health = function (blackboard)

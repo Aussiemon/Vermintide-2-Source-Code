@@ -165,18 +165,27 @@ else
 	}
 end
 
-if BUILD ~= "dev" and IS_WINDOWS then
-	if LAUNCH_MODE ~= "attract_benchmark" then
-		local input = io.input
-		local read = io.read
-		slot5 = io.write
+if IS_WINDOWS and BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attract_benchmark" then
+	local function scrub_library(lib)
+		rawset(_G, lib, nil)
+
+		package.loaded[lib] = nil
+		package.preload[lib] = nil
 	end
 
-	os.execute = nil
-	os.remove = nil
-	os.rename = nil
-	package.path = nil
-	package.cpath = nil
+	scrub_library("ffi")
+	scrub_library("io")
+
+	os = {
+		clock = os.clock,
+		date = os.date,
+		difftime = os.difftime,
+		time = os.time,
+		getenv = os.getenv
+	}
+	package.loadlib = nil
+	package.loaders[3] = nil
+	package.loaders[4] = nil
 end
 
 return

@@ -1,12 +1,13 @@
 local settings = DLCSettings.mutators_batch_02
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 settings.buff_templates = {
 	slayer_curse_debuff = {
 		buffs = {
 			{
 				name = "slayer_curse_debuff",
 				icon = "buff_icon_mutator_icon_slayer_curse",
-				perk = "slayer_curse",
-				debuff = true
+				debuff = true,
+				perk = buff_perks.slayer_curse
 			}
 		}
 	},

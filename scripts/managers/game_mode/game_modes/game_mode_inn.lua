@@ -33,6 +33,14 @@ GameModeInn.init = function (self, settings, world, ...)
 	self._local_player_spawned = false
 end
 
+GameModeInn.destroy = function (self)
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:unregister("level_start_local_player_spawned", self)
+	end
+end
+
 GameModeInn.register_rpcs = function (self, network_event_delegate, network_transmit)
 	GameModeInn.super.register_rpcs(self, network_event_delegate, network_transmit)
 	self._adventure_spawning:register_rpcs(network_event_delegate, network_transmit)
@@ -318,25 +326,28 @@ GameModeInn.local_player_game_starts = function (self, player, loading_context)
 
 	if show_profile_on_startup and not LEVEL_EDITOR_TEST and not Development.parameter("skip-start-menu") then
 		local platform = PLATFORM
+		local transition_name, menu_state_name = nil
 
 		if IS_CONSOLE then
-			local transition_params = {
-				menu_state_name = "character"
-			}
-			local view = "initial_character_selection_force"
-
-			Managers.state.event:trigger("ui_event_transition", view, transition_params)
+			transition_name = "initial_character_selection_force"
+			menu_state_name = "character"
 		else
-			local first_hero_selection_made = SaveData.first_hero_selection_made
-			local backend_waiting_for_input = Managers.backend:is_waiting_for_user_input()
-			local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
-			local transition_params = {
-				menu_state_name = (show_hero_selection and "character") or "overview"
-			}
-			local view = "initial_start_menu_view_force"
+			local show_hero_selection = not SaveData.first_hero_selection_made and not Managers.backend:is_waiting_for_user_input()
+			transition_name = "initial_start_menu_view_force"
 
-			Managers.state.event:trigger("ui_event_transition", view, transition_params)
+			if show_hero_selection then
+				menu_state_name = "character"
+			else
+				menu_state_name = "overview"
+			end
 		end
+
+		Managers.ui:handle_transition(transition_name, {
+			menu_state_name = menu_state_name,
+			on_exit_callback = callback(self, "_cb_start_menu_closed")
+		})
+	else
+		self:_cb_start_menu_closed()
 	end
 
 	if self._is_initial_spawn then
@@ -347,6 +358,36 @@ GameModeInn.local_player_game_starts = function (self, player, loading_context)
 		else
 			LevelHelper:flow_event(self._world, "level_start_local_player_spawned")
 		end
+	end
+
+	print("[GameModeInn] Start menu opened")
+end
+
+GameModeInn._cb_start_menu_closed = function (self)
+	print("[GameModeInn] Start menu closed")
+
+	local world = self._world
+	local player_data_changed = false
+	local first_time_store_release = not PlayerData.first_time_store_release
+
+	if first_time_store_release then
+		LevelHelper:flow_event(world, "first_time_store_release")
+
+		PlayerData.first_time_store_release = true
+		player_data_changed = true
+	end
+
+	local store_new_items = PlayerData.store_new_items
+
+	if store_new_items and GameSettingsDevelopment.store_nags then
+		LevelHelper:flow_event(world, "shop_new_items")
+
+		PlayerData.store_new_items = false
+		player_data_changed = true
+	end
+
+	if player_data_changed then
+		Managers.save:auto_save(SaveFileName, SaveData, nil)
 	end
 end
 

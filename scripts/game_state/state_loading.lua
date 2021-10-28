@@ -501,10 +501,40 @@ end
 
 StateLoading._trigger_sound_events = function (self, level_key)
 	local level_settings = LevelSettings[level_key]
-	local wwise_events = level_settings.loading_screen_wwise_events
+	local loading_screen_wwise_events = level_settings.loading_screen_wwise_events
+	local career_specific_events = nil
+
+	if loading_screen_wwise_events then
+		local network_server = self._network_server
+		local network_client = self._network_client
+		local profile_synchronizer = (network_server and network_server.profile_synchronizer) or (network_client and network_client.profile_synchronizer)
+
+		if profile_synchronizer then
+			local peers_with_full_profiles = profile_synchronizer:get_peers_with_full_profiles()
+
+			for i = 1, #peers_with_full_profiles, 1 do
+				local peer_data = peers_with_full_profiles[i]
+				local profile_index = peer_data.profile_index
+				local career_index = peer_data.career_index
+				local profile = SPProfiles[profile_index]
+				local career = profile and profile.careers[career_index]
+				local career_name = career and career.name
+
+				if loading_screen_wwise_events[career_name] then
+					career_specific_events = career_specific_events or {}
+
+					table.append(career_specific_events, loading_screen_wwise_events[career_name])
+				end
+			end
+		end
+	end
+
+	local wwise_events = career_specific_events or loading_screen_wwise_events
 
 	if wwise_events ~= nil then
-		local wwise_event = wwise_events[math.random(1, #wwise_events)]
+		local level_seed = Managers.level_transition_handler:get_current_level_seed()
+		local _, random_id = Math.next_random(level_seed, 1, #wwise_events)
+		local wwise_event = wwise_events[random_id]
 
 		if not script_data.disable_level_intro_dialogue then
 			local wwise_playing_id, wwise_source_id = Managers.music:trigger_event(wwise_event)
@@ -898,8 +928,6 @@ StateLoading._update_lobbies = function (self, dt, t)
 				text_id = "failure_start"
 			end
 
-			self:_destroy_lobby_host()
-
 			if self._network_server then
 				self._network_server:disconnect_all_peers("unknown_error")
 				self._network_server:destroy()
@@ -907,6 +935,7 @@ StateLoading._update_lobbies = function (self, dt, t)
 				self._network_server = nil
 			end
 
+			self:_destroy_lobby_host()
 			self:create_popup(text_id, "popup_error_topic", "restart_as_server", "menu_accept")
 		end
 	elseif self._lobby_finder then
@@ -2320,14 +2349,11 @@ StateLoading.setup_chat_manager = function (self, lobby, host_peer_id, my_peer_i
 	end
 
 	local function member_func()
-		if DEDICATED_SERVER then
+		if DEDICATED_SERVER and Managers.level_transition_handler:in_hub_level() then
 			local mechanism = Managers.mechanism:game_mechanism()
+			local reservation_handler = mechanism:get_slot_reservation_handler()
 
-			if mechanism:get_state() == "inn" then
-				local reservation_handler = mechanism:get_slot_reservation_handler()
-
-				return reservation_handler:reservers()
-			end
+			return reservation_handler:reservers()
 		end
 
 		return lobby:members():get_members()

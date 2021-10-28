@@ -793,7 +793,8 @@ settings.network_damage_types = {
 	"bolt_of_change"
 }
 settings.network_damage_sources = {
-	"poison_dot"
+	"poison_dot",
+	"tiny_explosive_barrel"
 }
 settings.network_lookups = {
 	deus_blessings = "DeusBlessingSettings",

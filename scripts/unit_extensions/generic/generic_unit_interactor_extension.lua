@@ -535,7 +535,7 @@ GenericUnitInteractorExtension.get_progress = function (self, t)
 	return interaction_template.client.get_progress(interaction_data, interaction_config, t)
 end
 
-GenericUnitInteractorExtension.start_interaction = function (self, hold_input, interactable_unit, interaction_type)
+GenericUnitInteractorExtension.start_interaction = function (self, hold_input, interactable_unit, interaction_type, forced)
 	InteractionHelper.printf("[GenericUnitInteractorExtension] start_interaction(interactable_unit=%s, interaction_type=%s)", tostring(interactable_unit), tostring(interaction_type))
 
 	local interaction_context = self.interaction_context
@@ -543,7 +543,7 @@ GenericUnitInteractorExtension.start_interaction = function (self, hold_input, i
 	interaction_context.interactable_unit = interactable_unit or interaction_context.interactable_unit
 	interaction_context.interaction_type = interaction_type or interaction_context.interaction_type
 
-	fassert(self:can_interact(interaction_context.interactable_unit, interaction_type), "Attempted to start interaction even though the interaction wasn't allowed.")
+	fassert(forced or self:can_interact(interaction_context.interactable_unit, interaction_type), "Attempted to start interaction even though the interaction wasn't allowed.")
 
 	interaction_context.interaction_type = InteractionHelper.player_modify_interaction_type(self.unit, interaction_context.interactable_unit, interaction_context.interaction_type)
 	local unit = self.unit

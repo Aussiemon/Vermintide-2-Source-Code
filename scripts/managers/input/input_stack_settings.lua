@@ -37,7 +37,6 @@ InputStackSettings = {
 		group_name = "ui",
 		services = {
 			"Text",
-			"motd",
 			"dark_pact_selection"
 		}
 	},

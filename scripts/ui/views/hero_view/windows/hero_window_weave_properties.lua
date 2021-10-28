@@ -1783,7 +1783,7 @@ HeroWindowWeaveProperties._set_essence_upgrade_cost = function (self, essence_am
 	end
 
 	widget_warning.content.visible = (magic_cap_reached ~= nil and magic_cap_reached) or false
-	button_content.button_hotspot.disable_button = magic_cap_reached or not essence_amount or not can_afford
+	button_content.button_hotspot.disable_button = script_data["eac-untrusted"] or magic_cap_reached or not essence_amount or not can_afford
 	button_content.title_text = button_text
 end
 

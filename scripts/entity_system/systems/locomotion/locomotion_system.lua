@@ -64,17 +64,13 @@ LocomotionSystem.init = function (self, entity_system_creation_context, system_n
 		end
 	end
 
-	if EngineOptimizedExtensions.init_husk_extensions then
-		EngineOptimizedExtensions.init_husk_extensions()
+	EngineOptimizedExtensions.init_husk_extensions()
 
-		if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
-			local physics_world = World.get_data(self.world, "physics_world")
-			local game_session = Managers.state.network:game()
+	if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
+		local physics_world = World.get_data(self.world, "physics_world")
+		local game_session = Managers.state.network:game()
 
-			EngineOptimizedExtensions.init_extensions(physics_world, GLOBAL_AI_NAVWORLD, game_session)
-		end
-	else
-		EngineOptimizedExtensions.init_extensions()
+		EngineOptimizedExtensions.init_extensions(physics_world, GLOBAL_AI_NAVWORLD, game_session)
 	end
 
 	if not GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
@@ -87,14 +83,9 @@ end
 LocomotionSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 	EngineOptimized.bone_lod_destroy()
+	EngineOptimizedExtensions.destroy_husk_extensions()
 
-	if EngineOptimizedExtensions.destroy_husk_extensions then
-		EngineOptimizedExtensions.destroy_husk_extensions()
-
-		if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
-			EngineOptimizedExtensions.destroy_extensions()
-		end
-	else
+	if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
 		EngineOptimizedExtensions.destroy_extensions()
 	end
 end
@@ -278,6 +269,8 @@ LocomotionSystem.rpc_set_affected_by_gravity = function (self, channel_id, game_
 	locomotion_extension:set_affected_by_gravity(affected)
 end
 
+local MAX_ALLOWABLE_RESYNC_TELEPORT_DISTANCE_SQ = 9
+
 LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id, game_object_id, animation_driven, script_driven_rotation, is_affected_by_gravity, position, rotation)
 	local unit = self.unit_storage:unit(game_object_id)
 
@@ -292,6 +285,16 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id,
 	locomotion_extension:set_animation_driven(animation_driven, is_affected_by_gravity, script_driven_rotation)
 
 	if animation_driven then
+		local source_position = Unit.local_position(unit, 0)
+		local distance_sq = Vector3.distance_squared(source_position, position)
+
+		if MAX_ALLOWABLE_RESYNC_TELEPORT_DISTANCE_SQ < distance_sq then
+			local breed = AiUtils.unit_breed(unit)
+			local breed_name = (breed and breed.name) or "n/a"
+
+			Managers.telemetry.events:breed_position_desync(source_position, position, distance_sq, breed_name)
+		end
+
 		locomotion_extension:teleport_to(position, rotation, locomotion_extension:current_velocity())
 	end
 end

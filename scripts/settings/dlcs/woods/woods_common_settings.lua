@@ -17,7 +17,6 @@ settings.profile_files = {
 settings.death_reactions = {
 	"scripts/settings/dlcs/woods/woods_death_reactions"
 }
-settings.local_backend_data = "scripts/settings/dlcs/woods/local_backend_data_woods"
 settings.spawn_unit_templates = "scripts/settings/dlcs/woods/woods_spawn_unit_templates"
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_woods"

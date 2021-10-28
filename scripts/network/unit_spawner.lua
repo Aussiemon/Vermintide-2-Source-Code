@@ -132,13 +132,15 @@ UnitSpawner.update_death_watch_list = function (self)
 		self.unit_death_watch_list_dirty = false
 	end
 
+	local max_num_ragdolls = RagdollSettings.max_num_ragdolls
+	local min_num_ragdolls = RagdollSettings.min_num_ragdolls
 	local num_alive_and_dead_units = #Managers.state.conflict:spawned_units() + self.unit_death_watch_list_n
 
-	if RagdollSettings.max_num_ragdolls < num_alive_and_dead_units then
-		local units_to_remove = math.min(num_alive_and_dead_units - RagdollSettings.max_num_ragdolls, self.unit_death_watch_list_n)
+	if max_num_ragdolls < num_alive_and_dead_units then
+		local units_to_remove = math.min(num_alive_and_dead_units - max_num_ragdolls, self.unit_death_watch_list_n)
 
-		if self.unit_death_watch_list_n - units_to_remove < RagdollSettings.min_num_ragdolls then
-			units_to_remove = units_to_remove - RagdollSettings.min_num_ragdolls
+		if min_num_ragdolls > self.unit_death_watch_list_n - units_to_remove then
+			units_to_remove = units_to_remove - min_num_ragdolls
 		end
 
 		for idx = 1, units_to_remove, 1 do

@@ -131,20 +131,32 @@ TelemetryEvents.session_id = function (self, session_id)
 	self.manager:register_event("session_id", params)
 end
 
-TelemetryEvents.ai_died = function (self, breed, position)
+TelemetryEvents.ai_died = function (self, id, breed, position)
 	table.clear(params)
 
+	params.id = id
 	params.breed = breed
 	params.position = position
 
 	self.manager:register_event("ai_died", params)
 end
 
-TelemetryEvents.ai_spawned = function (self, breed, position)
+TelemetryEvents.ai_spawned = function (self, id, breed, position, enhancements_array)
 	table.clear(params)
 
+	local enhancements = {}
+
+	if enhancements_array then
+		for i = 1, #enhancements_array, 1 do
+			local enhancement_data = enhancements_array[i]
+			enhancements[enhancement_data.name] = true
+		end
+	end
+
+	params.id = id
 	params.breed = breed
 	params.position = position
+	params.enhancements = enhancements
 
 	self.manager:register_event("ai_spawned", params)
 end
@@ -815,6 +827,48 @@ TelemetryEvents.memory_usage = function (self, index, memory_usage)
 	params.memory_usage = memory_usage
 
 	self.manager:register_event("memory_usage", params)
+end
+
+TelemetryEvents.chat_message = function (self, message)
+	local local_player = Managers.player:local_player()
+
+	if not local_player then
+		return
+	end
+
+	table.clear(params)
+
+	params.player_id = local_player:telemetry_id()
+	params.message_length = (message and #message) or 0
+
+	self.manager:register_event("chat_message", params)
+end
+
+TelemetryEvents.twitch_mode_activated = function (self)
+	table.clear(params)
+	self.manager:register_event("twitch_mode_activated", params)
+end
+
+TelemetryEvents.twitch_poll_completed = function (self, vote_info)
+	table.clear(params)
+
+	params.type = vote_info.vote_type
+	params.templates = vote_info.vote_templates
+	params.winning_template = vote_info.winning_template_name
+	params.votes_cast = vote_info.options
+
+	self.manager:register_event("twitch_poll_completed", params)
+end
+
+TelemetryEvents.breed_position_desync = function (self, source_position, destination_position, distance_sq, breed)
+	table.clear(params)
+
+	params.source_position = source_position
+	params.destination_position = destination_position
+	params.distance_sq = distance_sq
+	params.breed = breed
+
+	self.manager:register_event("breed_position_desync", params)
 end
 
 return

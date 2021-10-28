@@ -17,6 +17,7 @@ PlayerUnitLocomotionExtension.init = function (self, extension_init_context, uni
 	local mover_profile = profile.mover_profile
 	self._default_mover_filter = mover_profile or "filter_player_mover"
 	self._pactsworn_no_clip = self._default_mover_filter == "filter_player_mover_pactsworn"
+	self._no_clip_filter = {}
 	self.velocity_network = Vector3Box()
 	self.velocity_current = Vector3Box()
 	self.animation_translation_scale = Vector3Box(1, 1, 1)
@@ -447,6 +448,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		local query_position = current_position + velocity_flat_normalized * 0.5
 		local no_clip = self._mover_modes.enemy_noclip == true
 		local collide_with_enemies = not self._pactsworn_no_clip and not no_clip
+		local no_clip_filter = self._no_clip_filter
 
 		if collide_with_enemies then
 			local num_ai_units = AiUtils.broadphase_query(query_position, query_radius, ai_units)
@@ -456,7 +458,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
 				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
 
-				if is_alive and breed.player_locomotion_constrain_radius ~= nil then
+				if is_alive and breed.player_locomotion_constrain_radius ~= nil and not no_clip_filter[breed.armor_category] then
 					local ai_radius = breed.player_locomotion_constrain_radius
 					local ai_min_dist_sq = ai_radius * ai_radius * 2 * 2
 					local ai_position = Vector3.flat(POSITION_LOOKUP[ai_unit])
@@ -1003,6 +1005,38 @@ end
 
 PlayerUnitLocomotionExtension.enable_drag = function (self, use_drag)
 	self.use_drag = use_drag
+end
+
+local num_armor_types = 6
+
+PlayerUnitLocomotionExtension.apply_no_clip_filter = function (self, no_clip_filter, reason)
+	for i = 1, num_armor_types, 1 do
+		if no_clip_filter[i] then
+			if not self._no_clip_filter[i] then
+				self._no_clip_filter[i] = {
+					[reason] = true
+				}
+			else
+				self._no_clip_filter[i][reason] = true
+			end
+		end
+	end
+end
+
+PlayerUnitLocomotionExtension.remove_no_clip_filter = function (self, reason)
+	local no_clip_filter = self._no_clip_filter
+
+	for i = 1, num_armor_types, 1 do
+		local filter_category = no_clip_filter[i]
+
+		if filter_category then
+			filter_category[reason] = nil
+
+			if table.is_empty(filter_category) then
+				no_clip_filter[i] = nil
+			end
+		end
+	end
 end
 
 return

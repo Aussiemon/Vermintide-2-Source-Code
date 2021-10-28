@@ -837,6 +837,20 @@ PerceptionUtils.pick_encampment_target_idle = function (unit, blackboard, breed,
 	end
 end
 
+PerceptionUtils.pick_closest_target_with_spillover_wakeup_group = function (unit, blackboard, breed, t)
+	local attacker = blackboard.previous_attacker
+
+	if attacker or blackboard._was_attacked then
+		blackboard._was_attacked = true
+		local group_extension = ScriptUnit.extension(unit, "ai_group_system")
+		local group_template = group_extension.template
+
+		AIGroupTemplates[group_template].wake_up_group(group_extension.group, attacker)
+
+		return PerceptionUtils.pick_closest_target_with_spillover(unit, blackboard, breed, t)
+	end
+end
+
 PerceptionUtils.pick_no_targets = function ()
 	return
 end

@@ -39,10 +39,6 @@ UnlockManager.init = function (self)
 	self._reward_queue_id = 0
 end
 
-UnlockManager.set_ingame_ui = function (self, ingame_ui)
-	self._ingame_ui = ingame_ui
-end
-
 UnlockManager.enable_update_unlocks = function (self, enable)
 	self._update_unlocks = enable
 end
@@ -138,7 +134,7 @@ end
 UnlockManager._handle_popup_results = function (self, result)
 	if result == "restart_game" then
 		if IS_WINDOWS then
-			self._ingame_ui.restart_game = true
+			Managers.ui:restart_game()
 		else
 			Managers.account:force_exit_to_title_screen()
 		end
@@ -228,7 +224,7 @@ UnlockManager._check_licenses = function (self)
 		end
 	end
 
-	local is_in_store = self._ingame_ui and self._ingame_ui:is_in_view_state("HeroViewStateStore")
+	local is_in_store = Managers.ui:is_in_view_state("HeroViewStateStore")
 
 	if new_licensed_dlc ~= "" then
 		if Managers.state.event then
@@ -343,14 +339,14 @@ UnlockManager._update_console_backend_unlocks = function (self)
 			self._state = "check_unseen_rewards"
 		end
 	elseif self._state == "check_unseen_rewards" then
-		if self._ingame_ui and not self._ingame_ui:is_in_view_state("HeroViewStateStore") then
+		if not Managers.ui:is_in_view_state("HeroViewStateStore") then
 			self:_handle_unseen_rewards()
 
 			self._state = "wait_for_rewards"
 		end
 	elseif self._state == "wait_for_rewards" then
-		if self._ingame_ui and #self._reward_queue <= self._reward_queue_id then
-			local gift_popup_ui = self._ingame_ui:get_hud_component("GiftPopupUI")
+		if #self._reward_queue <= self._reward_queue_id then
+			local gift_popup_ui = Managers.ui:get_hud_component("GiftPopupUI")
 
 			if gift_popup_ui and not gift_popup_ui:has_presentation_data() then
 				self._state = "evaluate_restart"
@@ -389,7 +385,36 @@ UnlockManager.cb_reward_removed = function (self, unlock, success)
 	end
 end
 
+local type_sort_order = {
+	ranged = 2,
+	weapon_skin = 3,
+	hat = 4,
+	frame = 6,
+	melee = 1,
+	skin = 5,
+	deed = 8,
+	keep_decoration_painting = 7
+}
+
 UnlockManager._add_reward = function (self, items, presentation_text)
+	local item_rarity_order = UISettings.item_rarity_order
+
+	table.sort(items, function (a, b)
+		local a_rarity = item_rarity_order[a.rarity or a.data.rarity] or -1
+		local b_rarity = item_rarity_order[b.rarity or b.data.rarity] or -1
+
+		if a_rarity ~= b_rarity then
+			return a_rarity < b_rarity
+		end
+
+		local a_type = type_sort_order[a.data.slot_type or a.data.item_type] or 99
+		local b_type = type_sort_order[b.data.slot_type or b.data.item_type] or 99
+
+		if a_type ~= b_type then
+			return a_type < b_type
+		end
+	end)
+
 	self._reward_queue[#self._reward_queue + 1] = {
 		items = items,
 		presentation_text = presentation_text
@@ -402,9 +427,8 @@ UnlockManager.poll_rewards = function (self)
 	end
 
 	self._reward_queue_id = self._reward_queue_id + 1
-	local data = self._reward_queue[self._reward_queue_id]
 
-	return data
+	return self._reward_queue[self._reward_queue_id]
 end
 
 UnlockManager.get_unlocked_dlcs = function (self)
@@ -720,20 +744,7 @@ UnlockManager._update_backend_unlocks = function (self)
 			self._state = "check_unseen_rewards"
 		end
 	elseif self._state == "check_unseen_rewards" then
-		local is_in_store = false
-
-		if self._ingame_ui then
-			local current_view = self._ingame_ui.current_view
-
-			if current_view == "hero_view" then
-				local hero_view = self._ingame_ui.views.hero_view
-				local current_state = hero_view:current_state()
-
-				if current_state and current_state.NAME == "HeroViewStateStore" then
-					is_in_store = true
-				end
-			end
-		end
+		local is_in_store = Managers.ui:is_in_view_state("HeroViewStateStore")
 
 		if not is_in_store then
 			self:_handle_unseen_rewards()
@@ -741,8 +752,8 @@ UnlockManager._update_backend_unlocks = function (self)
 			self._state = "wait_for_rewards"
 		end
 	elseif self._state == "wait_for_rewards" then
-		if self._ingame_ui and #self._reward_queue <= self._reward_queue_id then
-			local gift_popup_ui = self._ingame_ui:get_hud_component("GiftPopupUI")
+		if #self._reward_queue <= self._reward_queue_id then
+			local gift_popup_ui = Managers.ui:get_hud_component("GiftPopupUI")
 
 			if gift_popup_ui and not gift_popup_ui:has_presentation_data() then
 				self._state = "evaluate_restart"
@@ -772,46 +783,82 @@ UnlockManager._handle_unseen_rewards = function (self)
 	local item_interface = backend_manager:get_interface("items")
 	local unseen_rewards = item_interface:get_unseen_item_rewards()
 
-	if unseen_rewards then
-		for i = 1, #unseen_rewards, 1 do
-			local reward = unseen_rewards[i]
-			local item = nil
+	if not unseen_rewards then
+		return
+	end
 
-			if reward.item_type == "weapon_skin" then
-				local item_id = reward.item_id
-				local weapon_skin_data = WeaponSkins.skins[item_id]
-				weapon_skin_data.item_type = "weapon_skin"
-				local backend_id, _ = item_interface:get_weapon_skin_from_skin_key(item_id)
-				item = {
-					data = weapon_skin_data,
-					backend_id = backend_id,
-					key = item_id
+	local items_by_source = {}
+
+	for i = 1, #unseen_rewards, 1 do
+		local reward = unseen_rewards[i]
+		local item = nil
+
+		if reward.item_type == "weapon_skin" then
+			local item_id = reward.item_id
+			local weapon_skin_data = WeaponSkins.skins[item_id]
+			local rarity = weapon_skin_data.rarity or "plentiful"
+			item = {
+				skin = item_id,
+				data = {
+					item_type = "weapon_skin",
+					slot_type = "weapon_skin",
+					information_text = "information_weapon_skin",
+					matching_item_key = weapon_skin_data.item_type,
+					can_wield = CanWieldAllItemTemplates,
+					rarity = rarity
 				}
-			elseif reward.reward_type == "keep_decoration_painting" then
-				local painting_data = Paintings[reward.keep_decoration_name]
-				item = {
-					data = {
-						item_type = "keep_decoration_painting",
-						display_name = painting_data.display_name,
-						description = painting_data.description,
-						inventory_icon = painting_data.icon,
-						rarity = painting_data.rarity
-					},
-					key = reward.keep_decoration_name
+			}
+		elseif reward.reward_type == "keep_decoration_painting" then
+			local decoration_name = reward.keep_decoration_name
+			local painting_data = Paintings[decoration_name]
+			local rarity = reward.rarity or painting_data.rarity or "plentiful"
+			item = {
+				painting = decoration_name,
+				data = {
+					slot_type = "keep_decoration_painting",
+					information_text = "information_text_painting",
+					item_type = "keep_decoration_painting",
+					matching_item_key = "keep_decoration_painting",
+					can_wield = CanWieldAllItemTemplates,
+					rarity = rarity,
+					display_name = painting_data.display_name,
+					description = painting_data.description,
+					inventory_icon = painting_data.icon
 				}
-			else
-				item = item_interface:get_item_from_id(reward.backend_id)
-			end
-
-			if item then
-				local item_data = item.data
-				local display_name = item_data.display_name
-
-				self:_add_reward({
-					item
-				}, display_name)
-			end
+			}
+		else
+			item = item_interface:get_item_from_id(reward.backend_id)
 		end
+
+		if item then
+			local source = reward.rewarded_from or "lb_unknown"
+			local item_list = items_by_source[source]
+
+			if not item_list then
+				item_list = {}
+				items_by_source[source] = item_list
+			end
+
+			item_list[#item_list + 1] = item
+		else
+			table.dump(reward, "reward", 3)
+			Crashify.print_exception("UnlockManager", "An unseen reward is an unknown item")
+		end
+	end
+
+	for i, dlc_data in ipairs(UISettings.dlc_order_data) do
+		local dlc_name = dlc_data.dlc
+		local item_list = items_by_source[dlc_name]
+
+		if item_list then
+			self:_add_reward(item_list, dlc_data.display_name)
+
+			items_by_source[dlc_name] = nil
+		end
+	end
+
+	for source, item_list in pairs(items_by_source) do
+		self:_add_reward(item_list, source)
 	end
 end
 

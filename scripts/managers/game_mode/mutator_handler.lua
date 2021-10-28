@@ -9,6 +9,12 @@ function mutator_dprint(text, ...)
 	end
 end
 
+function mutator_print(text, ...)
+	local s = string.format(text, ...)
+
+	printf("[Mutator] %s", s)
+end
+
 MutatorHandler = class(MutatorHandler)
 local RPCS = {
 	"rpc_activate_mutator_client",
@@ -131,6 +137,24 @@ MutatorHandler.hot_join_sync = function (self, peer_id)
 			template.server.hot_join_sync_function(mutator_context, mutator_data, peer_id)
 		else
 			template.client.hot_join_sync_function(mutator_context, mutator_data, peer_id)
+		end
+	end
+end
+
+MutatorHandler.pre_update = function (self, dt, t)
+	local active_mutators = self._active_mutators
+	local mutator_context = self._mutator_context
+	local is_server = self._is_server
+
+	for name, mutator_data in pairs(active_mutators) do
+		local template = mutator_data.template
+
+		if is_server and template.server.pre_update then
+			template.server.pre_update(mutator_context, mutator_data, dt, t)
+		end
+
+		if self._has_local_client and template.client.pre_update then
+			template.client.pre_update(mutator_context, mutator_data, dt, t)
 		end
 	end
 end
@@ -480,6 +504,24 @@ MutatorHandler.conflict_director_updated_settings = function (self)
 	end
 end
 
+MutatorHandler.get_terror_event_tags = function (self)
+	local mutator_context = self._mutator_context
+	local mutators = self._mutators
+	local terror_event_tags = nil
+
+	for name, mutator_data in pairs(mutators) do
+		local template = mutator_data.template
+
+		if template.get_terror_event_tags then
+			terror_event_tags = terror_event_tags or {}
+
+			template.get_terror_event_tags(mutator_context, mutator_data, terror_event_tags)
+		end
+	end
+
+	return terror_event_tags
+end
+
 MutatorHandler.tweak_zones = function (self, conflict_director_name, zones, num_zones)
 	fassert(self._is_server, "conflict_director_updated_settings only runs on server")
 
@@ -499,7 +541,12 @@ end
 
 MutatorHandler._server_initialize_mutator = function (self, name, active_mutators, mutator_context)
 	fassert(self._is_server, "Only server is allowed to run mutator initialization function.")
-	fassert(MutatorTemplates[name], "No such template (%s)", name)
+
+	if not MutatorTemplates[name] then
+		mutator_print("No such template (%s)", name)
+
+		return
+	end
 
 	local mutators = self._mutators
 
@@ -510,6 +557,9 @@ MutatorHandler._server_initialize_mutator = function (self, name, active_mutator
 	local mutator_data = {
 		template = template
 	}
+
+	mutator_print("Initializing mutator '%s'", name)
+
 	local server_template = template.server
 
 	if server_template.initialize_function then
@@ -521,7 +571,14 @@ end
 
 MutatorHandler._activate_mutator = function (self, name, active_mutators, mutator_context, mutator_data, optional_duration)
 	fassert(active_mutators[name] == nil, "Can't have multiple of same mutator running at the same time (%s)", name)
-	fassert(MutatorTemplates[name], "No such template (%s)", name)
+
+	if not MutatorTemplates[name] then
+		mutator_print("No such template (%s)", name)
+
+		return
+	end
+
+	mutator_print("Activating mutator '%s'", name)
 
 	local template = MutatorTemplates[name]
 	mutator_data = mutator_data or {
@@ -560,6 +617,7 @@ end
 
 MutatorHandler._deactivate_mutator = function (self, name, active_mutators, mutator_context, is_destroy)
 	fassert(active_mutators[name], "Trying to deactivate mutator (%s) but it isn't active", name)
+	mutator_print("Deactivating mutator '%s'", name)
 
 	local template = MutatorTemplates[name]
 	local mutator_data = active_mutators[name]

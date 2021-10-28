@@ -465,8 +465,8 @@ ConflictUtils.is_position_inside_no_spawn_volume = function (level, nav_tag_volu
 	return NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_SPAWN") or NavTagVolumeUtils.inside_level_volume_layer(level, nav_tag_volume_handler, pos, "NO_BOTS_NO_SPAWN")
 end
 
-ConflictUtils.find_center_tri = function (nav_world, pos)
-	local success, altitude = GwNavQueries.triangle_from_position(nav_world, pos, 30, 30)
+ConflictUtils.find_center_tri = function (nav_world, pos, above_max, below_max)
+	local success, altitude = GwNavQueries.triangle_from_position(nav_world, pos, above_max or 30, below_max or 30)
 
 	if success then
 		pos.z = altitude
@@ -528,11 +528,11 @@ ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, rad
 	return false
 end
 
-ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries, check_no_spawn_volumes, level, nav_tag_volume_handler)
+ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries, check_no_spawn_volumes, level, nav_tag_volume_handler, above_max, below_max)
 	for i = 1, tries, 1 do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
-		pos = ConflictUtils.find_center_tri(nav_world, pos)
+		pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
 		if pos and (not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, pos)) then
 			return pos
@@ -579,11 +579,25 @@ ConflictUtils.get_furthest_pos_from_pos_on_circle = function (nav_world, center_
 	return false
 end
 
-ConflictUtils.get_spawn_pos_on_circle_with_func = function (nav_world, center_pos, dist, spread, tries, filter_func, filter_data)
+ConflictUtils.get_spawn_pos_on_circle_with_func = function (nav_world, center_pos, dist, spread, tries, filter_func, filter_data, above_max, below_max)
 	for i = 1, tries, 1 do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
-		pos = ConflictUtils.find_center_tri(nav_world, pos)
+		pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
+
+		if pos and filter_func(pos, filter_data) then
+			return pos
+		end
+	end
+
+	return false
+end
+
+ConflictUtils.get_spawn_pos_on_circle_with_func_range = function (nav_world, center_pos, min_dist, max_dist, tries, filter_func, filter_data, above_max, below_max)
+	for i = 1, tries, 1 do
+		local add_vec = Vector3(math.lerp(min_dist, max_dist, math.random()), 0, 1)
+		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
+		pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
 		if pos and filter_func(pos, filter_data) then
 			return pos
@@ -1325,16 +1339,82 @@ ConflictUtils.override_extension_init_data = function (breed, extension_init_dat
 	end
 end
 
-ConflictUtils.apply_breed_variant = function (unit, breed, optional_data)
-	local variant_data = optional_data.variant_data
-	local buff_system = Managers.state.entity:system("buff_system")
-	local buffs = variant_data.buffs
+ConflictUtils.find_positions_around_position = function (center_position, output_position_list, nav_world, min_distance, max_distance, num_of_positions, forbidden_position_list, distance_to_forbidden_position_list, tries, circle_subdivision, row_distance)
+	local function filter_func(pos)
+		local distance_to_forbidden_position_list_sqr = math.pow(distance_to_forbidden_position_list, 2)
 
-	for i = 1, #buffs, 1 do
-		local buff_name = buffs[i]
+		for i = 1, #forbidden_position_list, 1 do
+			local forbidden_position = forbidden_position_list[i]
 
-		buff_system:add_buff(unit, buff_name, unit, true)
+			if Vector3.distance_squared(pos, forbidden_position) < distance_to_forbidden_position_list_sqr then
+				return false
+			end
+		end
+
+		for i = 1, #output_position_list, 1 do
+			local output_position = output_position_list[i]
+
+			if Vector3.distance_squared(pos, output_position) < distance_to_forbidden_position_list_sqr then
+				return false
+			end
+		end
+
+		return true
 	end
+
+	local spread = max_distance - min_distance
+	local distance = min_distance + spread * 0.5
+	local radian_subdivision = circle_subdivision or math.pi * 0.5
+	local spread_delta = row_distance or 2
+	local two_pi = 2 * math.pi
+	local start_spread = (math.random() - 0.5) * spread
+	local current_spread = start_spread
+	local start_radians = math.random() * two_pi
+	local current_radians = start_radians
+	local radians_delta = two_pi / radian_subdivision
+	local current_radian_delta_count = 0
+	tries = tries or 30
+
+	local function get_next_pos()
+		current_radians = current_radians + radians_delta
+
+		if two_pi < current_radians then
+			current_radians = current_radians - two_pi
+		end
+
+		current_radian_delta_count = current_radian_delta_count + 1
+
+		if radian_subdivision < current_radian_delta_count then
+			current_spread = current_spread + spread_delta
+
+			if current_spread > spread * 0.5 then
+				current_spread = current_spread - spread
+			end
+
+			current_radian_delta_count = 0
+			current_radians = math.random() * two_pi
+		end
+
+		local add_vec = Vector3(distance + current_spread, 0, 1)
+		local pos = center_position + Quaternion.rotate(Quaternion(Vector3.up(), current_radians), add_vec)
+
+		return pos
+	end
+
+	for i = 1, num_of_positions, 1 do
+		for try = 1, tries, 1 do
+			local pos = get_next_pos()
+			local spawn_pos = ConflictUtils.find_center_tri(nav_world, pos)
+
+			if spawn_pos and filter_func(spawn_pos) then
+				output_position_list[#output_position_list + 1] = spawn_pos
+
+				break
+			end
+		end
+	end
+
+	return output_position_list
 end
 
 return

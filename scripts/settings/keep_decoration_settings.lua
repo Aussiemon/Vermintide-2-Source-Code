@@ -103,6 +103,30 @@ KeepDecorationSettings = {
 		frame_type = "paint",
 		orientation = "horizontal",
 		backend_key = "keep_bugmans_painting_wood_base_1"
+	},
+	keep_trophy_01 = {
+		backend_key = "keep_trophy_01"
+	},
+	keep_trophy_02 = {
+		backend_key = "keep_trophy_02"
+	},
+	keep_trophy_03 = {
+		backend_key = "keep_trophy_03"
+	},
+	keep_trophy_04 = {
+		backend_key = "keep_trophy_04"
+	},
+	keep_trophy_05 = {
+		backend_key = "keep_trophy_05"
+	},
+	keep_trophy_06 = {
+		backend_key = "keep_trophy_06"
+	},
+	keep_trophy_07 = {
+		backend_key = "keep_trophy_07"
+	},
+	keep_trophy_08 = {
+		backend_key = "keep_trophy_08"
 	}
 }
 

@@ -169,7 +169,7 @@ DeusRunStatsUi._handle_input = function (self, dt, t)
 	local ui_scenegraph = self._ui_scenegraph
 	local power_up_widgets = self._power_up_widgets
 	local power_up_description_widget = self._widgets_by_name.power_up_description
-	local current_power_up = nil
+	local current_power_up_name, power_up_rarity = nil
 	local extend_left = false
 	local gamepad_selection_index = gamepad_active and self._gamepad_row_index + definitions.max_power_up_amount * 0.5 * (self._gamepad_column_index - 1)
 
@@ -182,18 +182,19 @@ DeusRunStatsUi._handle_input = function (self, dt, t)
 			ui_scenegraph.power_up_description_root.local_position[1] = world_position[1]
 			ui_scenegraph.power_up_description_root.local_position[2] = world_position[2]
 			power_up_description_widget.content.visible = true
-			current_power_up = widget.content.power_up
+			current_power_up_name = widget.content.power_up_name
+			power_up_rarity = widget.content.power_up_rarity
 			extend_left = i > definitions.max_power_up_amount * 0.5
 
 			break
 		end
 	end
 
-	if current_power_up ~= self._current_power_up then
-		self:_populate_power_up(current_power_up, power_up_description_widget, extend_left)
+	if current_power_up_name ~= self._current_power_up_name then
+		self:_populate_power_up(current_power_up_name, power_up_rarity, power_up_description_widget, extend_left)
 	end
 
-	self._current_power_up = current_power_up
+	self._current_power_up_name = current_power_up_name
 end
 
 DeusRunStatsUi._handle_gamepad_input = function (self, dt, t)
@@ -222,16 +223,15 @@ DeusRunStatsUi._handle_gamepad_input = function (self, dt, t)
 	end
 end
 
-DeusRunStatsUi._populate_power_up = function (self, power_up_instance, power_up_description_widget, extend_left)
-	if not power_up_instance then
+DeusRunStatsUi._populate_power_up = function (self, power_up_name, power_up_rarity, power_up_description_widget, extend_left)
+	if not power_up_name then
 		power_up_description_widget.content.visible = false
 
 		return
 	end
 
-	local power_up = DeusPowerUps[power_up_instance.rarity][power_up_instance.name]
+	local power_up = DeusPowerUps[power_up_rarity][power_up_name]
 	local content = power_up_description_widget.content
-	local style = power_up_description_widget.style
 	local player = Managers.player:local_player()
 	local profile_index = player:profile_index()
 	local career_index = player:career_index()
@@ -438,8 +438,10 @@ DeusRunStatsUi._update_power_ups = function (self, party_power_ups, power_ups, p
 			local hide_text = true
 			local idx = #power_up_widgets + 1
 			local scenegraph_id = "power_up_" .. idx
-			local widget_definition = UIWidgets.create_icon_info_box(scenegraph_id, icon, widget_data.icon_size, widget_data.icon_offset, widget_data.background_icon, widget_data.background_icon_size, widget_data.background_icon_offset, sub_text, title_text, text_color, widget_data.width, power_up, is_rectangular_icon, hide_text)
+			local widget_definition = UIWidgets.create_icon_info_box(scenegraph_id, icon, widget_data.icon_size, widget_data.icon_offset, widget_data.background_icon, widget_data.background_icon_size, widget_data.background_icon_offset, sub_text, title_text, text_color, widget_data.width, is_rectangular_icon, hide_text)
 			local widget = UIWidget.init(widget_definition)
+			widget.content.power_up_name = power_up.name
+			widget.content.power_up_rarity = power_up.rarity
 			power_up_widgets[#power_up_widgets + 1] = widget
 			self._widgets_by_name[scenegraph_id] = widget
 		end

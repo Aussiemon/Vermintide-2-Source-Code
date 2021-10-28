@@ -1,4 +1,5 @@
 local settings = DLCSettings.penny_part_3
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 settings.buff_templates = {
 	enemy_penny_curse_pulse = {
 		buffs = {
@@ -18,8 +19,8 @@ settings.buff_templates = {
 				duration = 5,
 				debuff = true,
 				max_stacks = 50,
-				perk = "slayer_curse",
-				refresh_durations = true
+				refresh_durations = true,
+				perk = buff_perks.slayer_curse
 			}
 		}
 	}

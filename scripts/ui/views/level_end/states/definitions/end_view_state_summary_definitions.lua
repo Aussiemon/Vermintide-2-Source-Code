@@ -334,7 +334,7 @@ local scenegraph_definition = {
 		}
 	},
 	right_entry_holder = {
-		vertical_alignment = "cente",
+		vertical_alignment = "center",
 		parent = "entry_window",
 		horizontal_alignment = "right",
 		size = {

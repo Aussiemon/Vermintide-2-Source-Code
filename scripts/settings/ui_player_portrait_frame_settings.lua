@@ -1613,6 +1613,142 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0105 = {
+		{
+			texture = "portrait_frame_0105",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0106 = {
+		{
+			texture = "portrait_frame_0105",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_geheimnisnacht_04_glow",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		},
+		{
+			texture = "portrait_frame_geheimnisnacht_04_effect",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		}
+	},
+	frame_0107 = {
+		{
+			texture = "portrait_frame_0107",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0108 = {
+		{
+			texture = "portrait_frame_0108",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0109 = {
+		{
+			texture = "portrait_frame_0109",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_0109_glow",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-17,
+				0
+			}
+		},
+		{
+			texture = "portrait_frame_0109_effect",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-17,
+				0
+			}
+		}
+	},
 	frame_mondstille_01 = {
 		{
 			texture = "portrait_frame_mondstille_01_base",

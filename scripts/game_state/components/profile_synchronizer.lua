@@ -411,7 +411,9 @@ ProfileSynchronizer.get_first_free_profile = function (self)
 	local career_index = 1
 
 	for profile_index = 1, NUM_HERO_PROFILES, 1 do
-		if not self:is_profile_in_use(profile_index) then
+		local profile_reserver_peer_id = self._state:get_profile_index_reservation(profile_index)
+
+		if not profile_reserver_peer_id then
 			return profile_index, career_index
 		end
 	end

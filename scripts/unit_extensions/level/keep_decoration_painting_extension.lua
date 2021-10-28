@@ -66,7 +66,7 @@ KeepDecorationPaintingExtension.extensions_ready = function (self)
 		return
 	end
 
-	local selected_painting = (self._is_client_painting and "hidden") or self:get_selected_painting()
+	local selected_painting = (self._is_client_painting and "hidden") or self:get_selected_decoration()
 	self._current_preview_painting = selected_painting
 
 	local function on_material_loaded()
@@ -94,7 +94,7 @@ KeepDecorationPaintingExtension.can_interact = function (self)
 	return self._go_id
 end
 
-KeepDecorationPaintingExtension.painting_selected = function (self, current_painting)
+KeepDecorationPaintingExtension.decoration_selected = function (self, current_painting)
 	self:_load_painting(current_painting, nil)
 end
 
@@ -109,22 +109,22 @@ KeepDecorationPaintingExtension.reset_selection = function (self)
 	self._current_preview_painting = nil
 end
 
-KeepDecorationPaintingExtension.unequip_painting = function (self, new_painting)
+KeepDecorationPaintingExtension.unequip_decoration = function (self, new_painting)
 	local painting = new_painting or "hor_none"
 
 	self:_load_painting(painting)
-	self:sync_painting()
+	self:sync_decoration()
 end
 
 KeepDecorationPaintingExtension.confirm_selection = function (self)
 	local current_preview_painting = self._current_preview_painting
 	local keep_decoration_system = self.keep_decoration_system
 
-	keep_decoration_system:painting_set(current_preview_painting, self)
-	self:sync_painting()
+	keep_decoration_system:on_painting_set(current_preview_painting, self)
+	self:sync_decoration()
 end
 
-KeepDecorationPaintingExtension.sync_painting = function (self)
+KeepDecorationPaintingExtension.sync_decoration = function (self)
 	local current_preview_painting = self._current_preview_painting
 
 	self:_set_selected_painting(current_preview_painting)
@@ -145,7 +145,7 @@ end
 KeepDecorationPaintingExtension.distributed_update = function (self)
 	if self._is_leader then
 		if self._waiting_for_game_session and Managers.state.network:in_game_session() then
-			local selected_painting = self:get_selected_painting()
+			local selected_painting = self:get_selected_decoration()
 
 			self:_create_game_object(selected_painting)
 
@@ -229,7 +229,7 @@ KeepDecorationPaintingExtension._show_painting = function (self)
 	Unit.set_unit_visibility(self._painting_unit, true)
 end
 
-KeepDecorationPaintingExtension.get_selected_painting = function (self)
+KeepDecorationPaintingExtension.get_selected_decoration = function (self)
 	if self._is_leader then
 		local backend_key = self._backend_key
 		local backend_interface = Managers.backend:get_interface("keep_decorations")

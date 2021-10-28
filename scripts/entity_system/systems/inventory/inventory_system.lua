@@ -95,6 +95,7 @@ InventorySystem.update = function (self, context, t)
 	InventorySystem.super.update(self, context, t)
 
 	if self.is_server then
+		local event_objective = self._event_objective
 		local sides = self.sides_to_update
 
 		for i = 1, #sides, 1 do
@@ -102,6 +103,10 @@ InventorySystem.update = function (self, context, t)
 			local units = side.PLAYER_AND_BOT_UNITS
 			self.num_grimoires = self:update_mission_inventory_item(units, "slot_potion", "wpn_grimoire_01", self.num_grimoires, add_grimoire, remove_grimoire)
 			self.num_side_objectives = self:update_mission_inventory_item(units, "slot_healthkit", "wpn_side_objective_tome_01", self.num_side_objectives, add_side_objective, remove_side_objective)
+
+			if event_objective then
+				self.num_event_objectives = self:update_mission_inventory_item(units, "slot_potion", event_objective, self.num_event_objectives, self._add_event_objective, self._remove_event_objective)
+			end
 		end
 	end
 end
@@ -137,6 +142,13 @@ end
 
 InventorySystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
+end
+
+InventorySystem.register_event_objective = function (self, objective_name, add_func, remove_func)
+	self.num_event_objectives = 0
+	self._event_objective = objective_name
+	self._add_event_objective = add_func
+	self._remove_event_objective = remove_func
 end
 
 InventorySystem.rpc_show_inventory = function (self, channel_id, unit_id, show_inventory)

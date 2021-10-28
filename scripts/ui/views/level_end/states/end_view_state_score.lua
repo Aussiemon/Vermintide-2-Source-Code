@@ -476,6 +476,7 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 	local score_index = 1
 	self._players_by_widget_index = {}
 	local players_by_widget_index = self._players_by_widget_index
+	local num_human_players = 0
 	local hero_widgets = self._hero_widgets
 
 	for stats_id, player_data in pairs(players_session_scores) do
@@ -494,10 +495,19 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 		local portrait_frame = player_data.portrait_frame or "default"
 		local player_level = player_data.player_level
 		local is_player_controlled = player_data.is_player_controlled
+
+		if IS_WINDOWS and peer_id and is_player_controlled then
+			num_human_players = num_human_players + 1
+		end
+
 		local level_text = (is_player_controlled and ((player_level and tostring(player_level)) or "-")) or "BOT"
 		local widget_definition = UIWidgets.create_portrait_frame("player_frame_" .. widget_index, portrait_frame, level_text, 1, nil, portrait_image)
 		hero_widgets[widget_index] = UIWidget.init(widget_definition)
 		widget_index = widget_index + 1
+	end
+
+	if IS_WINDOWS then
+		Presence.set_presence("steam_player_group_size", num_human_players)
 	end
 
 	self:_setup_score_panel(score_panel_scores, player_names)

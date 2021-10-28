@@ -126,8 +126,9 @@ StartGameWindowMutatorSummaryConsole._present_item_by_backend_id = function (sel
 	local item = item_interface:get_item_from_id(backend_id)
 	widgets_by_name.item_presentation.content.item = item
 	self._presenting_item = true
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
-	if not was_presenting_item then
+	if not was_presenting_item and (not IS_WINDOWS or gamepad_active) then
 		self:_start_transition_animation("on_enter")
 	end
 end

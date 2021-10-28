@@ -1,4 +1,5 @@
 require("scripts/flow/flow_callbacks")
+require("scripts/settings/quest_settings")
 require("scripts/managers/backend/statistics_database")
 require("scripts/managers/bot_nav_transition/bot_nav_transition_manager")
 require("scripts/managers/camera/camera_manager")
@@ -53,7 +54,6 @@ require("scripts/managers/performance/performance_manager")
 require("scripts/managers/world_interaction/world_interaction_manager")
 require("scripts/managers/decal/decal_manager")
 require("scripts/managers/performance_title/performance_title_manager")
-require("scripts/settings/quest_settings")
 require("scripts/managers/achievements/achievement_manager")
 require("scripts/managers/quest/quest_manager")
 require("scripts/managers/badge/badge_manager")
@@ -645,9 +645,7 @@ end
 
 StateIngame._setup_world = function (self)
 	local function update_ui()
-		for i, machine in ipairs(self.machines) do
-			machine:state():update_ui()
-		end
+		Managers.ui:update()
 	end
 
 	Managers.world:set_anim_update_callback(self.world, update_ui)
@@ -812,8 +810,6 @@ StateIngame.pre_update = function (self, dt)
 		self.entity_system:pre_update(dt, t)
 	end
 end
-
-local knoywloke = nil
 
 StateIngame.update = function (self, dt, main_t)
 	self.dt = dt

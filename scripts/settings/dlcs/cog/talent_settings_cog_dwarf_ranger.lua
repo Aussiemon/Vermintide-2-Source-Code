@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	bardin_engineer_passive_no_ability_regen = {
 		multiplier = -1
@@ -119,7 +120,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_start_action",
-				event_buff = true,
 				buff_func = "bardin_engineer_remove_pump_stacks_on_fire",
 				remove_buff_stack_data = {
 					{
@@ -138,7 +138,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_ability_recharged",
-				event_buff = true,
 				buff_func = "bardin_engineer_remove_pump_stacks",
 				remove_buff_stack_data = {
 					{
@@ -230,21 +229,20 @@ local talent_buff_templates = {
 				remove_buff_func = "bardin_engineer_animation_slow_down_remove",
 				debuff = true,
 				max_stacks = 1,
-				perk = "exhausted",
 				apply_buff_func = "bardin_engineer_animation_slow_down_add",
-				priority_buff = true
+				priority_buff = true,
+				perk = buff_perks.exhausted
 			}
 		}
 	},
 	bardin_engineer_vanguard = {
 		buffs = {
 			{
-				multiplier = 0.5,
 				name = "vanguard",
-				event_buff = true,
+				multiplier = 0.5,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing"
+				perk = buff_perks.tank_healing
 			}
 		}
 	},
@@ -253,24 +251,22 @@ local talent_buff_templates = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	bardin_engineer_heal_share = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -278,11 +274,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				buff_to_add = "bardin_engineer_ranged_crit_counter_buff",
+				max_stacks = 1,
 				stat_buff = "critical_strike_chance_ranged",
-				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit",
 				event = "on_hit",
-				max_stacks = 1,
 				client_side = true,
 				valid_attack_types = {
 					instant_projectile = true,
@@ -312,13 +307,12 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_critical_shot",
+				max_stacks = 1,
 				stat_buff = "critical_strike_chance_ranged",
-				event_buff = true,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
 				icon = "bardin_engineer_ranged_crit_count",
-				priority_buff = true,
-				max_stacks = 1
+				priority_buff = true
 			}
 		}
 	},
@@ -334,7 +328,6 @@ local talent_buff_templates = {
 			{
 				buff_to_add = "bardin_engineer_melee_power_range_power_buff_counter",
 				max_stacks = 1,
-				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit",
 				event = "on_hit",
 				valid_attack_types = {
@@ -366,7 +359,6 @@ local talent_buff_templates = {
 			{
 				buff_to_add = "bardin_engineer_melee_power_range_power_buff",
 				max_stacks = 1,
-				event_buff = true,
 				buff_func = "bardin_engineer_power_on_next_range",
 				event = "on_start_action",
 				icon = "bardin_engineer_melee_power_free_shot"
@@ -387,11 +379,10 @@ local talent_buff_templates = {
 	bardin_engineer_melee_power_free_shot = {
 		buffs = {
 			{
-				event = "on_kill",
-				stat_buff = "power_level_melee",
-				event_buff = true,
-				buff_func = "on_kill_add_remove",
 				max_stacks = 1,
+				stat_buff = "power_level_melee",
+				buff_func = "on_kill_add_remove",
+				event = "on_kill",
 				on_kill_add_remove_data = {
 					weapon_type = "melee",
 					requirements = {
@@ -434,12 +425,11 @@ local talent_buff_templates = {
 			{
 				event = "on_ammo_used",
 				icon = "victor_bountyhunter_passive_infinite_ammo",
-				event_buff = true,
+				max_stacks = 1,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
-				perk = "infinite_ammo",
 				priority_buff = true,
-				max_stacks = 1
+				perk = buff_perks.infinite_ammo
 			}
 		}
 	},
@@ -466,7 +456,7 @@ local talent_buff_templates = {
 	bardin_engineer_stacks_stay = {
 		buffs = {
 			{
-				perk = "engineer_persistent_pump_stacks",
+				perk = buff_perks.engineer_persistent_pump_stacks,
 				buffs_to_remove_on_remove = {
 					"bardin_engineer_pump_buff_long",
 					"bardin_engineer_pump_buff"
@@ -488,11 +478,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				buff_to_add = "bardin_engineer_stacking_damage_reduction_buff",
-				event_buff = true,
+				update_func = "add_buff_server_controlled",
 				buff_func = "remove_buff_stack",
 				event = "on_damage_taken",
 				remove_buff_func = "remove_buff_server_controlled",
-				update_func = "add_buff_server_controlled",
 				remove_buff_stack_data = {
 					{
 						reset_update_timer = true,
@@ -518,7 +507,7 @@ local talent_buff_templates = {
 	bardin_engineer_upgraded_grenades = {
 		buffs = {
 			{
-				perk = "frag_fire_grenades"
+				perk = buff_perks.frag_fire_grenades
 			}
 		}
 	},
@@ -526,11 +515,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				buff_to_add = "bardin_engineer_piston_powered_buff",
+				buff_to_check = "bardin_engineer_piston_powered_delay",
 				buff_to_remove = "bardin_engineer_piston_powered_ready",
-				event_buff = true,
 				buff_func = "bardin_engineer_piston_power_add",
 				event = "on_hit",
-				buff_to_check = "bardin_engineer_piston_powered_delay",
 				apply_buff_func = "bardin_engineer_piston_power_add_apply",
 				buffs_to_remove_on_remove = {
 					"bardin_engineer_piston_powered_delay",
@@ -544,9 +532,9 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				multiplier = 2,
-				perk = "explosive_stagger",
 				stat_buff = "power_level_impact",
-				duration = 0.2
+				duration = 0.2,
+				perk = buff_perks.explosive_stagger
 			}
 		}
 	},
@@ -566,10 +554,9 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				max_stacks = 1,
-				event_buff = true,
-				buff_func = "bardin_engineer_piston_power_sound",
+				icon = "bardin_engineer_no_overheat_explosion",
 				event = "on_start_action",
-				icon = "bardin_engineer_no_overheat_explosion"
+				buff_func = "bardin_engineer_piston_power_sound"
 			}
 		}
 	},
@@ -577,7 +564,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				buff_to_add = "bardin_engineer_increased_ability_bar_buff",
-				event_buff = true,
 				buff_func = "add_buff_on_special_kill",
 				event = "on_kill",
 				remove_buff_func = "remove_modify_ability_max_cooldown",
@@ -589,9 +575,9 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				max_stacks = 1,
-				perk = "free_ability",
 				refresh_durations = true,
-				icon = "bardin_engineer_increased_ability_bar"
+				icon = "bardin_engineer_increased_ability_bar",
+				perk = buff_perks.free_ability_engineer
 			}
 		}
 	}

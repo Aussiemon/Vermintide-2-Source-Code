@@ -127,6 +127,8 @@ ChallengeManager.add_challenge = function (self, challenge_template, is_repeatab
 		local _, max_progress = new_challenge:get_progress()
 
 		Managers.state.network.network_transmit:send_rpc_clients("rpc_server_add_ingame_challenge", unique_id, template_id, is_repeatable, category_id, reward_id, owner_peer_id, owner_local_player_id, max_progress)
+
+		return new_challenge
 	end
 end
 

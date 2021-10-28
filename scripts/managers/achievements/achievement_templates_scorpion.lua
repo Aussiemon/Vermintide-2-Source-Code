@@ -1,3 +1,4 @@
+local check_level_difficulty = AchievementTemplateHelper.check_level_difficulty
 local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
 local hero_level = AchievementTemplateHelper.hero_level
 local add_weapon_kill_challenge = AchievementTemplateHelper.add_weapon_kill_challenge
@@ -216,27 +217,19 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_one_cataclysm =
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.military.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.catacombs.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.mines.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.ground_zero.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 			count = count + 1
 		end
 
@@ -246,27 +239,19 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_one_cataclysm =
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.military.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.catacombs.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.mines.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.ground_zero.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 			count = count + 1
 		end
 
@@ -277,18 +262,10 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_one_cataclysm =
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.cataclysm.rank
-		local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.military.level_id
-		}, diff)
-		local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.catacombs.level_id
-		}, diff)
-		local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.mines.level_id
-		}, diff)
-		local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.ground_zero.level_id
-		}, diff)
+		local complete_military = check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff)
+		local complete_catacombs = check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff)
+		local complete_mines = check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff)
+		local complete_ground_zero = check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff)
 
 		return {
 			{
@@ -319,27 +296,19 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_two_cataclysm =
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.elven_ruins.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.bell.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.fort.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.skaven_stronghold.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 			count = count + 1
 		end
 
@@ -349,27 +318,19 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_two_cataclysm =
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.elven_ruins.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.bell.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.fort.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.skaven_stronghold.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 			count = count + 1
 		end
 
@@ -380,18 +341,10 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_two_cataclysm =
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.cataclysm.rank
-		local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.elven_ruins.level_id
-		}, diff)
-		local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.bell.level_id
-		}, diff)
-		local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.fort.level_id
-		}, diff)
-		local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.skaven_stronghold.level_id
-		}, diff)
+		local complete_elven_ruins = check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff)
+		local complete_bell = check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff)
+		local complete_fort = check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff)
+		local complete_skaven_stronghold = check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff)
 
 		return {
 			{
@@ -422,27 +375,19 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_three_cataclysm
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.farmlands.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.ussingen.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.nurgle.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.warcamp.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 			count = count + 1
 		end
 
@@ -452,27 +397,19 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_three_cataclysm
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.farmlands.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.ussingen.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.nurgle.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.warcamp.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 			count = count + 1
 		end
 
@@ -483,18 +420,10 @@ AchievementTemplates.achievements.scorpion_complete_helmgart_act_three_cataclysm
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.cataclysm.rank
-		local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.farmlands.level_id
-		}, diff)
-		local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.ussingen.level_id
-		}, diff)
-		local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.nurgle.level_id
-		}, diff)
-		local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.warcamp.level_id
-		}, diff)
+		local complete_farmlands = check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff)
+		local complete_ussingen = check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff)
+		local complete_nurgle = check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff)
+		local complete_warcamp = check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff)
 
 		return {
 			{
@@ -524,9 +453,7 @@ AchievementTemplates.achievements.scorpion_complete_skittergate_cataclysm = {
 	completed = function (statistics_db, stats_id)
 		local diff = DifficultySettings.cataclysm.rank
 
-		return check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.skittergate.level_id
-		}, diff)
+		return check_level_difficulty(statistics_db, stats_id, LevelSettings.skittergate.level_id, diff)
 	end
 }
 
@@ -564,9 +491,7 @@ AchievementTemplates.achievements.scorpion_complete_all_helmgart_levels_cataclys
 		local num_completed = 0
 
 		for _, level in ipairs(main_game_levels) do
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				level
-			}, rank) then
+			if check_level_difficulty(statistics_db, stats_id, level, rank) then
 				num_completed = num_completed + 1
 			end
 		end
@@ -581,9 +506,7 @@ AchievementTemplates.achievements.scorpion_complete_all_helmgart_levels_cataclys
 		local rank = DifficultySettings.cataclysm.rank
 
 		for _, level in ipairs(main_game_levels) do
-			local completed = check_level_list_difficulty(statistics_db, stats_id, {
-				level
-			}, rank)
+			local completed = check_level_difficulty(statistics_db, stats_id, level, rank)
 
 			table.insert(reqs, {
 				name = LevelSettings[level].display_name,
@@ -604,15 +527,11 @@ AchievementTemplates.achievements.scorpion_complete_bogenhafen_cataclysm = {
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.dlc_bogenhafen_slum.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.dlc_bogenhafen_city.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 			count = count + 1
 		end
 
@@ -622,15 +541,11 @@ AchievementTemplates.achievements.scorpion_complete_bogenhafen_cataclysm = {
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.dlc_bogenhafen_slum.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.dlc_bogenhafen_city.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 			count = count + 1
 		end
 
@@ -641,12 +556,8 @@ AchievementTemplates.achievements.scorpion_complete_bogenhafen_cataclysm = {
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.cataclysm.rank
-		local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.dlc_bogenhafen_slum.level_id
-		}, diff)
-		local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.dlc_bogenhafen_city.level_id
-		}, diff)
+		local complete_bogenhafen_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+		local complete_bogenhafen_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 		return {
 			{
@@ -670,21 +581,15 @@ AchievementTemplates.achievements.scorpion_complete_back_to_ubersreik_cataclysm 
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -694,21 +599,15 @@ AchievementTemplates.achievements.scorpion_complete_back_to_ubersreik_cataclysm 
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -719,15 +618,9 @@ AchievementTemplates.achievements.scorpion_complete_back_to_ubersreik_cataclysm 
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.cataclysm.rank
-		local complete_holly_magnus = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff)
-		local complete_holly_cemetery = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff)
-		local complete_holly_forest_ambush = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff)
+		local complete_holly_magnus = check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff)
+		local complete_holly_cemetery = check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff)
+		local complete_holly_forest_ambush = check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff)
 
 		return {
 			{
@@ -755,9 +648,7 @@ AchievementTemplates.achievements.scorpion_complete_plaza_cataclysm = {
 		local count = 0
 		local diff = DifficultySettings.cataclysm.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.plaza.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.plaza.level_id, diff) then
 			count = count + 1
 		end
 

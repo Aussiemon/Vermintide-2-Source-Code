@@ -33,6 +33,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	local first_person_unit = first_person_extension:get_first_person_unit()
 	self._first_person_unit = first_person_unit
 	self.damage_start_time = (lunge_data.damage_start_time and t + lunge_data.damage_start_time) or t
+	self.ledge_falloff_immunity_time = lunge_data.ledge_falloff_immunity and t + lunge_data.ledge_falloff_immunity
 	local forward_direction = Quaternion.forward(self.first_person_extension:current_rotation())
 
 	Vector3.set_z(forward_direction, 0)
@@ -208,7 +209,7 @@ PlayerCharacterStateLunging.update = function (self, unit, input, dt, context, t
 
 	local world = self.world
 
-	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+	if (not self.ledge_falloff_immunity_time or self.ledge_falloff_immunity_time < t) and CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
 		self._stop = true
 
 		csm:change_state("ledge_hanging", self.temp_params)

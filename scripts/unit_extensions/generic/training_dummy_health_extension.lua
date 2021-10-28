@@ -72,10 +72,7 @@ TrainingDummyHealthExtension.add_damage = function (self, attacker_unit, damage_
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
 
-	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
-		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
-	end
-
+	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 	self:_add_to_damage_history_buffer(unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike)
 
 	self._recent_damage_type = damage_type

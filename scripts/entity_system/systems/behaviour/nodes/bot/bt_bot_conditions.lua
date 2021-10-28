@@ -1017,6 +1017,12 @@ BTConditions.has_target_and_ammo_greater_than = function (blackboard, args)
 		return false
 	end
 
+	local target_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
+
+	if target_buff_extension and target_buff_extension:has_buff_perk("invulnerable_ranged") then
+		return false
+	end
+
 	local current, max = inventory_extension:current_ammo_status("slot_ranged")
 	local ammo_ok = not current or args.ammo_percentage < current / max
 	local overcharge_extension = blackboard.overcharge_extension

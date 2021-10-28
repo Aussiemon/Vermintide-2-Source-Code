@@ -173,6 +173,7 @@ SoundSectorSystem.update = function (self, context, t, dt)
 	end
 
 	local camera_position = Unit.local_position(self.camera_unit, 0)
+	camera_position = (Vector3.is_valid(camera_position) and camera_position) or Vector3(0, 0, 0)
 	local sector_sound_source_ids = self._sector_sound_source_ids
 
 	self:_update_sectors(camera_position)
@@ -266,6 +267,10 @@ local MIN_DISTANCE_THRESHOLD_SQ = 25
 local MAX_DISTANCE_THRESHOLD_SQ = 1600
 
 SoundSectorSystem._calc_unit_sector = function (self, camera_position, unit)
+	if not Vector3.is_valid(camera_position) then
+		return false
+	end
+
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance = Vector3.distance_squared(camera_position, unit_position)
 

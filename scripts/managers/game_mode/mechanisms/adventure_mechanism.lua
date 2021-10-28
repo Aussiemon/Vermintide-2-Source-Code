@@ -1,5 +1,15 @@
 AdventureMechanism = class(AdventureMechanism)
 AdventureMechanism.name = "Adventure"
+local live_event_packages = require("scripts/settings/live_events_packages")
+local HUB_LEVEL_NAME = "inn_level"
+local HUB_GAME_MODE_KEY = "inn"
+local HUB_STATE = "inn"
+local INGAME_GAME_MODE_KEY = "adventure"
+local INGAME_STATE = "ingame"
+local TUTORIAL_GAME_MODE_KEY = "tutorial"
+local TUTORIAL_STATE = "tutorial"
+local WEAVE_GAME_MODE_KEY = "weave"
+local WEAVE_STATE = "weave"
 
 local function print_vote_request(params)
 	local level_key = params.mission_id
@@ -113,7 +123,6 @@ local vote_requests = {
 local RPCS = {
 	"rpc_sync_adventure_data_to_peer"
 }
-local HUB_LEVEL_NAME = "inn_level"
 
 AdventureMechanism.init = function (self, settings)
 	self:_reset(settings)
@@ -140,7 +149,7 @@ AdventureMechanism.on_venture_start = function (self)
 end
 
 AdventureMechanism.on_venture_end = function (self)
-	if self._state ~= "weave" then
+	if self._state ~= WEAVE_STATE then
 		Managers.weave:clear_weave_name()
 		Managers.backend:set_talents_interface_override()
 	end
@@ -150,7 +159,7 @@ AdventureMechanism.is_venture_over = function (self)
 	local reason = self._game_round_ended_reason
 	local game_mode_ended = reason == "won" or reason == "lost"
 
-	if self._state == "weave" then
+	if self._state == WEAVE_STATE then
 		local final_round = not Managers.weave:calculate_next_objective_index()
 
 		return game_mode_ended and (reason == "lost" or final_round)
@@ -165,15 +174,15 @@ AdventureMechanism.handle_ingame_exit = function (self, exit_type)
 	end
 end
 
-AdventureMechanism._reset = function (self, settings)
+AdventureMechanism._reset = function (self, settings, prior_state)
 	local level_key = self:get_hub_level_key()
 	local level_settings = LevelSettings[level_key]
-	self._prior_state = self._state
+	self._prior_state = prior_state or self._state
 
 	if level_settings.hub_level then
-		self._state = "inn"
+		self._state = HUB_STATE
 	else
-		self._state = "ingame"
+		self._state = INGAME_STATE
 	end
 
 	self._next_state = nil
@@ -189,7 +198,7 @@ end
 AdventureMechanism.choose_next_state = function (self, next_state)
 	local state = self._state
 
-	if state == "inn" or state == "tutorial" then
+	if state == HUB_STATE or state == TUTORIAL_STATE then
 		local acceptable_states = {
 			weave = true,
 			ingame = true,
@@ -217,16 +226,16 @@ AdventureMechanism.progress_state = function (self)
 		local state = self._state
 		self._prior_state = state
 
-		if state == "inn" then
-			self._state = "ingame"
-		elseif state == "ingame" or state == "tutorial" then
-			self._state = "inn"
-		elseif state == "weave" then
+		if state == HUB_STATE then
+			self._state = INGAME_STATE
+		elseif state == INGAME_STATE or state == TUTORIAL_STATE then
+			self._state = HUB_STATE
+		elseif state == WEAVE_STATE then
 			local weave_manager = Managers.weave
 			local next_objective_index = weave_manager:calculate_next_objective_index()
 
 			if not next_objective_index then
-				self._state = "inn"
+				self._state = HUB_STATE
 			end
 		else
 			ferror("AdventureMechanism: unknown state %s", state)
@@ -272,7 +281,7 @@ AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 end
 
 AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won, quickplay, statistics_db, stats_id)
-	local is_weave_game_mode = self._current_game_mode == "weave"
+	local is_weave_game_mode = self._current_game_mode == WEAVE_GAME_MODE_KEY
 	local kill_count = statistics_db:get_stat(stats_id, "kills_total")
 	local weave_tier, weave_progress = nil
 
@@ -319,7 +328,7 @@ AdventureMechanism.get_end_of_level_extra_mission_results = function (self)
 end
 
 AdventureMechanism.is_final_round = function (self)
-	if self._current_game_mode == "weave" then
+	if self._current_game_mode == WEAVE_GAME_MODE_KEY then
 		return not Managers.weave:calculate_next_objective_index()
 	end
 
@@ -330,7 +339,7 @@ AdventureMechanism.get_level_end_view = function (self)
 	local lobby = Managers.state.network:lobby()
 	local is_quickplay = lobby:lobby_data("quick_game") == "true"
 
-	if self._current_game_mode == "weave" and not is_quickplay then
+	if self._current_game_mode == WEAVE_GAME_MODE_KEY and not is_quickplay then
 		return "LevelEndViewWeave"
 	end
 
@@ -343,11 +352,11 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 	local state = self._state
 	local level_key, conflict_settings, level_seed, locked_director_functions, difficulty, difficulty_tweak = nil
 
-	if state == "inn" then
+	if state == HUB_STATE then
 		level_key = Managers.level_transition_handler:get_next_level_key()
-	elseif state == "tutorial" then
+	elseif state == TUTORIAL_STATE then
 		level_key = self._debug_hub_level_key or AdventureMechanism.get_starting_level()
-	elseif state == "weave" then
+	elseif state == WEAVE_STATE then
 		local weave_manager = Managers.weave
 		local next_objective_index = weave_manager:calculate_next_objective_index()
 
@@ -379,7 +388,7 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 			locked_director_functions = level_transition_handler:get_current_locked_director_functions()
 		else
 			level_key = AdventureMechanism.debug_hub_level_key or AdventureMechanism.get_starting_level()
-			self._next_state = "inn"
+			self._next_state = HUB_STATE
 		end
 	else
 		level_key = AdventureMechanism.debug_hub_level_key or AdventureMechanism.get_starting_level()
@@ -403,28 +412,28 @@ AdventureMechanism.game_round_ended = function (self, t, dt, reason)
 end
 
 AdventureMechanism.should_run_tutorial = function (self)
-	return true, "tutorial"
+	return true, TUTORIAL_STATE
 end
 
 AdventureMechanism._get_next_game_mode_key = function (self)
 	local game_mode_key = nil
 	local state = self._state
 
-	if state == "inn" then
+	if state == HUB_STATE then
 		local current_level_key = Managers.level_transition_handler:get_current_level_keys()
 		local level_settings = LevelSettings[current_level_key]
 
 		if level_settings.hub_level then
-			game_mode_key = "inn"
+			game_mode_key = HUB_GAME_MODE_KEY
 		else
-			game_mode_key = "adventure"
+			game_mode_key = INGAME_GAME_MODE_KEY
 		end
-	elseif state == "tutorial" then
-		game_mode_key = "tutorial"
-	elseif state == "weave" then
-		game_mode_key = "weave"
+	elseif state == TUTORIAL_STATE then
+		game_mode_key = TUTORIAL_GAME_MODE_KEY
+	elseif state == WEAVE_STATE then
+		game_mode_key = WEAVE_GAME_MODE_KEY
 	else
-		game_mode_key = "adventure"
+		game_mode_key = INGAME_GAME_MODE_KEY
 	end
 
 	return game_mode_key
@@ -434,8 +443,11 @@ AdventureMechanism.start_next_round = function (self)
 	self._game_round_ended_reason = nil
 	local state = self._state
 
-	if state == "inn" then
-		self:_reset()
+	if state == HUB_STATE then
+		local settings = nil
+		local prior_state = self._prior_state
+
+		self:_reset(settings, prior_state)
 	end
 
 	local side_compositions = self:_build_side_compositions(state)
@@ -457,7 +469,7 @@ end
 AdventureMechanism._build_side_compositions = function (self, state)
 	local available_profiles = self._hero_profiles
 
-	if state == "tutorial" then
+	if state == TUTORIAL_STATE then
 		available_profiles = self._tutorial_profiles
 	end
 
@@ -577,9 +589,9 @@ AdventureMechanism.debug_load_level = function (self, level_name, environment_va
 	level_transition_handler:promote_next_level_data()
 
 	if level_settings and level_settings.hub_level then
-		self._next_state = "inn"
+		self._next_state = HUB_STATE
 	else
-		self._next_state = "ingame"
+		self._next_state = INGAME_STATE
 	end
 
 	Managers.mechanism:progress_state()
@@ -617,6 +629,90 @@ AdventureMechanism.get_starting_level = function ()
 	local keep_variation_data = Managers.backend:get_level_variation_data()
 
 	return keep_variation_data.hub_level or HUB_LEVEL_NAME
+end
+
+AdventureMechanism.left_mechanism_due_to_switch = function (self)
+	self:_unload_packages()
+end
+
+AdventureMechanism.is_packages_loaded = function (self)
+	local additional_packages = self._additional_packages
+
+	if additional_packages == nil then
+		return true
+	end
+
+	local package_manager = Managers.package
+
+	for name, packages in pairs(additional_packages) do
+		for i = 1, #packages, 1 do
+			if not package_manager:has_loaded(packages[i], name) then
+				return false
+			end
+		end
+	end
+
+	return true
+end
+
+AdventureMechanism.load_packages = function (self)
+	if self._additional_packages_initialized then
+		return
+	end
+
+	self:_load_live_event_packages()
+
+	self._additional_packages_initialized = true
+end
+
+AdventureMechanism._load_live_event_packages = function (self)
+	local live_event_interface = Managers.backend:get_interface("live_events")
+	local special_events = live_event_interface and live_event_interface:get_special_events()
+
+	if special_events then
+		self._additional_packages = {}
+		local additional_packages = self._additional_packages
+
+		for i = 1, #special_events, 1 do
+			local event_data = special_events[i]
+			local event_name = event_data.name
+			local event_packages = live_event_packages[event_name]
+
+			if event_packages then
+				if not additional_packages[event_name] then
+					additional_packages[event_name] = {}
+				end
+
+				table.append(additional_packages[event_name], event_packages)
+			end
+		end
+
+		local package_manager = Managers.package
+
+		for name, packages in pairs(additional_packages) do
+			for i = 1, #packages, 1 do
+				package_manager:load(packages[i], name, nil, true)
+			end
+		end
+	end
+end
+
+AdventureMechanism._unload_packages = function (self)
+	local additional_packages = self._additional_packages
+
+	if additional_packages then
+		local package_manager = Managers.package
+
+		for name, packages in pairs(additional_packages) do
+			for i = 1, #packages, 1 do
+				package_manager:unload(packages[i], name)
+			end
+		end
+
+		table.clear(additional_packages)
+	end
+
+	self._additional_packages_initialized = false
 end
 
 return

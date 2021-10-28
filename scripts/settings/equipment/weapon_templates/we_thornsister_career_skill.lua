@@ -6,7 +6,6 @@ local weapon_template = {
 	actions = {
 		action_career_hold = {
 			default = {
-				hold_input = "action_career_hold",
 				anim_end_event = "thorn_ability_cancel",
 				kind = "career_we_thornsister_target_wall",
 				weapon_action_hand = "left",
@@ -32,6 +31,12 @@ local weapon_template = {
 						sub_action = "default",
 						start_time = 0,
 						action = "action_career_release",
+						input = "action_career_not_hold"
+					},
+					{
+						sub_action = "default",
+						start_time = 0,
+						action = "action_career_release",
 						input = "action_career_release"
 					},
 					{
@@ -48,13 +53,12 @@ local weapon_template = {
 				end
 			},
 			thorn_wall_target_flip = {
-				hold_input = "action_career_hold",
 				vertical_rotation = true,
 				anim_end_event = "ability_finished",
 				kind = "career_we_thornsister_target_wall",
+				weapon_action_hand = "left",
 				uninterruptible = true,
 				anim_event = "thorn_ability_flip",
-				weapon_action_hand = "left",
 				anim_end_event_condition_func = function (unit, end_reason)
 					return end_reason ~= "new_interupting_action"
 				end,
@@ -76,6 +80,12 @@ local weapon_template = {
 						sub_action = "default",
 						start_time = 0,
 						action = "action_career_release",
+						input = "action_career_not_hold"
+					},
+					{
+						sub_action = "default",
+						start_time = 0,
+						action = "action_career_release",
 						input = "action_career_release"
 					},
 					{
@@ -92,7 +102,6 @@ local weapon_template = {
 				end
 			},
 			thorn_wall_target_flip_back = {
-				hold_input = "action_career_hold",
 				anim_end_event = "thorn_ability_cancel",
 				kind = "career_we_thornsister_target_wall",
 				weapon_action_hand = "left",
@@ -114,6 +123,12 @@ local weapon_template = {
 						action = "action_two",
 						force_release_input = "action_two_hold",
 						input = "action_two"
+					},
+					{
+						sub_action = "default",
+						start_time = 0,
+						action = "action_career_release",
+						input = "action_career_not_hold"
 					},
 					{
 						sub_action = "default",

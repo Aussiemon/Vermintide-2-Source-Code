@@ -1,6 +1,7 @@
 require("scripts/utils/ai_debugger")
 require("scripts/helpers/level_helper")
 require("scripts/helpers/network_utils")
+require("scripts/settings/terror_events/terror_event_utils")
 
 VISUAL_DEBUGGING_ENABLED = VISUAL_DEBUGGING_ENABLED or false
 GLOBAL_AI_NAVWORLD = GLOBAL_AI_NAVWORLD or {}
@@ -12,6 +13,7 @@ local Vector3_dot = Vector3.dot
 local Vector3_normalize = Vector3.normalize
 local sqrt = math.sqrt
 local unit_alive = Unit.alive
+local dummy_table = {}
 script_data.disable_ai_perception = script_data.disable_ai_perception or Development.parameter("disable_ai_perception")
 local ai_trees_created = false
 local NAV_COST_MAP_MAX_VOLUMES = 1024
@@ -25,13 +27,28 @@ local RPCS = {
 	"rpc_set_ward_state",
 	"rpc_set_hit_reaction_template",
 	"rpc_set_corruptor_beam_state",
-	"rpc_check_trigger_backstab_sfx"
+	"rpc_check_trigger_backstab_sfx",
+	"rpc_set_attribute_bool",
+	"rpc_set_attribute_int"
 }
 local extensions = {
 	"AISimpleExtension",
 	"AiHuskBaseExtension",
 	"PlayerBotBase"
 }
+AttributeDefinition = {
+	grudge_marked = {
+		name_index = function (unit, value)
+			Unit.flow_event(unit, "enable_grudge")
+			print("New enhanced breed spawned")
+		end
+	},
+	breed_enhancements = {}
+}
+
+for name in pairs(BreedEnhancements.boss) do
+	AttributeDefinition.breed_enhancements[name] = false
+end
 
 AISystem.init = function (self, context, name)
 	AISystem.super.init(self, context, name, extensions)
@@ -1437,6 +1454,67 @@ AISystem.rpc_check_trigger_backstab_sfx = function (self, channel_id, unit_id)
 	end
 end
 
+function write_attribute(extension, unit, id, category_id, value)
+	local attributes = extension.attributes
+
+	if not attributes then
+		attributes = {}
+		extension.attributes = attributes
+	end
+
+	attributes[category_id] = attributes[category_id] or {}
+	attributes[category_id][id] = value
+	local func = AttributeDefinition[category_id][id]
+
+	if func then
+		func(unit, value)
+	end
+end
+
+AISystem.set_attribute = function (self, unit, attribute_name, category_name, value)
+	local extension = self.unit_extension_data[unit]
+
+	write_attribute(extension, unit, attribute_name, category_name, value)
+
+	local unit_id = Managers.state.network:unit_game_object_id(unit)
+	local attribute_id = NetworkLookup.attributes[attribute_name]
+	local category_id = NetworkLookup.attribute_categories[category_name]
+
+	if type(value) == "boolean" then
+		self.network_transmit:send_rpc_clients("rpc_set_attribute_bool", unit_id, attribute_id, category_id, value)
+	else
+		self.network_transmit:send_rpc_clients("rpc_set_attribute_int", unit_id, attribute_id, category_id, value)
+	end
+end
+
+AISystem.get_attributes = function (self, unit)
+	local extension = self.unit_extension_data[unit]
+
+	return extension.attributes or dummy_table
+end
+
+AISystem.rpc_set_attribute_bool = function (self, channel_id, unit_id, attribute_id, category_id, value)
+	print("rpc_set_attribute_bool", unit_id, attribute_id, category_id, value)
+
+	local unit = Managers.state.unit_storage:unit(unit_id)
+	local extension = self.unit_extension_data[unit]
+	local attribute_name = NetworkLookup.attributes[attribute_id]
+	local category_name = NetworkLookup.attribute_categories[category_id]
+
+	write_attribute(extension, unit, attribute_name, category_name, value)
+end
+
+AISystem.rpc_set_attribute_int = function (self, channel_id, unit_id, attribute_id, category_id, value)
+	print("rpc_set_attribute_int", unit_id, attribute_id, category_id, value)
+
+	local unit = Managers.state.unit_storage:unit(unit_id)
+	local extension = self.unit_extension_data[unit]
+	local attribute_name = NetworkLookup.attributes[attribute_id]
+	local category_name = NetworkLookup.attribute_categories[category_id]
+
+	write_attribute(extension, unit, attribute_name, category_name, value)
+end
+
 AISystem.hot_join_sync = function (self, peer_id)
 	local size = #LAYER_ID_MAPPING
 
@@ -1445,6 +1523,29 @@ AISystem.hot_join_sync = function (self, peer_id)
 
 		if NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] <= 0 then
 			self.network_transmit:send_rpc("rpc_set_allowed_nav_layer", peer_id, i, false)
+		end
+	end
+
+	for unit, extension in pairs(self.unit_extension_data) do
+		local attributes = extension.attributes
+
+		if attributes and next(attributes) then
+			local network_manager = Managers.state.network
+			local unit_id = Managers.state.network:unit_game_object_id(unit)
+
+			for category_name, category in pairs(attributes) do
+				local category_id = NetworkLookup.attribute_categories[category_name]
+
+				for attribute_name, value in pairs(category) do
+					local attribute_id = NetworkLookup.attributes[attribute_name]
+
+					if type(value) == "boolean" then
+						self.network_transmit:send_rpc("rpc_set_attribute_bool", peer_id, unit_id, attribute_id, category_id, value)
+					else
+						self.network_transmit:send_rpc("rpc_set_attribute_int", peer_id, unit_id, attribute_id, category_id, value)
+					end
+				end
+			end
 		end
 	end
 

@@ -75,14 +75,210 @@ local function create_health_bar_widget()
 		0,
 		0
 	}
+	local line1_y = -40
+	local line2_y = -56
 	local widget = {
 		element = {}
 	}
-	local passes = {}
-	local content = {}
-	local style = {}
+	local passes = {
+		{
+			pass_type = "texture",
+			style_id = "lower_marked_bg",
+			texture_id = "lower_marked_bg",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.attributes[1]
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "lower_normal_bg",
+			texture_id = "lower_normal_bg",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return not content.attributes[1]
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "marked_portrait_frame",
+			texture_id = "marked_portrait_frame",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.attributes[1]
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "skull_divider1",
+			texture_id = "skull_divider1",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.attributes[2]
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "skull_divider2",
+			texture_id = "skull_divider2",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.attributes[3]
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "skull_divider3",
+			texture_id = "skull_divider3",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.attributes[5]
+			end
+		},
+		{
+			pass_type = "texture",
+			style_id = "skull_divider4",
+			texture_id = "skull_divider4",
+			retained_mode = retained_mode,
+			content_check_function = function (content)
+				return content.attributes[6]
+			end
+		}
+	}
+	local content = {
+		skull_divider1 = "skull_divider",
+		skull_divider4 = "skull_divider",
+		lower_marked_bg = "boss_hp_bar_marked_bg",
+		skull_divider3 = "skull_divider",
+		lower_normal_bg = "boss_hp_bar_bottom",
+		skull_divider2 = "skull_divider",
+		marked_portrait_frame = "unit_frame_portrait_enemy_marked"
+	}
+	local style = {
+		lower_marked_bg = {
+			size = {
+				472,
+				55
+			},
+			offset = {
+				-23,
+				-83,
+				2
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		lower_normal_bg = {
+			size = {
+				472,
+				55
+			},
+			offset = {
+				-23,
+				-83,
+				2
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		marked_portrait_frame = {
+			size = {
+				60,
+				70
+			},
+			offset = {
+				-62,
+				-52,
+				7
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		skull_divider1 = {
+			size = {
+				22,
+				27
+			},
+			offset = {
+				4,
+				line1_y,
+				7
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		skull_divider2 = {
+			size = {
+				22,
+				27
+			},
+			offset = {
+				34,
+				line1_y,
+				7
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		skull_divider3 = {
+			size = {
+				22,
+				27
+			},
+			offset = {
+				64,
+				line1_y,
+				7
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		skull_divider4 = {
+			size = {
+				22,
+				27
+			},
+			offset = {
+				430,
+				line1_y,
+				7
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	}
 	local text_style_ids = {}
+	content.attributes = {}
 	local bar_bg_name = "bar_bg"
+	local bar_y = -24
 	passes[#passes + 1] = {
 		pass_type = "texture",
 		texture_id = bar_bg_name,
@@ -94,7 +290,7 @@ local function create_health_bar_widget()
 		color = table.clone(default_color),
 		offset = {
 			0,
-			0,
+			bar_y,
 			0
 		}
 	}
@@ -119,7 +315,7 @@ local function create_health_bar_widget()
 		},
 		offset = {
 			0,
-			0,
+			bar_y,
 			2
 		},
 		default_offset = {
@@ -166,7 +362,7 @@ local function create_health_bar_widget()
 		},
 		offset = {
 			0,
-			0,
+			bar_y,
 			3
 		},
 		default_offset = {
@@ -213,7 +409,7 @@ local function create_health_bar_widget()
 		},
 		offset = {
 			0,
-			0,
+			bar_y,
 			1
 		},
 		default_offset = {
@@ -258,7 +454,7 @@ local function create_health_bar_widget()
 		color = table.clone(default_color),
 		offset = {
 			429,
-			-8,
+			bar_y - 8,
 			7
 		},
 		size = {
@@ -285,7 +481,7 @@ local function create_health_bar_widget()
 		color = table.clone(default_color),
 		offset = {
 			433,
-			0,
+			bar_y,
 			4
 		},
 		size = {
@@ -304,12 +500,12 @@ local function create_health_bar_widget()
 	content[bar_fg_name] = "boss_hp_bar"
 	style[bar_fg_name] = {
 		size = {
-			450,
-			70
+			459,
+			75
 		},
 		offset = {
 			-6,
-			-52,
+			-35,
 			5
 		},
 		color = {
@@ -372,6 +568,7 @@ local function create_health_bar_widget()
 		}
 	}
 	text_style_ids[#text_style_ids + 1] = portrait_healing_name
+	local title_y = 4
 	local title_text = "title_text"
 	passes[#passes + 1] = {
 		pass_type = "text",
@@ -382,14 +579,14 @@ local function create_health_bar_widget()
 	content[title_text] = ""
 	style[title_text] = {
 		vertical_alignment = "top",
-		upper_case = true,
+		upper_case = false,
 		horizontal_alignment = "left",
 		font_size = 24,
 		font_type = "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 		offset = {
 			4,
-			-18,
+			4,
 			7
 		}
 	}
@@ -411,12 +608,168 @@ local function create_health_bar_widget()
 		text_color = Colors.get_color_table_with_alpha("black", 255),
 		offset = {
 			6,
-			-20,
+			title_y - 2,
 			6
 		}
 	}
 	text_style_ids[#text_style_ids + 1] = title_text_shadow
 	content.text_style_ids = text_style_ids
+	local attribute_text = "attribute_text1"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = attribute_text,
+		style_id = attribute_text,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.attributes[1]
+		end
+	}
+	content[attribute_text] = ""
+	content.show_attributes = true
+	style[attribute_text] = {
+		vertical_alignment = "top",
+		upper_case = false,
+		horizontal_alignment = "left",
+		font_size = 16,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("orange", 255),
+		offset = {
+			4,
+			line1_y,
+			7
+		}
+	}
+	text_style_ids[#text_style_ids + 1] = attribute_text
+	attribute_text = "attribute_text2"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = attribute_text,
+		style_id = attribute_text,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.attributes[2]
+		end
+	}
+	content[attribute_text] = ""
+	content.show_attributes = true
+	style[attribute_text] = {
+		vertical_alignment = "top",
+		upper_case = false,
+		horizontal_alignment = "left",
+		font_size = 16,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("yellow", 255),
+		offset = {
+			4,
+			line1_y,
+			7
+		}
+	}
+	text_style_ids[#text_style_ids + 1] = attribute_text
+	attribute_text = "attribute_text3"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = attribute_text,
+		style_id = attribute_text,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.attributes[3]
+		end
+	}
+	content[attribute_text] = ""
+	content.show_attributes = true
+	style[attribute_text] = {
+		vertical_alignment = "top",
+		upper_case = false,
+		horizontal_alignment = "left",
+		font_size = 16,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("yellow", 255),
+		offset = {
+			4,
+			line1_y,
+			7
+		}
+	}
+	text_style_ids[#text_style_ids + 1] = attribute_text
+	attribute_text = "attribute_text4"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = attribute_text,
+		style_id = attribute_text,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.attributes[4]
+		end
+	}
+	content[attribute_text] = ""
+	content.show_attributes = true
+	style[attribute_text] = {
+		vertical_alignment = "top",
+		upper_case = false,
+		horizontal_alignment = "left",
+		font_size = 16,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("yellow", 255),
+		offset = {
+			4,
+			line2_y,
+			7
+		}
+	}
+	text_style_ids[#text_style_ids + 1] = attribute_text
+	attribute_text = "attribute_text5"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = attribute_text,
+		style_id = attribute_text,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.attributes[5]
+		end
+	}
+	content[attribute_text] = ""
+	content.show_attributes = true
+	style[attribute_text] = {
+		vertical_alignment = "top",
+		upper_case = false,
+		horizontal_alignment = "left",
+		font_size = 16,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("yellow", 255),
+		offset = {
+			4,
+			line2_y,
+			7
+		}
+	}
+	text_style_ids[#text_style_ids + 1] = attribute_text
+	attribute_text = "attribute_text6"
+	passes[#passes + 1] = {
+		pass_type = "text",
+		text_id = attribute_text,
+		style_id = attribute_text,
+		retained_mode = retained_mode,
+		content_check_function = function (content)
+			return content.attributes[6]
+		end
+	}
+	content[attribute_text] = ""
+	content.show_attributes = true
+	style[attribute_text] = {
+		vertical_alignment = "top",
+		upper_case = false,
+		horizontal_alignment = "left",
+		font_size = 16,
+		font_type = "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("yellow", 255),
+		offset = {
+			4,
+			line2_y,
+			7
+		}
+	}
+	text_style_ids[#text_style_ids + 1] = attribute_text
 	widget.element.passes = passes
 	widget.content = content
 	widget.style = style
@@ -430,12 +783,8 @@ local function create_health_bar_widget()
 	return widget
 end
 
-local widgets = {
-	bar = create_health_bar_widget()
-}
-
 return {
 	scenegraph_definition = scenegraph_definition,
 	bar_length = bar_length,
-	widgets = widgets
+	widget_create_func = create_health_bar_widget
 }

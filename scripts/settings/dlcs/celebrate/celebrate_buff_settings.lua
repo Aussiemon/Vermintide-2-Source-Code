@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.celebrate
 
 local function is_server()
@@ -40,7 +41,7 @@ settings.buff_templates = {
 			{
 				duration = 2.1,
 				name = "hinder_career_ability",
-				perk = "disable_career_ability"
+				perk = buff_perks.disable_career_ability
 			}
 		}
 	},
@@ -59,9 +60,9 @@ settings.buff_templates = {
 			{
 				duration = 2.5,
 				name = "intoxication_stagger",
-				perk = "intoxication_stagger",
 				max_stacks = 1,
-				refresh_durations = true
+				refresh_durations = true,
+				perk = buff_perks.intoxication_stagger
 			}
 		}
 	},
@@ -121,18 +122,18 @@ settings.buff_templates = {
 				refresh_durations = true
 			},
 			{
-				perk = "bloody_mess",
 				name = "intoxication_effect_bloody_mess",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 30
+				duration = 30,
+				perk = buff_perks.bloody_mess
 			},
 			{
-				perk = "drunk_stagger",
 				name = "intoxication_effect_drunk_stagger",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = 30
+				duration = 30,
+				perk = buff_perks.drunk_stagger
 			},
 			{
 				name = "intoxication_power_level",
@@ -171,14 +172,14 @@ settings.buff_templates = {
 		activation_effect = "fx/screenspace_hungover_01",
 		buffs = {
 			{
-				perk = "falling_down",
 				name = "falling_down_attack_speed_slowdown",
 				stat_buff = "attack_speed",
 				continuous_effect = "fx/screenspace_drink_looping",
 				max_stacks = 1,
 				remove_buff_func = "remove_falling_down_effect",
 				multiplier = -0.5,
-				duration = 5
+				duration = 5,
+				perk = buff_perks.falling_down
 			},
 			{
 				apply_buff_func = "apply_action_lerp_movement_buff",
@@ -238,7 +239,7 @@ settings.buff_templates = {
 			{
 				max_stacks = 3,
 				name = "hungover_effect_stagger",
-				perk = "hungover_stagger"
+				perk = buff_perks.hungover_stagger
 			},
 			{
 				max_stacks = 3,
@@ -255,7 +256,7 @@ settings.buff_templates = {
 			{
 				max_stacks = 1,
 				name = "hungover_effect_perk",
-				perk = "hungover"
+				perk = buff_perks.hungover
 			}
 		}
 	}

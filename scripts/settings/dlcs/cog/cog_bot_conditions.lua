@@ -17,6 +17,12 @@ BTConditions.can_activate.dr_engineer = function (blackboard)
 		return false
 	end
 
+	local target_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
+
+	if target_buff_extension and target_buff_extension:has_buff_perk("invulnerable_ranged") then
+		return false
+	end
+
 	local obstruction = blackboard.ranged_obstruction_by_static
 
 	if obstruction and obstruction.unit == target_unit then

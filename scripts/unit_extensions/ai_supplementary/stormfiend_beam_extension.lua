@@ -123,6 +123,10 @@ StormfiendBeamExtension.update = function (self, unit, input, dt, context, t)
 			World.set_particles_variable(world, self.warpfire_particle_id, effect_variable_id, particle_life_time_vector)
 		end
 	end
+
+	if self.muzzle_node and ALIVE[unit] and not AiUtils.unit_alive(unit) then
+		self:remove_vfx_and_sfx()
+	end
 end
 
 return

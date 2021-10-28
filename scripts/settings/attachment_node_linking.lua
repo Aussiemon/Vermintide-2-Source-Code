@@ -2296,6 +2296,10 @@ AttachmentNodeLinking = {
 				source = "j_leftleg"
 			},
 			{
+				target = "j_leftlegkneepad",
+				source = "j_leftlegkneepad"
+			},
+			{
 				target = "j_leftleg_roll",
 				source = "j_leftleg_roll"
 			},
@@ -2314,6 +2318,10 @@ AttachmentNodeLinking = {
 			{
 				target = "j_rightleg",
 				source = "j_rightleg"
+			},
+			{
+				target = "j_rightlegkneepad",
+				source = "j_rightlegkneepad"
 			},
 			{
 				target = "j_rightleg_roll",
@@ -2336,12 +2344,20 @@ AttachmentNodeLinking = {
 				source = "j_leftshoulderpad"
 			},
 			{
+				target = "j_leftshoulderpad_anim",
+				source = "j_leftshoulderpad_anim"
+			},
+			{
 				target = "j_leftarm",
 				source = "j_leftarm"
 			},
 			{
 				target = "j_leftarm_roll",
 				source = "j_leftarm_roll"
+			},
+			{
+				target = "j_leftelbowpad",
+				source = "j_leftelbowpad"
 			},
 			{
 				target = "j_leftforearm",
@@ -2450,6 +2466,10 @@ AttachmentNodeLinking = {
 			{
 				target = "j_rightarm_roll",
 				source = "j_rightarm_roll"
+			},
+			{
+				target = "j_rightelbowpad",
+				source = "j_rightelbowpad"
 			},
 			{
 				target = "j_rightforearm",
@@ -4985,10 +5005,14 @@ AttachmentNodeLinking = {
 					},
 					{
 						target = "j_back_center_01",
-						source = "j_rightweaponcomponent2"
+						source = "j_rightweaponcomponent1"
 					},
 					{
 						target = "j_back_cover_01",
+						source = "j_rightweaponcomponent2"
+					},
+					{
+						target = "j_back_lock_01",
 						source = "j_rightweaponcomponent3"
 					},
 					{
@@ -5016,20 +5040,24 @@ AttachmentNodeLinking = {
 						source = "j_rightweaponcomponent9"
 					},
 					{
-						target = "j_page_nr2_01",
+						target = "j_page_nr1_04",
 						source = "j_rightweaponcomponent10"
 					},
 					{
-						target = "j_page_nr2_02",
+						target = "j_page_nr2_01",
 						source = "j_rightweaponcomponent11"
 					},
 					{
-						target = "j_page_nr2_03",
+						target = "j_page_nr2_02",
 						source = "j_rightweaponcomponent12"
 					},
 					{
-						target = "j_back_lock_01",
+						target = "j_page_nr2_03",
 						source = "j_rightweaponcomponent13"
+					},
+					{
+						target = "j_page_nr2_04",
+						source = "j_rightweaponcomponent14"
 					}
 				},
 				unwielded = {
@@ -5052,15 +5080,15 @@ AttachmentNodeLinking = {
 						source = "j_rightweaponattach"
 					},
 					{
-						target = "j_root",
+						target = "j_back_center_01",
 						source = "j_rightweaponcomponent1"
 					},
 					{
-						target = "j_back_center_01",
+						target = "j_back_cover_01",
 						source = "j_rightweaponcomponent2"
 					},
 					{
-						target = "j_back_cover_01",
+						target = "j_back_lock_01",
 						source = "j_rightweaponcomponent3"
 					},
 					{
@@ -5088,20 +5116,24 @@ AttachmentNodeLinking = {
 						source = "j_rightweaponcomponent9"
 					},
 					{
-						target = "j_page_nr2_01",
+						target = "j_page_nr1_04",
 						source = "j_rightweaponcomponent10"
 					},
 					{
-						target = "j_page_nr2_02",
+						target = "j_page_nr2_01",
 						source = "j_rightweaponcomponent11"
 					},
 					{
-						target = "j_page_nr2_03",
+						target = "j_page_nr2_02",
 						source = "j_rightweaponcomponent12"
 					},
 					{
-						target = "j_back_lock_01",
+						target = "j_page_nr2_03",
 						source = "j_rightweaponcomponent13"
+					},
+					{
+						target = "j_page_nr2_04",
+						source = "j_rightweaponcomponent14"
 					}
 				},
 				unwielded = {
@@ -5121,10 +5153,14 @@ AttachmentNodeLinking = {
 					},
 					{
 						target = "j_back_center_01",
-						source = "j_leftweaponcomponent2"
+						source = "j_leftweaponcomponent1"
 					},
 					{
 						target = "j_back_cover_01",
+						source = "j_leftweaponcomponent2"
+					},
+					{
+						target = "j_back_lock_01",
 						source = "j_leftweaponcomponent3"
 					},
 					{
@@ -5152,20 +5188,24 @@ AttachmentNodeLinking = {
 						source = "j_leftweaponcomponent9"
 					},
 					{
-						target = "j_page_nr2_01",
+						target = "j_page_nr1_04",
 						source = "j_leftweaponcomponent10"
 					},
 					{
-						target = "j_page_nr2_02",
+						target = "j_page_nr2_01",
 						source = "j_leftweaponcomponent11"
 					},
 					{
-						target = "j_page_nr2_03",
+						target = "j_page_nr2_02",
 						source = "j_leftweaponcomponent12"
 					},
 					{
-						target = "j_back_lock_01",
+						target = "j_page_nr2_03",
 						source = "j_leftweaponcomponent13"
+					},
+					{
+						target = "j_page_nr2_04",
+						source = "j_leftweaponcomponent14"
 					}
 				},
 				unwielded = {
@@ -5188,15 +5228,15 @@ AttachmentNodeLinking = {
 						source = "j_leftweaponattach"
 					},
 					{
-						target = "j_root",
+						target = "j_back_center_01",
 						source = "j_leftweaponcomponent1"
 					},
 					{
-						target = "j_back_center_01",
+						target = "j_back_cover_01",
 						source = "j_leftweaponcomponent2"
 					},
 					{
-						target = "j_back_cover_01",
+						target = "j_back_lock_01",
 						source = "j_leftweaponcomponent3"
 					},
 					{
@@ -5224,20 +5264,24 @@ AttachmentNodeLinking = {
 						source = "j_leftweaponcomponent9"
 					},
 					{
-						target = "j_page_nr2_01",
+						target = "j_page_nr1_04",
 						source = "j_leftweaponcomponent10"
 					},
 					{
-						target = "j_page_nr2_02",
+						target = "j_page_nr2_01",
 						source = "j_leftweaponcomponent11"
 					},
 					{
-						target = "j_page_nr2_03",
+						target = "j_page_nr2_02",
 						source = "j_leftweaponcomponent12"
 					},
 					{
-						target = "j_back_lock_01",
+						target = "j_page_nr2_03",
 						source = "j_leftweaponcomponent13"
+					},
+					{
+						target = "j_page_nr2_04",
+						source = "j_leftweaponcomponent14"
 					}
 				},
 				unwielded = {

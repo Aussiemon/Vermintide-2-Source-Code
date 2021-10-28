@@ -96,20 +96,26 @@ local function is_power_up_incompatible(career_name, existing_power_ups, power_u
 end
 
 local function get_available_power_ups_array(career_name, excluded_power_ups, existing_power_ups, rarity, availability_type)
-	local available_power_ups = {}
 	local all_excluded_power_ups = {}
-	local possible_power_ups_array = DeusPowerUpsArray[rarity] or {}
-	local maxed_out_power_ups = get_maxed_out_power_ups(existing_power_ups)
 
 	for _, power_up in ipairs(excluded_power_ups) do
 		all_excluded_power_ups[power_up.name] = true
 	end
 
-	table.merge(all_excluded_power_ups, maxed_out_power_ups)
+	local maxed_out_power_ups = get_maxed_out_power_ups(existing_power_ups)
 
-	local career_excluded_power_ups = table.clone(DeusPowerUpExclusionList[career_name]) or {}
+	for power_up_name, _ in pairs(maxed_out_power_ups) do
+		all_excluded_power_ups[power_up_name] = true
+	end
 
-	table.merge(all_excluded_power_ups, career_excluded_power_ups)
+	local career_excluded_power_ups = DeusPowerUpExclusionList[career_name] or {}
+
+	for power_up_name, _ in pairs(career_excluded_power_ups) do
+		all_excluded_power_ups[power_up_name] = true
+	end
+
+	local available_power_ups = {}
+	local possible_power_ups_array = DeusPowerUpsArray[rarity] or {}
 
 	for _, power_up_instance in ipairs(possible_power_ups_array) do
 		local power_up = DeusPowerUps[power_up_instance.rarity][power_up_instance.name]

@@ -469,19 +469,16 @@ MainPathUtils.find_equidistant_points_in_node_list = function (node_list, start_
 	end
 end
 
-MainPathUtils.get_main_path_point_between_players = function ()
-	local conflict_director = Managers.state.conflict
-	local main_paths = conflict_director.level_analysis:get_main_paths()
-	local main_path_info = conflict_director.main_path_info
+MainPathUtils.get_main_path_point_between_players = function (main_paths, main_path_info, main_path_player_info)
 	local ahead_player_travel_dist, behind_player_travel_dist = nil
 
 	if not main_path_info.ahead_unit then
 		ahead_player_travel_dist = 0
 		behind_player_travel_dist = 0
 	else
-		local ahead_player_info = conflict_director.main_path_player_info[main_path_info.ahead_unit]
+		local ahead_player_info = main_path_player_info[main_path_info.ahead_unit]
 		ahead_player_travel_dist = ahead_player_info.travel_dist
-		local behind_player_info = conflict_director.main_path_player_info[main_path_info.behind_unit]
+		local behind_player_info = main_path_player_info[main_path_info.behind_unit]
 		behind_player_travel_dist = behind_player_info.travel_dist
 	end
 

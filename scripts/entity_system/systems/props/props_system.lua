@@ -11,7 +11,8 @@ local extensions = {
 	"BotNavTransitionExtension",
 	"QuestChallengePropExtension",
 	"ThornMutatorExtension",
-	"ScaleUnitExtension"
+	"ScaleUnitExtension",
+	"StoreDisplayItemGizmoExtension"
 }
 
 DLCUtils.append("prop_extension", extensions)

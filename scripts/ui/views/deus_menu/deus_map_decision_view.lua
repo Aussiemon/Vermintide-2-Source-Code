@@ -557,6 +557,7 @@ DeusMapDecisionView._on_enter_finished = function (self, dt, t)
 		self._ui:fade_out(CONTENT_FADE_OUT_DURATION)
 	end
 
+	Managers.state.event:trigger("close_ingame_menu")
 	self:_finish()
 end
 
@@ -673,27 +674,42 @@ end
 DeusMapDecisionView._handle_voting_end = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local votes = {}
+	local max_vote_count = 0
 
 	for _, peer_id in ipairs(deus_run_controller:get_peers()) do
 		local vote = self._shared_state:get_peer(peer_id, self._shared_state:get_key("vote")) or ""
 
 		if vote ~= "" then
-			votes[#votes + 1] = vote
+			local vote_count = votes[vote]
+			vote_count = (vote_count and vote_count + 1) or 1
+			votes[vote] = vote_count
+
+			if max_vote_count < vote_count then
+				max_vote_count = vote_count
+			end
+		end
+	end
+
+	local max_votes = {}
+
+	for vote, vote_count in pairs(votes) do
+		if max_vote_count <= vote_count then
+			max_votes[#max_votes + 1] = vote
 		end
 	end
 
 	local current_node = deus_run_controller:get_current_node()
 
-	if #votes == 0 then
+	if #max_votes == 0 then
 		for _, node in ipairs(current_node.next) do
-			votes[#votes + 1] = node
+			max_votes[#max_votes + 1] = node
 		end
 	end
 
-	local random_index = Math.random(1, #votes)
-	local next_node_key = votes[random_index]
+	local random_index = Math.random(1, #max_votes)
+	local next_node_key = max_votes[random_index]
 
-	self._shared_state:set_server(self._shared_state:get_key("final_node_selected"), votes[random_index])
+	self._shared_state:set_server(self._shared_state:get_key("final_node_selected"), next_node_key)
 
 	local graph_data = deus_run_controller:get_graph_data()
 	local node = graph_data[next_node_key]

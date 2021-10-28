@@ -64,9 +64,10 @@ weapon_template.actions = {
 				}
 			},
 			weapon_sway_settings = {
-				look_sensitivity = 0.5,
-				sway_range = 1,
 				recentering_lerp_speed = 2,
+				sway_range = 1,
+				camera_look_sensitivity = 1,
+				look_sensitivity = 0.5,
 				lerp_speed = math.huge
 			}
 		},
@@ -136,9 +137,10 @@ weapon_template.actions = {
 				}
 			},
 			weapon_sway_settings = {
-				look_sensitivity = 0.5,
-				sway_range = 1,
 				recentering_lerp_speed = 2,
+				sway_range = 1,
+				camera_look_sensitivity = 1,
+				look_sensitivity = 0.5,
 				lerp_speed = math.huge
 			}
 		},
@@ -192,9 +194,10 @@ weapon_template.actions = {
 				}
 			},
 			weapon_sway_settings = {
-				look_sensitivity = 0.5,
-				sway_range = 1,
 				recentering_lerp_speed = 2,
+				sway_range = 1,
+				camera_look_sensitivity = 1,
+				look_sensitivity = 0.5,
 				lerp_speed = math.huge
 			}
 		},
@@ -248,9 +251,10 @@ weapon_template.actions = {
 				}
 			},
 			weapon_sway_settings = {
-				look_sensitivity = 0.5,
-				sway_range = 1,
 				recentering_lerp_speed = 2,
+				sway_range = 1,
+				camera_look_sensitivity = 1,
+				look_sensitivity = 0.5,
 				lerp_speed = math.huge
 			}
 		},
@@ -304,9 +308,10 @@ weapon_template.actions = {
 				}
 			},
 			weapon_sway_settings = {
-				look_sensitivity = 0.5,
-				sway_range = 1,
 				recentering_lerp_speed = 2,
+				sway_range = 1,
+				camera_look_sensitivity = 1,
+				look_sensitivity = 0.5,
 				lerp_speed = math.huge
 			}
 		},

@@ -781,9 +781,8 @@ UIElements = {
 	Viewport = {
 		passes = {
 			{
-				style_id = "viewport",
 				pass_type = "viewport",
-				content_id = "viewport"
+				style_id = "viewport"
 			},
 			{
 				pass_type = "hotspot",

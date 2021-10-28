@@ -183,6 +183,7 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 	end
 
 	self.looping_audio_events = {}
+	self._current_weapon_buffs = {}
 	self._custom_data = {}
 	local item_data = rawget(ItemMasterList, self.item_name)
 	local weapon_template_name = item_data and item_data.template
@@ -198,6 +199,9 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 		end
 
 		self._weapon_update = template and template.update
+		self._weapon_wield = template and template.on_wield
+		self._weapon_unwield = template and template.on_unwield
+		self._weapon_template = template
 	end
 end
 
@@ -207,6 +211,8 @@ end
 
 WeaponUnitExtension.extensions_ready = function (self, world, unit)
 	self.ammo_extension = ScriptUnit.has_extension(unit, "ammo_system")
+	local owner_unit = self.owner_unit
+	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 end
 
 WeaponUnitExtension.destroy = function (self)
@@ -243,7 +249,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 	local owner_unit = self.owner_unit
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
-	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	local first_person_extension = self.first_person_extension
 	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
 	local current_action_settings = self.current_action_settings
 	local new_action = action_name
@@ -426,7 +432,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			local input_extension = ScriptUnit.extension(owner_unit, "input_system")
 			local remaining_time = (self.action_time_started + minimum_hold_time) - t
 
-			current_action_settings.enter_function(owner_unit, input_extension, remaining_time)
+			current_action_settings.enter_function(owner_unit, input_extension, remaining_time, self)
 		end
 
 		if event then
@@ -562,13 +568,16 @@ WeaponUnitExtension._finish_action = function (self, reason, data)
 	end
 
 	if current_action_settings.finish_function then
-		current_action_settings.finish_function(self.owner_unit, reason)
+		current_action_settings.finish_function(self.owner_unit, reason, self)
 	end
 
-	local first_person_extension = ScriptUnit.has_extension(self.owner_unit, "first_person_system")
+	local first_person_extension = self.first_person_extension
 
 	if first_person_extension then
-		first_person_extension:set_weapon_sway_settings(nil)
+		local weapon_template = self._weapon_template
+		local sway_settings = weapon_template and weapon_template.weapon_sway_settings
+
+		first_person_extension:set_weapon_sway_settings(sway_settings)
 	end
 
 	if self.bot_attack_data then
@@ -989,6 +998,26 @@ WeaponUnitExtension.set_custom_data = function (self, key, value)
 	self._custom_data[key] = value
 end
 
+WeaponUnitExtension.set_weapon_buffs = function (self, buffs)
+	local owner_unit = self.owner_unit
+	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	local current_buffs = self._current_weapon_buffs
+
+	for i = 1, #current_buffs, 1 do
+		buff_extension:remove_buff(current_buffs[i])
+	end
+
+	table.clear(current_buffs)
+
+	if buffs then
+		for i = 1, #buffs, 1 do
+			local buff_name = buffs[i]
+			local buff_id = buff_extension:add_buff(buff_name)
+			current_buffs[i] = buff_id
+		end
+	end
+end
+
 WeaponUnitExtension.add_looping_audio = function (self, id, start_event_id, end_event_id, start_event_husk_id, end_event_husk_id, auto_start)
 	fassert(start_event_id, "tried to add looping audio with no start event, id: %s", id)
 	fassert(end_event_id, "tried to add looping audio with no end event, id: %s", id)
@@ -1084,6 +1113,27 @@ WeaponUnitExtension.update_looping_audio_parameter = function (self, id, paramet
 	local wwise_source_id = WwiseWorld.make_auto_source(self.wwise_world, self.unit)
 
 	WwiseWorld.set_source_parameter(self.wwise_world, wwise_source_id, parameter_name, parameter_value)
+end
+
+WeaponUnitExtension.on_wield = function (self, hand_name)
+	local first_person_extension = self.first_person_extension
+
+	if first_person_extension then
+		local weapon_template = self._weapon_template
+		local sway_settings = weapon_template and weapon_template.weapon_sway_settings
+
+		first_person_extension:set_weapon_sway_settings(sway_settings)
+	end
+
+	if self._weapon_wield then
+		self:_weapon_wield(hand_name)
+	end
+end
+
+WeaponUnitExtension.on_unwield = function (self, hand_name)
+	if self._weapon_unwield then
+		self:_weapon_unwield(hand_name)
+	end
 end
 
 return

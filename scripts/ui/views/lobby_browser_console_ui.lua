@@ -10,6 +10,13 @@ local weave_details_widget_definition = definitions.weave_details_widget_definit
 local deus_details_widget_definition = definitions.deus_details_widget_definition
 local animation_definitions = definitions.animation_definitions
 LobbyBrowserConsoleUI = class(LobbyBrowserConsoleUI)
+local GAME_TYPE_LOOKUP_STRINGS = {
+	deus = "area_selection_morris_name",
+	adventure = "area_selection_campaign",
+	weave = "menu_weave_area_no_wom_title",
+	versus = "vs_ui_versus_tag",
+	any = "lobby_browser_mission"
+}
 
 LobbyBrowserConsoleUI.init = function (self, parent, ingame_ui_context, game_mode_data, show_lobby_data_table, distance_data_table)
 	self._ingame_ui_context = ingame_ui_context
@@ -99,11 +106,17 @@ LobbyBrowserConsoleUI._create_ui_elements = function (self)
 end
 
 LobbyBrowserConsoleUI._create_filters = function (self)
+	self._game_type_filter_widgets = {}
 	self._level_filter_widgets = {}
 	self._difficulty_filter_widgets = {}
 	self._lobby_filter_widgets = {}
 	self._distance_filter_widgets = {}
 	self._filter_functions = {
+		{
+			input_function = "_handle_game_type_filter_input",
+			render_function = "_render_game_type_filter_list",
+			input_function_mouse = "_handle_game_type_filter_input_mouse"
+		},
 		{
 			input_function = "_handle_level_filter_input",
 			render_function = "_render_level_filter_list",
@@ -125,6 +138,17 @@ LobbyBrowserConsoleUI._create_filters = function (self)
 			input_function_mouse = "_handle_distance_filter_input_mouse"
 		}
 	}
+
+	self:setup_filter_entries()
+end
+
+LobbyBrowserConsoleUI.setup_filter_entries = function (self)
+	table.clear(self._game_type_filter_widgets)
+	table.clear(self._level_filter_widgets)
+	table.clear(self._difficulty_filter_widgets)
+	table.clear(self._lobby_filter_widgets)
+	table.clear(self._distance_filter_widgets)
+
 	local game_mode_data = self._game_mode_data
 	local game_modes = game_mode_data.game_modes
 	local game_mode_index = self._parent:get_selected_game_mode_index() or game_modes.adventure
@@ -134,6 +158,19 @@ LobbyBrowserConsoleUI._create_filters = function (self)
 	local levels = game_mode_data.levels
 	local difficulties = game_mode_data.difficulties
 	local element_settings = definitions.element_settings
+	local offset_y = -element_settings.filter_height - element_settings.spacing
+	local create_game_type_filter_entry_func = definitions.create_game_type_filter_entry_func
+	local widget = create_game_type_filter_entry_func("any", GAME_TYPE_LOOKUP_STRINGS.any, offset_y)
+	self._game_type_filter_widgets[#self._game_type_filter_widgets + 1] = UIWidget.init(widget)
+
+	for _, game_type in ipairs(game_modes) do
+		if game_type ~= "any" then
+			offset_y = offset_y - element_settings.filter_height - element_settings.spacing
+			local widget = create_game_type_filter_entry_func(game_type, GAME_TYPE_LOOKUP_STRINGS[game_type], offset_y)
+			self._game_type_filter_widgets[#self._game_type_filter_widgets + 1] = UIWidget.init(widget)
+		end
+	end
+
 	local level_widgets = {}
 	local create_level_filter_entry_func = definitions.create_level_filter_entry_func
 
@@ -160,8 +197,12 @@ LobbyBrowserConsoleUI._create_filters = function (self)
 	local locked_level_widgets = {}
 
 	for _, level in pairs(unlockable_levels) do
-		local widget = create_level_filter_entry_func(level, false)
-		locked_level_widgets[#locked_level_widgets + 1] = UIWidget.init(widget)
+		local level_settings = LevelSettings[level]
+
+		if not level_settings.ommit_from_lobby_browser then
+			local widget = create_level_filter_entry_func(level, false)
+			locked_level_widgets[#locked_level_widgets + 1] = UIWidget.init(widget)
+		end
 	end
 
 	table.sort(locked_level_widgets, sort_func)
@@ -213,6 +254,14 @@ LobbyBrowserConsoleUI._create_filters = function (self)
 		local widget_definition = create_distance_filter_entry_func(distance, offset_y)
 		self._distance_filter_widgets[#self._distance_filter_widgets + 1] = UIWidget.init(widget_definition)
 	end
+
+	local frame_widget = self._widgets.filter_frame
+	local frame_widget_content = frame_widget.content
+	frame_widget_content.filter_hotspot_1.disable_button = #self._game_type_filter_widgets < 2
+	frame_widget_content.filter_hotspot_2.disable_button = #self._level_filter_widgets < 2
+	frame_widget_content.filter_hotspot_3.disable_button = #self._difficulty_filter_widgets < 2
+	frame_widget_content.filter_hotspot_4.disable_button = #self._lobby_filter_widgets < 2
+	frame_widget_content.filter_hotspot_5.disable_button = #self._distance_filter_widgets < 2
 end
 
 LobbyBrowserConsoleUI.update = function (self, dt, t, loading)
@@ -221,6 +270,7 @@ LobbyBrowserConsoleUI.update = function (self, dt, t, loading)
 	self:_handle_mouse_input(dt, t, loading)
 	self:_handle_input_description(dt, t)
 	self:_update_animations(dt, t)
+	self:_update_lobby_data(dt, t)
 	self:_draw(dt, t)
 end
 
@@ -258,8 +308,13 @@ LobbyBrowserConsoleUI._update_animations = function (self, dt, t)
 	UIWidgetUtils.animate_default_button(self._widgets.refresh_button, dt)
 end
 
+local VALID_LOBBIES = {}
+local VALID_LOBBIES_BY_ID = {}
+
 LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
-	local valid_lobbies = {}
+	table.clear(VALID_LOBBIES)
+	table.clear(VALID_LOBBIES_BY_ID)
+
 	local num_lobbies = #lobbies
 	local mission_ids = NetworkLookup.mission_ids
 	local invalid = false
@@ -294,19 +349,20 @@ LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 			end
 
 			if not invalid then
-				valid_lobbies[#valid_lobbies + 1] = lobby
+				VALID_LOBBIES[#VALID_LOBBIES + 1] = lobby
+				VALID_LOBBIES_BY_ID[lobby.id] = lobby
 			end
 		end
 	end
 
-	return valid_lobbies
+	return VALID_LOBBIES, VALID_LOBBIES_BY_ID
 end
 
 LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scroll_reset)
 	local lobby_frame_widget = self._widgets.frame
 	local lobby_frame_widget_content = lobby_frame_widget.content
 	lobby_frame_widget_content.timer = 0
-	local valid_lobbies = self:_remove_invalid_lobbies(lobbies)
+	local valid_lobbies, valid_lobbies_by_id = self:_remove_invalid_lobbies(lobbies)
 	local element_settings = definitions.element_settings
 	local offset_y = 0
 	local lobby_entry_widgets = self._lobby_entry_widgets
@@ -753,31 +809,162 @@ LobbyBrowserConsoleUI._handle_filter_input = function (self, input_service, elem
 	local current_filter_index = self._current_filter_index
 
 	if input_service:get("confirm") then
-		self._current_active_filter = self._current_filter_index
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
 		widget_content.filter_selection = false
+		self._current_active_filter = self._current_filter_index
 
 		self._parent:play_sound("Play_hud_hover")
 
 		return
 	elseif input_service:get("move_left") then
-		self._parent:play_sound("Play_hud_hover")
-
-		current_filter_index = math.clamp(current_filter_index - 1, 1, #self._filter_functions)
-		self._filter_list_index = nil
+		current_filter_index = self:_update_filter_index(-1)
 	elseif input_service:get("move_right") then
-		self._parent:play_sound("Play_hud_hover")
-
-		current_filter_index = math.clamp(current_filter_index + 1, 1, #self._filter_functions)
-		self._filter_list_index = nil
+		current_filter_index = self:_update_filter_index(1)
 	end
 
 	if self._current_filter_index ~= current_filter_index then
 		self._current_filter_index = current_filter_index
+
+		self._parent:play_sound("Play_hud_hover")
+
+		self._filter_list_index = nil
 		local widget = self._widgets.filter_frame
 		local widget_content = widget.content
 		widget_content.filter_index = current_filter_index
+	end
+end
+
+LobbyBrowserConsoleUI._update_filter_index = function (self, index_change)
+	local frame_widget = self._widgets.filter_frame
+	local frame_widget_content = frame_widget.content
+	local new_filter_index = math.clamp(self._current_filter_index + index_change, 1, #self._filter_functions)
+	local end_point = (index_change > 0 and #self._filter_functions) or 1
+
+	for i = new_filter_index, end_point, index_change do
+		local filter_hotspot = frame_widget_content["filter_hotspot_" .. i]
+
+		if not filter_hotspot.disable_button then
+			return i
+		end
+	end
+
+	return self._current_filter_index
+end
+
+LobbyBrowserConsoleUI._handle_game_type_filter_input = function (self, input_service, element_settings, dt, t)
+	local old_selected_list_index = self._filter_list_index
+	self._filter_list_index = self._filter_list_index or 1
+	local hold_down_timer = 0
+	local hold_up_timer = 0
+	local num_entries = #self._game_type_filter_widgets
+	local back_pressed = input_service:get("back_menu", true)
+
+	if input_service:get("confirm") or back_pressed then
+		local current_filter_list_index = self._filter_list_index
+		local widget = self._game_type_filter_widgets[current_filter_list_index]
+		local widget_content = widget.content
+		widget_content.selected = false
+		self._filter_list_index = nil
+		self._visible_list_index = 1
+		self._hold_up_list_timer = 0
+		self._hold_down_list_timer = 0
+
+		if not back_pressed then
+			self._parent:play_sound("hud_morris_start_menu_set")
+			self._parent:set_game_mode(widget_content.game_type)
+			self._parent:refresh()
+		end
+
+		self._current_active_filter = nil
+		local widget = self._widgets.filter_frame
+		local widget_content = widget.content
+		widget_content.filter_selection = true
+
+		return
+	end
+
+	if input_service:get("move_up_hold") then
+		hold_up_timer = self._hold_up_list_timer + dt
+	elseif input_service:get("move_down_hold") then
+		hold_down_timer = self._hold_down_list_timer + dt
+	end
+
+	self._hold_down_list_timer = hold_down_timer
+	self._hold_up_list_timer = hold_up_timer
+
+	if input_service:get("move_down") or self._hold_down_list_timer > 0.5 then
+		if self._hold_down_list_timer > 0.5 then
+			self._hold_down_list_timer = 0.4
+		end
+
+		self._filter_list_index = math.clamp(self._filter_list_index + 1, 1, num_entries)
+	elseif input_service:get("move_up") or self._hold_up_list_timer > 0.5 then
+		if self._hold_up_list_timer > 0.5 then
+			self._hold_up_list_timer = 0.4
+		end
+
+		self._filter_list_index = math.clamp(self._filter_list_index - 1, 1, num_entries)
+	end
+
+	if self._filter_list_index ~= old_selected_list_index then
+		local widget = self._game_type_filter_widgets[self._filter_list_index]
+		local widget_content = widget.content
+		widget_content.selected = true
+
+		if old_selected_list_index then
+			local widget = self._game_type_filter_widgets[old_selected_list_index]
+			local widget_content = widget.content
+			widget_content.selected = false
+		end
+
+		self._parent:play_sound("Play_hud_hover")
+	end
+end
+
+LobbyBrowserConsoleUI._handle_game_type_filter_input_mouse = function (self, input_service, element_settings, dt, t)
+	local length = element_settings.window_height + element_settings.filter_height
+	local num_visible_entries = math.ceil(length / (element_settings.filter_height + element_settings.spacing))
+	local entry_size_y = element_settings.filter_height + element_settings.spacing
+	self._list_base_pos_y = self._list_base_pos_y or scenegraph_definition.filter_game_type_entry_anchor.position[2]
+	local num_entries = #self._game_type_filter_widgets
+	self._mouse_scroll_index = self._mouse_scroll_index or 1
+	local any_selected = false
+	local exiting = input_service:get("back_menu", true)
+
+	if input_service:get("left_press") then
+		for idx, widget in ipairs(self._game_type_filter_widgets) do
+			local button_hotspot = widget.content.button_hotspot
+
+			if button_hotspot.is_hover then
+				any_selected = true
+
+				self._parent:play_sound("hud_morris_start_menu_set")
+				self._parent:set_game_mode(widget.content.game_type)
+				self._parent:refresh()
+
+				exiting = true
+
+				break
+			end
+		end
+
+		exiting = exiting or not any_selected
+	end
+
+	if exiting then
+		self._filter_list_index = nil
+		self._wanted_list_pos = self._list_base_pos_y
+		self._visible_list_index = 1
+		self._hold_up_list_timer = 0
+		self._hold_down_list_timer = 0
+		self._ui_scenegraph.filter_game_type_entry_anchor.position[2] = self._list_base_pos_y
+		self._current_active_filter = nil
+		local widget = self._widgets.filter_frame
+		local widget_content = widget.content
+		widget_content.filter_selection = true
+
+		return
 	end
 end
 
@@ -1380,7 +1567,40 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 		end
 	end
 
-	local lobby_data = self._lobbies[new_selected_lobby_index]
+	local selected_lobby_entry_widget = self._lobby_entry_widgets[new_selected_lobby_index]
+	local selected_lobby_entry_content = selected_lobby_entry_widget and selected_lobby_entry_widget.content
+	local selected_lobby_data = selected_lobby_entry_content and selected_lobby_entry_content.lobby_data
+	local id = selected_lobby_data and selected_lobby_data.id
+	self._selected_lobby_id = id
+	local current_lobbies = self._parent:get_lobbies()
+	local valid_current_lobbies, valid_current_lobbies_by_id = self:_remove_invalid_lobbies(current_lobbies)
+	local lobby_data = valid_current_lobbies_by_id[self._selected_lobby_id]
+
+	if lobby_data then
+		self:_update_lobby_details(valid_current_lobbies_by_id)
+	end
+end
+
+LobbyBrowserConsoleUI._update_lobby_data = function (self, dt, t)
+	if not self._parent:dirty() then
+		return
+	end
+
+	local current_lobbies = self._parent:get_lobbies()
+	local valid_current_lobbies, valid_current_lobbies_by_id = self:_remove_invalid_lobbies(current_lobbies)
+
+	self:_update_lobby_details(valid_current_lobbies_by_id)
+	self:_update_lobby_list(valid_current_lobbies_by_id, dt, t)
+end
+
+LobbyBrowserConsoleUI._update_lobby_details = function (self, valid_lobbies_by_id)
+	local selected_lobby_id = self._selected_lobby_id
+
+	if not selected_lobby_id then
+		self._details_filled = false
+	end
+
+	local lobby_data = valid_lobbies_by_id[selected_lobby_id]
 
 	if lobby_data then
 		local mechanism = lobby_data.mechanism
@@ -1393,6 +1613,42 @@ LobbyBrowserConsoleUI._select_lobby = function (self, old_selected_lobby_index, 
 		else
 			self:_fill_details(lobby_data)
 		end
+	else
+		self._details_filled = false
+	end
+end
+
+LobbyBrowserConsoleUI._update_lobby_list = function (self, valid_current_lobbies_by_id, dt, t)
+	for index, lobby_entry_widget in ipairs(self._lobby_entry_widgets) do
+		local content = lobby_entry_widget.content
+		local lobby_entry_lobby_data = content.lobby_data
+		local selected = content.selected
+		local offset_y = lobby_entry_widget.offset[2]
+
+		self:_update_lobby_entry(index, offset_y, selected, lobby_entry_lobby_data, valid_current_lobbies_by_id, dt, t)
+	end
+end
+
+LobbyBrowserConsoleUI._update_lobby_entry = function (self, index, offset_y, selected, lobby_entry_lobby_data, valid_current_lobbies_by_id, dt, t)
+	local entry_lobby_id = lobby_entry_lobby_data and lobby_entry_lobby_data.id
+	local lobby_data = valid_current_lobbies_by_id[entry_lobby_id]
+
+	if lobby_data then
+		local create_lobby_entry_func = definitions.create_lobby_entry_func
+		local joinable, locked_reason = self._parent:is_lobby_joinable(lobby_data)
+		local completed_difficulty_index = self._parent:completed_level_difficulty_index(lobby_data)
+		local lobby_entry = create_lobby_entry_func(offset_y, lobby_data, index, joinable, completed_difficulty_index)
+		local lobby_entry_widget = UIWidget.init(lobby_entry)
+		local lobby_entry_content = lobby_entry_widget.content
+		lobby_entry_content.selected = selected
+		self._lobby_entry_widgets[index] = lobby_entry_widget
+	else
+		local create_unavailable_lobby_entry_func = definitions.create_unavailable_lobby_entry_func
+		local lobby_entry = create_unavailable_lobby_entry_func(offset_y)
+		local lobby_entry_widget = UIWidget.init(lobby_entry)
+		local lobby_entry_content = lobby_entry_widget.content
+		lobby_entry_content.selected = selected
+		self._lobby_entry_widgets[index] = lobby_entry_widget
 	end
 end
 
@@ -1842,6 +2098,12 @@ LobbyBrowserConsoleUI._assign_objective = function (self, index, text, icon, spa
 	content.text = text or "-"
 end
 
+LobbyBrowserConsoleUI.set_game_type_filter = function (self, game_type_name)
+	local widget = self._widgets.filter_frame
+	local content = widget.content
+	content.game_type_name = game_type_name
+end
+
 LobbyBrowserConsoleUI.set_level_filter = function (self, level_display_name)
 	local widget = self._widgets.filter_frame
 	local content = widget.content
@@ -1893,6 +2155,12 @@ LobbyBrowserConsoleUI._render_filter = function (self, ui_renderer, ui_scenegrap
 		local filter_functions = self._filter_functions[self._current_active_filter]
 
 		self[filter_functions.render_function](self, ui_renderer, ui_scenegraph, input_service, dt, t)
+	end
+end
+
+LobbyBrowserConsoleUI._render_game_type_filter_list = function (self, ui_renderer, ui_scenegraph, input_service, dt, t)
+	for _, widget in ipairs(self._game_type_filter_widgets) do
+		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 end
 

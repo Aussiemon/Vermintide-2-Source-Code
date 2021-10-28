@@ -218,11 +218,11 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 	widget.content.visible = true
 
 	if level then
-		widget.content.node_info.title = Localize(level .. "_title")
-		widget.content.node_info.description = Localize(level .. "_desc")
+		widget.content.node_info.none_modifier_info.title = Localize(level .. "_title")
+		widget.content.node_info.none_modifier_info.description = Localize(level .. "_desc")
 	else
-		widget.content.node_info.title = Localize("undiscovered_level_title")
-		widget.content.node_info.description = Localize("undiscovered_level_desc")
+		widget.content.node_info.none_modifier_info.title = Localize("undiscovered_level_title")
+		widget.content.node_info.none_modifier_info.description = Localize("undiscovered_level_desc")
 	end
 
 	if not theme or theme == "wastes" then
@@ -262,7 +262,7 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 		widget.content.node_info.breed_text = ""
 	end
 
-	widget.content.node_info.click_to_vote = (selectable and "deus_map_node_info_click_to_vote") or ""
+	widget.content.node_info.none_modifier_info.click_to_vote = (selectable and "deus_map_node_info_click_to_vote") or ""
 	widget.content.node_info.frame_settings_name = (selected and "menu_frame_12_gold") or "menu_frame_12"
 end
 

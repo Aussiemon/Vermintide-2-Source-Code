@@ -200,12 +200,12 @@ local function create_static_widget()
 			},
 			host_icon = {
 				size = {
-					18,
-					14
+					40,
+					40
 				},
 				offset = {
-					-42,
-					-56,
+					-57,
+					-68,
 					50
 				},
 				color = {

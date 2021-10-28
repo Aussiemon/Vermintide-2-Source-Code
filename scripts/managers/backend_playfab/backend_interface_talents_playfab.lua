@@ -22,12 +22,41 @@ BackendInterfaceTalentsPlayfab._refresh = function (self)
 					career_talents[i] = tonumber(career_talents[i])
 				end
 
+				self:_validate_talents(career_name, career_talents)
+
 				talents[career_name] = career_talents
 			end
 		end
 	end
 
 	self._dirty = false
+end
+
+BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, career_talents)
+	local profile = PROFILES_BY_CAREER_NAMES[career_name]
+	local profile_name = profile.display_name
+	local read_only_data = self._backend_mirror:get_read_only_data()
+	local hero_experience = read_only_data[profile_name .. "_experience"]
+	local hero_level = ExperienceSettings.get_level(hero_experience)
+	local talent_unlock_levels = TalentUnlockLevels
+	local changed = false
+
+	for i = 1, #career_talents, 1 do
+		local selected_talent = career_talents[i]
+
+		if selected_talent > 0 then
+			local required_level = talent_unlock_levels["talent_point_" .. i]
+
+			if hero_level < required_level then
+				career_talents[i] = 0
+				changed = true
+			end
+		end
+	end
+
+	if changed then
+		self:set_talents(career_name, career_talents)
+	end
 end
 
 BackendInterfaceTalentsPlayfab.ready = function (self)

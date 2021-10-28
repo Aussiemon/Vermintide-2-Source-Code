@@ -1,3 +1,9 @@
+local refactored_mutator = nil
+
+if refactored_mutator then
+	return refactored_mutator
+end
+
 local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm_v2")
 local curse_blood_storm = table.clone(base_nurgle_storm)
 curse_blood_storm.package_name = "resource_packages/mutators/mutator_curse_blood_storm"
@@ -33,7 +39,7 @@ curse_blood_storm.server_start_function = function (context, data)
 	data.astar = GwNavAStar.create()
 end
 
-local base_update_function = curse_blood_storm.server_update_function
+local base_update_function = curse_blood_storm.server_pre_update_function
 
 curse_blood_storm.server_update_function = function (context, data, dt, t)
 	base_update_function(context, data)

@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	markus_huntsman_ability_cooldown_on_hit = {
 		bonus = 0.3
@@ -243,7 +244,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -252,7 +252,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -261,7 +260,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_ranged_hit",
-				event_buff = true,
 				buff_func = "end_huntsman_stealth",
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
@@ -271,7 +269,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "end_huntsman_stealth",
 				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
 			}
@@ -281,7 +278,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "markus_huntsman_passive_proc"
 			}
 		}
@@ -290,7 +286,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				deletion_delay = 0.05,
-				event_buff = true,
 				buff_func = "mark_for_delayed_deletion",
 				event = "on_auto_headshot",
 				update_func = "delayed_buff_removal",
@@ -303,7 +298,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				buff_to_add = "markus_huntsman_auto_headshot",
 				add_delay = 0.05,
-				event_buff = true,
 				buff_func = "add_buff_on_unmodified_headshot",
 				event = "on_hit",
 				update_func = "delayed_buff_add",
@@ -316,7 +310,7 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 10,
 				icon = "markus_huntsman_passive",
-				perk = "auto_headshot"
+				perk = buff_perks.auto_headshot
 			}
 		}
 	},
@@ -348,7 +342,7 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_passive_no_damage_dropoff = {
 		buffs = {
 			{
-				perk = "no_damage_dropoff"
+				perk = buff_perks.no_damage_dropoff
 			}
 		}
 	},
@@ -373,8 +367,8 @@ TalentBuffTemplates.empire_soldier = {
 				name = "markus_huntsman_activated_ability_increased_zoom",
 				refresh_durations = true,
 				max_stacks = 1,
-				perk = "increased_zoom",
-				duration = buff_tweak_data.markus_huntsman_activated_ability.duration
+				duration = buff_tweak_data.markus_huntsman_activated_ability.duration,
+				perk = buff_perks.increased_zoom
 			}
 		}
 	},
@@ -511,8 +505,8 @@ TalentBuffTemplates.empire_soldier = {
 				name = "markus_huntsman_activated_ability_increased_zoom",
 				refresh_durations = true,
 				max_stacks = 1,
-				perk = "increased_zoom",
-				duration = buff_tweak_data.markus_huntsman_activated_ability_duration.duration
+				duration = buff_tweak_data.markus_huntsman_activated_ability_duration.duration,
+				perk = buff_perks.increased_zoom
 			}
 		}
 	},
@@ -520,7 +514,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_ranged_hit",
-				event_buff = true,
 				buff_func = "end_huntsman_stealth",
 				duration = buff_tweak_data.markus_huntsman_activated_ability_duration.duration
 			}
@@ -530,7 +523,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "end_huntsman_stealth",
 				duration = buff_tweak_data.markus_huntsman_activated_ability_duration.duration
 			}
@@ -651,46 +643,42 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_vanguard = {
 		buffs = {
 			{
-				multiplier = 1,
 				name = "vanguard",
-				event_buff = true,
+				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing"
+				perk = buff_perks.tank_healing
 			}
 		}
 	},
 	markus_huntsman_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	markus_huntsman_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
 	markus_huntsman_debuff_defence_on_crit = {
 		buffs = {
 			{
-				event = "on_critical_hit",
 				buff_to_add = "defence_debuff_enemies",
-				event_buff = true,
+				event = "on_critical_hit",
 				buff_func = "on_hit_debuff_enemy_defence"
 			}
 		}
@@ -698,11 +686,10 @@ TalentBuffTemplates.empire_soldier = {
 	markus_huntsman_increased_damage_to_wounded_enemies = {
 		buffs = {
 			{
+				event = "on_hit",
 				buff_to_add = "defence_debuff_enemies",
 				stat_buff = "increased_weapon_damage_ranged_to_wounded",
-				event_buff = true,
-				buff_func = "on_hit_debuff_enemy_defence",
-				event = "on_hit"
+				buff_func = "on_hit_debuff_enemy_defence"
 			}
 		}
 	},
@@ -718,7 +705,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_hit",
 				buff_to_add = "markus_huntsman_headshot_no_ammo_count_counter",
-				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit_range"
 			}
 		}
@@ -742,10 +728,9 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_ammo_used",
-				event_buff = true,
-				buff_func = "markus_huntsman_free_shot",
+				icon = "markus_huntsman_increased_damage_to_wounded_enemies",
 				max_stacks = 1,
-				icon = "markus_huntsman_increased_damage_to_wounded_enemies"
+				buff_func = "markus_huntsman_free_shot"
 			}
 		}
 	},
@@ -754,9 +739,8 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				max_stacks = 1,
 				name = "markus_huntsman_headshots_restore_health",
-				event_buff = true,
-				buff_func = "markus_huntsman_increase_reload_speed",
-				event = "on_hit"
+				event = "on_hit",
+				buff_func = "markus_huntsman_increase_reload_speed"
 			}
 		}
 	},
@@ -785,7 +769,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_critical_action",
 				name = "markus_huntsman_passive_crit_buff_removal",
-				event_buff = true,
 				buff_func = "remove_markus_huntsman_passive_crit_buff"
 			}
 		}
@@ -794,7 +777,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "heal_finesse_damage_on_ranged"
 			}
 		}
@@ -822,7 +804,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_hit",
 				buff_to_add = "markus_huntsman_power_on_headshot_buff",
-				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit_headshot"
 			}
 		}
@@ -840,7 +821,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_huntsman_auto_headshot",
-				event_buff = true,
 				buff_func = "add_buff_stack_on_melee_critical_hit",
 				event = "on_hit",
 				remove_buff_func = "on_crit_passive_removed",
@@ -852,7 +832,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_huntsman_auto_headshot",
-				event_buff = true,
 				buff_func = "markus_huntsman_passive_on_melee_kills",
 				event = "on_kill",
 				counter_buff_to_add = "markus_huntsman_passive_melee_kills_counter",
@@ -885,10 +864,9 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				buff_to_add = "markus_huntsman_defence_buff",
-				max_stacks = 1,
-				event_buff = true,
-				buff_func = "add_buff_stack_on_special_kill",
 				event = "on_kill",
+				buff_func = "add_buff_stack_on_special_kill",
+				max_stacks = 1,
 				max_sub_buff_stacks = 4
 			}
 		}
@@ -907,7 +885,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_damage_taken",
 				buff_func = "remove_ref_buff_stack",
-				event_buff = true,
 				reference_buff = "markus_huntsman_stacking_damage_reduction_on_kills"
 			}
 		}
@@ -917,7 +894,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_boss_killed",
 				buff_to_add = "markus_huntsman_damage_reduction_on_monster_kill_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -943,7 +919,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_special_killed",
-				event_buff = true,
 				buff_func = "restore_ammo_on_special_kill"
 			}
 		}
@@ -960,7 +935,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				buff_to_add = "markus_huntsman_invuln_flash",
 				recharge_buff = "markus_huntsman_ult_on_death_delay",
-				event_buff = true,
 				buff_func = "markus_huntsman_ult_on_death",
 				event = "on_damage_taken",
 				icon = "markus_huntsman_damage_reduction_on_monster_kill"
@@ -971,9 +945,9 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				remove_buff_func = "remove_invulnd_flash",
-				perk = "invincibility",
 				apply_buff_func = "add_invulnd_flash",
-				duration = 1
+				duration = 1,
+				perk = buff_perks.invulnerable
 			}
 		}
 	},
@@ -995,7 +969,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -1004,7 +977,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -1046,19 +1018,18 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				remove_buff_func = "end_knight_activated_ability",
 				icon = "markus_knight_activated_ability",
-				perk = "uninterruptible"
+				perk = buff_perks.uninterruptible
 			}
 		}
 	},
 	markus_knight_vanguard = {
 		buffs = {
 			{
-				multiplier = 1,
 				name = "vanguard",
-				event_buff = true,
+				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing"
+				perk = buff_perks.tank_healing
 			}
 		}
 	},
@@ -1067,24 +1038,22 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	markus_knight_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -1098,10 +1067,9 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_cooldown_on_stagger_elite = {
 		buffs = {
 			{
-				buff_to_add = "markus_knight_cooldown_buff",
-				event_buff = true,
-				buff_func = "markus_knight_reduce_cooldown_on_stagger",
 				event = "on_stagger",
+				buff_to_add = "markus_knight_cooldown_buff",
+				buff_func = "markus_knight_reduce_cooldown_on_stagger",
 				enemy_type = {
 					"elite"
 				}
@@ -1121,10 +1089,9 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_power_level_on_stagger_elite = {
 		buffs = {
 			{
-				buff_to_add = "markus_knight_power_level_on_stagger_elite_buff",
-				event_buff = true,
-				buff_func = "buff_on_stagger_enemy",
 				event = "on_stagger",
+				buff_to_add = "markus_knight_power_level_on_stagger_elite_buff",
+				buff_func = "buff_on_stagger_enemy",
 				enemy_type = {
 					"elite"
 				}
@@ -1146,7 +1113,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_push",
 				buff_to_add = "markus_knight_attack_speed_on_push_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1250,9 +1216,8 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_guard_buff = {
 		buffs = {
 			{
-				stat_buff = "damage_taken",
 				max_stacks = 1,
-				event_buff = true,
+				stat_buff = "damage_taken",
 				buff_func = "markus_knight_guard_damage_taken",
 				event = "on_damage_taken",
 				icon = "markus_knight_passive_power_increase"
@@ -1288,7 +1253,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_block",
 				buff_to_add = "markus_knight_free_pushes_on_block_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1297,10 +1261,10 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				icon = "markus_knight_free_pushes_on_block",
-				perk = "no_push_fatigue_cost",
 				stat_buff = "push_power",
 				max_stacks = 1,
-				refresh_durations = true
+				refresh_durations = true,
+				perk = buff_perks.no_push_fatigue_cost
 			}
 		}
 	},
@@ -1328,9 +1292,11 @@ TalentBuffTemplates.empire_soldier = {
 	markus_knight_ability_invulnerability_buff = {
 		buffs = {
 			{
-				multiplier = -1,
 				icon = "markus_knight_ability_invulnerability",
+				multiplier = -1,
 				stat_buff = "damage_taken",
+				refresh_durations = true,
+				max_stacks = 1,
 				duration = 5
 			}
 		}
@@ -1339,7 +1305,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_charge_ability_hit_blast",
-				event_buff = true,
 				buff_func = "on_hit_debuff_enemy_defence"
 			}
 		}
@@ -1348,7 +1313,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_charge_ability_hit",
-				event_buff = true,
 				buff_func = "on_hit_debuff_enemy_defence"
 			}
 		}
@@ -1358,7 +1322,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_charge_ability_hit_blast",
 				buff_to_add = "markus_knight_ability_attack_speed_enemy_hit_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1368,7 +1331,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_charge_ability_hit",
 				buff_to_add = "markus_knight_ability_attack_speed_enemy_hit_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1386,7 +1348,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -1395,7 +1356,6 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -1403,9 +1363,8 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_passive = {
 		buffs = {
 			{
-				event = "on_hit",
 				buff_to_add = "markus_mercenary_passive_proc",
-				event_buff = true,
+				event = "on_hit",
 				buff_func = "gain_markus_mercenary_passive_proc"
 			}
 		}
@@ -1420,7 +1379,7 @@ TalentBuffTemplates.empire_soldier = {
 	markus_mercenary_passive_uninterruptible_heavy = {
 		buffs = {
 			{
-				perk = "uninterruptible_heavy"
+				perk = buff_perks.uninterruptible_heavy
 			}
 		}
 	},
@@ -1447,37 +1406,34 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	markus_mercenary_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	markus_mercenary_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -1509,7 +1465,6 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_hit",
 				buff_to_add = "markus_mercenary_counter_buff",
-				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit"
 			}
 		}
@@ -1534,12 +1489,11 @@ TalentBuffTemplates.empire_soldier = {
 			{
 				event = "on_critical_action",
 				icon = "markus_mercenary_crit_count",
-				event_buff = true,
+				max_stacks = 1,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
-				perk = "guaranteed_crit",
 				priority_buff = true,
-				max_stacks = 1
+				perk = buff_perks.guaranteed_crit
 			}
 		}
 	},

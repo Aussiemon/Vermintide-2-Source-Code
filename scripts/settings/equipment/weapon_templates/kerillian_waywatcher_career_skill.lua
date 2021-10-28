@@ -24,6 +24,9 @@ weapon_template.actions = {
 			zoom_condition_function = function ()
 				return true
 			end,
+			unzoom_condition_function = function (end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -77,6 +80,9 @@ weapon_template.actions = {
 			zoom_condition_function = function ()
 				return true
 			end,
+			unzoom_condition_function = function (end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
 			allowed_chain_actions = {
 				{
 					sub_action = "default",
@@ -107,7 +113,6 @@ weapon_template.actions = {
 	},
 	action_career_release = {
 		default = {
-			speed = 9000,
 			ammo_usage = 0,
 			fire_sound_event = "player_combat_weapon_bow_fire_light_homing",
 			sphere_sweep_length = 50,
@@ -117,22 +122,26 @@ weapon_template.actions = {
 			weapon_action_hand = "left",
 			multi_projectile_spread = 0.1,
 			kind = "career_we_three",
-			charge_value = "light_attack",
+			aim_assist_max_ramp_multiplier = 0.8,
 			aim_assist_ramp_decay_delay = 0.3,
 			anim_end_event = "ability_finished",
 			fire_time = 0.1,
 			single_target = true,
-			aim_assist_max_ramp_multiplier = 0.8,
+			speed = 9000,
 			aim_assist_ramp_multiplier = 0.4,
 			anim_event = "waywatcher_trueflight_ability_shoot",
 			apply_recoil = true,
 			extra_fire_sound_event = "Play_career_ability_waywatcher_shot",
 			hit_effect = "kerillian_ability_trueflight_arrow_impact",
 			sphere_sweep_radius = 2,
+			charge_value = "light_attack",
 			uninterruptible = true,
 			ignore_shield_hit = true,
 			total_time = 0.28,
 			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
+			unzoom_condition_function = function (end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {},
@@ -163,11 +172,14 @@ weapon_template.actions = {
 	action_two = {
 		default = {
 			kind = "career_dummy",
-			weapon_action_hand = "left",
 			anim_end_event = "ability_finished",
 			anim_event = "waywatcher_trueflight_ability_cancel",
+			weapon_action_hand = "left",
 			total_time = 0.35,
 			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
+			unzoom_condition_function = function (end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {}
@@ -207,7 +219,7 @@ weapon_template.display_unit = "units/weapons/weapon_display/display_bow"
 weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.bow
 weapon_template.wield_anim = "to_longbow"
 weapon_template.wield_anim_no_ammo = "to_longbow_noammo"
-weapon_template.crosshair_style = "default"
+weapon_template.crosshair_style = "projectile"
 weapon_template.no_ammo_reload_event = "reload"
 weapon_template.buff_type = "RANGED_ABILITY"
 weapon_template.weapon_type = "LONGBOW_TRUEFLIGHT"

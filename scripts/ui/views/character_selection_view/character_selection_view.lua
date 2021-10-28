@@ -438,7 +438,7 @@ CharacterSelectionView._change_screen_by_name = function (self, screen_name, sub
 		end
 	end
 
-	assert(settings_index, "[CharacterSelectionView] - Could not find state by name %s", screen_name)
+	fassert(settings_index, "[CharacterSelectionView] - Could not find state by name %s", screen_name)
 
 	self._title_widget.content.text = settings.display_name
 	self._title_description_widget.content.text = settings.description

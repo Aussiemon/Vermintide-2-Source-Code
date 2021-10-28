@@ -53,20 +53,22 @@ MatchmakingStateJoinGame.on_enter = function (self, state_context)
 end
 
 MatchmakingStateJoinGame.on_exit = function (self)
-	if self._popup_profile_picker then
-		if self._ingame_ui:unavailable_hero_popup_active() then
-			self._ingame_ui:hide_unavailable_hero_popup()
-		end
+	local ui_manager = Managers.ui
 
-		self._popup_profile_picker = nil
+	if ui_manager:get_active_popup("profile_picker") then
+		ui_manager:close_popup("profile_picker")
 	end
 end
 
 MatchmakingStateJoinGame.update = function (self, dt, t)
-	if self._ingame_ui:unavailable_hero_popup_active() then
-		local popup_result = self._popup_profile_picker:query_result()
+	local ui_manager = Managers.ui
+	local profile_picker = ui_manager:get_active_popup("profile_picker")
+
+	if profile_picker then
+		local popup_result = profile_picker:query_result()
 
 		if popup_result then
+			self._profile_picker_shown = false
 			self._selected_hero_at_t = t
 			local cancel_matchmaking = self:_handle_popup_result(popup_result, t)
 
@@ -78,8 +80,8 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 		end
 
 		self:_update_lobby_data(dt, t)
-	elseif self._popup_profile_picker then
-		self._popup_profile_picker = nil
+	elseif self._profile_picker_shown then
+		self._profile_picker_shown = false
 
 		self._matchmaking_manager:cancel_matchmaking()
 
@@ -114,7 +116,7 @@ MatchmakingStateJoinGame.update = function (self, dt, t)
 
 		if join_by_lobby_browser then
 			mm_printf_force("Abort from lobby browser or invite")
-			matchmaking_manager:cancel_join_lobby("user_cancel")
+			matchmaking_manager:cancel_join_lobby("cancelled")
 
 			return MatchmakingStateIdle, self.state_context
 		elseif Managers.account:user_detached() then
@@ -217,7 +219,7 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 		self._matchmaking_manager:send_system_chat_message(status_message)
 	end
 
-	self:_remove_join_popup()
+	Managers.ui:close_popup("profile_picker")
 
 	return cancel
 end
@@ -255,7 +257,10 @@ MatchmakingStateJoinGame._spawn_join_popup = function (self, dt, t)
 	local auto_cancel_time = MatchmakingSettings.JOIN_LOBBY_TIME_UNTIL_AUTO_CANCEL
 	local join_by_lobby_browser = self.state_context.join_by_lobby_browser
 	local difficulty = self.lobby_client:lobby_data("difficulty")
-	self._popup_profile_picker = self._ingame_ui:show_unavailable_hero_popup(profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data)
+
+	Managers.ui:open_popup("profile_picker", profile_index, career_index, auto_cancel_time, join_by_lobby_browser, difficulty, self._lobby_data)
+
+	self._profile_picker_shown = true
 	local time_manager = Managers.time
 	self._hero_popup_at_t = time_manager:time("game")
 	self._show_popup = false
@@ -271,12 +276,6 @@ MatchmakingStateJoinGame._update_popup_timeout = function (self, dt, t)
 		self._matchmaking_manager:send_system_chat_message(status_message)
 		self._matchmaking_manager:cancel_matchmaking()
 	end
-end
-
-MatchmakingStateJoinGame._remove_join_popup = function (self)
-	self._ingame_ui:hide_unavailable_hero_popup()
-
-	self._popup_profile_picker = nil
 end
 
 MatchmakingStateJoinGame._request_profile_from_host = function (self, hero_index)

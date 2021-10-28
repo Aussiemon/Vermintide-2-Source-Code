@@ -1,40 +1,51 @@
 Updator = class(Updator)
 
 Updator.init = function (self)
+	self._updator_autoindex = 1
 	self._updators = {}
-	self._updators_by_name = {}
+end
+
+local function error_handler(err)
+	return string.format("[Updator] Error: %s\n%s", err, Script.callstack())
 end
 
 Updator.update = function (self, dt)
-	for _, func in pairs(self._updators) do
-		func(dt)
-	end
+	for id, func in pairs(self._updators) do
+		local ok, err_str = xpcall(func, error_handler, dt)
 
-	for _, func in pairs(self._updators_by_name) do
-		func(dt)
-	end
-end
+		if not ok then
+			self._updators[id] = nil
 
-Updator.add_updator = function (self, func, name)
-	if name then
-		self._updators_by_name[name] = func
-	else
-		local id = #self._updators + 1
-		self._updators[id] = func
-
-		return id
+			print_error(err_str)
+			printf("[Updator] Warning: updator %q threw an error and has been detached", id)
+		end
 	end
 end
 
-Updator.remove_updator = function (self, id)
+Updator.add = function (self, func, id)
+	if not id then
+		id = self._updator_index
+		self._updator_index = id + 1
+	end
+
+	if not self._updators[id] then
+		printf("[Updator] Warning: replaced updator at index %q", id)
+	end
+
+	self._updators[id] = func
+
+	return id
+end
+
+Updator.remove = function (self, id)
+	if not self._updators[id] then
+		printf("[Updator] Warning: tried to remove updator at index %q, but there was none", id)
+	end
+
 	self._updators[id] = nil
 end
 
-Updator.remove_updator_by_name = function (self, name)
-	self._updators_by_name[name] = nil
-end
-
-Updator.clear_updators = function (self)
+Updator.clear = function (self)
 	table.clear(self._updators)
 end
 

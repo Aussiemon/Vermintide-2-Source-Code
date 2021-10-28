@@ -1,6 +1,5 @@
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
-require("scripts/ui/ui_element")
 require("scripts/ui/ui_widgets")
 
 local definitions = dofile("scripts/ui/views/console_cursor_view_definitions")

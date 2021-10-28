@@ -120,4 +120,10 @@ LevelHelper.find_dialogue_unit = function (self, world, dialogue_profile)
 	return intro_vo_unit
 end
 
+LevelHelper.get_base_level = function (self, level_key)
+	local level_settings = LevelSettings[level_key]
+
+	return (level_settings and level_settings.base_level_name) or level_key
+end
+
 return

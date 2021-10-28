@@ -74,15 +74,20 @@ AIShieldUserExtension.break_shield = function (self)
 	local network_transmit = Managers.state.network.network_transmit
 	local game_object_id = Managers.state.unit_storage:go_id(unit)
 	local reason_id = NetworkLookup.item_drop_reasons[reason]
+	local item_dropped = false
 
 	for i = 1, #inventory_item_definitions, 1 do
 		local item = inventory_item_definitions[i]
 		local success, item_unit = ai_inventory_extension:drop_single_item(i, reason)
 
 		if success then
+			item_dropped = true
+
 			network_transmit:send_rpc_clients("rpc_ai_drop_single_item", game_object_id, i, reason_id)
 		end
 	end
+
+	return item_dropped
 end
 
 AIShieldUserExtension.can_block_attack = function (self, attacker_unit, trueflight_blocking, hit_direction)

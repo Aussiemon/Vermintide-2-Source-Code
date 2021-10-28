@@ -926,6 +926,10 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 		if Development.parameter("twitch_debug_voting") then
 			self._activated = true
 		end
+
+		if self._activated then
+			Managers.telemetry.events:twitch_mode_activated()
+		end
 	end
 end
 
@@ -934,6 +938,7 @@ TwitchManager.debug_activate_twitch_game_mode = function (self)
 
 	if twitch_debug_voting then
 		Managers.state.event:trigger("activate_twitch_game_mode")
+		Managers.telemetry.events:twitch_mode_activated()
 
 		self._twitch_game_mode = TwitchGameMode:new(self)
 
@@ -1373,6 +1378,8 @@ TwitchGameMode._trigger_new_vote = function (self)
 end
 
 TwitchGameMode.cb_on_vote_complete = function (self, current_vote)
+	Managers.telemetry.events:twitch_poll_completed(current_vote)
+
 	local winning_template = TwitchVoteTemplates[current_vote.winning_template_name]
 	self._funds = self._funds + winning_template.cost
 	self._used_vote_templates[winning_template.name] = NUM_ROUNDS_TO_DISABLE_USED_VOTES

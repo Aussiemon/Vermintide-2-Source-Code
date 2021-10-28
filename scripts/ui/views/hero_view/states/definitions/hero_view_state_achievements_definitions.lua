@@ -247,7 +247,7 @@ local scenegraph_definition = {
 		}
 	},
 	category_window = {
-		vertical_alignment = "ceter",
+		vertical_alignment = "center",
 		parent = "left_window",
 		horizontal_alignment = "center",
 		size = category_window_size,
@@ -258,7 +258,7 @@ local scenegraph_definition = {
 		}
 	},
 	category_window_mask = {
-		vertical_alignment = "ceter",
+		vertical_alignment = "center",
 		parent = "category_window",
 		horizontal_alignment = "center",
 		size = {
@@ -324,8 +324,22 @@ local scenegraph_definition = {
 			3
 		}
 	},
+	search_input = {
+		vertical_alignment = "top",
+		parent = "window",
+		horizontal_alignment = "center",
+		size = {
+			800,
+			42
+		},
+		position = {
+			280,
+			-174,
+			50
+		}
+	},
 	achievement_window = {
-		vertical_alignment = "ceter",
+		vertical_alignment = "center",
 		parent = "right_window",
 		horizontal_alignment = "center",
 		size = achievement_window_size,
@@ -336,7 +350,7 @@ local scenegraph_definition = {
 		}
 	},
 	achievement_window_mask = {
-		vertical_alignment = "ceter",
+		vertical_alignment = "center",
 		parent = "achievement_window",
 		horizontal_alignment = "center",
 		size = {
@@ -416,9 +430,9 @@ local scenegraph_definition = {
 	quest_timer = {
 		vertical_alignment = "bottom",
 		parent = "achievement_window",
-		horizontal_alignment = "center",
+		horizontal_alignment = "left",
 		size = {
-			achievement_window_size[1] - 120,
+			achievement_window_size[1] - 70,
 			50
 		},
 		position = {
@@ -962,25 +976,10 @@ local quest_refresh_title_text = {
 	upper_case = false,
 	localize = false,
 	use_shadow = true,
-	horizontal_alignment = "left",
-	vertical_alignment = "center",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
-local quest_refresh_value_text = {
-	font_size = 28,
-	upper_case = false,
-	localize = false,
-	use_shadow = true,
 	horizontal_alignment = "right",
 	vertical_alignment = "center",
 	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,
 		0,
@@ -1004,7 +1003,7 @@ local quest_bar_title_text = {
 }
 local quest_bar_timer_text = {
 	font_size = 24,
-	upper_case = true,
+	upper_case = false,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "right",
@@ -1034,23 +1033,6 @@ local no_entries_overlay_text_style = {
 		10
 	}
 }
-local summary_quest_title_style = {
-	word_wrap = true,
-	upper_case = true,
-	localize = false,
-	use_shadow = true,
-	font_size = 28,
-	horizontal_alignment = "center",
-	vertical_alignment = "center",
-	dynamic_font_size = true,
-	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_default", 255),
-	offset = {
-		0,
-		0,
-		2
-	}
-}
 local summary_text_style = {
 	font_size = 26,
 	upper_case = false,
@@ -1061,13 +1043,13 @@ local summary_text_style = {
 	font_type = "hell_shark_header",
 	text_color = {
 		255,
-		20,
-		20,
-		20
+		5,
+		5,
+		5
 	},
 	offset = {
 		0,
-		0,
+		-50,
 		2
 	}
 }
@@ -2395,6 +2377,463 @@ local function create_quest_book(scenegraph_id)
 	}
 end
 
+local function create_quest_category_button_bg(scenegraph_id)
+	local hover_frame_settings = UIFrameSettings.frame_outer_glow_02
+	local hover_frame_spacing = hover_frame_settings.texture_sizes.horizontal[2]
+
+	return {
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "hotspot"
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "hover_frame",
+					texture_id = "hover_frame",
+					content_check_function = function (content)
+						return content.hotspot.is_hover
+					end
+				},
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			texture_id = "tab_menu_bg_02",
+			hotspot = {},
+			hover_frame = hover_frame_settings.texture
+		},
+		style = {
+			hover_frame = {
+				texture_size = hover_frame_settings.texture_size,
+				texture_sizes = hover_frame_settings.texture_sizes,
+				frame_margins = {
+					-hover_frame_spacing,
+					-hover_frame_spacing
+				},
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					10
+				}
+			},
+			texture_id = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			}
+		}
+	}
+end
+
+local function create_search_input_widget(scenegraph_id)
+	local frame_settings = UIFrameSettings.button_frame_01
+	local glow_settings = UIFrameSettings.frame_outer_glow_01
+	local glow_width = glow_settings.texture_sizes.horizontal[2]
+	local size = scenegraph_definition[scenegraph_id].size
+
+	return {
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "hotspot"
+				},
+				{
+					pass_type = "rect",
+					style_id = "bg"
+				},
+				{
+					pass_type = "texture",
+					style_id = "bg_fade",
+					texture_id = "bg_fade"
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame"
+				},
+				{
+					style_id = "detail_left",
+					pass_type = "texture",
+					content_id = "details"
+				},
+				{
+					style_id = "detail_right",
+					pass_type = "texture_uv",
+					content_id = "details"
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "glow",
+					texture_id = "glow",
+					content_check_function = function (content)
+						return content.input_active
+					end
+				},
+				{
+					style_id = "search_placeholder",
+					pass_type = "text",
+					text_id = "search_placeholder",
+					content_check_function = function (content)
+						return content.search_query == ""
+					end
+				},
+				{
+					style_id = "search_query",
+					pass_type = "text",
+					text_id = "search_query",
+					content_change_function = function (content, style)
+						if not content.input_active then
+							style.caret_color[1] = 0
+						else
+							style.caret_color[1] = 127 + 128 * math.sin(5 * Managers.time:time("ui"))
+						end
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "search_icon",
+					texture_id = "search_icon",
+					content_check_function = function (content)
+						return not content.help_tooltip.is_hover
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "search_icon_hover",
+					texture_id = "search_icon_hover",
+					content_check_function = function (content)
+						return content.help_tooltip.is_hover
+					end
+				},
+				{
+					style_id = "help_tooltip",
+					pass_type = "hover",
+					content_id = "help_tooltip"
+				},
+				{
+					style_id = "help_tooltip",
+					pass_type = "tooltip_text",
+					text_id = "text_id",
+					content_id = "help_tooltip",
+					content_check_function = function (content)
+						return content.is_hover
+					end
+				},
+				{
+					style_id = "clear_icon",
+					pass_type = "hotspot",
+					content_id = "clear_hotspot"
+				},
+				{
+					style_id = "clear_icon",
+					texture_id = "clear_icon",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.search_query ~= ""
+					end,
+					content_change_function = function (content, style)
+						local clear_hotspot = content.clear_hotspot
+						local is_hover = clear_hotspot.is_hover
+
+						if is_hover ~= clear_hotspot.was_hover then
+							clear_hotspot.was_hover = is_hover
+
+							if is_hover then
+								Colors.copy_to(style.color, Colors.color_definitions.font_title)
+							else
+								Colors.copy_to(style.color, Colors.color_definitions.very_dark_gray)
+							end
+						end
+					end
+				}
+			}
+		},
+		content = {
+			search_placeholder = "achievement_search_prompt",
+			bg_fade = "button_state_default",
+			clear_icon = "friends_icon_close",
+			search_icon = "store_info_contract_off",
+			input_active = false,
+			search_query = "",
+			caret_index = 1,
+			search_icon_hover = "store_info_contract_on",
+			text_index = 1,
+			search_icon_lerp_t = 0,
+			hotspot = {},
+			frame = frame_settings.texture,
+			glow = glow_settings.texture,
+			details = {
+				texture_id = "button_detail_04",
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				}
+			},
+			clear_hotspot = {},
+			help_tooltip = {
+				text_id = "n/a"
+			}
+		},
+		style = {
+			bg = {
+				color = {
+					255,
+					200,
+					200,
+					200
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
+			},
+			bg_fade = {
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			frame = {
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				offset = {
+					0,
+					0,
+					2
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			detail_left = {
+				horizontal_alignment = "left",
+				offset = {
+					-34,
+					0,
+					3
+				},
+				texture_size = {
+					60,
+					42
+				}
+			},
+			detail_right = {
+				horizontal_alignment = "right",
+				offset = {
+					34,
+					0,
+					3
+				},
+				texture_size = {
+					60,
+					42
+				}
+			},
+			glow = {
+				frame_margins = {
+					-glow_width,
+					-glow_width
+				},
+				texture_size = glow_settings.texture_size,
+				texture_sizes = glow_settings.texture_sizes,
+				offset = {
+					0,
+					0,
+					3
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			search_placeholder = {
+				horizontal_alignment = "left",
+				localize = true,
+				font_size = 21,
+				pixel_perfect = true,
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_arial",
+				text_color = {
+					255,
+					45,
+					45,
+					45
+				},
+				offset = {
+					47,
+					-3,
+					5
+				}
+			},
+			search_query = {
+				word_wrap = false,
+				font_size = 21,
+				horizontal_scroll = true,
+				pixel_perfect = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark_arial",
+				text_color = Colors.get_table("black"),
+				offset = {
+					47,
+					13,
+					3
+				},
+				caret_size = {
+					2,
+					26
+				},
+				caret_offset = {
+					0,
+					-6,
+					6
+				},
+				caret_color = Colors.get_table("black"),
+				size = {
+					size[1] - 90,
+					size[2]
+				}
+			},
+			search_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				color = {
+					255,
+					80,
+					80,
+					80
+				},
+				texture_size = {
+					45,
+					45
+				},
+				offset = {
+					0,
+					0,
+					7
+				}
+			},
+			search_icon_hover = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				texture_size = {
+					45,
+					45
+				},
+				offset = {
+					0,
+					0,
+					8
+				}
+			},
+			clear_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "right",
+				color = {
+					255,
+					80,
+					80,
+					80
+				},
+				texture_size = {
+					32,
+					32
+				},
+				area_size = {
+					32,
+					32
+				},
+				offset = {
+					-15,
+					0,
+					7
+				}
+			},
+			help_tooltip = {
+				font_size = 18,
+				max_width = 1500,
+				localize = false,
+				cursor_side = "right",
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				draw_downwards = true,
+				font_type = "hell_shark",
+				text_color = Colors.get_table("white"),
+				line_colors = {
+					Colors.get_table("orange_red")
+				},
+				cursor_offset = {
+					0,
+					30
+				},
+				offset = {
+					0,
+					0,
+					50
+				},
+				area_size = {
+					45,
+					45
+				}
+			}
+		}
+	}
+end
+
 local disable_with_gamepad = true
 local widgets = {
 	window = UIWidgets.create_frame("window", scenegraph_definition.window.size, "menu_frame_11", 40),
@@ -2456,6 +2895,7 @@ local widgets = {
 	title_text = UIWidgets.create_simple_text(Localize("achv_menu_title"), "title_text", nil, nil, title_text_style),
 	achievement_scrollbar = UIWidgets.create_chain_scrollbar("achievement_scrollbar", nil, scenegraph_definition.achievement_scrollbar.size),
 	category_scrollbar = UIWidgets.create_chain_scrollbar("category_scrollbar", "category_window_mask", scenegraph_definition.category_scrollbar.size),
+	search_input = create_search_input_widget("search_input"),
 	achievement_window = {
 		scenegraph_id = "achievement_window_mask",
 		element = {
@@ -2590,9 +3030,9 @@ local summary_widgets = {
 	summary_achievement_bar_4 = UIWidgets.create_statistics_bar("summary_achievement_bar_4", scenegraph_definition.summary_achievement_bar_4.size),
 	summary_achievement_bar_5 = UIWidgets.create_statistics_bar("summary_achievement_bar_5", scenegraph_definition.summary_achievement_bar_5.size),
 	summary_achievement_bar_6 = UIWidgets.create_statistics_bar("summary_achievement_bar_6", scenegraph_definition.summary_achievement_bar_6.size),
-	summary_quest_bar_background_1 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_1"),
-	summary_quest_bar_background_2 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_2"),
-	summary_quest_bar_background_3 = UIWidgets.create_simple_texture("tab_menu_bg_02", "summary_quest_bar_background_3"),
+	summary_quest_bar_background_1 = create_quest_category_button_bg("summary_quest_bar_background_1"),
+	summary_quest_bar_background_2 = create_quest_category_button_bg("summary_quest_bar_background_2"),
+	summary_quest_bar_background_3 = create_quest_category_button_bg("summary_quest_bar_background_3"),
 	summary_quest_bar_1 = UIWidgets.create_quest_bar("summary_quest_bar_1", scenegraph_definition.summary_quest_bar_1.size),
 	summary_quest_bar_2 = UIWidgets.create_quest_bar("summary_quest_bar_2", scenegraph_definition.summary_quest_bar_2.size),
 	summary_quest_bar_3 = UIWidgets.create_quest_bar("summary_quest_bar_3", scenegraph_definition.summary_quest_bar_3.size),
@@ -2717,5 +3157,9 @@ return {
 	animation_definitions = animation_definitions,
 	quest_entry_definition = quest_entry_definition,
 	achievement_entry_definition = achievement_entry_definition,
-	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor")
+	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
+	virtual_keyboard_anchor_point = {
+		230,
+		350
+	}
 }

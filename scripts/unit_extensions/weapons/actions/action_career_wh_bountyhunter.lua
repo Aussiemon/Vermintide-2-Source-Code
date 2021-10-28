@@ -38,7 +38,9 @@ ActionCareerWHBountyhunter.client_owner_post_update = function (self, dt, ...)
 		self.start_activated_ability_cooldown_t = self.start_activated_ability_cooldown_t - dt
 
 		if self.start_activated_ability_cooldown_t <= 0 then
-			self.career_extension:start_activated_ability_cooldown(1, 0, 0)
+			local ignore_ability_readiness = true
+
+			self.career_extension:start_activated_ability_cooldown(1, 0, 0, ignore_ability_readiness)
 
 			self.start_activated_ability_cooldown_t = nil
 		end

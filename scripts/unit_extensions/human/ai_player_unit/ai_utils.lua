@@ -255,6 +255,12 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			end
 		end
 	end
+
+	local blackboard = BLACKBOARDS[attacker_unit]
+
+	if blackboard then
+		blackboard.hit_through_block = false
+	end
 end
 
 AiUtils.add_attack_intensity = function (target_unit, action, blackboard)
@@ -484,6 +490,26 @@ AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_h
 	network_manager.network_transmit:send_rpc_clients("rpc_link_unit", child_unit_id, child_node, parent_unit_id, parent_node)
 
 	return overpowering_blob_unit
+end
+
+AiUtils.spawn_nurgle_liquid_blob_dynamic = function (network_manager, spawn_pos, owner_unit)
+	local extension_init_data = {
+		health_system = {},
+		props_system = {
+			start_size = 0.3,
+			duration = 0.5,
+			end_size = 1
+		},
+		death_system = {
+			death_reaction_template = "nurgle_liquid_blob",
+			shrink_and_despawn_time = 3
+		}
+	}
+	local spawn_unit_name = "units/props/nurgle_liquid_blob/nurgle_liquid_blob_dynamic"
+	local network_template_name = "nurgle_liquid_blob_dynamic"
+	local blob_unit = Managers.state.unit_spawner:spawn_network_unit(spawn_unit_name, network_template_name, extension_init_data, spawn_pos)
+
+	return blob_unit
 end
 
 AiUtils.broadphase_query = function (position, radius, result_table)

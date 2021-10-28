@@ -232,8 +232,12 @@ bolt_of_change.spawn_lightning_strike_unit = function (data)
 	end
 end
 
+bolt_of_change.server_players_left_safe_zone = function (context, data)
+	data.has_left_safe_zone = true
+end
+
 bolt_of_change.server_update_function = function (context, data, dt, t)
-	if global_is_inside_inn then
+	if not data.has_left_safe_zone or global_is_inside_inn then
 		return
 	end
 

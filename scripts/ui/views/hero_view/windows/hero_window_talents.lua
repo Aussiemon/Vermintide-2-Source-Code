@@ -364,8 +364,12 @@ HeroWindowTalents._is_talent_pressed = function (self)
 				local hotspot_name = "hotspot" .. name_suffix
 				local hotspot = content[hotspot_name]
 
-				if hotspot.on_pressed and not hotspot.disabled and not hotspot.is_selected then
-					return i, j
+				if not hotspot.disabled then
+					if hotspot.on_pressed then
+						return i, j
+					elseif hotspot.on_right_click and hotspot.is_selected then
+						return i, 0
+					end
 				end
 			end
 		end

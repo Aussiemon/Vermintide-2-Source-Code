@@ -1,5 +1,4 @@
 PackageChunkPackages = {
-	"backend/local_backend/local_backend",
 	"core/stingray_renderer/renderer",
 	"core/fallback_resources/fallback_resources",
 	"core/stingray_renderer/lookup_tables/generator/generate_luts",

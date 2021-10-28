@@ -4204,7 +4204,7 @@ UITooltipPasses = {
 		end
 	},
 	mutators = {
-		setup_data = function ()
+		setup_data = function (pass_style)
 			local data = {
 				default_icon = "icons_placeholder",
 				text_pass_data = {},
@@ -4225,7 +4225,7 @@ UITooltipPasses = {
 					icon = "icons_placeholder"
 				},
 				style = {
-					text = {
+					text = (pass_style and pass_style.text) or {
 						vertical_alignment = "center",
 						horizontal_alignment = "left",
 						word_wrap = true,
@@ -4237,7 +4237,7 @@ UITooltipPasses = {
 							Colors.get_color_table_with_alpha("font_default", 255)
 						}
 					},
-					text_shadow = {
+					text_shadow = (pass_style and pass_style.text_shadow) or {
 						vertical_alignment = "center",
 						horizontal_alignment = "left",
 						word_wrap = true,
@@ -4250,7 +4250,7 @@ UITooltipPasses = {
 							-1
 						}
 					},
-					icon = {
+					icon = (pass_style and pass_style.icon) or {
 						color = {
 							255,
 							255,

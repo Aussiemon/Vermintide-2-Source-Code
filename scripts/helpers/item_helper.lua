@@ -95,10 +95,6 @@ ItemHelper.unmark_sign_in_reward_as_new = function (reward_id)
 end
 
 ItemHelper.has_new_sign_in_reward = function (reward_id)
-	if Managers.backend:is_local() then
-		return false
-	end
-
 	if reward_id then
 		local new_sign_in_rewards = PlayerData.new_sign_in_rewards
 		local reward_items = new_sign_in_rewards[reward_id]
@@ -484,6 +480,34 @@ ItemHelper.set_all_shop_item_seen = function (tab_cat)
 	for tab_name, _ in pairs(tab_cat) do
 		tab_cat[tab_name] = 0
 	end
+
+	PlayerData.store_new_items = false
+
+	if Managers.state.event then
+		Managers.state.event:trigger("set_all_shop_item_seen")
+	end
+end
+
+ItemHelper.has_unseen_shop_items = function ()
+	local backend_store = Managers.backend:get_interface("peddler")
+	local store_items = backend_store:get_peddler_stock()
+	local seen_items = PlayerData.seen_shop_items
+
+	for item_key, pedler_item in pairs(store_items) do
+		local master_item_data = pedler_item.data
+
+		if not seen_items[master_item_data.key] then
+			return true
+		end
+	end
+
+	for dlc_name, dlc_settings in pairs(StoreDlcSettingsByName) do
+		if not seen_items[dlc_name] then
+			return true
+		end
+	end
+
+	return false
 end
 
 return

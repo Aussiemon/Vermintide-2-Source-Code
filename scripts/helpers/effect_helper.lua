@@ -189,6 +189,11 @@ end
 
 EffectHelper.play_skinned_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked)
 	local effect_settings = MaterialEffectMappings[effect_name]
+
+	if not effect_settings then
+		return
+	end
+
 	local material = nil
 	local skip_particles = false
 

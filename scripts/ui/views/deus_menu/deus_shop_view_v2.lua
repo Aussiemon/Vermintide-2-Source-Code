@@ -376,6 +376,7 @@ DeusShopView.update = function (self, dt, t)
 	end
 
 	self:_update_player_data()
+	self:_update_hold_text()
 	self:_update_background_animations(dt)
 	self:_update_animations(dt)
 	self:_draw(dt, t)
@@ -652,6 +653,8 @@ DeusShopView._acquire_input = function (self, ignore_cursor_stack)
 		ShowCursorStack.push()
 		input_manager:enable_gamepad_cursor()
 	end
+
+	self._acquiring_input = true
 end
 
 DeusShopView._release_input = function (self, ignore_cursor_stack)
@@ -664,10 +667,12 @@ DeusShopView._release_input = function (self, ignore_cursor_stack)
 	}, 1, self._input_service_name, "DeusShopView")
 	input_manager:device_unblock_all_services("mouse")
 
-	if not ignore_cursor_stack then
+	if not ignore_cursor_stack and self._acquiring_input then
 		ShowCursorStack.pop()
 		input_manager:disable_gamepad_cursor()
 	end
+
+	self._acquiring_input = false
 end
 
 DeusShopView._update_button_hover_sound = function (self, widget)
@@ -1141,6 +1146,14 @@ DeusShopView._create_background_unit_definition = function (self)
 			}
 		}
 	}
+end
+
+DeusShopView._update_hold_text = function (self)
+	local widgets_by_name = self._widgets_by_name
+	local hold_to_buy_widget = widgets_by_name.hold_to_buy_text
+	local hold_to_buy_style = hold_to_buy_widget.style.text
+	local glow_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
+	hold_to_buy_style.text_color[1] = 100 + 155 * glow_progress
 end
 
 DeusShopView._update_background_animations = function (self, dt)

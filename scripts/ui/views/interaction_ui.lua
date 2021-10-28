@@ -142,6 +142,11 @@ local widget_definitions = {
 					pass_type = "texture"
 				},
 				{
+					pass_type = "texture",
+					style_id = "background_interaction_bar",
+					texture_id = "background_interaction_bar"
+				},
+				{
 					style_id = "button_text",
 					pass_type = "text",
 					text_id = "button_text",
@@ -188,22 +193,64 @@ local widget_definitions = {
 					content_check_function = function (content)
 						return content.title_text
 					end
+				},
+				{
+					style_id = "hotkey_text",
+					pass_type = "text",
+					text_id = "hotkey_text",
+					content_check_function = function (content)
+						return content.has_hotkey and not content.gamepad_active
+					end
+				},
+				{
+					style_id = "hotkey_text_shadow",
+					pass_type = "text",
+					text_id = "hotkey_text",
+					content_check_function = function (content)
+						return content.has_hotkey and not content.gamepad_active
+					end
 				}
 			}
 		},
 		content = {
-			text = "tooltip_text",
+			background_interaction_bar = "interaction_pop_up_bar_border",
 			title_text = "title_text",
-			background = "interaction_pop_up",
+			has_hotkey = false,
+			hotkey_text = " ",
 			button_text = "",
+			text = "tooltip_text",
+			background = "interaction_pop_up",
+			gamepad_active = false,
 			icon_textures = {}
 		},
 		style = {
 			background = {
 				offset = {
 					0,
-					0,
-					-100
+					-5,
+					-1
+				},
+				size = {
+					274,
+					82
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			background_interaction_bar = {
+				scenegraph_id = "interaction_bar",
+				offset = {
+					10,
+					12,
+					0
+				},
+				size = {
+					212,
+					10
 				},
 				color = {
 					255,
@@ -272,6 +319,41 @@ local widget_definitions = {
 				offset = {
 					2,
 					-2,
+					1
+				}
+			},
+			hotkey_text = {
+				font_size = 20,
+				upper_case = true,
+				pixel_perfect = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				scenegraph_id = "text_pivot",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				default_text_color = Colors.get_color_table_with_alpha("white", 255),
+				disabled_text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					-30,
+					-30,
+					2
+				}
+			},
+			hotkey_text_shadow = {
+				upper_case = true,
+				horizontal_alignment = "left",
+				font_size = 20,
+				pixel_perfect = true,
+				scenegraph_id = "text_pivot",
+				vertical_alignment = "center",
+				dynamic_font = true,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				default_text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					-32,
+					-32,
 					1
 				}
 			},
@@ -430,6 +512,16 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
+local function contains_key(table, element)
+	for key, value in pairs(table) do
+		if key == element then
+			return true
+		end
+	end
+
+	return false
+end
+
 InteractionUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -538,6 +630,7 @@ InteractionUI.update = function (self, dt, t, my_player)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")
+	local gamepad_active = self.input_manager:is_device_active("gamepad")
 	local player_unit = my_player.player_unit
 
 	if not player_unit then
@@ -556,7 +649,7 @@ InteractionUI.update = function (self, dt, t, my_player)
 
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
 	local interaction_bar_active = false
-	local title_text, action_text, interact_action, failed_reason, is_channeling, override_text_color, interaction_component = nil
+	local title_text, action_text, interact_action, failed_reason, is_channeling, override_text_color, interaction_component, hotkey_text = nil
 	local is_interacting = interactor_extension:is_interacting()
 	local is_waiting_for_interaction_approval = interactor_extension:is_waiting_for_interaction_approval()
 	local interaction_in_progress = is_interacting and not is_waiting_for_interaction_approval and not interactor_extension:is_aborting_interaction()
@@ -571,18 +664,31 @@ InteractionUI.update = function (self, dt, t, my_player)
 		end
 	end
 
-	title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component = self:_get_interaction_text(player_unit, is_channeling)
+	title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component, hotkey_text = self:_get_interaction_text(player_unit, is_channeling)
 
 	if action_text then
 		title_text = (title_text and Localize(title_text)) or ""
-		action_text = (action_text and Localize(action_text)) or ""
+
+		if failed_reason == "ammo_blocked" or failed_reason == "throwing_axe" then
+			local hold_to_reload_key = (Managers.input:is_device_active("gamepad") and "$KEY;Player__weapon_reload_hold_input:") or "$KEY;Player__weapon_reload_hold:"
+			action_text = (action_text and TextToUpper(Localize(action_text)) .. hold_to_reload_key) or ""
+		else
+			action_text = (action_text and Localize(action_text)) or ""
+		end
 
 		self:_assign_button_info(interact_action, failed_reason, is_channeling, override_text_color)
 
 		local widget_style = self.interaction_widget.style
 		local widget_content = self.interaction_widget.content
+		widget_content.gamepad_active = gamepad_active
 		widget_content.text = action_text
 		widget_content.title_text = title_text
+		local can_interact, failed_reason, interaction_type = interactor_extension:can_interact()
+		local has_hotkey = not not UISettings.interaction_hotkey_lookup[interaction_type]
+
+		self:_update_interaction_widget_size(has_hotkey, gamepad_active)
+
+		widget_content.hotkey_text = hotkey_text
 
 		if not self.draw_interaction_tooltip then
 			local icon_style = widget_style.icon_styles
@@ -593,6 +699,9 @@ InteractionUI.update = function (self, dt, t, my_player)
 			local title_text_style = widget_style.title_text
 			local title_text_shadow_style = widget_style.title_text_shadow
 			local background_style = widget_style.background
+			local hotkey_text_style = widget_style.hotkey_text
+			local hotkey_text_shadow_style = widget_style.hotkey_text_shadow
+			local background_interaction_bar_style = widget_style.background_interaction_bar
 			local fade_in_time = 0.1
 			local target_alpha = 255
 			self.interaction_animations.tooltip_icon_fade = UIAnimation.init(UIAnimation.function_by_time, icon_style.color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
@@ -603,6 +712,9 @@ InteractionUI.update = function (self, dt, t, my_player)
 			self.interaction_animations.tooltip_title_text_fade = UIAnimation.init(UIAnimation.function_by_time, title_text_style.text_color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
 			self.interaction_animations.tooltip_title_text_shadow_fade = UIAnimation.init(UIAnimation.function_by_time, title_text_shadow_style.text_color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
 			self.interaction_animations.tooltip_background_fade = UIAnimation.init(UIAnimation.function_by_time, background_style.color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
+			self.interaction_animations.hotkey_text_fade = UIAnimation.init(UIAnimation.function_by_time, hotkey_text_style.text_color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
+			self.interaction_animations.hotkey_text_shadow_fade = UIAnimation.init(UIAnimation.function_by_time, hotkey_text_shadow_style.text_color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
+			self.interaction_animations.background_interaction_bar_fade = UIAnimation.init(UIAnimation.function_by_time, background_interaction_bar_style.color, 1, 0, target_alpha, fade_in_time, math.easeInCubic)
 		end
 
 		self.draw_interaction_tooltip = true
@@ -638,9 +750,24 @@ InteractionUI.update = function (self, dt, t, my_player)
 	ui_scenegraph.pivot.local_position = BASE_OFFSET
 end
 
+InteractionUI._update_interaction_widget_size = function (self, has_hotkey, gamepad_active)
+	local interaction_widget = self.interaction_widget
+	interaction_widget.content.has_hotkey = has_hotkey
+	local style = interaction_widget.style
+
+	if has_hotkey and not gamepad_active then
+		style.background.size[2] = 112
+		style.background.offset[2] = -32.5
+	else
+		style.background.size[2] = 82
+		style.background.offset[2] = -5
+	end
+end
+
 InteractionUI._get_interaction_text = function (self, player_unit, is_channeling)
 	local interactor_extension = ScriptUnit.extension(player_unit, "interactor_system")
-	local title_text, action_text, interact_action, interaction_component, override_text_color = nil
+	local interactable_unit = interactor_extension:interactable_unit()
+	local title_text, action_text, interact_action, interaction_component, override_text_color, hotkey_text = nil
 	local can_interact, failed_reason, interaction_type = interactor_extension:can_interact()
 	local is_interacting, current_interaction_type = interactor_extension:is_interacting()
 	interaction_type = interaction_type or current_interaction_type
@@ -662,11 +789,19 @@ InteractionUI._get_interaction_text = function (self, player_unit, is_channeling
 		title_text, action_text, interact_action, override_text_color, interaction_component = self:_get_wielded_interaction_text(player_unit)
 	end
 
+	local has_hotkey = not not UISettings.interaction_hotkey_lookup[interaction_type]
+
+	if has_hotkey then
+		local hotkey = UISettings.interaction_hotkey_lookup[interaction_type]
+		local key_text = string.format("$KEY;ingame_menu__%s:", hotkey)
+		hotkey_text = TextToUpper(Localize("hotkey_reminder")) .. key_text
+	end
+
 	if GameSettingsDevelopment.disabled_interactions[interaction_type] then
 		title_text = "Currently Disabled"
 	end
 
-	return title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component
+	return title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component, hotkey_text
 end
 
 InteractionUI._get_wielded_interaction_text = function (self, player_unit)

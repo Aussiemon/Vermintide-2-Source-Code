@@ -81,12 +81,11 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 		local fulfill_requirements_for_weave_levels = InteractionDefinitions._fulfill_requirements_for_weave()
 
 		if fulfill_requirements_for_weave_levels then
-			local transition_params = {
+			Managers.ui:handle_transition("start_game_view_force", {
 				menu_sub_state_name = "weave_quickplay",
-				menu_state_name = "play"
-			}
-
-			Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
+				menu_state_name = "play",
+				use_fade = true
+			})
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
 		else
 			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)
@@ -121,11 +120,10 @@ InteractionDefinitions.weave_magic_forge_access.client.stop = function (world, i
 		local fulfill_requirements_for_weave_forge = InteractionDefinitions._fulfill_requirements_for_weave()
 
 		if fulfill_requirements_for_weave_forge then
-			local transition_params = {
+			Managers.ui:handle_transition("hero_view_force", {
+				use_fade = true,
 				menu_state_name = "weave_forge"
-			}
-
-			Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			})
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
 		else
 			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)
@@ -160,11 +158,10 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 		local fulfill_requirements_for_leaderboard = InteractionDefinitions._fullfill_requirements_for_weave_leaderboards()
 
 		if fulfill_requirements_for_leaderboard then
-			local transition_params = {
+			Managers.ui:handle_transition("start_game_view_force", {
+				use_fade = true,
 				menu_state_name = "leaderboard"
-			}
-
-			Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
+			})
 			Unit.flow_event(interactable_unit, "lua_interaction_success")
 		else
 			Managers.state.event:trigger("weave_tutorial_message", WeaveUITutorials.requirements_not_met)

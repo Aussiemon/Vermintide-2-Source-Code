@@ -62,14 +62,37 @@ return {
 		end
 	end,
 	post_process_terror_event = function (context, data, elements)
-		for _, element in ipairs(elements) do
+		for index, element in ipairs(elements) do
 			if element.breed_name then
+				local cloned_element = nil
+
 				if type(element.breed_name) == "string" then
-					element.breed_name = conversion_table[element.breed_name] or element.breed_name
-				else
-					for index, breed_name in ipairs(element.breed_name) do
-						element.breed_name[index] = conversion_table[breed_name] or breed_name
+					local different_breed = conversion_table[element.breed_name]
+
+					if different_breed then
+						cloned_element = table.clone(element)
+						cloned_element.breed_name = different_breed
 					end
+				else
+					local cloned_breed_name = nil
+
+					for breed_name_index, breed_name in ipairs(element.breed_name) do
+						local different_breed = conversion_table[breed_name]
+
+						if different_breed then
+							cloned_element = cloned_element or table.clone(element)
+							cloned_breed_name = cloned_breed_name or table.clone(element.breed_name)
+							cloned_breed_name[breed_name_index] = different_breed
+						end
+					end
+
+					if cloned_breed_name then
+						cloned_element.breed_name = cloned_breed_name
+					end
+				end
+
+				if cloned_element then
+					elements[index] = cloned_element
 				end
 			end
 		end
@@ -102,5 +125,8 @@ return {
 
 			data.check_at = t + ai_tweak_update_rate
 		end
+	end,
+	get_terror_event_tags = function (context, data, terror_event_tags)
+		terror_event_tags[#terror_event_tags + 1] = DeusTerrorEventTags.NO_SORCERERS
 	end
 }

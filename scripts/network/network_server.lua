@@ -239,6 +239,8 @@ NetworkServer.on_game_entered = function (self, game_network_manager)
 
 	self.game_network_manager = game_network_manager
 
+	Managers.account:update_presence()
+
 	if not DEDICATED_SERVER then
 		self.peers_completed_game_object_sync[self.my_peer_id] = true
 
@@ -576,10 +578,38 @@ NetworkServer.game_object_sync_done = function (self, peer_id)
 end
 
 NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id)
+	print("GOT approve_channel", channel_id, peer_id, instance_id)
+
+	if PEER_ID_TO_CHANNEL[peer_id] then
+		printf("Client with peer_id %s already has a channel %d", peer_id, PEER_ID_TO_CHANNEL[peer_id])
+
+		return false
+	end
+
 	PEER_ID_TO_CHANNEL[peer_id] = channel_id
 	CHANNEL_TO_PEER_ID[channel_id] = peer_id
 
-	print("GOT approve_channel", channel_id, peer_id, instance_id)
+	if DEDICATED_SERVER then
+		local mechanism = Managers.mechanism:game_mechanism()
+
+		if mechanism.get_slot_reservation_handler then
+			local slot_reservation_handler = mechanism:get_slot_reservation_handler()
+
+			slot_reservation_handler:send_slot_update_to_clients()
+		end
+	else
+		local party_manager = Managers.party
+		local has_free_slots = party_manager:any_party_has_free_slots(1)
+
+		if not has_free_slots then
+			print("Game is full, denied access.")
+
+			PEER_ID_TO_CHANNEL[peer_id] = nil
+			CHANNEL_TO_PEER_ID[channel_id] = nil
+
+			return false
+		end
+	end
 
 	local joined_peers = self._joined_peers
 	local connections = self._connections
@@ -597,25 +627,6 @@ NetworkServer.approve_channel = function (self, channel_id, peer_id, instance_id
 	connections[peer_id] = connection
 	joined_peers[#joined_peers + 1] = connection
 
-	if DEDICATED_SERVER then
-		local mechanism = Managers.mechanism:game_mechanism()
-
-		if mechanism.get_slot_reservation_handler then
-			local slot_reservation_handler = mechanism:get_slot_reservation_handler()
-
-			slot_reservation_handler:send_slot_update_to_clients()
-		end
-	else
-		local party_manager = Managers.party
-		local has_free_slots = party_manager:any_party_has_free_slots(1)
-
-		if not has_free_slots then
-			print("Game is full, denied access.")
-
-			return false
-		end
-	end
-
 	printf("Client with peer_id %s got APPROVED by server", peer_id)
 
 	return true
@@ -623,6 +634,8 @@ end
 
 NetworkServer.close_channel = function (self, peer_id)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
+
+	print("GOT close_channel", channel_id, peer_id)
 
 	if self._eac_server and channel_id then
 		EACServer.remove_peer(self._eac_server, channel_id)

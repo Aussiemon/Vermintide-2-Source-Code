@@ -5,7 +5,9 @@ local death_reactions = {
 				return
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
-				return
+				Managers.state.game_mode:level_object_killed(unit, killing_blow)
+				Unit.set_flow_variable(unit, "current_health", 0)
+				Unit.flow_event(unit, "lua_on_death")
 			end,
 			update = function (unit, dt, context, t, data)
 				Managers.state.unit_spawner:mark_for_deletion(unit)
@@ -15,7 +17,8 @@ local death_reactions = {
 		},
 		husk = {
 			pre_start = function (unit, context, t, killing_blow)
-				return
+				Managers.state.game_mode:level_object_killed(unit, killing_blow)
+				Unit.flow_event(unit, "lua_on_death")
 			end,
 			start = function (unit, context, t, killing_blow, is_server)
 				return

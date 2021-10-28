@@ -1443,6 +1443,10 @@ CharacterStateHelper.crouch = function (unit, t, first_person_extension, status_
 	first_person_extension:set_wanted_player_height("crouch", t)
 	ScriptUnit.extension(unit, "locomotion_system"):set_active_mover("crouch")
 	status_extension:set_crouching(true)
+
+	local buff_extension = ScriptUnit.extension(unit, "buff_system")
+
+	buff_extension:trigger_procs("on_crouch")
 end
 
 CharacterStateHelper.uncrouch = function (unit, t, first_person_extension, status_extension)

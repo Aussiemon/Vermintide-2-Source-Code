@@ -9,6 +9,8 @@ local DifficultySettings = rawget(_G, "DifficultySettings")
 require("scripts/settings/quest_settings")
 require("scripts/managers/achievements/achievement_template_helper")
 
+local check_level = AchievementTemplateHelper.check_level
+local check_level_difficulty = AchievementTemplateHelper.check_level_difficulty
 local check_level_list = AchievementTemplateHelper.check_level_list
 local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
 local hero_level = AchievementTemplateHelper.hero_level
@@ -56,27 +58,19 @@ AchievementTemplates.achievements = {
 		progress = function (statistics_db, stats_id)
 			local count = 0
 
-			if check_level_list(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}) then
+			if check_level(statistics_db, stats_id, LevelSettings.military.level_id) then
 				count = count + 1
 			end
 
-			if check_level_list(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}) then
+			if check_level(statistics_db, stats_id, LevelSettings.catacombs.level_id) then
 				count = count + 1
 			end
 
-			if check_level_list(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}) then
+			if check_level(statistics_db, stats_id, LevelSettings.mines.level_id) then
 				count = count + 1
 			end
 
-			if check_level_list(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}) then
+			if check_level(statistics_db, stats_id, LevelSettings.ground_zero.level_id) then
 				count = count + 1
 			end
 
@@ -86,18 +80,10 @@ AchievementTemplates.achievements = {
 			}
 		end,
 		requirements = function (statistics_db, stats_id)
-			local complete_military = check_level_list(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			})
-			local complete_catacombs = check_level_list(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			})
-			local complete_mines = check_level_list(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			})
-			local complete_ground_zero = check_level_list(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			})
+			local complete_military = check_level(statistics_db, stats_id, LevelSettings.military.level_id)
+			local complete_catacombs = check_level(statistics_db, stats_id, LevelSettings.catacombs.level_id)
+			local complete_mines = check_level(statistics_db, stats_id, LevelSettings.mines.level_id)
+			local complete_ground_zero = check_level(statistics_db, stats_id, LevelSettings.ground_zero.level_id)
 
 			return {
 				{
@@ -127,27 +113,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 				count = count + 1
 			end
 
@@ -157,27 +135,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 				count = count + 1
 			end
 
@@ -188,18 +158,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
-			local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff)
-			local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff)
-			local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff)
-			local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff)
+			local complete_military = check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff)
+			local complete_catacombs = check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff)
+			local complete_mines = check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff)
+			local complete_ground_zero = check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff)
 
 			return {
 				{
@@ -230,9 +192,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.normal.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
@@ -248,9 +208,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
@@ -266,9 +224,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
@@ -284,9 +240,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
@@ -302,9 +256,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.normal.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -320,9 +272,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -338,9 +288,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -356,9 +304,7 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -376,15 +322,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.normal.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -394,15 +336,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.normal.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -413,12 +351,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.normal.rank
-			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_bogenhafen_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_bogenhafen_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -443,15 +377,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -461,15 +391,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -480,12 +406,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
-			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_bogenhafen_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_bogenhafen_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -510,15 +432,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -528,15 +446,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -547,12 +461,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
-			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_bogenhafen_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_bogenhafen_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -577,15 +487,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -595,15 +501,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -614,12 +516,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
-			local complete_bogenhafen_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_bogenhafen_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_bogenhafen_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_bogenhafen_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -641,27 +539,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 				count = count + 1
 			end
 
@@ -671,27 +561,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 				count = count + 1
 			end
 
@@ -702,18 +584,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
-			local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff)
-			local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff)
-			local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff)
-			local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff)
+			local complete_military = check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff)
+			local complete_catacombs = check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff)
+			local complete_mines = check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff)
+			local complete_ground_zero = check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff)
 
 			return {
 				{
@@ -743,27 +617,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 				count = count + 1
 			end
 
@@ -773,27 +639,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff) then
 				count = count + 1
 			end
 
@@ -804,18 +662,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
-			local complete_military = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.military.level_id
-			}, diff)
-			local complete_catacombs = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.catacombs.level_id
-			}, diff)
-			local complete_mines = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.mines.level_id
-			}, diff)
-			local complete_ground_zero = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ground_zero.level_id
-			}, diff)
+			local complete_military = check_level_difficulty(statistics_db, stats_id, LevelSettings.military.level_id, diff)
+			local complete_catacombs = check_level_difficulty(statistics_db, stats_id, LevelSettings.catacombs.level_id, diff)
+			local complete_mines = check_level_difficulty(statistics_db, stats_id, LevelSettings.mines.level_id, diff)
+			local complete_ground_zero = check_level_difficulty(statistics_db, stats_id, LevelSettings.ground_zero.level_id, diff)
 
 			return {
 				{
@@ -921,27 +771,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 				count = count + 1
 			end
 
@@ -951,27 +793,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 				count = count + 1
 			end
 
@@ -982,18 +816,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
-			local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff)
-			local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff)
-			local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff)
-			local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff)
+			local complete_elven_ruins = check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff)
+			local complete_bell = check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff)
+			local complete_fort = check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff)
+			local complete_skaven_stronghold = check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff)
 
 			return {
 				{
@@ -1023,27 +849,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1053,27 +871,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1084,18 +894,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
-			local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff)
-			local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff)
-			local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff)
-			local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff)
+			local complete_elven_ruins = check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff)
+			local complete_bell = check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff)
+			local complete_fort = check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff)
+			local complete_skaven_stronghold = check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff)
 
 			return {
 				{
@@ -1125,27 +927,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1155,27 +949,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1186,18 +972,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
-			local complete_elven_ruins = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.elven_ruins.level_id
-			}, diff)
-			local complete_bell = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.bell.level_id
-			}, diff)
-			local complete_fort = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.fort.level_id
-			}, diff)
-			local complete_skaven_stronghold = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skaven_stronghold.level_id
-			}, diff)
+			local complete_elven_ruins = check_level_difficulty(statistics_db, stats_id, LevelSettings.elven_ruins.level_id, diff)
+			local complete_bell = check_level_difficulty(statistics_db, stats_id, LevelSettings.bell.level_id, diff)
+			local complete_fort = check_level_difficulty(statistics_db, stats_id, LevelSettings.fort.level_id, diff)
+			local complete_skaven_stronghold = check_level_difficulty(statistics_db, stats_id, LevelSettings.skaven_stronghold.level_id, diff)
 
 			return {
 				{
@@ -1303,27 +1081,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1333,27 +1103,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1364,18 +1126,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
-			local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff)
-			local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff)
-			local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff)
-			local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff)
+			local complete_farmlands = check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff)
+			local complete_ussingen = check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff)
+			local complete_nurgle = check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff)
+			local complete_warcamp = check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff)
 
 			return {
 				{
@@ -1405,27 +1159,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1435,27 +1181,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1466,18 +1204,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
-			local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff)
-			local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff)
-			local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff)
-			local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff)
+			local complete_farmlands = check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff)
+			local complete_ussingen = check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff)
+			local complete_nurgle = check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff)
+			local complete_warcamp = check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff)
 
 			return {
 				{
@@ -1507,27 +1237,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1537,27 +1259,19 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1568,18 +1282,10 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
-			local complete_farmlands = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.farmlands.level_id
-			}, diff)
-			local complete_ussingen = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.ussingen.level_id
-			}, diff)
-			local complete_nurgle = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.nurgle.level_id
-			}, diff)
-			local complete_warcamp = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.warcamp.level_id
-			}, diff)
+			local complete_farmlands = check_level_difficulty(statistics_db, stats_id, LevelSettings.farmlands.level_id, diff)
+			local complete_ussingen = check_level_difficulty(statistics_db, stats_id, LevelSettings.ussingen.level_id, diff)
+			local complete_nurgle = check_level_difficulty(statistics_db, stats_id, LevelSettings.nurgle.level_id, diff)
+			local complete_warcamp = check_level_difficulty(statistics_db, stats_id, LevelSettings.warcamp.level_id, diff)
 
 			return {
 				{
@@ -1611,9 +1317,7 @@ AchievementTemplates.achievements = {
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.normal.rank
 
-			return check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skittergate.level_id
-			}, diff)
+			return check_level_difficulty(statistics_db, stats_id, LevelSettings.skittergate.level_id, diff)
 		end
 	},
 	complete_skittergate_veteran = {
@@ -1626,9 +1330,7 @@ AchievementTemplates.achievements = {
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
 
-			return check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skittergate.level_id
-			}, diff)
+			return check_level_difficulty(statistics_db, stats_id, LevelSettings.skittergate.level_id, diff)
 		end
 	},
 	complete_skittergate_champion = {
@@ -1641,9 +1343,7 @@ AchievementTemplates.achievements = {
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
 
-			return check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skittergate.level_id
-			}, diff)
+			return check_level_difficulty(statistics_db, stats_id, LevelSettings.skittergate.level_id, diff)
 		end
 	},
 	complete_skittergate_legend = {
@@ -1656,9 +1356,7 @@ AchievementTemplates.achievements = {
 		completed = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
 
-			return check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.skittergate.level_id
-			}, diff)
+			return check_level_difficulty(statistics_db, stats_id, LevelSettings.skittergate.level_id, diff)
 		end
 	},
 	bogenhafen_complete_recruit = {
@@ -1670,15 +1368,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.normal.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1688,15 +1382,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.normal.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1707,12 +1397,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.normal.rank
-			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -1735,15 +1421,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1753,15 +1435,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hard.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1772,12 +1450,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hard.rank
-			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -1800,15 +1474,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1818,15 +1488,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.harder.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1837,12 +1503,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.harder.rank
-			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -1865,15 +1527,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1883,15 +1541,11 @@ AchievementTemplates.achievements = {
 			local count = 0
 			local diff = DifficultySettings.hardest.rank
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff) then
 				count = count + 1
 			end
 
-			if check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff) then
+			if check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff) then
 				count = count + 1
 			end
 
@@ -1902,12 +1556,8 @@ AchievementTemplates.achievements = {
 		end,
 		requirements = function (statistics_db, stats_id)
 			local diff = DifficultySettings.hardest.rank
-			local complete_slum = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_slum.level_id
-			}, diff)
-			local complete_city = check_level_list_difficulty(statistics_db, stats_id, {
-				LevelSettings.dlc_bogenhafen_city.level_id
-			}, diff)
+			local complete_slum = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_slum.level_id, diff)
+			local complete_city = check_level_difficulty(statistics_db, stats_id, LevelSettings.dlc_bogenhafen_city.level_id, diff)
 
 			return {
 				{
@@ -2968,9 +2618,7 @@ for _, diff_key in ipairs(AchievementTemplates.difficulties) do
 			local num_completed = 0
 
 			for _, level in ipairs(main_game_levels) do
-				if check_level_list_difficulty(statistics_db, stats_id, {
-					level
-				}, DifficultySettings[diff_key].rank) then
+				if check_level_difficulty(statistics_db, stats_id, level, DifficultySettings[diff_key].rank) then
 					num_completed = num_completed + 1
 				end
 			end
@@ -2984,9 +2632,7 @@ for _, diff_key in ipairs(AchievementTemplates.difficulties) do
 			local reqs = {}
 
 			for _, level in ipairs(main_game_levels) do
-				local completed = check_level_list_difficulty(statistics_db, stats_id, {
-					level
-				}, DifficultySettings[diff_key].rank)
+				local completed = check_level_difficulty(statistics_db, stats_id, level, DifficultySettings[diff_key].rank)
 
 				table.insert(reqs, {
 					name = LevelSettings[level].display_name,
@@ -3034,9 +2680,7 @@ for _, career_name in ipairs(hero_careers) do
 				local num_completed = 0
 
 				for _, level in ipairs(main_game_levels) do
-					if check_level_list_difficulty(statistics_db, stats_id, {
-						level
-					}, DifficultySettings[diff_key].rank, career_name) then
+					if check_level_difficulty(statistics_db, stats_id, level, DifficultySettings[diff_key].rank, career_name) then
 						num_completed = num_completed + 1
 					end
 				end
@@ -3050,9 +2694,7 @@ for _, career_name in ipairs(hero_careers) do
 				local reqs = {}
 
 				for _, level in ipairs(main_game_levels) do
-					local completed = check_level_list_difficulty(statistics_db, stats_id, {
-						level
-					}, DifficultySettings[diff_key].rank, career_name)
+					local completed = check_level_difficulty(statistics_db, stats_id, level, DifficultySettings[diff_key].rank, career_name)
 
 					table.insert(reqs, {
 						name = LevelSettings[level].display_name,

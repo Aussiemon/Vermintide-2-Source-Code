@@ -853,6 +853,40 @@ DialogueSettings.dialogue_category_config = {
 			enemy_alerts_high = true
 		}
 	},
+	casual_singing_01 = {
+		mutually_exclusive = true,
+		interrupted_by = {},
+		playable_during_category = {
+			default = true,
+			enemy_high_prio = true,
+			casual_singing_02 = true,
+			enemy_basic_prio = true,
+			story_talk_vce = true
+		}
+	},
+	casual_singing_02 = {
+		mutually_exclusive = true,
+		interrupted_by = {},
+		playable_during_category = {
+			default = true,
+			enemy_high_prio = true,
+			enemy_basic_prio = true,
+			story_talk_vce = true,
+			casual_singing_01 = true
+		}
+	},
+	casual_singing_03 = {
+		mutually_exclusive = true,
+		interrupted_by = {},
+		playable_during_category = {
+			default = true,
+			enemy_high_prio = true,
+			casual_singing_02 = true,
+			enemy_basic_prio = true,
+			story_talk_vce = true,
+			casual_singing_01 = true
+		}
+	},
 	npc_talk = {
 		mutually_exclusive = true,
 		interrupted_by = {

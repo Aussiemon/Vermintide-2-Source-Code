@@ -10,7 +10,6 @@ local RPCS = {
 DeusArenaInteractableExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self._is_server = extension_init_context.is_server
-	self.game = extension_init_data.game
 	self._world = extension_init_context.world
 	self._state = STATES.WAITING
 	self._level_unit_id = Level.unit_index(LevelHelper:current_level(self._world), unit)
@@ -79,10 +78,18 @@ DeusArenaInteractableExtension.update = function (self, unit, input, dt, context
 end
 
 DeusArenaInteractableExtension._on_state_changed = function (self, prev_state, current_state)
+	local unit = self._unit
+
 	if current_state == STATES.WAITING then
-		Unit.flow_event(self._unit, "state_WAITING")
+		Unit.flow_event(unit, "state_WAITING")
 	elseif current_state == STATES.INTERACTED then
-		Unit.flow_event(self._unit, "state_INTERACTED")
+		Unit.flow_event(unit, "state_INTERACTED")
+
+		local event_name = Unit.get_data(unit, "arena_interactable_data", "interact_level_event_name")
+
+		if event_name ~= "default" then
+			LevelHelper:flow_event(self._world, event_name)
+		end
 	end
 end
 
@@ -99,7 +106,18 @@ DeusArenaInteractableExtension.can_interact = function (self)
 end
 
 DeusArenaInteractableExtension.get_interact_hud_description = function (self)
-	return "deus_altar_hud_desc"
+	local mechanism = Managers.mechanism:game_mechanism()
+	local deus_run_controller = mechanism:get_deus_run_controller()
+	local node = deus_run_controller:get_current_node()
+	local current_base_level_name = node.base_level
+	local arena_citadel_settings = DEUS_LEVEL_SETTINGS.arena_citadel
+	local arena_citadel_base_level_name = arena_citadel_settings.base_level_name
+
+	if current_base_level_name == arena_citadel_base_level_name then
+		return "deus_altar_hud_desc"
+	else
+		return "interaction_action_take"
+	end
 end
 
 DeusArenaInteractableExtension.on_server_interact = function (self, world, interactor_unit, interactable_unit, data, config, t, result)

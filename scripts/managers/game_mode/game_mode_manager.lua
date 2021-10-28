@@ -14,7 +14,8 @@ local RPCS = {
 	"rpc_to_client_spawn_player",
 	"rpc_is_ready_for_transition",
 	"rpc_change_game_mode_state",
-	"rpc_trigger_round_over"
+	"rpc_trigger_round_over",
+	"rpc_trigger_level_event"
 }
 local GAME_MODE_STATE_NETWORK_IDS = {}
 
@@ -642,6 +643,7 @@ GameModeManager.update_timebased_level_start = function (self, dt)
 end
 
 GameModeManager.pre_update = function (self, t, dt)
+	self._mutator_handler:pre_update(dt, t)
 	self._game_mode:pre_update(t, dt)
 end
 
@@ -1056,6 +1058,14 @@ end
 
 GameModeManager.rpc_trigger_round_over = function (self, channel_id)
 	self._game_mode.trigger_round_over = true
+end
+
+GameModeManager.rpc_trigger_level_event = function (self, channel_id, event)
+	local level = LevelHelper:current_level(self._world)
+
+	if level then
+		Level.trigger_event(level, event)
+	end
 end
 
 return

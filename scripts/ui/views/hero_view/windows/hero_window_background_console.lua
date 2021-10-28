@@ -94,10 +94,11 @@ HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.is_in_inn = ingame_ui_context.is_in_inn
+	self.force_ingame_menu = params.force_ingame_menu
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.skin_sync_id = self.parent.skin_sync_id
-	self._camera_move_duration = UISettings.console_menu_camera_move_duration
+	self._camera_move_duration = not IS_WINDOWS and UISettings.console_menu_camera_move_duration
 	self._animations = {}
 
 	self:create_ui_elements(params, offset)
@@ -184,7 +185,7 @@ HeroWindowBackgroundConsole.create_ui_elements = function (self, params, offset)
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	if self.is_in_inn then
+	if self.is_in_inn and not self.force_ingame_menu then
 		self._viewport_widget_definition = self:_create_viewport_definition()
 
 		self:_setup_object_sets()

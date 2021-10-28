@@ -26,7 +26,8 @@ local RPCS = {
 	"rpc_request_knock_down",
 	"rpc_request_heal_wounds",
 	"rpc_request_revive",
-	"rpc_request_insta_kill"
+	"rpc_request_insta_kill",
+	"rpc_request_convert_temp"
 }
 local extensions = {
 	"ChaosTrollHealthExtension",
@@ -514,9 +515,9 @@ HealthSystem.rpc_request_heal = function (self, channel_id, unit_go_id, heal_amo
 			local skin_id = NetworkLookup.weapon_skins["n/a"]
 
 			Managers.state.network.network_transmit:send_rpc("rpc_add_inventory_slot_item", peer_id, unit_go_id, slot_id, item_name_id, skin_id)
-		end
 
-		return
+			return
+		end
 	end
 
 	local heal_type = NetworkLookup.heal_types[heal_type_id]
@@ -526,6 +527,20 @@ HealthSystem.rpc_request_heal = function (self, channel_id, unit_go_id, heal_amo
 	else
 		DamageUtils.heal_network(unit, unit, heal_amount, heal_type)
 	end
+end
+
+HealthSystem.rpc_request_convert_temp = function (self, channel_id, unit_go_id, amount)
+	fassert(self.is_server or LEVEL_EDITOR_TEST, "Trying to request a health convert from a client")
+
+	local unit = self.unit_storage:unit(unit_go_id)
+
+	if not ALIVE[unit] then
+		return
+	end
+
+	local health_extension = self.unit_extensions[unit]
+
+	health_extension:convert_to_temp(amount)
 end
 
 HealthSystem.rpc_suicide = function (self, channel_id, go_id)
@@ -552,6 +567,8 @@ HealthSystem.rpc_sync_damage_taken = function (self, channel_id, go_id, is_level
 
 	local health_extension = self.unit_extensions[unit]
 	local state = NetworkLookup.health_statuses[state_id]
+
+	printf("SYNC DMG TAKEN set_max_health=%s amount=%s, state=%s", tostring(set_max_health), tostring(amount), tostring(state))
 
 	if health_extension.sync_damage_taken then
 		health_extension:sync_damage_taken(amount, set_max_health, state)

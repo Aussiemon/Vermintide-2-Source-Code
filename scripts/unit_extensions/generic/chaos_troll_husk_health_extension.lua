@@ -8,29 +8,34 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	self._regen_time = t + 1
 	self.pulse_time = 0
 	self.state = "unhurt"
+	local set_only_current_max_health = true
 
-	self:_update_health_variables(self.health)
+	self:_setup_initial_health_variables(self.health, set_only_current_max_health)
 end
 
-ChaosTrollHuskHealthExtension.set_max_health = function (self, value)
-	ChaosTrollHuskHealthExtension.super.set_max_health(self, value)
-	self:_update_health_variables(value)
+ChaosTrollHuskHealthExtension.set_max_health = function (self, value, set_only_current_max_health)
+	if set_only_current_max_health then
+		self.current_max_health = value
+	else
+		ChaosTrollHuskHealthExtension.super.set_max_health(self, value)
+		self:_setup_initial_health_variables(value)
+	end
 end
 
-ChaosTrollHuskHealthExtension._update_health_variables = function (self, value)
+ChaosTrollHuskHealthExtension._setup_initial_health_variables = function (self, new_max_health, from_init)
 	local breed = Breeds.chaos_troll
 	local action = BreedActions.chaos_troll.downed
-	self.go_down_health = value * action.become_downed_hp_percent
+	self.go_down_health = new_max_health * action.become_downed_hp_percent
 	self.regen_pulse_interval = breed.regen_pulse_interval
 	self.downed_pulse_interval = breed.downed_pulse_interval
 	self.regen_pulse_intensity = breed.regen_pulse_intensity
 	self.downed_pulse_intensity = breed.downed_pulse_intensity
 	self.action = action
-	self.original_health = value
+	self.respawn_hp_max = new_max_health
 end
 
 ChaosTrollHuskHealthExtension.current_max_health_percent = function (self)
-	return self.health / self.original_health
+	return self.health / self.current_max_health
 end
 
 ChaosTrollHuskHealthExtension.update = function (self, dt, context, t)
@@ -72,9 +77,7 @@ ChaosTrollHuskHealthExtension.add_damage = function (self, attacker_unit, damage
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
 
-	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
-		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
-	end
+	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 end
 
 ChaosTrollHuskHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)
@@ -85,7 +88,13 @@ end
 
 ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_max_health, state)
 	if set_max_health then
-		self:set_max_health(damage)
+		if not self._has_got_initial_setup then
+			self:set_max_health(damage, true)
+
+			self._has_got_initial_setup = true
+		else
+			ChaosTrollHealthExtension.super.set_max_health(self, damage)
+		end
 
 		return
 	end

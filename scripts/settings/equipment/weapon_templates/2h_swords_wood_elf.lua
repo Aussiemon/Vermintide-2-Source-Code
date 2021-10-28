@@ -483,7 +483,7 @@ weapon_template.actions = {
 		},
 		heavy_attack_down_first = {
 			damage_window_start = 0.35,
-			range_mod = 1.3,
+			range_mod = 1.45,
 			kind = "sweep",
 			sweep_z_offset = 0,
 			no_damage_impact_sound_event = "slashing_hit_armour",

@@ -385,7 +385,6 @@ local background_image = {
 			},
 			{
 				pass_type = "texture",
-				style_id = "bg_texture",
 				texture_id = "bg_texture"
 			},
 			{

@@ -602,8 +602,32 @@ BackendInterfaceCommon.serialize_runes = function (self, runes)
 end
 
 BackendInterfaceCommon.commit_load_time_data = function (self, load_time_data)
-	if Managers.account:offline_mode() or Managers.backend:is_local() then
+	if Managers.account:offline_mode() then
 		return
+	end
+
+	local human_players = Managers.player:human_players()
+	local collected_players = {}
+	local platform_id, name = nil
+
+	for unique_id, player in pairs(human_players) do
+		platform_id = player:platform_id()
+
+		if not IS_XB1 then
+			platform_id = Application.hex64_to_dec(platform_id)
+		end
+
+		name = player:cached_name()
+
+		if not name or name == "" then
+			name = player:name()
+		end
+
+		collected_players[#collected_players + 1] = {
+			platform_id = platform_id,
+			name = name,
+			career = player:career_name()
+		}
 	end
 
 	local request = {
@@ -611,7 +635,8 @@ BackendInterfaceCommon.commit_load_time_data = function (self, load_time_data)
 		FunctionParameter = {
 			identifier = load_time_data.identifier,
 			duration = load_time_data.duration,
-			parameters = load_time_data.parameters
+			parameters = load_time_data.parameters,
+			players = collected_players
 		}
 	}
 	local mirror = self._backend_mirror

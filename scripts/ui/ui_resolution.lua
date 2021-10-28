@@ -2,7 +2,7 @@ local math_round = math.round
 
 local function scale_vector3(vec, scale, do_round)
 	if do_round then
-		return Vector3(math.round(vec[1] * scale), math.round(vec[2] * scale), vec[3] or 0)
+		return Vector3(math_round(vec[1] * scale), math_round(vec[2] * scale), vec[3] or 0)
 	else
 		return Vector3(vec[1] * scale, vec[2] * scale, vec[3] or 0)
 	end

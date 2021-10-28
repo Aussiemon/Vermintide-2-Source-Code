@@ -58,6 +58,12 @@ weapon_template.actions = {
 					input = "weapon_reload"
 				},
 				{
+					sub_action = "default",
+					start_time = 0.6,
+					action = "action_three",
+					input = "action_three"
+				},
+				{
 					sub_action = "auto_reload",
 					start_time = 0.8,
 					action = "weapon_reload",
@@ -170,6 +176,93 @@ weapon_template.actions = {
 				climb_function = math.easeInCubic,
 				restore_function = math.ease_out_quad
 			}
+		},
+		special_action_shoot = {
+			total_time_secondary = 2,
+			speed = 16000,
+			kind = "handgun",
+			charge_value = "bullet_hit",
+			alert_sound_range_fire = 12,
+			alert_sound_range_hit = 2,
+			apply_recoil = true,
+			reload_when_out_of_ammo = true,
+			headshot_multiplier = 2,
+			hit_effect = "bullet_impact",
+			aim_assist_max_ramp_multiplier = 0.3,
+			aim_assist_auto_hit_chance = 0.5,
+			aim_assist_ramp_decay_delay = 0.2,
+			range = 100,
+			ammo_usage = 1,
+			fire_time = 0,
+			anim_event_secondary = "reload",
+			aim_assist_ramp_multiplier = 0.1,
+			anim_event = "attack_shoot",
+			reload_time = 0.1,
+			total_time = 1,
+			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "action_one",
+					sound_time_offset = -0.05,
+					chain_ready_sound = "weapon_gun_ready",
+					release_required = "action_one_hold",
+					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "action_one",
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.4,
+					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "weapon_reload",
+					input = "weapon_reload"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.6,
+					action = "action_three",
+					input = "action_three"
+				},
+				{
+					sub_action = "auto_reload",
+					start_time = 0.8,
+					action = "weapon_reload",
+					auto_chain = true
+				}
+			},
+			enter_function = function (attacker_unit, input_extension)
+				input_extension:clear_input_buffer()
+
+				return input_extension:reset_release_input()
+			end,
+			projectile_info = Projectiles.pistol_shot,
+			impact_data = {
+				damage_profile = "shot_carbine"
+			},
+			recoil_settings = {
+				horizontal_climb = 0,
+				restore_duration = 0.25,
+				vertical_climb = 2,
+				climb_duration = 0.1,
+				climb_function = math.easeInCubic,
+				restore_function = math.ease_out_quad
+			}
 		}
 	},
 	action_two = {
@@ -230,6 +323,74 @@ weapon_template.actions = {
 					auto_chain = true,
 					release_required = "action_two_hold",
 					start_time = 0
+				}
+			},
+			condition_func = function (unit, input_extension, ammo_extension)
+				if ammo_extension and ammo_extension:total_remaining_ammo() <= 0 then
+					return false
+				end
+
+				return true
+			end
+		}
+	},
+	action_three = {
+		default = {
+			anim_end_event = "attack_finished",
+			ammo_requirement = 1,
+			can_abort_reload = true,
+			kind = "dummy",
+			anim_event = "special_action",
+			total_time = 1.71,
+			anim_end_event_condition_func = function (unit, end_reason)
+				return end_reason ~= "new_interupting_action"
+			end,
+			allowed_chain_actions = {
+				{
+					sub_action = "default",
+					start_time = 0.4,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "special_action_shoot",
+					start_time = 0.75,
+					action = "action_one",
+					release_required = "action_one_hold",
+					end_time = 1.68,
+					input = "action_one"
+				},
+				{
+					sub_action = "special_action_shoot",
+					start_time = 0.75,
+					action = "action_one",
+					end_time = 1.68,
+					input = "action_one_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 1.7,
+					action = "action_one",
+					release_required = "action_one_hold",
+					input = "action_one"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.4,
+					action = "action_two",
+					input = "action_two_hold"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.75,
+					action = "weapon_reload",
+					input = "weapon_reload"
+				},
+				{
+					sub_action = "default",
+					start_time = 0.8,
+					action = "action_three",
+					input = "action_three"
 				}
 			},
 			condition_func = function (unit, input_extension, ammo_extension)

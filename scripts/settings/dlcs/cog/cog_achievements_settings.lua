@@ -3,6 +3,7 @@ settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
+				sorting = 2,
 				name = "inventory_name_dwarf_ranger",
 				entries = {
 					"cog_complete_all_helmgart_levels_recruit_dr_engineer",

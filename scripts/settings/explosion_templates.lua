@@ -739,11 +739,33 @@ ExplosionTemplates.victor_captain_activated_ability_stagger_ping_debuff = {
 		alert_enemies = true,
 		alert_enemies_radius = 15,
 		attack_template = "drakegun",
-		enemy_debuff = "defence_debuff_enemies",
 		damage_type = "grenade",
 		damage_profile = "ability_push",
 		ignore_attacker_unit = true,
-		no_friendly_fire = true
+		no_friendly_fire = true,
+		enemy_debuff = {
+			"defence_debuff_enemies"
+		}
+	}
+}
+ExplosionTemplates.victor_captain_activated_ability_stagger_ping_debuff_improved = {
+	explosion = {
+		use_attacker_power_level = true,
+		radius = 10,
+		no_prop_damage = true,
+		max_damage_radius = 2,
+		always_hurt_players = false,
+		alert_enemies = true,
+		alert_enemies_radius = 15,
+		attack_template = "drakegun",
+		damage_type = "grenade",
+		damage_profile = "ability_push",
+		ignore_attacker_unit = true,
+		no_friendly_fire = true,
+		enemy_debuff = {
+			"defence_debuff_enemies",
+			"victor_witchhunter_improved_damage_taken_ping"
+		}
 	}
 }
 ExplosionTemplates.sienna_adept_activated_ability_start_stagger = {

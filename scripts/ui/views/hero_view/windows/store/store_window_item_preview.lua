@@ -224,6 +224,20 @@ StoreWindowItemPreview.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
+	local dupe_warning_popup_id = self._dupe_warning_popup_id
+
+	if dupe_warning_popup_id then
+		local result = Managers.popup:query_result(dupe_warning_popup_id)
+
+		if result then
+			if result == "yes" then
+				self._parent:product_purchase_request(self._selected_product)
+			end
+
+			self._dupe_warning_popup_id = nil
+		end
+	end
+
 	self:_update_animations(dt)
 	self:_sync_layout_path()
 
@@ -590,9 +604,11 @@ StoreWindowItemPreview._handle_input = function (self, input_service, dt, t)
 	if (self:_is_button_pressed(unlock_button) or confirm_press) and not self:_owns_product() then
 		self:_play_sound("Play_hud_store_buy_window")
 
-		local selected_product = self._selected_product
-
-		parent:product_purchase_request(selected_product)
+		if self._show_dupe_warning then
+			self._dupe_warning_popup_id = Managers.popup:queue_popup(Localize("bundle_party_owned_description"), Localize("bundle_partly_owned_title"), "yes", Localize("popup_choice_yes"), "no", Localize("popup_choice_no"))
+		else
+			parent:product_purchase_request(self._selected_product)
+		end
 
 		input_handled = true
 	elseif confirm_press then
@@ -797,7 +813,9 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 		self._selected_product = selected_product
 		local already_owned = false
 		local can_afford = true
-		local dlc_name, product_id, product_type, is_item_useable = nil
+		local dlc_name = nil
+		local show_dupe_warning = false
+		local product_id, product_type, is_item_useable = nil
 
 		if selected_product then
 			product_id = selected_product.product_id
@@ -809,7 +827,15 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				local backend_items = Managers.backend:get_interface("items")
 				local item_key = item.key
 				dlc_name = item.dlc_name
-				already_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or self._parent:check_owns_bundle(backend_items, item.data.bundle_contains)
+
+				if backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) then
+					already_owned = true
+				else
+					local all_owned, any_owned = self._parent:check_owns_bundle(backend_items, item.data.bundle_contains)
+					already_owned = all_owned
+					show_dupe_warning = any_owned
+				end
+
 				can_afford = self._parent:can_afford_item(item)
 				is_item_useable = self._parent:can_use_item(item)
 			elseif product_type == "dlc" then
@@ -818,6 +844,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				already_owned = Managers.unlock:is_dlc_unlocked(dlc_name)
 			end
 
+			self._show_dupe_warning = show_dupe_warning
 			local selected_product_settings = selected_product.settings
 			local acquire_disabled = selected_product_settings and selected_product_settings.acquire_disabled
 			local acquire_hidden = selected_product_settings and selected_product_settings.acquire_hidden

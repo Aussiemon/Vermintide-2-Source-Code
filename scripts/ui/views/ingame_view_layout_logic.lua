@@ -1,9 +1,10 @@
 IngameViewLayoutLogic = class(IngameViewLayoutLogic)
 
-IngameViewLayoutLogic.init = function (self, ingame_ui_context, menu_layouts, full_access_layout)
+IngameViewLayoutLogic.init = function (self, ingame_ui_context, params, menu_layouts, full_access_layout)
 	self._menu_layouts = menu_layouts
 	self._full_access_layout = full_access_layout
 	self.ingame_ui = ingame_ui_context.ingame_ui
+	self._params = params
 	local is_in_inn = ingame_ui_context.is_in_inn
 	self.is_server = ingame_ui_context.is_server
 	self.layout_list = (is_in_inn and menu_layouts.in_menu) or menu_layouts.in_game
@@ -19,31 +20,37 @@ IngameViewLayoutLogic.setup_button_layout = function (self, layout_data)
 		active_button_data = self.active_button_data
 	end
 
+	local params = self._params
+
 	for index, data in ipairs(layout_data) do
-		local display_name = data.display_name
-		local display_name_func = data.display_name_func
-		local url = data.url
-		local callback = data.callback
-		local transition = data.transition
-		local transition_state = data.transition_state
-		local transition_sub_state = data.transition_sub_state
-		local disable_when_matchmaking = data.disable_when_matchmaking
-		local disable_when_matchmaking_ready = data.disable_when_matchmaking_ready
-		local requires_player_unit = data.requires_player_unit
-		local fade = data.fade
-		active_button_data[index] = {
-			display_name = display_name,
-			display_name_func = display_name_func,
-			url = url,
-			callback = callback,
-			transition = transition,
-			transition_state = transition_state,
-			transition_sub_state = transition_sub_state,
-			disable_when_matchmaking = disable_when_matchmaking,
-			disable_when_matchmaking_ready = disable_when_matchmaking_ready,
-			requires_player_unit = requires_player_unit,
-			fade = fade
-		}
+		if not data.can_add_function or data.can_add_function(params) then
+			local display_name = data.display_name
+			local display_name_func = data.display_name_func
+			local url = data.url
+			local callback = data.callback
+			local transition = data.transition
+			local transition_state = data.transition_state
+			local transition_sub_state = data.transition_sub_state
+			local disable_when_matchmaking = data.disable_when_matchmaking
+			local disable_when_matchmaking_ready = data.disable_when_matchmaking_ready
+			local requires_player_unit = data.requires_player_unit
+			local fade = data.fade
+			local force_open = data.force_open
+			active_button_data[#active_button_data + 1] = {
+				display_name = display_name,
+				display_name_func = display_name_func,
+				url = url,
+				callback = callback,
+				transition = transition,
+				transition_state = transition_state,
+				transition_sub_state = transition_sub_state,
+				disable_when_matchmaking = disable_when_matchmaking,
+				disable_when_matchmaking_ready = disable_when_matchmaking_ready,
+				requires_player_unit = requires_player_unit,
+				fade = fade,
+				force_open = force_open
+			}
+		end
 	end
 end
 
@@ -132,9 +139,11 @@ IngameViewLayoutLogic.execute_layout_option = function (self, index)
 			local transition_state = data.transition_state
 			local transition_sub_state = data.transition_sub_state
 			local fade = data.fade
+			local force_open = data.force_open
 			local transition_params = {
 				menu_state_name = transition_state,
-				menu_sub_state_name = transition_sub_state
+				menu_sub_state_name = transition_sub_state,
+				force_open = force_open
 			}
 
 			if fade then

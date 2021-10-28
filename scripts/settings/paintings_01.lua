@@ -1603,6 +1603,36 @@ Paintings.ver_PD291_WEMage_BW = {
 		wood = true
 	}
 }
+Paintings.hor_wfrp_thr_0055_moon_over_mountains = {
+	sound_event = "painting_wfrp_thr_0055_moon_over_mountains_description",
+	rarity = "common",
+	display_name = "painting_wfrp_thr_0055_moon_over_mountains_name",
+	icon = "icon_painting_1",
+	frame = "wood",
+	description = "painting_wfrp_thr_0055_moon_over_mountains_description",
+	artist = "painting_wfrp_thr_0055_moon_over_mountains_artist",
+	orientation = "horizontal",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_jb465_wh_nurgle_champion = {
+	sound_event = "painting_jb465_wh_nurgle_champion_description",
+	rarity = "common",
+	display_name = "painting_jb465_wh_nurgle_champion_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_jb465_wh_nurgle_champion_description",
+	artist = "painting_jb465_wh_nurgle_champion_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1647,6 +1677,7 @@ local painting_order = {
 	"hor_warriors_of_chaos_page_04",
 	"hor_IP_NK663C_WESpites8",
 	"hor_IP_NK672C_WESpites15",
+	"hor_wfrp_thr_0055_moon_over_mountains",
 	"ver_none",
 	"ver_bw01",
 	"ver_khorne04",
@@ -1713,7 +1744,8 @@ local painting_order = {
 	"ver_wood_elves_page_020",
 	"ver_wood_elves_page_046",
 	"ver_wood_elves_page_052",
-	"ver_PD291_WEMage_BW"
+	"ver_PD291_WEMage_BW",
+	"ver_jb465_wh_nurgle_champion"
 }
 PaintingOrder = PaintingOrder or {}
 

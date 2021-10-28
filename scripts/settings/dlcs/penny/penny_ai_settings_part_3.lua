@@ -90,7 +90,7 @@ settings.bt_enter_hooks = {
 		end
 
 		LevelHelper:flow_event(blackboard.world, "spawn_shield")
-		blackboard.health_extension:set_health_clamp_min(blackboard.health_extension:get_max_health() * 0.66)
+		blackboard.health_extension:set_min_health_percentage(0.66)
 	end,
 	stop_fly_sound = function (unit, blackboard, t)
 		local audio_system = Managers.state.entity:system("audio_system")
@@ -138,9 +138,9 @@ settings.bt_enter_hooks = {
 		health_extension.is_invincible = true
 
 		if not blackboard.two_thirds_transition_done and not blackboard.one_third_transition_done then
-			health_extension:set_health_clamp_min(blackboard.health_extension:get_max_health() * 0.33)
+			health_extension:set_min_health_percentage(0.33)
 		elseif not blackboard.one_third_transition_done then
-			health_extension:set_health_clamp_min(1)
+			health_extension:set_min_health_percentage(0)
 		end
 
 		blackboard.teleport_health_percent = blackboard.health_extension:current_health_percent() - 0.1

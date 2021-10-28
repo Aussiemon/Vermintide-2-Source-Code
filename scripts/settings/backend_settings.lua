@@ -1,14 +1,12 @@
-require("backend/local_backend/local_backend_available")
-
-local local_backend_available = not not rawget(_G, "LOCAL_BACKEND_AVAILABLE")
+local local_backend_available = false
 BackendSettings = BackendSettings or {}
 BackendSettings.prod_steam_playfab = {
 	enable_sessions = false,
 	allow_tutorial = true,
+	allow_local = false,
 	implementation = "playfab",
 	title_id = "5107",
-	environment = rawget(_G, "Backend") and Backend.ENV_STAGE,
-	allow_local = local_backend_available
+	environment = rawget(_G, "Backend") and Backend.ENV_STAGE
 }
 BackendSettings.stage_steam_playfab = {
 	enable_sessions = false,

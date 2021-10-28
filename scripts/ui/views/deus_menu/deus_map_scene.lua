@@ -581,7 +581,7 @@ DeusMapScene._update_cursor = function (self, gamepad_active)
 	if IS_XB1 and not gamepad_active then
 		cursor_position = Vector3(cursor[1], 1080 - cursor[2], cursor[3])
 	elseif gamepad_active then
-		cursor_position = UIInverseScaleVectorToResolution(cursor)
+		cursor_position = UIScaleVectorToResolution(cursor)
 	else
 		cursor_position = cursor
 	end
@@ -752,7 +752,7 @@ DeusMapScene.select_node = function (self, node_key, sound_event)
 	Unit.set_data(unit, "selected", true)
 	Unit.flow_event(unit, "update_visuals")
 
-	if sound_event then
+	if sound_event and Managers.state.network:game() then
 		local audio_system = Managers.state.entity:system("audio_system")
 
 		audio_system:play_2d_audio_event(sound_event)

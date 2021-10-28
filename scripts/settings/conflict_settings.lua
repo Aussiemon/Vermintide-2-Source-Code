@@ -163,11 +163,6 @@ HordeSettings = {
 					"skaven_huge_armor",
 					"skaven_huge_berzerker"
 				}
-			},
-			versus_base = {
-				vector_blob_composition = "large",
-				ambush_composition = "large",
-				vector_composition = "large"
 			}
 		}
 	},
@@ -637,11 +632,6 @@ RoamingSettings = {
 		despawn_path_distance = 75,
 		despawn_distance_z = 30,
 		disabled = true
-	},
-	gdc_build = {
-		despawn_distance = 45,
-		despawn_path_distance = 75,
-		despawn_distance_z = 30
 	}
 }
 local SpecialDifficultyOverrides = {
@@ -2101,103 +2091,6 @@ SpecialsSettings = {
 		},
 		difficulty_overrides = SpecialDifficultyOverrides_chaos
 	},
-	survival = {
-		spawn_method = "specials_by_slots",
-		disabled = false,
-		max_specials = 3,
-		breeds = {
-			"skaven_gutter_runner",
-			"skaven_poison_wind_globadier",
-			"skaven_pack_master",
-			"skaven_ratling_gunner"
-		},
-		methods = {
-			specials_by_time_window = {
-				even_out_breeds = true,
-				spawn_interval = {
-					80,
-					100
-				},
-				lull_time = {
-					15,
-					35
-				}
-			},
-			specials_by_slots = {
-				max_of_same = 2,
-				coordinated_attack_cooldown_multiplier = 0.5,
-				chance_of_coordinated_attack = 0,
-				select_next_breed = "get_random_breed",
-				after_safe_zone_delay = {
-					5,
-					150
-				},
-				spawn_cooldown = {
-					100,
-					200
-				}
-			}
-		},
-		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
-			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
-			distance_until_next_intervention = 30,
-			breeds = {
-				"skaven_pack_master",
-				"skaven_gutter_runner"
-			}
-		},
-		difficulty_overrides = SpecialDifficultyOverrides
-	},
-	gdc_build = {
-		spawn_method = "specials_by_slots",
-		disabled = false,
-		max_specials = 3,
-		breeds = {
-			"skaven_poison_wind_globadier",
-			"skaven_ratling_gunner"
-		},
-		methods = {
-			specials_by_time_window = {
-				even_out_breeds = true,
-				spawn_interval = {
-					80,
-					100
-				},
-				lull_time = {
-					20,
-					40
-				}
-			},
-			specials_by_slots = {
-				select_next_breed = "get_random_breed",
-				coordinated_attack_cooldown_multiplier = 0.5,
-				max_of_same = 2,
-				spawn_interval = {
-					30,
-					60
-				},
-				spawn_cooldown = {
-					30,
-					40
-				}
-			}
-		},
-		rush_intervention = {
-			loneliness_value_for_ambush_horde = 25,
-			delay_between_interventions = 30,
-			chance_of_ambush_horde = 0.25,
-			loneliness_value_for_special = 30,
-			distance_until_next_intervention = 30,
-			breeds = {
-				"skaven_pack_master",
-				"skaven_gutter_runner"
-			}
-		},
-		difficulty_overrides = SpecialDifficultyOverrides
-	},
 	beastmen = {
 		spawn_method = "specials_by_slots",
 		disabled = false,
@@ -2731,23 +2624,6 @@ BossSettings = {
 					"rare_event_loot_rat"
 				}
 			}
-		}
-	},
-	gdc_build = {
-		disabled = false,
-		boss_events = {
-			name = "boss_events",
-			debug_color = "deep_sky_blue",
-			events = {
-				"nothing"
-			},
-			event_lookup = {}
-		},
-		rare_events = {
-			name = "rare_events",
-			debug_color = "deep_pink",
-			events = {},
-			event_lookup = {}
 		}
 	},
 	disabled = {
@@ -4973,17 +4849,6 @@ ConflictDirectors = {
 		pack_spawning = PackSpawningSettings.disabled,
 		horde = HordeSettings.disabled
 	},
-	gdc_build = {
-		debug_color = "maroon",
-		disabled = false,
-		intensity = IntensitySettings.default,
-		pacing = PacingSettings.default,
-		boss = BossSettings.gdc_build,
-		specials = SpecialsSettings.gdc_build,
-		roaming = RoamingSettings.default,
-		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
-	},
 	demo = {
 		debug_color = "blue",
 		disabled = false,
@@ -4992,17 +4857,6 @@ ConflictDirectors = {
 		boss = BossSettings.disabled,
 		specials = SpecialsSettings.default,
 		roaming = RoamingSettings.default,
-		pack_spawning = PackSpawningSettings.default,
-		horde = HordeSettings.default
-	},
-	survival = {
-		debug_color = "maroon",
-		disabled = false,
-		intensity = IntensitySettings.default,
-		pacing = PacingSettings.disabled,
-		boss = BossSettings.disabled,
-		specials = SpecialsSettings.survival,
-		roaming = RoamingSettings.disabled,
 		pack_spawning = PackSpawningSettings.default,
 		horde = HordeSettings.default
 	},

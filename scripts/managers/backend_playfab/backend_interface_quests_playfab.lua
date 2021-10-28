@@ -36,16 +36,16 @@ BackendInterfaceQuestsPlayfab._refresh = function (self)
 
 	self._quests.weekly = weekly_quests
 	self._refresh_available = quest_data.daily_quest_refresh_available
-	self._daily_quest_update_time = quest_data.daily_quest_update_time / 1000
+	self._daily_quest_update_time = math.ceil(quest_data.daily_quest_update_time / 1000)
 	local weekly_quest_update_time = quest_data.weekly_quest_update_time
 
 	if weekly_quest_update_time ~= nil then
-		self._weekly_quest_update_time = weekly_quest_update_time / 1000
+		self._weekly_quest_update_time = math.ceil(weekly_quest_update_time / 1000)
 	end
 
 	for key, data in pairs(self._quests.event) do
 		if data.end_time ~= nil then
-			self._event_quest_update_times[key] = data.end_time / 1000
+			self._event_quest_update_times[key] = math.ceil(data.end_time / 1000)
 		end
 	end
 
@@ -66,7 +66,7 @@ BackendInterfaceQuestsPlayfab.make_dirty = function (self)
 	self._dirty = true
 end
 
-BackendInterfaceQuestsPlayfab.update_quests = function (self)
+BackendInterfaceQuestsPlayfab.update_quests = function (self, quests_updated_cb)
 	if self._quests_updating then
 		return
 	end
@@ -103,6 +103,7 @@ BackendInterfaceQuestsPlayfab.update_quests = function (self)
 
 		request_queue:enqueue(request, success_callback, false)
 
+		self._quests_updated_cb = quests_updated_cb
 		self._quests_updating = true
 	end
 end
@@ -131,6 +132,12 @@ BackendInterfaceQuestsPlayfab.get_quests_cb = function (self, result)
 	self._quests_updating = false
 	self._dirty = true
 	self._quest_timer = 0
+
+	if self._quests_updated_cb then
+		self._quests_updated_cb()
+
+		self._quests_updated_cb = nil
+	end
 end
 
 BackendInterfaceQuestsPlayfab.delete = function (self)
@@ -358,6 +365,42 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		end
 	end
 
+	local claimed_quest_name, claimed_quest_type = nil
+
+	if function_result.quest_name then
+		claimed_quest_name = function_result.quest_name
+		claimed_quest_type = function_result.quest_type
+	else
+		local quest_types = {
+			"current_daily_quests",
+			"current_event_quests",
+			"current_weekly_quests"
+		}
+		local quest_types_map = {
+			current_event_quests = "event",
+			current_weekly_quests = "weekly",
+			current_daily_quests = "daily"
+		}
+		local quest_data = backend_mirror:get_quest_data()
+
+		for i = 1, #quest_types, 1 do
+			local key = quest_types[i]
+			local current_quests = quest_data[key]
+			local claimed_quest_data = current_quests[data.quest_key]
+
+			if claimed_quest_data then
+				claimed_quest_name = claimed_quest_data.name
+				claimed_quest_type = quest_types_map[key]
+
+				break
+			end
+		end
+	end
+
+	if claimed_quest_type == "event" then
+		backend_mirror:add_claimed_event_quest(claimed_quest_name)
+	end
+
 	local current_daily_quests = function_result.current_daily_quests
 	local current_weekly_quests = function_result.current_weekly_quests
 	local current_event_quests = function_result.current_event_quests
@@ -470,6 +513,12 @@ end
 
 BackendInterfaceQuestsPlayfab.get_quest_rewards = function (self, id)
 	return self._quest_reward_requests[id]
+end
+
+BackendInterfaceQuestsPlayfab.get_claimed_event_quests = function (self)
+	local mirror = self._backend_mirror
+
+	return mirror:get_claimed_event_quests()
 end
 
 return

@@ -1160,7 +1160,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 			end
 
 			if completed_difficulty_index and completed_difficulty_index < 3 and completed_waves >= 13 then
-				ScriptApplication.send_to_crashify("StatisticsUtil", "Error in survival mode data. completed_difficulty_index = %s, completed_waves = %s, started_on_unlocked_difficulty = true", completed_difficulty_index, completed_waves)
+				Crashify.print_exception("StatisticsUtil", "Error in survival mode data. completed_difficulty_index = %s, completed_waves = %s, started_on_unlocked_difficulty = true", completed_difficulty_index, completed_waves)
 			end
 		else
 			local completed_difficulty_index = nil
@@ -1178,7 +1178,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 			end
 
 			if completed_difficulty_index and completed_difficulty_index < 3 and completed_waves >= 13 then
-				ScriptApplication.send_to_crashify("StatisticsUtil", "Error in survival mode data. completed_difficulty_index = %s, completed_waves = %s, started_on_unlocked_difficulty = false", completed_difficulty_index, completed_waves)
+				Crashify.print_exception("StatisticsUtil", "Error in survival mode data. completed_difficulty_index = %s, completed_waves = %s, started_on_unlocked_difficulty = false", completed_difficulty_index, completed_waves)
 			end
 		end
 

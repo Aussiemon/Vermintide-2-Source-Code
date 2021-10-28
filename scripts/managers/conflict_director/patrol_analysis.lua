@@ -1,5 +1,3 @@
-require("scripts/utils/util")
-
 PatrolAnalysis = class(PatrolAnalysis)
 local NAVTAG_LAYERS_STANDARD = {
 	jumps = 1.5,

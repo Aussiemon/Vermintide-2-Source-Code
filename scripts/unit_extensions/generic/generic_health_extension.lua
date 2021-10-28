@@ -55,11 +55,12 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self:set_max_health(health)
 
 	self.unmodified_max_health = self.health
-	self._health_clamp_min = nil
+	self._min_health_percentage = nil
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
 	self._last_damage_t = nil
-	self._damage_cap_per_hit = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit") or self.health
+	self._damage_cap = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit")
+	self._damage_cap_per_hit = self._damage_cap or self.health
 end
 
 GenericHealthExtension.destroy = function (self)
@@ -149,8 +150,8 @@ GenericHealthExtension.set_current_damage = function (self, damage)
 	self.damage = damage
 end
 
-GenericHealthExtension.set_health_clamp_min = function (self, health_clamp_min)
-	self._health_clamp_min = health_clamp_min
+GenericHealthExtension.set_min_health_percentage = function (self, min_health_percentage)
+	self._min_health_percentage = min_health_percentage
 end
 
 GenericHealthExtension.get_max_health = function (self)
@@ -177,6 +178,7 @@ GenericHealthExtension.set_max_health = function (self, health)
 	end
 
 	self.health = network_health
+	self._damage_cap_per_hit = self._damage_cap or self.health
 	local network_manager = Managers.state.network
 	local go_id, is_level_unit = network_manager:game_object_or_level_id(self.unit)
 
@@ -245,11 +247,13 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
 
-	if self._health_clamp_min then
+	if self._min_health_percentage then
 		local health = self:current_health()
+		local min_health = math.max(self._min_health_percentage * self.health, 0.25)
 		local predicted_health = health - damage_amount
-		local overkill_damage = math.max(0, self._health_clamp_min - predicted_health)
-		damage_amount = damage_amount - overkill_damage
+		local clamped_health = math.max(predicted_health, min_health)
+		local raw_damage = math.max(health - clamped_health, 0)
+		damage_amount = DamageUtils.networkify_damage(raw_damage)
 	end
 
 	if not source_attacker_unit then
@@ -268,10 +272,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
-
-	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
-		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
-	end
+	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 
 	if not self:get_is_invincible() and not self.dead then
 		local damage_mod = math.min(damage_amount, self._damage_cap_per_hit)
@@ -393,7 +394,7 @@ GenericHealthExtension.get_is_invincible = function (self)
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 	if buff_extension then
-		has_invincibility_buff = buff_extension:has_buff_perk("invincibility")
+		has_invincibility_buff = buff_extension:has_buff_perk("invulnerable")
 	end
 
 	local dlc_is_invincible = false

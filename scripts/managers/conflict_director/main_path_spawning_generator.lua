@@ -1,5 +1,4 @@
 require("foundation/scripts/util/error")
-require("scripts/utils/util")
 
 MainPathSpawningGenerator = {
 	_remove_zones_due_to_crossroads = function (zones, num_main_zones, removed_path_distances)

@@ -1,6 +1,7 @@
 require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_ping")
 require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_text_box")
 require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_news_feed")
+require("scripts/ui/hud_ui/world_marker_templates/world_marker_template_store")
 
 local temp_array_markers_to_remove = {}
 local temp_marker_raycast_queue = {}
@@ -51,7 +52,6 @@ local scenegraph_definition = {
 		}
 	}
 }
-local RELOAD_UI = true
 local DEBUG_MARKER = "ping"
 WorldMarkerUI = class(WorldMarkerUI)
 
@@ -65,6 +65,7 @@ WorldMarkerUI.init = function (self, parent, ingame_ui_context)
 		snap_pixel_positions = false
 	}
 	self._raycast_frame_counter = 0
+	self._aiming_alpha_multiplier = 1
 	self._game_world = ingame_ui_context.world_manager:world("level_world")
 	self.local_player = ingame_ui_context.player
 
@@ -88,7 +89,6 @@ WorldMarkerUI.destroy = function (self)
 end
 
 WorldMarkerUI._create_ui_elements = function (self)
-	RELOAD_UI = false
 	self._id_counter = 0
 	self._markers = {}
 	self._markers_by_id = {}
@@ -218,9 +218,7 @@ WorldMarkerUI._create_widget_by_type = function (self, widget_type)
 end
 
 WorldMarkerUI.update = function (self, dt, t)
-	if RELOAD_UI then
-		self:_create_ui_elements()
-	end
+	return
 end
 
 WorldMarkerUI.post_update = function (self, dt, t)
@@ -327,7 +325,6 @@ WorldMarkerUI.post_update = function (self, dt, t)
 
 					if not out_of_reach then
 						local marker_direction = Vector3.normalize(marker_position - camera_position)
-						marker_direction = Vector3.normalize(marker_direction)
 						local forward_dot_dir = Vector3.dot(camera_direction, marker_direction)
 						local right_vector_dot = Vector3.dot(camera_right_vector, marker_direction)
 						content.forward_dot_dir = forward_dot_dir
@@ -341,11 +338,29 @@ WorldMarkerUI.post_update = function (self, dt, t)
 						local is_clamped = false
 
 						if screen_clamp then
-							local clamped_x = 0
-							local clamped_y = 0
-							clamped_x, clamped_y, is_clamped = self:_clamp_to_screen(x, y, screen_margins, is_behind, is_under, marker_position, camera_position_center, camera_position_left, camera_position_right, camera_position_up, camera_position_down)
-							x = clamped_x
-							y = clamped_y
+							if settings.screen_clamp_method == "tutorial" then
+								local camera_forward_vector = Vector3.normalize(Vector3.flat(camera_forward))
+								local direction_flat = Vector3.normalize(Vector3.flat(marker_direction))
+								local forward_dot_flat = Vector3.dot(camera_forward_vector, direction_flat)
+								local right_dot_flat = Vector3.dot(camera_right_vector, direction_flat)
+								content.forward_dot_flat = forward_dot_flat
+								content.right_dot_flat = right_dot_flat
+								local clamped_x, clamped_y = nil
+								clamped_x, clamped_y, is_clamped = self:_tutorial_clamp_to_screen(x, y, forward_dot_flat, right_dot_flat, settings)
+								local lerp_speed = content._lerp_speed
+
+								if not lerp_speed or is_clamped ~= content.is_clamped then
+									lerp_speed = 0
+								end
+
+								lerp_speed = math.min(lerp_speed + dt, 1)
+								local offset = widget.offset
+								x = math.lerp(offset[1], clamped_x, lerp_speed)
+								y = math.lerp(offset[2], clamped_y, lerp_speed)
+								content._lerp_speed = lerp_speed
+							else
+								x, y, is_clamped = self:_normal_clamp_to_screen(x, y, screen_margins, is_behind, is_under, marker_position, camera_position_center, camera_position_left, camera_position_right, camera_position_up, camera_position_down)
+							end
 						end
 
 						if not is_clamped then
@@ -426,8 +441,9 @@ WorldMarkerUI.post_update = function (self, dt, t)
 		end
 
 		local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
-		local is_aiming = status_extension:get_is_aiming()
-		local alpha_multiplier = UIUtils.animate_value(render_settings.alpha_multiplier, dt * 5, is_aiming)
+		local is_not_aiming = not status_extension:get_is_aiming()
+		local alpha_multiplier = math.max(0.25, UIUtils.animate_value(self._aiming_alpha_multiplier, dt * 5, is_not_aiming))
+		self._aiming_alpha_multiplier = alpha_multiplier
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
@@ -455,7 +471,13 @@ WorldMarkerUI.post_update = function (self, dt, t)
 				end
 
 				if draw then
-					render_settings.alpha_multiplier = (widget.alpha_multiplier or 1) * alpha_multiplier
+					local widget_alpha_multiplier = widget.alpha_multiplier or 1
+
+					if not settings.ignore_aiming then
+						widget_alpha_multiplier = widget_alpha_multiplier * alpha_multiplier
+					end
+
+					render_settings.alpha_multiplier = widget_alpha_multiplier
 
 					UIRenderer.draw_widget(ui_renderer, widget)
 				end
@@ -463,8 +485,6 @@ WorldMarkerUI.post_update = function (self, dt, t)
 		end
 
 		UIRenderer.end_pass(ui_renderer)
-
-		render_settings.alpha_multiplier = alpha_multiplier
 	else
 		local viewport_name = "player_1"
 		local game_world = self._game_world
@@ -561,7 +581,7 @@ WorldMarkerUI._convert_world_to_screen_position = function (self, camera, world_
 	end
 end
 
-WorldMarkerUI._clamp_to_screen = function (self, x, y, screen_margins, is_behind, is_under, world_position, camera_position_center, camera_position_left, camera_position_right, camera_position_up, camera_position_down)
+WorldMarkerUI._normal_clamp_to_screen = function (self, x, y, screen_margins, is_behind, is_under, world_position, camera_position_center, camera_position_left, camera_position_right, camera_position_up, camera_position_down)
 	local root_size = UISceneGraph.get_size_scaled(self.ui_scenegraph, "root")
 	local margin_up = (screen_margins and screen_margins.up) or 0
 	local margin_down = (screen_margins and screen_margins.down) or 0
@@ -636,49 +656,23 @@ WorldMarkerUI._is_clamped = function (self, x, y)
 	return ((is_x_clamped or is_y_clamped) and true) or false
 end
 
-WorldMarkerUI._get_floating_icon_position = function (self, x, y, forward_dot, right_dot, tooltip_settings)
-	local root_size = UISceneGraph.get_size_scaled(self.ui_scenegraph, "root")
-	local scale = RESOLUTION_LOOKUP.scale
-	local scaled_root_size_x = root_size[1] * scale
-	local scaled_root_size_y = root_size[2] * scale
-	local scaled_root_size_x_half = scaled_root_size_x * 0.5
-	local scaled_root_size_y_half = scaled_root_size_y * 0.5
-	local screen_width = RESOLUTION_LOOKUP.res_w
-	local screen_height = RESOLUTION_LOOKUP.res_h
-	local x_diff = x - screen_width * 0.5
-	local y_diff = screen_height * 0.5 - y
-	local is_x_clamped = false
-	local is_y_clamped = false
+WorldMarkerUI._tutorial_clamp_to_screen = function (self, x, y, forward_dot, right_dot, settings)
+	local resolution_lookup = RESOLUTION_LOOKUP
+	local scale = resolution_lookup.scale
+	local screen_x_half = resolution_lookup.res_w * 0.5
+	local screen_y_half = resolution_lookup.res_h * 0.5
+	local is_x_clamped = math.abs(x * scale - screen_x_half) > screen_x_half * 0.9
+	local is_y_clamped = math.abs(screen_y_half - y * scale) > screen_y_half * 0.9
+	local is_clamped = is_x_clamped or is_y_clamped or forward_dot < 0
 
-	if math.abs(x_diff) > scaled_root_size_x_half * 0.9 then
-		is_x_clamped = true
+	if is_clamped then
+		local inverse_scale = resolution_lookup.inv_scale
+		local distance_from_center = settings.distance_from_center
+		x = inverse_scale * screen_x_half + right_dot * distance_from_center.width
+		y = inverse_scale * screen_y_half + forward_dot * distance_from_center.height
 	end
 
-	if math.abs(y_diff) > scaled_root_size_y_half * 0.9 then
-		is_y_clamped = true
-	end
-
-	local clamped_x = x
-	local clamped_y = y
-	local is_behind = (forward_dot < 0 and true) or false
-	local is_clamped = ((is_x_clamped or is_y_clamped) and true) or false
-
-	if is_clamped or is_behind then
-		local distance_from_center = tooltip_settings.distance_from_center
-		clamped_x = scaled_root_size_x_half + right_dot * distance_from_center.width * scale
-		clamped_y = scaled_root_size_y_half + forward_dot * distance_from_center.height * scale
-	else
-		local screen_pos_diff_x = screen_width - scaled_root_size_x
-		local screen_pos_diff_y = screen_height - scaled_root_size_y
-		clamped_x = clamped_x - screen_pos_diff_x * 0.5
-		clamped_y = clamped_y - screen_pos_diff_y * 0.5
-	end
-
-	local inverse_scale = RESOLUTION_LOOKUP.inv_scale
-	clamped_x = clamped_x * inverse_scale
-	clamped_y = clamped_y * inverse_scale
-
-	return clamped_x, clamped_y, is_clamped, is_behind
+	return x, y, is_clamped
 end
 
 local INDEX_POSITION = 1

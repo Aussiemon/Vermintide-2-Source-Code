@@ -402,7 +402,11 @@ Pickups.ammo.all_ammo = {
 		local is_throwing_axe = inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
 		local infinite_ammo = inventory_extension:has_infinite_ammo()
 
-		return has_ammo_consuming_weapon and not is_throwing_axe and not infinite_ammo
+		if not is_throwing_axe then
+			return has_ammo_consuming_weapon and not infinite_ammo
+		end
+
+		return true
 	end
 }
 Pickups.ammo.all_ammo_small = {
@@ -588,7 +592,6 @@ Pickups.special = {
 		spawn_weighting = 1e-06,
 		slot_name = "slot_level_event",
 		unit_name = "units/weapons/player/pup_ale/pup_ale",
-		allow_bots_pickup = true,
 		hud_description = "interaction_beer",
 		only_once = true,
 		item_description = "interaction_beer",

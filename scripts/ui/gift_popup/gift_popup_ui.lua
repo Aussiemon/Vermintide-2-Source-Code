@@ -1,35 +1,21 @@
 require("scripts/ui/reward_popup/reward_popup_ui")
 
-local POLL_REWARDS_COOLDOWN = 1.5
+local UNLOCK_MANAGER_POLL_INTERVAL = 1.5
 GiftPopupUI = class(GiftPopupUI)
 
 GiftPopupUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
-	local ingame_ui_context = ingame_ui_context
-	local ui_renderer = ingame_ui_context.ui_renderer
-	local ui_top_renderer = ingame_ui_context.ui_top_renderer
-	local input_manager = ingame_ui_context.input_manager
-	local world_manager = ingame_ui_context.world_manager
 	self._is_in_inn = ingame_ui_context.is_in_inn
-	local level_world = world_manager:world("level_world")
-	local wwise_world = Managers.world:wwise_world(level_world)
-	local reward_params = {
-		wwise_world = wwise_world,
-		ui_renderer = ui_renderer,
-		ui_top_renderer = ui_top_renderer,
-		input_manager = input_manager
-	}
-	local reward_popup = RewardPopupUI:new(reward_params)
+	local reward_popup = RewardPopupUI:new(ingame_ui_context)
 	self._reward_popup = reward_popup
 
-	reward_popup:set_input_manager(input_manager)
+	reward_popup:set_input_manager(ingame_ui_context.input_manager)
 
 	self._next_poll_time = 0
 	self._presentation_queue = {}
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "level_start_local_player_spawned", "event_initialize_poll")
-	rawset(_G, "gift_popup_ui", self)
 end
 
 GiftPopupUI.event_initialize_poll = function (self)
@@ -48,12 +34,16 @@ GiftPopupUI.post_update = function (self, dt, t)
 		local next_poll_time = self._next_poll_time
 
 		if next_poll_time <= t then
-			self._next_poll_time = t + POLL_REWARDS_COOLDOWN
-			local reward_data = Managers.unlock:poll_rewards()
+			self._next_poll_time = t + UNLOCK_MANAGER_POLL_INTERVAL
 
-			if reward_data then
-				local presentation_data = self:_generate_presentation_data(reward_data)
-				presentation_queue[#presentation_queue + 1] = presentation_data
+			while true do
+				local reward_data = Managers.unlock:poll_rewards()
+
+				if not reward_data then
+					break
+				end
+
+				presentation_queue[#presentation_queue + 1] = self:_generate_presentation_data(reward_data)
 			end
 		end
 
@@ -90,29 +80,24 @@ GiftPopupUI._can_present_reward = function (self)
 end
 
 GiftPopupUI._generate_presentation_data = function (self, reward_data)
-	local rewarded_items = reward_data.items
-	local presentation_text = reward_data.presentation_text
-	local presentation_data = {}
-
-	for _, item in ipairs(rewarded_items) do
-		local item_data = item.data
-		local item_display_name = item_data.display_name
-		local item_type = item_data.item_type
-		local entry = {
-			[#entry + 1] = {
+	local presentation_data = {
+		{
+			{
 				widget_type = "description",
 				value = {
-					Localize(item_display_name),
-					Localize(presentation_text)
+					Localize(reward_data.presentation_text),
+					Localize("gift_popup_sub_title_halloween")
 				}
 			},
-			[#entry + 1] = {
-				value = item,
-				widget_type = item_type or "item"
+			{
+				widget_type = "item_list",
+				value = reward_data.items
 			}
+		},
+		animation_data = {
+			claim_button = true
 		}
-		presentation_data[#presentation_data + 1] = entry
-	end
+	}
 
 	return presentation_data
 end
@@ -122,7 +107,7 @@ GiftPopupUI.active = function (self)
 end
 
 GiftPopupUI.active_input_service = function (self)
-	return FAKE_INPUT_SERVICE
+	return self._reward_popup:input_service()
 end
 
 GiftPopupUI.destroy = function (self)

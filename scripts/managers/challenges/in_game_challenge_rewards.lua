@@ -228,31 +228,37 @@ InGameChallengeRewards.markus_questing_knight_passive_health_regen_improved = {
 	reactivation_rule = BoonReactivationRules.questing_knight
 }
 
-for _, dlc in pairs(DLCSettings) do
-	local ingame_challenge_rewards = dlc.ingame_challenge_rewards
-
-	if ingame_challenge_rewards then
-		table.merge(InGameChallengeRewards, ingame_challenge_rewards)
-	end
-end
+DLCUtils.merge("ingame_challenge_rewards", InGameChallengeRewards)
 
 local function copy_buff_values(reward_name, buff_name, value_type)
-	InGameChallengeRewards[reward_name].description_values = {
-		{
-			value_type = "percent",
-			value_fmt = "%+d%%",
-			value = BuffTemplates[buff_name].buffs[1].multiplier
+	if BuffTemplates[buff_name] then
+		InGameChallengeRewards[reward_name].description_values = {
+			{
+				value_type = "percent",
+				value_fmt = "%+d%%",
+				value = BuffTemplates[buff_name].buffs[1].multiplier
+			}
 		}
-	}
+	else
+		InGameChallengeRewards[reward_name].description_values = {}
+	end
+
 	local reward_name_improved = reward_name .. "_improved"
 	local buff_name_improved = buff_name .. "_improved"
-	InGameChallengeRewards[reward_name_improved].description_values = {
-		{
-			value_type = "percent",
-			value_fmt = "%+d%%",
-			value = BuffTemplates[buff_name_improved].buffs[1].multiplier
-		}
-	}
+
+	if InGameChallengeRewards[reward_name_improved] then
+		if BuffTemplates[buff_name_improved] then
+			InGameChallengeRewards[reward_name_improved].description_values = {
+				{
+					value_type = "percent",
+					value_fmt = "%+d%%",
+					value = BuffTemplates[buff_name_improved].buffs[1].multiplier
+				}
+			}
+		else
+			InGameChallengeRewards[reward_name_improved].description_values = {}
+		end
+	end
 end
 
 copy_buff_values("markus_questing_knight_passive_cooldown_reduction", "markus_questing_knight_passive_cooldown_reduction")
@@ -339,6 +345,9 @@ InGameChallengeRewardTypes = {
 		end
 	end
 }
+
+DLCUtils.merge("ingame_challenge_reward_types", InGameChallengeRewardTypes)
+
 InGameChallengeRewardRevokeTypes = {
 	buff = function (reward_data, target_units, reward_instigator, additional_data)
 		if not reward_data.server_controlled then
@@ -359,6 +368,9 @@ InGameChallengeRewardRevokeTypes = {
 		end
 	end
 }
+
+DLCUtils.merge("ingame_challenge_revoke_types", InGameChallengeRewardRevokeTypes)
+
 local empty_table = {}
 InGameChallengeRewardTargets = {
 	owner = function (owner_unique_id)
@@ -397,5 +409,7 @@ InGameChallengeRewardTargets = {
 		return empty_table
 	end
 }
+
+DLCUtils.merge("ingame_challenge_revoke_targets", InGameChallengeRewardTargets)
 
 return

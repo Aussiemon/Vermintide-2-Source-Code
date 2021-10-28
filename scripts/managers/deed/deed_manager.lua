@@ -123,6 +123,18 @@ DeedManager.consume_deed = function (self, reward_callback)
 	end
 end
 
+DeedManager.hot_join_sync = function (self, peer_id)
+	if not self:has_deed() then
+		return
+	end
+
+	local selected_deed_data = self._selected_deed_data
+	local owner_peer_id = self._owner_peer_id
+	local item_name_id = NetworkLookup.item_names[selected_deed_data.name]
+
+	self:_send_rpc_to_client("rpc_select_deed", peer_id, item_name_id, owner_peer_id)
+end
+
 DeedManager.update = function (self, dt)
 	if self:has_deed() then
 		self:_update_owner(dt)
@@ -273,6 +285,19 @@ DeedManager._send_rpc_to_clients_except = function (self, rpc_name, except, ...)
 			rpc(channel_id, ...)
 		end
 	end
+end
+
+DeedManager._send_rpc_to_client = function (self, rpc_name, client_peer_id, ...)
+	local network_server = self._network_server
+
+	if not network_server then
+		return
+	end
+
+	local rpc = RPC[rpc_name]
+	local channel_id = PEER_ID_TO_CHANNEL[client_peer_id]
+
+	rpc(channel_id, ...)
 end
 
 return

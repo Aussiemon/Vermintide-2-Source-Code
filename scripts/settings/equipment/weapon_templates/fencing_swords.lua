@@ -651,6 +651,12 @@ weapon_template.actions = {
 				},
 				{
 					sub_action = "default",
+					start_time = 0.35,
+					action = "action_wield",
+					input = "action_wield"
+				},
+				{
+					sub_action = "default",
 					start_time = 1.3,
 					action = "idle",
 					auto_chain = true

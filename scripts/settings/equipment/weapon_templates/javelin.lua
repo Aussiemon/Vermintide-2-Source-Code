@@ -1220,14 +1220,17 @@ weapon_template.actions = {
 	},
 	action_two = {
 		default = {
-			allow_hold_toggle = true,
+			aim_zoom_delay = 0.25,
+			default_zoom = "zoom_in_trueflight",
 			anim_end_event = "attack_finished",
 			kind = "melee_start",
-			action_priority = 1,
 			weapon_action_hand = "right",
+			action_priority = 1,
+			minimum_hold_time = 0.2,
+			aim_at_gaze_setting = "tobii_aim_at_gaze_hagbane",
 			hold_input = "action_two_hold",
 			anim_event = "throw_charge",
-			minimum_hold_time = 0.2,
+			allow_hold_toggle = true,
 			anim_end_event_condition_func = function (unit, end_reason)
 				return end_reason ~= "new_interupting_action"
 			end,
@@ -1269,6 +1272,16 @@ weapon_template.actions = {
 					end_time = math.huge
 				}
 			},
+			buffed_zoom_thresholds = {
+				"zoom_in_trueflight",
+				"zoom_in"
+			},
+			zoom_condition_function = function (action)
+				return true
+			end,
+			unzoom_condition_function = function (end_reason, data)
+				return data == nil or data.new_action ~= "action_one"
+			end,
 			condition_func = function (unit, input_extension, ammo_extension)
 				if ammo_extension and (ammo_extension:total_remaining_ammo() <= 0 or ammo_extension:is_reloading()) then
 					return false
@@ -1410,7 +1423,7 @@ weapon_template.actions = {
 	action_wield = ActionTemplates.wield
 }
 weapon_template.ammo_data = {
-	ammo_hand = "right",
+	unique_ammo_type = true,
 	ammo_per_reload = 1,
 	ammo_type = "throwing_javelin",
 	ammo_per_clip = 1,
@@ -1418,6 +1431,7 @@ weapon_template.ammo_data = {
 	play_reload_anim_on_wield_reload = true,
 	should_update_anim_ammo = true,
 	has_wield_reload_anim = true,
+	ammo_hand = "right",
 	max_ammo = 3,
 	reload_on_ammo_pickup = true,
 	reload_time = 0,

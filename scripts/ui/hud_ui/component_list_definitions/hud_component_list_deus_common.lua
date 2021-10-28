@@ -31,7 +31,18 @@ if BUILD ~= "release" or script_data.debug_enabled then
 	})
 end
 
-local visibility_groups = {}
+local visibility_groups = {
+	{
+		name = "deus_run_stats",
+		order = 7,
+		validation_function = function (ingame_hud)
+			local component = ingame_hud:component("DeusRunStatsView")
+			local is_active = component and component:is_ui_active()
+
+			return is_active
+		end
+	}
+}
 
 for i = 1, #components, 1 do
 	require(components[i].filename)

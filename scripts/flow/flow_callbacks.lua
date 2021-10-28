@@ -1608,15 +1608,21 @@ function flow_callback_local_player_profile_check(params)
 end
 
 function flow_callback_local_player_profile_available(params)
-	local player = Managers.player:local_player()
+	local player = Managers.player:local_player_safe()
+
+	if not player then
+		return {
+			is_available = false
+		}
+	end
+
 	local profile_index = player:profile_index()
 	local profile = SPProfiles[profile_index]
 	local profile_name = profile and profile.display_name
-	local returns = {
+
+	return {
 		is_available = profile_name ~= nil
 	}
-
-	return returns
 end
 
 function flow_callback_compare_string(params)
@@ -4490,7 +4496,7 @@ function flow_callback_set_player_fall_height(params)
 
 		if is_husk then
 			if BUILD == "release" then
-				ScriptApplication.send_to_crashify("flow_callbacks", "Trying to set falling height on unit not owned")
+				Crashify.print_exception("flow_callbacks", "Trying to set falling height on unit not owned")
 			else
 				ferror("Trying to set falling height on unit not owned")
 			end
@@ -4559,23 +4565,31 @@ function flow_callback_stored_parent(params)
 end
 
 function flow_callback_set_unit_enabled(params)
+	local unit = params.unit
+
+	if not unit_alive(unit) then
+		Crashify.print_exception("Deleted Unit", "referenced in flow")
+
+		return
+	end
+
 	if params.enabled then
-		Unit.set_unit_visibility(params.unit, true)
-		Unit.enable_physics(params.unit)
-		Unit.enable_animation_state_machine(params.unit)
+		Unit.set_unit_visibility(unit, true)
+		Unit.enable_physics(unit)
+		Unit.enable_animation_state_machine(unit)
 	else
-		Unit.set_unit_visibility(params.unit, false)
+		Unit.set_unit_visibility(unit, false)
 
 		local projectile_linker_system = Managers.state.entity:system("projectile_linker_system")
 
 		if projectile_linker_system ~= nil then
-			projectile_linker_system:clear_linked_projectiles(params.unit)
+			projectile_linker_system:clear_linked_projectiles(unit)
 		end
 
-		Unit.disable_physics(params.unit)
+		Unit.disable_physics(unit)
 
-		if Unit.has_animation_state_machine(params.unit) then
-			Unit.disable_animation_state_machine(params.unit)
+		if Unit.has_animation_state_machine(unit) then
+			Unit.disable_animation_state_machine(unit)
 		end
 	end
 end
@@ -4586,6 +4600,16 @@ end
 
 function flow_callback_unregister_looping_event_timer(params)
 	Managers.state.game_mode:unregister_looping_event_timer(params.unique_id)
+end
+
+function flow_callback_rpc_clients_level_event(params)
+	local game_mode = Managers.state.game_mode
+
+	if game_mode then
+		local network_manager = Managers.state.network
+
+		network_manager.network_transmit:send_rpc_clients("rpc_trigger_level_event", params.level_event_name)
+	end
 end
 
 function flow_callback_set_unit_physics(params)

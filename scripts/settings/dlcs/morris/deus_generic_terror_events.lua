@@ -1,3 +1,5 @@
+require("scripts/settings/dlcs/morris/deus_terror_event_tags")
+
 local RECRUIT = 2
 local VETERAN = 3
 local CHAMPION = 4
@@ -5,6 +7,21 @@ local LEGENDARY = 5
 local CATACLYSM = 6
 local SHORT = 8
 local LONG = 16
+local cursed_chest_enemy_pre_spawn_func = nil
+cursed_chest_enemy_pre_spawn_func = TerrorEventUtils.add_enhancements_for_difficulty
+
+local function cursed_chest_enemy_spawned_func(unit, breed, optional_data)
+	if not breed.special and not breed.boss then
+		local player_unit = PlayerUtils.get_random_alive_hero()
+
+		AiUtils.aggro_unit_of_enemy(unit, player_unit)
+	end
+
+	local buff_system = Managers.state.entity:system("buff_system")
+
+	buff_system:add_buff(unit, "cursed_chest_objective_unit", unit)
+end
+
 GenericTerrorEvents.cursed_chest_prototype = {
 	{
 		"set_master_event_running",
@@ -25,8 +42,10 @@ GenericTerrorEvents.cursed_chest_prototype = {
 				local buff_system = Managers.state.entity:system("buff_system")
 
 				buff_system:add_buff(unit, "objective_unit", unit)
+				cursed_chest_enemy_spawned_func(unit, breed, optional_data)
 			end
-		}
+		},
+		pre_spawn_func = cursed_chest_enemy_pre_spawn_func
 	},
 	{
 		"delay",
@@ -42,121 +61,6 @@ GenericTerrorEvents.cursed_chest_prototype = {
 	{
 		"continue_when_spawned_count",
 		duration = 120,
-		condition = function (counter)
-			return counter.cursed_chest_boss <= 0
-		end
-	}
-}
-GenericTerrorEvents.cursed_chest_challenge = {
-	{
-		"inject_event",
-		event_name_list = {
-			"cursed_chest_challenge_skaven",
-			"cursed_chest_challenge_chaos",
-			"cursed_chest_challenge_chaos"
-		},
-		faction_requirement_list = {
-			"skaven",
-			"chaos"
-		}
-	},
-	{
-		"inject_event",
-		event_name_list = {
-			"cursed_chest_challenge_skaven",
-			"cursed_chest_challenge_beastmen",
-			"cursed_chest_challenge_beastmen"
-		},
-		faction_requirement_list = {
-			"skaven",
-			"beastmen"
-		}
-	},
-	{
-		"inject_event",
-		event_name_list = {
-			"cursed_chest_challenge_chaos",
-			"cursed_chest_challenge_beastmen"
-		},
-		faction_requirement_list = {
-			"chaos",
-			"beastmen"
-		}
-	}
-}
-GenericTerrorEvents.cursed_chest_challenge_skaven = {
-	{
-		"event_horde",
-		spawn_counter_category = "cursed_chest_boss",
-		composition_type = "cursed_chest_challenge_skaven",
-		optional_data = {
-			spawned_func = function (unit, breed, optional_data)
-				local buff_system = Managers.state.entity:system("buff_system")
-
-				buff_system:add_buff(unit, "objective_unit", unit)
-			end
-		}
-	}
-}
-GenericTerrorEvents.cursed_chest_challenge_chaos = {
-	{
-		"event_horde",
-		spawn_counter_category = "cursed_chest_boss",
-		composition_type = "cursed_chest_challenge_chaos",
-		optional_data = {
-			spawned_func = function (unit, breed, optional_data)
-				local buff_system = Managers.state.entity:system("buff_system")
-
-				buff_system:add_buff(unit, "objective_unit", unit)
-			end
-		}
-	}
-}
-GenericTerrorEvents.cursed_chest_challenge_beastmen = {
-	{
-		"event_horde",
-		spawn_counter_category = "cursed_chest_boss",
-		composition_type = "cursed_chest_challenge_beastmen",
-		optional_data = {
-			spawned_func = function (unit, breed, optional_data)
-				local buff_system = Managers.state.entity:system("buff_system")
-
-				buff_system:add_buff(unit, "objective_unit", unit)
-			end
-		}
-	}
-}
-GenericTerrorEvents.cursed_chest_challenge_test = {
-	{
-		"set_master_event_running",
-		name = "cursed_chest_prototype"
-	},
-	{
-		"event_horde",
-		spawn_counter_category = "cursed_chest_boss",
-		composition_type = "cursed_chest_challenge_test",
-		optional_data = {
-			spawned_func = function (unit, breed, optional_data)
-				local buff_system = Managers.state.entity:system("buff_system")
-
-				buff_system:add_buff(unit, "objective_unit", unit)
-			end
-		}
-	},
-	{
-		"delay",
-		duration = 1
-	},
-	{
-		"continue_when_spawned_count",
-		duration = 20,
-		condition = function (counter)
-			return counter.cursed_chest_boss > 0
-		end
-	},
-	{
-		"continue_when_spawned_count",
-		duration = 60,
 		condition = function (counter)
 			return counter.cursed_chest_boss <= 0
 		end
@@ -1214,14 +1118,52 @@ GenericTerrorEvents.deus_skaven_sequence = {
 		}
 	},
 	{
-		"inject_event",
-		event_name_list = {
-			"deus_skaven_wave_2a",
-			"deus_skaven_wave_2b",
-			"deus_skaven_wave_2c",
-			"deus_skaven_wave_2d",
-			"deus_skaven_wave_2e",
-			"deus_skaven_wave_2f"
+		"one_of",
+		{
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_skaven_wave_2a",
+					"deus_skaven_wave_2b",
+					"deus_skaven_wave_2e"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_MONSTERS
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_skaven_wave_2c",
+					"deus_skaven_wave_2d",
+					"deus_skaven_wave_2f"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_SPECIALS
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_skaven_wave_2c",
+					"deus_skaven_wave_2d",
+					"deus_skaven_wave_2f"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_ELITES
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_skaven_wave_2a",
+					"deus_skaven_wave_2b",
+					"deus_skaven_wave_2c",
+					"deus_skaven_wave_2d",
+					"deus_skaven_wave_2e",
+					"deus_skaven_wave_2f"
+				}
+			}
 		}
 	}
 }
@@ -1236,12 +1178,47 @@ GenericTerrorEvents.deus_chaos_sequence = {
 		}
 	},
 	{
-		"inject_event",
-		event_name_list = {
-			"deus_chaos_wave_2a",
-			"deus_chaos_wave_2b",
-			"deus_chaos_wave_2c",
-			"deus_chaos_wave_2d"
+		"one_of",
+		{
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_chaos_wave_2a",
+					"deus_chaos_wave_2c"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_MONSTERS
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_chaos_wave_2c",
+					"deus_chaos_wave_2d"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_SPECIALS
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_chaos_wave_2b",
+					"deus_chaos_wave_2d"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_ELITES
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_chaos_wave_2a",
+					"deus_chaos_wave_2b",
+					"deus_chaos_wave_2c",
+					"deus_chaos_wave_2d"
+				}
+			}
 		}
 	}
 }
@@ -1256,11 +1233,45 @@ GenericTerrorEvents.deus_beastmen_sequence = {
 		}
 	},
 	{
-		"inject_event",
-		event_name_list = {
-			"deus_beastmen_wave_2a",
-			"deus_beastmen_wave_2b",
-			"deus_beastmen_wave_2c"
+		"one_of",
+		{
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_beastmen_wave_2a",
+					"deus_beastmen_wave_2b"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_MONSTERS
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_beastmen_wave_2a",
+					"deus_beastmen_wave_2c"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_SPECIALS
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_beastmen_wave_2c"
+				},
+				tag_requirement_list = {
+					DeusTerrorEventTags.MORE_ELITES
+				}
+			},
+			{
+				"inject_event",
+				event_name_list = {
+					"deus_beastmen_wave_2a",
+					"deus_beastmen_wave_2b",
+					"deus_beastmen_wave_2c"
+				}
+			}
 		}
 	}
 }

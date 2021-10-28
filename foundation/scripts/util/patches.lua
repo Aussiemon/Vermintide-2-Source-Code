@@ -145,6 +145,19 @@ if not EACServer then
 	end
 end
 
+if not Clipboard then
+	auto_patch_missing_methods("Clipboard")
+
+	Clipboard.get = CONST("")
+	Clipboard.put = NOP
+end
+
+if not Presence then
+	auto_patch_missing_methods("Presence")
+
+	Presence.set_presence = NOP
+end
+
 ColorBox = QuaternionBox
 
 return

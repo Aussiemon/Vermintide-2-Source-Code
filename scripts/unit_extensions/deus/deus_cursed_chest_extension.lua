@@ -25,7 +25,6 @@ end
 DeusCursedChestExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self._is_server = Managers.player.is_server
-	self.game = extension_init_data.game
 
 	self:register_rpcs(extension_init_context.network_transmit.network_event_delegate)
 end
@@ -35,16 +34,6 @@ DeusCursedChestExtension.game_object_initialized = function (self, unit, go_id)
 end
 
 DeusCursedChestExtension.destroy = function (self)
-	if self._is_server then
-		local current_state = self:_get_state()
-
-		if current_state == STATES.RUNNING then
-			local mission_system = Managers.state.entity:system("mission_system")
-
-			mission_system:end_mission("deus_cursed_chest_defend", true)
-		end
-	end
-
 	if self._objective_unit then
 		self:_clear_objective_unit()
 	end
@@ -75,10 +64,9 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			Unit.flow_event(self._unit, "state_RUNNING")
 
 			if self._is_server then
-				local mission_system = Managers.state.entity:system("mission_system")
+				local seed = Managers.mechanism:get_level_seed()
 
-				mission_system:request_mission("deus_cursed_chest_defend")
-				Managers.state.conflict:start_terror_event("cursed_chest_prototype")
+				Managers.state.conflict:start_terror_event("cursed_chest_prototype", seed, unit)
 			end
 
 			local position = POSITION_LOOKUP[self._unit]
@@ -90,10 +78,6 @@ DeusCursedChestExtension.update = function (self, unit, input, dt, context, t)
 			self._reward_collected = true
 		elseif current_state == STATES.OPEN then
 			if self._is_server then
-				local mission_system = Managers.state.entity:system("mission_system")
-
-				mission_system:end_mission("deus_cursed_chest_defend", true)
-
 				local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
 
 				deus_run_controller:record_cursed_chest_purified()
@@ -263,11 +247,9 @@ DeusCursedChestExtension.on_client_interact = function (self, world, interactor_
 	local state = self:_get_state()
 
 	if state == STATES.OPEN then
-		local transition_params = {
+		Managers.ui:handle_transition("deus_cursed_chest", {
 			interactable_unit = interactable_unit
-		}
-
-		Managers.state.event:trigger("ui_event_transition", "deus_cursed_chest", transition_params)
+		})
 
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 

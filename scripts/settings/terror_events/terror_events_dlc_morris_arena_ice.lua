@@ -3,6 +3,8 @@ local VETERAN = 3
 local CHAMPION = 4
 local LEGENDARY = 5
 local CATACLYSM = 6
+local boss_pre_spawn_func = nil
+boss_pre_spawn_func = TerrorEventUtils.add_enhancements_for_difficulty
 local terror_event_blueprints = {
 	arena_ice_terror = {
 		{
@@ -211,12 +213,13 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			spawn_counter_category = "boss",
 			spawner_id = "arena_ice_terror_special",
+			spawn_counter_category = "boss",
 			breed_name = {
 				"skaven_rat_ogre",
 				"skaven_stormfiend"
-			}
+			},
+			pre_spawn_func = boss_pre_spawn_func
 		},
 		{
 			"delay",
@@ -401,12 +404,13 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			spawn_counter_category = "boss",
 			spawner_id = "arena_ice_terror_special",
+			spawn_counter_category = "boss",
 			breed_name = {
 				"chaos_troll",
 				"chaos_spawn"
-			}
+			},
+			pre_spawn_func = boss_pre_spawn_func
 		},
 		{
 			"delay",
@@ -579,9 +583,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			spawn_counter_category = "boss",
 			breed_name = "beastmen_minotaur",
-			spawner_id = "arena_ice_terror_special"
+			spawner_id = "arena_ice_terror_special",
+			spawn_counter_category = "boss",
+			pre_spawn_func = boss_pre_spawn_func
 		},
 		{
 			"delay",
@@ -925,12 +930,13 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			spawn_counter_category = "boss",
 			spawner_id = "arena_ice_terror_special2",
+			spawn_counter_category = "boss",
 			breed_name = {
 				"skaven_rat_ogre",
 				"skaven_stormfiend"
-			}
+			},
+			pre_spawn_func = boss_pre_spawn_func
 		},
 		{
 			"delay",
@@ -1146,12 +1152,13 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			spawn_counter_category = "boss",
 			spawner_id = "arena_ice_terror_special2",
+			spawn_counter_category = "boss",
 			breed_name = {
 				"chaos_troll",
 				"chaos_spawn"
-			}
+			},
+			pre_spawn_func = boss_pre_spawn_func
 		},
 		{
 			"delay",
@@ -1365,9 +1372,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"spawn_at_raw",
-			spawn_counter_category = "boss",
 			breed_name = "beastmen_minotaur",
-			spawner_id = "arena_ice_terror_special2"
+			spawner_id = "arena_ice_terror_special2",
+			spawn_counter_category = "boss",
+			pre_spawn_func = boss_pre_spawn_func
 		},
 		{
 			"delay",

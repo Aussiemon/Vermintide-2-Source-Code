@@ -2,6 +2,7 @@ require("scripts/settings/dlcs/morris/deus_power_up_settings")
 require("scripts/settings/dlcs/morris/greed_pinata_settings")
 require("scripts/settings/dlcs/morris/tweak_data/buff_tweak_data")
 
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local dlc_settings = DLCSettings.morris
 
 local function is_local(unit)
@@ -72,7 +73,7 @@ local function update_range_check(unit, buff, params, world)
 		local num_hits = 0
 
 		if not range_check_template.only_players then
-			AiUtils.broadphase_query(position, radius, temp_new_units_in_range)
+			num_hits = AiUtils.broadphase_query(position, radius, temp_new_units_in_range)
 		end
 
 		if not range_check_template.only_ai then
@@ -93,6 +94,10 @@ local function update_range_check(unit, buff, params, world)
 
 		for i = num_hits + 1, initial_length_temp_new_units_in_range, 1 do
 			temp_new_units_in_range[i] = nil
+		end
+
+		if buff_template.randomize_result then
+			table.shuffle(temp_new_units_in_range)
 		end
 
 		local unit_entered_range_func = unit_entered_range_func_name and BuffFunctionTemplates.functions[unit_entered_range_func_name]
@@ -122,7 +127,11 @@ local function update_range_check(unit, buff, params, world)
 				units_in_range[prev_unit_in_range] = nil
 			end
 		end
+
+		return true
 	end
+
+	return false
 end
 
 local function destroy_range_check(unit, buff, params, world)
@@ -166,6 +175,45 @@ local function trigger_deus_potion_end_sound_event(unit, buff, params, world)
 
 		WwiseWorld.trigger_event(wwise_world, "Play_potion_morris_effect_end")
 	end
+end
+
+local function spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time)
+	local network_position = AiAnimUtils.position_network_scale(position, true)
+	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
+	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
+	local t = Managers.time:time("game")
+	local explosion_data = {
+		explode_time = t + explode_time,
+		fuse_time = fuse_time
+	}
+	local extension_init_data = {
+		projectile_locomotion_system = {
+			network_position = network_position,
+			network_rotation = network_rotation,
+			network_velocity = network_velocity,
+			network_angular_velocity = network_velocity
+		},
+		death_system = {
+			in_hand = false,
+			death_data = explosion_data,
+			item_name = item_name
+		},
+		health_system = {
+			damage = 1,
+			health_data = explosion_data,
+			item_name = item_name
+		},
+		pickup_system = {
+			has_physics = true,
+			spawn_type = "loot",
+			pickup_name = item_name
+		}
+	}
+	local pickup_settings = AllPickups[item_name]
+	local unit_name = pickup_settings.unit_name
+	local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
+
+	Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
 end
 
 dlc_settings.buff_function_templates = {
@@ -381,6 +429,30 @@ dlc_settings.buff_function_templates = {
 	remove_curse_khorne_champions_aoe = function (unit, buff, params, world)
 		World.stop_spawning_particles(world, buff.fx_id)
 		destroy_range_check(unit, buff, params, world)
+	end,
+	curse_khorne_champions_unit_link_unit = function (unit, buff, params, world)
+		local template = buff.template
+		local unit_name = template.unit_name
+		local spawned_unit = Managers.state.unit_spawner:spawn_local_unit(unit_name, POSITION_LOOKUP[unit])
+
+		Managers.state.unit_spawner:create_unit_extensions(Unit.world(spawned_unit), spawned_unit, "prop_unit")
+		World.link_unit(Unit.world(unit), spawned_unit, 0, unit, Unit.node(unit, "root_point"))
+
+		buff.linked_unit = spawned_unit
+		local z_offset_config = template.z_offset
+		local breed = Unit.get_data(unit, "breed")
+		local breed_name = breed.name
+		local z_offset = z_offset_config[breed_name] or z_offset_config.default
+
+		Unit.set_local_position(spawned_unit, 0, Vector3(0, 0, z_offset))
+	end,
+	remove_linked_unit = function (unit, buff, params, world)
+		if buff.linked_unit then
+			World.unlink_unit(Unit.world(buff.linked_unit), buff.linked_unit)
+			Managers.state.unit_spawner:mark_for_deletion(buff.linked_unit)
+
+			buff.linked_unit = nil
+		end
 	end,
 	apply_curse_greed_pinata_drops = function (unit, buff, params, world)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
@@ -662,6 +734,15 @@ dlc_settings.buff_function_templates = {
 
 		trigger_deus_potion_end_sound_event(unit, buff, params, world)
 	end,
+	apply_pockets_full_of_bombs_buff = function (unit, buff, params)
+		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+		local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+		local slot_data = inventory_extension:get_slot_data(wielded_slot_name)
+
+		if wielded_slot_name == "slot_level_event" and slot_data then
+			inventory_extension:drop_level_event_item(slot_data)
+		end
+	end,
 	update_pockets_full_of_bombs_buff = function (unit, buff, params)
 		if is_local(unit) then
 			local network_manager = Managers.state.network
@@ -821,7 +902,9 @@ dlc_settings.buff_function_templates = {
 			if health_extension then
 				local max_health = health_extension:get_max_health()
 
-				health_extension:set_max_health(max_health - buff.added_health)
+				if buff.added_health < max_health then
+					health_extension:set_max_health(max_health - buff.added_health)
+				end
 			end
 		end
 	end,
@@ -1065,7 +1148,7 @@ dlc_settings.buff_function_templates = {
 			Unit.animation_event(unit, "revive_complete")
 		end
 	end,
-	update_bad_breath = function (unit, buff, params)
+	update_disable_rescue = function (unit, buff, params)
 		local time = Managers.time:time("main")
 
 		if buff.rescue_timer and buff.rescue_timer < time then
@@ -1143,6 +1226,14 @@ dlc_settings.buff_function_templates = {
 
 			buff.swapped_weapons = nil
 		end
+	end,
+	apply_cursed_chest_init = function (unit, buff, params)
+		local breed = Unit.get_data(unit, "breed")
+		local effect_name = (breed.boss and "fx/cursed_chest_spawn_02") or "fx/cursed_chest_spawn_01"
+		local world = Application.main_world()
+		local position = POSITION_LOOKUP[unit]
+
+		World.create_particles(world, effect_name, position)
 	end
 }
 dlc_settings.proc_functions = {
@@ -1191,7 +1282,7 @@ dlc_settings.proc_functions = {
 		local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
 		local career_power_level = career_extension:get_career_power_level()
 
-		DamageUtils.create_explosion(world, player_unit, hit_position, rotation, explosion_template, 1, "buff", true, is_husk(player_unit), player_unit, career_power_level, false)
+		DamageUtils.create_explosion(world, player_unit, hit_position, rotation, explosion_template, 1, "buff", is_server(), is_husk(player_unit), player_unit, career_power_level, false)
 	end,
 	remove_this_player_buff = function (player, buff, params)
 		local player_unit = player.player_unit
@@ -1370,8 +1461,12 @@ dlc_settings.proc_functions = {
 		local player_unit = player.player_unit
 
 		if ALIVE[player_unit] and is_server() then
+			local buff_template = buff.template
+			local difficulty_multiplier = buff_template.difficulty_multiplier
+			local difficulty_name = Managers.state.difficulty:get_difficulty()
+			local multiplier = difficulty_multiplier[difficulty_name] or table.values(difficulty_multiplier)[1]
 			local damage = params[param_order.damage_amount]
-			local heal_amount = damage * buff.multiplier
+			local heal_amount = damage * multiplier
 
 			DamageUtils.heal_network(player_unit, player_unit, heal_amount, "health_regen")
 		end
@@ -1385,8 +1480,12 @@ dlc_settings.proc_functions = {
 			local range_squared = range * range
 			local side = Managers.state.side.side_by_unit[player_unit]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+			local buff_template = buff.template
+			local difficulty_multiplier = buff_template.difficulty_multiplier
+			local difficulty_name = Managers.state.difficulty:get_difficulty()
+			local multiplier = difficulty_multiplier[difficulty_name] or table.values(difficulty_multiplier)[1]
 			local damage = params[param_order.damage_amount]
-			local heal_amount = damage * buff.multiplier
+			local heal_amount = damage * multiplier
 
 			for i = 1, #player_and_bot_units, 1 do
 				local healed_unit = player_and_bot_units[i]
@@ -1459,11 +1558,6 @@ dlc_settings.proc_functions = {
 		local event_manager = Managers.state.event
 
 		event_manager:trigger("tutorial_event_remove_health_bar", buff.unit)
-	end,
-	remove_level_object_unit = function (player, buff, params)
-		local unit = params[1]
-
-		Managers.state.game_mode:level_object_killed(unit)
 	end,
 	trigger_dialogue_event = function (player, buff, params)
 		local event = buff.template.dialogue_event
@@ -1853,56 +1947,55 @@ dlc_settings.proc_functions = {
 			end
 		end
 	end,
-	chance_free_potion_use = function (player, buff, params)
+	apply_held_potion_effect = function (player, buff, params)
 		local player_unit = player.player_unit
 
 		if not player_unit then
 			return
 		end
 
-		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-		local proc_chance = buff.template.chance
-		local proc_name = buff.template.name
+		local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
 
-		if not buff_extension:has_procced(proc_chance, proc_name) then
+		if not inventory_extension then
 			return
 		end
 
-		local inventory_extension = player_unit and ScriptUnit.has_extension(player_unit, "inventory_system")
+		local slot_name = "slot_potion"
+		local item_data = inventory_extension:get_item_data(slot_name)
 
-		if inventory_extension then
-			local potion_buffs = {}
-			local slot_name = "slot_potion"
-			local item_data = inventory_extension:get_item_data(slot_name)
+		if not item_data then
+			return
+		end
 
-			if item_data then
-				local item_template = BackendUtils.get_item_template(item_data)
-				local potion_buff = item_template.actions.action_one.default.buff_template
-				potion_buffs[#potion_buffs + 1] = potion_buff
-				local additional_items = inventory_extension:get_additional_items(slot_name)
+		local item_template = BackendUtils.get_item_template(item_data)
+		local potion_buffs = {
+			item_template.actions.action_one.default.buff_template
+		}
+		local additional_items = inventory_extension:get_additional_items(slot_name)
 
-				if additional_items then
-					for _, additional_item_data in pairs(additional_items) do
-						local additional_item_template = BackendUtils.get_item_template(additional_item_data)
-						local additional_potion_buff = additional_item_template.actions.action_one.default.buff_template
-						potion_buffs[#potion_buffs + 1] = additional_potion_buff
-					end
-				end
+		if additional_items then
+			for _, additional_item_data in pairs(additional_items) do
+				local additional_item_template = BackendUtils.get_item_template(additional_item_data)
+				local additional_potion_buff = additional_item_template.actions.action_one.default.buff_template
+				potion_buffs[#potion_buffs + 1] = additional_potion_buff
 			end
+		end
 
-			if #potion_buffs > 0 then
-				local random_buff = potion_buffs[math.random(1, #potion_buffs)]
-				local buff_system = Managers.state.entity:system("buff_system")
+		if #potion_buffs > 0 then
+			local random_buff = potion_buffs[math.random(#potion_buffs)]
+			local buff_system = Managers.state.entity:system("buff_system")
 
-				buff_system:add_buff(player_unit, random_buff, player_unit, false)
-			end
+			buff_system:add_buff(player_unit, random_buff, player_unit, false)
 		end
 	end,
 	block_procs_parry = function (player, buff, params)
 		local player_unit = player.player_unit
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		local attacking_unit = params[1]
+		local fatigue_type = params[2]
+		local blocking_weapon_unit = params[3]
 
-		buff_extension:trigger_procs("on_timed_block")
+		buff_extension:trigger_procs("on_timed_block", attacking_unit, fatigue_type, blocking_weapon_unit)
 	end,
 	active_ability_for_coins = function (player, buff, params)
 		local career_extension = ScriptUnit.has_extension(player.player_unit, "career_system")
@@ -2131,7 +2224,7 @@ dlc_settings.proc_functions = {
 						local explosion_template_name = "generic_mutator_explosion"
 						local explosion_template = ExplosionTemplates[explosion_template_name]
 
-						DamageUtils.create_explosion(world, attacker, position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, hit_unit, 0, false)
+						DamageUtils.create_explosion(world, attacker, position, Quaternion.identity(), explosion_template, 1, damage_source, is_server(), false, hit_unit, 0, false)
 
 						local audio_system = Managers.state.entity:system("audio_system")
 						local sound_event = buff.template.sound_event
@@ -2499,7 +2592,7 @@ dlc_settings.proc_functions = {
 		local time = Managers.time:time("main")
 		buff.rescue_timer = time + template.rescue_delay
 	end,
-	start_bad_breath_timer = function (player, buff, params)
+	start_disable_rescue_timer = function (player, buff, params)
 		local template = buff.template
 		local rescuable_disable_types = template.rescuable_disable_types
 		local disable_type = params[1]
@@ -2514,6 +2607,14 @@ dlc_settings.proc_functions = {
 		local world = Application.main_world()
 
 		World.create_particles(world, effects, POSITION_LOOKUP[player.player_unit])
+	end,
+	remove_linked_unit = function (player, buff, params)
+		if buff.linked_unit then
+			World.unlink_unit(Unit.world(buff.linked_unit), buff.linked_unit)
+			Managers.state.unit_spawner:mark_for_deletion(buff.linked_unit)
+
+			buff.linked_unit = nil
+		end
 	end
 }
 dlc_settings.explosion_templates = {
@@ -2942,32 +3043,30 @@ dlc_settings.buff_templates = {
 	vampiric_draught_potion = {
 		buffs = {
 			{
-				icon = "potion_vampiric_draught",
 				name = "vampiric_draught_potion_heal",
+				remove_buff_func = "remove_deus_potion_buff",
 				buff_func = "vampiric_heal",
 				event = "on_damage_dealt",
-				remove_buff_func = "remove_deus_potion_buff",
 				refresh_durations = true,
-				event_buff = true,
 				max_stacks = 1,
+				icon = "potion_vampiric_draught",
 				duration = MorrisBuffTweakData.vampiric_draught_potion.duration,
-				multiplier = MorrisBuffTweakData.vampiric_draught_potion.multiplier
+				difficulty_multiplier = MorrisBuffTweakData.vampiric_draught_potion.difficulty_multiplier
 			}
 		}
 	},
 	vampiric_draught_potion_increased = {
 		buffs = {
 			{
-				icon = "potion_vampiric_draught",
 				name = "vampiric_draught_potion_heal_increased",
+				remove_buff_func = "remove_deus_potion_buff",
 				buff_func = "vampiric_heal",
 				event = "on_damage_dealt",
-				remove_buff_func = "remove_deus_potion_buff",
 				refresh_durations = true,
-				event_buff = true,
 				max_stacks = 1,
+				icon = "potion_vampiric_draught",
 				duration = MorrisBuffTweakData.vampiric_draught_potion_increased.duration,
-				multiplier = MorrisBuffTweakData.vampiric_draught_potion_increased.multiplier
+				difficulty_multiplier = MorrisBuffTweakData.vampiric_draught_potion_increased.difficulty_multiplier
 			}
 		}
 	},
@@ -3079,11 +3178,10 @@ dlc_settings.buff_templates = {
 				event = "on_damage_dealt",
 				remove_buff_func = "remove_deus_potion_buff",
 				refresh_durations = true,
-				event_buff = true,
 				max_stacks = 1,
 				icon = "potion_friendly_murderer",
 				duration = MorrisBuffTweakData.friendly_murderer_potion.duration,
-				multiplier = MorrisBuffTweakData.friendly_murderer_potion.multiplier,
+				difficulty_multiplier = MorrisBuffTweakData.friendly_murderer_potion.difficulty_multiplier,
 				range = MorrisBuffTweakData.friendly_murderer_potion.range
 			}
 		}
@@ -3096,11 +3194,10 @@ dlc_settings.buff_templates = {
 				event = "on_damage_dealt",
 				remove_buff_func = "remove_deus_potion_buff",
 				refresh_durations = true,
-				event_buff = true,
 				max_stacks = 1,
 				icon = "potion_friendly_murderer",
 				duration = MorrisBuffTweakData.friendly_murderer_potion_increased.duration,
-				multiplier = MorrisBuffTweakData.friendly_murderer_potion_increased.multiplier,
+				difficulty_multiplier = MorrisBuffTweakData.friendly_murderer_potion_increased.difficulty_multiplier,
 				range = MorrisBuffTweakData.friendly_murderer_potion_increased.range
 			}
 		}
@@ -3134,12 +3231,13 @@ dlc_settings.buff_templates = {
 	pockets_full_of_bombs_potion = {
 		buffs = {
 			{
-				name = "pockets_full_of_bombs_potion",
 				update_func = "update_pockets_full_of_bombs_buff",
-				remove_buff_func = "remove_deus_potion_buff",
-				perk = "disable_interactions",
+				name = "pockets_full_of_bombs_potion",
 				icon = "potion_pockets_full_of_bombs",
-				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion.duration
+				remove_buff_func = "remove_deus_potion_buff",
+				apply_buff_func = "apply_pockets_full_of_bombs_buff",
+				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion.duration,
+				perk = buff_perks.disable_interactions
 			},
 			{
 				remove_buff_func = "remove_movement_buff",
@@ -3156,12 +3254,13 @@ dlc_settings.buff_templates = {
 	pockets_full_of_bombs_potion_increased = {
 		buffs = {
 			{
-				name = "pockets_full_of_bombs_potion_increased",
 				update_func = "update_pockets_full_of_bombs_buff",
-				remove_buff_func = "remove_deus_potion_buff",
-				perk = "disable_interactions",
+				name = "pockets_full_of_bombs_potion_increased",
 				icon = "potion_pockets_full_of_bombs",
-				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion_increased.duration
+				remove_buff_func = "remove_deus_potion_buff",
+				apply_buff_func = "apply_pockets_full_of_bombs_buff",
+				duration = MorrisBuffTweakData.pockets_full_of_bombs_potion_increased.duration,
+				perk = buff_perks.disable_interactions
 			},
 			{
 				name = "pockets_full_of_bombs_potion_movement_speed_increased",
@@ -3247,11 +3346,11 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "poison_proof_potion",
-				perk = "poison_proof",
 				remove_buff_func = "remove_deus_potion_buff",
 				max_stacks = 1,
 				icon = "potion_poison_proof",
 				refresh_durations = true,
+				perk = buff_perks.poison_proof,
 				duration = MorrisBuffTweakData.poison_proof_potion.duration
 			}
 		}
@@ -3260,11 +3359,11 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "poison_proof_potion_increased ",
-				perk = "poison_proof",
 				remove_buff_func = "remove_deus_potion_buff",
 				max_stacks = 1,
 				icon = "potion_poison_proof",
 				refresh_durations = true,
+				perk = buff_perks.poison_proof,
 				duration = MorrisBuffTweakData.poison_proof_potion_increased.duration
 			}
 		}
@@ -3279,13 +3378,11 @@ dlc_settings.buff_templates = {
 				event = "on_death",
 				remove_buff_func = "remove_mark_of_nurgle",
 				apply_buff_func = "apply_mark_of_nurgle",
-				stop_sound_event_name = "Stop_curse_corrupted_flesh_loop",
-				event_buff = true
+				stop_sound_event_name = "Stop_curse_corrupted_flesh_loop"
 			},
 			{
 				event = "on_damage_dealt",
 				name = "mark_of_nurgle_dot_attack",
-				event_buff = true,
 				buff_func = "apply_mark_of_nurgle_dot"
 			},
 			{
@@ -3295,7 +3392,6 @@ dlc_settings.buff_templates = {
 				buff_func = "mark_of_nurgle_explosion",
 				event = "on_death",
 				initial_radius = 1,
-				event_buff = true,
 				aoe_dot_damage_interval = 1,
 				aoe_init_difficulty_damage = {
 					{
@@ -3355,7 +3451,6 @@ dlc_settings.buff_templates = {
 			{
 				remove_on_proc = true,
 				name = "mark_of_nurgle_pingable",
-				event_buff = true,
 				buff_func = "curse_khorne_champions_leader_death",
 				event = "on_death",
 				remove_buff_func = "remove_make_pingable",
@@ -3381,15 +3476,14 @@ dlc_settings.buff_templates = {
 	curse_khorne_champions_aoe = {
 		buffs = {
 			{
-				update_func = "update_curse_khorne_champions_aoe",
+				particle_fx = "fx/deus_curse_khorne_champions_leader",
 				name = "curse_khorne_champions_leader",
 				buff_func = "curse_khorne_champions_leader_death",
 				event = "on_death",
 				remove_buff_func = "remove_curse_khorne_champions_aoe",
 				apply_buff_func = "apply_curse_khorne_champions_aoe",
-				event_buff = true,
 				remove_on_proc = true,
-				particle_fx = "fx/deus_curse_khorne_champions_leader",
+				update_func = "update_curse_khorne_champions_aoe",
 				in_range_units_buff_name = "curse_khorne_champions_buff",
 				range_check = {
 					unit_left_range_func = "unit_left_range_champions_aoe",
@@ -3401,11 +3495,28 @@ dlc_settings.buff_templates = {
 			{
 				remove_on_proc = true,
 				name = "curse_khorne_champions_aoe_pingable",
-				event_buff = true,
 				buff_func = "curse_khorne_champions_leader_death",
 				event = "on_death",
 				remove_buff_func = "remove_make_pingable",
 				apply_buff_func = "apply_make_pingable"
+			},
+			{
+				unit_name = "units/props/deus_bloodgod_curse/deus_bloodgod_curse_01",
+				name = "curse_khorne_champions_unit",
+				buff_func = "remove_linked_unit",
+				event = "on_death",
+				remove_buff_func = "remove_linked_unit",
+				apply_buff_func = "curse_khorne_champions_unit_link_unit",
+				z_offset = {
+					default = 2,
+					chaos_raider = 2,
+					beastmen_bestigor = 1.9,
+					chaos_warrior = 2.4,
+					skaven_storm_vermin_commander = 1.9,
+					skaven_storm_vermin = 1.9,
+					skaven_storm_vermin_with_shield = 1.9,
+					skaven_storm_vermin_champion = 1.9
+				}
 			}
 		}
 	},
@@ -3449,13 +3560,13 @@ dlc_settings.buff_templates = {
 				name = "curse_blood_storm_dot",
 				max_stacks = 1,
 				refresh_durations = true,
-				perk = "bleeding",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm",
 				duration = 1,
-				reapply_buff_func = "reapply_dot_damage"
+				reapply_buff_func = "reapply_dot_damage",
+				perk = buff_perks.bleeding
 			}
 		}
 	},
@@ -3466,13 +3577,13 @@ dlc_settings.buff_templates = {
 				name = "curse_blood_storm_dot",
 				max_stacks = 1,
 				refresh_durations = true,
-				perk = "bleeding",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm_bots",
 				duration = 1,
-				reapply_buff_func = "reapply_dot_damage"
+				reapply_buff_func = "reapply_dot_damage",
+				perk = buff_perks.bleeding
 			}
 		}
 	},
@@ -3488,18 +3599,16 @@ dlc_settings.buff_templates = {
 				apply_buff_func = "start_dot_damage"
 			},
 			{
-				name = "curse_abundance_of_life_heal_on_potions",
-				event_buff = true,
-				buff_func = "all_potions_heal_func",
 				event = "on_potion_consumed",
-				bonus = 100
+				name = "curse_abundance_of_life_heal_on_potions",
+				bonus = 100,
+				buff_func = "all_potions_heal_func"
 			},
 			{
-				dialogue_event = "curse_positive_effect_happened",
+				event = "on_potion_consumed",
 				name = "curse_abundance_of_life_vo",
-				event_buff = true,
-				buff_func = "trigger_dialogue_event",
-				event = "on_potion_consumed"
+				dialogue_event = "curse_positive_effect_happened",
+				buff_func = "trigger_dialogue_event"
 			}
 		}
 	},
@@ -3554,8 +3663,8 @@ dlc_settings.buff_templates = {
 			{
 				icon = "buff_icon_mutator_icon_slayer_curse",
 				name = "curse_rotten_miasma_debuff",
-				perk = "slayer_curse",
-				debuff = true
+				debuff = true,
+				perk = buff_perks.slayer_curse
 			},
 			{
 				activation_effect = "fx/screenspace_deus_miasma",
@@ -3570,7 +3679,6 @@ dlc_settings.buff_templates = {
 	curse_greed_pinata_drops = {
 		buffs = {
 			{
-				event_buff = true,
 				name = "curse_greed_pinata_drops",
 				buff_func = "curse_greed_pinata_death",
 				event = "on_death",
@@ -3586,7 +3694,6 @@ dlc_settings.buff_templates = {
 			{
 				particle_fx = "fx/deus_curse_khorne_champions_leader",
 				name = "curse_greed_pinata_spawner",
-				event_buff = true,
 				buff_func = "spawn_greed_pinata",
 				event = "on_death",
 				remove_buff_func = "remove_attach_particle",
@@ -3597,8 +3704,8 @@ dlc_settings.buff_templates = {
 	blessing_of_shallya_buff = {
 		buffs = {
 			{
-				perk = "temp_to_permanent_health",
-				name = "blessing_of_shallya_buff"
+				name = "blessing_of_shallya_buff",
+				perk = buff_perks.temp_to_permanent_health
 			}
 		}
 	},
@@ -3607,7 +3714,6 @@ dlc_settings.buff_templates = {
 			{
 				event = "on_inventory_post_apply_buffs",
 				name = "stockpile_refresh_ammo_buffs",
-				event_buff = true,
 				buff_func = "stockpile_refresh_ammo_buffs"
 			}
 		}
@@ -3663,8 +3769,8 @@ dlc_settings.buff_templates = {
 	blessing_of_isha_invincibility = {
 		buffs = {
 			{
-				perk = "ignore_death",
-				name = "blessing_of_isha_invincibility"
+				name = "blessing_of_isha_invincibility",
+				perk = buff_perks.ignore_death
 			}
 		}
 	},
@@ -3690,7 +3796,6 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "objective_unit",
-				event_buff = true,
 				buff_func = "remove_objective_unit",
 				event = "on_death",
 				remove_buff_func = "remove_objective_unit",
@@ -3698,37 +3803,42 @@ dlc_settings.buff_templates = {
 			}
 		}
 	},
-	egg_objective_unit = {
+	cursed_chest_objective_unit = {
 		buffs = {
 			{
+				apply_buff_func = "apply_cursed_chest_init",
+				name = "cursed_chest_init"
+			},
+			{
+				name = "cursed_chest_objective_unit",
+				buff_func = "remove_objective_unit",
 				event = "on_death",
-				name = "objective_unit",
-				event_buff = true,
-				buff_func = "remove_level_object_unit"
+				remove_buff_func = "remove_objective_unit",
+				apply_buff_func = "apply_objective_unit"
 			}
 		}
 	},
 	curse_empathy_shared_health_pool = {
 		buffs = {
 			{
-				perk = "shared_health_pool_damage_only",
-				name = "shared_health_pool"
+				name = "shared_health_pool",
+				perk = buff_perks.shared_health_pool_damage_only
 			}
 		}
 	},
 	we_deus_01_kerillian_critical_bleed_dot_disable = {
 		buffs = {
 			{
-				perk = "kerillian_critical_bleed_dot_disable",
-				name = "we_deus_01_kerillian_critical_bleed_dot_disable"
+				name = "we_deus_01_kerillian_critical_bleed_dot_disable",
+				perk = buff_perks.kerillian_critical_bleed_dot_disable
 			}
 		}
 	},
 	wh_deus_01_victor_witchhunter_bleed_on_critical_hit_disable = {
 		buffs = {
 			{
-				perk = "victor_witchhunter_bleed_on_critical_hit_disable",
-				name = "wh_deus_01_victor_witchhunter_bleed_on_critical_hit_disable"
+				name = "wh_deus_01_victor_witchhunter_bleed_on_critical_hit_disable",
+				perk = buff_perks.victor_witchhunter_bleed_on_critical_hit_disable
 			}
 		}
 	},
@@ -3742,11 +3852,11 @@ dlc_settings.buff_templates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				perk = "burning",
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "we_deus_01_dot",
-				update_func = "apply_dot_damage"
+				update_func = "apply_dot_damage",
+				perk = buff_perks.burning
 			}
 		}
 	},
@@ -3754,7 +3864,6 @@ dlc_settings.buff_templates = {
 		buffs = {
 			{
 				name = "health_bar",
-				event_buff = true,
 				buff_func = "remove_health_bar",
 				event = "on_death",
 				remove_buff_func = "remove_health_bar",
@@ -3773,14 +3882,14 @@ dlc_settings.buff_templates = {
 				reapply_start_flow_event = true,
 				apply_buff_func = "start_dot_damage",
 				death_flow_event = "burn_death",
-				perk = "burning",
 				time_between_dot_damages = 0.75,
 				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage",
-				max_stacks = 6
+				max_stacks = 6,
+				perk = buff_perks.burning
 			}
 		}
 	},
@@ -3791,7 +3900,6 @@ dlc_settings.buff_templates = {
 				name = "burning_magma_dot_infinite",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
-				perk = "burning",
 				remove_buff_func = "remove_dot_damage",
 				end_flow_event = "smoke",
 				max_stacks = 1,
@@ -3799,7 +3907,8 @@ dlc_settings.buff_templates = {
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				reapply_buff_func = "reapply_dot_damage"
+				reapply_buff_func = "reapply_dot_damage",
+				perk = buff_perks.burning
 			}
 		}
 	},
@@ -3821,24 +3930,22 @@ dlc_settings.buff_templates = {
 			{
 				rescue_delay = 0.5,
 				name = "ledge_rescue",
-				event_buff = true,
 				buff_func = "start_ledge_rescue_timer",
 				event = "on_ledge_hang_start",
 				update_func = "update_ledge_rescue",
 				pull_up_duration = 1,
-				perk = "ledge_self_rescue"
+				perk = buff_perks.ledge_self_rescue
 			}
 		}
 	},
-	bad_breath = {
+	disable_rescue = {
 		buffs = {
 			{
-				name = "bad_breath",
-				event_buff = true,
-				buff_func = "start_bad_breath_timer",
-				event = "on_player_disabled",
-				update_func = "update_bad_breath",
+				name = "disable_rescue",
 				rescue_delay = 0.5,
+				buff_func = "start_disable_rescue_timer",
+				event = "on_player_disabled",
+				update_func = "update_disable_rescue",
 				explosion_template = "player_disabled_stagger",
 				rescuable_disable_types = {
 					pack_master_grab = true,

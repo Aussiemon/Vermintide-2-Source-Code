@@ -4,6 +4,7 @@ require("scripts/managers/player/bulldozer_player")
 require("scripts/managers/player/remote_player")
 require("scripts/managers/player/player_bot")
 require("scripts/managers/player/player_sync_data")
+require("scripts/helpers/loadout_utils")
 
 PlayerManager = class(PlayerManager)
 PlayerManager.MAX_PLAYERS = 4
@@ -22,12 +23,14 @@ PlayerManager.init = function (self)
 	self._unit_owners = {}
 	self._player_units_owners = {}
 	self._local_human_player = nil
+	self._player_loadouts = {}
 	self._ui_id_increment = 0
 end
 
 local RPCS = {
 	"rpc_to_client_spawn_player",
-	"rpc_set_observed_player_id"
+	"rpc_set_observed_player_id",
+	"rpc_sync_loadout_slot"
 }
 
 PlayerManager.set_is_server = function (self, is_server, network_event_delegate, network_manager)
@@ -53,6 +56,27 @@ end
 
 PlayerManager.statistics_db = function (self)
 	return self._statistics_db
+end
+
+PlayerManager.player_loadouts = function (self)
+	return self._player_loadouts
+end
+
+PlayerManager.rpc_sync_loadout_slot = function (self, channel_id, peer_id, local_player_id, slot_id, item_id, rarity_id, power_level, num_buffs, buff_ids, buff_value_type_ids, buff_values)
+	if not Managers.state.network:in_game_session() then
+		return
+	end
+
+	local slot_name, item = LoadoutUtils.create_loadout_item_from_rpc_data(slot_id, item_id, rarity_id, power_level, num_buffs, buff_ids, buff_value_type_ids, buff_values)
+	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+	self._player_loadouts[unique_id] = self._player_loadouts[unique_id] or {}
+	self._player_loadouts[unique_id][slot_name] = item
+
+	if self.is_server and peer_id ~= Network.peer_id() then
+		local network_transmit = self.network_manager.network_transmit
+
+		network_transmit:send_rpc_clients("rpc_sync_loadout_slot", peer_id, local_player_id, slot_id, item_id, rarity_id, power_level, num_buffs, buff_ids, buff_value_type_ids, buff_values)
+	end
 end
 
 PlayerManager.rpc_to_client_spawn_player = function (self, channel_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
@@ -241,6 +265,10 @@ PlayerManager.add_remote_player = function (self, peer_id, player_controlled, lo
 	if player_controlled then
 		self._num_human_players = self._num_human_players + 1
 		self._human_players[unique_id] = player
+
+		if IS_WINDOWS then
+			Managers.account:update_presence()
+		end
 	end
 
 	if self.is_server and player_controlled then
@@ -332,6 +360,7 @@ PlayerManager.remove_player = function (self, peer_id, local_player_id)
 	end
 
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
+	self._player_loadouts[unique_id] = nil
 	local player = self._players[unique_id]
 
 	if player then
@@ -495,6 +524,16 @@ PlayerManager.num_players = function (self)
 end
 
 PlayerManager.local_player = function (self, local_player_id)
+	return self:player(Network.peer_id(), local_player_id or 1)
+end
+
+PlayerManager.local_player_safe = function (self, local_player_id)
+	local network_manager = Managers.state and Managers.state.network
+
+	if not network_manager or not network_manager:game() then
+		return
+	end
+
 	return self:player(Network.peer_id(), local_player_id or 1)
 end
 

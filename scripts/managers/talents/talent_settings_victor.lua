@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	victor_zealot_ability_cooldown_on_hit = {
 		bonus = 0.5
@@ -222,7 +223,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -231,7 +231,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -257,7 +256,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_passive_uninterruptible_heavy = {
 		buffs = {
 			{
-				perk = "uninterruptible_heavy"
+				perk = buff_perks.uninterruptible_heavy
 			}
 		}
 	},
@@ -278,11 +277,10 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				buff_to_add = "victor_zealot_invulnerability_on_lethal_damage_taken",
 				remove_on_proc = true,
-				event_buff = true,
+				max_stacks = 1,
 				buff_func = "victor_zealot_gain_invulnerability",
 				event = "on_damage_taken",
-				icon = "victor_zealot_passive_invulnerability",
-				max_stacks = 1
+				icon = "victor_zealot_passive_invulnerability"
 			}
 		}
 	},
@@ -293,11 +291,11 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				remove_buff_func = "add_victor_zealot_invulnerability_cooldown",
-				perk = "ignore_death",
 				stat_buff = "damage_taken",
 				max_stacks = 1,
 				icon = "victor_zealot_passive_invulnerability",
-				priority_buff = true
+				priority_buff = true,
+				perk = buff_perks.ignore_death
 			}
 		}
 	},
@@ -305,11 +303,11 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				remove_buff_func = "end_zealot_activated_ability",
-				perk = "victor_zealot_activated_ability",
 				stat_buff = "attack_speed",
 				max_stacks = 1,
 				icon = "victor_zealot_activated_ability",
-				priority_buff = true
+				priority_buff = true,
+				perk = buff_perks.victor_zealot_activated_ability
 			}
 		}
 	},
@@ -318,37 +316,34 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	victor_zealot_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	victor_zealot_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -357,7 +352,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_hit",
 				buff_to_add = "victor_zealot_counter_buff",
-				event_buff = true,
 				buff_func = "add_buff_on_first_target_hit"
 			}
 		}
@@ -367,13 +361,15 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				reset_on_max_stacks = true,
 				max_stacks = 5,
+				is_cooldown = true,
 				on_max_stacks_func = "add_remove_buffs",
 				icon = "victor_zealot_crit_count",
 				max_stack_data = {
 					buffs_to_add = {
 						"markus_mercenary_crit_count_buff"
 					}
-				}
+				},
+				duration = math.huge
 			}
 		}
 	},
@@ -382,12 +378,11 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_critical_action",
 				icon = "victor_zealot_crit_count",
-				event_buff = true,
+				max_stacks = 1,
 				buff_func = "dummy_function",
 				remove_on_proc = true,
-				perk = "guaranteed_crit",
 				priority_buff = true,
-				max_stacks = 1
+				perk = buff_perks.guaranteed_crit
 			}
 		}
 	},
@@ -481,11 +476,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_move_speed_on_damage_taken = {
 		buffs = {
 			{
-				buff_to_add = "victor_zealot_move_speed_on_damage_taken_buff",
-				event_buff = true,
-				buff_func = "add_buff_on_enemy_damage_taken",
 				event = "on_damage_taken",
-				perk = "no_moveslow_on_hit"
+				buff_to_add = "victor_zealot_move_speed_on_damage_taken_buff",
+				buff_func = "add_buff_on_enemy_damage_taken",
+				perk = buff_perks.no_moveslow_on_hit
 			}
 		}
 	},
@@ -508,7 +502,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "restore_stamina_on_enemy_damage_taken"
 			}
 		}
@@ -524,11 +517,10 @@ TalentBuffTemplates.witch_hunter = {
 	victor_zealot_activated_ability_power_on_hit = {
 		buffs = {
 			{
-				buff_to_add = "victor_zealot_activated_ability_power_on_hit_buff",
-				event_buff = true,
-				buff_func = "add_buff",
 				event = "on_hit",
-				duration = 5
+				duration = 5,
+				buff_to_add = "victor_zealot_activated_ability_power_on_hit_buff",
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -550,18 +542,17 @@ TalentBuffTemplates.witch_hunter = {
 				max_stacks = 1,
 				icon = "victor_zealot_activated_ability_ignore_death",
 				duration = 5,
-				perk = "ignore_death"
+				perk = buff_perks.ignore_death
 			}
 		}
 	},
 	victor_zealot_activated_ability_cooldown_stack_on_hit = {
 		buffs = {
 			{
-				buff_to_add = "victor_zealot_activated_ability_cooldown_stack_on_hit_buff",
-				event_buff = true,
-				buff_func = "add_buff",
 				event = "on_hit",
-				duration = 5
+				duration = 5,
+				buff_to_add = "victor_zealot_activated_ability_cooldown_stack_on_hit_buff",
+				buff_func = "add_buff"
 			}
 		}
 	},
@@ -579,7 +570,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -588,7 +578,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -606,7 +595,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_critical_action",
-				event_buff = true,
 				buff_func = "remove_victor_bountyhunter_passive_crit_buff"
 			}
 		}
@@ -641,36 +629,33 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				name = "regrowth",
-				event_buff = true,
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
-				perk = "ninja_healing",
-				bonus = 2
+				bonus = 2,
+				perk = buff_perks.ninja_healing
 			}
 		}
 	},
 	victor_bountyhunter_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
 	victor_bountyhunter_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
@@ -678,7 +663,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_last_ammo_used",
-				event_buff = true,
 				buff_func = "add_buff_on_out_of_ammo",
 				buffs_to_add = {
 					"victor_bountyhunter_attack_speed_on_no_ammo_buff",
@@ -711,9 +695,8 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_debuff_defence_on_crit = {
 		buffs = {
 			{
-				event = "on_critical_hit",
 				buff_to_add = "defence_debuff_enemies",
-				event_buff = true,
+				event = "on_critical_hit",
 				buff_func = "on_hit_debuff_enemy_defence"
 			}
 		}
@@ -752,7 +735,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_kill",
-				event_buff = true,
 				buff_func = "victor_bountyhunter_activate_passive_on_melee_kill"
 			}
 		}
@@ -761,12 +743,11 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				melee_buff = "victor_bountyhunter_blessed_melee_buff",
-				event = "on_hit",
+				ranged_buff_to_add = "victor_bountyhunter_blessed_ranged_damage_buff",
 				melee_buff_to_add = "victor_bountyhunter_blessed_melee_damage_buff",
 				buff_func = "victor_bountyhunter_blessed_combat",
-				ranged_buff_to_add = "victor_bountyhunter_blessed_ranged_damage_buff",
+				event = "on_hit",
 				ranged_buff = "victor_bountyhunter_blessed_ranged_buff",
-				event_buff = true,
 				update_func = "victor_bountyhunter_blessed_combat_update",
 				melee_buff_ids = {},
 				ranged_buff_ids = {}
@@ -818,17 +799,16 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				max_stacks = 1,
-				perk = "infinite_ammo",
-				icon = "victor_bountyhunter_passive_infinite_ammo"
+				icon = "victor_bountyhunter_passive_infinite_ammo",
+				perk = buff_perks.infinite_ammo
 			}
 		}
 	},
 	victor_bountyhunter_party_movespeed_on_ranged_crit = {
 		buffs = {
 			{
-				event = "on_hit",
 				buff_to_add = "victor_bountyhunter_party_movespeed_on_ranged_crit_buff",
-				event_buff = true,
+				event = "on_hit",
 				buff_func = "add_team_buff_on_ranged_critical_hit"
 			}
 		}
@@ -837,7 +817,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_kill",
-				event_buff = true,
 				buff_func = "victor_bounty_hunter_reload_on_kill"
 			}
 		}
@@ -846,7 +825,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_kill",
-				event_buff = true,
 				buff_func = "victor_bounty_hunter_ammo_fraction_gain_out_of_ammo"
 			}
 		}
@@ -856,12 +834,11 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				max_stacks = 1,
 				refresh_durations = true,
-				event_buff = true,
+				duration = 5,
 				buff_func = "victor_bounty_hunter_ammo_regen",
 				event = "on_hit",
 				icon = "bardin_slayer_activated_ability",
-				priority_buff = true,
-				duration = 5
+				priority_buff = true
 			}
 		}
 	},
@@ -884,7 +861,7 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_kill",
 				buff_to_add = "victor_bountyhunter_stacking_damage_reduction_on_elite_or_special_kill_buff",
-				event_buff = true,
+				restore_sub_buffs = true,
 				buff_func = "add_buff_on_elite_or_special_kill"
 			}
 		}
@@ -901,7 +878,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_critical_hit",
-				event_buff = true,
 				buff_func = "victor_bountyhunter_reduce_activated_ability_cooldown_on_passive_crit"
 			}
 		}
@@ -910,7 +886,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_kill",
-				event_buff = true,
 				buff_func = "victor_bountyhunter_reduce_activated_ability_cooldown_ignore_paused_on_kill"
 			}
 		}
@@ -918,22 +893,20 @@ TalentBuffTemplates.witch_hunter = {
 	victor_bountyhunter_activated_ability_blast_shotgun = {
 		buffs = {
 			{
+				event = "on_kill",
 				buff_to_add = "victor_bounty_blast_streak_buff",
 				stat_buff = "activated_cooldown",
-				event_buff = true,
-				buff_func = "victor_bounty_blast_streak_activation",
-				event = "on_kill"
+				buff_func = "victor_bounty_blast_streak_activation"
 			}
 		}
 	},
 	victor_bounty_blast_streak_buff = {
 		buffs = {
 			{
-				max_stacks = 20,
-				event_buff = true,
-				buff_func = "victor_bounty_blast_streak_buff",
 				event = "on_hit",
-				icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks"
+				icon = "victor_bountyhunter_activated_ability_reset_cooldown_on_stacks",
+				max_stacks = 20,
+				buff_func = "victor_bounty_blast_streak_buff"
 			}
 		}
 	},
@@ -942,7 +915,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_hit",
 				buff_to_add = "victor_bountyhunter_activated_ability_railgun_delayed_add",
-				event_buff = true,
 				buff_func = "victor_bounty_hunter_reduce_activated_ability_cooldown_railgun"
 			}
 		}
@@ -961,7 +933,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -970,7 +941,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -1017,7 +987,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_passive_block_cost_reduction = {
 		buffs = {
 			{
-				perk = "in_arc_block_cost_reduction"
+				perk = buff_perks.in_arc_block_cost_reduction
 			}
 		}
 	},
@@ -1031,7 +1001,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_headshot_crit_killing_blow = {
 		buffs = {
 			{
-				perk = "crit_headshot_killing_blow"
+				perk = buff_perks.crit_headshot_killing_blow
 			}
 		}
 	},
@@ -1049,11 +1019,10 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				name = "regrowth",
-				event_buff = true,
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
-				perk = "ninja_healing",
-				bonus = 2
+				bonus = 2,
+				perk = buff_perks.ninja_healing
 			}
 		}
 	},
@@ -1062,24 +1031,22 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	victor_witchhunter_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -1095,7 +1062,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_timed_block",
 				buff_to_add = "victor_witchhunter_guaranteed_crit_on_timed_block_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1103,13 +1069,12 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_guaranteed_crit_on_timed_block_buff = {
 		buffs = {
 			{
-				stat_buff = "critical_strike_chance",
 				event = "on_hit",
-				event_buff = true,
+				max_stacks = 1,
+				stat_buff = "critical_strike_chance",
 				buff_func = "dummy_function",
 				remove_on_proc = true,
 				icon = "victor_witchhunter_guaranteed_crit_on_timed_block",
-				max_stacks = 1,
 				refresh_durations = true
 			}
 		}
@@ -1117,7 +1082,7 @@ TalentBuffTemplates.witch_hunter = {
 	victor_witchhunter_bleed_on_critical_hit = {
 		buffs = {
 			{
-				perk = "victor_witchhunter_bleed_on_critical_hit"
+				perk = buff_perks.victor_witchhunter_bleed_on_critical_hit
 			}
 		}
 	},
@@ -1126,7 +1091,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_ping_target_killed",
 				buff_to_add = "victor_witchhunter_ping_target_crit_chance",
-				event_buff = true,
 				buff_func = "add_buff_to_all_players"
 			}
 		}
@@ -1146,7 +1110,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_enemy_pinged",
 				buff_to_add = "victor_witchhunter_attack_speed_on_enemy_pinged_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1182,7 +1145,6 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				event = "on_push",
 				buff_to_add = "victor_witchhunter_stamina_regen_on_push_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1225,7 +1187,6 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "victor_witchhunter_activated_ability_refund_cooldown_on_enemies_hit"
 			}
 		}

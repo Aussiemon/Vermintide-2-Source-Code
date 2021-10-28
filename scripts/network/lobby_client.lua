@@ -63,6 +63,7 @@ LobbyClient.update = function (self, dt)
 			self._try_reconnecting = nil
 			self._reconnect_times = nil
 
+			Managers.account:update_presence()
 			print("[LobbyClient] connected to lobby, id:", self.stored_lobby_data.id)
 		end
 
@@ -120,6 +121,18 @@ LobbyClient.update = function (self, dt)
 
 	if HAS_STEAM and self:lost_connection_to_lobby() and not self._reconnecting_to_lobby and self._try_reconnecting then
 		print("[LobbyClient] Attempting to rejoin lobby", self.stored_lobby_data.id, "Retries:", self._reconnect_times or 0)
+
+		local host = self._host_peer_id
+		local channel_id = self._host_channel_id
+
+		if channel_id then
+			printf("LobbyClient close server channel %s to %s", tostring(channel_id), host)
+			LobbyInternal.close_channel(self.lobby, channel_id)
+
+			PEER_ID_TO_CHANNEL[host] = nil
+			CHANNEL_TO_PEER_ID[channel_id] = nil
+		end
+
 		LobbyInternal.leave_lobby(self.lobby)
 
 		self.lobby = LobbyInternal.join_lobby(self.stored_lobby_data)

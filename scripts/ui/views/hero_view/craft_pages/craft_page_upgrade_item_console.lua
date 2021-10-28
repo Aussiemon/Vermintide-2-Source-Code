@@ -373,7 +373,7 @@ CraftPageUpgradeItemConsole.on_craft_completed = function (self)
 	if backend_id then
 		local item = item_interface:get_item_from_id(backend_id)
 		local rarity = item and item_interface:get_item_rarity(backend_id)
-		local rarity_approved = rarity and (rarity == "plentiful" or rarity == "common" or rarity == "rare")
+		local rarity_approved = rarity and (rarity == "plentiful" or rarity == "common" or rarity == "rare" or rarity == "exotic")
 
 		if item then
 			parent:set_reward_tooltip_item(item)

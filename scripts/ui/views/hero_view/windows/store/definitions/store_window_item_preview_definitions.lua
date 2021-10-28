@@ -1207,7 +1207,10 @@ local generic_input_actions = {
 		{
 			input_action = "special_1",
 			priority = 4,
-			description_text = "input_description_toggle_hero_details"
+			description_text = "input_description_toggle_hero_details",
+			content_check_function = function ()
+				return IS_PS4 or IS_XB1
+			end
 		},
 		{
 			input_action = "right_stick",

@@ -14,7 +14,8 @@ settings.start_game_windows = {
 	"scripts/ui/views/start_game_view/windows/start_game_window_weave_background_console",
 	"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_background_console_definitions",
 	"scripts/ui/views/start_game_view/windows/start_game_window_weave_panel_console",
-	"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_panel_console_definitions"
+	"scripts/ui/views/start_game_view/windows/definitions/start_game_window_weave_panel_console_definitions",
+	"scripts/ui/views/start_game_view/windows/start_game_window_weave_lobby_browser_console"
 }
 settings.start_game_window_layout = {
 	windows = {
@@ -104,6 +105,11 @@ settings.start_game_window_layout_console = {
 		weave_panel = {
 			class_name = "StartGameWindowWeavePanelConsole",
 			name = "weave_panel"
+		},
+		weave_console_lobby_browser = {
+			ignore_alignment = true,
+			name = "weave_console_lobby_browser",
+			class_name = "StartGameWindowWeaveLobbyBrowserConsole"
 		}
 	},
 	window_layouts = {
@@ -152,7 +158,7 @@ settings.start_game_window_layout_console = {
 			close_on_exit = true,
 			panel_sorting = 100,
 			windows = {
-				console_lobby_browser = 3,
+				weave_console_lobby_browser = 3,
 				weave_background = 2,
 				weave_panel = 1
 			},

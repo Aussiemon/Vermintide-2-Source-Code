@@ -1498,7 +1498,7 @@ end
 
 OptionsView.on_exit = function (self)
 	if not self.exiting then
-		ScriptApplication.send_to_crashify("[OptionsView]", "triggering on_exit() without triggering exit()")
+		Crashify.print_exception("[OptionsView]", "triggering on_exit() without triggering exit()")
 	end
 
 	self:cleanup_popups()
@@ -2754,7 +2754,7 @@ OptionsView.handle_apply_button = function (self, input_service, allow_gamepad_i
 
 			self.input_manager:get_blocked_services(nil, nil, blocked_input_services)
 			table.dump(blocked_input_services, "blocked_input_services", 2)
-			ScriptApplication.send_to_crashify("OptionsView", "Apply button wasn't disabled, even though we had an apply popup...")
+			Crashify.print_exception("OptionsView", "Apply button wasn't disabled, even though we had an apply popup...")
 		else
 			self:handle_apply_changes()
 		end

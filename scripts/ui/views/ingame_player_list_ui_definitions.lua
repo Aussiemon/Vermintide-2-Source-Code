@@ -1759,13 +1759,13 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					20,
-					size[2] - 30,
+					5,
+					size[2] - 30 - 12,
 					3
 				},
 				size = {
-					18,
-					14
+					40,
+					40
 				}
 			},
 			hero_name_divider = {

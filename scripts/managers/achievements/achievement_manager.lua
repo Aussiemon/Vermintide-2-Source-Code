@@ -112,6 +112,9 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 	local template_event_data = self._template_event_data
 	local template_list = event_mappings[event_name]
 	local unlocked_achievements = self._unlocked_achievements
+	local event_data = {
+		...
+	}
 
 	if template_list then
 		local local_player = Managers.player:local_player()
@@ -147,11 +150,15 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 			local always_run = template.always_run
 
 			if required_career_in_play and (not completed or always_run) then
-				template.on_event(statistics_db, stats_id, template_event_data[template.id], event_name, {
-					...
-				})
+				template.on_event(statistics_db, stats_id, template_event_data[template.id], event_name, event_data)
 			end
 		end
+	end
+
+	local event_manager = Managers.state.event
+
+	if event_manager then
+		event_manager:trigger("on_achievement_event", event_name, event_data)
 	end
 end
 
@@ -270,7 +277,7 @@ AchievementManager.update = function (self, dt, t)
 				achievement_completed = achievement_completed
 			}
 		elseif error_msg then
-			ScriptApplication.send_to_crashify("[AchievementManager]", "ERROR: %s", error_msg)
+			Crashify.print_exception("[AchievementManager]", "ERROR: %s", error_msg)
 		end
 	end
 
@@ -299,6 +306,31 @@ AchievementManager.outline = function (self)
 	end
 
 	return outline
+end
+
+AchievementManager._search_sub_categories = function (self, categories, in_category_id)
+	if not categories then
+		return
+	end
+
+	for i = 1, #categories, 1 do
+		local category = categories[i]
+		local category_id = category.name
+
+		if category_id == in_category_id then
+			return category.entries
+		else
+			local result = self:_search_sub_categories(category.categories, in_category_id)
+
+			if result then
+				return result
+			end
+		end
+	end
+end
+
+AchievementManager.get_entries_from_category = function (self, in_category_id)
+	return self:_search_sub_categories(outline.categories, in_category_id)
 end
 
 AchievementManager.get_data_by_id = function (self, achievement_id)

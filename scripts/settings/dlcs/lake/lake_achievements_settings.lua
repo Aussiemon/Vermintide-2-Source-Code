@@ -3,6 +3,7 @@ settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
+				sorting = 1,
 				name = "inventory_name_empire_soldier",
 				entries = {
 					"lake_complete_all_helmgart_levels_recruit_es_questingknight",

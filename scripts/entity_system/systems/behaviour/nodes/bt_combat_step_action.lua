@@ -20,6 +20,7 @@ BTCombatStepAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.active_node = BTCombatStepAction
 	blackboard.start_finished = nil
+	blackboard.start_started_since = t
 	local navigation_extension = blackboard.navigation_extension
 	local target_unit = blackboard.target_unit
 	local rotation_to_target = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
@@ -68,6 +69,7 @@ end
 
 BTCombatStepAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.start_finished = nil
+	blackboard.start_started_since = nil
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -94,7 +96,7 @@ BTCombatStepAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 
 BTCombatStepAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.start_finished then
+	if blackboard.start_finished or t - blackboard.start_started_since > 10 then
 		return "done"
 	end
 

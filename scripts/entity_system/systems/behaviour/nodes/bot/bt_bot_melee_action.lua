@@ -279,13 +279,18 @@ BTBotMeleeAction._target_unit_position = function (self, self_position, target_u
 end
 
 BTBotMeleeAction._is_attacking_me = function (self, self_unit, enemy_unit)
-	local ai_extension = ScriptUnit.has_extension(enemy_unit, "ai_system")
+	local bb = BLACKBOARDS[enemy_unit]
 
-	if not ai_extension then
+	if not bb then
 		return false
 	end
 
-	local bb = ai_extension:blackboard()
+	local enemy_buff_extension = ScriptUnit.has_extension(enemy_unit, "buff_system")
+
+	if enemy_buff_extension and enemy_buff_extension:has_buff_perk("ai_unblockable") then
+		return false
+	end
+
 	local action = bb.action
 	local unblockable = action and action.unblockable
 

@@ -24,7 +24,8 @@ local skin_es_questingknight_black_and_gold = {
 	material_changes = {
 		package_name = "units/beings/player/empire_soldier_breton/skins/black_and_gold/chr_empire_soldier_breton_black_and_gold",
 		third_person = {
-			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_gold/mtr_outfit_black_and_gold_3p"
+			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_gold/mtr_outfit_black_and_gold_3p",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_breton/skins/black_and_gold/mtr_outfit_ds_black_and_gold_3p"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_gold/mtr_outfit_black_and_gold_1p"
@@ -45,7 +46,8 @@ local skin_es_questingknight_black_and_yellow = {
 	material_changes = {
 		package_name = "units/beings/player/empire_soldier_breton/skins/black_and_yellow/chr_empire_soldier_breton_black_and_yellow",
 		third_person = {
-			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_yellow/mtr_outfit_black_and_yellow_3p"
+			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_yellow/mtr_outfit_black_and_yellow_3p",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_breton/skins/black_and_yellow/mtr_outfit_ds_black_and_yellow_3p"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/black_and_yellow/mtr_outfit_black_and_yellow_1p"
@@ -66,7 +68,8 @@ local skin_es_questingknight_blue_and_white = {
 	material_changes = {
 		package_name = "units/beings/player/empire_soldier_breton/skins/blue_and_white/chr_empire_soldier_breton_blue_and_white",
 		third_person = {
-			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/blue_and_white/mtr_outfit_blue_and_white_3p"
+			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/blue_and_white/mtr_outfit_blue_and_white_3p",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_breton/skins/blue_and_white/mtr_outfit_ds_blue_and_white_3p"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/blue_and_white/mtr_outfit_blue_and_white_1p"
@@ -87,7 +90,8 @@ local skin_es_questingknight_yellow_and_white = {
 	material_changes = {
 		package_name = "units/beings/player/empire_soldier_breton/skins/yellow_and_white/chr_empire_soldier_breton_yellow_and_white",
 		third_person = {
-			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/yellow_and_white/mtr_outfit_yellow_and_white_3p"
+			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/yellow_and_white/mtr_outfit_yellow_and_white_3p",
+			mtr_outfit_ds = "units/beings/player/empire_soldier_breton/skins/yellow_and_white/mtr_outfit_ds_yellow_and_white_3p"
 		},
 		first_person = {
 			mtr_outfit = "units/beings/player/empire_soldier_breton/skins/yellow_and_white/mtr_outfit_yellow_and_white_1p"

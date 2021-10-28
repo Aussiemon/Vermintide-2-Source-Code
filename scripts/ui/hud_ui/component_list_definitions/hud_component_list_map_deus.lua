@@ -37,7 +37,7 @@ local components = {
 	},
 	{
 		class_name = "IngamePlayerListUI",
-		filename = "scripts/ui/views/ingame_player_list_ui",
+		filename = (GameSettingsDevelopment.use_new_tab_menu and "scripts/ui/views/ingame_player_list_ui_v2") or "scripts/ui/views/ingame_player_list_ui",
 		visibility_groups = {
 			"tab_menu",
 			"realism",
@@ -67,6 +67,17 @@ local components = {
 				end
 			end
 		end
+	},
+	{
+		use_hud_scale = true,
+		class_name = "DeusRunStatsView",
+		filename = "scripts/ui/views/deus_menu/deus_run_stats_view",
+		visibility_groups = {
+			"deus_run_stats",
+			"game_mode_disable_hud",
+			"dead",
+			"alive"
+		}
 	}
 }
 

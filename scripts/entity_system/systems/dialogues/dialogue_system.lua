@@ -161,6 +161,11 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 	local environment_variation_name = entity_system_creation_context.startup_data.environment_variation_name
 	self.statistics_db = entity_system_creation_context.statistics_db
 	self.global_context = {
+		dwarf_ranger = false,
+		empire_soldier = false,
+		wood_elf = false,
+		bright_wizard = false,
+		witch_hunter = false,
 		current_level = current_level,
 		weather = environment_variation_name
 	}
@@ -611,7 +616,7 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 								event_data.dialogue_name = result
 								event_data.speaker = source
 								event_data.distance = 1
-								event_data.spaekar_name = speaker_name
+								event_data.speakar_name = speaker_name
 								event_data.sound_event = extension.last_query_sound_event
 
 								for unit, extension in pairs(self.unit_extension_data) do
@@ -801,6 +806,48 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					local dialogue_index = DialogueQueries.get_dialogue_event_index(dialogue)
 					dialogue.dialogue_timer = DialogueQueries.get_sound_event_duration(dialogue, dialogue_index)
 					dialogue.used_query = query
+					local additional_trigger = dialogue.additional_trigger or dialogue.additional_trigger_heard
+
+					if additional_trigger then
+						local event_data = FrameTable.alloc_table()
+						local source = dialogue_actor_unit
+						local speaker_name = "UNKNOWN"
+						local breed_data = Unit.get_data(source, "breed")
+
+						if breed_data and not breed_data.is_player then
+							speaker_name = breed_data.name
+						elseif source and ScriptUnit.has_extension(source, "dialogue_system") then
+							speaker_name = ScriptUnit.extension(source, "dialogue_system").context.player_profile
+						end
+
+						event_data.dialogue_name_nopre = string.sub(result, 5)
+						event_data.dialogue_name = result
+						event_data.speaker = source
+						event_data.speaker_name = speaker_name
+						event_data.sound_event = extension.last_query_sound_event
+
+						if not dialogue.additional_trigger_heard then
+							event_data.distance = 1
+
+							for unit, target_extension in pairs(self.unit_extension_data) do
+								target_extension.input:trigger_dialogue_event(additional_trigger, event_data)
+							end
+						else
+							local source_wp = POSITION_LOOKUP[source] or Unit.local_position(source, 0)
+							local sound_distance = DialogueSettings.default_hear_distance
+
+							for unit, target_extension in pairs(self.unit_extension_data) do
+								local target_world_pos = POSITION_LOOKUP[unit] or Unit.local_position(unit, 0)
+								local distance = Vector3.distance(source_wp, target_world_pos)
+								event_data.distance = distance
+
+								if distance <= sound_distance then
+									target_extension.input:trigger_dialogue_event(additional_trigger, event_data)
+								end
+							end
+						end
+					end
+
 					local query_context = query.query_context
 
 					if query_context.identifier and query_context.identifier ~= "" then
@@ -1134,27 +1181,7 @@ DialogueSystem.trigger_backstab_hit = function (self, player_unit, enemy_unit)
 end
 
 DialogueSystem.get_random_player = function (self)
-	local side = Managers.state.side:get_side_from_name("heroes")
-	local players = side.PLAYER_AND_BOT_UNITS
-	local unit_list = {}
-	local unit_list_n = 0
-
-	for i = 1, #players, 1 do
-		local unit = players[i]
-
-		if Unit.alive(unit) and ScriptUnit.extension(unit, "health_system"):is_alive() then
-			unit_list_n = unit_list_n + 1
-			unit_list[unit_list_n] = unit
-		end
-	end
-
-	if unit_list_n > 0 then
-		local unit = unit_list[math.random(1, unit_list_n)]
-
-		return unit
-	end
-
-	return nil
+	return PlayerUtils.get_random_alive_hero()
 end
 
 DialogueSystem._update_story_lines = function (self, t)

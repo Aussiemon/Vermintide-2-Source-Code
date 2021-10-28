@@ -228,7 +228,6 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 	local player_unit = my_player.player_unit
 	local inventory_extension = nil
 	local inventory_hud_settings = UISettings.inventory_hud
-	local gdc_build = Development.parameter("gdc")
 	local hud_extension = nil
 
 	if player_unit then

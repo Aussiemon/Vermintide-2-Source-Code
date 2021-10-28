@@ -82,9 +82,15 @@ ActionCareerWEThornsisterTargetWall.client_owner_start_action = function (self, 
 
 		self._max_segments = segment_count
 	end
+
+	self:_update_targeting()
 end
 
 ActionCareerWEThornsisterTargetWall.client_owner_post_update = function (self, dt, t, world, can_damage, current_time_in_action)
+	self:_update_targeting()
+end
+
+ActionCareerWEThornsisterTargetWall._update_targeting = function (self)
 	local start_pos, start_rot = self._first_person_extension:get_projectile_start_position_rotation()
 	local wall_direction_func = (self._vertical_rotation and Quaternion.right) or Quaternion.forward
 	local player_direction_flat = Vector3.flat(wall_direction_func(start_rot))

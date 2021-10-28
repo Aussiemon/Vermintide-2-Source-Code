@@ -20,6 +20,7 @@ BTDodgeBackAction.enter = function (self, unit, blackboard, t)
 	blackboard.action = self._tree_node.action_data
 	blackboard.active_node = BTDodgeBackAction
 	blackboard.start_finished = nil
+	blackboard.start_started_since = t
 	local navigation_extension = blackboard.navigation_extension
 	local action = blackboard.action
 	local dodge_back_animation = action.dodge_back_animation
@@ -66,6 +67,7 @@ end
 
 BTDodgeBackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.start_finished = nil
+	blackboard.start_started_since = nil
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 
 	ai_slot_system:do_slot_search(unit, true)
@@ -78,7 +80,7 @@ BTDodgeBackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 
 BTDodgeBackAction.run = function (self, unit, blackboard, t, dt)
-	if blackboard.start_finished then
+	if blackboard.start_finished or t - blackboard.start_started_since > 10 then
 		return "done"
 	end
 

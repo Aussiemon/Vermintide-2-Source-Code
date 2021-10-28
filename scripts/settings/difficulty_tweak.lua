@@ -53,6 +53,24 @@ local function nearest_lerp_table(difficulty, tweak, table)
 	return math.lerp(base_value, next_value, coeff)
 end
 
+local function nearest_table_value(difficulty, difficulty_tweak, table)
+	fassert(difficulty_tweak >= -tweak_range and difficulty_tweak <= tweak_range, "tweak needs to be an integer from -" .. tweak_range .. " to " .. tweak_range)
+
+	local difficulty_table = table[difficulty]
+
+	if difficulty_table then
+		for i = difficulty_tweak, -tweak_range, -1 do
+			local val = difficulty_table[i]
+
+			if val then
+				return val
+			end
+		end
+	end
+
+	return nil
+end
+
 DifficultyTweak = DifficultyTweak or {
 	range = tweak_range,
 	converters = {
@@ -70,6 +88,9 @@ DifficultyTweak = DifficultyTweak or {
 		end,
 		tweaked_delay_threat_value = function (difficulty, tweak, table)
 			return nearest_lerp_table(difficulty, tweak, table)
+		end,
+		closest_tweak_match = function (difficulty, tweak, table)
+			return nearest_table_value(difficulty, tweak, table)
 		end
 	}
 }

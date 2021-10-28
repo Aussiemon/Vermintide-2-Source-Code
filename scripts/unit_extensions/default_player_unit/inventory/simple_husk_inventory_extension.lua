@@ -315,6 +315,7 @@ SimpleHuskInventoryExtension.wield = function (self, slot_name)
 
 			Unit.flow_event(self._unit, "lua_wield")
 			self:start_weapon_fx("wield")
+			Managers.state.event:trigger("on_weapon_wield", equipment)
 		end
 	end
 end
@@ -606,6 +607,32 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 		left_hand_weapon_unit_3p, left_hand_ammo_unit_3p, left_hand_weapon_unit_1p, left_hand_ammo_unit_1p = GearUtils.spawn_inventory_unit(world, "left", item_template, item_units, slot_name, item_data, unit_1p, unit_3p, nil, nil, nil, item_units.material_settings)
 	end
 
+	local is_ammo_weapon = item_units.is_ammo_weapon
+
+	if is_ammo_weapon then
+		local material_settings = item_units.material_settings or item_template.material_settings
+
+		if material_settings then
+			if right_hand_ammo_unit_3p then
+				GearUtils.apply_material_settings(right_hand_ammo_unit_3p, material_settings)
+			end
+
+			if left_hand_ammo_unit_3p then
+				GearUtils.apply_material_settings(left_hand_ammo_unit_3p, material_settings)
+			end
+
+			if unit_1p then
+				if right_hand_ammo_unit_1p then
+					GearUtils.apply_material_settings(right_hand_ammo_unit_1p, material_settings)
+				end
+
+				if left_hand_ammo_unit_1p then
+					GearUtils.apply_material_settings(left_hand_ammo_unit_1p, material_settings)
+				end
+			end
+		end
+	end
+
 	local career_extension = ScriptUnit.extension(unit_3p, "career_system")
 	local career_index = career_extension:career_index()
 
@@ -617,15 +644,18 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 
 	local item_template = BackendUtils.get_item_template(item_data)
 	local wield_anim = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career, self._career_name)
+	local wield_anim_3p = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career_3p, self._career_name) or wield_anim
 
 	if right_hand_weapon_unit_3p or left_hand_weapon_unit_3p then
 		if self:ammo_percentage() == 0 and item_template.wield_anim_no_ammo_on_husk then
 			local wield_anim_no_ammo = get_wield_anim(item_template.wield_anim_no_ammo, item_template.wield_anim_no_ammo_career, self._career_name)
 			wield_anim = wield_anim_no_ammo or wield_anim
+			local wield_anim_no_ammo_3p = get_wield_anim(item_template.wield_anim_no_ammo, item_template.wield_anim_no_ammo_career_3p, self._career_name) or wield_anim_no_ammo
+			wield_anim_3p = wield_anim_no_ammo_3p or wield_anim_3p
 		end
 
 		Unit.flow_event(unit_3p, "lua_wield")
-		Unit.animation_event(unit_3p, wield_anim)
+		Unit.animation_event(unit_3p, wield_anim_3p)
 
 		if right_hand_weapon_unit_3p then
 			Unit.set_flow_variable(right_hand_weapon_unit_3p, "owner", unit_3p)

@@ -690,8 +690,12 @@ ActionUtils.is_critical_strike = function (unit, action, t)
 
 	local action_kind = action.kind
 
-	if is_crit and action_kind ~= "push_stagger" then
-		buff_extension:trigger_procs("on_critical_action", action_kind)
+	if action_kind ~= "push_stagger" then
+		if is_crit then
+			buff_extension:trigger_procs("on_critical_action", action_kind)
+		else
+			buff_extension:trigger_procs("on_non_critical_action", action_kind)
+		end
 	end
 
 	return is_crit

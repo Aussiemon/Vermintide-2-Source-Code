@@ -26,12 +26,9 @@ StartGameWindowDeusLobbyBrowser.on_enter = function (self, params, offset)
 	local ignore_dlc_check = false
 	self._current_weave = LevelUnlockUtils.current_weave(self._statistics_db, self._stats_id, ignore_dlc_check)
 	self._game_mode_data = definitions.setup_game_mode_data(self._statistics_db, self._stats_id)
-	local game_mode_data = self._game_mode_data
-	local game_modes = game_mode_data.game_modes
-	self._selected_game_mode_index = game_modes.deus
 	self._lobby_browser_console_ui = LobbyBrowserConsoleUI:new(self, ingame_ui_context, self._game_mode_data, definitions.show_lobbies_table, definitions.distance_table)
 
-	self:reset_filters()
+	self:reset_filters("deus")
 	Managers.matchmaking:set_active_lobby_browser(self)
 	self:_populate_lobby_list()
 	self:change_generic_actions("default_lobby_browser")

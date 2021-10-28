@@ -33,9 +33,10 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 		end
 	end
 
+	local has_completed_tutorial = Managers.backend:get_user_data("has_completed_tutorial") or SaveData.has_completed_tutorial or false
 	local run_tutorial, tutorial_state = Managers.mechanism:should_run_tutorial()
 
-	if SaveData.has_completed_tutorial or script_data.disable_tutorial_at_start or not run_tutorial then
+	if has_completed_tutorial or script_data.disable_tutorial_at_start or not run_tutorial then
 		return
 	end
 
@@ -44,9 +45,9 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 	self.parent.parent.loading_context.switch_to_tutorial_backend = run_tutorial
 	self.parent.parent.loading_context.wanted_tutorial_state = tutorial_state
 	self.parent.parent.loading_context.first_time = true
-	SaveData.has_completed_tutorial = true
 
-	Managers.save:auto_save(SaveFileName, SaveData)
+	Managers.backend:set_user_data("has_completed_tutorial", true)
+	Managers.backend:commit()
 end
 
 StateTitleScreenLoadSave._setup_init_network_view = function (self)

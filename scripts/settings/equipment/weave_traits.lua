@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 WeaveTraits = WeaveTraits or {}
 local buff_tweak_data = {
 	weave_traits_melee_attack_speed_on_crit_proc = {
@@ -117,7 +118,6 @@ WeaveTraits.buff_templates = {
 			{
 				event = "on_critical_hit",
 				buff_to_add = "weave_traits_melee_attack_speed_on_crit_proc",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -140,7 +140,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_block",
-				event_buff = true,
 				buff_func = "block_increase_enemy_damage_taken"
 			}
 		}
@@ -157,7 +156,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_assisted_ally",
-				event_buff = true,
 				buff_func = "heal_assisted_and_self_on_assist"
 			}
 		}
@@ -166,7 +164,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "replenish_ammo_on_headshot_ranged"
 			}
 		}
@@ -183,7 +180,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "increased_movement_speed"
 			}
 		}
@@ -200,7 +196,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_critical_hit",
-				event_buff = true,
 				buff_func = "ammo_fraction_gain_on_crit_trait"
 			}
 		}
@@ -209,9 +204,8 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_critical_hit",
-				perk = "no_overcharge_crit",
-				event_buff = true,
-				buff_func = "remove_overcharge"
+				buff_func = "remove_overcharge",
+				perk = buff_perks.no_overcharge_crit
 			}
 		}
 	},
@@ -219,7 +213,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "buff_consecutive_shots_damage"
 			}
 		}
@@ -247,7 +240,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_critical_hit",
-				event_buff = true,
 				buff_func = "ranged_crits_increase_dmg_vs_armour_type"
 			}
 		}
@@ -295,18 +287,17 @@ WeaveTraits.buff_templates = {
 	weave_traits_reduce_cooldown_on_crit = {
 		buffs = {
 			{
-				buff_to_add = "weave_traits_reduce_cooldown_on_crit_internal_cooldown",
-				event_buff = true,
-				buff_func = "reduce_activated_ability_cooldown_with_internal_cooldown_on_crit",
 				event = "on_critical_hit",
-				bonus = 1
+				buff_to_add = "weave_traits_reduce_cooldown_on_crit_internal_cooldown",
+				bonus = 1,
+				buff_func = "reduce_activated_ability_cooldown_with_internal_cooldown_on_crit"
 			}
 		}
 	},
 	weave_traits_reduce_cooldown_on_crit_internal_cooldown = {
 		buffs = {
 			{
-				perk = "cooldown_delay"
+				perk = buff_perks.cooldown_delay
 			}
 		}
 	},
@@ -315,7 +306,6 @@ WeaveTraits.buff_templates = {
 			{
 				event = "on_critical_hit",
 				bonus = 5,
-				event_buff = true,
 				buff_func = "heal"
 			}
 		}
@@ -349,7 +339,7 @@ WeaveTraits.buff_templates = {
 	weave_trait_ring_potion_duration = {
 		buffs = {
 			{
-				perk = "potion_duration"
+				perk = buff_perks.potion_duration
 			}
 		}
 	},
@@ -380,7 +370,7 @@ WeaveTraits.buff_templates = {
 			{
 				max_stacks = 1,
 				update_func = "update_heal_ticks",
-				perk = "no_permanent_health"
+				perk = buff_perks.no_permanent_health
 			}
 		}
 	},
@@ -388,7 +378,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "buff_defence_on_damage_taken"
 			}
 		}
@@ -420,7 +409,6 @@ WeaveTraits.buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "debuff_defence_grenade_hit"
 			}
 		}

@@ -1,3 +1,5 @@
+require("scripts/utils/steam_item_service")
+
 BackendInterfacePeddlerPlayFab = class(BackendInterfacePeddlerPlayFab)
 local PEDDLER_ID = "Store"
 local NON_FATAL_ERROR_CODES = {
@@ -59,6 +61,10 @@ end
 
 BackendInterfacePeddlerPlayFab.get_steam_item_price = function (self, steam_itemdefid)
 	return self._steam_item_prices[steam_itemdefid], self._steam_item_currency
+end
+
+BackendInterfacePeddlerPlayFab.is_purchaseable = function (self, steam_itemdefid)
+	return self._steam_item_prices[steam_itemdefid] ~= nil
 end
 
 BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
@@ -144,13 +150,15 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 	local inventory_items = mirror:get_all_inventory_items()
 	local has_steam = HAS_STEAM
 	local stock_index = #peddler_stock + 1
+	local seen_shop_items = PlayerData.seen_shop_items
+	local new_items = false
 
 	for i = 1, #stock, 1 do
 		local item = stock[i]
 		local key = item.ItemId
 
 		if item.ItemId and not rawget(ItemMasterList, item.ItemId) then
-			Crashify.print_exception("BackendInterfacePeddlerPlayFab", string.format("ItemMasterList has no item %q", tostring(item.ItemId)))
+			printf("BackendInterfacePeddlerPlayFab - ItemMasterList has no item %q", tostring(item.ItemId))
 		else
 			local data = ItemMasterList[key]
 			local owned = false
@@ -179,6 +187,10 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 					steam_itemdefid = has_steam and data.steam_itemdefid
 				}
 				stock_index = stock_index + 1
+
+				if not seen_shop_items[key] then
+					new_items = true
+				end
 			end
 		end
 	end
@@ -190,6 +202,30 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 
 	if external_cb then
 		external_cb()
+	end
+
+	if BUILD == "dev" and (IS_XB1 or IS_PS4) then
+		new_items = false
+	end
+
+	if new_items then
+		local metadata = result.MarketingData.Metadata
+
+		if type(metadata) == "string" then
+			metadata = cjson.decode(metadata)
+		end
+
+		local uploaded = metadata.uploaded
+		local last_update = PlayerData.store_update_timestamp
+
+		if not last_update or last_update < uploaded then
+			PlayerData.store_new_items = true
+			PlayerData.store_update_timestamp = uploaded
+
+			Managers.save:auto_save(SaveFileName, SaveData, nil)
+		end
+	else
+		PlayerData.store_new_items = false
 	end
 end
 
@@ -370,7 +406,7 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, p
 		bundle_item_data.bundle_price = price_sum
 	end
 
-	self._steam_item_currency = currency
+	self._steam_item_currency = string.gsub(currency, "%z", "")
 	self._steam_stock_ready = true
 end
 
@@ -649,33 +685,6 @@ end
 BackendInterfacePeddlerPlayFab._refresh_layout_override_on_error_cb = function (self, external_cb)
 	Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR, nil)
 	external_cb(false)
-end
-
-local PlayFabClientApi_RedeemCoupon = require("PlayFab.PlayFabClientApi").RedeemCoupon
-
-BackendInterfacePeddlerPlayFab.redeem_coupon = function (self, coupon_code, resolve_cb, reject_cb)
-	local function success_handler(result)
-		local backend_mirror = self._backend_mirror
-		local items = result.GrantedItems
-
-		for i = 1, #items, 1 do
-			local item = items[i]
-
-			backend_mirror:add_item(item.ItemInstanceId, item)
-			printf("[BackendInterfacePeddlerPlayFab] Redeemed `%s`", item.ItemId)
-		end
-
-		self:refresh_chips()
-		resolve_cb(result.GrantedItems)
-	end
-
-	local function error_handler(result)
-		reject_cb(result.errorCode or result.code, result.error or "Unknown")
-	end
-
-	PlayFabClientApi_RedeemCoupon({
-		CouponCode = coupon_code
-	}, success_handler, error_handler)
 end
 
 return

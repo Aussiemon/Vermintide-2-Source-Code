@@ -117,7 +117,8 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 
 			if link_target then
 				local node_id = _get_particle_link_node(fx, link_target)
-				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy)
+				local pose = (fx.pose and fx.pose:unbox()) or nil
+				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy, pose)
 
 				if fx.continuous then
 					if fx.destroy_policy == "stop" then

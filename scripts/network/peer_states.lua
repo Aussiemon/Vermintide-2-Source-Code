@@ -384,6 +384,7 @@ PeerStates.WaitingForPlayers = {
 PeerStates.InGame = {
 	approved_for_joining = true,
 	on_enter = function (self, previous_state)
+		Managers.account:update_presence()
 		Network.write_dump_tag(string.format("%s in game", self.peer_id))
 	end,
 	respawn_player = function (self)
@@ -499,6 +500,7 @@ PeerStates.Disconnected = {
 			enemy_package_loader:client_disconnected(peer_id)
 		end
 
+		Managers.account:update_presence()
 		server:peer_disconnected(peer_id)
 		server:close_channel(peer_id)
 	end,

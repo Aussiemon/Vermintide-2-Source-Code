@@ -542,6 +542,7 @@ local function create_auto_fill_button(scenegraph_id, icon_name, hover_color, ho
 			disable_with_gamepad = disable_with_gamepad
 		},
 		style = {
+			frame = {},
 			border = {
 				offset = {
 					0,

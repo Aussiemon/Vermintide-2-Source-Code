@@ -1,13 +1,12 @@
 require("scripts/ui/ui_layer")
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
-require("scripts/ui/ui_element")
+require("scripts/ui/ui_widget")
 require("scripts/ui/ui_widgets")
 require("scripts/ui/ui_widgets_weaves")
 require("scripts/ui/views/ingame_view")
 require("scripts/ui/views/ingame_hud")
 require("scripts/ui/views/popup_handler")
-require("scripts/ui/views/popup_profile_picker")
 require("scripts/ui/views/end_screen_ui")
 require("scripts/settings/ui_settings")
 require("scripts/settings/ui_frame_settings")
@@ -23,7 +22,6 @@ require("scripts/ui/views/chat_view")
 require("scripts/ui/views/start_menu_view/start_menu_view")
 require("scripts/ui/views/console_friends_view")
 require("scripts/ui/views/friends_ui_component")
-require("scripts/ui/motd/motd_popup_ui")
 require("scripts/ui/text_popup/text_popup_ui")
 require("scripts/ui/weave_tutorial/weave_ui_onboarding_tutorial")
 require("scripts/ui/dlc_upsell/common_popup_handler")
@@ -34,6 +32,12 @@ DLCUtils.map_list("ui_views", function (view)
 		dofile(file)
 	end
 end)
+
+for _, settings in pairs(PopupSettings) do
+	if settings.file then
+		require(settings.file)
+	end
+end
 
 local rpcs = {}
 local settings = require("scripts/ui/views/ingame_ui_settings")
@@ -56,10 +60,11 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.world = world
 	self.top_world = top_world
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
+	local mechanism_key = Managers.mechanism:current_mechanism_name()
 	local is_tutorial = game_mode_key == "tutorial"
 	local is_in_inn = self.is_in_inn
-	self.ui_renderer = self:create_ui_renderer(world, is_tutorial, is_in_inn)
-	self.ui_top_renderer = self:create_ui_renderer(top_world, is_tutorial, is_in_inn)
+	self.ui_renderer = self:create_ui_renderer(world, is_tutorial, is_in_inn, mechanism_key)
+	self.ui_top_renderer = self:create_ui_renderer(top_world, is_tutorial, is_in_inn, mechanism_key)
 	self.blocked_transitions = view_settings.blocked_transitions
 	self.fps = 0
 	self.mean_dt = 0
@@ -85,6 +90,7 @@ IngameUI.init = function (self, ingame_ui_context)
 	self._player = ingame_ui_context.player
 	self.is_server = ingame_ui_context.is_server
 	self.ingame_hud = IngameHud:new(self, ingame_ui_context)
+	self.popups_by_name = {}
 	self.last_resolution_x, self.last_resolution_y = Application.resolution()
 
 	self:setup_views(ingame_ui_context)
@@ -93,8 +99,6 @@ IngameUI.init = function (self, ingame_ui_context)
 	self.weave_onboarding = WeaveUIOnboardingTutorial:new(ingame_ui_context)
 	self.popup_handler = CommonPopupHandler:new(ingame_ui_context)
 	self.text_popup_ui = TextPopupUI:new(ingame_ui_context)
-	self.motd_ui = MOTDPopupUI:new(ingame_ui_context)
-	self.motd_loading = false
 
 	if GameSettingsDevelopment.help_screen_enabled then
 		self.help_screen = HelpScreenUI:new(ingame_ui_context)
@@ -119,16 +123,10 @@ IngameUI.init = function (self, ingame_ui_context)
 	self._profile_requester = network_handler:profile_requester()
 	self.telemetry_time_view_enter = 0
 	self.ingame_ui_context = ingame_ui_context
-	local event_manager = Managers.state.event
-
-	if event_manager then
-		event_manager:register(self, "ui_event_transition_with_fade", "transition_with_fade")
-		event_manager:register(self, "ui_event_transition", "handle_transition")
-	end
 end
 
-IngameUI.create_ui_renderer = function (self, world, is_tutorial, is_in_inn)
-	return view_settings.ui_renderer_function(world, is_tutorial, is_in_inn)
+IngameUI.create_ui_renderer = function (self, world, is_tutorial, is_in_inn, mechanism_key)
+	return view_settings.ui_renderer_function(world, is_tutorial, is_in_inn, mechanism_key)
 end
 
 IngameUI.setup_views = function (self, ingame_ui_context)
@@ -208,12 +206,6 @@ IngameUI.is_in_view_state = function (self, state_name)
 end
 
 IngameUI.destroy = function (self)
-	local event_manager = Managers.state.event
-
-	if event_manager then
-		event_manager:unregister("ui_event_transition_with_fade", self)
-	end
-
 	self:unregister_rpcs()
 	Managers.chat:set_profile_synchronizer(nil)
 	Managers.chat:set_wwise_world(nil)
@@ -254,14 +246,16 @@ IngameUI.destroy = function (self)
 		self.help_screen = nil
 	end
 
-	if self.popup_profile_picker then
-		self:hide_unavailable_hero_popup()
+	local popups_by_name = self.popups_by_name
+
+	for popup_name, popup_data in pairs(self.popups_by_name) do
+		local popup = popup_data.popup
+
+		popup:hide()
+		popup:delete()
+
+		popups_by_name[popup_name] = nil
 	end
-
-	self.motd_ui:destroy()
-
-	self.motd_ui = nil
-	self.motd_backend = nil
 
 	self.text_popup_ui:destroy()
 
@@ -508,19 +502,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			local on_close_callback = callback(self, "_holly_dlc_intro_closed")
 
 			self.text_popup_ui:show("area_selection_holly_name", "holly_lohner_spiel_short", on_close_callback)
-		else
-			self.motd_ui:update(dt)
-
-			if not self.motd_backend and Managers.backend and Managers.backend:interfaces_ready() then
-				self.motd_backend = Managers.backend:get_interface("motd")
-			elseif self.motd_backend and is_not_in_menu and not self.motd_ui.is_visible and not self.motd_loading and #self.motd_backend:get_new_image_urls() > 0 then
-				local url = self.motd_backend:get_new_image_urls()[1]
-				local cb = callback(self, "_url_loaded", url)
-
-				Managers.url_loader:load_resource(url, cb)
-
-				self.motd_loading = true
-			end
 		end
 
 		if self.weave_onboarding then
@@ -545,34 +526,36 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			end
 		end
 
-		local gdc_build = Development.parameter("gdc")
 		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI") or ingame_hud:component("VersusTabUI")
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 		local fade_active = Managers.transition:in_fade_active()
 
-		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and (not IS_CONSOLE or not self:cutscene_active()) and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not gdc_build and not self:unavailable_hero_popup_active() and input_service:get("toggle_menu", true) then
+		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then
 			local gamepad_active = Managers.input:is_device_active("gamepad")
 			local use_gamepad_layout = IS_CONSOLE or gamepad_active or UISettings.use_gamepad_menu_layout
 
 			if use_gamepad_layout then
-				local menu_state_name = "overview"
+				if not self:cutscene_active() then
+					local menu_state_name = "overview"
 
-				if is_in_inn then
-					local menu_sub_state_name = (gamepad_active and "equipment") or "system"
-					local transition_params = {
-						menu_state_name = menu_state_name,
-						menu_sub_state_name = menu_sub_state_name
-					}
+					if is_in_inn and gamepad_active then
+						local menu_sub_state_name = (gamepad_active and "equipment") or "system"
+						local transition_params = {
+							menu_state_name = menu_state_name,
+							menu_sub_state_name = menu_sub_state_name
+						}
 
-					self:transition_with_fade("hero_view_force", transition_params)
-				else
-					local menu_sub_state_name = "system"
-					local transition_params = {
-						menu_state_name = menu_state_name,
-						menu_sub_state_name = menu_sub_state_name
-					}
+						self:transition_with_fade("hero_view_force", transition_params)
+					else
+						local menu_sub_state_name = "system"
+						local transition_params = {
+							menu_state_name = menu_state_name,
+							menu_sub_state_name = menu_sub_state_name,
+							force_ingame_menu = IS_WINDOWS
+						}
 
-					self:handle_transition("hero_view_force", transition_params)
+						self:handle_transition("hero_view_force", transition_params)
+					end
 				end
 			else
 				self:handle_transition("ingame_menu")
@@ -591,8 +574,10 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			end
 		end
 
-		if self.popup_profile_picker then
-			self.popup_profile_picker:update(dt, t)
+		for _, popup_data in pairs(self.popups_by_name) do
+			local popup = popup_data.popup
+
+			popup:update(dt, t)
 		end
 
 		end_screen:update(dt, t)
@@ -637,27 +622,6 @@ IngameUI.post_update = function (self, dt, t)
 	end
 
 	self.ingame_hud:post_update(dt, t)
-	self.motd_ui:post_update(dt)
-end
-
-IngameUI._url_loaded = function (self, url, texture_resource)
-	self.motd_loading = false
-
-	if not self.hud_visible then
-		return
-	end
-
-	self.motd_ui:show(texture_resource)
-
-	if self.motd_ui.is_visible then
-		self.motd_backend:mark_url_as_viewed(url)
-	end
-end
-
-IngameUI.post_render = function (self)
-	if self.motd_ui then
-		self.motd_ui:post_render()
-	end
 end
 
 IngameUI.cutscene_active = function (self)
@@ -710,7 +674,7 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 	local mission_voting_ui = ingame_hud:component("MissionVotingUI")
 	local mission_vote_active = mission_voting_ui and mission_voting_ui:is_active()
 	local cutscene_system = self.cutscene_system
-	local unavailable_hero_popup_active = self:unavailable_hero_popup_active()
+	local profile_picker = self:get_active_popup("profile_picker")
 	local in_view = self.menu_active or (end_of_level_ui and end_of_level_ui:enable_chat()) or (self.current_view ~= nil and not self.views[self.current_view].normal_chat)
 	local active_cutscene = cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
 
@@ -731,8 +695,8 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 		local gift_popup_input_service = gift_popup_ui:active_input_service()
 
 		return in_view, gift_popup_input_service, false
-	elseif unavailable_hero_popup_active then
-		local join_popup_input_service = self.popup_profile_picker:input_service()
+	elseif profile_picker then
+		local join_popup_input_service = profile_picker:input_service()
 
 		return in_view, join_popup_input_service, false
 	elseif player_list_focused then
@@ -871,12 +835,6 @@ end
 IngameUI.handle_transition = function (self, new_transition, params)
 	fassert(transitions[new_transition], "Missing transition to %s", new_transition)
 
-	if script_data.disable_store and new_transition == "hero_view_force" and params and params.menu_state_name == "store" then
-		Managers.chat:add_local_system_message(1, "Store is disabled.", true)
-
-		return
-	end
-
 	local blocked_transitions = self.blocked_transitions
 
 	if blocked_transitions and blocked_transitions[new_transition] then
@@ -899,13 +857,23 @@ IngameUI.handle_transition = function (self, new_transition, params)
 	transitions[new_transition](self, params)
 
 	local new_view = self.current_view
+	local force_open = params.force_open
 
-	if old_view ~= new_view then
-		if self.views[old_view] and self.views[old_view].on_exit then
-			printf("[IngameUI] menu view on_exit %s", old_view)
-			self.views[old_view]:on_exit(params)
+	if old_view ~= new_view or force_open then
+		if self.views[old_view] then
+			if self.views[old_view].on_exit then
+				printf("[IngameUI] menu view on_exit %s", old_view)
+				self.views[old_view]:on_exit(params)
 
-			self.views[old_view].exit_to_game = nil
+				self.views[old_view].exit_to_game = nil
+			end
+
+			local old_params = self.transition_params
+			local on_exit_callback = old_params and old_params.on_exit_callback
+
+			if on_exit_callback then
+				on_exit_callback()
+			end
 		end
 
 		if new_view and self.views[new_view] and self.views[new_view].on_enter then
@@ -1075,12 +1043,7 @@ IngameUI._render_version_info = function (self)
 		build_hash = "???"
 	end
 
-	local is_local_backend = Managers.backend:is_local()
 	local text = "GAME HASH: " .. build_hash .. " | Content revision: " .. revision .. " | Engine version: " .. build:sub(1, 6) .. "..."
-
-	if is_local_backend then
-		text = "LOCAL BACKEND | " .. text
-	end
 
 	if rawget(_G, "Steam") then
 		local appid = Steam.app_id()
@@ -1193,33 +1156,38 @@ IngameUI._render_fps = function (self, dt)
 	end
 end
 
-IngameUI.show_unavailable_hero_popup = function (self, current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, difficulty, lobby_data)
-	fassert(self.popup_profile_picker == nil, "trying to show PopupProfilePicker when its already visible")
+IngameUI.open_popup = function (self, popup_name, ...)
+	local popups_by_name = self.popups_by_name
 
-	local ingame_ui_context = self.ingame_ui_context
-	local popup_profile_picker = PopupProfilePicker:new(ingame_ui_context)
+	fassert(popups_by_name[popup_name] == nil, "Trying to open a popup %q that is already active", popup_name)
 
-	popup_profile_picker:show(current_profile_index, current_career_index, time_until_cancel, join_by_lobby_browser, difficulty, lobby_data)
-
-	self.popup_profile_picker = popup_profile_picker
-
-	return popup_profile_picker
+	local popup_settings = PopupSettingsByName[popup_name]
+	local popup_class = rawget(_G, popup_settings.class)
+	local popup = popup_class:new(self.ingame_ui_context, ...)
+	popups_by_name[popup_name] = {
+		settings = popup_settings,
+		popup = popup
+	}
 end
 
-IngameUI.hide_unavailable_hero_popup = function (self)
-	local popup_profile_picker = self.popup_profile_picker
+IngameUI.close_popup = function (self, popup_name)
+	local popups_by_name = self.popups_by_name
+	local popup_data = popups_by_name[popup_name]
 
-	fassert(popup_profile_picker ~= nil, "trying to hide PopupProfilePicker when its not visible")
-	popup_profile_picker:hide()
-	popup_profile_picker:delete()
+	fassert(popup_data ~= nil, "Trying to close a popup %q that is not active", popup_name)
 
-	self.popup_profile_picker = nil
+	local popup = popup_data.popup
+
+	popup:hide()
+	popup:delete()
+
+	popups_by_name[popup_name] = nil
 end
 
-IngameUI.unavailable_hero_popup_active = function (self)
-	local popup_profile_picker = self.popup_profile_picker
+IngameUI.get_active_popup = function (self, popup_name)
+	local popup_data = self.popups_by_name[popup_name]
 
-	return popup_profile_picker ~= nil
+	return popup_data and popup_data.popup
 end
 
 IngameUI.respawn = function (self)

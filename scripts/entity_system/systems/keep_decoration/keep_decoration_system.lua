@@ -1,9 +1,12 @@
 require("scripts/settings/keep_decoration_settings")
 require("scripts/unit_extensions/level/keep_decoration_painting_extension")
+require("scripts/unit_extensions/level/keep_decoration_trophy_extension")
+require("scripts/settings/trophies")
 
 KeepDecorationSystem = class(KeepDecorationSystem, ExtensionSystemBase)
 local extensions = {
-	"KeepDecorationPaintingExtension"
+	"KeepDecorationPaintingExtension",
+	"KeepDecorationTrophyExtension"
 }
 local RPCS = {
 	"rpc_request_painting",
@@ -20,6 +23,7 @@ KeepDecorationSystem.init = function (self, entity_system_creation_context, syst
 	self._network_trasmit = Managers.state.network.network_transmit
 	self._extensions = {}
 	self._unit_extensions = {}
+	self._painting_extensions = {}
 	self._used_settings_keys = {}
 	self._used_backend_keys = {}
 	self._update_index = 0
@@ -32,6 +36,7 @@ end
 KeepDecorationSystem.destroy = function (self)
 	self._extensions = nil
 	self._unit_extensions = nil
+	self._painting_extensions = nil
 
 	self._network_event_delegate:unregister(self)
 end
@@ -60,9 +65,10 @@ KeepDecorationSystem.on_add_extension = function (self, world, unit, extension_n
 			self._client_painting_extensions[#self._client_painting_extensions + 1] = extension
 		end
 
-		extension.keep_decoration_system = self
+		self._painting_extensions[#self._painting_extensions + 1] = extension
 	end
 
+	extension.keep_decoration_system = self
 	self._extensions[#self._extensions + 1] = extension
 	self._unit_extensions[unit] = extension
 	self._used_settings_keys[settings_key] = true
@@ -111,6 +117,56 @@ KeepDecorationSystem.update = function (self, context, t)
 	self._update_index = update_index
 end
 
+KeepDecorationSystem.on_painting_set = function (self, painting, asking_extension)
+	local painting_extensions = self._painting_extensions
+	local painting_data = Paintings[painting]
+	local painting_frame = painting_data.frame
+
+	for i = 1, #painting_extensions, 1 do
+		local extension = painting_extensions[i]
+		local extension_painting = extension:get_selected_decoration()
+		local extension_painting_data = Paintings[extension_painting]
+		local extension_painting_frame = extension_painting_data.frame
+		local is_client_painting = extension:is_client_painting()
+
+		if extension_painting == painting and asking_extension ~= extension and painting_frame == extension_painting_frame and not is_client_painting then
+			extension:decoration_selected("hor_none")
+			extension:sync_decoration()
+		end
+	end
+end
+
+KeepDecorationSystem.on_decoration_set = function (self, decoration, asking_extension, type)
+	local extensions = self._extensions
+
+	for i = 1, #extensions, 1 do
+		local extension = extensions[i]
+		local current_decoration = extension:get_selected_decoration()
+
+		if current_decoration == decoration and asking_extension ~= extension then
+			local empty = (type == "painting" and "hor_none") or (type == "trophy" and "hub_trophy_empty")
+
+			extension:decoration_selected(empty)
+			extension:sync_decoration()
+		end
+	end
+end
+
+KeepDecorationSystem.is_decoration_in_use = function (self, decoration)
+	local extensions = self._extensions
+
+	for i = 1, #extensions, 1 do
+		local extension = extensions[i]
+		local extension_decoration = extension:get_selected_decoration()
+
+		if extension_decoration == decoration then
+			return true
+		end
+	end
+
+	return false
+end
+
 KeepDecorationSystem._add_client_painting = function (self, player_id, painting)
 	local client_paintings = self._client_paintings
 	client_paintings[player_id] = painting
@@ -156,39 +212,6 @@ KeepDecorationSystem._refresh_client_paintings = function (self)
 
 		extension:set_client_painting(painting)
 	end
-end
-
-KeepDecorationSystem.painting_set = function (self, painting, asking_extension)
-	local painting_extensions = self._extensions
-	local painting_data = Paintings[painting]
-	local painting_frame = painting_data.frame
-
-	for _, extension in pairs(painting_extensions) do
-		local extension_painting = extension:get_selected_painting()
-		local extension_painting_data = Paintings[extension_painting]
-		local extension_painting_frame = extension_painting_data.frame
-		local is_client_painting = extension:is_client_painting()
-
-		if extension_painting == painting and asking_extension ~= extension and painting_frame == extension_painting_frame and not is_client_painting then
-			extension:painting_selected("hor_none")
-			extension:sync_painting()
-		end
-	end
-end
-
-KeepDecorationSystem.is_painting_in_use = function (self, painting)
-	local painting_extensions = self._extensions
-
-	for i = 1, #painting_extensions, 1 do
-		local extension = painting_extensions[i]
-		local extension_painting = extension:get_selected_painting()
-
-		if extension_painting == painting then
-			return true
-		end
-	end
-
-	return false
 end
 
 KeepDecorationSystem.rpc_send_painting = function (self, channel_id, painting)

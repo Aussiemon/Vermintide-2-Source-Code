@@ -2,7 +2,6 @@ require("scripts/unit_extensions/default_player_unit/buffs/buff_templates")
 require("scripts/unit_extensions/default_player_unit/buffs/group_buff_templates")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_function_templates")
 require("scripts/unit_extensions/default_player_unit/buffs/buff_extension")
-require("scripts/utils/script_application")
 
 BuffSystem = class(BuffSystem, ExtensionSystemBase)
 IGNORED_ITEM_TYPES_FOR_BUFFS = {}
@@ -15,7 +14,13 @@ local RPCS = {
 	"rpc_buff_on_attack",
 	"rpc_remove_server_controlled_buff",
 	"rpc_proc_event",
-	"rpc_remove_gromril_armour"
+	"rpc_remove_gromril_armour",
+	"rpc_add_buff_synced",
+	"rpc_add_buff_synced_params",
+	"rpc_add_buff_synced_relay",
+	"rpc_add_buff_synced_relay_params",
+	"rpc_add_buff_synced_response",
+	"rpc_remove_buff_synced"
 }
 local extensions = {
 	"BuffExtension"
@@ -77,6 +82,8 @@ BuffSystem.hot_join_sync = function (self, peer_id)
 				network_transmit:send_rpc("rpc_add_buff", peer_id, unit_object_id, buff_template_name_id, attacker_unit_object_id, server_buff_id, false)
 			end
 		end
+
+		self:_hot_join_sync_synced_buffs(peer_id)
 	end
 end
 
@@ -108,7 +115,7 @@ BuffSystem.on_remove_extension = function (self, unit, extension_name)
 end
 
 BuffSystem.on_freeze_extension = function (self, unit, extension_name)
-	return
+	self:freeze(unit, extension_name)
 end
 
 BuffSystem.freeze = function (self, unit, extension_name, reason)
@@ -537,6 +544,358 @@ BuffSystem.set_buff_ext_active = function (self, unit, is_active)
 		end
 	else
 		self.active_buff_units[unit] = nil
+	end
+end
+
+BuffSyncType = table.enum("Local", "LocalAndServer", "All")
+
+local function buff_param_pack_float(input)
+	return math.floor(input * 100 + 32768)
+end
+
+local function buff_param_unpack_float(input)
+	return (input - 32768) / 100
+end
+
+local function buff_param_pack_t(input)
+	return math.floor(input * 10)
+end
+
+local function buff_param_unpack_t(input)
+	return input / 10
+end
+
+local function buff_param_raw(input)
+	return input
+end
+
+local function buff_param_damage_source(input)
+	return NetworkLookup.damage_sources[input]
+end
+
+local function buff_param_pack_unit(input, ctx)
+	return ctx.network_manager:unit_game_object_id(input)
+end
+
+local function buff_param_unpack_unit(input, ctx)
+	return ctx.unit_storage:unit(input)
+end
+
+local buff_param_packing_methods = {
+	attacker_unit = {
+		pack = buff_param_pack_unit,
+		unpack = buff_param_unpack_unit
+	},
+	source_attacker_unit = {
+		pack = buff_param_pack_unit,
+		unpack = buff_param_unpack_unit
+	},
+	damage_source = {
+		pack = buff_param_damage_source,
+		unpack = buff_param_damage_source
+	},
+	power_level = {
+		pack = buff_param_raw,
+		unpack = buff_param_raw
+	},
+	variable_value = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	external_optional_bonus = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	external_optional_multiplier = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	external_optional_value = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	external_optional_proc_chance = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	external_optional_duration = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	external_optional_range = {
+		pack = buff_param_pack_float,
+		unpack = buff_param_unpack_float
+	},
+	_hot_join_sync_buff_age = {
+		pack = buff_param_pack_t,
+		unpack = buff_param_unpack_t
+	}
+}
+local buff_params_list = table.keys(buff_param_packing_methods)
+local buff_params_list_lookup = table.mirror_array_inplace(table.keys(buff_param_packing_methods))
+local buff_param_count = #buff_params_list
+local packed_buff_param_ids = Script.new_array(buff_param_count)
+local packed_buff_param_vals = Script.new_array(buff_param_count)
+local unpacked_buff_params = Script.new_map(buff_param_count)
+
+BuffSystem._pack_buff_params = function (self, buff_params, dest_param_ids, dest_param_vals)
+	table.clear(packed_buff_param_ids)
+	table.clear(packed_buff_param_vals)
+
+	local num_params = 0
+
+	for name, val in pairs(buff_params) do
+		num_params = num_params + 1
+		dest_param_ids[num_params] = buff_params_list_lookup[name]
+		dest_param_vals[num_params] = buff_param_packing_methods[name].pack(val, self)
+	end
+
+	return dest_param_ids, dest_param_vals
+end
+
+BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_vals)
+	table.clear(dest_table)
+
+	for i = 1, #param_ids, 1 do
+		local param_id = param_ids[i]
+		local param_name = buff_params_list[param_id]
+		dest_table[param_name] = buff_param_packing_methods[param_name].unpack(param_vals[i], self)
+	end
+
+	return dest_table
+end
+
+local invalid_buff_sync_id = 0
+local buff_sync_type_lookup = table.mirror_array_inplace(table.keys(BuffSyncType))
+
+BuffSystem.add_buff_synced = function (self, target_unit, template_name, sync_type, params)
+	local buff_id = -1
+	local num_sub_buffs = -1
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension then
+		buff_id, num_sub_buffs = buff_extension:add_buff(template_name, params)
+
+		if (sync_type == BuffSyncType.LocalAndServer and not self.is_server) or sync_type == BuffSyncType.All then
+			local local_sync_id = invalid_buff_sync_id
+
+			if num_sub_buffs > 0 then
+				local_sync_id = buff_extension:generate_sync_id()
+
+				buff_extension:set_pending_sync_id(buff_id, local_sync_id, sync_type)
+			else
+				buff_id = -1
+			end
+
+			local network_manager = Managers.state.network
+			local target_unit_id = network_manager:unit_game_object_id(target_unit)
+			local template_name_id = NetworkLookup.buff_templates[template_name]
+			local sync_type_id = buff_sync_type_lookup[sync_type]
+			local send_rpc_func = nil
+			local network_transmit = network_manager.network_transmit
+
+			if self.is_server then
+				if local_sync_id ~= invalid_buff_sync_id then
+					buff_extension:apply_sync_id(local_sync_id, local_sync_id)
+				end
+
+				send_rpc_func = network_transmit.send_rpc_clients
+			else
+				send_rpc_func = network_transmit.send_rpc_server
+			end
+
+			if params then
+				local param_ids, param_vals = self:_pack_buff_params(params, packed_buff_param_ids, packed_buff_param_vals)
+
+				send_rpc_func(network_transmit, "rpc_add_buff_synced_params", target_unit_id, template_name_id, local_sync_id, sync_type_id, param_ids, param_vals)
+			else
+				send_rpc_func(network_transmit, "rpc_add_buff_synced", target_unit_id, template_name_id, local_sync_id, sync_type_id)
+			end
+		end
+	end
+
+	return buff_id
+end
+
+BuffSystem.remove_buff_synced = function (self, target_unit, buff_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension and buff_id then
+		buff_extension:remove_buff(buff_id)
+	end
+end
+
+BuffSystem.rpc_add_buff_synced = function (self, channel_id, target_unit_id, template_name_id, remote_sync_id, sync_type_id)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension then
+		local template_name = NetworkLookup.buff_templates[template_name_id]
+		local id, num_sub_buffs = buff_extension:add_buff(template_name)
+		local server_sync_id = (remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id()) or invalid_buff_sync_id
+		local sync_type = buff_sync_type_lookup[sync_type_id]
+		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		if server_sync_id ~= invalid_buff_sync_id then
+			buff_extension:apply_remote_sync_id(id, server_sync_id, sync_type, owner_peer_id)
+		end
+
+		if self.is_server then
+			local network_manager = Managers.state.network
+
+			if sync_type == BuffSyncType.All then
+				network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff_synced_relay", owner_peer_id, target_unit_id, template_name_id, server_sync_id, sync_type_id)
+			end
+
+			if remote_sync_id ~= invalid_buff_sync_id then
+				network_manager.network_transmit:send_rpc("rpc_add_buff_synced_response", owner_peer_id, target_unit_id, remote_sync_id, server_sync_id)
+			else
+				print("[BuffSystem] rpc_add_buff_synced, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+			end
+		end
+	end
+end
+
+BuffSystem.rpc_add_buff_synced_relay = function (self, channel_id, target_unit_id, template_name_id, server_sync_id, sync_type_id)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension then
+		local template_name = NetworkLookup.buff_templates[template_name_id]
+		local local_buff_id, num_sub_buffs = buff_extension:add_buff(template_name)
+
+		if server_sync_id ~= invalid_buff_sync_id then
+			local sync_type = buff_sync_type_lookup[sync_type_id]
+
+			buff_extension:apply_remote_sync_id(local_buff_id, server_sync_id, sync_type)
+		end
+	end
+end
+
+BuffSystem.rpc_add_buff_synced_params = function (self, channel_id, target_unit_id, template_name_id, remote_sync_id, sync_type_id, param_ids, param_vals)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension then
+		local template_name = NetworkLookup.buff_templates[template_name_id]
+		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals)
+		local id = buff_extension:add_buff(template_name, params)
+		local server_sync_id = (remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id()) or invalid_buff_sync_id
+		local sync_type = buff_sync_type_lookup[sync_type_id]
+		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
+
+		if server_sync_id ~= invalid_buff_sync_id then
+			buff_extension:apply_remote_sync_id(id, server_sync_id, sync_type, owner_peer_id)
+		end
+
+		if self.is_server then
+			local network_manager = Managers.state.network
+
+			if sync_type == BuffSyncType.All then
+				network_manager.network_transmit:send_rpc_clients_except("rpc_add_buff_synced_relay_params", owner_peer_id, target_unit_id, template_name_id, server_sync_id, sync_type_id, param_ids, param_vals)
+			end
+
+			if remote_sync_id ~= invalid_buff_sync_id then
+				network_manager.network_transmit:send_rpc("rpc_add_buff_synced_response", owner_peer_id, target_unit_id, remote_sync_id, server_sync_id)
+			else
+				print("[BuffSystem] rpc_add_buff_synced_params, response consumed due to blind fire sync", owner_peer_id, target_unit_id, template_name)
+			end
+		end
+	end
+end
+
+BuffSystem.rpc_add_buff_synced_relay_params = function (self, channel_id, target_unit_id, template_name_id, server_sync_id, sync_type_id, param_ids, param_vals)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension then
+		local template_name = NetworkLookup.buff_templates[template_name_id]
+		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals)
+		local local_buff_id = buff_extension:add_buff(template_name, params)
+
+		if server_sync_id ~= invalid_buff_sync_id then
+			local sync_type = buff_sync_type_lookup[sync_type_id]
+
+			buff_extension:apply_remote_sync_id(local_buff_id, server_sync_id, sync_type)
+		end
+	end
+end
+
+BuffSystem.rpc_add_buff_synced_response = function (self, channel_id, target_unit_id, local_sync_id, server_sync_id)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension and not buff_extension:apply_sync_id(local_sync_id, server_sync_id) then
+		local network_manager = Managers.state.network
+
+		network_manager.network_transmit:send_rpc_server("rpc_remove_buff_synced", target_unit_id, server_sync_id)
+	end
+end
+
+BuffSystem.rpc_remove_buff_synced = function (self, channel_id, target_unit_id, server_sync_id)
+	local target_unit = self.unit_storage:unit(target_unit_id)
+	local buff_extension = self.unit_extension_data[target_unit]
+
+	if buff_extension then
+		local buff_id = buff_extension:sync_id_to_id(server_sync_id)
+
+		if buff_id then
+			if self.is_server then
+				local sync_type = buff_extension:buff_sync_type(buff_id)
+
+				if sync_type == BuffSyncType.All then
+					local peer_id = CHANNEL_TO_PEER_ID[channel_id]
+					local network_transmit = Managers.state.network.network_transmit
+
+					network_transmit:send_rpc_clients_except("rpc_remove_buff_synced", peer_id, target_unit_id, server_sync_id)
+				end
+			end
+
+			buff_extension:remove_buff(buff_id, true)
+		end
+	end
+end
+
+BuffSystem._hot_join_sync_synced_buffs = function (self, peer_id)
+	local t = Managers.time:time("game")
+	local network_manager = Managers.state.network
+	local network_transmit = network_manager.network_transmit
+	local sync_type_id = buff_sync_type_lookup[BuffSyncType.All]
+	local buff_params = {}
+	local active_buff_units = self.active_buff_units
+
+	for unit, extension in pairs(active_buff_units) do
+		local buff_to_sync_type = extension._buff_to_sync_type
+
+		if buff_to_sync_type then
+			local unit_id = network_manager:unit_game_object_id(unit)
+			local id_to_server_sync = extension._id_to_server_sync
+			local buffs = extension._buffs
+
+			for buff_id, sync_type in pairs(buff_to_sync_type) do
+				if sync_type == BuffSyncType.All then
+					local buff = buffs[buff_id]
+					local template_name_id = NetworkLookup.buff_templates[buff.buff_template_name]
+					local server_sync_id = id_to_server_sync[buff_id]
+
+					table.clear(buff_params)
+
+					buff_params.external_optional_bonus = buff.bonus
+					buff_params.external_optional_multiplier = buff.multiplier
+					buff_params.external_optional_value = buff.value
+					buff_params.external_optional_proc_chance = buff.proc_chance
+					buff_params.external_optional_range = buff.range
+					buff_params.damage_source = buff.damage_source
+					buff_params.power_level = buff.power_level
+					buff_params.attacker_unit = buff.attacker_unit
+					buff_params.source_attacker_unit = buff.source_attacker_unit
+					buff_params._hot_join_sync_buff_age = buff_duration and math.min(t - buff.start_time, 6550)
+
+					self:_pack_buff_params(buff_params, packed_buff_param_ids, packed_buff_param_vals)
+					network_transmit:send_rpc("rpc_add_buff_synced_relay_params", peer_id, unit_id, template_name_id, server_sync_id, sync_type_id, packed_buff_param_ids, packed_buff_param_vals)
+				end
+			end
+		end
 	end
 end
 

@@ -1,12 +1,4 @@
 print("boot.lua start, os clock:", os.clock())
-
-local io_input = io.input
-local io_read = io.read
-local io_open = io.open
-local io_close = io.close
-local os_execute = os.execute
-local os_remove = os.remove
-
 dofile("scripts/boot_init")
 
 local BUILD = BUILD
@@ -62,14 +54,14 @@ local function foundation_require(path, ...)
 end
 
 print("Active feature-flags:")
-print("FEATURE_thornsister")
+print("PLATFORM_win32")
+print("FEATURE_steam_rich_presence")
+print("FEATURE_grudge_marks")
+print("FEATURE_geheimnisnacht_2021")
+print("FEATURE_fall_collection_2021")
 print("")
 require("scripts/settings/dlc_settings")
 require("scripts/helpers/dlc_utils")
-
-local stripping_string = "LUA IS STRIPPED!"
-
-print(stripping_string)
 
 Boot = Boot or {}
 Boot.flow_return_table = Script.new_map(32)
@@ -143,15 +135,9 @@ Boot.setup = function (self)
 		"resource_packages/foundation_scripts",
 		"resource_packages/game_scripts",
 		"resource_packages/level_scripts",
-		"resource_packages/levels/debug_levels",
 		"resource_packages/levels/benchmark_levels",
 		"resource_packages/levels/honduras_levels"
 	}
-
-	if IS_WINDOWS then
-		Boot.startup_packages[#Boot.startup_packages + 1] = "backend/local_backend/local_backend"
-	end
-
 	local handles = {}
 
 	for _, package_name in ipairs(Boot.startup_packages) do
@@ -371,20 +357,23 @@ Boot.booting_update = function (self, dt)
 		DLCUtils.merge("script_data", script_data)
 		Game:require_game_scripts()
 
-		local require_end = os.clock()
-
-		if IS_WINDOWS then
-			game_require("managers", "mod/mod_manager")
-
-			Managers.mod = ModManager:new(Boot.gui)
-			Boot.startup_state = "loading_mods"
+		if IS_WINDOWS and LAUNCH_MODE ~= "attract_benchmark" then
+			Boot.startup_state = "init_mods"
 		elseif IS_LINUX then
 			Managers.mod = MockClass:new()
 			Boot.startup_state = "ready"
 		else
 			Boot.startup_state = "ready"
 		end
+	elseif Boot.startup_state == "init_mods" then
+		Managers.curl = CurlManager:new()
+
+		game_require("managers", "mod/mod_manager")
+
+		Managers.mod = ModManager:new(Boot.gui)
+		Boot.startup_state = "loading_mods"
 	elseif Boot.startup_state == "loading_mods" then
+		Managers.curl:update(true)
 		Managers.mod:update(dt)
 
 		if Managers.mod:all_mods_loaded() then
@@ -393,7 +382,9 @@ Boot.booting_update = function (self, dt)
 			Boot.startup_state = "ready"
 		end
 	elseif Boot.startup_state == "ready" then
-		Crashify.print_property("project", "vermintide 2")
+		local crashify_settings = require("scripts/settings/crashify_settings")
+
+		Crashify.print_property("project", crashify_settings.project)
 		Crashify.print_property("build", BUILD)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("dedicated_server", DEDICATED_SERVER)
@@ -412,6 +403,7 @@ Boot.booting_update = function (self, dt)
 			if rawget(_G, "Steam") then
 				Crashify.print_property("steam_id", Steam.user_id())
 				Crashify.print_property("steam_profile_name", Steam.user_name())
+				Crashify.print_property("steam_app_id", Steam.app_id())
 
 				local write_network_debug_output_to_log = Application.user_setting("write_network_debug_output_to_log")
 
@@ -448,7 +440,7 @@ Boot.booting_update = function (self, dt)
 		Game:setup()
 
 		local start_state, params = Game:select_starting_state()
-		params.notify_mod_manager = IS_WINDOWS
+		params.notify_mod_manager = IS_WINDOWS and LAUNCH_MODE ~= "attract_benchmark"
 		local project_setup_end = os.clock()
 		local state_machine_start = os.clock()
 
@@ -477,7 +469,7 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
-	base_require("util", "verify_plugins", "clipboard", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string", "reportify")
+	base_require("util", "verify_plugins", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string", "reportify")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
@@ -543,6 +535,7 @@ function on_close()
 
 	if close then
 		Application.force_silent_exit_policy()
+		Crashify.print_property("shutdown", true)
 	end
 
 	return close
@@ -550,6 +543,7 @@ end
 
 function shutdown()
 	Application.force_silent_exit_policy()
+	Crashify.print_property("shutdown", true)
 	Boot:shutdown()
 end
 
@@ -636,7 +630,7 @@ ReplayBoot.init = function (self)
 		table.insert(self._packages, package)
 	end
 
-	base_require("util", "verify_plugins", "clipboard", "error", "framerate", "patches", "class", "callback", "rectangle", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "frame_table", "path", "script_extended_replay")
+	base_require("util", "verify_plugins", "error", "framerate", "patches", "class", "callback", "rectangle", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "frame_table", "path", "script_extended_replay")
 	base_require("managers", "managers", "replay/replay_manager")
 	Framerate.set_replay()
 
@@ -713,7 +707,7 @@ Boot.game_update = function (self, real_world_dt)
 
 	UPDATE_RESOLUTION_LOOKUP()
 	Managers.perfhud:update(dt)
-	Managers.debug_updator:update(dt)
+	Managers.updator:update(dt)
 
 	GLOBAL_FRAME_INDEX = GLOBAL_FRAME_INDEX + 1
 
@@ -888,10 +882,6 @@ Game.setup = function (self)
 	if IS_XB1 then
 		Application.set_kinect_enabled(true)
 	end
-
-	profile(p, "handle rev info")
-	self:_handle_revision_info()
-	profile(p, "handle rev info")
 
 	if script_data.honduras_demo then
 		self:_demo_setup()
@@ -1223,107 +1213,14 @@ Game._set_ps4_content_restrictions = function (self)
 	NpCheck.set_content_restriction(18, restrictions)
 end
 
-Game._handle_revision_info = function (self)
-	local content_revision = script_data.settings.content_revision
-	local no_revision = content_revision == nil or content_revision == ""
-	local trunk_path = Development.parameter("trunk_path")
-
-	if no_revision and trunk_path then
-		if false then
-			local path = Path.path_from_string(trunk_path)
-
-			Path.add_path_part(path, "update_scripts")
-
-			local svn_info_path = Path.copy(path)
-
-			Path.add_path_part(svn_info_path, "svn_info.txt")
-
-			svn_info_path = Path.tostring(svn_info_path, "\\")
-
-			os_remove(svn_info_path)
-
-			local script_path = Path.copy(path)
-
-			Path.add_path_part(script_path, "get_svn_revision.bat")
-
-			script_path = Path.tostring(script_path)
-			path = Path.tostring(path)
-			local command = string.format("start \"\" /min cmd /c call \"%s\" \"%s/.\" \"%s\"", script_path, trunk_path, svn_info_path)
-
-			print(command)
-
-			local execute_result = os_execute(command)
-
-			if execute_result ~= 0 then
-				print("[Boot] Could not execute command, result ", tostring(execute_result))
-			end
-
-			local t0 = os.clock()
-
-			while os.clock() - t0 <= 1 do
-			end
-
-			local svn_info_file = io_open(svn_info_path, "r")
-
-			if svn_info_file then
-				io_input(svn_info_file)
-
-				while true do
-					local svn_info_line = io_read()
-
-					if svn_info_line == nil then
-						break
-					end
-
-					local find_start, find_end = svn_info_line:find("Revision: ")
-
-					if find_start and find_end then
-						local svn_revision = svn_info_line:sub(find_end + 1)
-						script_data.settings.content_revision = svn_revision
-
-						break
-					end
-				end
-
-				io_close(svn_info_file)
-			else
-				print("[Boot] Could not open ", svn_info_path)
-			end
-		end
-	end
-
-	local tab = {}
-
-	for word in string.gmatch(script_data.build_identifier, "([^|]+)") do
-		table.insert(tab, word)
-	end
-
-	if #tab == 3 then
-		local build_id = tab[2]:gsub("^%s*(.-)%s*$", "%1")
-		local build_conf = tab[3]:gsub("^%s*(.-)%s*$", "%1")
-		local build_url = string.format("http://vcs01.i.fatshark.se:8111/viewLog.html?buildId=%s&tab=buildResultsDiv&buildTypeId=%s", build_id, build_conf)
-
-		print("[Boot] Link to build log:", build_url)
-	end
-
-	print("[Boot] Application build:", BUILD)
-	print("[Boot] Content revision:", script_data.settings.content_revision)
-	print("[Boot] Engine revision:", script_data.build_identifier)
-	print("[Boot] Release version:", VersionSettings.version)
-
-	if Development.parameter("paste_revision_to_clipboard") then
-		Clipboard.put(string.format("%s | %s", tostring(script_data.settings.content_revision), tostring(script_data.build_identifier)))
-	end
-end
-
 Game.require_game_scripts = function (self)
-	game_require("utils", "patches", "colors", "framerate", "random_table", "global_utils", "function_call_stats", "util", "loaded_dice", "script_application", "deadlock_stack", "benchmark/benchmark_handler")
+	game_require("utils", "patches", "colors", "framerate", "global_utils", "function_call_stats", "loaded_dice", "deadlock_stack", "benchmark/benchmark_handler")
 	game_require("settings", "version_settings")
 	game_require("ui", "views/show_cursor_stack", "ui_fonts")
 	game_require("settings", "demo_settings", "motion_control_settings", "game_settings_development", "controller_settings", "default_user_settings")
 	game_require("entity_system", "entity_system")
 	game_require("game_state", "game_state_machine", "state_context", "state_splash_screen", "state_loading", "state_ingame", "state_demo_end")
-	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "boon/boon_manager", "telemetry/telemetry_manager", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "weave/weave_manager")
+	game_require("managers", "admin/admin_manager", "news_ticker/news_ticker_manager", "player/player_manager", "player/player_bot", "save/save_manager", "save/save_data", "perfhud/perfhud_manager", "music/music_manager", "network/party_manager", "network/lobby_manager", "transition/transition_manager", "debug/updator", "invite/invite_manager", "unlock/unlock_manager", "popup/popup_manager", "popup/simple_popup", "light_fx/light_fx_manager", "razer_chroma/razer_chroma_manager", "play_go/play_go_manager", "controller_features/controller_features_manager", "deed/deed_manager", "boon/boon_manager", "telemetry/telemetry_manager", "load_time/load_time_manager", "game_mode/game_mechanism_manager", "ui/ui_manager", "weave/weave_manager")
 
 	if IS_WINDOWS then
 		game_require("managers", "irc/irc_manager", "curl/curl_manager", "twitch/twitch_manager")
@@ -1517,14 +1414,18 @@ Game._init_managers = function (self)
 
 	Managers.admin = AdminManager:new()
 	Managers.perfhud = PerfhudManager:new()
-	Managers.debug_updator = Updator:new()
+	Managers.updator = Updator:new()
 	Managers.music = MusicManager:new()
 	Managers.transition = TransitionManager:new()
 	Managers.play_go = PlayGoManager:new()
 
 	if IS_WINDOWS then
 		Managers.irc = IRCManager:new()
-		Managers.curl = CurlManager:new()
+
+		if not Managers.curl then
+			Managers.curl = CurlManager:new()
+		end
+
 		Managers.twitch = TwitchManager:new()
 		Managers.unlock = UnlockManager:new()
 
@@ -1548,11 +1449,16 @@ Game._init_managers = function (self)
 		Managers.twitch = TwitchManager:new()
 	elseif IS_LINUX then
 		Managers.irc = IRCManager:new()
-		Managers.curl = CurlManager:new()
+
+		if not Managers.curl then
+			Managers.curl = CurlManager:new()
+		end
+
 		Managers.twitch = TwitchManager:new()
 		Managers.unlock = UnlockManager:new()
 	end
 
+	Managers.ui = UIManager:new()
 	Managers.weave = WeaveManager:new()
 	Managers.telemetry = TelemetryManager.create()
 	Managers.player = PlayerManager:new()

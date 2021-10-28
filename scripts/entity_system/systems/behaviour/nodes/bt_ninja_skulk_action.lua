@@ -128,7 +128,9 @@ BTNinjaSkulkAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if not blackboard.urgency_to_engage or blackboard.urgency_to_engage > 0 then
-		local dist = blackboard.target_dist
+		local enemy_pos = POSITION_LOOKUP[blackboard.target_unit]
+		local pos = position_lookup[unit]
+		local dist = Vector3.distance(pos, enemy_pos)
 		local in_close_range = dist < close_range
 
 		if blackboard.target_skulk_time < t or in_close_range then
@@ -164,7 +166,7 @@ BTNinjaSkulkAction.run = function (self, unit, blackboard, t, dt)
 					debug3d(unit, "SkulkAction not in LOS", "yellow")
 				end
 			else
-				aiprint("Too far away to crazy jump")
+				aiprint("Too far away to crazy jump (B)")
 			end
 
 			blackboard.target_skulk_time = t + 0.5

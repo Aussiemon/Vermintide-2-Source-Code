@@ -302,16 +302,18 @@ end
 DeusWeaponGeneration = DeusWeaponGeneration or {}
 
 DeusWeaponGeneration.serialize_weapon = function (item)
-	local string_array = {
-		[#string_array + 1] = "item_key=",
-		[#string_array + 1] = item.deus_item_key,
-		[#string_array + 1] = ",",
-		[#string_array + 1] = "powerlevel=",
-		[#string_array + 1] = tostring(item.power_level),
-		[#string_array + 1] = ",",
-		[#string_array + 1] = "rarity=",
-		[#string_array + 1] = item.rarity
-	}
+	local string_array = {}
+
+	fassert(item.deus_item_key, "weapon malformed.")
+
+	string_array[#string_array + 1] = "item_key="
+	string_array[#string_array + 1] = item.deus_item_key
+	string_array[#string_array + 1] = ","
+	string_array[#string_array + 1] = "powerlevel="
+	string_array[#string_array + 1] = tostring(item.power_level)
+	string_array[#string_array + 1] = ","
+	string_array[#string_array + 1] = "rarity="
+	string_array[#string_array + 1] = item.rarity
 
 	if item.skin then
 		string_array[#string_array + 1] = ","

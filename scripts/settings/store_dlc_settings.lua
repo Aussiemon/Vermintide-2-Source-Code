@@ -431,11 +431,408 @@ StoreDlcSettings = {
 		}
 	},
 	{
+		information_text = "description_fall_collection_2021_bundle",
+		name = "display_name_five_career_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_fall_collection_2021_bundle",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_fall_collection_2021_bundle",
+		optional_dlc_display_name = "display_name_five_career_bundle_0002",
+		dlc_name = "fall_collection_2021_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_fall_collection_2021_bundle",
+		optional_dlc_subtitle = "five_career_bundle_0001_subtitle",
+		slideshow_text = "description_fall_collection_2021_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_fall_collection_2021_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_bw_adept_1001",
+			"adept_hat_1002",
+			"skin_dr_slayer_1001",
+			"slayer_hat_1002",
+			"skin_es_longshark",
+			"huntsman_hat_1005",
+			"skin_ww_moonmantle",
+			"maidenguard_hat_1004",
+			"skin_wh_zealot_1001",
+			"zealot_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		},
+		layout_console = {
+			{
+				id = "dlc_logo",
+				type = "big_image",
+				settings = {
+					text = "",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_fall_collection_2021_bundle",
+					localize = false,
+					show_frame = true,
+					texture_package = "resource_packages/store/bundle_icons/store_item_icon_fall_collection_2021_bundle",
+					image_size = {
+						800.4,
+						591.6
+					},
+					size = {
+						800.4,
+						591.6
+					}
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_bw_adept_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "adept_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_adept_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_adept_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_dr_slayer_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "slayer_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_slayer_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_slayer_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_es_longshark",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "huntsman_hat_1005",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_huntsman_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_huntsman_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_ww_moonmantle",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "maidenguard_hat_1004",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_maidenguard_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_maidenguard_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_wh_zealot_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "zealot_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_zealot_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_zealot_bundle_0001",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			}
+		}
+	},
+	{
+		information_text = "description_adept_bundle_0001",
+		name = "display_name_adept_bundle_0001",
+		slideshow_texture = "store_slideshow_bundle_adept_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_adept_bundle_0001",
+		optional_dlc_display_name = "display_name_adept_bundle_0001",
+		dlc_name = "adept_bundle_0001",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_adept_bundle_0001",
+		optional_dlc_subtitle = "bw_adept",
+		slideshow_text = "description_adept_bundle_0001",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_adept_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_bw_adept_1001",
+			"adept_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_slayer_bundle_0001",
+		name = "display_name_slayer_bundle_0001",
+		slideshow_texture = "store_slideshow_bundle_slayer_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_slayer_bundle_0001",
+		optional_dlc_display_name = "display_name_slayer_bundle_0001",
+		dlc_name = "slayer_bundle_0001",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_slayer_bundle_0001",
+		optional_dlc_subtitle = "dr_slayer",
+		slideshow_text = "description_slayer_bundle_0001",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_slayer_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_dr_slayer_1001",
+			"slayer_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_huntsman_bundle_0001",
+		name = "display_name_huntsman_bundle_0001",
+		slideshow_texture = "store_slideshow_bundle_huntsman_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_huntsman_bundle_0001",
+		optional_dlc_display_name = "display_name_huntsman_bundle_0001",
+		dlc_name = "huntsman_bundle_0001",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_huntsman_bundle_0001",
+		optional_dlc_subtitle = "es_huntsman",
+		slideshow_text = "description_huntsman_bundle_0001",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_huntsman_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_es_longshark",
+			"huntsman_hat_1005"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_maidenguard_bundle_0001",
+		name = "display_name_maidenguard_bundle_0001",
+		slideshow_texture = "store_slideshow_bundle_maidenguard_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_maidenguard_bundle_0001",
+		optional_dlc_display_name = "display_name_maidenguard_bundle_0001",
+		dlc_name = "maidenguard_bundle_0001",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_maidenguard_bundle_0001",
+		optional_dlc_subtitle = "we_maidenguard",
+		slideshow_text = "description_maidenguard_bundle_0001",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_maidenguard_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_ww_moonmantle",
+			"maidenguard_hat_1004"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_zealot_bundle_0001",
+		name = "display_name_zealot_bundle_0001",
+		slideshow_texture = "store_slideshow_bundle_zealot_bundle_0001",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_zealot_bundle_0001",
+		optional_dlc_display_name = "display_name_zealot_bundle_0001",
+		dlc_name = "zealot_bundle_0001",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_zealot_bundle_0001",
+		optional_dlc_subtitle = "wh_zealot",
+		slideshow_text = "description_zealot_bundle_0001",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_zealot_bundle_0001",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_wh_zealot_1001",
+			"zealot_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
 		information_text = "five_career_bundle_0001_desc",
 		name = "five_career_bundle_0001",
+		slideshow_texture = "store_slideshow_bundle_five_career_bundle_0001",
 		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0001",
 		optional_dlc_display_name = "five_career_bundle_0001",
 		dlc_name = "five_career_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0001",
 		optional_dlc_subtitle = "five_career_bundle_0001_subtitle",
 		slideshow_text = "five_career_bundle_0001_desc",
 		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_five_career_bundle_0001",
@@ -457,6 +854,25 @@ StoreDlcSettings = {
 			"ps4"
 		},
 		layout_console = {
+			{
+				id = "dlc_logo",
+				type = "big_image",
+				settings = {
+					text = "",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0001",
+					localize = false,
+					show_frame = true,
+					texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0001",
+					image_size = {
+						800.4,
+						591.6
+					},
+					size = {
+						800.4,
+						591.6
+					}
+				}
+			},
 			{
 				type = "spacing"
 			},
@@ -2350,7 +2766,11 @@ StoreDlcSettings = {
 StoreDlcSettingsByName = {}
 
 for _, settings in ipairs(StoreDlcSettings) do
-	StoreDlcSettingsByName[settings.dlc_name] = settings
+	local available_platforms = settings.available_platforms
+
+	if not available_platforms or table.find(available_platforms, PLATFORM) then
+		StoreDlcSettingsByName[settings.dlc_name] = settings
+	end
 end
 
 return

@@ -45,17 +45,14 @@ local function timer()
 end
 
 local StateInGameTestify = {
+	load_level = function (level_settings)
+		local level_key = level_settings.level_key
+		local environment_variation_id = level_settings.environment_variation_id or 0
+
+		Managers.mechanism:debug_load_level(level_key, environment_variation_id)
+	end,
 	wait_for_state_ingame_reached = function ()
 		return
-	end,
-	load_level = function (level_key)
-		Managers.mechanism:debug_load_level(level_key)
-	end,
-	load_level_with_variation = function (weather_variation)
-		local level_transition_handler = Managers.level_transition_handler
-
-		level_transition_handler:set_next_level(weather_variation.level, weather_variation.variation_id)
-		level_transition_handler:promote_next_level_data()
 	end,
 	get_level_weather_variations = function (level_key)
 		return LevelSettings[level_key].environment_variations

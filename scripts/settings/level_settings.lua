@@ -1250,6 +1250,7 @@ LevelSettings.prologue = {
 	player_aux_bus_name = "environment_reverb_outside",
 	loading_ui_package_name = "loading_screen_9",
 	knocked_down_setting = "knocked_down",
+	tutorial_level = true,
 	level_name = "levels/honduras/prologue/world",
 	source_aux_bus_name = "environment_reverb_outside_source",
 	packages = {

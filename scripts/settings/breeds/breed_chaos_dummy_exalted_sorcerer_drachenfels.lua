@@ -230,6 +230,11 @@ local action_data = {
 				15,
 				1,
 				0
+			},
+			{
+				15,
+				1,
+				0
 			}
 		},
 		aoe_dot_damage = {
@@ -255,6 +260,11 @@ local action_data = {
 			},
 			{
 				15,
+				0,
+				0
+			},
+			{
+				20,
 				0,
 				0
 			},

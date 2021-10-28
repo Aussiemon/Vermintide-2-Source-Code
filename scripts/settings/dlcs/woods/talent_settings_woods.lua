@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	thorn_sister_ability_cooldown_on_hit = {
 		bonus = 0.3
@@ -77,7 +78,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -86,7 +86,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -98,7 +97,7 @@ local talent_buff_templates = {
 				range = 100,
 				remove_buff_func = "remove_aura_buff",
 				update_func = "activate_buff_on_distance",
-				perk = "overcharge_no_slow"
+				perk = buff_perks.overcharge_no_slow
 			}
 		}
 	},
@@ -123,19 +122,18 @@ local talent_buff_templates = {
 	kerillian_thorn_sister_passive_temp_health_funnel_aura_buff = {
 		buffs = {
 			{
-				authority = "server",
+				max_stacks = 1,
 				name = "kerillian_thorn_sister_passive_temp_health_funnel",
-				event_buff = true,
+				authority = "server",
 				buff_func = "thorn_sister_transfer_temp_health_at_full",
-				event = "on_healed",
-				max_stacks = 1
+				event = "on_healed"
 			}
 		}
 	},
 	kerillian_thorn_sister_damage_vs_wounded_enemies = {
 		buffs = {
 			{
-				perk = "missing_health_damage"
+				perk = buff_perks.missing_health_damage
 			}
 		}
 	},
@@ -144,7 +142,6 @@ local talent_buff_templates = {
 			{
 				event = "on_ability_cooldown_started",
 				amount_to_convert = 0.1,
-				event_buff = true,
 				buff_func = "kerillian_thorn_sister_health_conversion"
 			}
 		}
@@ -194,9 +191,8 @@ local talent_buff_templates = {
 			{
 				buff_to_add = "kerillian_power_on_health_gain_buff",
 				health_threshold = 1,
-				event_buff = true,
-				buff_func = "add_buff_on_proc_thorn",
-				event = "on_healed"
+				event = "on_healed",
+				buff_func = "add_buff_on_proc_thorn"
 			}
 		}
 	},
@@ -214,7 +210,6 @@ local talent_buff_templates = {
 			{
 				event = "on_hit",
 				bleed = "thorn_sister_big_bleed",
-				event_buff = true,
 				buff_func = "thorn_sister_add_bleed_on_hit"
 			}
 		}
@@ -242,7 +237,6 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				event = "on_elite_killed",
-				event_buff = true,
 				buff_func = "kerillian_thorn_sister_reduce_passive_on_elite"
 			}
 		}
@@ -252,7 +246,6 @@ local talent_buff_templates = {
 			{
 				event = "on_extra_ability_consumed",
 				buff_to_add = "kerillian_thorn_sister_avatar",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -367,21 +360,19 @@ local talent_buff_templates = {
 				multiplier = -1,
 				stat_buff = "reduced_overcharge",
 				buff_func = "kerillian_thorn_sister_add_buff_remove",
-				event = "on_ammo_used",
-				icon = "kerillian_thornsister_free_throw",
-				event_buff = true,
 				max_stacks = 1,
-				perk = "infinite_ammo"
+				icon = "kerillian_thornsister_free_throw",
+				event = "on_ammo_used",
+				perk = buff_perks.infinite_ammo
 			}
 		}
 	},
 	kerillian_thorn_sister_free_throw_buff_heal = {
 		buffs = {
 			{
-				max_stacks = 1,
-				event_buff = true,
-				buff_func = "kerillian_thorn_sister_restore_health_on_ranged_hit",
 				event = "on_damage_dealt",
+				buff_func = "kerillian_thorn_sister_restore_health_on_ranged_hit",
+				max_stacks = 1,
 				duration = 0.5,
 				amount_to_heal = 3
 			}
@@ -391,10 +382,9 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				buff_to_add = "kerillian_thorn_sister_crit_on_any_ability_buff",
-				max_stacks = 1,
-				event_buff = true,
-				buff_func = "add_buff_reff_buff_stack",
 				event = "on_ability_activated",
+				buff_func = "add_buff_reff_buff_stack",
+				max_stacks = 1,
 				reference_buff = "kerillian_thorn_sister_crit_on_any_ability_handler"
 			}
 		}
@@ -402,30 +392,29 @@ local talent_buff_templates = {
 	kerillian_thorn_sister_crit_on_any_ability_handler = {
 		buffs = {
 			{
+				event = "on_critical_action",
 				max_stacks = 1,
 				buff_to_remove = "kerillian_thorn_sister_crit_on_any_ability_buff",
-				event_buff = true,
-				buff_func = "remove_ref_buff_stack_woods",
-				event = "on_critical_action"
+				buff_func = "remove_ref_buff_stack_woods"
 			}
 		}
 	},
 	kerillian_thorn_sister_crit_on_any_ability_buff = {
 		buffs = {
 			{
-				perk = "guaranteed_crit",
-				icon = "kerillian_thornsister_crit_on_any_ability"
+				icon = "kerillian_thornsister_crit_on_any_ability",
+				perk = buff_perks.guaranteed_crit,
+				max_stacks = math.huge
 			}
 		}
 	},
 	kerillian_thorn_sister_big_push = {
 		buffs = {
 			{
+				event = "on_start_action",
 				buff_to_add = "kerillian_thorn_sister_big_push_buff",
 				buff_to_add_2 = "kerillian_thorn_sister_big_push_buff_2",
-				event_buff = true,
-				buff_func = "thorn_sister_big_push",
-				event = "on_start_action"
+				buff_func = "thorn_sister_big_push"
 			}
 		}
 	},

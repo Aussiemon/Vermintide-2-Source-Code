@@ -1,4 +1,5 @@
 NetworkLookup.anims = {
+	"special_action",
 	"attack_charge",
 	"attack_charge_fireball",
 	"attack_charge_fireball_loop",

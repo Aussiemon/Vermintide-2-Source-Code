@@ -53,6 +53,25 @@ local item_master_list = {
 			"dr_ironbreaker"
 		}
 	},
+	dr_deus_01_skin_03 = {
+		description = "dr_deus_01_skin_02_description",
+		ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03",
+		display_name = "dr_deus_01_skin_02_name",
+		hud_icon = "weapon_generic_icon_crossbow",
+		inventory_icon = "icon_wpn_dw_trollhammer_t3",
+		slot_type = "weapon_skin",
+		information_text = "information_weapon_skin",
+		rarity = "exotic",
+		ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03_3p",
+		template = "dr_deus_01_template_1",
+		display_unit = "units/weapons/weapon_display/display_drakegun",
+		item_type = "weapon_skin",
+		left_hand_unit = "units/weapons/player/wpn_dr_deus_03/wpn_dr_deus_03",
+		matching_item_key = "dr_deus_01",
+		can_wield = {
+			"dr_ironbreaker"
+		}
+	},
 	dr_deus_01_skin_01_runed = {
 		description = "dr_deus_01_skin_01_runed_description",
 		ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_01/wpn_dr_deus_projectile_01",
@@ -89,6 +108,70 @@ local item_master_list = {
 		matching_item_key = "dr_deus_01",
 		can_wield = {
 			"dr_ironbreaker"
+		}
+	},
+	dr_deus_01_skin_03_runed = {
+		description = "dr_deus_01_skin_02_runed_description",
+		ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03",
+		display_name = "dr_deus_01_skin_02_runed_name",
+		hud_icon = "weapon_generic_icon_crossbow",
+		inventory_icon = "icon_wpn_dw_trollhammer_t3_runed",
+		slot_type = "weapon_skin",
+		information_text = "information_weapon_skin",
+		rarity = "unique",
+		ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03_3p",
+		template = "dr_deus_01_template_1",
+		display_unit = "units/weapons/weapon_display/display_drakegun",
+		item_type = "weapon_skin",
+		left_hand_unit = "units/weapons/player/wpn_dr_deus_03/wpn_dr_deus_03_runed",
+		matching_item_key = "dr_deus_01",
+		can_wield = {
+			"dr_ironbreaker"
+		}
+	},
+	dr_deus_01_skin_magic = {
+		description = "dr_deus_01_magic_description",
+		rarity = "magic",
+		template = "dr_deus_01_template_1",
+		slot_type = "weapon_skin",
+		inventory_icon = "icon_wpn_dw_trollhammer_t1",
+		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01_magic",
+		hud_icon = "weapon_generic_icon_staff_3",
+		item_type = "weapon_skin",
+		matching_item_key = "dr_deus_01",
+		can_wield = {
+			"dr_ironbreaker",
+			"dr_engineer"
+		}
+	},
+	dr_deus_02_skin_magic = {
+		description = "dr_deus_01_magic_description",
+		rarity = "magic",
+		template = "dr_deus_01_template_1",
+		slot_type = "weapon_skin",
+		inventory_icon = "icon_wpn_dw_trollhammer_t2",
+		left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02_magic",
+		hud_icon = "weapon_generic_icon_staff_3",
+		item_type = "weapon_skin",
+		matching_item_key = "dr_deus_01",
+		can_wield = {
+			"dr_ironbreaker",
+			"dr_engineer"
+		}
+	},
+	dr_deus_01_skin_01 = {
+		description = "dr_deus_01_skin_01_description",
+		rarity = "plentiful",
+		template = "dr_deus_01_template_1",
+		slot_type = "weapon_skin",
+		inventory_icon = "icon_wpn_dw_trollhammer_t1",
+		left_hand_unit = "units/weapons/player/wpn_dr_deus_01/wpn_dr_deus_01",
+		hud_icon = "weapon_generic_icon_staff_3",
+		item_type = "weapon_skin",
+		matching_item_key = "dr_deus_01",
+		can_wield = {
+			"dr_ironbreaker",
+			"dr_engineer"
 		}
 	},
 	dr_deus_01_magic = {
@@ -147,6 +230,23 @@ local item_master_list = {
 			"es_mercenary"
 		}
 	},
+	es_deus_01_skin_01 = {
+		description = "es_deus_01_skin_01_description",
+		rarity = "plentiful",
+		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01",
+		hud_icon = "weapon_generic_icon_staff_3",
+		inventory_icon = "icon_wpn_empire_spearshield_t1",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_es_deus_shield_01",
+		template = "es_deus_01_template",
+		slot_type = "weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "es_deus_01",
+		can_wield = {
+			"es_huntsman",
+			"es_knight",
+			"es_mercenary"
+		}
+	},
 	es_deus_01_skin_02 = {
 		description = "es_deus_01_skin_02_description",
 		rarity = "rare",
@@ -157,6 +257,26 @@ local item_master_list = {
 		information_text = "information_weapon_skin",
 		template = "es_deus_01_template",
 		display_name = "es_deus_01_skin_02_name",
+		slot_type = "weapon_skin",
+		display_unit = "units/weapons/weapon_display/display_shield_sword",
+		item_type = "weapon_skin",
+		matching_item_key = "es_deus_01",
+		can_wield = {
+			"es_huntsman",
+			"es_knight",
+			"es_mercenary"
+		}
+	},
+	es_deus_01_skin_03 = {
+		description = "es_deus_01_skin_03_description",
+		rarity = "rare",
+		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_03/wpn_es_deus_spear_03",
+		hud_icon = "weapon_generic_iweapon_generic_icon_falkencon_bow",
+		inventory_icon = "icon_wpn_empire_spearshield_t3",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_03/wpn_es_deus_shield_03",
+		information_text = "information_weapon_skin",
+		template = "es_deus_01_template",
+		display_name = "es_deus_01_skin_03_name",
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
 		item_type = "weapon_skin",
@@ -199,6 +319,60 @@ local item_master_list = {
 		display_name = "es_deus_01_skin_02_runed_name",
 		slot_type = "weapon_skin",
 		display_unit = "units/weapons/weapon_display/display_shield_sword",
+		item_type = "weapon_skin",
+		matching_item_key = "es_deus_01",
+		can_wield = {
+			"es_huntsman",
+			"es_knight",
+			"es_mercenary"
+		}
+	},
+	es_deus_01_skin_03_runed = {
+		description = "es_deus_01_skin_03_runed_description",
+		rarity = "unique",
+		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_03/wpn_es_deus_spear_03_runed",
+		hud_icon = "weapon_generic_icon_falken",
+		inventory_icon = "icon_wpn_empire_spearshield_t3_runed",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_03/wpn_es_deus_shield_03_runed",
+		information_text = "information_weapon_skin",
+		template = "es_deus_01_template",
+		display_name = "es_deus_01_skin_03_runed_name",
+		slot_type = "weapon_skin",
+		display_unit = "units/weapons/weapon_display/display_shield_sword",
+		item_type = "weapon_skin",
+		matching_item_key = "es_deus_01",
+		can_wield = {
+			"es_huntsman",
+			"es_knight",
+			"es_mercenary"
+		}
+	},
+	es_deus_01_skin_magic = {
+		description = "es_deus_01_magic_description",
+		rarity = "magic",
+		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_01/wpn_es_deus_spear_01_magic",
+		hud_icon = "weapon_generic_icon_staff_3",
+		inventory_icon = "icon_wpn_empire_spearshield_t1",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_01/wpn_es_deus_shield_01",
+		template = "es_deus_01_template",
+		slot_type = "weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "es_deus_01",
+		can_wield = {
+			"es_huntsman",
+			"es_knight",
+			"es_mercenary"
+		}
+	},
+	es_deus_02_skin_magic = {
+		description = "es_deus_01_magic_description",
+		rarity = "magic",
+		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_02/wpn_es_deus_spear_02_magic",
+		hud_icon = "weapon_generic_icon_staff_3",
+		inventory_icon = "icon_wpn_empire_spearshield_t1",
+		left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_magic",
+		template = "es_deus_01_template",
+		slot_type = "weapon_skin",
 		item_type = "weapon_skin",
 		matching_item_key = "es_deus_01",
 		can_wield = {
@@ -265,6 +439,23 @@ local item_master_list = {
 			"we_waywatcher"
 		}
 	},
+	we_deus_01_skin_01 = {
+		description = "we_deus_01_skin_01_description",
+		rarity = "plentiful",
+		template = "we_deus_01_template_1",
+		slot_type = "weapon_skin",
+		inventory_icon = "icon_wpn_we_moonfire_t1",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01",
+		hud_icon = "weapon_generic_icon_bow",
+		item_type = "weapon_skin",
+		matching_item_key = "we_deus_01",
+		can_wield = {
+			"we_shade",
+			"we_maidenguard",
+			"we_waywatcher",
+			"we_thornsister"
+		}
+	},
 	we_deus_01_skin_02 = {
 		description = "we_deus_01_skin_02_description",
 		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02",
@@ -328,22 +519,100 @@ local item_master_list = {
 			"we_waywatcher"
 		}
 	},
+	we_deus_01_skin_magic = {
+		description = "we_deus_01_description",
+		rarity = "magic",
+		template = "we_deus_01_template_1",
+		slot_type = "weapon_skin",
+		inventory_icon = "icon_wpn_we_moonfire_t1",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01_magic",
+		hud_icon = "weapon_generic_icon_bow",
+		item_type = "weapon_skin",
+		matching_item_key = "we_deus_01",
+		can_wield = {
+			"we_shade",
+			"we_maidenguard",
+			"we_waywatcher",
+			"we_thornsister"
+		}
+	},
 	we_deus_01_magic = {
 		description = "we_deus_01_magic_description",
-		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02",
+		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
 		display_name = "we_deus_01_magic_name",
 		has_power_level = true,
-		inventory_icon = "icon_wpn_we_moonfire_t2_magic",
+		inventory_icon = "icon_wpn_we_moonfire_t1_magic",
 		slot_type = "ranged",
 		hud_icon = "weapon_generic_icon_bow",
 		rarity = "magic",
 		trait_table_name = "ranged_energy",
-		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
+		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
 		template = "we_deus_01_template_1",
 		property_table_name = "ranged",
 		item_type = "we_deus_01",
 		required_unlock_item = "we_deus_01",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_01_magic",
+		can_wield = {
+			"we_shade",
+			"we_maidenguard",
+			"we_waywatcher"
+		}
+	},
+	we_deus_02_skin_magic = {
+		description = "we_deus_01_magic_description",
+		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02",
+		display_name = "we_deus_01_magic_name",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_we_moonfire_t2_magic",
+		slot_type = "weapon_skin",
+		rarity = "magic",
 		left_hand_unit = "units/weapons/player/wpn_we_deus_02/wpn_we_deus_02_magic",
+		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
+		template = "we_deus_01_template_1",
+		item_type = "weapon_skin",
+		required_unlock_item = "we_deus_01",
+		can_wield = {
+			"we_shade",
+			"we_maidenguard",
+			"we_waywatcher"
+		}
+	},
+	we_deus_01_skin_03 = {
+		description = "we_deus_01_skin_03_description",
+		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
+		display_name = "we_deus_01_skin_03_name",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_we_moonfire_t3",
+		slot_type = "weapon_skin",
+		information_text = "information_weapon_skin",
+		rarity = "exotic",
+		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
+		template = "we_deus_01_template_1",
+		display_unit = "units/weapons/weapon_display/display_bow",
+		item_type = "weapon_skin",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_03/wpn_we_deus_03",
+		matching_item_key = "we_deus_01",
+		can_wield = {
+			"we_shade",
+			"we_maidenguard",
+			"we_waywatcher"
+		}
+	},
+	we_deus_01_skin_03_runed = {
+		description = "we_deus_01_skin_03_runed_description",
+		ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
+		display_name = "we_deus_01_skin_03_runed_name",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_we_moonfire_t3_runed",
+		slot_type = "weapon_skin",
+		information_text = "information_weapon_skin",
+		rarity = "unique",
+		ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
+		template = "we_deus_01_template_1",
+		display_unit = "units/weapons/weapon_display/display_bow",
+		item_type = "weapon_skin",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_03_runed",
+		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
 			"we_maidenguard",
@@ -378,6 +647,23 @@ local item_master_list = {
 		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "bw_deus_01",
+		can_wield = {
+			"bw_scholar",
+			"bw_adept",
+			"bw_unchained"
+		}
+	},
+	bw_deus_01_skin_01 = {
+		description = "bw_deus_01_skin_01_description",
+		rarity = "plentiful",
+		right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01",
+		hud_icon = "weapon_generic_icon_staff_3",
+		inventory_icon = "icon_wpn_brw_magmastaff_t1",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		template = "bw_deus_01_template",
+		slot_type = "weapon_skin",
 		item_type = "weapon_skin",
 		matching_item_key = "bw_deus_01",
 		can_wield = {
@@ -446,6 +732,40 @@ local item_master_list = {
 			"bw_unchained"
 		}
 	},
+	bw_deus_01_skin_magic = {
+		description = "bw_deus_01_magic_description",
+		rarity = "magic",
+		right_hand_unit = "units/weapons/player/wpn_bw_deus_01/wpn_bw_deus_01_magic",
+		hud_icon = "weapon_generic_icon_staff_3",
+		inventory_icon = "icon_wpn_brw_magmastaff_t1",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		template = "bw_deus_01_template",
+		slot_type = "weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "bw_deus_01",
+		can_wield = {
+			"bw_scholar",
+			"bw_adept",
+			"bw_unchained"
+		}
+	},
+	bw_deus_02_skin_magic = {
+		description = "bw_deus_01_magic_description",
+		rarity = "magic",
+		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02_magic",
+		hud_icon = "weapon_generic_icon_staff_3",
+		inventory_icon = "icon_wpn_brw_magmastaff_t2",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		template = "bw_deus_01_template",
+		slot_type = "weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "bw_deus_01",
+		can_wield = {
+			"bw_scholar",
+			"bw_adept",
+			"bw_unchained"
+		}
+	},
 	bw_deus_01_magic = {
 		description = "bw_deus_01_magic_description",
 		rarity = "magic",
@@ -495,6 +815,23 @@ local item_master_list = {
 		base_skin_item = true,
 		slot_type = "weapon_skin",
 		information_text = "information_weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "wh_deus_01",
+		can_wield = {
+			"wh_bountyhunter",
+			"wh_captain",
+			"wh_zealot"
+		}
+	},
+	wh_deus_01_skin_01 = {
+		description = "wh_deus_01_skin_01_description",
+		rarity = "plentiful",
+		right_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_emp_duckfoot_t1",
+		left_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01",
+		template = "wh_deus_01_template_1",
+		slot_type = "weapon_skin",
 		item_type = "weapon_skin",
 		matching_item_key = "wh_deus_01",
 		can_wield = {
@@ -578,6 +915,80 @@ local item_master_list = {
 		item_type = "wh_deus_01",
 		left_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02_magic",
 		required_unlock_item = "wh_deus_01",
+		can_wield = {
+			"wh_bountyhunter",
+			"wh_captain",
+			"wh_zealot"
+		}
+	},
+	wh_deus_01_skin_03 = {
+		description = "wh_deus_01_skin_03_description",
+		rarity = "exotic",
+		right_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_emp_duckfoot_t3",
+		left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03",
+		information_text = "information_weapon_skin",
+		template = "wh_deus_01_template_1",
+		display_name = "wh_deus_01_skin_03_name",
+		slot_type = "weapon_skin",
+		display_unit = "units/weapons/weapon_display/display_pistols",
+		item_type = "weapon_skin",
+		matching_item_key = "wh_deus_01",
+		can_wield = {
+			"wh_bountyhunter",
+			"wh_captain",
+			"wh_zealot"
+		}
+	},
+	wh_deus_01_skin_03_runed = {
+		description = "wh_deus_01_skin_03_runed_description",
+		rarity = "exotic",
+		right_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_emp_duckfoot_t3",
+		left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
+		information_text = "information_weapon_skin",
+		template = "wh_deus_01_template_1",
+		display_name = "wh_deus_01_skin_03_runed_name",
+		slot_type = "weapon_skin",
+		display_unit = "units/weapons/weapon_display/display_pistols",
+		item_type = "weapon_skin",
+		matching_item_key = "wh_deus_01",
+		can_wield = {
+			"wh_bountyhunter",
+			"wh_captain",
+			"wh_zealot"
+		}
+	},
+	wh_deus_02_skin_magic = {
+		description = "wh_deus_01_magic_desciption",
+		rarity = "magic",
+		right_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02_magic",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_emp_duckfoot_t1",
+		left_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02_magic",
+		template = "wh_deus_01_template_1",
+		slot_type = "weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "wh_deus_01",
+		can_wield = {
+			"wh_bountyhunter",
+			"wh_captain",
+			"wh_zealot"
+		}
+	},
+	wh_deus_01_skin_magic = {
+		description = "wh_deus_01_magic_desciption",
+		rarity = "magic",
+		right_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01_magic",
+		hud_icon = "weapon_generic_icon_bow",
+		inventory_icon = "icon_wpn_emp_duckfoot_t1",
+		left_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01_magic",
+		template = "wh_deus_01_template_1",
+		slot_type = "weapon_skin",
+		item_type = "weapon_skin",
+		matching_item_key = "wh_deus_01",
 		can_wield = {
 			"wh_bountyhunter",
 			"wh_captain",

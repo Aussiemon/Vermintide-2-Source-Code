@@ -7,9 +7,8 @@ settings.interactions_filenames = {
 }
 settings.backend_interfaces = {
 	peddler = {
-		playfab_file = "scripts/managers/backend_playfab/backend_interface_peddler_playfab",
 		ignore_on_dedicated_server = true,
-		local_class = "BackendInterfacePeddlerLocal",
+		playfab_file = "scripts/managers/backend_playfab/backend_interface_peddler_playfab",
 		playfab_class = "BackendInterfacePeddlerPlayFab"
 	}
 }

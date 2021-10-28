@@ -33,6 +33,11 @@ local StateInGameRunningTestify = {
 
 		Managers.telemetry.events:memory_usage(index, memory_usage)
 	end,
+	wait_for_level_to_be_loaded = function (_, state_ingame_running)
+		if not state_ingame_running._game_started_current_frame then
+			return Testify.RETRY
+		end
+	end,
 	fail_test = function (message)
 		assert(false, message)
 	end,

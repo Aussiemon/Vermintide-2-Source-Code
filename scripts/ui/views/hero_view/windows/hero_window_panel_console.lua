@@ -40,6 +40,7 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 	self.player_manager = player_manager
 	self.peer_id = ingame_ui_context.peer_id
 	self.is_in_inn = ingame_ui_context.is_in_inn
+	self.force_ingame_menu = params.force_ingame_menu
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
@@ -65,12 +66,16 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 		cosmetics = title_button_widgets[4]
 	}
 
-	if self.is_in_inn then
+	if self.is_in_inn and not self.force_ingame_menu then
 		self:_setup_text_buttons_width()
 		self:_setup_input_buttons()
 	else
 		local system_button = self._widgets_by_name.system_button
 		system_button.content.button_hotspot.is_selected = true
+
+		if IS_WINDOWS then
+			system_button.content.visible = false
+		end
 	end
 
 	self:_validate_product_owner()
@@ -126,7 +131,7 @@ HeroWindowPanelConsole.update = function (self, dt, t)
 	self:_handle_gamepad_activity()
 	self:_handle_back_button_visibility()
 
-	if self.is_in_inn then
+	if self.is_in_inn and not self.force_ingame_menu then
 		self:_sync_news(dt, t)
 		self:_update_selected_option()
 	end
@@ -244,7 +249,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 		input_made = true
 	end
 
-	if self.is_in_inn then
+	if self.is_in_inn and not self.force_ingame_menu then
 		local close_on_exit = parent:close_on_exit()
 
 		if not close_on_exit and not input_made and self:_is_button_pressed(back_button) then
@@ -352,7 +357,7 @@ HeroWindowPanelConsole.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	if self.is_in_inn then
+	if self.is_in_inn and not self.force_ingame_menu then
 		for _, widget in ipairs(self._title_button_widgets) do
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end

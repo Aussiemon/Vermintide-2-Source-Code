@@ -25,11 +25,6 @@ NewsFeedUI.init = function (self, parent, ingame_ui_context)
 	self.is_in_inn = ingame_ui_context.is_in_inn
 
 	self:_create_ui_elements()
-
-	self.conditions_params = {}
-	self.templates_on_cooldown = {}
-	self.feed_sync_delay = SYNC_WAIT_DURATION_TIME
-
 	rawset(_G, "news_feed_ui", self)
 end
 
@@ -46,6 +41,9 @@ NewsFeedUI._create_ui_elements = function (self)
 	self._news_widgets = news_widgets
 	self._unused_news_widgets = unused_news_widgets
 	self._active_news = {}
+	self.conditions_params = {}
+	self.templates_on_cooldown = {}
+	self.feed_sync_delay = SYNC_WAIT_DURATION_TIME
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 	self:set_visible(true)
@@ -126,7 +124,7 @@ NewsFeedUI._sync_news = function (self, dt, t)
 			local template_name = template.name
 			local condition_func = template.condition_func
 
-			if not templates_on_cooldown[template_name] and condition_func(conditions_params) then
+			if not templates_on_cooldown[template_name] and (condition_func(conditions_params) or script_data.show_all_news_feed_items) then
 				local verified = false
 
 				for j = 1, #active_news, 1 do
@@ -193,6 +191,9 @@ NewsFeedUI._add_entry = function (self, template)
 	local infinite = template.infinite
 	local title = template.title
 	local description = template.description
+	local icon = template.icon
+	local icon_offset = template.icon_offset
+	local icon_size = template.icon_size
 	local unused_news_widgets = self._unused_news_widgets
 	local num_news = #self._active_news
 
@@ -216,10 +217,14 @@ NewsFeedUI._add_entry = function (self, template)
 	if not hidden then
 		local widget = table.remove(unused_news_widgets, 1)
 		local widget_content = widget.content
+		local widget_style = widget.style
 		data.widget = widget
 		widget_content.title_text = Localize(title)
 		widget_content.text = Localize(description)
 		widget_content.is_infinite = infinite
+		widget_content.icon = icon
+		widget_style.icon.texture_size = icon_size
+		widget_style.icon.offset = icon_offset
 		local vertical_spacing = WIDGET_SIZE[2] + NEWS_SPACING
 		local widget_offset = widget.offset
 
@@ -406,6 +411,7 @@ NewsFeedUI._animate_widget = function (self, widget, state, progress)
 	style.title_text.text_color[1] = alpha
 	style.title_text_shadow.text_color[1] = alpha
 	style.background.color[1] = alpha
+	style.icon.color[1] = alpha
 	local effect_style = style.effect
 	local effect_color = effect_style.color
 
@@ -467,8 +473,10 @@ NewsFeedUI.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 
-	for _, data in ipairs(self._active_news) do
-		local widget = data.widget
+	local active_news = self._active_news
+
+	for i = 1, #active_news, 1 do
+		local widget = active_news[i].widget
 
 		if widget then
 			UIRenderer.draw_widget(ui_renderer, widget)

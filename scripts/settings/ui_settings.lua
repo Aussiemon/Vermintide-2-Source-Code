@@ -275,9 +275,9 @@ if not UISettings then
 		},
 		positive_reinforcement = {
 			show_duration = 4,
+			folding_enabled = true,
 			fade_duration = 0.5,
-			increment_duration = 0.33,
-			folding_enabled = Application.user_setting("positive_reinforcement_folding_enabled")
+			increment_duration = 0.33
 		},
 		damage_feedback = {
 			fade_duration = 0.5,
@@ -326,6 +326,7 @@ if not UISettings then
 			vs_chaos_troll = "unit_frame_portrait_enemy_chaos_troll",
 			vs_chaos_spawn = "unit_frame_portrait_enemy_chaos_spawn",
 			hero_dr_ironbreaker = "small_unit_frame_portrait_bardin_ironbreaker",
+			hero_wh_priest = "small_unit_frame_portrait_victor_priest",
 			hero_wh_captain = "small_unit_frame_portrait_victor_captain",
 			chaos_raider = "unit_frame_portrait_enemy_raider",
 			hero_wh_zealot = "small_unit_frame_portrait_victor_zealot",
@@ -1090,6 +1091,164 @@ UISettings.hero_fullscreen_menu_on_exit = function ()
 	print("hero_fullscreen_menu_on_exit")
 end
 
+UISettings.dlc_order_data = {
+	{
+		dlc = "pre_order",
+		display_name = "gift_popup_text_vt2_pre_order_bonus"
+	},
+	{
+		dlc = "vermintide_1",
+		display_name = "gift_popup_text_vt1"
+	},
+	{
+		dlc = "base_game",
+		display_name = "warhammer_vermintide_2"
+	},
+	{
+		dlc = "bogenhafen",
+		display_name = "store_bogenhafen_title"
+	},
+	{
+		dlc = "holly",
+		display_name = "store_ubersreik_title"
+	},
+	{
+		dlc = "scorpion",
+		display_name = "store_wom_title"
+	},
+	{
+		dlc = "grass",
+		display_name = "store_grass_title"
+	},
+	{
+		dlc = "mm_1001",
+		display_name = "display_name_mercenary_hat_1001"
+	},
+	{
+		dlc = "mh_1001",
+		display_name = "display_name_huntsman_hat_1001"
+	},
+	{
+		dlc = "mk_1001",
+		display_name = "display_name_knight_hat_1001"
+	},
+	{
+		dlc = "br_1001",
+		display_name = "display_name_ranger_hat_1001"
+	},
+	{
+		dlc = "bi_1001",
+		display_name = "display_name_ironbreaker_hat_1001"
+	},
+	{
+		dlc = "bs_1001",
+		display_name = "display_name_slayer_hat_1001"
+	},
+	{
+		dlc = "kw_1001",
+		display_name = "display_name_waywatcher_hat_1001"
+	},
+	{
+		dlc = "kh_1001",
+		display_name = "display_name_maidenguard_hat_1001"
+	},
+	{
+		dlc = "ks_1001",
+		display_name = "display_name_shade_hat_1001"
+	},
+	{
+		dlc = "vw_1001",
+		display_name = "display_name_witchhunter_hat_1001"
+	},
+	{
+		dlc = "vb_1001",
+		display_name = "display_name_bountyhunter_hat_1001"
+	},
+	{
+		dlc = "vz_1001",
+		display_name = "display_name_zealot_hat_1001"
+	},
+	{
+		dlc = "vz_1003",
+		display_name = "display_name_zealot_hat_1003"
+	},
+	{
+		dlc = "sb_1001",
+		display_name = "display_name_adept_hat_1001"
+	},
+	{
+		dlc = "sp_1001",
+		display_name = "display_name_scholar_hat_1001"
+	},
+	{
+		dlc = "su_1001",
+		display_name = "display_name_unchained_hat_1001"
+	},
+	{
+		dlc = "bountyhunter_bundle",
+		display_name = "bounty_hunter_bundle_01"
+	},
+	{
+		dlc = "shade_bundle",
+		display_name = "shade_bundle_01"
+	},
+	{
+		dlc = "ironbreaker_bundle",
+		display_name = "ironbreaker_bundle_01"
+	},
+	{
+		dlc = "mercenary_bundle",
+		display_name = "mercenary_bundle_01"
+	},
+	{
+		dlc = "scholar_bundle",
+		display_name = "pyromancer_bundle_01"
+	},
+	{
+		dlc = "adept_bundle_0001",
+		display_name = "display_name_adept_bundle_0001"
+	},
+	{
+		dlc = "slayer_bundle_0001",
+		display_name = "display_name_slayer_bundle_0001"
+	},
+	{
+		dlc = "zealot_bundle_0001",
+		display_name = "display_name_zealot_bundle_0001"
+	},
+	{
+		dlc = "huntsman_bundle_0001",
+		display_name = "display_name_huntsman_bundle_0001"
+	},
+	{
+		dlc = "maidenguard_bundle_0001",
+		display_name = "display_name_maidenguard_bundle_0001"
+	},
+	{
+		dlc = "lake",
+		display_name = "store_lake_title"
+	},
+	{
+		dlc = "lake_upgrade",
+		display_name = "store_lake_upgrade_title"
+	},
+	{
+		dlc = "cog",
+		display_name = "store_cog_title"
+	},
+	{
+		dlc = "cog_upgrade",
+		display_name = "store_cog_upgrade_title"
+	},
+	{
+		dlc = "woods",
+		display_name = "store_woods_title"
+	},
+	{
+		dlc = "woods_upgrade",
+		display_name = "store_woods_upgrade_title"
+	}
+}
 local pc_button_icon = {
 	{
 		texture = "pc_button_icon_left",
@@ -1801,5 +1960,16 @@ UISettings.set_console_settings = function ()
 		UISettings.use_subtitles = use_subtitles
 	end
 end
+
+UISettings.interaction_hotkey_lookup = {
+	characters_access = "hotkey_hero",
+	weave_level_select_access = "hotkey_weave_play",
+	weave_magic_forge_access = "hotkey_weave_forge",
+	achievement_access = "hotkey_achievements",
+	store_access = "hotkey_store",
+	inventory_access = "hotkey_inventory",
+	weave_leaderboard_access = "hotkey_weave_leaderboard",
+	map_access = "hotkey_map"
+}
 
 return

@@ -139,7 +139,7 @@ ScriptBackend._update_state = function (self)
 		local error_message, reason = nil
 
 		if self._state == Backend.CONNECTION_ENTITIES_LOADED then
-			ScriptApplication.send_to_crashify("Backend", "Disconnected")
+			Crashify.print_exception("Backend", "Disconnected")
 
 			reason = BACKEND_LUA_ERRORS.ERR_DISCONNECTED
 		else
@@ -236,7 +236,7 @@ ScriptBackend.set_stats = function (self, nice_stats)
 	end
 
 	for stat_name, stat_value in pairs(new_stats) do
-		ScriptApplication.send_to_crashify("ScriptBackend", "Tried to set unregistered stat %s, value: %s", tostring(stat_name), tostring(stat_value))
+		Crashify.print_exception("ScriptBackend", "Tried to set unregistered stat %s, value: %s", stat_name, stat_value)
 	end
 
 	self:commit()

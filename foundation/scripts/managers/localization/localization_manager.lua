@@ -101,6 +101,36 @@ LocalizationManager.exists = function (self, text_id)
 	return self:_base_lookup(text_id) ~= nil
 end
 
+LocalizationManager.plural_form = function (self, n)
+	local loc = self._language_id
+
+	if loc == "en" or loc == "es" or loc == "it" or loc == "br-pt" then
+		return (n ~= 1 and 1) or 0
+	elseif loc == "fr" then
+		return (n > 1 and 1) or 0
+	elseif loc == "zh" then
+		return 0
+	elseif loc == "ru" then
+		if n % 10 == 1 and n % 100 ~= 11 then
+			return 0
+		elseif n % 10 >= 2 and n % 10 <= 4 and (n % 100 < 10 or n % 100 >= 20) then
+			return 1
+		else
+			return 2
+		end
+	elseif loc == "pl" then
+		if n == 1 then
+			return 0
+		elseif n % 10 >= 2 and n % 10 <= 4 and (n % 100 < 10 or n % 100 >= 20) then
+			return 1
+		else
+			return 2
+		end
+	end
+
+	return 0
+end
+
 function Localize(text_id)
 	return Managers.localizer:lookup(text_id)
 end
@@ -174,7 +204,7 @@ LocalizationManager._set_locale = function (self, locale, lightweight)
 		end)
 	end
 
-	self:_reload_ui()
+	Managers.ui:reload_ingame_ui(true)
 	collectgarbage()
 	DeadlockStack.unpause()
 end
@@ -211,38 +241,6 @@ end
 LocalizationManager.set_locale_override_setting = function (self, locale)
 	Application.set_user_setting("language_id", locale)
 	Application.save_user_settings()
-end
-
-LocalizationManager._reload_ui = function (self)
-	printf("[LocalizationManager] reload_ui()")
-
-	for pkg in pairs(package.loaded) do
-		if string.find(pkg, "^scripts/ui") then
-			package.loaded[pkg] = nil
-		end
-	end
-
-	require("scripts/ui/views/ingame_ui")
-
-	local state_in_game_running = rawget(_G, "_state_in_game_running")
-
-	if not state_in_game_running then
-		return
-	end
-
-	local ingame_ui = state_in_game_running.ingame_ui
-
-	if ingame_ui then
-		local current_transition = ingame_ui.last_transition_name
-		local current_params = ingame_ui.last_transition_params
-
-		print(current_transition)
-		state_in_game_running:create_ingame_ui(state_in_game_running.ingame_ui_context)
-
-		if current_transition then
-			ingame_ui:handle_transition(current_transition, current_params)
-		end
-	end
 end
 
 return

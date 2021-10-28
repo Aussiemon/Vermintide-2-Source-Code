@@ -18,8 +18,8 @@ weapon_template.actions = {
 			total_time = math.huge,
 			num_projectiles = NUM_PROJECTILES,
 			buffed_zoom_thresholds = {
-				"zoom_in",
-				"increased_zoom_in"
+				"zoom_in_trueflight",
+				"zoom_in"
 			},
 			zoom_condition_function = function ()
 				return true
@@ -74,8 +74,8 @@ weapon_template.actions = {
 			total_time = math.huge,
 			num_projectiles = NUM_PROJECTILES,
 			buffed_zoom_thresholds = {
-				"zoom_in",
-				"increased_zoom_in"
+				"zoom_in_trueflight",
+				"zoom_in"
 			},
 			zoom_condition_function = function ()
 				return true
@@ -135,7 +135,6 @@ weapon_template.actions = {
 			hit_effect = "kerillian_ability_trueflight_arrow_impact",
 			sphere_sweep_radius = 2,
 			charge_value = "light_attack",
-			num_projectiles = 1,
 			uninterruptible = true,
 			ignore_shield_hit = true,
 			total_time = 0.28,
@@ -146,6 +145,7 @@ weapon_template.actions = {
 				return end_reason ~= "new_interupting_action"
 			end,
 			allowed_chain_actions = {},
+			num_projectiles = NUM_PROJECTILES,
 			projectile_info = Projectiles.kerillian_ability_true_flight_piercing,
 			impact_data = {
 				max_bounces = 2,

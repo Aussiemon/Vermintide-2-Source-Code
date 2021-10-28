@@ -52,7 +52,6 @@ morris_weapon_traits.buff_templates = {
 			{
 				explosion_template = "stagger_aoe_on_crit",
 				name = "stagger_aoe_on_crit",
-				event_buff = true,
 				buff_func = "stagger_aoe_on_hit",
 				event = "on_critical_hit",
 				icon = "bardin_ironbreaker_gromril_armour"
@@ -64,7 +63,6 @@ morris_weapon_traits.buff_templates = {
 			{
 				event = "on_kill",
 				name = "armor_breaker_on_armored_kill",
-				event_buff = true,
 				buff_func = "armor_breaker_on_armored_kill"
 			}
 		}
@@ -96,7 +94,6 @@ morris_weapon_traits.buff_templates = {
 			{
 				update_func = "update_bloodthirst",
 				name = "bloodthirst",
-				event_buff = true,
 				buff_func = "bloodthirst_on_kill",
 				event = "on_kill",
 				remove_buff_func = "remove_bloodthirst",
@@ -116,7 +113,6 @@ morris_weapon_traits.buff_templates = {
 		buffs = {
 			{
 				name = "headhunter",
-				event_buff = true,
 				buff_func = "headhunter_on_damage_dealt",
 				event = "on_damage_dealt",
 				remove_buff_func = "remove_headhunter",

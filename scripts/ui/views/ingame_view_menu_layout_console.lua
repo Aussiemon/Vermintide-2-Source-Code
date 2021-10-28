@@ -33,6 +33,12 @@ function demo_inverted_func()
 	end
 end
 
+local function can_add_inventory(params)
+	local variable_name = "force_ingame_menu"
+
+	return params[variable_name]
+end
+
 if IS_PS4 then
 	menu_layouts = {
 		in_menu = {
@@ -673,6 +679,16 @@ else
 					transition = "character_selection"
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "inventory_menu_button_name",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view",
+					force_open = true,
+					can_add_function = can_add_inventory
+				},
+				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
@@ -702,6 +718,16 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection"
+				},
+				{
+					disable_when_matchmaking_ready = true,
+					display_name = "inventory_menu_button_name",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view",
+					force_open = true,
+					can_add_function = can_add_inventory
 				},
 				{
 					fade = true,
@@ -738,6 +764,16 @@ else
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection"
+				},
+				{
+					disable_when_matchmaking_ready = true,
+					display_name = "inventory_menu_button_name",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "overview",
+					transition = "hero_view",
+					force_open = true,
+					can_add_function = can_add_inventory
 				},
 				{
 					fade = true,
@@ -857,13 +893,13 @@ else
 					display_name = "return_to_game_button_name"
 				},
 				{
+					transition = "options_menu",
+					display_name = "options_menu_button_name"
+				},
+				{
 					fade = false,
 					transition = "leave_group_hero_view",
 					display_name = "leave_game_menu_button_name"
-				},
-				{
-					transition = "options_menu",
-					display_name = "options_menu_button_name"
 				},
 				{
 					transition = "quit_game_hero_view",
@@ -933,6 +969,16 @@ local full_access_layout = {
 		transition_state = "character",
 		transition = "character_selection",
 		disable_when_matchmaking = false
+	},
+	{
+		disable_when_matchmaking_ready = true,
+		display_name = "inventory_menu_button_name",
+		requires_player_unit = true,
+		fade = true,
+		transition_state = "overview",
+		transition = "hero_view",
+		force_open = true,
+		can_add_function = can_add_inventory
 	},
 	{
 		display_name = "achievements",

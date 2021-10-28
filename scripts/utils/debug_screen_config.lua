@@ -1,5 +1,38 @@
 require("scripts/utils/debug_hero_templates")
 
+local function save_statistics()
+	local backend_manager = Managers.backend
+	local stats_interface = backend_manager:get_interface("statistics")
+
+	stats_interface:save()
+	backend_manager:commit(true)
+end
+
+local function add_items(items)
+	local backend_mirror = Managers.backend._backend_mirror
+	local request = {
+		FunctionName = "devGrantItems",
+		FunctionParameter = {
+			items = items
+		}
+	}
+
+	local function cb(result)
+		local items = result.FunctionResult.items
+		local item_interface = Managers.backend:get_interface("items")
+
+		for i = 1, #items, 1 do
+			local item = items[i]
+
+			backend_mirror:add_item(item.ItemInstanceId, item)
+		end
+	end
+
+	local request_queue = backend_mirror:request_queue()
+
+	request_queue:enqueue(request, cb, false)
+end
+
 local settings = {
 	{
 		description = [[
@@ -186,6 +219,18 @@ local settings = {
 		category = "Allround useful stuff!"
 	},
 	{
+		description = "Do not clear the unseen_rewards field",
+		is_boolean = true,
+		setting_name = "dont_clear_unseen_rewards",
+		category = "Allround useful stuff!"
+	},
+	{
+		description = "Do not show unseen rewards at login",
+		is_boolean = true,
+		setting_name = "dont_show_unseen_rewards",
+		category = "Allround useful stuff!"
+	},
+	{
 		description = "Use LAN instead of Steam",
 		is_boolean = true,
 		setting_name = "use_lan_backend",
@@ -318,7 +363,7 @@ local settings = {
 				Managers.mechanism:override_hub_level(level_name)
 			end
 
-			debug.load_level(level_name, environment_id, level_settings.debug_environment_level_flow_event)
+			Debug.load_level(level_name, environment_id, level_settings.debug_environment_level_flow_event)
 		end
 	},
 	{
@@ -927,16 +972,18 @@ Features that make player mechanics nicer to work with.
 		category = "Player mechanics",
 		setting_name = "reset_career_talents",
 		func = function ()
+			local backend_manager = Managers.backend
 			local player = Managers.player:local_player()
 			local career_name = player:career_name()
 
-			Managers.backend:get_interface("talents"):set_talents(career_name, {
+			backend_manager:get_interface("talents"):set_talents(career_name, {
 				0,
 				0,
 				0,
 				0,
 				0
 			})
+			backend_manager:commit(true)
 		end
 	},
 	{
@@ -1464,6 +1511,12 @@ Features that make player mechanics nicer to work with.
 				Managers.state.conflict:mini_patrol(t, nil, side_id, composition, group_template)
 			end
 		end
+	},
+	{
+		description = "Enemy ragdolls are despawned immediately.",
+		is_boolean = true,
+		setting_name = "disable_ragdolls",
+		category = "AI"
 	},
 	{
 		description = "Enables horde logging in console",
@@ -5638,6 +5691,18 @@ Features that make player mechanics nicer to work with.
 		category = "Network"
 	},
 	{
+		description = "Do not check the network hash when joining a game as a client.",
+		is_boolean = true,
+		setting_name = "do_not_check_network_hash_when_joining",
+		category = "Network"
+	},
+	{
+		description = "Do not blacklist lobbies when exiting/cancelling as a client.",
+		is_boolean = true,
+		setting_name = "do_not_add_broken_lobby_client",
+		category = "Network"
+	},
+	{
 		description = "Debug All Contexts",
 		is_boolean = true,
 		setting_name = "dialogue_debug_all_contexts",
@@ -5745,15 +5810,15 @@ Features that make player mechanics nicer to work with.
 		category = "Input"
 	},
 	{
-		description = "Reverts back to the old Deus Map UI in case the new one is buggy",
+		description = "Enables additional assertions to help catch errors in UI code. Only has an effect when DEBUG is enabled.",
 		is_boolean = true,
-		setting_name = "FEATURE_old_map_ui",
+		setting_name = "strict_ui_checks",
 		category = "UI"
 	},
 	{
-		description = "Will load the ui debug package on startup if true",
+		description = "Reverts back to the old Deus Map UI in case the new one is buggy",
 		is_boolean = true,
-		setting_name = "load_ui_debug_package",
+		setting_name = "FEATURE_old_map_ui",
 		category = "UI"
 	},
 	{
@@ -5894,6 +5959,28 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "enable_detailed_tooltips",
 		category = "UI"
+	},
+	{
+		description = "Always allow buying bundles (even if you already own them).",
+		is_boolean = true,
+		setting_name = "always_allow_buying_bundles",
+		category = "UI"
+	},
+	{
+		description = "Show all news feed items when entering the keep.",
+		is_boolean = true,
+		setting_name = "show_all_news_feed_items",
+		category = "UI"
+	},
+	{
+		description = "Marks all shop items as unseen.",
+		category = "UI",
+		setting_name = "mark_all_unseen",
+		func = function ()
+			PlayerData.seen_shop_items = {}
+
+			Managers.save:auto_save(SaveFileName, SaveData)
+		end
 	},
 	{
 		description = "Disables position lookup validation. Can turn this on for extra performance.",
@@ -6642,6 +6729,12 @@ Features that make player mechanics nicer to work with.
 		category = "Progression"
 	},
 	{
+		description = "You have to reload the inn for the setting to take effect",
+		is_boolean = true,
+		setting_name = "unlock_full_keep",
+		category = "Progression"
+	},
+	{
 		description = "Win",
 		close_when_selected = true,
 		setting_name = "Complete current level",
@@ -6793,19 +6886,46 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		description = "Adds 1000 Experience to your account.",
+		setting_name = "Add Experience",
+		description = "Adds Experience to your account.",
 		category = "Progression",
-		setting_name = "1000 Experience",
-		func = function ()
-			local player_manager = Managers.player
-			local player = player_manager:local_player(1)
+		item_source = {},
+		load_items_source_func = function (options)
+			table.clear(options)
+
+			options[1] = 1
+			options[2] = 10
+			options[3] = 100
+			options[4] = 1000
+			options[5] = 10000
+			options[6] = 60850
+		end,
+		func = function (options, index)
+			local backend_manager = Managers.backend
+			local experience = options[index] or 1
+			local player = Managers.player:local_player(1)
 			local profile_index = player:profile_index()
 			local profile = SPProfiles[profile_index]
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
-			local experience = hero_attributes:get(profile.display_name, "experience")
-			local end_experience = math.min(experience + 1000, ExperienceSettings.max_experience)
+			local display_name = profile.display_name
 
-			hero_attributes:set(profile.display_name, "experience", end_experience)
+			local function cb(result)
+				local function_result = result.FunctionResult
+				local hero_attributes = backend_manager:get_interface("hero_attributes")
+
+				hero_attributes:set(display_name, "experience", function_result.data[display_name .. "_experience"])
+			end
+
+			local request = {
+				FunctionName = "devAddExperience",
+				FunctionParameter = {
+					hero = display_name,
+					experience = experience
+				}
+			}
+			local backend_mirror = backend_manager._backend_mirror
+			local request_queue = backend_mirror:request_queue()
+
+			request_queue:enqueue(request, cb, false)
 		end
 	},
 	{
@@ -6813,13 +6933,30 @@ Features that make player mechanics nicer to work with.
 		category = "Progression",
 		setting_name = "Reset Level",
 		func = function ()
-			local player_manager = Managers.player
-			local player = player_manager:local_player(1)
+			local backend_manager = Managers.backend
+			local player = Managers.player:local_player(1)
 			local profile_index = player:profile_index()
 			local profile = SPProfiles[profile_index]
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			local display_name = profile.display_name
 
-			hero_attributes:set(profile.display_name, "experience", 0)
+			local function cb(result)
+				local function_result = result.FunctionResult
+				local hero_attributes = backend_manager:get_interface("hero_attributes")
+
+				hero_attributes:set(display_name, "experience", function_result.data[display_name .. "_experience"])
+			end
+
+			local request = {
+				FunctionName = "devSetExperience",
+				FunctionParameter = {
+					experience = 0,
+					hero = display_name
+				}
+			}
+			local backend_mirror = backend_manager._backend_mirror
+			local request_queue = backend_mirror:request_queue()
+
+			request_queue:enqueue(request, cb, false)
 		end
 	},
 	{
@@ -6827,14 +6964,31 @@ Features that make player mechanics nicer to work with.
 		category = "Progression",
 		setting_name = "Level up above prestige level requirements",
 		func = function ()
-			local player_manager = Managers.player
-			local player = player_manager:local_player(1)
+			local backend_manager = Managers.backend
+			local player = Managers.player:local_player(1)
 			local profile_index = player:profile_index()
 			local profile = SPProfiles[profile_index]
-			local hero_attributes = Managers.backend:get_interface("hero_attributes")
+			local display_name = profile.display_name
 
-			hero_attributes:set(profile.display_name, "experience", 1000000)
-			debug.load_level("inn_level")
+			local function cb(result)
+				local function_result = result.FunctionResult
+				local hero_attributes = backend_manager:get_interface("hero_attributes")
+
+				hero_attributes:set(display_name, "experience", function_result.data[display_name .. "_experience"])
+				Debug.load_level("inn_level")
+			end
+
+			local request = {
+				FunctionName = "devSetExperience",
+				FunctionParameter = {
+					experience = 1000000,
+					hero = display_name
+				}
+			}
+			local backend_mirror = backend_manager._backend_mirror
+			local request_queue = backend_mirror:request_queue()
+
+			request_queue:enqueue(request, cb, false)
 		end
 	},
 	{
@@ -6849,7 +7003,7 @@ Features that make player mechanics nicer to work with.
 			local hero_attributes = Managers.backend:get_interface("hero_attributes")
 
 			hero_attributes:set(profile.display_name, "prestige", 0)
-			debug.load_level("inn_level")
+			Debug.load_level("inn_level")
 		end
 	},
 	{
@@ -7198,9 +7352,11 @@ Features that make player mechanics nicer to work with.
 			local item_interface = Managers.backend:get_interface("items")
 			local item = options[index]
 
-			if item then
-				item_interface:award_item(item)
-			end
+			add_items({
+				{
+					ItemName = item
+				}
+			})
 		end
 	},
 	{
@@ -7209,13 +7365,17 @@ Features that make player mechanics nicer to work with.
 		category = "Items",
 		func = function ()
 			local item_master_list = ItemMasterList
-			local item_interface = Managers.backend:get_interface("items")
+			local hats = {}
 
 			for key, item in pairs(item_master_list) do
 				if item.slot_type == "hat" then
-					item_interface:award_item(key)
+					hats[#hats + 1] = {
+						ItemName = key
+					}
 				end
 			end
+
+			add_items(hats)
 		end
 	},
 	{
@@ -7240,9 +7400,11 @@ Features that make player mechanics nicer to work with.
 			local item_interface = Managers.backend:get_interface("items")
 			local item = options[index]
 
-			if item then
-				item_interface:award_item(item)
-			end
+			add_items({
+				{
+					ItemName = item
+				}
+			})
 		end
 	},
 	{
@@ -7267,9 +7429,11 @@ Features that make player mechanics nicer to work with.
 			local item_interface = Managers.backend:get_interface("items")
 			local item = options[index]
 
-			if item then
-				item_interface:award_item(item)
-			end
+			add_items({
+				{
+					ItemName = item
+				}
+			})
 		end
 	},
 	{
@@ -7294,9 +7458,11 @@ Features that make player mechanics nicer to work with.
 			local item_interface = Managers.backend:get_interface("items")
 			local item = options[index]
 
-			if item then
-				item_interface:award_item(item)
-			end
+			add_items({
+				{
+					ItemName = item
+				}
+			})
 		end
 	},
 	{
@@ -7321,54 +7487,60 @@ Features that make player mechanics nicer to work with.
 			local item_interface = Managers.backend:get_interface("items")
 			local item = options[index]
 
-			if item then
-				item_interface:award_item(item)
-			end
+			add_items({
+				{
+					ItemName = item
+				}
+			})
 		end
 	},
 	{
-		description = "Adds one weapon per skin with that skin applied. This only works on local backend!",
+		description = "Adds one weapon per skin with that skin applied.",
 		setting_name = "Add All Weapon Skins",
 		category = "Items",
 		func = function ()
 			local item_master_list = ItemMasterList
+			local weapon_skins = WeaponSkins
 			local item_interface = Managers.backend:get_interface("items")
-			local owned_skins = {}
 			local added_skins = {}
-			local commit_backend = false
-			local all_items = item_interface:get_all_backend_items()
-
-			for _, item in pairs(all_items) do
-				if item.skin then
-					owned_skins[item.skin] = true
-				end
-			end
+			local weapons_to_add = {}
 
 			for key, item in pairs(item_master_list) do
-				if (item.slot_type == "melee" or item.slot_type == "ranged") and item.skin_combination_table then
-					table.clear(added_skins)
+				local slot_type = item.slot_type
+				local skin_combination = item.skin_combination_table
 
-					if item.rarity ~= "magic" then
-						local skin_combinations_by_rarity = WeaponSkins.skin_combinations[item.skin_combination_table]
+				if (slot_type == "melee" or slot_type == "ranged") and skin_combination and item.rarity ~= "magic" then
+					local skin_combinations_by_rarity = weapon_skins.skin_combinations[skin_combination]
 
-						for rarity, skins in pairs(skin_combinations_by_rarity) do
-							for _, skin_name in ipairs(skins) do
-								if not owned_skins[skin_name] and not added_skins[skin_name] then
-									added_skins[skin_name] = true
-
-									item_interface:award_item(key, nil, skin_name)
-
-									commit_backend = true
-								end
+					for rarity, skins in pairs(skin_combinations_by_rarity) do
+						for _, skin_name in ipairs(skins) do
+							if not added_skins[skin_name] then
+								added_skins[skin_name] = true
+								weapons_to_add[#weapons_to_add + 1] = {
+									ItemName = key,
+									CustomData = {
+										skin = skin_name
+									}
+								}
 							end
 						end
 					end
 				end
 			end
 
-			if commit_backend then
-				Managers.backend:commit()
+			local backend_mirror = Managers.backend._backend_mirror
+			local request = {
+				FunctionName = "devUnlockAllWeaponSkins",
+				FunctionParameter = {}
+			}
+
+			local function cb(result)
+				add_items(weapons_to_add)
 			end
+
+			local request_queue = backend_mirror:request_queue()
+
+			request_queue:enqueue(request, cb, false)
 		end
 	},
 	{
@@ -7508,19 +7680,24 @@ Features that make player mechanics nicer to work with.
 			if AchievementTemplates then
 				local template = AchievementTemplates.achievements[options[index]]
 
-				if template ~= nil and template.debug_unlock then
-					local stats_db = Managers.state.game_mode.statistics_db
-					local stats_id = Managers.player:local_player():stats_id()
+				if template ~= nil then
+					if template.debug_unlock then
+						local stats_db = Managers.state.game_mode.statistics_db
+						local stats_id = Managers.player:local_player():stats_id()
 
-					if stats_db and stats_id then
-						template.debug_unlock(stats_db, stats_id)
-						print("Unlocked challenge ", options[index])
+						if stats_db and stats_id then
+							template.debug_unlock(stats_db, stats_id)
+							print("Unlocked challenge ", options[index])
 
-						local world = Managers.world:world("level_world")
+							local world = Managers.world:world("level_world")
 
-						LevelHelper:flow_event(world, "lua_unlock_challenge_debug_event")
+							LevelHelper:flow_event(world, "lua_unlock_challenge_debug_event")
+							save_statistics()
 
-						return
+							return
+						end
+					else
+						print("Missing 'debug_unlock' on challenge")
 					end
 				end
 			end
@@ -7549,15 +7726,20 @@ Features that make player mechanics nicer to work with.
 			if AchievementTemplates then
 				local template = AchievementTemplates.achievements[options[index]]
 
-				if template ~= nil and template.debug_reset then
-					local stats_db = Managers.state.game_mode.statistics_db
-					local stats_id = Managers.player:local_player():stats_id()
+				if template ~= nil then
+					if template.debug_reset then
+						local stats_db = Managers.state.game_mode.statistics_db
+						local stats_id = Managers.player:local_player():stats_id()
 
-					if stats_db and stats_id then
-						template.debug_reset(stats_db, stats_id)
-						print("Reset challenge ", options[index])
+						if stats_db and stats_id then
+							template.debug_reset(stats_db, stats_id)
+							print("Reset challenge ", options[index])
+							save_statistics()
 
-						return
+							return
+						end
+					else
+						print("Missing 'debug_reset' function")
 					end
 				end
 			end
@@ -7700,27 +7882,26 @@ Features that make player mechanics nicer to work with.
 			local local_player = Managers.player:local_player()
 			local stats_id = local_player:stats_id()
 
-			if chosen_state == "1" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 1)
-			elseif chosen_state == "2" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 2)
-			elseif chosen_state == "3" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 3)
-			elseif chosen_state == "4" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 4)
-			elseif chosen_state == "5" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 5)
-			elseif chosen_state == "6" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 6)
-			elseif chosen_state == "7" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 7)
-			elseif chosen_state == "8" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 8)
-			elseif chosen_state == "9" then
-				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 9)
-			elseif chosen_state == "clear" then
+			if chosen_state == "clear" then
 				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", 0)
+			else
+				statistics_db:set_stat(stats_id, "scorpion_onboarding_step", tonumber(chosen_state))
 			end
+
+			save_statistics()
+		end
+	},
+	{
+		description = "complete the weave onboarding ui tutorial",
+		setting_name = "Weave Onboarding UI",
+		category = "Onboarding",
+		func = function ()
+			local statistics_db = Managers.player:statistics_db()
+			local local_player = Managers.player:local_player()
+			local stats_id = local_player:stats_id()
+
+			statistics_db:set_stat(stats_id, "scorpion_ui_onboarding_state", -1)
+			save_statistics()
 		end
 	},
 	{
@@ -7733,6 +7914,7 @@ Features that make player mechanics nicer to work with.
 			local stats_id = local_player:stats_id()
 
 			statistics_db:set_stat(stats_id, "scorpion_ui_onboarding_state", 0)
+			save_statistics()
 		end
 	},
 	{
@@ -7745,6 +7927,67 @@ Features that make player mechanics nicer to work with.
 			local stats_id = local_player:stats_id()
 
 			statistics_db:set_stat(stats_id, "scorpion_onboarding_weave_first_fail_vo_played", 0)
+			save_statistics()
+		end
+	},
+	{
+		description = "Will make it so \"first_time_store_release\" is always triggered when players start the game and enter the keep",
+		is_boolean = true,
+		setting_name = "always_first_time_store_release",
+		category = "Onboarding"
+	},
+	{
+		description = "Will make it so \"store_new_items\" is always triggered when players start the game and enter the keep",
+		is_boolean = true,
+		setting_name = "always_store_new_items",
+		category = "Onboarding"
+	},
+	{
+		description = "Will make it so \"shop_closed_item_bought\" is always triggered when players close the store. Exclusive with other \"shop_closed\" events",
+		is_boolean = true,
+		setting_name = "always_shop_closed_item_bought",
+		category = "Onboarding"
+	},
+	{
+		description = "Will make it so \"shop_closed_golden_key_redeemed\" is always triggered when players close the store. Exclusive with other \"shop_closed\" events",
+		is_boolean = true,
+		setting_name = "always_shop_closed_golden_key_redeemed",
+		category = "Onboarding"
+	},
+	{
+		description = "Will make it so \"shop_closed_login_reward_claimed\" is always triggered when players close the store. Exclusive with other \"shop_closed\" events",
+		is_boolean = true,
+		setting_name = "always_shop_closed_login_reward_claimed",
+		category = "Onboarding"
+	},
+	{
+		description = "Trigger the \"first_time_store_release\" level flow event",
+		setting_name = "Trigger \"first_time_store_release\"",
+		category = "Onboarding",
+		func = function ()
+			local world = Managers.world:world("level_world")
+
+			LevelHelper:flow_event(world, "first_time_store_release")
+		end
+	},
+	{
+		description = "Trigger the \"store_new_items\" level flow event",
+		setting_name = "Trigger \"store_new_items\"",
+		category = "Onboarding",
+		func = function ()
+			local world = Managers.world:world("level_world")
+
+			LevelHelper:flow_event(world, "store_new_items")
+		end
+	},
+	{
+		description = "Trigger the \"first_time_started_game\" level flow event",
+		setting_name = "Trigger \"first_time_started_game\"",
+		category = "Onboarding",
+		func = function ()
+			local world = Managers.world:world("level_world")
+
+			LevelHelper:flow_event(world, "first_time_started_game")
 		end
 	},
 	{
@@ -7752,6 +7995,15 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "count_owned_dlc_as_installed",
 		category = "DLC"
+	},
+	{
+		description = "Displays the diorama prototype",
+		close_when_selected = true,
+		setting_name = "Run Diorama Prototype",
+		category = "Diorama",
+		func = function ()
+			Managers.ui:handle_transition("diorama_prototype", {})
+		end
 	},
 	{
 		description = "Starts a Deus run directly on a map",
@@ -7884,11 +8136,63 @@ Features that make player mechanics nicer to work with.
 				return
 			end
 
+			local local_player = Managers.player:local_player()
+			local local_player_id = local_player:local_player_id()
 			local option = options[index]
 			local rarity_and_power_up_name = string.split(option, "/")
 			local rarity = rarity_and_power_up_name[1]
 			local power_up_name = rarity_and_power_up_name[2]
-			local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
+			local existing_power_ups = deus_run_controller:get_player_power_ups(local_player.peer_id, local_player_id)
+			local already_added = nil
+
+			for _, existing_power_up in ipairs(existing_power_ups) do
+				if existing_power_up.name == power_up_name then
+					already_added = true
+
+					break
+				end
+			end
+
+			if not already_added then
+				local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, rarity)
+
+				deus_run_controller:add_power_ups({
+					power_up
+				}, local_player_id)
+
+				local local_player_unit = local_player.player_unit
+
+				if local_player_unit then
+					local buff_system = Managers.state.entity:system("buff_system")
+					local talent_interface = Managers.backend:get_talents_interface()
+					local deus_backend = Managers.backend:get_interface("deus")
+					local profile_index = local_player:profile_index()
+					local career_index = local_player:career_index()
+
+					DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, local_player_unit, profile_index, career_index)
+				end
+			end
+		end
+	},
+	{
+		description = "Adds 10.000 deus soft currency",
+		setting_name = "add_soft_currency",
+		category = "Deus",
+		func = function (options, index)
+			local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+			local own_peer_id = deus_run_controller._run_state:get_own_peer_id()
+
+			deus_run_controller:_add_soft_currency_to_peer(own_peer_id, 10000)
+		end
+	},
+	{
+		description = "Adds a random boon, the type obtained from boon shrines",
+		setting_name = "add_random_boon",
+		category = "Deus",
+		func = function (options, index)
+			local deus_run_controller = Managers.mechanism:game_mechanism():get_deus_run_controller()
+			local power_ups = deus_run_controller:generate_random_power_ups(DeusPowerUpSettings.weapon_chest_choice_amount, DeusPowerUpAvailabilityTypes.weapon_chest, math.random_seed())
+			local power_up = power_ups[1]
 			local local_player = Managers.player:local_player()
 			local local_player_id = local_player:local_player_id()
 
@@ -7896,17 +8200,20 @@ Features that make player mechanics nicer to work with.
 				power_up
 			}, local_player_id)
 
-			local local_player_unit = local_player.player_unit
+			local buff_system = Managers.state.entity:system("buff_system")
+			local talent_interface = Managers.backend:get_talents_interface()
+			local deus_backend = Managers.backend:get_interface("deus")
+			local player_unit = local_player.player_unit
+			local profile_index = local_player:profile_index()
+			local career_index = local_player:career_index()
 
-			if local_player_unit then
-				local buff_system = Managers.state.entity:system("buff_system")
-				local talent_interface = Managers.backend:get_talents_interface()
-				local deus_backend = Managers.backend:get_interface("deus")
-				local profile_index = local_player:profile_index()
-				local career_index = local_player:career_index()
-
-				DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, local_player_unit, profile_index, career_index)
-			end
+			DeusPowerUpUtils.activate_deus_power_up(power_up, buff_system, talent_interface, deus_backend, deus_run_controller, player_unit, profile_index, career_index)
+			Managers.state.event:trigger("present_rewards", {
+				{
+					type = "deus_power_up",
+					power_up = power_up
+				}
+			})
 		end
 	},
 	{

@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.woods
 local max_stacks_functions = MaxStackFunctions
 local on_kill_killing_blow = 1
@@ -14,13 +15,13 @@ settings.buff_templates = {
 				damage_profile = "bleed_maidenguard",
 				name = "weapon bleed dot javelin",
 				duration = 4,
-				perk = "bleeding",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.5,
 				hit_zone = "neck",
 				max_stacks = 1,
-				update_func = "apply_dot_damage"
+				update_func = "apply_dot_damage",
+				perk = buff_perks.bleeding
 			}
 		}
 	},
@@ -30,13 +31,13 @@ settings.buff_templates = {
 				damage_profile = "bleed",
 				name = "thorn sister big bleed",
 				duration = 5,
-				perk = "bleeding",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.75,
 				hit_zone = "neck",
 				max_stacks = 5,
-				update_func = "apply_dot_damage"
+				update_func = "apply_dot_damage",
+				perk = buff_perks.bleeding
 			}
 		}
 	},
@@ -46,13 +47,13 @@ settings.buff_templates = {
 				damage_profile = "bleed",
 				name = "thorn_sister_wall_bleed",
 				duration = 10,
-				perk = "bleeding",
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 0.25,
 				hit_zone = "neck",
 				max_stacks = 1,
-				update_func = "apply_dot_damage"
+				update_func = "apply_dot_damage",
+				perk = buff_perks.bleeding
 			}
 		}
 	},
@@ -200,17 +201,8 @@ settings.proc_functions = {
 			local amount_to_add = template.amount_to_add
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-			if template.reference_buff then
-				for i = 1, amount_to_add, 1 do
-					local reference_buff_name = template.reference_buff
-					local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
-
-					if not reference_buff.buff_list then
-						reference_buff.buff_list = {}
-					end
-
-					table.insert(reference_buff.buff_list, buff_extension:add_buff(buff_name))
-				end
+			for i = 1, amount_to_add, 1 do
+				buff_extension:add_buff(buff_name)
 			end
 		end
 	end,
@@ -221,11 +213,16 @@ settings.proc_functions = {
 			local buff_template = buff.template
 			local buff_name = buff_template.buff_to_remove
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buffs = buff_extension:get_stacking_buff(buff_name)
 
-			if buff.buff_list then
-				local buff_id = table.remove(buff.buff_list)
+			if buffs then
+				local num_stacks = #buffs
 
-				buff_extension:remove_buff(buff_id)
+				if num_stacks > 0 then
+					local buff_id = buffs[num_stacks].id
+
+					buff_extension:remove_buff(buff_id)
+				end
 			end
 		end
 	end,
@@ -246,7 +243,12 @@ settings.proc_functions = {
 				return false
 			end
 
-			buff_system:add_buff(hit_unit, bleed, player_unit, false, power_level)
+			local buff_params = {
+				power_level = power_level,
+				attacker_unit = player_unit
+			}
+
+			buff_system:add_buff_synced(hit_unit, bleed, BuffSyncType.LocalAndServer, buff_params)
 		end
 	end,
 	thorn_sister_big_push = function (player, buff, params, world)

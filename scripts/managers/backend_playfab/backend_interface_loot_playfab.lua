@@ -21,12 +21,13 @@ BackendInterfaceLootPlayfab._new_id = function (self)
 	return self._last_id
 end
 
-BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id, game_mode_key)
+BackendInterfaceLootPlayfab.open_loot_chest = function (self, hero_name, backend_id, game_mode_key, num_chests)
 	local id = self:_new_id()
 	local data = {
 		hero_name = hero_name,
 		playfab_id = backend_id,
 		id = id,
+		amount = num_chests or 1,
 		game_mode_key = game_mode_key
 	}
 	local generate_loot_chest_rewards_request = {
@@ -75,7 +76,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	end
 
 	if updated_statistics then
-		local player = Managers.player and Managers.player:local_player()
+		local player = Managers.player and Managers.player:local_player_safe()
 		local statistics_db = Managers.player:statistics_db()
 
 		if not player or not statistics_db then

@@ -30,8 +30,10 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config)
 		printf("seeds used for this node: \n%s", table.tostring(seeds))
 
 		local level = string.gsub(without_suffix, "^%w*_", "")
+		local base_level = string.gsub(level, "(%w_+%w+).*", "%1")
 		local progress = string.gsub(without_suffix, "_.*$", "")
 		start_node.level = level
+		start_node.base_level = base_level
 		start_node.run_progress = (progress ~= "" and tonumber(progress) / 1000) or 0
 
 		if string.starts_with(level, "pat") then

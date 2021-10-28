@@ -30,6 +30,10 @@ BTNinjaVanishAction.enter = function (self, unit, blackboard, t)
 		Managers.state.network:anim_event(unit, "foff_self")
 
 		blackboard.vanish_timer = t + blackboard.action.foff_anim_length
+	elseif blackboard.move_state ~= "idle" then
+		Managers.state.network:anim_event(unit, "idle")
+
+		blackboard.move_state = "idle"
 	end
 end
 

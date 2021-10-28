@@ -12,7 +12,12 @@ PlayFabClientApi.settings.titleId = GameSettingsDevelopment.backend_settings.tit
 ScriptBackendPlayFab = class(ScriptBackendPlayFab)
 
 ScriptBackendPlayFab.init = function (self)
-	self._steam_ticket_id = Steam.retrieve_auth_session_ticket()
+	if HAS_STEAM then
+		self._steam_ticket_id = Steam.retrieve_auth_session_ticket()
+	elseif GameSettingsDevelopment.use_offline_backend then
+	end
+
+	self._metadata = Managers.backend:get_metadata()
 end
 
 ScriptBackendPlayFab.update_state = function (self)
@@ -21,7 +26,12 @@ end
 
 ScriptBackendPlayFab.update_signin = function (self)
 	if self._steam_ticket_id then
-		local ticket = Steam.poll_auth_session_ticket(self._steam_ticket_id)
+		local ticket = nil
+
+		if HAS_STEAM then
+			ticket = Steam.poll_auth_session_ticket(self._steam_ticket_id)
+		elseif GameSettingsDevelopment.use_offline_backend then
+		end
 
 		if ticket then
 			local login_request = {
@@ -113,7 +123,8 @@ ScriptBackendPlayFab._validate_version = function (self)
 	local request = {
 		FunctionName = "validateVersion",
 		FunctionParameter = {
-			Version = VersionSettings.version
+			Version = VersionSettings.version,
+			metadata = self._metadata
 		}
 	}
 	local callback = callback(self, "_validate_version_cb")
@@ -161,7 +172,8 @@ ScriptBackendPlayFab._set_up_initial_inventory = function (self, start_index)
 	local initial_account_data_set_up = {
 		FunctionName = "initialInventorySetup",
 		FunctionParameter = {
-			start_index = start_index or 0
+			start_index = start_index or 0,
+			metadata = self._metadata
 		}
 	}
 	local initial_inventory_setup_request_cb = callback(self, "initial_inventory_setup_request_cb")

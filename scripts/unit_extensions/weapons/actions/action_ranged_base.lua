@@ -197,7 +197,7 @@ ActionRangedBase._shooting = function (self, t, action_ended)
 		if self._num_shots_fired < self._num_shots_total then
 			self._state = "waiting_to_shoot"
 			self._time_to_shoot = t + self._burst_shot_delay
-		elseif self:proc_extra_shot(t) then
+		elseif self:_check_extra_shot_proc(self.buff_extension) then
 			self._state = "waiting_to_shoot"
 			self._time_to_shoot = t + self._extra_shot_delay
 			self._extra_buff_shot = true

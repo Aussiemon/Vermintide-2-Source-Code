@@ -49,7 +49,7 @@ end
 StartGameWindowEvent._setup_content_from_backend = function (self)
 	local widgets_by_name = self._widgets_by_name
 	local live_event_interface = Managers.backend:get_interface("live_events")
-	local game_mode_data = live_event_interface:get_game_mode_data()
+	local game_mode_data = live_event_interface:get_weekly_events_game_mode_data()
 	local title_text_id = game_mode_data.title_text_id
 	local event_title_widget = widgets_by_name.event_title
 	event_title_widget.content.text = Localize(title_text_id)

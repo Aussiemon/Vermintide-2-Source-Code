@@ -555,13 +555,9 @@ math.rand_utf8_string = function (string_length, ignore_chars)
 end
 
 math.uuid = function ()
-	local template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+	local random = math.random
 
-	return string.gsub(template, "[xy]", function (c)
-		local v = (c == "x" and math.random(0, 15)) or math.random(8, 11)
-
-		return string.format("%x", v)
-	end)
+	return string.format("%08x-%04x-4%03x-%x%03x-%012x", random(0, 4294967295.0), random(0, 65535), random(0, 4095), random(0, 11), random(0, 4095), random(0, 281474976710655.0))
 end
 
 math.get_uniformly_random_point_inside_sector = function (radius1, radius2, angle1, angle2)

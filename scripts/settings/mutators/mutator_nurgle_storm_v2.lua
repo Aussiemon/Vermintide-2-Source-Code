@@ -14,7 +14,7 @@ return {
 		data.unchecked_positions = {}
 		data.astar = GwNavAStar.create()
 	end,
-	server_update_function = function (context, data)
+	server_pre_update_function = function (context, data)
 		if Network.game_session() == nil or global_is_inside_inn then
 			return
 		end

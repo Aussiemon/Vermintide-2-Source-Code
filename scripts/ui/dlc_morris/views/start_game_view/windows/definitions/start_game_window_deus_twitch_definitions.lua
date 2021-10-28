@@ -531,12 +531,17 @@ local scenegraph_definition = {
 		}
 	},
 	chat_feed_area_mask = {
-		vertical_alignment = "bottom",
+		vertical_alignment = "center",
 		parent = "menu_root",
 		horizontal_alignment = "right",
 		size = {
 			600,
-			1000
+			window_size[2]
+		},
+		position = {
+			0,
+			-25,
+			0
 		}
 	},
 	chat_feed_area = {
@@ -545,10 +550,10 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = {
 			600,
-			1000
+			window_size[2]
 		},
 		position = {
-			-10,
+			10,
 			0,
 			1
 		}
@@ -559,7 +564,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = {
 			600,
-			1000
+			window_size[2]
 		}
 	}
 }
@@ -880,7 +885,7 @@ local chat_output_widget = {
 			pixel_perfect = false,
 			vertical_alignment = "top",
 			dynamic_font = true,
-			font_type = "chat_output_font",
+			font_type = "chat_output_font_masked",
 			text_color = Colors.get_table("white"),
 			name_color = Colors.get_table("sky_blue"),
 			name_color_dev = Colors.get_table("cheeseburger"),
@@ -894,7 +899,7 @@ local chat_output_widget = {
 	},
 	offset = {
 		0,
-		-25,
+		0,
 		0
 	}
 }
@@ -1103,6 +1108,76 @@ local function create_window(scenegraph_id, size)
 	return widget
 end
 
+function create_twitch_rect_with_outer_frame(scenegraph_id, size, frame_style, layer, color, frame_color)
+	color = color or {
+		255,
+		255,
+		255,
+		255
+	}
+	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.frame_outer_fade_02
+	local edge_height = frame_settings.texture_sizes.horizontal[2]
+	local frame_size = {
+		size[1] + edge_height * 2,
+		size[2] + edge_height * 2
+	}
+	local widget = {
+		element = {}
+	}
+	local passes = {
+		{
+			pass_type = "texture_frame",
+			style_id = "frame",
+			texture_id = "frame",
+			content_check_function = function (content, style)
+				return Managers.twitch:is_connected()
+			end
+		},
+		{
+			style_id = "rect",
+			pass_type = "rect",
+			content_check_function = function (content, style)
+				return Managers.twitch:is_connected()
+			end
+		}
+	}
+	local content = {
+		frame = frame_settings.texture
+	}
+	local style = {
+		frame = {
+			color = frame_color or color,
+			size = frame_size,
+			texture_size = frame_settings.texture_size,
+			texture_sizes = frame_settings.texture_sizes,
+			offset = {
+				-edge_height,
+				-edge_height,
+				layer or 0
+			}
+		},
+		rect = {
+			color = color,
+			offset = {
+				0,
+				0,
+				layer or 0
+			}
+		}
+	}
+	widget.element.passes = passes
+	widget.content = content
+	widget.style = style
+	widget.offset = {
+		0,
+		0,
+		0
+	}
+	widget.scenegraph_id = scenegraph_id
+
+	return widget
+end
+
 local client_disclaimer_description_style = {
 	font_size = 28,
 	upper_case = false,
@@ -1156,7 +1231,9 @@ local widgets = {
 	frame_widget = create_window("twitch_background", scenegraph_definition.twitch_background.size),
 	difficulty_info = UIWidgets.create_start_game_deus_difficulty_info_box("difficulty_info", scenegraph_definition.difficulty_info.size),
 	upsell_button = UIWidgets.create_simple_two_state_button("upsell_button", "icon_redirect", "icon_redirect_hover"),
-	chat_output_widget = chat_output_widget
+	chat_output_widget = chat_output_widget,
+	chat_mask = UIWidgets.create_simple_texture("mask_rect", "chat_feed_area_mask"),
+	chat_output_background = create_twitch_rect_with_outer_frame("chat_feed_area_mask", scenegraph_definition.chat_feed_area_mask.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color)
 }
 widgets.login_text_frame.element.passes[1].content_check_function = connected_content_check_function
 widgets.connect_button_frame.element.passes[1].content_check_function = connected_content_check_function

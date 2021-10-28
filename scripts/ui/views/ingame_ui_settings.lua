@@ -425,7 +425,7 @@ local transitions = {
 		local countdown_ui = ingame_hud:component("LevelCountdownUI")
 		local is_enter_game = countdown_ui and countdown_ui:is_enter_game()
 
-		if not is_enter_game and not Managers.chat:chat_is_focused() and not Managers.matchmaking:is_join_popup_visible() then
+		if not is_enter_game and not Managers.chat:chat_is_focused() and not self:get_active_popup("profile_picker") then
 			self.input_manager:device_unblock_all_services("keyboard", 1)
 			self.input_manager:device_unblock_all_services("mouse", 1)
 			self.input_manager:device_unblock_all_services("gamepad", 1)
@@ -476,7 +476,7 @@ local transitions = {
 	end
 }
 local view_settings = {
-	ui_renderer_function = function (world, is_tutorial, is_in_inn)
+	ui_renderer_function = function (world, is_tutorial, is_in_inn, mechanism_key)
 		local materials = {
 			"material",
 			"materials/ui/ui_1080p_hud_atlas_textures",
@@ -499,8 +499,6 @@ local view_settings = {
 			materials[#materials + 1] = "materials/ui/ui_1080p_achievement_atlas_textures"
 			materials[#materials + 1] = "material"
 			materials[#materials + 1] = "materials/ui/ui_1080p_inn_single_textures"
-			materials[#materials + 1] = "material"
-			materials[#materials + 1] = "materials/ui/motd/motd_dynamic"
 
 			for _, settings in pairs(AreaSettings) do
 				local video_settings = settings.video_settings
@@ -510,8 +508,9 @@ local view_settings = {
 
 			for _, dlc in pairs(DLCSettings) do
 				local ui_materials_in_inn = dlc.ui_materials_in_inn
+				local ui_materials_in_inn_condition = dlc.ui_materials_in_inn_condition
 
-				if ui_materials_in_inn then
+				if ui_materials_in_inn and (not ui_materials_in_inn_condition or ui_materials_in_inn_condition(is_tutorial, is_in_inn, mechanism_key)) then
 					for _, path in ipairs(ui_materials_in_inn) do
 						materials[#materials + 1] = "material"
 						materials[#materials + 1] = path
@@ -522,8 +521,9 @@ local view_settings = {
 
 		for _, dlc in pairs(DLCSettings) do
 			local ui_materials = dlc.ui_materials
+			local ui_materials_condition = dlc.ui_materials_condition
 
-			if ui_materials then
+			if ui_materials and (not ui_materials_condition or ui_materials_condition(is_tutorial, is_in_inn, mechanism_key)) then
 				for _, path in ipairs(ui_materials) do
 					materials[#materials + 1] = "material"
 					materials[#materials + 1] = path

@@ -353,6 +353,7 @@ local saturated_materials = {
 }
 local masked_saturated_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked_saturated",
+	gui_hud_atlas = "gui_hud_atlas_point_sample_masked_saturated",
 	gui_icons_atlas = "gui_icons_atlas_masked_saturated",
 	gui_items_atlas = "gui_items_atlas_masked_saturated",
 	gui_level_images_atlas = "gui_level_images_atlas_masked_saturated"

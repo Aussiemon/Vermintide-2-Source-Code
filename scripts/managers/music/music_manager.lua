@@ -462,7 +462,7 @@ MusicManager._update_boss_state = function (self, conflict_director)
 		return
 	end
 
-	local angry_boss = conflict_director:angry_boss()
+	local angry_boss = conflict_director:angry_boss() or conflict_director:boss_event_running()
 	local state = (angry_boss and self:_get_combat_music_state(conflict_director)) or "no_boss"
 
 	self:set_music_group_state("combat_music", "boss_state", state)
@@ -680,7 +680,7 @@ MusicManager._get_game_state_for_player = function (self, dt, t, conflict_direct
 	local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush" or old_state == "pre_ambush_beastmen" or old_state == "pre_ambush_chaos"
 	local horde_type, sound_settings = conflict_director:has_horde()
 	local horde_size, horde_ends_at = conflict_director:horde_size()
-	local is_horde_alive = (is_survival and horde_size >= 1) or (horde_size >= 7 and t < horde_ends_at) or horde_type
+	local is_horde_alive = horde_size >= 1 or (horde_size >= 7 and t < horde_ends_at) or horde_type
 
 	if is_pre_horde and self._scream_delays[party_id] and self._scream_delays[party_id] < t then
 		self._scream_delays[party_id] = nil
@@ -697,8 +697,12 @@ MusicManager._get_game_state_for_player = function (self, dt, t, conflict_direct
 			return "horde"
 		end
 	elseif is_pre_horde and is_horde_alive then
+		self:delay_trigger_horde_dialogue(t)
+
 		return old_state
 	elseif (old_state == "horde" or old_state == "horde_beastmen" or old_state == "horde_chaos") and is_horde_alive then
+		self:delay_trigger_horde_dialogue(t)
+
 		return "horde"
 	elseif horde_type == "vector" or horde_type == "vector_blob" or horde_type == "event" then
 		self:delay_trigger_horde_dialogue(t, t + DialogueSettings.vector_delay, "vector")

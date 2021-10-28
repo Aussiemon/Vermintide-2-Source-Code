@@ -453,6 +453,17 @@ local es_hats_no_ear = {
 	buffs = {}
 }
 Attachments.es_hats_no_ear = table.clone(es_hats_no_ear)
+local es_hats_no_ear_lock_neck = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_ears_lock_neck",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.es_hats_no_ear_lock_neck = table.clone(es_hats_no_ear_lock_neck)
 local es_hats_no_ear_moustache = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -949,6 +960,17 @@ local bw_gates_facemask_no_breastplate = {
 	buffs = {}
 }
 Attachments.bw_gates_facemask_no_breastplate = table.clone(bw_gates_facemask_no_breastplate)
+local bw_hat_skinned_wide = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat_skinned_wide,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.bw_hat_skinned_wide = table.clone(bw_hat_skinned_wide)
 local necklace_template = {
 	display_unit = "",
 	attachment_node_linking = AttachmentNodeLinking.non_visual_attachment,

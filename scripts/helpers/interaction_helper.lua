@@ -27,6 +27,7 @@ InteractionHelper.interactions = {
 	characters_access = {},
 	talents_access = {},
 	pictureframe = {},
+	trophy = {},
 	decoration = {},
 	achievement_access = {},
 	luckstone_access = {},

@@ -87,7 +87,7 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 		self.wounds = math.huge
 	end
 
-	self.max_wounds = self.wounds
+	self._base_max_wounds = self.wounds
 	self._num_times_grabbed_by_pack_master = 0
 	self._num_times_hit_by_globadier_poison = 0
 	self._num_times_knocked_down = 0
@@ -720,7 +720,7 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	if blocking_weapon_unit and self.timed_block and (t < self.timed_block or all_blocks_parry) then
 		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, "timed_block_cost")
 
-		buff_extension:trigger_procs("on_timed_block")
+		buff_extension:trigger_procs("on_timed_block", attacking_unit, fatigue_type, blocking_weapon_unit)
 	end
 
 	if amount and fatigue_point_costs_multiplier and amount < 2 and fatigue_point_costs_multiplier < 1 and buff_extension:has_buff_perk("in_arc_block_cost_reduction") then
@@ -1231,9 +1231,11 @@ end
 
 GenericStatusExtension.set_wounded = function (self, wounded, reason, t)
 	if wounded then
-		self.wounds = self.wounds - 1
+		if not self.buff_extension:has_buff_perk("infinite_wounds") then
+			self.wounds = self.wounds - 1
+		end
 	elseif reason == "healed" then
-		self.wounds = self.max_wounds
+		self.wounds = self:get_max_wounds()
 	end
 
 	if self.player.local_player and not Managers.state.game_mode:has_activated_mutator("instant_death") then
@@ -1906,7 +1908,7 @@ GenericStatusExtension.is_blocking = function (self)
 end
 
 GenericStatusExtension.is_wounded = function (self)
-	return self.wounds < self.max_wounds
+	return self.wounds < self:get_max_wounds()
 end
 
 GenericStatusExtension.is_permanent_heal = function (self, heal_type)
@@ -2085,6 +2087,14 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 		end
 	end
 
+	local buff_extension = self.buff_extension
+
+	if invisible then
+		buff_extension:trigger_procs("on_invisible")
+	else
+		buff_extension:trigger_procs("on_visible")
+	end
+
 	if not self.is_husk then
 		local network_manager = Managers.state.network
 
@@ -2201,7 +2211,7 @@ GenericStatusExtension.set_falling_height = function (self, override, override_h
 end
 
 GenericStatusExtension.max_wounds_network_safe = function (self)
-	local max_wounds = self.max_wounds
+	local max_wounds = self:get_max_wounds()
 
 	if max_wounds == math.huge then
 		max_wounds = -1
@@ -2320,6 +2330,13 @@ end
 
 GenericStatusExtension.should_climb = function (self)
 	return false
+end
+
+GenericStatusExtension.get_max_wounds = function (self)
+	local base_max_wounds = self._base_max_wounds
+	local buff_extension = self.buff_extension
+
+	return buff_extension:apply_buffs_to_value(base_max_wounds, "extra_wounds")
 end
 
 return

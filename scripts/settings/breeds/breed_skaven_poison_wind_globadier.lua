@@ -271,6 +271,7 @@ local action_data = {
 			7,
 			10,
 			10,
+			10,
 			10
 		},
 		aoe_dot_damage = {

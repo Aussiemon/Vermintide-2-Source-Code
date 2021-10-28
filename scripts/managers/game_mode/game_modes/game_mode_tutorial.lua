@@ -136,6 +136,10 @@ GameModeTutorial.evaluate_end_conditions = function (self, round_started, dt, t)
 	end
 end
 
+GameModeTutorial.mutators = function (self)
+	return
+end
+
 GameModeTutorial.complete_level = function (self)
 	StatisticsUtil.register_complete_tutorial(Managers.state.game_mode.statistics_db)
 

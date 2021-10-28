@@ -154,7 +154,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 				self._state = "verify_game_mode"
 			else
-				mm_printf("Network hashes differ. lobby_id=%s, host_id:%s", lobby_id, host_name)
+				mm_printf("Network hashes differ. lobby_id=%s, host_id:%s, this_hash:%q, other_hash:%q", lobby_id, host_name, this_hash, other_hash)
 				self:_join_fail_popup(string.format(Localize("failure_start_join_server_incorrect_hash"), this_hash, other_hash))
 
 				return self:_join_game_failed("network_hash_mismatch", t, true)
@@ -268,7 +268,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 		if self._join_timeout < t then
 			mm_printf_force("Failed to join game due to timeout. lobby_id=%s, host_id:%s", lobby_id, host_name)
 
-			return self:_join_game_failed("join_timeout", t, true)
+			return self:_join_game_failed("connection_timeout", t, true)
 		elseif game_reply ~= nil then
 			if game_reply == "lobby_ok" then
 				mm_printf("Successfully joined game after %.2f seconds: lobby_id=%s host_id:%s", join_time, lobby_id, host_name)

@@ -490,6 +490,20 @@ local scenegraph_definition = {
 			-50,
 			4
 		}
+	},
+	hold_to_buy_text = {
+		vertical_alignment = "center",
+		parent = "ready_button",
+		horizontal_alignment = "center",
+		size = {
+			100,
+			50
+		},
+		position = {
+			-25,
+			50,
+			10
+		}
 	}
 }
 local shrine_title_text_style = {
@@ -548,6 +562,21 @@ local bottom_text_style = {
 	horizontal_alignment = "center",
 	vertical_alignment = "center",
 	dynamic_font_size = true,
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
+local hold_text_style = {
+	font_size = 22,
+	upper_case = true,
+	localize = true,
+	use_shadow = true,
+	horizontal_alignment = "left",
+	vertical_alignment = "center",
 	font_type = "hell_shark_header",
 	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
@@ -2547,7 +2576,8 @@ local widgets = {
 		255,
 		10,
 		10
-	})
+	}),
+	hold_to_buy_text = UIWidgets.create_simple_text("hold_to_buy", "hold_to_buy_text", nil, nil, hold_text_style)
 }
 local top_widgets = {
 	console_cursor = UIWidgets.create_console_cursor("console_cursor"),
@@ -2726,7 +2756,7 @@ local function create_blessing_portraits_frame(scenegraph_id, frame_settings_nam
 	return widget
 end
 
-animations_definitions = {
+local animations_definitions = {
 	flash_icon = {
 		{
 			name = "flash_icon",

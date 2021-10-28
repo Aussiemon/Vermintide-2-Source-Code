@@ -362,7 +362,7 @@ Debug.teardown = function ()
 	table.clear(Debug.line_objects)
 end
 
-debug.animation_log_specific_profile = function (profile, enable)
+Debug.animation_log_specific_profile = function (profile, enable)
 	local player_manager = Managers.player
 	local players = player_manager:players()
 
@@ -387,7 +387,7 @@ debug.animation_log_specific_profile = function (profile, enable)
 	end
 end
 
-debug.spawn_hero = function (hero_name)
+Debug.spawn_hero = function (hero_name)
 	local spawn_manager = Managers.state.spawn
 	local hero_spawner_handler = spawn_manager.hero_spawner_handler
 	local peer_id = Network.peer_id()
@@ -396,7 +396,7 @@ debug.spawn_hero = function (hero_name)
 	hero_spawner_handler:spawn_hero_request(player, hero_name)
 end
 
-debug.load_level = function (level_name, environment_variation_id, debug_environment_level_flow_event)
+Debug.load_level = function (level_name, environment_variation_id, debug_environment_level_flow_event)
 	Managers.mechanism:debug_load_level(level_name, environment_variation_id)
 
 	if debug_environment_level_flow_event ~= nil then
@@ -408,7 +408,7 @@ debug.load_level = function (level_name, environment_variation_id, debug_environ
 	end
 end
 
-debug.level_loaded = function (level_name)
+Debug.level_loaded = function (level_name)
 	local state_managers = Managers.state
 
 	if not state_managers then

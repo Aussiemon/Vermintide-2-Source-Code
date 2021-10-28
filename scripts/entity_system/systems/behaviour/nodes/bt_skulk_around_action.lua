@@ -26,7 +26,10 @@ BTSkulkAroundAction.enter = function (self, unit, blackboard, t)
 
 	local network_manager = Managers.state.network
 
-	network_manager:anim_event(unit, "move_fwd")
+	Managers.state.network:anim_event(unit, "idle")
+
+	blackboard.move_state = "idle"
+
 	blackboard.navigation_extension:set_max_speed(blackboard.breed.run_speed)
 
 	local locomotion = blackboard.locomotion_extension
@@ -55,9 +58,6 @@ BTSkulkAroundAction.leave = function (self, unit, blackboard, t, reason, destroy
 
 	navigation_extension:set_max_speed(default_move_speed)
 
-	if reason == "aborted" then
-	end
-
 	if blackboard.approach_target then
 		local skulk_data = blackboard.skulk_data
 		skulk_data.attack_timer = nil
@@ -66,6 +66,27 @@ end
 
 BTSkulkAroundAction.run = function (self, unit, blackboard, t, dt)
 	local skulk_data = blackboard.skulk_data
+
+	if blackboard.navigation_extension:is_following_path() then
+		if blackboard.move_state ~= "moving" then
+			Managers.state.network:anim_event(unit, "move_fwd")
+
+			blackboard.move_state = "moving"
+		end
+	else
+		if blackboard.l ~= "idle" then
+			Managers.state.network:anim_event(unit, "idle")
+
+			blackboard.move_state = "idle"
+		end
+
+		if blackboard.no_path_found then
+			local pos = self:get_new_skulk_goal(unit, blackboard)
+			skulk_data.skulk_pos = Vector3Box(pos)
+
+			blackboard.navigation_extension:move_to(pos)
+		end
+	end
 
 	if not skulk_data.skulk_pos then
 		return "done"

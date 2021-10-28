@@ -238,6 +238,10 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 		end
 	end
 
+	if IS_WINDOWS and self.chat_closed ~= closed then
+		Window.set_ime_enabled(not closed)
+	end
+
 	if menu_active then
 		if self.chat_closed and not closed then
 			self:menu_open()
@@ -837,7 +841,9 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		if GameSettingsDevelopment.use_global_chat then
 			if enlarge_hotspot.on_release then
 				self:unblock_input()
-				Managers.state.event:trigger("ui_event_transition_with_fade", "chat_view_force")
+				Managers.ui:handle_transition("chat_view_force", {
+					use_fade = true
+				})
 
 				chat_closed = true
 				chat_close_time = 0

@@ -23,19 +23,7 @@ local CAREER_ID_LOOKUP = {
 }
 local REDUCTION_INTERVAL = 80
 local DELAY_MULTIPLIER = 5
-
-local function guid()
-	if IS_PS4 then
-		local pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-
-		return string.gsub(pattern, "x", function (c)
-			return string.format("%x", math.random(0, 15))
-		end)
-	else
-		return Application.guid()
-	end
-end
-
+local guid = (IS_PS4 and math.uuid) or Application.guid
 PlayFabMirrorBase = class(PlayFabMirrorBase)
 
 PlayFabMirrorBase.init = function (self, signin_result)
@@ -100,6 +88,10 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self._commit_limit_total = 1
 
 	self:_update_dlc_ownership()
+
+	if not script_data["eac-untrusted"] then
+		self:_request_store_settings()
+	end
 end
 
 PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_values)
@@ -117,6 +109,21 @@ PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_v
 	end
 
 	return claimed_achievements
+end
+
+PlayFabMirrorBase._parse_claimed_event_quests = function (self, read_only_data_values)
+	local claimed_event_quests = {}
+	local claimed_string = read_only_data_values.claimed_event_quests
+
+	if claimed_string then
+		local split_string = string.split(claimed_string, ",")
+
+		for i = 1, #split_string, 1 do
+			claimed_event_quests[split_string[i]] = true
+		end
+	end
+
+	return claimed_event_quests
 end
 
 PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_values)
@@ -201,6 +208,7 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 
 	local read_only_data_values = self._read_only_data
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
+	self._claimed_event_quests = self:_parse_claimed_event_quests(read_only_data_values)
 	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
 	local unlocked_keep_decorations_json = read_only_data_values.unlocked_keep_decorations or "{}"
 	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
@@ -431,6 +439,29 @@ PlayFabMirrorBase.get_quests_cb = function (self, result)
 	self:set_quest_data("current_weekly_quests", current_weekly_quests)
 	self:set_quest_data("weekly_quest_update_time", weekly_quest_update_time)
 	self:_request_fix_inventory_data_1()
+end
+
+PlayFabMirrorBase._request_store_settings = function (self)
+	local request = {
+		FunctionName = "getStoreSettings",
+		FunctionParameter = {}
+	}
+	local success_callback = callback(self, "get_store_settings_cb")
+
+	self._request_queue:enqueue(request, success_callback, true)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.get_store_settings_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local function_result = result.FunctionResult
+	local store_settings = function_result.store_settings
+	self._store_settings = store_settings
+end
+
+PlayFabMirrorBase.store_settings = function (self)
+	return self._store_settings
 end
 
 PlayFabMirrorBase._request_fix_inventory_data_1 = function (self)
@@ -796,7 +827,7 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 
 		if not item.BundleContents then
 			if item.ItemId and not rawget(ItemMasterList, item.ItemId) then
-				Crashify.print_exception("PlayFabMirrorBase", string.format("ItemMasterList has no item %q", tostring(item.ItemId)))
+				Crashify.print_exception("PlayFabMirrorBase", "ItemMasterList has no item %q", item.ItemId)
 			else
 				local backend_id = item.ItemInstanceId
 
@@ -1304,6 +1335,14 @@ PlayFabMirrorBase.get_claimed_achievements = function (self)
 	return self._claimed_achievements
 end
 
+PlayFabMirrorBase.get_claimed_event_quests = function (self)
+	return self._claimed_event_quests
+end
+
+PlayFabMirrorBase.add_claimed_event_quest = function (self, quest_name)
+	self._claimed_event_quests[quest_name] = true
+end
+
 PlayFabMirrorBase.get_achievement_rewards = function (self)
 	return self._achievement_rewards
 end
@@ -1456,9 +1495,8 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item)
 		local fake_item_id = nil
 
 		if Managers.account:offline_mode() then
-			fake_item_id = item.ItemInstanceId
-
-			return self:add_unlocked_weapon_skin(item.ItemId, item.ItemInstanceId)
+			local ids = self:add_unlocked_weapon_skin(item.ItemId, item.ItemInstanceId)
+			fake_item_id = item.ItemInstanceId or (ids and ids[1])
 		else
 			local ids = self:add_unlocked_weapon_skin(item.ItemId)
 			fake_item_id = ids and ids[1]
@@ -1642,7 +1680,7 @@ PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_c
 	local stats_interface = Managers.backend:get_interface("statistics")
 	local game_mode_key = Managers.state and Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 
-	if game_mode_key == "inn" then
+	if Managers.level_transition_handler:in_hub_level() then
 		stats_interface:save()
 	end
 
@@ -1927,13 +1965,6 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 	self.broken_slots_data = nil
 	self._num_items_to_load = self._num_items_to_load - 1
 	local function_result = result.FunctionResult
-
-	if function_result.num_items_granted > 0 then
-		self:_request_user_inventory()
-
-		return
-	end
-
 	local character_starting_gear = function_result.character_starting_gear
 	local current_career_data = self._career_data
 	local mirror_career_data = self._career_data_mirror
@@ -1948,7 +1979,13 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 		table.merge(mirror_career_data, mirror_careers)
 	end
 
-	if Managers.mechanism:current_mechanism_name() == "adventure" then
+	self:set_read_only_data(self._characters_data_key, cjson.encode(character_starting_gear), true)
+
+	if function_result.num_items_granted > 0 then
+		self:_request_user_inventory()
+
+		return
+	elseif Managers.mechanism:current_mechanism_name() == "adventure" then
 		self:_check_weaves_loadout()
 	end
 end

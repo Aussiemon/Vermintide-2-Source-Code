@@ -2378,47 +2378,6 @@ DeusDropPowerlevelRanges = DeusDropPowerlevelRanges or {
 	}
 }
 
-local function add_career_to_weapon_group(weapons, career)
-	for _, weapon in ipairs(weapons) do
-		local weapon_group_can_wield = DeusWeaponGroups[weapon].can_wield
-
-		if not table.contains(weapon_group_can_wield, career) then
-			table.insert(weapon_group_can_wield, career)
-		end
-	end
-end
-
-if DLCSettings.cog then
-	add_career_to_weapon_group({
-		"dr_1h_axe",
-		"dr_2h_hammer",
-		"dr_1h_hammer",
-		"dr_2h_axe",
-		"dr_2h_pick",
-		"dr_shield_axe",
-		"dr_shield_hammer",
-		"dr_dual_wield_hammers",
-		"dr_rakegun",
-		"dr_handgun",
-		"dr_drakegun",
-		"dr_drake_pistol"
-	}, "dr_engineer")
-end
-
-if DLCSettings.bless then
-	add_career_to_weapon_group({
-		"wh_1h_axe",
-		"wh_crossbow"
-	}, "wh_4")
-end
-
-if DLCSettings.shovel then
-	add_career_to_weapon_group({
-		"bw_sword",
-		"bw_skullstaff_fireball"
-	}, "bw_4")
-end
-
 for _, data in pairs(DeusWeapons) do
 	local base_item = ItemMasterList[data.base_item]
 	data.property_table_name = data.property_table_name or property_table_mapping[base_item.property_table_name] or base_item.property_table_name

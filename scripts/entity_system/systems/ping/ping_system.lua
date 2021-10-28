@@ -178,6 +178,12 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 		return
 	end
 
+	local party = sender_player:get_party()
+
+	if not party then
+		return
+	end
+
 	local world_marker_response_index = nil
 
 	if parent_pinger_unit then
@@ -221,7 +227,6 @@ PingSystem._handle_ping = function (self, ping_type, social_wheel_event_id, send
 	end
 
 	local t = Managers.time:time("game")
-	local party = sender_player:get_party()
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(pinger_unit)
 	local pinged_unit_id = pinged_unit and network_manager:unit_game_object_id(pinged_unit)

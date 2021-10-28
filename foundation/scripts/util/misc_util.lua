@@ -31,6 +31,24 @@ function sprintf(f, ...)
 	return string_format(f, ...)
 end
 
+function cprint(...)
+	print(...)
+
+	if IS_WINDOWS then
+		CommandWindow.print(...)
+	end
+end
+
+function cprintf(f, ...)
+	local s = string_format(f, ...)
+
+	print(s)
+
+	if IS_WINDOWS then
+		CommandWindow.print(s)
+	end
+end
+
 function to_boolean(a)
 	local t = type(a)
 

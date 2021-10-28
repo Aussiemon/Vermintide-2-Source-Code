@@ -581,6 +581,8 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	local breed_attacker = Unit.get_data(attacker_unit, "breed")
 	local breed_killed = Unit.get_data(ai_unit, "breed")
 
+	Managers.state.event:trigger("on_killed", killing_blow, breed_killed, breed_attacker, attacker_unit, ai_unit)
+
 	if not breed_attacker or not breed_attacker.is_player or not breed_killed then
 		return
 	end
@@ -1234,9 +1236,9 @@ DeathReactions.templates = {
 						end
 
 						local dice_keeper = context.dice_keeper
-						local can_spawn_pickup_type = true
 						local pickup_settings = AllPickups[pickup_name]
-						local can_spawn_func = pickup_settings.can_spawn_func
+						local can_spawn_func = pickup_settings and pickup_settings.can_spawn_func
+						local can_spawn_pickup_type = pickup_settings ~= nil
 						pickup_params.dice_keeper = dice_keeper
 
 						if can_spawn_func and not can_spawn_func(pickup_params) then
@@ -1641,6 +1643,14 @@ DeathReactions.templates = {
 						local last_attacker_unit = network_manager:game_object_or_level_unit(last_damage_data.attacker_unit_id, false) or unit
 
 						Managers.state.entity:system("area_damage_system"):create_explosion(last_attacker_unit, position, rotation, explosion_template, 1, item_name, nil, false)
+
+						if last_attacker_unit then
+							local buff_extension = ScriptUnit.has_extension(last_attacker_unit, "buff_system")
+
+							if buff_extension then
+								buff_extension:trigger_procs("on_barrel_exploded", position, rotation, item_name)
+							end
+						end
 					end
 
 					data.exploded = true
@@ -1722,6 +1732,14 @@ DeathReactions.templates = {
 				end
 
 				local shrink_and_despawn_time = death_extension.extension_init_data.shrink_and_despawn_time
+				local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+				if buff_extension then
+					local buff = buff_extension:get_buff_type("bubonic_blob_buff")
+
+					buff_extension:remove_buff(buff.id)
+				end
+
 				local data = {
 					start_time = network_time,
 					shrink_and_despawn_time = shrink_and_despawn_time
@@ -1741,8 +1759,6 @@ DeathReactions.templates = {
 				local result = DeathReactions.IS_NOT_DONE
 
 				if network_time >= start_time + delaytime then
-					Unit.flow_event(unit, "lua_death_reaction_start")
-
 					if not data.destroyed then
 						local num_actors = Unit.num_actors(unit)
 
@@ -1827,13 +1843,22 @@ DeathReactions.templates = {
 			pre_start = function (unit, context, t, killing_blow)
 				return
 			end,
-			start = function (unit, context, t, killing_blow, is_server)
+			start = function (unit, context, t, killing_blow, is_server, death_extension)
 				local network_time = Managers.state.network:network_time()
+				local shrink_and_despawn_time = death_extension.extension_init_data.shrink_and_despawn_time
 				local data = {
-					start_time = network_time
+					start_time = network_time,
+					shrink_and_despawn_time = shrink_and_despawn_time
 				}
 				local death_extension = ScriptUnit.extension(unit, "death_system")
 				death_extension.death_has_started = true
+				local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+				if buff_extension then
+					local buff = buff_extension:get_buff_type("bubonic_blob_buff")
+
+					buff_extension:remove_buff(buff.id)
+				end
 
 				return data, DeathReactions.IS_NOT_DONE
 			end,
@@ -1855,7 +1880,24 @@ DeathReactions.templates = {
 
 					data.destroyed = true
 				elseif data.destroyed and network_time >= start_time + 0.5 then
-					result = DeathReactions.IS_DONE
+					if data.shrink_and_despawn_time then
+						local scale_unit_extension = ScriptUnit.has_extension(unit, "props_system")
+						local shrinking_state = data.shrinking_state
+
+						if not shrinking_state then
+							data.shrinking_state = "waiting"
+						elseif shrinking_state == "waiting" then
+							if network_time >= start_time + data.shrink_and_despawn_time then
+								scale_unit_extension:setup(1, 0, 0.5)
+
+								data.shrinking_state = "shrinking"
+							end
+						elseif shrinking_state == "shrinking" and scale_unit_extension:scaling_complete() then
+							result = DeathReactions.IS_DONE
+						end
+					else
+						result = DeathReactions.IS_DONE
+					end
 				end
 
 				return result

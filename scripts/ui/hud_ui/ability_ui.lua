@@ -108,13 +108,6 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		style.ability_effect_left.color[1] = effect_alpha
 		style.ability_effect_top_left.color[1] = effect_alpha
 		style.ability_bar_highlight.color[1] = input_alpha
-		style.input_text_gamepad.text_color[1] = input_alpha
-		style.input_text_gamepad.text_color[3] = input_green
-		style.input_text_shadow_gamepad.text_color[1] = input_alpha
-		style.input_texture_left_shoulder.color[1] = input_alpha
-		style.input_texture_left_shoulder.color[3] = input_green
-		style.input_texture_right_shoulder.color[1] = input_alpha
-		style.input_texture_right_shoulder.color[3] = input_green
 
 		return true
 	elseif content.can_use then
@@ -125,10 +118,6 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		style.ability_effect_left.color[1] = 0
 		style.ability_effect_top_left.color[1] = 0
 		style.ability_bar_highlight.color[1] = 0
-		style.input_text_gamepad.text_color[1] = 0
-		style.input_text_shadow_gamepad.text_color[1] = 0
-		style.input_texture_left_shoulder.color[1] = 0
-		style.input_texture_right_shoulder.color[1] = 0
 
 		return true
 	end

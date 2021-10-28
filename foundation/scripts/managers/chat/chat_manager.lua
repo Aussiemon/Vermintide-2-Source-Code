@@ -554,6 +554,10 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 				end
 			end
 		end
+
+		if not localize then
+			Managers.telemetry.events:chat_message(message)
+		end
 	elseif message_type == Irc.CHANNEL_MSG or message_type == Irc.PRIVATE_MSG then
 		Managers.irc:send_message(message, message_target)
 

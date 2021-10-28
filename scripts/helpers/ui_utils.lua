@@ -19,9 +19,9 @@ UIUtils.format_localized_description = function (fmt_str, fmt_def)
 		return fmt_localized
 	end
 
-	local n = #fmt_def
+	local num_defs = #fmt_def
 
-	for i = 1, n, 1 do
+	for i = 1, num_defs, 1 do
 		local value_data = fmt_def[i]
 		local value_type = value_data.value_type
 		local value_fmt = value_data.value_fmt
@@ -40,7 +40,11 @@ UIUtils.format_localized_description = function (fmt_str, fmt_def)
 		VALUE_LIST[i] = value
 	end
 
-	return string.format(fmt_localized, unpack(VALUE_LIST, 1, n))
+	local str = string.format(fmt_localized, unpack(VALUE_LIST, 1, num_defs))
+
+	table.clear(VALUE_LIST)
+
+	return str
 end
 
 UIUtils.get_talent_description = function (talent_data)
@@ -183,7 +187,7 @@ UIUtils.get_ui_information_from_item = function (item)
 	local inventory_icon, display_name, description, store_icon = nil
 
 	if item_type == "weapon_skin" then
-		local skin = item.skin or item_data.key
+		local skin = item.skin or item.key or item_data.key
 		local skin_template = WeaponSkins.skins[skin]
 		inventory_icon = skin_template.inventory_icon
 		store_icon = skin_template.store_icon
@@ -333,60 +337,64 @@ UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_globa
 end
 
 UIUtils.is_button_pressed = function (widget, hotspot_name)
-	if not widget then
-		return false
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+		if hotspot.on_release then
+			hotspot.on_release = false
+
+			return true
+		end
 	end
 
-	local content = widget.content
-	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
-	end
+	return false
 end
 
 UIUtils.is_button_held = function (widget, hotspot_name)
-	if not widget then
-		return false
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+		if hotspot.is_held then
+			return true
+		end
 	end
 
-	local content = widget.content
-	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
-
-	if hotspot.is_held then
-		return true
-	end
+	return false
 end
 
 UIUtils.is_button_hover_enter = function (widget, hotspot_name)
-	if not widget then
-		return false
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+		return hotspot.on_hover_enter
 	end
 
-	local content = widget.content
-	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
-
-	return hotspot.on_hover_enter
+	return false
 end
 
 UIUtils.is_button_hover = function (widget, hotspot_name)
-	if not widget then
-		return false
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+		return hotspot.is_hover
 	end
 
-	local content = widget.content
-	local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
-
-	return hotspot.is_hover
+	return false
 end
 
 UIUtils.is_button_selected = function (widget, hotspot_name)
-	local content = widget.content
-	local hotspot = content[hotspot_name] or content.button_hotspot
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
 
-	return hotspot.is_selected
+		return hotspot.is_selected
+	end
+
+	return false
 end
 
 UIUtils.animate_value = function (x, dx, dir)
@@ -422,95 +430,6 @@ UIUtils.get_portrait_image_by_profile_index = function (profile_index, career_in
 	return portrait_image
 end
 
-UIUtils.get_input_texture_data = function (input_service, input_action, gamepad_active)
-	local platform = PLATFORM
-
-	if IS_XB1 and GameSettingsDevelopment.allow_keyboard_mouse and not gamepad_active then
-		platform = "win32"
-	elseif IS_WINDOWS and gamepad_active then
-		platform = "xb1"
-	end
-
-	local keymap_binding = input_service:get_keymapping(input_action, platform)
-	local device_type = keymap_binding[1]
-	local key_index = keymap_binding[2]
-	local key_action_type = keymap_binding[3]
-	local prefix_text = nil
-
-	if key_action_type == "held" then
-		prefix_text = "matchmaking_prefix_hold"
-	end
-
-	if device_type == "keyboard" then
-		return nil, Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index), prefix_text
-	elseif device_type == "mouse" then
-		local button_texture_data = ButtonTextureByName(device_type .. "_" .. key_index, platform)
-
-		return button_texture_data, Mouse.button_name(key_index), prefix_text
-	elseif device_type == "gamepad" then
-		local button_name = Pad1.button_name(key_index)
-		local button_texture_data = ButtonTextureByName(button_name, platform)
-
-		return button_texture_data, button_name, prefix_text
-	end
-
-	return nil, ""
-end
-
-UIUtils.mixin_pass = function (widget, pass_def)
-	local passes = widget.element.passes
-	passes[#passes + 1] = pass_def
-	local name = pass_def.name
-
-	if pass_def.texture then
-		local texture_id = name
-		pass_def.texture_id = texture_id
-		widget.content[texture_id] = pass_def.texture
-	end
-
-	if pass_def.text then
-		local text_id = name
-		pass_def.text_id = text_id
-		widget.content[text_id] = pass_def.text
-	end
-
-	if pass_def.content then
-		local content_id = name
-		pass_def.content_id = content_id
-		widget.content[content_id] = pass_def.content
-	end
-
-	if pass_def.style then
-		local style_id = name
-		pass_def.style_id = style_id
-		widget.style[style_id] = pass_def.style
-	end
-
-	return widget
-end
-
-UIUtils.make_widget = function (widget, pass, ...)
-	if not widget.element then
-		widget.element = {
-			passes = {}
-		}
-	end
-
-	if not widget.content then
-		widget.content = {}
-	end
-
-	if not widget.style then
-		widget.style = {}
-	end
-
-	if pass then
-		return UIUtils.make_widget(UIUtils.mixin_pass(widget, pass), ...)
-	else
-		return widget
-	end
-end
-
 UIUtils.create_widgets = function (widget_definitions, widgets, widgets_by_name)
 	widgets = widgets or {}
 	widgets_by_name = widgets_by_name or {}
@@ -538,14 +457,22 @@ UIUtils.mark_dirty = function (widget_list)
 	end
 end
 
-UIUtils.align = function (alignment, position, offset)
-	if alignment == "right" or alignment == "top" then
-		position = position + offset
-	elseif alignment == "center" then
-		position = position + 0.5 * offset
+UIUtils.align_box_inplace = function (ui_style, position, size, child_size)
+	local ha = ui_style.horizontal_alignment
+
+	if ha == "right" then
+		position[1] = (position[1] + size[1]) - child_size[1]
+	elseif ha == "center" then
+		position[1] = position[1] + 0.5 * (size[1] - child_size[1])
 	end
 
-	return position
+	local va = ui_style.vertical_alignment
+
+	if va == "top" then
+		position[2] = (position[2] + size[2]) - child_size[2]
+	elseif va == "center" then
+		position[2] = position[2] + 0.5 * (size[2] - child_size[2])
+	end
 end
 
 UIUtils.format_time = function (t)
@@ -553,6 +480,20 @@ UIUtils.format_time = function (t)
 	local min = (t - sec) / 60
 
 	return string.format("%02d:%02d", min, sec)
+end
+
+UIUtils.format_duration = function (t, done_string)
+	if t > 172800 then
+		return string.format(Localize("datetime_days") .. ", " .. Localize("datetime_hours_short"), t / 86400, (t / 3600) % 24)
+	elseif t > 7200 then
+		return string.format(Localize("datetime_hours_short") .. ", " .. Localize("datetime_minutes_short"), t / 3600, (t / 60) % 60)
+	elseif t > 120 then
+		return string.format(Localize("datetime_minutes_short") .. ", " .. Localize("datetime_seconds_short"), t / 60, t % 60)
+	elseif t > 0 then
+		return string.format(Localize("datetime_seconds_short"), t)
+	else
+		return done_string or string.format(Localize("datetime_seconds_short"), 0)
+	end
 end
 
 UIUtils.get_color_for_consumable_item = function (item_key)

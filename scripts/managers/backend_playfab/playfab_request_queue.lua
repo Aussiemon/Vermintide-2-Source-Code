@@ -1,17 +1,5 @@
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
-
-local function guid()
-	if IS_PS4 then
-		local pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-
-		return string.gsub(pattern, "x", function (c)
-			return string.format("%x", math.random(0, 15))
-		end)
-	else
-		return Application.guid()
-	end
-end
-
+local guid = (IS_PS4 and math.uuid) or Application.guid
 PlayFabRequestQueue = class(PlayFabRequestQueue)
 local MAX_RETRIES = 2
 local TIMEOUT_TIME = 20
@@ -21,6 +9,7 @@ PlayFabRequestQueue.init = function (self)
 	self._active_entry = nil
 	self._id = 0
 	self._eac_id = 0
+	self._metadata = Managers.backend:get_metadata()
 end
 
 PlayFabRequestQueue.is_pending_request = function (self)
@@ -29,6 +18,16 @@ end
 
 PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_eac_challenge, error_callback)
 	local id = self._id + 1
+	local parameters = request.FunctionParameter
+
+	if not parameters then
+		request.FunctionParameter = {
+			metadata = self._metadata
+		}
+	else
+		parameters.metadata = self._metadata
+	end
+
 	local entry = {
 		resends = 0,
 		eac_challenge_success = false,
@@ -112,7 +111,8 @@ PlayFabRequestQueue.update = function (self, dt)
 		local generate_challenge_request = {
 			FunctionName = "generateChallenge",
 			FunctionParameter = {
-				eac_id = eac_id
+				eac_id = eac_id,
+				metadata = self._metadata
 			}
 		}
 		entry.expected_eac_id = eac_id
@@ -207,6 +207,14 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 	self._active_entry = nil
 
 	success_callback(result)
+
+	if script_data.testify then
+		local function_to_wait_for = Testify:poll_request("wait_for_playfab_response")
+
+		if function_to_wait_for and function_to_wait_for == request.FunctionName then
+			Testify:respond_to_request("wait_for_playfab_response", request.FunctionName)
+		end
+	end
 end
 
 PlayFabRequestQueue.playfab_request_error_cb = function (self, error_callback, id, result)

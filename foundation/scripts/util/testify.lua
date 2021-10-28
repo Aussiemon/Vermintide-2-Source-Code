@@ -54,85 +54,110 @@ Testify = {
 		self._responses[request_name] = nil
 
 		return self:_wait_for_response(request_name)
-	end,
-	_wait_for_response = function (self, request_name)
-		while true do
-			coroutine.yield()
-
-			local response = self._responses[request_name]
-
-			if response ~= nil then
-				return response
-			end
-		end
-	end,
-	poll_request = function (self, request_name)
-		return self._requests[request_name]
-	end,
-	handle_request = function (self, request_name)
-		self:_print("Handling request %s", request_name)
-
-		self._requests[request_name] = nil
-	end,
-	respond_to_request = function (self, request_name, response_value)
-		self:_print("Responding to %s %s", request_name, response_value)
-
-		self._requests[request_name] = nil
-		self._responses[request_name] = (response_value == nil and "") or response_value
-	end,
-	clear_all_requests = function (self)
-		self:_print("Clearing all requests")
-
-		for key, _ in pairs(self._requests) do
-			self._responses[key] = ""
-			self._requests[key] = nil
-		end
-	end,
-	print_test_case_marker = function (self)
-		print("<<testify>>test case<</testify>>")
-	end,
-	inspect = function (self)
-		printf("[Testify] Test case running? %s", self._thread ~= nil)
-		table.dump(self._requests, "[Testify] Requests", 2)
-		table.dump(self._responses, "[Testify] Responses", 2)
-	end,
-	_set_time_scale = function (self)
-		local debug_manager = Managers.state.debug
-
-		if not debug_manager then
-			return
-		end
-
-		local scale = Development.parameter("testify_time_scale")
-		local time_scale_index = table.index_of(debug_manager.time_scale_list, tonumber(scale))
-		self._time_scaled = true
-
-		if time_scale_index == -1 then
-			printf("[Testify] Time Scale %s is not supported. Please chose a value from the following list:%s", scale, table.dump_string(debug_manager.time_scale_list, 1))
-
-			return
-		end
-
-		debug_manager:set_time_scale(time_scale_index)
-	end,
-	_signal = function (self, signal, message)
-		if Application.console_send == nil then
-			return
-		end
-
-		Application.console_send({
-			system = "Testify",
-			type = "signal",
-			signal = signal,
-			message = tostring(message)
-		})
-	end,
-	_print = function (self, ...)
-		if Development.parameter("debug_testify") then
-			printf("[Testify] %s", string.format(...))
-		end
 	end
 }
+
+Testify.make_request_to_runner = function (self, request_name, request_parameter)
+	self:_print("Requesting %s %s to the Testify Runner", request_name, request_parameter)
+
+	self._requests[request_name] = (request_parameter == nil and "") or request_parameter
+	self._responses[request_name] = nil
+	local request = {
+		name = request_name,
+		parameter = request_parameter
+	}
+
+	Testify:_signal(SIGNALS.request, cjson.encode(request))
+
+	return self:_wait_for_response(request_name)
+end
+
+Testify._wait_for_response = function (self, request_name)
+	while true do
+		coroutine.yield()
+
+		local response = self._responses[request_name]
+
+		if response ~= nil then
+			return response
+		end
+	end
+end
+
+Testify.poll_request = function (self, request_name)
+	return self._requests[request_name]
+end
+
+Testify.handle_request = function (self, request_name)
+	self:_print("Handling request %s", request_name)
+
+	self._requests[request_name] = nil
+end
+
+Testify.respond_to_request = function (self, request_name, response_value)
+	self:_print("Responding to %s %s", request_name, response_value)
+
+	self._requests[request_name] = nil
+	self._responses[request_name] = (response_value == nil and "") or response_value
+end
+
+Testify.clear_all_requests = function (self)
+	self:_print("Clearing all requests")
+
+	for key, _ in pairs(self._requests) do
+		self._responses[key] = ""
+		self._requests[key] = nil
+	end
+end
+
+Testify.print_test_case_marker = function (self)
+	print("<<testify>>test case<</testify>>")
+end
+
+Testify.inspect = function (self)
+	printf("[Testify] Test case running? %s", self._thread ~= nil)
+	table.dump(self._requests, "[Testify] Requests", 2)
+	table.dump(self._responses, "[Testify] Responses", 2)
+end
+
+Testify._set_time_scale = function (self)
+	local debug_manager = Managers.state.debug
+
+	if not debug_manager then
+		return
+	end
+
+	local scale = Development.parameter("testify_time_scale")
+	local time_scale_index = table.index_of(debug_manager.time_scale_list, tonumber(scale))
+	self._time_scaled = true
+
+	if time_scale_index == -1 then
+		printf("[Testify] Time Scale %s is not supported. Please chose a value from the following list:%s", scale, table.dump_string(debug_manager.time_scale_list, 1))
+
+		return
+	end
+
+	debug_manager:set_time_scale(time_scale_index)
+end
+
+Testify._signal = function (self, signal, message)
+	if Application.console_send == nil then
+		return
+	end
+
+	Application.console_send({
+		system = "Testify",
+		type = "signal",
+		signal = signal,
+		message = tostring(message)
+	})
+end
+
+Testify._print = function (self, ...)
+	if Development.parameter("debug_testify") then
+		printf("[Testify] %s", string.format(...))
+	end
+end
 
 Testify.poll_requests_through_handler = function (self, callback_table, userdata)
 	local RETRY = Testify.RETRY

@@ -197,10 +197,11 @@ ActionTemplates.action_inspect = {
 		total_time = math.huge,
 		allowed_chain_actions = {},
 		weapon_sway_settings = {
-			look_sensitivity = 1.5,
-			sway_range = 1,
+			recentering_lerp_speed = 0,
 			lerp_speed = 10,
-			recentering_lerp_speed = 0
+			sway_range = 1,
+			camera_look_sensitivity = 1,
+			look_sensitivity = 1.5
 		}
 	}
 }

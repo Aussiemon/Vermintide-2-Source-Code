@@ -139,6 +139,19 @@ SimpleInventoryExtension.extensions_ready = function (self, world, unit)
 		local buffs = self:_get_property_and_trait_buffs(backend_id)
 
 		self:apply_buffs(buffs, "wield", item_data.name, default_wielded_slot)
+
+		local equipment = self._equipment
+		local left_weapon = ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "weapon_system")
+
+		if left_weapon then
+			left_weapon:on_wield("left")
+		end
+
+		local right_weapon = ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "weapon_system")
+
+		if right_weapon then
+			right_weapon:on_wield("right")
+		end
 	end
 
 	self._equipment.wielded_slot = profile.default_wielded_slot
@@ -524,6 +537,18 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 
 	if equipment.wielded_slot ~= slot_name then
 		self.buff_extension:trigger_procs("on_unwield")
+
+		local left_weapon = ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "weapon_system")
+
+		if left_weapon then
+			left_weapon:on_unwield("left")
+		end
+
+		local right_weapon = ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "weapon_system")
+
+		if right_weapon then
+			right_weapon:on_unwield("right")
+		end
 	end
 
 	self:_stop_all_weapon_fx()
@@ -584,6 +609,18 @@ SimpleInventoryExtension.wield = function (self, slot_name)
 	end
 
 	self:start_weapon_fx("wield")
+
+	local left_weapon = ScriptUnit.has_extension(equipment.left_hand_wielded_unit, "weapon_system")
+
+	if left_weapon then
+		left_weapon:on_wield("left")
+	end
+
+	local right_weapon = ScriptUnit.has_extension(equipment.right_hand_wielded_unit, "weapon_system")
+
+	if right_weapon then
+		right_weapon:on_wield("right")
+	end
 end
 
 SimpleInventoryExtension._despawn_attached_units = function (self)
@@ -694,6 +731,11 @@ SimpleInventoryExtension.add_equipment = function (self, slot_name, item_name, u
 	self.recently_acquired_list[slot_name] = slot_equipment_data
 
 	CosmeticUtils.update_cosmetic_slot(self.player, slot_name, item_data.name, slot_equipment_data.skin)
+
+	local backend_interface_items = Managers.backend:get_interface("items")
+	local item = backend_interface_items:get_item_from_id(item_data.backend_id) or rawget(ItemMasterList, item_data.name)
+
+	LoadoutUtils.sync_loadout_slot(self.player, slot_name, item)
 
 	local item_name = item_data.name
 	local buffs_by_buffer = self:_get_no_wield_required_property_and_trait_buffs(item_data.backend_id)
@@ -1228,7 +1270,7 @@ SimpleInventoryExtension._spawn_resynced_loadout = function (self, equipment_to_
 
 	self:add_equipment(slot_name, item_data, unit_template, extra_extension_data, ammo_percent)
 
-	if not skip_wield and slot_name ~= "slot_career_skill_weapon" then
+	if not skip_wield and slot_name ~= "slot_career_skill_weapon" and slot_name ~= "slot_level_event" then
 		self:wield(slot_name)
 	end
 end
@@ -1743,7 +1785,9 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	local wield_anim = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career, self._career_name)
 
 	if not script_data.disable_third_person_weapon_animation_events then
-		Unit.animation_event(unit_3p, wield_anim)
+		local wield_anim_3p = get_wield_anim(item_template.wield_anim, item_template.wield_anim_career_3p, self._career_name) or wield_anim
+
+		Unit.animation_event(unit_3p, wield_anim_3p)
 	end
 
 	if slot_data.right_unit_1p or slot_data.left_unit_1p then
@@ -1876,6 +1920,7 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	end
 
 	Unit.flow_event(unit_1p, "lua_wield")
+	Managers.state.event:trigger("on_weapon_wield", equipment)
 
 	return true
 end

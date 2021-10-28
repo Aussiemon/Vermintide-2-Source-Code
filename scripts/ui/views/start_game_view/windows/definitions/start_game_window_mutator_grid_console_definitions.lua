@@ -99,8 +99,8 @@ local scenegraph_definition = {
 		parent = "window",
 		horizontal_alignment = "center",
 		size = {
-			window_size[1] + 70,
-			415
+			window_size[1] + 90,
+			100
 		},
 		position = {
 			0,
@@ -348,14 +348,15 @@ local heroic_deed_title_style = {
 	}
 }
 local rows = 5
-local slots_per_row = 5
+local slots_per_row = 7
 local slot_width_spacing = 12
 local slot_height_spacing = 12
 local use_pages = false
 local widgets = {
+	heroic_deed_description_background = UIWidgets.create_rect_with_outer_frame("heroic_deed_background", scenegraph_definition.heroic_deed_background.size, "frame_outer_fade_02", nil, UISettings.console_start_game_menu_rect_color),
 	heroic_deed_title = UIWidgets.create_simple_text(Localize("start_game_window_mutator_title"), "heroic_deed_title", nil, nil, heroic_deed_title_style),
 	heroic_deed_divider = UIWidgets.create_simple_texture("divider_01_top", "heroic_deed_divider"),
-	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, rows, slots_per_row, slot_width_spacing, slot_height_spacing, use_pages),
+	item_grid = UIWidgets.create_grid("item_grid", scenegraph_definition.item_grid.size, rows, slots_per_row, slot_width_spacing, slot_height_spacing, use_pages, nil, true),
 	input_icon_next = UIWidgets.create_simple_texture("xbone_button_icon_a", "input_icon_next"),
 	input_icon_previous = UIWidgets.create_simple_texture("xbone_button_icon_a", "input_icon_previous"),
 	input_arrow_next = UIWidgets.create_simple_uv_texture("settings_arrow_normal", {

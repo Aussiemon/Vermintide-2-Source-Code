@@ -1868,6 +1868,31 @@ local unit_templates = {
 			"ProjectileLinkerExtension"
 		}
 	},
+	nurgle_liquid_blob_dynamic = {
+		go_type = "positioned_blob_unit",
+		self_owned_extensions = {
+			"GenericHealthExtension",
+			"GenericDeathExtension",
+			"ProjectileLinkerExtension",
+			"GenericHitReactionExtension",
+			"ProximityMineExtension",
+			"ScaleUnitExtension"
+		},
+		husk_extensions = {
+			"GenericHealthExtension",
+			"GenericDeathExtension",
+			"ProjectileLinkerExtension",
+			"GenericHitReactionExtension",
+			"ProximityMineExtension",
+			"ScaleUnitExtension"
+		},
+		remove_when_killed = {
+			"GenericDeathExtension",
+			"ProjectileLinkerExtension",
+			"ProximityMineExtension",
+			"ScaleUnitExtension"
+		}
+	},
 	explosive_pickup_projectile_unit_limited = {
 		go_type = "explosive_pickup_projectile_unit_limited",
 		self_owned_extensions = {

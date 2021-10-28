@@ -822,7 +822,7 @@ end
 StateTitleScreenMainMenu._waiting_for_backend_signin = function (self)
 	local backend_manager = Managers.backend
 
-	if backend_manager and (backend_manager:is_local() or backend_manager:authenticated()) then
+	if backend_manager and backend_manager:authenticated() then
 		self._params.menu_screen_music_playing = false
 
 		Managers.transition:fade_in(GameSettings.transition_fade_out_speed, callback(self, "cb_fade_in_done"))

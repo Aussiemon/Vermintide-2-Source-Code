@@ -426,7 +426,7 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 
 		if description_text then
 			widget_use_index = widget_use_index + 1
-			description_text = Localize(description_text)
+			description_text = (action_data.ignore_localization and description_text) or Localize(description_text)
 			local action_texture_data = self:get_gamepad_input_texture_data(input_action, ignore_keybinding)
 			local description_widget = console_input_description_widgets[widget_use_index]
 			local widget_content = description_widget.content

@@ -747,7 +747,6 @@ SplashView.init = function (self, input_manager, world)
 	end
 
 	self._fram_skip_hack = 0
-	self.gdc_build = Development.parameter("gdc")
 	self.force_debug_enabled = Development.parameter("force_debug_enabled")
 	self.render_settings = {
 		snap_pixel_positions = true

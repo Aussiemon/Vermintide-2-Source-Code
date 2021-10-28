@@ -124,11 +124,13 @@ HeroViewStateStore.on_enter = function (self, params)
 		snap_pixel_positions = true
 	}
 	self._wwise_world = params.wwise_world
+	self._world = params.parent.world
 	self._loaded_package_names = {}
 	self._cloned_materials_by_reference = {}
 	self._animations = {}
 	self._ui_animations = {}
 	self._unload_list = {}
+	self._items_bought = 0
 	self._unseen_product_reward_queue = {}
 	self.tab_cat = {}
 
@@ -288,10 +290,36 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 	self:block_input()
 end
 
+HeroViewStateStore._has_unseen_items_tab_cat = function (self)
+	local tab_cat = self.tab_cat
+
+	for _, count in pairs(tab_cat) do
+		if count > 0 then
+			return true
+		end
+	end
+
+	return false
+end
+
 HeroViewStateStore.change_generic_actions = function (self, input_actions)
 	local menu_input_description = self._menu_input_description
+	self._active_input_actions = input_actions
+	local input_actions_copy = input_actions
 
-	menu_input_description:change_generic_actions(input_actions)
+	if self:_has_unseen_items_tab_cat() then
+		input_actions_copy = {
+			{
+				input_action = "refresh",
+				priority = 20,
+				description_text = "mark_all_as_seen"
+			}
+		}
+
+		table.append(input_actions_copy, input_actions)
+	end
+
+	menu_input_description:change_generic_actions(input_actions_copy)
 end
 
 HeroViewStateStore._setup_menu_layout = function (self)
@@ -787,6 +815,20 @@ HeroViewStateStore.on_exit = function (self, params)
 
 	self:_clear_unload_list()
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
+
+	local login_rewards_popup = self._login_rewards_popup
+	local flow_event = nil
+
+	if self._items_bought > 0 then
+		flow_event = "shop_closed_item_bought"
+	else
+		flow_event = "shop_closed"
+	end
+
+	if GameSettingsDevelopment.store_nags then
+		LevelHelper:flow_event(self._world, flow_event)
+	end
+
 	Managers.telemetry.events:store_closed()
 end
 
@@ -1106,6 +1148,11 @@ HeroViewStateStore._handle_input = function (self, dt, t)
 			self:set_layout(previous_layout_key)
 		end
 	end
+
+	if input_service:get("refresh", true) then
+		ItemHelper.set_all_shop_item_seen(self.tab_cat)
+		self:change_generic_actions(self._active_input_actions)
+	end
 end
 
 HeroViewStateStore.close_menu = function (self, ignore_sound_on_close_menu)
@@ -1250,10 +1297,14 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 								}
 
 								self:enqueue_acquired_product(sub_product)
+
+								self._items_bought = self._items_bought + 1
 							end
 						end
 					else
 						self:enqueue_acquired_product(product)
+
+						self._items_bought = self._items_bought + 1
 					end
 				else
 					print("[HeroViewState] Purchase steam item: FAILED. result-code:", result)
@@ -1281,7 +1332,7 @@ HeroViewStateStore.check_owns_bundle = function (self, backend_items, bundle_con
 	bundle_contains = bundle_contains or dummy_table
 
 	if #bundle_contains <= 0 then
-		return false
+		return false, false
 	end
 
 	for i = 1, #bundle_contains, 1 do
@@ -1289,11 +1340,11 @@ HeroViewStateStore.check_owns_bundle = function (self, backend_items, bundle_con
 		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
 
 		if not backend_items:has_item(item_key) and not backend_items:has_weapon_illusion(item_key) then
-			return false
+			return false, i > 1
 		end
 	end
 
-	return true
+	return true, true
 end
 
 HeroViewStateStore.enqueue_acquired_product = function (self, product)
@@ -1347,6 +1398,7 @@ HeroViewStateStore._complete_item_purchase_request = function (self)
 	self:_abort_item_purchase_request()
 
 	self._products_version_id = (self._products_version_id or 0) + 1
+	self._items_bought = self._items_bought + 1
 end
 
 HeroViewStateStore._abort_item_purchase_request = function (self)
@@ -1558,9 +1610,26 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 		if steam_itemdefid then
 			real_currency = true
 			price_text, price_text_original = self:get_steam_item_price_text(steam_itemdefid, content, item_data)
+			local price_data = SteamItemService.get_item_data(steam_itemdefid, "price")
 
-			if item_data.show_discount then
-				self:_calculate_discount_textures(widget, item_data.discount)
+			if not price_data then
+				print("[HeroViewStateStore] No price_data")
+			end
+
+			if price_data and price_data.discount_is_active then
+				local backend_store = Managers.backend:get_interface("peddler")
+				local current, currency = backend_store:get_steam_item_price(steam_itemdefid)
+				local regular = item_data.bundle_price or price_data.regular_prices[currency]
+				local discount = 1 - current / regular
+
+				self:_calculate_discount_textures(widget, math.round(100 * discount))
+
+				local o1 = style.optional_item_name.offset
+				o1[1] = o1[1] + 35
+				o1[2] = o1[2] - 10
+				local o2 = style.optional_subtitle.offset
+				o2[1] = o2[1] + 35
+				o2[2] = o2[2] - 10
 			end
 		elseif dlc_name then
 			real_currency = true
@@ -1570,19 +1639,17 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 			price_text = Localize(reason)
 		else
 			local currency_type = "SM"
-			local regular_prices = item.regular_prices
-			local current_prices = item.current_prices
-			local price = current_prices[currency_type] or regular_prices[currency_type]
-			local price_difference = regular_prices[currency_type] - current_prices[currency_type]
+			local regular_price = item.regular_prices[currency_type]
+			local current_price = item.current_prices[currency_type]
 
-			if price_difference ~= 0 then
-				local discount = price_difference / price * 100
+			if current_price ~= regular_price then
+				local discount = 1 - current_price / regular_price
 
-				self:_calculate_discount_textures(widget, discount)
+				self:_calculate_discount_textures(widget, math.round(100 * discount))
 			end
 
 			real_currency = false
-			price_text = UIUtils.comma_value(tostring(price))
+			price_text = UIUtils.comma_value(tostring(current_price))
 		end
 
 		if item_data.show_old_price then

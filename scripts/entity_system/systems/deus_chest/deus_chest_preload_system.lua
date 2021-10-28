@@ -127,7 +127,14 @@ DeusChestPreloadSystem._setup_weapon_preload_settings = function (self)
 			success = true
 		end
 	elseif IS_PS4 then
-		local platform_type = (PS4.is_pro() and "ps4_pro") or "ps4"
+		local platform_type = "ps4"
+
+		if PS4.is_ps5() then
+			platform_type = "ps5"
+		elseif PS4.is_pro() then
+			platform_type = "ps4_pro"
+		end
+
 		local settings = deus_weapon_preload_settings[platform_type]
 		local default_settings = deus_weapon_preload_settings.default
 

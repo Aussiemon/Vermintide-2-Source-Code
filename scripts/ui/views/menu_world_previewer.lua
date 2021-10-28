@@ -40,8 +40,8 @@ local camera_position_by_character = {
 	}
 }
 
-MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_character_positions, unique_id)
-	MenuWorldPreviewer.super.init(self, ingame_ui_context, unique_id)
+MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_character_positions, unique_id, delayed_spawn)
+	MenuWorldPreviewer.super.init(self, ingame_ui_context, unique_id, delayed_spawn)
 
 	self.input_manager = ingame_ui_context.input_manager
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -74,6 +74,7 @@ MenuWorldPreviewer.init = function (self, ingame_ui_context, optional_camera_cha
 		0
 	}
 	self._units = {}
+	self._requested_unit_spawn_queue = {}
 end
 
 MenuWorldPreviewer.destroy = function (self)
@@ -83,11 +84,14 @@ MenuWorldPreviewer.destroy = function (self)
 end
 
 MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
+	MenuWorldPreviewer.super.on_enter(self)
+	self:setup_viewport(viewport_widget, hero_name)
+end
+
+MenuWorldPreviewer.setup_viewport = function (self, viewport_widget, hero_name)
 	self.viewport_widget = viewport_widget
 	local preview_pass_data = viewport_widget.element.pass_data[1]
-
-	MenuWorldPreviewer.super.on_enter(self, preview_pass_data.world)
-
+	self.world = preview_pass_data.world
 	self.level = preview_pass_data.level
 	self.viewport = preview_pass_data.viewport
 	self.camera = ScriptViewport.camera(self.viewport)
@@ -107,6 +111,33 @@ MenuWorldPreviewer.on_enter = function (self, viewport_widget, hero_name)
 	self.camera_xy_angle_target = DEFAULT_ANGLE
 	self._requested_unit_spawn_queue = {}
 	self._units = {}
+end
+
+local EMPTY_TABLE = {}
+
+MenuWorldPreviewer.activate = function (self, activate, viewport_widget, hero_name)
+	if not self._delayed_spawn then
+		return
+	end
+
+	if self._activated == activate then
+		return
+	end
+
+	if activate then
+		self:setup_viewport(viewport_widget, hero_name)
+
+		self._requested_hero_spawn_data = self._delayed_hero_spawn_data or EMPTY_TABLE
+		self._requested_unit_spawn_queue = self._delayed_unit_spawn_queue or EMPTY_TABLE
+	else
+		local reset_camera = true
+
+		self:clear_units(reset_camera)
+
+		self.world = nil
+	end
+
+	self._activated = activate
 end
 
 MenuWorldPreviewer.trigger_level_event = function (self, event_name)
@@ -141,7 +172,13 @@ MenuWorldPreviewer.on_exit = function (self)
 end
 
 MenuWorldPreviewer.update = function (self, dt, t, input_disabled)
+	self._requested_unit_spawn_queue = self._delayed_unit_spawn_queue or EMPTY_TABLE
+
 	MenuWorldPreviewer.super.update(self, dt, t)
+
+	if not self._activated then
+		return
+	end
 
 	local character_unit = self.character_unit
 
@@ -393,6 +430,10 @@ MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, caree
 		optional_skin = optional_skin
 	}
 
+	if self._delayed_spawn then
+		self._delayed_hero_spawn_data = table.clone(self._requested_hero_spawn_data)
+	end
+
 	self:clear_units(reset_camera)
 end
 
@@ -404,6 +445,10 @@ MenuWorldPreviewer.request_spawn_unit = function (self, unit_name, unit_type, cb
 		unit_type = unit_type,
 		callback = cb
 	}
+
+	if self._delayed_spawn then
+		self._delayed_unit_spawn_queue = table.clone(queue)
+	end
 end
 
 MenuWorldPreviewer._handle_hero_spawn_request = function (self)
@@ -448,7 +493,9 @@ end
 MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index, state_character, callback, optional_scale, camera_move_duration, optional_skin)
 	self.camera_xy_angle_target = DEFAULT_ANGLE
 
-	self:_unload_all_packages()
+	if not self._delayed_spawn then
+		self:_unload_all_packages()
+	end
 
 	camera_move_duration = camera_move_duration or 0.01
 	local character_camera_positions = self._character_camera_positions

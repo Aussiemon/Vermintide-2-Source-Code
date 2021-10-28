@@ -5,7 +5,7 @@ local hero_widget_definition = definitions.hero_widget_definition
 local hero_icon_widget_definition = definitions.hero_icon_widget_definition
 PopupProfilePicker = class(PopupProfilePicker)
 
-PopupProfilePicker.init = function (self, ingame_ui_context)
+PopupProfilePicker.init = function (self, ingame_ui_context, ...)
 	self._ui_renderer = ingame_ui_context.ui_renderer
 	self._ui_top_renderer = ingame_ui_context.ui_top_renderer
 	self._ingame_ui = ingame_ui_context.ingame_ui
@@ -26,6 +26,7 @@ PopupProfilePicker.init = function (self, ingame_ui_context)
 
 	self._menu_input_desc:set_input_description(nil)
 	self:_create_ui_elements()
+	self:show(...)
 end
 
 PopupProfilePicker._create_ui_elements = function (self)

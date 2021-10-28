@@ -3,11 +3,10 @@ InteractionDefinitions.deus_access.config.swap_to_3p = false
 
 InteractionDefinitions.deus_access.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("start_game_view_force", {
+			use_fade = true,
 			menu_state_name = "play"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
+		})
 	end
 end
 
@@ -329,9 +328,7 @@ InteractionDefinitions.deus_debug_changelog.config.swap_to_3p = false
 
 InteractionDefinitions.deus_debug_changelog.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {}
-
-		Managers.state.event:trigger("ui_event_transition", "deus_debug_changelog_view", transition_params)
+		Managers.ui:handle_transition("deus_debug_changelog_view", {})
 	end
 end
 

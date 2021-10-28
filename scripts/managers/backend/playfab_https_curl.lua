@@ -82,7 +82,7 @@ local function on_error(request_data, result, id, error_override)
 		local override = (error_override and string.format(" | Error Override: %s", error_override)) or ""
 
 		printf("[PLAYFAB HTTPS CURL] RESENDING REQUEST. Id: %s | Error Code: %s%s", id, error_code, override)
-		ScriptApplication.send_to_crashify("Backend_Error", "RESENDING REQUEST: %s", request_data)
+		Crashify.print_exception("Backend_Error", "RESENDING REQUEST: %s", request_data)
 	else
 		if error_override then
 			error_code = error_override or error_code

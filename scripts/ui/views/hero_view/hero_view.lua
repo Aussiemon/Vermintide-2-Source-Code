@@ -259,7 +259,12 @@ HeroView.update = function (self, dt, t)
 end
 
 HeroView.on_enter = function (self, params)
-	self:_setup_hdr_gui()
+	self._force_ingame_menu = params.force_ingame_menu
+
+	if not self._force_ingame_menu then
+		self:_setup_hdr_gui()
+	end
+
 	ShowCursorStack.push()
 
 	local input_manager = self.input_manager
@@ -428,7 +433,10 @@ HeroView.post_update_on_exit = function (self)
 	end
 
 	Managers.backend:commit()
-	self:destroy_hdr_gui()
+
+	if not self._force_ingame_menu then
+		self:destroy_hdr_gui()
+	end
 end
 
 HeroView.on_exit = function (self)
@@ -463,7 +471,7 @@ HeroView.exit = function (self, return_to_game, ignore_sound)
 	local exit_transition = "exit_menu"
 	self.exiting = true
 
-	if self.is_in_inn then
+	if self.is_in_inn and not self._force_ingame_menu then
 		self.ingame_ui:transition_with_fade(exit_transition)
 	else
 		self.ingame_ui:handle_transition(exit_transition)

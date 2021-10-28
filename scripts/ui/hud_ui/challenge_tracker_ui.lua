@@ -20,7 +20,6 @@ ChallengeTrackerUI._create_ui_elements = function (self)
 	}
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, definitions.animation_definitions)
 	self._data = {
-		category = "questing_knight",
 		offset = {
 			0,
 			0,
@@ -39,7 +38,12 @@ end
 ChallengeTrackerUI._refresh_challenge_data = function (self, data)
 	table.clear(data.challenges)
 
-	local challenges, n = Managers.venture.challenge:get_challenges_filtered(data.challenges, data.category)
+	local challenges, n = Managers.venture.challenge:get_challenges_filtered(data.challenges)
+
+	table.sort(challenges, function (a, b)
+		return a:get_category() < b:get_category()
+	end)
+
 	local active_widgets = data.widgets
 	local num_active_widgets = #active_widgets
 

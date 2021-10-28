@@ -84,6 +84,139 @@ TerrorEventMixer.init_functions = {
 	roaming_patrol = function (event, element, t)
 		return
 	end,
+	spawn_around_player = function (event, element, t)
+		return
+	end,
+	spawn_around_origin_unit = function (event, element, t)
+		local breed_name = nil
+		local check_name = element.breed_name
+		local num_to_spawn = element.amount or 1
+		local num_to_spawn_scaled = element.difficulty_amount
+
+		if type(check_name) == "table" then
+			breed_name = check_name[Math.random(1, #check_name)]
+		else
+			breed_name = check_name
+		end
+
+		if num_to_spawn_scaled then
+			local chosen_amount = Managers.state.difficulty:get_difficulty_value_from_table(num_to_spawn_scaled)
+			chosen_amount = chosen_amount or num_to_spawn_scaled.hardest
+
+			if type(chosen_amount) == "table" then
+				num_to_spawn = chosen_amount[Math.random(1, #chosen_amount)]
+			else
+				num_to_spawn = chosen_amount
+			end
+		elseif type(num_to_spawn) == "table" then
+			num_to_spawn = num_to_spawn[Math.random(1, #num_to_spawn)]
+		end
+
+		local optional_data = element.optional_data and table.clone(element.optional_data)
+
+		if element.spawn_counter_category then
+			optional_data = add_spawned_counting(event, optional_data, element.spawn_counter_category)
+		end
+
+		local distance_to_enemies = element.distance_to_enemies or 2
+
+		local function filter_func(pos, invalid_pos_list)
+			local min_dist_enemies_sqr = math.pow(distance_to_enemies, 2)
+
+			for i = 1, #invalid_pos_list, 1 do
+				if Vector3.distance_squared(pos, invalid_pos_list[i]) < min_dist_enemies_sqr then
+					return false
+				end
+			end
+
+			return true
+		end
+
+		if element.pre_spawn_func then
+			local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+		end
+
+		local invalid_pos_list = {}
+		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
+		local spawn_positions = {}
+		event.spawn_at = t + (element.spawn_delay or 0)
+		event.spawn_positions = spawn_positions
+		event.optional_data = optional_data
+		event.breed = Breeds[breed_name]
+		local center_unit = event.data.origin_unit
+		local center_position = nil
+
+		if center_unit then
+			center_position = Unit.local_position(center_unit, 0)
+		else
+			Application.warning("[TerrorEventMixer] spawn_around_origin_unit present in a terror event that is started without an origin_unit, falling back to a random player")
+
+			local random_player = PlayerUtils.get_random_alive_hero()
+			center_position = POSITION_LOOKUP[random_player]
+		end
+
+		local distance = element.spawn_distance or 10
+		local spread = element.spread or 10
+		local radian_subdivision = element.circle_subdivision or math.pi * 0.5
+		local spread_delta = element.row_distance or 2
+		local two_pi = 2 * math.pi
+		local start_spread = (math.random() - 0.5) * spread
+		local current_spread = start_spread
+		local start_radians = math.random() * two_pi
+		local current_radians = start_radians
+		local radians_delta = two_pi / radian_subdivision
+		local current_radian_delta_count = 0
+
+		local function get_next_pos()
+			current_radians = current_radians + radians_delta
+
+			if two_pi < current_radians then
+				current_radians = current_radians - two_pi
+			end
+
+			current_radian_delta_count = current_radian_delta_count + 1
+
+			if radian_subdivision < current_radian_delta_count then
+				current_spread = current_spread + spread_delta
+
+				if current_spread > spread * 0.5 then
+					current_spread = current_spread - spread
+				end
+
+				current_radian_delta_count = 0
+				current_radians = math.random() * two_pi
+			end
+
+			local add_vec = Vector3(distance + current_spread, 0, 1)
+			local pos = center_position + Quaternion.rotate(Quaternion(Vector3.up(), current_radians), add_vec)
+
+			return pos
+		end
+
+		for i = 1, num_to_spawn, 1 do
+			for try = 1, 30, 1 do
+				local pos = get_next_pos()
+				local spawn_pos = ConflictUtils.find_center_tri(nav_world, pos)
+
+				if spawn_pos and filter_func(spawn_pos, invalid_pos_list) then
+					table.insert(invalid_pos_list, spawn_pos)
+
+					local boxed_spawn_pos = Vector3Box(spawn_pos)
+
+					if element.pre_spawn_unit_func then
+						element.pre_spawn_unit_func(event, element, boxed_spawn_pos, breed_name)
+					end
+
+					spawn_positions[#spawn_positions + 1] = boxed_spawn_pos
+
+					break
+				end
+			end
+		end
+
+		return true
+	end,
 	continue_when = function (event, element, t)
 		if element.duration then
 			event.ends_at = t + ConflictUtils.random_interval(element.duration)
@@ -206,6 +339,16 @@ TerrorEventMixer.init_functions = {
 		if event then
 			event.destroy = true
 		end
+	end,
+	start_mission = function (event, element, t)
+		local mission_name = element.mission_name
+
+		Managers.state.entity:system("mission_system"):request_mission(mission_name)
+	end,
+	end_mission = function (event, element, t)
+		local mission_name = element.mission_name
+
+		Managers.state.entity:system("mission_system"):end_mission(mission_name, true)
 	end,
 	set_master_event_running = function (event, element, t)
 		Managers.state.conflict:set_master_event_running(element.name)
@@ -475,6 +618,11 @@ TerrorEventMixer.run_functions = {
 			breed_name = breed_name[Math.random(1, #breed_name)]
 		end
 
+		if element.pre_spawn_func then
+			local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+		end
+
 		conflict_director:spawn_one(Breeds[breed_name], position, group_data, optional_data)
 
 		return true
@@ -630,6 +778,11 @@ TerrorEventMixer.run_functions = {
 				breed_name = check_name
 			end
 
+			if element.pre_spawn_func then
+				local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+				optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+			end
+
 			local conflict_director = Managers.state.conflict
 
 			for i = 1, num_to_spawn, 1 do
@@ -736,6 +889,107 @@ TerrorEventMixer.run_functions = {
 
 		return true
 	end,
+	spawn_around_player = function (event, element, t, dt)
+		local breed_name = nil
+		local check_name = element.breed_name
+		local num_to_spawn = element.amount or 1
+		local num_to_spawn_scaled = element.difficulty_amount
+
+		if type(check_name) == "table" then
+			breed_name = check_name[Math.random(1, #check_name)]
+		else
+			breed_name = check_name
+		end
+
+		if num_to_spawn_scaled then
+			local chosen_amount = Managers.state.difficulty:get_difficulty_value_from_table(num_to_spawn_scaled)
+			chosen_amount = chosen_amount or num_to_spawn_scaled.hardest
+
+			if type(chosen_amount) == "table" then
+				num_to_spawn = chosen_amount[Math.random(1, #chosen_amount)]
+			else
+				num_to_spawn = chosen_amount
+			end
+		elseif type(num_to_spawn) == "table" then
+			num_to_spawn = num_to_spawn[Math.random(1, #num_to_spawn)]
+		end
+
+		local optional_data = element.optional_data and table.clone(element.optional_data)
+
+		if element.spawn_counter_category then
+			optional_data = add_spawned_counting(event, optional_data, element.spawn_counter_category)
+		end
+
+		local hero_side = Managers.state.side:get_side_from_name("heroes")
+		local player_positions = hero_side.PLAYER_AND_BOT_POSITIONS
+		local distance_to_players = element.distance_to_players or 2
+		local distance_to_enemies = element.distance_to_enemies or 2
+
+		local function filter_func(pos, invalid_pos_list)
+			local min_dist_players_sqr = math.pow(distance_to_players, 2)
+
+			for i = 1, #player_positions, 1 do
+				if Vector3.distance_squared(pos, player_positions[i]) < min_dist_players_sqr then
+					return false
+				end
+			end
+
+			local min_dist_enemies_sqr = math.pow(distance_to_enemies, 2)
+
+			for i = 1, #invalid_pos_list, 1 do
+				if Vector3.distance_squared(pos, invalid_pos_list[i]) < min_dist_enemies_sqr then
+					return false
+				end
+			end
+
+			return true
+		end
+
+		if element.pre_spawn_func then
+			local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+		end
+
+		local invalid_pos_list = {}
+		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
+		local conflict_director = Managers.state.conflict
+
+		for i = 1, num_to_spawn, 1 do
+			local random_player = PlayerUtils.get_random_alive_hero()
+			local player_position = POSITION_LOOKUP[random_player]
+			local distance = element.spawn_distance or 10
+			local spread = element.spread or 10
+			local spawn_pos = ConflictUtils.get_spawn_pos_on_circle_with_func(nav_world, player_position, distance, spread, 30, filter_func, invalid_pos_list)
+
+			if spawn_pos then
+				table.insert(invalid_pos_list, spawn_pos)
+				conflict_director:spawn_one(Breeds[breed_name], spawn_pos, nil, optional_data)
+			end
+		end
+
+		return true
+	end,
+	spawn_around_origin_unit = function (event, element, t, dt)
+		if event.spawn_at < t then
+			local conflict_director = Managers.state.conflict
+			local breed = event.breed
+			local optional_data = event.optional_data
+
+			for _, spawn_pos in ipairs(event.spawn_positions) do
+				conflict_director:spawn_one(breed, spawn_pos:unbox(), nil, optional_data)
+
+				if element.post_spawn_unit_func then
+					element.post_spawn_unit_func(event, element, spawn_pos)
+				end
+			end
+
+			event.spawn_positions = nil
+
+			return true
+		end
+
+		return false
+	end,
 	continue_when = function (event, element, t, dt)
 		if element.duration and event.ends_at < t then
 			return true
@@ -812,6 +1066,12 @@ TerrorEventMixer.run_functions = {
 		return true
 	end,
 	stop_event = function (event, element, t, dt)
+		return true
+	end,
+	start_mission = function (event, element, t)
+		return true
+	end,
+	end_mission = function (event, element, t)
 		return true
 	end,
 	flow_event = function (event, element, t, dt)
@@ -1059,6 +1319,12 @@ TerrorEventMixer.debug_functions = {
 	stop_event = function (event, element, t, dt)
 		return "event_name: " .. element.stop_event_name
 	end,
+	start_mission = function (event, element, t)
+		return "mission_name: " .. element.mission_name
+	end,
+	end_mission = function (event, element, t)
+		return "mission_name: " .. element.mission_name
+	end,
 	flow_event = function (event, element, t, dt)
 		return "event_name: " .. tostring(element.flow_event_name)
 	end,
@@ -1125,12 +1391,13 @@ TerrorEventMixer.reset = function ()
 	table.clear(TerrorEventMixer.optional_data)
 end
 
-TerrorEventMixer.add_to_start_event_list = function (event_name, seed)
+TerrorEventMixer.add_to_start_event_list = function (event_name, seed, origin_unit)
 	local start_events = TerrorEventMixer.start_event_list
 	start_events[#start_events + 1] = {
 		name = event_name,
 		data = {
-			seed = seed
+			seed = seed,
+			origin_unit = origin_unit
 		}
 	}
 end
@@ -1157,11 +1424,11 @@ TerrorEventMixer.start_random_event = function (event_chunk_name)
 	print("TerrorEventMixer.start_random_event:", event_chunk_name, "->", event_name)
 end
 
-local function is_element_available(element)
-	local conflict_director = Managers.state.conflict
-	local director = ConflictDirectors[conflict_director.initial_conflict_settings]
-	local factions = director.factions
-	local current_difficulty, current_difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
+local function is_element_available(element, data)
+	local active_tags = data.active_tags
+	local factions = data.factions
+	local current_difficulty = data.current_difficulty
+	local current_difficulty_tweak = data.current_difficulty_tweak
 
 	if element.minimum_difficulty_tweak and current_difficulty_tweak < element.minimum_difficulty_tweak then
 		return false
@@ -1193,12 +1460,75 @@ local function is_element_available(element)
 		end
 	end
 
+	if element.tag_requirement_list then
+		local tags = element.tag_requirement_list
+
+		for _, tag in ipairs(tags) do
+			if not active_tags or not table.contains(active_tags, tag) then
+				return false
+			end
+		end
+	end
+
 	return true
+end
+
+local process_terror_event_recursive = nil
+
+local function process_terror_event_recursive_element(element, data, processed_elements, base_event_name, depth)
+	if element[1] == "inject_event" then
+		local injected_event_name = nil
+
+		if element.event_name_list then
+			local seed, index = Math.next_random(data.seed, 1, #element.event_name_list)
+			injected_event_name = element.event_name_list[index]
+			data.seed = seed
+		elseif element.weighted_event_names then
+			local total_weight = 0
+
+			for _, sub_element in ipairs(element.weighted_event_names) do
+				total_weight = total_weight + sub_element.weight
+			end
+
+			local seed, random = Math.next_random(data.seed, 0, total_weight)
+			data.seed = seed
+			local weight_sum = 0
+
+			for _, sub_element in ipairs(element.weighted_event_names) do
+				weight_sum = weight_sum + sub_element.weight
+
+				if random <= weight_sum then
+					injected_event_name = sub_element.event_name
+
+					break
+				end
+			end
+
+			if injected_event_name == nil then
+				assert(false, "Failed getting a random weighted element.")
+			end
+		else
+			injected_event_name = element.event_name
+		end
+
+		process_terror_event_recursive(processed_elements, data, depth + 1, injected_event_name)
+	elseif element[1] == "one_of" then
+		for _, possible_element in ipairs(element[2]) do
+			if is_element_available(possible_element, data) then
+				process_terror_event_recursive_element(possible_element, data, processed_elements, base_event_name, depth)
+
+				break
+			end
+		end
+	else
+		element.base_event_name = base_event_name
+		processed_elements[#processed_elements + 1] = element
+	end
 end
 
 local MAX_INJECTION_DEPTH = 10
 
-local function process_terror_event_recursive(processed_elements, data, depth, event_name)
+function process_terror_event_recursive(processed_elements, data, depth, event_name)
 	fassert(depth < MAX_INJECTION_DEPTH, "Injecting terror events lead to high level of recursion, please check if there is a possible loop, or increase MAX_INJECTION_DEPTH.")
 
 	local level_transition_handler = Managers.level_transition_handler
@@ -1208,23 +1538,8 @@ local function process_terror_event_recursive(processed_elements, data, depth, e
 	fassert(injected_elements, "No terror event called '%s', exists. Make sure it is added to level %s, or generic, terror event file if its supposed to be there.", event_name, level_key)
 
 	for _, element in ipairs(injected_elements) do
-		if is_element_available(element) then
-			if element[1] == "inject_event" then
-				local injected_event_name = nil
-
-				if element.event_name_list then
-					local seed, index = Math.next_random(data.seed, 1, #element.event_name_list)
-					injected_event_name = element.event_name_list[index]
-					data.seed = seed
-				else
-					injected_event_name = element.event_name
-				end
-
-				processed_elements = process_terror_event_recursive(processed_elements, data, depth + 1, injected_event_name)
-			else
-				element.base_event_name = event_name
-				processed_elements[#processed_elements + 1] = element
-			end
+		if is_element_available(element, data) then
+			process_terror_event_recursive_element(element, data, processed_elements, event_name, depth)
 		end
 	end
 
@@ -1232,6 +1547,15 @@ local function process_terror_event_recursive(processed_elements, data, depth, e
 end
 
 local function process_terror_event(data, base_event_name)
+	local active_tags = Managers.state.game_mode._mutator_handler:get_terror_event_tags()
+	local conflict_director = Managers.state.conflict
+	local director = ConflictDirectors[conflict_director.initial_conflict_settings]
+	local factions = director.factions
+	local current_difficulty, current_difficulty_tweak = Managers.state.difficulty:get_difficulty_rank()
+	data.current_difficulty = current_difficulty
+	data.current_difficulty_tweak = current_difficulty_tweak
+	data.factions = factions
+	data.active_tags = active_tags
 	local processed_elements = process_terror_event_recursive({}, data, 0, base_event_name)
 
 	if script_data.debug_terror then

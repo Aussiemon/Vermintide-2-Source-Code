@@ -1,5 +1,6 @@
 DLCSettings = DLCSettings or {
 	store = {
+		localization = "localization/store",
 		package_name = "resource_packages/dlcs/store",
 		additional_settings = {
 			common = "scripts/settings/dlcs/store/store_common_settings",
@@ -9,6 +10,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	eight_ball = {
+		localization = "localization/eight_ball",
 		package_name = "resource_packages/dlcs/eight_ball",
 		additional_settings = {
 			common = "scripts/settings/dlcs/eight_ball/eight_ball_common_settings",
@@ -26,6 +28,7 @@ DLCSettings = DLCSettings or {
 	morris = {
 		platform_specific = "resource_packages/dlcs/morris_platform_specific",
 		package_name = "resource_packages/dlcs/morris",
+		localization = "localization/morris",
 		additional_settings = {
 			level = "scripts/settings/dlcs/morris/morris_level_settings",
 			ai = "scripts/settings/dlcs/morris/morris_ai_settings",
@@ -63,6 +66,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	penny_part_1 = {
+		localization = "localization/penny",
 		package_name = "resource_packages/dlcs/penny_part_1",
 		additional_settings = {
 			common = "scripts/settings/dlcs/penny/penny_common_settings_part_1",
@@ -158,6 +162,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	mutators_batch_01 = {
+		localization = "localization/mutators_01",
 		package_name = "resource_packages/dlcs/mutators_batch_01",
 		additional_settings = {
 			common = "scripts/settings/dlcs/mutators_batch_01/mutators_batch_01_common_settings",
@@ -166,6 +171,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	mutators_batch_02 = {
+		localization = "localization/mutators_02",
 		package_name = "resource_packages/dlcs/mutators_batch_02",
 		additional_settings = {
 			equipment = "scripts/settings/dlcs/mutators_batch_02/mutators_batch_02_equipment_settings",
@@ -182,6 +188,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	lake = {
+		localization = "localization/lake",
 		package_name = "resource_packages/dlcs/lake",
 		additional_settings = {
 			equipment = "scripts/settings/dlcs/lake/lake_equipment_settings",
@@ -192,6 +199,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	cog = {
+		localization = "localization/cog",
 		package_name = "resource_packages/dlcs/cog",
 		additional_settings = {
 			equipment = "scripts/settings/dlcs/cog/cog_equipment_settings",
@@ -203,6 +211,7 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	woods = {
+		localization = "localization/woods",
 		package_name = "resource_packages/dlcs/woods",
 		additional_settings = {
 			equipment = "scripts/settings/dlcs/woods/woods_equipment_settings",
@@ -211,6 +220,31 @@ DLCSettings = DLCSettings or {
 			buff = "scripts/settings/dlcs/woods/buff_settings_woods",
 			sound = "scripts/settings/dlcs/woods/woods_sound_settings",
 			achievements = "scripts/settings/dlcs/woods/woods_achievements_settings"
+		}
+	},
+	grudge_marks = {
+		localization = "localization/grudge_marks",
+		package_name = "resource_packages/dlcs/grudge_marks",
+		additional_settings = {
+			common = "scripts/settings/dlcs/grudge_marks/grudge_marks_common_settings",
+			achievements = "scripts/settings/dlcs/grudge_marks/grudge_marks_achievements_settings",
+			sound = "scripts/settings/dlcs/grudge_marks/grudge_marks_sound_settings",
+			buff = "scripts/settings/dlcs/grudge_marks/buff_settings_grudge_marks"
+		}
+	},
+	geheimnisnacht_2021 = {
+		localization = "localization/geheimnisnacht_2021",
+		package_name = "resource_packages/dlcs/geheimnisnacht_2021",
+		additional_settings = {
+			common = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_common_settings",
+			quest = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_quest_settings",
+			buff = "scripts/settings/dlcs/geheimnisnacht_2021/buff_settings_geheimnisnacht_2021"
+		}
+	},
+	fall_collection_2021 = {
+		package_name = "resource_packages/dlcs/fall_collection_2021",
+		additional_settings = {
+			common = "scripts/settings/dlcs/fall_collection_2021/fall_collection_2021_common_settings"
 		}
 	}
 }

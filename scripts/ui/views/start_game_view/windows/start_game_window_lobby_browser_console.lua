@@ -22,6 +22,13 @@ local GAME_MODE_LOOKUP_STRINGS = {
 	["n/a"] = "lb_game_type_none",
 	any = "lobby_browser_mission"
 }
+local GAME_TYPE_LOOKUP_STRINGS = {
+	deus = "area_selection_morris_name",
+	adventure = "area_selection_campaign",
+	weave = "menu_weave_area_no_wom_title",
+	versus = "vs_ui_versus_tag",
+	any = "lobby_browser_mission"
+}
 StartGameWindowLobbyBrowserConsole = class(StartGameWindowLobbyBrowserConsole)
 StartGameWindowLobbyBrowserConsole.NAME = "StartGameWindowLobbyBrowserConsole"
 
@@ -96,13 +103,17 @@ StartGameWindowLobbyBrowserConsole.update = function (self, dt, t)
 
 	local is_refreshing = self:_is_refreshing()
 
-	if self._searching and not is_refreshing then
-		self._searching = false
+	if not is_refreshing then
+		if self._do_populate then
+			self:_populate_lobby_list()
+		end
 
-		self:_populate_lobby_list()
+		self._searching = false
+		self._do_populate = false
 	end
 
-	self._lobby_browser_console_ui:update(dt, t, self._searching)
+	self:_update_auto_refresh(dt)
+	self._lobby_browser_console_ui:update(dt, t, self._searching and self._do_populate)
 end
 
 StartGameWindowLobbyBrowserConsole.post_update = function (self, dt, t)
@@ -122,7 +133,7 @@ StartGameWindowLobbyBrowserConsole.cancel_join_lobby = function (self, status_me
 end
 
 StartGameWindowLobbyBrowserConsole._populate_lobby_list = function (self, auto_update)
-	local lobbies = self:_get_lobbies()
+	local lobbies = self:get_lobbies()
 	local ignore_scroll_reset = true
 	local show_lobbies_index = self._selected_show_lobbies_index
 	local show_filter = definitions.show_lobbies_table[show_lobbies_index] or "lb_show_all"
@@ -161,7 +172,7 @@ end
 
 local empty_lobby_list = {}
 
-StartGameWindowLobbyBrowserConsole._get_lobbies = function (self)
+StartGameWindowLobbyBrowserConsole.get_lobbies = function (self)
 	local lobby_finder = self._lobby_finder
 
 	return lobby_finder:lobbies() or empty_lobby_list
@@ -275,25 +286,43 @@ StartGameWindowLobbyBrowserConsole.input_service = function (self)
 	return self._parent:window_input_service()
 end
 
+StartGameWindowLobbyBrowserConsole.dirty = function (self)
+	local dirty = self._dirty
+	self._dirty = false
+
+	return dirty
+end
+
 StartGameWindowLobbyBrowserConsole._update_auto_refresh = function (self, dt)
+	local is_refreshing = self:_is_refreshing()
 	local lobby_list_update_timer = self._lobby_list_update_timer or MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH
 
 	if lobby_list_update_timer then
 		lobby_list_update_timer = lobby_list_update_timer - dt
 
-		if lobby_list_update_timer < 0 then
-			self:_populate_lobby_list(true)
+		if lobby_list_update_timer < 0 and not is_refreshing then
+			self._lobby_list_update_timer = MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH
+			local skip_populate = true
+
+			self:_search(skip_populate)
 		else
 			self._lobby_list_update_timer = lobby_list_update_timer
 		end
 	end
+
+	if self._was_refreshing and not is_refreshing then
+		self._dirty = true
+	end
+
+	self._was_refreshing = is_refreshing
 end
 
-StartGameWindowLobbyBrowserConsole.reset_filters = function (self)
-	self:set_level("any")
-	self:set_difficulty("any")
-	self:set_lobby_filter(((BUILD == "dev" or BUILD == "debug") and "lb_show_all") or "lb_show_joinable")
-	self:set_distance_filter("map_zone_options_5")
+StartGameWindowLobbyBrowserConsole.reset_filters = function (self, selected_game_mode, selected_level, selected_difficulty, selected_filter, selected_distance)
+	self:set_level(selected_level or "any")
+	self:set_difficulty(selected_difficulty or "any")
+	self:set_lobby_filter(selected_filter or ((BUILD == "dev" or BUILD == "debug") and "lb_show_all") or "lb_show_joinable")
+	self:set_distance_filter(selected_distance or "map_zone_options_5")
+	self:set_game_mode(selected_game_mode or "any")
 	self:_search()
 end
 
@@ -387,7 +416,7 @@ StartGameWindowLobbyBrowserConsole._join = function (self, lobby_data, join_para
 	self.join_lobby_data_id = lobby_data.id
 end
 
-StartGameWindowLobbyBrowserConsole._search = function (self)
+StartGameWindowLobbyBrowserConsole._search = function (self, skip_populate)
 	local requirements = self:_create_filter_requirements()
 	local lobby_finder = self._lobby_finder
 
@@ -404,6 +433,14 @@ StartGameWindowLobbyBrowserConsole._search = function (self)
 	lobby_finder:add_filter_requirements(requirements, force_refresh)
 
 	self._searching = true
+	self._do_populate = not skip_populate
+end
+
+StartGameWindowLobbyBrowserConsole._get_game_modes = function (self)
+	local game_mode_data = self._game_mode_data
+	local game_modes = game_mode_data.game_modes
+
+	return game_modes
 end
 
 StartGameWindowLobbyBrowserConsole._get_levels = function (self)
@@ -434,9 +471,28 @@ StartGameWindowLobbyBrowserConsole.completed_level_difficulty_index = function (
 end
 
 StartGameWindowLobbyBrowserConsole.refresh = function (self)
-	if not self._searching then
+	if not self:_is_refreshing() then
 		self:_search()
 	end
+end
+
+StartGameWindowLobbyBrowserConsole.set_game_mode = function (self, game_mode)
+	local game_modes_table = self:_get_game_modes()
+	local new_index = table.find(game_modes_table, game_mode)
+	local game_mode_display_name = "lobby_browser_mission"
+	local game_mode = game_modes_table[new_index]
+
+	if game_mode and game_mode ~= "any" then
+		game_mode_display_name = GAME_TYPE_LOOKUP_STRINGS[game_mode]
+	end
+
+	self._selected_game_mode_index = new_index
+	self._search_timer = input_delay_before_start_new_search
+	self._do_populate = true
+
+	self:set_level("any")
+	self._lobby_browser_console_ui:set_game_type_filter(Localize(game_mode_display_name))
+	self._lobby_browser_console_ui:setup_filter_entries()
 end
 
 StartGameWindowLobbyBrowserConsole.set_level = function (self, level)

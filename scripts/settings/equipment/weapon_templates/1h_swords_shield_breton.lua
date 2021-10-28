@@ -955,10 +955,7 @@ weapon_template.tooltip_detail = {
 	}
 }
 weapon_template.wwise_dep_right_hand = {
-	"wwise/one_handed_swords"
-}
-weapon_template.wwise_dep_left_hand = {
-	"wwise/two_handed_hammers"
+	"wwise/two_handed_swords"
 }
 
 return {

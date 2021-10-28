@@ -492,12 +492,13 @@ DeusRunController.has_completed_current_node = function (self)
 	end
 end
 
-DeusRunController.handle_shrine_completed = function (self)
+DeusRunController.handle_shrine_entered = function (self, shrine_node_key)
+	self._run_state:set_current_node_key(shrine_node_key)
+
 	local traversed_nodes = self._run_state:get_traversed_nodes()
-	local current_node_key = self._run_state:get_current_node_key()
 	local skip_metatable = true
 	traversed_nodes = table.clone(traversed_nodes, skip_metatable)
-	traversed_nodes[#traversed_nodes + 1] = current_node_key
+	traversed_nodes[#traversed_nodes + 1] = shrine_node_key
 
 	self._run_state:set_traversed_nodes(traversed_nodes)
 end
@@ -921,7 +922,8 @@ end
 DeusRunController.rpc_deus_shop_power_up_bought = function (self, sender_channel_id, rarity, power_up_name, power_up_client_id, discount)
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
 	discount = discount / DISCOUNT_CONVERSION_EPSILON
-	local power_up = DeusPowerUps[rarity][power_up_name]
+	local skip_metatable = true
+	local power_up = table.clone(DeusPowerUps[rarity][power_up_name], skip_metatable)
 	power_up.client_id = power_up_client_id
 	local success = self:_try_buy_power_up(sender, power_up, discount)
 
@@ -1315,6 +1317,22 @@ DeusRunController._try_buy_power_up = function (self, buyer, power_up, discount)
 	self._run_state:set_bought_power_ups(bought_power_ups)
 
 	return true
+end
+
+DeusRunController.grant_party_power_up = function (self, power_up_name, power_up_rarity)
+	if not self._run_state:is_server() then
+		ferror("DeusRunController:grant_party_power_up is designed to only be called on the server")
+	end
+
+	local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, power_up_rarity)
+	local party_power_ups = self._run_state:get_party_power_ups()
+	local skip_metatable = true
+	party_power_ups = table.clone(party_power_ups, skip_metatable)
+	party_power_ups[#party_power_ups + 1] = power_up
+
+	self._run_state:set_party_power_ups(party_power_ups)
+
+	return power_up
 end
 
 DeusRunController.get_player_profile = function (self, peer_id, local_player_id)

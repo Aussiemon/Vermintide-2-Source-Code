@@ -19,13 +19,6 @@ end
 BTIdleAction.enter = function (self, unit, blackboard, t)
 	local network_manager = Managers.state.network
 	local animation = "idle"
-	local optional_spawn_data = blackboard.optional_spawn_data
-	local idle_animation = optional_spawn_data and optional_spawn_data.idle_animation
-
-	if idle_animation and idle_animation ~= "" then
-		animation = idle_animation
-	end
-
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	blackboard.spawn_to_running = nil
@@ -46,6 +39,13 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 		local index = action.anim_cycle_index % #anims + 1
 		animation = anims[index]
 		action.anim_cycle_index = index
+	end
+
+	local optional_spawn_data = blackboard.optional_spawn_data
+	local idle_animation = optional_spawn_data and optional_spawn_data.idle_animation
+
+	if idle_animation and idle_animation ~= "" then
+		animation = idle_animation
 	end
 
 	if blackboard.move_state ~= "idle" or (action and action.force_idle_animation) then

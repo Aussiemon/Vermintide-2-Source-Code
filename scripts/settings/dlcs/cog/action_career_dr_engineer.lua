@@ -1,4 +1,5 @@
 ActionCareerDREngineer = class(ActionCareerDREngineer, ActionRangedBase)
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local BOT_THREAT_REFRESH_TIME = 1
 local BOT_THREAT_DURATION = 1.2
 local BOT_THREAT_AREA_W = 3
@@ -25,6 +26,7 @@ ActionCareerDREngineer.init = function (self, world, item_name, is_server, owner
 	self._last_avoidance_t = 0
 	self._free_ammo_t = 0
 	self._ranged_attack = true
+	self._num_extra_shots = 0
 end
 
 ActionCareerDREngineer.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
@@ -99,6 +101,7 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, t)
 			if self:_check_extra_shot_proc(self.buff_extension) then
 				self.extra_buff_shot = true
 				extra_shots = 1 + self._extra_shots
+				self._num_extra_shots = extra_shots
 			end
 
 			self._current_rps = math.clamp(self._current_rps + self._rps_gain_per_shot * num_projectilise, self._initial_rounds_per_second, self._max_rps)
@@ -166,17 +169,23 @@ ActionCareerDREngineer.apply_shot_cost = function (self, t)
 	self:_fake_activate_ability(t)
 
 	local should_consume_ammo = self._free_ammo_t < t
+	local buff_extension = self.buff_extension
+
+	if buff_extension and buff_extension:has_buff_perk(buff_perks.free_ability_engineer) then
+		should_consume_ammo = false
+	end
 
 	if should_consume_ammo then
 		local projectiles_per_shot = self._num_projectiles_per_shot
 
 		if self.extra_buff_shot then
-			projectiles_per_shot = math.max(projectiles_per_shot - 1, 1)
+			projectiles_per_shot = math.max(projectiles_per_shot - self._num_extra_shots, 1)
 		end
 
 		self.career_extension:reduce_activated_ability_cooldown(-self._shot_cost * projectiles_per_shot)
 
 		self.extra_buff_shot = false
+		self._num_extra_shots = 0
 	end
 end
 
@@ -255,7 +264,7 @@ ActionCareerDREngineer._fake_activate_ability = function (self, t)
 	if buff_extension then
 		self._ammo_expended = self._ammo_expended + self._shot_cost * self._num_projectiles_per_shot
 
-		if buff_extension:has_buff_perk("free_ability") then
+		if buff_extension:has_buff_perk(buff_perks.free_ability) then
 			buff_extension:trigger_procs("on_ability_activated", self.owner_unit, 1)
 			buff_extension:trigger_procs("on_ability_cooldown_started")
 

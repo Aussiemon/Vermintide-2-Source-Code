@@ -699,7 +699,6 @@ DEUS_MAP_POPULATE_SETTINGS.journey_cave.LEVEL_AVAILABILITY = {
 	}
 }
 DEUS_MAP_POPULATE_SETTINGS.journey_ice = table.clone(default_config)
-DEUS_MAP_POPULATE_SETTINGS.journey_ice = table.clone(default_config)
 DEUS_MAP_POPULATE_SETTINGS.journey_ice.MUTATORS = {
 	SIGNATURE = {
 		"deus_pacing_tweak",

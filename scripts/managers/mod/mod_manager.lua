@@ -1,61 +1,71 @@
+require("scripts/managers/mod/mod_shim")
+
 ModManager = class(ModManager)
-local LOG_LEVELS = {
-	spew = 4,
-	info = 3,
-	warning = 2,
-	error = 1
-}
-
-ModManager.print = function (self, level, str, ...)
-	if self._settings.log_level >= (LOG_LEVELS[level] or 99) then
-		local concat_str = sprintf("[ModManager][" .. level .. "] " .. str, ...)
-
-		print(concat_str)
-
-		if Managers.chat then
-			Managers.chat:add_local_system_message(1, concat_str, true)
-		else
-			self._print_cache[#self._print_cache + 1] = concat_str
-		end
-	end
-end
 
 ModManager.init = function (self, boot_gui)
 	self._mods = {}
 	self._num_mods = nil
 	self._state = "not_loaded"
-	local settings = Application.user_setting("mod_settings") or {
-		disable_pcalls = false,
+	self._settings = Application.user_setting("mod_settings") or {
+		toposort = false,
 		log_level = 1,
 		developer_mode = false
 	}
-	self._settings = settings
-	self._print_cache = {}
+	self._chat_print_buffer = {}
+	self._reload_data = {}
 	self._gui = boot_gui
 	self._ui_time = 0
-	self._reload_data = {}
 	self._network_callbacks = {}
 	local in_modded_realm = script_data["eac-untrusted"]
 
-	if HAS_STEAM then
-		if in_modded_realm then
-			Presence.set_presence("status", "Modded Realm")
-			Crashify.print_property("realm", "modded")
-		else
-			Presence.set_presence("status", "Official Realm")
-			Crashify.print_property("realm", "official")
-		end
+	Crashify.print_property("realm", (in_modded_realm and "modded") or "official")
+
+	if rawget(_G, "Presence") then
+		Presence.set_presence("status", (in_modded_realm and "Modded Realm") or "Official Realm")
 	end
 
-	require("scripts/managers/mod/mod_shim")
+	ModShim.start()
 
-	if self:_has_enabled_mods(in_modded_realm) and Application.bundled() then
-		self:print("info", "Scanning for mods...")
-		self:_start_scan()
+	local has_enabled_mods = self:_has_enabled_mods()
+	local is_bundled = Application.bundled()
+
+	printf("[ModManager] Mods enabled: %s // Bundled: %s", has_enabled_mods, is_bundled)
+
+	if has_enabled_mods and is_bundled then
+		print("[ModManager] Fetching mod metadata ...")
+
+		if in_modded_realm then
+			self._mod_metadata = {}
+			self._state = "fetching_metadata"
+		else
+			self:_fetch_mod_metadata()
+		end
 	else
 		self._state = "done"
 		self._num_mods = 0
 	end
+end
+
+ModManager.developer_mode_enabled = function (self)
+	return self._settings.developer_mode
+end
+
+ModManager._draw_state_to_gui = function (self, gui, dt)
+	local state = self._state
+	local t = self._ui_time + dt
+	self._ui_time = t
+	local status_str = "Loading mods"
+
+	if state == "scanning" then
+		status_str = "Scanning for mods"
+	elseif state == "loading" then
+		local mod = self._mods[self._mod_load_index]
+		status_str = string.format("Loading mod %q", mod.name)
+	elseif state == "fetching_metadata" then
+		status_str = "Fetching mod metadata"
+	end
+
+	Gui.text(gui, status_str .. string.rep(".", (2 * t) % 4), "materials/fonts/arial", 16, nil, Vector3(5, 10, 1))
 end
 
 ModManager.remove_gui = function (self)
@@ -68,7 +78,7 @@ ModManager._has_enabled_mods = function (self, in_modded_realm)
 	local mod_settings = Application.user_setting("mods")
 
 	if not mod_settings then
-		return
+		return false
 	end
 
 	for i = 1, #mod_settings, 1 do
@@ -80,25 +90,30 @@ ModManager._has_enabled_mods = function (self, in_modded_realm)
 	return false
 end
 
-ModManager.state = function (self)
-	return self._state
+local Keyboard = Keyboard
+local BUTTON_INDEX_R = Keyboard.button_index("r")
+local BUTTON_INDEX_LEFT_SHIFT = Keyboard.button_index("left shift")
+local BUTTON_INDEX_LEFT_CTRL = Keyboard.button_index("left ctrl")
+
+ModManager._check_reload = function (self)
+	return Keyboard.pressed(BUTTON_INDEX_R) and Keyboard.button(BUTTON_INDEX_LEFT_SHIFT) + Keyboard.button(BUTTON_INDEX_LEFT_CTRL) == 2
 end
 
 ModManager.update = function (self, dt)
-	local print_cache = self._print_cache
-	local num_delayed_prints = #print_cache
+	local chat_print_buffer = self._chat_print_buffer
+	local num_delayed_prints = #chat_print_buffer
 
 	if num_delayed_prints > 0 and Managers.chat then
 		for i = 1, num_delayed_prints, 1 do
-			Managers.chat:add_local_system_message(1, print_cache[i], true)
-		end
+			Managers.chat:add_local_system_message(1, chat_print_buffer[i], true)
 
-		table.clear(print_cache)
+			chat_print_buffer[i] = nil
+		end
 	end
 
 	local old_state = self._state
 
-	if self._settings.developer_mode and Keyboard.pressed(Keyboard.button_index("r")) and Keyboard.button(Keyboard.button_index("left shift")) + Keyboard.button(Keyboard.button_index("left ctrl")) == 2 then
+	if self._settings.developer_mode and self:_check_reload() then
 		self._reload_requested = true
 	end
 
@@ -106,11 +121,22 @@ ModManager.update = function (self, dt)
 		self:_reload_mods()
 	end
 
-	if self._state == "scanning" and not Mod.is_scanning() then
+	if self._state == "done" then
+		for i = 1, self._num_mods, 1 do
+			local mod = self._mods[i]
+
+			if mod and mod.enabled and not mod.callbacks_disabled then
+				self:_run_callback(mod, "update", dt)
+			end
+		end
+	elseif self._state == "fetching_metadata" then
+		if self._mod_metadata then
+			self:_start_scan()
+		end
+	elseif self._state == "scanning" and not Mod.is_scanning() then
 		local mod_handles = Mod.mods()
 
 		self:_build_mod_table(mod_handles)
-		table.dump(mod_handles, "Mods", 1)
 
 		self._state = self:_load_mod(1)
 		self._ui_time = 0
@@ -125,21 +151,17 @@ ModManager.update = function (self, dt)
 			local mod_data = mod.data
 
 			if next_index > #mod_data.packages then
-				local on_loaded_func = nil
 				mod.state = "running"
-				local object = mod_data.run()
-				local name = mod.name
+				local ok, object = pcall(mod_data.run)
 
-				if object then
-					mod.object = object
-
-					self:_run_callback(mod, "init", self._reload_data[mod.id])
-				else
-					mod.object = {}
-
-					self:print("info", "Mod %s does not return callback table from run function", name)
+				if not ok then
+					self:print("error", "%s", object)
 				end
 
+				local name = mod.name
+				mod.object = object or {}
+
+				self:_run_callback(mod, "init", self._reload_data[mod.id])
 				self:print("info", "%s loaded.", name)
 
 				self._state = self:_load_mod(self._mod_load_index + 1)
@@ -147,32 +169,12 @@ ModManager.update = function (self, dt)
 				self:_load_package(mod, next_index)
 			end
 		end
-	elseif self._state == "done" then
-		for i = 1, self._num_mods, 1 do
-			local mod = self._mods[i]
-
-			if mod and mod.enabled and not mod.callbacks_disabled then
-				self:_run_callback(mod, "update", dt)
-			end
-		end
 	end
 
 	local gui = self._gui
 
 	if gui then
-		local state = self._state
-		local t = self._ui_time + dt
-		self._ui_time = t
-		local status_str = "Loading mods"
-
-		if state == "scanning" then
-			status_str = "Scanning for mods"
-		elseif state == "loading" then
-			local mod = self._mods[self._mod_load_index]
-			status_str = string.format("Loading mod %q", mod.name)
-		end
-
-		Gui.text(gui, status_str .. string.rep(".", (2 * t) % 4), "materials/fonts/arial", 16, nil, Vector3(5, 10, 1))
+		self:_draw_state_to_gui(gui, dt)
 	end
 
 	if old_state ~= self._state then
@@ -192,30 +194,140 @@ ModManager._run_callback = function (self, mod, callback_name, ...)
 	local object = mod.object
 	local cb = object[callback_name]
 
-	if cb then
-		if mod.disable_pcalls == true or (self._settings.disable_pcalls == true and mod.disable_pcalls ~= false) then
-			return cb(object, ...)
-		else
-			local success, val = pcall(cb, object, ...)
+	if not cb then
+		return
+	end
 
-			if success then
-				return val
-			else
-				self:print("error", "%s", val or "[unknown mod error]")
-				self:print("error", "Failed to run callback %q for mod %q. Disabling callbacks until reload.", callback_name, mod.name)
+	local success, val = pcall(cb, object, ...)
 
-				mod.callbacks_disabled = true
-			end
-		end
+	if success then
+		return val
+	else
+		self:print("error", "%s", val or "[unknown error]")
+		self:print("error", "Failed to run callback %q for mod %q with id %d. Disabling callbacks until reload.", callback_name, mod.name, mod.id)
+
+		mod.callbacks_disabled = true
 	end
 end
 
+ModManager._fetch_mod_metadata = function (self)
+	local url = "http://cdn.fatsharkgames.se/mod_metadata.txt"
+	local headers = {
+		["User-Agent"] = "Warhammer: Vermintide 2"
+	}
+
+	Managers.curl:get(url, headers, callback(self, "_cb_mod_metadata"))
+
+	self._state = "fetching_metadata"
+end
+
+ModManager._cb_mod_metadata = function (self, success, return_code, headers, data, userdata)
+	printf("[ModManager] Metadata request completed. success=%s code=%s", success, return_code)
+
+	local mod_metadata = {}
+
+	if success and return_code >= 200 and return_code < 300 then
+		local line_number = 0
+
+		for line in string.gmatch(data, "[^\n\r]+") do
+			line_number = line_number + 1
+			line = string.gsub(line, "#(.*)$", "")
+
+			if line ~= "" then
+				local key, value = string.match(line, "(%d+)%s*=%s*(%w+)")
+
+				if key then
+					printf("[ModManager] Metadata set: [%s] = %s", key, value)
+
+					mod_metadata[key] = value
+				else
+					printf("[ModManager] Malformed metadata entry near line %d", line_number)
+				end
+			end
+		end
+	end
+
+	self._mod_metadata = mod_metadata
+end
+
 ModManager._start_scan = function (self)
-	self:print("info", "scanning")
+	self:print("info", "Starting mod scan")
 
 	self._state = "scanning"
 
 	Mod.start_scan(not script_data["eac-untrusted"])
+end
+
+ModManager._build_mod_table = function (self, mod_handles)
+	fassert(table.is_empty(self._mods), "Trying to add mods to non-empty mod table")
+
+	local user_settings_mod_list = Application.user_setting("mods") or {}
+
+	if self._settings.toposort then
+		user_settings_mod_list = self:_topologically_sorted(user_settings_mod_list)
+	end
+
+	table.dump(mod_handles, "mod_handles", 3)
+
+	local mod_metadata = self._mod_metadata
+
+	print("user_setting.mods =>")
+
+	for i, mod_data in ipairs(user_settings_mod_list) do
+		local id = mod_data.id or -9999
+		local handle = mod_handles[id]
+		local enabled = mod_data.enabled
+
+		if not handle then
+			self:print("warning", "Mod %q with id %d was not found in the workshop folder.", mod_data.name, id)
+			self:print("warning", "Did you try loading an unsanctioned mod in Official?")
+
+			enabled = false
+		end
+
+		local metadata = mod_metadata[id]
+
+		if enabled and metadata then
+			local last_updated_string = mod_data.last_updated
+			local month, day, year, hour, minute, second, am_pm = string.match(last_updated_string, "(%d+)/(%d+)/(%d+) (%d+):(%d+):(%d+) ([AP]M)")
+
+			if month then
+				if am_pm == "PM" then
+					hour = tonumber(hour) + 12
+				end
+
+				local last_updated = string.format("%04d%02d%02dT%02d%02d%02dZ", year, month, day, hour, minute, second)
+
+				printf("[ModManager] id=%s last_updated=%s metadata=%s", id, last_updated, metadata)
+
+				if last_updated < metadata then
+					enabled = false
+				end
+			else
+				printf("[ModManager] Could not parse date for %s", id)
+
+				enabled = false
+			end
+		end
+
+		self._mods[i] = {
+			state = "not_loaded",
+			callbacks_disabled = false,
+			id = id,
+			name = mod_data.name,
+			enabled = enabled,
+			handle = handle,
+			loaded_packages = {}
+		}
+	end
+
+	for i, mod_data in ipairs(user_settings_mod_list) do
+		printf("[ModManager] mods[%d] = (id=%d, name=%q, enabled=%q, last_updated=%q)", i, mod_data.id, mod_data.name, mod_data.enabled, mod_data.last_updated)
+	end
+
+	self._num_mods = #self._mods
+
+	self:print("info", "Found %i mods", #self._mods)
 end
 
 ModManager._load_mod = function (self, index)
@@ -228,134 +340,64 @@ ModManager._load_mod = function (self, index)
 		mod = mods[index]
 	end
 
-	if mod then
-		local id = mod.id
-		local handle = mod.handle
-
-		self:print("info", "loading mod %s", id)
-
-		local info = Mod.info(handle)
-
-		self:print("spew", "<mod info> \n%s\n<\\mod info>", info)
-		Crashify.print_property("modded", true)
-
-		local data_file, info_error = loadstring(info)
-
-		if not data_file then
-			self:print("error", "Syntax error in .mod file. Mod %q skipped.", mod.name)
-			self:print("info", info_error)
-
-			mod.enabled = false
-
-			return self:_load_mod(index + 1)
-		end
-
-		local success, data_or_error = pcall(data_file)
-
-		if not success then
-			self:print("error", "Error in .mod file return table. Mod %q skipped.", mod.name)
-			self:print("info", data_or_error)
-
-			mod.enabled = false
-
-			return self:_load_mod(index + 1)
-		end
-
-		mod.data = data_or_error
-		mod.name = mod.name or data_or_error.NAME or "Mod " .. id
-		mod.state = "loading"
-
-		Crashify.print_property(string.format("Mod:%s:%s", id, mod.name), true)
-
-		self._mod_load_index = index
-
-		self:_load_package(mod, 1)
-
-		return "loading"
-	else
+	if not mod then
 		table.clear(self._reload_data)
 
 		return "done"
 	end
-end
 
-ModManager._build_mod_table = function (self, mod_handles)
-	fassert(table.is_empty(self._mods), "Trying to add mods to non-empty mod table")
+	local id = mod.id
+	local handle = mod.handle
 
-	local index = 0
-	local parsed_mods = {}
+	self:print("info", "loading mod %s", id)
 
-	local function add_mod(handle, id, enabled, name, version, user_settings_index)
-		index = index + 1
-		self._mods[index] = {
-			state = "not_loaded",
-			callbacks_disabled = false,
-			name = name,
-			version = version,
-			id = id,
-			handle = handle,
-			enabled = enabled,
-			loaded_packages = {},
-			user_settings_index = user_settings_index
-		}
+	local info = Mod.info(handle)
+
+	self:print("spew", "<mod info>\n%s\n</mod info>", info)
+	Crashify.print_property("modded", true)
+
+	local chunk, err_msg = loadstring(info)
+
+	if not chunk then
+		self:print("error", "Syntax error in .mod file. Mod %q with id %d skipped.", mod.name, mod.id)
+		self:print("info", err_msg)
+
+		mod.enabled = false
+
+		return self:_load_mod(index + 1)
 	end
 
-	local user_settings_mod_list = Application.user_setting("mods") or {}
+	local ok, data_or_error = pcall(chunk)
 
-	table.dump(user_settings_mod_list, "mod settings", 3)
-	table.dump(mod_handles, "mod_handles", 3)
+	if not ok then
+		self:print("error", "Error in .mod file return table. Mod %q with id %d skipped.", mod.name, mod.id)
+		self:print("info", data_or_error)
 
-	for i, mod_data in ipairs(user_settings_mod_list) do
-		local id = mod_data.id
-		local handle = mod_handles[id]
+		mod.enabled = false
 
-		if handle then
-			add_mod(handle, id, mod_data.enabled, mod_data.name, mod_data.version, i)
-
-			parsed_mods[handle] = true
-		else
-			add_mod(nil, id, false, mod_data.name, mod_data.version, i)
-			self:print("warning", "Skipping unsanctioned mod %s (id = %s)", mod_data.name, id)
-		end
+		return self:_load_mod(index + 1)
 	end
 
-	for id, handle in pairs(mod_handles) do
-		if not parsed_mods[handle] then
-			add_mod(handle, id, false, "unnamed", "unversioned")
-		end
-	end
+	mod.data = data_or_error
+	mod.name = mod.name or data_or_error.NAME or "Mod " .. id
+	mod.state = "loading"
 
-	self._num_mods = index
+	Crashify.print_property(string.format("Mod:%s:%s", id, mod.name), true)
 
-	self:print("info", "Found %i mods", index)
+	self._mod_load_index = index
 
-	local new_settings_table = {}
+	self:_load_package(mod, 1)
 
-	for i = 1, self._num_mods, 1 do
-		local mod = self._mods[i]
-		local mod_data = nil
-
-		if mod.user_settings_index then
-			mod_data = user_settings_mod_list[mod.user_settings_index]
-		else
-			mod_data = {
-				name = mod.name,
-				id = mod.id,
-				version = mod.version,
-				enabled = mod.enabled or false
-			}
-		end
-
-		new_settings_table[i] = mod_data
-	end
-
-	Application.set_user_setting("mods", new_settings_table)
-	Application.save_user_settings()
+	return "loading"
 end
 
 ModManager._load_package = function (self, mod, index)
 	mod.package_index = index
 	local package_name = mod.data.packages[index]
+
+	if not package_name then
+		return
+	end
 
 	self:print("info", "loading package %q", package_name)
 
@@ -368,24 +410,26 @@ ModManager._load_package = function (self, mod, index)
 end
 
 ModManager.unload_all_mods = function (self)
-	if self._state == "done" then
-		self:print("info", "Unload all mod packages")
+	if self._state ~= "done" then
+		self:print("error", "Mods can't be unloaded, mod state is not \"done\". current: %q", self._state)
 
-		for i = self._num_mods, 1, -1 do
-			local mod = self._mods[i]
+		return
+	end
 
-			if mod and mod.enabled then
-				self:unload_mod(i)
-			end
+	self:print("info", "Unload all mod packages")
+
+	for i = self._num_mods, 1, -1 do
+		local mod = self._mods[i]
+
+		if mod and mod.enabled then
+			self:unload_mod(i)
 		end
 
-		table.clear(self._mods)
-
-		self._num_mods = nil
-		self._state = "unloaded"
-	else
-		self:print("error", "Mods can't be unloaded, mod state is not \"done\". current: %q", self._state)
+		self._mods[i] = nil
 	end
+
+	self._num_mods = nil
+	self._state = "unloaded"
 end
 
 ModManager.unload_mod = function (self, index)
@@ -437,6 +481,78 @@ ModManager.on_game_state_changed = function (self, status, state_name, state_obj
 		end
 	else
 		self:print("warning", "Ignored on_game_state_changed call due to being in state %q", self._state)
+	end
+end
+
+ModManager._topologically_sorted = function (self, mod_list)
+	local visited = {}
+	local sorted = {}
+
+	for _, mod_data in ipairs(mod_list) do
+		if not visited[mod_data] then
+			self:_visit(mod_list, visited, sorted, mod_data)
+		end
+	end
+
+	return sorted
+end
+
+ModManager._visit = function (self, mod_list, visited, sorted, mod_data)
+	self:print("debug", "Visiting mod %q with id %d", mod_data.name, mod_data.id)
+
+	if visited[mod_data] then
+		return mod_data.enabled
+	end
+
+	if visited[mod_data] ~= nil then
+		self:print("error", "Dependency cycle detected at mod %q with id %d", mod_data.name, mod_data.id)
+
+		return false
+	end
+
+	visited[mod_data] = false
+	local enabled = mod_data.enabled or false
+	slot6 = 1
+	slot7 = mod_data.num_children or 0
+
+	for i = slot6, slot7, 1 do
+		local child_id = mod_data.children[j]
+		local child_index = table.find_by_key(mod_list, "id", child_id)
+		local child_mod_data = mod_list[child_index]
+
+		if not child_mod_data then
+			self:print("warning", "Mod with id %d not found", id)
+		elseif not self:_visit(mod_list, visited, sorted, child_mod_data) and enabled then
+			self:print("warning", "Disabled mod %q with id %d due to missing dependency %d.", mod_data.name, mod_data.id, child_id)
+
+			enabled = false
+		end
+	end
+
+	mod_data.enabled = enabled
+	visited[mod_data] = true
+	sorted[#sorted + 1] = mod_data
+
+	return enabled
+end
+
+local LOG_LEVELS = {
+	spew = 4,
+	info = 3,
+	warning = 2,
+	error = 1
+}
+
+ModManager.print = function (self, level, str, ...)
+	local message = string.format("[ModManager][" .. level .. "] " .. str, ...)
+	local log_level = LOG_LEVELS[level] or 99
+
+	if log_level <= 2 then
+		print(message)
+	end
+
+	if log_level <= self._settings.log_level then
+		self._chat_print_buffer[#self._chat_print_buffer + 1] = message
 	end
 end
 

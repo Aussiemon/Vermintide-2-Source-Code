@@ -76,6 +76,8 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 
 	self:_init_brain(breed, is_horde)
 	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
+
+	self.attributes = nil
 end
 
 AISimpleExtension.unit_removed_from_game = function (self)
@@ -148,6 +150,10 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	table.clear(blackboard.node_data)
 	table.clear(blackboard.running_nodes)
 	table.clear(blackboard.override_targets)
+
+	if self.attributes then
+		table.clear(self.attributes)
+	end
 
 	blackboard.target_dist = math.huge
 	blackboard.spawn_type = spawn_type

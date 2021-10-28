@@ -1,7 +1,6 @@
 require("foundation/scripts/util/local_require")
 require("scripts/ui/ui_renderer")
 require("scripts/ui/ui_elements")
-require("scripts/ui/ui_element")
 require("scripts/ui/ui_widgets")
 
 local definitions = require("scripts/ui/views/loading_icon_view_definitions")

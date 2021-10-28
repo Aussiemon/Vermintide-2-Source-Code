@@ -21,7 +21,8 @@ local extensions = {
 	"DamageWaveExtension",
 	"DamageWaveHuskExtension",
 	"DamageBlobExtension",
-	"DamageBlobHuskExtension"
+	"DamageBlobHuskExtension",
+	"ProximityMineExtension"
 }
 local AOE_DAMAGE_RING_BUFFER_SIZE = 128
 local NUM_UNITS_TO_DAMAGE_PER_FRAME = 15

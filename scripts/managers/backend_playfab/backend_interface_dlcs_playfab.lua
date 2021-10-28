@@ -150,7 +150,7 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 	self._backend_mirror:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
 	print("Finished Getting New DLC Rewards")
 	print("New Rewards:")
-	table.dump(unseen_rewards, nil, 5)
+	table.dump(unseen_rewards, "unseen_rewards", 5)
 
 	self._updating_dlc_ownership = false
 end

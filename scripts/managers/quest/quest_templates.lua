@@ -1703,4 +1703,6 @@ for i = 1, 3, 1 do
 	}
 end
 
+DLCUtils.merge("quest_templates", quest_templates.quests)
+
 return quest_templates

@@ -137,6 +137,7 @@ local widget = {
 		}
 	},
 	style = {
+		background = {},
 		glow_top = {
 			vertical_alignment = "top",
 			horizontal_alignment = "center",

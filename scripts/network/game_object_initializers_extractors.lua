@@ -1805,6 +1805,16 @@ go_type_table = {
 
 			return data_table
 		end,
+		positioned_blob_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
+			local data_table = {
+				go_type = NetworkLookup.go_types.positioned_blob_unit,
+				husk_unit = NetworkLookup.husks[unit_name],
+				position = Unit.local_position(unit, 0),
+				rotation = Unit.local_rotation(unit, 0)
+			}
+
+			return data_table
+		end,
 		destructible_objective_unit = function (unit, unit_name, unit_template, gameobject_functor_context)
 			local health_extension = ScriptUnit.has_extension(unit, "health_system")
 			local data_table = {
@@ -4282,6 +4292,29 @@ go_type_table = {
 		positioned_prop_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
 			local unit_template_name = "positioned_prop_unit"
 			local extension_init_data = nil
+
+			return unit_template_name, extension_init_data
+		end,
+		positioned_blob_unit = function (game_session, go_id, owner_id, unit, gameobject_functor_context)
+			local unit_template_name = "nurgle_liquid_blob_dynamic"
+			local extension_init_data = {
+				props_system = {
+					start_size = 0.3,
+					duration = 0.5,
+					end_size = 1
+				},
+				death_system = {
+					death_reaction_template = "nurgle_liquid_blob",
+					shrink_and_despawn_time = 3
+				},
+				area_damage_system = {
+					catapult_strength = 3,
+					range = 2,
+					detonation_time = 3,
+					arm_time = 3,
+					explosion_template = "bubonic_catapult_explosion"
+				}
+			}
 
 			return unit_template_name, extension_init_data
 		end,

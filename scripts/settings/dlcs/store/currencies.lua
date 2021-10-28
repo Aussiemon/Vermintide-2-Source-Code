@@ -60,5 +60,35 @@ Currencies.shillings_06 = {
 	slot_type = "chips",
 	can_wield = CanWieldAllItemTemplates
 }
+Currencies.shillings_small = {
+	description = "shilling_bag_small_description",
+	rarity = "common",
+	display_name = "shilling_bag_small_name",
+	item_type = "chips",
+	icon = "icon_shillings_05",
+	information_text = "information_text_shilling",
+	slot_type = "chips",
+	can_wield = CanWieldAllItemTemplates
+}
+Currencies.shillings_medium = {
+	description = "shilling_bag_medium_description",
+	rarity = "common",
+	display_name = "shilling_bag_medium_name",
+	item_type = "chips",
+	icon = "icon_shillings_06",
+	information_text = "information_text_shilling",
+	slot_type = "chips",
+	can_wield = CanWieldAllItemTemplates
+}
+Currencies.shillings_large = {
+	description = "shilling_bag_large_description",
+	rarity = "common",
+	display_name = "shilling_bag_large_name",
+	item_type = "chips",
+	icon = "icon_shillings_06",
+	information_text = "information_text_shilling",
+	slot_type = "chips",
+	can_wield = CanWieldAllItemTemplates
+}
 
 return

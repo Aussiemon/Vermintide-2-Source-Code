@@ -1,4 +1,18 @@
 QuestSettings = {
+	rules = {
+		daily = {
+			num_criterias = 3,
+			max_quests = 3
+		},
+		weekly = {
+			num_criterias = 3,
+			max_quests = 7
+		},
+		event = {
+			num_criterias = 12,
+			max_quests = 10
+		}
+	},
 	elven_ruins_speed_event = 30,
 	farmlands_speed_event = 60,
 	bell_speed_event = 85,
@@ -252,78 +266,24 @@ local level_challenge_name_lookup = {
 	catacombs_added_souls_cata = "achv_catacombs_stay_inside_ritual_pool_cata_name",
 	bell_speed_event_cata = "achv_bell_destroy_bell_flee_timed_cata_name"
 }
-QuestSettings.stat_mappings = {
-	daily_quest_1 = {
-		"daily_quest_1_stat_1",
-		"daily_quest_1_stat_2",
-		"daily_quest_1_stat_3"
-	},
-	daily_quest_2 = {
-		"daily_quest_2_stat_1",
-		"daily_quest_2_stat_2",
-		"daily_quest_2_stat_3"
-	},
-	daily_quest_3 = {
-		"daily_quest_3_stat_1",
-		"daily_quest_3_stat_2",
-		"daily_quest_3_stat_3"
-	},
-	event_quest_1 = {
-		"event_quest_1_stat_1",
-		"event_quest_1_stat_2",
-		"event_quest_1_stat_3"
-	},
-	event_quest_2 = {
-		"event_quest_2_stat_1",
-		"event_quest_2_stat_2",
-		"event_quest_2_stat_3"
-	},
-	event_quest_3 = {
-		"event_quest_3_stat_1",
-		"event_quest_3_stat_2",
-		"event_quest_3_stat_3"
-	},
-	event_quest_4 = {
-		"event_quest_4_stat_1",
-		"event_quest_4_stat_2",
-		"event_quest_4_stat_3"
-	},
-	weekly_quest_1 = {
-		"weekly_quest_1_stat_1",
-		"weekly_quest_1_stat_2",
-		"weekly_quest_1_stat_3"
-	},
-	weekly_quest_2 = {
-		"weekly_quest_2_stat_1",
-		"weekly_quest_2_stat_2",
-		"weekly_quest_2_stat_3"
-	},
-	weekly_quest_3 = {
-		"weekly_quest_3_stat_1",
-		"weekly_quest_3_stat_2",
-		"weekly_quest_3_stat_3"
-	},
-	weekly_quest_4 = {
-		"weekly_quest_4_stat_1",
-		"weekly_quest_4_stat_2",
-		"weekly_quest_4_stat_3"
-	},
-	weekly_quest_5 = {
-		"weekly_quest_5_stat_1",
-		"weekly_quest_5_stat_2",
-		"weekly_quest_5_stat_3"
-	},
-	weekly_quest_6 = {
-		"weekly_quest_6_stat_1",
-		"weekly_quest_6_stat_2",
-		"weekly_quest_6_stat_3"
-	},
-	weekly_quest_7 = {
-		"weekly_quest_7_stat_1",
-		"weekly_quest_7_stat_2",
-		"weekly_quest_7_stat_3"
-	}
-}
+local stat_mappings = {}
+
+for quest_type, data in pairs(QuestSettings.rules) do
+	local quest_prefix = string.format("%s_quest", quest_type)
+
+	for i = 1, data.max_quests, 1 do
+		local quest_name = string.format("%s_%d", quest_prefix, i)
+		local stat_map = {}
+
+		for j = 1, data.num_criterias, 1 do
+			stat_map[#stat_map + 1] = string.format("%s_stat_%d", quest_name, j)
+		end
+
+		stat_mappings[quest_name] = stat_map
+	end
+end
+
+QuestSettings.stat_mappings = stat_mappings
 
 QuestSettings.send_completed_message = function (challenge_stat_id)
 	local has_not_completed_challenge = false

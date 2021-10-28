@@ -1,9 +1,7 @@
 local DEFAULT_ANGLE = 0
 LootItemUnitPreviewer = class(LootItemUnitPreviewer)
 
-LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels)
-	self._background_world = background_world
-	self._background_viewport = background_viewport
+LootItemUnitPreviewer.init = function (self, item, spawn_position, background_world, background_viewport, unique_id, invert_start_rotation, display_unit_key, use_highest_mip_levels, delayed_spawn)
 	self._unique_id = unique_id
 	self._loaded_packages = {}
 	self._packages_to_load = {}
@@ -15,8 +13,40 @@ LootItemUnitPreviewer.init = function (self, item, spawn_position, background_wo
 	self._spawn_position = spawn_position
 	self._item = item
 	self._use_highest_mip_levels = use_highest_mip_levels
-	self._link_unit = self:_spawn_link_unit(item)
+	self._delayed_spawn = delayed_spawn
+
+	if not self._delayed_spawn then
+		self._background_world = background_world
+		self._background_viewport = background_viewport
+		self._link_unit = self:_spawn_link_unit(item)
+	end
+
+	self._activated = not self._delayed_spawn
 	self._units_to_spawn = self:_load_item_units(item)
+end
+
+LootItemUnitPreviewer.activate = function (self, activate, background_world, background_viewport, force_present)
+	if not self._delayed_spawn then
+		return
+	end
+
+	if activate == self._activated then
+		return
+	end
+
+	if activate then
+		self._background_world = background_world
+		self._background_viewport = background_viewport
+		self._link_unit = self:_spawn_link_unit(self._item)
+	else
+		self:_destroy_units()
+
+		self._background_world = nil
+		self._background_viewport = nil
+	end
+
+	self._activated = activate
+	self._force_present = force_present
 end
 
 LootItemUnitPreviewer.activate_auto_spin = function (self)
@@ -55,9 +85,14 @@ LootItemUnitPreviewer._destroy_units = function (self)
 
 	self._link_unit = nil
 	self.units_spawned = nil
+	self._items_spawned = nil
 end
 
 LootItemUnitPreviewer.update = function (self, dt, t, input_service)
+	if not self._activated then
+		return
+	end
+
 	if self._items_spawned then
 		if self._request_show_settings and self:_update_manual_mip_streaming() then
 			local request_show_settings = self._request_show_settings
@@ -68,6 +103,13 @@ LootItemUnitPreviewer.update = function (self, dt, t, input_service)
 			self:_enable_item_units_visibility(item_key, ignore_spin, visible)
 
 			self._request_show_settings = nil
+		elseif self._force_present then
+			local item = self._item
+			local item_key = item.key
+
+			self:present_item(item_key, true)
+
+			self._force_present = false
 		end
 
 		if input_service then
@@ -179,6 +221,10 @@ LootItemUnitPreviewer._handle_controller_input = function (self, input_service, 
 end
 
 LootItemUnitPreviewer.post_update = function (self, dt, t)
+	if not self._activated then
+		return
+	end
+
 	if self._spawn_callback and self._items_spawned then
 		self._spawn_callback()
 

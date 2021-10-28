@@ -104,40 +104,13 @@ local ability_widget_definition = {
 				text_id = "input_text_gamepad",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content, style)
-					return Managers.input:is_device_active("gamepad") and content.can_use
-				end
-			},
-			{
-				style_id = "input_text_shadow_gamepad",
-				pass_type = "text",
-				text_id = "input_text_gamepad",
-				retained_mode = RETAINED_MODE_ENABLED,
-				content_check_function = function (content, style)
-					return Managers.input:is_device_active("gamepad") and content.can_use
-				end
-			},
-			{
-				pass_type = "texture",
-				style_id = "input_texture_left_shoulder",
-				texture_id = "input_texture_left_shoulder",
-				retained_mode = RETAINED_MODE_ENABLED,
-				content_check_function = function (content, style)
-					return Managers.input:is_device_active("gamepad") and content.can_use
-				end
-			},
-			{
-				pass_type = "texture",
-				style_id = "input_texture_right_shoulder",
-				texture_id = "input_texture_right_shoulder",
-				retained_mode = RETAINED_MODE_ENABLED,
-				content_check_function = function (content, style)
-					return Managers.input:is_device_active("gamepad") and content.can_use
+					return Managers.input:is_device_active("gamepad")
 				end
 			}
 		}
 	},
 	content = {
-		input_text_gamepad = "+",
+		input_text_gamepad = "$KEY;Player__ability:",
 		ability_bar_highlight = "hud_player_ability_bar_glow",
 		input_text = "",
 		on_cooldown = false,
@@ -167,9 +140,7 @@ local ability_widget_definition = {
 					1
 				}
 			}
-		},
-		input_texture_left_shoulder = ButtonTextureByName("left_shoulder", "xb1").texture,
-		input_texture_right_shoulder = ButtonTextureByName("right_shoulder", "xb1").texture
+		}
 	},
 	style = {
 		input_text = {
@@ -207,73 +178,13 @@ local ability_widget_definition = {
 		input_text_gamepad = {
 			vertical_alignment = "center",
 			font_type = "hell_shark",
-			font_size = 24,
-			horizontal_alignment = "center",
-			text_color = {
-				0,
-				255,
-				255,
-				255
-			},
+			font_size = 28,
+			horizontal_alignment = "left",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				0,
-				83,
-				20
-			}
-		},
-		input_text_shadow_gamepad = {
-			vertical_alignment = "center",
-			font_type = "hell_shark",
-			font_size = 24,
-			horizontal_alignment = "center",
-			text_color = {
-				0,
-				0,
-				0,
-				0
-			},
-			offset = {
-				0,
-				81,
-				19
-			}
-		},
-		input_texture_left_shoulder = {
-			vertical_alignment = "center",
-			horizontal_alignment = "center",
-			color = {
-				0,
-				255,
-				255,
-				255
-			},
-			offset = {
-				-35,
-				83,
-				20
-			},
-			texture_size = {
-				ButtonTextureByName("left_shoulder", "xb1").size[1] * 0.85,
-				ButtonTextureByName("left_shoulder", "xb1").size[2] * 0.85
-			}
-		},
-		input_texture_right_shoulder = {
-			vertical_alignment = "center",
-			horizontal_alignment = "center",
-			color = {
-				0,
-				255,
-				255,
-				255
-			},
-			offset = {
-				25,
-				83,
-				20
-			},
-			texture_size = {
-				ButtonTextureByName("right_shoulder", "xb1").size[1] * 0.85,
-				ButtonTextureByName("right_shoulder", "xb1").size[2] * 0.85
+				38,
+				78,
+				2
 			}
 		},
 		ability_effect_right = {

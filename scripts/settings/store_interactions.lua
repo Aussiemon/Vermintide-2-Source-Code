@@ -9,12 +9,11 @@ InteractionDefinitions.store_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_sub_state_name = "featured",
-			menu_state_name = "store"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			menu_state_name = "store",
+			use_fade = true
+		})
 	end
 end
 

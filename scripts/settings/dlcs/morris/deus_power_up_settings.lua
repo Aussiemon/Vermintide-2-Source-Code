@@ -1,295 +1,11 @@
 require("scripts/settings/dlcs/morris/deus_cost_settings")
+require("scripts/settings/dlcs/morris/tweak_data/buff_tweak_data")
 
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 DeusPowerUpSettings = DeusPowerUpSettings or {
 	cursed_chest_max_picks = 1,
 	weapon_chest_choice_amount = 1,
 	cursed_chest_choice_amount = 3
-}
-local power_up_tweak_data = {
-	attack_speed = {
-		multiplier = 0.1
-	},
-	stamina = {
-		bonus = 4
-	},
-	push_block_arc = {
-		multiplier = 0.6
-	},
-	crit_chance = {
-		bonus = 0.1
-	},
-	ability_cooldown_reduction = {
-		multiplier = -0.2
-	},
-	crit_boost = {
-		multiplier = 0.4
-	},
-	power_vs_skaven = {
-		multiplier = 0.2
-	},
-	power_vs_chaos = {
-		multiplier = 0.2
-	},
-	power_vs_unarmoured = {
-		multiplier = 0.2
-	},
-	power_vs_armoured = {
-		multiplier = 0.2
-	},
-	power_vs_large = {
-		multiplier = 0.2
-	},
-	power_vs_frenzy = {
-		multiplier = 0.2
-	},
-	health = {
-		multiplier = 0.2
-	},
-	block_cost = {
-		multiplier = -0.3
-	},
-	protection_skaven = {
-		multiplier = 0.2
-	},
-	protection_chaos = {
-		multiplier = 0.2
-	},
-	protection_aoe = {
-		multiplier = 0.3
-	},
-	respawn_speed = {
-		multiplier = -0.6
-	},
-	revive_speed = {
-		multiplier = -0.6
-	},
-	fatigue_regen = {
-		multiplier = 0.3
-	},
-	movespeed = {
-		description_value = 0.05,
-		multiplier = 1.05
-	},
-	curse_resistance = {
-		multiplier = -0.5
-	},
-	home_brewer = {
-		proc_chance = 0.25
-	},
-	decanter = {
-		multiplier = 0.5
-	},
-	concoction = {
-		multiplier = -0.5
-	},
-	healers_touch = {
-		proc_chance = 0.25
-	},
-	hand_of_shallya = {
-		multiplier = 0.5
-	},
-	power_up_of_shallya = {
-		multiplier = 0.3
-	},
-	natural_bond = {
-		time_between_heals = 5,
-		heal_amount = 1
-	},
-	barkskin = {
-		sub_buff_duration = 2,
-		multiplier = -0.4
-	},
-	grenadier = {
-		proc_chance = 0.5
-	},
-	explosive_ordinance = {
-		multiplier = 0.5
-	},
-	deus_coin_pickup_regen_buff = {
-		heal = 5,
-		duration = 10
-	},
-	deus_ammo_pickup_range_pen_buff = {
-		duration = 15,
-		bonus = 2
-	},
-	deus_ammo_pickup_reload_speed_buff = {
-		duration = 10,
-		multiplier = -0.5
-	},
-	deus_large_ammo_pickup_infinite_ammo_buff = {
-		duration = 10
-	},
-	deus_revive_regen_buff = {
-		heal = 2,
-		duration = 15
-	},
-	active_ability_movement_speed = {
-		duration = 5,
-		multiplier = 1.4,
-		visualizer_multiplier = 0.4
-	},
-	explosive_pushes = {
-		duration = 5
-	},
-	deus_always_blocking = {
-		duration = 10
-	},
-	deus_crit_on_damage_taken_buff = {
-		bonus = 1,
-		duration = 3
-	},
-	deus_damage_reduction_on_incapacitated_buff = {
-		duration = 10,
-		multiplier = -0.5
-	},
-	deus_consumable_extra_shot_buff = {
-		duration = 15,
-		bonus = 1
-	},
-	deus_reckless_swings_buff = {
-		health_threshold = 0.5,
-		multiplier = 0.25,
-		damage_to_deal = 3
-	},
-	deus_big_swing_stagger_buff = {
-		multiplier = 0.5,
-		duration = 3,
-		targets_to_hit = 5
-	},
-	deus_second_wind_attack_speed = {
-		multiplier = 0.15,
-		duration = 10,
-		health_threshold = 0.1
-	},
-	deus_second_wind_movement_speed = {
-		duration = 10,
-		multiplier = 1.2
-	},
-	deus_second_wind_cooldown = {
-		duration = 30
-	},
-	deus_guard_buff = {
-		health_threshold = 0.75,
-		multiplier = -0.5
-	},
-	deus_push_increased_cleave_buff = {
-		multiplier = 0.5,
-		duration = 3
-	},
-	deus_parry_damage_immune_buff = {
-		duration = 2
-	},
-	deus_standing_still_damage_reduction_buff = {
-		multiplier = -0.3
-	},
-	triple_melee_headshot_power_boost = {
-		duration = 10,
-		multiplier = 0.15,
-		count = 3
-	},
-	melee_killing_spree_speed_boost = {
-		kill_amount = 10,
-		baked_multiplier = 1.2,
-		multiplier = 0.2,
-		kill_window = 10,
-		duration = 10
-	},
-	last_player_standing_power_reg_boost = {
-		heal = 5,
-		multiplier = 1,
-		duration = 10
-	},
-	cooldown_reg_not_hit_buff = {
-		max_stacks = 5,
-		multiplier = 0.05,
-		frequency = 5
-	},
-	heal_on_dot_damage_dealt = {
-		heal_per_tick = 0.25
-	},
-	explosive_kills_on_elite_kills = {
-		amount_of_explosions = 1
-	},
-	deus_powerup_attack_speed = {
-		multiplier = 0.1
-	},
-	deus_push_cost_reduction = {
-		visualizer_number = 0.5
-	},
-	deus_extra_stamina = {
-		extra_stamina = 4,
-		visualizer_number = 2
-	},
-	deus_skill_on_special_kill = {
-		percent_restored = 0.1
-	},
-	attack_speed_per_cooldown = {
-		multiplier = 0.2
-	},
-	cooldown_on_friendly_ability = {
-		percent_restored = 0.1
-	},
-	deus_crit_chain_lightning = {
-		max_targets = 5,
-		max_chain_range = 15
-	},
-	deus_ranged_crit_explosion = {
-		multiplier = 0.3
-	},
-	deus_extra_shot = {
-		bonus = 1
-	},
-	deus_collateral_damage_on_melee_killing_blow = {
-		max_range = 3,
-		proc_chance = 0.5
-	},
-	deus_throw_speed_increase = {
-		multiplier = 1
-	},
-	deus_grenade_multi_throw = {
-		bonus = 1
-	},
-	deus_ammo_pickup_give_allies_ammo = {
-		percent = 0.1
-	},
-	deus_target_full_health_damage_mult = {
-		visualizer_number = 0.2,
-		baked_multiplier = 1.2
-	},
-	deus_barrel_power = {
-		visualizer_number = 3,
-		multiplier = 4
-	},
-	deus_ammo_pickup_heal = {
-		amount = 15
-	},
-	deus_max_health = {
-		multiplier = 0.5
-	},
-	deus_health_regeneration = {
-		frequency = 3,
-		amount = 1
-	},
-	deus_larger_clip = {
-		multiplier = 1
-	},
-	deus_more_head_less_body_damage = {
-		positive_multiplier = 0.5,
-		negative_multiplier = -0.1
-	},
-	friendly_cooldown_on_ability = {
-		percent = 0.1
-	},
-	deus_cooldown_regen = {
-		multiplier = 0.1
-	},
-	deus_increased_healing_taken = {
-		multiplier = 0.5
-	},
-	deus_free_potion_use_on_ability = {
-		proc_chance = 0.5
-	}
 }
 DeusPowerUpBuffTemplates = {
 	deus_coin_pickup_regen_buff = {
@@ -301,8 +17,8 @@ DeusPowerUpBuffTemplates = {
 				update_func = "health_regen_update",
 				apply_buff_func = "health_regen_start",
 				icon = "deus_healing",
-				heal = power_up_tweak_data.deus_coin_pickup_regen_buff.heal,
-				duration = power_up_tweak_data.deus_coin_pickup_regen_buff.duration
+				heal = MorrisBuffTweakData.deus_coin_pickup_regen_buff.heal,
+				duration = MorrisBuffTweakData.deus_coin_pickup_regen_buff.duration
 			}
 		}
 	},
@@ -314,8 +30,8 @@ DeusPowerUpBuffTemplates = {
 				stat_buff = "ranged_additional_penetrations",
 				icon = "deus_icon_ammo_pickup_range_pen",
 				max_stacks = 1,
-				bonus = power_up_tweak_data.deus_ammo_pickup_range_pen_buff.bonus,
-				duration = power_up_tweak_data.deus_ammo_pickup_range_pen_buff.duration
+				bonus = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.bonus,
+				duration = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.duration
 			}
 		}
 	},
@@ -329,32 +45,34 @@ DeusPowerUpBuffTemplates = {
 				apply_buff_func = "apply_ammo_reload_speed_buff",
 				max_stacks = 1,
 				icon = "deus_icon_ammo_pickup_reload_speed",
-				multiplier = power_up_tweak_data.deus_ammo_pickup_reload_speed_buff.multiplier,
-				duration = power_up_tweak_data.deus_ammo_pickup_reload_speed_buff.duration
+				multiplier = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.multiplier,
+				duration = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.duration
 			}
 		}
 	},
 	deus_large_ammo_pickup_infinite_ammo_buff = {
 		buffs = {
 			{
-				perk = "infinite_ammo",
 				name = "deus_large_ammo_pickup_infinite_ammo_buff",
 				icon = "icons_placeholder",
-				duration = power_up_tweak_data.deus_large_ammo_pickup_infinite_ammo_buff.duration
+				perk = buff_perks.infinite_ammo,
+				duration = MorrisBuffTweakData.deus_large_ammo_pickup_infinite_ammo_buff.duration
 			}
 		}
 	},
 	deus_revive_regen_buff = {
 		buffs = {
 			{
-				name = "deus_revive_regen_buff",
 				heal_type = "health_regen",
+				name = "deus_revive_regen_buff",
+				max_stacks = 1,
 				time_between_heal = 1,
-				update_func = "health_regen_update",
+				refresh_durations = true,
 				apply_buff_func = "health_regen_start",
 				icon = "deus_revive_regen",
-				heal = power_up_tweak_data.deus_revive_regen_buff.heal,
-				duration = power_up_tweak_data.deus_revive_regen_buff.duration
+				update_func = "health_regen_update",
+				heal = MorrisBuffTweakData.deus_revive_regen_buff.heal,
+				duration = MorrisBuffTweakData.deus_revive_regen_buff.duration
 			}
 		}
 	},
@@ -367,8 +85,8 @@ DeusPowerUpBuffTemplates = {
 				refresh_durations = true,
 				remove_buff_func = "remove_active_ability_movement_buff",
 				max_stacks = 1,
-				multiplier = power_up_tweak_data.active_ability_movement_speed.multiplier,
-				duration = power_up_tweak_data.active_ability_movement_speed.duration,
+				multiplier = MorrisBuffTweakData.active_ability_movement_speed.multiplier,
+				duration = MorrisBuffTweakData.active_ability_movement_speed.duration,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -378,28 +96,26 @@ DeusPowerUpBuffTemplates = {
 	explosive_pushes = {
 		buffs = {
 			{
-				icon = "potion_buff_02",
+				explosion_template = "buff_explosion",
 				name = "explosive_pushes",
 				authority = "server",
 				buff_func = "on_push_explosion",
 				event = "on_push",
+				icon = "potion_buff_02",
 				power_scale = 1.5,
-				explosion_template = "buff_explosion",
-				event_buff = true,
-				duration = power_up_tweak_data.explosive_pushes.duration
+				duration = MorrisBuffTweakData.explosive_pushes.duration
 			}
 		}
 	},
 	deus_crit_on_damage_taken_buff = {
 		buffs = {
 			{
-				icon = "deus_icon_crit_on_damage_taken",
 				name = "deus_crit_on_damage_taken_buff",
-				stat_buff = "critical_strike_chance",
+				icon = "deus_icon_crit_on_damage_taken",
 				refresh_durations = true,
 				max_stacks = 1,
-				duration = power_up_tweak_data.deus_crit_on_damage_taken_buff.duration,
-				bonus = power_up_tweak_data.deus_crit_on_damage_taken_buff.bonus
+				duration = MorrisBuffTweakData.deus_crit_on_damage_taken_buff.duration,
+				perk = buff_perks.guaranteed_crit
 			}
 		}
 	},
@@ -412,8 +128,8 @@ DeusPowerUpBuffTemplates = {
 				max_stacks = 1,
 				remove_buff_func = "remove_damage_reduction_on_incapacitated",
 				apply_buff_func = "apply_damage_reduction_on_incapacitated",
-				multiplier = power_up_tweak_data.deus_damage_reduction_on_incapacitated_buff.multiplier,
-				duration = power_up_tweak_data.deus_damage_reduction_on_incapacitated_buff.duration
+				multiplier = MorrisBuffTweakData.deus_damage_reduction_on_incapacitated_buff.multiplier,
+				duration = MorrisBuffTweakData.deus_damage_reduction_on_incapacitated_buff.duration
 			}
 		}
 	},
@@ -427,8 +143,8 @@ DeusPowerUpBuffTemplates = {
 				apply_buff_func = "on_extra_shot_buff_apply",
 				max_stacks = 1,
 				icon = "deus_icon_consumable_extra_shot",
-				bonus = power_up_tweak_data.deus_consumable_extra_shot_buff.bonus,
-				duration = power_up_tweak_data.deus_consumable_extra_shot_buff.duration
+				bonus = MorrisBuffTweakData.deus_consumable_extra_shot_buff.bonus,
+				duration = MorrisBuffTweakData.deus_consumable_extra_shot_buff.duration
 			}
 		}
 	},
@@ -439,27 +155,25 @@ DeusPowerUpBuffTemplates = {
 				name = "elites_on_kill_explosion_buff",
 				authority = "server",
 				buff_func = "elites_on_kill_explosion",
-				event = "on_kill",
 				power_scale = 2,
+				event = "on_kill",
 				max_stacks = 1,
 				explosion_template = "buff_explosion",
-				event_buff = true,
 				icon = "explosive_kills_on_elite_kills",
-				amount_of_explosions = power_up_tweak_data.explosive_kills_on_elite_kills.amount_of_explosions
+				amount_of_explosions = MorrisBuffTweakData.explosive_kills_on_elite_kills.amount_of_explosions
 			}
 		}
 	},
 	deus_knockdown_damage_immunity_buff = {
 		buffs = {
 			{
-				perk = "invincibility",
+				icon = "deus_knockdown_damage_immunity_aura",
 				name = "deus_knockdown_damage_immunity_buff",
-				event_buff = true,
+				particle_fx = "fx/cw_allies_shield",
 				buff_func = "play_particle_effect",
 				event = "on_damage_taken",
-				icon = "deus_knockdown_damage_immunity_aura",
-				particle_fx = "fx/cw_allies_shield",
-				max_stacks = 1
+				max_stacks = 1,
+				perk = buff_perks.invulnerable
 			}
 		}
 	},
@@ -478,15 +192,14 @@ DeusPowerUpBuffTemplates = {
 	deus_timed_block_free_shot_buff = {
 		buffs = {
 			{
-				perk = "infinite_ammo",
-				name = "deus_timed_block_free_shot_buff",
-				max_stacks = 1,
-				buff_func = "dummy_function",
 				event = "on_ammo_used",
-				priority_buff = true,
-				event_buff = true,
+				name = "deus_timed_block_free_shot_buff",
+				icon = "deus_utils",
+				buff_func = "dummy_function",
 				remove_on_proc = true,
-				icon = "deus_utils"
+				priority_buff = true,
+				max_stacks = 1,
+				perk = buff_perks.infinite_ammo
 			}
 		}
 	},
@@ -495,11 +208,10 @@ DeusPowerUpBuffTemplates = {
 			{
 				buff_to_add = "deus_special_farm_max_health_buff",
 				name = "deus_special_farm_max_health",
-				event_buff = true,
+				authority = "server",
 				buff_func = "deus_special_farm_max_health_on_special",
-				event = "on_special_killed",
 				specials_per_pop = 5,
-				authority = "server"
+				event = "on_special_killed"
 			}
 		}
 	},
@@ -523,11 +235,10 @@ DeusPowerUpBuffTemplates = {
 				stat_buff = "power_level_melee",
 				buff_func = "deus_reckless_swings_buff_on_hit",
 				event = "on_hit",
-				event_buff = true,
-				max_stacks = 1,
 				icon = "deus_reckless_swings",
-				multiplier = power_up_tweak_data.deus_reckless_swings_buff.multiplier,
-				damage_to_deal = power_up_tweak_data.deus_reckless_swings_buff.damage_to_deal
+				max_stacks = 1,
+				multiplier = MorrisBuffTweakData.deus_reckless_swings_buff.multiplier,
+				damage_to_deal = MorrisBuffTweakData.deus_reckless_swings_buff.damage_to_deal
 			}
 		}
 	},
@@ -539,8 +250,8 @@ DeusPowerUpBuffTemplates = {
 				stat_buff = "power_level_impact",
 				icon = "deus_icon_big_swing_stagger",
 				max_stacks = 1,
-				duration = power_up_tweak_data.deus_big_swing_stagger_buff.duration,
-				multiplier = power_up_tweak_data.deus_big_swing_stagger_buff.multiplier
+				duration = MorrisBuffTweakData.deus_big_swing_stagger_buff.duration,
+				multiplier = MorrisBuffTweakData.deus_big_swing_stagger_buff.multiplier
 			}
 		}
 	},
@@ -550,14 +261,14 @@ DeusPowerUpBuffTemplates = {
 				icon = "deus_second_wind",
 				name = "deus_second_wind_attack_speed",
 				stat_buff = "attack_speed",
-				perk = "invincibility",
 				remove_buff_func = "remove_second_wind",
 				apply_buff_func = "apply_second_wind",
 				buff_after_delay = true,
 				max_stacks = 1,
 				delayed_buff_name = "deus_second_wind_cooldown",
-				duration = power_up_tweak_data.deus_second_wind_attack_speed.duration,
-				multiplier = power_up_tweak_data.deus_second_wind_attack_speed.multiplier
+				perk = buff_perks.invulnerable,
+				duration = MorrisBuffTweakData.deus_second_wind_attack_speed.duration,
+				multiplier = MorrisBuffTweakData.deus_second_wind_attack_speed.multiplier
 			}
 		}
 	},
@@ -568,8 +279,8 @@ DeusPowerUpBuffTemplates = {
 				name = "deus_second_wind_movement_speed",
 				max_stacks = 1,
 				apply_buff_func = "apply_movement_buff",
-				duration = power_up_tweak_data.deus_second_wind_movement_speed.duration,
-				multiplier = power_up_tweak_data.deus_second_wind_movement_speed.multiplier,
+				duration = MorrisBuffTweakData.deus_second_wind_movement_speed.duration,
+				multiplier = MorrisBuffTweakData.deus_second_wind_movement_speed.multiplier,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -583,7 +294,7 @@ DeusPowerUpBuffTemplates = {
 				max_stacks = 1,
 				is_cooldown = true,
 				icon = "deus_second_wind",
-				duration = power_up_tweak_data.deus_second_wind_cooldown.duration
+				duration = MorrisBuffTweakData.deus_second_wind_cooldown.duration
 			}
 		}
 	},
@@ -609,8 +320,7 @@ DeusPowerUpBuffTemplates = {
 				max_stacks = 1,
 				icon = "deus_icon_guard_aura_check",
 				event = "on_damage_taken",
-				event_buff = true,
-				multiplier = power_up_tweak_data.deus_guard_buff.multiplier
+				multiplier = MorrisBuffTweakData.deus_guard_buff.multiplier
 			}
 		}
 	},
@@ -621,20 +331,20 @@ DeusPowerUpBuffTemplates = {
 				name = "deus_push_increased_cleave_buff",
 				stat_buff = "power_level_melee_cleave",
 				max_stacks = 1,
-				duration = power_up_tweak_data.deus_push_increased_cleave_buff.duration,
-				multiplier = power_up_tweak_data.deus_push_increased_cleave_buff.multiplier
+				duration = MorrisBuffTweakData.deus_push_increased_cleave_buff.duration,
+				multiplier = MorrisBuffTweakData.deus_push_increased_cleave_buff.multiplier
 			}
 		}
 	},
 	deus_parry_damage_immune_buff = {
 		buffs = {
 			{
-				perk = "invincibility",
 				name = "deus_parry_damage_immune_buff",
 				icon = "deus_parry_damage_immune",
 				max_stacks = 1,
 				apply_buff_func = "apply_parry_damage_immune",
-				duration = power_up_tweak_data.deus_parry_damage_immune_buff.duration
+				perk = buff_perks.invulnerable,
+				duration = MorrisBuffTweakData.deus_parry_damage_immune_buff.duration
 			}
 		}
 	},
@@ -644,7 +354,7 @@ DeusPowerUpBuffTemplates = {
 				name = "deus_standing_still_damage_reduction_buff",
 				stat_buff = "damage_taken",
 				icon = "deus_standing_still_damage_reduction",
-				multiplier = power_up_tweak_data.deus_standing_still_damage_reduction_buff.multiplier
+				multiplier = MorrisBuffTweakData.deus_standing_still_damage_reduction_buff.multiplier
 			}
 		}
 	},
@@ -656,8 +366,8 @@ DeusPowerUpBuffTemplates = {
 				max_stacks = 1,
 				icon = "triple_melee_headshot_power",
 				refresh_durations = true,
-				multiplier = power_up_tweak_data.triple_melee_headshot_power_boost.multiplier,
-				duration = power_up_tweak_data.triple_melee_headshot_power_boost.duration
+				multiplier = MorrisBuffTweakData.triple_melee_headshot_power_boost.multiplier,
+				duration = MorrisBuffTweakData.triple_melee_headshot_power_boost.duration
 			}
 		}
 	},
@@ -672,8 +382,8 @@ DeusPowerUpBuffTemplates = {
 				apply_buff_func = "apply_screenspace_fx",
 				max_stacks = 1,
 				icon = "melee_killing_spree_speed",
-				multiplier = power_up_tweak_data.melee_killing_spree_speed_boost.multiplier,
-				duration = power_up_tweak_data.melee_killing_spree_speed_boost.duration
+				multiplier = MorrisBuffTweakData.melee_killing_spree_speed_boost.multiplier,
+				duration = MorrisBuffTweakData.melee_killing_spree_speed_boost.duration
 			},
 			{
 				name = "melee_killing_spree_speed_boost",
@@ -681,8 +391,8 @@ DeusPowerUpBuffTemplates = {
 				remove_buff_func = "remove_movement_buff",
 				apply_buff_func = "apply_movement_buff",
 				refresh_durations = true,
-				multiplier = power_up_tweak_data.melee_killing_spree_speed_boost.baked_multiplier,
-				duration = power_up_tweak_data.melee_killing_spree_speed_boost.duration,
+				multiplier = MorrisBuffTweakData.melee_killing_spree_speed_boost.baked_multiplier,
+				duration = MorrisBuffTweakData.melee_killing_spree_speed_boost.duration,
 				path_to_movement_setting_to_modify = {
 					"move_speed"
 				}
@@ -695,8 +405,8 @@ DeusPowerUpBuffTemplates = {
 				name = "last_player_standing_power_boost",
 				stat_buff = "power_level",
 				icon = "last_player_standing_power_reg",
-				multiplier = power_up_tweak_data.last_player_standing_power_reg_boost.multiplier,
-				duration = power_up_tweak_data.last_player_standing_power_reg_boost.duration
+				multiplier = MorrisBuffTweakData.last_player_standing_power_reg_boost.multiplier,
+				duration = MorrisBuffTweakData.last_player_standing_power_reg_boost.duration
 			},
 			{
 				name = "last_player_standing_reg_boost",
@@ -704,8 +414,8 @@ DeusPowerUpBuffTemplates = {
 				time_between_heal = 0.5,
 				update_func = "health_regen_update",
 				apply_buff_func = "health_regen_start",
-				heal = power_up_tweak_data.last_player_standing_power_reg_boost.heal,
-				duration = power_up_tweak_data.last_player_standing_power_reg_boost.duration
+				heal = MorrisBuffTweakData.last_player_standing_power_reg_boost.heal,
+				duration = MorrisBuffTweakData.last_player_standing_power_reg_boost.duration
 			}
 		}
 	},
@@ -715,8 +425,8 @@ DeusPowerUpBuffTemplates = {
 				name = "cooldown_reg_not_hit_buff",
 				stat_buff = "cooldown_regen",
 				icon = "deus_icon_cooldown_reg_not_hit",
-				multiplier = power_up_tweak_data.cooldown_reg_not_hit_buff.multiplier,
-				max_stacks = power_up_tweak_data.cooldown_reg_not_hit_buff.max_stacks
+				multiplier = MorrisBuffTweakData.cooldown_reg_not_hit_buff.multiplier,
+				max_stacks = MorrisBuffTweakData.cooldown_reg_not_hit_buff.max_stacks
 			}
 		}
 	},
@@ -737,11 +447,15 @@ DeusPowerUpBuffTemplates = {
 				name = "deus_always_blocking_lock_out",
 				icon = "deus_icon_always_blocking_01",
 				debuff = true,
+				max_stacks = 1,
 				duration = 10
 			}
 		}
 	}
 }
+
+DLCUtils.merge("deus_power_up_buff_templates", DeusPowerUpBuffTemplates)
+
 DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	attack_speed = {
 		display_name = "properties_attack_speed",
@@ -759,7 +473,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.attack_speed.multiplier
+				value = MorrisBuffTweakData.attack_speed.multiplier
 			}
 		}
 	},
@@ -779,7 +493,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "bonus",
-				value = power_up_tweak_data.stamina.bonus
+				value = MorrisBuffTweakData.stamina.bonus
 			}
 		}
 	},
@@ -799,7 +513,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.push_block_arc.multiplier
+				value = MorrisBuffTweakData.push_block_arc.multiplier
 			}
 		}
 	},
@@ -819,7 +533,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.crit_chance.bonus
+				value = MorrisBuffTweakData.crit_chance.bonus
 			}
 		}
 	},
@@ -839,7 +553,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.ability_cooldown_reduction.multiplier
+				value = MorrisBuffTweakData.ability_cooldown_reduction.multiplier
 			}
 		}
 	},
@@ -859,7 +573,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.crit_boost.multiplier
+				value = MorrisBuffTweakData.crit_boost.multiplier
 			}
 		}
 	},
@@ -879,7 +593,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_vs_skaven.multiplier
+				value = MorrisBuffTweakData.power_vs_skaven.multiplier
 			}
 		}
 	},
@@ -899,7 +613,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_vs_chaos.multiplier
+				value = MorrisBuffTweakData.power_vs_chaos.multiplier
 			}
 		}
 	},
@@ -919,7 +633,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_vs_unarmoured.multiplier
+				value = MorrisBuffTweakData.power_vs_unarmoured.multiplier
 			}
 		}
 	},
@@ -939,7 +653,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_vs_armoured.multiplier
+				value = MorrisBuffTweakData.power_vs_armoured.multiplier
 			}
 		}
 	},
@@ -959,7 +673,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_vs_large.multiplier
+				value = MorrisBuffTweakData.power_vs_large.multiplier
 			}
 		}
 	},
@@ -979,7 +693,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_vs_frenzy.multiplier
+				value = MorrisBuffTweakData.power_vs_frenzy.multiplier
 			}
 		}
 	},
@@ -999,7 +713,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.health.multiplier
+				value = MorrisBuffTweakData.health.multiplier
 			}
 		}
 	},
@@ -1019,7 +733,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.block_cost.multiplier
+				value = MorrisBuffTweakData.block_cost.multiplier
 			}
 		}
 	},
@@ -1039,7 +753,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.protection_skaven.multiplier
+				value = MorrisBuffTweakData.protection_skaven.multiplier
 			}
 		}
 	},
@@ -1059,7 +773,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.protection_chaos.multiplier
+				value = MorrisBuffTweakData.protection_chaos.multiplier
 			}
 		}
 	},
@@ -1079,7 +793,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.protection_aoe.multiplier
+				value = MorrisBuffTweakData.protection_aoe.multiplier
 			}
 		}
 	},
@@ -1099,7 +813,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.respawn_speed.multiplier
+				value = MorrisBuffTweakData.respawn_speed.multiplier
 			}
 		}
 	},
@@ -1119,7 +833,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.revive_speed.multiplier
+				value = MorrisBuffTweakData.revive_speed.multiplier
 			}
 		}
 	},
@@ -1139,7 +853,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.fatigue_regen.multiplier
+				value = MorrisBuffTweakData.fatigue_regen.multiplier
 			}
 		}
 	},
@@ -1163,7 +877,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.movespeed.description_value
+				value = MorrisBuffTweakData.movespeed.description_value
 			}
 		}
 	},
@@ -1183,7 +897,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.curse_resistance.multiplier
+				value = MorrisBuffTweakData.curse_resistance.multiplier
 			}
 		}
 	},
@@ -1203,7 +917,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.home_brewer.proc_chance
+				value = MorrisBuffTweakData.home_brewer.proc_chance
 			}
 		}
 	},
@@ -1216,14 +930,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					dormant = true,
-					perk = "potion_duration"
+					perk = buff_perks.potion_duration
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.decanter.multiplier
+				value = MorrisBuffTweakData.decanter.multiplier
 			}
 		}
 	},
@@ -1243,7 +957,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.healers_touch.proc_chance
+				value = MorrisBuffTweakData.healers_touch.proc_chance
 			}
 		}
 	},
@@ -1263,7 +977,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.hand_of_shallya.multiplier
+				value = MorrisBuffTweakData.hand_of_shallya.multiplier
 			}
 		}
 	},
@@ -1284,7 +998,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.power_up_of_shallya.multiplier
+				value = MorrisBuffTweakData.power_up_of_shallya.multiplier
 			}
 		}
 	},
@@ -1299,16 +1013,16 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					max_stacks = 1,
 					update_func = "update_heal_ticks",
 					dormant = true,
-					perk = "no_permanent_health"
+					perk = buff_perks.no_permanent_health
 				}
 			}
 		},
 		description_values = {
 			{
-				value = power_up_tweak_data.natural_bond.heal_amount
+				value = MorrisBuffTweakData.natural_bond.heal_amount
 			},
 			{
-				value = power_up_tweak_data.natural_bond.time_between_heals
+				value = MorrisBuffTweakData.natural_bond.time_between_heals
 			}
 		}
 	},
@@ -1323,7 +1037,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					event = "on_damage_taken",
 					dormant = true,
-					event_buff = true,
 					buff_func = "buff_defence_on_damage_taken"
 				}
 			}
@@ -1331,15 +1044,15 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.barkskin.multiplier
+				value = MorrisBuffTweakData.barkskin.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.barkskin.sub_buff_duration
+				value = MorrisBuffTweakData.barkskin.sub_buff_duration
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.barkskin.sub_buff_duration
+				value = MorrisBuffTweakData.barkskin.sub_buff_duration
 			}
 		}
 	},
@@ -1360,7 +1073,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.grenadier.proc_chance
+				value = MorrisBuffTweakData.grenadier.proc_chance
 			}
 		}
 	},
@@ -1380,7 +1093,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.explosive_ordinance.multiplier
+				value = MorrisBuffTweakData.explosive_ordinance.multiplier
 			}
 		}
 	},
@@ -1393,7 +1106,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					event = "on_hit",
-					event_buff = true,
 					buff_func = "debuff_defence_grenade_hit"
 				}
 			}
@@ -1420,7 +1132,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					buff_to_add = "deus_always_blocking_buff",
 					name = "always_blocking",
-					event_buff = true,
 					buff_func = "always_blocking_weapon_swap",
 					event = "on_inventory_post_apply_buffs",
 					update_func = "always_blocking_update",
@@ -1429,7 +1140,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					event = "on_block_broken",
 					name = "block_broken_remove_buff",
-					event_buff = true,
 					buff_func = "always_blocking_temporarily_remove"
 				}
 			}
@@ -1437,7 +1147,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_always_blocking.duration
+				value = MorrisBuffTweakData.deus_always_blocking.duration
 			}
 		}
 	},
@@ -1450,11 +1160,10 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					sound_event = "morris_power_ups_drop_coins",
+					event = "on_hit",
 					name = "deus_transmute_into_coins",
-					event_buff = true,
-					buff_func = "deus_transmute_into_coins",
-					event = "on_hit"
+					sound_event = "morris_power_ups_drop_coins",
+					buff_func = "deus_transmute_into_coins"
 				}
 			}
 		},
@@ -1469,19 +1178,18 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					name = "heal_on_dot_damage_dealt",
-					event_buff = true,
-					buff_func = "heal_on_dot_damage_dealt",
 					event = "on_dot_damage_dealt",
+					name = "heal_on_dot_damage_dealt",
 					authority = "server",
-					value = power_up_tweak_data.heal_on_dot_damage_dealt.heal_per_tick
+					buff_func = "heal_on_dot_damage_dealt",
+					value = MorrisBuffTweakData.heal_on_dot_damage_dealt.heal_per_tick
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.heal_on_dot_damage_dealt.heal_per_tick
+				value = MorrisBuffTweakData.heal_on_dot_damage_dealt.heal_per_tick
 			}
 		}
 	},
@@ -1494,18 +1202,17 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "elites_on_kill_explosion_buff",
+					event = "on_kill_elite_special",
 					name = "explosive_kills_on_elite_kills",
-					event_buff = true,
-					buff_func = "add_buff_on_melee_kills_proc",
-					event = "on_kill_elite_special"
+					buff_to_add = "elites_on_kill_explosion_buff",
+					buff_func = "add_buff_on_melee_kills_proc"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.explosive_kills_on_elite_kills.amount_of_explosions
+				value = MorrisBuffTweakData.explosive_kills_on_elite_kills.amount_of_explosions
 			}
 		}
 	},
@@ -1518,18 +1225,17 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "explosive_pushes",
+					event = "on_damage_taken",
 					name = "explosive_pushes_on_damage_taken",
-					event_buff = true,
-					buff_func = "add_buff_on_proc",
-					event = "on_damage_taken"
+					buff_to_add = "explosive_pushes",
+					buff_func = "add_buff_on_proc"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.explosive_pushes.duration
+				value = MorrisBuffTweakData.explosive_pushes.duration
 			}
 		}
 	},
@@ -1542,18 +1248,17 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "deus_crit_on_damage_taken_buff",
+					event = "on_damage_taken",
 					name = "deus_crit_on_damage_taken",
-					event_buff = true,
-					buff_func = "add_buff_on_non_friendly_damage_taken",
-					event = "on_damage_taken"
+					buff_to_add = "deus_crit_on_damage_taken_buff",
+					buff_func = "add_buff_on_non_friendly_damage_taken"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_crit_on_damage_taken_buff.duration
+				value = MorrisBuffTweakData.deus_crit_on_damage_taken_buff.duration
 			}
 		}
 	},
@@ -1566,22 +1271,21 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "deus_damage_reduction_on_incapacitated_buff",
+					event = "on_damage_taken",
 					name = "deus_damage_reduction_on_incapacitated",
-					event_buff = true,
-					buff_func = "deus_damage_reduction_on_incapacitated",
-					event = "on_damage_taken"
+					buff_to_add = "deus_damage_reduction_on_incapacitated_buff",
+					buff_func = "deus_damage_reduction_on_incapacitated"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_damage_reduction_on_incapacitated_buff.multiplier
+				value = MorrisBuffTweakData.deus_damage_reduction_on_incapacitated_buff.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_damage_reduction_on_incapacitated_buff.duration
+				value = MorrisBuffTweakData.deus_damage_reduction_on_incapacitated_buff.duration
 			}
 		}
 	},
@@ -1596,14 +1300,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_powerup_attack_speed",
 					stat_buff = "attack_speed",
-					multiplier = power_up_tweak_data.deus_powerup_attack_speed.multiplier
+					multiplier = MorrisBuffTweakData.deus_powerup_attack_speed.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_powerup_attack_speed.multiplier
+				value = MorrisBuffTweakData.deus_powerup_attack_speed.multiplier
 			}
 		}
 	},
@@ -1621,22 +1325,22 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					authority = "server",
 					update_func = "update_server_buff_on_health_percent",
 					update_frequency = 0.5,
-					health_threshold = power_up_tweak_data.deus_reckless_swings_buff.health_threshold
+					health_threshold = MorrisBuffTweakData.deus_reckless_swings_buff.health_threshold
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_reckless_swings_buff.health_threshold
+				value = MorrisBuffTweakData.deus_reckless_swings_buff.health_threshold
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_reckless_swings_buff.multiplier
+				value = MorrisBuffTweakData.deus_reckless_swings_buff.multiplier
 			},
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.deus_reckless_swings_buff.damage_to_deal
+				value = MorrisBuffTweakData.deus_reckless_swings_buff.damage_to_deal
 			}
 		}
 	},
@@ -1651,25 +1355,24 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					buff_to_add = "deus_big_swing_stagger_buff",
 					name = "deus_big_swing_stagger",
-					event_buff = true,
 					buff_func = "deus_big_swing_stagger_on_hit",
 					event = "on_hit",
-					targets_to_hit = power_up_tweak_data.deus_big_swing_stagger_buff.targets_to_hit
+					targets_to_hit = MorrisBuffTweakData.deus_big_swing_stagger_buff.targets_to_hit
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.deus_big_swing_stagger_buff.targets_to_hit
+				value = MorrisBuffTweakData.deus_big_swing_stagger_buff.targets_to_hit
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_big_swing_stagger_buff.multiplier
+				value = MorrisBuffTweakData.deus_big_swing_stagger_buff.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_big_swing_stagger_buff.duration
+				value = MorrisBuffTweakData.deus_big_swing_stagger_buff.duration
 			}
 		}
 	},
@@ -1684,30 +1387,29 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					max_stacks = 1,
 					name = "deus_second_wind",
-					event_buff = true,
+					authority = "server",
 					buff_func = "deus_second_wind_on_hit",
 					event = "on_damage_taken",
-					authority = "server",
 					buffs_to_add = {
 						"deus_second_wind_attack_speed",
 						"deus_second_wind_movement_speed"
 					},
-					health_threshold = power_up_tweak_data.deus_second_wind_attack_speed.health_threshold
+					health_threshold = MorrisBuffTweakData.deus_second_wind_attack_speed.health_threshold
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_second_wind_attack_speed.health_threshold
+				value = MorrisBuffTweakData.deus_second_wind_attack_speed.health_threshold
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_second_wind_attack_speed.multiplier
+				value = MorrisBuffTweakData.deus_second_wind_attack_speed.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_second_wind_attack_speed.duration
+				value = MorrisBuffTweakData.deus_second_wind_attack_speed.duration
 			}
 		}
 	},
@@ -1720,15 +1422,15 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					perk = "slayer_stamina",
-					name = "deus_push_cost_reduction"
+					name = "deus_push_cost_reduction",
+					perk = buff_perks.slayer_stamina
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_push_cost_reduction.visualizer_number
+				value = MorrisBuffTweakData.deus_push_cost_reduction.visualizer_number
 			}
 		}
 	},
@@ -1746,14 +1448,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					authority = "server",
 					update_func = "update_server_buff_on_health_percent",
 					update_frequency = 0.5,
-					health_threshold = power_up_tweak_data.deus_guard_buff.health_threshold
+					health_threshold = MorrisBuffTweakData.deus_guard_buff.health_threshold
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_guard_buff.health_threshold
+				value = MorrisBuffTweakData.deus_guard_buff.health_threshold
 			}
 		}
 	},
@@ -1768,14 +1470,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_extra_stamina",
 					stat_buff = "max_fatigue",
-					bonus = power_up_tweak_data.deus_extra_stamina.extra_stamina
+					bonus = MorrisBuffTweakData.deus_extra_stamina.extra_stamina
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.deus_extra_stamina.visualizer_number
+				value = MorrisBuffTweakData.deus_extra_stamina.visualizer_number
 			}
 		}
 	},
@@ -1788,18 +1490,17 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "deus_parry_damage_immune_buff",
+					event = "on_timed_block",
 					name = "deus_parry_damage_immune",
-					event_buff = true,
-					buff_func = "add_buff",
-					event = "on_timed_block"
+					buff_to_add = "deus_parry_damage_immune_buff",
+					buff_func = "add_buff"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_parry_damage_immune_buff.duration
+				value = MorrisBuffTweakData.deus_parry_damage_immune_buff.duration
 			}
 		}
 	},
@@ -1812,18 +1513,17 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					name = "deus_skill_on_special_kill",
-					event_buff = true,
-					buff_func = "skill_on_special_kill",
 					event = "on_special_killed",
-					percent_restored = power_up_tweak_data.deus_skill_on_special_kill.percent_restored
+					name = "deus_skill_on_special_kill",
+					buff_func = "skill_on_special_kill",
+					percent_restored = MorrisBuffTweakData.deus_skill_on_special_kill.percent_restored
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_skill_on_special_kill.percent_restored
+				value = MorrisBuffTweakData.deus_skill_on_special_kill.percent_restored
 			}
 		}
 	},
@@ -1837,7 +1537,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "drop_item_on_active_ability_use",
-					event_buff = true,
 					buff_func = "drop_item_on_ability_use",
 					event = "on_ability_cooldown_started",
 					cooldown_buff = "drop_item_on_ability_use_cooldown",
@@ -1860,22 +1559,21 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "active_ability_movement_speed",
+					event = "on_ability_cooldown_started",
 					name = "movement_speed_on_active_ability_use",
-					event_buff = true,
-					buff_func = "add_buff_on_proc",
-					event = "on_ability_cooldown_started"
+					buff_to_add = "active_ability_movement_speed",
+					buff_func = "add_buff_on_proc"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.active_ability_movement_speed.visualizer_multiplier
+				value = MorrisBuffTweakData.active_ability_movement_speed.visualizer_multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.active_ability_movement_speed.duration
+				value = MorrisBuffTweakData.active_ability_movement_speed.duration
 			}
 		}
 	},
@@ -1891,14 +1589,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					name = "attack_speed_per_cooldown",
 					stat_buff = "attack_speed",
 					update_func = "update_attack_speed_per_cooldown",
-					value = power_up_tweak_data.attack_speed_per_cooldown.multiplier
+					value = MorrisBuffTweakData.attack_speed_per_cooldown.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.attack_speed_per_cooldown.multiplier
+				value = MorrisBuffTweakData.attack_speed_per_cooldown.multiplier
 			}
 		}
 	},
@@ -1911,19 +1609,18 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					range = 20,
 					name = "cooldown_on_friendly_ability",
-					event_buff = true,
+					range = 20,
 					buff_func = "cooldown_on_friendly_ability",
 					event = "on_ability_activated",
-					value = power_up_tweak_data.cooldown_on_friendly_ability.percent_restored
+					value = MorrisBuffTweakData.cooldown_on_friendly_ability.percent_restored
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.cooldown_on_friendly_ability.percent_restored
+				value = MorrisBuffTweakData.cooldown_on_friendly_ability.percent_restored
 			}
 		}
 	},
@@ -1944,16 +1641,15 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					damage_profile = "beam_shot",
 					particle_name = "",
 					damage_source = "buff",
-					event_buff = true,
-					max_targets = power_up_tweak_data.deus_crit_chain_lightning.max_targets,
-					max_chain_range = power_up_tweak_data.deus_crit_chain_lightning.max_chain_range
+					max_targets = MorrisBuffTweakData.deus_crit_chain_lightning.max_targets,
+					max_chain_range = MorrisBuffTweakData.deus_crit_chain_lightning.max_chain_range
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "targets",
-				value = power_up_tweak_data.deus_crit_chain_lightning.max_targets
+				value = MorrisBuffTweakData.deus_crit_chain_lightning.max_targets
 			}
 		}
 	},
@@ -1972,19 +1668,18 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					buff_func = "explosion_on_damage_dealt",
 					event = "on_hit",
 					explosion_template = "deus_ranged_crit_explosion",
-					event_buff = true,
 					valid_attack_types = {
 						instant_projectile = true,
 						projectile = true
 					},
-					power_scale = power_up_tweak_data.deus_ranged_crit_explosion.multiplier
+					power_scale = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_ranged_crit_explosion.multiplier
+				value = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier
 			}
 		}
 	},
@@ -1999,14 +1694,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_extra_shot",
 					stat_buff = "extra_shot",
-					bonus = power_up_tweak_data.deus_extra_shot.bonus
+					bonus = MorrisBuffTweakData.deus_extra_shot.bonus
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "bonus",
-				value = power_up_tweak_data.deus_extra_shot.bonus
+				value = MorrisBuffTweakData.deus_extra_shot.bonus
 			}
 		}
 	},
@@ -2019,22 +1714,21 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "deus_consumable_extra_shot_buff",
+					event = "on_potion_consumed",
 					name = "deus_consumable_extra_shot",
-					event_buff = true,
-					buff_func = "add_buff",
-					event = "on_potion_consumed"
+					buff_to_add = "deus_consumable_extra_shot_buff",
+					buff_func = "add_buff"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "bonus",
-				value = power_up_tweak_data.deus_consumable_extra_shot_buff.bonus
+				value = MorrisBuffTweakData.deus_consumable_extra_shot_buff.bonus
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_consumable_extra_shot_buff.duration
+				value = MorrisBuffTweakData.deus_consumable_extra_shot_buff.duration
 			}
 		}
 	},
@@ -2047,22 +1741,21 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "deus_push_increased_cleave_buff",
+					event = "on_push",
 					name = "deus_push_increased_cleave",
-					event_buff = true,
-					buff_func = "add_buff",
-					event = "on_push"
+					buff_to_add = "deus_push_increased_cleave_buff",
+					buff_func = "add_buff"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_push_increased_cleave_buff.multiplier
+				value = MorrisBuffTweakData.deus_push_increased_cleave_buff.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_push_increased_cleave_buff.duration
+				value = MorrisBuffTweakData.deus_push_increased_cleave_buff.duration
 			}
 		}
 	},
@@ -2076,20 +1769,19 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_collateral_damage_on_melee_killing_blow",
-					event_buff = true,
+					authority = "server",
 					buff_func = "deus_collateral_damage_on_melee_killing_blow_func",
 					event = "on_kill",
 					sound_event = "morris_power_ups_extra_damage",
-					authority = "server",
-					max_range = power_up_tweak_data.deus_collateral_damage_on_melee_killing_blow.max_range,
-					proc_chance = power_up_tweak_data.deus_collateral_damage_on_melee_killing_blow.proc_chance
+					max_range = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.max_range,
+					proc_chance = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.proc_chance
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_collateral_damage_on_melee_killing_blow.proc_chance
+				value = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.proc_chance
 			}
 		}
 	},
@@ -2105,14 +1797,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					max_stacks = 1,
 					name = "deus_throw_speed_increase",
 					stat_buff = "throw_speed_increase",
-					multiplier = power_up_tweak_data.deus_throw_speed_increase.multiplier
+					multiplier = MorrisBuffTweakData.deus_throw_speed_increase.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_throw_speed_increase.multiplier
+				value = MorrisBuffTweakData.deus_throw_speed_increase.multiplier
 			}
 		}
 	},
@@ -2127,14 +1819,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_grenade_multi_throw",
 					stat_buff = "grenade_extra_shot",
-					bonus = power_up_tweak_data.deus_grenade_multi_throw.bonus
+					bonus = MorrisBuffTweakData.deus_grenade_multi_throw.bonus
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "bonus",
-				value = power_up_tweak_data.deus_grenade_multi_throw.bonus
+				value = MorrisBuffTweakData.deus_grenade_multi_throw.bonus
 			}
 		}
 	},
@@ -2170,10 +1862,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_coin_pickup_regen",
-					event_buff = true,
+					authority = "server",
 					buff_func = "add_buff_on_pickup",
 					event = "on_consumable_picked_up",
-					authority = "server",
 					pickup_types = {
 						deus_soft_currency = {
 							"deus_coin_pickup_regen_buff"
@@ -2185,7 +1876,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_coin_pickup_regen_buff.duration
+				value = MorrisBuffTweakData.deus_coin_pickup_regen_buff.duration
 			}
 		}
 	},
@@ -2199,14 +1890,13 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_ammo_pickup_give_allies_ammo",
-					event_buff = true,
+					authority = "server",
 					buff_func = "ally_gain_ammo_on_pickup",
 					event = "on_consumable_picked_up",
-					authority = "server",
 					pickup_types = {
 						ammo = {
 							max_range = 10,
-							ammo_bonus_fraction = power_up_tweak_data.deus_ammo_pickup_give_allies_ammo.percent
+							ammo_bonus_fraction = MorrisBuffTweakData.deus_ammo_pickup_give_allies_ammo.percent
 						}
 					}
 				}
@@ -2215,7 +1905,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_ammo_pickup_give_allies_ammo.percent
+				value = MorrisBuffTweakData.deus_ammo_pickup_give_allies_ammo.percent
 			}
 		}
 	},
@@ -2229,11 +1919,10 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_target_full_health_damage_mult",
-					event_buff = true,
+					authority = "server",
 					buff_func = "deus_target_full_health_damage_mult",
 					event = "on_player_damage_dealt",
-					authority = "server",
-					damage_mult = power_up_tweak_data.deus_target_full_health_damage_mult.baked_multiplier,
+					damage_mult = MorrisBuffTweakData.deus_target_full_health_damage_mult.baked_multiplier,
 					valid_attack_types = {
 						heavy_attack = true,
 						light_attack = true
@@ -2244,7 +1933,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_target_full_health_damage_mult.visualizer_number
+				value = MorrisBuffTweakData.deus_target_full_health_damage_mult.visualizer_number
 			}
 		}
 	},
@@ -2258,21 +1947,20 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_barrel_power",
-					event_buff = true,
 					buff_func = "deus_damage_source_damage_mult",
 					event = "on_damage_dealt",
 					valid_damage_sources = {
 						explosive_barrel = true,
 						explosive_barrel_objective = true
 					},
-					damage_mult = power_up_tweak_data.deus_barrel_power.multiplier
+					damage_mult = MorrisBuffTweakData.deus_barrel_power.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_barrel_power.visualizer_number
+				value = MorrisBuffTweakData.deus_barrel_power.visualizer_number
 			}
 		}
 	},
@@ -2286,10 +1974,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_revive_regen",
-					event_buff = true,
+					authority = "server",
 					buff_func = "add_buff_on_ally_revived",
 					event = "on_revived_ally",
-					authority = "server",
 					buff_to_add = {
 						"deus_revive_regen_buff"
 					},
@@ -2302,7 +1989,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_revive_regen_buff.duration
+				value = MorrisBuffTweakData.deus_revive_regen_buff.duration
 			}
 		}
 	},
@@ -2316,10 +2003,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_ammo_pickup_range_pen",
-					event_buff = true,
+					authority = "client",
 					buff_func = "add_buff_on_pickup",
 					event = "on_consumable_picked_up",
-					authority = "client",
 					pickup_types = {
 						ammo = {
 							"deus_ammo_pickup_range_pen_buff"
@@ -2331,11 +2017,11 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "bonus",
-				value = power_up_tweak_data.deus_ammo_pickup_range_pen_buff.bonus
+				value = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.bonus
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_ammo_pickup_range_pen_buff.duration
+				value = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.duration
 			}
 		}
 	},
@@ -2350,14 +2036,13 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					sound_event = "hud_player_buff_regen_health",
 					name = "deus_ammo_pickup_heal",
-					event_buff = true,
+					authority = "server",
 					buff_func = "heal_on_pickup",
 					event = "on_consumable_picked_up",
-					authority = "server",
 					pickup_types = {
 						ammo = {
 							type = "health_regen",
-							amount = power_up_tweak_data.deus_ammo_pickup_heal.amount
+							amount = MorrisBuffTweakData.deus_ammo_pickup_heal.amount
 						}
 					}
 				}
@@ -2366,7 +2051,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.deus_ammo_pickup_heal.amount
+				value = MorrisBuffTweakData.deus_ammo_pickup_heal.amount
 			}
 		}
 	},
@@ -2380,10 +2065,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_ammo_pickup_reload_speed",
-					event_buff = true,
+					authority = "client",
 					buff_func = "add_buff_on_pickup",
 					event = "on_consumable_picked_up",
-					authority = "client",
 					pickup_types = {
 						ammo = {
 							"deus_ammo_pickup_reload_speed_buff"
@@ -2395,11 +2079,11 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_ammo_pickup_reload_speed_buff.multiplier
+				value = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.multiplier
 			},
 			{
 				value_type = "range",
-				value = power_up_tweak_data.deus_ammo_pickup_reload_speed_buff.duration
+				value = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.duration
 			}
 		}
 	},
@@ -2414,14 +2098,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_max_health",
 					stat_buff = "max_health",
-					multiplier = power_up_tweak_data.deus_max_health.multiplier
+					multiplier = MorrisBuffTweakData.deus_max_health.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_max_health.multiplier
+				value = MorrisBuffTweakData.deus_max_health.multiplier
 			}
 		}
 	},
@@ -2439,19 +2123,19 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					heal_type = "health_regen",
 					update_func = "health_regen_update",
 					apply_buff_func = "health_regen_start",
-					time_between_heal = power_up_tweak_data.deus_health_regeneration.frequency,
-					heal = power_up_tweak_data.deus_health_regeneration.amount
+					time_between_heal = MorrisBuffTweakData.deus_health_regeneration.frequency,
+					heal = MorrisBuffTweakData.deus_health_regeneration.amount
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_health_regeneration.amount
+				value = MorrisBuffTweakData.deus_health_regeneration.amount
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_health_regeneration.frequency
+				value = MorrisBuffTweakData.deus_health_regeneration.frequency
 			}
 		}
 	},
@@ -2465,10 +2149,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			buffs = {
 				{
 					name = "deus_large_ammo_pickup_infinite_ammo",
-					event_buff = true,
+					authority = "client",
 					buff_func = "add_buff_on_pickup",
 					event = "on_consumable_picked_up",
-					authority = "client",
 					pickup_names = {
 						all_ammo = {
 							"deus_large_ammo_pickup_infinite_ammo_buff"
@@ -2483,7 +2166,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.deus_large_ammo_pickup_infinite_ammo_buff.duration
+				value = MorrisBuffTweakData.deus_large_ammo_pickup_infinite_ammo_buff.duration
 			}
 		}
 	},
@@ -2498,7 +2181,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_larger_clip",
 					stat_buff = "clip_size",
-					multiplier = power_up_tweak_data.deus_larger_clip.multiplier,
+					multiplier = MorrisBuffTweakData.deus_larger_clip.multiplier,
 					buffs_to_remove_on_remove = {
 						"deus_larger_clip_update"
 					}
@@ -2513,7 +2196,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_larger_clip.multiplier
+				value = MorrisBuffTweakData.deus_larger_clip.multiplier
 			}
 		}
 	},
@@ -2526,11 +2209,10 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "deus_timed_block_free_shot_buff",
+					event = "on_timed_block",
 					name = "deus_timed_block_free_shot",
-					event_buff = true,
-					buff_func = "add_buff",
-					event = "on_timed_block"
+					buff_to_add = "deus_timed_block_free_shot_buff",
+					buff_func = "add_buff"
 				}
 			}
 		},
@@ -2547,7 +2229,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_more_head_less_body_damage_bonus",
 					stat_buff = "headshot_damage",
-					multiplier = power_up_tweak_data.deus_more_head_less_body_damage.positive_multiplier,
+					multiplier = MorrisBuffTweakData.deus_more_head_less_body_damage.positive_multiplier,
 					buffs_to_remove_on_remove = {
 						"deus_more_head_less_body_damage_negative"
 					}
@@ -2555,18 +2237,18 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_more_head_less_body_damage_negative",
 					stat_buff = "non_headshot_damage",
-					multiplier = power_up_tweak_data.deus_more_head_less_body_damage.negative_multiplier
+					multiplier = MorrisBuffTweakData.deus_more_head_less_body_damage.negative_multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_more_head_less_body_damage.positive_multiplier
+				value = MorrisBuffTweakData.deus_more_head_less_body_damage.positive_multiplier
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_more_head_less_body_damage.negative_multiplier
+				value = MorrisBuffTweakData.deus_more_head_less_body_damage.negative_multiplier
 			}
 		}
 	},
@@ -2579,19 +2261,18 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					range = 20,
 					name = "friendly_cooldown_on_ability",
-					event_buff = true,
+					range = 20,
 					buff_func = "friendly_cooldown_on_ability",
 					event = "on_ability_activated",
-					value = power_up_tweak_data.friendly_cooldown_on_ability.percent
+					value = MorrisBuffTweakData.friendly_cooldown_on_ability.percent
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.friendly_cooldown_on_ability.percent
+				value = MorrisBuffTweakData.friendly_cooldown_on_ability.percent
 			}
 		}
 	},
@@ -2606,25 +2287,24 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					buff_to_add = "triple_melee_headshot_power_boost",
 					name = "triple_melee_headshot_power",
-					event_buff = true,
 					buff_func = "triple_melee_headshot_power_counter",
 					event = "on_hit",
-					hits = power_up_tweak_data.triple_melee_headshot_power_boost.count
+					hits = MorrisBuffTweakData.triple_melee_headshot_power_boost.count
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.triple_melee_headshot_power_boost.count
+				value = MorrisBuffTweakData.triple_melee_headshot_power_boost.count
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.triple_melee_headshot_power_boost.multiplier
+				value = MorrisBuffTweakData.triple_melee_headshot_power_boost.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.triple_melee_headshot_power_boost.duration
+				value = MorrisBuffTweakData.triple_melee_headshot_power_boost.duration
 			}
 		}
 	},
@@ -2640,7 +2320,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					max_stacks = 10,
 					name = "deus_cooldown_regen",
 					stat_buff = "cooldown_regen",
-					multiplier = power_up_tweak_data.deus_cooldown_regen.multiplier
+					multiplier = MorrisBuffTweakData.deus_cooldown_regen.multiplier
 				}
 			}
 		},
@@ -2660,8 +2340,8 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					perk = "infinite_dodge",
-					name = "deus_infinite_dodges"
+					name = "deus_infinite_dodges",
+					perk = buff_perks.infinite_dodge
 				}
 			}
 		},
@@ -2678,8 +2358,8 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					perk = "uninterruptible",
-					name = "deus_uninterruptable_attacks"
+					name = "deus_uninterruptable_attacks",
+					perk = buff_perks.uninterruptible
 				}
 			}
 		},
@@ -2698,14 +2378,14 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					stat_buff = "healing_received",
 					max_stacks = 10,
 					priority_buff = true,
-					multiplier = power_up_tweak_data.deus_increased_healing_taken.multiplier
+					multiplier = MorrisBuffTweakData.deus_increased_healing_taken.multiplier
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_increased_healing_taken.multiplier
+				value = MorrisBuffTweakData.deus_increased_healing_taken.multiplier
 			}
 		}
 	},
@@ -2718,22 +2398,21 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					buff_to_add = "last_player_standing_power_reg_boost",
+					event = "on_ally_knocked_down",
 					name = "last_player_standing_power_reg",
-					event_buff = true,
-					buff_func = "last_player_standing_knocked_down_check",
-					event = "on_ally_knocked_down"
+					buff_to_add = "last_player_standing_power_reg_boost",
+					buff_func = "last_player_standing_knocked_down_check"
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.last_player_standing_power_reg_boost.multiplier
+				value = MorrisBuffTweakData.last_player_standing_power_reg_boost.multiplier
 			},
 			{
 				value_type = "duration",
-				value = power_up_tweak_data.last_player_standing_power_reg_boost.duration
+				value = MorrisBuffTweakData.last_player_standing_power_reg_boost.duration
 			}
 		}
 	},
@@ -2746,30 +2425,29 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
+					buff_to_add = "cooldown_reg_not_hit_buff",
 					name = "cooldown_reg_on_not_hit",
 					authority = "server",
 					buff_func = "deus_cooldown_reg_not_hit_damage_taken",
 					event = "on_damage_taken",
-					buff_to_add = "cooldown_reg_not_hit_buff",
-					apply_buff_func = "deus_cooldown_reg_not_hit_init",
-					event_buff = true,
 					update_func = "deus_cooldown_reg_not_hit_update",
-					interval = power_up_tweak_data.cooldown_reg_not_hit_buff.frequency
+					apply_buff_func = "deus_cooldown_reg_not_hit_init",
+					interval = MorrisBuffTweakData.cooldown_reg_not_hit_buff.frequency
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.cooldown_reg_not_hit_buff.frequency
+				value = MorrisBuffTweakData.cooldown_reg_not_hit_buff.frequency
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.cooldown_reg_not_hit_buff.multiplier
+				value = MorrisBuffTweakData.cooldown_reg_not_hit_buff.multiplier
 			},
 			{
 				value_type = "stacks",
-				value = power_up_tweak_data.cooldown_reg_not_hit_buff.max_stacks
+				value = MorrisBuffTweakData.cooldown_reg_not_hit_buff.max_stacks
 			}
 		}
 	},
@@ -2784,10 +2462,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					sound_event = "dodge",
 					name = "deus_push_charge",
-					event_buff = true,
+					authority = "client",
 					buff_func = "deus_push_charge",
 					event = "on_push",
-					authority = "client",
 					lunge_settings = {
 						initial_speed = 25,
 						duration = 0.25,
@@ -2807,12 +2484,11 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					authority = "server",
+					range = 20,
 					name = "transfer_temp_health_at_full",
-					event_buff = true,
+					authority = "server",
 					buff_func = "transfer_temp_health_at_full",
-					event = "on_healed",
-					range = 20
+					event = "on_healed"
 				}
 			}
 		},
@@ -2838,7 +2514,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_standing_still_damage_reduction_buff.multiplier
+				value = MorrisBuffTweakData.deus_standing_still_damage_reduction_buff.multiplier
 			}
 		}
 	},
@@ -2851,18 +2527,17 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					name = "deus_free_potion_use_on_ability",
-					event_buff = true,
-					buff_func = "chance_free_potion_use",
 					event = "on_ability_cooldown_started",
-					chance = power_up_tweak_data.deus_free_potion_use_on_ability.proc_chance
+					name = "deus_free_potion_use_on_ability",
+					buff_func = "apply_held_potion_effect",
+					proc_chance = MorrisBuffTweakData.deus_free_potion_use_on_ability.proc_chance
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.deus_free_potion_use_on_ability.proc_chance
+				value = MorrisBuffTweakData.deus_free_potion_use_on_ability.proc_chance
 			}
 		}
 	},
@@ -2877,7 +2552,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					event = "on_block",
 					name = "deus_block_procs_parry",
-					event_buff = true,
 					buff_func = "block_procs_parry"
 				}
 			}
@@ -2898,25 +2572,24 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 					authority = "client",
 					buff_func = "melee_killing_spree_speed_counter",
 					event = "on_kill",
-					event_buff = true,
 					update_func = "melee_killing_spree_speed_counter_update",
-					kills = power_up_tweak_data.melee_killing_spree_speed_boost.kill_amount,
-					time = power_up_tweak_data.melee_killing_spree_speed_boost.kill_window
+					kills = MorrisBuffTweakData.melee_killing_spree_speed_boost.kill_amount,
+					time = MorrisBuffTweakData.melee_killing_spree_speed_boost.kill_window
 				}
 			}
 		},
 		description_values = {
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.melee_killing_spree_speed_boost.kill_amount
+				value = MorrisBuffTweakData.melee_killing_spree_speed_boost.kill_amount
 			},
 			{
 				value_type = "percent",
-				value = power_up_tweak_data.melee_killing_spree_speed_boost.multiplier
+				value = MorrisBuffTweakData.melee_killing_spree_speed_boost.multiplier
 			},
 			{
 				value_type = "amount",
-				value = power_up_tweak_data.melee_killing_spree_speed_boost.duration
+				value = MorrisBuffTweakData.melee_killing_spree_speed_boost.duration
 			}
 		}
 	},
@@ -3048,7 +2721,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 	}
 }
 DeusPowerUpIncompatibilityPairs = DeusPowerUpIncompatibilityPairs or {
-	default = {},
 	wh_zealot = {},
 	wh_bountyhunter = {
 		{
@@ -4203,7 +3875,7 @@ for rarity, power_up_configs in pairs(DeusPowerUpRarityPool) do
 				incompatibility = template.incompatibility
 			}
 			local buff_template = table.clone(template.buff_template)
-			local tweak_data = power_up_tweak_data[power_up_name]
+			local tweak_data = MorrisBuffTweakData[power_up_name]
 
 			if tweak_data then
 				for key, value in pairs(tweak_data) do

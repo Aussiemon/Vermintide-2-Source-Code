@@ -44,6 +44,21 @@ local skins = {
 		}
 	},
 	{
+		name = "dr_deus_01_skin_03",
+		data = {
+			description = "dr_deus_01_skin_02_description",
+			ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03",
+			display_name = "dr_deus_01_skin_02_name",
+			rarity = "exotic",
+			inventory_icon = "icon_wpn_dw_trollhammer_t2",
+			left_hand_unit = "units/weapons/player/wpn_dr_deus_03/wpn_dr_deus_03",
+			template = "dr_deus_01_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_drakegun"
+		}
+	},
+	{
 		name = "dr_deus_01_skin_01_runed",
 		data = {
 			description = "dr_deus_01_skin_01_runed_description",
@@ -69,6 +84,21 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_dr_deus_02/wpn_dr_deus_02_runed",
 			template = "dr_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_02/wpn_dr_deus_projectile_02_3p",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_drakegun"
+		}
+	},
+	{
+		name = "dr_deus_01_skin_03_runed",
+		data = {
+			description = "dr_deus_01_skin_02_runed_description",
+			ammo_unit = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03",
+			display_name = "dr_deus_01_skin_02_runed_name",
+			rarity = "unique",
+			inventory_icon = "icon_wpn_dw_trollhammer_t2",
+			left_hand_unit = "units/weapons/player/wpn_dr_deus_03/wpn_dr_deus_03_runed",
+			template = "dr_deus_01_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_dr_deus_projectile_03/wpn_dr_deus_projectile_03_3p",
 			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_drakegun"
 		}
@@ -132,6 +162,20 @@ local skins = {
 		}
 	},
 	{
+		name = "es_deus_01_skin_03",
+		data = {
+			description = "es_deus_01_skin_03_description",
+			rarity = "rare",
+			display_name = "es_deus_01_skin_03_name",
+			right_hand_unit = "units/weapons/player/wpn_es_deus_spear_03/wpn_es_deus_spear_03",
+			inventory_icon = "icon_wpn_empire_spearshield_t2",
+			left_hand_unit = "units/weapons/player/wpn_es_deus_shield_03/wpn_es_deus_shield_03",
+			template = "es_deus_01_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_shield_sword"
+		}
+	},
+	{
 		name = "es_deus_01_skin_01_runed",
 		data = {
 			description = "es_deus_01_skin_01_runed_description",
@@ -154,6 +198,20 @@ local skins = {
 			right_hand_unit = "units/weapons/player/wpn_es_deus_spear_02/wpn_es_deus_spear_02_runed",
 			inventory_icon = "icon_wpn_empire_spearshield_t1",
 			left_hand_unit = "units/weapons/player/wpn_es_deus_shield_02/wpn_es_deus_shield_02_runed",
+			template = "es_deus_01_template",
+			hud_icon = "weapon_generic_icon_staff_3",
+			display_unit = "units/weapons/weapon_display/display_shield_sword"
+		}
+	},
+	{
+		name = "es_deus_01_skin_03_runed",
+		data = {
+			description = "es_deus_01_skin_03_runed_description",
+			rarity = "unique",
+			display_name = "es_deus_01_skin_03_runed_name",
+			right_hand_unit = "units/weapons/player/wpn_es_deus_spear_03/wpn_es_deus_spear_03_runed",
+			inventory_icon = "icon_wpn_empire_spearshield_t1",
+			left_hand_unit = "units/weapons/player/wpn_es_deus_shield_03/wpn_es_deus_shield_03_runed",
 			template = "es_deus_01_template",
 			hud_icon = "weapon_generic_icon_staff_3",
 			display_unit = "units/weapons/weapon_display/display_shield_sword"
@@ -362,6 +420,36 @@ local skins = {
 		}
 	},
 	{
+		name = "we_deus_01_skin_03",
+		data = {
+			description = "we_deus_01_skin_03_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
+			display_name = "we_deus_01_skin_03_name",
+			rarity = "exotic",
+			inventory_icon = "icon_wpn_we_moonfire_t3",
+			left_hand_unit = "units/weapons/player/wpn_we_deus_03/wpn_we_deus_03",
+			template = "we_deus_01_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
+			hud_icon = "weapon_generic_icon_bow",
+			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+		}
+	},
+	{
+		name = "we_deus_01_skin_03_runed",
+		data = {
+			description = "we_deus_01_skin_03_runed_description",
+			ammo_unit = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01",
+			display_name = "we_deus_01_skin_03_runed_name",
+			rarity = "unique",
+			inventory_icon = "icon_wpn_we_moonfire_t3",
+			left_hand_unit = "units/weapons/player/wpn_we_deus_03/wpn_we_deus_03_runed",
+			template = "we_deus_01_template_1",
+			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
+			hud_icon = "weapon_generic_icon_bow",
+			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+		}
+	},
+	{
 		name = "wh_deus_01_skin_01",
 		data = {
 			description = "wh_deus_01_skin_01_description",
@@ -444,6 +532,34 @@ local skins = {
 			hud_icon = "weapon_generic_icon_bow",
 			display_unit = "units/weapons/weapon_display/display_1h_weapon"
 		}
+	},
+	{
+		name = "wh_deus_01_skin_03",
+		data = {
+			description = "wh_deus_01_skin_03_description",
+			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03",
+			display_name = "wh_deus_01_skin_03_name",
+			inventory_icon = "icon_wpn_emp_duckfoot_t2",
+			left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03",
+			template = "wh_deus_01_template_1",
+			hud_icon = "weapon_generic_icon_bow",
+			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+		}
+	},
+	{
+		name = "wh_deus_01_skin_03_runed",
+		data = {
+			description = "wh_deus_01_skin_03_runed_description",
+			rarity = "exotic",
+			right_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
+			display_name = "wh_deus_01_skin_03_runed_name",
+			inventory_icon = "icon_wpn_emp_duckfoot_t2",
+			left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
+			template = "wh_deus_01_template_1",
+			hud_icon = "weapon_generic_icon_bow",
+			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+		}
 	}
 }
 local skin_combinations = {
@@ -478,11 +594,14 @@ local skin_combinations = {
 		},
 		exotic = {
 			"dr_deus_01_skin_02",
+			"dr_deus_01_skin_03",
 			"dr_deus_01_skin_01_runed"
 		},
 		unique = {
 			"dr_deus_01_skin_02",
-			"dr_deus_01_skin_02_runed"
+			"dr_deus_01_skin_03",
+			"dr_deus_01_skin_02_runed",
+			"dr_deus_01_skin_03_runed"
 		},
 		magic = {
 			"dr_deus_01_skin_magic",
@@ -501,11 +620,13 @@ local skin_combinations = {
 		},
 		exotic = {
 			"es_deus_01_skin_02",
-			"es_deus_01_skin_01_runed"
+			"es_deus_01_skin_01_runed",
+			"es_deus_01_skin_03"
 		},
 		unique = {
 			"es_deus_01_skin_02",
-			"es_deus_01_skin_02_runed"
+			"es_deus_01_skin_02_runed",
+			"es_deus_01_skin_03_runed"
 		},
 		magic = {
 			"es_deus_01_skin_magic",
@@ -547,11 +668,13 @@ local skin_combinations = {
 		},
 		exotic = {
 			"we_deus_01_skin_02",
-			"we_deus_01_skin_01_runed"
+			"we_deus_01_skin_01_runed",
+			"we_deus_01_skin_03"
 		},
 		unique = {
 			"we_deus_01_skin_02",
-			"we_deus_01_skin_02_runed"
+			"we_deus_01_skin_02_runed",
+			"we_deus_01_skin_03_runed"
 		},
 		magic = {
 			"we_deus_01_skin_magic",
@@ -572,15 +695,19 @@ local skin_combinations = {
 		exotic = {
 			"wh_deus_01_skin_02",
 			"wh_deus_01_skin_02_runed",
-			"wh_deus_01_skin_01_runed"
+			"wh_deus_01_skin_01_runed",
+			"wh_deus_01_skin_03"
 		},
 		unique = {
 			"wh_deus_01_skin_02",
-			"wh_deus_01_skin_02_runed"
+			"wh_deus_01_skin_02_runed",
+			"wh_deus_01_skin_03",
+			"wh_deus_01_skin_03_runed"
 		},
 		magic = {
 			"wh_deus_01_skin_magic",
-			"wh_deus_02_skin_magic"
+			"wh_deus_02_skin_magic",
+			"wh_deus_01_skin_03_runed"
 		}
 	}
 }

@@ -497,7 +497,7 @@ weapon_template.buffs = {
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_sniper",
 	"weapon_keyword_crowd_control",
-	"weapon_keyword_damage_over_time"
+	"weapon_keyword_rapid_fire"
 }
 weapon_template.tooltip_compare = {
 	light = {

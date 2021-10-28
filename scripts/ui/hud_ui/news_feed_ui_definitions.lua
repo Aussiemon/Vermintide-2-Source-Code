@@ -86,6 +86,14 @@ local function create_news_widget(index, specific_scenegraph_id)
 				},
 				{
 					pass_type = "texture",
+					style_id = "icon",
+					texture_id = "icon",
+					content_check_function = function (content, style)
+						return content.icon ~= nil
+					end
+				},
+				{
+					pass_type = "texture",
 					style_id = "background",
 					texture_id = "background"
 				},
@@ -98,9 +106,9 @@ local function create_news_widget(index, specific_scenegraph_id)
 		},
 		content = {
 			text = "text \n text \n text",
-			title_text = "title_text",
+			effect = "sparkle_effect",
 			background = "news_feed_background",
-			effect = "sparkle_effect"
+			title_text = "title_text"
 		},
 		style = {
 			title_text = {
@@ -110,6 +118,7 @@ local function create_news_widget(index, specific_scenegraph_id)
 				font_size = 24,
 				horizontal_alignment = "right",
 				vertical_alignment = "top",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				offset = {
 					-12,
@@ -125,6 +134,7 @@ local function create_news_widget(index, specific_scenegraph_id)
 				font_size = 24,
 				horizontal_alignment = "right",
 				vertical_alignment = "top",
+				dynamic_font_size = true,
 				font_type = "hell_shark",
 				offset = {
 					-10,
@@ -162,6 +172,11 @@ local function create_news_widget(index, specific_scenegraph_id)
 					1
 				},
 				text_color = Colors.get_color_table_with_alpha("black", 255)
+			},
+			icon = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				color = Colors.get_color_table_with_alpha("white", 255)
 			},
 			background = {
 				offset = {

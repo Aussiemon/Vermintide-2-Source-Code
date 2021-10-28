@@ -338,7 +338,6 @@ local currency_text_style = {
 		2
 	}
 }
-local disable_with_gamepad = true
 
 local function create_panel_button_selection(scenegraph_id, size)
 	return {

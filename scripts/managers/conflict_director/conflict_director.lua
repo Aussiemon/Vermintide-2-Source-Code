@@ -70,6 +70,9 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self._num_spawned_by_breed_during_event = {}
 	self._spawned_units_by_breed = {}
 	self.num_queued_spawn_by_breed = {}
+
+	TerrorEventUtils.set_seed(level_seed)
+
 	self._current_debug_list_index = 1
 	self._debug_list = {
 		"none"
@@ -924,10 +927,10 @@ ConflictDirector.get_horde_data = function (self)
 	return self._next_horde_time, self.horde_spawner.hordes, self._multiple_horde_count
 end
 
-ConflictDirector.start_terror_event = function (self, event_name, optional_seed)
+ConflictDirector.start_terror_event = function (self, event_name, optional_seed, origin_unit)
 	local seed = optional_seed or 0
 
-	TerrorEventMixer.add_to_start_event_list(event_name, seed)
+	TerrorEventMixer.add_to_start_event_list(event_name, seed, origin_unit)
 end
 
 ConflictDirector.terror_event_finished = function (self, event_name)
@@ -1204,9 +1207,11 @@ ConflictDirector.respawn_level = function (self, seed)
 		self.enemy_recycler:set_seed(seed)
 		self.level_analysis:set_random_seed(nil, seed)
 		self.spawn_zone_baker:set_seed(seed)
+		TerrorEventUtils.set_seed(seed)
 	else
 		self.level_analysis:set_random_seed(nil, self.level_analysis.seed)
 		self.spawn_zone_baker:set_seed(self.spawn_zone_baker.seed)
+		TerrorEventUtils.set_seed(self.level_analysis.seed)
 	end
 
 	local pack_members = nil
@@ -1815,11 +1820,12 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 end
 
 ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
-	local blackboard = BLACKBOARDS[ai_unit]
 	optional_data = optional_data or {}
+	local blackboard = BLACKBOARDS[ai_unit]
+	blackboard.enemy_id = optional_data.spawn_queue_index
 
-	if optional_data.spawned_func then
-		optional_data.spawned_func(ai_unit, breed, optional_data)
+	if optional_data.enhancements then
+		TerrorEventUtils.apply_breed_enhancements(ai_unit, breed, optional_data)
 	end
 
 	local breed_name = breed.name
@@ -1831,7 +1837,10 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 
 	Unit.set_flow_variable(ai_unit, "climate_type", climate_type)
 	Unit.flow_event(ai_unit, "climate_type_set")
-	Managers.telemetry.events:ai_spawned(breed.name, spawn_pos)
+
+	if optional_data.enhancements then
+		Managers.telemetry.events:ai_spawned(blackboard.enemy_id, breed.name, spawn_pos, optional_data.enhancements)
+	end
 
 	blackboard.spawn_animation = spawn_animation
 	blackboard.optional_spawn_data = optional_data
@@ -1862,6 +1871,10 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 
 	if locomotion_extension then
 		locomotion_extension:ready(go_id, blackboard)
+	end
+
+	if optional_data.spawned_func then
+		optional_data.spawned_func(ai_unit, breed, optional_data)
 	end
 end
 
@@ -2033,8 +2046,14 @@ ConflictDirector.register_unit_killed = function (self, unit, blackboard, killer
 	local breed = blackboard.breed
 	local breed_name = breed.name
 	local death_pos = POSITION_LOOKUP[unit]
+	local breed_enhancements = nil
+	local ai_system = Managers.state.entity:system("ai_system")
+	local attributes = ai_system:get_attributes(unit)
+	local breed_enhancements = (attributes.grudge_marked and attributes.breed_enhancements) or nil
 
-	Managers.telemetry.events:ai_died(breed_name, death_pos)
+	if breed_enhancements then
+		Managers.telemetry.events:ai_died(blackboard.enemy_id, breed_name, death_pos)
+	end
 end
 
 ConflictDirector.register_unit_destroyed = function (self, unit, reason)
@@ -2255,17 +2274,20 @@ end
 
 ConflictDirector.debug_spawn_breed = function (self, t, delayed, override_pos)
 	local breed = self:get_debug_breed()
+	local item = self.debug_breed_picker:current_item()
+	local text = item[1]
+	local func = item[2]
+
+	if func and self[func] then
+		local done = self[func](self, item[3], item[4], item[5], item[6])
+
+		if done then
+			return
+		end
+	end
 
 	if not breed then
-		local item = self.debug_breed_picker:current_item()
-		local text = item[1]
-		local func_name = item[2]
-
-		print("Debug spawning func:", text)
-
-		if func_name and self[func_name] then
-			return self[func_name](self, item[3], item[4], item[5])
-		end
+		print("debug spawning - missing breed")
 
 		return
 	end
@@ -2342,6 +2364,8 @@ ConflictDirector.debug_spawn_all_breeds = function (self, except_these_breeds, u
 			end
 		end
 	end
+
+	return true
 end
 
 ConflictDirector.debug_spawn_breed_at_hidden_spawner = function (self, t)
@@ -2588,7 +2612,7 @@ ConflictDirector.set_debug_spawn_side = function (self, side_id)
 	self.debug_spawn_side_id = side_id
 end
 
-ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_delayed, optional_override_pos, variant_data)
+ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_delayed, optional_override_pos, additional_data)
 	local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
 
 	if optional_delayed then
@@ -2628,6 +2652,10 @@ ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_dela
 				ai_system.ai_debugger.active_unit = unit
 				script_data.debug_unit = unit
 			end
+		end
+
+		if additional_data then
+			table.merge(optional_data, additional_data)
 		end
 
 		self:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), spawn_category, nil, nil, optional_data)
@@ -2690,6 +2718,8 @@ end
 
 ConflictDirector.aim_patrol_spawning = function (self, formation_name)
 	self:aim_spawning_group(nil, true, formation_name)
+
+	return true
 end
 
 ConflictDirector.inject_event_patrol = function (self)
@@ -3258,7 +3288,7 @@ ConflictDirector.intensity_decay_frozen = function (self, freeze_time)
 end
 
 ConflictDirector.boss_event_running = function (self)
-	return self._num_spawned_by_breed.skaven_rat_ogre > 0 or self._num_spawned_by_breed.skaven_stormfiend > 0 or self._num_spawned_by_breed.chaos_troll > 0 or self._num_spawned_by_breed.chaos_spawn > 0
+	return self._num_spawned_by_breed.skaven_rat_ogre > 0 or self._num_spawned_by_breed.skaven_stormfiend > 0 or self._num_spawned_by_breed.chaos_troll > 0 or self._num_spawned_by_breed.chaos_spawn > 0 or self._num_spawned_by_breed.beastmen_minotaur > 0
 end
 
 ConflictDirector.angry_boss = function (self)
@@ -4023,6 +4053,42 @@ end
 
 ConflictDirector.get_peaks = function (self)
 	return self._peak_delayer:get_peaks()
+end
+
+ConflictDirector.spawn_breed_func = function (self, breed_name)
+	local picked_enhancements = self.debug_breed_picker.picked_enhancements
+
+	if picked_enhancements and next(picked_enhancements) then
+		self:debug_spawn_variant(breed_name, picked_enhancements)
+
+		return true
+	end
+end
+
+ConflictDirector.debug_spawn_variant = function (self, breed_name, enhancement_list, num_enhancements)
+	local breed = Breeds[breed_name]
+
+	if enhancement_list then
+		local enhancements = TerrorEventUtils.generate_enhanced_breed_from_list(enhancement_list)
+		local additional_data = {
+			enhancements = enhancements
+		}
+
+		return self:aim_spawning(breed, false, nil, nil, additional_data)
+	elseif num_enhancements then
+		local enhancements = TerrorEventUtils.generate_enhanced_breed(num_enhancements, breed_name)
+		local additional_data = {
+			enhancements = enhancements
+		}
+
+		return self:aim_spawning(breed, false, nil, nil, additional_data)
+	end
+
+	return breed
+end
+
+ConflictDirector.pick_enhancement = function (self, enhancement_name)
+	print("Picked:", enhancement_name)
 end
 
 return

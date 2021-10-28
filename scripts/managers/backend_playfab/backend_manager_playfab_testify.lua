@@ -20,6 +20,9 @@ local BackendManagerPlayFabTestify = {
 
 			return is_weapon and can_wield and is_magic
 		end)
+	end,
+	wait_for_playfab_response = function (cloudscript_function, backend_manager_playfab)
+		return Testify.RETRY
 	end
 }
 

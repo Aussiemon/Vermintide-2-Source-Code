@@ -379,7 +379,7 @@ StartMenuView._change_screen_by_name = function (self, screen_name, sub_screen_n
 		end
 	end
 
-	assert(settings_index, "[StartMenuView] - Could not find state by name %s", screen_name)
+	fassert(settings_index, "[StartMenuView] - Could not find state by name %s", screen_name)
 
 	local state_name = settings.state_name
 	local state = rawget(_G, state_name)
@@ -609,11 +609,15 @@ StartMenuView.destroy = function (self)
 
 	self.ingame_ui_context = nil
 	self.ui_animator = nil
-	local viewport_name = "player_1"
-	local world = Managers.world:world("level_world")
-	local viewport = ScriptWorld.viewport(world, viewport_name)
+	local world_name = "level_world"
+	local world_manager = Managers.world
 
-	ScriptWorld.activate_viewport(world, viewport)
+	if world_manager:has_world(world_name) then
+		local world = world_manager:world(world_name)
+		local viewport = ScriptWorld.viewport(world, "player_1")
+
+		ScriptWorld.activate_viewport(world, viewport)
+	end
 
 	if self._machine then
 		self._machine:destroy()

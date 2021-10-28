@@ -709,6 +709,14 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local distal_force = push_parameters.distal_force or 0
 	local lateral_force = push_parameters.lateral_force or 0
 	local vertical_force = push_parameters.vertical_force or 0
+	local buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+	if buff_extension then
+		distal_force = buff_extension:apply_buffs_to_value(distal_force, "hit_force")
+		lateral_force = buff_extension:apply_buffs_to_value(lateral_force, "hit_force")
+		vertical_force = buff_extension:apply_buffs_to_value(vertical_force, "hit_force")
+	end
+
 	local distal_vector = distal_direction * distal_force
 	local lateral_vector = lateral_direction * lateral_force
 	local vertical_vector = Vector3(0, 0, vertical_force)

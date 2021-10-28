@@ -36,7 +36,7 @@ local Crashify = {
 
 		print(output)
 	end,
-	print_exception = function (system, message)
+	print_exception = function (system, message_format, ...)
 		Application.set_exit_code(1, "silent_limited")
 
 		if system == nil then
@@ -45,8 +45,16 @@ local Crashify = {
 			return
 		end
 
-		if message == nil then
+		if message_format == nil then
 			Application.warning("[Crashify] Message can't be nil")
+
+			return
+		end
+
+		local fmt_ok, message = pcall(string.format, message_format, ...)
+
+		if not fmt_ok then
+			Application.warning("[Crashify] Error formatting exception")
 
 			return
 		end

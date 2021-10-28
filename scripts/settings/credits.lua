@@ -869,6 +869,62 @@ local Credits = {
 			type = "header"
 		},
 		{
+			text = "Mark Estdale",
+			type = "person"
+		},
+		{
+			text = "Megan Clarke",
+			type = "person"
+		},
+		{
+			text = "Juan Manuel Delfin",
+			type = "person"
+		},
+		{
+			text = "Victoria Prentice",
+			type = "person"
+		},
+		{
+			text = "Natalie Beran",
+			type = "person"
+		},
+		{
+			text = "Sasha James",
+			type = "person"
+		},
+		{
+			text = "Matt Dear",
+			type = "person"
+		},
+		{
+			text = "Jerome Watson",
+			type = "person"
+		},
+		{
+			text = "Roni Yosko",
+			type = "person"
+		},
+		{
+			text = "Louise Burton",
+			type = "person"
+		},
+		{
+			text = "Luke Elliot",
+			type = "person"
+		},
+		{
+			text = "Matthew Panayiotopoulos",
+			type = "person"
+		},
+		{
+			text = "Mike Timm",
+			type = "person"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
 			text = "credits_witch_hunter",
 			localized = true,
 			type = "title"
@@ -979,6 +1035,69 @@ local Credits = {
 		},
 		{
 			text = "Sophie Wilkinson",
+			type = "person"
+		},
+		{
+			text = "credits_plague_daemon",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = "Greg Jones",
+			type = "person"
+		},
+		{
+			text = "credits_other_parts",
+			localized = true,
+			type = "title"
+		},
+		{
+			text = " ",
+			type = "person"
+		},
+		{
+			text = "credits_keep_paintings",
+			localized = true,
+			type = "header"
+		},
+		{
+			text = "John Blanche",
+			type = "person"
+		},
+		{
+			text = "Alex Boyd",
+			type = "person"
+		},
+		{
+			text = "Kevin Chin",
+			type = "person"
+		},
+		{
+			text = "Paul Dainton",
+			type = "person"
+		},
+		{
+			text = "Dave Gallagher",
+			type = "person"
+		},
+		{
+			text = "Nuala Kinrade",
+			type = "person"
+		},
+		{
+			text = "Karl Kopinski",
+			type = "person"
+		},
+		{
+			text = "Adrian Smith",
+			type = "person"
+		},
+		{
+			text = "Cubicle 7",
+			type = "title"
+		},
+		{
+			text = "JG O'Donoghue",
 			type = "person"
 		},
 		{

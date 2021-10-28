@@ -9,11 +9,13 @@ local function dprint(...)
 end
 
 AccountManager.init = function (self)
-	return
+	if HAS_STEAM then
+		self._initial_user_id = Steam.user_id()
+	end
 end
 
 AccountManager.user_id = function (self)
-	return
+	return self._initial_user_id
 end
 
 AccountManager.update = function (self, dt)
@@ -45,7 +47,39 @@ AccountManager.reset = function (self)
 end
 
 AccountManager.update_presence = function (self)
-	return
+	if DEDICATED_SERVER or not rawget(_G, "Presence") then
+		return
+	end
+
+	local is_in_hub_level = Managers.level_transition_handler:in_hub_level()
+	local state = Managers.state
+	local network = state and state.network
+	local lobby = network and network:lobby()
+
+	if not lobby then
+		return
+	end
+
+	local is_server = Managers.player.is_server
+	local lobby_data = (is_server and lobby:get_stored_lobby_data()) or LobbyInternal.get_lobby_data_from_id(lobby:id())
+
+	if not lobby_data then
+		return
+	end
+
+	if is_in_hub_level then
+		Presence.set_presence("steam_display", (to_boolean(script_data["eac-untrusted"]) and "#presence_modded_hub") or "#presence_official_hub")
+		Presence.set_presence("steam_player_group_size", PresenceHelper.lobby_num_players())
+		Presence.set_presence("hub_string", PresenceHelper.get_hub_presence())
+		Presence.set_presence("level", PresenceHelper.lobby_level())
+	else
+		Presence.set_presence("steam_display", (to_boolean(script_data["eac-untrusted"]) and "#presence_modded") or "#presence_official")
+		Presence.set_presence("steam_player_group", lobby:id())
+		Presence.set_presence("steam_player_group_size", PresenceHelper.lobby_num_players())
+		Presence.set_presence("gamemode", PresenceHelper.lobby_gamemode(lobby_data))
+		Presence.set_presence("difficulty", PresenceHelper.lobby_difficulty())
+		Presence.set_presence("level", PresenceHelper.lobby_level())
+	end
 end
 
 AccountManager.set_controller_disconnected = function (self, disconnected)
@@ -93,6 +127,16 @@ AccountManager.account_id = function (self)
 	return Network.peer_id()
 end
 
+AccountManager.active_controller = function (self)
+	local input_manager = Managers.input
+
+	if input_manager:is_device_active("gamepad") then
+		return input_manager:get_most_recent_device()
+	end
+
+	return nil
+end
+
 AccountManager.friends_list_initiated = function (self)
 	return
 end
@@ -122,10 +166,6 @@ AccountManager.has_popup = function (self)
 end
 
 AccountManager.cancel_all_popups = function (self)
-	return
-end
-
-AccountManager.active_controller = function (self)
 	return
 end
 

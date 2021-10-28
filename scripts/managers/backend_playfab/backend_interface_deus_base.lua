@@ -57,17 +57,7 @@ BackendInterfaceDeusBase.has_loadout_item_id = function (self, career_name, item
 	end
 end
 
-local function guid()
-	if IS_PS4 then
-		local pattern = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-
-		return string.gsub(pattern, "x", function (c)
-			return string.format("%x", math.random(0, 15))
-		end)
-	else
-		return Application.guid()
-	end
-end
+local guid = (IS_PS4 and math.uuid) or Application.guid
 
 BackendInterfaceDeusBase.refresh_deus_weapons_in_items_backend = function (self)
 	Managers.backend:get_interface("items"):refresh_game_mode_specific_items()

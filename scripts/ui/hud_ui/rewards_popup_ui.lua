@@ -135,10 +135,7 @@ RewardsPopupUI.present_rewards = function (self, rewards)
 				local animation_data = {
 					end_animation = "deus_close",
 					start_animation = "deus_open",
-					animation_wait_time = 3,
-					animations_list = {
-						"present_entry_end_of_level"
-					}
+					animation_wait_time = 6
 				}
 				presentation_data[#presentation_data + 1] = entry
 				presentation_data.animation_data = animation_data

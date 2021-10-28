@@ -71,7 +71,7 @@ ProjectileLocomotionSystem._server_sync_position_rotation = function (self, dt, 
 	end
 end
 
-local REST_CORRECTION_DISTANCE = 0.01
+local REST_CORRECTION_DISTANCE = 0.05
 local ACTIVE_CORRECTION_DISTANCE = 5
 
 ProjectileLocomotionSystem._client_validate_position_rotation = function (self, dt, t)

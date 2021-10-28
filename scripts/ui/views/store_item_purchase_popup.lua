@@ -1554,17 +1554,17 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 	local current_prices = item.current_prices
 
 	if regular_prices or current_prices then
-		local price = current_prices[currency_type] or regular_prices[currency_type]
-		local price_difference = regular_prices[currency_type] - current_prices[currency_type]
+		local regular_price = regular_prices[currency_type]
+		local current_price = current_prices[currency_type]
 
-		if price_difference ~= 0 then
-			local discount = price_difference / price * 100
+		if current_price ~= regular_price then
+			local discount = 1 - current_price / regular_price
 
-			self:_calculate_discount_textures(widget, discount)
+			self:_calculate_discount_textures(widget, math.round(100 * discount))
 		end
 
 		local real_currency = false
-		local price_text = UIUtils.comma_value(tostring(price))
+		local price_text = UIUtils.comma_value(tostring(current_price))
 
 		self:_set_product_price_text(widget, price_text, real_currency)
 	end
@@ -1617,6 +1617,8 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 
 		return
 	end
+
+	content.icon = inventory_icon
 
 	Application.warning("Icon package not accessable for product_id: (%s) and texture_name: (%s)", product_id, texture_name)
 end

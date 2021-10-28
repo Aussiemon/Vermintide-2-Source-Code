@@ -36,10 +36,8 @@ OutlineSystem.init = function (self, context, system_name)
 	self._pulsing_units = {}
 end
 
-OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
-	local extension = OutlineExtension:new()
-
-	if extension_name == "PlayerOutlineExtension" then
+OutlineSystem.add_ext_functions = {
+	PlayerOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.ally,
@@ -48,7 +46,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "never"
-	elseif extension_name == "PlayerHuskOutlineExtension" then
+	end,
+	PlayerHuskOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "outside_distance_or_not_visible",
 			outline_color = OutlineSettings.colors.ally,
@@ -77,7 +76,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 		end
 
 		extension:update_override_method_player_setting()
-	elseif extension_name == "PickupOutlineExtension" then
+	end,
+	PickupOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
@@ -87,7 +87,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
-	elseif extension_name == "AIOutlineExtension" then
+	end,
+	AIOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.interactable,
@@ -97,7 +98,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
-	elseif extension_name == "DoorOutlineExtension" then
+	end,
+	DoorOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
@@ -107,7 +109,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
-	elseif extension_name == "ObjectiveOutlineExtension" then
+	end,
+	ObjectiveOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
@@ -117,7 +120,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
-	elseif extension_name == "ObjectiveLightOutlineExtension" then
+	end,
+	ObjectiveLightOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
@@ -127,7 +131,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
-	elseif extension_name == "ElevatorOutlineExtension" then
+	end,
+	ElevatorOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
@@ -137,7 +142,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
-	elseif extension_name == "ConditionalInteractOutlineExtension" then
+	end,
+	ConditionalInteractOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "conditional_within_distance",
 			outline_color = OutlineSettings.colors.interactable,
@@ -147,7 +153,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
-	elseif extension_name == "ConditionalPickupOutlineExtension" then
+	end,
+	ConditionalPickupOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "conditional_within_distance",
 			outline_color = OutlineSettings.colors.interactable,
@@ -157,7 +164,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "always"
-	elseif extension_name == "EnemyOutlineExtension" then
+	end,
+	EnemyOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettings.colors.knocked_down,
@@ -166,7 +174,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "not_in_dark"
-	elseif extension_name == "SmallPickupOutlineExtension" then
+	end,
+	SmallPickupOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance_and_not_in_dark",
 			outline_color = OutlineSettings.colors.interactable,
@@ -176,7 +185,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
-	elseif extension_name == "GenericOutlineExtension" then
+	end,
+	GenericOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "within_distance",
 			outline_color = OutlineSettings.colors.interactable,
@@ -186,9 +196,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit"
 		extension.pinged_method = "not_in_dark"
-	end
-
-	if extension_name == "DarkPactPlayerOutlineExtension" then
+	end,
+	DarkPactPlayerOutlineExtension = function (extension)
 		extension:add_outline({
 			method = "never",
 			outline_color = OutlineSettingsVS.colors.ally,
@@ -197,7 +206,8 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "show_versus_dark_pact_outline"
-	elseif extension_name == "DarkPactPlayerHuskOutlineExtension" then
+	end,
+	DarkPactPlayerHuskOutlineExtension = function (extension)
 		local is_ally = nil
 		local local_player = Managers.player:local_player()
 
@@ -226,7 +236,13 @@ OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
 		extension.apply_method = "unit_and_childs"
 		extension.pinged_method = "show_versus_dark_pact_outline"
 	end
+}
 
+OutlineSystem.on_add_extension = function (self, world, unit, extension_name)
+	local extension = OutlineExtension:new()
+	local setup_func = OutlineSystem.add_ext_functions[extension_name]
+
+	setup_func(extension)
 	ScriptUnit.set_extension(unit, "outline_system", extension, {})
 
 	self.unit_extension_data[unit] = extension

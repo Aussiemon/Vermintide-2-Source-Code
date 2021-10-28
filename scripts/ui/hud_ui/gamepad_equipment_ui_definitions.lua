@@ -270,6 +270,20 @@ local scenegraph_definition = {
 			80,
 			26
 		}
+	},
+	reload_ui = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			-220,
+			3
+		},
+		size = {
+			0,
+			0
+		}
 	}
 }
 
@@ -1775,6 +1789,21 @@ local widget_definitions = {
 		}
 	}
 }
+local reload_tip_text_style = {
+	word_wrap = false,
+	localize = false,
+	font_size = 30,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("white", 0),
+	default_text_color = Colors.get_color_table_with_alpha("white", 0),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local career_widget_definitions = {
 	engineer_base = create_engineer_background("gamepad_icon_base", 10)
 }
@@ -1796,7 +1825,8 @@ local ammo_widget_definitions = {
 			1,
 			1
 		}
-	}, "overcharge", nil, RETAINED_MODE_ENABLED)
+	}, "overcharge", nil, RETAINED_MODE_ENABLED),
+	reload_tip_text = UIWidgets.create_simple_text("", "reload_ui", nil, Colors.get_color_table_with_alpha("white", 0), reload_tip_text_style, nil, RETAINED_MODE_ENABLED, false)
 }
 local slots = InventorySettings.slots
 local slot_widget_definitions = {}
@@ -1881,6 +1911,43 @@ for i = 1, extra_storage_icons, 1 do
 	}
 end
 
+animations_definitions = {
+	show_reload_tip = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widget, params)
+				widget.content.visible = true
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				local alpha = 255 * anim_progress
+				widget.style.text.text_color[1] = alpha
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
+				return
+			end
+		},
+		{
+			name = "fade_out",
+			start_progress = 2.3,
+			end_progress = 2.6,
+			init = function (ui_scenegraph, scenegraph_definition, widget, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				local alpha = 255 * (1 - anim_progress)
+				widget.style.text.text_color[1] = alpha
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
+				widget.content.visible = false
+			end
+		}
+	}
+}
+
 return {
 	slot_size = slot_size,
 	NUM_SLOTS = #slot_widget_definitions,
@@ -1890,5 +1957,6 @@ return {
 	frame_definitions = frame_definitions,
 	ammo_widget_definitions = ammo_widget_definitions,
 	slot_widget_definitions = slot_widget_definitions,
-	extra_storage_icon_definitions = extra_storage_icon_definitions
+	extra_storage_icon_definitions = extra_storage_icon_definitions,
+	animations_definitions = animations_definitions
 }

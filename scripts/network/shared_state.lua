@@ -28,22 +28,6 @@ local function get_or_create_table(table, key)
 	return val
 end
 
-local function recursive_readonlytable(table)
-	setmetatable(table, {
-		__newindex = function (table, key, value)
-			error("Trying to modify read only table. (debug only assert)")
-		end
-	})
-
-	for _, value in pairs(table) do
-		local type = type(value)
-
-		if type == "table" then
-			recursive_readonlytable(value)
-		end
-	end
-end
-
 local function set(state, owner, key_type, peer_id, local_player_id, profile_index, career_index, value)
 	state = get_or_create_table(state, owner)
 	state = get_or_create_table(state, key_type)
@@ -268,7 +252,7 @@ local function dprintf(...)
 	if script_data.shared_state_debug then
 		local message = sprintf(...)
 
-		printf("[SharedState] %s", message)
+		global_printf("[SharedState] %s", message)
 	end
 end
 

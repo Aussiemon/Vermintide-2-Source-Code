@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	kerillian_shade_ability_cooldown_on_hit = {
 		bonus = 0.5
@@ -211,7 +212,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -220,7 +220,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -242,7 +241,7 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_passive_backstab_killing_blow = {
 		buffs = {
 			{
-				perk = "crit_backstab_killing_blow"
+				perk = buff_perks.crit_backstab_killing_blow
 			}
 		}
 	},
@@ -251,7 +250,7 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_hit",
 				max_stacks = 1,
-				event_buff = true,
+				proc_weight = 5,
 				buff_func = "end_shade_activated_ability"
 			}
 		}
@@ -274,36 +273,33 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				name = "regrowth",
-				event_buff = true,
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
-				perk = "ninja_healing",
-				bonus = 2
+				bonus = 2,
+				perk = buff_perks.ninja_healing
 			}
 		}
 	},
 	kerillian_shade_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	kerillian_shade_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -326,7 +322,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_hit",
 				buff_to_add = "kerillian_shade_stacking_headshot_damage_on_headshot_buff",
-				event_buff = true,
 				buff_func = "add_buff_on_headshot"
 			}
 		}
@@ -351,7 +346,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_backstab",
-				event_buff = true,
 				buff_func = "shade_backstab_ammo_gain"
 			}
 		}
@@ -365,7 +359,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_kill",
-				event_buff = true,
 				buff_func = "kerillian_shade_stealth_on_backstab_kill"
 			}
 		}
@@ -400,7 +393,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_critical_hit",
 				buff_to_add = "kerillian_shade_movement_speed_on_critical_hit_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -424,7 +416,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_critical_hit",
 				buff_to_add = "kerillian_shade_damage_reduction_on_critical_hit_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -456,7 +447,10 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_shade_activated_ability_quick_cooldown_buff = {
 		buffs = {
 			{
-				stat_buff = "activated_cooldown"
+				event = "on_hit",
+				proc_weight = 10,
+				stat_buff = "activated_cooldown",
+				buff_func = "crit_on_hit_from_stealth"
 			}
 		}
 	},
@@ -482,7 +476,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -491,7 +484,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -546,7 +538,7 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_passive_uninterruptible_revive = {
 		buffs = {
 			{
-				perk = "uninterruptible_revive"
+				perk = buff_perks.uninterruptible_revive
 			}
 		}
 	},
@@ -571,11 +563,10 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				multiplier = -0.5,
-				event_buff = true,
+				stat_buff = "faster_revive",
 				buff_func = "buff_defence_on_revived_target",
 				event = "on_revived_ally",
 				refresh_durations = true,
-				stat_buff = "faster_revive",
 				buff_to_add = {
 					"kerillian_maidenguard_insta_ress_buff"
 				}
@@ -587,50 +578,46 @@ TalentBuffTemplates.wood_elf = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	kerillian_maidenguard_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	kerillian_maidenguard_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
 	kerillian_maidenguard_power_level_on_unharmed = {
 		buffs = {
 			{
-				stat_buff = "power_level",
 				remove_on_proc = true,
-				event_buff = true,
+				max_stacks = 1,
+				stat_buff = "power_level",
 				buff_func = "maidenguard_reset_unharmed_buff",
 				event = "on_damage_taken",
-				icon = "kerillian_maidenguard_power_level_on_unharmed",
-				max_stacks = 1
+				icon = "kerillian_maidenguard_power_level_on_unharmed"
 			}
 		}
 	},
@@ -657,12 +644,11 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				buff_to_add = "kerillian_maidenguard_speed_on_block_dummy_buff",
-				amount_to_add = 2,
+				max_stacks = 1,
 				buff_func = "maidenguard_add_power_buff_on_block",
 				event = "on_block",
-				event_buff = true,
-				max_stacks = 1,
 				update_func = "maidenguard_attack_speed_on_block_update",
+				amount_to_add = 2,
 				max_sub_buff_stacks = 2,
 				stat_increase_buffs = {
 					"kerillian_maidenguard_speed_on_block_buff",
@@ -675,12 +661,11 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				buff_to_add = "kerillian_maidenguard_speed_on_block_dummy_buff",
-				amount_to_add = 2,
+				max_stacks = 1,
 				buff_func = "maidenguard_add_power_buff_on_block",
 				event = "on_push",
-				event_buff = true,
-				max_stacks = 1,
 				update_func = "maidenguard_attack_speed_on_block_update",
+				amount_to_add = 2,
 				max_sub_buff_stacks = 2,
 				stat_increase_buffs = {
 					"kerillian_maidenguard_speed_on_block_buff",
@@ -716,12 +701,11 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_power_on_blocked_attacks_remove_damage = {
 		buffs = {
 			{
-				event_buff = true,
+				max_stacks = 1,
 				chunk_size = 1,
 				buff_to_remove = "kerillian_maidenguard_speed_on_block_dummy_buff",
 				buff_func = "maidenguard_remove_on_block_speed_buff",
 				event = "on_damage_dealt",
-				max_stacks = 1,
 				reference_buffs = {
 					"kerillian_maidenguard_speed_on_block",
 					"kerillian_maidenguard_speed_on_push"
@@ -732,10 +716,9 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_versatile_dodge = {
 		buffs = {
 			{
-				attack_buff_to_add = "kerillian_maidenguard_power_on_dodge",
-				event_buff = true,
-				buff_func = "maidenguard_footwork_buff",
 				event = "on_dodge",
+				attack_buff_to_add = "kerillian_maidenguard_power_on_dodge",
+				buff_func = "maidenguard_footwork_buff",
 				dodge_buffs_to_add = {
 					"kerillian_maidenguard_improved_dodge",
 					"kerillian_maidenguard_improved_dodge_speed"
@@ -767,7 +750,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_dodge",
 				buff_to_add = "kerillian_maidenguard_passive_attack_speed_on_dodge_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -784,7 +766,6 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_improved_dodge = {
 		buffs = {
 			{
-				event_buff = true,
 				buff_func = "maidenguard_footwork_on_dodge_end",
 				event = "on_dodge_finished",
 				remove_buff_func = "remove_movement_buff",
@@ -799,7 +780,6 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_maidenguard_improved_dodge_speed = {
 		buffs = {
 			{
-				event_buff = true,
 				buff_func = "maidenguard_footwork_on_dodge_end",
 				event = "on_dodge_finished",
 				remove_buff_func = "remove_movement_buff",
@@ -816,7 +796,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_dodge",
 				set_status = true,
-				event_buff = true,
 				buff_func = "set_noclip"
 			}
 		}
@@ -826,7 +805,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_dodge_finished",
 				set_status = false,
-				event_buff = true,
 				buff_func = "set_noclip"
 			}
 		}
@@ -868,7 +846,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_charge_ability_hit",
 				buff_to_add = "kerillian_maidenguard_activated_ability_crit_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -886,7 +863,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				stat_buff = "faster_revive",
-				event_buff = true,
 				buff_func = "buff_defence_on_revived_target",
 				event = "on_revived_ally",
 				refresh_durations = true,
@@ -916,7 +892,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -925,7 +900,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -949,14 +923,14 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_passive_increased_zoom = {
 		buffs = {
 			{
-				perk = "increased_zoom"
+				perk = buff_perks.increased_zoom
 			}
 		}
 	},
 	kerillian_waywatcher_passive_no_damage_dropoff = {
 		buffs = {
 			{
-				perk = "no_damage_dropoff"
+				perk = buff_perks.no_damage_dropoff
 			}
 		}
 	},
@@ -964,11 +938,10 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				name = "regrowth",
-				event_buff = true,
 				buff_func = "heal_finesse_damage_on_melee",
 				event = "on_hit",
-				perk = "ninja_healing",
-				bonus = 2
+				bonus = 2,
+				perk = buff_perks.ninja_healing
 			}
 		}
 	},
@@ -977,24 +950,22 @@ TalentBuffTemplates.wood_elf = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	kerillian_waywatcher_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -1003,7 +974,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_kill",
 				buff_to_add = "kerillian_waywatcher_extra_arrow_melee_kill_buff",
-				event_buff = true,
 				buff_func = "kerillian_waywatcher_add_extra_shot_buff_on_melee_kill"
 			}
 		}
@@ -1011,32 +981,30 @@ TalentBuffTemplates.wood_elf = {
 	kerillian_waywatcher_extra_arrow_melee_kill_buff = {
 		buffs = {
 			{
-				event = "on_ranged_hit",
-				icon = "kerillian_waywatcher_extra_arrow_melee_kill",
-				event_buff = true,
-				buff_func = "dummy_function",
 				remove_on_proc = true,
-				perk = "extra_shot",
+				icon = "kerillian_waywatcher_extra_arrow_melee_kill",
 				refresh_durations = true,
-				max_stacks = 1
+				buff_func = "dummy_function",
+				event = "on_ranged_hit",
+				max_stacks = 1,
+				perk = buff_perks.extra_shot
 			}
 		}
 	},
 	kerillian_waywatcher_critical_bleed = {
 		buffs = {
 			{
-				perk = "kerillian_critical_bleed_dot"
+				perk = buff_perks.kerillian_critical_bleed_dot
 			}
 		}
 	},
 	kerillian_waywatcher_attack_speed_on_ranged_headshot = {
 		buffs = {
 			{
+				event = "on_hit",
 				buff_to_add = "kerillian_waywatcher_attack_speed_on_ranged_headshot_buff",
 				buff_on_stacks = 5,
-				event_buff = true,
-				buff_func = "add_buff_on_ranged_headshot",
-				event = "on_hit"
+				buff_func = "add_buff_on_ranged_headshot"
 			}
 		}
 	},
@@ -1055,7 +1023,6 @@ TalentBuffTemplates.wood_elf = {
 			{
 				event = "on_kill_elite_special",
 				buff_to_add = "kerillian_waywatcher_movement_speed_on_special_kill_buff",
-				event_buff = true,
 				buff_func = "add_buff"
 			}
 		}
@@ -1085,8 +1052,8 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				max_stacks = 1,
-				perk = "add_projectile_bounces",
-				stat_buff = "projectile_bounces"
+				stat_buff = "projectile_bounces",
+				perk = buff_perks.add_projectile_bounces
 			}
 		}
 	},
@@ -1094,7 +1061,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_kill_elite_special",
-				event_buff = true,
 				buff_func = "kerillian_waywatcher_restore_ammo_on_career_skill_special_kill"
 			}
 		}
@@ -1103,7 +1069,6 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "kerillian_waywatcher_reduce_activated_ability_cooldown"
 			}
 		}
@@ -1413,6 +1378,7 @@ Talents.wood_elf = {
 	{
 		description = "kerillian_shade_activated_ability_quick_cooldown_desc_2",
 		name = "kerillian_shade_activated_ability_quick_cooldown",
+		buffer = "both",
 		num_ranks = 1,
 		icon = "kerillian_shade_activated_ability_quick_cooldown",
 		description_values = {
@@ -1575,7 +1541,7 @@ Talents.wood_elf = {
 		name = "kerillian_maidenguard_crit_chance",
 		buffer = "server",
 		num_ranks = 1,
-		icon = "kerillian_maidenguard_crit_chance",
+		icon = "kerillian_maidenguard_damage_reduction_on_last_standing",
 		description_values = {
 			{
 				value_type = "percent",

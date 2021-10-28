@@ -1365,6 +1365,11 @@ InteractionDefinitions.pickup_object = {
 				return_value = false
 			end
 
+			if return_value and slot_name and item_template and item_template.is_not_droppable then
+				fail_reason = "not_droppable"
+				return_value = false
+			end
+
 			local pickup_item_name = pickup_settings.item_name
 			local slot_item_name = inventory_extension:get_item_name(slot_name)
 			local can_hold_more = inventory_extension:can_store_additional_item(slot_name)
@@ -1386,6 +1391,10 @@ InteractionDefinitions.pickup_object = {
 
 			if return_value and pickup_settings.type == "ammo" then
 				if inventory_extension:is_ammo_blocked() then
+					fail_reason = "ammo_blocked"
+					return_value = false
+				elseif inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe") and pickup_settings.pickup_name == "all_ammo" then
+					fail_reason = "throwing_axe"
 					return_value = false
 				elseif inventory_extension:has_full_ammo() then
 					fail_reason = "ammo_full"
@@ -1396,6 +1405,8 @@ InteractionDefinitions.pickup_object = {
 			return return_value, fail_reason
 		end,
 		hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+			local hud_description = "no_ammo_for_this_weapon"
+			local different_hud_desc = false
 			local interaction_action_description = "interaction_action_pick_up"
 
 			if not Managers.state.unit_spawner:is_marked_for_deletion(interactable_unit) then
@@ -1412,10 +1423,18 @@ InteractionDefinitions.pickup_object = {
 						end
 
 						interaction_action_description = "interaction_action_already_equipped"
+					elseif fail_reason == "ammo_blocked" then
+						interaction_action_description = "interaction_action_ammo_blocked"
+						different_hud_desc = true
+					elseif fail_reason == "throwing_axe" then
+						interaction_action_description = "interaction_action_ammo_blocked"
+						different_hud_desc = true
 					elseif fail_reason == "ammo_full" then
 						interaction_action_description = "interaction_action_ammo_full"
 					elseif fail_reason == "grimoire_equipped" then
 						interaction_action_description = "interaction_action_grimoire_equipped"
+					elseif fail_reason == "not_droppable" then
+						interaction_action_description = "interaction_action_not_droppable"
 					end
 				else
 					local pickup_extension = ScriptUnit.extension(interactable_unit, "pickup_system")
@@ -1430,6 +1449,10 @@ InteractionDefinitions.pickup_object = {
 						interaction_action_description = "trinket_not_consume_pickup_tier1"
 					end
 				end
+			end
+
+			if different_hud_desc then
+				return hud_description, interaction_action_description
 			end
 
 			return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), interaction_action_description
@@ -1998,12 +2021,11 @@ InteractionDefinitions.inventory_access.client.stop = function (world, interacto
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_sub_state_name = "equipment",
-			menu_state_name = "overview"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			menu_state_name = "overview",
+			use_fade = true
+		})
 	end
 end
 
@@ -2022,12 +2044,11 @@ InteractionDefinitions.prestige_access.client.stop = function (world, interactor
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_sub_state_name = "prestige",
-			menu_state_name = "overview"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			menu_state_name = "overview",
+			use_fade = true
+		})
 	end
 end
 
@@ -2046,12 +2067,11 @@ InteractionDefinitions.forge_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_sub_state_name = "forge",
-			menu_state_name = "overview"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			menu_state_name = "overview",
+			use_fade = true
+		})
 	end
 end
 
@@ -2070,12 +2090,11 @@ InteractionDefinitions.talents_access.client.stop = function (world, interactor_
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_sub_state_name = "talents",
-			menu_state_name = "overview"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			menu_state_name = "overview",
+			use_fade = true
+		})
 	end
 end
 
@@ -2094,12 +2113,11 @@ InteractionDefinitions.cosmetics_access.client.stop = function (world, interacto
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_sub_state_name = "cosmetics",
-			menu_state_name = "overview"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+			menu_state_name = "overview",
+			use_fade = true
+		})
 	end
 end
 
@@ -2118,11 +2136,10 @@ InteractionDefinitions.loot_access.client.stop = function (world, interactor_uni
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
+			use_fade = true,
 			menu_state_name = "loot"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+		})
 	end
 end
 
@@ -2141,11 +2158,10 @@ InteractionDefinitions.characters_access.client.stop = function (world, interact
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("character_selection_force", {
+			use_fade = true,
 			menu_state_name = "character"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "character_selection_force", transition_params)
+		})
 	end
 end
 
@@ -2164,7 +2180,9 @@ InteractionDefinitions.altar_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		Managers.state.event:trigger("ui_event_transition_with_fade", "altar_view_force")
+		Managers.ui:handle_transition("altar_view_force", {
+			use_fade = true
+		})
 	end
 end
 
@@ -2179,7 +2197,9 @@ InteractionDefinitions.quest_access.client.stop = function (world, interactor_un
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		Managers.state.event:trigger("ui_event_transition_with_fade", "quest_view_force")
+		Managers.ui:handle_transition("quest_view_force", {
+			use_fade = true
+		})
 	end
 end
 
@@ -2207,7 +2227,9 @@ InteractionDefinitions.journal_access.client.stop = function (world, interactor_
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		Managers.state.event:trigger("ui_event_transition_with_fade", "lorebook_view_force")
+		Managers.ui:handle_transition("lorebook_view_force", {
+			use_fade = true
+		})
 	end
 end
 
@@ -2222,11 +2244,10 @@ InteractionDefinitions.map_access.client.stop = function (world, interactor_unit
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("start_game_view_force", {
+			use_fade = true,
 			menu_state_name = "play"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "start_game_view_force", transition_params)
+		})
 	end
 end
 
@@ -2247,7 +2268,9 @@ InteractionDefinitions.unlock_key_access.client.stop = function (world, interact
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		Managers.state.event:trigger("ui_event_transition_with_fade", "unlock_key_force")
+		Managers.ui:handle_transition("unlock_key_force", {
+			use_fade = true
+		})
 	end
 end
 
@@ -2279,13 +2302,12 @@ InteractionDefinitions.pictureframe.client.stop = function (world, interactor_un
 		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
 
 		keep_decoration_extension:interacted_with()
-
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
+			type = "painting",
 			menu_state_name = "keep_decorations",
+			use_fade = true,
 			interactable_unit = interactable_unit
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+		})
 	end
 end
 
@@ -2304,6 +2326,40 @@ InteractionDefinitions.pictureframe.client.hud_description = function (interacta
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), interaction_action_text
 end
 
+InteractionDefinitions.trophy = InteractionDefinitions.trophy or table.clone(InteractionDefinitions.smartobject)
+InteractionDefinitions.trophy.config.swap_to_3p = false
+
+InteractionDefinitions.trophy.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
+	data.start_time = nil
+
+	if result == InteractionResult.SUCCESS and not data.is_husk and rawget(_G, "HeroViewStateKeepDecorations") then
+		local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
+
+		keep_decoration_extension:interacted_with()
+		Managers.ui:handle_transition("hero_view_force", {
+			type = "trophy",
+			menu_state_name = "keep_decorations",
+			use_fade = true,
+			interactable_unit = interactable_unit
+		})
+	end
+end
+
+InteractionDefinitions.trophy.client.can_interact = function (interactor_unit, interactable_unit, data, config)
+	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
+	local can_interact = keep_decoration_extension:can_interact()
+	local unit_not_interactable = Unit.get_data(interactable_unit, "trophy_data", "not_interactable")
+
+	return can_interact and not unit_not_interactable
+end
+
+InteractionDefinitions.trophy.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
+	local view_only = not data.is_server or Unit.get_data(interactable_unit, "interaction_data", "view_only")
+	local interaction_action_text = (view_only and "interaction_action_view") or Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
+
+	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), interaction_action_text
+end
+
 InteractionDefinitions.decoration = InteractionDefinitions.decoration or table.clone(InteractionDefinitions.smartobject)
 InteractionDefinitions.decoration.config.swap_to_3p = false
 
@@ -2311,12 +2367,11 @@ InteractionDefinitions.decoration.client.stop = function (world, interactor_unit
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk and rawget(_G, "HeroViewStateKeepDecorations") then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
 			menu_state_name = "keep_decorations",
+			use_fade = true,
 			interactable_unit = interactable_unit
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+		})
 	end
 end
 
@@ -2350,11 +2405,10 @@ InteractionDefinitions.achievement_access.client.stop = function (world, interac
 	data.start_time = nil
 
 	if result == InteractionResult.SUCCESS and not data.is_husk then
-		local transition_params = {
+		Managers.ui:handle_transition("hero_view_force", {
+			use_fade = true,
 			menu_state_name = "achievements"
-		}
-
-		Managers.state.event:trigger("ui_event_transition_with_fade", "hero_view_force", transition_params)
+		})
 	end
 end
 

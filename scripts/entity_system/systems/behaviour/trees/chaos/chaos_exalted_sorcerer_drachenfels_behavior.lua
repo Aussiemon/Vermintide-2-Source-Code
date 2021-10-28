@@ -199,7 +199,7 @@ BreedBehaviors.chaos_exalted_sorcerer_drachenfels = {
 				},
 				leave_hook = "kill_unit",
 				name = "death_sequence",
-				condition = "at_one_health",
+				condition = "less_than_one_health",
 				enter_hook = "teleport_to_center_drachenfels"
 			},
 			{

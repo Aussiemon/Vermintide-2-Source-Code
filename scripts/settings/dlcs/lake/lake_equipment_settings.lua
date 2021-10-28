@@ -20,7 +20,7 @@ settings.default_items = {
 		display_name = "es_bastard_sword_blacksmith_name"
 	},
 	es_sword_shield_breton = {
-		inventory_icon = "icon_wpn_emp_gk_sword_01_t1_wpn_emp_gk_shield_02",
+		inventory_icon = "icon_wpn_emp_gk_sword_01_t1_wpn_emp_gk_shield_03",
 		description = "description_default_witch_hunter_wh_1h_falchions",
 		display_name = "es_1h_sword_shield_breton_blacksmith_name"
 	}

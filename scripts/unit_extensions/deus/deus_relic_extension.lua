@@ -63,7 +63,6 @@ end
 DeusRelicExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._unit = unit
 	self._is_server = Managers.player.is_server
-	self.game = extension_init_data.game
 	self._nav_world = Managers.state.entity:system("ai_system"):nav_world()
 end
 

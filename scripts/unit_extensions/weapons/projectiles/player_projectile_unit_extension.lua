@@ -532,6 +532,16 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	if grenade or (aoe_data and self._max_mass <= self._amount_of_mass_hit) then
 		self:do_aoe(aoe_data, hit_position)
+
+		if grenade then
+			local owner_unit = self._owner_unit
+			local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+
+			if owner_buff_extension then
+				owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
+			end
+		end
+
 		self:stop()
 	end
 
@@ -643,7 +653,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local damage_source_id = NetworkLookup.damage_sources[damage_source]
 	local damage_profile_id = self._impact_damage_profile_id
 	local weapon_system = self._weapon_system
-	local predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
+	local predicted_damage, invulnerable = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
 
 	if not is_server then
 		local target_health_extension = Unit.alive(hit_unit) and ScriptUnit.has_extension(hit_unit, "health_system")
@@ -689,8 +699,14 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 		EffectHelper.player_critical_hit(self._world, is_critical_strike, owner_unit, hit_unit, hit_position)
 	end
 
+	if invulnerable then
+		hit_effect = "invulnerable"
+
+		DamageUtils.handle_hit_indication(owner_unit, hit_unit, 0, hit_zone_name, false, true)
+	end
+
 	if hit_effect then
-		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked)
+		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, invulnerable)
 	end
 
 	if hit_zone_name == "head" and not shield_blocked then
@@ -736,6 +752,16 @@ PlayerProjectileUnitExtension.hit_player = function (self, impact_data, hit_unit
 
 		if aoe_data and self._max_mass <= self._amount_of_mass_hit then
 			self:do_aoe(aoe_data, hit_position)
+
+			if impact_data.grenade then
+				local owner_unit = self._owner_unit
+				local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+
+				if owner_buff_extension then
+					owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
+				end
+			end
+
 			self:stop()
 		end
 
@@ -800,7 +826,7 @@ PlayerProjectileUnitExtension.hit_player_damage = function (self, damage_profile
 
 	weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, hit_direction, damage_profile_id, "power_level", power_level, "hit_target_index", actual_target_index, "blocking", false, "shield_break_procced", false, "boost_curve_multiplier", ranged_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "first_hit", num_targets_hit == 1)
 
-	local predicted_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
+	local predicted_damage, invulnerable = DamageUtils.calculate_damage(DamageOutput, hit_unit, owner_unit, hit_zone_name, power_level, BoostCurves[target_settings.boost_curve_type], ranged_boost_curve_multiplier, is_critical_strike, damage_profile, actual_target_index, nil, damage_source)
 	local no_damage = predicted_damage <= 0
 
 	if no_damage then
@@ -809,6 +835,12 @@ PlayerProjectileUnitExtension.hit_player_damage = function (self, damage_profile
 		self:stop()
 	else
 		self._did_damage = predicted_damage
+	end
+
+	if invulnerable then
+		hit_effect = "invulnerable"
+
+		DamageUtils.handle_hit_indication(owner_unit, hit_unit, 0, hit_zone_name, false, true)
 	end
 
 	if hit_effect then
@@ -890,6 +922,10 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 
 	if aoe_data then
 		self:do_aoe(aoe_data, hit_position)
+
+		if impact_data.grenade and owner_buff_extension then
+			owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
+		end
 	end
 
 	if health_extension and self._num_additional_penetrations > 0 and not impact_data.grenade then
@@ -961,6 +997,15 @@ PlayerProjectileUnitExtension.hit_non_level_unit = function (self, impact_data, 
 
 	if aoe_data then
 		self:do_aoe(aoe_data, hit_position)
+
+		if impact_data.grenade then
+			local owner_unit = self._owner_unit
+			local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+
+			if owner_buff_extension then
+				owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
+			end
+		end
 
 		stop_impacts = true
 	end
@@ -1093,7 +1138,6 @@ PlayerProjectileUnitExtension._handle_linking = function (self, impact_data, hit
 	end
 
 	if allow_link and impact_data.link then
-		self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, shield_blocked)
 		self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, shield_blocked, impact_data.flow_event_on_init, impact_data.flow_event_on_walls)
 	elseif impact_data.link_pickup then
 		local network_manager = Managers.state.network

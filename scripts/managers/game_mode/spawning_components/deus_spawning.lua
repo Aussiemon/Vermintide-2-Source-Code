@@ -40,7 +40,11 @@ DeusSpawning._restore_player_game_mode_data = function (self, peer_id, local_pla
 	if is_initial_spawn then
 		box_pos, box_rot = self:get_spawn_point()
 	else
-		box_pos, box_rot = MainPathUtils.get_main_path_point_between_players()
+		local conflict_director = Managers.state.conflict
+		local main_paths = conflict_director.level_analysis:get_main_paths()
+		local main_path_info = conflict_director.main_path_info
+		local main_path_player_info = conflict_director.main_path_player_info
+		box_pos, box_rot = MainPathUtils.get_main_path_point_between_players(main_paths, main_path_info, main_path_player_info)
 	end
 
 	game_mode_data.position = box_pos

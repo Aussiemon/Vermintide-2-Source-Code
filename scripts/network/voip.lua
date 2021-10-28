@@ -23,6 +23,7 @@ if has_steam and not disable_voip then
 		local world = Managers.world:create_world(world_name, GameSettingsDevelopment.default_environment, shading_callback, layer, Application.DISABLE_PHYSICS, Application.DISABLE_APEX_CLOTH, Application.DISABLE_RENDERING)
 		self.world = world
 		self.wwise_world = Wwise.wwise_world(world)
+		self._member_buffer = {}
 		local member_list = {}
 		self.member_list = member_list
 		local added_members = {}
@@ -199,19 +200,13 @@ if has_steam and not disable_voip then
 
 			if self.push_to_talk then
 				local input_service = Managers.input:get_service("chat_input")
-				local push_to_talk_active = input_service:get("voip_push_to_talk")
+				local push_to_talk_active = not not input_service:get("voip_push_to_talk")
 
-				if push_to_talk_active and not self.push_to_talk_active then
-					self.push_to_talk_active = true
-
-					for index, member_peer_id in pairs(SteamVoipClient.members(self.voip_client)) do
-						SteamVoipClient.select_out(self.voip_client, true, member_peer_id)
-					end
-				elseif not push_to_talk_active and self.push_to_talk_active then
-					self.push_to_talk_active = false
+				if push_to_talk_active ~= self.push_to_talk_active then
+					self.push_to_talk_active = push_to_talk_active
 
 					for index, member_peer_id in pairs(SteamVoipClient.members(self.voip_client)) do
-						SteamVoipClient.select_out(self.voip_client, false, member_peer_id)
+						SteamVoipClient.select_out(self.voip_client, push_to_talk_active, member_peer_id)
 					end
 				end
 			end
@@ -234,7 +229,11 @@ if has_steam and not disable_voip then
 				end
 			end
 
-			for peer_index, peer_id in pairs(SteamVoipRoom.members(self.room_id)) do
+			local member_buffer, member_count = SteamVoipRoom.members(self.room_id, self._member_buffer)
+
+			for i = 1, member_count, 1 do
+				local peer_id = member_buffer[i]
+
 				if peer_id ~= self.peer_id and PEER_ID_TO_CHANNEL[peer_id] == nil then
 					voip_info_print("[VOIP] Removing voip member due to not having a connection to it: %q", tostring(peer_id))
 					SteamVoipRoom.remove_member(room_id, peer_id)

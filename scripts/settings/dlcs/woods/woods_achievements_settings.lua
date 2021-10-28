@@ -3,6 +3,7 @@ settings.achievement_outline = {
 	heroes = {
 		categories = {
 			{
+				sorting = 3,
 				name = "inventory_name_wood_elf",
 				entries = {
 					"woods_complete_all_helmgart_levels_recruit_we_thornsister",

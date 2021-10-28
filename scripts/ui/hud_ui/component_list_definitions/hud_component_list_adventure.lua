@@ -314,7 +314,8 @@ local components = {
 		class_name = "CrosshairUI",
 		filename = "scripts/ui/views/crosshair_ui",
 		visibility_groups = {
-			"alive"
+			"alive",
+			"realism"
 		}
 	},
 	{
@@ -343,7 +344,7 @@ local components = {
 	},
 	{
 		class_name = "IngamePlayerListUI",
-		filename = "scripts/ui/views/ingame_player_list_ui",
+		filename = (GameSettingsDevelopment.use_new_tab_menu and "scripts/ui/views/ingame_player_list_ui_v2") or "scripts/ui/views/ingame_player_list_ui",
 		visibility_groups = {
 			"tab_menu",
 			"realism",
@@ -368,7 +369,12 @@ local components = {
 		visibility_groups = {
 			"game_mode_disable_hud",
 			"alive"
-		}
+		},
+		validation_function = function ()
+			local level_settings = LevelHelper.current_level_settings()
+
+			return level_settings.tutorial_level
+		end
 	},
 	{
 		class_name = "CutsceneOverlayUI",
@@ -513,9 +519,8 @@ local visibility_groups = {
 		name = "hero_selection_popup",
 		validation_function = function (ingame_hud)
 			local ingame_ui = ingame_hud:parent()
-			local hero_popup_active = ingame_ui:unavailable_hero_popup_active()
 
-			return hero_popup_active
+			return ingame_ui:get_active_popup("profile_picker")
 		end
 	},
 	{

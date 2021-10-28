@@ -476,6 +476,9 @@ AIInventoryExtension.unwield_set = function (self, item_set_index)
 end
 
 AIInventoryExtension.play_hit_sound = function (self, victim_unit, damage_type)
+	local owner = Managers.player:owner(victim_unit)
+	local is_husk = owner.remote or owner.bot_player or false
+	local world = self.world
 	local inventory_configuration_name = self.inventory_configuration_name
 	local inventory_configuration = InventoryConfigurations[inventory_configuration_name]
 	local enemy_hit_sound = inventory_configuration.enemy_hit_sound
@@ -484,14 +487,20 @@ AIInventoryExtension.play_hit_sound = function (self, victim_unit, damage_type)
 		enemy_hit_sound = "melee"
 	end
 
-	if enemy_hit_sound == nil then
-		return
+	if enemy_hit_sound then
+		EffectHelper.play_melee_hit_effects_enemy("enemy_hit", enemy_hit_sound, world, victim_unit, damage_type, is_husk)
 	end
 
-	local owner = Managers.player:owner(victim_unit)
-	local is_husk = owner.remote or owner.bot_player or false
+	if self._additional_hit_sounds then
+		local hit_sounds = self._additional_hit_sounds
 
-	EffectHelper.play_melee_hit_effects_enemy("enemy_hit", enemy_hit_sound, self.world, victim_unit, damage_type, is_husk)
+		for i = 1, #hit_sounds, 1 do
+			local source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, victim_unit)
+
+			WwiseWorld.set_switch(wwise_world, "husk", tostring(is_husk), source_id)
+			WwiseWorld.trigger_event(wwise_world, hit_sounds[i], source_id)
+		end
+	end
 end
 
 AIInventoryExtension.hot_join_sync = function (self, peer_id)
@@ -509,6 +518,86 @@ AIInventoryExtension.hot_join_sync = function (self, peer_id)
 
 		if go_id then
 			RPC.rpc_ai_inventory_wield(channel_id, go_id, self.current_item_set_index)
+		end
+	end
+end
+
+AIInventoryExtension.add_additional_hit_sfx = function (self, additional_sfx_name)
+	if not additional_sfx_name then
+		return nil
+	end
+
+	local additional_hit_sounds = self._additional_hit_sounds
+	local additional_hit_sounds_ids = self._additional_hit_sounds_ids
+
+	if not additional_hit_sounds then
+		additional_hit_sounds = {}
+		self._additional_hit_sounds = additional_hit_sounds
+		additional_hit_sounds_ids = {}
+		self._additional_hit_sounds_ids = additional_hit_sounds_ids
+	end
+
+	local unique_id = self._unique_id or 1
+	self._unique_id = unique_id + 1
+	local override_ids = additional_hit_sounds_ids[additional_sfx_name]
+
+	if not override_ids then
+		additional_hit_sounds[#additional_hit_sounds + 1] = additional_sfx_name
+		additional_hit_sounds_ids[additional_sfx_name] = {
+			unique_id
+		}
+		additional_hit_sounds_ids[unique_id] = additional_sfx_name
+	else
+		local sfx_unique_ids = additional_hit_sounds_ids[additional_sfx_name]
+		local num_overrides = #sfx_unique_ids
+		sfx_unique_ids[num_overrides + 1] = unique_id
+		additional_hit_sounds_ids[unique_id] = additional_sfx_name
+	end
+
+	return unique_id
+end
+
+AIInventoryExtension.remove_additioanl_hit_sfx = function (self, override_id)
+	local additional_hit_sounds_ids = self._additional_hit_sounds_ids
+
+	if not additional_hit_sounds_ids then
+		return
+	end
+
+	local sfx_name = additional_hit_sounds_ids[override_id]
+
+	if not sfx_name then
+		return
+	end
+
+	local sfx_unique_ids = additional_hit_sounds_ids[sfx_name]
+
+	if not sfx_unique_ids then
+		return
+	end
+
+	local override_index = table.index_of(sfx_unique_ids, override_id)
+
+	if override_index > 0 then
+		table.swap_delete(sfx_unique_ids, override_index)
+
+		additional_hit_sounds_ids[override_id] = nil
+
+		if #sfx_unique_ids == 0 then
+			additional_hit_sounds_ids[sfx_name] = nil
+			local additional_hit_sounds = self._additional_hit_sounds
+
+			if additional_hit_sounds then
+				local sfx_name_id = table.index_of(additional_hit_sounds, sfx_name)
+
+				if sfx_name_id > 0 then
+					table.swap_delete(additional_hit_sounds, sfx_name_id)
+
+					if #additional_hit_sounds == 0 then
+						self._additional_hit_sounds = nil
+					end
+				end
+			end
 		end
 	end
 end

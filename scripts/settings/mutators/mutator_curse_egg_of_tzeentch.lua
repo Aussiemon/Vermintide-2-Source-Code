@@ -46,7 +46,6 @@ local EGG_EXTENSION_INIT_DATA = {
 	buff_system = {
 		breed = "n/a",
 		initial_buff_names = {
-			"egg_objective_unit",
 			"objective_unit",
 			"health_bar"
 		}
@@ -172,28 +171,19 @@ return {
 		data.timer = MutatorCommonSettings.deus.initial_activation_delay
 	end,
 	server_update_function = function (context, data, dt, t)
-		if not data.timer then
-			local mission_system = data.mission_system
-			local active_missions = mission_system:get_missions()
-			local num_missions = table.size(active_missions)
-
-			if num_missions >= 2 and mission_system:has_active_mission(EGG_MISSION_NAME) then
-				mission_system:end_mission(EGG_MISSION_NAME, true)
-
-				if ALIVE[data.egg_unit] then
-					data.unit_spawner:mark_for_deletion(data.egg_unit)
-
-					data.alert_timer = nil
-					data.alert_high_triggered = false
-					data.alert_medium_triggered = false
-				end
-			end
-		end
-
-		local pacing_frozen = data.conflict_director.pacing:get_state() == "pacing_frozen"
 		local mission_system = data.mission_system
 		local active_missions = mission_system:get_missions()
 		local num_missions = table.size(active_missions)
+
+		if not data.timer and num_missions >= 2 and ALIVE[data.egg_unit] and mission_system:has_active_mission(EGG_MISSION_NAME) then
+			AiUtils.kill_unit(data.egg_unit)
+
+			data.alert_timer = nil
+			data.alert_high_triggered = false
+			data.alert_medium_triggered = false
+		end
+
+		local pacing_frozen = data.conflict_director.pacing:get_state() == "pacing_frozen"
 
 		if AiUtils.unit_alive(data.last_spawned_monster) or pacing_frozen or num_missions > 0 then
 			return

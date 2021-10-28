@@ -134,13 +134,15 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	local difficulty_name = Managers.state.difficulty:get_difficulty()
 	local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
 	local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
+	local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
 
 	if health_state == "knocked_down" then
 		num_slayer_curses = 0
+		cursed_health = 0
 	end
 
-	if num_grimoires + num_twitch_grimoires + num_slayer_curses + num_mutator_curses > 0 then
-		modifier = 1 + num_grimoires * grimoire_multiplier + num_twitch_grimoires * twitch_grimoire_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier
+	if num_grimoires + num_twitch_grimoires + num_slayer_curses + num_mutator_curses + cursed_health > 0 then
+		modifier = 1 + num_grimoires * grimoire_multiplier + num_twitch_grimoires * twitch_grimoire_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 	end
 
 	local max_health = self:_calculate_buffed_max_health()
@@ -488,9 +490,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		end
 	end
 
-	if ScriptUnit.has_extension(attacker_unit, "hud_system") then
-		DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
-	end
+	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 
 	local weave_manager = Managers.weave
 
@@ -888,6 +888,30 @@ PlayerUnitHealthExtension.convert_temporary_to_permanent_health = function (self
 
 		GameSession.set_game_object_field(game, game_object_id, "current_health", health + temporary_health)
 		GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", 0)
+	end
+end
+
+PlayerUnitHealthExtension.convert_to_temp = function (self, amount)
+	amount = DamageUtils.networkify_damage(amount)
+
+	if self.is_server then
+		local game = self.game
+		local game_object_id = self.health_game_object_id
+
+		if game and game_object_id then
+			local health = GameSession.game_object_field(game, game_object_id, "current_health")
+			local temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
+			local convert_amount = math.min(health, amount)
+
+			GameSession.set_game_object_field(game, game_object_id, "current_health", health - convert_amount)
+			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", temporary_health + convert_amount)
+		end
+	else
+		local unit_id = self.unit_storage:go_id(self.unit)
+
+		if unit_id then
+			self.network_transmit:send_rpc_server("rpc_request_convert_temp", unit_id, amount)
+		end
 	end
 end
 

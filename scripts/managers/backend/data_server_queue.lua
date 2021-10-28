@@ -43,7 +43,7 @@ BEQueueItem.poll_backend = function (self, caller)
 				end
 			end
 
-			ScriptApplication.send_to_crashify("DataServerQueue", error_string)
+			Crashify.print_exception("DataServerQueue", error_string)
 		end
 
 		self._is_done = true

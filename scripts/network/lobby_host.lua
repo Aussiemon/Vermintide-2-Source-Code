@@ -77,6 +77,7 @@ LobbyHost.update = function (self, dt)
 			self.lobby_members = self.lobby_members or LobbyMembers:new(lobby)
 
 			Managers.party:set_leader(lobby:lobby_host())
+			Managers.account:update_presence()
 		elseif old_state == LobbyState.JOINED then
 			Managers.party:set_leader(nil)
 

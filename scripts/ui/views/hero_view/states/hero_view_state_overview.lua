@@ -42,7 +42,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	print("[HeroViewState] Enter Substate HeroViewStateOverview")
 
 	self.parent = params.parent
-	self._gamepad_style_active = self:_setup_menu_layout()
+	self._gamepad_style_active = self:_setup_menu_layout(params)
 	local ingame_ui_context = params.ingame_ui_context
 	self.ingame_ui_context = ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -57,6 +57,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.wwise_world = params.wwise_world
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self.is_in_inn = ingame_ui_context.is_in_inn
+	self.force_ingame_menu = params.state_params.force_ingame_menu
 	self.world_previewer = params.world_previewer
 	self.platform = PLATFORM
 	local player_manager = Managers.player
@@ -106,7 +107,8 @@ HeroViewStateOverview.on_enter = function (self, params)
 		hero_name = self.hero_name,
 		career_index = self.career_index,
 		profile_index = self.profile_index,
-		start_state = params.start_state
+		start_state = params.start_state,
+		force_ingame_menu = self.force_ingame_menu
 	}
 
 	self:_initial_windows_setups(window_params)
@@ -114,7 +116,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 	if self._gamepad_style_active then
 		UISettings.hero_fullscreen_menu_on_enter()
 
-		if self.is_in_inn then
+		if self.is_in_inn and not self.force_ingame_menu then
 			self:play_sound("play_gui_amb_hero_screen_loop_begin")
 			self:disable_player_world()
 		else
@@ -123,8 +125,8 @@ HeroViewStateOverview.on_enter = function (self, params)
 	end
 end
 
-HeroViewStateOverview._setup_menu_layout = function (self)
-	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+HeroViewStateOverview._setup_menu_layout = function (self, params)
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout or params.state_params.force_ingame_menu
 
 	if use_gamepad_layout then
 		self._layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout_console")
@@ -462,7 +464,7 @@ HeroViewStateOverview.on_exit = function (self, params)
 	if self._gamepad_style_active then
 		UISettings.hero_fullscreen_menu_on_exit()
 
-		if self.is_in_inn then
+		if self.is_in_inn and not self.force_ingame_menu then
 			self:play_sound("play_gui_amb_hero_screen_loop_end")
 			self:enable_player_world()
 		else

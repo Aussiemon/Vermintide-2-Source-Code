@@ -218,7 +218,6 @@ local function create_auto_fill_button(scenegraph_id, icon_name, hover_color, ho
 		element = {
 			passes = {
 				{
-					style_id = "frame",
 					pass_type = "hotspot",
 					content_id = "button_hotspot"
 				},

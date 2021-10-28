@@ -1,5 +1,5 @@
 local check_level_list = AchievementTemplateHelper.check_level_list
-local check_level_list_difficulty = AchievementTemplateHelper.check_level_list_difficulty
+local check_level_difficulty = AchievementTemplateHelper.check_level_difficulty
 local hero_level = AchievementTemplateHelper.hero_level
 local equipped_items_of_rarity = AchievementTemplateHelper.equipped_items_of_rarity
 AchievementTemplates.achievements.holly_complete_recruit = {
@@ -13,21 +13,15 @@ AchievementTemplates.achievements.holly_complete_recruit = {
 		local count = 0
 		local diff = DifficultySettings.normal.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -37,21 +31,15 @@ AchievementTemplates.achievements.holly_complete_recruit = {
 		local count = 0
 		local diff = DifficultySettings.normal.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -62,15 +50,9 @@ AchievementTemplates.achievements.holly_complete_recruit = {
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.normal.rank
-		local complete_holly_magnus = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff)
-		local complete_holly_cemetery = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff)
-		local complete_holly_forest_ambush = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff)
+		local complete_holly_magnus = check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff)
+		local complete_holly_cemetery = check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff)
+		local complete_holly_forest_ambush = check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff)
 
 		return {
 			{
@@ -99,21 +81,15 @@ AchievementTemplates.achievements.holly_complete_veteran = {
 		local count = 0
 		local diff = DifficultySettings.hard.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -123,21 +99,15 @@ AchievementTemplates.achievements.holly_complete_veteran = {
 		local count = 0
 		local diff = DifficultySettings.hard.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -148,15 +118,9 @@ AchievementTemplates.achievements.holly_complete_veteran = {
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.hard.rank
-		local complete_holly_magnus = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff)
-		local complete_holly_cemetery = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff)
-		local complete_holly_forest_ambush = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff)
+		local complete_holly_magnus = check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff)
+		local complete_holly_cemetery = check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff)
+		local complete_holly_forest_ambush = check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff)
 
 		return {
 			{
@@ -185,21 +149,15 @@ AchievementTemplates.achievements.holly_complete_champion = {
 		local count = 0
 		local diff = DifficultySettings.harder.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -209,21 +167,15 @@ AchievementTemplates.achievements.holly_complete_champion = {
 		local count = 0
 		local diff = DifficultySettings.harder.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -234,15 +186,9 @@ AchievementTemplates.achievements.holly_complete_champion = {
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.harder.rank
-		local complete_holly_magnus = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff)
-		local complete_holly_cemetery = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff)
-		local complete_holly_forest_ambush = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff)
+		local complete_holly_magnus = check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff)
+		local complete_holly_cemetery = check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff)
+		local complete_holly_forest_ambush = check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff)
 
 		return {
 			{
@@ -271,21 +217,15 @@ AchievementTemplates.achievements.holly_complete_legend = {
 		local count = 0
 		local diff = DifficultySettings.hardest.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -295,21 +235,15 @@ AchievementTemplates.achievements.holly_complete_legend = {
 		local count = 0
 		local diff = DifficultySettings.hardest.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff) then
 			count = count + 1
 		end
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff) then
 			count = count + 1
 		end
 
@@ -320,15 +254,9 @@ AchievementTemplates.achievements.holly_complete_legend = {
 	end,
 	requirements = function (statistics_db, stats_id)
 		local diff = DifficultySettings.hardest.rank
-		local complete_holly_magnus = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.magnus.level_id
-		}, diff)
-		local complete_holly_cemetery = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.cemetery.level_id
-		}, diff)
-		local complete_holly_forest_ambush = check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.forest_ambush.level_id
-		}, diff)
+		local complete_holly_magnus = check_level_difficulty(statistics_db, stats_id, LevelSettings.magnus.level_id, diff)
+		local complete_holly_cemetery = check_level_difficulty(statistics_db, stats_id, LevelSettings.cemetery.level_id, diff)
+		local complete_holly_forest_ambush = check_level_difficulty(statistics_db, stats_id, LevelSettings.forest_ambush.level_id, diff)
 
 		return {
 			{
@@ -355,9 +283,7 @@ AchievementTemplates.achievements.holly_complete_plaza_recruit = {
 		local count = 0
 		local diff = DifficultySettings.normal.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.plaza.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.plaza.level_id, diff) then
 			count = count + 1
 		end
 
@@ -373,9 +299,7 @@ AchievementTemplates.achievements.holly_complete_plaza_veteran = {
 		local count = 0
 		local diff = DifficultySettings.hard.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.plaza.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.plaza.level_id, diff) then
 			count = count + 1
 		end
 
@@ -391,9 +315,7 @@ AchievementTemplates.achievements.holly_complete_plaza_champion = {
 		local count = 0
 		local diff = DifficultySettings.harder.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.plaza.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.plaza.level_id, diff) then
 			count = count + 1
 		end
 
@@ -409,9 +331,7 @@ AchievementTemplates.achievements.holly_complete_plaza_legend = {
 		local count = 0
 		local diff = DifficultySettings.hardest.rank
 
-		if check_level_list_difficulty(statistics_db, stats_id, {
-			LevelSettings.plaza.level_id
-		}, diff) then
+		if check_level_difficulty(statistics_db, stats_id, LevelSettings.plaza.level_id, diff) then
 			count = count + 1
 		end
 

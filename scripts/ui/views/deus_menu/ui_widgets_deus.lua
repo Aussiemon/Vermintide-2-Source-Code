@@ -265,12 +265,12 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 			},
 			host_icon = {
 				size = {
-					18,
-					14
+					40,
+					40
 				},
 				offset = {
-					-50,
-					10,
+					-65,
+					-2,
 					50
 				},
 				color = {
@@ -1290,7 +1290,7 @@ UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, in
 	return widget
 end
 
-UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_offset, background_icon, background_icon_size, background_icon_offset, sub_text, title_text, title_text_color, width, power_up, is_rectangular_icon, hide_text)
+UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_offset, background_icon, background_icon_size, background_icon_offset, sub_text, title_text, title_text_color, width, is_rectangular_icon, hide_text)
 	local size = {
 		width,
 		background_icon_size[2]
@@ -1434,7 +1434,6 @@ UIWidgets.create_icon_info_box = function (scenegraph_id, icon, icon_size, icon_
 		title_text = title_text,
 		sub_text = sub_text,
 		total_widget_size = size,
-		power_up = power_up,
 		is_rectangular_icon = is_rectangular_icon,
 		hide_text = hide_text
 	}

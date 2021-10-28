@@ -64,6 +64,11 @@ end
 
 CrosshairUI.update = function (self, dt, t, player)
 	local player_unit = player.player_unit
+
+	if not player_unit then
+		return
+	end
+
 	local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 	local equipment = inventory_extension:equipment()
 	local parent = self._parent
@@ -207,13 +212,14 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	local added_dot = hit_marker_data.added_dot
 	local shield_break = hit_marker_data.shield_break
 	local shield_open = hit_marker_data.shield_open
+	local invulnerable = hit_marker_data.invulnerable
 	local is_critical = false
 	local is_armored = false
 	local additional_hit_icon = nil
 	local hit_armored_markers = self._hit_armored_markers
 	local hit_marker_config = definitions.hit_marker_configurations
 
-	if damage_amount <= 0 and has_armor and not added_dot then
+	if invulnerable or (damage_amount <= 0 and has_armor and not added_dot) then
 		is_armored = true
 	elseif hit_critical then
 		is_critical = true

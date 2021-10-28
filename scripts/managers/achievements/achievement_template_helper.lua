@@ -8,8 +8,15 @@ AchievementTemplateHelper.rarity_index = {
 }
 AchievementTemplateHelper.PLACEHOLDER_ICON = "icons_placeholder"
 
+AchievementTemplateHelper.check_level = function (statistics_db, stats_id, level_id)
+	local level_stat = statistics_db:get_persistent_stat(stats_id, "completed_levels", level_id)
+	local not_completed = not level_stat or level_stat == 0
+
+	return not not_completed
+end
+
 AchievementTemplateHelper.check_level_list = function (statistics_db, stats_id, levels_to_complete)
-	assert(type(levels_to_complete) == "table", "levels_to_complete needs to be a list of levels")
+	assert(type(levels_to_complete) == "table" and #levels_to_complete > 0, "levels_to_complete needs to be a list of levels with at least 1 element")
 
 	for i = 1, #levels_to_complete, 1 do
 		local level_id = levels_to_complete[i]
@@ -23,33 +30,30 @@ AchievementTemplateHelper.check_level_list = function (statistics_db, stats_id, 
 	return true
 end
 
-AchievementTemplateHelper.check_level_completed_difficulty = function (statistics_db, stats_id, level_to_complete, difficulty_rank, career)
-	assert(type(level_to_complete) == "table", "level_to_complete needs to be a table")
-
+AchievementTemplateHelper.check_level_difficulty = function (statistics_db, stats_id, level_id, difficulty_rank, career, streak)
 	local difficulty_manager = Managers.state.difficulty
 
 	if not difficulty_manager then
 		return false
 	end
 
-	local level_id = level_to_complete.level_id
 	local difficulties = difficulty_manager:get_level_difficulties(level_id)
 	local difficulty_index = nil
 
-	if career then
-		for i, r in ipairs(difficulties) do
-			local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, r)
+	if not career then
+		difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
+	elseif not streak then
+		for i = #difficulties, 1, -1 do
+			local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, difficulties[i])
 
 			if wins > 0 then
 				difficulty_index = i
+
+				break
 			end
 		end
 	else
-		difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-	end
-
-	if not difficulty_index then
-		return false
+		difficulty_index = statistics_db:get_persistent_stat(stats_id, "mission_streak", career, level_id)
 	end
 
 	local difficulty_key = difficulties[difficulty_index]
@@ -63,49 +67,24 @@ AchievementTemplateHelper.check_level_completed_difficulty = function (statistic
 	return difficulty_rank <= completed_rank
 end
 
-AchievementTemplateHelper.check_level_list_difficulty = function (statistics_db, stats_id, levels_to_complete, difficulty_rank, career, streak)
-	assert(type(levels_to_complete) == "table", "levels_to_complete needs to be a list of levels")
+AchievementTemplateHelper.check_level_table_difficulty = function (statistics_db, stats_id, level_to_complete, difficulty_rank, career)
+	assert(type(level_to_complete) == "table" and level_to_complete.level_id, "level_to_complete needs to be a table with a level_id field")
 
-	local difficulty_manager = Managers.state.difficulty
+	local level_id = level_to_complete.level_id
 
-	if not difficulty_manager then
-		return false
-	end
+	return AchievementTemplateHelper.check_level_difficulty(statistics_db, stats_id, level_id, difficulty_rank, career)
+end
+
+AchievementTemplateHelper.check_level_list_difficulty = function (statistics_db, stats_id, levels_to_complete, difficulty_rank, career)
+	assert(type(levels_to_complete) == "table" and #levels_to_complete > 0, "levels_to_complete needs to be a list of levels with at least 1 element")
+
+	local check_level_difficulty = AchievementTemplateHelper.check_level_difficulty
 
 	for i = 1, #levels_to_complete, 1 do
 		local level_id = levels_to_complete[i]
-		local difficulties = difficulty_manager:get_level_difficulties(level_id)
-		local difficulty_index = nil
+		local completed = check_level_difficulty(statistics_db, stats_id, level_id, difficulty_rank, career)
 
-		if career then
-			if streak then
-				difficulty_index = statistics_db:get_persistent_stat(stats_id, "mission_streak", career, level_id)
-			else
-				for i, r in ipairs(difficulties) do
-					local wins = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career, level_id, r)
-
-					if wins > 0 then
-						difficulty_index = i
-					end
-				end
-			end
-		else
-			difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, level_id)
-		end
-
-		if not difficulty_index then
-			return false
-		end
-
-		local difficulty_key = difficulties[difficulty_index]
-
-		if not difficulty_key then
-			return false
-		end
-
-		local completed_rank = DifficultySettings[difficulty_key].rank
-
-		if completed_rank < difficulty_rank then
+		if not completed then
 			return false
 		end
 	end
@@ -438,7 +417,7 @@ AchievementTemplateHelper.add_levels_complete_challenge = function (achievements
 			local count = 0
 
 			for i = 1, num_levels, 1 do
-				if AchievementTemplateHelper.check_level_completed_difficulty(statistics_db, stats_id, levels[i], difficulty_rank) then
+				if AchievementTemplateHelper.check_level_table_difficulty(statistics_db, stats_id, levels[i], difficulty_rank) then
 					count = count + 1
 				end
 			end
@@ -452,7 +431,7 @@ AchievementTemplateHelper.add_levels_complete_challenge = function (achievements
 			local count = 0
 
 			for i = 1, num_levels, 1 do
-				if AchievementTemplateHelper.check_level_completed_difficulty(statistics_db, stats_id, levels[i], difficulty_rank) then
+				if AchievementTemplateHelper.check_level_table_difficulty(statistics_db, stats_id, levels[i], difficulty_rank) then
 					count = count + 1
 				end
 			end
@@ -469,7 +448,7 @@ AchievementTemplateHelper.add_levels_complete_challenge = function (achievements
 			for i = 1, num_levels, 1 do
 				local entry = {
 					name = levels[i].display_name,
-					completed = AchievementTemplateHelper.check_level_completed_difficulty(statistics_db, stats_id, levels[i], difficulty_rank)
+					completed = AchievementTemplateHelper.check_level_table_difficulty(statistics_db, stats_id, levels[i], difficulty_rank)
 				}
 
 				table.insert(out_table, entry)

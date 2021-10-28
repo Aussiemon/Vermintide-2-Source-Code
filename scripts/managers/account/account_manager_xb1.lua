@@ -1084,4 +1084,8 @@ AccountManager.region = function (self)
 	return
 end
 
+AccountManager.update_presence = function (self)
+	return
+end
+
 return

@@ -235,6 +235,7 @@ NetworkClient.on_game_entered = function (self)
 
 	local channel_id = PEER_ID_TO_CHANNEL[self.server_peer_id]
 
+	Managers.account:update_presence()
 	RPC.rpc_is_ingame(channel_id)
 end
 

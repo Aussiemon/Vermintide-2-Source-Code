@@ -33,13 +33,13 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 		end
 
 		if not game_session_host or game_session_host == "0" then
-			ScriptApplication.send_to_crashify("[GameNetworkManager]", "did not join GameSession %s as game_session_host was equal to \"0\". This probably means the host left at a weird timing.", session)
+			Crashify.print_exception("[GameNetworkManager]", "did not join GameSession %s as game_session_host was equal to \"0\". This probably means the host left at a weird timing.", session)
 		else
 			self._game_session_host = game_session_host
 			local channel_id = PEER_ID_TO_CHANNEL[game_session_host]
 
 			if not channel_id or channel_id == 0 then
-				ScriptApplication.send_to_crashify("[GameNetworkManager]", "did not join GameSession %s as channel_id was invalid. This happens when the host leaves while the client transitions between state_loading and state_ingame.", session)
+				Crashify.print_exception("[GameNetworkManager]", "did not join GameSession %s as channel_id was invalid. This happens when the host leaves while the client transitions between state_loading and state_ingame.", session)
 			else
 				GameSession.join(session, channel_id)
 				printf("Joining GameSession %s as a client through channel_id %d", session, channel_id)
@@ -822,6 +822,8 @@ GameNetworkManager._hot_join_sync = function (self, peer_id)
 	self.networked_flow_state:hot_join_sync(peer_id)
 	self.voting_manager:hot_join_sync(peer_id)
 	self.statistics_db:hot_join_sync(peer_id)
+	Managers.deed:hot_join_sync(peer_id)
+	LoadoutUtils.hot_join_sync(peer_id)
 
 	if self.matchmaking_manager then
 		self.matchmaking_manager:hot_join_sync(peer_id)

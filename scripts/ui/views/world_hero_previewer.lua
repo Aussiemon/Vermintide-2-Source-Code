@@ -1,6 +1,6 @@
 HeroPreviewer = class(HeroPreviewer)
 
-HeroPreviewer.init = function (self, ingame_ui_context, unique_id)
+HeroPreviewer.init = function (self, ingame_ui_context, unique_id, delayed_spawn)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.character_unit = nil
 	self.world = nil
@@ -22,8 +22,28 @@ HeroPreviewer.init = function (self, ingame_ui_context, unique_id)
 	self.unique_id = unique_id
 	self._session_id = 0
 	self._requested_mip_streaming_units = {}
+	self._delayed_spawn = delayed_spawn
+	self._activated = not delayed_spawn
 	self._equipment_units[InventorySettings.slots_by_name.slot_melee.slot_index] = {}
 	self._equipment_units[InventorySettings.slots_by_name.slot_ranged.slot_index] = {}
+end
+
+HeroPreviewer.activate = function (self, activate, world)
+	if not self._delayed_spawn then
+		return
+	end
+
+	if activate == self._activated then
+		return
+	end
+
+	if activate then
+		self:on_enter(world)
+	else
+		self.world = nil
+	end
+
+	self._activated = activate
 end
 
 HeroPreviewer.destroy = function (self)
@@ -31,6 +51,8 @@ HeroPreviewer.destroy = function (self)
 
 	GarbageLeakDetector.register_object(self, "HeroPreviewer")
 end
+
+local EMPTY_TABLE = {}
 
 HeroPreviewer.on_enter = function (self, world)
 	table.clear(self._requested_mip_streaming_units)
@@ -41,6 +63,10 @@ HeroPreviewer.on_enter = function (self, world)
 	Application.set_render_setting("max_shadow_casting_lights", 16)
 
 	self._session_id = self._session_id or 0
+
+	if self._delayed_spawn then
+		self._requested_hero_spawn_data = self._delayed_hero_spawn_data or EMPTY_TABLE
+	end
 end
 
 HeroPreviewer.prepare_exit = function (self)
@@ -95,6 +121,10 @@ HeroPreviewer._update_unit_mip_streaming = function (self)
 end
 
 HeroPreviewer._update_delayed_material_changes = function (self)
+	if not self._activated then
+		return
+	end
+
 	local character_unit = self.character_unit
 
 	if not Unit.alive(character_unit) then
@@ -142,6 +172,10 @@ HeroPreviewer._request_mip_streaming_for_unit = function (self, unit)
 end
 
 HeroPreviewer._update_units_visibility = function (self, dt)
+	if not self._activated then
+		return
+	end
+
 	local items_loaded = self:_is_all_items_loaded()
 
 	if not items_loaded then
@@ -322,6 +356,10 @@ HeroPreviewer.request_spawn_hero_unit = function (self, profile_name, career_ind
 		optional_skin = optional_skin
 	}
 
+	if self._delayed_spawn then
+		self._delayed_hero_spawn_data = table.clone(self._requested_hero_spawn_data)
+	end
+
 	self:clear_units()
 end
 
@@ -346,7 +384,9 @@ HeroPreviewer._handle_hero_spawn_request = function (self)
 end
 
 HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, callback, optional_skin, optional_scale)
-	self:_unload_all_packages()
+	if not self._delayed_spawn then
+		self:_unload_all_packages()
+	end
 
 	self._current_profile_name = profile_name
 	local profile_index = FindProfileIndex(profile_name)
@@ -413,7 +453,7 @@ HeroPreviewer._poll_hero_package_loading = function (self)
 		end
 	end
 
-	if all_packages_loaded then
+	if all_packages_loaded and self._activated then
 		local skin_data = data.skin_data
 		local optional_scale = data.optional_scale
 		local career_index = data.career_index
@@ -664,7 +704,7 @@ HeroPreviewer._poll_item_package_loading = function (self)
 				end
 			end
 
-			if all_packages_loaded then
+			if all_packages_loaded and self._activated then
 				data.loaded = true
 				local item_name = data.name
 				local spawn_data = data.spawn_data
@@ -900,7 +940,9 @@ HeroPreviewer._load_packages = function (self, package_names)
 	local package_manager = Managers.package
 
 	for index, package_name in ipairs(package_names) do
-		package_manager:load(package_name, reference_name, nil, true, true)
+		if not package_manager:has_loaded(package_name, reference_name) then
+			package_manager:load(package_name, reference_name, nil, true, true)
+		end
 	end
 end
 
@@ -945,7 +987,9 @@ HeroPreviewer._unload_item_packages_by_slot = function (self, slot_type)
 		local reference_name = self:_reference_name()
 
 		for _, package_name in ipairs(package_names) do
-			package_manager:unload(package_name, reference_name)
+			if package_manager:has_loaded(package_name, reference_name) then
+				package_manager:unload(package_name, reference_name)
+			end
 		end
 
 		item_info_by_slot[slot_type] = nil

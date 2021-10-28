@@ -251,11 +251,22 @@ DeusChestExtension.get_interact_hud_description = function (self)
 end
 
 DeusChestExtension.get_purchase_cost = function (self)
-	return self._purchase_cost
+	local chest_type = self._chest_type
+
+	if chest_type == DEUS_CHEST_TYPES.upgrade or chest_type == DEUS_CHEST_TYPES.swap_melee or chest_type == DEUS_CHEST_TYPES.swap_ranged then
+		local wielded_weapon = self:_get_wielded_weapon()
+		local equipped_rarity = wielded_weapon.rarity
+
+		return DeusCostSettings.deus_chest[chest_type][equipped_rarity][self._rarity]
+	elseif chest_type == DEUS_CHEST_TYPES.power_up then
+		return DeusCostSettings.deus_chest.power_up
+	end
+
+	return math.huge
 end
 
 DeusChestExtension.purchase = function (self)
-	local purchase_cost = self._purchase_cost
+	local purchase_cost = self:get_purchase_cost()
 
 	self._deus_run_controller:purchase_chest(self._rarity, self._chest_type, purchase_cost)
 
@@ -282,17 +293,18 @@ DeusChestExtension._get_wielded_weapon = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
 	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
-	local wielded_weapon = (wielded_slot_name == "slot_melee" and melee_weapon) or ranged_weapon
+	local weapon_slot_name = (wielded_slot_name == "slot_melee" and "slot_melee") or "slot_ranged"
+	local wielded_weapon = (weapon_slot_name == "slot_melee" and melee_weapon) or ranged_weapon
 
-	return wielded_weapon
+	return wielded_weapon, weapon_slot_name
 end
 
 DeusChestExtension.on_interact = function (self)
 	if self._chest_type == DEUS_CHEST_TYPES.upgrade then
-		local wielded_weapon = self:_get_wielded_weapon()
+		local wielded_weapon, wielded_slot_name = self:_get_wielded_weapon()
 
 		if wielded_weapon and wielded_weapon ~= self._previous_wielded_weapon then
-			self:_generate_upgraded_weapon(wielded_weapon, self._rarity, self._go_id, self._profile_index, self._career_index)
+			self:_generate_upgraded_weapon(wielded_weapon, wielded_slot_name, self._rarity, self._go_id, self._profile_index, self._career_index)
 
 			self._previous_wielded_weapon = wielded_weapon
 		end
@@ -301,13 +313,12 @@ end
 
 DeusChestExtension._setup_rarity = function (self, seed, chest_type)
 	if chest_type == DEUS_CHEST_TYPES.power_up then
-		self._purchase_cost = DeusCostSettings.deus_chest.power_up
+		return nil
 	else
 		local current_node = self._deus_run_controller:get_current_node()
 		local difficulty = self._deus_run_controller:get_run_difficulty()
 		local progress = current_node.run_progress
 		self._rarity = DeusWeaponGeneration.get_random_rarity(difficulty, progress, seed)
-		self._purchase_cost = DeusCostSettings.deus_chest[chest_type][self._rarity]
 
 		Unit.flow_event(self.unit, "lua_update_" .. self._rarity)
 
@@ -374,13 +385,14 @@ DeusChestExtension._generate_stored_weapon = function (self, slots, rarity, go_i
 	self._stored_purchase = new_weapon
 end
 
-DeusChestExtension._generate_upgraded_weapon = function (self, weapon, rarity, go_id, profile_index, career_index)
+DeusChestExtension._generate_upgraded_weapon = function (self, weapon, slot_name, rarity, go_id, profile_index, career_index)
 	local deus_run_controller = self._deus_run_controller
 	local current_node = deus_run_controller:get_current_node()
 	local progress = current_node.run_progress
 	local difficulty = deus_run_controller:get_run_difficulty()
 	local weapon_seed = HashUtils.fnv32_hash(string.format("%s_%s_%s_%s_%s", profile_index, career_index, current_node.weapon_pickup_seed, go_id, 1))
 	local new_weapon = DeusWeaponGeneration.upgrade_item(weapon, difficulty, progress, rarity, weapon_seed)
+	new_weapon.preferred_slot_name = slot_name
 	local deus_backend = Managers.backend:get_interface("deus")
 
 	deus_backend:grant_deus_weapon(new_weapon)
@@ -498,6 +510,14 @@ DeusChestExtension.open_chest = function (self)
 		self:_play_sound(sound_events.unlock_power_up)
 		self:_post_chest_unlock(self._stored_purchase)
 	else
+		if not self._stored_purchase then
+			local wielded_weapon, wielded_slot_name = self:_get_wielded_weapon()
+
+			self:_generate_upgraded_weapon(wielded_weapon, wielded_slot_name, self._rarity, self._go_id, self._profile_index, self._career_index)
+
+			self._previous_wielded_weapon = wielded_weapon
+		end
+
 		self:_equip_weapon(run_controller, self._stored_purchase)
 
 		local rarity = self:get_rarity()
@@ -531,7 +551,7 @@ DeusChestExtension._equip_weapon = function (self, deus_run_controller, new_weap
 	elseif chest_type == DEUS_CHEST_TYPES.swap_ranged then
 		slot_name = "slot_ranged"
 	else
-		slot_name = self:_get_best_slot_name(new_weapon, career_data, inventory_extension)
+		slot_name = self:_get_best_slot_name(new_weapon, chest_type, career_data, inventory_extension)
 	end
 
 	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
@@ -539,7 +559,7 @@ DeusChestExtension._equip_weapon = function (self, deus_run_controller, new_weap
 	deus_run_controller:save_loadout(new_weapon, slot_name)
 end
 
-DeusChestExtension._get_best_slot_name = function (self, stored_weapon, career_data, inventory_extension)
+DeusChestExtension._get_best_slot_name = function (self, stored_weapon, chest_type, career_data, inventory_extension)
 	local slot_name = nil
 	local stored_weapon_slot_type = stored_weapon.data.slot_type
 	local slots = InventorySettings.slots_by_slot_index
@@ -564,11 +584,15 @@ DeusChestExtension._get_best_slot_name = function (self, stored_weapon, career_d
 		end
 	end
 
-	local wielded_slot_types = career_data.item_slot_types_by_slot_name[wielded_slot_name]
-	local slot_available = wielded_slot_types and table.contains(wielded_slot_types, stored_weapon_slot_type)
-	local best_slot_name = (slot_available and wielded_slot_name) or slot_name
+	if chest_type == DEUS_CHEST_TYPES.upgrade then
+		return stored_weapon.preferred_slot_name
+	else
+		local wielded_slot_types = career_data.item_slot_types_by_slot_name[wielded_slot_name]
+		local slot_available = wielded_slot_types and table.contains(wielded_slot_types, stored_weapon_slot_type)
+		local best_slot_name = (slot_available and wielded_slot_name) or slot_name
 
-	return best_slot_name, stored_weapon_slot_type
+		return best_slot_name, stored_weapon_slot_type
+	end
 end
 
 DeusChestExtension._post_chest_unlock = function (self, store_purchase)

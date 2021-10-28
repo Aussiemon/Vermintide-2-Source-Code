@@ -15,7 +15,6 @@ settings.talent_settings = {
 settings.profile_files = {
 	"scripts/settings/dlcs/cog/cog_profiles"
 }
-settings.local_backend_data = "scripts/settings/dlcs/cog/local_backend_data_cog"
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_cog"
 }

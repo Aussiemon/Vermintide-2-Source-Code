@@ -594,7 +594,7 @@ DebugManager.screen_text_extents = function (self, text, size)
 
 	local min, max = Gui.text_extents(self._screen_gui, text, GameSettings.ingame_font.font, size)
 	local width = max[1] - min[1]
-	local height = max[3] - min[3]
+	local height = max[2] - min[2]
 
 	return width, height
 end

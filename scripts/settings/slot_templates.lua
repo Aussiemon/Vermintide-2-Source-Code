@@ -422,62 +422,6 @@ SlotTemplates = {
 			avoid_slots_behind_overwhelmed_target = false,
 			min_wait_queue_distance = 3
 		}
-	},
-	versus_base = {
-		skaven_horde = {
-			abandon_slot_when_blocked = false,
-			abandon_slot_when_staggered = false,
-			avoid_slots_behind_overwhelmed_target = true,
-			abandon_slot_when_staggered_time = 0.3,
-			restricted_queue_distance = true,
-			slot_type = "normal",
-			prioritize_queued_units_on_death = true,
-			abandon_slot_when_blocked_time = 0.3,
-			min_wait_queue_distance = 2
-		},
-		skaven_roamer = {
-			prioritize_queued_units_on_death = true,
-			slot_type = "normal",
-			min_wait_queue_distance = 2,
-			restricted_queue_distance = true,
-			abandon_slot_when_blocked = false
-		},
-		skaven_elite = {
-			restricted_queue_distance = true,
-			slot_type = "normal",
-			avoid_slots_behind_overwhelmed_target = false,
-			min_wait_queue_distance = 3
-		},
-		chaos_horde = {
-			abandon_slot_when_blocked = false,
-			abandon_slot_when_staggered = true,
-			avoid_slots_behind_overwhelmed_target = true,
-			abandon_slot_when_staggered_time = 0.3,
-			restricted_queue_distance = true,
-			slot_type = "normal",
-			prioritize_queued_units_on_death = true,
-			abandon_slot_when_blocked_time = 0.3,
-			min_wait_queue_distance = 3.5
-		},
-		chaos_roamer = {
-			prioritize_queued_units_on_death = true,
-			slot_type = "medium",
-			avoid_slots_behind_overwhelmed_target = false,
-			restricted_queue_distance = true,
-			min_wait_queue_distance = 3
-		},
-		chaos_elite = {
-			restricted_queue_distance = true,
-			slot_type = "medium",
-			avoid_slots_behind_overwhelmed_target = false,
-			min_wait_queue_distance = 3
-		},
-		chaos_large_elite = {
-			restricted_queue_distance = true,
-			slot_type = "large",
-			avoid_slots_behind_overwhelmed_target = false,
-			min_wait_queue_distance = 3
-		}
 	}
 }
 

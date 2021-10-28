@@ -38,7 +38,7 @@ end
 BTLeaveHooks.unclamp_health = function (unit, blackboard, t)
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
 
-	health_extension:set_health_clamp_min(nil)
+	health_extension:set_min_health_percentage(nil)
 end
 
 BTLeaveHooks.ring_summoning_ends = function (unit, blackboard, t)

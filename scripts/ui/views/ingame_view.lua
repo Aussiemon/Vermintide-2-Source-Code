@@ -26,10 +26,10 @@ IngameView.init = function (self, ingame_ui_context)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self.ingame_ui_context = ingame_ui_context
 	self.network_lobby = ingame_ui_context.network_lobby
 	local is_in_inn = ingame_ui_context.is_in_inn
 	self.is_server = ingame_ui_context.is_server
-	self.layout_logic = IngameViewLayoutLogic:new(ingame_ui_context, layout_definitions.menu_layouts, layout_definitions.full_access_layout)
 	self.menu_definition = IngameViewDefinitions
 
 	self:create_ui_elements()
@@ -53,11 +53,8 @@ end
 
 local MENU_ANIMATION_TIME = 0.3
 
-IngameView.on_enter = function (self, menu_to_enter)
-	assert(menu_to_enter ~= "MainMenu")
-
-	local had_menu = self.active_menu
-	self.active_menu = menu_to_enter
+IngameView.on_enter = function (self, params)
+	self.layout_logic = IngameViewLayoutLogic:new(self.ingame_ui_context, params, layout_definitions.menu_layouts, layout_definitions.full_access_layout)
 	self.controller_cooldown = 0.2
 
 	self.input_manager:block_device_except_service("ingame_menu", "keyboard", 1)
@@ -107,6 +104,9 @@ IngameView.on_exit = function (self)
 	end
 
 	Managers.state.event:trigger("ingame_menu_closed")
+	self.layout_logic:destroy()
+
+	self.layout_logic = nil
 end
 
 IngameView.input_service = function (self)
@@ -166,10 +166,6 @@ IngameView.destroy = function (self)
 	self.menu_input_description:destroy()
 
 	self.menu_input_description = nil
-
-	self.layout_logic:destroy()
-
-	self.layout_logic = nil
 end
 
 IngameView.set_background_height = function (self, num_buttons)

@@ -1125,8 +1125,7 @@ local empty_hero_widget = {
 	element = {
 		passes = {
 			{
-				pass_type = "hover",
-				content_id = "hover_hotspot"
+				pass_type = "hover"
 			},
 			{
 				pass_type = "texture",

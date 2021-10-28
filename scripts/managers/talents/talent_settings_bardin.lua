@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local buff_tweak_data = {
 	bardin_ironbreaker_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -263,7 +264,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -272,7 +272,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -313,10 +312,9 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_refresh_gromril_armour = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ironbreaker_gromril_buff",
-				buff_func = "add_gromril_delay",
-				event_buff = true,
 				event = "on_gromril_armour_removed",
+				buff_func = "add_gromril_delay",
+				buff_to_add = "bardin_ironbreaker_gromril_buff",
 				base_duration = buff_tweak_data.bardin_ironbreaker_gromril_delay.duration
 			}
 		}
@@ -352,12 +350,12 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				update_func = "update_bardin_ironbreaker_activated_ability",
 				stat_buff = "damage_taken",
-				perk = "reduced_hit_react",
 				name = "bardin_ironbreaker_activated_ability",
 				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_activated_ability",
+				perk = buff_perks.reduced_hit_react,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability.multiplier_damage_taken
 			}
 		}
@@ -389,37 +387,34 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_vanguard = {
 		buffs = {
 			{
-				multiplier = 1,
 				name = "vanguard",
-				event_buff = true,
+				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing"
+				perk = buff_perks.tank_healing
 			}
 		}
 	},
 	bardin_ironbreaker_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	bardin_ironbreaker_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -449,7 +444,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				update_func = "activate_buff_stacks_based_on_overcharge_chunks",
 				stat_buff = "attack_speed_drakefire",
 				max_stacks = 10,
-				perk = "overcharge_no_slow"
+				perk = buff_perks.overcharge_no_slow
 			}
 		}
 	},
@@ -506,10 +501,9 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				buff_to_add = "bardin_ironbreaker_party_power_on_blocked_attacks_buff",
 				chunk_size = 1,
-				event_buff = true,
+				max_stacks = 1,
 				buff_func = "add_buff_to_all_players",
 				event = "on_block",
-				max_stacks = 1,
 				max_sub_buff_stacks = 5
 			}
 		}
@@ -527,22 +521,20 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				buff_to_add = "bardin_ironbreaker_power_on_blocked_attacks_buff",
+				event = "on_block",
 				max_stacks = 1,
-				event_buff = true,
-				buff_func = "bardin_ironbreaker_add_power_buff_on_block",
-				event = "on_block"
+				buff_func = "bardin_ironbreaker_add_power_buff_on_block"
 			}
 		}
 	},
 	bardin_ironbreaker_power_on_blocked_attacks_remove_damage = {
 		buffs = {
 			{
-				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
+				max_stacks = 1,
 				chunk_size = 1,
-				event_buff = true,
+				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
 				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
 				event = "on_player_damage_dealt",
-				max_stacks = 1,
 				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add"
 			}
 		}
@@ -550,12 +542,11 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_ironbreaker_power_on_blocked_attacks_remove_stagger = {
 		buffs = {
 			{
-				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
+				max_stacks = 1,
 				chunk_size = 1,
-				event_buff = true,
+				buff_to_remove = "bardin_ironbreaker_power_on_blocked_attacks_buff",
 				buff_func = "bardin_ironbreaker_remove_on_block_power_buff",
 				event = "on_stagger",
-				max_stacks = 1,
 				reference_buff = "bardin_ironbreaker_power_on_blocked_attacks_add"
 			}
 		}
@@ -623,7 +614,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_gromril_armour_removed",
-				event_buff = true,
 				buff_func = "bardin_ironbreaker_gromril_stagger",
 				explosion_template = ExplosionTemplates.bardin_ironbreaker_gromril_stagger
 			}
@@ -633,7 +623,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "bardin_ironbreaker_regen_stamina_on_charged_attacks"
 			}
 		}
@@ -652,7 +641,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_block_broken",
-				event_buff = true,
 				buff_func = "bardin_ironbreaker_regen_stamina_on_block_broken"
 			}
 		}
@@ -661,7 +649,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_kill",
-				event_buff = true,
 				buff_func = "bardin_ironbreaker_cooldown_reduction_on_kill_while_full_stamina"
 			}
 		}
@@ -674,12 +661,12 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				update_func = "update_bardin_ironbreaker_activated_ability",
 				stat_buff = "damage_taken",
-				perk = "reduced_hit_react",
 				name = "bardin_ironbreaker_activated_ability_duration",
 				remove_buff_func = "end_bardin_ironbreaker_activated_ability",
 				refresh_durations = true,
 				max_stacks = 1,
 				icon = "bardin_ironbreaker_activated_ability",
+				perk = buff_perks.reduced_hit_react,
 				multiplier = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.multiplier_damage_taken
 			}
 		}
@@ -721,7 +708,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -730,7 +716,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -745,7 +730,7 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_passive_uninterruptible_heavy = {
 		buffs = {
 			{
-				perk = "uninterruptible_heavy"
+				perk = buff_perks.uninterruptible_heavy
 			}
 		}
 	},
@@ -753,7 +738,7 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				max_stacks = 1,
-				perk = "uninterruptible"
+				perk = buff_perks.uninterruptible
 			}
 		}
 	},
@@ -761,7 +746,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "add_bardin_slayer_passive_buff",
 				max_stacks = buff_tweak_data.bardin_slayer_passive_stacking_damage_buff.max_stacks
 			}
@@ -782,10 +766,10 @@ TalentBuffTemplates.dwarf_ranger = {
 				icon = "bardin_slayer_activated_ability",
 				name = "bardin_slayer_frenzy",
 				stat_buff = "attack_speed",
-				perk = "no_ranged_knockback",
 				max_stacks = 1,
 				remove_buff_func = "end_slayer_activated_ability",
-				refresh_durations = true
+				refresh_durations = true,
+				perk = buff_perks.no_ranged_knockback
 			}
 		}
 	},
@@ -794,37 +778,34 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	bardin_slayer_bloodlust = {
 		buffs = {
 			{
-				multiplier = 0.45,
 				name = "bloodlust",
-				event_buff = true,
+				multiplier = 0.45,
+				heal_cap = 0.25,
 				buff_func = "heal_percentage_of_enemy_hp_on_melee_kill",
 				event = "on_kill",
-				perk = "smiter_healing",
-				heal_cap = 0.25
+				perk = buff_perks.smiter_healing
 			}
 		}
 	},
 	bardin_slayer_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
@@ -915,7 +896,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				buff_to_add = "bardin_slayer_damage_reduction_on_melee_charge_action_buff",
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "add_buff_on_charged_attack_hit",
 				max_stacks = 1,
 				server_controlled = false
@@ -937,7 +917,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				event = "on_dodge",
 				explosion_template = "bardin_slayer_push_on_dodge",
-				event_buff = true,
 				buff_func = "bardin_slayer_push_on_dodge"
 			}
 		}
@@ -945,11 +924,10 @@ TalentBuffTemplates.dwarf_ranger = {
 	bardin_slayer_activated_ability_leap_damage_add = {
 		buffs = {
 			{
+				event = "on_leap_start",
 				buff_to_add = "bardin_slayer_activated_ability_leap_damage_buff",
 				max_stacks = 1,
-				event_buff = true,
-				buff_func = "bardin_slayer_add_buff_on_leap_start",
-				event = "on_leap_start"
+				buff_func = "bardin_slayer_add_buff_on_leap_start"
 			}
 		}
 	},
@@ -957,10 +935,9 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_leap_finished",
+				parent_buff = "bardin_slayer_activated_ability_leap_damage_add",
 				max_stacks = 1,
-				event_buff = true,
-				buff_func = "bardin_slayer_remove_buff_on_leap_finished",
-				parent_buff = "bardin_slayer_activated_ability_leap_damage_add"
+				buff_func = "bardin_slayer_remove_buff_on_leap_finished"
 			}
 		}
 	},
@@ -970,7 +947,7 @@ TalentBuffTemplates.dwarf_ranger = {
 				max_stacks = 1,
 				icon = "bardin_slayer_activated_ability_leap_damage",
 				stat_buff = "power_level",
-				perk = "bloody_mess"
+				perk = buff_perks.bloody_mess
 			}
 		}
 	},
@@ -992,7 +969,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_hit",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -1001,7 +977,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_damage_taken",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown_on_damage_taken"
 			}
 		}
@@ -1010,7 +985,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_special_killed",
-				event_buff = true,
 				buff_func = "bardin_ranger_scavenge_proc"
 			}
 		}
@@ -1084,45 +1058,41 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				multiplier = -0.05,
 				name = "reaper",
-				event_buff = true,
+				max_targets = 5,
 				buff_func = "heal_damage_targets_on_melee",
 				event = "on_player_damage_dealt",
-				perk = "linesman_healing",
-				max_targets = 5,
-				bonus = 0.25
+				bonus = 0.25,
+				perk = buff_perks.linesman_healing
 			}
 		}
 	},
 	bardin_ranger_vanguard = {
 		buffs = {
 			{
-				multiplier = 1,
 				name = "vanguard",
-				event_buff = true,
+				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
-				perk = "tank_healing"
+				perk = buff_perks.tank_healing
 			}
 		}
 	},
 	bardin_ranger_conqueror = {
 		buffs = {
 			{
-				multiplier = 0.2,
 				name = "conqueror",
-				event_buff = true,
+				multiplier = 0.2,
+				range = 10,
 				buff_func = "heal_other_players_percent_at_range",
-				event = "on_healed_consumeable",
-				range = 10
+				event = "on_healed_consumeable"
 			}
 		}
 	},
 	bardin_ranger_increased_melee_damage_on_no_ammo_add = {
 		buffs = {
 			{
-				buff_to_add = "bardin_ranger_melee_damage_on_no_ammo",
 				event = "on_last_ammo_used",
-				event_buff = true,
+				buff_to_add = "bardin_ranger_melee_damage_on_no_ammo",
 				buff_func = "bardin_ranger_add_power_on_no_ammo_proc"
 			}
 		}
@@ -1132,7 +1102,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				event = "on_gained_ammo_from_no_ammo",
 				buff_to_remove = "bardin_ranger_melee_damage_on_no_ammo",
-				event_buff = true,
 				buff_func = "bardin_ranger_remove_power_on_no_ammo_proc"
 			}
 		}
@@ -1151,7 +1120,6 @@ TalentBuffTemplates.dwarf_ranger = {
 		buffs = {
 			{
 				event = "on_reload",
-				event_buff = true,
 				buff_func = "reduce_activated_ability_cooldown"
 			}
 		}
@@ -1179,7 +1147,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				event = "on_hit",
 				buff_to_add = "bardin_ranger_reduced_damage_taken_headshot_buff",
-				event_buff = true,
 				buff_func = "add_buff_on_headshot"
 			}
 		}
@@ -1199,7 +1166,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				event = "on_hit",
 				buff_to_add = "bardin_ranger_reload_speed_on_multi_hit_buff",
-				event_buff = true,
 				buff_func = "bardin_ranger_add_reload_speed_buff"
 			}
 		}
@@ -1295,7 +1261,6 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				event = "on_grenade_use",
 				buff_to_remove = "bardin_ranger_ability_free_grenade_buff",
-				event_buff = true,
 				buff_func = "remove_non_stacking_buff"
 			}
 		}
@@ -1305,7 +1270,7 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				max_stacks = 1,
 				icon = "bardin_ranger_ability_free_grenade",
-				perk = "free_grenade"
+				perk = buff_perks.free_grenade
 			}
 		}
 	}

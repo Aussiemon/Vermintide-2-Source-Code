@@ -5,6 +5,8 @@ local grid_size = {
 	520,
 	600
 }
+local num_loot_options = (IS_CONSOLE and 5) or 5
+local USE_DELAYED_SPAWN = true
 local scenegraph_definition = {
 	screen = console_menu_scenegraphs.screen,
 	area = console_menu_scenegraphs.area,
@@ -74,6 +76,34 @@ local scenegraph_definition = {
 			0,
 			-40,
 			1
+		}
+	},
+	chest_indicator_root = {
+		vertical_alignment = "top",
+		parent = "dead_space_filler",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			200,
+			0
+		}
+	},
+	arrow_root = {
+		vertical_alignment = "top",
+		parent = "dead_space_filler",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			200,
+			0
 		}
 	},
 	info_root = {
@@ -535,18 +565,46 @@ local scenegraph_definition = {
 			10
 		}
 	},
-	open_button = {
+	open_buttons_pivot = {
 		vertical_alignment = "bottom",
 		parent = "dead_space_filler",
 		horizontal_alignment = "center",
 		size = {
-			380,
+			0,
 			70
 		},
 		position = {
 			0,
 			30,
 			10
+		}
+	},
+	open_button = {
+		vertical_alignment = "bottom",
+		parent = "open_buttons_pivot",
+		horizontal_alignment = "right",
+		size = {
+			380,
+			70
+		},
+		position = {
+			-10,
+			0,
+			0
+		}
+	},
+	open_multiple_button = {
+		vertical_alignment = "bottom",
+		parent = "open_buttons_pivot",
+		horizontal_alignment = "left",
+		size = {
+			380,
+			70
+		},
+		position = {
+			10,
+			0,
+			0
 		}
 	},
 	continue_button = {
@@ -575,146 +633,6 @@ local scenegraph_definition = {
 			-80,
 			30,
 			10
-		}
-	},
-	loot_options_root = {
-		vertical_alignment = "center",
-		parent = "dead_space_filler",
-		horizontal_alignment = "center",
-		size = {
-			0,
-			0
-		},
-		position = {
-			0,
-			-30,
-			1
-		}
-	},
-	loot_option_1 = {
-		vertical_alignment = "center",
-		parent = "loot_options_root",
-		horizontal_alignment = "center",
-		size = {
-			364,
-			0
-		},
-		position = {
-			-600,
-			0,
-			1
-		}
-	},
-	loot_option_1_center = {
-		vertical_alignment = "center",
-		parent = "loot_option_1",
-		horizontal_alignment = "center",
-		size = {
-			0,
-			0
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	gamepad_tooltip_option_1 = {
-		vertical_alignment = "center",
-		parent = "loot_option_1",
-		horizontal_alignment = "center",
-		size = {
-			450,
-			0
-		},
-		position = {
-			0,
-			380,
-			100
-		}
-	},
-	loot_option_2 = {
-		vertical_alignment = "center",
-		parent = "loot_options_root",
-		horizontal_alignment = "center",
-		size = {
-			364,
-			0
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	loot_option_2_center = {
-		vertical_alignment = "center",
-		parent = "loot_option_2",
-		horizontal_alignment = "center",
-		size = {
-			0,
-			0
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	gamepad_tooltip_option_2 = {
-		vertical_alignment = "center",
-		parent = "loot_option_2",
-		horizontal_alignment = "center",
-		size = {
-			450,
-			0
-		},
-		position = {
-			0,
-			380,
-			100
-		}
-	},
-	loot_option_3 = {
-		vertical_alignment = "center",
-		parent = "loot_options_root",
-		horizontal_alignment = "center",
-		size = {
-			364,
-			0
-		},
-		position = {
-			600,
-			0,
-			1
-		}
-	},
-	loot_option_3_center = {
-		vertical_alignment = "center",
-		parent = "loot_option_3",
-		horizontal_alignment = "center",
-		size = {
-			0,
-			0
-		},
-		position = {
-			0,
-			0,
-			1
-		}
-	},
-	gamepad_tooltip_option_3 = {
-		vertical_alignment = "center",
-		parent = "loot_option_3",
-		horizontal_alignment = "center",
-		size = {
-			450,
-			0
-		},
-		position = {
-			0,
-			380,
-			100
 		}
 	},
 	debug_add_chest_5 = {
@@ -786,8 +704,158 @@ local scenegraph_definition = {
 			160,
 			2
 		}
+	},
+	loot_options_root = {
+		vertical_alignment = "center",
+		parent = "dead_space_filler",
+		horizontal_alignment = "center",
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			-30,
+			1
+		}
 	}
 }
+
+for i = 1, num_loot_options, 1 do
+	local idx = (i - 1) * 3 + 1
+	local id = "loot_option_" .. idx
+	scenegraph_definition[id] = {
+		vertical_alignment = "center",
+		parent = "loot_options_root",
+		horizontal_alignment = "center",
+		size = {
+			364,
+			0
+		},
+		position = {
+			-600 + 1920 * (i - 1),
+			0,
+			1
+		}
+	}
+	scenegraph_definition[id .. "_center"] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		parent = id,
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	}
+	scenegraph_definition["gamepad_tooltip_option_" .. idx] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		parent = id,
+		size = {
+			450,
+			0
+		},
+		position = {
+			0,
+			380,
+			100
+		}
+	}
+	local idx = (i - 1) * 3 + 2
+	local id = "loot_option_" .. idx
+	scenegraph_definition[id] = {
+		vertical_alignment = "center",
+		parent = "loot_options_root",
+		horizontal_alignment = "center",
+		size = {
+			364,
+			0
+		},
+		position = {
+			0 + 1920 * (i - 1),
+			0,
+			1
+		}
+	}
+	scenegraph_definition[id .. "_center"] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		parent = id,
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	}
+	scenegraph_definition["gamepad_tooltip_option_" .. idx] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		parent = id,
+		size = {
+			450,
+			0
+		},
+		position = {
+			0,
+			380,
+			100
+		}
+	}
+	local idx = (i - 1) * 3 + 3
+	local id = "loot_option_" .. idx
+	scenegraph_definition[id] = {
+		vertical_alignment = "center",
+		parent = "loot_options_root",
+		horizontal_alignment = "center",
+		size = {
+			364,
+			0
+		},
+		position = {
+			600 + 1920 * (i - 1),
+			0,
+			1
+		}
+	}
+	scenegraph_definition[id .. "_center"] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		parent = id,
+		size = {
+			0,
+			0
+		},
+		position = {
+			0,
+			0,
+			1
+		}
+	}
+	scenegraph_definition["gamepad_tooltip_option_" .. idx] = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		parent = id,
+		size = {
+			450,
+			0
+		},
+		position = {
+			0,
+			380,
+			100
+		}
+	}
+end
+
 local loot_option_positions_by_amount = {
 	{
 		{
@@ -1000,9 +1068,8 @@ local viewport_widget = {
 	element = {
 		passes = {
 			{
-				style_id = "viewport",
 				pass_type = "viewport",
-				content_id = "viewport"
+				style_id = "viewport"
 			},
 			{
 				pass_type = "hotspot",
@@ -1043,6 +1110,202 @@ local viewport_widget = {
 		button_hotspot = {}
 	}
 }
+local arrow_right = {
+	scenegraph_id = "arrow_root",
+	element = {
+		passes = {
+			{
+				style_id = "button_hotspot",
+				pass_type = "hotspot",
+				content_id = "button_hotspot"
+			},
+			{
+				pass_type = "texture",
+				style_id = "arrow_lit",
+				texture_id = "arrow_lit"
+			},
+			{
+				pass_type = "texture",
+				style_id = "arrow_unlit",
+				texture_id = "arrow_unlit"
+			}
+		}
+	},
+	content = {
+		arrow_unlit = "arrow_off_01",
+		disable_with_gamepad = true,
+		arrow_lit = "arrow_on",
+		button_hotspot = {}
+	},
+	style = {
+		button_hotspot = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			area_size = {
+				58,
+				62
+			},
+			offset = {
+				0,
+				0,
+				0
+			}
+		},
+		arrow_lit = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				58,
+				62
+			},
+			offset = {
+				0,
+				0,
+				1
+			},
+			color = {
+				0,
+				255,
+				255,
+				255
+			}
+		},
+		arrow_unlit = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				58,
+				62
+			},
+			offset = {
+				0,
+				0,
+				0
+			},
+			color = {
+				128,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	offset = {
+		0,
+		5,
+		0
+	}
+}
+local arrow_left = {
+	scenegraph_id = "arrow_root",
+	element = {
+		passes = {
+			{
+				style_id = "button_hotspot",
+				pass_type = "hotspot",
+				content_id = "button_hotspot"
+			},
+			{
+				style_id = "arrow_lit",
+				pass_type = "texture_uv",
+				content_id = "arrow_lit"
+			},
+			{
+				style_id = "arrow_unlit",
+				pass_type = "texture_uv",
+				content_id = "arrow_unlit"
+			}
+		}
+	},
+	content = {
+		disable_with_gamepad = true,
+		button_hotspot = {},
+		arrow_lit = {
+			texture_id = "arrow_on",
+			uvs = {
+				{
+					1,
+					0
+				},
+				{
+					0,
+					1
+				}
+			}
+		},
+		arrow_unlit = {
+			texture_id = "arrow_off_01",
+			uvs = {
+				{
+					1,
+					0
+				},
+				{
+					0,
+					1
+				}
+			}
+		}
+	},
+	style = {
+		button_hotspot = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			area_size = {
+				58,
+				62
+			},
+			offset = {
+				0,
+				0,
+				0
+			}
+		},
+		arrow_lit = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				58,
+				62
+			},
+			offset = {
+				0,
+				0,
+				1
+			},
+			color = {
+				0,
+				255,
+				255,
+				255
+			}
+		},
+		arrow_unlit = {
+			vertical_alignment = "center",
+			horizontal_alignment = "center",
+			texture_size = {
+				58,
+				62
+			},
+			offset = {
+				0,
+				0,
+				0
+			},
+			color = {
+				128,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	offset = {
+		0,
+		5,
+		0
+	}
+}
 
 local function create_loot_preview_widget(scenegraph_id, size)
 	local widget = {
@@ -1050,9 +1313,8 @@ local function create_loot_preview_widget(scenegraph_id, size)
 	}
 	local passes = {
 		{
-			style_id = "viewport",
 			pass_type = "viewport",
-			content_id = "viewport"
+			style_id = "viewport"
 		},
 		{
 			pass_type = "hotspot",
@@ -2104,6 +2366,205 @@ local function create_vertical_window_divider(scenegraph_id, size)
 	return widget
 end
 
+local function create_chest_indicator_func(index, current_index, rarity_a, rarity_b, rarity_c)
+	local spacing = 20
+	local size = 40
+	local rarity_size = size / 5
+	local rarity_settings_a = RaritySettings[rarity_a]
+	local rarity_color_a = rarity_settings_a.color
+	local rarity_settings_b = RaritySettings[rarity_b]
+	local rarity_color_b = rarity_settings_b and rarity_settings_b.color
+	local rarity_settings_c = RaritySettings[rarity_c]
+	local rarity_color_c = rarity_settings_c and rarity_settings_c.color
+	local selected = index == current_index
+	local widget = {
+		scenegraph_id = "chest_indicator_root",
+		element = {
+			passes = {
+				{
+					style_id = "button_hotspot",
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					pass_type = "texture",
+					style_id = "indicator_selected",
+					texture_id = "dot_lit",
+					content_check_function = function (content)
+						return content.selected
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "indicator_unselected",
+					texture_id = "dot_unlit",
+					content_check_function = function (content)
+						return not content.selected
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "texture_hover_id",
+					texture_id = "dot_lit",
+					content_check_function = function (content)
+						return not content.selected
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "rarity_a",
+					texture_id = "rarity_icon"
+				},
+				{
+					pass_type = "texture",
+					style_id = "rarity_b",
+					texture_id = "rarity_icon",
+					content_check_function = function (content)
+						return rarity_settings_b
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "rarity_c",
+					texture_id = "rarity_icon",
+					content_check_function = function (content)
+						return rarity_settings_c
+					end
+				}
+			}
+		},
+		content = {
+			dot_unlit = "dot_off_01",
+			dot_lit = "dot_on",
+			rarity_icon = "loot_indicator_rarity",
+			button_hotspot = {},
+			index = index,
+			selected = selected
+		},
+		style = {
+			button_hotspot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				area_size = {
+					60,
+					60
+				},
+				offset = {
+					0,
+					-5,
+					0
+				}
+			},
+			indicator_selected = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				},
+				texture_size = {
+					60,
+					60
+				}
+			},
+			indicator_unselected = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					128,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				},
+				texture_size = {
+					60,
+					60
+				}
+			},
+			texture_hover_id = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				},
+				texture_size = {
+					60,
+					60
+				}
+			},
+			rarity_a = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "center",
+				color = rarity_color_a,
+				offset = {
+					-rarity_size * 2,
+					-size,
+					6
+				},
+				texture_size = {
+					18,
+					18
+				}
+			},
+			rarity_b = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "center",
+				color = rarity_color_b,
+				offset = {
+					0,
+					-size,
+					6
+				},
+				texture_size = {
+					18,
+					18
+				}
+			},
+			rarity_c = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "center",
+				color = rarity_color_c,
+				offset = {
+					rarity_size * 2,
+					-size,
+					6
+				},
+				texture_size = {
+					18,
+					18
+				}
+			}
+		},
+		offset = {
+			(index - 1) * (spacing + size),
+			0,
+			0
+		}
+	}
+
+	return widget
+end
+
 local disable_with_gamepad = true
 local widgets = {
 	chest_title = UIWidgets.create_simple_text("chest_title", "chest_title", nil, nil, title_text_style),
@@ -2133,8 +2594,9 @@ local widgets = {
 	page_text_left = UIWidgets.create_simple_text("0", "page_text_area", nil, nil, page_number_left_text_style),
 	page_text_right = UIWidgets.create_simple_text("0", "page_text_area", nil, nil, page_number_right_text_style),
 	page_text_area = UIWidgets.create_simple_texture("tab_menu_bg_03", "page_text_area"),
-	open_button = UIWidgets.create_default_button("open_button", scenegraph_definition.open_button.size, nil, nil, Localize("interaction_action_open"), 32, "green", nil, nil, disable_with_gamepad),
-	close_button = UIWidgets.create_default_button("close_button", scenegraph_definition.close_button.size, nil, nil, Localize("interaction_action_close"), 32, nil, nil, nil, disable_with_gamepad),
+	open_button = UIWidgets.create_default_button("open_button", scenegraph_definition.open_button.size, nil, nil, Localize("interaction_action_open") .. " 1", 32, "green", nil, nil, disable_with_gamepad, false),
+	open_multiple_button = UIWidgets.create_default_button("open_multiple_button", scenegraph_definition.open_multiple_button.size, nil, nil, Localize("interaction_action_open") .. " 5", 32, "green", nil, nil, disable_with_gamepad, true),
+	close_button = UIWidgets.create_default_button("close_button", scenegraph_definition.close_button.size, nil, nil, Localize("interaction_action_close"), 32, nil, nil, nil, disable_with_gamepad, true),
 	item_cap_warning_text = UIWidgets.create_simple_text(Localize("item_cap_warning_text"), "item_cap_warning_text", nil, nil, warning_text_style)
 }
 local input_description_widgets = {
@@ -2176,25 +2638,47 @@ local console_tooltip_pass_definition = {
 	"detailed_stats_ranged_heavy",
 	"console_item_background"
 }
-local gamepad_tooltip_widgets = {
-	item_tooltip_1 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_1", console_tooltip_pass_definition),
-	item_tooltip_2 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_2", console_tooltip_pass_definition),
-	item_tooltip_3 = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_3", console_tooltip_pass_definition)
-}
-local option_background_widgets = {
-	loot_background_1 = UIWidgets.create_background("loot_option_1", scenegraph_definition.loot_option_1.size, "item_tooltip_background_old"),
-	loot_background_2 = UIWidgets.create_background("loot_option_2", scenegraph_definition.loot_option_2.size, "item_tooltip_background_old"),
-	loot_background_3 = UIWidgets.create_background("loot_option_3", scenegraph_definition.loot_option_3.size, "item_tooltip_background_old")
-}
-local option_widgets = {
-	loot_option_1 = create_loot_widget(1, scenegraph_definition.loot_option_1.size),
-	loot_option_2 = create_loot_widget(2, scenegraph_definition.loot_option_2.size),
-	loot_option_3 = create_loot_widget(3, scenegraph_definition.loot_option_3.size)
-}
-local preview_widgets = {
-	loot_option_1 = create_loot_preview_widget("loot_option_1", scenegraph_definition.loot_option_1.size),
-	loot_option_2 = create_loot_preview_widget("loot_option_2", scenegraph_definition.loot_option_2.size),
-	loot_option_3 = create_loot_preview_widget("loot_option_3", scenegraph_definition.loot_option_3.size)
+local gamepad_tooltip_widgets = {}
+
+for i = 1, num_loot_options, 1 do
+	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 1] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 1, console_tooltip_pass_definition)
+	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 2] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 2, console_tooltip_pass_definition)
+	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 3] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 3, console_tooltip_pass_definition)
+end
+
+local option_background_widgets = {}
+
+for i = 1, num_loot_options, 1 do
+	option_background_widgets["loot_background_" .. (i - 1) * 3 + 1] = UIWidgets.create_background("loot_option_" .. (i - 1) * 3 + 1, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 1].size, "item_tooltip_background_old")
+	option_background_widgets["loot_background_" .. (i - 1) * 3 + 2] = UIWidgets.create_background("loot_option_" .. (i - 1) * 3 + 2, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 2].size, "item_tooltip_background_old")
+	option_background_widgets["loot_background_" .. (i - 1) * 3 + 3] = UIWidgets.create_background("loot_option_" .. (i - 1) * 3 + 3, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 3].size, "item_tooltip_background_old")
+end
+
+local option_widgets = {}
+
+for i = 1, num_loot_options, 1 do
+	option_widgets["loot_option_" .. (i - 1) * 3 + 1] = create_loot_widget((i - 1) * 3 + 1, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 1].size)
+	option_widgets["loot_option_" .. (i - 1) * 3 + 2] = create_loot_widget((i - 1) * 3 + 2, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 2].size)
+	option_widgets["loot_option_" .. (i - 1) * 3 + 3] = create_loot_widget((i - 1) * 3 + 3, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 3].size)
+end
+
+local preview_widgets = {}
+
+if USE_DELAYED_SPAWN then
+	preview_widgets.loot_option_1 = create_loot_preview_widget("loot_option_1", scenegraph_definition.loot_option_1.size)
+	preview_widgets.loot_option_2 = create_loot_preview_widget("loot_option_2", scenegraph_definition.loot_option_2.size)
+	preview_widgets.loot_option_3 = create_loot_preview_widget("loot_option_3", scenegraph_definition.loot_option_3.size)
+else
+	for i = 1, num_loot_options, 1 do
+		preview_widgets["loot_option_" .. (i - 1) * 3 + 1] = create_loot_preview_widget("loot_option_" .. (i - 1) * 3 + 1, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 1].size)
+		preview_widgets["loot_option_" .. (i - 1) * 3 + 2] = create_loot_preview_widget("loot_option_" .. (i - 1) * 3 + 2, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 2].size)
+		preview_widgets["loot_option_" .. (i - 1) * 3 + 3] = create_loot_preview_widget("loot_option_" .. (i - 1) * 3 + 3, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 3].size)
+	end
+end
+
+local arrow_widgets = {
+	arrow_right = arrow_right,
+	arrow_left = arrow_left
 }
 local continue_button = UIWidgets.create_default_button("continue_button", scenegraph_definition.continue_button.size, nil, nil, Localize("continue"), 32, nil, nil, nil, disable_with_gamepad)
 local debug_button_widgets = {
@@ -2205,6 +2689,27 @@ local debug_button_widgets = {
 }
 local generic_input_actions = {
 	default = {},
+	chest_selected_single_use = {
+		actions = {
+			{
+				input_action = "d_pad",
+				priority = 1,
+				description_text = "input_description_navigate",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 2,
+				ignore_localization = true,
+				description_text = Localize("interaction_action_open")
+			},
+			{
+				input_action = "back",
+				priority = 3,
+				description_text = "input_description_close"
+			}
+		}
+	},
 	chest_selected = {
 		actions = {
 			{
@@ -2216,11 +2721,18 @@ local generic_input_actions = {
 			{
 				input_action = "confirm",
 				priority = 2,
-				description_text = "interaction_action_open"
+				ignore_localization = true,
+				description_text = Localize("interaction_action_open") .. " 1"
+			},
+			{
+				input_action = "refresh",
+				priority = 3,
+				ignore_localization = true,
+				description_text = Localize("interaction_action_open") .. " 5"
 			},
 			{
 				input_action = "back",
-				priority = 3,
+				priority = 4,
 				description_text = "input_description_close"
 			}
 		}
@@ -2272,20 +2784,84 @@ local generic_input_actions = {
 				input_action = "special_1",
 				priority = 2,
 				description_text = "input_description_tooltip"
+			},
+			{
+				input_action = "back",
+				priority = 3,
+				description_text = "input_description_close"
+			}
+		}
+	},
+	chest_opened_pages = {
+		actions = {
+			{
+				input_action = "d_horizontal",
+				priority = 1,
+				description_text = "input_description_select",
+				ignore_keybinding = true
+			},
+			{
+				input_action = "confirm",
+				priority = 1,
+				description_text = "input_description_open"
+			},
+			{
+				input_action = "special_1",
+				priority = 2,
+				description_text = "input_description_tooltip"
+			},
+			{
+				input_action = "trigger_cycle_previous",
+				priority = 3,
+				description_text = "input_description_prev_page"
+			},
+			{
+				input_action = "trigger_cycle_next",
+				priority = 4,
+				description_text = "input_description_next_page"
+			},
+			{
+				input_action = "back",
+				priority = 5,
+				description_text = "input_description_close"
 			}
 		}
 	},
 	loot_presented = {
 		actions = {
 			{
-				input_action = "back",
+				input_action = "special_1",
 				priority = 1,
-				description_text = "input_description_close"
+				description_text = "input_description_tooltip"
 			},
 			{
-				input_action = "special_1",
+				input_action = "back",
 				priority = 2,
+				description_text = "input_description_close"
+			}
+		}
+	},
+	loot_presented_pages = {
+		actions = {
+			{
+				input_action = "special_1",
+				priority = 1,
 				description_text = "input_description_tooltip"
+			},
+			{
+				input_action = "trigger_cycle_previous",
+				priority = 2,
+				description_text = "input_description_prev_page"
+			},
+			{
+				input_action = "trigger_cycle_next",
+				priority = 3,
+				description_text = "input_description_next_page"
+			},
+			{
+				input_action = "back",
+				priority = 4,
+				description_text = "input_description_close"
 			}
 		}
 	}
@@ -2487,6 +3063,10 @@ local animation_definitions = {
 }
 
 return {
+	USE_DELAYED_SPAWN = USE_DELAYED_SPAWN,
+	arrow_widgets = arrow_widgets,
+	create_chest_indicator_func = create_chest_indicator_func,
+	num_loot_options = num_loot_options,
 	loot_option_positions_by_amount = loot_option_positions_by_amount,
 	gamepad_tooltip_widgets = gamepad_tooltip_widgets,
 	input_description_widgets = input_description_widgets,

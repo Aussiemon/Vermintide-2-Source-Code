@@ -18,7 +18,10 @@ GameSettingsDevelopment.help_screen_enabled = false
 GameSettingsDevelopment.use_career_voice_pitch = false
 GameSettingsDevelopment.lobby_browser_enabled = true
 GameSettingsDevelopment.disabled_interactions = {}
+GameSettingsDevelopment.store_nags = false
+GameSettingsDevelopment.show_ingame_player_list_talents = false
 GameSettingsDevelopment.use_global_chat = (table.find(argv, "-use-global-chat") and true) or false
+GameSettingsDevelopment.use_new_tab_menu = true
 local network_timeout = (Development.parameter("network_timeout_really_long") and 10000) or 60
 GameSettingsDevelopment.network_timeout = Development.parameter("network_timeout") or network_timeout
 GameSettingsDevelopment.network_silence_warning_delay = 3
@@ -34,7 +37,10 @@ GameSettingsDevelopment.disable_carousel = Development.parameter("disable_carous
 GameSettingsDevelopment.use_store_unload_list = true
 local script_data = script_data
 script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
-GameSettingsDevelopment.use_backend = not Development.parameter("use_local_backend")
+
+fassert(not Development.parameter("use_offline_backend") and not Development.parameter("use_local_backend"), "Unable to use local backend with DEBUG stripped. Remove --use-local-backend or --use-offline-backend")
+
+GameSettingsDevelopment.use_backend = not GameSettingsDevelopment.use_offline_backend
 GameSettingsDevelopment.backend_settings = BackendSettings.dev_steam_playfab
 GameSettingsDevelopment.twitch_enabled = true
 GameSettingsDevelopment.allow_chat_input = true
@@ -63,7 +69,6 @@ script_data.disable_tutorial_at_start = script_data.disable_tutorial_at_start or
 
 if script_data.honduras_demo then
 	GameSettingsDevelopment.use_backend = false
-	GameSettingsDevelopment.use_local_backend = true
 	GameSettingsDevelopment.skip_start_screen = false
 	GameSettingsDevelopment.use_alien_fx = true
 

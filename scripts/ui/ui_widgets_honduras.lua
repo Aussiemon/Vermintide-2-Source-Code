@@ -1,3 +1,7 @@
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 require("scripts/settings/ui_frame_settings")
 require("scripts/settings/ui_player_portrait_frame_settings")
 
@@ -367,7 +371,7 @@ UIWidgets.create_simple_item_tooltip = function (scenegraph_id, tooltip_passes)
 	}
 end
 
-UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_passes, force_equipped)
+UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_passes, force_equipped, pass_styles)
 	return {
 		element = {
 			passes = {
@@ -386,6 +390,7 @@ UIWidgets.create_simple_item_presentation = function (scenegraph_id, tooltip_pas
 			force_equipped = force_equipped
 		},
 		style = {
+			pass_styles = pass_styles,
 			item = {
 				font_size = 18,
 				max_width = 500,
@@ -1000,7 +1005,9 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 	return widget
 end
 
-UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot_width_spacing, slot_height_spacing, use_pages)
+UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot_width_spacing, slot_height_spacing, use_pages, offset, disable_mouse_tooltips)
+
+	-- Decompilation error in this vicinity:
 	local default_color = {
 		255,
 		255,
@@ -1032,7 +1039,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 	local content = {
 		rows = rows,
 		columns = slots_per_row,
-		slots = rows * slots_per_row
+		slots = rows * slots_per_row,
+		disable_mouse_tooltips = disable_mouse_tooltips
 	}
 	local style = {}
 
@@ -1377,7 +1385,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				style_id = item_tooltip_name,
 				item_id = "item" .. name_suffix,
 				content_check_function = function (content)
-					return content[hotspot_name].is_hover and content[item_name]
+					return content[hotspot_name].is_hover and content[item_name] and not content.disable_mouse_tooltips
 				end
 			}
 			style[item_tooltip_name] = {
@@ -1663,6 +1671,10 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 	widget.content = content
 	widget.style = style
 	widget.offset = {
+		offset[1] or 0,
+		offset[2] or 0,
+		offset[3] or 0
+	} or {
 		0,
 		0,
 		0
@@ -6011,6 +6023,8 @@ end
 
 UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail_texture, optional_detail_offset)
 	local frame_settings = UIFrameSettings.menu_frame_06
+	local hover_frame_settings = UIFrameSettings.frame_outer_glow_02
+	local hover_frame_spacing = hover_frame_settings.texture_sizes.horizontal[2]
 	local side_detail_texture = optional_detail_texture or "button_detail_03"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
@@ -6018,6 +6032,26 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 	return {
 		element = {
 			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "hotspot"
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "hover_frame",
+					texture_id = "hover_frame",
+					content_check_function = function (content)
+						return content.hotspot.is_hover
+					end
+				},
+				{
+					texture_id = "star",
+					style_id = "star",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.has_star
+					end
+				},
 				{
 					texture_id = "frame",
 					style_id = "frame",
@@ -6089,10 +6123,13 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 		content = {
 			title_text = "n/a",
 			experience_bar_edge = "experience_bar_edge_glow",
-			background = "xp_bar_bg",
-			glass = "xp_bar_glass",
-			value_text = "n/a",
 			draw_frame = true,
+			glass = "xp_bar_glass",
+			background = "xp_bar_bg",
+			value_text = "n/a",
+			star = "list_item_tag_new",
+			hotspot = {},
+			hover_frame = hover_frame_settings.texture,
 			side_detail = {
 				uvs = {
 					{
@@ -6189,6 +6226,43 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 					4
 				}
 			},
+			hover_frame = {
+				texture_size = hover_frame_settings.texture_size,
+				texture_sizes = hover_frame_settings.texture_sizes,
+				frame_margins = {
+					-hover_frame_spacing,
+					-hover_frame_spacing
+				},
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				}
+			},
+			star = {
+				horizontal_alignment = "right",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-100,
+					-4,
+					6
+				},
+				texture_size = {
+					126,
+					51
+				}
+			},
 			title_text = {
 				vertical_alignment = "center",
 				font_type = "hell_shark",
@@ -6281,76 +6355,200 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 	}
 end
 
+local function has_locked(content)
+	return content.has_locked
+end
+
+local function has_available(content)
+	return content.has_available
+end
+
+local function has_completed(content)
+	return content.has_completed
+end
+
+local function is_hover(content)
+	return content.is_hover
+end
+
 UIWidgets.create_quest_bar = function (scenegraph_id, size)
 	local side_detail_texture = "chain_end"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
-	local amount = 10
-	local spacing = 0
-	local multi_texture_extra_width = 116
-	local multi_texture_width = size[1] + multi_texture_extra_width
-	local multi_texture_size = {
-		multi_texture_width,
-		size[2]
+	local paper_width = 20
+	local paper_offset = 30
+	local group_offset = 135
+	local group_align = -31
+	local tooltip_size = {
+		95 + paper_width,
+		58
 	}
-	local slot_textures = {}
-	local texture_colors = {}
-	local slot_frame_texture_colors = {}
-	local slot_frame_color = {
-		255,
-		238,
-		122,
-		20
-	}
-
-	for i = 1, amount, 1 do
-		texture_colors[i] = {
-			255,
-			255,
-			255,
-			255
-		}
-		slot_frame_texture_colors[i] = {
-			slot_frame_color[1],
-			slot_frame_color[2],
-			slot_frame_color[3],
-			slot_frame_color[4]
-		}
-		slot_textures[i] = "achievement_symbol_book"
-	end
 
 	return {
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		},
 		element = {
 			passes = {
 				{
-					pass_type = "centered_texture_amount",
-					style_id = "slot",
-					texture_id = "slot"
+					pass_type = "texture",
+					style_id = "locked_slot",
+					texture_id = "slot",
+					content_check_function = has_locked
 				},
 				{
-					pass_type = "centered_texture_amount",
-					style_id = "slot_frame",
-					texture_id = "slot_frame"
+					pass_type = "texture",
+					style_id = "locked_icon_cooldown",
+					texture_id = "icon_cooldown",
+					content_check_function = function (content)
+						return content.has_locked and content.cooldown_lock
+					end
 				},
 				{
-					pass_type = "centered_texture_amount",
-					style_id = "icon_available",
-					texture_id = "icon_available"
+					pass_type = "texture",
+					style_id = "locked_icon_locked",
+					texture_id = "icon_locked",
+					content_check_function = function (content)
+						return content.has_locked and not content.cooldown_lock
+					end
 				},
 				{
-					pass_type = "centered_texture_amount",
-					style_id = "icon_cooldown",
-					texture_id = "icon_cooldown"
+					pass_type = "tiled_texture",
+					style_id = "locked_count_bg_center",
+					texture_id = "count_bg_center",
+					content_check_function = has_locked
 				},
 				{
-					pass_type = "centered_texture_amount",
-					style_id = "icon_loot",
-					texture_id = "icon_loot"
+					pass_type = "texture",
+					style_id = "locked_count_bg_right",
+					texture_id = "count_bg_right",
+					content_check_function = has_locked
 				},
 				{
-					pass_type = "centered_texture_amount",
-					style_id = "icon_locked",
-					texture_id = "icon_locked"
+					style_id = "locked_text",
+					pass_type = "text",
+					text_id = "locked_text",
+					content_check_function = has_locked
+				},
+				{
+					style_id = "locked_tooltip",
+					pass_type = "hover",
+					content_id = "locked_tooltip",
+					content_check_function = function (content)
+						return content.parent.has_locked
+					end
+				},
+				{
+					style_id = "locked_tooltip",
+					pass_type = "tooltip_text",
+					text_id = "text_id",
+					content_id = "locked_tooltip",
+					content_check_function = is_hover
+				},
+				{
+					pass_type = "texture",
+					style_id = "available_slot",
+					texture_id = "slot",
+					content_check_function = has_available
+				},
+				{
+					pass_type = "texture",
+					style_id = "available_slot_frame",
+					texture_id = "slot_frame",
+					content_check_function = has_available
+				},
+				{
+					pass_type = "texture",
+					style_id = "available_icon_available",
+					texture_id = "icon_available",
+					content_check_function = has_available
+				},
+				{
+					pass_type = "tiled_texture",
+					style_id = "available_count_bg_center",
+					texture_id = "count_bg_center",
+					content_check_function = has_available
+				},
+				{
+					pass_type = "texture",
+					style_id = "available_count_bg_right",
+					texture_id = "count_bg_right",
+					content_check_function = has_available
+				},
+				{
+					style_id = "available_text",
+					pass_type = "text",
+					text_id = "available_text",
+					content_check_function = has_available
+				},
+				{
+					style_id = "available_tooltip",
+					pass_type = "hover",
+					content_id = "available_tooltip",
+					content_check_function = function (content)
+						return content.parent.has_available
+					end
+				},
+				{
+					style_id = "available_tooltip",
+					pass_type = "tooltip_text",
+					text_id = "text_id",
+					content_id = "available_tooltip",
+					content_check_function = is_hover
+				},
+				{
+					pass_type = "texture",
+					style_id = "completed_slot",
+					texture_id = "slot",
+					content_check_function = has_completed
+				},
+				{
+					pass_type = "texture",
+					style_id = "completed_slot_frame",
+					texture_id = "slot_frame",
+					content_check_function = has_completed
+				},
+				{
+					pass_type = "texture",
+					style_id = "completed_icon_loot",
+					texture_id = "icon_loot",
+					content_check_function = has_completed
+				},
+				{
+					pass_type = "tiled_texture",
+					style_id = "completed_count_bg_center",
+					texture_id = "count_bg_center",
+					content_check_function = has_completed
+				},
+				{
+					pass_type = "texture",
+					style_id = "completed_count_bg_right",
+					texture_id = "count_bg_right",
+					content_check_function = has_completed
+				},
+				{
+					style_id = "completed_text",
+					pass_type = "text",
+					text_id = "completed_text",
+					content_check_function = has_completed
+				},
+				{
+					style_id = "completed_tooltip",
+					pass_type = "hover",
+					content_id = "completed_tooltip",
+					content_check_function = function (content)
+						return content.parent.has_completed
+					end
+				},
+				{
+					style_id = "completed_tooltip",
+					pass_type = "tooltip_text",
+					text_id = "text_id",
+					content_id = "completed_tooltip",
+					content_check_function = is_hover
 				},
 				{
 					style_id = "side_detail_right",
@@ -6381,16 +6579,33 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 			}
 		},
 		content = {
-			refresh_icon_bg = "achievement_refresh_off",
+			count_bg_right = "store_thumbnail_pricetag_right",
+			count_bg_center = "store_thumbnail_pricetag_middle",
 			slot_frame = "achievement_symbol_book_glow_1",
-			icon_available = "achievement_symbol_skull",
+			has_available = true,
+			has_completed = true,
+			has_locked = true,
 			icon_cooldown = "achievement_symbol_hourglass",
 			icon_loot = "achievement_symbol_loot",
-			background = "chain_link_horizontal_01",
 			slot_flames = "achievement_small_book_glow",
-			refresh_icon = "achievement_refresh_on",
 			icon_locked = "achievement_symbol_lock",
-			slot = slot_textures,
+			refresh_icon_bg = "achievement_refresh_off",
+			icon_available = "achievement_symbol_skull",
+			available_text = "n/a",
+			completed_text = "n/a",
+			slot = "achievement_symbol_book",
+			background = "chain_link_horizontal_01",
+			refresh_icon = "achievement_refresh_on",
+			locked_text = "n/a",
+			locked_tooltip = {
+				text_id = "achv_menu_summary_locked_quests"
+			},
+			available_tooltip = {
+				text_id = "achv_menu_summary_available_quests"
+			},
+			completed_tooltip = {
+				text_id = "achv_menu_summary_completed_quests"
+			},
 			side_detail = {
 				uvs = {
 					{
@@ -6423,15 +6638,13 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					255
 				}
 			},
-			slot = {
-				texture_axis = 1,
-				spacing = spacing,
+			locked_slot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
 				texture_size = {
 					63,
 					58
 				},
-				texture_amount = amount,
-				texture_colors = texture_colors,
 				color = {
 					255,
 					255,
@@ -6439,65 +6652,18 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					255
 				},
 				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 29,
+					group_align - group_offset,
+					0,
 					2
-				},
-				size = multi_texture_size
+				}
 			},
-			slot_frame = {
-				texture_axis = 1,
-				spacing = spacing,
-				texture_size = {
-					63,
-					58
-				},
-				texture_amount = amount,
-				texture_colors = slot_frame_texture_colors,
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 29,
-					0
-				},
-				size = multi_texture_size
-			},
-			slot_flames = {
-				texture_axis = 1,
-				spacing = spacing,
-				texture_size = {
-					71,
-					102
-				},
-				texture_amount = amount,
-				texture_colors = slot_frame_texture_colors,
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 40,
-					1
-				},
-				size = multi_texture_size
-			},
-			icon_cooldown = {
-				texture_axis = 1,
-				spacing = spacing,
+			locked_icon_cooldown = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
 				texture_size = {
 					56,
 					40
 				},
-				texture_amount = amount,
-				texture_colors = texture_colors,
 				color = {
 					255,
 					255,
@@ -6505,21 +6671,159 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					255
 				},
 				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 20,
+					group_align - group_offset,
+					0,
 					3
-				},
-				size = multi_texture_size
+				}
 			},
-			icon_available = {
-				texture_axis = 1,
-				spacing = spacing,
+			locked_icon_locked = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					56,
+					40
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					group_align - group_offset,
+					0,
+					3
+				}
+			},
+			locked_count_bg_center = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					paper_width,
+					36
+				},
+				texture_tiling_size = {
+					10,
+					36
+				},
+				color = {
+					255,
+					230,
+					230,
+					230
+				},
+				offset = {
+					group_align - group_offset + paper_offset,
+					0,
+					1
+				}
+			},
+			locked_count_bg_right = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					40
+				},
+				color = {
+					255,
+					230,
+					230,
+					230
+				},
+				offset = {
+					group_align - group_offset + paper_offset + paper_width,
+					0,
+					1
+				}
+			},
+			locked_text = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				localize = false,
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					group_align - group_offset + paper_offset + 12,
+					0,
+					2
+				}
+			},
+			locked_tooltip = {
+				font_size = 18,
+				max_width = 500,
+				localize = true,
+				cursor_side = "right",
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_table("white"),
+				line_colors = {
+					Colors.get_table("orange_red")
+				},
+				cursor_offset = {
+					20,
+					-57
+				},
+				offset = {
+					-group_offset,
+					0,
+					50
+				},
+				area_size = tooltip_size
+			},
+			available_slot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					63,
+					58
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					group_align,
+					0,
+					2
+				}
+			},
+			available_slot_frame = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					63,
+					58
+				},
+				color = {
+					255,
+					238,
+					122,
+					20
+				},
+				offset = {
+					group_align,
+					0,
+					0
+				}
+			},
+			available_icon_available = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
 				texture_size = {
 					34,
 					34
 				},
-				texture_amount = amount,
-				texture_colors = texture_colors,
 				color = {
 					255,
 					255,
@@ -6527,21 +6831,102 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					255
 				},
 				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 17,
+					group_align,
+					0,
 					3
-				},
-				size = multi_texture_size
+				}
 			},
-			icon_locked = {
-				texture_axis = 1,
-				spacing = spacing,
+			available_count_bg_center = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
 				texture_size = {
-					56,
+					paper_width,
+					36
+				},
+				texture_tiling_size = {
+					10,
+					36
+				},
+				color = {
+					255,
+					230,
+					230,
+					230
+				},
+				offset = {
+					group_align + paper_offset,
+					0,
+					1
+				}
+			},
+			available_count_bg_right = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
 					40
 				},
-				texture_amount = amount,
-				texture_colors = texture_colors,
+				color = {
+					255,
+					230,
+					230,
+					230
+				},
+				offset = {
+					group_align + paper_offset + paper_width,
+					0,
+					1
+				}
+			},
+			available_text = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				localize = false,
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					group_align + paper_offset + 12,
+					0,
+					2
+				}
+			},
+			available_tooltip = {
+				font_size = 18,
+				max_width = 500,
+				localize = true,
+				cursor_side = "right",
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_table("white"),
+				line_colors = {
+					Colors.get_table("orange_red")
+				},
+				cursor_offset = {
+					15,
+					-55
+				},
+				offset = {
+					0,
+					0,
+					50
+				},
+				area_size = tooltip_size
+			},
+			completed_slot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					63,
+					58
+				},
 				color = {
 					255,
 					255,
@@ -6549,21 +6934,37 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					255
 				},
 				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 20,
-					3
-				},
-				size = multi_texture_size
+					group_align + group_offset,
+					0,
+					2
+				}
 			},
-			icon_loot = {
-				texture_axis = 1,
-				spacing = spacing,
+			completed_slot_frame = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					63,
+					58
+				},
+				color = {
+					255,
+					238,
+					122,
+					20
+				},
+				offset = {
+					group_align + group_offset,
+					0,
+					0
+				}
+			},
+			completed_icon_loot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
 				texture_size = {
 					42,
 					29
 				},
-				texture_amount = amount,
-				texture_colors = texture_colors,
 				color = {
 					255,
 					255,
@@ -6571,11 +6972,94 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					255
 				},
 				offset = {
-					-multi_texture_extra_width * 0.5,
-					size[2] / 2 - 14.5,
+					group_align + group_offset,
+					0,
 					3
+				}
+			},
+			completed_count_bg_center = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					paper_width,
+					36
 				},
-				size = multi_texture_size
+				texture_tiling_size = {
+					10,
+					36
+				},
+				color = {
+					255,
+					230,
+					230,
+					230
+				},
+				offset = {
+					group_align + group_offset + paper_offset,
+					0,
+					1
+				}
+			},
+			completed_count_bg_right = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					32,
+					40
+				},
+				color = {
+					255,
+					230,
+					230,
+					230
+				},
+				offset = {
+					group_align + group_offset + paper_offset + paper_width,
+					0,
+					1
+				}
+			},
+			completed_text = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				localize = false,
+				dynamic_font_size = true,
+				font_size = 24,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					group_align + group_offset + paper_offset + 12,
+					0,
+					2
+				}
+			},
+			completed_tooltip = {
+				font_size = 18,
+				max_width = 500,
+				localize = true,
+				cursor_side = "right",
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_table("white"),
+				line_colors = {
+					Colors.get_table("orange_red")
+				},
+				cursor_offset = {
+					20,
+					27
+				},
+				offset = {
+					group_offset,
+					0,
+					50
+				},
+				area_size = tooltip_size
 			},
 			side_detail_left = {
 				color = {
@@ -6645,12 +7129,6 @@ UIWidgets.create_quest_bar = function (scenegraph_id, size)
 					25
 				}
 			}
-		},
-		scenegraph_id = scenegraph_id,
-		offset = {
-			0,
-			0,
-			0
 		}
 	}
 end
@@ -7002,7 +7480,7 @@ UIWidgets.create_career_summary_window = function (scenegraph_id, size)
 	}
 end
 
-UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad)
+UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad, skip_side_detail)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
@@ -7068,13 +7546,19 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 				{
 					style_id = "side_detail_right",
 					pass_type = "texture_uv",
-					content_id = "side_detail"
+					content_id = "side_detail",
+					content_check_function = function (content)
+						return not content.skip_side_detail
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "side_detail_left",
 					pass_type = "texture",
-					content_id = "side_detail"
+					content_id = "side_detail",
+					content_check_function = function (content)
+						return not content.skip_side_detail
+					end
 				},
 				{
 					style_id = "title_text",
@@ -7129,7 +7613,8 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 						1
 					}
 				},
-				texture_id = side_detail_texture
+				texture_id = side_detail_texture,
+				skip_side_detail = skip_side_detail
 			},
 			button_hotspot = {},
 			title_text = text or "n/a",
@@ -11858,7 +12343,7 @@ UIWidgets.create_title_and_tooltip = function (scenegraph_id, size, text, toolti
 	}
 end
 
-UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons, slot_spacing, use_frame, optional_frame_size, optional_allow_multi_hover)
+UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons, slot_spacing, use_frame, optional_frame_size, optional_allow_multi_hover, disable_cross)
 	local default_color = {
 		255,
 		255,
@@ -11872,7 +12357,8 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 	}
 	local passes = {}
 	local content = {
-		amount = amount
+		amount = amount,
+		disable_cross = disable_cross
 	}
 	local style = {}
 	local slot_width_spacing = slot_spacing or 0
@@ -11939,6 +12425,13 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 		style[icon_name] = {
 			size = icon_size,
 			color = default_color,
+			default_color = default_color,
+			disabled_color = {
+				255,
+				30,
+				30,
+				30
+			},
 			offset = {
 				offset[1],
 				offset[2],
@@ -11977,7 +12470,7 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 			texture_id = disabled_name,
 			style_id = disabled_name,
 			content_check_function = function (content)
-				return content.disable_button and not content.locked
+				return content.disable_button and not content.locked and not content.parent.disable_cross
 			end
 		}
 		style[disabled_name] = {

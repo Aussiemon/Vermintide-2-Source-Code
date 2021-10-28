@@ -316,6 +316,7 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 
 	if buff_extension and not self._ignored_overcharge_types[overcharge_type] then
 		buff_extension:trigger_procs("on_ammo_used")
+		buff_extension:trigger_procs("on_overcharge_used", overcharge_amount)
 		Managers.state.achievement:trigger_event("ammo_used", self.owner_unit)
 
 		if not LEVEL_EDITOR_TEST and not self._is_server then
@@ -374,7 +375,6 @@ PlayerUnitOverchargeExtension._check_overcharge_level_thresholds = function (sel
 			local damage_amount = 2 + max_value / 12
 			damage_amount = buff_extension:apply_buffs_to_value(damage_amount, "vent_damage")
 
-			DamageUtils.add_damage_network(wielder, wielder, damage_amount, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge", nil, nil, nil, nil, false, false, false, 0, 1)
 			self:remove_charge(vent_amount)
 		else
 			local unit = self.unit

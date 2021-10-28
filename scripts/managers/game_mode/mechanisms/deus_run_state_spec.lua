@@ -200,7 +200,7 @@ end
 local spec = {
 	server = {
 		run_node_key = {
-			default_value = "",
+			default_value = "start",
 			type = "string",
 			composite_keys = {}
 		},

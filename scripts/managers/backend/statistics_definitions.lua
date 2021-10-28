@@ -39,48 +39,23 @@ player.damage_dealt = {
 	value = 0,
 	sync_on_hot_join = true
 }
-local max_daily_quests = 3
-local max_event_quests = 4
-local max_weekly_quests = 7
-local num_quest_statistics_per_quest = 3
 player.quest_statistics = {}
+local quest_rules = QuestSettings.rules
 
-for i = 1, max_daily_quests, 1 do
-	local stat_prefix = "daily_quest_" .. i
+for quest_type, data in pairs(quest_rules) do
+	local stat_prefix = string.format("%s_quest", quest_type)
 
-	for j = 1, num_quest_statistics_per_quest, 1 do
-		local stat_name = stat_prefix .. "_stat_" .. j
-		player.quest_statistics[stat_name] = {
-			value = 0,
-			source = "player_data",
-			database_name = "quest_statistics_" .. stat_name
-		}
-	end
-end
+	for i = 1, data.max_quests, 1 do
+		local quest_name = string.format("%s_%d", stat_prefix, i)
 
-for i = 1, max_event_quests, 1 do
-	local stat_prefix = "event_quest_" .. i
-
-	for j = 1, num_quest_statistics_per_quest, 1 do
-		local stat_name = stat_prefix .. "_stat_" .. j
-		player.quest_statistics[stat_name] = {
-			value = 0,
-			source = "player_data",
-			database_name = "quest_statistics_" .. stat_name
-		}
-	end
-end
-
-for i = 1, max_weekly_quests, 1 do
-	local stat_prefix = "weekly_quest_" .. i
-
-	for j = 1, num_quest_statistics_per_quest, 1 do
-		local stat_name = stat_prefix .. "_stat_" .. j
-		player.quest_statistics[stat_name] = {
-			value = 0,
-			source = "player_data",
-			database_name = "quest_statistics_" .. stat_name
-		}
+		for j = 1, data.num_criterias, 1 do
+			local stat_name = string.format("%s_stat_%d", quest_name, j)
+			player.quest_statistics[stat_name] = {
+				value = 0,
+				source = "player_data",
+				database_name = "quest_statistics_" .. stat_name
+			}
+		end
 	end
 end
 

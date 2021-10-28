@@ -1,4 +1,3 @@
-require("scripts/utils/util")
 require("scripts/managers/conflict_director/main_path_spawning_generator")
 
 LevelAnalysis = class(LevelAnalysis)
