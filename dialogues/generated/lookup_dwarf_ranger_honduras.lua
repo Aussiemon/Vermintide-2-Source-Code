@@ -181,6 +181,7 @@ assert(DialogueLookup[DialogueLookup_n + 180] == nil)
 assert(DialogueLookup[DialogueLookup_n + 181] == nil)
 assert(DialogueLookup[DialogueLookup_n + 182] == nil)
 assert(DialogueLookup[DialogueLookup_n + 183] == nil)
+assert(DialogueLookup[DialogueLookup_n + 184] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_gameplay_seeing_a_stormvermin"
 DialogueLookup[DialogueLookup_n + 2] = "pdr_gameplay_seeing_a_gutter_runner"
@@ -365,6 +366,7 @@ DialogueLookup[DialogueLookup_n + 180] = "pdr_gameplay_parry_empire_soldier"
 DialogueLookup[DialogueLookup_n + 181] = "pdr_curse"
 DialogueLookup[DialogueLookup_n + 182] = "pdr_gameplay_overcharge"
 DialogueLookup[DialogueLookup_n + 183] = "pdr_targeted_by_ratling"
-DialogueLookup_n = DialogueLookup_n + 183
+DialogueLookup[DialogueLookup_n + 184] = "pdr_curse_forced"
+DialogueLookup_n = DialogueLookup_n + 184
 
 return

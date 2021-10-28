@@ -55,7 +55,7 @@ LevelSettings.dlc_morris_map = {
 	ambient_sound_event = "silent_default_world_sound",
 	knocked_down_setting = "knocked_down",
 	loading_bg_image = "loading_screen_1",
-	loading_ui_package_name = "morris/deus_loading_screen_1",
+	loading_ui_package_name = "morris/deus_loading_screen_2",
 	conflict_settings = "disabled",
 	level_image = "level_image_any",
 	load_no_enemies = true,
@@ -102,6 +102,12 @@ for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 			settings_clone.game_mode = "deus"
 			settings_clone.mechanism = "deus"
 			settings_clone.disable_percentage_completed = true
+			settings_clone.act = "deus_act"
+			settings_clone.act_presentation_order = 1
+			settings_clone.act_unlock_order = 0
+			settings_clone.unlockable = true
+			settings_clone.dlc_name = "morris"
+			settings_clone.ommit_from_lobby_browser = true
 			settings_clone.allowed_locked_director_functions = {
 				beastmen = true
 			}
