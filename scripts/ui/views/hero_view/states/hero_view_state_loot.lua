@@ -421,7 +421,7 @@ HeroViewStateLoot.transitioning = function (self)
 end
 
 HeroViewStateLoot._can_open_chests = function (self, num_chests)
-	local extra_items = (num_chests or 0) * 3
+	local extra_items = (num_chests or 1) * 3
 	local backend_items = Managers.backend:get_interface("items")
 	local items = backend_items:get_all_backend_items()
 	local item_count = 0
@@ -1138,15 +1138,17 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	end
 
 	self._selected_item = item
-	local can_open = self:_can_open_chests()
-	self._open_chests_enabled = can_open
-	widgets_by_name.item_cap_warning_text.content.visible = not can_open and item ~= nil
-	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open or item == nil
-	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not can_open or item == nil or (item and item.RemainingUses < 2)
+	local can_open_one = self:_can_open_chests()
+	local can_open_multiple = item and item.RemainingUses > 1 and self:_can_open_chests(math.min(item.RemainingUses, num_loot_options))
+	self._open_chests_enabled = can_open_one
+	self._open_multiple_chests_enabled = can_open_multiple
+	widgets_by_name.item_cap_warning_text.content.visible = not can_open_one and item ~= nil
+	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open_one or item == nil
+	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not can_open_multiple or item == nil or (item and item.RemainingUses < 2)
 
-	if not can_open or item == nil then
+	if not can_open_one or item == nil then
 		self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
-	elseif item.RemainingUses < 2 then
+	elseif item.RemainingUses < 2 or not can_open_multiple then
 		self.menu_input_description:set_input_description(generic_input_actions.chest_selected_single_use)
 	else
 		self.menu_input_description:set_input_description(generic_input_actions.chest_selected)
@@ -1510,9 +1512,10 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 		end
 
 		local open_button_pressed = self._open_chests_enabled and (input_service:get("confirm_press") or input_service:get("skip_pressed", true))
-		local open_multiple_button_pressed = self._open_chests_enabled and input_service:get("refresh")
+		local open_multiple_button_pressed = self._open_multiple_chests_enabled and input_service:get("refresh")
+		local gamepad_active = Managers.input:is_device_active("gamepad")
 
-		if IS_WINDOWS and open_button_pressed and self._last_open_pressed == "multiple" then
+		if not gamepad_active and IS_WINDOWS and open_button_pressed and self._last_open_pressed == "multiple" then
 			open_button_pressed = false
 			open_multiple_button_pressed = true
 		end

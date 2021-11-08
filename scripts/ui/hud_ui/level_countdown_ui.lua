@@ -131,10 +131,6 @@ LevelCountdownUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
 
-LevelCountdownUI.destroy = function (self)
-	Managers.state.event:trigger("activate_waystone_portal", nil)
-end
-
 LevelCountdownUI._get_start_time = function (self)
 	local status_extension = self:_get_active_waystone_extension()
 

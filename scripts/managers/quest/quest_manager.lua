@@ -358,7 +358,7 @@ QuestManager.has_any_unclaimed_quests = function (self)
 			for _, entry in ipairs(entries) do
 				local entry_data = self:get_data_by_id(entry)
 
-				if entry_data.completed and not entry_data.claimed then
+				if entry_data and entry_data.completed and not entry_data.claimed then
 					return true
 				end
 			end
@@ -398,11 +398,16 @@ end
 
 QuestManager.claim_reward = function (self, quest_id)
 	if self._reward_poll_id or self._refresh_poll_id then
-		return "Polling in progress."
+		return nil, "Polling in progress."
 	end
 
 	local backend_interface_quests = self._backend_interface_quests
 	local quest_key = backend_interface_quests:get_quest_key(quest_id)
+
+	if not quest_key then
+		return nil, "Unable to find active quest"
+	end
+
 	local reward_poll_id = backend_interface_quests:claim_quest_rewards(quest_key)
 	self._reward_poll_id = reward_poll_id
 

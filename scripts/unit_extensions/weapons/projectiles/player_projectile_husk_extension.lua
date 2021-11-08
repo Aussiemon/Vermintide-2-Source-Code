@@ -702,38 +702,41 @@ PlayerProjectileHuskExtension._handle_linking = function (self, impact_data, hit
 
 	local projectile_info = self.projectile_info
 	local projectile_units = self:_get_projectile_units_names(projectile_info)
-	local dummy_linker_unit_name = projectile_units.dummy_linker_unit_name
-	local depth = impact_data.depth or 0.15
-	local depth_offset = impact_data.depth_offset or 0.15
+	local dummy_linker_unit_name = projectile_units and projectile_units.dummy_linker_unit_name
 
-	if projectile_units.dummy_linker_broken_units then
-		local broken_chance = Math.random()
+	if dummy_linker_unit_name then
+		local depth = impact_data.depth or 0.15
+		local depth_offset = impact_data.depth_offset or 0.15
 
-		if damage_amount then
-			broken_chance = broken_chance * math.clamp(damage_amount / 2, 0.75, 1.25)
-		else
-			broken_chance = broken_chance * 2
-		end
+		if projectile_units.dummy_linker_broken_units then
+			local broken_chance = Math.random()
 
-		if broken_chance <= 0.5 then
-			local num_variations = #projectile_units.dummy_linker_broken_units
-			local random_pick = Math.random(1, num_variations)
-			dummy_linker_unit_name = projectile_units.dummy_linker_broken_units[random_pick]
-
-			if random_pick == 1 then
-				depth = 0.05
-				depth_offset = 0.1
+			if damage_amount then
+				broken_chance = broken_chance * math.clamp(damage_amount / 2, 0.75, 1.25)
 			else
-				depth_offset = 0.15
+				broken_chance = broken_chance * 2
 			end
+
+			if broken_chance <= 0.5 then
+				local num_variations = #projectile_units.dummy_linker_broken_units
+				local random_pick = Math.random(1, num_variations)
+				dummy_linker_unit_name = projectile_units.dummy_linker_broken_units[random_pick]
+
+				if random_pick == 1 then
+					depth = 0.05
+					depth_offset = 0.1
+				else
+					depth_offset = 0.15
+				end
+			end
+		elseif damage_amount then
+			depth = depth * math.clamp(damage_amount, 1, 3)
 		end
-	elseif damage_amount then
-		depth = depth * math.clamp(damage_amount, 1, 3)
+
+		depth = depth + depth_offset
+
+		self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, impact_data.flow_event_on_init, impact_data.flow_event_on_walls)
 	end
-
-	depth = depth + depth_offset
-
-	self:_link_projectile(hit_unit, hit_actor, dummy_linker_unit_name, hit_position, hit_direction, depth, impact_data.flow_event_on_init, impact_data.flow_event_on_walls)
 end
 
 PlayerProjectileHuskExtension._link_projectile = function (self, hit_unit, hit_actor, linker_unit_name, hit_position, hit_direction, depth, flow_event_on_init, flow_event_on_walls)

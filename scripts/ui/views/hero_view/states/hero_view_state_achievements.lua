@@ -1304,13 +1304,13 @@ HeroViewStateAchievements._claim_reward = function (self, widget)
 	local content = widget.content
 	local id = content.id
 	local quest_manager = self._quest_manager
-	local reward_poll_id = nil
+	local reward_poll_id, reason = nil
 	local achievement_layout_type = self._achievement_layout_type
 
 	if achievement_layout_type == "achievements" then
 		reward_poll_id = self:_claim_achievement_reward(id)
 	else
-		reward_poll_id = self:_claim_quest_reward(id)
+		reward_poll_id, reason = self:_claim_quest_reward(id)
 	end
 
 	if reward_poll_id then
@@ -1323,6 +1323,8 @@ HeroViewStateAchievements._claim_reward = function (self, widget)
 
 		self._reward_poll_id = reward_poll_id
 		self._reward_poll_type = achievement_layout_type
+	elseif reason then
+		printf("[HeroViewStateAchievements] %s", reason)
 	end
 end
 
@@ -1333,12 +1335,12 @@ HeroViewStateAchievements._claim_quest_reward = function (self, id)
 	if not can_claim then
 		print("[HeroViewStateAchievements]:_claim_quest_reward()", can_claim, claim_error, id)
 
-		return nil
+		return nil, nil
 	end
 
-	local claim_id = quest_manager:claim_reward(id)
+	local claim_id, reason = quest_manager:claim_reward(id)
 
-	return claim_id
+	return claim_id, reason
 end
 
 HeroViewStateAchievements._claim_achievement_reward = function (self, id)
@@ -1461,7 +1463,7 @@ HeroViewStateAchievements._update_new_status_for_current_tab = function (self)
 		return
 	end
 
-	if self._achievement_layout_type == "quests" then
+	if self._achievement_layout_type == "quest" then
 		local layout = self:_get_layout(self._achievement_layout_type)
 		local categories = layout.categories
 		local category_tab_widgets = self._category_tab_widgets
@@ -2000,6 +2002,9 @@ end
 HeroViewStateAchievements._activate_tab = function (self, widget, index, tab_list_index, ignore_sound)
 	self._active_tab = widget
 	self._active_tab_index = index
+
+	self:_update_new_status_for_current_tab()
+
 	local content = widget.content
 	local style = widget.style
 	local list_style = style.list_style

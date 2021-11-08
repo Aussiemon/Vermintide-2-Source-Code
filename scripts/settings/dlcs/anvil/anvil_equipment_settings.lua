@@ -113,15 +113,17 @@ settings.projectile_units = {
 }
 settings.projectiles = {
 	throwing_axe = {
-		rotation_speed = 50,
+		use_weapon_skin = true,
 		static_impact_type = "raycast",
 		impact_type = "sphere_sweep",
 		trajectory_template_name = "throw_trajectory",
 		radius = 0.075,
 		linear_dampening = 0.691,
 		indexed = true,
-		use_weapon_skin = true,
+		rotation_speed = 50,
 		gravity_settings = "throwing_axes",
+		projectile_unit_template_name = "player_projectile_unit",
+		projectile_units_template = "throwing_axe_01_t1",
 		bounce_angular_velocity = {
 			3,
 			-10,

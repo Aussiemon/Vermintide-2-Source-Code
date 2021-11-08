@@ -1326,25 +1326,26 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 	end
 end
 
-local dummy_table = {}
-
 HeroViewStateStore.check_owns_bundle = function (self, backend_items, bundle_contains)
-	bundle_contains = bundle_contains or dummy_table
-
-	if #bundle_contains <= 0 then
+	if not bundle_contains then
 		return false, false
 	end
+
+	local all_owned = true
+	local any_owned = false
 
 	for i = 1, #bundle_contains, 1 do
 		local steam_itemdefid = bundle_contains[i]
 		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
 
-		if not backend_items:has_item(item_key) and not backend_items:has_weapon_illusion(item_key) then
-			return false, i > 1
+		if backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) then
+			any_owned = true
+		else
+			all_owned = false
 		end
 	end
 
-	return true, true
+	return all_owned, any_owned
 end
 
 HeroViewStateStore.enqueue_acquired_product = function (self, product)

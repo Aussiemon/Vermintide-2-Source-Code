@@ -2078,7 +2078,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 
 		local boss_elite_damage_cap = buff_extension:get_buff_value("max_damage_taken_from_boss_or_elite")
 		local all_damage_cap = buff_extension:get_buff_value("max_damage_taken")
-		local breed = unit_get_data(attacker_unit, "breed")
+		local breed = ALIVE[attacker_unit] and unit_get_data(attacker_unit, "breed")
 
 		if breed and (breed.boss or breed.elite) then
 			local min_damage_cap = nil

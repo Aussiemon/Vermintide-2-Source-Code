@@ -26,6 +26,10 @@ local DELAY_MULTIPLIER = 5
 local guid = (IS_PS4 and math.uuid) or Application.guid
 PlayFabMirrorBase = class(PlayFabMirrorBase)
 
+local function debug_printf(format, ...)
+	printf("[PlayFabMirrorBase] " .. format, ...)
+end
+
 PlayFabMirrorBase.init = function (self, signin_result)
 	self._num_items_to_load = 0
 	self._stats = {}
@@ -876,12 +880,12 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 end
 
 PlayFabMirrorBase._request_steam_user_inventory = function (self)
-	print("steam item server: requesting user inventory")
+	debug_printf("steam item server: requesting user inventory")
 
 	self._num_items_to_load = self._num_items_to_load + 1
 
 	local function callback(result, item_list)
-		print("[PlayFabMirrorBase] _request_steam_user_inventory got results")
+		debug_printf("_request_steam_user_inventory got results")
 
 		local migrate_and_request_characters = true
 
@@ -937,7 +941,7 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 	self._num_items_to_load = self._num_items_to_load - 1
 
 	if result == 1 then
-		print("[PlayFabMirrorBase] -> retrieval of steam user inventory, SUCCESS")
+		debug_printf("-> retrieval of steam user inventory, SUCCESS")
 
 		for i = 1, #item_list, 4 do
 			local steam_itemdefid = item_list[i]
@@ -957,11 +961,11 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 
 				self._inventory_items[backend_id] = steam_item
 
-				print("Steam Item: ", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
+				debug_printf("Steam Item: %q, %q, %q, %q, %q", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
 			end
 		end
 	else
-		print("[PlayFabMirrorBase] ERROR could not retrieve get steam user inventory. result-code:", result)
+		debug_printf("ERROR could not retrieve get steam user inventory. result-code: %q", result)
 	end
 
 	if migrate_and_request_characters then
@@ -1015,7 +1019,7 @@ PlayFabMirrorBase._verify_items_are_usable = function (self, broken_slots, chara
 	local career_settings = CareerSettings[career_name]
 
 	if not career_settings then
-		print("PlayfabMirror - Tried to verify items of career that doesn't exist:", career_name)
+		debug_printf("Tried to verify items of career that doesn't exist: %q", career_name)
 
 		return
 	end
@@ -1147,8 +1151,8 @@ PlayFabMirrorBase.update = function (self, dt)
 	if queued_commit.active then
 		queued_commit.timer = queued_commit.timer - dt
 
-		if queued_commit.timer <= 0 and not self._commit_current_id and not Managers.account:user_detached() then
-			self:_commit_internal(queued_commit.id)
+		if queued_commit.timer <= 0 and not self._commit_current_id and not Managers.account:user_detached() and LobbyInternal.network_initialized() then
+			self:_commit_internal(queued_commit.id, queued_commit.commit_complete_callbacks)
 		end
 	end
 
@@ -1167,7 +1171,7 @@ PlayFabMirrorBase._check_current_commit = function (self)
 		local commit_current_id = self._commit_current_id
 		local commit_data = self._commits[commit_current_id]
 
-		print("commit result", status, commit_current_id)
+		debug_printf("commit result %q, %q", status, commit_current_id)
 
 		self._commit_current_id = nil
 
@@ -1179,8 +1183,10 @@ PlayFabMirrorBase._check_current_commit = function (self)
 			backend_manager:dirtify_interfaces()
 		end
 
-		if commit_data.commit_complete_callback then
-			commit_data.commit_complete_callback(status)
+		if commit_data.commit_complete_callbacks then
+			for i = 1, #commit_data.commit_complete_callbacks, 1 do
+				commit_data.commit_complete_callbacks[i](status)
+			end
 		end
 
 		self._commits[commit_current_id] = nil
@@ -1613,27 +1619,46 @@ PlayFabMirrorBase.predict_debug_clear_deus_meta_progression = function (self, am
 	self._deus_rolled_over_soft_currency = 0
 end
 
+local function add_callback(commit, callback)
+	if not callback then
+		return
+	end
+
+	commit.commit_complete_callbacks = commit.commit_complete_callbacks or {}
+	commit.commit_complete_callbacks[#commit.commit_complete_callbacks + 1] = callback
+
+	return commit.commit_complete_callbacks
+end
+
 PlayFabMirrorBase.commit = function (self, skip_queue, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local id = nil
 
 	if skip_queue then
 		if self._commit_current_id then
-			print("Unable to skip queue due to commit already in progress")
+			debug_printf("Unable to skip queue: commit already in progress")
 
-			return
-		end
+			id = self:_queue_commit(commit_complete_callback)
+		elseif not LobbyInternal.network_initialized() then
+			debug_printf("Unable to skip queue: Network not initialized")
 
-		if queued_commit.active then
+			id = self:_queue_commit(commit_complete_callback)
+		elseif queued_commit.active then
 			local id = queued_commit.id
 
-			print("FORCE COMMIT", id)
-			self:_commit_internal(id, commit_complete_callback)
+			debug_printf("Force commit: Override existing queue %q", id)
+			add_callback(queued_commit, commit_complete_callback)
+			self:_commit_internal(id, queued_commit.commit_complete_callbacks)
 		else
-			id = self:_commit_internal(nil, commit_complete_callback)
+			debug_printf("Force commit")
+			add_callback(queued_commit, commit_complete_callback)
+
+			id = self:_commit_internal(nil, queued_commit.commit_complete_callbacks)
 		end
 	elseif not queued_commit.active then
-		id = self:_queue_commit()
+		id = self:_queue_commit(commit_complete_callback)
+	elseif commit_complete_callback then
+		add_callback(queued_commit, commit_complete_callback)
 	end
 
 	if id then
@@ -1649,7 +1674,7 @@ PlayFabMirrorBase._new_id = function (self)
 	return self._last_id
 end
 
-PlayFabMirrorBase._queue_commit = function (self)
+PlayFabMirrorBase._queue_commit = function (self, commit_complete_callback)
 	local queued_commit = self._queued_commit
 	local timer = self._commit_limit_total * DELAY_MULTIPLIER
 	local id = self:_new_id()
@@ -1657,20 +1682,22 @@ PlayFabMirrorBase._queue_commit = function (self)
 	queued_commit.id = id
 	queued_commit.active = true
 
+	add_callback(queued_commit, commit_complete_callback)
+
 	return id
 end
 
 local new_data = {}
 
-PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_callback)
-	print("PlayFabMirrorBase:_commit_internal", queue_id)
+PlayFabMirrorBase._commit_internal = function (self, queue_id, commit_complete_callbacks)
+	debug_printf("_commit_internal %q", queue_id)
 
 	local commit_id = queue_id or self:_new_id()
 	local commit = {
 		num_updates = 0,
 		status = "success",
 		updates_to_make = 0,
-		commit_complete_callback = commit_complete_callback,
+		commit_complete_callbacks = commit_complete_callbacks,
 		request_queue_ids = {}
 	}
 
@@ -1927,7 +1954,7 @@ PlayFabMirrorBase._setup_careers = function (self)
 				if broken_slots then
 					broken_slots_data[career_name] = broken_slots
 
-					print("Broken item slots for career", career_name)
+					debug_printf("Broken item slots for career: %q", career_name)
 					table.dump(broken_slots)
 				end
 			end

@@ -139,15 +139,17 @@ settings.projectile_gravity_settings = {
 }
 settings.projectiles = {
 	javelin = {
-		rotation_speed = 0,
+		use_weapon_skin = true,
 		static_impact_type = "raycast",
 		impact_type = "sphere_sweep",
 		trajectory_template_name = "throw_trajectory",
 		radius = 0.075,
 		linear_dampening = 0.691,
 		indexed = true,
-		use_weapon_skin = true,
+		rotation_speed = 0,
 		gravity_settings = "javelin",
+		projectile_unit_template_name = "player_projectile_unit",
+		projectile_units_template = "javelin",
 		bounce_angular_velocity = {
 			3,
 			-10,

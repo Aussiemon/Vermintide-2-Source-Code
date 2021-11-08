@@ -765,7 +765,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 		local has_hit_precision_target_and_has_last_hit_result = has_potential_result and (has_hit_precision_target or lost_precision_target)
 		local result = SWEEP_RESULTS[i]
 		local hit_actor = result.actor
-		local hit_unit = Actor.unit(hit_actor)
+		local hit_unit = Script.type_name(hit_actor) == "Actor" and Actor.unit(hit_actor)
 		local hit_position = result.position
 		local hit_normal = result.normal
 

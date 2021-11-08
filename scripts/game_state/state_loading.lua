@@ -531,7 +531,7 @@ StateLoading._trigger_sound_events = function (self, level_key)
 
 	local wwise_events = career_specific_events or loading_screen_wwise_events
 
-	if wwise_events ~= nil then
+	if wwise_events ~= nil and #wwise_events > 0 then
 		local level_seed = Managers.level_transition_handler:get_current_level_seed()
 		local _, random_id = Math.next_random(level_seed, 1, #wwise_events)
 		local wwise_event = wwise_events[random_id]

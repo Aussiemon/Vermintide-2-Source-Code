@@ -553,15 +553,15 @@ local scenegraph_definition = {
 	},
 	item_cap_warning_text = {
 		vertical_alignment = "bottom",
-		parent = "open_button",
+		parent = "bottom_panel",
 		horizontal_alignment = "center",
 		size = {
-			500,
+			1920,
 			100
 		},
 		position = {
 			0,
-			100,
+			235,
 			10
 		}
 	},
