@@ -71,7 +71,23 @@ LevelSettings.crater = {
 	},
 	loading_screen_wwise_events = {
 		"nik_crater_loading_screen_01",
-		"nik_crater_loading_screen_02"
+		"nik_crater_loading_screen_02",
+		dr_engineer = {
+			"pdr_de_crater_loading_screen_01",
+			"pdr_de_crater_loading_screen_02"
+		},
+		we_thornsister = {
+			"pwe_st_crater_loading_screen_01",
+			"pwe_st_crater_loading_screen_02"
+		},
+		es_questingknight = {
+			"pes_gk_crater_loading_screen_01",
+			"pes_gk_crater_loading_screen_02"
+		},
+		wh_priest = {
+			"pwh_wp_crater_loading_screen_01",
+			"pwh_wp_crater_loading_screen_02"
+		}
 	},
 	locations = {
 		"location_crater_start",

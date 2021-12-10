@@ -69,7 +69,23 @@ LevelSettings.dlc_bastion = {
 		}
 	},
 	loading_screen_wwise_events = {
-		"nik_bastion_briefing_01"
+		"nik_bastion_briefing_01",
+		dr_engineer = {
+			"pdr_de_bastion_briefing_01",
+			"pdr_de_bastion_briefing_02"
+		},
+		we_thornsister = {
+			"pwe_st_bastion_briefing_01",
+			"pwe_st_bastion_briefing_02"
+		},
+		es_questingknight = {
+			"pes_gk_bastion_briefing_01",
+			"pes_gk_bastion_briefing_02"
+		},
+		wh_priest = {
+			"pwh_wp_bastion_briefing_01",
+			"pwh_wp_bastion_briefing_02"
+		}
 	},
 	locations = {
 		"location_bastion_intro",

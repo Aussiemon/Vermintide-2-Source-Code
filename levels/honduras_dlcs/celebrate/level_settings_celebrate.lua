@@ -88,7 +88,23 @@ LevelSettings.dlc_celebrate_crawl = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_crawl_01",
-		"nik_loading_screen_crawl_02"
+		"nik_loading_screen_crawl_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_crawl_01",
+			"pdr_de_loading_screen_crawl_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_crawl_01",
+			"pwe_st_loading_screen_crawl_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_crawl_01",
+			"pes_gk_loading_screen_crawl_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_crawl_01",
+			"pwh_wp_loading_screen_crawl_02"
+		}
 	},
 	override_dialogue_settings = {
 		max_view_distance = 50,

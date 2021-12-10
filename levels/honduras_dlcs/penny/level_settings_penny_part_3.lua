@@ -69,7 +69,23 @@ LevelSettings.dlc_castle = {
 		}
 	},
 	loading_screen_wwise_events = {
-		"nik_castle_briefing_02"
+		"nik_castle_briefing_02",
+		dr_engineer = {
+			"pdr_de_castle_briefing_01",
+			"pdr_de_castle_briefing_02"
+		},
+		we_thornsister = {
+			"pwe_st_castle_briefing_01",
+			"pwe_st_castle_briefing_02"
+		},
+		es_questingknight = {
+			"pes_gk_castle_briefing_01",
+			"pes_gk_castle_briefing_02"
+		},
+		wh_priest = {
+			"pwh_wp_castle_briefing_01",
+			"pwh_wp_castle_briefing_02"
+		}
 	},
 	locations = {
 		"dlc1_4_location_castle_ballroom",

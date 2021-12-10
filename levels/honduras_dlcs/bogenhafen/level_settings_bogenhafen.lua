@@ -89,7 +89,23 @@ LevelSettings.dlc_bogenhafen_slum = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_dlc_pit_01",
-		"nik_loading_screen_dlc_pit_02"
+		"nik_loading_screen_dlc_pit_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_dlc_pit_01",
+			"pdr_de_loading_screen_dlc_pit_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_dlc_pit_01",
+			"pwe_st_loading_screen_dlc_pit_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_dlc_pit_01",
+			"pes_gk_loading_screen_dlc_pit_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_dlc_pit_01",
+			"pwh_wp_loading_screen_dlc_pit_02"
+		}
 	}
 }
 LevelSettings.dlc_bogenhafen_city = {
@@ -197,7 +213,23 @@ LevelSettings.dlc_bogenhafen_city = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_dlc_bogenhafen_01",
-		"nik_loading_screen_dlc_bogenhafen_02"
+		"nik_loading_screen_dlc_bogenhafen_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_dlc_bogenhafen_01",
+			"pdr_de_loading_screen_dlc_bogenhafen_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_dlc_bogenhafen_01",
+			"pwe_st_loading_screen_dlc_bogenhafen_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_dlc_bogenhafen_01",
+			"pes_gk_loading_screen_dlc_bogenhafen_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_dlc_bogenhafen_01",
+			"pwh_wp_loading_screen_dlc_bogenhafen_02"
+		}
 	}
 }
 

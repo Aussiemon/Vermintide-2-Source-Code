@@ -70,7 +70,23 @@ LevelSettings.dlc_portals = {
 	},
 	loading_screen_wwise_events = {
 		"nik_portals_briefing_01",
-		"nik_portals_briefing_02"
+		"nik_portals_briefing_02",
+		dr_engineer = {
+			"pdr_de_portals_briefing_01",
+			"pdr_de_portals_briefing_02"
+		},
+		we_thornsister = {
+			"pwe_st_portals_briefing_01",
+			"pwe_st_portals_briefing_02"
+		},
+		es_questingknight = {
+			"pes_gk_portals_briefing_01",
+			"pes_gk_portals_briefing_02"
+		},
+		wh_priest = {
+			"pwh_wp_portals_briefing_01",
+			"pwh_wp_portals_briefing_02"
+		}
 	},
 	locations = {
 		"dlc1_4_location_portals_outlook",

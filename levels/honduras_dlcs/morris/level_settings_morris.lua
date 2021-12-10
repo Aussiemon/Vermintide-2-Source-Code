@@ -90,8 +90,19 @@ for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 		for _, path in ipairs(settings.paths) do
 			local settings_clone = table.clone(settings)
 			local permutation_name = theme_name .. "_path" .. path
-			local permutation_key = level_key .. "_" .. permutation_name
-			settings_clone.level_name = "levels/honduras_dlcs/morris/" .. level_key .. "/generated/" .. permutation_name .. "/world"
+			local permutation_key, level_name = nil
+
+			if settings.overridden_level_name then
+				fassert(settings.overridden_level_key, "If a morris level settings has an overridden_level_name, it also must have a overriden_level_key")
+
+				permutation_key = settings.overridden_level_key
+				level_name = settings.overridden_level_name
+			else
+				permutation_key = level_key .. "_" .. permutation_name
+				level_name = "levels/honduras_dlcs/morris/" .. level_key .. "/generated/" .. permutation_name .. "/world"
+			end
+
+			settings_clone.level_name = level_name
 			settings_clone.theme = theme_name
 			settings_clone.display_name = level_key .. "_title"
 			settings_clone.description_text = level_key .. "_desc"
@@ -114,9 +125,13 @@ for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 			settings_clone.disable_quickplay = true
 			local base_level_name = settings.base_level_name
 			local packages = settings_clone.packages
-			packages[#packages + 1] = theme_packages_lookup[theme_name]
-			packages[#packages + 1] = string.format("resource_packages/levels/dlcs/morris/%s/%s_common", base_level_name, theme_name)
-			packages[#packages + 1] = string.format("resource_packages/levels/dlcs/morris/%s/%s", level_key, permutation_name)
+
+			if not settings.do_not_add_default_packages then
+				packages[#packages + 1] = theme_packages_lookup[theme_name]
+				packages[#packages + 1] = string.format("resource_packages/levels/dlcs/morris/%s/%s_common", base_level_name, theme_name)
+				packages[#packages + 1] = string.format("resource_packages/levels/dlcs/morris/%s/%s", level_key, permutation_name)
+			end
+
 			LevelSettings[permutation_key] = settings_clone
 		end
 	end

@@ -72,7 +72,23 @@ LevelSettings.magnus = {
 	},
 	loading_screen_wwise_events = {
 		"nfl_magnus_tower_loading_screen_01",
-		"nfl_magnus_tower_loading_screen_02"
+		"nfl_magnus_tower_loading_screen_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_magnus_tower_01",
+			"pdr_de_loading_screen_magnus_tower_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_magnus_tower_01",
+			"pwe_st_loading_screen_magnus_tower_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_magnus_tower_01",
+			"pes_gk_loading_screen_magnus_tower_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_magnus_tower_01",
+			"pwh_wp_loading_screen_magnus_tower_02"
+		}
 	},
 	locations = {
 		"location_magnus_gate_plaza",
@@ -166,7 +182,23 @@ LevelSettings.cemetery = {
 	},
 	loading_screen_wwise_events = {
 		"nfl_cemetery_loading_screen_01",
-		"nfl_cemetery_loading_screen_02"
+		"nfl_cemetery_loading_screen_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_cemetary_01",
+			"pdr_de_loading_screen_cemetary_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_cemetary_01",
+			"pwe_st_loading_screen_cemetary_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_cemetary_01",
+			"pes_gk_loading_screen_cemetary_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_cemetary_01",
+			"pwh_wp_loading_screen_cemetary_02"
+		}
 	},
 	locations = {
 		"location_cemetery_1",
@@ -263,7 +295,23 @@ LevelSettings.forest_ambush = {
 	},
 	loading_screen_wwise_events = {
 		"nfl_forest_ambush_loading_screen_01",
-		"nfl_forest_ambush_loading_screen_02"
+		"nfl_forest_ambush_loading_screen_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_forest_ambush_01",
+			"pdr_de_loading_screen_forest_ambush_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_forest_ambush_01",
+			"pwe_st_loading_screen_forest_ambush_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_forest_ambush_01",
+			"pes_gk_loading_screen_forest_ambush_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_forest_ambush_01",
+			"pwh_wp_loading_screen_forest_ambush_02"
+		}
 	},
 	locations = {
 		"location_forest_reikwald",
