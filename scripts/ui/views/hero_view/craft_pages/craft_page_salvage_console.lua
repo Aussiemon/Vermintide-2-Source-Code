@@ -174,11 +174,12 @@ CraftPageSalvageConsole._handle_input = function (self, dt, t)
 	local clear_input = UIUtils.is_button_pressed(widgets_by_name.auto_fill_clear)
 	local craft_input_held = UIUtils.is_button_held(widgets_by_name.craft_button)
 	local craft_input_gamepad = is_button_enabled and gamepad_active and input_service:get("refresh_hold")
+	local craft_input_keyboard = is_button_enabled and not gamepad_active and input_service:get("skip")
 	local craft_input_accepted = false
 
 	if input_service:get("special_1") or clear_input then
 		self:reset()
-	elseif craft_input_held or craft_input_gamepad then
+	elseif craft_input_held or craft_input_gamepad or craft_input_keyboard then
 		if not self._craft_input_time then
 			self._craft_input_time = 0
 

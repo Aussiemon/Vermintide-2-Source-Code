@@ -12,6 +12,14 @@ LocalizationManager.init = function (self, language_id)
 	local has_steam = rawget(_G, "Steam")
 	self._language_id = language_id or Application.user_setting("language_id") or (has_steam and Steam.language()) or "en"
 	self._backend_localizations = {}
+
+	rawset(_G, "Localize", function (text_id)
+		return self:lookup(text_id)
+	end)
+end
+
+LocalizationManager.destroy = function (self)
+	rawset(_G, "Localize", nil)
 end
 
 LocalizationManager._setup_localizers = function (self)
@@ -129,10 +137,6 @@ LocalizationManager.plural_form = function (self, n)
 	end
 
 	return 0
-end
-
-function Localize(text_id)
-	return Managers.localizer:lookup(text_id)
 end
 
 function LocalizeArray(text_ids, result)

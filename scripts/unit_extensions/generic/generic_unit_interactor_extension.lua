@@ -331,14 +331,17 @@ GenericUnitInteractorExtension._check_if_interactable_in_chest = function (self,
 
 	local unit_center_matrix, _ = Unit.box(interactable_unit)
 	local unit_pos = Matrix4x4.translation(unit_center_matrix)
-	local dir = Vector3.normalize(unit_pos - camera_position)
 	local distance = Vector3.length(unit_pos - camera_position)
-	local found_collision, collisionPos, distance, normal, hit_actor = PhysicsWorld.immediate_raycast(self.physics_world, unit_pos, dir, distance, "closest", "types", "both", "collision_filter", "filter_interactable_in_chest")
 
-	if found_collision then
-		chest_interactables[interactable_unit] = true
+	if distance > 0 then
+		local dir = Vector3.normalize(unit_pos - camera_position)
+		local found_collision, collisionPos, distance, normal, hit_actor = PhysicsWorld.immediate_raycast(self.physics_world, unit_pos, dir, distance, "closest", "types", "both", "collision_filter", "filter_interactable_in_chest")
 
-		return true
+		if found_collision then
+			chest_interactables[interactable_unit] = true
+
+			return true
+		end
 	end
 
 	return false

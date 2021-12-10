@@ -213,8 +213,6 @@ StoreWindowItemPreview.on_exit = function (self, params, force_unload)
 
 		self._viewport_widget = nil
 	end
-
-	self._parent:change_generic_actions(generic_input_actions.default)
 end
 
 StoreWindowItemPreview.update = function (self, dt, t)
@@ -831,7 +829,7 @@ StoreWindowItemPreview._sync_presentation_item = function (self, force_update)
 				if backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) then
 					already_owned = true
 				else
-					local all_owned, any_owned = self._parent:check_owns_bundle(backend_items, item.data.bundle_contains)
+					local all_owned, any_owned = backend_items:has_bundle_contents(item.data.bundle_contains)
 					already_owned = all_owned
 					show_dupe_warning = any_owned
 				end

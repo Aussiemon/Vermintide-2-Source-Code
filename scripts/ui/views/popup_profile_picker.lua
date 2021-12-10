@@ -284,8 +284,9 @@ end
 PopupProfilePicker._select_hero = function (self, profile_index, career_index, ignore_sound)
 	local profile_settings = SPProfiles[profile_index]
 	local career_settings = profile_settings.careers[career_index]
+	local backend_dlcs = Managers.backend:get_interface("dlcs")
 
-	if not career_settings then
+	if not career_settings or backend_dlcs:is_unreleased_career(career_settings.name) then
 		return
 	end
 
@@ -313,12 +314,15 @@ PopupProfilePicker._select_hero = function (self, profile_index, career_index, i
 
 	self:_set_hero_icon_selected(self._selected_hero_column)
 
+	local backend_dlcs = Managers.backend:get_interface("dlcs")
+
 	for i, widget in ipairs(self._hero_widgets) do
 		local career = profile_settings.careers[i]
 		local content = widget.content
-		content.exists = career ~= nil
+		local available = career and not backend_dlcs:is_unreleased_career(career.name)
+		content.exists = available
 
-		if career then
+		if available then
 			content.career_settings = career
 			content.portrait = career.picking_image or "medium_" .. career.portrait_image
 			local is_career_unlocked, _, dlc_name = career:is_unlocked_function(hero_name, level)

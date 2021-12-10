@@ -1340,14 +1340,18 @@ ConflictUtils.override_extension_init_data = function (breed, extension_init_dat
 end
 
 ConflictUtils.find_positions_around_position = function (center_position, output_position_list, nav_world, min_distance, max_distance, num_of_positions, forbidden_position_list, distance_to_forbidden_position_list, tries, circle_subdivision, row_distance)
+	distance_to_forbidden_position_list = distance_to_forbidden_position_list or 1
+
 	local function filter_func(pos)
 		local distance_to_forbidden_position_list_sqr = math.pow(distance_to_forbidden_position_list, 2)
 
-		for i = 1, #forbidden_position_list, 1 do
-			local forbidden_position = forbidden_position_list[i]
+		if forbidden_position_list then
+			for i = 1, #forbidden_position_list, 1 do
+				local forbidden_position = forbidden_position_list[i]
 
-			if Vector3.distance_squared(pos, forbidden_position) < distance_to_forbidden_position_list_sqr then
-				return false
+				if Vector3.distance_squared(pos, forbidden_position) < distance_to_forbidden_position_list_sqr then
+					return false
+				end
 			end
 		end
 

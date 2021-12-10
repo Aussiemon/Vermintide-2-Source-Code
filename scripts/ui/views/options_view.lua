@@ -1023,9 +1023,10 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		if widget then
 			local name = element.callback
 			size_y = widget.style.size[2]
-			widget.type = widget_type
-			widget.name = name
-			widget.ui_animations = {}
+
+			rawset(widget, "type", widget_type)
+			rawset(widget, "name", name)
+			rawset(widget, "ui_animations", {})
 		end
 
 		list_size_y = list_size_y + size_y
@@ -1135,12 +1136,15 @@ OptionsView.build_stepper_widget = function (self, element, scenegraph_id, base_
 	local callback_func = self:make_callback(callback_name)
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local condition_cb_name = element.condition
+	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local setup_name = element.setup
 	local selected_option, options, text, default_value = self[setup_name](self)
-	local widget = definitions.create_stepper_widget(text, options, selected_option, element.tooltip_text, scenegraph_id, base_offset)
+	local widget = definitions.create_stepper_widget(text, options, selected_option, element.tooltip_text, element.disabled_tooltip_text, scenegraph_id, base_offset)
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
+	content.condition_cb = condition_cb
 	content.on_hover_enter_callback = callback(self, "on_stepper_arrow_hover", widget)
 	content.on_hover_exit_callback = callback(self, "on_stepper_arrow_dehover", widget)
 	content.default_value = default_value
@@ -1153,6 +1157,8 @@ OptionsView.build_option_widget = function (self, element, scenegraph_id, base_o
 	local callback_func = self:make_callback(callback_name)
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local condition_cb_name = element.condition
+	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local setup_name = element.setup
 	local selected_option, options, text, default_value = self[setup_name](self)
 	local ui_renderer = self.ui_renderer
@@ -1160,6 +1166,7 @@ OptionsView.build_option_widget = function (self, element, scenegraph_id, base_o
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
+	content.condition_cb = condition_cb
 	content.default_value = default_value
 
 	return widget
@@ -1170,14 +1177,17 @@ OptionsView.build_drop_down_widget = function (self, element, scenegraph_id, bas
 	local callback_func = self:make_callback(callback_name)
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local condition_cb_name = element.condition
+	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local ignore_upper_case = element.ignore_upper_case
 	local setup_name = element.setup
 	local selected_option, options, text, default_value = self[setup_name](self)
-	local widget = definitions.create_drop_down_widget(text, options, selected_option, element.tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
+	local widget = definitions.create_drop_down_widget(text, options, selected_option, element.tooltip_text, element.disabled_tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
 	content.default_value = default_value
+	content.condition_cb = condition_cb
 
 	return widget
 end
@@ -1188,6 +1198,8 @@ OptionsView.build_slider_widget = function (self, element, scenegraph_id, base_o
 	local callback_on_release = element.callback_on_release
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local condition_cb_name = element.condition
+	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local setup_name = element.setup
 	local slider_image = element.slider_image
 	local slider_image_text = element.slider_image_text
@@ -1207,6 +1219,7 @@ OptionsView.build_slider_widget = function (self, element, scenegraph_id, base_o
 	content.on_hover_exit_callback = callback(self, "on_stepper_arrow_dehover", widget)
 	content.saved_value_cb = saved_value_cb
 	content.default_value = default_value
+	content.condition_cb = condition_cb
 
 	return widget
 end
@@ -1363,6 +1376,8 @@ OptionsView.build_checkbox_widget = function (self, element, scenegraph_id, base
 	local callback_func = self:make_callback(callback_name)
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local condition_cb_name = element.condition
+	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local setup_name = element.setup
 	local flag, text, default_value = self[setup_name](self)
 
@@ -1374,6 +1389,7 @@ OptionsView.build_checkbox_widget = function (self, element, scenegraph_id, base
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
 	content.default_value = default_value
+	content.condition_cb = condition_cb
 
 	return widget
 end
@@ -1398,6 +1414,8 @@ OptionsView.build_sorted_list_widget = function (self, element, scenegraph_id, b
 	local callback_func = callback(self, callback_name)
 	local saved_value_cb_name = element.saved_value
 	local saved_value_cb = callback(self, saved_value_cb_name)
+	local condition_cb_name = element.condition
+	local condition_cb = condition_cb_name and callback(self, condition_cb_name)
 	local setup_name = element.setup
 	local text, list_contents, list_styles, entry_size, item_content_change_function, default_value = self[setup_name](self)
 	local widget = definitions.create_sorted_list_widget(text, element.tooltip_text, list_contents, list_styles, entry_size, item_content_change_function, scenegraph_id, base_offset)
@@ -1405,6 +1423,7 @@ OptionsView.build_sorted_list_widget = function (self, element, scenegraph_id, b
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
 	content.default_value = default_value
+	content.condition_cb = condition_cb
 
 	return widget
 end
@@ -1704,7 +1723,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		network_manager:set_small_network_packets(user_settings.small_network_packets)
 	end
 
-	MatchmakingSettings.max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or user_settings.max_quick_play_search_range
+	MatchmakingSettings.max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or user_settings.max_quick_play_search_range or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
 	local max_stacking_frames = user_settings.max_stacking_frames
 
 	if max_stacking_frames then
@@ -3034,6 +3053,10 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 			if UIAnimation.completed(animation) then
 				ui_animations[name] = nil
 			end
+		end
+
+		if content.condition_cb then
+			content:condition_cb(style)
 		end
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -4897,6 +4920,144 @@ OptionsView.cb_gamma = function (self, content)
 	self.changed_render_settings.gamma = content.value
 
 	Application.set_render_setting("gamma", content.value)
+end
+
+OptionsView.cb_fsr_enabled_setup = function (self)
+	local options = {
+		{
+			value = false,
+			text = Localize("menu_settings_off")
+		},
+		{
+			value = true,
+			text = Localize("menu_settings_on")
+		}
+	}
+	local fsr_enabled = Application.user_setting("render_settings", "fsr_enabled")
+	local default_value = DefaultUserSettings.get("render_settings", "fsr_enabled")
+
+	if fsr_enabled then
+		slot4 = 2
+	else
+		local selected_option = 1
+	end
+
+	if default_value then
+		slot5 = 2
+	else
+		local default_option = 1
+	end
+
+	if not IS_WINDOWS then
+		slot6 = Application.set_render_setting
+		slot7 = "fsr_enabled"
+
+		if not fsr_enabled or not tostring(fsr_enabled) then
+			slot8 = tostring(default_value)
+		end
+
+		slot6(slot7, slot8)
+	end
+
+	return selected_option, options, "menu_settings_fsr_enabled", default_option
+end
+
+OptionsView.cb_fsr_enabled_saved_value = function (self, widget)
+	local fsr_enabled = assigned(self.changed_render_settings.fsr_enabled, Application.user_setting("render_settings", "fsr_enabled"))
+
+	if fsr_enabled then
+		slot3 = 2
+	else
+		local selected_option = 1
+	end
+
+	widget.content.current_selection = selected_option
+end
+
+OptionsView.cb_fsr_enabled = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_render_settings.fsr_enabled = value
+
+	if not IS_WINDOWS then
+		Application.set_render_setting("fsr_enabled", tostring(value))
+	end
+end
+
+OptionsView.cb_fsr_enabled_condition = function (self, content, style)
+	local content_enabled = not content.disable
+	local taa_enabled_changed_value = self.changed_render_settings.taa_enabled
+	local taa_enabled_value = Application.user_setting("render_settings", "taa_enabled")
+	local fsr_allowed = nil
+
+	if taa_enabled_changed_value ~= nil then
+		fsr_allowed = taa_enabled_changed_value
+	else
+		fsr_allowed = taa_enabled_value
+	end
+
+	if not fsr_allowed and content_enabled and content.current_selection ~= content.default_value then
+		content.current_selection = content.default_value
+
+		self:cb_fsr_enabled(content, style)
+	end
+
+	content.disabled = not fsr_allowed
+end
+
+OptionsView.cb_fsr_quality_setup = function (self)
+	local options = {
+		{
+			value = 1,
+			text = Localize("menu_settings_performance")
+		},
+		{
+			value = 2,
+			text = Localize("menu_settings_balanced")
+		},
+		{
+			value = 3,
+			text = Localize("menu_settings_quality")
+		},
+		{
+			value = 4,
+			text = Localize("menu_settings_ultra_quality")
+		}
+	}
+	local fsr_quality = Application.user_setting("render_settings", "fsr_quality")
+	local default_value = DefaultUserSettings.get("render_settings", "fsr_quality")
+	local selected_option = fsr_quality
+	local default_option = default_value
+
+	return selected_option, options, "menu_settings_fsr_quality", default_option
+end
+
+OptionsView.cb_fsr_quality_saved_value = function (self, widget)
+	local fsr_quality = assigned(self.changed_render_settings.fsr_quality, Application.user_setting("render_settings", "fsr_quality"))
+	widget.content.current_selection = fsr_quality
+end
+
+OptionsView.cb_fsr_quality = function (self, content, style, called_from_graphics_quality)
+	local value = content.options_values[content.current_selection]
+	self.changed_render_settings.fsr_quality = value
+
+	if not IS_WINDOWS then
+		Application.set_render_setting("fsr_quality", value)
+	end
+end
+
+OptionsView.cb_fsr_quality_condition = function (self, content, style)
+	local content_enabled = not content.disable
+	local taa_enabled_changed_value = self.changed_render_settings.taa_enabled
+	local taa_enabled_value = Application.user_setting("render_settings", "taa_enabled")
+	local fsr_allowed = nil
+
+	if taa_enabled_changed_value ~= nil then
+		fsr_allowed = taa_enabled_changed_value
+	else
+		fsr_allowed = taa_enabled_value
+	end
+
+	content.disabled = not fsr_allowed
 end
 
 OptionsView.cb_sun_shadows_setup = function (self)

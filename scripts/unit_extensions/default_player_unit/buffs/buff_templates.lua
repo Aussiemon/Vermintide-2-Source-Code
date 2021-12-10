@@ -254,7 +254,7 @@ end
 ProcEventParams = {
 	on_player_damage_dealt = make_proc_param_lookup("attacked_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "first_hit", "PROC_MODIFIABLE"),
 	on_damage_dealt = make_proc_param_lookup("attacked_unit", "attacker_unit", "damage_amount", "hit_zone_name", "no_crit_headshot_damage", "is_critical_strike", "buff_attack_type", "target_index", "damage_source", "damage_type", "first_hit", "PROC_MODIFIABLE"),
-	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number")
+	on_critical_hit = make_proc_param_lookup("hit_unit", "attack_type", "hit_zone_name", "target_number", "buff_type")
 }
 local buff_params = {}
 
@@ -1014,18 +1014,21 @@ ProcFunctions = {
 	add_gromril_delay = function (player, buff, params)
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) then
-			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+		if not ALIVE[player_unit] then
+			return
+		end
 
-			if talent_extension then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+		if is_local(player_unit) or (is_server() and is_bot(player_unit)) then
+			local buff_name = "bardin_ironbreaker_gromril_delay"
+			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
-				if talent_extension:has_talent("bardin_ironbreaker_max_gromril_delay", "dwarf_ranger", true) then
-					buff_extension:add_buff("bardin_ironbreaker_gromril_delay_short", buff_params)
-				else
-					buff_extension:add_buff("bardin_ironbreaker_gromril_delay")
-				end
+			if talent_extension:has_talent("bardin_ironbreaker_max_gromril_delay", "dwarf_ranger", true) then
+				buff_name = "bardin_ironbreaker_gromril_delay_short"
 			end
+
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+			buff_extension:add_buff(buff_name)
 		end
 	end,
 	reduce_ally_damage_taken_on_revived_ally = function (player, buff, params)
@@ -3323,7 +3326,7 @@ ProcFunctions = {
 
 						local buff_system = Managers.state.entity:system("buff_system")
 						local server_buff_ids = buff.server_buff_ids
-						num_stacks = math.min(#server_buff_ids, num_stacks)
+						num_stacks = (server_buff_ids and math.min(#server_buff_ids, num_stacks)) or 0
 
 						for i = 1, num_stacks, 1 do
 							local buff_to_remove = table.remove(server_buff_ids)
@@ -3757,8 +3760,16 @@ ProcFunctions = {
 	reduce_activated_ability_cooldown_with_internal_cooldown_on_crit = function (player, buff, params)
 		local player_unit = player.player_unit
 		local attack_type = params[2]
+		local buff_type = params[5]
+		local valid_attack = nil
 
-		if attack_type and (attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe") and ALIVE[player_unit] then
+		if RangedBuffTypes[buff_type] then
+			valid_attack = attack_type == "projectile" or attack_type == "instant_projectile" or attack_type == "aoe"
+		else
+			valid_attack = attack_type == "light_attack" or attack_type == "heavy_attack"
+		end
+
+		if valid_attack and ALIVE[player_unit] then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_template = buff.template
 			local buff_to_add = buff_template.buff_to_add

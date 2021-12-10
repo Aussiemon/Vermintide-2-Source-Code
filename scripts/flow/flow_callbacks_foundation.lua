@@ -531,9 +531,10 @@ end
 
 function flow_callback_attach_player_item(params)
 	if params.item == nil then
-		return
+		return {}
 	end
 
+	local item_unit = nil
 	local parent_unit = params.unit
 	local world = Unit.world(parent_unit)
 
@@ -573,7 +574,7 @@ function flow_callback_attach_player_item(params)
 						end
 					end
 
-					if weapon_template.wield_anim ~= nil and not params.skip_wield_anim then
+					if Unit.has_animation_state_machine(parent_unit) and weapon_template.wield_anim ~= nil and not params.skip_wield_anim then
 						Unit.animation_event(parent_unit, weapon_template.wield_anim)
 					end
 				else
@@ -583,7 +584,7 @@ function flow_callback_attach_player_item(params)
 				if item.unit ~= nil then
 					if Attachments ~= nil then
 						local hat_template = Attachments[item.template]
-						item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, params.unwielded)
+						item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, nil)
 						equip_event = Unit.get_data(item_unit, "equip_event") or hat_template.show_attachments_event or nil
 						material_switches = nil
 
@@ -595,9 +596,9 @@ function flow_callback_attach_player_item(params)
 							Unit.flow_event(parent_unit, equip_event)
 						end
 
-						local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+						local flow_item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
 
-						for _, attached_unit in pairs(flow_unit_attachments) do
+						for _, attached_unit in pairs(flow_item_attachments) do
 							if equip_event then
 								Unit.flow_event(attached_unit, equip_event)
 							end
@@ -614,27 +615,37 @@ function flow_callback_attach_player_item(params)
 				end
 			elseif item.slot_type == "skin" then
 				if Cosmetics ~= nil then
-					local skin_template = Cosmetics[item.temporary_template]
+					local skin_template = Cosmetics[params.item]
 
-					if skin_template.material_changes ~= nil then
-						local flow_unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
+					if skin_template.third_person_attachment ~= nil then
+						item_unit = attach_player_item(parent_unit, skin_template.third_person_attachment.unit, skin_template.third_person_attachment.attachment_node_linking, nil)
 
-						if flow_unit_attachments then
+						if skin_template.material_changes ~= nil then
 							for slot_name, material_name in pairs(skin_template.material_changes.third_person) do
-								for _, attached_unit in pairs(flow_unit_attachments) do
-									Unit.set_material(attached_unit, slot_name, material_name)
-								end
+								Unit.set_material(item_unit, slot_name, material_name)
 							end
+						end
+
+						if Unit.has_animation_state_machine(item_unit) and Unit.has_animation_event(item_unit, "enable") then
+							Unit.animation_event(item_unit, "enable")
 						end
 					end
 				else
 					print("SKIPPED PLAYER COSMETICS: Missing Cosmetics table")
 				end
+			else
+				print("SKIPPED PLAYER ITEM: Unsupported slot type " .. item.slot_type)
 			end
+		else
+			print("SKIPPED PLAYER ITEM: Missing item " .. params.item)
 		end
 	else
 		print("SKIPPED PLAYER INVENTORY: Missing ItemMasterList table")
 	end
+
+	return {
+		item_unit = item_unit
+	}
 end
 
 function attach_player_item(parent_unit, child_unit_name, node_link_template, unwielded)
@@ -696,6 +707,8 @@ function flow_callback_remove_player_items(params)
 	end
 
 	Unit.set_data(parent_unit, "flow_item_attachments", {})
+
+	return {}
 end
 
 function flow_callback_unattach_unit(params)

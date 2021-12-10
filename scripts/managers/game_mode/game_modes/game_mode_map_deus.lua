@@ -122,6 +122,17 @@ GameModeMapDeus.ended = function (self, reason)
 	end
 end
 
+GameModeMapDeus.local_player_ready_to_start = function (self, player)
+	local profile_index = player:profile_index()
+	local career_index = player:career_index()
+
+	if profile_index == 0 or career_index == 0 then
+		return false
+	end
+
+	return true
+end
+
 GameModeMapDeus.local_player_game_starts = function (self, player, loading_context)
 	self._game_started = true
 

@@ -167,7 +167,17 @@ local MUTATORS_PER_COLUMN = 1
 local MUTATOR_ROWS = 3
 local MAX_MUTATORS = MUTATORS_PER_COLUMN * MUTATOR_ROWS
 
-IngamePlayerListUI._setup_mutator_data = function (self, mutators)
+IngamePlayerListUI._setup_mutator_data = function (self)
+	local current_level_settings = LevelHelper:current_level_settings()
+	local mutators = nil
+
+	if current_level_settings.hub_level then
+		mutators = Managers.deed:mutators()
+		mutators = mutators and table.set(mutators)
+	else
+		mutators = Managers.state.game_mode:activated_mutators()
+	end
+
 	local widgets_by_name = self._widgets_by_name
 	local mutator_summary_widget1 = widgets_by_name.mutator_summary1
 	local mutator_storage1 = mutator_summary_widget1.content.item.mutators
@@ -277,6 +287,9 @@ IngamePlayerListUI._setup_chaos_wastes_info = function (self)
 end
 
 IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
+	table.clear(self._reward_widgets)
+
+	self._num_rewards = 0
 	local deed_reward_data = Managers.deed:rewards()
 
 	if not deed_reward_data then
@@ -286,8 +299,6 @@ IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
 	local item_width = 60
 	local spacing = 20
 	local offset = 0
-
-	table.clear(self._reward_widgets)
 
 	for i = 1, #deed_reward_data, 1 do
 		local reward_name = deed_reward_data[i]
@@ -1044,10 +1055,7 @@ IngamePlayerListUI._set_active = function (self, active)
 			end
 		end
 
-		local game_mode_manager = Managers.state.game_mode
-		local activated_mutators = game_mode_manager:activated_mutators()
-
-		self:_setup_mutator_data(activated_mutators)
+		self:_setup_mutator_data()
 		self:_setup_deed_reward_data()
 		self:_setup_chaos_wastes_info()
 		Managers.input:enable_gamepad_cursor()
@@ -1074,7 +1082,7 @@ IngamePlayerListUI._set_active = function (self, active)
 		self._cursor_active = false
 	end
 
-	Managers.state.event:trigger("ingame_player_list_enabled", active)
+	Managers.state.event:trigger("ingame_player_list_enabled", active, true)
 end
 
 IngamePlayerListUI._update_fade_in_duration = function (self, dt)
@@ -1277,22 +1285,6 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local grimoire_debuff_divider_style = style.grimoire_debuff_divider
 			local ability_bar_content = content.ability_bar
 
-			if GameSettingsDevelopment.show_ingame_player_list_talents then
-				local talent_interface = Managers.backend:get_talents_interface()
-				local profile_name = player:profile_display_name()
-				local career_name = player:career_name()
-				local talent_ids = talent_interface:get_talent_ids(career_name)
-				local profile_talents = Talents[profile_name]
-
-				for i = 1, 6, 1 do
-					local id = talent_ids[i]
-					local talent = profile_talents[id]
-					local talent_content = content["talent_" .. i]
-					talent_content.talent = talent
-					talent_content.icon = talent and talent.icon
-				end
-			end
-
 			if game and go_id then
 				local ability_cooldown_percentage = GameSession.game_object_field(game, go_id, "ability_percentage") or 0
 				ability_bar_content.bar_value = 1 - ability_cooldown_percentage
@@ -1307,15 +1299,61 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local profile_settings = profiles[profile_index]
 			local loadout = player_loadouts[unique_id] or EMPTY_TABLE
 			local equipment = inventory_extension:equipment()
+			local is_build_visible = true
+
+			if player.local_player or (player.bot_player and player.is_server) then
+				is_build_visible = true
+			else
+				local remote_privacy = player:get_data("playerlist_build_privacy")
+				local own_privacy = Application.user_setting("playerlist_build_privacy")
+				local privacy_level = math.min(remote_privacy, own_privacy)
+
+				if privacy_level == PrivacyLevels.friends then
+					is_build_visible = Friends.in_category(player_data.peer_id, Friends.FRIEND_FLAG)
+				elseif privacy_level == PrivacyLevels.private then
+					is_build_visible = false
+				end
+			end
 
 			for slot_name, item in pairs(loadout) do
 				local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
-				local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
+				local inventory_icon = UIUtils.get_ui_information_from_item(item)
+
+				if not is_build_visible then
+					inventory_icon = nil
+					rarity = nil
+				end
+
 				content[slot_name] = inventory_icon
-				content[slot_name .. "_rarity_texture"] = UISettings.item_rarity_textures[rarity]
+				content[slot_name .. "_rarity_texture"] = rarity and UISettings.item_rarity_textures[rarity]
 
 				if UIUtils.is_button_hover(widget, slot_name .. "_hotspot") then
 					self:_update_item_tooltip_widget(item, widget.offset)
+				end
+			end
+
+			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+
+			if talent_extension then
+				local talent_ids = talent_extension:get_talent_ids()
+				local profile_name = player:profile_display_name()
+				local profile_talents = Talents[profile_name]
+
+				for i = 1, 6, 1 do
+					local id = talent_ids[i]
+					local talent = profile_talents and profile_talents[id]
+					local talent_content = content["talent_" .. i]
+
+					if not is_build_visible then
+						talent = nil
+					end
+
+					talent_content.talent = talent
+					talent_content.icon = talent and talent.icon
+
+					if talent_content.is_hover then
+						ui_scenegraph.talent_tooltip.local_position[2] = widget.offset[2]
+					end
 				end
 			end
 		end

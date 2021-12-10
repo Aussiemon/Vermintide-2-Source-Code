@@ -1138,10 +1138,7 @@ end
 
 PlayerBotBase._update_attack_request = function (self, t)
 	local blackboard = self._blackboard
-	local inventory_extension = blackboard.inventory_extension
-	local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
-	local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
-	local weapon_extension = current_action_extension or right_hand_weapon_extension or left_hand_weapon_extension
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		weapon_extension:update_bot_attack_request(t)
@@ -1997,7 +1994,7 @@ PlayerBotBase._update_weapon_metadata = function (self, template)
 			for name, _ in pairs(used_actions.action_one) do
 				local current_attack = weapon_attacks[name]
 
-				if current_attack.kind == "melee_start" or current_attack.melee_start then
+				if ActionUtils.is_melee_start_sub_action(current_attack) then
 					local chain_attacks = current_attack.allowed_chain_actions
 					local anim_speed_scale = current_attack.anim_time_scale or 1
 					local min_idx, min, max_idx, max = find_chain_times(chain_attacks)

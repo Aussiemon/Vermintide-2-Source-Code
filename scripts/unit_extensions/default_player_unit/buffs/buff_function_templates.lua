@@ -901,7 +901,7 @@ BuffFunctionTemplates.functions = {
 		local is_husk = owner.remote or owner.bot_player or false
 
 		if is_husk then
-			Unit.flow_event(unit, "impact_vomit")
+			CosmeticsUtils.flow_event_mesh_3p(unit, "impact_vomit")
 		end
 
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1024,7 +1024,7 @@ BuffFunctionTemplates.functions = {
 		local is_husk = owner.remote or owner.bot_player or false
 
 		if is_husk then
-			Unit.flow_event(unit, "impact_vomit")
+			CosmeticsUtils.flow_event_mesh_3p(unit, "impact_vomit")
 		end
 
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1725,7 +1725,7 @@ BuffFunctionTemplates.functions = {
 		local is_husk = owner.remote or owner.bot_player or false
 
 		if is_husk then
-			Unit.flow_event(unit, "impact_warpfire")
+			CosmeticsUtils.flow_event_mesh_3p(unit, "impact_warpfire")
 		end
 
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -2555,6 +2555,7 @@ BuffFunctionTemplates.functions = {
 
 		local template = buff.template
 		local range = buff.range
+		local disregard_self = template.disregard_self
 		local range_squared = range * range
 		local owner_position = POSITION_LOOKUP[owner_unit]
 		local buff_to_add = template.buff_to_add
@@ -2571,7 +2572,7 @@ BuffFunctionTemplates.functions = {
 		for i = 1, num_units, 1 do
 			local unit = player_and_bot_units[i]
 
-			if Unit.alive(unit) then
+			if Unit.alive(unit) and (not disregard_self or unit ~= owner_unit) then
 				local unit_position = POSITION_LOOKUP[unit]
 				local distance_squared = Vector3.distance_squared(owner_position, unit_position)
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -3790,8 +3791,7 @@ BuffFunctionTemplates.functions = {
 
 				if has_action then
 					local current_action_settings = lh_weapon_extension:get_current_action_settings()
-					local current_action_type = current_action_settings.kind
-					add_buff_on_action_type = current_action_type == "melee_start"
+					add_buff_on_action_type = ActionUtils.is_melee_start_sub_action(current_action_settings)
 				end
 			end
 
@@ -3800,8 +3800,7 @@ BuffFunctionTemplates.functions = {
 
 				if has_action then
 					local current_action_settings = rh_weapon_extension:get_current_action_settings()
-					local current_action_type = current_action_settings.kind
-					add_buff_on_action_type = current_action_type == "melee_start"
+					add_buff_on_action_type = ActionUtils.is_melee_start_sub_action(current_action_settings)
 				end
 			end
 

@@ -28,11 +28,9 @@ StoreWorldMarkerExtension._extensions_ready = function (self)
 	end
 
 	self._local_player = Managers.player:local_player()
+	self._backend_store = Managers.backend:get_interface("peddler")
 	self._unseen_shop_items = ItemHelper.has_unseen_shop_items()
-
-	if GameSettingsDevelopment.store_nags then
-		self._initialized = true
-	end
+	self._initialized = true
 end
 
 StoreWorldMarkerExtension._add_marker = function (self, cb)
@@ -56,6 +54,11 @@ StoreWorldMarkerExtension.update = function (self, unit, dummy_input, dt, contex
 	end
 
 	local should_show = self._unseen_shop_items
+	local login_rewards = not GameSettingsDevelopment.use_offline_backend and self._backend_store:get_login_rewards()
+
+	if login_rewards and login_rewards.next_claim_timestamp < os.time() then
+		should_show = true
+	end
 
 	if should_show == not self._id then
 		if should_show then

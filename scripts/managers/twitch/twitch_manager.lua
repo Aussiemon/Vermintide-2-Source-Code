@@ -6,7 +6,11 @@ local MIN_VOTES_LEFT_IN_ROTATION = 2
 
 local function debug_print(message, ...)
 	if DEBUG_TWITCH then
-		print("[TwitchManager] " .. string.format(message, ...))
+		if type(message) == "table" then
+			table.dump(message, "[TwitchManager]")
+		else
+			print("[TwitchManager] " .. string.format(message, ...))
+		end
 	end
 end
 
@@ -914,8 +918,10 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 
 		network_event_delegate:register(self, unpack(RPCS))
 
-		if is_server and self._connected then
-			self._twitch_game_mode = TwitchGameMode:new(self)
+		if self._connected then
+			if is_server then
+				self._twitch_game_mode = TwitchGameMode:new(self)
+			end
 
 			self:_load_sound_bank()
 		end

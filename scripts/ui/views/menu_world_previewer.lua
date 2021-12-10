@@ -262,10 +262,10 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 	MenuWorldPreviewer.super._update_units_visibility(self, dt)
 end
 
-MenuWorldPreviewer._set_character_visibility = function (self, visible)
+MenuWorldPreviewer._set_character_visibility = function (self, visible, camera_move_duration)
 	MenuWorldPreviewer.super._set_character_visibility(self, visible)
 
-	local camera_move_duration = self._camera_move_duration
+	local camera_move_duration = camera_move_duration or self._camera_move_duration
 
 	if camera_move_duration then
 		local x = 0
@@ -521,17 +521,8 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 
 	self._current_career_name = career_name
 	self.character_unit_skin_data = nil
-	local package_names = {}
+	local package_names = CosmeticsUtils.retrieve_skin_packages_for_preview(skin_name)
 	local skin_data = Cosmetics[skin_name]
-	local unit_name = skin_data.third_person
-	local material_changes = skin_data.material_changes
-	package_names[#package_names + 1] = unit_name
-
-	if material_changes then
-		local material_package = material_changes.package_name
-		package_names[#package_names + 1] = material_package
-	end
-
 	local data = {
 		num_loaded_packages = 0,
 		career_name = career_name,

@@ -4,14 +4,8 @@ ActionDummy.init = function (self, world, item_name, is_server, owner_unit, dama
 	ActionDummy.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
 
 	self._owner_unit = owner_unit
-
-	if ScriptUnit.has_extension(owner_unit, "status_system") then
-		self.status_extension = ScriptUnit.extension(owner_unit, "status_system")
-	end
-
-	if ScriptUnit.has_extension(weapon_unit, "spread_system") then
-		self.spread_extension = ScriptUnit.extension(weapon_unit, "spread_system")
-	end
+	self.status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+	self.spread_extension = ScriptUnit.has_extension(weapon_unit, "spread_system")
 end
 
 ActionDummy.client_owner_start_action = function (self, new_action, t)

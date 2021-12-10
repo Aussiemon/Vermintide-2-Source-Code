@@ -27,6 +27,7 @@ settings.achievement_outline = {
 					"grudge_mark_kills_grind_bw_scholar",
 					"grudge_mark_kills_grind_bw_unchained",
 					"grudge_mark_kills_grind_wh_zealot",
+					"grudge_mark_kills_grind_wh_priest",
 					"kill_each_monster_grudge_we_thornsister",
 					"kill_each_monster_grudge_we_shade",
 					"kill_each_monster_grudge_bw_adept",
@@ -45,6 +46,7 @@ settings.achievement_outline = {
 					"kill_each_monster_grudge_bw_scholar",
 					"kill_each_monster_grudge_bw_unchained",
 					"kill_each_monster_grudge_wh_zealot",
+					"kill_each_monster_grudge_wh_priest",
 					"kill_grudge_each_expedition_we_thornsister",
 					"kill_grudge_each_expedition_we_shade",
 					"kill_grudge_each_expedition_bw_adept",
@@ -63,6 +65,7 @@ settings.achievement_outline = {
 					"kill_grudge_each_expedition_bw_scholar",
 					"kill_grudge_each_expedition_bw_unchained",
 					"kill_grudge_each_expedition_wh_zealot",
+					"kill_grudge_each_expedition_wh_priest",
 					"complete_all_career_grudge_challenges_we_thornsister",
 					"complete_all_career_grudge_challenges_we_shade",
 					"complete_all_career_grudge_challenges_bw_adept",
@@ -80,7 +83,8 @@ settings.achievement_outline = {
 					"complete_all_career_grudge_challenges_es_mercenary",
 					"complete_all_career_grudge_challenges_bw_scholar",
 					"complete_all_career_grudge_challenges_bw_unchained",
-					"complete_all_career_grudge_challenges_wh_zealot"
+					"complete_all_career_grudge_challenges_wh_zealot",
+					"complete_all_career_grudge_challenges_wh_priest"
 				}
 			}
 		}

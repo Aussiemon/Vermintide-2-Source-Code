@@ -797,11 +797,60 @@ UISettings.item_rarity_textures = {
 	rare = "icon_bg_rare",
 	unique = "icon_bg_unique"
 }
+UISettings.hud_inventory_panel_data = {
+	default = {
+		texture_id = "hud_inventory_panel",
+		texture_size = {
+			624,
+			66
+		}
+	},
+	dr_engineer = {
+		texture_id = "hud_inventory_panel_cog",
+		texture_size = {
+			630,
+			73
+		}
+	}
+}
 
+DLCUtils.merge("hud_inventory_panel_data", UISettings.hud_inventory_panel_data)
+
+UISettings.gamepad_ability_ui_data = {
+	default = {
+		always_show_activated_ability_input = false,
+		ability_top_texture_id = "ability_glow",
+		ability_effect = "gamepad_ability_effect",
+		lit_frame_id = false
+	},
+	dr_engineer = {
+		always_show_activated_ability_input = true,
+		ability_top_texture_id = "icon_rotarygun",
+		ability_effect = "gamepad_ability_effect_cog",
+		lit_frame_id = "lit_frame_engineer"
+	}
+}
+
+DLCUtils.merge("gamepad_ability_ui_data", UISettings.gamepad_ability_ui_data)
+
+UISettings.ability_ui_data = {
+	default = {
+		ability_effect_top = "ability_effect_top",
+		ability_bar_highlight = "hud_player_ability_bar_glow",
+		ability_effect = "ability_effect"
+	},
+	we_thornsister = {
+		ability_effect_top = "ability_effect_top",
+		ability_bar_highlight = "hud_player_ability_bar_glow",
+		ability_effect = "ability_effect",
+		ability_effect_thorn = "ability_effect_thornsister",
+		ability_effect_top_thorn = "ability_effect_top_thornsister"
+	}
+}
+
+DLCUtils.merge("ability_ui_data", UISettings.gamepad_ability_ui_data)
 setmetatable(UISettings.item_rarity_textures, {
 	__index = function (self, rarity)
-		Crashify.print_exception("UISettings", "Unknown rarity: " .. tostring(rarity))
-
 		return "icons_placeholder"
 	end
 })
@@ -1121,6 +1170,10 @@ UISettings.dlc_order_data = {
 		display_name = "store_grass_title"
 	},
 	{
+		dlc = "grass_2",
+		display_name = "store_grass_title"
+	},
+	{
 		dlc = "mm_1001",
 		display_name = "display_name_mercenary_hat_1001"
 	},
@@ -1247,6 +1300,14 @@ UISettings.dlc_order_data = {
 	{
 		dlc = "woods_upgrade",
 		display_name = "store_woods_upgrade_title"
+	},
+	{
+		dlc = "bless",
+		display_name = "store_bless_title"
+	},
+	{
+		dlc = "bless_upgrade",
+		display_name = "store_bless_upgrade_title"
 	}
 }
 local pc_button_icon = {

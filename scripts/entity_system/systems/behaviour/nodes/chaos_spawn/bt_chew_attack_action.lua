@@ -47,6 +47,8 @@ BTChewAttackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		blackboard.has_grabbed_victim = nil
 		blackboard.victim_grabbed = nil
+	else
+		blackboard.wants_to_throw = true
 	end
 
 	if not AiUtils.unit_alive(blackboard.victim_grabbed) then
@@ -68,7 +70,7 @@ BTChewAttackAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.anim_cb_chew_attack_finished = false
 	end
 
-	if blackboard.target_dist < 4 and blackboard.chew_attacks_done >= 2 then
+	if blackboard.target_dist < 4 and blackboard.action.max_chew_attacks <= blackboard.chew_attacks_done then
 		return "done"
 	end
 
@@ -77,18 +79,19 @@ end
 
 BTChewAttackAction.anim_cb_chew_attack = function (self, unit, blackboard)
 	local action = blackboard.action
-
-	AiUtils.damage_target(blackboard.victim_grabbed, unit, action, action.damage)
-
+	local chew_damage = AiUtils.damage_target(blackboard.victim_grabbed, unit, action, action.damage)
 	blackboard.chew_attacks_done = blackboard.chew_attacks_done + 1
-	local heal_type = "leech"
-	local difficulty_level = Managers.state.difficulty:get_difficulty()
-	local heal_amount = action.health_leech[difficulty_level]
-	heal_amount = heal_amount * blackboard.chew_attacks_done
-	heal_amount = DamageUtils.networkify_damage(heal_amount)
-	local health_extension = ScriptUnit.extension(unit, "health_system")
 
-	health_extension:add_heal(unit, heal_amount, nil, heal_type)
+	if chew_damage > 0 then
+		local heal_type = "leech"
+		local difficulty_level = Managers.state.difficulty:get_difficulty()
+		local heal_amount = chew_damage * action.health_leech_multiplier[difficulty_level]
+		heal_amount = heal_amount * blackboard.chew_attacks_done
+		heal_amount = DamageUtils.networkify_damage(heal_amount)
+		local health_extension = ScriptUnit.extension(unit, "health_system")
+
+		health_extension:add_heal(unit, heal_amount, nil, heal_type)
+	end
 
 	if action.max_chew_attacks <= blackboard.chew_attacks_done then
 		blackboard.wants_to_throw = true

@@ -19,16 +19,20 @@ BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
 	self._steam_stock_ready = not HAS_STEAM
 	self._app_prices_ready = false
 	self._steam_item_prices = {}
+	self._login_rewards_cooldown = 0
+	self._is_done_claiming = true
+	self._discounted_shilling_items = {}
 
 	self:refresh_stock()
 	self:refresh_chips()
 	self:refresh_layout_override(true)
 	self:refresh_app_prices()
 	self:refresh_platform_item_prices()
+	self:refresh_login_rewards()
 end
 
 BackendInterfacePeddlerPlayFab.ready = function (self)
-	return self._stock_ready and self._steam_stock_ready and self._chips_ready and self._app_prices_ready
+	return self._login_rewards and self._stock_ready and self._steam_stock_ready and self._chips_ready and self._app_prices_ready
 end
 
 BackendInterfacePeddlerPlayFab.destroy = function (self)
@@ -65,6 +69,10 @@ end
 
 BackendInterfacePeddlerPlayFab.is_purchaseable = function (self, steam_itemdefid)
 	return self._steam_item_prices[steam_itemdefid] ~= nil
+end
+
+BackendInterfacePeddlerPlayFab.is_discounted_shilling_item = function (self, item_key)
+	return self._discounted_shilling_items[item_key] ~= nil
 end
 
 BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
@@ -145,6 +153,9 @@ end
 
 BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, result)
 	local stock = result.Store
+
+	table.clear(self._discounted_shilling_items)
+
 	local peddler_stock = self._peddler_stock
 	local mirror = self._backend_mirror
 	local inventory_items = mirror:get_all_inventory_items()
@@ -174,18 +185,28 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 			local verified, has_platform = verify_stock_item(data)
 
 			if verified and not has_platform then
-				peddler_stock[stock_index] = {
+				local regular_prices = item.CustomData.regular_prices
+				local current_prices = item.VirtualCurrencyPrices
+				local item_data = {
 					type = "item",
 					data = table.clone(data),
 					key = key,
 					id = key,
-					regular_prices = item.CustomData.regular_prices,
-					current_prices = item.VirtualCurrencyPrices,
+					regular_prices = regular_prices,
+					current_prices = current_prices,
 					end_time = item.CustomData.end_time,
 					owned = owned,
 					dlc_name = data.dlc_name,
 					steam_itemdefid = has_steam and data.steam_itemdefid
 				}
+				local regular_price = regular_prices and regular_prices.SM
+				local current_price = current_prices and current_prices.SM
+
+				if regular_price and current_price and current_price < regular_price then
+					self._discounted_shilling_items[key] = item_data
+				end
+
+				peddler_stock[stock_index] = item_data
 				stock_index = stock_index + 1
 
 				if not seen_shop_items[key] then
@@ -312,10 +333,18 @@ BackendInterfacePeddlerPlayFab._refresh_layout_override_cb = function (self, ext
 	self:refresh_layout_override(true, external_cb)
 end
 
-BackendInterfacePeddlerPlayFab.refresh_platform_item_prices = function (self)
+BackendInterfacePeddlerPlayFab.store_display_items = function (self)
+	local mirror = self._backend_mirror
+	local title_data = mirror:get_title_data()
+	local store_display_items_str = title_data.store_display_items
+
+	return store_display_items_str and cjson.decode(store_display_items_str)
+end
+
+BackendInterfacePeddlerPlayFab.refresh_platform_item_prices = function (self, external_cb)
 	if HAS_STEAM then
 		print("[BackendInterfacePeddlerPlayFab] refresh steam item prices")
-		Managers.steam:request_item_prices(callback(self, "_refresh_steam_item_prices_cb"))
+		Managers.steam:request_item_prices(callback(self, "_refresh_steam_item_prices_cb", external_cb))
 	end
 end
 
@@ -335,7 +364,7 @@ BackendInterfacePeddlerPlayFab._read_bundle_from_steam = function (self, steam_i
 	end
 end
 
-BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, price_list, currency)
+BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, external_cb, price_list, currency)
 	print("_refresh_steam_item_prices_cb")
 
 	local mirror = self._backend_mirror
@@ -383,8 +412,9 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, p
 					key = item_key,
 					id = item_key,
 					owned = owned,
-					steam_itemdefid = master_item.steam_itemdefid,
-					steam_price = price
+					steam_itemdefid = steam_itemdefid,
+					steam_price = price,
+					steam_data = SteamItemService.get_item_data(steam_itemdefid)
 				}
 				steam_stock_index = steam_stock_index + 1
 			end
@@ -408,6 +438,10 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, p
 
 	self._steam_item_currency = string.gsub(currency, "%z", "")
 	self._steam_stock_ready = true
+
+	if external_cb then
+		external_cb()
+	end
 end
 
 BackendInterfacePeddlerPlayFab.refresh_app_prices = function (self, external_cb)
@@ -685,6 +719,80 @@ end
 BackendInterfacePeddlerPlayFab._refresh_layout_override_on_error_cb = function (self, external_cb)
 	Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_NON_FATAL_STORE_ERROR, nil)
 	external_cb(false)
+end
+
+BackendInterfacePeddlerPlayFab.refresh_login_rewards = function (self, external_cb)
+	local request = {
+		FunctionName = "getStoreRewards"
+	}
+	local request_cb = callback(self, "_refresh_login_rewards_cb", external_cb)
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(request, request_cb, false)
+end
+
+BackendInterfacePeddlerPlayFab._refresh_login_rewards_cb = function (self, external_cb, result)
+	local login_rewards = result.FunctionResult
+	login_rewards.count_down_to_next_claim = nil
+
+	if not GameSettingsDevelopment.use_offline_backend and login_rewards.total_claims > 0 then
+		login_rewards.reward_index = login_rewards.reward_index + 1
+	end
+
+	self._login_rewards = login_rewards
+
+	if external_cb then
+		external_cb()
+	end
+end
+
+BackendInterfacePeddlerPlayFab.get_login_rewards = function (self)
+	return self._login_rewards
+end
+
+BackendInterfacePeddlerPlayFab.done_claiming_login_rewards = function (self)
+	return self._is_done_claiming
+end
+
+BackendInterfacePeddlerPlayFab.claim_login_rewards = function (self, external_cb)
+	if not self._is_done_claiming then
+		return
+	end
+
+	local request = {
+		FunctionName = "claimStoreRewards"
+	}
+	local request_cb = callback(self, "_claim_store_rewards_cb", external_cb)
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(request, request_cb, true)
+
+	self._is_done_claiming = false
+end
+
+BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, external_cb, result)
+	self:_refresh_login_rewards_cb(nil, result)
+	self:refresh_chips()
+
+	local granted_items = result.FunctionResult.items
+
+	if granted_items then
+		local backend_mirror = self._backend_mirror
+
+		for i = 1, #granted_items, 1 do
+			local item = granted_items[i]
+			local backend_id = item.ItemInstanceId
+			local amount = item.UsesIncrementedBy or 1
+
+			backend_mirror:add_item(backend_id, item)
+		end
+
+		if not table.is_empty(granted_items) then
+			Managers.telemetry.events:store_calendar_rewards_claimed(result.FunctionResult)
+		end
+	end
+
+	self._is_done_claiming = true
 end
 
 return

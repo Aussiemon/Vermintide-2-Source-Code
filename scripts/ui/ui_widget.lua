@@ -21,15 +21,12 @@ UIWidget.init = function (widget_definition)
 		local pass = passes[i]
 		local pass_type = pass.pass_type
 		local ui_pass = UIPasses[pass_type]
-
-		fassert(ui_pass, "No such pass-type: %s", pass_type)
-
 		pass_data[i] = ui_pass.init(pass, content, style, style_global)
 	end
 
-	return {
+	local widget = {
 		scenegraph_id = widget_definition.scenegraph_id,
-		offset = offset,
+		offset = offset or false,
 		element = {
 			passes = passes,
 			pass_data = pass_data
@@ -39,6 +36,8 @@ UIWidget.init = function (widget_definition)
 		animations = {},
 		style_global = style_global
 	}
+
+	return widget
 end
 
 UIWidget.destroy = function (ui_renderer, widget)

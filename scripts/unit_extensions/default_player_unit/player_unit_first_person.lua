@@ -2,6 +2,8 @@ local player_unit_first_person_testify = script_data.testify and require("script
 PlayerUnitFirstPerson = class(PlayerUnitFirstPerson)
 script_data.disable_aim_lead_rig_motion = script_data.disable_aim_lead_rig_motion or Development.parameter("disable_aim_lead_rig_motion") or true
 local unit_alive = Unit.alive
+local unit_animation_find_variable = Unit.animation_find_variable
+local unit_animation_set_variable = Unit.animation_set_variable
 local MOUSE_SCALE = 0.001
 local DEFAULT_WEAPON_SWAY_SETTINGS = {
 	recentering_lerp_speed = 2,
@@ -37,17 +39,10 @@ PlayerUnitFirstPerson.init = function (self, extension_init_context, unit, exten
 
 	Unit.set_flow_variable(fp_unit, "lua_first_person_mesh_unit", self.first_person_attachment_unit)
 	AttachmentUtils.link(extension_init_context.world, self.first_person_unit, self.first_person_attachment_unit, attachment_node_linking)
-	Unit.set_unit_visibility(self.unit, false)
-	Unit.flow_event(self.unit, "lua_spawn_attachments")
-
-	self.flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
-
-	for k, v in pairs(self.flow_unit_attachments) do
-		Unit.set_unit_visibility(v, false)
-	end
 
 	self.first_person_mode = true
 	self._show_first_person_units = true
+	self._anim_var_id_lookup = {}
 	self.look_position = Vector3Box(Unit.local_position(unit, 0))
 	self.look_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
 	self.forced_look_rotation = nil
@@ -120,12 +115,15 @@ PlayerUnitFirstPerson.extensions_ready = function (self)
 	self.attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 	self.smart_targeting_extension = ScriptUnit.extension(unit, "smart_targeting_system")
 	self.input_extension = ScriptUnit.extension(unit, "input_system")
+	self.cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 	local career_name = ScriptUnit.extension(unit, "career_system"):career_name()
 
 	Unit.set_flow_variable(self.first_person_unit, "lua_career_name", career_name)
 
 	if script_data.debug_third_person then
 		self:set_first_person_mode(false)
+	else
+		self.cosmetic_extension:show_third_person_mesh(false)
 	end
 end
 
@@ -158,7 +156,7 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 		local no_wobble = Application.user_setting("no_wobble")
 
 		if self._no_wobble ~= no_wobble then
-			Unit.animation_event(self.first_person_unit, (no_wobble and "no_wobble_enabled") or "no_wobble_disabled")
+			Unit.animation_event(self.first_person_unit, (no_wobble and "motion_sickness_prevention_on") or "motion_sickness_prevention_off")
 
 			self._no_wobble = no_wobble
 		end
@@ -770,11 +768,7 @@ end
 PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override, unarmed)
 	if not self.debug_first_person_mode and (override or not Development.parameter("third_person_mode") or not Development.parameter("attract_mode")) then
 		if self.first_person_mode ~= active then
-			Unit.set_unit_visibility(self.unit, not active)
-
-			for k, v in pairs(self.flow_unit_attachments) do
-				Unit.set_unit_visibility(v, not active)
-			end
+			self.cosmetic_extension:show_third_person_mesh(not active)
 
 			if not self.tutorial_first_person then
 				Unit.set_unit_visibility(self.first_person_attachment_unit, active)
@@ -785,14 +779,12 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override, 
 			self:unhide_weapons("third_person_mode")
 
 			if self.first_person_mode ~= active then
-				Unit.flow_event(self.unit, "lua_exit_third_person_camera")
 				Unit.flow_event(self.first_person_unit, "lua_exit_third_person_camera")
 			end
 		else
 			self:hide_weapons("third_person_mode", true)
 
 			if self.first_person_mode ~= active then
-				Unit.flow_event(self.unit, "lua_enter_third_person_camera")
 				Unit.flow_event(self.first_person_unit, "lua_enter_third_person_camera")
 			end
 		end
@@ -809,13 +801,9 @@ PlayerUnitFirstPerson.set_first_person_mode = function (self, active, override, 
 end
 
 PlayerUnitFirstPerson.show_third_person_units = function (self, show)
-	Unit.set_unit_visibility(self.unit, show)
 	self.inventory_extension:show_third_person_inventory(show)
 	self.attachment_extension:show_attachments(show)
-
-	for k, v in pairs(self.flow_unit_attachments) do
-		Unit.set_unit_visibility(v, show)
-	end
+	self.cosmetic_extension:show_third_person_mesh(show)
 end
 
 PlayerUnitFirstPerson.first_person_mode_active = function (self)
@@ -923,9 +911,17 @@ PlayerUnitFirstPerson.show_first_person_ammo = function (self, show)
 end
 
 PlayerUnitFirstPerson.animation_set_variable = function (self, variable_name, value)
-	local variable = Unit.animation_find_variable(self.first_person_unit, variable_name)
+	local fp_unit = self.first_person_unit
+	local anim_var_id = self._anim_var_id_lookup[variable_name]
 
-	Unit.animation_set_variable(self.first_person_unit, variable, value)
+	if anim_var_id == nil then
+		anim_var_id = unit_animation_find_variable(fp_unit, variable_name) or false
+		self._anim_var_id_lookup[variable_name] = anim_var_id
+	end
+
+	if anim_var_id then
+		unit_animation_set_variable(fp_unit, anim_var_id, value)
+	end
 end
 
 PlayerUnitFirstPerson.animation_event = function (self, event)
@@ -1267,26 +1263,14 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	look_delta_y = math_clamp(look_delta_y, -sway_range, sway_range)
 	self._look_delta_x = look_delta_x
 	self._look_delta_y = look_delta_y
-	local look_delta_x_variable = Unit.animation_find_variable(self.first_person_unit, "look_delta_x")
 
-	if look_delta_x_variable then
-		Unit.animation_set_variable(self.first_person_unit, look_delta_x_variable, look_delta_x)
-	end
+	self:animation_set_variable("look_delta_x", look_delta_x)
+	self:animation_set_variable("look_delta_y", look_delta_y)
 
-	local look_delta_y_variable = Unit.animation_find_variable(self.first_person_unit, "look_delta_y")
+	local rotation = self.look_rotation:unbox()
+	local world_look_delta_y = math.clamp(Quaternion.pitch(rotation) / self.MAX_MIN_PITCH, -1, 1)
 
-	if look_delta_y_variable then
-		Unit.animation_set_variable(self.first_person_unit, look_delta_y_variable, look_delta_y)
-	end
-
-	local world_look_delta_y_variable = Unit.animation_find_variable(self.first_person_unit, "world_look_delta_y")
-
-	if world_look_delta_y_variable then
-		local rotation = self.look_rotation:unbox()
-		local world_look_delta_y = math.clamp(Quaternion.pitch(rotation) / self.MAX_MIN_PITCH, -1, 1)
-
-		Unit.animation_set_variable(self.first_person_unit, world_look_delta_y_variable, world_look_delta_y)
-	end
+	self:animation_set_variable("world_look_delta_y", world_look_delta_y)
 
 	if weapon_sway_settings.recenter_acc then
 		local recenter_acc = weapon_sway_settings.recenter_acc
@@ -1346,23 +1330,10 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	self._move_y = move_y
 	self._move_x = move_x
 	self._move_z = move_z
-	local move_x_variable = Unit.animation_find_variable(self.first_person_unit, "move_x")
 
-	if move_x_variable then
-		Unit.animation_set_variable(self.first_person_unit, move_x_variable, move_x)
-	end
-
-	local move_y_variable = Unit.animation_find_variable(self.first_person_unit, "move_y")
-
-	if move_y_variable then
-		Unit.animation_set_variable(self.first_person_unit, move_y_variable, move_y)
-	end
-
-	local move_z_variable = Unit.animation_find_variable(self.first_person_unit, "move_z")
-
-	if move_z_variable then
-		Unit.animation_set_variable(self.first_person_unit, move_z_variable, move_z)
-	end
+	self:animation_set_variable("move_x", move_x)
+	self:animation_set_variable("move_y", move_y)
+	self:animation_set_variable("move_z", move_z)
 end
 
 return

@@ -137,7 +137,10 @@ ProjectileSystem._get_projectile_units_names = function (self, projectile_info, 
 		if inventory_extension then
 			local slot_name = "slot_ranged"
 			local slot_data = inventory_extension:get_slot_data(slot_name)
-			projectile_units_template = slot_data.projectile_units_template or projectile_units_template
+
+			if slot_data then
+				projectile_units_template = slot_data.projectile_units_template or projectile_units_template
+			end
 		end
 	end
 

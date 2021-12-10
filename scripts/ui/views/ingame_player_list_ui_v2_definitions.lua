@@ -78,19 +78,6 @@ local scenegraph_definition = {
 			1080
 		}
 	},
-	banner_bottom = {
-		vertical_alignment = "bottom",
-		scale = "fit_width",
-		position = {
-			0,
-			0,
-			1
-		},
-		size = {
-			1920,
-			180
-		}
-	},
 	banner_left = {
 		scale = "fit_height",
 		horizontal_alignment = "left",
@@ -101,6 +88,19 @@ local scenegraph_definition = {
 		},
 		size = BANNER_LEFT_SIZE
 	},
+	banner_left_edge = {
+		scale = "fit_height",
+		horizontal_alignment = "left",
+		position = {
+			BANNER_LEFT_SIZE[1],
+			0,
+			1
+		},
+		size = {
+			5,
+			BANNER_LEFT_SIZE[2]
+		}
+	},
 	banner_right = {
 		scale = "fit_height",
 		horizontal_alignment = "right",
@@ -110,6 +110,19 @@ local scenegraph_definition = {
 			1
 		},
 		size = BANNER_RIGHT_SIZE
+	},
+	banner_right_edge = {
+		scale = "fit_height",
+		horizontal_alignment = "right",
+		position = {
+			-BANNER_LEFT_SIZE[1],
+			0,
+			1
+		},
+		size = {
+			5,
+			BANNER_LEFT_SIZE[2]
+		}
 	},
 	player_list_input_description = {
 		vertical_alignment = "bottom",
@@ -186,20 +199,6 @@ local scenegraph_definition = {
 		size = {
 			200,
 			90
-		}
-	},
-	party_title = {
-		vertical_alignment = "top",
-		parent = "screen",
-		horizontal_alignment = "center",
-		position = {
-			0,
-			-210,
-			1
-		},
-		size = {
-			334,
-			60
 		}
 	},
 	player_portrait = {
@@ -383,7 +382,7 @@ local scenegraph_definition = {
 		},
 		size = {
 			300,
-			120
+			100
 		}
 	},
 	player_ability_icon = {
@@ -438,8 +437,8 @@ local scenegraph_definition = {
 			1
 		},
 		size = {
-			320,
-			120
+			300,
+			100
 		}
 	},
 	game_level = {
@@ -648,6 +647,25 @@ local scenegraph_definition = {
 		offset = {
 			-80,
 			0,
+			0
+		},
+		size = {
+			400,
+			0
+		}
+	},
+	talent_tooltip = {
+		vertical_alignment = "bottom",
+		parent = "player_list",
+		horizontal_alignment = "right",
+		position = {
+			450,
+			0,
+			1
+		},
+		offset = {
+			0,
+			-5,
 			0
 		},
 		size = {
@@ -2173,9 +2191,10 @@ local function player_widget_definition(index)
 					end
 				},
 				{
-					talent_id = "talent",
-					style_id = "talent_1",
+					style_id = "talent_tooltip",
+					scenegraph_id = "talent_tooltip",
 					pass_type = "talent_tooltip",
+					talent_id = "talent",
 					content_id = "talent_1",
 					content_check_function = function (content)
 						return content.talent and content.is_hover
@@ -2204,9 +2223,10 @@ local function player_widget_definition(index)
 					end
 				},
 				{
-					talent_id = "talent",
-					style_id = "talent_2",
+					style_id = "talent_tooltip",
+					scenegraph_id = "talent_tooltip",
 					pass_type = "talent_tooltip",
+					talent_id = "talent",
 					content_id = "talent_2",
 					content_check_function = function (content)
 						return content.talent and content.is_hover
@@ -2235,9 +2255,10 @@ local function player_widget_definition(index)
 					end
 				},
 				{
-					talent_id = "talent",
-					style_id = "talent_3",
+					style_id = "talent_tooltip",
+					scenegraph_id = "talent_tooltip",
 					pass_type = "talent_tooltip",
+					talent_id = "talent",
 					content_id = "talent_3",
 					content_check_function = function (content)
 						return content.talent and content.is_hover
@@ -2266,9 +2287,10 @@ local function player_widget_definition(index)
 					end
 				},
 				{
-					talent_id = "talent",
-					style_id = "talent_4",
+					style_id = "talent_tooltip",
+					scenegraph_id = "talent_tooltip",
 					pass_type = "talent_tooltip",
+					talent_id = "talent",
 					content_id = "talent_4",
 					content_check_function = function (content)
 						return content.talent and content.is_hover
@@ -2297,9 +2319,10 @@ local function player_widget_definition(index)
 					end
 				},
 				{
-					talent_id = "talent",
-					style_id = "talent_5",
+					style_id = "talent_tooltip",
+					scenegraph_id = "talent_tooltip",
 					pass_type = "talent_tooltip",
+					talent_id = "talent",
 					content_id = "talent_5",
 					content_check_function = function (content)
 						return content.talent and content.is_hover
@@ -2328,9 +2351,10 @@ local function player_widget_definition(index)
 					end
 				},
 				{
-					talent_id = "talent",
-					style_id = "talent_6",
+					style_id = "talent_tooltip",
+					scenegraph_id = "talent_tooltip",
 					pass_type = "talent_tooltip",
+					talent_id = "talent",
 					content_id = "talent_6",
 					content_check_function = function (content)
 						return content.talent and content.is_hover
@@ -2518,7 +2542,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-215,
-					-20,
+					-10,
 					1
 				}
 			},
@@ -2537,7 +2561,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-215,
-					-20,
+					-10,
 					2
 				}
 			},
@@ -2556,7 +2580,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-215,
-					-20,
+					-10,
 					0
 				}
 			},
@@ -2579,7 +2603,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-165,
-					-20,
+					-10,
 					1
 				}
 			},
@@ -2598,7 +2622,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-165,
-					-20,
+					-10,
 					2
 				}
 			},
@@ -2617,7 +2641,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-165,
-					-20,
+					-10,
 					0
 				}
 			},
@@ -2640,7 +2664,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-115,
-					-20,
+					-10,
 					1
 				}
 			},
@@ -2659,7 +2683,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-115,
-					-20,
+					-10,
 					2
 				}
 			},
@@ -2678,7 +2702,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-115,
-					-20,
+					-10,
 					0
 				}
 			},
@@ -2701,7 +2725,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-65,
-					-20,
+					-10,
 					1
 				}
 			},
@@ -2720,7 +2744,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-65,
-					-20,
+					-10,
 					2
 				}
 			},
@@ -2739,7 +2763,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-65,
-					-20,
+					-10,
 					0
 				}
 			},
@@ -2762,7 +2786,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-15 + 0 * -50,
-					-20,
+					-10,
 					1
 				}
 			},
@@ -2781,7 +2805,7 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-15 + 0 * -50,
-					-20,
+					-10,
 					2
 				}
 			},
@@ -2800,199 +2824,202 @@ local function player_widget_definition(index)
 				},
 				offset = {
 					-15 + 0 * -50,
-					-20,
+					-10,
 					0
 				}
 			},
+			talent_tooltip = {
+				draw_downwards = false
+			},
 			talent_1 = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				draw_right = true,
 				draw_downwards = false,
 				area_size = {
-					30,
-					30
+					40,
+					40
 				},
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-203,
-					10,
+					-215,
+					-60,
 					0
 				}
 			},
 			talent_1_frame = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-203,
-					10,
+					-215,
+					-60,
 					1
 				}
 			},
 			talent_2 = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				draw_right = true,
 				draw_downwards = false,
 				area_size = {
-					30,
-					30
+					40,
+					40
 				},
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-168,
-					10,
+					-175,
+					-60,
 					0
 				}
 			},
 			talent_2_frame = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-168,
-					10,
+					-175,
+					-60,
 					1
 				}
 			},
 			talent_3 = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				draw_right = true,
 				draw_downwards = false,
 				area_size = {
-					30,
-					30
+					40,
+					40
 				},
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-133,
-					10,
+					-135,
+					-60,
 					0
 				}
 			},
 			talent_3_frame = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-133,
-					10,
+					-135,
+					-60,
 					1
 				}
 			},
 			talent_4 = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				draw_right = true,
 				draw_downwards = false,
 				area_size = {
-					30,
-					30
+					40,
+					40
 				},
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-98,
-					10,
+					-95,
+					-60,
 					0
 				}
 			},
 			talent_4_frame = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-98,
-					10,
+					-95,
+					-60,
 					1
 				}
 			},
 			talent_5 = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				draw_right = true,
 				draw_downwards = false,
 				area_size = {
-					30,
-					30
+					40,
+					40
 				},
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-63,
-					10,
+					-55,
+					-60,
 					0
 				}
 			},
 			talent_5_frame = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-63,
-					10,
+					-55,
+					-60,
 					1
 				}
 			},
 			talent_6 = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				draw_right = true,
 				draw_downwards = false,
 				area_size = {
-					30,
-					30
+					40,
+					40
 				},
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-28 + 0 * -35,
-					10,
+					-15 + 0 * -40,
+					-60,
 					0
 				}
 			},
 			talent_6_frame = {
-				vertical_alignment = "bottom",
+				vertical_alignment = "top",
 				horizontal_alignment = "right",
 				texture_size = {
-					30,
-					30
+					40,
+					40
 				},
 				offset = {
-					-28 + 0 * -35,
-					10,
+					-15 + 0 * -40,
+					-60,
 					1
 				}
 			},
@@ -3248,8 +3275,8 @@ local function player_widget_definition(index)
 					0
 				},
 				offset = {
-					-215,
-					45,
+					-170,
+					10,
 					1
 				}
 			},
@@ -3267,8 +3294,8 @@ local function player_widget_definition(index)
 					128
 				},
 				offset = {
-					-215,
-					45,
+					-170,
+					10,
 					3
 				}
 			},
@@ -3290,8 +3317,8 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					-215,
-					45,
+					-170,
+					10,
 					2
 				}
 			},
@@ -3309,8 +3336,8 @@ local function player_widget_definition(index)
 					0
 				},
 				offset = {
-					-165,
-					45,
+					-120,
+					10,
 					3
 				}
 			},
@@ -3328,8 +3355,8 @@ local function player_widget_definition(index)
 					128
 				},
 				offset = {
-					-165,
-					45,
+					-120,
+					10,
 					6
 				}
 			},
@@ -3351,8 +3378,8 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					-165,
-					45,
+					-120,
+					10,
 					4
 				}
 			},
@@ -3370,8 +3397,8 @@ local function player_widget_definition(index)
 					0
 				},
 				offset = {
-					-165,
-					45,
+					-120,
+					10,
 					5
 				}
 			},
@@ -3389,8 +3416,8 @@ local function player_widget_definition(index)
 					0
 				},
 				offset = {
-					-115,
-					45,
+					-70,
+					10,
 					1
 				}
 			},
@@ -3408,8 +3435,8 @@ local function player_widget_definition(index)
 					128
 				},
 				offset = {
-					-115,
-					45,
+					-70,
+					10,
 					6
 				}
 			},
@@ -3431,8 +3458,8 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					-115,
-					45,
+					-70,
+					10,
 					4
 				}
 			},
@@ -3450,8 +3477,8 @@ local function player_widget_definition(index)
 					0
 				},
 				offset = {
-					-115,
-					45,
+					-70,
+					10,
 					5
 				}
 			},
@@ -3469,8 +3496,8 @@ local function player_widget_definition(index)
 					0
 				},
 				offset = {
-					-65 + 0 * -50,
-					45,
+					-20 + 0 * -50,
+					10,
 					3
 				}
 			},
@@ -3488,8 +3515,8 @@ local function player_widget_definition(index)
 					128
 				},
 				offset = {
-					-65 + 0 * -50,
-					45,
+					-20 + 0 * -50,
+					10,
 					6
 				}
 			},
@@ -3511,8 +3538,8 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					-65 + 0 * -50,
-					45,
+					-20 + 0 * -50,
+					10,
 					4
 				}
 			},
@@ -3530,24 +3557,20 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					10,
-					-5,
+					-210,
+					5,
 					5
 				}
 			},
 			ping_text = {
-				horizontal_alignment = "center",
+				horizontal_alignment = "right",
 				font_size = 20,
-				vertical_alignment = "center",
+				vertical_alignment = "bottom",
 				dynamic_font_size = true,
 				font_type = "arial",
-				size = {
-					60,
-					50
-				},
 				offset = {
-					size[1] - 90 + 10,
-					-8,
+					-255,
+					13,
 					3
 				},
 				text_color = Colors.get_table("font_default"),
@@ -3565,47 +3588,9 @@ local function player_widget_definition(index)
 					255
 				},
 				offset = {
-					-15,
-					45,
+					-215,
+					10,
 					3
-				},
-				texture_size = {
-					40,
-					40
-				}
-			},
-			host_frame = {
-				vertical_alignment = "bottom",
-				horizontal_alignment = "right",
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-15,
-					45,
-					3
-				},
-				texture_size = {
-					40,
-					40
-				}
-			},
-			host_background = {
-				vertical_alignment = "bottom",
-				horizontal_alignment = "right",
-				color = {
-					255,
-					0,
-					0,
-					0
-				},
-				offset = {
-					-15,
-					45,
-					2
 				},
 				texture_size = {
 					40,
@@ -3944,14 +3929,18 @@ local career_perks_name_style = {
 	}
 }
 local career_perks_description_style = {
+	font_type = "hell_shark",
 	font_size = 24,
-	use_shadow = true,
 	localize = false,
 	dynamic_font_size_word_wrap = true,
 	word_wrap = true,
+	use_shadow = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
-	font_type = "hell_shark",
+	area_size = {
+		300,
+		100
+	},
 	text_color = Colors.get_table("font_default"),
 	offset = {
 		0,

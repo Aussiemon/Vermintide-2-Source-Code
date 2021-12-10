@@ -92,5 +92,24 @@ CommonPopupSettings.woods = {
 		}
 	}
 }
+CommonPopupSettings.bless = {
+	body_text = "upsell_popup_bless_body",
+	title_text = "upsell_popup_new_career_title",
+	ok_button_text = "menu_close",
+	button_text = "upsell_popup_bless_button",
+	popup_type = "upsell",
+	class_name = "UpsellPopup",
+	background_texture = "priest_upsell_popup_bg",
+	definitions = local_require("scripts/ui/dlc_upsell/upsell_popup_definitions"),
+	input_desc = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 1,
+				description_text = "upsell_popup_bless_button"
+			}
+		}
+	}
+}
 
 return

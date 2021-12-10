@@ -474,7 +474,7 @@ BotBehaviors.default = {
 				"BTSelector",
 				{
 					"BTBotInventorySwitchAction",
-					name = "switch_ranged_axe_recall",
+					name = "switch_ranged_unique_ammo_recall",
 					condition = "is_slot_not_wielded",
 					condition_args = {
 						"slot_ranged"
@@ -485,8 +485,8 @@ BotBehaviors.default = {
 					"BTBotReloadAction",
 					name = "recall"
 				},
-				name = "recall_throwing_axes",
-				condition = "should_recall_throwing_axes",
+				name = "recall_unique_ammo",
+				condition = "should_recall_unique_ammo",
 				condition_args = {
 					ammo_percentage_threshold = 0.2
 				}

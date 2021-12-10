@@ -89,7 +89,9 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 	if key_modifier then
 		modifier_pressed = input_service:get(key_modifier)
 	else
-		for i, blocking_key in ipairs(blocking_modifiers) do
+		for i = 1, #blocking_modifiers, 1 do
+			local blocking_key = blocking_modifiers[i]
+
 			if blocking_key ~= key and input_service:get(blocking_key) then
 				modifier_pressed = false
 
@@ -98,9 +100,9 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 		end
 	end
 
-	local key_pressed = input_service:get(key)
+	local key_pressed = modifier_pressed and input_service:get(key)
 
-	return modifier_pressed and key_pressed
+	return key_pressed
 end
 
 DebugKeyHandler.frame_clear = function ()

@@ -136,6 +136,22 @@ local filter_macros = {
 
 		return item_data.chest_category
 	end,
+	discounted_items = function (item, backend_id)
+		local item_data = item.data
+		local item_key = item_data.key
+		local backend_peddler = Managers.backend:get_interface("peddler")
+		local steam_itemdefid = item_data.steam_itemdefid
+
+		if HAS_STEAM and steam_itemdefid then
+			local steam_data = item.steam_data
+
+			if steam_data and steam_data.discount_is_active then
+				return true
+			end
+		end
+
+		return backend_peddler:is_discounted_shilling_item(item_key)
+	end,
 	trinket_as_hero = function (item, backend_id)
 		local item_data = item.data
 
@@ -227,12 +243,12 @@ local filter_macros = {
 
 		return hero_name
 	end,
-	can_wield_by_current_career = function (item, backend_id)
+	can_wield_by_current_career = function (item, backend_id, params)
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = Managers.player:local_player()
-		local profile_index = player:profile_index()
-		local career_index = player:career_index()
+		local profile_index = (params and params.profile_index) or player:profile_index()
+		local career_index = (params and params.career_index) or player:career_index()
 		local hero_data = SPProfiles[profile_index]
 		local career_data = hero_data.careers[career_index]
 		local career_name = career_data.name
@@ -240,12 +256,12 @@ local filter_macros = {
 
 		return table.contains(item_can_wield, career_name)
 	end,
-	can_wield_by_current_hero = function (item, backend_id)
+	can_wield_by_current_hero = function (item, backend_id, params)
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = Managers.player:local_player()
-		local profile_index = player:profile_index()
-		local career_index = player:career_index()
+		local profile_index = (params and params.profile_index) or player:profile_index()
+		local career_index = (params and params.career_index) or player:career_index()
 		local hero_data = SPProfiles[profile_index]
 		local careers = hero_data.careers
 		local item_can_wield = item_data.can_wield

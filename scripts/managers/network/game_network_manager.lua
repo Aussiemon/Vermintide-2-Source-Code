@@ -32,19 +32,13 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 			game_session_host = lobby:lobby_host()
 		end
 
-		if not game_session_host or game_session_host == "0" then
-			Crashify.print_exception("[GameNetworkManager]", "did not join GameSession %s as game_session_host was equal to \"0\". This probably means the host left at a weird timing.", session)
-		else
-			self._game_session_host = game_session_host
-			local channel_id = PEER_ID_TO_CHANNEL[game_session_host]
+		fassert(game_session_host and game_session_host ~= "0", "tried to join GameSession without a valid host.")
 
-			if not channel_id or channel_id == 0 then
-				Crashify.print_exception("[GameNetworkManager]", "did not join GameSession %s as channel_id was invalid. This happens when the host leaves while the client transitions between state_loading and state_ingame.", session)
-			else
-				GameSession.join(session, channel_id)
-				printf("Joining GameSession %s as a client through channel_id %d", session, channel_id)
-			end
-		end
+		local channel_id = PEER_ID_TO_CHANNEL[game_session_host]
+
+		GameSession.join(session, channel_id)
+
+		self._game_session_host = game_session_host
 	end
 
 	self._world = world

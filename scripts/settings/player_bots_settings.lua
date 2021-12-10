@@ -191,6 +191,17 @@ BotActions.default = {
 				action = "aim_at_target"
 			}
 		},
+		wh_priest = {
+			activation = {
+				action = "aim_at_target",
+				min_hold_time = 0.2
+			},
+			end_condition = {
+				is_slot_not_wielded = {
+					"slot_career_skill_weapon"
+				}
+			}
+		},
 		we_shade = {
 			activation = {},
 			end_condition = {

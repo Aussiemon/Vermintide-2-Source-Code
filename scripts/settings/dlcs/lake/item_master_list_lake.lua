@@ -83,6 +83,22 @@ ItemMasterList.skin_es_questingknight_yellow_and_white = {
 		"es_questingknight"
 	}
 }
+ItemMasterList.skin_es_questingknight_white = {
+	description = "description_skin_es_questingknight_white",
+	temporary_template = "skin_es_questingknight_white",
+	display_name = "skin_es_questingknight_white",
+	name = "skin_es_questingknight_white",
+	inventory_icon = "icon_skin_es_questingknight_white",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	hud_icon = "unit_frame_portrait_empire_soldier",
+	rarity = "unique",
+	skin_type = "unit",
+	item_type = "skin",
+	can_wield = {
+		"es_questingknight"
+	}
+}
 ItemMasterList.markus_questingknight_career_skill_weapon = {
 	right_hand_unit = "units/weapons/player/wpn_emp_gk_sword_ability/wpn_emp_gk_sword_ability",
 	rarity = "plentiful",
@@ -93,7 +109,7 @@ ItemMasterList.markus_questingknight_career_skill_weapon = {
 }
 ItemMasterList.questing_knight_hat_0000 = {
 	description = "description_questing_knight_hat_0000",
-	rarity = "default",
+	rarity = "promo",
 	display_name = "display_name_questing_knight_hat_0000",
 	template = "es_hats_no_ear_moustache",
 	inventory_icon = "icon_questing_knight_hat_0000",
@@ -109,7 +125,7 @@ ItemMasterList.questing_knight_hat_0000 = {
 }
 ItemMasterList.questing_knight_hat_0001 = {
 	description = "description_questing_knight_hat_0001",
-	rarity = "default",
+	rarity = "promo",
 	display_name = "display_name_questing_knight_hat_0001",
 	template = "es_hats_no_ear_moustache",
 	inventory_icon = "icon_questing_knight_hat_0001",
@@ -125,7 +141,7 @@ ItemMasterList.questing_knight_hat_0001 = {
 }
 ItemMasterList.questing_knight_hat_0003 = {
 	description = "description_questing_knight_hat_0003",
-	rarity = "default",
+	rarity = "promo",
 	display_name = "display_name_questing_knight_hat_0003",
 	template = "es_hats_no_ear_moustache",
 	inventory_icon = "icon_questing_knight_hat_0003",

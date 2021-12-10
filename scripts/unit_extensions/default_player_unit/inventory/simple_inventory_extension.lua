@@ -1280,6 +1280,27 @@ local slots_to_check = {
 	slot_melee = true
 }
 
+SimpleInventoryExtension.has_unique_ammo_type_weapon_equipped = function (self)
+	local equipment = self._equipment
+	local inventory_slots = equipment.slots
+
+	for slot_name, slot_data in pairs(inventory_slots) do
+		if slots_to_check[slot_name] then
+			local item_template = slot_data.item_template
+
+			if item_template then
+				local ammo_data = item_template.ammo_data
+
+				if ammo_data and ammo_data.unique_ammo_type then
+					return true
+				end
+			end
+		end
+	end
+
+	return false
+end
+
 SimpleInventoryExtension.has_ammo_consuming_weapon_equipped = function (self, ammo_type)
 	local equipment = self._equipment
 	local inventory_slots = equipment.slots
@@ -1751,6 +1772,10 @@ SimpleInventoryExtension._wield_slot = function (self, equipment, slot_data, uni
 	if equipment.left_hand_ammo_unit_3p then
 		Unit.flow_event(equipment.left_hand_ammo_unit_3p, "lua_unwield")
 		Unit.set_unit_visibility(equipment.left_hand_ammo_unit_3p, false)
+	end
+
+	if not slot_data then
+		return
 	end
 
 	local item_data = slot_data.item_data

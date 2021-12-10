@@ -33,7 +33,9 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	blackboard.action = action
 	blackboard.active_node = BTMeleeOverlapAttackAction
-	local should_attack = self:_init_attack(unit, blackboard, action, t, 1)
+	local target_unit = blackboard.override_target_unit or blackboard.target_unit
+	blackboard.locked_target_unit = target_unit
+	local should_attack = self:_init_attack(unit, target_unit, blackboard, action, t, 1)
 
 	if not should_attack then
 		blackboard.attack_finished = true
@@ -50,8 +52,6 @@ BTMeleeOverlapAttackAction.enter = function (self, unit, blackboard, t)
 	if freeze_intensity_decay_time > 0 then
 		Managers.state.conflict:freeze_intensity_decay(freeze_intensity_decay_time)
 	end
-
-	local target_unit = blackboard.target_unit
 
 	AiUtils.add_attack_intensity(target_unit, action, blackboard)
 end
@@ -84,7 +84,7 @@ local function incremental_randomize(event, blackboard)
 	end
 end
 
-BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, action, t, start_attack_index)
+BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, blackboard, action, t, start_attack_index)
 	if blackboard.last_combo_attack then
 		blackboard.last_combo_attack = nil
 
@@ -92,7 +92,6 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, blackboard, acti
 	end
 
 	local locomotion_extension = blackboard.locomotion_extension
-	local target_unit = blackboard.target_unit
 	blackboard.target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 	local use_running_attack = nil
 
@@ -307,6 +306,7 @@ BTMeleeOverlapAttackAction.leave = function (self, unit, blackboard, t, reason, 
 	blackboard.damage_done_time = nil
 	blackboard.attack_finished = nil
 	blackboard.attack_aborted = nil
+	blackboard.locked_target_unit = nil
 
 	if blackboard.continous_overlap_data then
 		table.clear(blackboard.continous_overlap_data)
@@ -317,7 +317,7 @@ BTMeleeOverlapAttackAction._attack_finished = function (self, unit, blackboard, 
 	local action = blackboard.action
 
 	if action.is_combo_attack then
-		return not self:_init_attack(unit, blackboard, action, t)
+		return not self:_init_attack(unit, blackboard.locked_target_unit, blackboard, action, t)
 	end
 
 	return true
@@ -421,7 +421,7 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 			local target_status_extension = blackboard.target_unit_status_extension
 
 			if t < blackboard.attack_rotation_update_timer and target_status_extension and not target_status_extension:is_invisible() and (attack.ignores_dodging or not target_status_extension:get_is_dodging()) then
-				local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
+				local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.locked_target_unit)
 				local rotation_speed = attack.rotation_speed
 
 				if rotation_speed then
@@ -814,6 +814,12 @@ end
 BTMeleeOverlapAttackAction.anim_cb_attack_overlap_done = function (self, unit, blackboard)
 	local overlap_data = blackboard.continous_overlap_data
 	overlap_data.perform_overlap = nil
+end
+
+BTMeleeOverlapAttackAction.anim_cb_attack_grabbed_smash = function (self, unit, blackboard)
+	local action = blackboard.action
+
+	AiUtils.damage_target(blackboard.victim_grabbed, unit, action, action.damage)
 end
 
 return

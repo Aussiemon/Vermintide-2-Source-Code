@@ -88,62 +88,71 @@ TerrorEventMixer.init_functions = {
 		return
 	end,
 	spawn_around_origin_unit = function (event, element, t)
-		local breed_name = nil
-		local check_name = element.breed_name
-		local num_to_spawn = element.amount or 1
-		local num_to_spawn_scaled = element.difficulty_amount
+		local breed_spawn_table_per_difficulty = element.breed_spawn_table_per_difficulty
 
-		if type(check_name) == "table" then
-			breed_name = check_name[Math.random(1, #check_name)]
-		else
-			breed_name = check_name
-		end
+		if not breed_spawn_table_per_difficulty then
+			local breed_name = element.breed_name
+			local num_to_spawn = element.amount or 1
+			local num_to_spawn_scaled = element.difficulty_amount
 
-		if num_to_spawn_scaled then
-			local chosen_amount = Managers.state.difficulty:get_difficulty_value_from_table(num_to_spawn_scaled)
-			chosen_amount = chosen_amount or num_to_spawn_scaled.hardest
-
-			if type(chosen_amount) == "table" then
-				num_to_spawn = chosen_amount[Math.random(1, #chosen_amount)]
-			else
-				num_to_spawn = chosen_amount
+			if type(breed_name) == "table" then
+				breed_name = breed_name[Math.random(1, #breed_name)]
 			end
-		elseif type(num_to_spawn) == "table" then
-			num_to_spawn = num_to_spawn[Math.random(1, #num_to_spawn)]
-		end
 
-		local optional_data = element.optional_data and table.clone(element.optional_data)
+			if num_to_spawn_scaled then
+				local chosen_amount = Managers.state.difficulty:get_difficulty_value_from_table(num_to_spawn_scaled)
+				chosen_amount = chosen_amount or num_to_spawn_scaled.hardest
 
-		if element.spawn_counter_category then
-			optional_data = add_spawned_counting(event, optional_data, element.spawn_counter_category)
-		end
-
-		local distance_to_enemies = element.distance_to_enemies or 2
-
-		local function filter_func(pos, invalid_pos_list)
-			local min_dist_enemies_sqr = math.pow(distance_to_enemies, 2)
-
-			for i = 1, #invalid_pos_list, 1 do
-				if Vector3.distance_squared(pos, invalid_pos_list[i]) < min_dist_enemies_sqr then
-					return false
+				if type(chosen_amount) == "table" then
+					num_to_spawn = chosen_amount[Math.random(1, #chosen_amount)]
+				else
+					num_to_spawn = chosen_amount
 				end
+			elseif type(num_to_spawn) == "table" then
+				num_to_spawn = num_to_spawn[Math.random(1, #num_to_spawn)]
 			end
 
-			return true
+			local spawn_table = {}
+
+			for i = 1, num_to_spawn, 1 do
+				spawn_table[i] = breed_name
+			end
+
+			breed_spawn_table_per_difficulty = {
+				default = spawn_table
+			}
 		end
 
-		if element.pre_spawn_func then
-			local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
-			optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+		local difficulty, difficulty_tweak = Managers.state.difficulty:get_difficulty()
+		local spawn_table = breed_spawn_table_per_difficulty[difficulty] or breed_spawn_table_per_difficulty.default
+		local num_to_spawn = #spawn_table
+		local distance_to_enemies = element.distance_to_enemies or 2
+		local optional_data_table = {}
+
+		for i = 1, num_to_spawn, 1 do
+			local optional_data = (element.optional_data and table.clone(element.optional_data)) or {}
+
+			if element.spawn_counter_category then
+				optional_data = add_spawned_counting(event, optional_data, element.spawn_counter_category)
+			end
+
+			local breed_name = spawn_table[i]
+
+			if element.pre_spawn_func then
+				optional_data = element.pre_spawn_func(optional_data, difficulty, breed_name, event, difficulty_tweak)
+			end
+
+			optional_data_table[i] = optional_data
 		end
 
+		event.optional_data_table = optional_data_table
 		local invalid_pos_list = {}
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local spawn_positions = {}
 		event.spawn_at = t + (element.spawn_delay or 0)
 		event.spawn_positions = spawn_positions
-		event.optional_data = optional_data
-		event.breed = Breeds[breed_name]
+		event.optional_data_table = optional_data_table
+		event.spawn_table = spawn_table
 		local center_unit = event.data.origin_unit
 		local center_position = nil
 
@@ -156,63 +165,27 @@ TerrorEventMixer.init_functions = {
 			center_position = POSITION_LOOKUP[random_player]
 		end
 
-		local distance = element.spawn_distance or 10
-		local spread = element.spread or 10
-		local radian_subdivision = element.circle_subdivision or math.pi * 0.5
-		local spread_delta = element.row_distance or 2
-		local two_pi = 2 * math.pi
-		local start_spread = (math.random() - 0.5) * spread
-		local current_spread = start_spread
-		local start_radians = math.random() * two_pi
-		local current_radians = start_radians
-		local radians_delta = two_pi / radian_subdivision
-		local current_radian_delta_count = 0
+		local row_distance = element.row_distance
+		local circle_subdivision = element.circle_subdivision
+		local min_distance = element.min_distance
+		local max_distance = element.max_distance
+		local tries = 30
 
-		local function get_next_pos()
-			current_radians = current_radians + radians_delta
+		ConflictUtils.find_positions_around_position(center_position, spawn_positions, nav_world, min_distance, max_distance, num_to_spawn, invalid_pos_list, distance_to_enemies, tries, circle_subdivision, row_distance)
 
-			if two_pi < current_radians then
-				current_radians = current_radians - two_pi
+		event.center_position = Vector3Box(center_position)
+
+		for i = 1, #spawn_positions, 1 do
+			local spawn_pos = spawn_positions[i]
+			local boxed_spawn_pos = Vector3Box(spawn_pos)
+
+			if element.pre_spawn_unit_func then
+				local actual_breed_name = spawn_table[i]
+
+				element.pre_spawn_unit_func(event, element, boxed_spawn_pos, actual_breed_name)
 			end
 
-			current_radian_delta_count = current_radian_delta_count + 1
-
-			if radian_subdivision < current_radian_delta_count then
-				current_spread = current_spread + spread_delta
-
-				if current_spread > spread * 0.5 then
-					current_spread = current_spread - spread
-				end
-
-				current_radian_delta_count = 0
-				current_radians = math.random() * two_pi
-			end
-
-			local add_vec = Vector3(distance + current_spread, 0, 1)
-			local pos = center_position + Quaternion.rotate(Quaternion(Vector3.up(), current_radians), add_vec)
-
-			return pos
-		end
-
-		for i = 1, num_to_spawn, 1 do
-			for try = 1, 30, 1 do
-				local pos = get_next_pos()
-				local spawn_pos = ConflictUtils.find_center_tri(nav_world, pos)
-
-				if spawn_pos and filter_func(spawn_pos, invalid_pos_list) then
-					table.insert(invalid_pos_list, spawn_pos)
-
-					local boxed_spawn_pos = Vector3Box(spawn_pos)
-
-					if element.pre_spawn_unit_func then
-						element.pre_spawn_unit_func(event, element, boxed_spawn_pos, breed_name)
-					end
-
-					spawn_positions[#spawn_positions + 1] = boxed_spawn_pos
-
-					break
-				end
-			end
+			spawn_positions[i] = boxed_spawn_pos
 		end
 
 		return true
@@ -972,11 +945,35 @@ TerrorEventMixer.run_functions = {
 	spawn_around_origin_unit = function (event, element, t, dt)
 		if event.spawn_at < t then
 			local conflict_director = Managers.state.conflict
-			local breed = event.breed
-			local optional_data = event.optional_data
+			local spawn_table = event.spawn_table
+			local optional_data_table = event.optional_data_table
+			local spawn_positions = event.spawn_positions
+			local group_data = nil
 
-			for _, spawn_pos in ipairs(event.spawn_positions) do
-				conflict_director:spawn_one(breed, spawn_pos:unbox(), nil, optional_data)
+			if element.group_template then
+				group_data = {
+					id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
+					size = #spawn_positions,
+					template = element.group_template
+				}
+			end
+
+			local center_position_unboxed = event.center_position:unbox()
+
+			for i = 1, #spawn_positions, 1 do
+				local spawn_pos = spawn_positions[i]
+				local spawn_pos_unboxed = spawn_pos:unbox()
+				local breed_name = spawn_table[i]
+				local breed = Breeds[breed_name]
+				local optional_data = optional_data_table[i]
+				local rotation = nil
+
+				if element.face_unit then
+					local direction = center_position_unboxed - spawn_pos_unboxed
+					rotation = Quaternion.look(direction, Vector3.up())
+				end
+
+				conflict_director:spawn_one(breed, spawn_pos_unboxed, group_data, optional_data, rotation)
 
 				if element.post_spawn_unit_func then
 					element.post_spawn_unit_func(event, element, spawn_pos)

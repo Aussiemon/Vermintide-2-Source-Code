@@ -73,13 +73,16 @@ BuffSystem.hot_join_sync = function (self, peer_id)
 
 		for unit, data in pairs(self.server_controlled_buffs) do
 			for server_buff_id, buff_data in pairs(data) do
-				local template_name = buff_data.template_name
-				local attacker_unit = buff_data.attacker_unit
 				local unit_object_id = network_manager:unit_game_object_id(unit)
-				local buff_template_name_id = NetworkLookup.buff_templates[template_name]
-				local attacker_unit_object_id = network_manager:unit_game_object_id(attacker_unit) or NetworkConstants.invalid_game_object_id
 
-				network_transmit:send_rpc("rpc_add_buff", peer_id, unit_object_id, buff_template_name_id, attacker_unit_object_id, server_buff_id, false)
+				if unit_object_id then
+					local template_name = buff_data.template_name
+					local attacker_unit = buff_data.attacker_unit
+					local buff_template_name_id = NetworkLookup.buff_templates[template_name]
+					local attacker_unit_object_id = network_manager:unit_game_object_id(attacker_unit) or NetworkConstants.invalid_game_object_id
+
+					network_transmit:send_rpc("rpc_add_buff", peer_id, unit_object_id, buff_template_name_id, attacker_unit_object_id, server_buff_id, false)
+				end
 			end
 		end
 
@@ -144,6 +147,8 @@ BuffSystem.unfreeze = function (self, unit)
 
 	self.frozen_unit_extension_data[unit] = nil
 	self.unit_extension_data[unit] = extension
+
+	extension:unfreeze()
 end
 
 local dummy_input = {}
@@ -245,6 +250,10 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 	end
 
 	fassert(self.is_server or not is_server_controlled, "[BuffSystem]: Trying to add a server controlled buff from a client!")
+
+	if is_server_controlled and not AiUtils.unit_alive(unit) then
+		return nil
+	end
 
 	local server_buff_id = (is_server_controlled and self:_next_free_server_buff_id()) or 0
 

@@ -104,6 +104,34 @@ NewsFeedTemplates = {
 		end
 	},
 	{
+		description = "news_feed_store_description",
+		name = "new_shop_items",
+		duration = 5,
+		cooldown = -1,
+		infinite = false,
+		title = "news_feed_store_title",
+		icon = "hud_store_icon",
+		icon_offset = {
+			40,
+			20,
+			3
+		},
+		icon_size = {
+			40,
+			40
+		},
+		condition_func = function (params)
+			if GameSettingsDevelopment.use_offline_backend then
+				return false
+			end
+
+			local backend_store = Managers.backend:get_interface("peddler")
+			local login_rewards = backend_store:get_login_rewards()
+
+			return login_rewards.next_claim_timestamp < os.time()
+		end
+	},
+	{
 		description = "news_feed_talent_description",
 		name = "talent",
 		duration = 5,

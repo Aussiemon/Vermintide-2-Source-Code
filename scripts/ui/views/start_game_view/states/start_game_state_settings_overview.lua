@@ -534,7 +534,7 @@ StartGameStateSettingsOverview.get_save_data_table_map = function (self, mechani
 end
 
 StartGameStateSettingsOverview.set_layout = function (self, index)
-	local layout_setting = self:_get_layout_setting(index)
+	local layout_setting = self:get_layout_setting(index)
 	local sound_event_enter = layout_setting.sound_event_enter
 
 	if sound_event_enter then
@@ -643,7 +643,7 @@ StartGameStateSettingsOverview.get_previous_selected_layout_name = function (sel
 	return self._previous_selected_layout_name
 end
 
-StartGameStateSettingsOverview._get_layout_setting = function (self, index)
+StartGameStateSettingsOverview.get_layout_setting = function (self, index)
 	return self._window_layouts[index]
 end
 

@@ -1,3 +1,8 @@
+PrivacyLevels = table.mirror_array_inplace({
+	"private",
+	"friends",
+	"public"
+})
 PlayerSyncData = class(PlayerSyncData)
 
 PlayerSyncData.init = function (self, player, network_manager)
@@ -19,12 +24,19 @@ PlayerSyncData.init = function (self, player, network_manager)
 			slot_melee = NetworkLookup.item_names["n/a"],
 			slot_melee_skin = NetworkLookup.weapon_skins["n/a"],
 			slot_ranged = NetworkLookup.item_names["n/a"],
-			slot_ranged_skin = NetworkLookup.weapon_skins["n/a"]
+			slot_ranged_skin = NetworkLookup.weapon_skins["n/a"],
+			playerlist_build_privacy = Application.user_setting("playerlist_build_privacy")
 		}
 		local callback = callback(self, "cb_game_session_disconnect")
 		local game_object_id = network_manager:create_game_object("player_sync_data", game_object_data_table, callback)
 		self._game_object_id = game_object_id
+
+		Managers.state.event:register(self, "on_game_options_changed", "_on_game_options_changed")
 	end
+end
+
+PlayerSyncData._on_game_options_changed = function (self)
+	self:set_data("playerlist_build_privacy", Application.user_setting("playerlist_build_privacy"))
 end
 
 PlayerSyncData._calc_highest_unlocked_difficulty = function (self)
@@ -100,12 +112,16 @@ PlayerSyncData.active = function (self)
 end
 
 PlayerSyncData.destroy = function (self)
-	if self._player.local_player and self._game_object_id then
+	local player = self._player
+
+	if (player.local_player or (player.bot_player and player.is_server)) and self._game_object_id then
 		local game = self._network_manager:game()
 
 		if GameSession.game_object_exists(game, self._game_object_id) then
 			self._network_manager:destroy_game_object(self._game_object_id)
 		end
+
+		Managers.state.event:unregister(self, "on_game_options_changed")
 	end
 
 	self._game_object_id = nil

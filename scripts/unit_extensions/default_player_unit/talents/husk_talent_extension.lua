@@ -157,12 +157,17 @@ HuskTalentExtension.has_talent = function (self, talent_name)
 	return false
 end
 
-HuskTalentExtension.get_talent_names = function (self)
-	local talent_ids = self._talent_ids
-	local talent_names = {}
-	local hero_name = self._hero_name
+HuskTalentExtension.get_talent_ids = function (self)
+	return self._talent_ids
+end
 
-	for _, talent_id in ipairs(talent_ids) do
+HuskTalentExtension.get_talent_names = function (self, talent_names)
+	local talent_ids = self._talent_ids
+	local hero_name = self._hero_name
+	talent_names = talent_names or {}
+
+	for i = 1, #talent_ids, 1 do
+		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
 		talent_names[#talent_names + 1] = talent_data.name
 	end

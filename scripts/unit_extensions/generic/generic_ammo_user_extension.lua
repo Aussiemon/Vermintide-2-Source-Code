@@ -32,6 +32,13 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._has_wield_reload_anim = ammo_data.has_wield_reload_anim
 	self._destroy_when_out_of_ammo = ammo_data.destroy_when_out_of_ammo
 	self._unwield_when_out_of_ammo = ammo_data.unwield_when_out_of_ammo
+
+	if ammo_data.wield_previous_weapon_when_destroyed ~= nil then
+		self._wield_previous_weapon_when_destroyed = ammo_data.wield_previous_weapon_when_destroyed
+	else
+		self._wield_previous_weapon_when_destroyed = true
+	end
+
 	self._ammo_type = ammo_data.ammo_type or "default"
 	self._ammo_kind = ammo_data.ammo_kind or "default"
 	self._block_ammo_pickup = ammo_data.block_ammo_pickup or false
@@ -149,10 +156,12 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 
 					inventory_extension:destroy_slot(self.slot_name, false, true)
 
-					local grabbed_by_packmaster = status_extension and CharacterStateHelper.pack_master_status(status_extension)
+					if self._wield_previous_weapon_when_destroyed then
+						local grabbed_by_packmaster = status_extension and CharacterStateHelper.pack_master_status(status_extension)
 
-					if not grabbed_by_packmaster then
-						inventory_extension:wield_previous_weapon()
+						if not grabbed_by_packmaster then
+							inventory_extension:wield_previous_weapon()
+						end
 					end
 				elseif self._unwield_when_out_of_ammo then
 					local inventory_extension = ScriptUnit.extension(self.owner_unit, "inventory_system")

@@ -1008,6 +1008,12 @@ StartGameWindowLobbyBrowser._get_lobbies = function (self)
 end
 
 StartGameWindowLobbyBrowser._valid_lobby = function (self, lobby_data)
+	local is_valid = lobby_data.valid
+
+	if not is_valid then
+		return false
+	end
+
 	local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 	local num_players = tonumber(lobby_data.num_players)
 

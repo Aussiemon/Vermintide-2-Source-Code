@@ -22,6 +22,13 @@ local function cursed_chest_enemy_spawned_func(unit, breed, optional_data)
 	buff_system:add_buff(unit, "cursed_chest_objective_unit", unit)
 end
 
+local function cursed_chest_spawn_function(unit, breed, optional_data)
+	local buff_system = Managers.state.entity:system("buff_system")
+
+	buff_system:add_buff(unit, "objective_unit", unit)
+	cursed_chest_enemy_spawned_func(unit, breed, optional_data)
+end
+
 GenericTerrorEvents.cursed_chest_prototype = {
 	{
 		"set_master_event_running",
@@ -38,12 +45,29 @@ GenericTerrorEvents.cursed_chest_prototype = {
 		},
 		optional_data = {
 			prevent_killed_enemy_dialogue = true,
-			spawned_func = function (unit, breed, optional_data)
-				local buff_system = Managers.state.entity:system("buff_system")
-
-				buff_system:add_buff(unit, "objective_unit", unit)
-				cursed_chest_enemy_spawned_func(unit, breed, optional_data)
-			end
+			spawned_func = cursed_chest_spawn_function
+		},
+		faction_requirement_list = {
+			"skaven",
+			"chaos"
+		},
+		pre_spawn_func = cursed_chest_enemy_pre_spawn_func
+	},
+	{
+		"spawn",
+		spawn_counter_category = "cursed_chest_boss",
+		breed_name = {
+			"skaven_rat_ogre",
+			"skaven_stormfiend",
+			"beastmen_minotaur"
+		},
+		optional_data = {
+			prevent_killed_enemy_dialogue = true,
+			spawned_func = cursed_chest_spawn_function
+		},
+		faction_requirement_list = {
+			"skaven",
+			"beastmen"
 		},
 		pre_spawn_func = cursed_chest_enemy_pre_spawn_func
 	},

@@ -1271,17 +1271,17 @@ local generic_input_actions = {
 		},
 		{
 			input_action = "confirm",
-			priority = 2,
+			priority = 3,
 			description_text = "input_description_select"
 		},
 		{
 			input_action = "refresh",
-			priority = 3,
+			priority = 4,
 			description_text = "input_description_remove"
 		},
 		{
 			input_action = "back",
-			priority = 4,
+			priority = 5,
 			description_text = "input_description_close"
 		}
 	}

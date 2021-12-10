@@ -303,10 +303,11 @@ DeusPowerUpBuffTemplates = {
 			{
 				buff_to_add = "deus_guard_buff",
 				name = "deus_guard_aura",
-				authority = "server",
-				range = 10,
+				disregard_self = true,
 				remove_buff_func = "remove_aura_buff",
+				range = 10,
 				update_func = "activate_buff_on_distance",
+				authority = "server",
 				update_frequency = 0.5
 			}
 		}
@@ -2729,6 +2730,7 @@ DeusPowerUpIncompatibilityPairs = DeusPowerUpIncompatibilityPairs or {
 		}
 	},
 	wh_captain = {},
+	wh_priest = {},
 	bw_scholar = {},
 	bw_adept = {},
 	bw_unchained = {},
@@ -2858,6 +2860,21 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 		talent_3_3 = true,
 		talent_3_2 = true
 	},
+	wh_priest = {
+		deus_ammo_pickup_heal = true,
+		talent_3_1 = true,
+		deus_extra_shot = true,
+		deus_ammo_pickup_give_allies_ammo = true,
+		deus_ranged_crit_explosion = true,
+		deus_ammo_pickup_reload_speed = true,
+		talent_3_2 = true,
+		deus_larger_clip = true,
+		deus_ammo_pickup_range_pen = true,
+		deus_consumable_extra_shot = true,
+		deus_large_ammo_pickup_infinite_ammo = true,
+		talent_3_3 = true,
+		deus_timed_block_free_shot = true
+	},
 	bw_scholar = {
 		deus_ammo_pickup_range_pen = true,
 		talent_3_1 = true,
@@ -2895,9 +2912,13 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 		deus_ranged_crit_explosion = true,
 		deus_ammo_pickup_reload_speed = true,
 		talent_3_2 = true,
+		deus_larger_clip = true,
 		talent_3_1 = true,
 		deus_consumable_extra_shot = true,
-		talent_3_3 = true
+		deus_large_ammo_pickup_infinite_ammo = true,
+		deus_ammo_pickup_give_allies_ammo = true,
+		talent_3_3 = true,
+		deus_timed_block_free_shot = true
 	},
 	dr_ranger = {
 		talent_3_1 = true,
@@ -2952,16 +2973,20 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 	},
 	es_questingknight = {
 		deus_ammo_pickup_heal = true,
-		talent_4_2 = true,
-		talent_3_1 = true,
-		heal_on_dot_damage_dealt = true,
-		deus_ranged_crit_explosion = true,
 		deus_ammo_pickup_reload_speed = true,
-		talent_3_2 = true,
-		deus_extra_shot = true,
+		talent_4_2 = true,
+		heal_on_dot_damage_dealt = true,
 		deus_ammo_pickup_range_pen = true,
-		deus_consumable_extra_shot = true,
+		talent_3_2 = true,
+		deus_larger_clip = true,
+		talent_3_1 = true,
 		talent_4_1 = true,
+		deus_timed_block_free_shot = true,
+		deus_ammo_pickup_give_allies_ammo = true,
+		deus_ranged_crit_explosion = true,
+		deus_extra_shot = true,
+		deus_large_ammo_pickup_infinite_ammo = true,
+		deus_consumable_extra_shot = true,
 		talent_3_3 = true,
 		talent_4_3 = true
 	}

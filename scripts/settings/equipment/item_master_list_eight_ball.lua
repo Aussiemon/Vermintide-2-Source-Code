@@ -727,10 +727,10 @@ ItemMasterList.five_career_bundle_0001 = {
 	description = "five_career_bundle_0001_desc",
 	subtitle = "five_career_bundle_0001_subtitle",
 	inventory_icon = "",
-	bundle_contains = false,
 	discount = 99,
 	can_wield = {},
-	steam_store_hidden = store_item_hidden
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
 }
 ItemMasterList.adept_hat_1002 = {
 	description = "description_adept_hat_1002",
@@ -1048,10 +1048,10 @@ ItemMasterList.fall_collection_2021_bundle = {
 	description = "description_five_career_bundle_0002",
 	subtitle = "five_career_bundle_0001_subtitle",
 	inventory_icon = "",
-	bundle_contains = false,
 	discount = 99,
 	can_wield = {},
-	steam_store_hidden = store_item_hidden
+	steam_store_hidden = store_item_hidden,
+	bundle_contains = {}
 }
 ItemMasterList.skin_bw_adept_white = {
 	description = "description_skin_bw_adept_white",
@@ -1102,22 +1102,6 @@ ItemMasterList.skin_bw_unchained_white = {
 		"bw_unchained"
 	}
 }
-ItemMasterList.skin_dr_engineer_white = {
-	description = "description_skin_dr_engineer_white",
-	temporary_template = "skin_dr_engineer_white",
-	display_name = "skin_dr_engineer_white",
-	name = "skin_dr_engineer_white",
-	inventory_icon = "icon_skin_dr_engineer_white",
-	slot_type = "skin",
-	information_text = "information_text_character_skin",
-	hud_icon = "unit_frame_portrait_dwarf_ranger",
-	rarity = "unique",
-	skin_type = "unit",
-	item_type = "skin",
-	can_wield = {
-		"dr_engineer"
-	}
-}
 ItemMasterList.skin_dr_ironbreaker_white = {
 	description = "description_skin_dr_ironbreaker_white",
 	temporary_template = "skin_dr_ironbreaker_white",
@@ -1164,22 +1148,6 @@ ItemMasterList.skin_dr_ranger_white = {
 	item_type = "skin",
 	can_wield = {
 		"dr_ranger"
-	}
-}
-ItemMasterList.skin_es_questingknight_white = {
-	description = "description_skin_es_questingknight_white",
-	temporary_template = "skin_es_questingknight_white",
-	display_name = "skin_es_questingknight_white",
-	name = "skin_es_questingknight_white",
-	inventory_icon = "icon_skin_es_questingknight_white",
-	slot_type = "skin",
-	information_text = "information_text_character_skin",
-	hud_icon = "unit_frame_portrait_empire_soldier",
-	rarity = "unique",
-	skin_type = "unit",
-	item_type = "skin",
-	can_wield = {
-		"es_questingknight"
 	}
 }
 ItemMasterList.skin_es_huntsman_white = {
@@ -1278,22 +1246,6 @@ ItemMasterList.skin_ww_waywatcher_white = {
 	item_type = "skin",
 	can_wield = {
 		"we_waywatcher"
-	}
-}
-ItemMasterList.skin_ww_thornsister_white = {
-	description = "description_skin_ww_thornsister_white",
-	temporary_template = "skin_ww_thornsister_white",
-	display_name = "skin_ww_thornsister_white",
-	name = "skin_ww_thornsister_white",
-	inventory_icon = "icon_skin_ww_thornsister_white",
-	slot_type = "skin",
-	information_text = "information_text_character_skin",
-	hud_icon = "unit_frame_portrait_way_watcher",
-	rarity = "unique",
-	skin_type = "unit",
-	item_type = "skin",
-	can_wield = {
-		"we_thornsister"
 	}
 }
 ItemMasterList.skin_wh_captain_white = {

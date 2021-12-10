@@ -858,7 +858,7 @@ SpecialsPacing.request_speed_running_intervention = function (self, t, player_un
 	local speed_running_intervention_settings = CurrentSpecialsSettings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
 	local breeds = speed_running_intervention_settings.breeds
 	local slots = self._specials_slots
-	local best_slot = get_best_specials_slot(slots) or 1
+	local best_slot = get_best_specials_slot(slots)
 
 	if best_slot then
 		local slot = slots[best_slot]

@@ -67,16 +67,11 @@ HeroViewStateOverview.on_enter = function (self, params)
 	self.peer_id = ingame_ui_context.peer_id
 	self.local_player_id = ingame_ui_context.local_player_id
 	self.player = local_player
-	local profile_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
-	local profile_settings = SPProfiles[profile_index]
-	local display_name = profile_settings.display_name
-	local character_name = profile_settings.character_name
-	local hero_attributes = Managers.backend:get_interface("hero_attributes")
-	local career_index = hero_attributes:get(display_name, "career")
-	self.hero_name = display_name
-	self.career_index = career_index
-	self.profile_index = profile_index
 	self.is_server = self.parent.is_server
+	local profile_index, career_index = self.profile_synchronizer:profile_by_peer(self.peer_id, self.local_player_id)
+	self.profile_index = profile_index or 1
+	self.career_index = career_index or 1
+	self.hero_name = SPProfiles[self.profile_index].display_name
 	self._animations = {}
 	self._ui_animations = {}
 	self.loadout_sync_id = 0
@@ -335,7 +330,9 @@ HeroViewStateOverview.set_layout = function (self, index)
 		end
 	end
 
-	if self._selected_game_mode_index then
+	local current_layout_settings = self:_get_layout_setting(self._selected_game_mode_index)
+
+	if self._selected_game_mode_index and current_layout_settings.close_on_exit then
 		self._previous_selected_game_mode_index = self._selected_game_mode_index
 	end
 

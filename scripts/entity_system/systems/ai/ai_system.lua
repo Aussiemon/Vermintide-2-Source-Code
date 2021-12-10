@@ -1490,7 +1490,7 @@ end
 AISystem.get_attributes = function (self, unit)
 	local extension = self.unit_extension_data[unit]
 
-	return extension.attributes or dummy_table
+	return (extension and extension.attributes) or dummy_table
 end
 
 AISystem.rpc_set_attribute_bool = function (self, channel_id, unit_id, attribute_id, category_id, value)

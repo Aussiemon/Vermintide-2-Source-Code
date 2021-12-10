@@ -313,11 +313,12 @@ CraftPageConvertDustConsole._handle_input = function (self, dt, t)
 	local is_button_enabled = not widget.content.button_hotspot.disable_button
 	local craft_input = self:_is_button_held(widgets_by_name.craft_button)
 	local craft_input_gamepad = is_button_enabled and gamepad_active and input_service:get("refresh_hold")
+	local craft_input_keyboard = is_button_enabled and not gamepad_active and input_service:get("skip")
 	local craft_input_accepted = false
 
 	if input_service:get("special_1") then
 		self:reset()
-	elseif (craft_input == 0 or craft_input_gamepad) and self._has_all_requirements then
+	elseif (craft_input == 0 or craft_input_gamepad or craft_input_keyboard) and self._has_all_requirements then
 		if not self._craft_input_time then
 			self._craft_input_time = 0
 

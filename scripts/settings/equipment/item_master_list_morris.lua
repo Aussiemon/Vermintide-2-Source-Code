@@ -611,7 +611,7 @@ local item_master_list = {
 		template = "we_deus_01_template_1",
 		display_unit = "units/weapons/weapon_display/display_bow",
 		item_type = "weapon_skin",
-		left_hand_unit = "units/weapons/player/wpn_we_deus_01/wpn_we_deus_03_runed",
+		left_hand_unit = "units/weapons/player/wpn_we_deus_03/wpn_we_deus_03_runed",
 		matching_item_key = "we_deus_01",
 		can_wield = {
 			"we_shade",
@@ -674,7 +674,7 @@ local item_master_list = {
 	},
 	bw_deus_01_skin_02 = {
 		description = "bw_deus_01_skin_02_description",
-		rarity = "unique",
+		rarity = "exotic",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02",
 		hud_icon = "weapon_generic_icon_staff_5",
 		inventory_icon = "icon_wpn_brw_magmastaff_t2",
@@ -781,6 +781,46 @@ local item_master_list = {
 		item_type = "bw_deus_01",
 		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
 		required_unlock_item = "bw_deus_01",
+		can_wield = {
+			"bw_scholar",
+			"bw_adept",
+			"bw_unchained"
+		}
+	},
+	bw_deus_01_skin_03 = {
+		description = "bw_deus_01_skin_03_description",
+		rarity = "exotic",
+		right_hand_unit = "units/weapons/player/wpn_bw_deus_03/wpn_bw_deus_03",
+		hud_icon = "weapon_generic_icon_staff_5",
+		inventory_icon = "icon_wpn_brw_magmastaff_t3",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		information_text = "information_weapon_skin",
+		template = "bw_deus_01_template_1",
+		display_name = "bw_deus_01_skin_03_name",
+		slot_type = "weapon_skin",
+		display_unit = "units/weapons/weapon_display/display_stff",
+		item_type = "weapon_skin",
+		matching_item_key = "bw_deus_01",
+		can_wield = {
+			"bw_scholar",
+			"bw_adept",
+			"bw_unchained"
+		}
+	},
+	bw_deus_01_skin_03_runed = {
+		description = "bw_deus_01_skin_03_runed_description",
+		rarity = "exotic",
+		right_hand_unit = "units/weapons/player/wpn_bw_deus_03/wpn_bw_deus_03_runed",
+		hud_icon = "weapon_generic_icon_staff_5",
+		inventory_icon = "icon_wpn_brw_magmastaff_t3_runed",
+		left_hand_unit = "units/weapons/player/wpn_fireball/wpn_fireball",
+		information_text = "information_weapon_skin",
+		template = "bw_deus_01_template_1",
+		display_name = "bw_deus_01_skin_03_runed_name",
+		slot_type = "weapon_skin",
+		display_unit = "units/weapons/weapon_display/display_stff",
+		item_type = "weapon_skin",
+		matching_item_key = "bw_deus_01",
 		can_wield = {
 			"bw_scholar",
 			"bw_adept",
@@ -946,7 +986,7 @@ local item_master_list = {
 		rarity = "exotic",
 		right_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
 		hud_icon = "weapon_generic_icon_bow",
-		inventory_icon = "icon_wpn_emp_duckfoot_t3",
+		inventory_icon = "icon_wpn_emp_duckfoot_t3_runed",
 		left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
 		information_text = "information_weapon_skin",
 		template = "wh_deus_01_template_1",

@@ -11,6 +11,10 @@ ChaosTrollHuskHealthExtension.init = function (self, extension_init_context, uni
 	local set_only_current_max_health = true
 
 	self:_setup_initial_health_variables(self.health, set_only_current_max_health)
+
+	self.network_event_delegate = extension_init_context.system_data.network_event_delegate
+
+	self.network_event_delegate:register(self, "rpc_sync_current_max_health")
 end
 
 ChaosTrollHuskHealthExtension.set_max_health = function (self, value, set_only_current_max_health)
@@ -125,6 +129,21 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 
 		set_material_property(self.unit, "damage_value", "mtr_skin", percent_damage, true)
 	end
+end
+
+ChaosTrollHuskHealthExtension.rpc_sync_current_max_health = function (self, channel_id, go_id, new_max_health)
+	local game_object_id = self.game_object_id or Managers.state.unit_storage:go_id(self.unit)
+
+	if game_object_id ~= go_id then
+		return
+	end
+
+	self.current_max_health = new_max_health
+end
+
+ChaosTrollHuskHealthExtension.destroy = function (self)
+	ChaosTrollHuskHealthExtension.super:destroy()
+	self.network_event_delegate:unregister(self)
 end
 
 return

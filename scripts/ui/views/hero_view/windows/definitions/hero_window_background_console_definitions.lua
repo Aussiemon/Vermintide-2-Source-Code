@@ -743,6 +743,11 @@ local camera_position_by_character = {
 		z = 0.5,
 		x = 0.6,
 		y = -1.3
+	},
+	default = {
+		z = 0.4,
+		x = 0,
+		y = 1
 	}
 }
 local widgets = {

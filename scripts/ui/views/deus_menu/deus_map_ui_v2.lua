@@ -15,12 +15,16 @@ DeusMapUI.init = function (self, context)
 	Managers.state.event:register(self, "ingame_player_list_enabled", "event_ingame_player_list_enabled")
 end
 
-DeusMapUI.event_ingame_player_list_enabled = function (self, enabled)
+DeusMapUI.event_ingame_player_list_enabled = function (self, enabled, override_disable_cursor)
 	local cursor_widget = self._widgets_by_name.console_cursor
 	local cursor_widget_content = cursor_widget.content
 
 	if enabled then
 		cursor_widget_content.visible = false
+
+		if not override_disable_cursor then
+			Managers.input:disable_gamepad_cursor()
+		end
 	else
 		cursor_widget_content.visible = true
 

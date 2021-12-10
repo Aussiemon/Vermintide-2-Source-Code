@@ -213,6 +213,8 @@ WeaponUnitExtension.extensions_ready = function (self, world, unit)
 	self.ammo_extension = ScriptUnit.has_extension(unit, "ammo_system")
 	local owner_unit = self.owner_unit
 	self.first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+	self._buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	self._talent_extension = ScriptUnit.has_extension(owner_unit, "talent_system")
 end
 
 WeaponUnitExtension.destroy = function (self)
@@ -804,6 +806,7 @@ WeaponUnitExtension._find_chain_action = function (self, actions, allowed_chain_
 		local action_name = found_chain_info.action
 		local sub_action_name = found_chain_info.sub_action
 		found_action_settings = actions[action_name][sub_action_name]
+		found_action_settings, action_name, sub_action_name = ActionUtils.resolve_action_selector(found_action_settings, self._talent_extension, self._buff_extension, self)
 		local current_action_settings = self.current_action_settings
 
 		if current_action_settings and not self:_is_before_end_time(found_chain_info, t) then
@@ -950,7 +953,7 @@ end
 WeaponUnitExtension.is_starting_attack = function (self)
 	local current_action_settings = self.current_action_settings
 
-	return current_action_settings and current_action_settings.kind == "melee_start"
+	return ActionUtils.is_melee_start_sub_action(current_action_settings)
 end
 
 WeaponUnitExtension.time_to_next_attack = function (self, wanted_attack_type, current_actions, current_weapon_name, t, attack_chain)
@@ -987,13 +990,13 @@ WeaponUnitExtension.get_mode = function (self)
 end
 
 WeaponUnitExtension.get_custom_data = function (self, key)
-	fassert(self._custom_data[key], "Custom data key '%s' does not exist, add it to the weapon template", key)
+	fassert(self._custom_data[key] ~= nil, "Custom data key '%s' does not exist, add it to the weapon template", key)
 
 	return self._custom_data[key]
 end
 
 WeaponUnitExtension.set_custom_data = function (self, key, value)
-	fassert(self._custom_data[key], "Custom data key '%s' does not exist, add it to the weapon template", key)
+	fassert(self._custom_data[key] ~= nil, "Custom data key '%s' does not exist, add it to the weapon template", key)
 
 	self._custom_data[key] = value
 end

@@ -408,7 +408,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		local owner_player = Managers.player:owner(self.unit)
 
 		if owner_player and owner_player.local_player and not owner_player.bot_player then
-			Managers.state.event:trigger("show_boss_health_bar", attacker_unit)
+			Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", attacker_unit, "damage_taken")
 		end
 
 		QuestSettings.handle_bastard_block(self.unit, attacker_unit, false)

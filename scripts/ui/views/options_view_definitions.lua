@@ -451,6 +451,20 @@ local scenegraph_definition = {
 			30
 		}
 	},
+	settings_button_9 = {
+		vertical_alignment = "bottom",
+		parent = "button_pivot",
+		horizontal_alignment = "left",
+		position = {
+			0,
+			0,
+			1
+		},
+		size = {
+			220,
+			30
+		}
+	},
 	calibrate_ui_dummy = {
 		position = {
 			0,
@@ -2190,7 +2204,7 @@ local DROP_DOWN_WIDGET_SIZE = {
 	30
 }
 
-local function create_drop_down_widget(text, options, selected_option, tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
+local function create_drop_down_widget(text, options, selected_option, tooltip_text, disabled_tooltip_text, scenegraph_id, base_offset, ignore_upper_case)
 	local options_texts = {}
 	local options_values = {}
 	local options_n = #options
@@ -2267,7 +2281,14 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				{
 					style_id = "text",
 					pass_type = "text",
-					text_id = "text"
+					text_id = "text",
+					content_change_function = function (content, style)
+						if content.disabled then
+							style.text_color = style.disabled_color
+						else
+							style.text_color = style.default_color
+						end
+					end
 				},
 				{
 					pass_type = "texture",
@@ -2290,7 +2311,22 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 					pass_type = "option_tooltip",
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
+						if ui_content.disabled then
+							return false
+						end
+
 						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+					end
+				},
+				{
+					pass_type = "option_tooltip",
+					text_id = "disabled_tooltip_text",
+					content_check_function = function (ui_content)
+						if not ui_content.disabled then
+							return false
+						end
+
+						return ui_content.disabled_tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
 					end
 				},
 				{
@@ -2491,6 +2527,7 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 			options_texts = options_texts,
 			options_values = options_values,
 			tooltip_text = tooltip_text,
+			disabled_tooltip_text = disabled_tooltip_text or tooltip_text,
 			arrow = {
 				texture_id = "drop_down_menu_arrow",
 				uvs = {
@@ -2591,17 +2628,19 @@ local function create_drop_down_widget(text, options, selected_option, tooltip_t
 				}
 			},
 			text = {
+				font_size = 16,
 				upper_case = true,
 				localize = true,
 				dynamic_font = true,
-				font_size = 16,
 				font_type = "hell_shark_masked",
 				offset = {
 					base_offset[1] + 2,
 					base_offset[2] + 5,
 					base_offset[3] + 10
 				},
-				text_color = Colors.get_color_table_with_alpha("font_default", 255)
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				disabled_color = Colors.get_color_table_with_alpha("font_default", 50)
 			},
 			arrow = {
 				masked = true,
@@ -2868,7 +2907,7 @@ local STEPPER_WIDGET_SIZE = {
 	30
 }
 
-local function create_stepper_widget(text, options, selected_option, tooltip_text, scenegraph_id, base_offset)
+local function create_stepper_widget(text, options, selected_option, tooltip_text, disabled_tooltip_text, scenegraph_id, base_offset)
 	local options_texts = {}
 	local options_values = {}
 	local num_options = #options
@@ -2899,7 +2938,10 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				},
 				{
 					pass_type = "hotspot",
-					content_id = "highlight_hotspot"
+					content_id = "highlight_hotspot",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					pass_type = "texture",
@@ -2914,6 +2956,13 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 					text_id = "tooltip_text",
 					content_check_function = function (ui_content)
 						return ui_content.tooltip_text and ui_content.highlight_hotspot.is_hover and not Managers.input:is_device_active("gamepad")
+					end,
+					content_change_function = function (ui_content)
+						if ui_content.disabled then
+							ui_content.tooltip_text = ui_content.tooltip_text_disabled
+						else
+							ui_content.tooltip_text = ui_content.tooltip_text_enabled
+						end
 					end
 				},
 				{
@@ -2972,7 +3021,9 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 							end
 						end
 
-						if left_hotspot.is_hover or right_hotspot.is_hover then
+						if ui_content.disabled then
+							ui_style.selection_text.text_color = ui_style.selection_text.disabled_color
+						elseif left_hotspot.is_hover or right_hotspot.is_hover then
 							ui_style.selection_text.text_color = ui_style.selection_text.highlight_color
 						else
 							ui_style.selection_text.text_color = ui_style.selection_text.default_color
@@ -2982,29 +3033,48 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				{
 					style_id = "text",
 					pass_type = "text",
-					text_id = "text"
+					text_id = "text",
+					content_change_function = function (content, style)
+						if content.disabled then
+							style.text_color = style.disabled_color
+						else
+							style.text_color = style.default_color
+						end
+					end
 				},
 				{
 					style_id = "left_arrow_hotspot",
 					pass_type = "hotspot",
-					content_id = "left_hotspot"
+					content_id = "left_hotspot",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					style_id = "right_arrow_hotspot",
 					pass_type = "hotspot",
-					content_id = "right_hotspot"
+					content_id = "right_hotspot",
+					content_check_function = function (content)
+						return not content.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "left_arrow",
 					pass_type = "texture",
-					content_id = "arrow"
+					content_id = "arrow",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
 					style_id = "right_arrow",
 					pass_type = "texture_uv",
-					content_id = "arrow"
+					content_id = "arrow",
+					content_check_function = function (content)
+						return not content.parent.disabled
+					end
 				},
 				{
 					texture_id = "texture_id",
@@ -3056,11 +3126,12 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 		content = {
 			left_arrow = "settings_arrow_normal",
 			right_arrow_hover = "settings_arrow_clicked",
+			left_arrow_hover = "settings_arrow_clicked",
 			right_arrow = "settings_arrow_normal",
 			selection_text = "",
 			highlight_texture = "playerlist_hover",
 			rect_masked = "rect_masked",
-			left_arrow_hover = "settings_arrow_clicked",
+			disabled = false,
 			left_hotspot = {},
 			right_hotspot = {},
 			highlight_hotspot = {
@@ -3094,6 +3165,8 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				}
 			},
 			tooltip_text = tooltip_text,
+			tooltip_text_enabled = tooltip_text,
+			tooltip_text_disabled = disabled_tooltip_text or tooltip_text,
 			current_selection = selected_option,
 			options_texts = options_texts,
 			options_values = options_values,
@@ -3227,21 +3300,23 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				}
 			},
 			text = {
+				font_size = 16,
 				upper_case = true,
 				localize = true,
 				dynamic_font = true,
-				font_size = 16,
 				font_type = "hell_shark_masked",
 				offset = {
 					base_offset[1] + 2,
 					base_offset[2] + 2,
 					base_offset[3]
 				},
-				text_color = Colors.get_color_table_with_alpha("font_default", 255)
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				disabled_color = Colors.get_color_table_with_alpha("font_default", 50)
 			},
 			selection_text = {
-				font_size = 16,
 				upper_case = true,
+				font_size = 16,
 				horizontal_alignment = "center",
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
@@ -3252,7 +3327,8 @@ local function create_stepper_widget(text, options, selected_option, tooltip_tex
 				},
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				highlight_color = Colors.get_color_table_with_alpha("font_default", 255),
-				default_color = Colors.get_color_table_with_alpha("font_default", 255)
+				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				disabled_color = Colors.get_color_table_with_alpha("font_default", 50)
 			},
 			debug_middle_line = {
 				offset = {

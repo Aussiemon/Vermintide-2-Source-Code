@@ -4,6 +4,14 @@ local portrait_scale = 1
 local HEALING_MAX_LIFE_TIME = 0.5
 local HEALING_EFFECT_LIFE_TIME = 2
 local breed_textures = UISettings.breed_textures
+local PRIORITY_TIMER_LENGTH = 5
+local PRIORITY_REASONS = {
+	proximity = 1,
+	lord = 2,
+	ping = 4,
+	damage_taken = 3,
+	damage_done = 4
+}
 BossHealthUI = class(BossHealthUI)
 
 BossHealthUI.init = function (self, parent, ingame_ui_context)
@@ -24,9 +32,12 @@ BossHealthUI.init = function (self, parent, ingame_ui_context)
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
+	self._prioritized_unit = nil
+	self._prioritized_reason = nil
 	local event_manager = Managers.state.event
 
-	event_manager:register(self, "show_boss_health_bar", "event_show_boss_health_bar")
+	event_manager:register(self, "boss_health_bar_set_prioritized_unit", "event_set_prioritized_unit")
+	event_manager:register(self, "boss_health_bar_clear_prioritized_unit", "event_clear_prioritized_unit")
 	event_manager:register(self, "on_spectator_target_changed", "on_spectator_target_changed")
 
 	self._proximity_update_time = 0
@@ -38,8 +49,9 @@ BossHealthUI.destroy = function (self)
 
 	local event_manager = Managers.state.event
 
-	event_manager:unregister("show_boss_health_bar", self)
 	event_manager:unregister("on_spectator_target_changed", self)
+	event_manager:unregister("boss_health_bar_set_prioritized_unit", self)
+	event_manager:unregister("boss_health_bar_clear_prioritized_unit", self)
 end
 
 BossHealthUI.create_ui_elements = function (self)
@@ -201,6 +213,7 @@ BossHealthUI.update = function (self, dt, t)
 
 	self:_sync_boss_health(dt, t)
 	self:_update_targeted_boss(dt, t)
+	self:_update_timed_prioritization(dt, t)
 
 	if self._current_progress and not script_data.hide_boss_health_ui then
 		self:_update_animations(dt, t)
@@ -221,11 +234,19 @@ BossHealthUI._update_targeted_boss = function (self, dt, t)
 		return
 	end
 
+	if self._prioritized_unit then
+		if ALIVE[self._prioritized_unit] then
+			return
+		else
+			self:event_clear_prioritized_unit()
+		end
+	end
+
 	local proximity_system = Managers.state.entity:system("proximity_system")
 	local proximity_boss_unit = proximity_system.closest_boss_unit
 
 	if proximity_boss_unit and self._boss_unit ~= proximity_boss_unit then
-		self:event_show_boss_health_bar(proximity_boss_unit)
+		self:_show_boss_health_bar(proximity_boss_unit)
 	end
 end
 
@@ -239,6 +260,27 @@ BossHealthUI._update_animations = function (self, dt, t)
 			animations[name] = nil
 		end
 	end
+end
+
+BossHealthUI._update_timed_prioritization = function (self, dt, t)
+	if self._start_prioritization_timer then
+		self._prioritization_timer = t
+		self._start_prioritization_timer = false
+
+		return
+	end
+
+	if not self._prioritization_timer then
+		return
+	end
+
+	if t < self._prioritization_timer + PRIORITY_TIMER_LENGTH then
+		return
+	end
+
+	self._prioritization_timer = nil
+
+	self:event_clear_prioritized_unit(self._prioritized_reason)
 end
 
 BossHealthUI._draw = function (self, dt, t)
@@ -259,46 +301,83 @@ BossHealthUI._draw = function (self, dt, t)
 	UIRenderer.end_pass(ui_renderer)
 end
 
-BossHealthUI.event_show_boss_health_bar = function (self, unit)
-	if unit and AiUtils.unit_alive(unit) then
-		local breed = Unit.get_data(unit, "breed")
-		local should_show_health_bar = false
-
-		if breed and breed.server_controlled_health_bar then
-			local game = Managers.state.network:game()
-			local go_id = Managers.state.unit_storage:go_id(unit)
-			local show_health_bar_field = go_id and GameSession.game_object_field(game, go_id, "show_health_bar")
-
-			if show_health_bar_field then
-				should_show_health_bar = true
-			end
-		else
-			should_show_health_bar = breed and breed.boss
-		end
-
-		if should_show_health_bar then
-			local breed_name = breed.name
-			self._switch_healthbars = self._boss_unit and unit ~= self._boss_unit
-			self._breed_name = breed_name
-
-			self:_update_enemy_portrait_name_and_attributes(unit, breed_name)
-
-			self.render_settings.alpha_multiplier = (not self._boss_unit and 0) or self.render_settings.alpha_multiplier
-			self._boss_unit = unit
-
-			self:_set_healing_amount(0, 0)
-			self:_set_health_effect_alpha(0)
-
-			self._freeze_healing = false
-			self._next_update_is_instant = true
-		end
+BossHealthUI._show_boss_health_bar = function (self, unit)
+	if not ALIVE[unit] then
+		return
 	end
+
+	local should_show_health_bar = false
+	local breed = Unit.get_data(unit, "breed")
+
+	if breed and breed.server_controlled_health_bar then
+		local state_manager = Managers.state
+		local game = state_manager.network:game()
+		local go_id = state_manager.unit_storage:go_id(unit)
+		local show_health_bar_field = go_id and GameSession.game_object_field(game, go_id, "show_health_bar")
+
+		if show_health_bar_field then
+			should_show_health_bar = true
+		end
+	else
+		should_show_health_bar = breed and breed.boss
+	end
+
+	if should_show_health_bar then
+		local breed_name = breed.name
+		self._switch_healthbars = self._boss_unit and unit ~= self._boss_unit
+		self._breed_name = breed_name
+
+		self:_update_enemy_portrait_name_and_attributes(unit, breed_name)
+
+		self.render_settings.alpha_multiplier = (not self._boss_unit and 0) or self.render_settings.alpha_multiplier
+		self._boss_unit = unit
+
+		self:_set_healing_amount(0, 0)
+		self:_set_health_effect_alpha(0)
+
+		self._freeze_healing = false
+		self._next_update_is_instant = true
+
+		return true
+	end
+
+	return false
 end
 
 BossHealthUI.on_spectator_target_changed = function (self, spectated_player_unit)
 	self._spectated_player_unit = spectated_player_unit
 	self._spectated_player = Managers.player:owner(spectated_player_unit)
 	self._is_spectator = true
+end
+
+BossHealthUI.event_set_prioritized_unit = function (self, unit, reason)
+	local new_prio = PRIORITY_REASONS[reason] or -999
+	local current_prio = PRIORITY_REASONS[self._prioritized_reason] or -999
+
+	if new_prio < current_prio then
+		return
+	end
+
+	if self:_show_boss_health_bar(unit) then
+		self._prioritized_reason = reason
+		self._prioritized_unit = unit
+
+		if reason == "damage_taken" or reason == "damage_done" then
+			self._start_prioritization_timer = true
+		else
+			self._prioritization_timer = nil
+			self._start_prioritization_timer = false
+		end
+	end
+end
+
+BossHealthUI.event_clear_prioritized_unit = function (self, reason)
+	if self._prioritized_reason ~= reason then
+		return
+	end
+
+	self._prioritized_unit = nil
+	self._prioritized_reason = nil
 end
 
 BossHealthUI._reset = function (self)
@@ -309,6 +388,8 @@ BossHealthUI._reset = function (self)
 	self._healing_start_progress = nil
 	self._healing_life_time = nil
 	self._healing_effect_life_time = nil
+	self._prioritized_unit = nil
+	self._prioritized_reason = nil
 end
 
 BossHealthUI._sync_boss_health = function (self, dt, t)

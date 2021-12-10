@@ -2,15 +2,19 @@ require("scripts/utils/cosmetics_utils")
 
 Cosmetics = {
 	skin_dr_default = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		always_hide_attachment_slots = {
 			"slot_hat"
@@ -19,25 +23,33 @@ Cosmetics = {
 	skin_dr_ironbreaker = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		}
 	},
 	skin_dr_ironbreaker_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_ironbreaker/skins/black_and_gold/chr_dwarf_ranger_ironbreaker_black_and_gold",
@@ -50,15 +62,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ironbreaker_blue = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_ironbreaker/skins/blue/chr_dwarf_ranger_ironbreaker_blue",
@@ -71,15 +87,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ironbreaker_crimson = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_ironbreaker/skins/crimson/chr_dwarf_ranger_ironbreaker_crimson",
@@ -92,15 +112,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ironbreaker_green = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_ironbreaker/skins/green/chr_dwarf_ranger_ironbreaker_green",
@@ -113,15 +137,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ironbreaker_iron = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 1,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_ironbreaker/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_ironbreaker/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_ironbreaker/skins/iron/chr_dwarf_ranger_ironbreaker_iron",
@@ -136,25 +164,33 @@ Cosmetics = {
 	skin_dr_slayer = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		}
 	},
 	skin_dr_slayer_axe = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/axe/chr_dwarf_ranger_slayer_axe",
@@ -169,15 +205,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_slayer_dragon = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/dragon/chr_dwarf_ranger_slayer_dragon",
@@ -192,15 +232,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_slayer_skaven = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/skaven/chr_dwarf_ranger_slayer_skaven",
@@ -215,15 +259,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_slayer_skull = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/skull/chr_dwarf_ranger_slayer_skull",
@@ -238,15 +286,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_slayer_runes = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/runes/chr_dwarf_ranger_slayer_runes",
@@ -261,15 +313,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_slayer_wing = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/wing/chr_dwarf_ranger_slayer_wing",
@@ -284,15 +340,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_slayer_skull = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 2,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_slayer/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_slayer/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_slayer/skins/skull/chr_dwarf_ranger_slayer_skull",
@@ -309,25 +369,33 @@ Cosmetics = {
 	skin_dr_ranger = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		}
 	},
 	skin_dr_ranger_helmgart = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_upgraded/skins/helmgart/chr_dwarf_ranger_upgraded_helmgart",
@@ -340,15 +408,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ranger_barak_varr = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_upgraded/skins/barak_varr/chr_dwarf_ranger_upgraded_barak_varr",
@@ -361,15 +433,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ranger_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_upgraded/skins/black_and_gold/chr_dwarf_ranger_upgraded_black_and_gold",
@@ -382,15 +458,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ranger_brown_and_yellow = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_upgraded/skins/brown_and_yellow/chr_dwarf_ranger_upgraded_brown_and_yellow",
@@ -403,15 +483,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ranger_karak_norn = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_upgraded/skins/karak_norn/chr_dwarf_ranger_upgraded_karak_norn",
@@ -424,15 +508,19 @@ Cosmetics = {
 		}
 	},
 	skin_dr_ranger_zhufbar = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
 		career = 3,
+		third_person_bot = "units/beings/player/third_person_base/dwarf_ranger/chr_third_person_base",
 		first_person_attachment = {
 			unit = "units/beings/player/dwarf_ranger_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/dwarf_ranger_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.bardin
 		},
 		material_changes = {
 			package_name = "units/beings/player/dwarf_ranger_upgraded/skins/zhufbar/chr_dwarf_ranger_upgraded_zhufbar",
@@ -445,15 +533,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_default = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/empire_soldier/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		always_hide_attachment_slots = {
 			"slot_hat"
@@ -462,25 +554,33 @@ Cosmetics = {
 	skin_es_knight = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_knight/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		}
 	},
 	skin_es_knight_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_knight/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_knight/skins/black_and_gold/chr_empire_soldier_knight_black_and_gold",
@@ -493,15 +593,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_knight_bronze = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_knight/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_knight/skins/bronze/chr_empire_soldier_knight_bronze",
@@ -514,15 +618,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_knight_green = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_knight/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_knight/skins/green/chr_empire_soldier_knight_green",
@@ -535,15 +643,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_knight_middenland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_knight/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_knight/skins/middenland/chr_empire_soldier_knight_middenland",
@@ -556,15 +668,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_knight_red = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_knight/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_knight/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_knight/skins/red/chr_empire_soldier_knight_red",
@@ -579,25 +695,33 @@ Cosmetics = {
 	skin_es_mercenary = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		}
 	},
 	skin_es_mercenary_helmgart = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_mercenary/skins/helmgart/chr_empire_soldier_mercenary_helmgart",
@@ -610,15 +734,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_mercenary_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_mercenary/skins/black_and_gold/chr_empire_soldier_mercenary_black_and_gold",
@@ -631,15 +759,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_mercenary_carroburg = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_mercenary/skins/carroburg/chr_empire_soldier_mercenary_carroburg",
@@ -652,15 +784,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_mercenary_middenland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_mercenary/skins/middenland/chr_empire_soldier_mercenary_middenland",
@@ -673,15 +809,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_mercenary_ostermark = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_mercenary/skins/ostermark/chr_empire_soldier_mercenary_ostermark",
@@ -694,15 +834,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_mercenary_ostland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_mercenary/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_mercenary/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_mercenary/skins/ostland/chr_empire_soldier_mercenary_ostland",
@@ -717,25 +861,33 @@ Cosmetics = {
 	skin_es_huntsman = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_huntsman/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		}
 	},
 	skin_es_huntsman_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_huntsman/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_huntsman/skins/black_and_gold/chr_empire_soldier_huntsman_black_and_gold",
@@ -748,15 +900,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_huntsman_middenland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_huntsman/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_huntsman/skins/middenland/chr_empire_soldier_huntsman_middenland",
@@ -769,15 +925,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_huntsman_ostermark = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_huntsman/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_huntsman/skins/ostermark/chr_empire_soldier_huntsman_ostermark",
@@ -790,15 +950,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_huntsman_red_and_white = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_huntsman/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_huntsman/skins/red_and_white/chr_empire_soldier_huntsman_red_and_white",
@@ -811,15 +975,19 @@ Cosmetics = {
 		}
 	},
 	skin_es_huntsman_yellow_and_green = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/empire_soldier/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/empire_soldier_huntsman/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/empire_soldier_huntsman/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kruber
 		},
 		material_changes = {
 			package_name = "units/beings/player/empire_soldier_huntsman/skins/yellow_and_green/chr_empire_soldier_huntsman_yellow_and_green",
@@ -832,15 +1000,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_default = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/way_watcher/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		always_hide_attachment_slots = {
 			"slot_hat"
@@ -849,25 +1021,33 @@ Cosmetics = {
 	skin_ww_shade = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_shade/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		}
 	},
 	skin_ww_shade_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_shade/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_shade/skins/black_and_gold/chr_way_watcher_shade_black_and_gold",
@@ -880,15 +1060,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_shade_ash = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_shade/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_shade/skins/ash/chr_way_watcher_shade_ash",
@@ -901,15 +1085,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_shade_crimson = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_shade/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_shade/skins/crimson/chr_way_watcher_shade_crimson",
@@ -922,15 +1110,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_shade_emerald = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_shade/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_shade/skins/emerald/chr_way_watcher_shade_emerald",
@@ -943,15 +1135,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_shade_midnight = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_shade/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_shade/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_shade/skins/midnight/chr_way_watcher_shade_midnight",
@@ -966,25 +1162,33 @@ Cosmetics = {
 	skin_ww_maidenguard = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_maiden_guard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		}
 	},
 	skin_ww_maidenguard_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_maiden_guard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_maiden_guard/skins/black_and_gold/chr_way_watcher_maiden_guard_black_and_gold",
@@ -1000,15 +1204,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_maidenguard_caledor = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_maiden_guard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_maiden_guard/skins/caledor/chr_way_watcher_maiden_guard_caledor",
@@ -1024,15 +1232,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_maidenguard_elyrion = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_maiden_guard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_maiden_guard/skins/elyrion/chr_way_watcher_maiden_guard_elyrion",
@@ -1048,15 +1260,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_maidenguard_red_and_yellow = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_maiden_guard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_maiden_guard/skins/red_and_yellow/chr_way_watcher_maiden_guard_red_and_yellow",
@@ -1072,15 +1288,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_maidenguard_white_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_maiden_guard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_maiden_guard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_maiden_guard/skins/white_and_gold/chr_way_watcher_maiden_guard_white_and_gold",
@@ -1098,25 +1318,33 @@ Cosmetics = {
 	skin_ww_waywatcher = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		}
 	},
 	skin_ww_waywatcher_helmgart = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_upgraded/skins/helmgart/chr_way_watcher_upgraded_helmgart",
@@ -1130,15 +1358,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_waywatcher_anmyr = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_upgraded/skins/anmyr/chr_way_watcher_upgraded_anmyr",
@@ -1152,15 +1384,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_waywatcher_atylwyth = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_upgraded/skins/atylwyth/chr_way_watcher_upgraded_atylwyth",
@@ -1174,15 +1410,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_waywatcher_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_upgraded/skins/black_and_gold/chr_way_watcher_upgraded_black_and_gold",
@@ -1196,15 +1436,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_waywatcher_cythral = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_upgraded/skins/cythral/chr_way_watcher_upgraded_cythral",
@@ -1218,15 +1462,19 @@ Cosmetics = {
 		}
 	},
 	skin_ww_waywatcher_tirsyth = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/way_watcher/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/way_watcher_upgraded/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/way_watcher_upgraded/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.kerillian
 		},
 		material_changes = {
 			package_name = "units/beings/player/way_watcher_upgraded/skins/tirsyth/chr_way_watcher_upgraded_tirsyth",
@@ -1240,15 +1488,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_default = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/witch_hunter/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		always_hide_attachment_slots = {
 			"slot_hat"
@@ -1257,25 +1509,33 @@ Cosmetics = {
 	skin_wh_captain = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		}
 	},
 	skin_wh_captain_helmgart = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_captain/skins/helmgart/chr_witch_hunter_captain_helmgart",
@@ -1288,15 +1548,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_captain_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_captain/skins/black_and_gold/chr_witch_hunter_captain_black_and_gold",
@@ -1309,15 +1573,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_captain_grey_and_yellow = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_captain/skins/grey_and_yellow/chr_witch_hunter_captain_grey_and_yellow",
@@ -1330,15 +1598,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_captain_middenland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_captain/skins/middenland/chr_witch_hunter_captain_middenland",
@@ -1351,15 +1623,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_captain_ostermark = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_captain/skins/ostermark/chr_witch_hunter_captain_ostermark",
@@ -1372,15 +1648,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_captain_ostland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_captain/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_captain/skins/ostland/chr_witch_hunter_captain_ostland",
@@ -1395,25 +1675,33 @@ Cosmetics = {
 	skin_wh_zealot = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_zealot/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		}
 	},
 	skin_wh_zealot_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_zealot/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_zealot/skins/black_and_gold/chr_witch_hunter_zealot_black_and_gold",
@@ -1427,15 +1715,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_zealot_crimson = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_zealot/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_zealot/skins/crimson/chr_witch_hunter_zealot_crimson",
@@ -1449,15 +1741,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_zealot_green_and_yellow = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_zealot/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_zealot/skins/green_and_yellow/chr_witch_hunter_zealot_green_and_yellow",
@@ -1471,15 +1767,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_zealot_middenland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_zealot/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_zealot/skins/middenland/chr_witch_hunter_zealot_middenland",
@@ -1493,15 +1793,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_zealot_pure = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_zealot/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_zealot/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_zealot/skins/pure/chr_witch_hunter_zealot_pure",
@@ -1517,25 +1821,33 @@ Cosmetics = {
 	skin_wh_bountyhunter = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_bounty_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		}
 	},
 	skin_wh_bountyhunter_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_bounty_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_bounty_hunter/skins/black_and_gold/chr_witch_hunter_bounty_hunter_black_and_gold",
@@ -1548,15 +1860,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_bountyhunter_brown_and_white = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_bounty_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_bounty_hunter/skins/brown_and_white/chr_witch_hunter_bounty_hunter_brown_and_white",
@@ -1569,15 +1885,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_bountyhunter_green_and_yellow = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_bounty_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_bounty_hunter/skins/green_and_yellow/chr_witch_hunter_bounty_hunter_green_and_yellow",
@@ -1590,15 +1910,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_bountyhunter_middenland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_bounty_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_bounty_hunter/skins/middenland/chr_witch_hunter_bounty_hunter_middenland",
@@ -1611,15 +1935,19 @@ Cosmetics = {
 		}
 	},
 	skin_wh_bountyhunter_yellow_and_red = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/witch_hunter/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/witch_hunter_bounty_hunter/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.victor
 		},
 		material_changes = {
 			package_name = "units/beings/player/witch_hunter_bounty_hunter/skins/yellow_and_red/chr_witch_hunter_bounty_hunter_yellow_and_red",
@@ -1632,15 +1960,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_default = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/bright_wizard/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		always_hide_attachment_slots = {
 			"slot_hat"
@@ -1649,25 +1981,33 @@ Cosmetics = {
 	skin_bw_unchained = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_unchained/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		}
 	},
 	skin_bw_unchained_ash = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_unchained/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_unchained/skins/ash/chr_bright_wizard_unchained_ash",
@@ -1680,15 +2020,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_unchained_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_unchained/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_unchained/skins/black_and_gold/chr_bright_wizard_unchained_black_and_gold",
@@ -1701,15 +2045,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_unchained_bronze = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_unchained/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_unchained/skins/bronze/chr_bright_wizard_unchained_bronze",
@@ -1722,15 +2070,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_unchained_brown_and_white = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_unchained/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_unchained/skins/brown_and_white/chr_bright_wizard_unchained_brown_and_white",
@@ -1743,15 +2095,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_unchained_ostermark = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_unchained/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_unchained/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_unchained/skins/ostermark/chr_bright_wizard_unchained_ostermark",
@@ -1766,25 +2122,33 @@ Cosmetics = {
 	skin_bw_scholar = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_scholar/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		}
 	},
 	skin_bw_scholar_ash = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_scholar/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_scholar/skins/ash/chr_bright_wizard_scholar_ash",
@@ -1798,15 +2162,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_scholar_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_scholar/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_scholar/skins/black_and_gold/chr_bright_wizard_scholar_black_and_gold",
@@ -1820,15 +2188,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_scholar_bronze = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_scholar/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_scholar/skins/bronze/chr_bright_wizard_scholar_bronze",
@@ -1842,15 +2214,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_scholar_brown_and_white = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_scholar/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_scholar/skins/brown_and_white/chr_bright_wizard_scholar_brown_and_white",
@@ -1864,15 +2240,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_scholar_ostermark = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_scholar/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_scholar/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_scholar/skins/ostermark/chr_bright_wizard_scholar_ostermark",
@@ -1888,25 +2268,33 @@ Cosmetics = {
 	skin_bw_adept = {
 		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		unit = "",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		}
 	},
 	skin_bw_adept_helmgart = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_adept/skins/helmgart/chr_bright_wizard_adept_helmgart",
@@ -1919,15 +2307,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_adept_ash = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_adept/skins/ash/chr_bright_wizard_adept_ash",
@@ -1940,15 +2332,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_adept_black_and_gold = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_adept/skins/black_and_gold/chr_bright_wizard_adept_black_and_gold",
@@ -1961,15 +2357,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_adept_brown_and_yellow = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_adept/skins/brown_and_yellow/chr_bright_wizard_adept_brown_and_yellow",
@@ -1982,15 +2382,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_adept_ostermark = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_adept/skins/ostermark/chr_bright_wizard_adept_ostermark",
@@ -2003,15 +2407,19 @@ Cosmetics = {
 		}
 	},
 	skin_bw_adept_ostland = {
-		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_husk = "units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
 		first_person = "units/beings/player/first_person_base/chr_first_person_base",
-		third_person = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
-		third_person_bot = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_base",
+		third_person = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
+		first_person_bot = "units/beings/player/first_person_base/chr_first_person_bot_base",
+		third_person_bot = "units/beings/player/third_person_base/bright_wizard/chr_third_person_base",
 		unit = "",
-		third_person_husk = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_husk_base",
 		first_person_attachment = {
 			unit = "units/beings/player/bright_wizard_adept/first_person_base/chr_first_person_mesh",
 			attachment_node_linking = AttachmentNodeLinking.first_person_attachment
+		},
+		third_person_attachment = {
+			unit = "units/beings/player/bright_wizard_adept/third_person_base/chr_third_person_mesh",
+			attachment_node_linking = AttachmentNodeLinking.third_person_attachment.sienna
 		},
 		material_changes = {
 			package_name = "units/beings/player/bright_wizard_adept/skins/ostland/chr_bright_wizard_adept_ostland",

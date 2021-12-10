@@ -6,12 +6,26 @@ local scenegraph_definition = {
 	area_left = console_menu_scenegraphs.area_left,
 	area_right = console_menu_scenegraphs.area_right,
 	area_divider = console_menu_scenegraphs.area_divider,
+	discount_banner = {
+		vertical_alignment = "top",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			800,
+			64
+		},
+		position = {
+			0,
+			-81,
+			0
+		}
+	},
 	slideshow = {
 		vertical_alignment = "top",
 		parent = "screen",
 		horizontal_alignment = "left",
 		size = {
-			788,
+			920,
 			0
 		},
 		position = {
@@ -116,8 +130,348 @@ local scenegraph_definition = {
 			15,
 			-1
 		}
+	},
+	login_rewards = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "right",
+		size = {
+			375,
+			68
+		},
+		position = {
+			-350,
+			120,
+			20
+		}
 	}
 }
+
+local function create_login_rewards_button(scenegraph_id)
+	local size = scenegraph_definition[scenegraph_id].size
+	local frame_settings = UIFrameSettings.button_frame_01_gold
+	local glow_settings = UIFrameSettings.frame_outer_glow_01
+	local glow_width = glow_settings.texture_sizes.horizontal[2]
+	local side_detail_texture = "button_detail_09_gold"
+	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
+	local side_detail_texture_size = side_detail_texture_settings.size
+
+	return {
+		scenegraph_id = scenegraph_id,
+		offset = {
+			0,
+			0,
+			0
+		},
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "button_hotspot"
+				},
+				{
+					texture_id = "bg",
+					style_id = "bg",
+					pass_type = "tiled_texture"
+				},
+				{
+					texture_id = "bg_fade",
+					style_id = "bg_fade",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "hover_glow",
+					style_id = "hover_glow",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "glass",
+					style_id = "glass",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "glass_top",
+					style_id = "glass_top",
+					pass_type = "texture"
+				},
+				{
+					texture_id = "frame",
+					style_id = "frame",
+					pass_type = "texture_frame"
+				},
+				{
+					style_id = "side_detail_right",
+					pass_type = "texture_uv",
+					content_id = "side_detail"
+				},
+				{
+					style_id = "side_detail_left",
+					pass_type = "texture",
+					content_id = "side_detail"
+				},
+				{
+					style_id = "outer_glow",
+					texture_id = "outer_glow",
+					pass_type = "texture_frame",
+					content_check_function = function (content)
+						return content.is_claimable
+					end,
+					content_change_function = function (content, style)
+						style.color[1] = 150 + 105 * math.sin(5 * Managers.time:time("ui"))
+					end
+				},
+				{
+					style_id = "title",
+					pass_type = "text",
+					text_id = "title"
+				},
+				{
+					style_id = "title_shadow",
+					pass_type = "text",
+					text_id = "title"
+				},
+				{
+					style_id = "subtitle",
+					pass_type = "text",
+					text_id = "subtitle"
+				}
+			}
+		},
+		content = {
+			bg_fade = "button_bg_fade",
+			subtitle = "n/a",
+			hover_glow = "button_state_default",
+			bg = "menu_frame_bg_07",
+			title = "store_login_rewards_title",
+			glass = "game_options_fg",
+			glass_top = "button_glass_01",
+			glass_bottom = "button_glass_02",
+			button_hotspot = {},
+			frame = frame_settings.texture,
+			side_detail = {
+				uvs = {
+					{
+						1,
+						0
+					},
+					{
+						0,
+						1
+					}
+				},
+				texture_id = side_detail_texture
+			},
+			outer_glow = glow_settings.texture
+		},
+		style = {
+			bg = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				texture_tiling_size = {
+					512,
+					256
+				}
+			},
+			bg_fade = {
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			hover_glow = {
+				vertical_alignment = "bottom",
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					2
+				},
+				texture_size = {
+					size[1],
+					math.min(size[2] - 5, 80)
+				}
+			},
+			glass = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			glass_top = {
+				vertical_alignment = "top",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					4
+				},
+				texture_size = {
+					size[1],
+					11
+				}
+			},
+			frame = {
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				offset = {
+					0,
+					0,
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			side_detail_left = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					-55,
+					0,
+					10
+				},
+				texture_size = {
+					side_detail_texture_size[1],
+					side_detail_texture_size[2]
+				}
+			},
+			side_detail_right = {
+				vertical_alignment = "center",
+				horizontal_alignment = "right",
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					55,
+					0,
+					10
+				},
+				texture_size = {
+					side_detail_texture_size[1],
+					side_detail_texture_size[2]
+				}
+			},
+			outer_glow = {
+				frame_margins = {
+					-glow_width,
+					-glow_width
+				},
+				texture_size = glow_settings.texture_size,
+				texture_sizes = glow_settings.texture_sizes,
+				offset = {
+					0,
+					0,
+					4
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			title = {
+				horizontal_alignment = "center",
+				font_size = 38,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("font_title", 255),
+				offset = {
+					30,
+					0,
+					6
+				},
+				size = {
+					size[1] - 60,
+					size[2]
+				}
+			},
+			title_shadow = {
+				horizontal_alignment = "center",
+				font_size = 38,
+				localize = true,
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					32,
+					-2,
+					5
+				},
+				size = {
+					size[1] - 60,
+					size[2]
+				}
+			},
+			subtitle = {
+				vertical_alignment = "center",
+				localize = false,
+				horizontal_alignment = "center",
+				font_size = 25,
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				offset = {
+					0,
+					-65,
+					6
+				}
+			}
+		}
+	}
+end
 
 local function create_slideshow_definition(scenegraph_id, size)
 	local frame_name = "menu_frame_16"
@@ -202,6 +556,14 @@ local function create_slideshow_definition(scenegraph_id, size)
 			content_id = "icon_2"
 		},
 		{
+			pass_type = "texture",
+			style_id = "hourglass_icon",
+			texture_id = "hourglass_icon",
+			content_check_function = function (content)
+				return content.show_hourglass
+			end
+		},
+		{
 			style_id = "list_style",
 			pass_type = "list_pass",
 			content_id = "list_content",
@@ -225,6 +587,7 @@ local function create_slideshow_definition(scenegraph_id, size)
 		}
 	}
 	local content = {
+		hourglass_icon = "icon_store_timer",
 		title_text = "n/a",
 		rect = "rect_masked",
 		wait_time = 3,
@@ -556,6 +919,19 @@ local function create_slideshow_definition(scenegraph_id, size)
 				12
 			}
 		},
+		hourglass_icon = {
+			vertical_alignment = "top",
+			horizontal_alignment = "right",
+			offset = {
+				0,
+				0,
+				10
+			},
+			texture_size = {
+				49.5,
+				58.5
+			}
+		},
 		list_style = {
 			num_draws = 0,
 			start_index = 1,
@@ -633,6 +1009,227 @@ local function create_slideshow_definition(scenegraph_id, size)
 	return widget
 end
 
+local function create_discount_banner(scenegraph_id)
+	local size = scenegraph_definition[scenegraph_id].size
+	local frame_name = "button_frame_03_gold"
+	local frame_settings = UIFrameSettings[frame_name]
+	local frame_spacing = frame_settings.texture_sizes.horizontal[2]
+
+	return {
+		scenegraph_id = scenegraph_id,
+		element = {
+			passes = {
+				{
+					pass_type = "hotspot",
+					content_id = "hotspot"
+				},
+				{
+					pass_type = "rect",
+					style_id = "bg",
+					texture_id = "bg"
+				},
+				{
+					pass_type = "tiled_texture",
+					style_id = "bg_texture",
+					texture_id = "bg_texture"
+				},
+				{
+					pass_type = "texture",
+					style_id = "glass_top",
+					texture_id = "glass_top"
+				},
+				{
+					pass_type = "texture",
+					style_id = "glass_bottom",
+					texture_id = "glass_bottom"
+				},
+				{
+					pass_type = "texture",
+					style_id = "glass",
+					texture_id = "glass"
+				},
+				{
+					pass_type = "texture",
+					style_id = "glow",
+					texture_id = "glow"
+				},
+				{
+					pass_type = "texture_frame",
+					style_id = "frame",
+					texture_id = "frame"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text"
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text_shadow"
+				},
+				{
+					style_id = "icon",
+					texture_id = "icon",
+					pass_type = "texture",
+					content_change_function = function (content, style)
+						local s = 0.5 + math.sin(Managers.time:time("ui") * 3) * 0.5
+						style.color[1] = 215 + 40 * s
+					end
+				}
+			}
+		},
+		content = {
+			visible = false,
+			text_shadow = "n/a",
+			text = "n/a",
+			bg_texture = "button_bg_01",
+			glass = "athanor_panel_front_glass",
+			glow = "tab_menu_glow",
+			glass_top = "button_glass_01",
+			icon = "icon_store_timer",
+			glass_bottom = "button_glass_02",
+			hotspot = {},
+			frame = frame_settings.texture
+		},
+		style = {
+			bg = {
+				color = {
+					255,
+					66,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			bg_texture = {
+				color = {
+					179,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					2
+				},
+				texture_tiling_size = {
+					480,
+					270
+				}
+			},
+			glass_top = {
+				vertical_alignment = "top",
+				texture_size = {
+					size[1],
+					5
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			glass_bottom = {
+				vertical_alignment = "bottom",
+				texture_size = {
+					size[1],
+					5
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			glass = {
+				offset = {
+					0,
+					0,
+					4
+				}
+			},
+			glow = {
+				offset = {
+					0,
+					0,
+					5
+				}
+			},
+			icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					44,
+					46
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					12,
+					0,
+					6
+				}
+			},
+			text = {
+				font_size = 40,
+				horizontal_alignment = "center",
+				localize = false,
+				vertical_alignment = "bottom",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					50,
+					5,
+					7
+				},
+				size = {
+					size[1] - 100,
+					size[2]
+				}
+			},
+			text_shadow = {
+				font_size = 40,
+				horizontal_alignment = "center",
+				localize = false,
+				vertical_alignment = "bottom",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					51,
+					4,
+					6
+				},
+				size = {
+					size[1] - 100,
+					size[2]
+				}
+			},
+			frame = {
+				texture_size = frame_settings.texture_size,
+				texture_sizes = frame_settings.texture_sizes,
+				area_size = size,
+				offset = {
+					0,
+					0,
+					8
+				}
+			}
+		}
+	}
+end
+
 local content_widgets = {
 	slideshow = create_slideshow_definition("slideshow", {
 		920,
@@ -640,6 +1237,7 @@ local content_widgets = {
 	})
 }
 local widgets = {
+	discount_banner = create_discount_banner("discount_banner"),
 	skull_front_right = UIWidgets.create_simple_uv_texture("store_fence_skulls_front", {
 		{
 			0,
@@ -679,7 +1277,8 @@ local widgets = {
 			0,
 			1
 		}
-	}, "skull_back_left")
+	}, "skull_back_left"),
+	login_rewards_button = create_login_rewards_button("login_rewards")
 }
 local animation_definitions = {
 	on_enter = {
@@ -765,6 +1364,14 @@ local generic_input_actions = {
 			input_action = "back",
 			priority = 4,
 			description_text = "input_description_close"
+		},
+		{
+			input_action = "special_1",
+			priority = 5,
+			description_text = "store_login_rewards_button",
+			content_check_function = function ()
+				return not GameSettingsDevelopment.use_offline_backend
+			end
 		}
 	}
 }
@@ -774,7 +1381,6 @@ return {
 	max_slideshow_items = MAX_SLIDESHOW_ITEMS,
 	widgets = widgets,
 	content_widgets = content_widgets,
-	title_button_definitions = title_button_definitions,
 	scenegraph_definition = scenegraph_definition,
 	animation_definitions = animation_definitions
 }

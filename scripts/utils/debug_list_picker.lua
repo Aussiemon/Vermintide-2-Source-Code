@@ -35,16 +35,18 @@ DebugListPicker.setup = function (self)
 		columns = {}
 	}
 	self.save_data = save_data
-	self.column_index = save_data.last_column_index or 1
 	local columns = save_data.columns
+	self.column_index = (columns[save_data.last_column_index] and save_data.last_column_index) or 1
 	self.row_index = (columns[self.column_index] and columns[self.column_index].row_index) or 1
-	self.column = self.pick_list[self.column_index]
-	self.item = self.column[self.row_index]
 	local start_item = nil
 	local max_width = 0
 	local max_height = 0
 	local pick_list = self.pick_list
 	local max_rows = 0
+	self.column_index = (pick_list[self.column_index] and self.column_index) or 1
+	self.column = pick_list[self.column_index]
+	self.row_index = (self.column[self.row_index] and self.row_index) or 1
+	self.item = self.column[self.row_index]
 
 	for i = 1, #pick_list, 1 do
 		local column = pick_list[i]

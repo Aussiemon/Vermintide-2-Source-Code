@@ -1060,10 +1060,10 @@ BTConditions.should_vent_overcharge = function (blackboard, args)
 	return should_vent
 end
 
-BTConditions.should_recall_throwing_axes = function (blackboard, args)
+BTConditions.should_recall_unique_ammo = function (blackboard, args)
 	local inventory_extension = blackboard.inventory_extension
 
-	if not inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe") then
+	if not inventory_extension:has_unique_ammo_type_weapon_equipped() then
 		return false
 	end
 

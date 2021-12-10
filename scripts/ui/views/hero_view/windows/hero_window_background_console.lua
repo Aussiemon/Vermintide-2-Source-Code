@@ -71,6 +71,7 @@ local character_visibility_per_layout = {
 	talents = false,
 	cosmetics_selection = true
 }
+local camera_move_duration_per_layout = {}
 HeroWindowBackgroundConsole = class(HeroWindowBackgroundConsole)
 HeroWindowBackgroundConsole.NAME = "HeroWindowBackgroundConsole"
 
@@ -102,6 +103,7 @@ HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 	self._animations = {}
 
 	self:create_ui_elements(params, offset)
+	Managers.state.event:register(self, "respawn_hero", "respawn_hero")
 end
 
 HeroWindowBackgroundConsole._create_viewport_definition = function (self)
@@ -213,6 +215,8 @@ HeroWindowBackgroundConsole.on_exit = function (self, params)
 
 	self.ui_animator = nil
 
+	Managers.state.event:unregister("respawn_hero", self)
+
 	if self.world_previewer then
 		self.world_previewer:prepare_exit()
 		self.world_previewer:on_exit()
@@ -253,8 +257,9 @@ end
 
 HeroWindowBackgroundConsole._update_character_visibility = function (self, layout_name)
 	local draw_character = character_visibility_per_layout[layout_name] or false
+	local camera_move_duration = camera_move_duration_per_layout[layout_name]
 
-	self.world_previewer:_set_character_visibility(draw_character)
+	self.world_previewer:_set_character_visibility(draw_character, camera_move_duration)
 
 	self._draw_character = draw_character
 
@@ -275,6 +280,10 @@ end
 
 HeroWindowBackgroundConsole._update_object_sets = function (self, layout_name)
 	local object_set_to_enable = object_sets_per_layout[layout_name]
+
+	if object_set_to_enable.keep_current_object_set then
+		return
+	end
 
 	for object_set_name, object_set_units in pairs(self._object_sets) do
 		local enable_visibility = (object_set_to_enable and object_set_to_enable[object_set_name]) or false
@@ -311,11 +320,11 @@ HeroWindowBackgroundConsole.post_update = function (self, dt, t)
 		local layout_name = self.parent:get_layout_name()
 
 		if layout_name ~= self._current_layout_name then
-			self._current_layout_name = layout_name
-
 			self:_update_object_sets(layout_name)
 			self:_update_level_events(layout_name)
 			self:_update_character_visibility(layout_name)
+
+			self._current_layout_name = layout_name
 		end
 
 		if self.hero_unit_spawned then
@@ -330,7 +339,12 @@ end
 
 local FORCE_RESYNC = -1
 
-HeroWindowBackgroundConsole.respawn_hero = function (self)
+HeroWindowBackgroundConsole.respawn_hero = function (self, optional_params, override_camera_movement)
+	if optional_params then
+		self.hero_name = optional_params.hero_name
+		self.career_index = optional_params.career_index
+	end
+
 	local world_previewer = self.world_previewer
 
 	if not world_previewer then

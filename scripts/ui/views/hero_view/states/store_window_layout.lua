@@ -2,7 +2,8 @@ local windows = {
 	panel = {
 		ignore_alignment = true,
 		name = "panel",
-		class_name = "StoreWindowPanel"
+		class_name = "StoreWindowPanel",
+		always_reload = true
 	},
 	background = {
 		ignore_alignment = true,

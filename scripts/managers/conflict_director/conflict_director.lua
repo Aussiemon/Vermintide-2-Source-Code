@@ -2995,7 +2995,7 @@ ConflictDirector._spawn_spline_group = function (self, base_group_data, spline)
 	end
 end
 
-ConflictDirector.spawn_one = function (self, breed, optional_pos, group_data, optional_data)
+ConflictDirector.spawn_one = function (self, breed, optional_pos, group_data, optional_data, optional_rotation)
 	if breed.special then
 		local specials_spawning_disabled = Managers.state.game_mode:setting("ai_specials_spawning_disabled")
 
@@ -3028,7 +3028,8 @@ ConflictDirector.spawn_one = function (self, breed, optional_pos, group_data, op
 	local spawn_pos = optional_pos or ConflictUtils.get_spawn_pos_on_circle(self.nav_world, center_pos, 20, 8, 30)
 
 	if spawn_pos then
-		local rot = Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
+		local rot = optional_rotation
+		rot = rot or Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
 
 		self:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(rot), spawn_category, nil, nil, optional_data, group_data)
 	end

@@ -4124,7 +4124,7 @@ ItemMasterList.we_longbow_skin_03 = {
 }
 ItemMasterList.es_halberd_skin_04_runed_01 = {
 	description = "es_halberd_skin_04_runed_01_description",
-	rarity = "exotic",
+	rarity = "unique",
 	display_name = "es_halberd_skin_04_runed_01_name",
 	inventory_icon = "icon_wpn_wh_halberd_04",
 	slot_type = "weapon_skin",

@@ -222,6 +222,19 @@ DLCSettings = DLCSettings or {
 			achievements = "scripts/settings/dlcs/woods/woods_achievements_settings"
 		}
 	},
+	bless = {
+		localization = "localization/bless",
+		package_name = "resource_packages/dlcs/bless",
+		additional_settings = {
+			equipment = "scripts/settings/dlcs/bless/bless_equipment_settings",
+			ai = "scripts/settings/dlcs/bless/bless_ai_settings",
+			ui = "scripts/settings/dlcs/bless/bless_ui_settings",
+			buff = "scripts/settings/dlcs/bless/buff_settings_bless",
+			common = "scripts/settings/dlcs/bless/bless_common_settings",
+			achievements = "scripts/settings/dlcs/bless/bless_achievements_settings",
+			sound = "scripts/settings/dlcs/bless/bless_sound_settings"
+		}
+	},
 	grudge_marks = {
 		localization = "localization/grudge_marks",
 		package_name = "resource_packages/dlcs/grudge_marks",

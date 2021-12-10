@@ -25,6 +25,7 @@ StoreWindowItemDetails.on_enter = function (self, params, offset)
 	self:_start_transition_animation("on_enter")
 	self._parent:set_list_details_visibility(true)
 	self._parent:set_list_details_length(680, 0.3)
+	self._parent:change_generic_actions("default")
 end
 
 StoreWindowItemDetails._start_transition_animation = function (self, animation_name)

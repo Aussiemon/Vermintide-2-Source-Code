@@ -45,13 +45,13 @@ settings.action_classes_lookup = {
 }
 settings.inventory_package_list = {
 	"resource_packages/careers/dr_engineer",
-	"units/beings/player/dwarf_ranger_engineer/third_person_base/chr_third_person_base",
-	"units/beings/player/dwarf_ranger_engineer/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/dwarf_ranger_engineer/first_person_base/chr_first_person_mesh",
+	"units/beings/player/dwarf_ranger_engineer/third_person_base/chr_third_person_mesh",
 	"units/beings/player/dwarf_ranger_engineer/skins/black_and_gold/chr_dwarf_ranger_engineer_black_and_gold",
 	"units/beings/player/dwarf_ranger_engineer/skins/blue_and_gold/chr_dwarf_ranger_engineer_blue_and_gold",
 	"units/beings/player/dwarf_ranger_engineer/skins/brown_and_iron/chr_dwarf_ranger_engineer_brown_and_iron",
 	"units/beings/player/dwarf_ranger_engineer/skins/purple_and_copper/chr_dwarf_ranger_engineer_purple_and_copper",
+	"units/beings/player/dwarf_ranger_engineer/skins/white/chr_dwarf_ranger_engineer_white",
 	"units/weapons/player/wpn_dw_coghammer_01_t1/wpn_dw_coghammer_01_t1",
 	"units/weapons/player/wpn_dw_coghammer_01_t1/wpn_dw_coghammer_01_t1_3p",
 	"units/weapons/player/wpn_dw_coghammer_01_t2/wpn_dw_coghammer_01_t2",
@@ -81,9 +81,6 @@ settings.inventory_package_list = {
 	"units/beings/player/dwarf_ranger_engineer/headpiece/dr_e_hat_01",
 	"units/beings/player/dwarf_ranger_engineer/headpiece/dr_e_hat_02",
 	"units/beings/player/dwarf_ranger_engineer/headpiece/dr_e_hat_03"
-}
-settings.husk_lookup = {
-	"units/beings/player/dwarf_ranger_engineer/third_person_base/chr_third_person_husk_base"
 }
 
 return

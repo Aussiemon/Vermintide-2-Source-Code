@@ -475,10 +475,14 @@ PingSystem._add_unit_ping = function (self, pinger_unit, pinged_unit, flash, pin
 		ping_extension:set_pinged(true, flash, pinger_unit, apply_outline)
 	end
 
-	local breed = Unit.get_data(pinged_unit, "breed")
+	local sender_player = Managers.player:unit_owner(pinger_unit)
 
-	if breed and breed.boss then
-		Managers.state.event:trigger("show_boss_health_bar", pinged_unit)
+	if sender_player and sender_player.local_player then
+		local breed = Unit.get_data(pinged_unit, "breed")
+
+		if breed and breed.boss then
+			Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", pinged_unit, "ping")
+		end
 	end
 end
 
@@ -584,6 +588,12 @@ PingSystem._remove_ping = function (self, pinger_unit)
 
 			ping_extension:set_pinged(false, nil, pinger_unit, apply_outline)
 		end
+	end
+
+	local sender_player = Managers.player:unit_owner(pinger_unit)
+
+	if sender_player and sender_player.local_player then
+		Managers.state.event:trigger("boss_health_bar_clear_prioritized_unit", "ping")
 	end
 
 	if self._world_markers_enabled and world_marker_id then

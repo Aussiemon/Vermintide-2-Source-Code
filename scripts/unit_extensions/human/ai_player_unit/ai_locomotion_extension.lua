@@ -9,6 +9,7 @@ AILocomotionExtension = class(AILocomotionExtension)
 AILocomotionExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self._system_data = extension_init_data.system_data
 	self._unit = unit
+	self.breed = extension_init_data.breed
 	self._world = extension_init_context.world
 	self._nav_world = extension_init_data.nav_world
 
@@ -26,7 +27,7 @@ AILocomotionExtension.init = function (self, extension_init_context, unit, exten
 	self._constrained_by_mover = false
 	self._constrained_by_players = false
 	self._snap_to_navmesh = true
-	self._animation_translation_scale = Vector3Box(Vector3(1, 1, 1))
+	self._animation_translation_scale_box = Vector3Box(1, 1, 1)
 	self._animation_rotation_scale = 1
 	self._lerp_rotation = true
 	self._is_falling = false
@@ -184,7 +185,7 @@ AILocomotionExtension.set_animation_driven = function (self, is_animation_driven
 end
 
 AILocomotionExtension.set_animation_translation_scale = function (self, animation_translation_scale)
-	self._animation_translation_scale:store(animation_translation_scale)
+	self._animation_translation_scale_box:store(animation_translation_scale)
 end
 
 AILocomotionExtension.set_animation_rotation_scale = function (self, animation_rotation_scale)
@@ -358,6 +359,14 @@ end
 
 AILocomotionExtension.get_rotation_speed_modifier = function (self)
 	return self._rotation_speed_modifier
+end
+
+AILocomotionExtension.get_animation_rotation_scale = function (self)
+	return self._animation_rotation_scale
+end
+
+AILocomotionExtension.get_animation_translation_scale = function (self)
+	return self._animation_translation_scale_box:unbox()
 end
 
 return

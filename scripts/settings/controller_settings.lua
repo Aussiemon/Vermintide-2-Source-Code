@@ -4619,7 +4619,7 @@ IngameMenuKeymaps.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 	},
 	hotkey_mark_favorite_item = {
 		"gamepad",
-		"back",
+		"right_thumb",
 		"pressed"
 	},
 	show_information = {
@@ -4912,12 +4912,12 @@ IngameMenuKeymaps.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 	},
 	show_gamercard = {
 		"gamepad",
-		"l2",
+		"touch",
 		"pressed"
 	},
 	hotkey_mark_favorite_item = {
 		"gamepad",
-		"touch",
+		"r3",
 		"pressed"
 	},
 	show_information = {

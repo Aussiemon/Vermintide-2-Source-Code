@@ -3103,6 +3103,122 @@ AttachmentNodeLinking = {
 			}
 		}
 	},
+	flail_wp = {
+		first_person = {
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				},
+				{
+					target = "j_link_01",
+					source = "j_link_01"
+				},
+				{
+					target = "j_link_02",
+					source = "j_link_02"
+				},
+				{
+					target = "j_link_03",
+					source = "j_link_03"
+				},
+				{
+					target = "j_link_04",
+					source = "j_link_04"
+				},
+				{
+					target = "j_link_05",
+					source = "j_link_05"
+				},
+				{
+					target = "j_link_06",
+					source = "j_link_06"
+				},
+				{
+					target = "j_link_07",
+					source = "j_link_07"
+				},
+				{
+					target = "j_link_08",
+					source = "j_link_08"
+				},
+				{
+					target = "j_link_09",
+					source = "j_link_09"
+				},
+				{
+					target = "j_link_10",
+					source = "j_link_10"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "j_hips"
+				}
+			}
+		},
+		third_person = {
+			display = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				}
+			},
+			wielded = {
+				{
+					target = 0,
+					source = "j_rightweaponattach"
+				},
+				{
+					target = "j_link_01",
+					source = "j_rightweaponcomponent1"
+				},
+				{
+					target = "j_link_02",
+					source = "j_rightweaponcomponent2"
+				},
+				{
+					target = "j_link_03",
+					source = "j_rightweaponcomponent3"
+				},
+				{
+					target = "j_link_04",
+					source = "j_rightweaponcomponent4"
+				},
+				{
+					target = "j_link_05",
+					source = "j_rightweaponcomponent5"
+				},
+				{
+					target = "j_link_06",
+					source = "j_rightweaponcomponent6"
+				},
+				{
+					target = "j_link_07",
+					source = "j_rightweaponcomponent7"
+				},
+				{
+					target = "j_link_08",
+					source = "j_rightweaponcomponent8"
+				},
+				{
+					target = "j_link_09",
+					source = "j_rightweaponcomponent9"
+				},
+				{
+					target = "j_link_10",
+					source = "j_rightweaponcomponent10"
+				}
+			},
+			unwielded = {
+				{
+					target = 0,
+					source = "a_unwielded_1h_right"
+				}
+			}
+		}
+	},
 	first_aid_kit = {
 		first_person = {
 			wielded = {
@@ -5694,48 +5810,32 @@ AttachmentNodeLinking = {
 				source = "j_chin_amim"
 			},
 			{
-				target = "j_lowerlipright1_anim",
-				source = "j_lowerlipright1_anim"
+				target = "j_lowerlipcenter_anim",
+				source = "j_lowerlipcenter_anim"
 			},
 			{
 				target = "j_lowerlipleft1_anim",
 				source = "j_lowerlipleft1_anim"
 			},
 			{
-				target = "j_lowerlipcenter_anim",
-				source = "j_lowerlipcenter_anim"
+				target = "j_lowerlipright1_anim",
+				source = "j_lowerlipright1_anim"
 			},
 			{
 				target = "j_leftcrease_01_anim",
 				source = "j_leftcrease_01_anim"
 			},
 			{
-				target = "j_leftcheek_01_anim",
-				source = "j_leftcheek_01_anim"
-			},
-			{
 				target = "j_leftsnarl_01_anim",
 				source = "j_leftsnarl_01_anim"
-			},
-			{
-				target = "j_rightsnarl_01_anim",
-				source = "j_rightsnarl_01_anim"
-			},
-			{
-				target = "j_rightcheek_03_anim",
-				source = "j_rightcheek_03_anim"
 			},
 			{
 				target = "j_rightcrease_01_anim",
 				source = "j_rightcrease_01_anim"
 			},
 			{
-				target = "j_upperlipright2_anim",
-				source = "j_upperlipright2_anim"
-			},
-			{
-				target = "j_upperlipright1_anim",
-				source = "j_upperlipright1_anim"
+				target = "j_rightsnarl_01_anim",
+				source = "j_rightsnarl_01_anim"
 			},
 			{
 				target = "j_upperlipcenter_anim",
@@ -5748,6 +5848,22 @@ AttachmentNodeLinking = {
 			{
 				target = "j_upperlipleft2_anim",
 				source = "j_upperlipleft2_anim"
+			},
+			{
+				target = "j_upperlipright2_anim",
+				source = "j_upperlipright2_anim"
+			},
+			{
+				target = "j_upperlipright1_anim",
+				source = "j_upperlipright1_anim"
+			},
+			{
+				target = "j_rightcheek_03_anim",
+				source = "j_rightcheek_03_anim"
+			},
+			{
+				target = "j_leftcheek_03_anim",
+				source = "j_leftcheek_03_anim"
 			}
 		}
 	},

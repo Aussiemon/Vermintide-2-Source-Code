@@ -646,6 +646,8 @@ local function create_hero_widget(scenegraph_id, size)
 	local frame_premium_settings = UIFrameSettings.frame_corner_detail_01_gold
 	local hover_frame_settings = UIFrameSettings.frame_outer_glow_01
 	local hover_frame_width = hover_frame_settings.texture_sizes.horizontal[2]
+	local bot_frame_style = "frame_inner_glow_02"
+	local bot_frame_settings = UIFrameSettings[bot_frame_style]
 
 	return {
 		element = {
@@ -677,6 +679,30 @@ local function create_hero_widget(scenegraph_id, size)
 					pass_type = "texture",
 					content_check_function = function (content)
 						return content.taken and not content.locked
+					end
+				},
+				{
+					texture_id = "bot_frame",
+					style_id = "bot_frame",
+					pass_type = "texture_frame",
+					content_check_function = function (content)
+						return content.bot_selected
+					end
+				},
+				{
+					texture_id = "bot_texture",
+					style_id = "bot_texture",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.bot_selected
+					end
+				},
+				{
+					style_id = "bot_text",
+					pass_type = "text",
+					text_id = "bot_priority",
+					content_check_function = function (content)
+						return content.bot_priority
 					end
 				},
 				{
@@ -721,12 +747,14 @@ local function create_hero_widget(scenegraph_id, size)
 			}
 		},
 		content = {
+			portrait = "icons_placeholder",
 			locked = false,
 			lock_texture = "hero_icon_locked",
-			portrait = "icons_placeholder",
-			taken = false,
 			taken_texture = "hero_icon_unavailable",
+			taken = false,
+			bot_texture = "friends_icon_01",
 			button_hotspot = {},
+			bot_frame = bot_frame_settings.texture,
 			frame = frame_settings.texture,
 			frame_premium = frame_premium_settings.texture,
 			hover_frame = hover_frame_settings.texture
@@ -798,6 +826,56 @@ local function create_hero_widget(scenegraph_id, size)
 				},
 				offset = {
 					0,
+					0,
+					6
+				}
+			},
+			bot_frame = {
+				texture_size = bot_frame_settings.texture_size,
+				texture_sizes = bot_frame_settings.texture_sizes,
+				color = {
+					200,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					3
+				}
+			},
+			bot_texture = {
+				texture_size = {
+					40,
+					40
+				},
+				color = {
+					255,
+					200,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					6
+				}
+			},
+			bot_text = {
+				vertical_alignment = "bottom",
+				horizontal_alignment = "left",
+				localize = false,
+				font_size = 24,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					200,
+					255,
+					255
+				},
+				offset = {
+					35,
 					0,
 					6
 				}

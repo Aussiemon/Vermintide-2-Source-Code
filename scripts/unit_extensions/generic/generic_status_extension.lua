@@ -985,6 +985,7 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 
 		buff_extension:trigger_procs("on_player_disabled", "assassin_pounced")
 		Managers.state.event:trigger("on_player_disabled", "assassin_pounced", unit, pouncer_unit)
+		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
 end
 
@@ -1115,6 +1116,8 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 
 			Managers.telemetry.events:player_knocked_down(player, damage_type, position)
 		end
+
+		Managers.state.achievement:trigger_event("player_knocked_down", player)
 	end
 
 	Managers.music:check_last_man_standing_music_state()
@@ -1181,6 +1184,8 @@ GenericStatusExtension.set_dead = function (self, dead)
 		CharacterStateHelper.stop_weapon_actions(inventory_extension, "dead")
 		CharacterStateHelper.stop_career_abilities(career_extension, "dead")
 	end
+
+	Managers.state.achievement:trigger_event("player_dead", player)
 
 	self.dead = dead
 end
@@ -1596,6 +1601,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 
 		buff_extension:trigger_procs("on_player_disabled", "pack_master_grab")
 		Managers.state.event:trigger("on_player_disabled", "pack_master_grab", unit, grabber_unit)
+		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
 
 	local locomotion = ScriptUnit.extension(unit, "locomotion_system")
@@ -1768,6 +1774,7 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 
 		buff_extension:trigger_procs("on_player_disabled", "corruptor_grab")
 		Managers.state.event:trigger("on_player_disabled", "corruptor_grab", unit, self.corruptor_unit)
+		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
 end
 

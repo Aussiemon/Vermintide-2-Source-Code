@@ -1,4 +1,6 @@
 require("scripts/settings/equipment/item_master_list")
+dofile("scripts/settings/equipment/attachments")
+dofile("scripts/settings/equipment/cosmetics")
 
 ItemHelper = ItemHelper or {}
 local item_type_templates = {

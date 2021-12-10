@@ -537,7 +537,7 @@ local action_data = {
 				offset_up = 0,
 				range = 2.5,
 				player_push_speed = 9,
-				damage_done_time = 1.9,
+				damage_done_time = 1.9333333333333333,
 				rotation_speed = 5,
 				player_push_speed_blocked = 9,
 				push_close_units_during_attack = true,
@@ -747,7 +747,16 @@ local action_data = {
 				}
 			}
 		},
-		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
+		difficulty_damage = {
+			harder = 15,
+			hard = 8,
+			normal = 5,
+			hardest = 25,
+			cataclysm = 32,
+			cataclysm_3 = 50,
+			cataclysm_2 = 40,
+			easy = 3
+		}
 	},
 	attack_grabbed_throw = {
 		action_weight = 1,
@@ -769,15 +778,15 @@ local action_data = {
 			cataclysm_2 = 40,
 			easy = 3
 		},
-		health_leech = {
-			harder = 200,
-			hard = 100,
-			normal = 10,
-			hardest = 300,
-			cataclysm = 400,
-			cataclysm_3 = 500,
-			cataclysm_2 = 450,
-			easy = 10
+		health_leech_multiplier = {
+			harder = 13.33,
+			hard = 12.5,
+			normal = 2,
+			hardest = 12,
+			cataclysm = 12.5,
+			cataclysm_3 = 10,
+			cataclysm_2 = 11.25,
+			easy = 3.33
 		}
 	},
 	tentacle_grab = {
@@ -845,7 +854,16 @@ local action_data = {
 				}
 			}
 		},
-		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack
+		difficulty_damage = {
+			harder = 7,
+			hard = 6,
+			normal = 5,
+			hardest = 8,
+			cataclysm = 10,
+			cataclysm_3 = 10,
+			cataclysm_2 = 10,
+			easy = 3
+		}
 	},
 	erratic_follow = {
 		enter_catch_up_dist_sq = 1600,

@@ -64,9 +64,10 @@ DeusRunStatsView._handle_input = function (self, dt, t)
 		self:_update_inventory()
 
 		local local_player = Managers.player:local_player()
+		local no_player_unit = local_player.player_unit == nil
 
-		if local_player.player_unit == nil or gamepad_active then
-			self._ui:lock(true)
+		if no_player_unit or gamepad_active then
+			self._ui:lock(true, no_player_unit)
 		end
 	end
 

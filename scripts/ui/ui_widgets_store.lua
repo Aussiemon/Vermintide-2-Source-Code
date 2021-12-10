@@ -316,7 +316,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			style_id = "expire_time_icon",
 			texture_id = "expire_time_icon",
 			content_check_function = function (content)
-				return content.has_expire_date
+				return content.discount
 			end
 		},
 		{
@@ -405,14 +405,6 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			text_id = "price_text_before",
 			content_check_function = function (content)
 				return not content.owned and (IS_WINDOWS or not content.real_currency) and not content.hide_price and content.old_price
-			end
-		},
-		{
-			pass_type = "texture",
-			style_id = "timer_icon",
-			texture_id = "timer_icon",
-			content_check_function = function (content)
-				return content.limited_time
 			end
 		},
 		{
@@ -562,6 +554,10 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			pass_type = "texture",
 			texture_id = "new_marker",
 			content_check_function = function (content)
+				if content.discount then
+					return false
+				end
+
 				return not PlayerData.seen_shop_items[content.item_key] and not content.hide_new
 			end,
 			content_change_function = function (content, style)
@@ -573,40 +569,37 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 		}
 	}
 	local content = {
-		expire_time_icon = "store_icon_hourglass",
-		old_price = false,
-		price_strike_through = "shop_bundle_line",
-		has_expire_date = false,
-		draw_price_icon = true,
-		optional_subtitle = "",
-		price_text_now = "-",
-		owned_icon = "store_owned_sigil",
-		optional_item_name = "",
+		expire_time_icon = "icon_store_timer",
 		price_icon = "store_icon_currency_ingame",
+		old_price = false,
+		owned_icon = "store_owned_sigil",
+		hide_price = false,
+		draw_price_icon = true,
+		owned = false,
 		background_price_center = "store_thumbnail_pricetag_middle",
-		price_text = "-",
-		console_first_price_text = "",
+		price_strike_through = "shop_bundle_line",
+		price_text_now = "-",
+		optional_item_name = "",
+		psplus_icon = "psplus_logo",
 		console_third_price_text = "",
+		price_text = "-",
+		show_secondary_stroke = false,
+		show_third_stroke = false,
 		show_ps4_plus = false,
 		price_text_before = "-",
 		type_tag_icon = "store_tag_icon_dlc",
 		discount = false,
-		show_secondary_stroke = false,
-		show_third_stroke = false,
 		loading_icon = "loot_loading",
 		new_marker = "list_item_tag_new",
 		background_price = "store_thumbnail_pricetag_left",
 		price_gradient = "gradient",
 		real_currency = false,
-		limited_time = false,
-		owned = false,
 		console_secondary_price_text = "",
-		hide_price = false,
+		optional_subtitle = "",
 		owned_icon_bg = "store_owned_ribbon",
 		background_price_right = "store_thumbnail_pricetag_right",
 		discount_bg = "store_thumbnail_sale",
-		timer_icon = "store_owned_sigil",
-		psplus_icon = "psplus_logo",
+		console_first_price_text = "",
 		hide_new = settings.hide_new,
 		item_key = product.product_id,
 		hotspot = {},
@@ -814,8 +807,8 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			horizontal_alignment = "left",
 			masked = masked,
 			texture_size = {
-				33,
-				39
+				49.5,
+				58.5
 			},
 			color = {
 				255,
@@ -824,9 +817,9 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				255
 			},
 			offset = {
-				size[1] - 45,
-				-size[2] + 50,
-				9
+				3,
+				9,
+				10
 			}
 		},
 		overlay = {
@@ -895,7 +888,7 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 				36
 			},
 			texture_tiling_size = {
-				10,
+				12,
 				36
 			},
 			color = {
@@ -976,35 +969,6 @@ UIWidgets.create_store_item_definition = function (scenegraph_id, size, masked, 
 			offset = {
 				3,
 				-(size[2] - 47),
-				11
-			}
-		},
-		timer_icon = {
-			vertical_alignment = "bottom",
-			horizontal_alignment = "left",
-			masked = masked,
-			texture_size = {
-				24,
-				24
-			},
-			default_texture_size = {
-				24,
-				24
-			},
-			color = {
-				255,
-				255,
-				255,
-				255
-			},
-			offset = {
-				15,
-				-40,
-				11
-			},
-			default_offset = {
-				15,
-				-40,
 				11
 			}
 		},
@@ -3510,12 +3474,26 @@ UIWidgets.create_store_panel_button = function (scenegraph_id, size, text, font_
 					style_id = "new_marker",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.new
+						return content.new and not content.timer
+					end
+				},
+				{
+					style_id = "timer_marker",
+					pass_type = "texture",
+					texture_id = "timer_marker",
+					content_check_function = function (content)
+						return content.timer
+					end,
+					content_change_function = function (content, style)
+						local s = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
+						style.color[1] = 100 + 155 * s
 					end
 				}
 			}
 		},
 		content = {
+			timer_marker = "icon_store_timer",
+			timer = false,
 			new_marker = "list_item_tag_new",
 			button_hotspot = {},
 			text_field = text,
@@ -3617,6 +3595,21 @@ UIWidgets.create_store_panel_button = function (scenegraph_id, size, text, font_
 				offset = {
 					new_marker_offset[1],
 					new_marker_offset[2],
+					new_marker_offset[3]
+				},
+				size = size
+			},
+			timer_marker = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				texture_size = {
+					44,
+					46
+				},
+				color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					new_marker_offset[1] + 42,
+					new_marker_offset[2] - 2,
 					new_marker_offset[3]
 				},
 				size = size

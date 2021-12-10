@@ -3389,7 +3389,7 @@ ItemMasterList.bw_gate_0001 = {
 }
 ItemMasterList.unchained_hat_0000 = {
 	description = "description_unchained_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_unchained_hat_0000",
 	template = "bw_hat",
 	inventory_icon = "icon_unchained_hat_0000",
@@ -3557,7 +3557,7 @@ ItemMasterList.bw_gate_0006 = {
 }
 ItemMasterList.adept_hat_0000 = {
 	description = "description_adept_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_adept_hat_0000",
 	template = "bw_gates",
 	inventory_icon = "icon_adept_hat_0000",
@@ -3740,7 +3740,7 @@ ItemMasterList.bw_gate_0007 = {
 }
 ItemMasterList.scholar_hat_0000 = {
 	description = "description_scholar_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_scholar_hat_0000",
 	template = "bw_gates",
 	inventory_icon = "icon_scholar_hat_0000",
@@ -3985,7 +3985,7 @@ ItemMasterList.dr_helmet_0001 = {
 }
 ItemMasterList.ranger_hat_0000 = {
 	description = "description_ranger_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_ranger_hat_0000",
 	template = "dr_helmets",
 	inventory_icon = "icon_ranger_hat_0000",
@@ -4258,7 +4258,7 @@ ItemMasterList.dr_helmet_0003 = {
 }
 ItemMasterList.ironbreaker_hat_0000 = {
 	description = "description_ironbreaker_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_ironbreaker_hat_0000",
 	template = "dr_helmets_beard_ears",
 	inventory_icon = "icon_ironbreaker_hat_0000",
@@ -4517,7 +4517,7 @@ ItemMasterList.dr_helmet_0011 = {
 }
 ItemMasterList.slayer_hat_0000 = {
 	description = "description_slayer_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_slayer_hat_0000",
 	template = "dr_hair_tattoo_00",
 	inventory_icon = "icon_slayer_hat_0000",
@@ -4762,7 +4762,7 @@ ItemMasterList.es_hat_0001 = {
 }
 ItemMasterList.huntsman_hat_0000 = {
 	description = "description_huntsman_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_huntsman_hat_0000",
 	template = "es_hats_skinned",
 	inventory_icon = "icon_huntsman_hat_0000",
@@ -4930,7 +4930,7 @@ ItemMasterList.es_hat_0002 = {
 }
 ItemMasterList.mercenary_hat_0000 = {
 	description = "description_mercenary_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_mercenary_hat_0000",
 	template = "es_hats",
 	inventory_icon = "icon_mercenary_hat_0000",
@@ -5098,7 +5098,7 @@ ItemMasterList.es_hat_0003 = {
 }
 ItemMasterList.knight_hat_0000 = {
 	description = "description_knight_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_knight_hat_0000",
 	template = "es_hats_no_ear",
 	inventory_icon = "icon_knight_hat_0000",
@@ -5330,7 +5330,7 @@ ItemMasterList.wh_hat_0001 = {
 }
 ItemMasterList.witchhunter_hat_0000 = {
 	description = "description_witchhunter_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_witchhunter_hat_0000",
 	template = "wh_hats",
 	inventory_icon = "icon_witchhunter_hat_0000",
@@ -5513,7 +5513,7 @@ ItemMasterList.wh_hat_0003 = {
 }
 ItemMasterList.zealot_hat_0000 = {
 	description = "description_zealot_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_zealot_hat_0000",
 	template = "wh_z_hats_tattoo_02",
 	inventory_icon = "icon_zealot_hat_0000",
@@ -5709,7 +5709,7 @@ ItemMasterList.wh_hat_0007 = {
 }
 ItemMasterList.bountyhunter_hat_0000 = {
 	description = "description_bountyhunter_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_bountyhunter_hat_0000",
 	template = "wh_hats",
 	inventory_icon = "icon_bountyhunter_hat_0000",
@@ -5906,7 +5906,7 @@ ItemMasterList.ww_hood_0000 = {
 }
 ItemMasterList.waywatcher_hat_0000 = {
 	description = "description_waywatcher_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_waywatcher_hat_0000",
 	template = "ww_full_face",
 	inventory_icon = "icon_waywatcher_hat_0000",
@@ -6103,7 +6103,7 @@ ItemMasterList.ww_hood_0001 = {
 }
 ItemMasterList.shade_hat_0000 = {
 	description = "description_shade_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_shade_hat_0000",
 	template = "ww_masks",
 	inventory_icon = "icon_shade_hat_0000",
@@ -6285,7 +6285,7 @@ ItemMasterList.ww_hood_0002 = {
 }
 ItemMasterList.maidenguard_hat_0000 = {
 	description = "description_maidenguard_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_maidenguard_hat_0000",
 	template = "ww_full_face",
 	inventory_icon = "icon_maidenguard_hat_0000",

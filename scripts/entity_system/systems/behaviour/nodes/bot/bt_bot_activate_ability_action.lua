@@ -198,18 +198,33 @@ BTBotActivateAbilityAction.run = function (self, unit, blackboard, t, dt)
 	local activation_data = data.activation
 
 	if activation_data.dynamic_target_unit then
-		if ALIVE[blackboard.target_unit] then
-			local aim_position = update_target_location(blackboard.target_unit, data.aim_position)
-			local input_extension = blackboard.input_extension
+		local target_unit = (activation_data.custom_target_unit and data.target_unit) or blackboard.target_unit
 
-			input_extension:set_aiming(true, true, false)
-			input_extension:set_aim_position(aim_position)
+		if ALIVE[target_unit] then
+			if target_unit == unit then
+				local input_extension = blackboard.input_extension
 
-			if activation_data.move_to_target_unit and data.next_repath_t <= t then
-				blackboard.navigation_destination_override:store(aim_position)
+				input_extension:set_aiming(true, true, false)
 
-				data.move_to_position_set = true
-				data.next_repath_t = t + 0.5
+				local first_person_extension = blackboard.first_person_extension
+				local camera_position = first_person_extension:current_position()
+				local current_rotation = first_person_extension:current_rotation()
+				local current_forward = Quaternion.forward(current_rotation)
+
+				input_extension:set_aim_position(camera_position + current_forward)
+			else
+				local aim_position = update_target_location(target_unit, data.aim_position)
+				local input_extension = blackboard.input_extension
+
+				input_extension:set_aiming(true, true, false)
+				input_extension:set_aim_position(aim_position)
+
+				if activation_data.move_to_target_unit and data.next_repath_t <= t then
+					blackboard.navigation_destination_override:store(aim_position)
+
+					data.move_to_position_set = true
+					data.next_repath_t = t + 0.5
+				end
 			end
 		else
 			return "failed"

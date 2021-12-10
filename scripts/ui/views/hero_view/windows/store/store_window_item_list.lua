@@ -26,6 +26,7 @@ StoreWindowItemList.on_enter = function (self, params, offset)
 	self:_create_ui_elements(params, offset)
 	self._parent:set_list_details_visibility(true)
 	self._parent:set_list_details_length(930, 0.3)
+	self._parent:change_generic_actions("default")
 end
 
 StoreWindowItemList._start_transition_animation = function (self, animation_name)
@@ -272,7 +273,7 @@ StoreWindowItemList._update_item_list = function (self)
 		if item then
 			local backend_items = Managers.backend:get_interface("items")
 			local item_key = item.key
-			local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or self._parent:check_owns_bundle(backend_items, item.data.bundle_contains)
+			local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
 			item.owned = item_owned
 			self._list_widgets[self._selected_gamepad_grid_index].content.owned = item_owned
 		end
@@ -317,15 +318,20 @@ StoreWindowItemList._update_item_list = function (self)
 			items = self:_get_all_items()
 		end
 
+		local insert_index = 0
+
 		for backend_id, item in pairs(items) do
-			layout[#layout + 1] = {
+			local product = {
 				item = item,
 				type = product_type,
-				product_id = item.key
+				product_id = item.key,
+				sort_key = StoreLayoutConfig.make_sort_key(item)
 			}
+			insert_index = insert_index + 1
+			layout[insert_index] = product
 		end
 
-		table.sort(layout, StoreLayoutConfig.sort.cmp_layout_item)
+		table.sort(layout, StoreLayoutConfig.compare_sort_key)
 	elseif product_type == "dlc" then
 		for index, dlc_name in ipairs(page_content) do
 			local dlc_index = table.find_by_key(StoreDlcSettings, "dlc_name", dlc_name)

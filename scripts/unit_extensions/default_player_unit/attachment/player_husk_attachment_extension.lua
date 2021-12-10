@@ -17,6 +17,9 @@ end
 PlayerHuskAttachmentExtension.extensions_ready = function (self, world, unit)
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self._cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
+	self._tp_unit_mesh = self._cosmetic_extension:get_third_person_mesh_unit()
+
+	Unit.flow_event(self._tp_unit_mesh, "lua_attachment_unhidden")
 end
 
 PlayerHuskAttachmentExtension.destroy = function (self)
@@ -53,7 +56,7 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 	local show_attachments_event = item_template.show_attachments_event
 
 	if show_attachments_event then
-		Unit.flow_event(unit, show_attachments_event)
+		Unit.flow_event(self._tp_unit_mesh, show_attachments_event)
 	end
 
 	self:_show_attachment(slot_name, slot_data, true)
@@ -101,10 +104,20 @@ PlayerHuskAttachmentExtension.get_slot_data = function (self, slot_id)
 end
 
 PlayerHuskAttachmentExtension.show_attachments = function (self, show)
-	local slots = self._attachments.slots
+	if self._show_attachments ~= show then
+		local slots = self._attachments.slots
 
-	for slot_name, slot_data in pairs(slots) do
-		self:_show_attachment(slot_name, slot_data, show)
+		for slot_name, slot_data in pairs(slots) do
+			if slot_data.unit then
+				self:_show_attachment(slot_name, slot_data, show)
+			end
+		end
+
+		local attachment_event = (show and "lua_attachment_unhidden") or "lua_attachment_hidden"
+
+		Unit.flow_event(self._tp_unit_mesh, attachment_event)
+
+		self._show_attachments = show
 	end
 end
 

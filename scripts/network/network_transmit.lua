@@ -1,4 +1,5 @@
 local RPC = RPC
+local dummy_table = {}
 
 function call_RPC(rpc_func_name, peer_id, ...)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
@@ -137,11 +138,13 @@ NetworkTransmit.send_rpc_party_clients = function (self, rpc_name, party, includ
 	end
 
 	local occupied_slots = party.occupied_slots
-	local peer_ids = {}
+	local peer_ids = dummy_table
+
+	table.clear(peer_ids)
 
 	for _, player_data in ipairs(occupied_slots) do
 		if player_data.is_player then
-			peer_ids[#peer_ids + 1] = player_data.peer_id
+			peer_ids[player_data.peer_id] = true
 		end
 	end
 
@@ -153,7 +156,7 @@ NetworkTransmit.send_rpc_party_clients = function (self, rpc_name, party, includ
 
 			for _, player_data in ipairs(occupied_slots) do
 				if player_data.is_player then
-					peer_ids[#peer_ids + 1] = player_data.peer_id
+					peer_ids[player_data.peer_id] = true
 				end
 			end
 		end
@@ -162,7 +165,7 @@ NetworkTransmit.send_rpc_party_clients = function (self, rpc_name, party, includ
 	local peer_ignore_list = self.peer_ignore_list
 
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
-		if not peer_ignore_list[peer_id] and table.contains(peer_ids, peer_id) then
+		if not peer_ignore_list[peer_id] and peer_ids[peer_id] then
 			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 			rpc(channel_id, ...)
@@ -185,11 +188,13 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 	end
 
 	local occupied_slots = party.occupied_slots
-	local peer_ids = {}
+	local peer_ids = dummy_table
+
+	table.clear(peer_ids)
 
 	for _, player_data in ipairs(occupied_slots) do
 		if player_data.is_player then
-			peer_ids[#peer_ids + 1] = player_data.peer_id
+			peer_ids[player_data.peer_id] = true
 		end
 	end
 
@@ -201,7 +206,7 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 
 			for _, player_data in ipairs(occupied_slots) do
 				if player_data.is_player then
-					peer_ids[#peer_ids + 1] = player_data.peer_id
+					peer_ids[player_data.peer_id] = true
 				end
 			end
 		end
@@ -210,7 +215,7 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 	local peer_ignore_list = self.peer_ignore_list
 
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
-		if not peer_ignore_list[peer_id] and table.contains(peer_ids, peer_id) then
+		if not peer_ignore_list[peer_id] and peer_ids[peer_id] then
 			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 			rpc(channel_id, ...)
@@ -232,11 +237,13 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 	end
 
 	local player_units = side.PLAYER_UNITS
-	local peer_ids = {}
+	local peer_ids = dummy_table
+
+	table.clear(peer_ids)
 
 	for _, unit in ipairs(player_units) do
 		local player = Managers.player:owner(unit)
-		peer_ids[#peer_ids + 1] = player:network_id()
+		peer_ids[player:network_id()] = true
 	end
 
 	if include_spectators then
@@ -247,7 +254,7 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 
 			for _, unit in ipairs(player_units) do
 				local player = Managers.player:owner(unit)
-				peer_ids[#peer_ids + 1] = player:unique_id()
+				peer_ids[player:network_id()] = true
 			end
 		end
 	end
@@ -255,7 +262,7 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 	local peer_ignore_list = self.peer_ignore_list
 
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
-		if not peer_ignore_list[peer_id] and table.contains(peer_ids, peer_id) then
+		if not peer_ignore_list[peer_id] and peer_ids[peer_id] then
 			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 			rpc(channel_id, ...)
@@ -311,7 +318,7 @@ NetworkTransmit.send_rpc_clients_except = function (self, rpc_name, except, ...)
 	end
 end
 
-NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, include_spectators, expect, ...)
+NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, include_spectators, except, ...)
 	fassert(self.is_server, "Trying to send rpc %q on client to clients which is wrong. Only servers should use this function.", rpc_name)
 
 	local rpc = RPC[rpc_name]
@@ -325,11 +332,13 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 	end
 
 	local player_units = side.PLAYER_UNITS
-	local peer_ids = {}
+	local peer_ids = dummy_table
+
+	table.clear(peer_ids)
 
 	for _, unit in ipairs(player_units) do
 		local player = Managers.player:owner(unit)
-		peer_ids[#peer_ids + 1] = player:unique_id()
+		peer_ids[player:network_id()] = true
 	end
 
 	if include_spectators then
@@ -340,7 +349,7 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 
 			for _, unit in ipairs(player_units) do
 				local player = Managers.player:owner(unit)
-				peer_ids[#peer_ids + 1] = player:unique_id()
+				peer_ids[player:network_id()] = true
 			end
 		end
 	end
@@ -348,7 +357,7 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 	local peer_ignore_list = self.peer_ignore_list
 
 	for _, peer_id in ipairs(GameSession.other_peers(session)) do
-		if not peer_ignore_list[peer_id] and table.contains(peer_ids, peer_id) and peer_id ~= except then
+		if not peer_ignore_list[peer_id] and peer_ids[peer_id] and peer_id ~= except then
 			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 			rpc(channel_id, ...)
@@ -407,31 +416,6 @@ NetworkTransmit.send_rpc_all_except = function (self, rpc_name, except, ...)
 			local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
 			rpc(channel_id, ...)
-		end
-	end
-end
-
-local _rpc_params_table = {}
-
-NetworkTransmit._validate_rpc = function (self, rpc_name, ...)
-	table.clear(_rpc_params_table)
-
-	for i = 1, select("#", ...), 1 do
-		_rpc_params_table[i] = select(i, ...)
-	end
-
-	local message_info = Network.message_info(rpc_name)
-	local arguments = message_info.arguments
-
-	for i, argument in ipairs(arguments) do
-		local param = _rpc_params_table[i]
-
-		if type(param) == "table" and argument.max_size and argument.max_size < #param then
-			Application.warning("[NetworkTransmit:_validate_rpc] %s above max size: %d > %d", rpc_name, #param, argument.max_size)
-
-			for _, p in ipairs(param) do
-				Application.warning(p)
-			end
 		end
 	end
 end

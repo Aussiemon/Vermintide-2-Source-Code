@@ -18,7 +18,9 @@ PlayerUnitVisualEffectsExtension.extensions_ready = function (self, world, unit)
 	self.first_person_extension = first_person_extension
 	self.first_person_unit = first_person_unit
 	self.first_person_mesh_unit = first_person_mesh_unit
-	self.flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
+	local cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
+	self.cosmetic_extension = cosmetic_extension
+	self.third_person_mesh_unit = cosmetic_extension:get_third_person_mesh_unit()
 end
 
 PlayerUnitVisualEffectsExtension.destroy = function (self)
@@ -63,19 +65,18 @@ end
 
 PlayerUnitVisualEffectsExtension._set_character_overcharge = function (self, value)
 	local unit = self.unit
+	local third_person_mesh_unit = self.third_person_mesh_unit
 	local first_person_unit = self.first_person_unit
 	local first_person_mesh_unit = self.first_person_mesh_unit
 
 	if unit and Unit.alive(unit) then
 		unit_set_flow_variable(unit, "current_overcharge", value)
 		unit_flow_event(unit, "lua_update_overcharge")
+	end
 
-		for k, v in pairs(self.flow_unit_attachments) do
-			if Unit.alive(v) then
-				unit_set_flow_variable(v, "current_overcharge", value)
-				unit_flow_event(v, "lua_update_overcharge")
-			end
-		end
+	if third_person_mesh_unit and Unit.alive(third_person_mesh_unit) then
+		unit_set_flow_variable(third_person_mesh_unit, "current_overcharge", value)
+		unit_flow_event(third_person_mesh_unit, "lua_update_overcharge")
 	end
 
 	if first_person_unit and Unit.alive(first_person_unit) then
@@ -143,6 +144,7 @@ end
 
 PlayerUnitVisualEffectsExtension._set_character_overcharge_threshold = function (self)
 	local unit = self.unit
+	local third_person_mesh_unit = self.third_person_mesh_unit
 	local first_person_unit = self.first_person_unit
 	local first_person_mesh_unit = self.first_person_mesh_unit
 	local event_name = "below_overcharge_threshold"
@@ -153,6 +155,10 @@ PlayerUnitVisualEffectsExtension._set_character_overcharge_threshold = function 
 
 	if unit and Unit.alive(unit) then
 		unit_flow_event(unit, event_name)
+	end
+
+	if third_person_mesh_unit and Unit.alive(third_person_mesh_unit) then
+		unit_flow_event(third_person_mesh_unit, event_name)
 	end
 
 	if first_person_unit and Unit.alive(first_person_unit) then

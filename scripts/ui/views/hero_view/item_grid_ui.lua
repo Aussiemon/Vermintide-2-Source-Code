@@ -10,7 +10,7 @@ local function tablefind_item_key(tab, item_key)
 	end
 end
 
-ItemGridUI.init = function (self, category_settings, widget, hero_name, career_index)
+ItemGridUI.init = function (self, category_settings, widget, hero_name, career_index, params)
 	self._platform = PLATFORM
 	self._category_settings = category_settings
 	self._widget = widget
@@ -21,6 +21,7 @@ ItemGridUI.init = function (self, category_settings, widget, hero_name, career_i
 
 	self._hero_name = hero_name
 	self._career_index = career_index
+	self._params = params
 	self._locked_items = {}
 end
 
@@ -739,7 +740,7 @@ end
 
 ItemGridUI._get_items_by_filter = function (self, item_filter)
 	local backend_items = Managers.backend:get_interface("items")
-	local items = backend_items:get_filtered_items(item_filter)
+	local items = backend_items:get_filtered_items(item_filter, self._params)
 
 	return items
 end

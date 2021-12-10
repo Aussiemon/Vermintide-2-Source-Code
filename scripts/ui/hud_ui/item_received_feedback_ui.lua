@@ -73,12 +73,14 @@ ItemReceivedFeedbackUI.create_ui_elements = function (self)
 
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	self.message_widgets = {}
+	self._unused_widgets = {}
+	local i = 0
 
 	for _, widget in pairs(definitions.message_widgets) do
-		self.message_widgets[#self.message_widgets + 1] = UIWidget.init(widget)
+		i = i + 1
+		self.message_widgets[i] = UIWidget.init(widget)
+		self._unused_widgets[i] = UIWidget.init(widget)
 	end
-
-	self._unused_widgets = table.clone(self.message_widgets)
 end
 
 ItemReceivedFeedbackUI.remove_event = function (self, index)

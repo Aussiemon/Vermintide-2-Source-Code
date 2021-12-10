@@ -482,6 +482,16 @@ UIUtils.format_time = function (t)
 	return string.format("%02d:%02d", min, sec)
 end
 
+UIUtils.format_time_long = function (t)
+	local floor = math.floor
+	local days = floor(t / 86400)
+	local hours = floor((t / 3600) % 24)
+	local minutes = floor(t / 60) % 60
+	local seconds = t % 60
+
+	return string.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)
+end
+
 UIUtils.format_duration = function (t, done_string)
 	if t > 172800 then
 		return string.format(Localize("datetime_days") .. ", " .. Localize("datetime_hours_short"), t / 86400, (t / 3600) % 24)

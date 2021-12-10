@@ -1185,12 +1185,6 @@ Colors.color_definitions = {
 		50,
 		100
 	},
-	bw_4 = {
-		ALPHA,
-		28,
-		32,
-		53
-	},
 	empire_soldier_tutorial = {
 		ALPHA,
 		36,

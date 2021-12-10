@@ -165,7 +165,6 @@ DemoCharacterPreviewer.cb_spawn_hero_unit = function (self, profile, career, ski
 		self.unit_max_look_height = 0.9
 	end
 
-	Unit.flow_event(character_unit, "lua_spawn_attachments")
 	self:_spawn_inventory(career)
 end
 

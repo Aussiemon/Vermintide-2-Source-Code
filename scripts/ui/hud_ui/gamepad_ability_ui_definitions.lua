@@ -29,20 +29,6 @@ local scenegraph_definition = {
 		}
 	}
 }
-local career_specific_data = {
-	dr_engineer = {
-		always_show_activated_ability_input = true,
-		ability_top_texture_id = "icon_rotarygun",
-		ability_effect = "gamepad_ability_effect_cog",
-		lit_frame_id = "lit_frame_engineer"
-	},
-	default = {
-		always_show_activated_ability_input = false,
-		ability_top_texture_id = "ability_glow",
-		ability_effect = "gamepad_ability_effect",
-		lit_frame_id = false
-	}
-}
 
 local function create_ability_widget()
 	return {
@@ -69,7 +55,7 @@ local function create_ability_widget()
 
 						local career_ext = ScriptUnit.extension(player_unit, "career_system")
 						local career_name = career_ext:career_name()
-						local career_data = career_specific_data[career_name] or career_specific_data.default
+						local career_data = UISettings.gamepad_ability_ui_data[career_name] or UISettings.gamepad_ability_ui_data.default
 
 						for content_id, content_value in pairs(career_data) do
 							content[content_id] = content_value
@@ -253,20 +239,10 @@ local thornsister_passive_widget_definition = {
 				content_check_function = function (content)
 					return content.is_active and not content.hide_top_effect
 				end
-			},
-			{
-				pass_type = "texture",
-				style_id = "horns",
-				texture_id = "horns",
-				retained_mode = RETAINED_MODE_ENABLED,
-				content_check_function = function (content)
-					return content.is_active
-				end
 			}
 		}
 	},
 	content = {
-		horns = "thornsister_passive_effect",
 		ability_top_texture_id = "gamepad_ability_effect_top_thornsister",
 		ability_effect = "gamepad_ability_effect_thornsister",
 		is_active = true
@@ -305,25 +281,6 @@ local thornsister_passive_widget_definition = {
 			},
 			color = {
 				255,
-				255,
-				255,
-				255
-			}
-		},
-		horns = {
-			vertical_alignment = "bottom",
-			horizontal_alignment = "right",
-			texture_size = {
-				129.8,
-				97.9
-			},
-			offset = {
-				3,
-				65,
-				105
-			},
-			color = {
-				0,
 				255,
 				255,
 				255

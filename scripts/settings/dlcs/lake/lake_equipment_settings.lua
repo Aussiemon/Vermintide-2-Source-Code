@@ -37,13 +37,13 @@ settings.action_classes_lookup = {
 }
 settings.inventory_package_list = {
 	"resource_packages/careers/es_questingknight",
-	"units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_base",
-	"units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/empire_soldier_breton/first_person_base/chr_first_person_mesh",
+	"units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_mesh",
 	"units/beings/player/empire_soldier_breton/skins/black_and_gold/chr_empire_soldier_breton_black_and_gold",
 	"units/beings/player/empire_soldier_breton/skins/black_and_yellow/chr_empire_soldier_breton_black_and_yellow",
 	"units/beings/player/empire_soldier_breton/skins/blue_and_white/chr_empire_soldier_breton_blue_and_white",
 	"units/beings/player/empire_soldier_breton/skins/yellow_and_white/chr_empire_soldier_breton_yellow_and_white",
+	"units/beings/player/empire_soldier_breton/skins/white/chr_empire_soldier_breton_white",
 	"units/weapons/player/wpn_emp_gk_sword_01_t1/wpn_emp_gk_sword_01_t1",
 	"units/weapons/player/wpn_emp_gk_sword_01_t1/wpn_emp_gk_sword_01_t1_3p",
 	"units/weapons/player/wpn_emp_gk_sword_01_t2/wpn_emp_gk_sword_01_t2",
@@ -77,9 +77,6 @@ settings.inventory_package_list = {
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_01",
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_02",
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_03"
-}
-settings.husk_lookup = {
-	"units/beings/player/empire_soldier_breton/third_person_base/chr_third_person_husk_base"
 }
 
 return

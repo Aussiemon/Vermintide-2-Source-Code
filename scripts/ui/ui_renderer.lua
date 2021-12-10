@@ -5,11 +5,21 @@ require("scripts/utils/strict_table")
 require("scripts/ui/ui_scenegraph")
 require("scripts/ui/ui_resolution")
 require("scripts/utils/debug_key_handler")
+require("scripts/helpers/ui_atlas_helper")
 
 local pdArray = require("foundation/scripts/util/array")
 script_data.ui_debug_scenegraph = script_data.ui_debug_scenegraph or Development.parameter("ui_debug_scenegraph")
 script_data.ui_debug_pixeldistance = script_data.ui_debug_pixeldistance or Development.parameter("ui_debug_pixeldistance")
 script_data.ui_debug_draw_texture = script_data.ui_debug_draw_texture or Development.parameter("ui_debug_draw_texture")
+local Color = Color
+local Vector2 = Vector2
+local Vector3 = Vector3
+local Gui_bitmap_uv = Gui.bitmap_uv
+local Gui_bitmap = Gui.bitmap
+local Gui_update_bitmap_uv = Gui.update_bitmap_uv
+local Gui_update_bitmap = Gui.update_bitmap
+local RESOLUTION_LOOKUP = RESOLUTION_LOOKUP
+local UIAtlasHelper = UIAtlasHelper
 UIRenderer = {}
 local UIRenderer = UIRenderer
 SNAP_PIXEL_POSITIONS = true
@@ -45,14 +55,6 @@ local function snap_to_position(position)
 
 	return position
 end
-
-local Color = Color
-local Vector2 = Vector2
-local Vector3 = Vector3
-local Gui_bitmap_uv = Gui.bitmap_uv
-local Gui_bitmap = Gui.bitmap
-local Gui_update_bitmap_uv = Gui.update_bitmap_uv
-local Gui_update_bitmap = Gui.update_bitmap
 
 UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_position, gui_size, color, masked, saturated, retained_id)
 	local snap_pixel_positions = render_settings and render_settings.snap_pixel_positions
@@ -393,22 +395,6 @@ UIRenderer.end_pass = function (self)
 	end
 end
 
-UIRenderer.draw_widget = function (self, ui_widget)
-	local animations = ui_widget.animations
-
-	if animations then
-		for ui_animation in pairs(animations) do
-			UIAnimation.update(ui_animation, self.dt)
-
-			if UIAnimation.completed(ui_animation) then
-				animations[ui_animation] = nil
-			end
-		end
-	end
-
-	UIRenderer.draw_element(self, ui_widget.element, ui_widget.style, ui_widget.style_global, ui_widget.scenegraph_id, ui_widget.content, animations, ui_widget.offset)
-end
-
 local DUMMY = {
 	alpha_multiplier = 1
 }
@@ -416,129 +402,148 @@ local DUMMY = {
 UIRenderer.draw_all_widgets = function (self, widget_list)
 	local render_settings = self.render_settings or DUMMY
 	local base_alpha_multiplier = render_settings.alpha_multiplier or 1
+	local draw_widget = UIRenderer.draw_widget
 
-	for _, ui_widget in pairs(widget_list) do
-		render_settings.alpha_multiplier = (ui_widget.content.alpha_multiplier or 1) * base_alpha_multiplier
+	for _, widget in pairs(widget_list) do
+		render_settings.alpha_multiplier = (widget.content.alpha_multiplier or 1) * base_alpha_multiplier
 
-		UIRenderer.draw_widget(self, ui_widget)
+		draw_widget(self, widget)
 	end
 
 	render_settings.alpha_multiplier = base_alpha_multiplier
 end
 
-UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global, scenegraph_id, ui_content, ui_animations, offset)
-	local ui_scenegraph = self.ui_scenegraph
-	local position = Vector3(unpack(UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id)))
+UIRenderer.draw_widget = function (self, widget)
+	local ui_animations = widget.animations
 
-	if offset then
-		position = position + Vector3(unpack(offset))
+	if next(ui_animations) then
+		for ui_animation in pairs(ui_animations) do
+			UIAnimation.update(ui_animation, self.dt)
+
+			if UIAnimation.completed(ui_animation) then
+				ui_animations[ui_animation] = nil
+			end
+		end
 	end
 
-	local widget_optional_scale = ui_style_global and ui_style_global.scale
-	local size = UISceneGraph.get_size_scaled(ui_scenegraph, scenegraph_id, widget_optional_scale)
+	local UIPasses = UIPasses
+	local Vector3 = Vector3
+	local get_size_scaled = UISceneGraph.get_size_scaled
+	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_service
-	local global_visible = true
+	local dt = self.dt
+	local scenegraph_id = widget.scenegraph_id
+	local world_pos = ui_scenegraph[scenegraph_id].world_position
+	local offset = widget.offset or UISceneGraph.ZERO_VECTOR3
+	local position = Vector3(world_pos[1] + offset[1], world_pos[2] + offset[2], world_pos[3] + offset[3])
+	local widget_content = widget.content
+	local widget_style = widget.style
+	local widget_style_global = widget.style_global
+	local widget_optional_scale = widget_style_global.scale
+	local size = get_size_scaled(ui_scenegraph, scenegraph_id, widget_optional_scale)
+	local widget_visible = true
 	local input_manager = Managers.input
 
 	if input_manager then
-		local gamepad_active = Managers.input:is_device_active("gamepad")
-		ui_content.is_gamepad_active = gamepad_active
+		local gamepad_active = input_manager:is_device_active("gamepad")
+		widget_content.is_gamepad_active = gamepad_active
 
-		if ui_content.disable_with_gamepad then
-			global_visible = not gamepad_active
-		end
-
-		if ui_content.only_with_gamepad then
-			global_visible = gamepad_active
+		if widget_content.disable_with_gamepad then
+			widget_visible = not gamepad_active
 		end
 	end
 
-	local dt = self.dt
-	local pass_datas = ui_element.pass_data
-	local UIPasses = UIPasses
-	local UISceneGraph_get_size_scaled = UISceneGraph.get_size_scaled
-	local UISceneGraph_get_world_position = UISceneGraph.get_world_position
-	local passes = ui_element.passes
+	local widget_element = widget.element
+	local widget_dirty = widget_element.dirty
+	local passes = widget_element.passes
+	local pass_datas = widget_element.pass_data
 
 	for i = 1, #passes, 1 do
-		local pass_info = passes[i]
-		local pass_type = pass_info.pass_type
-		local content_id = pass_info.content_id
-		local element_content = (content_id and ui_content[content_id]) or ui_content
-		local visible = global_visible
+		local pass = passes[i]
+		local pass_type = pass.pass_type
+		local visible = widget_visible
 
-		if ui_content then
-			if ui_content.visible == false then
-				visible = false
-			end
+		if widget_content.visible == false then
+			visible = false
+		end
 
-			if content_id then
-				element_content.parent = ui_content
+		local pass_content = widget_content
+		local content_id = pass.content_id
 
-				if element_content and element_content.visible == false then
+		if content_id then
+			pass_content = widget_content[content_id]
+
+			if not pass_content then
+				pass_content = widget_content
+			else
+				pass_content.parent = widget_content
+
+				if pass_content.visible == false then
 					visible = false
 				end
 			end
 		end
 
-		local style_id = pass_info.style_id
-		local style_data = (style_id and ui_style[style_id]) or ui_style
+		local pass_style = widget_style
+		local style_id = pass.style_id
 
-		if ui_style[style_id] then
-			style_data.parent = ui_style
+		if style_id then
+			pass_style = widget_style[style_id]
+
+			if pass_style then
+				pass_style.parent = widget_style
+			else
+				pass_style = widget_style
+			end
+		end
+
+		if visible then
+			local content_check_function = pass.content_check_function
+
+			if content_check_function then
+				visible = not not content_check_function(pass_content, pass_style)
+			end
+
+			if visible then
+				local content_change_function = pass.content_change_function
+
+				if content_change_function then
+					content_change_function(pass_content, pass_style, ui_animations, dt)
+				end
+			end
 		end
 
 		local ui_pass = UIPasses[pass_type]
-
-		assert(ui_pass, "No such UI Pass: %s", pass_type)
-
-		local content_check_function = pass_info.content_check_function
-
-		if visible and content_check_function then
-			visible = not not content_check_function(element_content, style_data)
-		end
-
-		local content_change_function = pass_info.content_change_function
-
-		if visible and content_change_function then
-			content_change_function(element_content, style_data, ui_animations, dt)
-		end
-
 		local pass_data = pass_datas[i]
 
 		if ui_pass.update then
-			ui_pass.update(self, pass_data, ui_scenegraph, pass_info, style_data, element_content, input_service, dt, ui_style_global, visible)
+			ui_pass.update(self, pass_data, ui_scenegraph, pass, pass_style, pass_content, input_service, dt, widget_style_global, visible)
 		end
 
-		if pass_info.retained_mode then
+		if pass.retained_mode then
+			if not widget_dirty and not pass_data.dirty then
+			end
+		elseif visible then
 
 			-- Decompilation error in this vicinity:
-			local visible_previous = pass_data.visible
-			pass_data.visible = visible
-
-			if not ui_element.dirty and not pass_data.dirty then
-			end
-		elseif not visible then
-		else
-			local pass_size, pass_position = nil
-			local pass_scenegraph_id = (style_data and style_data.scenegraph_id) or pass_info.scenegraph_id
+			local pass_size = size
+			local pass_position = Vector3(position[1], position[2], position[3])
+			local pass_scenegraph_id = pass_style.scenegraph_id or pass.scenegraph_id
 
 			if pass_scenegraph_id then
-				pass_size = UISceneGraph_get_size_scaled(ui_scenegraph, pass_scenegraph_id, widget_optional_scale)
-				local world_pos = UISceneGraph_get_world_position(ui_scenegraph, pass_scenegraph_id)
-				pass_position = Vector3(world_pos[1], world_pos[2], world_pos[3])
-			else
-				pass_size = size
-				pass_position = Vector3(position[1], position[2], position[3])
+				pass_size = get_size_scaled(ui_scenegraph, pass_scenegraph_id, widget_optional_scale)
+				local world_pos = ui_scenegraph[pass_scenegraph_id].world_position
+
+				Vector3.set_xyz(pass_position, world_pos[1], world_pos[2], world_pos[3])
 			end
 
-			local style_data_size = style_data and style_data.size
+			local pass_style_size = pass_style.size
 
-			if style_data_size then
-				pass_size = Vector2(style_data_size[1] or pass_size[1], style_data_size[2] or pass_size[2])
+			if pass_style_size then
+				pass_size = Vector2(pass_style_size[1] or pass_size[1], pass_style_size[2] or pass_size[2])
 			end
 
-			local style_offset = style_data and style_data.offset
+			local style_offset = pass_style.offset
 
 			if style_offset then
 				pass_position = pass_position + Vector3(style_offset[1], style_offset[2], style_offset[3] or 0)
@@ -549,11 +554,11 @@ UIRenderer.draw_element = function (self, ui_element, ui_style, ui_style_global,
 				pass_position = widget_optional_scale * pass_position
 			end
 
-			ui_pass.draw(self, pass_data, ui_scenegraph, pass_info, style_data, element_content, pass_position, pass_size, input_service, dt, ui_style_global)
+			ui_pass.draw(self, pass_data, ui_scenegraph, pass, pass_style, pass_content, pass_position, pass_size, input_service, dt, widget_style_global)
 		end
 	end
 
-	ui_element.dirty = nil
+	widget_element.dirty = nil
 end
 
 UIRenderer.set_element_visible = function (self, ui_element, visible)
@@ -818,18 +823,20 @@ UIRenderer.draw_texture_flip_horizontal = function (self, material, lower_left_c
 	return UIRenderer.script_draw_bitmap_uv(self.gui, self.render_settings, material, uvs_draw_texture_flip_horizontal, gui_position, size, color, masked, saturated)
 end
 
-UIRenderer.draw_texture = function (self, material, lower_left_corner, size, color, masked, saturated, retained_id)
-	local scale = RESOLUTION_LOOKUP.scale
-	local gui_position = Vector3(lower_left_corner[1] * scale, lower_left_corner[2] * scale, lower_left_corner[3] or 0)
-	local gui_size = Vector3(size[1] * scale, size[2] * scale, size[3] or 0)
+UIRenderer.draw_texture = function (self, material, position, size, color, masked, saturated, retained_id)
+	local gui = self.gui
 
-	if retained_id == true then
-		return UIRenderer.script_draw_bitmap(self.gui_retained, self.render_settings, material, gui_position, gui_size, color, masked, saturated, nil)
-	elseif retained_id then
-		return UIRenderer.script_draw_bitmap(self.gui_retained, self.render_settings, material, gui_position, gui_size, color, masked, saturated, retained_id)
-	else
-		return UIRenderer.script_draw_bitmap(self.gui, self.render_settings, material, gui_position, gui_size, color, masked, saturated)
+	if retained_id then
+		gui = self.gui_retained
+
+		if retained_id == true then
+			retained_id = nil
+		end
 	end
+
+	local scale = RESOLUTION_LOOKUP.scale
+
+	return UIRenderer.script_draw_bitmap(gui, self.render_settings, material, Vector3(position[1] * scale, position[2] * scale, position[3] or 0), Vector3(size[1] * scale, size[2] * scale, size[3] or 0), color, masked, saturated, retained_id)
 end
 
 UIRenderer.draw_texture_uv = function (self, material, lower_left_corner, size, uvs, color, masked, saturated, retained_id)
@@ -1034,56 +1041,54 @@ local uvs_draw_tiled_texture = {
 	}
 }
 
-UIRenderer.draw_tiled_texture = function (self, material, lower_left_corner, size, texture_size, color, masked, saturated, retained_ids)
-	local UIRenderer_script_draw_bitmap_uv = UIRenderer.script_draw_bitmap_uv
-	local position = UIScaleVectorToResolution(lower_left_corner)
-	local area_size = UIScaleVectorToResolution(size)
-	texture_size = UIScaleVectorToResolution(texture_size)
+UIRenderer.draw_tiled_texture = function (self, material, position, total_size, texture_size, color, masked, saturated, retained_ids)
+	local scale = RESOLUTION_LOOKUP.scale
+	local position_x = scale * position[1]
+	local position_y = scale * position[2]
+	position = Vector3(position_x, position_y, position[3] or 0)
 	local texture_size_x = texture_size[1]
 	local texture_size_y = texture_size[2]
-	local num_x = area_size[1] / texture_size[1]
+	local num_x = total_size[1] / texture_size_x
+	local num_y = total_size[2] / texture_size_y
+	texture_size_x = scale * texture_size_x
+	texture_size_y = scale * texture_size_y
+	texture_size = Vector2(texture_size_x, texture_size_y)
+	local math_min = math.min
+	local script_draw_bitmap_uv = UIRenderer.script_draw_bitmap_uv
 	local gui = self.gui
-	local gui_retained = self.gui_retained
-	local v, q, m = Script.temp_count()
-	local uvs_1 = Vector2(0, 0)
-	local uvs_2 = Vector2(1, 1)
-	local default_y_position = position.y
-	local retained_id = nil
+	local render_settings = self.render_settings
+	local uvs = uvs_draw_tiled_texture
+	uvs[2][1] = 1
 
 	while num_x > 0 do
-		position.y = default_y_position
-		local num_y = area_size[2] / texture_size[2]
-		local x_amount = (num_x >= 1 and 1) or num_x
-		uvs_draw_tiled_texture[2][1] = x_amount
-		local x_size = texture_size_x * x_amount
-
-		while num_y > 0 do
-			local y_amount = (num_y >= 1 and 1) or num_y
-			local y_size = texture_size_y * y_amount
-			local draw_size = Vector2(x_size, y_size)
-			uvs_draw_tiled_texture[1][2] = 1 - y_amount
-
-			if retained_ids == true then
-				retained_id = UIRenderer_script_draw_bitmap_uv(gui_retained, self.render_settings, uvs_draw_tiled_texture, position, draw_size, color, masked, saturated, nil)
-			elseif retained_ids then
-				retained_id = retained_ids[i]
-
-				UIRenderer_script_draw_bitmap_uv(gui_retained, self.render_settings, material, uvs_draw_tiled_texture, position, draw_size, color, masked, saturated, retained_id)
-			else
-				UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, material, uvs_draw_tiled_texture, position, draw_size, color, masked, saturated)
-			end
-
-			num_y = num_y - 1
-			position.y = position.y + texture_size_y
+		if num_x < 1 then
+			uvs[2][1] = num_x
+			texture_size[1] = num_x * texture_size_x
 		end
 
+		local position_y = position_y
+		position[2] = position_y
+		uvs[2][2] = 1
+		texture_size[2] = texture_size_y
+		local num_y = num_y
+
+		while num_y > 0 do
+			if num_y < 1 then
+				uvs[2][2] = num_y
+				texture_size[2] = num_y * texture_size_y
+			end
+
+			script_draw_bitmap_uv(gui, render_settings, material, uvs, position, texture_size, color, masked, saturated)
+
+			position_y = position_y + texture_size_y
+			position[2] = position_y
+			num_y = num_y - 1
+		end
+
+		position_x = position_x + texture_size_x
+		position[1] = position_x
 		num_x = num_x - 1
-		position.x = position.x + texture_size_x
 	end
-
-	Script.set_temp_count(v, q, m)
-
-	return retained_id
 end
 
 UIRenderer.draw_centered_texture_amount = function (self, material, lower_left_corner, size, texture_size, texture_amount, axis, spacing, color, texture_colors, masked, retained_ids)

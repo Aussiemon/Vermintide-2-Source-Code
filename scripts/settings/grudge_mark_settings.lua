@@ -88,8 +88,32 @@ BREED_ENHANCEMENTS_PER_DIFFICULTY = {
 	},
 	default = {}
 }
-BreedEnhancementExclusionList = {}
-BreedEnhancementBannedBreeds = {}
+BreedEnhancementExclusionList = {
+	periodic_shield = {
+		regenerating = true
+	},
+	crushing = {
+		crippling = true
+	},
+	crippling = {
+		crushing = true
+	},
+	intangible = {
+		periodic_shield = true,
+		warping = true
+	}
+}
+BreedEnhancementBannedBreeds = {
+	beastmen_minotaur = {
+		crushing = true
+	},
+	chaos_spawn = {
+		crushing = true
+	},
+	chaos_troll = {
+		periodic_shield = true
+	}
+}
 GrudgeMarkedNames = {
 	skaven_rat_ogre = {
 		"name_grudge_rat_ogre_001",

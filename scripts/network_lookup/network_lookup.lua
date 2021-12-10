@@ -298,6 +298,11 @@ NetworkLookup.breeds[#NetworkLookup.breeds + 1] = "n/a"
 NetworkLookup.husks = {
 	"units/decals/decal_vortex_circle_inner",
 	"units/decals/decal_vortex_circle_outer",
+	"units/beings/player/third_person_base/bright_wizard/chr_third_person_husk_base",
+	"units/beings/player/third_person_base/dwarf_ranger/chr_third_person_husk_base",
+	"units/beings/player/third_person_base/empire_soldier/chr_third_person_husk_base",
+	"units/beings/player/third_person_base/way_watcher/chr_third_person_husk_base",
+	"units/beings/player/third_person_base/witch_hunter/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter_bounty_hunter/third_person_base/chr_third_person_husk_base",
 	"units/beings/player/witch_hunter_captain/third_person_base/chr_third_person_husk_base",
@@ -491,8 +496,7 @@ NetworkLookup.husks = {
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3p",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_01_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_02_3ps",
-	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps",
-	"units/props/nurgle_liquid_blob/nurgle_liquid_blob_dynamic"
+	"units/weapons/player/wpn_we_quiver_t1/wpn_we_broken_arrow_03_3ps"
 }
 
 DLCUtils.append("husk_lookup", NetworkLookup.husks)
@@ -584,7 +588,8 @@ NetworkLookup.go_types = {
 	"weave_kill_enemies_unit",
 	"versus_character_selection_unit",
 	"horde_surge",
-	"engineer_career_data"
+	"engineer_career_data",
+	"priest_career_data"
 }
 
 DLCUtils.append("network_go_types", NetworkLookup.go_types)
@@ -661,6 +666,7 @@ NetworkLookup.collision_filters = {
 	"filter_player_ray_projectile",
 	"filter_player_ray_projectile_no_player",
 	"filter_enemy_unit",
+	"filter_ray_projectile",
 	"n/a"
 }
 NetworkLookup.hit_zones = {
@@ -1237,7 +1243,6 @@ NetworkLookup.effects = {
 	"fx/drachenfels_flies_impact",
 	"fx/drachenfels_boss_teleport_enter",
 	"fx/mutator_death_03",
-	"fx/torch_07_nurgle",
 	"fx/wpnfx_poison_wind_globe_impact_death_01"
 }
 

@@ -6518,15 +6518,39 @@ Features that make player mechanics nicer to work with.
 		category = "Bots"
 	},
 	{
-		description = "Bot won't shot at enemy players, but still attack ai enemies.",
+		description = "Bot won't shot at enemy players, but still attack ai enemies. Versus Specific",
 		is_boolean = true,
 		setting_name = "ai_bots_disable_player_range_attacks",
 		category = "Bots"
 	},
 	{
-		description = "Bot won't melee at enemy players, but still attack ai enemies.",
+		description = "Make bots not dodge attacks",
+		is_boolean = true,
+		setting_name = "ai_bots_disable_dodging",
+		category = "Bots"
+	},
+	{
+		description = "Bot won't melee at enemy players, but still attack ai enemies. Versus Specific",
 		is_boolean = true,
 		setting_name = "ai_bots_disable_player_melee_attacks",
+		category = "Bots"
+	},
+	{
+		description = "Bots will only use ranged attacks.",
+		is_boolean = true,
+		setting_name = "ai_bots_disable_ranged_attacks",
+		category = "Bots"
+	},
+	{
+		description = "Bots will only use melee attacks.",
+		is_boolean = true,
+		setting_name = "ai_bots_disable_melee_attacks",
+		category = "Bots"
+	},
+	{
+		description = "Bots use ranged attacks as much as possible.",
+		is_boolean = true,
+		setting_name = "ai_bots_ranged_attack_always_valid",
 		category = "Bots"
 	},
 	{
@@ -6721,6 +6745,12 @@ Features that make player mechanics nicer to work with.
 		func = function ()
 			Managers.backend:refresh_log_level()
 		end
+	},
+	{
+		description = "Connect to a backend running locally. Can be set to a string to use that as a URL.",
+		is_boolean = true,
+		setting_name = "backend_base_url",
+		category = "Backend"
 	},
 	{
 		description = "Unlock all careers",
@@ -6938,19 +6968,17 @@ Features that make player mechanics nicer to work with.
 			local profile_index = player:profile_index()
 			local profile = SPProfiles[profile_index]
 			local display_name = profile.display_name
+			local hero_attributes = backend_manager:get_interface("hero_attributes")
 
 			local function cb(result)
-				local function_result = result.FunctionResult
-				local hero_attributes = backend_manager:get_interface("hero_attributes")
-
-				hero_attributes:set(display_name, "experience", function_result.data[display_name .. "_experience"])
+				hero_attributes:set(display_name, "experience", 0)
 			end
 
 			local request = {
-				FunctionName = "devSetExperience",
+				FunctionName = "devAddExperience",
 				FunctionParameter = {
-					experience = 0,
-					hero = display_name
+					hero = display_name,
+					experience = hero_attributes:get(display_name, "experience")
 				}
 			}
 			local backend_mirror = backend_manager._backend_mirror

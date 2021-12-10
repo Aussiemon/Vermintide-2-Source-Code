@@ -23,7 +23,7 @@ PresenceHelper.get_hub_presence = function ()
 end
 
 PresenceHelper.lobby_gamemode = function (lobby_data)
-	local mechanism = Managers.mechanism:game_mechanism()
+	local mechanism = lobby_data.mechanism
 	local is_in_prologue = lobby_data.mission_id == "prologue"
 	local matchmakin_type = lobby_data.matchmaking_type
 	local quick_game = to_boolean(lobby_data.quick_game)
@@ -74,8 +74,14 @@ PresenceHelper.has_eac = function ()
 	return not IS_WINDOWS or lobby_data.eac_authorized
 end
 
+local function dangerous_num_players()
+	return Managers.state.network:lobby():members():get_member_count()
+end
+
 PresenceHelper.lobby_num_players = function ()
-	return Managers.player:num_human_players()
+	local ok, num = pcall(dangerous_num_players)
+
+	return (ok and num) or 1
 end
 
 return

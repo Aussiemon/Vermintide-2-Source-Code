@@ -21,11 +21,6 @@ PlayerBotUnitFirstPerson.init = function (self, extension_init_context, unit, ex
 	Unit.set_flow_variable(fp_unit, "sound_character", career.sound_character)
 	Unit.set_flow_variable(fp_unit, "is_bot", true)
 	Unit.flow_event(fp_unit, "character_vo_set")
-	Unit.flow_event(self.unit, "lua_spawn_attachments")
-
-	self.flow_unit_attachments = Unit.get_data(self.unit, "flow_unit_attachments") or {}
-
-	Unit.set_data(self.unit, "flow_unit_attachments", self.flow_unit_attachments)
 	AttachmentUtils.link(extension_init_context.world, fp_unit, self.first_person_attachment_unit, attachment_node_linking)
 
 	self.look_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
@@ -60,6 +55,7 @@ PlayerBotUnitFirstPerson.extensions_ready = function (self)
 	self.locomotion_extension = ScriptUnit.extension(self.unit, "locomotion_system")
 	self.inventory_extension = ScriptUnit.extension(self.unit, "inventory_system")
 	self.attachment_extension = ScriptUnit.extension(self.unit, "attachment_system")
+	self.cosmetic_extension = ScriptUnit.extension(self.unit, "cosmetic_system")
 
 	self:set_first_person_mode(true)
 end
@@ -220,14 +216,11 @@ PlayerBotUnitFirstPerson.set_first_person_mode = function (self, active)
 		self.inventory_extension:show_first_person_inventory_lights(false)
 		self.inventory_extension:show_third_person_inventory(true)
 		self.attachment_extension:show_attachments(true)
+		self.cosmetic_extension:show_third_person_mesh(true)
 	end
 end
 
 PlayerBotUnitFirstPerson.debug_set_first_person_mode = function (self, active, override)
-	for k, v in pairs(self.flow_unit_attachments) do
-		Unit.set_unit_visibility(v, not active)
-	end
-
 	if active then
 		Unit.set_unit_visibility(self.unit, not override)
 		Unit.set_unit_visibility(self.first_person_attachment_unit, override)
@@ -235,6 +228,7 @@ PlayerBotUnitFirstPerson.debug_set_first_person_mode = function (self, active, o
 		self.inventory_extension:show_first_person_inventory_lights(override)
 		self.inventory_extension:show_third_person_inventory(not override)
 		self.attachment_extension:show_attachments(not override)
+		self.cosmetic_extension:show_third_person_mesh(not override)
 
 		self.first_person_debug = true
 	else

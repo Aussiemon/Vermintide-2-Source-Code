@@ -9,6 +9,12 @@ BackendInterfaceKeepDecorationsPlayFab.init = function (self, backend_mirror)
 	self._keep_decorations = cjson.decode(keep_decorations)
 
 	self:_refresh()
+
+	for slot_name, painting in pairs(self._keep_decorations) do
+		if painting ~= "hidden" and painting ~= "hor_none" and not table.contains(self._unlocked_keep_decorations, painting) then
+			self._keep_decorations[slot_name] = "hor_none"
+		end
+	end
 end
 
 BackendInterfaceKeepDecorationsPlayFab.dirtify = function (self)

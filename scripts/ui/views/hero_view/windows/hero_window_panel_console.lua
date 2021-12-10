@@ -300,7 +300,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 
 				self:_on_panel_button_selected(next_index)
 			elseif input_service:get(INPUT_ACTION_NEXT) then
-				local next_index = current_index % max_index + 1
+				local next_index = 1 + current_index % max_index
 
 				self:_on_panel_button_selected(next_index)
 			end

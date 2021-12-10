@@ -1634,23 +1634,27 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 	local network_manager = Managers.state.network
 
 	if not network_manager:game() then
-		return
+		return 0
 	end
 
 	if DamageUtils.is_in_inn then
 		local attacked_side = Managers.state.side.side_by_unit[attacked_unit]
 
 		if attacked_side and attacked_side.VALID_ENEMY_PLAYERS_AND_BOTS[attacked_unit] then
-			return
+			return 0
 		end
-	end
-
-	if is_immune_to_damage(attacked_unit, damage_type, damage_source, buff_attack_type) then
-		return
 	end
 
 	local player_manager = Managers.player
 	local is_server = player_manager.is_server
+
+	if is_immune_to_damage(attacked_unit, damage_type, damage_source, buff_attack_type) then
+		if is_server or LEVEL_EDITOR_TEST then
+			Managers.state.achievement:trigger_event("register_damage_resisted_immune", attacked_unit, attacker_unit, damage_type)
+		end
+
+		return 0
+	end
 
 	if is_server or LEVEL_EDITOR_TEST then
 		local attacker_breed = AiUtils.unit_breed(attacker_unit)
@@ -1727,20 +1731,22 @@ DamageUtils.add_damage_network = function (attacked_unit, attacker_unit, origina
 
 		network_manager.network_transmit:send_rpc_server("rpc_add_damage_network", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_react_type_id, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier)
 	end
+
+	return damage_amount
 end
 
 DamageUtils.add_damage_network_player = function (damage_profile, target_index, power_level, hit_unit, attacker_unit, hit_zone_name, hit_position, attack_direction, damage_source, hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 	local network_manager = Managers.state.network
 
 	if not network_manager:game() then
-		return
+		return 0
 	end
 
 	if DamageUtils.is_in_inn then
 		local attacked_side = Managers.state.side.side_by_unit[hit_unit]
 
 		if attacked_side and attacked_side.VALID_ENEMY_PLAYERS_AND_BOTS[hit_unit] then
-			return
+			return 0
 		end
 	end
 
@@ -1748,7 +1754,7 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 	local attacker_player = player_manager:owner(attacker_unit)
 
 	if attacker_player and attacker_player.bot_player and not DamageUtils.can_bots_damage(hit_unit) then
-		return
+		return 0
 	end
 
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
@@ -1759,13 +1765,13 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 	if damage_profile.instant_death and DamageUtils.is_ai(hit_unit) then
 		AiUtils.kill_unit(hit_unit, attacker_unit, hit_zone_name, damage_type, attack_direction, damage_source)
 
-		return
+		return 0
 	end
 
 	local charge_value = damage_profile.charge_value
 
 	if is_immune_to_damage(hit_unit, damage_type, damage_source, charge_value) then
-		return
+		return 0
 	end
 
 	local boost_curve = BoostCurves[target_settings.boost_curve_type]
@@ -1832,6 +1838,8 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 			end
 		end
 	end
+
+	return damage_amount
 end
 
 local HIT_MARKER_FREQ = 0.1
@@ -1921,7 +1929,7 @@ DamageUtils.buff_on_attack = function (unit, hit_unit, attack_type, is_critical,
 	end
 
 	if is_critical and hostile_unit and attack_type ~= "wind_mutator" then
-		buff_extension:trigger_procs("on_critical_hit", hit_unit, attack_type, hit_zone_name, target_number)
+		buff_extension:trigger_procs("on_critical_hit", hit_unit, attack_type, hit_zone_name, target_number, buff_type)
 	end
 
 	if send_to_server and not Managers.player.is_server then
@@ -2497,8 +2505,10 @@ DamageUtils.check_block = function (attacking_unit, target_unit, fatigue_type, o
 	if status_extension then
 		local is_blocking = status_extension:is_blocking()
 		local can_block, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction = status_extension:can_block(attacking_unit, original_enemy_weapon_direction)
+		local target_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
+		local is_invulnerable = target_buff_extension and target_buff_extension:has_buff_perk("invulnerable")
 
-		if is_blocking and can_block then
+		if is_blocking and can_block and not is_invulnerable then
 			local buff_extension = ScriptUnit.has_extension(attacking_unit, "buff_system")
 
 			if Managers.player.is_server and buff_extension and buff_extension:has_buff_perk("ai_unblockable") then
@@ -3429,6 +3439,7 @@ DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level,
 			local weapon_template = weapon_template_name and Weapons[weapon_template_name]
 			local buff_type = (weapon_template and weapon_template.buff_type) or nil
 
+			Managers.state.achievement:trigger_event("register_ai_stagger", target_unit, attacker_unit, damage_profile, is_push, stagger_type)
 			attacker_buff_extension:trigger_procs("on_stagger", target_unit, damage_profile, attacker_unit, stagger_type, stagger_duration, stagger_value, buff_type, target_index)
 		end
 	end

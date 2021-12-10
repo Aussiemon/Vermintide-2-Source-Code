@@ -868,6 +868,24 @@ AnimationCallbackTemplates.server.anim_cb_chew_attack_finished = function (unit,
 	blackboard.anim_cb_chew_attack_finished = true
 end
 
+AnimationCallbackTemplates.server.anim_cb_attack_grabbed_smash = function (unit, param)
+	local blackboard = BLACKBOARDS[unit]
+	local active_node = blackboard.active_node
+	local victim_unit = blackboard.victim_grabbed
+
+	if not victim_unit or not Unit.alive(victim_unit) then
+		return
+	end
+
+	if active_node then
+		local anim_cb = active_node.anim_cb_attack_grabbed_smash
+
+		if anim_cb then
+			anim_cb(active_node, unit, blackboard)
+		end
+	end
+end
+
 DLCUtils.require_list("animation_callback_template_files")
 
 return

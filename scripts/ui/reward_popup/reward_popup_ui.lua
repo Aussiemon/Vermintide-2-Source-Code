@@ -12,10 +12,9 @@ local function speed_up_popup_pressed(input_service)
 end
 
 RewardPopupUI.init = function (self, level_end_view_context)
-	self.ui_renderer = level_end_view_context.ui_renderer
 	self._ui_top_renderer = level_end_view_context.ui_top_renderer
 	self._input_manager = level_end_view_context.input_manager
-	self.world = level_end_view_context.world
+	self.world = level_end_view_context.world or level_end_view_context.ui_renderer.world
 	local wwise_world = level_end_view_context.wwise_world
 	self._wwise_world = wwise_world or level_end_view_context.world_manager:wwise_world(self.world)
 	self._render_settings = {
@@ -41,9 +40,6 @@ RewardPopupUI.create_ui_elements = function (self)
 	self.deus_background_top_glow_widget = UIWidget.init(widget_definitions.deus_background_top_glow)
 	self.deus_background_bottom_glow_widget = UIWidget.init(widget_definitions.deus_background_bottom_glow)
 	self.claim_button_widget = UIWidget.init(widget_definitions.claim_button)
-
-	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
-
 	self._ui_animator = UIAnimator:new(self._ui_scenegraph, animation_definitions)
 	self._animations = {}
 	self._is_visible = true
@@ -668,7 +664,7 @@ RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, prog
 		return
 	end
 
-	local world = self.ui_renderer.world
+	local world = self.world
 	local shading_env = World.get_data(world, "shading_environment")
 	progress = progress or (enabled and 1) or 0
 

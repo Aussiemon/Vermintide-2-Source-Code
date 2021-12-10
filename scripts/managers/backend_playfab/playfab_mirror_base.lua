@@ -19,7 +19,8 @@ local CAREER_ID_LOOKUP = {
 	"wh_captain",
 	"wh_bountyhunter",
 	"wh_zealot",
-	"we_thornsister"
+	"we_thornsister",
+	"wh_priest"
 }
 local REDUCTION_INTERVAL = 80
 local DELAY_MULTIPLIER = 5
@@ -92,10 +93,6 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self._commit_limit_total = 1
 
 	self:_update_dlc_ownership()
-
-	if not script_data["eac-untrusted"] then
-		self:_request_store_settings()
-	end
 end
 
 PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_values)
@@ -443,29 +440,6 @@ PlayFabMirrorBase.get_quests_cb = function (self, result)
 	self:set_quest_data("current_weekly_quests", current_weekly_quests)
 	self:set_quest_data("weekly_quest_update_time", weekly_quest_update_time)
 	self:_request_fix_inventory_data_1()
-end
-
-PlayFabMirrorBase._request_store_settings = function (self)
-	local request = {
-		FunctionName = "getStoreSettings",
-		FunctionParameter = {}
-	}
-	local success_callback = callback(self, "get_store_settings_cb")
-
-	self._request_queue:enqueue(request, success_callback, true)
-
-	self._num_items_to_load = self._num_items_to_load + 1
-end
-
-PlayFabMirrorBase.get_store_settings_cb = function (self, result)
-	self._num_items_to_load = self._num_items_to_load - 1
-	local function_result = result.FunctionResult
-	local store_settings = function_result.store_settings
-	self._store_settings = store_settings
-end
-
-PlayFabMirrorBase.store_settings = function (self)
-	return self._store_settings
 end
 
 PlayFabMirrorBase._request_fix_inventory_data_1 = function (self)

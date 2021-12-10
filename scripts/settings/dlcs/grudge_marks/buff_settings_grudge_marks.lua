@@ -331,13 +331,14 @@ settings.buff_templates = {
 	grudge_mark_crushing_blow_debuff = {
 		buffs = {
 			{
-				multiplier = -1,
+				duration = 5,
 				name = "grudge_mark_crushing_blow_debuff",
 				stat_buff = "fatigue_regen",
+				multiplier = -1,
+				refresh_durations = true,
+				apply_buff_func = "remove_all_stamina",
 				debuff = true,
 				max_stacks = 1,
-				refresh_durations = true,
-				duration = 5,
 				icon = "troll_vomit_debuff"
 			}
 		}
@@ -658,6 +659,17 @@ settings.buff_function_templates = {
 				Unit.flow_event(first_person_unit, flow_event)
 			end
 		end
+	end,
+	remove_all_stamina = function (unit, buff, params)
+		local local_player = owner_is_local_player(unit)
+
+		if local_player then
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+			if status_extension then
+				status_extension:add_fatigue_points("complete", params.attacker_unit)
+			end
+		end
 	end
 }
 settings.proc_functions = {
@@ -766,19 +778,15 @@ settings.proc_functions = {
 		local status_extension = ScriptUnit.has_extension(attacked_unit, "status_system")
 
 		if blackboard and blackboard.hit_through_block and status_extension then
-			local current_fatigue, max_fatigue = status_extension:current_fatigue_points()
-			local stamina_left = max_fatigue - current_fatigue
+			local buff_extension = ScriptUnit.extension(attacked_unit, "buff_system")
+			local buff_template = buff.template
+			local buff_name = buff_template.buff_to_add
 
-			status_extension:add_fatigue_points("complete", attacked_unit)
-
-			if stamina_left > 0 then
+			if not buff_extension:has_buff_type(buff_name) then
 				local proc_mod_table = params[param_order.PROC_MODIFIABLE]
 				proc_mod_table.damage_amount = 0
 			end
 
-			local buff_template = buff.template
-			local buff_name = buff_template.buff_to_add
-			local buff_extension = ScriptUnit.extension(attacked_unit, "buff_system")
 			local network_manager = Managers.state.network
 			local network_transmit = network_manager.network_transmit
 			local unit_object_id = network_manager:unit_game_object_id(attacked_unit)

@@ -150,7 +150,8 @@ local unit_templates = {
 			"PlayerProximityExtension",
 			"SurroundingObserverHuskExtension",
 			"PlayerHuskOutlineExtension",
-			"PlayerUnitAttackIntensityExtension"
+			"PlayerUnitAttackIntensityExtension",
+			"ClientHuskTalentExtension"
 		},
 		husk_extensions_server = {
 			"GenericStatusExtension",
@@ -335,9 +336,10 @@ local unit_templates = {
 			"GenericDeathExtension",
 			"PlayerUnitWeaveLoadoutExtension",
 			"PlayerUnitLocomotionExtension",
+			"PlayerUnitCosmeticExtension",
+			"PlayerUnitAttachmentExtension",
 			"PlayerBotUnitFirstPerson",
 			"GenericUnitAimExtension",
-			"PlayerUnitAttachmentExtension",
 			"DialogueActorExtension",
 			"SurroundingObserverHuskExtension",
 			"PlayerWhereaboutsExtension",
@@ -353,7 +355,6 @@ local unit_templates = {
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitDarknessExtension",
-			"PlayerUnitCosmeticExtension",
 			"PlayerUnitOverchargeExtension",
 			"PlayerUnitEnergyExtension",
 			"PlayerUnitVisualEffectsExtension",
@@ -378,15 +379,16 @@ local unit_templates = {
 			"PlayerProximityExtension",
 			"HealthTriggerExtension",
 			"GenericDialogueContextExtension",
-			"PlayerHuskAttachmentExtension",
 			"StatisticsExtension",
 			"PingTargetExtension",
 			"PlayerUnitFadeExtension",
 			"PlayerUnitCosmeticExtension",
+			"PlayerHuskAttachmentExtension",
 			"PlayerUnitDarknessExtension",
 			"PlayerHuskOverchargeExtension",
 			"PlayerHuskEnergyExtension",
-			"PlayerHuskVisualEffectsExtension"
+			"PlayerHuskVisualEffectsExtension",
+			"ClientHuskTalentExtension"
 		}
 	},
 	ai_unit_base = {
@@ -1866,31 +1868,6 @@ local unit_templates = {
 		remove_when_killed = {
 			"GenericDeathExtension",
 			"ProjectileLinkerExtension"
-		}
-	},
-	nurgle_liquid_blob_dynamic = {
-		go_type = "positioned_blob_unit",
-		self_owned_extensions = {
-			"GenericHealthExtension",
-			"GenericDeathExtension",
-			"ProjectileLinkerExtension",
-			"GenericHitReactionExtension",
-			"ProximityMineExtension",
-			"ScaleUnitExtension"
-		},
-		husk_extensions = {
-			"GenericHealthExtension",
-			"GenericDeathExtension",
-			"ProjectileLinkerExtension",
-			"GenericHitReactionExtension",
-			"ProximityMineExtension",
-			"ScaleUnitExtension"
-		},
-		remove_when_killed = {
-			"GenericDeathExtension",
-			"ProjectileLinkerExtension",
-			"ProximityMineExtension",
-			"ScaleUnitExtension"
 		}
 	},
 	explosive_pickup_projectile_unit_limited = {

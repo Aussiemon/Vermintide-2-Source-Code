@@ -909,12 +909,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 							self:_set_achievement_expand_height(widget, expand_height)
 
 							if progress and not completed and not claimed then
-								local accuired = progress[1]
-								local required = progress[2]
-								local progress_fraction = accuired / required
-								local progress_text = tostring(accuired) .. "/" .. tostring(required)
-
-								self:_set_widget_bar_progress(widget, progress_fraction, progress_text)
+								self:_set_widget_bar_progress(widget, progress[1], progress[2])
 
 								content.draw_bar = true
 							else
@@ -993,14 +988,14 @@ HeroViewStateAchievements._hide_empty_entries_warning = function (self)
 	overlay_text_widget.content.visible = false
 end
 
-HeroViewStateAchievements._set_widget_bar_progress = function (self, widget, fraction, text)
+HeroViewStateAchievements._set_widget_bar_progress = function (self, widget, current, required)
 	local content = widget.content
 	local style = widget.style
 	local progress_bar_style = style.progress_bar
 	local default_size = progress_bar_style.default_size
 	local texture_size = progress_bar_style.texture_size
-	texture_size[1] = default_size[1] * fraction
-	content.progress_text = text
+	texture_size[1] = default_size[1] * current / required
+	content.progress_text = string.format("%d/%d", current, required)
 end
 
 HeroViewStateAchievements._set_requirements = function (self, widget, requirements)

@@ -63,7 +63,7 @@ GameModeWeave.evaluate_end_conditions = function (self, round_started, dt, t, mu
 
 	local ignore_bots = true
 	local humans_dead = GameModeHelper.side_is_dead("heroes", ignore_bots)
-	local players_disabled = GameModeHelper.side_is_disabled("heroes")
+	local players_disabled = GameModeHelper.side_is_disabled("heroes") and not GameModeHelper.side_delaying_loss("heroes")
 	local mutator_lost = mutator_handler:evaluate_lose_conditions()
 	local time_up = self:_is_time_up(t)
 	local lost = not self._lose_condition_disabled and (mutator_lost or humans_dead or players_disabled or self._level_failed or time_up)

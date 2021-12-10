@@ -122,6 +122,7 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	self._has_hit_precision_target = true
 	self._precision_target_unit = nil
 	self._number_of_hit_enemies = 0
+	self._this_attack_killed_enemy = false
 	self._amount_of_mass_hit = 0
 	self._number_of_potential_hit_results = 0
 	self._hit_mass_of_potential_hit_results = 0
@@ -757,6 +758,7 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 
 	local side = Managers.state.side.side_by_unit[owner_unit]
 	local enemy_units_lookup = side.enemy_units_lookup
+	local this_attack_killed_enemy = self._this_attack_killed_enemy
 	local view_position, view_rotation = first_person_extension:camera_position_rotation()
 
 	for i = 1, number_of_results_this_frame, 1 do
@@ -875,10 +877,6 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						abort_attack = self._max_targets <= self._amount_of_mass_hit + 3 or (hit_armor and not current_action.slide_armour_hit and not current_action.ignore_armour_hit and not self._ignore_mass_and_armour)
 					end
 
-					local armor_type = breed.armor_category
-
-					self:_play_hit_animations(owner_unit, current_action, abort_attack, hit_zone_name, armor_type, shield_blocked)
-
 					if sound_effect_extension and AiUtils.unit_alive(hit_unit) then
 						sound_effect_extension:add_hit()
 					end
@@ -894,9 +892,13 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						local has_melee_boost, melee_boost_curve_multiplier = self:_get_power_boost()
 						local power_level = self._power_level
 						local is_critical_strike = self._is_critical_strike or has_melee_boost
-
-						self:_play_character_impact(is_server, owner_unit, hit_unit, breed, hit_position, hit_zone_name, current_action, damage_profile, actual_hit_target_index, power_level, attack_direction, shield_blocked, melee_boost_curve_multiplier, is_critical_strike, backstab_multiplier)
+						local target_presumed_dead = self:_play_character_impact(is_server, owner_unit, hit_unit, breed, hit_position, hit_zone_name, current_action, damage_profile, actual_hit_target_index, power_level, attack_direction, shield_blocked, melee_boost_curve_multiplier, is_critical_strike, backstab_multiplier)
+						this_attack_killed_enemy = this_attack_killed_enemy or target_presumed_dead
 					end
+
+					local armor_type = breed.armor_category
+
+					self:_play_hit_animations(owner_unit, current_action, abort_attack, hit_zone_name, armor_type, shield_blocked, this_attack_killed_enemy)
 
 					if is_dodging then
 						abort_attack = false
@@ -1050,6 +1052,8 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 			end
 		end
 	end
+
+	self._this_attack_killed_enemy = this_attack_killed_enemy
 
 	if environment_unit_hit and not self._has_hit_environment and num_results1 + num_results2 > 0 then
 		self._has_hit_environment = true
@@ -1270,7 +1274,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 	end
 
 	if blocking then
-		return
+		return false
 	end
 
 	if not is_dummy and not husk and not target_presumed_dead and breed and not breed.disable_local_hit_reactions and unit_has_animation_state_machine(hit_unit) then
@@ -1303,6 +1307,8 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 
 		unit_animation_event(hit_unit, hit_anim)
 	end
+
+	return target_presumed_dead
 end
 
 local DUMMY_BREED = {}
@@ -1427,9 +1433,9 @@ ActionSweep.destroy = function (self)
 	return
 end
 
-ActionSweep._play_hit_animations = function (self, owner_unit, current_action, abort_attack, hit_zone_name, armor_type, blocking)
+ActionSweep._play_hit_animations = function (self, owner_unit, current_action, abort_attack, hit_zone_name, armor_type, blocking, killed_unit)
 	local hit_stop_anim = (current_action.dual_hit_stop_anims and self._action_hand and current_action.dual_hit_stop_anims[self._action_hand]) or current_action.hit_stop_anim
-	local first_person_hit_anim = (hit_zone_name ~= "head" and armor_type == 2 and abort_attack and current_action.hit_armor_anim) or (abort_attack and blocking and current_action.hit_shield_stop_anim) or (abort_attack and hit_stop_anim) or current_action.first_person_hit_anim
+	local first_person_hit_anim = (abort_attack and killed_unit and current_action.hit_stop_kill_anim) or (hit_zone_name ~= "head" and armor_type == 2 and abort_attack and current_action.hit_armor_anim) or (abort_attack and blocking and current_action.hit_shield_stop_anim) or (abort_attack and hit_stop_anim) or current_action.first_person_hit_anim
 	local third_person_hit_anim = abort_attack and current_action.hit_stop_anim
 	self._attack_aborted = self._attack_aborted or abort_attack
 

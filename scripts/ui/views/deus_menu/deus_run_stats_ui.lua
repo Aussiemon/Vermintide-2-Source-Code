@@ -121,9 +121,10 @@ DeusRunStatsUi._update_animations = function (self, dt, t)
 	end
 end
 
-DeusRunStatsUi.lock = function (self, lock)
+DeusRunStatsUi.lock = function (self, lock, show_fullscreen_fade)
 	local locked = self._locked
 	self._locked = lock
+	self._widgets_by_name.fullscreen_fade.content.visible = show_fullscreen_fade
 	local input_manager = Managers.input
 
 	if not locked and lock then
@@ -147,6 +148,10 @@ DeusRunStatsUi.locked = function (self)
 end
 
 DeusRunStatsUi.set_active = function (self, active)
+	if active ~= self._active then
+		Managers.state.event:trigger("ingame_player_list_enabled", active)
+	end
+
 	self._active = active
 end
 
@@ -277,7 +282,7 @@ DeusRunStatsUi._draw = function (self, dt, t)
 		return
 	end
 
-	local ui_renderer = self._ui_renderer
+	local ui_renderer = self._ui_top_renderer
 	local ui_scenegraph = self._ui_scenegraph
 	local render_settings = self._render_settings
 	local input_service = self._parent:input_service()

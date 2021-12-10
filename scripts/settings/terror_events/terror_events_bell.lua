@@ -21,14 +21,6 @@ local terror_event_blueprints = {
 			enable = false
 		},
 		{
-			"set_time_challenge",
-			time_challenge_name = "bell_speed_event"
-		},
-		{
-			"set_time_challenge",
-			time_challenge_name = "bell_speed_event_cata"
-		},
-		{
 			"disable_kick"
 		},
 		{
@@ -153,6 +145,16 @@ local terror_event_blueprints = {
 		{
 			"flow_event",
 			flow_event_name = "canyon_escape_event_done"
+		}
+	},
+	canyon_escape_event_start = {
+		{
+			"set_time_challenge",
+			time_challenge_name = "bell_speed_event"
+		},
+		{
+			"set_time_challenge",
+			time_challenge_name = "bell_speed_event_cata"
 		}
 	},
 	canyon_escape_event_completion_check = {

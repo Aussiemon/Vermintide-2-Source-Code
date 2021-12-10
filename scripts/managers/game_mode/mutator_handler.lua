@@ -124,10 +124,11 @@ MutatorHandler.hot_join_sync = function (self, peer_id)
 	local mutator_context = self._mutator_context
 	local is_server = self._is_server
 
-	for name, _ in pairs(active_mutators) do
-		local mutator_id = NetworkLookup.mutator_templates[name]
+	for mutator_name, mutator_settings in pairs(active_mutators) do
+		local mutator_id = NetworkLookup.mutator_templates[mutator_name]
+		local activated_by_twitch = not not mutator_settings.activated_by_twitch
 
-		network_transmit:send_rpc("rpc_activate_mutator_client", peer_id, mutator_id)
+		network_transmit:send_rpc("rpc_activate_mutator_client", peer_id, mutator_id, activated_by_twitch)
 	end
 
 	for name, mutator_data in pairs(active_mutators) do
@@ -610,8 +611,9 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 
 	if self._is_server then
 		local mutator_id = NetworkLookup.mutator_templates[name]
+		local activated_by_twitch = not not mutator_data.activated_by_twitch
 
-		self._network_transmit:send_rpc_clients("rpc_activate_mutator_client", mutator_id)
+		self._network_transmit:send_rpc_clients("rpc_activate_mutator_client", mutator_id, activated_by_twitch)
 	end
 end
 
@@ -671,14 +673,18 @@ MutatorHandler.tweak_pack_spawning_settings = function (zone_mutator_list, mutat
 	return new_pack_spawning_settings or pack_spawning_settings
 end
 
-MutatorHandler.rpc_activate_mutator_client = function (self, channel_id, mutator_id)
+MutatorHandler.rpc_activate_mutator_client = function (self, channel_id, mutator_id, activated_by_twitch)
 	fassert(not self._is_server, "Only call rpc_activate_mutator_client on clients.")
 
 	local mutator_name = NetworkLookup.mutator_templates[mutator_id]
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
+	local mutator_data = {
+		template = MutatorTemplates[mutator_name],
+		activated_by_twitch = activated_by_twitch
+	}
 
-	self:_activate_mutator(mutator_name, active_mutators, mutator_context)
+	self:_activate_mutator(mutator_name, active_mutators, mutator_context, mutator_data)
 end
 
 MutatorHandler.rpc_deactivate_mutator_client = function (self, channel_id, mutator_id)

@@ -274,6 +274,24 @@ DeusWeapons = DeusWeapons or {
 	deus_we_life_staff = {
 		base_item = "we_life_staff"
 	},
+	deus_wh_1h_hammer = {
+		base_item = "wh_1h_hammer"
+	},
+	deus_wh_2h_hammer = {
+		base_item = "wh_2h_hammer"
+	},
+	deus_wh_hammer_shield = {
+		base_item = "wh_hammer_shield"
+	},
+	deus_wh_flail_shield = {
+		base_item = "wh_flail_shield"
+	},
+	deus_wh_dual_hammer = {
+		base_item = "wh_dual_hammer"
+	},
+	deus_wh_hammer_book = {
+		base_item = "wh_hammer_book"
+	},
 	deus_wh_fencing_sword_unique1 = {
 		base_item = "wh_fencing_sword",
 		archetypes = {
@@ -1410,6 +1428,10 @@ DeusDefaultLoadout = DeusDefaultLoadout or {
 		slot_ranged = "deus_wh_deus_01",
 		slot_melee = "deus_wh_1h_axe"
 	},
+	wh_priest = {
+		slot_ranged = "deus_wh_2h_hammer",
+		slot_melee = "deus_wh_1h_hammer"
+	},
 	bw_scholar = {
 		slot_ranged = "deus_bw_deus_01",
 		slot_melee = "deus_bw_sword"
@@ -1500,8 +1522,12 @@ DeusStartingWeaponTypeMapping = DeusStartingWeaponTypeMapping or {
 	we_deus_01 = "deus_we_deus_01",
 	bw_skullstaff_geiser = "deus_bw_skullstaff_geiser",
 	dr_2h_cog_hammer = "deus_dr_2h_cog_hammer",
+	wh_2h_hammer = "deus_wh_2h_hammer",
+	wh_hammer_shield = "deus_wh_hammer_shield",
 	es_2h_hammer = "deus_es_2h_hammer",
+	wh_flail_shield = "deus_wh_flail_shield",
 	we_dual_wield_sword_dagger = "deus_we_dual_wield_sword_dagger",
+	wh_hammer_book = "deus_wh_hammer_book",
 	wh_repeating_pistols = "deus_wh_repeating_pistols",
 	es_sword_shield = "deus_es_sword_shield",
 	we_spear = "deus_we_spear",
@@ -1534,10 +1560,12 @@ DeusStartingWeaponTypeMapping = DeusStartingWeaponTypeMapping or {
 	bw_skullstaff_beam = "deus_bw_skullstaff_beam",
 	dr_2h_axe = "deus_dr_2h_axe",
 	es_2h_heavy_spear = "deus_es_2h_heavy_spear",
+	wh_dual_hammer = "deus_wh_dual_hammer",
 	bw_1h_flail_flaming = "deus_bw_1h_flail_flaming",
 	dr_shield_hammer = "deus_dr_shield_hammer",
 	es_2h_sword = "deus_es_2h_sword",
 	we_javelin = "deus_we_javelin",
+	wh_1h_hammer = "deus_wh_1h_hammer",
 	wh_crossbow = "deus_wh_crossbow",
 	dr_steam_pistol = "deus_dr_steam_pistol",
 	wh_crossbow_repeater = "deus_wh_crossbow_repeater",
@@ -1997,6 +2025,42 @@ DeusWeaponGroups = DeusWeaponGroups or {
 		default = "deus_we_life_staff",
 		slot_type = "ranged",
 		can_wield = ItemMasterList.we_life_staff.can_wield,
+		items_per_rarity = {}
+	},
+	wh_1h_hammer = {
+		default = "deus_wh_1h_hammer",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.wh_1h_hammer.can_wield,
+		items_per_rarity = {}
+	},
+	wh_2h_hammer = {
+		default = "deus_wh_2h_hammer",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.wh_2h_hammer.can_wield,
+		items_per_rarity = {}
+	},
+	wh_hammer_shield = {
+		default = "deus_wh_hammer_shield",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.wh_hammer_shield.can_wield,
+		items_per_rarity = {}
+	},
+	wh_flail_shield = {
+		default = "deus_wh_flail_shield",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.wh_flail_shield.can_wield,
+		items_per_rarity = {}
+	},
+	wh_dual_hammer = {
+		default = "deus_wh_dual_hammer",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.wh_dual_hammer.can_wield,
+		items_per_rarity = {}
+	},
+	wh_hammer_book = {
+		default = "deus_wh_hammer_book",
+		slot_type = "ranged",
+		can_wield = ItemMasterList.wh_hammer_book.can_wield,
 		items_per_rarity = {}
 	}
 }

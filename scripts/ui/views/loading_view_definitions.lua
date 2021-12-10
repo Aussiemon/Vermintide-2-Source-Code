@@ -314,17 +314,20 @@ local dead_space_filler = {
 	element = {
 		passes = {
 			{
-				pass_type = "rect"
+				pass_type = "rect",
+				style_id = "rect"
 			}
 		}
 	},
 	content = {},
 	style = {
-		color = {
-			255,
-			0,
-			0,
-			0
+		rect = {
+			color = {
+				255,
+				0,
+				0,
+				0
+			}
 		}
 	}
 }

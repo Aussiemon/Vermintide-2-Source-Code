@@ -1717,6 +1717,12 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 		text = Managers.localizer:simple_lookup(input_text)
 	end
 
+	if not string.find(text, "%b$;[%a%d_]*:") then
+		table.clear(INPUT_ACTIONS)
+
+		return prepared_text
+	end
+
 	local gamepad_active = Managers.input and Managers.input:is_device_active("gamepad")
 	local input_action, input_service_name = nil
 	input_action, INPUT_ACTIONS, input_service_name, INPUT_SERVICE_NAMES = Managers.localizer:get_input_action(text)
@@ -1749,7 +1755,7 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 				end
 
 				local replacement_str_iterator = math.ceil(button_width / replacement_width) + 1
-				REPLACEMENT_STR_LIST[i] = " "
+				REPLACEMENT_STR_LIST[i] = ""
 
 				for k = 1, replacement_str_iterator, 1 do
 					REPLACEMENT_STR_LIST[i] = REPLACEMENT_STR_LIST[i] .. "½"
@@ -1767,7 +1773,7 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 					end
 
 					local replacement_str_iterator = math.ceil(button_width / replacement_width) + 1
-					REPLACEMENT_STR_LIST[i] = " "
+					REPLACEMENT_STR_LIST[i] = ""
 
 					for k = 1, replacement_str_iterator, 1 do
 						REPLACEMENT_STR_LIST[i] = REPLACEMENT_STR_LIST[i] .. "½"
@@ -1783,7 +1789,7 @@ local function extract_button_data_from_text(ui_renderer, ui_style, input_text, 
 					end
 
 					local replacement_str_iterator = math.ceil(text_width / replacement_width)
-					REPLACEMENT_STR_LIST[i] = " "
+					REPLACEMENT_STR_LIST[i] = ""
 
 					for k = 1, replacement_str_iterator, 1 do
 						REPLACEMENT_STR_LIST[i] = REPLACEMENT_STR_LIST[i] .. "½"
@@ -1826,6 +1832,21 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 	local inv_scale = RESOLUTION_LOOKUP.inv_scale
 
 	while found_button do
+		local current_input_action = INPUT_ACTIONS[#INPUT_ACTIONS]
+		local current_input_service = INPUT_SERVICE_NAMES[#INPUT_SERVICE_NAMES]
+		local current_replacement_str = REPLACEMENT_STR_LIST[#REPLACEMENT_STR_LIST]
+		local current_final_replacement_str = FINAL_REPLACEMENT_STR_LIST[#FINAL_REPLACEMENT_STR_LIST]
+
+		if not current_input_action or not current_input_service or not current_replacement_str or not current_final_replacement_str then
+			Crashify.print_exception("Buttons in text", "Text: %q - Input action: %q - input_service: %q - replacement_str: %q - final_replacement_str: %q", tostring(text), tostring(current_input_action), tostring(current_input_service), tostring(current_replacement_str), tostring(current_final_replacement_str))
+			table.clear(INPUT_ACTIONS)
+			table.clear(INPUT_SERVICE_NAMES)
+			table.clear(REPLACEMENT_STR_LIST)
+			table.clear(FINAL_REPLACEMENT_STR_LIST)
+
+			return text
+		end
+
 		local start_idx, end_idx = string.find(text, REPLACEMENT_STR_LIST[#REPLACEMENT_STR_LIST])
 
 		if start_idx then
@@ -1836,7 +1857,7 @@ local function render_buttons_in_text(ui_renderer, text, font_material, font_siz
 			local substr = string.sub(text, 1, math.max(start_idx, 2))
 			local length = UIRenderer.text_size(ui_renderer, substr, font_material, font_size)
 			length = (start_idx > 1 and length) or 0
-			local pos = position + Vector3(length, -font_size * inv_scale * 0.25, 0)
+			local pos = position + Vector3(length - font_size * inv_scale * 0.25, -font_size * inv_scale * 0.25, 0)
 
 			if not ui_style.skip_button_rendering then
 				if gamepad_active then
@@ -1964,7 +1985,7 @@ UIPasses.text = {
 		end
 
 		if ui_style.upper_case then
-			text = TextToUpper(text)
+			text = Utf8.upper(text)
 		end
 
 		local widget_scale = nil

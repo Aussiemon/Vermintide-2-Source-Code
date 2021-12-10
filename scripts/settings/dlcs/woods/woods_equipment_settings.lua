@@ -48,12 +48,12 @@ settings.action_classes_lookup = {
 settings.inventory_package_list = {
 	"resource_packages/careers/we_thornsister",
 	"units/beings/player/way_watcher_thornsister/first_person_base/chr_first_person_mesh",
-	"units/beings/player/way_watcher_thornsister/third_person_base/chr_third_person_base",
-	"units/beings/player/way_watcher_thornsister/third_person_base/chr_third_person_husk_base",
+	"units/beings/player/way_watcher_thornsister/third_person_base/chr_third_person_mesh",
 	"units/beings/player/way_watcher_thornsister/skins/black_and_gold/chr_way_watcher_thornsister_black_and_gold",
 	"units/beings/player/way_watcher_thornsister/skins/blue/chr_way_watcher_thornsister_blue",
 	"units/beings/player/way_watcher_thornsister/skins/green/chr_way_watcher_thornsister_green",
 	"units/beings/player/way_watcher_thornsister/skins/redblack/chr_way_watcher_thornsister_redblack",
+	"units/beings/player/way_watcher_thornsister/skins/white/chr_way_watcher_thornsister_white",
 	"units/weapons/player/wpn_we_javelin_01/wpn_we_javelin_01",
 	"units/weapons/player/wpn_we_javelin_01/wpn_we_javelin_01_3p",
 	"units/weapons/player/wpn_we_javelin_01/prj_we_javelin_01_3ps",
@@ -87,7 +87,6 @@ settings.inventory_package_list = {
 	"units/beings/player/way_watcher_thornsister/headpiece/ww_t_fatshark_hat_01"
 }
 settings.husk_lookup = {
-	"units/beings/player/way_watcher_thornsister/third_person_base/chr_third_person_husk_base",
 	"units/weapons/player/wpn_we_javelin_01/wpn_we_javelin_01",
 	"units/weapons/player/wpn_we_javelin_01/wpn_we_javelin_01_3p",
 	"units/weapons/player/wpn_we_javelin_01/prj_we_javelin_01_3ps",

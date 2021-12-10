@@ -174,7 +174,7 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 			local breed = Unit.get_data(hit_unit, "breed")
 
 			if breed and breed.boss then
-				Managers.state.event:trigger("show_boss_health_bar", hit_unit)
+				Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", hit_unit, "damage_done")
 			end
 		end
 	end

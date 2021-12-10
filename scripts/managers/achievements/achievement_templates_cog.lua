@@ -832,7 +832,7 @@ achievements.cog_only_crank = {
 
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
 
-			if damage_source ~= "bardin_engineer_career_skill_weapon" then
+			if damage_source ~= "bardin_engineer_career_skill_weapon" and damage_source ~= "bardin_engineer_career_skill_weapon_heavy" then
 				template_data.failed = true
 
 				return false

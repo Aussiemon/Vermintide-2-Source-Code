@@ -95,14 +95,11 @@ LobbyFinder.update = function (self, dt)
 
 				table.dump(engine_lobby_data, "LOBBY_DATA", 2)
 
-				if LobbyAux.verify_lobby_data(engine_lobby_data) then
+				if engine_lobby_data.network_hash == self._network_hash and LobbyAux.verify_lobby_data(engine_lobby_data) then
 					engine_lobbies[#engine_lobbies + 1] = engine_lobby_data
+					engine_lobby_data.valid = true
 
-					if engine_lobby_data.network_hash == self._network_hash then
-						engine_lobby_data.valid = true
-
-						printf("=======================Found valid lobby!")
-					end
+					printf("=======================Found valid lobby!")
 				end
 			end
 

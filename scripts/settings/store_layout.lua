@@ -1,6 +1,6 @@
-if not rawget(_G, "StoreLayoutConfig") then
-	require("scripts/settings/store_dlc_settings")
+require("scripts/settings/store_dlc_settings")
 
+if not StoreLayoutConfig then
 	StoreLayoutConfig = {
 		menu_options = {
 			"featured",
@@ -113,6 +113,7 @@ if not rawget(_G, "StoreLayoutConfig") then
 		sound_event_enter = "Play_hud_store_category_front",
 		layout = "featured",
 		display_name = "menu_store_panel_title_featured",
+		rotation_timer = false,
 		slideshow = {},
 		grid = {}
 	}
@@ -121,6 +122,13 @@ if not rawget(_G, "StoreLayoutConfig") then
 		layout = "category",
 		display_name = "menu_store_panel_title_cosmetics",
 		item_filter = "item_type ~= bundle"
+	}
+	StoreLayoutConfig.pages.discount_tab = {
+		sound_event_enter = "Play_hud_store_category_cosmetics",
+		layout = "item_list",
+		item_filter = "discounted_items",
+		type = "item",
+		display_name = "menu_store_panel_title_discounts"
 	}
 	local dlc_content = {}
 	local bundle_dlc_content = {}
@@ -393,13 +401,21 @@ if not rawget(_G, "StoreLayoutConfig") then
 		sort_order = 3,
 		category_button_texture = "store_category_icon_sienna_unchained"
 	}
-end
+	StoreLayoutConfig.pages.discounts = {
+		sound_event_enter = "Play_hud_store_kruber",
+		layout = "category",
+		display_name = "inventory_discounts",
+		item_filter = "discounted_items",
+		sort_order = 6,
+		category_button_texture = "store_category_icon_kruber_mercenary"
+	}
 
-for dlc_name, dlc_settings in pairs(DLCSettings) do
-	local store_layout = dlc_settings.store_layout
+	for dlc_name, dlc_settings in pairs(DLCSettings) do
+		local store_layout = dlc_settings.store_layout
 
-	if store_layout then
-		table.append_recursive(StoreLayoutConfig, store_layout)
+		if store_layout then
+			table.append_recursive(StoreLayoutConfig, store_layout)
+		end
 	end
 end
 
@@ -413,106 +429,51 @@ local ORDER_RARITY = {
 	unique = 6
 }
 
-local function cmp_rarity(a, b)
-	local a_rarity = (a.data and a.data.rarity) or "plentiful"
-	local b_rarity = (b.data and b.data.rarity) or "plentiful"
-
-	return ORDER_RARITY[a_rarity] - ORDER_RARITY[b_rarity]
-end
-
-local function cmp_price(a, b)
-	local a_price = (a.current_prices and a.current_prices.SM) or 0
-	local b_price = (b.current_prices and b.current_prices.SM) or 0
-
-	return b_price - a_price
-end
-
-local function cmp_prio(a, b)
-	local a_prio = a.prio or (a.data and a.data.prio) or 0
-	local b_prio = b.prio or (b.data and b.data.prio) or 0
-
-	return a_prio - b_prio
-end
-
-local function item_get_type_order_key(item)
+StoreLayoutConfig.make_sort_key = function (item)
+	local backend_items = Managers.backend:get_interface("items")
 	local data = item.data
-	local item_type = nil
+	local key = item.key
+	local item_type = key
+	local prio = item.prio or 0
+	local price = 0
+	local rarity = item.rarity or "plentiful"
+	local owned = ((backend_items:has_item(key) or backend_items:has_weapon_illusion(key)) and 2) or 0
 
 	if data then
 		item_type = data.item_type
 
 		if item_type == "weapon_skin" then
-			return data.matching_item_key or "weapon_skin"
+			item_type = data.matching_item_key or "weapon_skin"
 		elseif item_type == "bundle" then
-			return "2.bundle"
+			item_type = "2.bundle"
 		elseif item_type == "skin" then
-			return "1.skin"
+			item_type = "1.skin"
 		elseif item_type == "hat" then
-			return "0.hat"
+			item_type = "0.hat"
+		else
+			item_type = key
+		end
+
+		prio = data.prio or prio
+		rarity = data.rarity or rarity
+		local current_prices = item.current_prices
+
+		if current_prices then
+			price = current_prices.SM or 0
+		end
+
+		if not owned and backend_items:has_bundle_contents(data.bundle_contains) then
+			owned = 1
 		end
 	end
 
-	return item_type or "~.unknown"
+	local sort_key = string.format("%01x%-16.16s%03x%04x%01x", owned, item_type, prio, price, ORDER_RARITY[rarity] or 0)
+
+	return sort_key
 end
 
-local function cmp_type(a, b)
-	local a_type = item_get_type_order_key(a)
-	local b_type = item_get_type_order_key(b)
-
-	return (a_type < b_type and 1) or (b_type < a_type and -1) or 0
+StoreLayoutConfig.compare_sort_key = function (a, b)
+	return a.sort_key < b.sort_key
 end
-
-local function item_get_owned(item)
-	local backend_items = Managers.backend:get_interface("items")
-	local item_key = item.key
-
-	return backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
-end
-
-local function cmp_unowned(a, b)
-	return ((item_get_owned(b) and 1) or 0) - ((item_get_owned(a) and 1) or 0)
-end
-
-local function cmp_item(a, b)
-	local diff = cmp_unowned(a, b)
-
-	if diff ~= 0 then
-		return diff > 0
-	end
-
-	diff = cmp_type(a, b)
-
-	if diff ~= 0 then
-		return diff > 0
-	end
-
-	diff = cmp_prio(a, b)
-
-	if diff ~= 0 then
-		return diff > 0
-	end
-
-	diff = cmp_price(a, b)
-
-	if diff ~= 0 then
-		return diff > 0
-	end
-
-	return cmp_rarity(a, b) > 0
-end
-
-local function cmp_layout_item(a, b)
-	return cmp_item(a.item, b.item)
-end
-
-StoreLayoutConfig.sort = {
-	cmp_prio = cmp_prio,
-	cmp_rarity = cmp_rarity,
-	cmp_price = cmp_price,
-	cmp_type = cmp_type,
-	cmp_unowned = cmp_unowned,
-	cmp_item = cmp_item,
-	cmp_layout_item = cmp_layout_item
-}
 
 return

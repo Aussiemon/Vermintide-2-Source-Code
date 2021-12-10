@@ -785,11 +785,7 @@ InputManager.get_most_recent_device_type = function (self)
 end
 
 InputManager.is_device_active = function (self, input_device_type)
-	if IS_XB1 and Managers.account and Managers.account:is_controller_disconnected() and input_device_type == "gamepad" then
-		return true
-	end
-
-	if gamepad_disabled and input_device_type == "gamepad" then
+	if input_device_type == "gamepad" and gamepad_disabled then
 		return false
 	end
 

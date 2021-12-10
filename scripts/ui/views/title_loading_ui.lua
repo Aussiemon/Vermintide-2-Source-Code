@@ -2,11 +2,12 @@ require("scripts/settings/controller_settings")
 require("scripts/ui/ui_widgets")
 require("scripts/ui/views/cutscene_overlay_ui")
 
-local first_time_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
+local prologue_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_trailer")
 local penny_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_penny_intro")
 local cog_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_cog_intro")
 local morris_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_morris_intro")
 local woods_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_woods_intro")
+local bless_intro_video_subtitle_settings = local_require("scripts/ui/cutscene_overlay_templates/cutscene_template_bless_intro")
 local scenegraph_definition = {
 	screen = {
 		vertical_alignment = "center",
@@ -811,22 +812,23 @@ local dynamic_range_widget_definitions = {
 	description = UIWidgets.create_simple_text("startup_settings_dynamic_range_desc", "gamma_info_text", nil, nil, description_text_style)
 }
 local done_button = UIWidgets.create_default_button("apply_button", scenegraph_definition.apply_button.size, nil, nil, Localize("input_description_confirm"))
-local first_time_video = {
+local prologue_video = {
 	video_name = "video/vermintide_2_prologue_intro",
 	sound_start = "vermintide_2_prologue_intro",
 	scenegraph_id = "splash_video",
 	material_name = "vermintide_2_prologue_intro",
 	sound_stop = "Stop_vermintide_2_prologue_intro",
-	subtitle_template_settings = first_time_video_subtitle_settings
+	subtitle_template_settings = prologue_video_subtitle_settings
 }
 local dlc_intro_video = {
-	video_name = "video/vermintide_2_woods_intro",
-	sound_start = "Play_vermintide_2_woods_intro",
+	video_name = "video/vermintide_2_bless_intro",
+	sound_start = "Play_vermintide_2_bless_intro",
 	scenegraph_id = "splash_video",
-	material_name = "vermintide_2_woods_intro",
-	sound_stop = "Stop_vermintide_2_woods_intro",
-	subtitle_template_settings = woods_intro_video_subtitle_settings
+	material_name = "vermintide_2_bless_intro",
+	sound_stop = "Stop_vermintide_2_bless_intro",
+	subtitle_template_settings = bless_intro_video_subtitle_settings
 }
+local first_time_video = dlc_intro_video
 
 local function get_slider_progress(min, max, value)
 	local range = max - min
@@ -906,15 +908,16 @@ TitleLoadingUI = class(TitleLoadingUI)
 TitleLoadingUI.init = function (self, world, params, force_done)
 	Framerate.set_low_power()
 
-	if not params.is_prologue then
-		first_time_video = dlc_intro_video
-	end
-
+	first_time_video = dlc_intro_video
 	local title_settings = Managers.backend:get_title_settings()
 
 	if title_settings and title_settings.video_override then
 		first_time_video = title_settings.video_override
 		first_time_video.subtitle_template_settings = local_require(first_time_video.subtitle_template_settings_path)
+	end
+
+	if params.is_prologue then
+		first_time_video = prologue_video
 	end
 
 	self.render_settings = {

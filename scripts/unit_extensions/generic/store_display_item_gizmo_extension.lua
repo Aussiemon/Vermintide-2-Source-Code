@@ -4,8 +4,8 @@ StoreDisplayItemGizmoExtension.init = function (self, extension_init_context, un
 	self._gizmo_unit = unit
 	self._world = extension_init_context.world
 	local store_display_key = Unit.get_data(unit, "store_display_key")
-	local store_settings = Managers.backend:get_interface("items"):store_settings()
-	local store_display_items = store_settings and store_settings.store_display_items
+	local backend_store = Managers.backend:get_interface("peddler")
+	local store_display_items = backend_store:store_display_items()
 	local item_key = store_display_items and store_display_items[store_display_key]
 
 	if item_key then

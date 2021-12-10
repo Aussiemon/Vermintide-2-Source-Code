@@ -160,9 +160,10 @@ local PlayFabHttpsCurl = {
 			headers[#headers + 1] = auth_key .. ": " .. auth_value
 		end
 
+		local base_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com"
 		local id = PlayFabHttpsCurlData.request_id + 1
 		local curl_manager = Managers.curl
-		local full_url = "https://" .. PlayFabSettings.settings.titleId .. ".playfabapi.com" .. url_path
+		local full_url = base_url .. url_path
 		local options = {
 			[curl_manager._curl.OPT_SSL_OPTIONS] = curl_manager._curl.SSLOPT_NO_REVOKE
 		}

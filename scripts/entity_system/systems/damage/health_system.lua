@@ -465,7 +465,7 @@ HealthSystem.rpc_heal = function (self, channel_id, target_unit_go_id, target_un
 	else
 		local health_extension = self.unit_extensions[target_unit]
 
-		health_extension:add_heal(target_unit, heal_amount, nil, heal_type)
+		health_extension:add_heal(healer_unit, heal_amount, nil, heal_type)
 
 		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 

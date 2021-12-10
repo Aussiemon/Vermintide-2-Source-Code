@@ -5,6 +5,10 @@ local World = rawget(_G, "World")
 local script_data = rawget(_G, "script_data")
 local Color = rawget(_G, "Color")
 local Gui = rawget(_G, "Gui")
+local TIMED_EVENT_TEMPLATE_ID = 1
+local TIMED_EVENT_EVENT_ID = 2
+local TIMED_EVENT_DELAY = 3
+local TIMED_EVENT_DATA = 4
 
 if IS_CONSOLE then
 	local to_remove = {}
@@ -47,6 +51,9 @@ AchievementManager.init = function (self, world, statistics_db)
 	self._available_careers = {}
 	self._achievement_data = {}
 	self._incompleted_achievements = {}
+	self._timed_events = {}
+	self._canceled_timed_events_n = 0
+	self._canceled_timed_events = {}
 	local backend_interface_loot = Managers.backend:get_interface("loot")
 	self._backend_interface_loot = backend_interface_loot
 
@@ -162,6 +169,75 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 	end
 end
 
+AchievementManager.register_timed_event = function (self, achievement_id, event_name, delay, data)
+	local t = Managers.time:time("game")
+	local handle = {
+		achievement_id,
+		event_name,
+		delay,
+		data,
+		valid = true
+	}
+	self._timed_events[handle] = t + (delay or 0)
+
+	return handle
+end
+
+AchievementManager.cancel_timed_event = function (self, handle)
+	if self._timed_events[handle] then
+		handle.valid = false
+		local canceled_n = self._canceled_timed_events_n
+		canceled_n = canceled_n + 1
+		self._canceled_timed_events[canceled_n] = handle
+		self._canceled_timed_events_n = canceled_n
+	end
+end
+
+AchievementManager.get_registered_timed_event = function (self, handle)
+	return self._timed_events[handle]
+end
+
+AchievementManager.reset_timed_event = function (self, handle)
+	local timed_event = self._timed_events[handle]
+
+	if timed_event and handle.valid then
+		local t = Managers.time:time("game")
+		timed_event[handle] = t + timed_event[TIMED_EVENT_DELAY]
+
+		return true
+	end
+
+	return false
+end
+
+AchievementManager._update_timed_events = function (self, dt, t)
+	local timed_events = self._timed_events
+	local canceled_timed_events = self._canceled_timed_events
+
+	for i = 1, self._canceled_timed_events_n, 1 do
+		timed_events[canceled_timed_events[i]] = nil
+		canceled_timed_events[i] = nil
+	end
+
+	self._canceled_timed_events_n = 0
+	local local_player = Managers.player:local_player()
+	local stats_id = local_player:stats_id()
+	local statistics_db = self._statistics_db
+
+	for handle, event_t in pairs(timed_events) do
+		if event_t <= t then
+			local achievement_id = handle[TIMED_EVENT_TEMPLATE_ID]
+			local event = handle[TIMED_EVENT_EVENT_ID]
+			local event_data = handle[TIMED_EVENT_DATA]
+			local template = AchievementTemplates.achievements[achievement_id]
+			local template_event_data = self._template_event_data[template.id]
+
+			template[event](statistics_db, stats_id, template_event_data, event_data)
+			self:cancel_timed_event(handle)
+		end
+	end
+end
+
 AchievementManager.destroy = function (self)
 	Managers.state.event:unregister("event_enable_achievements", self)
 
@@ -170,6 +246,8 @@ AchievementManager.destroy = function (self)
 
 		self.gui = nil
 	end
+
+	self._timed_events = nil
 end
 
 AchievementManager.event_enable_achievements = function (self, enable)
@@ -240,6 +318,8 @@ AchievementManager.update = function (self, dt, t)
 	end
 
 	if self._console_achievement_check_delay and t < self._console_achievement_check_delay then
+		self:_update_timed_events(dt, t)
+
 		return
 	end
 
@@ -291,6 +371,7 @@ AchievementManager.update = function (self, dt, t)
 
 	self:_update_reward_polling(dt, t)
 	self:_check_for_completed_achievements()
+	self:_update_timed_events(dt, t)
 end
 
 AchievementManager.reset = function (self)

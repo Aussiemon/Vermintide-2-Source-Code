@@ -400,7 +400,23 @@ LevelSettings.farmlands = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_farmland_01",
-		"nik_loading_screen_farmland_02"
+		"nik_loading_screen_farmland_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_farmland_01",
+			"pdr_de_loading_screen_farmland_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_farmland_01",
+			"pwe_st_loading_screen_farmland_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_farmland_01",
+			"pes_gk_loading_screen_farmland_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_farmland_01",
+			"pwh_wp_loading_screen_farmland_02"
+		}
 	},
 	locations = {
 		"location_farmlands_farmlands",
@@ -484,7 +500,23 @@ LevelSettings.catacombs = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_catacombs_01",
-		"nik_loading_screen_catacombs_02"
+		"nik_loading_screen_catacombs_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_catacombs_01",
+			"pdr_de_loading_screen_catacombs_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_catacombs_01",
+			"pwe_st_loading_screen_catacombs_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_catacombs_01",
+			"pes_gk_loading_screen_catacombs_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_catacombs_01",
+			"pwh_wp_loading_screen_catacombs_02"
+		}
 	},
 	locations = {
 		"location_catacombs_temple",
@@ -580,7 +612,23 @@ LevelSettings.elven_ruins = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_elven_ruins_01",
-		"nik_loading_screen_elven_ruins_02"
+		"nik_loading_screen_elven_ruins_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_elven_ruins_01",
+			"pdr_de_loading_screen_elven_ruins_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_elven_ruins_01",
+			"pwe_st_loading_screen_elven_ruins_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_elven_ruins_01",
+			"pes_gk_loading_screen_elven_ruins_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_elven_ruins_01",
+			"pwh_wp_loading_screen_elven_ruins_02"
+		}
 	},
 	locations = {
 		"location_elven_forest",
@@ -678,7 +726,23 @@ LevelSettings.mines = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_mines_01",
-		"nik_loading_screen_mines_02"
+		"nik_loading_screen_mines_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_mines_01",
+			"pdr_de_loading_screen_mines_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_mines_01",
+			"pwe_st_loading_screen_mines_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_mines_01",
+			"pes_gk_loading_screen_mines_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_mines_01",
+			"pwh_wp_loading_screen_mines_02"
+		}
 	},
 	locations = {
 		"location_mines_mine",
@@ -772,7 +836,23 @@ LevelSettings.ground_zero = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_ground_zero_01",
-		"nik_loading_screen_ground_zero_02"
+		"nik_loading_screen_ground_zero_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_ground_zero_01",
+			"pdr_de_loading_screen_ground_zero_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_ground_zero_01",
+			"pwe_st_loading_screen_ground_zero_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_ground_zero_01",
+			"pes_gk_loading_screen_ground_zero_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_ground_zero_01",
+			"pwh_wp_loading_screen_ground_zero_02"
+		}
 	},
 	locations = {
 		"location_ground_zero_upper_terrace",
@@ -873,7 +953,23 @@ LevelSettings.fort = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_fort_01",
-		"nik_loading_screen_fort_02"
+		"nik_loading_screen_fort_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_fort_01",
+			"pdr_de_loading_screen_fort_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_fort_01",
+			"pwe_st_loading_screen_fort_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_fort_01",
+			"pes_gk_loading_screen_fort_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_fort_01",
+			"pwh_wp_loading_screen_fort_02"
+		}
 	}
 }
 LevelSettings.ussingen = {
@@ -966,7 +1062,23 @@ LevelSettings.ussingen = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_ussingen_01",
-		"nik_loading_screen_ussingen_02"
+		"nik_loading_screen_ussingen_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_ussingen_01",
+			"pdr_de_loading_screen_ussingen_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_ussingen_01",
+			"pwe_st_loading_screen_ussingen_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_ussingen_01",
+			"pes_gk_loading_screen_ussingen_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_ussingen_01",
+			"pwh_wp_loading_screen_ussingen_02"
+		}
 	}
 }
 LevelSettings.ussingen_demo = {
@@ -1135,7 +1247,23 @@ LevelSettings.skaven_stronghold = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_skaven_stronghold_01",
-		"nik_loading_screen_skaven_stronghold_02"
+		"nik_loading_screen_skaven_stronghold_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_skaven_stronghold_01",
+			"pdr_de_loading_screen_skaven_stronghold_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_skaven_stronghold_01",
+			"pwe_st_loading_screen_skaven_stronghold_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_skaven_stronghold_01",
+			"pes_gk_loading_screen_skaven_stronghold_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_skaven_stronghold_01",
+			"pwh_wp_loading_screen_skaven_stronghold_02"
+		}
 	}
 }
 LevelSettings.military = {
@@ -1215,7 +1343,23 @@ LevelSettings.military = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_helmgart_military_01",
-		"nik_loading_screen_helmgart_military_02"
+		"nik_loading_screen_helmgart_military_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_helmgart_military_01",
+			"pdr_de_loading_screen_helmgart_military_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_helmgart_military_01",
+			"pwe_st_loading_screen_helmgart_military_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_helmgart_military_01",
+			"pes_gk_loading_screen_helmgart_military_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_helmgart_military_01",
+			"pwh_wp_loading_screen_helmgart_military_02"
+		}
 	},
 	locations = {
 		"location_military_streets_01",
@@ -1349,7 +1493,23 @@ LevelSettings.skittergate = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_skittergate_01",
-		"nik_loading_screen_skittergate_02"
+		"nik_loading_screen_skittergate_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_skittergate_01",
+			"pdr_de_loading_screen_skittergate_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_skittergate_01",
+			"pwe_st_loading_screen_skittergate_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_skittergate_01",
+			"pes_gk_loading_screen_skittergate_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_skittergate_01",
+			"pwh_wp_loading_screen_skittergate_02"
+		}
 	},
 	locations = {
 		"location_skittergate_helmgart",
@@ -1444,7 +1604,23 @@ LevelSettings.bell = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_bell_01",
-		"nik_loading_screen_bell_02"
+		"nik_loading_screen_bell_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_bell_01",
+			"pdr_de_loading_screen_bell_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_bell_01",
+			"pwe_st_loading_screen_bell_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_bell_01",
+			"pes_gk_loading_screen_bell_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_bell_01",
+			"pwh_wp_loading_screen_bell_02"
+		}
 	},
 	locations = {
 		"location_bell_winery",
@@ -1537,7 +1713,23 @@ LevelSettings.nurgle = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_nurgle_01_short",
-		"nik_loading_screen_nurgle_02_short"
+		"nik_loading_screen_nurgle_02_short",
+		dr_engineer = {
+			"pdr_de_loading_screen_nurgle_01",
+			"pdr_de_loading_screen_nurgle_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_nurgle_01",
+			"pwe_st_loading_screen_nurgle_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_nurgle_01",
+			"pes_gk_loading_screen_nurgle_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_nurgle_01",
+			"pwh_wp_loading_screen_nurgle_02"
+		}
 	},
 	locations = {
 		"location_nurgle_start_area",
@@ -1640,7 +1832,23 @@ LevelSettings.warcamp = {
 	},
 	loading_screen_wwise_events = {
 		"nik_loading_screen_chaos_war_camp_01",
-		"nik_loading_screen_chaos_war_camp_02"
+		"nik_loading_screen_chaos_war_camp_02",
+		dr_engineer = {
+			"pdr_de_loading_screen_chaos_war_camp_01",
+			"pdr_de_loading_screen_chaos_war_camp_02"
+		},
+		we_thornsister = {
+			"pwe_st_loading_screen_chaos_war_camp_01",
+			"pwe_st_loading_screen_chaos_war_camp_02"
+		},
+		es_questingknight = {
+			"pes_gk_loading_screen_chaos_war_camp_01",
+			"pes_gk_loading_screen_chaos_war_camp_02"
+		},
+		wh_priest = {
+			"pwh_wp_loading_screen_chaos_war_camp_01",
+			"pwh_wp_loading_screen_chaos_war_camp_02"
+		}
 	},
 	locations = {
 		"location_warcamp_intro",

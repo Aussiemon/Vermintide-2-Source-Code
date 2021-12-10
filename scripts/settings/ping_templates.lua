@@ -9,6 +9,7 @@ PingTypes = {
 	PLAYER_PICK_UP = 18,
 	CHAT_ONLY = 3,
 	VO_ONLY = 21,
+	UNIT_DOWNED = 22,
 	CANCEL = 2,
 	ACKNOWLEDGE = 1,
 	PLAYER_HELP = 17,
@@ -180,6 +181,9 @@ PingTemplates = {
 				}
 			},
 			[PingTypes.CHAT_ONLY] = {
+				true
+			},
+			[PingTypes.UNIT_DOWNED] = {
 				true
 			}
 		},

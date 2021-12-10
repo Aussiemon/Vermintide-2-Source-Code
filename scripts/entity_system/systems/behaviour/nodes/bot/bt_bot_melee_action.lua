@@ -83,7 +83,6 @@ BTBotMeleeAction.enter = function (self, unit, blackboard, t)
 end
 
 BTBotMeleeAction.leave = function (self, unit, blackboard, t, reason, destroy)
-	blackboard.wielded_item_template = nil
 	local input_ext = blackboard.input_extension
 
 	input_ext:set_aiming(false)
@@ -97,6 +96,8 @@ BTBotMeleeAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if self:_should_stop_attack_on_leave(blackboard) then
 		self:_stop_attack(blackboard)
 	end
+
+	blackboard.wielded_item_template = nil
 end
 
 BTBotMeleeAction.run = function (self, unit, blackboard, t, dt)
@@ -515,16 +516,8 @@ BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_
 	end
 end
 
-BTBotMeleeAction._get_current_weapon_extension = function (self, blackboard)
-	local inventory_extension = blackboard.inventory_extension
-	local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
-	local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
-
-	return current_action_extension or right_hand_weapon_extension or left_hand_weapon_extension
-end
-
 BTBotMeleeAction._time_to_next_attack = function (self, attack_input, blackboard, t)
-	local weapon_extension = self:_get_current_weapon_extension(blackboard)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		local wielded_item_template = blackboard.wielded_item_template
@@ -536,7 +529,7 @@ BTBotMeleeAction._time_to_next_attack = function (self, attack_input, blackboard
 end
 
 BTBotMeleeAction._attack = function (self, attack_input, blackboard)
-	local weapon_extension = self:_get_current_weapon_extension(blackboard)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		local wielded_item_template = blackboard.wielded_item_template
@@ -548,7 +541,7 @@ BTBotMeleeAction._attack = function (self, attack_input, blackboard)
 end
 
 BTBotMeleeAction._should_stop_attack_on_leave = function (self, blackboard)
-	local weapon_extension = self:_get_current_weapon_extension(blackboard)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		return weapon_extension:bot_should_stop_attack_on_leave()
@@ -556,7 +549,7 @@ BTBotMeleeAction._should_stop_attack_on_leave = function (self, blackboard)
 end
 
 BTBotMeleeAction._stop_attack = function (self, blackboard)
-	local weapon_extension = self:_get_current_weapon_extension(blackboard)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		weapon_extension:stop_action()
@@ -564,7 +557,7 @@ BTBotMeleeAction._stop_attack = function (self, blackboard)
 end
 
 BTBotMeleeAction._clear_pending_attack = function (self, blackboard)
-	local weapon_extension = self:_get_current_weapon_extension(blackboard)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		weapon_extension:clear_bot_attack_request()
@@ -572,7 +565,7 @@ BTBotMeleeAction._clear_pending_attack = function (self, blackboard)
 end
 
 BTBotMeleeAction._is_starting_attack = function (self, blackboard)
-	local weapon_extension = self:_get_current_weapon_extension(blackboard)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 
 	if weapon_extension then
 		return weapon_extension:is_starting_attack()

@@ -18,6 +18,9 @@ settings.dialogue_settings = {
 	},
 	inn_level_sonnstill = {
 		"dialogues/generated/dlc_woods"
+	},
+	morris_hub = {
+		"dialogues/generated/dlc_woods"
 	}
 }
 settings.auto_load_files = {

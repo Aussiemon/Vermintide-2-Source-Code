@@ -55,10 +55,9 @@ end
 
 print("Active feature-flags:")
 print("PLATFORM_win32")
-print("FEATURE_steam_rich_presence")
-print("FEATURE_grudge_marks")
-print("FEATURE_geheimnisnacht_2021")
-print("FEATURE_fall_collection_2021")
+print("FEATURE_store_onboarding")
+print("FEATURE_warrior_priest")
+print("FEATURE_amd_fsr")
 print("")
 require("scripts/settings/dlc_settings")
 require("scripts/helpers/dlc_utils")
@@ -421,6 +420,16 @@ Boot.booting_update = function (self, dt)
 			Crashify.print_property("machine_id", Application.machine_id())
 		elseif IS_PS4 then
 			Crashify.print_property("machine_id", Application.machine_id())
+
+			local console_type = "ps4"
+
+			if PS4.is_ps5() then
+				console_type = "ps5"
+			elseif PS4.is_pro() then
+				console_type = "ps4_pro"
+			end
+
+			Crashify.print_property("console_type", console_type)
 		elseif IS_XB1 then
 			Crashify.print_property("console_type", XboxOne.console_type_string())
 		end
@@ -1409,8 +1418,6 @@ Game._init_managers = function (self)
 	else
 		self:_init_backend()
 	end
-
-	self:_init_localization_manager()
 
 	Managers.admin = AdminManager:new()
 	Managers.perfhud = PerfhudManager:new()

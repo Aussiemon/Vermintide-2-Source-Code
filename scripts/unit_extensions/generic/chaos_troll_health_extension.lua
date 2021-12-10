@@ -28,6 +28,12 @@ end
 ChaosTrollHealthExtension.set_max_health = function (self, value)
 	ChaosTrollHealthExtension.super.set_max_health(self, value)
 	self:_setup_initial_health_variables(value)
+
+	local go_id = self._game_object_id or Managers.state.unit_storage:go_id(self.unit)
+
+	if go_id then
+		self.network_transmit:send_rpc_clients("rpc_sync_current_max_health", go_id, self.current_max_health)
+	end
 end
 
 ChaosTrollHealthExtension._setup_initial_health_variables = function (self, new_max_health)

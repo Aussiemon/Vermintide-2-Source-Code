@@ -843,4 +843,18 @@ ActionUtils.get_performance_scores_for_sub_action = function (sub_action)
 	return results
 end
 
+ActionUtils.is_melee_start_sub_action = function (sub_action)
+	if not sub_action then
+		return false
+	end
+
+	local kind = sub_action.kind
+
+	if kind == "melee_start" then
+		return true
+	end
+
+	return sub_action.melee_start
+end
+
 return

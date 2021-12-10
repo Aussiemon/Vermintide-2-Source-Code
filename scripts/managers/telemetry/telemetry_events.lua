@@ -694,16 +694,74 @@ TelemetryEvents.store_breadcrumbs_changed = function (self, widgets, product)
 end
 
 TelemetryEvents.store_product_purchased = function (self, product)
+	local product = {
+		currency = "SM",
+		id = product.product_id,
+		type = product.item.data.item_type,
+		current_price = product.item.current_prices.SM or product.item.regular_prices.SM,
+		regular_price = product.item.regular_prices.SM
+	}
+
+	self:_store_product_purchased(product)
+end
+
+local function find_steam_currency(product)
+	local price = tonumber(product.item.steam_price)
+	local steam_data = product.item.steam_data
+	local price_table = (steam_data.discount_is_active and steam_data.discount_prices) or steam_data.regular_prices or {}
+
+	for currency, currency_price in pairs(price_table) do
+		if price == currency_price then
+			return currency
+		end
+	end
+end
+
+local function find_regular_price(product)
+	local currency = find_steam_currency(product)
+
+	return product.item.steam_data.regular_prices[currency]
+end
+
+TelemetryEvents.steam_store_product_purchased = function (self, steam_product)
+	local steam_data = steam_product.item.steam_data
+	local product = {
+		id = steam_product.item.id,
+		type = steam_product.item.data.item_type,
+		current_price = tonumber(steam_product.item.steam_price),
+		currency = (steam_data and find_steam_currency(steam_product)) or "?"
+	}
+
+	if steam_data and steam_data.discount_is_active then
+		product.discounted = true
+		product.regular_price = find_regular_price(steam_product)
+	end
+
+	self:_store_product_purchased(product)
+end
+
+TelemetryEvents._store_product_purchased = function (self, product)
+	table.clear(params)
+	self.manager:register_event("store_product_purchased", product)
+end
+
+TelemetryEvents.store_calendar_rewards_claimed = function (self, claim)
 	table.clear(params)
 
-	params.id = product.product_id
-	params.name = product.item.name
-	params.type = product.item.data.item_type
-	params.current_price = product.item.current_prices.SM
-	params.regular_price = product.item.regular_prices.SM
-	params.localized_name = product.item.data.localized_name
+	params.strike = claim.strike
+	params.total_claims = claim.total_claims
+	params.cooldown = claim.cooldown
+	params.reward_index = claim.reward_index
+	params.rewards = claim.rewards
+	params.items = table.map(claim.items, function (item)
+		return {
+			name = item.data.name,
+			type = item.data.item_type,
+			rarity = item.data.rarity_key
+		}
+	end)
 
-	self.manager:register_event("store_product_purchased", params)
+	self.manager:register_event("store_calendar_rewards_claimed", params)
 end
 
 TelemetryEvents.player_joined = function (self, player, num_human_players)

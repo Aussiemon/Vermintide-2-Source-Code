@@ -4,7 +4,7 @@ if refactored_mutator then
 	return refactored_mutator
 end
 
-local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm_v2")
+local base_nurgle_storm = require("scripts/settings/mutators/mutator_nurgle_storm")
 local curse_blood_storm = table.clone(base_nurgle_storm)
 curse_blood_storm.package_name = "resource_packages/mutators/mutator_curse_blood_storm"
 curse_blood_storm.display_name = "curse_blood_storm_name"

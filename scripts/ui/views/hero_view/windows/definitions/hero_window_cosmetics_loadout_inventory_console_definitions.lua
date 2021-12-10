@@ -258,12 +258,6 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
-			input_action = "right_stick",
-			priority = 2,
-			description_text = "input_description_rotate_hero",
-			ignore_keybinding = true
-		},
-		{
 			input_action = "hotkey_mark_favorite_item",
 			priority = 3,
 			description_text = "lb_add_to_favorites"

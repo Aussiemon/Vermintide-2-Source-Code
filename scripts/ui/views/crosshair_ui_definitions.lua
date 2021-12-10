@@ -1,6 +1,7 @@
 local MAX_SIZE = 228
 local GAP = 2
 local HIT_GAP = 3
+local PI = math.pi
 local scenegraph_definition = {
 	screen = {
 		scale = "fit",
@@ -379,7 +380,7 @@ local widget_definitions = {
 		},
 		style = {
 			rotating_texture = {
-				angle = 0.5 * math.pi,
+				angle = 0.5 * PI,
 				pivot = {
 					5,
 					2
@@ -410,7 +411,7 @@ local widget_definitions = {
 		},
 		style = {
 			rotating_texture = {
-				angle = 0.5 * math.pi,
+				angle = 0.5 * PI,
 				pivot = {
 					5,
 					2
@@ -558,6 +559,184 @@ local widget_definitions = {
 				0
 			}
 		}
+	},
+	crosshair_wh_priest = {
+		scenegraph_id = "crosshair_dot",
+		element = {
+			passes = {
+				{
+					pass_type = "rotated_texture",
+					style_id = "crosshair_component_1",
+					texture_id = "crosshair_component"
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "crosshair_component_2",
+					texture_id = "crosshair_component"
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "crosshair_component_3",
+					texture_id = "crosshair_component"
+				},
+				{
+					pass_type = "rotated_texture",
+					style_id = "crosshair_component_4",
+					texture_id = "crosshair_component"
+				},
+				{
+					pass_type = "texture",
+					style_id = "career_portrait",
+					texture_id = "career_portrait"
+				},
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text_id"
+				}
+			}
+		},
+		content = {
+			career_portrait = "small_unit_frame_portrait_default",
+			text_id = "-",
+			crosshair_component = "crosshair_01_horizontal",
+			state = "wh_priest_self"
+		},
+		style = {
+			crosshair_component_1 = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				angle = PI / 6,
+				pivot = {
+					5,
+					2
+				},
+				offset = {
+					-87,
+					50,
+					0
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				size = {
+					10,
+					4
+				}
+			},
+			crosshair_component_2 = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				angle = (11 * PI) / 6,
+				pivot = {
+					5,
+					2
+				},
+				offset = {
+					-87,
+					-50,
+					0
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				size = {
+					10,
+					4
+				}
+			},
+			crosshair_component_3 = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				angle = (7 * PI) / 6,
+				pivot = {
+					5,
+					2
+				},
+				offset = {
+					87,
+					-50,
+					0
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				size = {
+					10,
+					4
+				}
+			},
+			crosshair_component_4 = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				angle = (5 * PI) / 6,
+				pivot = {
+					5,
+					2
+				},
+				offset = {
+					87,
+					50,
+					0
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				size = {
+					10,
+					4
+				}
+			},
+			career_portrait = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					42,
+					54
+				},
+				color = {
+					0,
+					255,
+					255,
+					255
+				},
+				offset = {
+					70,
+					0,
+					0
+				}
+			},
+			text = {
+				word_wrap = false,
+				font_size = 22,
+				use_shadow = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("white", 0),
+				size = {
+					50,
+					50
+				},
+				offset = {
+					90,
+					-40,
+					3
+				}
+			}
+		}
 	}
 }
 local hit_marker_configurations = {
@@ -590,9 +769,80 @@ local hit_marker_configurations = {
 		}
 	}
 }
+local animations_definitions = {
+	ally_to_self = {
+		{
+			name = "ally_to_self",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local style = widgets.style
+				local anim_progress = math.easeOutCubic(progress)
+				local move_progres = 100 * math.easeOutCubic(progress)
+
+				for _, component in pairs(style) do
+					if not component.angle then
+						if false then
+						end
+					else
+						local angle = component.angle
+						local offset_x = -move_progres * math.cos(angle)
+						local offset_y = move_progres * math.sin(angle)
+						component.offset[1] = offset_x
+						component.offset[2] = offset_y
+					end
+				end
+
+				style.career_portrait.color[1] = 255 * (1 - anim_progress)
+				style.text.text_color[1] = 255 * (1 - anim_progress)
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	self_to_ally = {
+		{
+			name = "self_to_ally",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local style = widgets.style
+				local anim_progress = math.easeOutCubic(progress)
+				local move_progres = 10 + 90 * (1 - math.easeOutCubic(progress))
+
+				for _, component in pairs(style) do
+					if not component.angle then
+						if false then
+						end
+					else
+						local angle = component.angle
+						local offset_x = -move_progres * math.cos(angle)
+						local offset_y = move_progres * math.sin(angle)
+						component.offset[1] = offset_x
+						component.offset[2] = offset_y
+					end
+				end
+
+				style.career_portrait.color[1] = 255 * anim_progress
+				style.text.text_color[1] = 255 * anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	}
+}
 
 return {
 	scenegraph_definition = scenegraph_definition,
+	animations_definitions = animations_definitions,
 	widget_definitions = widget_definitions,
 	hit_marker_configurations = hit_marker_configurations,
 	max_spread_pitch = MAX_SIZE,

@@ -485,6 +485,28 @@ UIFrameSettings = {
 			}
 		}
 	},
+	frame_outer_glow_01_white = {
+		texture = "frame_outer_glow_01_white",
+		outer_frame = true,
+		texture_size = {
+			68,
+			68
+		},
+		texture_sizes = {
+			corner = {
+				14,
+				14
+			},
+			vertical = {
+				13,
+				1
+			},
+			horizontal = {
+				1,
+				13
+			}
+		}
+	},
 	frame_outer_glow_02 = {
 		texture = "frame_outer_glow_02",
 		outer_frame = true,
@@ -761,6 +783,27 @@ UIFrameSettings = {
 			horizontal = {
 				1,
 				4
+			}
+		}
+	},
+	button_frame_03_gold = {
+		texture = "button_frame_03_gold",
+		texture_size = {
+			62,
+			60
+		},
+		texture_sizes = {
+			corner = {
+				24,
+				24
+			},
+			vertical = {
+				24,
+				1
+			},
+			horizontal = {
+				1,
+				24
 			}
 		}
 	},

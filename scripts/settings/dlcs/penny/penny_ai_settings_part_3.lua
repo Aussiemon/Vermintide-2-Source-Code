@@ -246,7 +246,7 @@ settings.bt_leave_hooks = {
 			local go_id = Managers.state.unit_storage:go_id(unit)
 
 			GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-			Managers.state.event:trigger("show_boss_health_bar", unit)
+			Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
 			Managers.state.conflict:add_angry_boss(1, blackboard)
 
 			blackboard.is_angry = true

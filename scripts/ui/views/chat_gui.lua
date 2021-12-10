@@ -96,6 +96,7 @@ ChatGui.create_ui_elements = function (self)
 		end
 
 		self:set_font_size(font_size)
+		self:set_menu_transition_fraction(0)
 	end
 
 	RELOAD_CHAT_GUI = false

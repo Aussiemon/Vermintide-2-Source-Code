@@ -10,9 +10,6 @@ end
 BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 	if blackboard.victim_grabbed then
 		blackboard.has_grabbed_victim = true
-
-		PerceptionUtils.clear_target_unit(blackboard)
-
 		local status_extension = ScriptUnit.has_extension(blackboard.victim_grabbed, "status_system")
 		local is_grabbed = status_extension and status_extension:is_grabbed_by_chaos_spawn()
 
@@ -98,7 +95,7 @@ BTLeaveHooks.stormfiend_boss_rage_leave = function (unit, blackboard, t)
 	health_extension.is_invincible = false
 
 	GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-	Managers.state.event:trigger("show_boss_health_bar", unit)
+	Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
 
 	local conflict_director = Managers.state.conflict
 	local level_analysis = conflict_director.level_analysis
@@ -188,6 +185,8 @@ BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 	else
 		blackboard.wants_to_throw = true
 	end
+
+	blackboard.override_target_unit = nil
 end
 
 BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
@@ -198,7 +197,7 @@ BTLeaveHooks.on_lord_intro_leave = function (unit, blackboard, t)
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
 		GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-		Managers.state.event:trigger("show_boss_health_bar", unit)
+		Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
 		Managers.state.conflict:add_angry_boss(1, blackboard)
 
 		blackboard.is_angry = true
@@ -217,7 +216,7 @@ BTLeaveHooks.on_lord_warlord_intro_leave = function (unit, blackboard, t)
 		local go_id = Managers.state.unit_storage:go_id(unit)
 
 		GameSession.set_game_object_field(game, go_id, "show_health_bar", true)
-		Managers.state.event:trigger("show_boss_health_bar", unit)
+		Managers.state.event:trigger("boss_health_bar_set_prioritized_unit", unit, "lord")
 		Managers.state.conflict:add_angry_boss(1, blackboard)
 
 		blackboard.is_angry = true

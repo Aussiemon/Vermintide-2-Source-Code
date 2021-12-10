@@ -87,7 +87,11 @@ HeroWindowCosmeticsLoadoutInventoryConsole.on_enter = function (self, params, of
 	self:create_ui_elements(params, offset)
 	self:_setup_input_buttons()
 
-	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	local params = {
+		profile_index = params.profile_index,
+		career_index = params.career_index
+	}
+	local item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index, params)
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)

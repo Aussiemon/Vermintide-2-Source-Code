@@ -83,6 +83,22 @@ ItemMasterList.skin_dr_engineer_purple_and_copper = {
 		"dr_engineer"
 	}
 }
+ItemMasterList.skin_dr_engineer_white = {
+	description = "description_skin_dr_engineer_white",
+	temporary_template = "skin_dr_engineer_white",
+	display_name = "skin_dr_engineer_white",
+	name = "skin_dr_engineer_white",
+	inventory_icon = "icon_skin_dr_engineer_white",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	hud_icon = "unit_frame_portrait_dwarf_ranger",
+	rarity = "unique",
+	skin_type = "unit",
+	item_type = "skin",
+	can_wield = {
+		"dr_engineer"
+	}
+}
 ItemMasterList.bardin_engineer_career_skill_weapon = {
 	right_hand_unit = "units/weapons/player/wpn_dw_rotary_gun_01_t1/wpn_dw_rotary_gun_01_t1",
 	rarity = "plentiful",
@@ -99,7 +115,7 @@ ItemMasterList.bardin_engineer_career_skill_weapon_heavy = {
 }
 ItemMasterList.engineer_hat_0000 = {
 	description = "description_engineer_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_engineer_hat_0000",
 	template = "dr_helmets",
 	inventory_icon = "icon_engineer_hat_0000",
@@ -450,7 +466,7 @@ ItemMasterList.dr_steam_pistol_skin_02 = {
 }
 ItemMasterList.dr_steam_pistol_skin_01_runed_01 = {
 	description = "dr_steam_pistol_skin_01_runed_01_description",
-	rarity = "exotic",
+	rarity = "unique",
 	right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t1/wpn_dw_steam_pistol_01_t1_runed_01",
 	hud_icon = "weapon_generic_icon_hammer2h",
 	inventory_icon = "icon_wpn_dw_steam_pistol_01_t1_runed_01",
@@ -488,7 +504,7 @@ ItemMasterList.dr_steam_pistol_skin_01_runed_02 = {
 }
 ItemMasterList.dr_steam_pistol_skin_02_runed_01 = {
 	description = "dr_steam_pistol_skin_02_runed_01_description",
-	rarity = "exotic",
+	rarity = "unique",
 	right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2_runed_01",
 	hud_icon = "weapon_generic_icon_hammer2h",
 	inventory_icon = "icon_wpn_dw_steam_pistol_01_t2_runed_01",
@@ -507,7 +523,7 @@ ItemMasterList.dr_steam_pistol_skin_02_runed_01 = {
 }
 ItemMasterList.dr_steam_pistol_skin_02_runed_02 = {
 	description = "dr_steam_pistol_skin_02_runed_02_description",
-	rarity = "exotic",
+	rarity = "unique",
 	right_hand_unit = "units/weapons/player/wpn_dw_steam_pistol_01_t2/wpn_dw_steam_pistol_01_t2_runed_01",
 	hud_icon = "weapon_generic_icon_hammer2h",
 	inventory_icon = "icon_wpn_dw_steam_pistol_01_t2_runed_02",

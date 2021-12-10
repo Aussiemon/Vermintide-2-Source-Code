@@ -2107,16 +2107,6 @@ go_type_table = {
 					side = side
 				}
 			}
-
-			Unit.set_animation_merge_options(unit)
-			Unit.flow_event(unit, "lua_spawn_attachments")
-
-			local level_settings = LevelHelper:current_level_settings()
-			local climate_type = level_settings.climate_type or "default"
-
-			Unit.set_flow_variable(unit, "climate_type", climate_type)
-			Unit.flow_event(unit, "climate_type_set")
-
 			local unit_template_name = profile.unit_template_name or "player_unit_3rd"
 
 			return unit_template_name, extension_init_data
@@ -2262,16 +2252,6 @@ go_type_table = {
 					side = side
 				}
 			}
-
-			Unit.flow_event(unit, "lua_spawn_attachments")
-
-			local level_settings = LevelHelper:current_level_settings()
-
-			if level_settings.climate_type then
-				Unit.set_flow_variable(unit, "climate_type", level_settings.climate_type)
-				Unit.flow_event(unit, "climate_type_set")
-			end
-
 			local unit_template_name = "player_bot_unit"
 
 			return unit_template_name, extension_init_data

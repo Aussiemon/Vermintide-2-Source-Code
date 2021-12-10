@@ -1,5 +1,436 @@
 StoreDlcSettings = {
 	{
+		name = "store_bless_title",
+		dlc_name = "bless",
+		show_in_slideshow = true,
+		store_page_url = "https://store.steampowered.com/app/1782450",
+		store_texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless",
+		information_text = "store_bless_desc",
+		prio = 5,
+		slideshow_texture = "store_slideshow_dlc_bless",
+		slideshow_text = "store_bless_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/bless/dlc_store_banner_bless",
+		available_platforms = {
+			"win32",
+			"ps4",
+			"xb1"
+		},
+		layout = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/victor/wh_priest"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/dlc_store_logo_bless"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_bless_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_horizontal",
+				settings = {
+					text = "dlc_bless_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		},
+		layout_console = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/victor/wh_priest"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/dlc_store_logo_bless"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_bless_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_horizontal",
+				settings = {
+					text = "dlc_bless_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_6",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_7",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_06_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_06",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_8",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_9",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				id = "dlc_feature_10",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
+		name = "store_bless_upgrade_title",
+		store_page_url = "https://store.steampowered.com/app/1782451",
+		store_texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless",
+		information_text = "store_bless_upgrade_desc",
+		dlc_name = "bless_upgrade",
+		slideshow_texture = "store_slideshow_dlc_bless",
+		slideshow_text = "store_bless_upgrade_desc",
+		store_banner_texture_paths = "gui/1080p/single_textures/dlc_store/bless/dlc_store_banner_bless_upgrade",
+		available_platforms = {
+			"win32"
+		},
+		layout = {
+			{
+				id = "header_video",
+				type = "dlc_header_video",
+				settings = {
+					sound_event = "Play_hud_menu_area_helmgart",
+					set_loop = true,
+					masked_material_name = "video_masked",
+					material_name = "video_default",
+					resource = "video/career_videos/victor/wh_priest"
+				}
+			},
+			{
+				id = "dlc_logo",
+				type = "dlc_logo",
+				settings = {
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/dlc_store_logo_bless"
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "store_bless_upgrade_desc",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				id = "dlc_feature_5",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_04_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_04",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_4",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_05_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_05",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_6",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_06_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_06",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				id = "dlc_feature_1",
+				type = "dlc_feature_vertical_long",
+				settings = {
+					text = "dlc_bless_upgrade_slate_01_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_01",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "dlc_feature_2",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_02_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_02",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				id = "dlc_feature_3",
+				type = "dlc_feature_vertical",
+				settings = {
+					text = "dlc_bless_upgrade_slate_03_description",
+					texture_path = "gui/1080p/single_textures/dlc_store/bless/slate_bless_upgrade_03",
+					localize = true,
+					texture_package = "resource_packages/store/dlc_icons/bless/store_dlc_icons_bless"
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			}
+		}
+	},
+	{
 		name = "store_woods_title",
 		dlc_name = "woods",
 		show_in_slideshow = true,

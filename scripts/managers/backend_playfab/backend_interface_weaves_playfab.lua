@@ -117,15 +117,19 @@ BackendInterfaceWeavesPlayFab._parse_loadouts = function (self, read_only_data)
 	local loadouts = {}
 
 	for career_name, settings in pairs(CareerSettings) do
-		if settings.playfab_name and not settings.excluded_from_weave_loadouts then
-			local dlc_unlocked = settings.is_dlc_unlocked()
+		if settings.playfab_name then
+			if not settings.excluded_from_weave_loadouts then
+				local dlc_unlocked = settings.is_dlc_unlocked()
 
-			if dlc_unlocked == nil or dlc_unlocked then
-				local loadout_json = read_only_data["weaves_loadout_" .. career_name]
-				local loadout = loadout_json and cjson.decode(loadout_json)
-				loadouts[career_name] = loadout
+				if dlc_unlocked == nil or dlc_unlocked then
+					local loadout_json = read_only_data["weaves_loadout_" .. career_name]
+					local loadout = loadout_json and cjson.decode(loadout_json)
+					loadouts[career_name] = loadout
 
-				self:_validate_loadout(career_name, loadout)
+					self:_validate_loadout(career_name, loadout)
+				end
+			else
+				Application.warning("[BackendInterfaceWeavesPlayFab] Career %q excluded from weaves", career_name)
 			end
 		end
 	end
@@ -694,7 +698,8 @@ local CAREER_ID_LOOKUP = {
 	"wh_captain",
 	"wh_bountyhunter",
 	"wh_zealot",
-	"we_thornsister"
+	"we_thornsister",
+	"wh_priest"
 }
 
 BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, external_cb, result)

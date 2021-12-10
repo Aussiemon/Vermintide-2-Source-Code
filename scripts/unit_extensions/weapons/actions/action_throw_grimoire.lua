@@ -39,7 +39,12 @@ ActionThrowGrimoire.finish = function (self, reason)
 	local is_player_controlled = player:is_player_controlled()
 	local peer_id = player.peer_id
 	local predicate = "discarded_grimoire"
-	local owner_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+	local owner_name = player:name()
+
+	if not IS_CONSOLE then
+		owner_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+	end
+
 	local pop_chat = true
 	local message = string.format(Localize("system_chat_player_discarded_grimoire"), owner_name)
 

@@ -824,7 +824,10 @@ DeusMechanism.get_level_seed = function (self, level_seed, optional_system)
 end
 
 DeusMechanism.can_spawn_pickup = function (self, spawner_unit, pickup_name)
-	return Pickups.deus_potions[pickup_name] and Unit.get_data(spawner_unit, "deus_potion")
+	local can_spawn = nil
+	can_spawn = Pickups.deus_potions[pickup_name] and Unit.get_data(spawner_unit, "deus_potion")
+
+	return can_spawn
 end
 
 DeusMechanism.uses_random_directors = function (self)

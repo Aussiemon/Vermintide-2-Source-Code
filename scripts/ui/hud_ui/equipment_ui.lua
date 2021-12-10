@@ -336,8 +336,13 @@ EquipmentUI._sync_player_equipment = function (self)
 	local wielded = equipment.wielded_slot
 	local inventory_slots = InventorySettings.slots
 	local num_inventory_slots = #inventory_slots
-	local is_cog = player:career_name() == "dr_engineer"
-	self._widgets_by_name.background_panel_cog.content.visible = is_cog
+	local career_name = player:career_name()
+	local hud_inventory_widget_content = self._widgets_by_name.background_panel.content
+	local career_data = UISettings.hud_inventory_panel_data[career_name] or UISettings.hud_inventory_panel_data.default
+	hud_inventory_widget_content.texture_id = career_data.texture_id
+	local hud_inventory_widget_style = self._widgets_by_name.background_panel.style.texture_id
+	hud_inventory_widget_style.texture_size = career_data.texture_size
+	local is_cog = career_name == "dr_engineer"
 	local added_items = self._added_items
 
 	for i = 1, num_inventory_slots, 1 do

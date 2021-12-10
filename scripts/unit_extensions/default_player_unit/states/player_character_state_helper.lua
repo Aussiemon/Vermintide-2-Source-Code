@@ -1155,8 +1155,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	local uninterruptible_heavy = false
 
 	if current_action_settings then
-		local action_type = current_action_settings.kind
-		uninterruptible_heavy = action_type and action_type == "melee_start" and buff_extension:has_buff_perk("uninterruptible_heavy")
+		uninterruptible_heavy = ActionUtils.is_melee_start_sub_action(current_action_settings) and buff_extension:has_buff_perk("uninterruptible_heavy")
 	end
 
 	local can_interrupt, reloading = nil
@@ -1440,6 +1439,8 @@ end
 
 CharacterStateHelper.crouch = function (unit, t, first_person_extension, status_extension)
 	CharacterStateHelper.play_animation_event(unit, "to_crouch")
+	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "to_crouch")
+	CharacterStateHelper.set_animation_var_first_person(first_person_extension, "is_crouched", 1)
 	first_person_extension:set_wanted_player_height("crouch", t)
 	ScriptUnit.extension(unit, "locomotion_system"):set_active_mover("crouch")
 	status_extension:set_crouching(true)
@@ -1451,6 +1452,8 @@ end
 
 CharacterStateHelper.uncrouch = function (unit, t, first_person_extension, status_extension)
 	CharacterStateHelper.play_animation_event(unit, "to_uncrouch")
+	CharacterStateHelper.play_animation_event_first_person(first_person_extension, "to_uncrouch")
+	CharacterStateHelper.set_animation_var_first_person(first_person_extension, "is_crouched", 0)
 	first_person_extension:set_wanted_player_height("stand", t)
 	ScriptUnit.extension(unit, "locomotion_system"):set_active_mover("standing")
 	status_extension:set_crouching(false)
@@ -1763,6 +1766,10 @@ end
 
 CharacterStateHelper.play_animation_event_first_person = function (first_person_extension, anim_event)
 	first_person_extension:animation_event(anim_event)
+end
+
+CharacterStateHelper.set_animation_var_first_person = function (first_person_extension, var_name, value)
+	first_person_extension:animation_set_variable(var_name, value)
 end
 
 CharacterStateHelper.play_animation_event_with_variable_float = function (unit, anim_event, variable_name, variable_value)

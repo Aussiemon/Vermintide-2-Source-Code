@@ -11,6 +11,7 @@ local CURSE_COVERT_AMOUNT = 5
 local immune_careers = {
 	es_questingknight = true,
 	dr_slayer = true,
+	wh_priest = true,
 	we_thornsister = true
 }
 

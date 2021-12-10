@@ -28,6 +28,7 @@ local function to_vector3_table(t)
 	}
 end
 
+UISceneGraph.ZERO_VECTOR3 = ZERO_VECTOR3
 local ALIGN_KWORD_MULT = {
 	left = 0,
 	bottom = 0,

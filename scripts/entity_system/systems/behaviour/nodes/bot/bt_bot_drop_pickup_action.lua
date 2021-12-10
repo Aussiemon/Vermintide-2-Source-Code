@@ -16,8 +16,9 @@ BTBotDropPickupAction.enter = function (self, unit, blackboard, t)
 	local item_template = BackendUtils.get_item_template(item_data)
 	local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
 	local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+	local weapon_extension = AiUtils.get_bot_weapon_extension(blackboard)
 	blackboard.drop = {
-		weapon_extension = current_action_extension or right_hand_weapon_extension or left_hand_weapon_extension,
+		weapon_extension = weapon_extension,
 		wielded_item_template = item_template
 	}
 end

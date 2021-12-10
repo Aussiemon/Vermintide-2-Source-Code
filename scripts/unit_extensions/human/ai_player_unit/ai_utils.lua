@@ -187,9 +187,10 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 	local damage_direction = Vector3.normalize(target_pos - attacker_pos)
 	local _, is_level_unit = Managers.state.network:game_object_or_level_id(target_unit)
 	damage_source = damage_source or AiUtils.breed_name(attacker_unit)
+	local inflicted_damage = nil
 
 	if is_level_unit then
-		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
+		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
 	else
 		local difficulty_manager = Managers.state.difficulty
 		local difficulty_settings = difficulty_manager:get_difficulty_settings()
@@ -241,8 +242,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 			end
 		end
 
-		DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
-
+		inflicted_damage = DamageUtils.add_damage_network(target_unit, attacker_unit, damage, "torso", action.damage_type, nil, damage_direction, damage_source, nil, nil, nil, action.hit_react_type)
 		local push_speed = action.player_push_speed
 
 		if is_player_unit and push_speed then
@@ -261,6 +261,8 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 	if blackboard then
 		blackboard.hit_through_block = false
 	end
+
+	return inflicted_damage
 end
 
 AiUtils.add_attack_intensity = function (target_unit, action, blackboard)
@@ -490,26 +492,6 @@ AiUtils.spawn_overpowering_blob = function (network_manager, target_unit, blob_h
 	network_manager.network_transmit:send_rpc_clients("rpc_link_unit", child_unit_id, child_node, parent_unit_id, parent_node)
 
 	return overpowering_blob_unit
-end
-
-AiUtils.spawn_nurgle_liquid_blob_dynamic = function (network_manager, spawn_pos, owner_unit)
-	local extension_init_data = {
-		health_system = {},
-		props_system = {
-			start_size = 0.3,
-			duration = 0.5,
-			end_size = 1
-		},
-		death_system = {
-			death_reaction_template = "nurgle_liquid_blob",
-			shrink_and_despawn_time = 3
-		}
-	}
-	local spawn_unit_name = "units/props/nurgle_liquid_blob/nurgle_liquid_blob_dynamic"
-	local network_template_name = "nurgle_liquid_blob_dynamic"
-	local blob_unit = Managers.state.unit_spawner:spawn_network_unit(spawn_unit_name, network_template_name, extension_init_data, spawn_pos)
-
-	return blob_unit
 end
 
 AiUtils.broadphase_query = function (position, radius, result_table)
@@ -1085,14 +1067,17 @@ end
 AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_type, damage_direction, damage_source)
 	local damage_amount = NetworkConstants.damage.max
 	local attacker_unit = attacker_unit or victim_unit
-	local hit_zone_name = hit_zone_name or "full"
-	local damage_type = damage_type or "kinetic"
-	local damage_source = damage_source or "suicide"
-	local damage_direction = damage_direction or Vector3(0, 0, 1)
-	local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
 
-	for i = 1, math.ceil(health / damage_amount), 1 do
-		DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source)
+	if ALIVE[victim_unit] then
+		local hit_zone_name = hit_zone_name or "full"
+		local damage_type = damage_type or "kinetic"
+		local damage_source = damage_source or "suicide"
+		local damage_direction = damage_direction or Vector3(0, 0, 1)
+		local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
+
+		for i = 1, math.ceil(health / damage_amount), 1 do
+			DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source)
+		end
 	end
 end
 
@@ -1509,6 +1494,28 @@ AiUtils.get_party_danger = function ()
 	end
 
 	return 0
+end
+
+AiUtils.get_bot_weapon_extension = function (blackboard)
+	if blackboard then
+		local inventory_extension = blackboard.inventory_extension
+		local item_data, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(inventory_extension)
+		local _, current_action_extension, _ = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+
+		if current_action_extension then
+			return current_action_extension
+		end
+
+		local item_template = item_data and BackendUtils.get_item_template(item_data)
+
+		if item_template and item_template.dominant_left then
+			return left_hand_weapon_extension or right_hand_weapon_extension
+		else
+			return right_hand_weapon_extension or left_hand_weapon_extension
+		end
+	end
+
+	return nil
 end
 
 return

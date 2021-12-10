@@ -592,14 +592,13 @@ TutorialUI.setup_objective_tooltip_widget = function (self, widget_holder, objec
 
 	widget.style.texture_id.color[1] = 0
 	widget.style.arrow.color[1] = 0
-	widget.mission_tooltip_animation_in_time = 0
-	widget.size_scale = Unit.get_data(unit, "tutorial_size_scale") or 1
+	widget.content.size_scale = Unit.get_data(unit, "tutorial_size_scale") or 1
 	local position_offset_x = Unit.get_data(unit, "tutorial_position_offset", "x")
 
 	if position_offset_x ~= nil then
 		local position_offset_y = Unit.get_data(unit, "tutorial_position_offset", "y")
 		local position_offset_z = Unit.get_data(unit, "tutorial_position_offset", "z")
-		widget.position_offset = Vector3Box(position_offset_x, position_offset_y, position_offset_z)
+		widget.content.position_offset = Vector3Box(position_offset_x, position_offset_y, position_offset_z)
 	end
 end
 
@@ -653,7 +652,7 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 	end
 
 	local widget = widget_holder.widget
-	local position_offset = (widget.position_offset and Vector3.up() + widget.position_offset:unbox()) or Vector3.up()
+	local position_offset = (widget.content.position_offset and Vector3.up() + widget.content.position_offset:unbox()) or Vector3.up()
 	local objective_unit_position = Unit.world_position(objective_unit, 0) + position_offset
 	local first_person_extension = self:get_player_first_person_extension()
 	local player_position = first_person_extension:current_position()
@@ -704,7 +703,7 @@ TutorialUI.update_objective_tooltip_widget = function (self, widget_holder, play
 	elseif use_screen_position then
 		local current_size = ui_scenegraph[widget_holder.scenegraph_icon].size[1]
 		local original_size = definitions.FLOATING_ICON_SIZE[1]
-		local icon_scale = widget.size_scale
+		local icon_scale = widget.content.size_scale
 		local new_icon_size, new_icon_scale = self:get_icon_size(objective_unit_position, player_position, current_size, original_size, objective_tooltip_settings, icon_scale)
 		ui_scenegraph.tooltip_mission_icon.size[1] = new_icon_size
 		ui_scenegraph.tooltip_mission_icon.size[2] = new_icon_size

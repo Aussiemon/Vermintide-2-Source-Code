@@ -138,7 +138,7 @@ end
 
 local function level_exists_locally(lobby)
 	local mission_id = lobby.selected_mission_id or lobby.mission_id
-	local level_exists_locally = mission_id and NetworkLookup.mission_ids[mission_id]
+	local level_exists_locally = mission_id and rawget(NetworkLookup.mission_ids, mission_id)
 	level_exists_locally = level_exists_locally or (WeaveSettings.templates[mission_id] and true)
 
 	return level_exists_locally

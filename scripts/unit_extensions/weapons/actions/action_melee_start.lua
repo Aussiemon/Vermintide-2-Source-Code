@@ -8,6 +8,15 @@ local function scale_delay_value(action_settings, value, owner_unit, buff_extens
 	return new_value
 end
 
+ActionMeleeStart.init = function (self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+	ActionMeleeStart.super.init(self, world, item_name, is_server, owner_unit, damage_unit, first_person_unit, weapon_unit, weapon_system)
+
+	self._owner_unit = owner_unit
+	self.input_extension = ScriptUnit.extension(owner_unit, "input_system")
+	self.buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+	self.spread_extension = ScriptUnit.has_extension(weapon_unit, "spread_system")
+end
+
 ActionMeleeStart.client_owner_start_action = function (self, new_action, t, chain_action_data, power_level, action_init_data)
 	ActionMeleeStart.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 	Unit.flow_event(self.first_person_unit, "sfx_swing_charge")
@@ -17,10 +26,11 @@ ActionMeleeStart.client_owner_start_action = function (self, new_action, t, chai
 	self:_play_additional_animation(new_action.custom_start_anim_data)
 
 	self.zoom_condition_function = new_action.zoom_condition_function
+	local owner_unit = self.owner_unit
+	local buff_extension = self.buff_extension
+	self._block_delay = scale_delay_value(new_action, new_action.blocking_charge_start_time or 0, owner_unit, buff_extension)
 
 	if self.zoom_condition_function then
-		local owner_unit = self.owner_unit
-		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local aim_zoom_delay = scale_delay_value(new_action, new_action.aim_zoom_delay or 0, owner_unit, buff_extension)
 		self.aim_zoom_time = t + aim_zoom_delay
 	end
@@ -31,9 +41,9 @@ ActionMeleeStart.client_owner_post_update = function (self, dt, t, world)
 	local owner_unit = self.owner_unit
 	local action_start_time = self._action_start_time
 	local blocking_charge = action.blocking_charge
-	local status_extension = ScriptUnit.extension(owner_unit, "status_system")
+	local status_extension = self.status_extension
 
-	if not status_extension.blocking and blocking_charge and t > action.blocking_charge_start_time + action_start_time then
+	if not status_extension.blocking and blocking_charge and t > action_start_time + self._block_delay then
 		local go_id = Managers.state.unit_storage:go_id(owner_unit)
 
 		if not LEVEL_EDITOR_TEST then
@@ -53,9 +63,8 @@ ActionMeleeStart.client_owner_post_update = function (self, dt, t, world)
 	end
 
 	if self.zoom_condition_function and self.zoom_condition_function(action.lookup_data) then
-		local status_extension = ScriptUnit.extension(owner_unit, "status_system")
-		local input_extension = ScriptUnit.extension(owner_unit, "input_system")
-		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+		local input_extension = self.input_extension
+		local buff_extension = self.buff_extension
 
 		if not status_extension:is_zooming() and self.aim_zoom_time <= t then
 			status_extension:set_zooming(true, action.default_zoom)

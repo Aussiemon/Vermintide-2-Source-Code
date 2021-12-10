@@ -22,6 +22,7 @@ PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
 	self.buff_extension = ScriptUnit.extension(unit, "buff_system")
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
 	self._cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
+	self._tp_unit_mesh = self._cosmetic_extension:get_third_person_mesh_unit()
 	local attachments = self._attachments
 	local profile = self._profile
 	local attachment_slots = InventorySettings.attachment_slots
@@ -106,7 +107,7 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 		local show_attachments_event = item_template.show_attachments_event
 
 		if show_attachments_event then
-			Unit.flow_event(unit, show_attachments_event)
+			Unit.flow_event(self._tp_unit_mesh, show_attachments_event)
 		end
 	end
 
@@ -187,7 +188,7 @@ PlayerUnitAttachmentExtension._show_attachment = function (self, slot_name, slot
 		local show_attachments_event = item_template.show_attachments_event
 
 		if show_attachments_event then
-			Unit.flow_event(self._unit, show_attachments_event)
+			Unit.flow_event(self._tp_unit_mesh, show_attachments_event)
 		end
 	else
 		Unit.flow_event(unit, "lua_attachment_hidden")
@@ -206,7 +207,7 @@ PlayerUnitAttachmentExtension.show_attachments = function (self, show)
 
 		local attachment_event = (show and "lua_attachment_unhidden") or "lua_attachment_hidden"
 
-		Unit.flow_event(self._unit, attachment_event)
+		Unit.flow_event(self._tp_unit_mesh, attachment_event)
 
 		self._show_attachments = show
 	end

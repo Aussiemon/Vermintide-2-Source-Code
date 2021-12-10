@@ -68,6 +68,7 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	local position = self._position:unbox()
 	self.speed = self.speed - self.dt * self.speed * (1 - self._linear_dampening)
 	local life_time = self.life_time
+	local new_position = nil
 	local speed = self.speed / 100
 	local radians = self.radians
 	local gravity = self.gravity
@@ -76,7 +77,7 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	local trajectory_template_name = self.trajectory_template_name
 	local is_husk = self.is_husk
 	local trajectory = ProjectileTemplates.get_trajectory_template(trajectory_template_name, is_husk)
-	local new_position = trajectory.update(speed, radians, gravity, initial_position, target_vector, life_time)
+	new_position = trajectory.update(speed, radians, gravity, initial_position, target_vector, life_time)
 	local velocity = new_position - position
 	local direction = Vector3.normalize(velocity)
 	local length = Vector3.length(velocity)
@@ -95,6 +96,7 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 		return
 	end
 
+	local new_rotation = nil
 	local direction_norm = Vector3.normalize(direction)
 	local rotation = Quaternion.look(direction_norm)
 
@@ -103,15 +105,18 @@ ProjectileScriptUnitLocomotionExtension.update = function (self, unit, input, _,
 	end
 
 	if self.rotation_speed ~= 0 then
-		local left = -Quaternion.right(Quaternion.look(direction_norm, Vector3.up()))
+		local look_rotation = Quaternion.look(direction_norm, Vector3.up())
+		local left = -Quaternion.right(look_rotation)
 		rotation = Quaternion.multiply(Quaternion.axis_angle(left, self.life_time * self.rotation_speed), rotation)
 	end
 
-	self:_unit_set_position_rotation(unit, new_position, rotation)
+	new_rotation = rotation
+
+	self:_unit_set_position_rotation(unit, new_position, new_rotation)
 	self._last_position:store(position)
 	self._position:store(new_position)
 	self.velocity:store(velocity)
-	self._rotation:store(rotation)
+	self._rotation:store(new_rotation)
 
 	self.moved = true
 	self.t = t

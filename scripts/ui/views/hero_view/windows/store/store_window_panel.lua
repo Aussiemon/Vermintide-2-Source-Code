@@ -49,6 +49,7 @@ StoreWindowPanel._create_ui_elements = function (self, params, offset)
 
 	ItemHelper.create_tab_unseen_item_stars(tab_cat)
 
+	local in_sub_page = #self._parent:get_store_path() > 1
 	local total_length = 0
 
 	for index, page_name in ipairs(menu_options) do
@@ -153,8 +154,13 @@ StoreWindowPanel._update_animations = function (self, dt)
 	for i, widget in ipairs(title_button_widgets) do
 		self:_animate_title_entry(widget, dt)
 
-		local num_unseen = tab_cat[widget.content.page_name]
-		widget.content.new = num_unseen > 0
+		local content = widget.content
+		local page_name = content.page_name
+		local page_settings = StoreLayoutConfig.pages[page_name]
+		local rotation_timestamp = page_settings.rotation_timestamp
+		content.timer = rotation_timestamp and os.time() < rotation_timestamp
+		local num_unseen = tab_cat[page_name]
+		content.new = num_unseen > 0
 		sum_unseen = sum_unseen + num_unseen
 	end
 

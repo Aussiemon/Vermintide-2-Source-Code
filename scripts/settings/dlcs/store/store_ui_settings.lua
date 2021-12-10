@@ -51,6 +51,7 @@ settings.store_state_filenames = {
 	"scripts/settings/store_layout",
 	"scripts/ui/views/store_welcome_popup",
 	"scripts/ui/views/store_item_purchase_popup",
+	"scripts/ui/views/store_login_rewards_popup",
 	"scripts/ui/views/hero_view/states/store_window_layout",
 	"scripts/ui/views/hero_view/windows/store/store_window_item_list",
 	"scripts/ui/views/hero_view/windows/store/store_window_panel",

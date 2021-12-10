@@ -59,30 +59,32 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		self._career_name = career_name
 	end
 
+	local career_data = UISettings.ability_ui_data[career_name] or UISettings.ability_ui_data.default
 	local ability_widget = self._widgets_by_name.ability
 	local content = ability_widget.content
 	local style = ability_widget.style
+	content.ability_effect.texture_id = career_data.ability_effect
+	content.ability_effect_top.texture_id = career_data.ability_effect_top
+	content.ability_bar_highlight = career_data.ability_bar_highlight
 	local can_use_ability = career_extension:can_use_activated_ability()
-	local thornsister_widget = self._widgets_by_name.thornsister_passive
-	local thornsister_content = thornsister_widget.content
-	local thornsister_style = thornsister_widget.style
 	local current_extra_uses, max_extra_uses = career_extension:get_extra_ability_uses()
 	local has_thornsister_passive = current_extra_uses > 0
 
-	if thornsister_content.is_active ~= has_thornsister_passive then
-		thornsister_content.is_active = has_thornsister_passive
-
-		return true
+	if has_thornsister_passive then
+		content.ability_effect.texture_id = career_data.ability_effect_thorn
+		content.ability_effect_top.texture_id = career_data.ability_effect_top_thorn
+	else
+		content.ability_effect.texture_id = career_data.ability_effect
+		content.ability_effect_top.texture_id = career_data.ability_effect_top
 	end
 
 	if has_thornsister_passive then
 		local pulse_progress = 0.5 + 0.5 * math.sin(t * 5)
 		local effect_alpha = 220 + 35 * pulse_progress
-		thornsister_style.ability_effect_right.color[1] = effect_alpha
-		thornsister_style.ability_effect_top_right.color[1] = effect_alpha
-		thornsister_style.ability_effect_left.color[1] = effect_alpha
-		thornsister_style.ability_effect_top_left.color[1] = effect_alpha
-		hide_effects = true
+		style.ability_effect_right.color[1] = effect_alpha
+		style.ability_effect_top_right.color[1] = effect_alpha
+		style.ability_effect_left.color[1] = effect_alpha
+		style.ability_effect_top_left.color[1] = effect_alpha
 	end
 
 	if can_use_ability then
@@ -97,12 +99,6 @@ AbilityUI._update_ability_widget = function (self, dt, t)
 		end
 
 		local input_alpha = 100 + pulse_progress * 155
-		local input_green = 255 * pulse_progress
-
-		if has_thornsister_passive then
-			input_green = 255
-		end
-
 		style.ability_effect_right.color[1] = effect_alpha
 		style.ability_effect_top_right.color[1] = effect_alpha
 		style.ability_effect_left.color[1] = effect_alpha

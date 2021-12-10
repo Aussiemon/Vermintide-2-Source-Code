@@ -87,7 +87,7 @@ GameModeAdventure.evaluate_end_conditions = function (self, round_started, dt, t
 
 	local ignore_bots = true
 	local humans_dead = GameModeHelper.side_is_dead("heroes", ignore_bots)
-	local players_disabled = GameModeHelper.side_is_disabled("heroes")
+	local players_disabled = GameModeHelper.side_is_disabled("heroes") and not GameModeHelper.side_delaying_loss("heroes")
 	local mutator_lost, mutator_lost_delay = mutator_handler:evaluate_lose_conditions()
 	local lost = not self._lose_condition_disabled and self._local_player_spawned and (mutator_lost or humans_dead or players_disabled or self._level_failed or self:_is_time_up())
 

@@ -576,6 +576,10 @@ local game_object_templates = {
 	engineer_career_data = {
 		game_object_created_func_name = "game_object_created_career_data",
 		game_object_destroyed_func_name = "game_object_destroyed_career_data"
+	},
+	priest_career_data = {
+		game_object_created_func_name = "game_object_created_career_data",
+		game_object_destroyed_func_name = "game_object_destroyed_career_data"
 	}
 }
 

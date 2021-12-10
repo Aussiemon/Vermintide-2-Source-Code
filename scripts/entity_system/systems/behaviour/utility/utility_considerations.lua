@@ -312,7 +312,7 @@ UtilityConsiderations = {
 				1,
 				0.6333333333333333,
 				1,
-				0.7866666666666666,
+				0.85,
 				0,
 				1,
 				0
@@ -734,34 +734,30 @@ UtilityConsiderations = {
 		}
 	},
 	attack_grabbed_smash = {
-		distance_to_target = {
-			max_value = 5,
-			blackboard_input = "target_dist",
+		current_health_percent = {
+			max_value = 1,
+			blackboard_input = "current_health_percent",
 			spline = {
 				0,
-				1,
-				0.5233333333333333,
-				1,
-				0.7,
 				0,
+				0.4333333333333332,
 				1,
-				0
+				1,
+				1
 			}
 		}
 	},
 	attack_grabbed_chew = {
-		distance_to_target = {
-			max_value = 5,
-			blackboard_input = "target_dist",
+		current_health_percent = {
+			max_value = 1,
+			blackboard_input = "current_health_percent",
 			spline = {
 				0,
-				0,
-				0.5233333333333333,
-				0,
+				1,
 				0.6,
 				1,
 				1,
-				1
+				0.1
 			}
 		}
 	},

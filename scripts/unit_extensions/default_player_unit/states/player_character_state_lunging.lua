@@ -43,7 +43,10 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 
 	Unit.set_local_rotation(unit, 0, flat_rotation)
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, first_person_extension, status_extension, self.inventory_extension)
-	self:_on_enter_animation(unit, lunge_data.animation_event, lunge_data.animation_variable_name, lunge_data.animation_variable_value, lunge_data.first_person_animation_event)
+
+	if lunge_data.animation_event then
+		self:_on_enter_animation(unit, lunge_data.animation_event, lunge_data.animation_variable_name, lunge_data.animation_variable_value, lunge_data.first_person_animation_event)
+	end
 
 	self._num_impacts = 0
 	self._amount_of_mass_hit = 0

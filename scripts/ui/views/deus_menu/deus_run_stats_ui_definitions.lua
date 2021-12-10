@@ -55,14 +55,29 @@ local weapon_ranged_position = {
 	weapon_melee_position[2],
 	1
 }
+local base_layer = UILayer.end_screen
 local scenegraph = {
+	fullscreen_fade = {
+		vertical_alignment = "center",
+		horizontal_alignment = "center",
+		scale = "fit",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			base_layer - 1
+		}
+	},
 	root = {
 		is_root = true,
 		size = full_size,
 		position = {
 			0,
 			0,
-			UILayer.default
+			base_layer
 		}
 	},
 	screen = {
@@ -71,7 +86,7 @@ local scenegraph = {
 		position = {
 			0,
 			0,
-			UILayer.end_screen_banner
+			base_layer + 100
 		}
 	},
 	screen_reminder = {
@@ -80,7 +95,7 @@ local scenegraph = {
 		position = {
 			0,
 			0,
-			UILayer.default
+			base_layer
 		}
 	},
 	screen_center = {
@@ -116,7 +131,7 @@ local scenegraph = {
 		position = {
 			0,
 			0,
-			800
+			base_layer + 200
 		}
 	},
 	center_title = {
@@ -143,7 +158,7 @@ local scenegraph = {
 		position = {
 			425,
 			0,
-			6
+			base_layer + 6
 		}
 	},
 	options_background = {
@@ -156,7 +171,7 @@ local scenegraph = {
 		position = {
 			425,
 			0,
-			6
+			base_layer + 6
 		}
 	},
 	options_background_edge = {
@@ -169,7 +184,7 @@ local scenegraph = {
 		position = {
 			-260,
 			0,
-			3
+			base_layer + 3
 		}
 	},
 	power_up_root = {
@@ -183,7 +198,7 @@ local scenegraph = {
 		position = {
 			170,
 			0,
-			800
+			101
 		}
 	},
 	blessing_root = {
@@ -1373,6 +1388,12 @@ end
 
 local disable_with_gamepad = true
 local widgets = {
+	fullscreen_fade = UIWidgets.create_simple_rect("fullscreen_fade", {
+		155,
+		0,
+		0,
+		0
+	}),
 	center_title = UIWidgets.create_simple_text(Localize("menu_weave_forge_options_sub_title_properties_utility"), "center_title", 32, nil, center_title_style),
 	center_title_bg = UIWidgets.create_simple_texture("tab_menu_bg_03", "center_title"),
 	options_background_edge = UIWidgets.create_simple_texture("shrine_sidebar_background", "options_background_edge"),

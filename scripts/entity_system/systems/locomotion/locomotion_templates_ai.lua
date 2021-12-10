@@ -94,7 +94,7 @@ LocomotionTemplates.AILocomotionExtension = {
 			yaw_rotation_radians = yaw_rotation_radians * extension._animation_rotation_scale
 			wanted_rotation = Quaternion.multiply(current_rotation, Quaternion(up_vector, yaw_rotation_radians))
 			local wanted_velocity = (wanted_position - current_position) / dt
-			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
+			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension:get_animation_translation_scale())
 			extension._wanted_velocity = wanted_velocity
 			extension._wanted_rotation = wanted_rotation
 		end
@@ -104,7 +104,7 @@ LocomotionTemplates.AILocomotionExtension = {
 			local wanted_position = Matrix4x4.translation(wanted_pose)
 			local current_position = Unit.local_position(unit, 0)
 			local wanted_velocity = (wanted_position - current_position) / dt
-			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension._animation_translation_scale:unbox())
+			wanted_velocity = Vector3.multiply_elements(wanted_velocity, extension:get_animation_translation_scale())
 			extension._wanted_velocity = wanted_velocity
 		end
 	end,
@@ -135,13 +135,15 @@ LocomotionTemplates.AILocomotionExtension = {
 				extension._wanted_rotation = nil
 
 				if extension._lerp_rotation then
-					if extension._rotation_speed * extension._rotation_speed_modifier * dt > 1 then
+					local step = extension._rotation_speed * extension._rotation_speed_modifier * dt
+
+					if step >= 1 then
 						local new_rotation = wanted_rotation
 
 						Unit_set_local_rotation(unit, 0, new_rotation)
 					else
 						local current_rotation = Unit_local_rotation(unit, 0)
-						local new_rotation = Quaternion_lerp(current_rotation, wanted_rotation, extension._rotation_speed * extension._rotation_speed_modifier * dt)
+						local new_rotation = Quaternion_lerp(current_rotation, wanted_rotation, step)
 
 						Unit_set_local_rotation(unit, 0, new_rotation)
 					end

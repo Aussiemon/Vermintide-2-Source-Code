@@ -318,6 +318,7 @@ CharacterSelectionView.on_enter = function (self, params)
 	UISettings.hero_fullscreen_menu_on_enter()
 
 	self._exit_transition = params.exit_transition
+	self._exit_transition_params = params.exit_transition_params
 end
 
 CharacterSelectionView.set_current_hero = function (self, profile_index)
@@ -482,7 +483,7 @@ CharacterSelectionView._change_screen_by_index = function (self, index)
 end
 
 CharacterSelectionView.post_update_on_enter = function (self)
-	assert(self.viewport_widget == nil)
+	fassert(self.viewport_widget == nil, "[CharacterSelectionView:post_update_on_enter] viewport already created")
 
 	self.viewport_widget = UIWidget.init(widget_definitions.viewport)
 	self.waiting_for_post_update_enter = nil
@@ -514,11 +515,6 @@ CharacterSelectionView.post_update_on_exit = function (self)
 	end
 end
 
-CharacterSelectionView.last_hero_picked = function (self, profile_index, career_index)
-	self._last_picked_profile_index = profile_index
-	self._last_picked_career_index = career_index
-end
-
 CharacterSelectionView.on_exit = function (self, params)
 	self.input_manager:device_unblock_all_services("keyboard", 1)
 	self.input_manager:device_unblock_all_services("mouse", 1)
@@ -526,12 +522,6 @@ CharacterSelectionView.on_exit = function (self, params)
 	ShowCursorStack.pop()
 
 	self.exiting = nil
-
-	fassert(params.last_picked_profile_index == nil and params.last_picked_career_index == nil, "should not be set")
-
-	params.last_picked_profile_index = self._last_picked_profile_index
-	params.last_picked_career_index = self._last_picked_career_index
-	params.came_from_character_selection_view = true
 
 	if self._machine then
 		self._machine:destroy()
@@ -548,7 +538,7 @@ end
 CharacterSelectionView.exit = function (self, return_to_game)
 	local exit_transition = self._exit_transition or (self:initial_profile_view() and "exit_initial_character_selection") or "exit_menu"
 
-	self.ingame_ui:transition_with_fade(exit_transition)
+	self.ingame_ui:transition_with_fade(exit_transition, self._exit_transition_params)
 	self:play_sound("Play_hud_button_close")
 
 	self.exiting = true

@@ -404,12 +404,6 @@ BackendInterfaceItemPlayfab.make_dirty = function (self)
 	self._dirty = true
 end
 
-BackendInterfaceItemPlayfab.store_settings = function (self)
-	if self._backend_mirror.store_settings then
-		return self._backend_mirror:store_settings()
-	end
-end
-
 BackendInterfaceItemPlayfab.has_item = function (self, item_key)
 	local items = self:get_all_backend_items()
 
@@ -432,6 +426,28 @@ BackendInterfaceItemPlayfab.has_weapon_illusion = function (self, item_key)
 	end
 
 	return false
+end
+
+BackendInterfaceItemPlayfab.has_bundle_contents = function (self, bundle_contains)
+	if not bundle_contains then
+		return false, false
+	end
+
+	local all_owned = true
+	local any_owned = false
+
+	for i = 1, #bundle_contains, 1 do
+		local steam_itemdefid = bundle_contains[i]
+		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+
+		if self:has_item(item_key) or self:has_weapon_illusion(item_key) then
+			any_owned = true
+		else
+			all_owned = false
+		end
+	end
+
+	return all_owned, any_owned
 end
 
 BackendInterfaceItemPlayfab.get_item_template = function (self, item_data, backend_id)

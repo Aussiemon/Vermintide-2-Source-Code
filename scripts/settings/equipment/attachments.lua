@@ -277,6 +277,23 @@ local wh_z_hats_tattoo_06 = {
 	}
 }
 Attachments.wh_z_hats_tattoo_06 = table.clone(wh_z_hats_tattoo_06)
+local wh_z_hat_10 = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_show_ears",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_10_face",
+		third_person = {
+			mtr_head = "units/beings/player/witch_hunter_zealot/headpiece/wh_z_hat_10_face"
+		}
+	}
+}
+Attachments.wh_z_hat_10 = table.clone(wh_z_hat_10)
 local ww_hoods = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -861,6 +878,23 @@ local dr_hair_nose_big_tattoo_05 = {
 	}
 }
 Attachments.dr_hair_nose_big_tattoo_05 = table.clone(dr_hair_nose_big_tattoo_05)
+local dr_s_hat_14 = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_normal_nose",
+	attachment_node_linking = AttachmentNodeLinking.dr_beard,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {},
+	character_material_changes = {
+		package_name = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_14_face",
+		third_person = {
+			mtr_face = "units/beings/player/dwarf_ranger_slayer/headpiece/dr_s_hat_14_face"
+		}
+	}
+}
+Attachments.dr_s_hat_14 = table.clone(dr_s_hat_14)
 local bw_gates = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

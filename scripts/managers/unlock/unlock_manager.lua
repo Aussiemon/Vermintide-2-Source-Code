@@ -511,19 +511,10 @@ UnlockManager.dlc_id = function (self, name)
 	return unlock:id()
 end
 
-local function find_steam_store_page_url(dlc_name)
-	for _, dlc_settings in pairs(StoreDlcSettings) do
-		if dlc_settings.dlc_name == dlc_name then
-			return dlc_settings.store_page_url
-		end
-	end
-
-	return nil
-end
-
 UnlockManager.open_dlc_page = function (self, dlc_name)
 	if IS_WINDOWS and HAS_STEAM then
-		local url = find_steam_store_page_url(dlc_name)
+		local dlc_settings = StoreDlcSettingsByName[dlc_name]
+		local url = dlc_settings and dlc_settings.store_page_url
 
 		if url then
 			Steam.open_url(url)

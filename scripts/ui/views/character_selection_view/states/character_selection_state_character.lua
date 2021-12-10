@@ -18,6 +18,7 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	self.parent:clear_wanted_state()
 	print("[HeroViewState] Enter Substate CharacterSelectionStateCharacter")
 
+	local state_params = params.state_params
 	self._hero_name = params.hero_name
 	local ingame_ui_context = params.ingame_ui_context
 	self.ui_top_renderer = ingame_ui_context.ui_top_renderer
@@ -169,6 +170,7 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 	local hero_icon_widgets = {}
 	self._hero_icon_widgets = hero_icon_widgets
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local backend_dlcs = Managers.backend:get_interface("dlcs")
 	local num_max_rows = #SPProfilesAbbreviation
 	self._num_hero_columns = {}
 
@@ -178,7 +180,6 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 		local hero_experience = hero_attributes:get(hero_name, "experience") or 0
 		local hero_level = ExperienceSettings.get_level(hero_experience)
 		local careers = profile_settings.careers
-		self._num_hero_columns[i] = #careers
 		local icon_widget = UIWidget.init(hero_icon_widget_definition)
 		hero_icon_widgets[#hero_icon_widgets + 1] = icon_widget
 		local hero_icon_offset = icon_widget.offset
@@ -186,38 +187,43 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 		local hero_icon_texture = "hero_icon_large_" .. hero_name
 		icon_widget.content.icon = hero_icon_texture
 		icon_widget.content.icon_selected = hero_icon_texture .. "_glow"
+		local valid_career_count = 0
 
-		for j, career in ipairs(careers) do
-			local widget = UIWidget.init(hero_widget_definition)
-			hero_widgets[#hero_widgets + 1] = widget
-			local offset = widget.offset
-			local content = widget.content
-			content.career_settings = career
-			local portrait_image = career.portrait_image
-			content.portrait = "medium_" .. portrait_image
-			local is_career_unlocked, reason, dlc_name, localized = career:is_unlocked_function(hero_name, hero_level)
-			content.locked = not is_career_unlocked
-			content.locked_reason = not is_career_unlocked and ((localized and reason) or Localize(reason))
-			content.dlc_name = dlc_name
+		for j = 1, 4, 1 do
+			local career = careers[j]
 
-			if reason == "dlc_not_owned" then
-				content.lock_texture = content.lock_texture .. "_gold"
-				content.frame = content.frame .. "_gold"
+			if career and not backend_dlcs:is_unreleased_career(career.name) then
+				valid_career_count = valid_career_count + 1
+				local widget = UIWidget.init(hero_widget_definition)
+				hero_widgets[#hero_widgets + 1] = widget
+				local offset = widget.offset
+				local content = widget.content
+				content.career_settings = career
+				local portrait_image = career.portrait_image
+				content.portrait = "medium_" .. portrait_image
+				local is_career_unlocked, reason, dlc_name, localized = career:is_unlocked_function(hero_name, hero_level)
+				content.locked = not is_career_unlocked
+				content.locked_reason = not is_career_unlocked and ((localized and reason) or Localize(reason))
+				content.dlc_name = dlc_name
+
+				if reason == "dlc_not_owned" then
+					content.lock_texture = content.lock_texture .. "_gold"
+					content.frame = content.frame .. "_gold"
+				end
+
+				offset[1] = (j - 1) * 124
+				offset[2] = -((i - 1) * 144)
+			else
+				local widget = UIWidget.init(empty_hero_widget_definition)
+				local offset = widget.offset
+				offset[1] = (j - 1) * 124
+				offset[2] = -((i - 1) * 144)
+				local widgets = self._widgets
+				widgets[#widgets + 1] = widget
 			end
-
-			offset[1] = (j - 1) * 124
-			offset[2] = -((i - 1) * 144)
 		end
 
-		local widgets = self._widgets
-
-		for j = #careers + 1, 4, 1 do
-			local widget = UIWidget.init(empty_hero_widget_definition)
-			local offset = widget.offset
-			offset[1] = offset[1] + 124 * (j - 1)
-			offset[2] = offset[2] - 144 * (i - 1)
-			widgets[#widgets + 1] = widget
-		end
+		self._num_hero_columns[i] = valid_career_count
 	end
 
 	self._num_max_hero_rows = num_max_rows
@@ -230,6 +236,13 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 	local profile_synchronizer = self.profile_synchronizer
 	local own_player_profile_index = player ~= nil and player:profile_index()
 	local own_player_career_index = player ~= nil and player:career_index()
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local bot_spawn_priority = PlayerData.bot_spawn_priority
+
+	if not bot_spawn_priority[1] then
+		bot_spawn_priority = ProfileIndexToPriorityIndex
+	end
+
 	local widget_index = 1
 	local selected_career_index = self._selected_career_index
 	local selected_profile_index = self._selected_profile_index
@@ -237,6 +250,7 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 
 	for i, profile_index in ipairs(ProfilePriority) do
 		local profile_settings = SPProfiles[profile_index]
+		local profile_name = profile_settings.display_name
 		local is_profile_available = false
 
 		if player then
@@ -248,16 +262,20 @@ CharacterSelectionStateCharacter._update_available_profiles = function (self)
 
 		local is_currently_played_profile = own_player_profile_index == profile_index
 		local can_play_profile = is_currently_played_profile or is_profile_available
+		local bot_career_index = hero_attributes:get(profile_name, "career")
 		local careers = profile_settings.careers
 
 		for j, career in ipairs(careers) do
 			local widget = hero_widgets[widget_index]
-			local content = widget.content
-			local is_career_locked = content.locked
-			content.taken = not can_play_profile
 
-			if j == selected_career_index and selected_profile_index == profile_index then
-				self:_set_select_button_enabled(can_play_profile and not is_career_locked, is_career_locked and content.dlc_name, content.dlc_name)
+			if widget then
+				local content = widget.content
+				local is_career_locked = content.locked
+				content.taken = not can_play_profile
+
+				if j == selected_career_index and selected_profile_index == profile_index then
+					self:_set_select_button_enabled(can_play_profile and not is_career_locked, is_career_locked and content.dlc_name, content.dlc_name)
+				end
 			end
 
 			widget_index = widget_index + 1
@@ -629,6 +647,13 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 
 			world_previewer:equip_item(item_name, slot, backend_id)
 		end
+
+		local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
+		local skin_item_data = skin_item and skin_item.data
+
+		if skin_item_data then
+			preview_animation = skin_item_data.career_select_preview_animation or preview_animation
+		end
 	end
 
 	if preview_animation then
@@ -918,11 +943,6 @@ CharacterSelectionStateCharacter._update_profile_request = function (self)
 
 			hero_attributes:set(hero_name, "career", career_index)
 			self:_save_selected_profile(profile_index)
-
-			if self.parent.last_hero_picked then
-				self.parent:last_hero_picked(profile_index, career_index)
-			end
-
 			self.parent:set_current_hero(profile_index)
 
 			if self._close_on_successful_profile_request then

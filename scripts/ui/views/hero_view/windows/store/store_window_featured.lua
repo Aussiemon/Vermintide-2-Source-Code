@@ -35,11 +35,13 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	self._current_read_index = 1
 	local parent = self._parent
 	local path = parent:get_store_path()
+	local page_name = path[#path]
 	local path_structure = StoreLayoutConfig.structure
 	local pages = StoreLayoutConfig.pages
-	local current_page = pages[path[#path]]
+	local current_page = pages[page_name]
 	local slideshow_content = current_page.slideshow and table.clone(current_page.slideshow)
 	local grid_content = current_page.grid and table.clone(current_page.grid)
+	self._page_name = page_name
 
 	if slideshow_content and #slideshow_content == 0 then
 		slideshow_content = self:_get_default_featured_slideshow_content()
@@ -67,6 +69,7 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 		}
 	})
 	self._parent:change_generic_actions(generic_input_actions.featured)
+	self:_initialize_time_until_rotation()
 end
 
 StoreWindowFeatured._start_transition_animation = function (self, animation_name)
@@ -99,11 +102,12 @@ StoreWindowFeatured.on_exit = function (self, params, force_unload)
 
 	self:_reset_cloned_materials()
 	self:_destroy_product_widgets(force_unload)
-	self._parent:change_generic_actions(generic_input_actions.default)
 end
 
 StoreWindowFeatured.update = function (self, dt, t)
 	self:_handle_gamepad_activity()
+	self:_sync_login_rewards()
+	self:_update_rotation_timer(dt)
 	self:_update_animations(dt)
 	self:_draw(dt)
 end
@@ -136,6 +140,85 @@ StoreWindowFeatured._update_animations = function (self, dt)
 	end
 end
 
+StoreWindowFeatured._sync_login_rewards = function (self)
+	local content = self._widgets_by_name.login_rewards_button.content
+
+	if GameSettingsDevelopment.use_offline_backend then
+		content.visible = false
+
+		return
+	end
+
+	local backend_store = Managers.backend:get_interface("peddler")
+	local login_rewards = backend_store:get_login_rewards()
+	local cooldown = login_rewards.next_claim_timestamp - os.time()
+
+	if cooldown <= 0 then
+		content.is_claimable = true
+		content.title = "store_login_claim_reward_title"
+		content.subtitle = Localize("available_now")
+	else
+		local timer = UIUtils.format_duration(cooldown)
+		content.is_claimable = false
+		content.title = "store_login_rewards_title"
+		content.subtitle = Localize("store_login_rewards_next_available_in") .. timer
+		content.visible = not Managers.input:is_device_active("gamepad")
+	end
+end
+
+StoreWindowFeatured._update_rotation_timer = function (self, dt)
+	local time_until_rotation = self._time_until_rotation
+
+	if time_until_rotation then
+		time_until_rotation = math.max(0, time_until_rotation - dt)
+		self._time_until_rotation = time_until_rotation
+		local widget = self._widgets_by_name.discount_banner
+		local text = string.format("%s - %s: %s", Utf8.upper(Localize("menu_store_featured_page_banner_title_default")), Localize("timer_prefix_time_left"), UIUtils.format_duration(math.ceil(time_until_rotation)))
+		widget.content.text = "{#grad(true);color(255,205,70);color2(255,255,255)}" .. text
+		widget.content.text_shadow = text
+
+		if time_until_rotation == 0 and not self._refreshed_store_layout_once then
+			self._refreshed_store_layout_once = true
+			self._time_until_rotation = nil
+			local backend_store = Managers.backend:get_interface("peddler")
+			local cb = callback(self, "_refresh_cb")
+			self._refresh_counter = 4
+
+			backend_store:refresh_stock(cb)
+			backend_store:refresh_app_prices(cb)
+			backend_store:refresh_platform_item_prices(cb)
+			backend_store:refresh_layout_override(false, cb)
+		end
+	end
+end
+
+StoreWindowFeatured._refresh_cb = function (self)
+	self._refresh_counter = self._refresh_counter - 1
+
+	if self._refresh_counter <= 0 then
+		self._parent:go_to_store_path({
+			"featured"
+		})
+	end
+end
+
+StoreWindowFeatured._initialize_time_until_rotation = function (self)
+	local current_page = StoreLayoutConfig.pages[self._page_name]
+	local rotation_timestamp = current_page.rotation_timestamp
+	local banner_visible = false
+
+	if rotation_timestamp then
+		local time_until_rotation = rotation_timestamp - os.time()
+
+		if time_until_rotation > 0 then
+			self._time_until_rotation = time_until_rotation
+			banner_visible = true
+		end
+	end
+
+	self._widgets_by_name.discount_banner.content.visible = banner_visible
+end
+
 StoreWindowFeatured._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local content_widgets_by_name = self._content_widgets_by_name
@@ -163,6 +246,18 @@ StoreWindowFeatured._handle_input = function (self, dt, t)
 		else
 			self:_handle_gamepad_grid_selection(input_service)
 		end
+	end
+
+	local login_rewards_button = self._widgets_by_name.login_rewards_button
+
+	UIWidgetUtils.animate_default_button(login_rewards_button, dt)
+
+	if UIUtils.is_button_hover_enter(login_rewards_button) then
+		self:_play_sound("Play_hud_store_button_hover")
+	end
+
+	if UIUtils.is_button_pressed(login_rewards_button) or (input_service:get("special_1_press") and not GameSettingsDevelopment.use_offline_backend) then
+		parent:open_login_rewards_popup()
 	end
 
 	self:_handle_slideshow_logic(slideshow_widget, dt, input_service)
@@ -457,7 +552,7 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 		local product = nil
 
 		if product_type == "dlc" then
-			local dlc_settings = self:_get_dlc_settings(product_id)
+			local dlc_settings = StoreDlcSettingsByName[product_id]
 
 			if dlc_settings then
 				product = {
@@ -465,6 +560,8 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 					type = product_type,
 					product_id = product_id
 				}
+			else
+				printf("[StoreWindowFeatured] Warning: dlc %q not found", product_id)
 			end
 		elseif product_type == "item" then
 			local item = self._parent:get_item_by_key(product_id)
@@ -478,7 +575,11 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 						mask_price_strike_through_hack = true
 					}
 				}
+			else
+				printf("[StoreWindowFeatured] Warning: item %q not found", product_id)
 			end
+		else
+			printf("[StoreWindowFeatured] Warning: %s %q not found", product_type, product_id)
 		end
 
 		if product then
@@ -491,31 +592,34 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 	self:_create_product_widgets(layout)
 end
 
-StoreWindowFeatured._get_dlc_settings = function (self, product_id)
-	for _, settings in ipairs(StoreDlcSettings) do
-		if settings.dlc_name == product_id then
-			return settings
-		end
-	end
-
-	return nil
-end
-
 StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 	local slideshow_content = {}
+	local unlock_manager = Managers.unlock
+	local backend_store = Managers.backend:get_interface("peddler")
 	self._reference_id = (self._reference_id or 0) + 1
 
 	for index, slideshow in ipairs(data) do
-		local valid = false
+		local valid = true
+		local is_discounted = false
 		local product_id = slideshow.product_id
 
 		if product_id then
 			local product_type = slideshow.product_type
 
-			if product_type == "dlc" and self:_get_dlc_settings(product_id) then
-				valid = true
-			elseif product_type == "item" and self._parent:get_item_by_key(product_id) then
-				valid = true
+			if product_type == "dlc" then
+				if unlock_manager:dlc_exists(product_id) and StoreDlcSettingsByName[product_id] then
+					valid = true
+					local dlc_id = unlock_manager:dlc_id(product_id)
+					local price_data = backend_store:get_app_price((IS_WINDOWS and dlc_id) or product_id)
+					is_discounted = price_data and price_data.current_price ~= price_data.regular_price
+				end
+			elseif product_type == "item" then
+				local item = self._parent:get_item_by_key(product_id)
+
+				if item then
+					valid = true
+					is_discounted = item.steam_data and item.steam_data.discount_is_active
+				end
 			end
 		else
 			valid = true
@@ -533,6 +637,7 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 				slideshow.texture = slideshow.texture or "icons_placeholder"
 			end
 
+			slideshow.is_discounted = is_discounted
 			slideshow_content[#slideshow_content + 1] = slideshow
 		end
 	end
@@ -759,6 +864,7 @@ StoreWindowFeatured._set_slideshow_selected_read_index = function (self, widget,
 	local wait_time = content.wait_time
 	content.read_index = index
 	content.delay_timer = wait_time
+	content.show_hourglass = slide_content.is_discounted
 	local header = slide_content.header or slide_content.backend_header
 	local description = slide_content.description or slide_content.backend_description
 	content.title_text = Localize(header)
@@ -773,12 +879,19 @@ StoreWindowFeatured._on_slideshow_pressed = function (self, widget)
 	local slide_content = slideshow_content[read_index]
 	local path = slide_content.path
 	local product_id = slide_content.product_id
+	local steam_url = slide_content.steam_url
 	local parent = self._parent
 
 	if product_id then
-		parent:go_to_product(product_id, path)
+		if slide_content.product_type == "dlc" and not slide_content.open_ingame_store_page then
+			Managers.unlock:open_dlc_page(product_id)
+		else
+			parent:go_to_product(product_id, path)
+		end
 	elseif path then
 		parent:go_to_store_path(path)
+	elseif HAS_STEAM and steam_url then
+		Steam.open_url(steam_url)
 	end
 end
 

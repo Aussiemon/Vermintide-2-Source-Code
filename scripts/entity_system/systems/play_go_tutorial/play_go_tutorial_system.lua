@@ -441,6 +441,9 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 		if is_first_person[profile_index] then
 			profile_packages[first_person_attachment.unit] = true
 		end
+
+		local third_person_attachment = profile.third_person_attachment
+		profile_packages[third_person_attachment.unit] = true
 	end
 
 	for package_name, _ in pairs(profile_packages) do

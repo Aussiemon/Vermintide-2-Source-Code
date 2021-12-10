@@ -1633,6 +1633,96 @@ Paintings.ver_jb465_wh_nurgle_champion = {
 		wood = true
 	}
 }
+Paintings.ver_empire_page_036 = {
+	sound_event = "painting_empire_page_036_description",
+	rarity = "common",
+	display_name = "painting_empire_page_036_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_empire_page_036_description",
+	artist = "painting_empire_page_036_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_empire_page_047 = {
+	sound_event = "painting_empire_page_047_description",
+	rarity = "common",
+	display_name = "painting_empire_page_047_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_empire_page_047_description",
+	artist = "painting_empire_page_047_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_empire_page_059 = {
+	sound_event = "painting_empire_page_059_description",
+	rarity = "common",
+	display_name = "painting_empire_page_059_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_empire_page_059_description",
+	artist = "painting_empire_page_059_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_end_times_thanquol_narrative_Page_205 = {
+	sound_event = "painting_end_times_thanquol_narrative_Page_205_description",
+	rarity = "common",
+	display_name = "painting_end_times_thanquol_narrative_Page_205_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_end_times_thanquol_narrative_Page_205_description",
+	artist = "painting_end_times_thanquol_narrative_Page_205_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_legend_of_sigmar_cover = {
+	sound_event = "painting_legend_of_sigmar_cover_description",
+	rarity = "common",
+	display_name = "painting_legend_of_sigmar_cover_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_legend_of_sigmar_cover_description",
+	artist = "painting_legend_of_sigmar_cover_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
+Paintings.ver_The_Empire_at_War_Page_096 = {
+	sound_event = "painting_The_Empire_at_War_Page_096_description",
+	rarity = "common",
+	display_name = "painting_The_Empire_at_War_Page_096_name",
+	icon = "icon_painting_2",
+	frame = "wood",
+	description = "painting_The_Empire_at_War_Page_096_description",
+	artist = "painting_The_Empire_at_War_Page_096_artist",
+	orientation = "vertical",
+	frames = {
+		gold = true,
+		paint = true,
+		wood = true
+	}
+}
 DefaultPaintings = {
 	"hor_none",
 	"ver_none",
@@ -1745,7 +1835,13 @@ local painting_order = {
 	"ver_wood_elves_page_046",
 	"ver_wood_elves_page_052",
 	"ver_PD291_WEMage_BW",
-	"ver_jb465_wh_nurgle_champion"
+	"ver_jb465_wh_nurgle_champion",
+	"ver_empire_page_036",
+	"ver_empire_page_047",
+	"ver_empire_page_059",
+	"ver_end_times_thanquol_narrative_Page_205",
+	"ver_legend_of_sigmar_cover",
+	"ver_The_Empire_at_War_Page_096"
 }
 PaintingOrder = PaintingOrder or {}
 

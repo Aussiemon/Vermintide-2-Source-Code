@@ -6,6 +6,10 @@ settings.unlock_settings = {
 	grass = {
 		class = "UnlockDlc",
 		id = "1592630"
+	},
+	grass_2 = {
+		class = "UnlockDlc",
+		id = "1592630"
 	}
 }
 settings.unlock_settings_xb1 = {
@@ -15,6 +19,11 @@ settings.unlock_settings_xb1 = {
 	grass = {
 		id = "58375039-3534-3043-C036-354E4233F200",
 		backend_reward_id = "grass",
+		class = "UnlockDlc"
+	},
+	grass_2 = {
+		id = "58375039-3534-3043-C036-354E4233F200",
+		backend_reward_id = "grass_2",
 		class = "UnlockDlc"
 	},
 	five_career_bundle = {
@@ -58,6 +67,12 @@ settings.unlock_settings_ps4 = {
 			product_label = "V2USFORGOTTENREL",
 			class = "UnlockDlc",
 			backend_reward_id = "grass"
+		},
+		grass_2 = {
+			id = "d3a78a970d0d40ea8abdded9dd3e8bf3",
+			product_label = "V2USFORGOTTENREL",
+			class = "UnlockDlc",
+			backend_reward_id = "grass_2"
 		},
 		five_career_bundle = {
 			id = "614a9ea6b2ad44c6834218ee784c5535",
@@ -105,6 +120,12 @@ settings.unlock_settings_ps4 = {
 			product_label = "V2EUFORGOTTENREL",
 			class = "UnlockDlc",
 			backend_reward_id = "grass"
+		},
+		grass_2 = {
+			id = "78047b6b56134b6e86b44903e3bb9468",
+			product_label = "V2EUFORGOTTENREL",
+			class = "UnlockDlc",
+			backend_reward_id = "grass_2"
 		},
 		five_career_bundle = {
 			id = "aa1ff0f288944f27a73434f9ed93474d",
@@ -793,8 +814,7 @@ settings.network_damage_types = {
 	"bolt_of_change"
 }
 settings.network_damage_sources = {
-	"poison_dot",
-	"tiny_explosive_barrel"
+	"poison_dot"
 }
 settings.network_lookups = {
 	deus_blessings = "DeusBlessingSettings",

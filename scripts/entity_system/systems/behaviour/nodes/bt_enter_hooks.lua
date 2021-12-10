@@ -57,6 +57,8 @@ end
 BTEnterHooks.attack_grabbed_smash = function (unit, blackboard, t)
 	if unit_alive(blackboard.victim_grabbed) then
 		StatusUtils.set_grabbed_by_chaos_spawn_status_network(blackboard.victim_grabbed, "beating_with")
+
+		blackboard.override_target_unit = blackboard.victim_grabbed
 	end
 
 	blackboard.grabbed_state = "attack_smash"

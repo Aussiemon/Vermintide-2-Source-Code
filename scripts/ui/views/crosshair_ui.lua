@@ -1,9 +1,12 @@
 local definitions = local_require("scripts/ui/views/crosshair_ui_definitions")
+local scenegraph_definition = definitions.scenegraph_definition
+local animation_definitions = definitions.animations_definitions
 local MAX_SIZE = definitions.MAX_SIZE
 CrosshairUI = class(CrosshairUI)
 local CROSSHAIR_STYLE_FUNCTIONS = {
 	default = "draw_default_style_crosshair",
 	circle = "draw_circle_style_crosshair",
+	wh_priest = "draw_wh_priest_style_crosshair",
 	shotgun = "draw_shotgun_style_crosshair",
 	dot = "draw_dot_style_crosshair",
 	arrows = "draw_arrows_style_crosshair",
@@ -15,6 +18,7 @@ local MELEE_CROSSHAIR_STYLES = {
 local RANGED_CROSSHAIR_STYLES = {
 	default = true,
 	circle = true,
+	wh_priest = true,
 	shotgun = true,
 	arrows = true,
 	projectile = true
@@ -29,19 +33,22 @@ CrosshairUI.init = function (self, parent, ingame_ui_context)
 		snap_pixel_positions = false
 	}
 	self.local_player = Managers.player:local_player()
+	self._small_career_portrait = "small_unit_frame_portrait_default"
 
+	Managers.state.event:register(self, "on_set_ability_target_name", "_set_crosshair_target_info")
 	self:create_ui_elements()
 	self:update_enabled_crosshair_styles()
 end
 
 CrosshairUI.create_ui_elements = function (self)
-	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
+	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.crosshair_projectile = UIWidget.init(definitions.widget_definitions.crosshair_projectile)
 	self.crosshair_shotgun = UIWidget.init(definitions.widget_definitions.crosshair_shotgun)
 	self.crosshair_dot = UIWidget.init(definitions.widget_definitions.crosshair_dot)
 	self.crosshair_line = UIWidget.init(definitions.widget_definitions.crosshair_line)
 	self.crosshair_arrow = UIWidget.init(definitions.widget_definitions.crosshair_arrow)
 	self.crosshair_circle = UIWidget.init(definitions.widget_definitions.crosshair_circle)
+	self.wh_priest = UIWidget.init(definitions.widget_definitions.crosshair_wh_priest)
 	self._hit_armored_markers = {
 		damage = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_damage),
 		no_damage = UIWidget.init(definitions.widget_definitions.crosshair_hit_armored_no_damage),
@@ -56,10 +63,10 @@ CrosshairUI.create_ui_elements = function (self)
 		hit_markers[i] = UIWidget.init(definitions.widget_definitions[widget_definition_name])
 	end
 
+	self._ui_animator = UIAnimator:new(scenegraph_definition, animation_definitions)
 	self.hit_markers = hit_markers
 	self.hit_markers_n = hit_markers_n
 	self.hit_marker_animations = {}
-	self.hit_markers_orig_size = hit_markers[1].size
 end
 
 CrosshairUI.update = function (self, dt, t, player)
@@ -79,6 +86,8 @@ CrosshairUI.update = function (self, dt, t, player)
 	self:update_crosshair_style(equipment)
 	self:update_hit_markers(dt)
 	self:update_spread(dt, equipment)
+	self:_update_self_to_ally_transition()
+	self:_update_animations(dt)
 end
 
 local crosshairs = {}
@@ -416,6 +425,10 @@ CrosshairUI.draw_circle_style_crosshair = function (self, ui_renderer, pitch_per
 	UIRenderer.draw_widget(ui_renderer, self.crosshair_circle)
 end
 
+CrosshairUI.draw_wh_priest_style_crosshair = function (self, ui_renderer, pitch_percentage, yaw_percentage)
+	UIRenderer.draw_widget(ui_renderer, self.wh_priest)
+end
+
 CrosshairUI._set_widget_point_offset = function (self, widget, point_index, max_points, pitch_percentage, yaw_percentage, start_degrees, pitch_offset, yaw_offset)
 	local ptx, pty, angle = self:_get_point_offset(point_index, max_points, pitch_percentage, yaw_percentage, start_degrees)
 	local widget_style = widget.style
@@ -444,6 +457,35 @@ CrosshairUI._get_point_offset = function (self, point_index, max_points, pitch_p
 	local ptx = x + yaw_radius * math.cos(angle)
 
 	return ptx, pty, angle
+end
+
+CrosshairUI._set_crosshair_target_info = function (self, portrait, state)
+	local content = self.wh_priest.content
+	content.state = state
+	content.career_portrait = (portrait and portrait) or self._small_career_portrait
+	content.text_id = "$KEY;Player__action_one:"
+	self._small_career_portrait = (portrait and portrait) or self._small_career_portrait
+end
+
+CrosshairUI._update_self_to_ally_transition = function (self)
+	local content = self.wh_priest.content
+
+	if content.state ~= self.state then
+		local animation_name = (content.state == "wh_priest_self" and "ally_to_self") or "self_to_ally"
+		self.wh_crosshair_anim = self._ui_animator:start_animation(animation_name, self.wh_priest, scenegraph_definition)
+	end
+
+	self.state = content.state
+end
+
+CrosshairUI._update_animations = function (self, dt)
+	local ui_animator = self._ui_animator
+
+	ui_animator:update(dt)
+end
+
+CrosshairUI.destroy = function (self)
+	Managers.state.event:unregister("on_set_ability_target_name", self)
 end
 
 return

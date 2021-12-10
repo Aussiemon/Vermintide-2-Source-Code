@@ -470,6 +470,7 @@ StatisticsUtil.register_revive = function (reviver_unit, revivee_unit, statistic
 		local local_human = not player1.remote and not player1.bot_player
 
 		Managers.state.event:trigger("add_coop_feedback", player1:stats_id() .. player2:stats_id(), local_human, predicate, player1, player2)
+		Managers.state.achievement:trigger_event("register_revive", reviver_unit, revivee_unit)
 	end
 end
 
@@ -510,6 +511,8 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 		local breed = career_extension:get_breed()
 
 		if breed.is_hero then
+			Managers.state.achievement:trigger_event("register_damage_taken", victim_unit, damage_data)
+
 			local min_health = statistics_db:get_stat(stats_id, "min_health_percentage", career_name)
 
 			if current_health_percentage < min_health then

@@ -33,7 +33,7 @@ function demo_inverted_func()
 	end
 end
 
-local function can_add_inventory(params)
+local function can_add_ingame_menu(params)
 	local variable_name = "force_ingame_menu"
 
 	return params[variable_name]
@@ -686,7 +686,7 @@ else
 					transition_state = "overview",
 					transition = "hero_view",
 					force_open = true,
-					can_add_function = can_add_inventory
+					can_add_function = can_add_ingame_menu
 				},
 				{
 					fade = true,
@@ -727,7 +727,7 @@ else
 					transition_state = "overview",
 					transition = "hero_view",
 					force_open = true,
-					can_add_function = can_add_inventory
+					can_add_function = can_add_ingame_menu
 				},
 				{
 					fade = true,
@@ -773,7 +773,7 @@ else
 					transition_state = "overview",
 					transition = "hero_view",
 					force_open = true,
-					can_add_function = can_add_inventory
+					can_add_function = can_add_ingame_menu
 				},
 				{
 					fade = true,
@@ -978,7 +978,18 @@ local full_access_layout = {
 		transition_state = "overview",
 		transition = "hero_view",
 		force_open = true,
-		can_add_function = can_add_inventory
+		can_add_function = can_add_ingame_menu
+	},
+	{
+		requires_player_unit = true,
+		transition_sub_state = "talents",
+		display_name = "hero_window_talents",
+		force_open = true,
+		fade = true,
+		transition = "hero_view",
+		transition_state = "overview",
+		disable_when_matchmaking_ready = true,
+		can_add_function = can_add_ingame_menu
 	},
 	{
 		display_name = "achievements",

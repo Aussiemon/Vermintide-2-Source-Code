@@ -2114,19 +2114,23 @@ local info_frame_text_title_style = {
 	}
 }
 local info_frame_text_style = {
-	font_size = 16,
+	use_shadow = true,
 	upper_case = true,
 	localize = false,
-	use_shadow = true,
-	word_wrap = true,
+	font_size = 16,
 	horizontal_alignment = "right",
 	vertical_alignment = "center",
+	dynamic_font_size = true,
 	font_type = "arial",
 	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
-		0,
+		80,
 		0,
 		2
+	},
+	size = {
+		200,
+		16
 	}
 }
 local widgets = {

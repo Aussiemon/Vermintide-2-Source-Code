@@ -173,7 +173,7 @@ LobbyClient.is_dedicated_server = function (self)
 end
 
 LobbyClient.lobby_host = function (self)
-	return self.lobby:lobby_host()
+	return self._host_peer_id
 end
 
 LobbyClient.lobby_data = function (self, key)

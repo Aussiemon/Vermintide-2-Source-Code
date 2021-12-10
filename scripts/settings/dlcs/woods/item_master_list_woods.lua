@@ -7,7 +7,7 @@ ItemMasterList.skin_ww_thornsister = {
 	slot_type = "skin",
 	information_text = "information_text_character_skin",
 	hud_icon = "unit_frame_portrait_way_watcher",
-	rarity = "default",
+	rarity = "plentiful",
 	skin_type = "unit",
 	item_preview_environment = "waystalker_skins_01",
 	item_type = "skin",
@@ -84,9 +84,25 @@ ItemMasterList.skin_ww_thornsister_redblack = {
 		"we_thornsister"
 	}
 }
+ItemMasterList.skin_ww_thornsister_white = {
+	description = "description_skin_ww_thornsister_white",
+	temporary_template = "skin_ww_thornsister_white",
+	display_name = "skin_ww_thornsister_white",
+	name = "skin_ww_thornsister_white",
+	inventory_icon = "icon_skin_ww_thornsister_white",
+	slot_type = "skin",
+	information_text = "information_text_character_skin",
+	hud_icon = "unit_frame_portrait_way_watcher",
+	rarity = "unique",
+	skin_type = "unit",
+	item_type = "skin",
+	can_wield = {
+		"we_thornsister"
+	}
+}
 ItemMasterList.thornsister_hat_0000 = {
 	description = "description_thornsister_hat_0000",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_thornsister_hat_0000",
 	template = "ww_half_masks",
 	inventory_icon = "icon_we_t_hat_01",

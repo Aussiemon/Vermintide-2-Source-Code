@@ -742,6 +742,17 @@ dlc_settings.buff_function_templates = {
 		if wielded_slot_name == "slot_level_event" and slot_data then
 			inventory_extension:drop_level_event_item(slot_data)
 		end
+
+		local pickup_settings = AllPickups.frag_grenade_t1
+		local slot_name = pickup_settings.slot_name
+
+		if wielded_slot_name ~= slot_name then
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+			CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
+			inventory_extension:wield(slot_name)
+		end
 	end,
 	update_pockets_full_of_bombs_buff = function (unit, buff, params)
 		if is_local(unit) then
@@ -770,14 +781,14 @@ dlc_settings.buff_function_templates = {
 				else
 					network_transmit:send_rpc_server("rpc_add_equipment", go_id, slot_id, item_id, weapon_skin_id)
 				end
-			end
 
-			local wielded_slot_name = inventory_extension:get_wielded_slot_name()
+				local wielded_slot_name = inventory_extension:get_wielded_slot_name()
 
-			if wielded_slot_name ~= slot_name then
-				CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
-				CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
-				inventory_extension:wield(slot_name)
+				if wielded_slot_name ~= slot_name then
+					CharacterStateHelper.stop_weapon_actions(inventory_extension, "picked_up_object")
+					CharacterStateHelper.stop_career_abilities(career_extension, "picked_up_object")
+					inventory_extension:wield(slot_name)
+				end
 			end
 		end
 	end,
@@ -2569,8 +2580,19 @@ dlc_settings.proc_functions = {
 			local damage_dealt = params[2]
 			local damage_type = params[3]
 
-			if player_unit ~= guardian_unit then
-				DamageUtils.add_damage_network(guardian_unit, attacker_unit, damage_dealt, "torso", "buff", nil, Vector3(0, 0, 0), "buff", nil, guardian_unit)
+			if player_unit ~= guardian_unit and damage_type ~= "life_tap" then
+				local buff_extension = ScriptUnit.extension(guardian_unit, "buff_system")
+				local dr_amount = buff_extension:apply_buffs_to_value(1, "damage_taken")
+
+				if buff_extension:has_buff_type("deus_guard_buff") then
+					dr_amount = dr_amount / -buff.template.multiplier
+				end
+
+				damage_dealt = damage_dealt * dr_amount
+
+				if damage_dealt > 0 then
+					DamageUtils.add_damage_network(guardian_unit, attacker_unit, damage_dealt, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, player_unit)
+				end
 			end
 		end
 	end,

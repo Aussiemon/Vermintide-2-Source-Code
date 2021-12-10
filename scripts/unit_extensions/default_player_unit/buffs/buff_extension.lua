@@ -79,6 +79,12 @@ end
 
 BuffExtension.freeze = function (self)
 	self:clear()
+
+	self._ai_frozen = true
+end
+
+BuffExtension.unfreeze = function (self)
+	self._ai_frozen = nil
 end
 
 BuffExtension.clear = function (self)
@@ -119,7 +125,7 @@ end
 BuffExtension.add_buff = function (self, template_name, params)
 	local unit = self._unit
 
-	if FROZEN[unit] then
+	if FROZEN[unit] or self._ai_frozen then
 		return
 	end
 
@@ -480,7 +486,7 @@ BuffExtension._add_stacking_buff = function (self, sub_buff_template, max_stacks
 end
 
 BuffExtension._add_stat_buff = function (self, sub_buff_template, buff)
-	if FROZEN[self._unit] then
+	if FROZEN[self._unit] or self._ai_frozen then
 		return
 	end
 

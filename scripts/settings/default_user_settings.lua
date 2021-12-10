@@ -3,6 +3,7 @@ require("scripts/settings/camera_transition_templates")
 require("scripts/settings/camera_settings")
 require("scripts/managers/blood/blood_settings")
 require("scripts/settings/sound_quality_settings")
+require("scripts/managers/player/player_sync_data")
 
 local default_user_settings = {
 	toggle_alternate_attack = false,
@@ -31,7 +32,6 @@ local default_user_settings = {
 	twitch_vote_time = 45,
 	max_fps = 0,
 	use_gamepad_hud_layout = "auto",
-	use_subtitles = true,
 	adapter_index = 0,
 	twitch_disable_positive_votes = "enable_positive_votes",
 	max_upload_speed = 512,
@@ -79,6 +79,7 @@ local default_user_settings = {
 	ragdoll_enabled = true,
 	tobii_extended_view = true,
 	use_razer_chroma = false,
+	use_subtitles = true,
 	language_id = "en",
 	subtitles_font_size = 20,
 	subtitles_background_opacity = 20,
@@ -110,6 +111,7 @@ local default_user_settings = {
 	volumetric_fog_quality = script_data.settings.default_volumetric_fog_quality or "lowest",
 	ambient_light_quality = script_data.settings.default_ambient_light_quality or "high",
 	ao_quality = script_data.settings.default_ao_quality or "medium",
+	playerlist_build_privacy = PrivacyLevels.friends,
 	sound_channel_configuration = Wwise.AK_SPEAKER_SETUP_AUTO
 }
 local default_render_settings = {
@@ -128,6 +130,8 @@ local default_render_settings = {
 	dof_enabled = false,
 	ssr_enabled = false,
 	bloom_enabled = true,
+	fsr_enabled = false,
+	fsr_quality = 4,
 	taa_enabled = false,
 	ssr_high_quality = false,
 	gamma = 2.2,

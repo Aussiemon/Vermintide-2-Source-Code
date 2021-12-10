@@ -528,6 +528,7 @@ NetworkLookup.anims = {
 	"wind_up_start",
 	"wind_up_loop",
 	"attack_finished",
+	"attack_finished_02",
 	"death_instakill",
 	"death_decap",
 	"interaction_end",

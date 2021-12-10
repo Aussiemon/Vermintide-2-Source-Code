@@ -167,4 +167,15 @@ BackendInterfaceDLCsPlayfab.updating_dlc_ownership = function (self)
 	return self._updating_dlc_ownership
 end
 
+BackendInterfaceDLCsPlayfab.is_unreleased_career = function (self, career_name)
+	local title_data = self._backend_mirror:get_title_data()
+	local unreleased_careers = title_data.unreleased_careers
+
+	if unreleased_careers and string.find(unreleased_careers, career_name) then
+		return true
+	end
+
+	return false
+end
+
 return

@@ -329,15 +329,20 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 		items = self:_get_all_items()
 	end
 
+	local insert_index = 0
+
 	for backend_id, item in pairs(items) do
-		layout[#layout + 1] = {
+		local product = {
 			item = item,
 			type = product_type,
-			product_id = item.key
+			product_id = item.key,
+			sort_key = StoreLayoutConfig.make_sort_key(item)
 		}
+		insert_index = insert_index + 1
+		layout[insert_index] = product
 	end
 
-	table.sort(layout, StoreLayoutConfig.sort.cmp_layout_item)
+	table.sort(layout, StoreLayoutConfig.compare_sort_key)
 
 	self._layout = layout
 

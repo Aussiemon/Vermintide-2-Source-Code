@@ -510,28 +510,6 @@ table.mirror_array_inplace = function (t)
 	return t
 end
 
-local temp_weak_table = setmetatable({}, {
-	__mode = "v"
-})
-local temp_weak_table_size = 0
-
-table.unpack_map = function (t)
-	local n = 0
-
-	for value, _ in pairs(t) do
-		n = n + 1
-		temp_weak_table[n] = value
-	end
-
-	for i = n + 1, temp_weak_table_size, 1 do
-		temp_weak_table[i] = nil
-	end
-
-	temp_weak_table_size = n
-
-	return unpack(temp_weak_table)
-end
-
 table.keys = function (t, out)
 	out = out or {}
 	local n = 0

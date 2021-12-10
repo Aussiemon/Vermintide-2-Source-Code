@@ -49,32 +49,31 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		self._num_free_events = math.min(self._num_free_events + free_events_to_add, MAX_FREE_EVENTS)
 	end
 
-	if self._ping_context or self._social_wheel_context then
-		if self._ping_context then
-			local ping_context = self._ping_context
-			local ping_released = self._input_extension:get("ping_release")
-			local ping_held = self._input_extension:get("ping_hold")
-			local unit_to_ping = ping_context.unit
+	if self._ping_context then
+		local ping_context = self._ping_context
+		local ping_released = self._input_extension:get("ping_release")
+		local ping_held = self._input_extension:get("ping_hold")
+		local unit_to_ping = ping_context.unit
+		local ping_type = ping_context.ping_type
 
-			if ping_released or not ping_held then
-				if t <= ping_context.max_t then
-					if ALIVE[unit_to_ping] then
-						self:ping_attempt(unit, unit_to_ping, t)
-					elseif ping_context.position then
-						self:ping_world_position_attempt(unit, ping_context.position:unbox(), t)
-					end
+		if ping_released or not ping_held then
+			if t <= ping_context.max_t then
+				if ALIVE[unit_to_ping] then
+					self:ping_attempt(unit, unit_to_ping, t, ping_type)
+				elseif ping_context.position then
+					self:ping_world_position_attempt(unit, ping_context.position:unbox(), t)
 				end
-
-				self._ping_context = nil
-				self._social_wheel_context = nil
 			end
-		elseif self._social_wheel_context then
-			local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
-			local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
 
-			if social_wheel_only_released or not social_wheel_only_held then
-				self._social_wheel_context = nil
-			end
+			self._ping_context = nil
+			self._social_wheel_context = nil
+		end
+	elseif self._social_wheel_context then
+		local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
+		local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
+
+		if social_wheel_only_released or not social_wheel_only_held then
+			self._social_wheel_context = nil
 		end
 	else
 		local input_extension = self._input_extension
@@ -113,6 +112,12 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 				if input_service then
 					social_wheel_only = input_service:get("ping")
 				end
+			elseif ping_unit then
+				local status_ext = ScriptUnit.has_extension(ping_unit, "status_system")
+
+				if status_ext and status_ext:is_knocked_down() then
+					ping_type = PingTypes.UNIT_DOWNED
+				end
 			end
 
 			if is_ping_only then
@@ -134,7 +139,8 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 					unit = ping_unit,
 					max_t = t + social_wheel_delay,
 					distance = ping_unit_distance,
-					position = stored_ping_position
+					position = stored_ping_position,
+					ping_type = ping_type
 				}
 				self._social_wheel_context = {
 					unit = social_wheel_unit,

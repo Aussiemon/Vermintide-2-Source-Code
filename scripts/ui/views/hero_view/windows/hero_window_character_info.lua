@@ -20,6 +20,7 @@ HeroWindowCharacterInfo.on_enter = function (self, params, offset)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self.ingame_ui = ingame_ui_context.ingame_ui
 	local player_manager = Managers.player
 	local local_player = player_manager:local_player()
 	self._stats_id = local_player:stats_id()
@@ -103,17 +104,6 @@ HeroWindowCharacterInfo._update_animations = function (self, dt)
 
 			animations[animation_name] = nil
 		end
-	end
-end
-
-HeroWindowCharacterInfo._is_button_pressed = function (self, widget)
-	local content = widget.content
-	local hotspot = content.button_hotspot
-
-	if hotspot.on_release then
-		hotspot.on_release = false
-
-		return true
 	end
 end
 

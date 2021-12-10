@@ -239,7 +239,7 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				name = "vanguard",
-				multiplier = 0.5,
+				multiplier = 1,
 				buff_func = "heal_stagger_targets_on_melee",
 				event = "on_stagger",
 				perk = buff_perks.tank_healing

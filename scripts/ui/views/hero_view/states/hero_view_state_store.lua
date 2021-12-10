@@ -302,13 +302,17 @@ HeroViewStateStore._has_unseen_items_tab_cat = function (self)
 	return false
 end
 
-HeroViewStateStore.change_generic_actions = function (self, input_actions)
+HeroViewStateStore.change_generic_actions = function (self, wanted_input_actions)
 	local menu_input_description = self._menu_input_description
-	self._active_input_actions = input_actions
-	local input_actions_copy = input_actions
+
+	if wanted_input_actions == "default" then
+		wanted_input_actions = generic_input_actions
+	end
+
+	local input_actions = wanted_input_actions
 
 	if self:_has_unseen_items_tab_cat() then
-		input_actions_copy = {
+		input_actions = {
 			{
 				input_action = "refresh",
 				priority = 20,
@@ -316,10 +320,12 @@ HeroViewStateStore.change_generic_actions = function (self, input_actions)
 			}
 		}
 
-		table.append(input_actions_copy, input_actions)
+		table.append(input_actions, wanted_input_actions)
 	end
 
-	menu_input_description:change_generic_actions(input_actions_copy)
+	self._active_input_actions = input_actions
+
+	menu_input_description:change_generic_actions(input_actions)
 end
 
 HeroViewStateStore._setup_menu_layout = function (self)
@@ -736,7 +742,7 @@ end
 HeroViewStateStore._windows_post_update = function (self, dt, t)
 	local active_windows = self._active_windows
 
-	for _, window in ipairs(active_windows) do
+	for _, window in pairs(active_windows) do
 		if window.post_update then
 			window:post_update(dt, t)
 		end
@@ -821,6 +827,8 @@ HeroViewStateStore.on_exit = function (self, params)
 
 	if self._items_bought > 0 then
 		flow_event = "shop_closed_item_bought"
+	elseif self._login_rewards_popup and self._login_rewards_popup:has_claimed_rewards() then
+		flow_event = "shop_closed_login_reward_claimed"
 	else
 		flow_event = "shop_closed"
 	end
@@ -903,6 +911,20 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 
 	self:_update_dlc_purchases()
 
+	local login_rewards_popup = self._login_rewards_popup
+
+	if login_rewards_popup then
+		login_rewards_popup:update(input_service, dt, t)
+
+		if login_rewards_popup:is_complete() then
+			login_rewards_popup:delete()
+
+			self._login_rewards_popup = nil
+
+			self:unblock_input()
+		end
+	end
+
 	if self._fail_steam_item_purchase_popup_id then
 		local result = Managers.popup:query_result(self._fail_steam_item_purchase_popup_id)
 
@@ -938,7 +960,7 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 				local ignore_sound_on_close_menu = true
 
 				self:close_menu(ignore_sound_on_close_menu)
-			elseif not self._item_purchase_popup and not self._welcome_popup then
+			elseif not self._item_purchase_popup and not self._welcome_popup and not self._login_rewards_popup then
 				self:_handle_input(dt, t)
 			end
 		end
@@ -1211,7 +1233,7 @@ HeroViewStateStore._draw = function (self, input_service, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 
-	if gamepad_active and not self._item_purchase_popup and not self._welcome_popup then
+	if gamepad_active and not self._item_purchase_popup and not self._welcome_popup and not self._login_rewards_popup then
 		self._menu_input_description:draw(ui_top_renderer, dt)
 	end
 end
@@ -1279,6 +1301,7 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 					local backend_items = Managers.backend:get_interface("items")
 
 					backend_items:add_steam_items(item_list)
+					Managers.telemetry.events:steam_store_product_purchased(product)
 
 					local bundle_contains = product.item.data.bundle_contains
 
@@ -1326,26 +1349,18 @@ HeroViewStateStore.product_purchase_request = function (self, product)
 	end
 end
 
-HeroViewStateStore.check_owns_bundle = function (self, backend_items, bundle_contains)
-	if not bundle_contains then
-		return false, false
-	end
+HeroViewStateStore.open_login_rewards_popup = function (self)
+	self:play_sound("Play_hud_store_buy_window")
 
-	local all_owned = true
-	local any_owned = false
+	self._login_rewards_popup = StoreLoginRewardsPopup:new(self, {
+		ui_renderer = self._store_ui_renderer,
+		ui_top_renderer = self._ui_top_renderer,
+		world = self._store_ui_renderer.world,
+		wwise_world = self._wwise_world,
+		input_manager = self._input_manager
+	})
 
-	for i = 1, #bundle_contains, 1 do
-		local steam_itemdefid = bundle_contains[i]
-		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
-
-		if backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) then
-			any_owned = true
-		else
-			all_owned = false
-		end
-	end
-
-	return all_owned, any_owned
+	self:block_input()
 end
 
 HeroViewStateStore.enqueue_acquired_product = function (self, product)
@@ -1515,6 +1530,11 @@ HeroViewStateStore._calculate_discount_textures = function (self, widget, discou
 	local previous_offset_x = 0
 	local height_spacing = 9
 	local area_length = 106
+
+	if discount <= 0 then
+		return
+	end
+
 	local discount_string = tostring(math.floor(discount))
 	local length = string.len(discount_string) + 2
 
@@ -1611,16 +1631,16 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 		if steam_itemdefid then
 			real_currency = true
 			price_text, price_text_original = self:get_steam_item_price_text(steam_itemdefid, content, item_data)
-			local price_data = SteamItemService.get_item_data(steam_itemdefid, "price")
+			local steam_data = item.steam_data
 
-			if not price_data then
-				print("[HeroViewStateStore] No price_data")
+			if not steam_data then
+				printf("[HeroViewStateStore] No steam_data for %q", item.key)
 			end
 
-			if price_data and price_data.discount_is_active then
+			if steam_data and steam_data.discount_is_active then
 				local backend_store = Managers.backend:get_interface("peddler")
 				local current, currency = backend_store:get_steam_item_price(steam_itemdefid)
-				local regular = item_data.bundle_price or price_data.regular_prices[currency]
+				local regular = item_data.bundle_price or steam_data.regular_prices[currency]
 				local discount = 1 - current / regular
 
 				self:_calculate_discount_textures(widget, math.round(100 * discount))
@@ -1662,7 +1682,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 
 	local backend_items = Managers.backend:get_interface("items")
 	local item_key = item.key
-	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or self:check_owns_bundle(backend_items, item.data.bundle_contains)
+	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
 	content.owned = item_owned
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
 	content.type_tag_icon = (rarity and item_type_icon .. "_" .. rarity) or item_type_icon

@@ -36,6 +36,23 @@ GameModeHelper.side_is_disabled = function (side_name)
 	return true
 end
 
+GameModeHelper.side_delaying_loss = function (side_name)
+	local side = Managers.state.side:get_side_from_name(side_name)
+	local player_units = side.PLAYER_AND_BOT_UNITS
+	local num_human_players = #player_units
+
+	for i = 1, num_human_players, 1 do
+		local player_unit = player_units[i]
+		local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+		if buff_extension and buff_extension:has_buff_perk("invulnerable") then
+			return true
+		end
+	end
+
+	return false
+end
+
 GameModeHelper.change_player_to_selected_profile = function (profile_synchronizer, peer_id, local_player_id)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 	local selected_profile_index = status.selected_profile_index

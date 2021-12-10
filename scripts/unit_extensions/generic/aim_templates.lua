@@ -69,6 +69,20 @@ AimTemplates.player = {
 			data.aim_direction_pitch_var = Unit.animation_find_variable(unit, "aim_direction_pitch")
 			data.locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 			data.status_extension = ScriptUnit.extension(unit, "status_system")
+			data.min_head_lookat_z = -3
+			local player = Managers.player:owner(unit)
+
+			if player then
+				local profile_index = player:profile_index()
+				local career_index = player:career_index()
+				local profile = SPProfiles[profile_index]
+				local careers = profile and profile.careers
+				local career_settings = careers and careers[career_index]
+
+				if career_settings and career_settings.min_head_lookat_z then
+					data.min_head_lookat_z = career_settings.min_head_lookat_z
+				end
+			end
 		end,
 		update = function (unit, t, dt, data)
 			local aim_direction = nil
@@ -94,7 +108,10 @@ AimTemplates.player = {
 
 			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, block_anim_variable)
 
+			local min_head_look_z = (data.status_extension:is_crouching() and -3) or data.min_head_lookat_z
 			local aim_direction_scaled = aim_direction * 3
+			local z = aim_direction_scaled.z
+			aim_direction_scaled.z = math.clamp(z, min_head_look_z, 3)
 			local aim_from_pos = Unit.world_position(unit, Unit.node(unit, "camera_attach"))
 			local aim_target = aim_from_pos + aim_direction_scaled
 
@@ -131,6 +148,20 @@ AimTemplates.player = {
 			data.packmaster_claw_aim_constraint = Unit.animation_find_constraint_target(unit, "packmaster_claw_target")
 			data.camera_attach_node = Unit.node(unit, "camera_attach")
 			data.status_extension = ScriptUnit.extension(unit, "status_system")
+			data.min_head_lookat_z = -3
+			local player = Managers.player:owner(unit)
+
+			if player then
+				local profile_index = player:profile_index()
+				local career_index = player:career_index()
+				local profile = SPProfiles[profile_index]
+				local careers = profile and profile.careers
+				local career_settings = careers and careers[career_index]
+
+				if career_settings and career_settings.min_head_lookat_z then
+					data.min_head_lookat_z = career_settings.min_head_lookat_z
+				end
+			end
 		end,
 		update = function (unit, t, dt, data)
 			local game = Managers.state.network:game()
@@ -148,7 +179,10 @@ AimTemplates.player = {
 			local pitch_rotation = Quaternion(Vector3.right(), pitch)
 			local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 			aim_direction = Vector3.normalize(Quaternion.forward(look_rotation))
+			local min_head_look_z = (data.status_extension:is_crouching() and -3) or data.min_head_lookat_z
 			local aim_direction_scaled = aim_direction * 3
+			local z = aim_direction_scaled.z
+			aim_direction_scaled.z = math.clamp(z, min_head_look_z, 3)
 			local from_pos = Unit.world_position(unit, data.camera_attach_node)
 
 			if script_data.lerp_debug or script_data.extrapolation_debug then

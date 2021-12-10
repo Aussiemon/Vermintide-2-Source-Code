@@ -224,10 +224,9 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
-			input_action = "right_stick",
+			input_action = "show_gamercard",
 			priority = 2,
-			description_text = "input_description_rotate_hero",
-			ignore_keybinding = true
+			description_text = "start_menu_switch_hero"
 		},
 		{
 			input_action = "hotkey_mark_favorite_item",

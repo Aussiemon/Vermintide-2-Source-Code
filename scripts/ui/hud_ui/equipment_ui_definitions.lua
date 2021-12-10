@@ -224,20 +224,6 @@ local scenegraph_definition = {
 			26
 		}
 	},
-	background_panel_cog = {
-		vertical_alignment = "bottom",
-		parent = "background_panel",
-		horizontal_alignment = "left",
-		position = {
-			0,
-			0,
-			1
-		},
-		size = {
-			630,
-			73
-		}
-	},
 	reload_ui = {
 		vertical_alignment = "center",
 		parent = "screen",
@@ -622,10 +608,56 @@ local reload_tip_text_style = {
 	}
 }
 local extra_storage_x = 4 * (slot_size[1] + 24)
+
+function create_inventory_panel(default_texture, scenegraph_id)
+	local texture_size = scenegraph_definition[scenegraph_id].size
+	local offset = {
+		0,
+		0,
+		1
+	}
+	local masked = nil
+	local retained = RETAINED_MODE_ENABLED
+
+	return {
+		element = {
+			passes = {
+				{
+					texture_id = "texture_id",
+					style_id = "texture_id",
+					pass_type = "texture",
+					retained_mode = retained
+				}
+			}
+		},
+		content = {
+			texture_id = default_texture
+		},
+		style = {
+			texture_id = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				},
+				masked = masked,
+				texture_size = texture_size
+			}
+		},
+		offset = offset,
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local widget_definitions = {
-	background_panel = UIWidgets.create_simple_texture("hud_inventory_panel", "background_panel", nil, RETAINED_MODE_ENABLED),
+	background_panel = create_inventory_panel("hud_inventory_panel", "background_panel"),
 	background_panel_bg = UIWidgets.create_simple_texture("hud_inventory_panel_bg", "background_panel_bg", nil, RETAINED_MODE_ENABLED),
-	background_panel_cog = UIWidgets.create_simple_texture("hud_inventory_panel_cog", "background_panel_cog", nil, RETAINED_MODE_ENABLED),
 	extra_storage_bg = {
 		scenegraph_id = "slot",
 		offset = {
@@ -695,7 +727,7 @@ local ammo_widget_definitions = {
 local slots = InventorySettings.slots
 local slot_widget_definitions = {}
 local career_skill_weapon_widget_definition = {
-	scenegraph_id = "background_panel_cog",
+	scenegraph_id = "background_panel",
 	offset = {
 		0,
 		0,
@@ -825,7 +857,7 @@ local career_skill_weapon_widget_definition = {
 			vertical_alignment = "bottom",
 			horizontal_alignment = "right",
 			offset = {
-				-37,
+				-31,
 				21,
 				0
 			},

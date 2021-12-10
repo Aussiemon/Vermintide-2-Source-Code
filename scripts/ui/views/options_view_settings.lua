@@ -198,6 +198,33 @@ local video_settings_definition = {
 		widget_type = "empty"
 	},
 	{
+		text = "settings_view_header_fidelityfx_super_resolution",
+		widget_type = "title"
+	},
+	{
+		setup = "cb_fsr_enabled_setup",
+		name = "fsr_enabled_settings",
+		tooltip_text = "tooltip_fsr_enabled",
+		callback = "cb_fsr_enabled",
+		disabled_tooltip_text = "tooltip_fsr_disabled",
+		saved_value = "cb_fsr_enabled_saved_value",
+		condition = "cb_fsr_enabled_condition",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_fsr_quality_setup",
+		saved_value = "cb_fsr_quality_saved_value",
+		tooltip_text = "tooltip_fsr_quality",
+		callback = "cb_fsr_quality",
+		disabled_tooltip_text = "tooltip_fsr_disabled",
+		condition = "cb_fsr_quality_condition",
+		widget_type = "drop_down"
+	},
+	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
 		text = "settings_view_header_post_processing",
 		widget_type = "title"
 	},
@@ -739,6 +766,20 @@ local gameplay_settings_definition = {
 		callback = "cb_clan_tag",
 		tooltip_text = "tooltip_clan_tag",
 		widget_type = "stepper"
+	},
+	{
+		setting_name = "playerlist_build_privacy",
+		widget_type = "stepper",
+		options = {
+			{
+				text = Localize("visibility_friends"),
+				value = PrivacyLevels.friends
+			},
+			{
+				text = Localize("visibility_private"),
+				value = PrivacyLevels.private
+			}
+		}
 	},
 	{
 		size_y = 30,

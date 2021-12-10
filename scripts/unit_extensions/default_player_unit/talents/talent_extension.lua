@@ -24,7 +24,7 @@ TalentExtension.extensions_ready = function (self, world, unit)
 	self._hero_name = hero_name
 	self._hero_affiliation = hero_affiliation
 	self._career_name = career_name
-	local talent_ids = self:_get_talent_ids()
+	local talent_ids = self:get_talent_ids()
 
 	self:apply_buffs_from_talents(talent_ids)
 	self:update_talent_weapon_index(talent_ids)
@@ -32,21 +32,19 @@ TalentExtension.extensions_ready = function (self, world, unit)
 end
 
 TalentExtension.game_object_initialized = function (self, unit, unit_go_id)
-	if not self.is_server then
-		local talent_ids = self:_get_talent_ids()
+	local talent_ids = self:get_talent_ids()
 
-		self:_send_rpc_sync_talents(talent_ids)
-	end
+	self:_send_rpc_sync_talents(talent_ids)
 end
 
 TalentExtension.talents_changed = function (self)
-	local talent_ids = self:_get_talent_ids()
+	local talent_ids = self:get_talent_ids()
 
 	self:apply_buffs_from_talents(talent_ids)
 	self:update_talent_weapon_index(talent_ids)
 	self.inventory_extension:update_career_skill_weapon_slot_safe()
 
-	if not self.is_server and Managers.state.network:game() then
+	if Managers.state.network:game() then
 		self:_send_rpc_sync_talents(talent_ids)
 	end
 
@@ -59,7 +57,12 @@ TalentExtension._send_rpc_sync_talents = function (self, talent_ids)
 	local unit_go_id = Managers.state.unit_storage:go_id(self._unit)
 
 	printf("TalentExtension:_send_rpc_sync_talents %d", unit_go_id)
-	network_transmit:send_rpc_server("rpc_sync_talents", unit_go_id, talent_ids)
+
+	if self.is_server then
+		network_transmit:send_rpc_clients("rpc_sync_talents", unit_go_id, talent_ids)
+	else
+		network_transmit:send_rpc_server("rpc_sync_talents", unit_go_id, talent_ids)
+	end
 end
 
 TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
@@ -213,7 +216,7 @@ TalentExtension.has_talent = function (self, talent_name)
 		return false
 	end
 
-	local talent_ids = self:_get_talent_ids()
+	local talent_ids = self:get_talent_ids()
 	local wanted_talent_lookup = TalentIDLookup[talent_name]
 
 	if not wanted_talent_lookup then
@@ -237,7 +240,7 @@ TalentExtension.has_talent = function (self, talent_name)
 	return false
 end
 
-TalentExtension._get_talent_ids = function (self)
+TalentExtension.get_talent_ids = function (self)
 	local talent_interface = Managers.backend:get_talents_interface()
 	local career_name = self._career_name
 	local talent_ids = talent_interface:get_talent_ids(career_name)
@@ -253,7 +256,7 @@ TalentExtension.has_talent_perk = function (self, perk)
 		return
 	end
 
-	local talent_ids = self:_get_talent_ids()
+	local talent_ids = self:get_talent_ids()
 
 	for i = 1, #talent_ids, 1 do
 		local talent_id = talent_ids[i]
@@ -276,7 +279,7 @@ TalentExtension.has_talent_perk = function (self, perk)
 end
 
 TalentExtension.get_talent_names = function (self)
-	local talent_ids = self:_get_talent_ids()
+	local talent_ids = self:get_talent_ids()
 	local talent_names = {}
 	local hero_name = self._hero_name
 
