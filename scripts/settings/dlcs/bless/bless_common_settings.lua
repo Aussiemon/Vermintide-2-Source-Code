@@ -76,31 +76,31 @@ settings.unlock_settings_xb1 = {
 settings.unlock_settings_ps4 = {
 	CUSA13595_00 = {
 		bless = {
-			product_label = "V2USXXXXXXXXXXXX",
+			product_label = "V2USWARRIORPRIES",
 			backend_reward_id = "bless",
-			class = "AlwaysUnlocked",
+			class = "UnlockDlc",
 			requires_restart = true,
-			id = "00000000000000000000000000000000"
+			id = "4ba165834b5b404c9ae6172f6e69452d"
 		},
 		bless_upgrade = {
-			id = "00000000000000000000000000000000",
-			product_label = "V2USXXXXXXXXXXXX",
-			class = "AlwaysUnlocked",
+			id = "4ba165834b5b404c9ae6172f6e69452d",
+			product_label = "V2USWARRIORPRIES",
+			class = "UnlockDlc",
 			backend_reward_id = "bless_upgrade"
 		}
 	},
 	CUSA13645_00 = {
 		bless = {
-			product_label = "V2EUXXXXXXXXXXXX",
+			product_label = "V2EUWARRIORPRIES",
 			backend_reward_id = "bless",
-			class = "AlwaysUnlocked",
+			class = "UnlockDlc",
 			requires_restart = true,
-			id = "00000000000000000000000000000000"
+			id = "3c117d927ef3441d9c7583b9980c956b"
 		},
 		bless_upgrade = {
-			id = "00000000000000000000000000000000",
-			product_label = "V2EUXXXXXXXXXXXX",
-			class = "AlwaysUnlocked",
+			id = "3c117d927ef3441d9c7583b9980c956b",
+			product_label = "V2EUWARRIORPRIES",
+			class = "UnlockDlc",
 			backend_reward_id = "bless_upgrade"
 		}
 	}

@@ -10,17 +10,16 @@ UnlockDlc.init = function (self, name, app_id, backend_reward_id, always_unlocke
 	self._requires_restart = requires_restart
 	self._status_changed = false
 
-	if rawget(_G, "Steam") then
-		if Steam.is_installed(app_id) then
-			self._installed = true
-		elseif always_unlocked_game_app_ids then
-			local steam_app_id = Steam.app_id()
+	if HAS_STEAM and always_unlocked_game_app_ids then
+		local steam_app_id = Steam.app_id()
 
-			if steam_app_id and table.contains(always_unlocked_game_app_ids, steam_app_id) then
-				self._installed = true
-			end
+		if steam_app_id and table.contains(always_unlocked_game_app_ids, steam_app_id) then
+			self._always_unlocked_for_app_id = true
+			self._installed = true
 		end
 	end
+
+	self:update_is_installed()
 end
 
 UnlockDlc.ready = function (self)
@@ -57,6 +56,26 @@ UnlockDlc.set_owned = function (self, value, set_status_change)
 	end
 
 	self._owned = value
+end
+
+UnlockDlc.update_is_installed = function (self)
+	if not HAS_STEAM then
+		return self._installed
+	end
+
+	if self._always_unlocked_for_app_id then
+		return self._installed
+	end
+
+	local installed = Steam.is_installed(self._id)
+
+	if self._installed ~= installed then
+		self._installed = installed
+
+		return installed, true
+	end
+
+	return installed
 end
 
 UnlockDlc.is_cosmetic = function (self)

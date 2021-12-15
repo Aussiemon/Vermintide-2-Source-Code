@@ -1740,6 +1740,14 @@ local function player_widget_definition(index)
 					end
 				},
 				{
+					style_id = "build_private_text",
+					pass_type = "text",
+					text_id = "build_private_text",
+					content_check_function = function (content, style)
+						return not content.is_build_visible
+					end
+				},
+				{
 					pass_type = "rect",
 					style_id = "chat_button_background",
 					texture_id = "chat_button_texture"
@@ -2365,7 +2373,7 @@ local function player_widget_definition(index)
 		content = {
 			name = "n/a",
 			show_chat_button = false,
-			slot_trinket_1_frame = "reward_pop_up_item_frame",
+			disabled_texture = "tab_menu_icon_03",
 			grimoire_debuff_divider = "hud_player_hp_bar_grim_divider",
 			profile_tooltip_text = "input_description_show_profile",
 			slot_melee_frame = "reward_pop_up_item_frame",
@@ -2374,24 +2382,25 @@ local function player_widget_definition(index)
 			voice_tooltip_text_unmute = "input_description_unmute_voice",
 			talent_frame = "talent_frame",
 			kick_tooltip_text = "input_description_vote_kick_player",
-			hero = "wh_captain",
+			slot_trinket_1_frame = "reward_pop_up_item_frame",
 			slot_ring_rarity_texture = "icon_bg_plentiful",
 			chat_button_texture = "tab_menu_icon_02",
+			build_private_text = "visibility_private",
 			button_frame = "reward_pop_up_item_frame",
 			voice_tooltip_text_mute = "input_description_mute_voice",
 			host_texture = "host_icon",
 			slot_necklace_rarity_texture = "icon_bg_plentiful",
+			hero = "wh_captain",
 			voice_button_texture = "tab_menu_icon_01",
-			profile_button_texture = "tab_menu_icon_05",
 			ping_text = "150",
 			slot_melee_rarity_texture = "icon_bg_plentiful",
 			show_kick_button = false,
 			chat_tooltip_text_mute = "input_description_mute_chat",
 			show_ping = false,
-			disabled_texture = "tab_menu_icon_03",
+			profile_button_texture = "tab_menu_icon_05",
+			kick_button_texture = "tab_menu_icon_04",
 			slot_necklace_frame = "reward_pop_up_item_frame",
 			hp_bar_bg = "hud_teammate_hp_bar_bg",
-			kick_button_texture = "tab_menu_icon_04",
 			show_profile_button = false,
 			ping_texture = "ping_icon_03",
 			show_voice_button = false,
@@ -3577,6 +3586,25 @@ local function player_widget_definition(index)
 				high_ping_color = Colors.get_table("crimson"),
 				medium_ping_color = Colors.get_table("gold"),
 				low_ping_color = Colors.get_table("lime_green")
+			},
+			build_private_text = {
+				vertical_alignment = "top",
+				upper_case = true,
+				localize = true,
+				horizontal_alignment = "center",
+				font_type = "hell_shark_header",
+				font_size = 24,
+				offset = {
+					200,
+					-20,
+					1
+				},
+				text_color = {
+					255,
+					128,
+					128,
+					128
+				}
 			},
 			host_texture = {
 				vertical_alignment = "bottom",

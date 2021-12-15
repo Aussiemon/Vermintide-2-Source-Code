@@ -336,6 +336,12 @@ UnlockManager._update_console_backend_unlocks = function (self)
 		local dlcs_interface = Managers.backend:get_interface("dlcs")
 
 		if not dlcs_interface:updating_dlc_ownership() then
+			Managers.backend:get_interface("dlcs")._backend_mirror:request_characters()
+
+			self._state = "waiting_for_backend_refresh"
+		end
+	elseif self._state == "waiting_for_backend_refresh" then
+		if Managers.backend:get_interface("dlcs")._backend_mirror:ready() then
 			self._state = "check_unseen_rewards"
 		end
 	elseif self._state == "check_unseen_rewards" then
@@ -693,14 +699,15 @@ UnlockManager._update_backend_unlocks = function (self)
 
 					if not self._excluded_dlcs[unlock_name] and not table.find(owned_dlcs, unlock_name) then
 						local unlock = self._unlocks[unlock_name]
-						local id = unlock and unlock:id()
 
-						if id and Steam.is_installed(id) then
-							printf("INSTALLED: %s", unlock_name)
+						if unlock and unlock.update_is_installed then
+							local new_value, changed = unlock:update_is_installed()
 
-							new_dlc_installed = true
+							if new_value then
+								printf("INSTALLED: %q", unlock_name)
 
-							break
+								new_dlc_installed = true
+							end
 						end
 					end
 				end

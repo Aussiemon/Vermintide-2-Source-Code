@@ -4491,36 +4491,21 @@ BuffFunctionTemplates.functions = {
 		local activation_buff = template.activation_buff
 		local has_buff = buff_extension:get_non_stacking_buff(activation_buff)
 
-		if not buff.buff_ids then
-			buff.buff_ids = {}
-		end
-
 		if has_buff then
-			local t = params.t
-			local pulse_frequency = template.pulse_frequency
+			if not buff.buff_ids then
+				buff.buff_ids = {}
+			end
 
-			if (not buff.timer or buff.timer < t) and #buff.buff_ids < template.max_sub_buff_stacks then
+			local num_stacks = #buff.buff_ids
+
+			if num_stacks < template.max_sub_buff_stacks then
 				local buff_to_add = template.buff_to_add
-
-				table.insert(buff.buff_ids, buff_extension:add_buff(buff_to_add))
-
-				buff.timer = t + pulse_frequency
+				local stack_buff_id = buff_extension:add_buff(buff_to_add)
+				buff.buff_ids[num_stacks + 1] = stack_buff_id
 			end
 		else
-			local buff_amount = #buff.buff_ids
-
-			for i = 1, #buff.buff_ids, 1 do
-				buff_extension:remove_buff(buff.buff_ids[1])
-				table.remove(buff.buff_ids, 1)
-			end
-
-			table.clear(buff.buff_ids)
-
-			for i = 1, buff_amount, 1 do
-				local buff_on_pop = template.buff_on_pop
-
-				buff_extension:add_buff(buff_on_pop)
-			end
+			local t = Managers.time:time("game")
+			buff._next_update_t = t + 0.5
 		end
 	end,
 	update_bardin_ironbreaker_activated_ability = function (unit, buff, params)

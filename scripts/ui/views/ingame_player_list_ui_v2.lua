@@ -205,7 +205,9 @@ IngamePlayerListUI._setup_mutator_data = function (self)
 		local current_mutator_index = 1
 
 		for name, mutator_settings in pairs(mutators) do
-			if not mutator_settings.activated_by_twitch and not MutatorTemplates[name].hide_from_player_ui then
+			local activated_by_twitch = type(mutator_settings) == "table" and mutator_settings.activated_by_twitch
+
+			if not activated_by_twitch and not MutatorTemplates[name].hide_from_player_ui then
 				local row = 1 + math.floor((current_mutator_index - 1) / MUTATORS_PER_COLUMN) % MUTATOR_ROWS
 
 				if MAX_MUTATORS < current_mutator_index then
@@ -1267,7 +1269,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local num_grimoires = buff_extension:num_buff_perk("skaven_grimoire")
 			local multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 			local num_twitch_grimoires = buff_extension:num_buff_perk("twitch_grimoire")
-			local twitch_multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF
+			local twitch_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF, "curse_protection")
 			local num_slayer_curses = buff_extension:num_buff_perk("slayer_curse")
 			local slayer_curse_multiplier = buff_extension:apply_buffs_to_value(PlayerUnitDamageSettings.SLAYER_CURSE_HEALTH_DEBUFF, "curse_protection")
 			local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
@@ -1304,9 +1306,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			if player.local_player or (player.bot_player and player.is_server) then
 				is_build_visible = true
 			else
-				local remote_privacy = player:get_data("playerlist_build_privacy")
-				local own_privacy = Application.user_setting("playerlist_build_privacy")
-				local privacy_level = math.min(remote_privacy, own_privacy)
+				local privacy_level = player:get_data("playerlist_build_privacy")
 
 				if privacy_level == PrivacyLevels.friends then
 					is_build_visible = Friends.in_category(player_data.peer_id, Friends.FRIEND_FLAG)
@@ -1314,6 +1314,8 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 					is_build_visible = false
 				end
 			end
+
+			content.is_build_visible = is_build_visible
 
 			for slot_name, item in pairs(loadout) do
 				local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"

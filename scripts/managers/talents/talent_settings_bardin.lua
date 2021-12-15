@@ -564,10 +564,12 @@ TalentBuffTemplates.dwarf_ranger = {
 			{
 				buff_on_pop = "bardin_ironbreaker_gromril_attack_speed",
 				activation_buff = "bardin_ironbreaker_gromril_armour",
-				pulse_frequency = 7,
 				buff_to_add = "bardin_ironbreaker_gromril_rising_anger",
+				buff_func = "bardin_ironbreaker_gromril_trigger_rising_anger",
+				event = "on_gromril_armour_removed",
 				update_func = "bardin_ironbreaker_stacking_buff_gromril",
-				max_sub_buff_stacks = 5
+				max_sub_buff_stacks = 5,
+				update_frequency = 7
 			}
 		}
 	},

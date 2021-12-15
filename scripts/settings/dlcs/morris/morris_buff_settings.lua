@@ -1187,7 +1187,7 @@ dlc_settings.buff_function_templates = {
 	always_blocking_init = function (unit, buff, params)
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 		local equipment = inventory_extension:equipment()
-		local melee = equipment.wielded.slot_type == "melee"
+		local melee = equipment.wielded and equipment.wielded.slot_type == "melee"
 		local buff_name = buff.template.buff_to_add
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
@@ -1202,7 +1202,7 @@ dlc_settings.buff_function_templates = {
 		if buff.locked_out and not locked_out then
 			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 			local equipment = inventory_extension:equipment()
-			local melee = equipment.wielded.slot_type == "melee"
+			local melee = equipment.wielded and equipment.wielded.slot_type == "melee"
 			local buff_name = buff.template.buff_to_add
 
 			if melee then
@@ -1223,7 +1223,7 @@ dlc_settings.buff_function_templates = {
 
 		if not buff.locked_out and buff.swapped_weapons then
 			local equipment = buff.equipment
-			local melee = equipment.wielded.slot_type == "melee"
+			local melee = equipment.wielded and equipment.wielded.slot_type == "melee"
 			local buff_name = buff.template.buff_to_add
 			local has_buff = buff_extension and buff_extension:has_buff_type(buff_name)
 

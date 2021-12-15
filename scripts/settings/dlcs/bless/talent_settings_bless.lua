@@ -80,6 +80,7 @@ local talent_buff_templates = {
 				stat_buff = "damage_taken",
 				buff_func = "victor_priest_damage_stagger",
 				staggered_damage_taken = 0.4,
+				percentage_to_take = 0.2,
 				event = "on_damage_taken"
 			}
 		}

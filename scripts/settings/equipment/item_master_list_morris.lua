@@ -249,7 +249,7 @@ local item_master_list = {
 	},
 	es_deus_01_skin_02 = {
 		description = "es_deus_01_skin_02_description",
-		rarity = "rare",
+		rarity = "exotic",
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_02/wpn_es_deus_spear_02",
 		hud_icon = "weapon_generic_iweapon_generic_icon_falkencon_bow",
 		inventory_icon = "icon_wpn_empire_spearshield_t2",
@@ -269,7 +269,7 @@ local item_master_list = {
 	},
 	es_deus_01_skin_03 = {
 		description = "es_deus_01_skin_03_description",
-		rarity = "rare",
+		rarity = "exotic",
 		right_hand_unit = "units/weapons/player/wpn_es_deus_spear_03/wpn_es_deus_spear_03",
 		hud_icon = "weapon_generic_iweapon_generic_icon_falkencon_bow",
 		inventory_icon = "icon_wpn_empire_spearshield_t3",
@@ -809,7 +809,7 @@ local item_master_list = {
 	},
 	bw_deus_01_skin_03_runed = {
 		description = "bw_deus_01_skin_03_runed_description",
-		rarity = "exotic",
+		rarity = "unique",
 		right_hand_unit = "units/weapons/player/wpn_bw_deus_03/wpn_bw_deus_03_runed",
 		hud_icon = "weapon_generic_icon_staff_5",
 		inventory_icon = "icon_wpn_brw_magmastaff_t3_runed",
@@ -983,7 +983,7 @@ local item_master_list = {
 	},
 	wh_deus_01_skin_03_runed = {
 		description = "wh_deus_01_skin_03_runed_description",
-		rarity = "exotic",
+		rarity = "unique",
 		right_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
 		hud_icon = "weapon_generic_icon_bow",
 		inventory_icon = "icon_wpn_emp_duckfoot_t3_runed",

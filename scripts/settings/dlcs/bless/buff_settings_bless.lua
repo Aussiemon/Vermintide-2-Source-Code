@@ -423,8 +423,9 @@ settings.proc_functions = {
 			local percent_non_mitigated_damage = 1 - staggered_damage_taken
 			local percent_to_absorb = staggered_damage_taken / percent_non_mitigated_damage
 			local damage_to_take = damage_amount * percent_to_absorb
+			local percentage_of_original = (damage_amount + damage_to_take) * template.percentage_to_take
 			local params = {
-				external_optional_value = damage_to_take
+				external_optional_value = percentage_of_original
 			}
 			local damage_stagger_dot = buff_extension:get_buff_type("damage_stagger")
 
@@ -432,7 +433,7 @@ settings.proc_functions = {
 				local current_damage = damage_stagger_dot.value
 				local current_damage_dealt = damage_stagger_dot.damage_dealt or 0
 				local remaining_damage = current_damage - current_damage_dealt
-				local new_damage = damage_to_take + remaining_damage
+				local new_damage = percentage_of_original + remaining_damage
 				damage_stagger_dot.value = new_damage
 				damage_stagger_dot.damage_dealt = 0
 				local t = Managers.time:time("game")
@@ -879,6 +880,7 @@ settings.buff_function_templates = {
 				if status_extension and status_extension:is_knocked_down() then
 					StatusUtils.set_revived_network(owner_unit, true, attacker_unit)
 					CharacterStateHelper.play_animation_event(owner_unit, "revive_complete")
+					StatisticsUtil.register_revive(attacker_unit, owner_unit, Managers.player:statistics_db())
 				end
 
 				local heal_window = BuffTemplates.victor_priest_6_3_buff.buffs[1].heal_window or 3
@@ -990,7 +992,7 @@ settings.buff_function_templates = {
 			local duration = template.duration
 			local health_extension = ScriptUnit.has_extension(unit, "health_system")
 			local damage = buff.value
-			local damage_per_tick = damage / (duration / update_frequency)
+			local damage_per_tick = damage / math.round(duration / update_frequency)
 			local current_health = health_extension:current_health()
 
 			if current_health <= damage_per_tick then

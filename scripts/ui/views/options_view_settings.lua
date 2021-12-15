@@ -778,6 +778,10 @@ local gameplay_settings_definition = {
 			{
 				text = Localize("visibility_private"),
 				value = PrivacyLevels.private
+			},
+			{
+				text = Localize("visibility_public"),
+				value = PrivacyLevels.public
 			}
 		}
 	},

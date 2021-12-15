@@ -807,6 +807,30 @@ ProcFunctions = {
 			DamageUtils.create_explosion(world, player_unit, player_position, rotation, explosion_template, 1, "career_ability", true, is_husk, player_unit, career_power_level, false)
 		end
 	end,
+	bardin_ironbreaker_gromril_trigger_rising_anger = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_amount = #buff.buff_ids
+
+			for i = 1, buff_amount, 1 do
+				buff_extension:remove_buff(buff.buff_ids[i])
+			end
+
+			table.clear(buff.buff_ids)
+
+			local template = buff.template
+
+			for i = 1, buff_amount, 1 do
+				local buff_on_pop = template.buff_on_pop
+				slot12 = buff_extension:add_buff(buff_on_pop)
+			end
+
+			local t = Managers.time:time("game")
+			buff._next_update_t = t + 0.5
+		end
+	end,
 	bardin_slayer_push_on_dodge = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -1018,7 +1042,7 @@ ProcFunctions = {
 			return
 		end
 
-		if is_local(player_unit) or (is_server() and is_bot(player_unit)) then
+		if is_local(player_unit) or is_server() then
 			local buff_name = "bardin_ironbreaker_gromril_delay"
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 
@@ -4345,11 +4369,9 @@ BuffTemplates = {
 			{
 				duration = 60,
 				name = "twitch_grimoire_health_debuff",
-				stat_buff = "max_health",
 				debuff = true,
 				max_stacks = 1,
 				icon = "buff_icon_grimoire_health_debuff",
-				multiplier = PlayerUnitDamageSettings.GRIMOIRE_HEALTH_DEBUFF,
 				perk = buff_perks.twitch_grimoire
 			}
 		}
