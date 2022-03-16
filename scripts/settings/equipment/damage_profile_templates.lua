@@ -2629,6 +2629,7 @@ DamageProfileTemplates.arrow_sniper_ability_piercing = {
 DamageProfileTemplates.shortbow_hagbane = {
 	charge_value = "projectile",
 	ignore_stagger_reduction = true,
+	allow_dot_finesse_hit = true,
 	no_stagger_damage_reduction_ranged = true,
 	require_damage_for_dot = true,
 	critical_strike = {

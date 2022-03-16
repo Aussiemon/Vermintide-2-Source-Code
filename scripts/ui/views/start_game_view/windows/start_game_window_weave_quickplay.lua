@@ -194,7 +194,7 @@ end
 StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local widgets_by_name = self._widgets_by_name
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local input_service = self._parent:window_input_service()
 	local play_button = widgets_by_name.play_button
 
@@ -202,7 +202,7 @@ StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 		self:_play_sound("Play_hud_hover")
 	end
 
-	local play_pressed = gamepad_active and input_service:get("refresh_press")
+	local play_pressed = (not mouse_active and input_service:get("refresh_press")) or input_service:get("skip_press")
 
 	if self._is_matchmaking then
 		if play_pressed then
@@ -216,7 +216,7 @@ StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 
 	local difficulty_widgets = self._difficulty_widgets
 
-	if not gamepad_active then
+	if mouse_active then
 		for i = 1, #difficulty_widgets, 1 do
 			local widget = difficulty_widgets[i]
 

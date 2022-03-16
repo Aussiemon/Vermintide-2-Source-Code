@@ -3,15 +3,14 @@ require("scripts/utils/colors")
 
 if not UISettings then
 	slot0 = {
-		bots_level_display_text = "BOT",
 		tooltip_fade_in_speed = 4,
 		start_drag_threshold = 0.15,
 		double_click_threshold = 0.1,
 		crafting_progress_time = 0.3,
 		max_craft_material_presentation_amount = 999,
-		crafting_animation_wait_time = 0.3,
 		console_menu_camera_move_duration = 0.5,
-		tooltip_wait_duration = 0.1,
+		bots_level_display_text = "BOT",
+		crafting_animation_wait_time = 0.3,
 		max_inventory_items = 1000,
 		hero_panel_height = 120,
 		wait_for_mip_streaming_items = false,
@@ -20,6 +19,7 @@ if not UISettings then
 		crafting_animation_out_time = 0.1,
 		chest_upgrade_score_topics_min_duration = 0.5,
 		chest_upgrade_score_topics_max_duration = 7,
+		tooltip_wait_duration = 0.1,
 		crafting_animation_in_time = 0.2,
 		wait_for_mip_streaming_character = true,
 		console_menu_rect_color = Colors.get_color_table_with_alpha("console_menu_rect", 125),
@@ -71,7 +71,7 @@ if not UISettings then
 		hud_scale = Application.user_setting("hud_scale") or 100,
 		hud_clamp_ui_scaling = Application.user_setting("hud_clamp_ui_scaling") or false,
 		use_custom_hud_scale = Application.user_setting("use_custom_hud_scale") or false,
-		use_gamepad_menu_layout = Application.user_setting("use_gamepad_menu_layout") or false,
+		use_pc_menu_layout = Application.user_setting("use_pc_menu_layout") or false,
 		use_gamepad_hud_layout = Application.user_setting("use_gamepad_hud_layout") or false,
 		interaction = {
 			bar = {
@@ -865,6 +865,15 @@ UISettings.item_rarity_order = {
 	rare = 5,
 	unique = 3
 }
+UISettings.item_rarities = {
+	"default",
+	"plentiful",
+	"common",
+	"rare",
+	"exotic",
+	"unique",
+	"promo"
+}
 UISettings.cosmetics_sorting_order = {
 	weapon_skin = 3,
 	skin = 2,
@@ -1121,6 +1130,8 @@ UISettings.console_tooltip_pass_definitions = {
 	"loot_chest_power_range",
 	"unwieldable",
 	"console_keywords",
+	"console_special_action_tooltip",
+	"console_other_equipped_careers_tooltip",
 	"console_item_description",
 	"light_attack_stats",
 	"heavy_attack_stats",
@@ -1308,6 +1319,30 @@ UISettings.dlc_order_data = {
 	{
 		dlc = "bless_upgrade",
 		display_name = "store_bless_upgrade_title"
+	},
+	{
+		dlc = "q1_ranger_bundle",
+		display_name = "display_name_q1_ranger_bundle"
+	},
+	{
+		dlc = "q1_waywatcher_bundle",
+		display_name = "display_name_q1_waywatcher_bundle"
+	},
+	{
+		dlc = "q1_footknight_bundle",
+		display_name = "display_name_q1_footknight_bundle"
+	},
+	{
+		dlc = "q1_unchained_bundle ",
+		display_name = "display_name_q1_unchained_bundle "
+	},
+	{
+		dlc = "q1_wh_captain_bundle",
+		display_name = "display_name_q1_wh_captain_bundle"
+	},
+	{
+		dlc = "q1_collection_bundle",
+		display_name = "display_name_q1_collection_bundle"
 	}
 }
 local pc_button_icon = {
@@ -1358,6 +1393,13 @@ local button_mapping = {
 			}
 		},
 		middle = {
+			texture = "mouse_input_middle",
+			size = {
+				50,
+				66
+			}
+		},
+		wheel = {
 			texture = "mouse_input_middle",
 			size = {
 				50,
@@ -1989,7 +2031,12 @@ UISettings.get_gamepad_input_texture_data = function (input_service, input_actio
 		if device_type == "keyboard" then
 			button_name = Keyboard.button_locale_name(key_index) or Keyboard.button_name(key_index)
 		elseif device_type == "mouse" then
-			button_name = Mouse.button_name(key_index)
+			if key_action_type == "axis" then
+				button_name = Mouse.axis_name(key_index)
+			else
+				button_name = Mouse.button_name(key_index)
+			end
+
 			button_texture_data = button_mapping.win32[button_name] or button_mapping.win32.default
 		elseif device_type == "gamepad" then
 			if key_action_type == "axis" then
@@ -2023,14 +2070,158 @@ UISettings.set_console_settings = function ()
 end
 
 UISettings.interaction_hotkey_lookup = {
-	characters_access = "hotkey_hero",
-	weave_level_select_access = "hotkey_weave_play",
 	weave_magic_forge_access = "hotkey_weave_forge",
+	weave_leaderboard_access = "hotkey_weave_leaderboard",
+	inventory_access = "hotkey_inventory",
+	map_access = "hotkey_map",
+	characters_access = "hotkey_hero",
 	achievement_access = "hotkey_achievements",
 	store_access = "hotkey_store",
-	inventory_access = "hotkey_inventory",
-	weave_leaderboard_access = "hotkey_weave_leaderboard",
-	map_access = "hotkey_map"
+	weave_level_select_access = "hotkey_weave_play",
+	loot_access = "hotkey_loot"
+}
+UISettings.achievement_search_definitions = {
+	{
+		{
+			true,
+			"search_keywords_true"
+		},
+		{
+			false,
+			"search_keywords_false"
+		},
+		key = "claimed"
+	},
+	{
+		{
+			true,
+			"search_keywords_true"
+		},
+		{
+			false,
+			"search_keywords_false"
+		},
+		key = "completed"
+	},
+	{
+		{
+			true,
+			"search_keywords_true"
+		},
+		{
+			false,
+			"search_keywords_false"
+		},
+		key = "locked"
+	},
+	{
+		{
+			"default",
+			"search_keywords_default"
+		},
+		{
+			"plentiful",
+			"search_keywords_plentiful"
+		},
+		{
+			"common",
+			"search_keywords_common"
+		},
+		{
+			"rare",
+			"search_keywords_rare"
+		},
+		{
+			"exotic",
+			"search_keywords_exotic"
+		},
+		{
+			"unique",
+			"search_keywords_unique"
+		},
+		{
+			"promo",
+			"search_keywords_promo"
+		},
+		key = "rarity"
+	},
+	{
+		{
+			"loot_chest",
+			"search_keywords_chest"
+		},
+		{
+			"chips",
+			"search_keywords_currency"
+		},
+		{
+			"keep_decoration_painting",
+			"search_keywords_decoration"
+		},
+		{
+			"frame",
+			"search_keywords_frame"
+		},
+		{
+			"hat",
+			"search_keywords_hat"
+		},
+		{
+			"skin",
+			"search_keywords_skin"
+		},
+		{
+			"weapon_skin",
+			"search_keywords_illusion"
+		},
+		{
+			"melee",
+			"search_keywords_melee"
+		},
+		{
+			"ranged",
+			"search_keywords_ranged"
+		},
+		key = "reward"
+	}
+}
+UISettings.crosshair_styles = {
+	ranged = {
+		projectile = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_01"
+		},
+		shotgun = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_02"
+		},
+		default = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_03"
+		},
+		arrows = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_05"
+		},
+		circle = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_06"
+		},
+		wh_priest = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_07"
+		}
+	},
+	melee = {
+		dot = {
+			enabled = true,
+			crosshair_icon = "icon_crosshair_04"
+		}
+	},
+	default = {
+		enabled = true,
+		crosshair_icon = "icon_crosshair_01"
+	}
 }
 
 return

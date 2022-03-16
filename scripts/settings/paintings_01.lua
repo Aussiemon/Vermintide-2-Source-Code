@@ -1851,8 +1851,6 @@ for _, painting in ipairs(painting_order) do
 	end
 end
 
-table.sort(PaintingOrder)
-
 local prefix = "resource_packages/keep_paintings/keep_painting_"
 PaintingPackageNames = PaintingPackageNames or {}
 

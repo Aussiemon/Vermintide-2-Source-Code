@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local pushed_data = {
 	ahead_dist = 1.5,
 	push_width = 1.25,
@@ -5,10 +6,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 7,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -24,10 +25,10 @@ local running_pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 9,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -666,10 +667,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -752,10 +753,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -816,10 +817,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -895,10 +896,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -959,10 +960,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,

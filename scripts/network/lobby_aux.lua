@@ -21,20 +21,21 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash, disable
 	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or (trunk_revision ~= nil and trunk_revision ~= "")
 	local concatenated_dlc_string = (GameSettingsDevelopment.network_concatenated_dlc_check_enabled and concatenate_dlcs()) or ""
 	local lobby_data_version = (DEDICATED_SERVER and GameServerInternal.lobby_data_version) or LobbyInternal.lobby_data_version
+	local num_levels = #NetworkLookup.level_keys
 
 	if use_trunk_revision then
 		fassert(trunk_revision, "No trunk_revision even though it needs to exist!")
 
-		combined_hash = Application.make_hash(network_hash, trunk_revision, engine_revision, project_hash, concatenated_dlc_string, lobby_data_version)
+		combined_hash = Application.make_hash(network_hash, trunk_revision, engine_revision, project_hash, concatenated_dlc_string, lobby_data_version, num_levels)
 
 		if not disable_print then
-			printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, trunk_revision=%s, engine_revision=%s, project_hash=%s, lobby_data_version=%s", tostring(combined_hash), tostring(network_hash), tostring(trunk_revision), tostring(engine_revision), tostring(project_hash), tostring(lobby_data_version))
+			printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, trunk_revision=%s, engine_revision=%s, project_hash=%s, lobby_data_version=%s, num_levels=%s", tostring(combined_hash), tostring(network_hash), tostring(trunk_revision), tostring(engine_revision), tostring(project_hash), tostring(lobby_data_version), tostring(num_levels))
 		end
 	else
-		combined_hash = Application.make_hash(network_hash, engine_revision, project_hash, concatenated_dlc_string, lobby_data_version)
+		combined_hash = Application.make_hash(network_hash, engine_revision, project_hash, concatenated_dlc_string, lobby_data_version, num_levels)
 
 		if not disable_print then
-			printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, engine_revision=%s, project_hash=%s, lobby_data_version=%s", tostring(combined_hash), tostring(network_hash), tostring(engine_revision), tostring(project_hash), tostring(lobby_data_version))
+			printf("[LobbyAux] Making combined_hash: %s from network_hash=%s, engine_revision=%s, project_hash=%s, lobby_data_version=%s, num_levels=%s", tostring(combined_hash), tostring(network_hash), tostring(engine_revision), tostring(project_hash), tostring(lobby_data_version), tostring(num_levels))
 		end
 	end
 
@@ -42,7 +43,7 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash, disable
 		printf("GameServerAux.create_network_hash network_hash: %s, trunk_revision/content_revision: %s, ignore_engine_revision: %s, engine_revision: %s, , concatenated_dlc_string %s, use_trunk_revision %s, combined_hash %s, lobby_data_version=%s", network_hash, trunk_revision, ignore_engine_revision, engine_revision, concatenated_dlc_string, use_trunk_revision, combined_hash, tostring(lobby_data_version))
 	end
 
-	if Managers.mechanism:setting("ignore_network_hash") then
+	if Managers.mechanism:setting("ignore_network_hash") or Development.parameter("ignore_network_hash") then
 		print("network hash is overridden: ignore_network_hash")
 
 		combined_hash = "ignored_network_hash"

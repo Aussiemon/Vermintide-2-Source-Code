@@ -27,22 +27,43 @@ ActionCareerWEThornsisterWall.client_owner_start_action = function (self, new_ac
 		local position = target_data.position:unbox()
 		local rotation = target_data.rotation:unbox()
 		local segments = target_data.segments
-
-		self:_spawn_wall(num_segments, segments, rotation)
-
 		local explosion_template = "we_thornsister_career_skill_wall_explosion"
 		local scale = 1
 		local career_extension = self.career_extension
 		local career_power_level = career_extension:get_career_power_level()
 		local area_damage_system = Managers.state.entity:system("area_damage_system")
 
-		if self.talent_extension:has_talent("kerillian_thorn_sister_explosive_wall") then
-			explosion_template = "we_thornsister_career_skill_explosive_wall_explosion"
-		elseif self.talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
-			explosion_template = "we_thornsister_career_skill_debuff_wall_spawn_explosion"
+		if self.talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
+			if self.talent_extension:has_talent("kerillian_thorn_sister_double_poison") then
+				explosion_template = "we_thornsister_career_skill_explosive_wall_explosion_improved"
+			else
+				explosion_template = "we_thornsister_career_skill_explosive_wall_explosion"
+			end
+		elseif self.talent_extension:has_talent("kerillian_thorn_sister_wall_push") then
+			explosion_template = nil
 		end
 
-		area_damage_system:create_explosion(self.owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
+		if explosion_template then
+			self:_spawn_wall(num_segments, segments, rotation)
+			area_damage_system:create_explosion(self.owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
+		else
+			local damage_wave_template_name = "thornsister_thorn_wall_push"
+			local damage_wave_template_id = NetworkLookup.damage_wave_templates[damage_wave_template_name]
+			local network_manager = Managers.state.network
+			local source_unit_id = network_manager:unit_game_object_id(self.owner_unit)
+			local forward = Quaternion.forward(rotation)
+			local right = Quaternion.right(rotation)
+			local segment_arr = {}
+
+			for i = 1, num_segments, 1 do
+				segment_arr[i] = segments[i]:unbox() + forward * (math.random() * WALL_FORWARD_OFFSET_RANGE * 2 - WALL_FORWARD_OFFSET_RANGE) + right * (math.random() * WALL_RIGHT_OFFSET_RANGE * 2 - WALL_RIGHT_OFFSET_RANGE)
+			end
+
+			local wall_index = self:_get_next_wall_index()
+
+			network_manager.network_transmit:send_rpc_server("rpc_create_thornsister_push_wave", source_unit_id, POSITION_LOOKUP[self.owner_unit], position, damage_wave_template_id, career_power_level, segment_arr, wall_index)
+		end
+
 		career_extension:start_activated_ability_cooldown()
 	end
 end
@@ -63,9 +84,15 @@ ActionCareerWEThornsisterWall._play_vo = function (self)
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
 
-ActionCareerWEThornsisterWall._spawn_wall = function (self, num_segments, segments, wall_rotation)
-	local wall_index = self._wall_index + 1
+ActionCareerWEThornsisterWall._get_next_wall_index = function (self)
+	local wall_index = self._wall_index % 16 + 1
 	self._wall_index = wall_index
+
+	return wall_index
+end
+
+ActionCareerWEThornsisterWall._spawn_wall = function (self, num_segments, segments, wall_rotation)
+	local wall_index = self:_get_next_wall_index()
 	local owner_unit = self.owner_unit
 	local forward = Quaternion.forward(wall_rotation)
 	local right = Quaternion.right(wall_rotation)

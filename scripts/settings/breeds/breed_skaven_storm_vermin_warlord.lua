@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local pushed_data = {
 	ahead_dist = 2,
 	push_width = 1.25,
@@ -5,10 +6,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 8,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -145,32 +146,32 @@ local breed_data = {
 	run_on_husk_spawn = AiBreedSnippets.on_storm_vermin_champion_husk_spawn,
 	run_on_despawn = AiBreedSnippets.on_storm_vermin_champion_despawn,
 	hot_join_sync = AiBreedSnippets.on_storm_vermin_hot_join_sync,
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if not blackboard.unit then
-			return stagger, duration, length
+			return stagger_type, duration, length
 		end
 
 		local t = Managers.time:time("game")
 
 		if t < blackboard.intro_timer then
-			stagger = 0
+			stagger_type = stagger_types.none
 
-			return stagger, duration, length
+			return stagger_type, duration, length
 		end
 
 		local ai_shield_extension = ScriptUnit.extension(blackboard.unit, "ai_shield_system")
 
-		if not blackboard.dual_wield_mode and stagger ~= 6 then
-			stagger = 0
+		if not blackboard.dual_wield_mode and stagger_type ~= stagger_types.explosion then
+			stagger_type = stagger_types.none
 
 			ai_shield_extension:set_is_blocking(false)
-		elseif blackboard.dual_wield_mode and stagger ~= 6 then
+		elseif blackboard.dual_wield_mode and stagger_type ~= stagger_types.explosion then
 			if not blackboard.next_stagger_block_t or blackboard.next_stagger_block_t < t then
 				blackboard.stagger_block_timer = blackboard.stagger_block_timer or t + 3
 			else
 				ai_shield_extension:set_is_blocking(false)
 
-				stagger = 0
+				stagger_type = stagger_types.none
 			end
 
 			if blackboard.stagger_block_timer and blackboard.stagger_block_timer < t then
@@ -179,11 +180,11 @@ local breed_data = {
 
 				ai_shield_extension:set_is_blocking(false)
 
-				stagger = 0
+				stagger_type = stagger_types.none
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	hitzone_multiplier_types = {
 		head = "headshot",
@@ -405,10 +406,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 6,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -974,7 +975,7 @@ local action_data = {
 			local stagger_anims = action.stagger_anims[stagger_type]
 			local idle_event = "idle"
 
-			if stagger_type == 6 then
+			if stagger_type == stagger_types.explosion then
 				return stagger_anims, idle_event
 			end
 
@@ -1849,10 +1850,10 @@ local action_data = {
 			easy = 15
 		},
 		stagger_impact = {
-			1,
-			2,
-			0,
-			0
+			stagger_types.weak,
+			stagger_types.medium,
+			stagger_types.none,
+			stagger_types.none
 		}
 	}
 }

@@ -150,11 +150,11 @@ AccountManager.set_offline_mode = function (self, offline)
 end
 
 AccountManager.is_online = function (self)
-	return true
+	return not GameSettingsDevelopment.use_offline_backend
 end
 
 AccountManager.offline_mode = function (self)
-	return false
+	return GameSettingsDevelopment.use_offline_backend == true
 end
 
 AccountManager.has_fatal_error = function (self)

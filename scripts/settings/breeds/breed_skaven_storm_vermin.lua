@@ -273,6 +273,7 @@ local breed_data = {
 Breeds.skaven_storm_vermin = table.create_copy(Breeds.skaven_storm_vermin, breed_data)
 Breeds.skaven_storm_vermin_commander = table.create_copy(Breeds.skaven_storm_vermin_commander, breed_data)
 Breeds.skaven_storm_vermin_commander.behavior = "storm_vermin_commander"
+Breeds.skaven_storm_vermin_commander.killfeed_fold_with = "skaven_storm_vermin"
 local AttackIntensityPerDifficulty = {
 	sweep = {
 		easy = {

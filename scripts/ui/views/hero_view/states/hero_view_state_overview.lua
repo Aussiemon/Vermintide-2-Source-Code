@@ -13,6 +13,7 @@ require("scripts/ui/views/hero_view/windows/hero_window_panel_console")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout_inventory_console")
 require("scripts/ui/views/hero_view/windows/hero_window_loadout_console")
 require("scripts/ui/views/hero_view/windows/hero_window_character_info")
+require("scripts/ui/views/hero_view/windows/hero_window_character_selection_console")
 require("scripts/ui/views/hero_view/windows/hero_window_crafting_list_console")
 require("scripts/ui/views/hero_view/windows/hero_window_crafting_console")
 require("scripts/ui/views/hero_view/windows/hero_window_crafting_inventory_console")
@@ -21,6 +22,8 @@ require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_consol
 require("scripts/ui/views/hero_view/windows/hero_window_cosmetics_loadout_inventory_console")
 require("scripts/ui/views/hero_view/windows/hero_window_ingame_view")
 require("scripts/ui/views/hero_view/windows/hero_window_character_preview")
+require("scripts/ui/views/hero_view/windows/hero_window_item_customization")
+require("scripts/ui/views/hero_view/windows/hero_window_character_summary")
 
 local definitions = local_require("scripts/ui/views/hero_view/states/definitions/hero_view_state_overview_definitions")
 local widget_definitions = definitions.widgets
@@ -121,7 +124,7 @@ HeroViewStateOverview.on_enter = function (self, params)
 end
 
 HeroViewStateOverview._setup_menu_layout = function (self, params)
-	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout or params.state_params.force_ingame_menu
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or not UISettings.use_pc_menu_layout or params.state_params.force_ingame_menu
 
 	if use_gamepad_layout then
 		self._layout_settings = local_require("scripts/ui/views/hero_view/states/hero_window_layout_console")
@@ -216,6 +219,19 @@ end
 
 HeroViewStateOverview.window_input_service = function (self)
 	return (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+end
+
+HeroViewStateOverview.change_profile = function (self, profile_index, career_index)
+	self.profile_index = profile_index
+	self.hero_name = SPProfiles[profile_index].display_name
+	self.career_index = career_index
+	self._window_params.hero_name = self.hero_name
+	self._window_params.profile_index = self.profile_index
+	self._window_params.career_index = self.career_index
+end
+
+HeroViewStateOverview.currently_selected_profile = function (self)
+	return self.profile_index, self.career_index, self.hero_name
 end
 
 HeroViewStateOverview._close_window_at_index = function (self, window_index)
@@ -878,24 +894,26 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 
 	BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
 
-	if slot_type == "melee" or slot_type == "ranged" then
-		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
+	if not self:is_bot_career() then
+		if slot_type == "melee" or slot_type == "ranged" then
+			local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
-		inventory_extension:create_equipment_in_slot(slot_name, backend_id)
-	elseif slot_type == "hat" then
-		local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
+			inventory_extension:create_equipment_in_slot(slot_name, backend_id)
+		elseif slot_type == "hat" then
+			local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
-		attachment_extension:create_attachment_in_slot(slot_name, backend_id)
-	elseif slot_type == "trinket" or slot_type == "ring" or slot_type == "necklace" then
-		local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
+			attachment_extension:create_attachment_in_slot(slot_name, backend_id)
+		elseif slot_type == "trinket" or slot_type == "ring" or slot_type == "necklace" then
+			local attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 
-		attachment_extension:create_attachment_in_slot(slot_name, backend_id)
-	elseif slot_type == "frame" then
-		local frame_data = ItemHelper.get_template_by_item_name(item_data.key)
-		local frame_name = frame_data.name
-		local cosmetic_system = Managers.state.entity:system("cosmetic_system")
+			attachment_extension:create_attachment_in_slot(slot_name, backend_id)
+		elseif slot_type == "frame" then
+			local frame_data = ItemHelper.get_template_by_item_name(item_data.key)
+			local frame_name = frame_data.name
+			local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 
-		cosmetic_system:set_equipped_frame(unit, frame_name)
+			cosmetic_system:set_equipped_frame(unit, frame_name)
+		end
 	end
 
 	self.loadout_sync_id = self.loadout_sync_id + 1
@@ -908,6 +926,18 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 	end
 
 	Managers.state.event:trigger("event_set_loadout_items")
+end
+
+HeroViewStateOverview.is_bot_career = function (self)
+	local local_player = Managers.player:local_player()
+	local current_profile_index = local_player:profile_index()
+	local current_career_index = local_player:career_index()
+
+	return current_profile_index ~= self.profile_index or current_career_index ~= self.career_index, self.profile_index, self.career_index
+end
+
+HeroViewStateOverview.get_career_data = function (self)
+	return self.profile_index, self.career_index
 end
 
 HeroViewStateOverview.update_talent_sync = function (self)

@@ -31,6 +31,7 @@ CareerSettings.dr_engineer = {
 	portrait_image = "unit_frame_portrait_bardin_engineer",
 	portrait_thumbnail = "portrait_bardin_engineer_thumbnail",
 	sort_order = 1,
+	required_dlc = "cog",
 	breed = PlayerBreeds.hero_dr_engineer,
 	item_types = {},
 	activated_ability = ActivatedAbilitySettings.dr_4,

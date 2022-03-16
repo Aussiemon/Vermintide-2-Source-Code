@@ -79,11 +79,13 @@ NewsFeedTemplates = {
 		infinite = false,
 		title = "news_feed_equipment_title",
 		condition_func = function (params)
-			if ItemHelper.has_new_backend_ids_by_slot_type("trinket") then
+			local rarities_to_ignore = params.rarities_to_ignore
+
+			if ItemHelper.has_new_backend_ids_by_slot_type("trinket", rarities_to_ignore) then
 				return true
-			elseif ItemHelper.has_new_backend_ids_by_slot_type("ring") then
+			elseif ItemHelper.has_new_backend_ids_by_slot_type("ring", rarities_to_ignore) then
 				return true
-			elseif ItemHelper.has_new_backend_ids_by_slot_type("necklace") then
+			elseif ItemHelper.has_new_backend_ids_by_slot_type("necklace", rarities_to_ignore) then
 				return true
 			else
 				local hero_name = params.hero_name
@@ -94,9 +96,9 @@ NewsFeedTemplates = {
 				for _, career in ipairs(careers) do
 					local career_name = career.name
 
-					if ItemHelper.has_new_backend_ids_by_career_name_and_slot_type(career_name, "melee") then
+					if ItemHelper.has_new_backend_ids_by_career_name_and_slot_type(career_name, "melee", rarities_to_ignore) then
 						return true
-					elseif ItemHelper.has_new_backend_ids_by_career_name_and_slot_type(career_name, "ranged") then
+					elseif ItemHelper.has_new_backend_ids_by_career_name_and_slot_type(career_name, "ranged", rarities_to_ignore) then
 						return true
 					end
 				end

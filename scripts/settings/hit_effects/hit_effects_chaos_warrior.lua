@@ -1825,9 +1825,7 @@ HitEffectsChaosWarrior = {
 				"aoe_poison_dot"
 			}
 		},
-		animations = {
-			"hit_reaction"
-		}
+		animations = {}
 	},
 	arrow_poison_dot_death = {
 		flow_event = "poisoned",

@@ -596,7 +596,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			is_final_objective = true
 		end
 
-		Managers.state.game_mode:game_lost()
+		Managers.state.game_mode:game_lost(player)
 		print("Game lost")
 
 		self.parent.parent.loading_context.saved_scoreboard_stats = nil

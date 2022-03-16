@@ -497,7 +497,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -518,7 +518,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -539,7 +539,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -560,7 +560,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -576,7 +576,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -597,7 +597,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -613,7 +613,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -634,7 +634,7 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
 			}
 		}
 	},
@@ -655,7 +655,22 @@ local generic_input_actions = {
 			{
 				input_action = "back",
 				priority = 3,
-				description_text = "input_description_close"
+				description_text = "input_description_back"
+			},
+			{
+				input_action = "right_stick_press",
+				priority = 4,
+				description_text = "input_description_mark_delete"
+			},
+			{
+				input_action = "special_1",
+				priority = 5,
+				description_text = "input_description_delete_selection"
+			},
+			{
+				input_action = "refresh",
+				priority = 6,
+				description_text = "input_description_clear_all"
 			}
 		}
 	},

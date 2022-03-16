@@ -287,12 +287,12 @@ local widgets = {
 	custom_game_description = UIWidgets.create_simple_text(Localize("start_game_window_specific_desc"), "custom_game_description", nil, nil, custom_game_description_style),
 	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
 	difficulty_setting = UIWidgets.create_start_game_console_setting_button("game_option_2", Localize("start_game_window_difficulty"), nil, "difficulty_option_1", nil, scenegraph_definition.game_option_2.size, true),
-	play_button_console = UIWidgets.create_start_game_console_play_button("play_button_console"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_play"))
 }
 local selector_input_definition = {
 	"mission_setting",
-	"difficulty_setting"
+	"difficulty_setting",
+	"play_button"
 }
 
 return {

@@ -641,6 +641,8 @@ end
 
 local PUSHED_COOLDOWN = 2
 local BLOCK_BROKEN_COOLDOWN = 4
+local BOT_INTERACT_DIST = 2.4
+local BOT_INTERACT_DIST_SQ = BOT_INTERACT_DIST * BOT_INTERACT_DIST
 
 local function is_safe_to_block_interact(status_extension, interaction_extension, wanted_interaction_type)
 	local t = Managers.time:time("game")
@@ -733,7 +735,7 @@ BTConditions.can_revive = function (blackboard)
 		local ally_distance = blackboard.ally_distance
 		local is_interacting, interaction_type = interaction_extension:is_interacting()
 
-		if is_interacting and interaction_type == "revive" and ally_distance < 1 then
+		if is_interacting and interaction_type == "revive" and ally_distance <= BOT_INTERACT_DIST then
 			return true
 		end
 
@@ -745,6 +747,10 @@ BTConditions.can_revive = function (blackboard)
 			return true
 		end
 	end
+end
+
+BTConditions.is_there_threat_to_aid = function (self_unit, proximite_enemies, force_aid)
+	return is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
 end
 
 BTConditions.can_heal_player = function (blackboard)
@@ -771,7 +777,7 @@ BTConditions.can_heal_player = function (blackboard)
 		local ally_speed_sq = Vector3.length_squared(ally_velocity)
 		local ally_distance = blackboard.ally_distance
 
-		if can_interact_with_ally and (ally_destination_reached or (ally_speed_sq > 0.04000000000000001 and ally_distance < 2)) then
+		if can_interact_with_ally and (ally_destination_reached or (ally_speed_sq > 0.04000000000000001 and ally_distance <= BOT_INTERACT_DIST)) then
 			return true
 		end
 	end
@@ -791,7 +797,7 @@ BTConditions.can_help_in_need_player = function (blackboard, args)
 		local ally_speed_sq = Vector3.length_squared(ally_velocity)
 		local ally_distance = blackboard.ally_distance
 
-		if can_interact_with_ally and (ally_destination_reached or (ally_speed_sq > 0.04000000000000001 and ally_distance < 2)) then
+		if can_interact_with_ally and (ally_destination_reached or (ally_speed_sq > 0.04000000000000001 and ally_distance <= BOT_INTERACT_DIST)) then
 			return true
 		end
 	end
@@ -946,7 +952,7 @@ BTConditions.has_priority_or_opportunity_target = function (blackboard)
 	end
 
 	local dist = 40
-	local result = (target == blackboard.priority_target_enemy and blackboard.priority_target_distance < dist) or (target == blackboard.urgent_target_enemy and blackboard.urgent_target_distance < dist) or (target == blackboard.opportunity_target_enemy and blackboard.opportunity_target_distance < dist)
+	local result = (target == blackboard.priority_target_enemy and blackboard.priority_target_distance < dist) or (not blackboard.revive_with_urgent_target and target == blackboard.urgent_target_enemy and blackboard.urgent_target_distance < dist) or (target == blackboard.opportunity_target_enemy and blackboard.opportunity_target_distance < dist)
 
 	return result
 end

@@ -59,8 +59,6 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 	end
 
 	if self.state == "shooting" then
-		local procced = self:_check_extra_shot_proc(self.owner_buff_extension)
-		local extra_shot_perk = procced and not current_action.career_skill
 		local add_spread = not self.extra_buff_shot
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -68,6 +66,8 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 				rumble_effect = "bow_fire"
 			})
 		end
+
+		local has_extra_shot = not current_action.career_skill and self:_update_extra_shots(self.owner_buff_extension, 1)
 
 		self:fire(current_action, add_spread)
 
@@ -83,7 +83,7 @@ ActionBow.client_owner_post_update = function (self, dt, t, world, can_damage)
 			end
 		end
 
-		if extra_shot_perk then
+		if has_extra_shot then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.1
 			self.extra_buff_shot = true
@@ -120,8 +120,12 @@ ActionBow.finish = function (self, reason, data)
 
 		self.state = "shot"
 
-		self:reload(current_action)
-	elseif self.state == "shot" and (reason == "stunned" or reason == "charged" or reason == "interrupted") then
+		if self.ammo_extension and not self.extra_buff_shot then
+			local ammo_usage = current_action.ammo_usage
+
+			self.ammo_extension:use_ammo(ammo_usage)
+		end
+
 		self:reload(current_action)
 	end
 

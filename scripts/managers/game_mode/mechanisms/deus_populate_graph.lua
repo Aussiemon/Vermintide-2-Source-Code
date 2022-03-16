@@ -629,14 +629,19 @@ local function spread_curse(context, working_graph)
 	local hot_spot_count = context.random_generator(context.config.CURSES_HOT_SPOTS_MIN_COUNT, context.config.CURSES_HOT_SPOTS_MAX_COUNT)
 	local nodes_above_progress = get_nodes_above_progress(working_graph, context.config.CURSES_MIN_PROGRESS)
 	local possible_cursed_nodes = filter_node_types(nodes_above_progress, context.config.CURSEABLE_NODE_TYPES)
-	local squared_god_range = context.config.CURSES_HOT_SPOT_MAX_RANGE * context.config.CURSES_HOT_SPOT_MAX_RANGE
-	possible_cursed_nodes = spread_curse_on_hot_spot(context, working_graph, context.dominant_god, "final", squared_god_range, possible_cursed_nodes)
+
+	if not context.config.NO_DOMINANT_GOD then
+		local squared_god_range = context.config.CURSES_HOT_SPOT_MAX_RANGE * context.config.CURSES_HOT_SPOT_MAX_RANGE
+		possible_cursed_nodes = spread_curse_on_hot_spot(context, working_graph, context.dominant_god, "final", squared_god_range, possible_cursed_nodes)
+	end
+
 	local remaining_gods = {}
+	local available_gods = context.config.AVAILABLE_GODS
 
 	for i = 2, hot_spot_count, 1 do
 		if #remaining_gods == 0 then
-			for _, god in ipairs(context.config.AVAILABLE_GODS) do
-				if god ~= context.dominant_god then
+			for _, god in ipairs(available_gods) do
+				if context.config.NO_DOMINANT_GOD or god ~= context.dominant_god then
 					remaining_gods[#remaining_gods + 1] = god
 				end
 			end

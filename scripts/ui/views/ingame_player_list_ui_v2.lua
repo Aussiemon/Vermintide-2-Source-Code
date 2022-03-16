@@ -1044,11 +1044,11 @@ IngamePlayerListUI._set_active = function (self, active)
 				matchmaking_type = "lb_game_type_custom"
 			end
 
-			mechanism_type_widget.content.text = string.upper(Localize("lb_game_type_weave"))
+			mechanism_type_widget.content.text = Utf8.upper(Localize("lb_game_type_weave"))
 			mission_type_widget.content.text = Localize(matchmaking_type)
 		else
 			local mechanism_settings = MechanismSettings[mechanism_name]
-			mechanism_type_widget.content.text = string.upper(Localize(mechanism_settings.display_name))
+			mechanism_type_widget.content.text = Utf8.upper(Localize(mechanism_settings.display_name))
 
 			if quick_game == "true" then
 				mission_type_widget.content.text = Localize("lb_game_type_quick_play")
@@ -1277,6 +1277,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local value = Managers.state.difficulty:get_difficulty_value_from_table(curse_settings_value)
 			local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(value, "curse_protection")
 			local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+			cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 			local active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 			local widget = self._player_list_widgets[i]
 			local style = widget.style
@@ -1309,7 +1310,8 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 				local privacy_level = player:get_data("playerlist_build_privacy")
 
 				if privacy_level == PrivacyLevels.friends then
-					is_build_visible = Friends.in_category(player_data.peer_id, Friends.FRIEND_FLAG)
+					local Friends = rawget(_G, "Friends")
+					is_build_visible = Friends and Friends.in_category(player_data.peer_id, Friends.FRIEND_FLAG)
 				elseif privacy_level == PrivacyLevels.private then
 					is_build_visible = false
 				end

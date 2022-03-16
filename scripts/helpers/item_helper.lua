@@ -36,7 +36,7 @@ local stats_localization_keys = {
 ItemHelper.get_template_by_item_name = function (name)
 	local item_data = ItemMasterList[name]
 
-	assert(item_data, "Requested template for item %s which does not exist.", name)
+	fassert(item_data, "Requested template for item %s which does not exist.", name)
 
 	local slot_type = item_data.slot_type
 	local template_name = item_data.template
@@ -44,7 +44,7 @@ ItemHelper.get_template_by_item_name = function (name)
 	template_name = temporary_template or template_name
 	local template = item_type_templates[slot_type][template_name]
 
-	assert(template, "No template by name %s found for item_data %s.", template_name, name)
+	fassert(template, "No template by name %s found for item_data %s.", template_name, name)
 
 	return template
 end
@@ -109,7 +109,7 @@ ItemHelper.has_new_sign_in_reward = function (reward_id)
 	end
 end
 
-ItemHelper.mark_backend_id_as_new = function (backend_id, item)
+ItemHelper.mark_backend_id_as_new = function (backend_id, item, skip_autosave)
 	local item_interface = Managers.backend:get_interface("items")
 	local item = item or item_interface:get_item_from_id(backend_id)
 	local item_data = item.data
@@ -130,6 +130,10 @@ ItemHelper.mark_backend_id_as_new = function (backend_id, item)
 
 	PlayerData.new_item_ids = new_item_ids
 	PlayerData.new_item_ids_by_career = new_item_ids_by_career
+
+	if skip_autosave then
+		return
+	end
 
 	Managers.save:auto_save(SaveFileName, SaveData, nil)
 end
@@ -165,7 +169,7 @@ ItemHelper.is_new_backend_id = function (backend_id)
 	return new_item_ids and new_item_ids[backend_id]
 end
 
-ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_name, slot_type_name)
+ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_name, slot_type_name, rarities_to_ignore)
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
 	for career, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
@@ -174,6 +178,40 @@ ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_n
 				if slot_type_name == slot_type then
 					for item_backend_id, value in pairs(backend_ids) do
 						if value then
+							if rarities_to_ignore then
+								local item = BackendUtils.get_item_from_masterlist(item_backend_id)
+
+								if not rarities_to_ignore[item.rarity] then
+									return true
+								end
+							else
+								return true
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return false
+end
+
+ItemHelper.has_new_backend_ids_by_slot_type = function (slot_type_name, rarities_to_ignore)
+	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
+
+	for career_name, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
+		for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
+			if slot_type_name == slot_type then
+				for item_backend_id, value in pairs(backend_ids) do
+					if value then
+						if rarities_to_ignore then
+							local item = BackendUtils.get_item_from_masterlist(item_backend_id)
+
+							if not rarities_to_ignore[item.rarity] then
+								return true
+							end
+						else
 							return true
 						end
 					end
@@ -185,25 +223,7 @@ ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_n
 	return false
 end
 
-ItemHelper.has_new_backend_ids_by_slot_type = function (slot_type_name)
-	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
-
-	for career_name, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
-		for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
-			if slot_type_name == slot_type then
-				for item_backend_id, value in pairs(backend_ids) do
-					if value then
-						return true
-					end
-				end
-			end
-		end
-	end
-
-	return false
-end
-
-ItemHelper.has_new_backend_ids_by_career_name = function (career_name)
+ItemHelper.has_new_backend_ids_by_career_name = function (career_name, rarities_to_ignore)
 	local new_item_ids_by_career = PlayerData.new_item_ids_by_career
 
 	for career, item_ids_by_slot_type in pairs(new_item_ids_by_career) do
@@ -211,7 +231,15 @@ ItemHelper.has_new_backend_ids_by_career_name = function (career_name)
 			for slot_type, backend_ids in pairs(item_ids_by_slot_type) do
 				for item_backend_id, value in pairs(backend_ids) do
 					if value then
-						return true
+						if rarities_to_ignore then
+							local item = BackendUtils.get_item_from_masterlist(item_backend_id)
+
+							if not rarities_to_ignore[item.rarity] then
+								return true
+							end
+						else
+							return true
+						end
 					end
 				end
 			end

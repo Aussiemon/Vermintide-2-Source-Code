@@ -71,14 +71,14 @@ ActivatedAbilitySettings = {
 		{
 			description = "career_active_desc_we_1_2",
 			display_name = "career_active_name_we_1",
-			cooldown = 60,
+			cooldown = 70,
 			icon = "kerillian_shade_activated_ability",
 			ability_class = CareerAbilityWEShade
 		},
 		{
 			description = "career_active_desc_we_1_2",
 			display_name = "career_active_name_we_1",
-			cooldown = 60,
+			cooldown = 70,
 			icon = "kerillian_shade_activated_ability",
 			ability_class = CareerAbilityWEShadeDash
 		}
@@ -320,20 +320,30 @@ PassiveAbilitySettings = {
 		}
 	},
 	we_1 = {
-		description = "career_passive_desc_we_1a",
-		display_name = "career_passive_name_we_1",
+		description = "career_passive_desc_we_1b_2",
+		display_name = "career_passive_name_we_1b",
 		icon = "kerillian_shade_passive",
 		buffs = {
 			"kerillian_shade_passive",
+			"kerillian_shade_passive_sfx",
 			"kerillian_shade_passive_backstab_killing_blow",
-			"kerillian_shade_end_activated_ability",
+			"kerillian_shade_passive_stealth_parry",
+			"kerillian_shade_stealth_crits",
 			"kerillian_shade_ability_cooldown_on_hit",
 			"kerillian_shade_ability_cooldown_on_damage_taken"
 		},
 		perks = {
 			{
-				display_name = "career_passive_name_we_1b",
-				description = "career_passive_desc_we_1b"
+				display_name = "career_passive_name_we_1_2",
+				description = "career_passive_desc_we_1a_2"
+			},
+			{
+				display_name = "career_passive_name_we_1d",
+				description = "career_passive_desc_we_1d"
+			},
+			{
+				display_name = "career_passive_name_we_1",
+				description = "career_passive_desc_we_1a_3"
 			}
 		}
 	},

@@ -107,13 +107,6 @@ IngameVotingUI.start_vote = function (self, active_voting)
 	end
 
 	self.background.content.info_text = title_text
-	local info_text_style = self.background.style.info_text
-	local font = UIFontByResolution(info_text_style)
-	local width = self.ui_scenegraph.info_text.size[1] * RESOLUTION_LOOKUP.inv_scale
-	local lines = UIRenderer.word_wrap(self.ui_top_renderer, title_text, font[1], info_text_style.font_size, width)
-	local text_width, text_height = UIRenderer.text_size(self.ui_top_renderer, title_text, font[1], info_text_style.font_size)
-	text_height = text_height * RESOLUTION_LOOKUP.scale
-	local size_y = math.max(text_height * #lines, 53)
 	self.voters = {}
 	self.vote_results = {
 		[1.0] = 0,
@@ -138,7 +131,7 @@ IngameVotingUI.start_vote = function (self, active_voting)
 	self.option_yes.content.result_text = tostring(0)
 	self.option_no.content.result_text = tostring(0)
 	self.gamepad_active = self.input_manager:is_device_active("gamepad")
-	self._is_window_minimized = Window.is_minimized()
+	self.is_minimized = RESOLUTION_LOOKUP.minimized
 	self.vote_successful = nil
 
 	self:play_sound("play_gui_ban_popup")
@@ -294,9 +287,20 @@ IngameVotingUI.update = function (self, dt, t)
 		self:update_vote(voting_manager.active_voting.votes)
 
 		if not self.has_voted then
+			local resetup_option_inputs = false
+
+			if self.is_minimized and not RESOLUTION_LOOKUP.minimized then
+				resetup_option_inputs = true
+			end
+
 			local gamepad_active = self.input_manager:is_device_active("gamepad")
 
 			if self.gamepad_active ~= gamepad_active then
+				self.gamepad_active = gamepad_active
+				resetup_option_inputs = true
+			end
+
+			if resetup_option_inputs then
 				local active_voting = voting_manager.active_voting
 				local vote_template = active_voting and active_voting.template
 
@@ -307,26 +311,6 @@ IngameVotingUI.update = function (self, dt, t)
 					self:setup_option_input(self.option_no, vote_options[2])
 
 					self.gamepad_active = gamepad_active
-				end
-			end
-		end
-
-		if self._is_window_minimized then
-			local force_update = true
-
-			UPDATE_RESOLUTION_LOOKUP(force_update)
-
-			self._is_window_minimized = Window.is_minimized()
-
-			if not self._is_window_minimized then
-				local active_voting = voting_manager.active_voting
-				local vote_template = active_voting and active_voting.template
-
-				if vote_template then
-					local vote_options = vote_template.vote_options
-
-					self:setup_option_input(self.option_yes, vote_options[1])
-					self:setup_option_input(self.option_no, vote_options[2])
 				end
 			end
 		end

@@ -96,8 +96,15 @@ MusicPlayer.update = function (self, flags, game_object_id)
 			local state_id = GameSession.game_object_field(session, game_object_id, group)
 
 			if type(state_id) == "table" then
-				local local_party_id = Managers.player:local_player():get_party().party_id
-				state_id = state_id[local_party_id]
+				local local_player = Managers.player:local_player()
+				local local_party = local_player:get_party()
+
+				if local_party then
+					local local_party_id = local_party.party_id
+					state_id = state_id[local_party_id]
+				else
+					state_id = nil
+				end
 			end
 
 			if state_id then

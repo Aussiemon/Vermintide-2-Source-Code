@@ -135,10 +135,55 @@ DeedManager.hot_join_sync = function (self, peer_id)
 	self:_send_rpc_to_client("rpc_select_deed", peer_id, item_name_id, owner_peer_id)
 end
 
+DeedManager.delete_marked_deeds = function (self, deed_list)
+	local item_interface = Managers.backend:get_interface("items")
+	local deed_removal_id = item_interface:delete_marked_deeds(deed_list)
+	self._deed_removal_id = deed_removal_id
+
+	return deed_removal_id
+end
+
+DeedManager.is_deleting_deeds = function (self)
+	return (self._deed_removal_id and true) or false
+end
+
+DeedManager._update_deed_deletion = function (self)
+	local deed_removal_id = self._deed_removal_id
+
+	if deed_removal_id then
+		local item_interface = Managers.backend:get_interface("items")
+		local removal_completed = item_interface:has_deleted_deeds(deed_removal_id)
+
+		if removal_completed then
+			self._deed_removal_id = nil
+		end
+	end
+end
+
+DeedManager.can_delete_deeds = function (self, current_deeds, marked_deeds)
+	local item_interface = Managers.backend:get_interface("items")
+	local can_delete, remaining_deeds, deletable_deeds = item_interface:can_delete_deeds(current_deeds, marked_deeds)
+	local num_marked_deeds, num_deletable_deeds = nil
+	num_marked_deeds = (marked_deeds and #marked_deeds) or 0
+	num_deletable_deeds = (deletable_deeds and #deletable_deeds) or 0
+
+	if can_delete and num_deletable_deeds ~= num_marked_deeds then
+		return remaining_deeds, deletable_deeds, "Not all marked deeds could be deleted."
+	end
+
+	if not can_delete then
+		return nil, nil, "No deeds could be deleted!"
+	end
+
+	return remaining_deeds, deletable_deeds, nil
+end
+
 DeedManager.update = function (self, dt)
 	if self:has_deed() then
 		self:_update_owner(dt)
 	end
+
+	self:_update_deed_deletion()
 end
 
 DeedManager.select_deed = function (self, backend_id, peer_id)

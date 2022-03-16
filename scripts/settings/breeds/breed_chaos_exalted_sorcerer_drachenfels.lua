@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local base_health = 850
 local breed_data = {
 	race = "chaos",
@@ -7,9 +8,10 @@ local breed_data = {
 	is_bot_aid_threat = true,
 	hit_mass_count = 100,
 	poison_resistance = 100,
-	aoe_radius = 1,
+	lord_damage_reduction = true,
 	armored_on_no_damage = true,
 	bot_hitbox_radius_approximation = 0.8,
+	aoe_radius = 1,
 	animation_sync_rpc = "rpc_sync_anim_state_7",
 	exchange_order = 2,
 	target_selection = "pick_rat_ogre_target_with_weights",
@@ -38,7 +40,7 @@ local breed_data = {
 	run_speed = 6.5,
 	awards_positive_reinforcement_message = true,
 	aim_template = "chaos_marauder",
-	lord_damage_reduction = true,
+	combat_music_state = "no_boss",
 	hit_reaction = "ai_default",
 	smart_targeting_outer_width = 0.7,
 	hit_effect_template = "HitEffectsChaosExaltedSorcererDrachenfels",
@@ -83,15 +85,15 @@ local breed_data = {
 		base_health * 8
 	},
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
-		if blackboard.stagger_count >= 3 then
-			stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
+		if stagger_types.heavy <= blackboard.stagger_count then
+			stagger_type = stagger_types.none
 			blackboard.stagger_ignore_anim_cb = true
 		else
 			blackboard.stagger_ignore_anim_cb = false
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	debug_color = {
 		255,
@@ -415,10 +417,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 10,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -434,10 +436,10 @@ local pushed_data_continuous = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 10,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -577,11 +579,11 @@ local action_data = {
 		push_ai = {
 			stagger_distance = 1.5,
 			stagger_impact = {
-				6,
-				6,
-				0,
-				0,
-				6
+				stagger_types.explosion,
+				stagger_types.explosion,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion
 			},
 			stagger_duration = {
 				3,

@@ -194,6 +194,11 @@ HeroWindowLoadoutInventoryConsole.create_ui_elements = function (self, params, o
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
+
+	widgets_by_name.item_tooltip.content.profile_index = self.params.profile_index
+	widgets_by_name.item_tooltip.content.career_index = self.params.career_index
+	widgets_by_name.item_tooltip_compare.content.profile_index = self.params.profile_index
+	widgets_by_name.item_tooltip_compare.content.career_index = self.params.career_index
 end
 
 HeroWindowLoadoutInventoryConsole.set_focus = function (self, focused)
@@ -330,9 +335,9 @@ HeroWindowLoadoutInventoryConsole._is_button_hovered = function (self, widget)
 end
 
 HeroWindowLoadoutInventoryConsole._handle_gamepad_input = function (self, dt, t)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 
@@ -573,10 +578,10 @@ HeroWindowLoadoutInventoryConsole._set_gamepad_input_buttons_visibility = functi
 end
 
 HeroWindowLoadoutInventoryConsole._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local force_update = self.gamepad_active_last_frame == nil
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 			local item_grid = self._item_grid

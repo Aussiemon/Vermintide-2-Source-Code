@@ -368,12 +368,12 @@ function flow_callback_link_objects_in_units_and_store(params)
 
 		World.link_unit(world, childunit, childnodeindex, parentunit, parentnodeindex)
 
-		if params.parent_lod_object and params.child_lod_object then
+		if params.parent_lod_object and params.child_lod_object and Unit.has_lod_object(parentunit, params.parent_lod_object) and Unit.has_lod_object(childunit, params.child_lod_object) then
 			local parent_lod_object = Unit.lod_object(parentunit, params.parent_lod_object)
 			local child_lod_object = Unit.lod_object(childunit, params.child_lod_object)
 
 			LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-			LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+			World.link_unit(world, childunit, LODObject.node(child_lod_object), parentunit, LODObject.node(parent_lod_object))
 		end
 	end
 
@@ -447,7 +447,7 @@ function flow_callback_attach_unit(params)
 		local child_lod_object = Unit.lod_object(childunit, index_offset)
 
 		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-		LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+		World.link_unit(world, childunit, LODObject.node(child_lod_object), parentunit, LODObject.node(parent_lod_object))
 	end
 
 	if params.store_in_parent then
@@ -460,73 +460,6 @@ function flow_callback_attach_unit(params)
 	return {
 		linked = true
 	}
-end
-
-function flow_callback_attach_player_hat(params)
-	local parent_unit = params.unit
-	local world = Unit.world(parent_unit)
-	local source_node_index = Unit.node(parent_unit, "a_hat")
-	item_position = Unit.world_position(parent_unit, source_node_index)
-	item_rotation = Unit.world_rotation(parent_unit, source_node_index)
-	local child_unit = World.spawn_unit(world, params.hat, item_position, item_rotation)
-	node_linking_data = Unit.get_data(child_unit, "node_linking") or nil
-
-	if not node_linking_data then
-		print("Missing node link data in unit %s", tostring(params.hat))
-
-		return
-	end
-
-	local node_link_table = AttachmentNodeLinking
-	node_link_table = node_link_table[node_linking_data] or nil
-	node_link_table = node_link_table.slot_hat or nil
-
-	if not node_link_table then
-		print("No attachment node linking with name %s", node_linking_data)
-
-		return
-	end
-
-	link_attachment(node_link_table, world, child_unit, parent_unit)
-
-	node_linking_event = Unit.get_data(child_unit, "equip_event") or nil
-
-	if node_linking_event then
-		local unit_attachments = Unit.get_data(parent_unit, "flow_unit_attachments") or {}
-
-		for i = 1, #unit_attachments, 1 do
-			Unit.flow_event(unit_attachments[i], node_linking_event)
-		end
-	else
-		print("Missing equip event in unit %s", tostring(params.hat))
-	end
-
-	local index_offset = Script.index_offset()
-
-	if Unit.num_lod_objects(parent_unit) ~= 0 and Unit.num_lod_objects(child_unit) ~= 0 then
-		local parent_lod_object = Unit.lod_object(parent_unit, index_offset)
-		local child_lod_object = Unit.lod_object(child_unit, index_offset)
-
-		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-		LODObject.set_orientation_node(child_lod_object, parent_unit, LODObject.node(parent_lod_object))
-	end
-
-	local hat_attachments = Unit.get_data(parent_unit, "flow_hat_attachments") or {}
-
-	table.insert(hat_attachments, child_unit)
-	Unit.set_data(parent_unit, "flow_hat_attachments", hat_attachments)
-end
-
-function flow_callback_remove_player_hat(params)
-	local parent_unit = params.unit
-	local world = Unit.world(parent_unit)
-	local hat_attachments = Unit.get_data(parent_unit, "flow_hat_attachments") or {}
-
-	for i = 1, #hat_attachments, 1 do
-		World.destroy_unit(world, hat_attachments[i])
-	end
-
-	Unit.set_data(parent_unit, "flow_hat_attachments", {})
 end
 
 function flow_callback_attach_player_item(params)
@@ -555,14 +488,14 @@ function flow_callback_attach_player_item(params)
 					local weapon_template = Weapons[item.template]
 
 					if item.right_hand_unit ~= nil then
-						item_unit = attach_player_item(parent_unit, item.right_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+						item_unit = attach_player_item(parent_unit, item.right_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded, false)
 					end
 
 					if item.left_hand_unit ~= nil then
 						if item.left_hand_unit ~= item.ammo_unit then
-							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.left_hand_attachment_node_linking.third_person, params.unwielded)
+							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.left_hand_attachment_node_linking.third_person, params.unwielded, false)
 						else
-							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded)
+							item_unit = attach_player_item(parent_unit, item.left_hand_unit .. "_3p", weapon_template.right_hand_attachment_node_linking.third_person, params.unwielded, false)
 						end
 					end
 
@@ -570,7 +503,7 @@ function flow_callback_attach_player_item(params)
 						local projectile_units = ProjectileUnits
 
 						if projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name ~= nil then
-							item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, params.unwielded)
+							item_unit = attach_player_item(parent_unit, projectile_units[weapon_template.actions.action_one.default.projectile_info.projectile_units_template].dummy_linker_unit_name, weapon_template.ammo_data.ammo_unit_attachment_node_linking.third_person, params.unwielded, false)
 						end
 					end
 
@@ -584,7 +517,7 @@ function flow_callback_attach_player_item(params)
 				if item.unit ~= nil then
 					if Attachments ~= nil then
 						local hat_template = Attachments[item.template]
-						item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, nil)
+						item_unit = attach_player_item(parent_unit, item.unit, hat_template.attachment_node_linking.slot_hat, nil, true)
 						equip_event = Unit.get_data(item_unit, "equip_event") or hat_template.show_attachments_event or nil
 						material_switches = nil
 
@@ -609,6 +542,12 @@ function flow_callback_attach_player_item(params)
 								end
 							end
 						end
+
+						local skin_events = Unit.get_data(parent_unit, "skin_events") or {}
+
+						for _, skin_event in pairs(skin_events) do
+							Unit.flow_event(item_unit, skin_event)
+						end
 					else
 						print("SKIPPED PLAYER ATTACHMENT: Missing Attachments table")
 					end
@@ -618,12 +557,19 @@ function flow_callback_attach_player_item(params)
 					local skin_template = Cosmetics[params.item]
 
 					if skin_template.third_person_attachment ~= nil then
-						item_unit = attach_player_item(parent_unit, skin_template.third_person_attachment.unit, skin_template.third_person_attachment.attachment_node_linking, nil)
+						item_unit = attach_player_item(parent_unit, skin_template.third_person_attachment.unit, skin_template.third_person_attachment.attachment_node_linking, nil, true)
 
 						if skin_template.material_changes ~= nil then
 							for slot_name, material_name in pairs(skin_template.material_changes.third_person) do
 								Unit.set_material(item_unit, slot_name, material_name)
 							end
+						end
+
+						if skin_template.equip_hat_event ~= nil then
+							local skin_events = Unit.get_data(parent_unit, "skin_events") or {}
+
+							table.insert(skin_events, skin_template.equip_hat_event)
+							Unit.set_data(parent_unit, "skin_events", skin_events)
 						end
 
 						if Unit.has_animation_state_machine(item_unit) and Unit.has_animation_event(item_unit, "enable") then
@@ -648,7 +594,7 @@ function flow_callback_attach_player_item(params)
 	}
 end
 
-function attach_player_item(parent_unit, child_unit_name, node_link_template, unwielded)
+function attach_player_item(parent_unit, child_unit_name, node_link_template, unwielded, link_lods)
 	local index_offset = Script.index_offset()
 
 	if unwieled then
@@ -681,12 +627,12 @@ function attach_player_item(parent_unit, child_unit_name, node_link_template, un
 		World.link_unit(world, child_unit, child_node_index, parent_unit, parent_node_index)
 	end
 
-	if Unit.num_lod_objects(parent_unit) ~= 0 and Unit.num_lod_objects(child_unit) ~= 0 then
+	if link_lods and Unit.num_lod_objects(parent_unit) ~= 0 and Unit.num_lod_objects(child_unit) ~= 0 then
 		local parent_lod_object = Unit.lod_object(parent_unit, index_offset)
 		local child_lod_object = Unit.lod_object(child_unit, index_offset)
 
 		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-		LODObject.set_orientation_node(child_lod_object, parent_unit, LODObject.node(parent_lod_object))
+		World.link_unit(world, child_unit, LODObject.node(child_lod_object), parent_unit, LODObject.node(parent_lod_object))
 	end
 
 	local item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
@@ -1526,12 +1472,12 @@ function flow_callback_link_objects_in_units(params)
 
 		World.link_unit(world, childunit, childnodeindex, parentunit, parentnodeindex)
 
-		if params.parent_lod_object and params.child_lod_object then
+		if params.parent_lod_object and params.child_lod_object and Unit.has_lod_object(parentunit, params.parent_lod_object) and Unit.has_lod_object(childunit, params.child_lod_object) then
 			local parent_lod_object = Unit.lod_object(parentunit, params.parent_lod_object)
 			local child_lod_object = Unit.lod_object(childunit, params.child_lod_object)
 
 			LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-			LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+			World.link_unit(world, childunit, LODObject.node(child_lod_object), parentunit, LODObject.node(parent_lod_object))
 		end
 	end
 end
@@ -1677,6 +1623,8 @@ function split(text, sep)
 end
 
 function link_attachment(attachment_node_link, world, target, source)
+	local index_offset = Script.index_offset()
+
 	for i, attachment_nodes in ipairs(attachment_node_link) do
 		local source_node = attachment_nodes.source
 		local target_node = attachment_nodes.target
@@ -1684,6 +1632,14 @@ function link_attachment(attachment_node_link, world, target, source)
 		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node + 1
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
+
+		if Unit.num_lod_objects(source) ~= 0 and Unit.num_lod_objects(target) ~= 0 then
+			local owner_lod_object = Unit.lod_object(source, index_offset)
+			local attachment_lod_object = Unit.lod_object(target, index_offset)
+
+			LODObject.set_bounding_volume(attachment_lod_object, LODObject.bounding_volume(owner_lod_object))
+			World.link_unit(world, target, LODObject.node(attachment_lod_object), source, LODObject.node(owner_lod_object))
+		end
 	end
 end
 

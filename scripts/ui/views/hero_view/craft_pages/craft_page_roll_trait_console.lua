@@ -36,6 +36,7 @@ CraftPageRollTraitConsole.on_enter = function (self, params, settings)
 	self.profile_index = params.profile_index
 	self.wwise_world = params.wwise_world
 	self.settings = settings
+	self._recipe_name = settings.name
 	self._animations = {}
 
 	self:create_ui_elements(params)
@@ -283,7 +284,7 @@ CraftPageRollTraitConsole._handle_input = function (self, dt, t)
 			items[#items + 1] = backend_id
 		end
 
-		local recipe_available = parent:craft(items)
+		local recipe_available = parent:craft(items, self._recipe_name)
 
 		if recipe_available then
 			self:_set_craft_button_disabled(true)
@@ -402,6 +403,8 @@ CraftPageRollTraitConsole._remove_craft_item = function (self, backend_id, slot_
 		end
 
 		self:_play_sound("play_gui_craft_item_drag")
+
+		self._recipe_name = self.settings.name
 	end
 end
 
@@ -424,6 +427,14 @@ CraftPageRollTraitConsole._add_craft_item = function (self, backend_id, slot_ind
 		craft_items[slot_index] = backend_id
 		local item_interface = Managers.backend:get_interface("items")
 		local item = backend_id and item_interface:get_item_from_id(backend_id)
+		local item_data = backend_id and item_interface:get_item_masterlist_data(backend_id)
+		local added_item_slot_type = item_data and item_data.slot_type
+
+		if added_item_slot_type == "ranged" or added_item_slot_type == "melee" then
+			self._recipe_name = "reroll_weapon_traits"
+		elseif added_item_slot_type == "trinket" or added_item_slot_type == "ring" or added_item_slot_type == "necklace" then
+			self._recipe_name = "reroll_jewellery_traits"
+		end
 
 		self._item_grid:add_item_to_slot_index(slot_index, item)
 		self.super_parent:set_disabled_backend_id(backend_id, true)

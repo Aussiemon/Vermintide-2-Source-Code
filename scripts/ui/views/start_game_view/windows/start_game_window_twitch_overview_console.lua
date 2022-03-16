@@ -34,9 +34,11 @@ StartGameWindowTwitchOverviewConsole.on_enter = function (self, params, offset)
 
 	self:_create_ui_elements(params, offset)
 
-	self._input_index = params.input_index or 1
+	if self._is_server then
+		self._input_index = params.input_index or 1
 
-	self:_handle_new_selection(self._input_index)
+		self:_handle_new_selection(self._input_index)
+	end
 
 	if self._is_server then
 		self:_update_mission_option()
@@ -119,8 +121,6 @@ StartGameWindowTwitchOverviewConsole._create_ui_elements = function (self, param
 		window_position[3] = window_position[3] + offset[3]
 	end
 
-	self:_setup_input_buttons()
-
 	if IS_PS4 then
 		local frame_widget = self._widgets_by_name.frame_widget
 		local frame_widget_content = frame_widget.content
@@ -153,23 +153,6 @@ StartGameWindowTwitchOverviewConsole._set_disconnect_button_text = function (sel
 	end
 end
 
-StartGameWindowTwitchOverviewConsole._setup_input_buttons = function (self)
-	if self._is_server then
-		local input_service = self._parent:window_input_service()
-		local start_game_input_data = UISettings.get_gamepad_input_texture_data(input_service, START_GAME_INPUT, true)
-		local widgets_by_name = self._widgets_by_name
-		local play_button_console = widgets_by_name.play_button_console
-		local input_texture_style = play_button_console.style.input_texture
-		input_texture_style.horizontal_alignment = "center"
-		input_texture_style.vertical_alignment = "center"
-		input_texture_style.texture_size = {
-			start_game_input_data.size[1],
-			start_game_input_data.size[2]
-		}
-		play_button_console.content.input_texture = start_game_input_data.texture
-	end
-end
-
 StartGameWindowTwitchOverviewConsole.on_exit = function (self, params)
 	print("[StartGameViewWindow] Exit Substate StartGameWindowTwitchOverviewConsole")
 
@@ -194,7 +177,6 @@ StartGameWindowTwitchOverviewConsole.update = function (self, dt, t)
 	self:_update_animations(dt)
 	self:_handle_virtual_keyboard(dt, t)
 	self:_handle_input(dt, t)
-	self:_handle_gamepad_activity()
 	self:_draw(dt)
 end
 
@@ -218,9 +200,8 @@ StartGameWindowTwitchOverviewConsole._update_can_play = function (self)
 		if self._previous_can_play ~= can_play then
 			self._previous_can_play = can_play
 			local play_button = self._widgets_by_name.play_button
-			local play_button_console = self._widgets_by_name.play_button_console
-			play_button_console.content.locked = not can_play
 			play_button.content.button_hotspot.disable_button = not can_play
+			play_button.content.disabled = not can_play
 
 			if can_play then
 				self._parent:set_input_description("play_available")
@@ -317,6 +298,8 @@ StartGameWindowTwitchOverviewConsole._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local input_service = parent:window_input_service()
 
+	self:_handle_twitch_login_input(dt, t, input_service)
+
 	if self._is_server then
 		if input_service:get(SELECTION_INPUT) then
 			self:_option_selected(self._input_index, t)
@@ -364,8 +347,6 @@ StartGameWindowTwitchOverviewConsole._handle_input = function (self, dt, t)
 			end
 		end
 	end
-
-	self:_handle_twitch_login_input(dt, t, input_service)
 end
 
 StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self, dt, t, input_service)
@@ -385,23 +366,17 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 				self._parent.parent:set_input_blocked(true)
 
 				frame_widget_content.text_field_active = true
-			elseif screen_hotspot.on_pressed or is_connected then
-				if screen_hotspot.on_pressed and not frame_widget_content.text_field_active and not frame_hotspot.on_pressed then
-					self:set_active(false)
-
-					frame_widget_content.text_field_active = false
-
-					self.parent.parent:set_input_blocked(false)
-
-					return
-				end
-
+			elseif frame_widget_content.text_field_active and screen_hotspot.on_pressed then
 				frame_widget_content.text_field_active = false
 
 				self._parent.parent:set_input_blocked(false)
 			end
 
 			if frame_widget_content.text_field_active then
+				input_service:get("move_up", true)
+				input_service:get("move_down", true)
+				input_service:get("cycle_next", true)
+				input_service:get("cycle_previous", true)
 				Managers.chat:block_chat_input_for_one_frame()
 
 				local keystrokes = Keyboard.keystrokes()
@@ -412,6 +387,10 @@ StartGameWindowTwitchOverviewConsole._handle_twitch_login_input = function (self
 					local user_name = string.gsub(frame_widget_content.twitch_name, " ", "")
 
 					Managers.twitch:connect(user_name, callback(Managers.twitch, "cb_connection_error_callback"), callback(self, "cb_connection_success_callback"))
+				elseif input_service:get("toggle_menu", true) then
+					frame_widget_content.text_field_active = false
+
+					self._parent.parent:set_input_blocked(false)
 				end
 			end
 		end
@@ -570,19 +549,28 @@ StartGameWindowTwitchOverviewConsole._option_selected = function (self, input_in
 		self._parent:set_layout_by_name(twitch_settings.layout_name)
 	elseif selected_widget_name == "difficulty_setting" then
 		self._parent:set_layout_by_name("difficulty_selection_custom")
-	elseif selected_widget_name == "play_button_console" then
-		self._play_button_pressed = true
+	elseif selected_widget_name == "play_button" then
+		if self:_can_play() then
+			self._play_button_pressed = true
 
-		self._parent:play(t, twitch_settings.game_mode_type)
+			self._parent:play(t, twitch_settings.game_mode_type)
+		end
 	else
 		ferror("Unknown selector_input_definition: %s", selected_widget_name)
 	end
 end
 
 StartGameWindowTwitchOverviewConsole._handle_new_selection = function (self, input_index)
+	local widgets_by_name = self._widgets_by_name
 	local num_inputs = #selector_input_definition
 	input_index = math.clamp(input_index, 1, num_inputs)
-	local widgets_by_name = self._widgets_by_name
+	local widget_name = selector_input_definition[input_index]
+	local widget = widgets_by_name[widget_name]
+	local widget_content = widget.content
+
+	if widget_content.disabled then
+		return
+	end
 
 	for i = 1, #selector_input_definition, 1 do
 		local widget_name = selector_input_definition[i]
@@ -726,31 +714,6 @@ end
 
 StartGameWindowTwitchOverviewConsole._play_sound = function (self, event)
 	self._parent:play_sound(event)
-end
-
-StartGameWindowTwitchOverviewConsole._handle_gamepad_activity = function (self)
-	local force_update = self.gamepad_active_last_frame == nil
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-
-	if gamepad_active then
-		if not self.gamepad_active_last_frame or force_update then
-			self.gamepad_active_last_frame = true
-
-			if self._is_server then
-				local widgets_by_name = self._widgets_by_name
-				widgets_by_name.play_button.content.visible = false
-				widgets_by_name.play_button_console.content.visible = true
-			end
-		end
-	elseif self.gamepad_active_last_frame or force_update then
-		self.gamepad_active_last_frame = false
-
-		if self._is_server then
-			local widgets_by_name = self._widgets_by_name
-			widgets_by_name.play_button.content.visible = true
-			widgets_by_name.play_button_console.content.visible = false
-		end
-	end
 end
 
 return

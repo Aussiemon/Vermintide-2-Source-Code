@@ -185,15 +185,15 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		end
 	end
 
-	local stagger = true
+	local do_stagger = true
 	local taunt_bosses = talent_extension:has_talent("bardin_ironbreaker_activated_ability_taunt_bosses")
 
 	if is_server then
 		local target_override_extension = ScriptUnit.extension(owner_unit, "target_override_system")
 
-		target_override_extension:taunt(range, duration, stagger, taunt_bosses)
+		target_override_extension:taunt(range, duration, do_stagger, taunt_bosses)
 	else
-		network_transmit:send_rpc_server("rpc_taunt", owner_unit_id, range, duration, stagger, taunt_bosses)
+		network_transmit:send_rpc_server("rpc_taunt", owner_unit_id, range, duration, do_stagger, taunt_bosses)
 	end
 
 	local num_targets = #targets

@@ -568,31 +568,27 @@ PlayerProjectileHuskExtension.hit_level_unit = function (self, impact_data, hit_
 		buffed_bounces = owner_buff_extension:apply_buffs_to_value(buffed_bounces, "projectile_bounces")
 	end
 
-	local bounce_linking = false
+	local finished_bouncing = false
 
 	if bounce then
 		local num_bounces = self._num_bounces
 		local max_bounces = impact_data.max_bounces or 1
 		max_bounces = max_bounces + buffed_bounces
+		local locomotion_extension = self.locomotion_extension
 
-		if num_bounces < max_bounces then
-			local locomotion_extension = self.locomotion_extension
+		if locomotion_extension.bounce and num_bounces < max_bounces then
+			locomotion_extension:bounce(hit_position, hit_direction, hit_normal)
 
-			if locomotion_extension.bounce then
-				locomotion_extension:bounce(hit_position, hit_direction, hit_normal)
-
-				self._num_bounces = self._num_bounces + 1
-
-				return
-			end
+			self._num_bounces = self._num_bounces + 1
 		else
-			bounce_linking = true
+			finished_bouncing = true
 		end
 	end
 
 	local aoe_data = impact_data.aoe
+	local aoe_on_bounce = impact_data.aoe_on_bounce
 
-	if aoe_data then
+	if aoe_data and (not bounce or finished_bouncing or aoe_on_bounce) then
 		self:do_aoe(aoe_data, hit_position)
 
 		if impact_data.grenade and owner_buff_extension then
@@ -600,7 +596,9 @@ PlayerProjectileHuskExtension.hit_level_unit = function (self, impact_data, hit_
 		end
 	end
 
-	if hit_actor and (not bounce or (bounce and bounce_linking)) then
+	if bounce and not finished_bouncing then
+		return
+	elseif hit_actor then
 		self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor)
 	end
 

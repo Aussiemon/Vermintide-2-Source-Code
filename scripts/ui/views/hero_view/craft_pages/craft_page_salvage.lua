@@ -34,6 +34,7 @@ CraftPageSalvage.on_enter = function (self, params, settings)
 	self.profile_index = params.profile_index
 	self.wwise_world = params.wwise_world
 	self.settings = settings
+	self._recipe_name = settings.name
 	self._num_craft_items = 0
 	self._animations = {}
 
@@ -191,7 +192,7 @@ CraftPageSalvage._handle_input = function (self, dt, t)
 
 	if craft_input_accepted then
 		local items = self._craft_items
-		local recipe_available = parent:craft(items)
+		local recipe_available = parent:craft(items, self._recipe_name)
 
 		if recipe_available then
 			self:_set_craft_button_disabled(true)

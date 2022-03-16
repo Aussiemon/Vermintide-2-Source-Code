@@ -60,17 +60,7 @@ end
 
 EndViewStateScore.create_ui_elements = function (self, params)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
-	local widgets = {}
-	local widgets_by_name = {}
-
-	for name, widget_definition in pairs(widget_definitions) do
-		local widget = UIWidget.init(widget_definition)
-		widgets[#widgets + 1] = widget
-		widgets_by_name[name] = widget
-	end
-
-	self._widgets = widgets
-	self._widgets_by_name = widgets_by_name
+	self._widgets, self._widgets_by_name = UIUtils.create_widgets(widget_definitions)
 	self._hero_widgets = {
 		UIWidget.init(hero_widget_definitions.player_frame_1),
 		UIWidget.init(hero_widget_definitions.player_frame_2),

@@ -44,7 +44,7 @@ function cprintf(f, ...)
 
 	print(s)
 
-	if IS_WINDOWS then
+	if IS_WINDOWS and DEDICATED_SERVER then
 		CommandWindow.print(s)
 	end
 end

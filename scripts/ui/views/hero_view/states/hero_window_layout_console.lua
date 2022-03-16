@@ -68,6 +68,16 @@ local windows = {
 		ignore_alignment = true,
 		name = "ingame_view",
 		class_name = "HeroWindowIngameView"
+	},
+	character_selection = {
+		ignore_alignment = true,
+		name = "character_selection",
+		class_name = "HeroWindowCharacterSelectionConsole"
+	},
+	item_customization = {
+		ignore_alignment = true,
+		name = "item_customization",
+		class_name = "HeroWindowItemCustomization"
 	}
 }
 local window_layouts = {
@@ -182,6 +192,29 @@ local window_layouts = {
 		close_on_exit = true,
 		windows = {
 			background = 1
+		}
+	},
+	{
+		sound_event_enter = "Play_hud_button_open",
+		name = "character_selection",
+		sound_event_exit = "Play_hud_button_close",
+		close_on_exit = false,
+		windows = {
+			character_selection = 3,
+			panel = 1,
+			background = 2
+		}
+	},
+	{
+		sound_event_enter = "Play_hud_button_open",
+		name = "item_customization",
+		sound_event_exit = "Play_hud_button_close",
+		close_on_exit = false,
+		windows = {
+			character_info = 3,
+			panel = 1,
+			background = 2,
+			item_customization = 4
 		}
 	}
 }

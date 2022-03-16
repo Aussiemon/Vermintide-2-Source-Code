@@ -1,5 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
 BTMeleeOverlapAttackAction = class(BTMeleeOverlapAttackAction, BTNode)
 
 BTMeleeOverlapAttackAction.init = function (self, ...)
@@ -578,6 +579,10 @@ BTMeleeOverlapAttackAction.hit_ai = function (self, unit, hit_unit, action, atta
 	local immune_breeds = attack.immune_breeds
 	local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 
+	if hit_unit_blackboard.is_illusion then
+		return
+	end
+
 	if immune_breeds then
 		local breed_name = hit_unit_blackboard.breed and hit_unit_blackboard.breed.name
 
@@ -670,7 +675,7 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 			if not outside_interval and Vector3.length_squared(side_vector) < push_width_sq then
 				local stagger_type, stagger_duration = DamageUtils.calculate_stagger(data.push_stagger_impact, data.push_stagger_duration, hit_unit, unit)
 
-				if stagger_type > 0 then
+				if stagger_types.none < stagger_type then
 					local direction = Vector3.normalize(side_vector)
 					local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 
@@ -707,6 +712,10 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 end
 
 BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboard, action, attack, data, physics_world, t, dt)
+	if blackboard.is_illusion then
+		return
+	end
+
 	local weapon_unit = data.weapon_unit
 	local to_old_frame_tip_node_pos = nil
 	local tip_node = data.tip_node
@@ -760,6 +769,10 @@ BTMeleeOverlapAttackAction.weapon_sweep_overlap = function (self, unit, blackboa
 end
 
 BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, physics_world, t, action, attack, oobb_pos, box_rot, box_size, hit_units, overlap_update_radius)
+	if blackboard.is_illusion then
+		return 0
+	end
+
 	local filter_name = (attack.hit_only_players and "filter_player_hit_box_check") or "filter_player_and_enemy_hit_box_check"
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, oobb_pos, overlap_update_radius)

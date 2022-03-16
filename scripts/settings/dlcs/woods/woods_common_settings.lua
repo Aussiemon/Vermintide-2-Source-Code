@@ -86,7 +86,6 @@ settings.effects = {
 settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_woods"
 }
-settings.tracked_weapon_kills_per_breed_stats = {}
 settings._tracked_weapon_kill_stats = {}
 settings.unlock_settings = {
 	woods = {
@@ -188,8 +187,10 @@ settings.network_damage_types = {
 	"burst_thorn"
 }
 settings.dot_type_lookup = {
+	thorn_sister_passive_poison_improved = "poison_dot",
+	weapon_bleed_dot_javelin = "poison_dot",
 	thorn_sister_wall_bleed = "poison_dot",
-	weapon_bleed_dot_javelin = "poison_dot"
+	thorn_sister_passive_poison = "poison_dot"
 }
 settings.progression_unlocks = {
 	we_thornsister = {
@@ -259,6 +260,9 @@ settings.game_object_initializers = {
 			owner_player_id = owner_player.game_object_id
 		end
 
+		local wall_extension = ScriptUnit.extension(unit, "props_system")
+		local wall_index = wall_extension.wall_index
+		local group_spawn_index = wall_extension.group_spawn_index
 		local data_table = {
 			go_type = NetworkLookup.go_types.thornsister_thorn_wall_unit,
 			husk_unit = NetworkLookup.husks[unit_name],
@@ -276,7 +280,9 @@ settings.game_object_initializers = {
 			area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 			explosion_template_name = NetworkLookup.explosion_templates[explosion_template_name],
 			owner_player_id = owner_player_id,
-			health = ScriptUnit.extension(unit, "health_system"):get_max_health()
+			health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
+			wall_index = wall_index,
+			group_spawn_index = group_spawn_index
 		}
 
 		return data_table
@@ -338,6 +344,7 @@ settings.game_object_extractors = {
 		local explosion_template_name = GameSession.game_object_field(game_session, go_id, "explosion_template_name")
 		local owner_player_id = GameSession.game_object_field(game_session, go_id, "owner_player_id")
 		local health = GameSession.game_object_field(game_session, go_id, "health")
+		local wall_index = GameSession.game_object_field(game_session, go_id, "wall_index")
 		extra_dot_effect_name = NetworkLookup.effects[extra_dot_effect_name]
 
 		if extra_dot_effect_name == "n/a" then
@@ -350,13 +357,13 @@ settings.game_object_extractors = {
 			explosion_template_name = nil
 		end
 
-		local player_screen_effect_name = NetworkLookup.effects[player_screen_effect_name]
+		player_screen_effect_name = NetworkLookup.effects[player_screen_effect_name]
 
 		if player_screen_effect_name == "n/a" then
 			player_screen_effect_name = nil
 		end
 
-		local dot_effect_name = NetworkLookup.effects[dot_effect_name]
+		dot_effect_name = NetworkLookup.effects[dot_effect_name]
 
 		if dot_effect_name == "n/a" then
 			dot_effect_name = nil
@@ -397,7 +404,8 @@ settings.game_object_extractors = {
 			},
 			props_system = {
 				life_time = life_time,
-				owner_unit = owner_player
+				owner_unit = owner_player,
+				wall_index = wall_index
 			},
 			health_system = {
 				health = health

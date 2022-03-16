@@ -11,6 +11,8 @@ SingleWeaponUnitExtension.init = function (self, extension_init_context, unit, e
 	self.single_weapon_template_name = item_template.single_weapon_template_name
 	self.weapon_template = SingleWeaponUnitTemplates.get_template(self.single_weapon_template_name)
 	self.is_server = Managers.player.is_server
+	self._weapon_wield = item_template and item_template.on_wield
+	self._weapon_unwield = item_template and item_template.on_unwield
 	self.data = {}
 end
 
@@ -34,6 +36,18 @@ end
 
 SingleWeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 	self.weapon_template.update(self.world, self.unit, self.owner_unit, self.data, t, dt)
+end
+
+SingleWeaponUnitExtension.on_wield = function (self, hand_name)
+	if self._weapon_wield then
+		self:_weapon_wield(hand_name)
+	end
+end
+
+SingleWeaponUnitExtension.on_unwield = function (self, hand_name)
+	if self._weapon_unwield then
+		self:_weapon_unwield(hand_name)
+	end
 end
 
 return

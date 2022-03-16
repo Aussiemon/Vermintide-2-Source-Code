@@ -120,6 +120,16 @@ CareerExtension.extensions_ready = function (self, world, unit)
 		end
 	end
 
+	local husk_buffs = passive_ability_data.husk_buffs
+
+	if husk_buffs and not self.is_server and not player.local_player then
+		for i = 1, #husk_buffs, 1 do
+			local buff = husk_buffs[i]
+
+			buff_extension:add_buff(buff)
+		end
+	end
+
 	self._first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local abilities = self._abilities
@@ -444,6 +454,10 @@ CareerExtension.modify_extra_ability_charge = function (self, amount)
 	self._extra_ability_use_charge = current_charge
 end
 
+CareerExtension.update_extra_ability_charge = function (self, required_charge)
+	self._extra_ability_use_required_charge = required_charge
+end
+
 CareerExtension.setup_extra_ability_uses = function (self, current_charge, max_charge, current_extra_uses, max_extra_uses)
 	self._extra_ability_use_charge = math.min(current_charge, max_charge)
 	self._extra_ability_use_required_charge = max_charge
@@ -556,7 +570,7 @@ end
 
 CareerExtension.has_melee_boost = function (self)
 	local buff_extension = self._buff_extension
-	local has_shade_buff = buff_extension:has_buff_type("kerillian_shade_activated_ability") or buff_extension:has_buff_type("kerillian_shade_activated_ability_duration")
+	local has_shade_buff = buff_extension:has_buff_perk("shade_melee_boost")
 	local has_murder_hobo_buff = false
 	local multiplier = (has_shade_buff and 4) or (has_murder_hobo_buff and 1) or 0
 

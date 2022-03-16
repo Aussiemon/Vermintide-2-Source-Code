@@ -169,10 +169,11 @@ DeusPowerUpBuffTemplates = {
 			{
 				icon = "deus_knockdown_damage_immunity_aura",
 				name = "deus_knockdown_damage_immunity_buff",
-				particle_fx = "fx/cw_allies_shield",
+				proc_weight = 15,
 				buff_func = "play_particle_effect",
 				event = "on_damage_taken",
 				max_stacks = 1,
+				particle_fx = "fx/cw_allies_shield",
 				perk = buff_perks.invulnerable
 			}
 		}
@@ -1388,9 +1389,10 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					max_stacks = 1,
 					name = "deus_second_wind",
-					authority = "server",
+					proc_weight = 10,
 					buff_func = "deus_second_wind_on_hit",
 					event = "on_damage_taken",
+					authority = "server",
 					buffs_to_add = {
 						"deus_second_wind_attack_speed",
 						"deus_second_wind_movement_speed"
@@ -2182,10 +2184,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 				{
 					name = "deus_larger_clip",
 					stat_buff = "clip_size",
-					multiplier = MorrisBuffTweakData.deus_larger_clip.multiplier,
-					buffs_to_remove_on_remove = {
-						"deus_larger_clip_update"
-					}
+					multiplier = MorrisBuffTweakData.deus_larger_clip.multiplier
 				},
 				{
 					remove_buff_func = "refresh_ranged_slot_buffs",
@@ -2228,12 +2227,9 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		buff_template = {
 			buffs = {
 				{
-					name = "deus_more_head_less_body_damage_bonus",
+					name = "deus_more_head_less_body_damage",
 					stat_buff = "headshot_damage",
-					multiplier = MorrisBuffTweakData.deus_more_head_less_body_damage.positive_multiplier,
-					buffs_to_remove_on_remove = {
-						"deus_more_head_less_body_damage_negative"
-					}
+					multiplier = MorrisBuffTweakData.deus_more_head_less_body_damage.positive_multiplier
 				},
 				{
 					name = "deus_more_head_less_body_damage_negative",

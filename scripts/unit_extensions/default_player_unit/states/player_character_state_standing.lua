@@ -231,6 +231,17 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		end
 	end
 
+	if self.cosmetic_extension:get_queued_3p_emote() then
+		local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(self.inventory_extension)
+		local current_action_settings = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+
+		if not current_action_settings then
+			csm:change_state("emote")
+
+			return
+		end
+	end
+
 	local inventory_extension = self.inventory_extension
 	local first_person_extension = self.first_person_extension
 	local toggle_crouch = input_extension.toggle_crouch

@@ -1,5 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
 BTChaosSorcererChargeAction = class(BTChaosSorcererChargeAction, BTNode)
 
 BTChaosSorcererChargeAction.init = function (self, ...)
@@ -410,7 +411,7 @@ BTChaosSorcererChargeAction._hit_ai = function (self, unit, hit_unit, action, bl
 	if push_data then
 		local stagger_type, stagger_duration = DamageUtils.calculate_stagger(push_data.stagger_impact, push_data.stagger_duration, hit_unit, unit)
 
-		if stagger_type > 0 then
+		if stagger_types.none < stagger_type then
 			local self_pos = POSITION_LOOKUP[unit]
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local direction_to_ai = Vector3.normalize(hit_unit_pos - self_pos)

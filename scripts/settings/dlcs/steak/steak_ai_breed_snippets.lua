@@ -121,6 +121,8 @@ AiBreedSnippets.on_beastmen_minotaur_update = function (unit, blackboard, t)
 end
 
 AiBreedSnippets.on_beastmen_minotaur_death = function (unit, blackboard, t)
+	print("minotaur died!")
+
 	local astar_data = blackboard.charge_astar_data
 
 	if astar_data and astar_data.astar then

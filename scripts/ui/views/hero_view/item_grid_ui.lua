@@ -15,6 +15,8 @@ ItemGridUI.init = function (self, category_settings, widget, hero_name, career_i
 	self._category_settings = category_settings
 	self._widget = widget
 
+	self:_append_widget_content(widget, params)
+
 	if career_index > #PROFILES_BY_NAME[hero_name].careers then
 		career_index = 1
 	end
@@ -23,6 +25,12 @@ ItemGridUI.init = function (self, category_settings, widget, hero_name, career_i
 	self._career_index = career_index
 	self._params = params
 	self._locked_items = {}
+end
+
+ItemGridUI._append_widget_content = function (self, widget, params)
+	local widget_content = widget.content
+	widget_content.profile_index = params and params.profile_index
+	widget_content.career_index = params and params.career_index
 end
 
 ItemGridUI.change_category = function (self, category_name, keep_page_index)
@@ -745,26 +753,6 @@ ItemGridUI._get_items_by_filter = function (self, item_filter)
 	return items
 end
 
-ItemGridUI._filter_career_specific_items = function (self, items, career_index, slot_type)
-	local item_interface = Managers.backend:get_interface("items")
-
-	if slot_type == "skin" then
-		for _, item in pairs(items) do
-			local item_key = item_interface:get_key(item.backend_id)
-			local item_data = item.data
-
-			if item_data.slot_type == "skin" and item_key then
-				local cosmetic_data = Cosmetics[item_key]
-				local cosmetic_career_index = cosmetic_data.career
-
-				if cosmetic_career_index and career_index ~= cosmetic_career_index then
-					table.remove(items, tablefind_item_key(items, item_key))
-				end
-			end
-		end
-	end
-end
-
 ItemGridUI._get_slot_by_ui_index = function (self, index)
 	local slots = InventorySettings.slots
 
@@ -877,6 +865,35 @@ ItemGridUI.get_item_hovered = function (self)
 			end
 		end
 	end
+end
+
+ItemGridUI.get_item_hovered_slot = function (self)
+	local widget = self._widget
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+
+			if slot_hotspot.internal_is_hover then
+				return i, k
+			end
+		end
+	end
+end
+
+ItemGridUI.get_item_content = function (self, row, column)
+	local widget = self._widget
+	local content = widget.content
+	local name_sufix = "_" .. tostring(row) .. "_" .. tostring(column)
+	local hotspot_name = "hotspot" .. name_sufix
+	local item_content = content[hotspot_name]
+
+	return item_content
 end
 
 ItemGridUI.is_slot_hovered = function (self)
@@ -996,6 +1013,10 @@ end
 
 ItemGridUI.destroy = function (self)
 	return
+end
+
+ItemGridUI.get_selected_item_grid_slot = function (self)
+	return self._selected_item_row, self._selected_item_column
 end
 
 return

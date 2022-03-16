@@ -315,13 +315,30 @@ end
 
 function flow_callback_force_terror_event(params)
 	if Managers.player.is_server or LEVEL_EDITOR_TEST then
-		Managers.state.conflict:start_terror_event(params.event_type, params.seed)
+		Managers.state.conflict:start_terror_event(params.event_type, params.seed, params.origin_unit)
 	end
+
+	local new_seed = Math.next_random(params.seed or 0)
+	flow_return_table.new_seed = new_seed
+
+	return flow_return_table
 end
 
 function flow_callback_override_player_respawning(params)
 	if Managers.player.is_server or LEVEL_EDITOR_TEST then
 		Managers.state.game_mode:set_override_respawn_group(params.respawn_group_name, params.active)
+	end
+end
+
+function flow_callback_disable_player_respawning(params)
+	if Managers.player.is_server or LEVEL_EDITOR_TEST then
+		Managers.state.game_mode:set_respawn_group_enabled(params.respawn_group_name, not params.active)
+	end
+end
+
+function flow_callback_disable_player_respawning_gate(params)
+	if Managers.player.is_server or LEVEL_EDITOR_TEST then
+		Managers.state.game_mode:set_respawn_gate_enabled(params.unit, not params.active)
 	end
 end
 

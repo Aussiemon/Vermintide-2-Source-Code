@@ -1,4 +1,4 @@
-local weapon_template = weapon_template or {}
+local weapon_template = {}
 local ARROW_HIT_EFFECT = "arrow_impact"
 local ALERT_SOUND_RANGE_FIRE = 4
 local ALERT_SOUND_RANGE_HIT = 2
@@ -388,6 +388,22 @@ weapon_template.default_loaded_projectile_settings = {
 	drop_multiplier = 0.03,
 	speed = action.speed,
 	gravity = ProjectileGravitySettings[action.projectile_info.gravity_settings]
+}
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 0,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 7,
+		[DamageTypes.STAGGER] = 0,
+		[DamageTypes.DAMAGE] = 4
+	},
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 3,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 4,
+		[DamageTypes.STAGGER] = 0,
+		[DamageTypes.DAMAGE] = 5
+	}
 }
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_rapid_fire",

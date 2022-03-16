@@ -109,11 +109,13 @@ achievements.grudge_marks_on_kill_util = {
 	end
 }
 
-for career, _ in pairs(CareerSettings) do
+for career, career_settings in pairs(CareerSettings) do
 	if career ~= "empire_soldier_tutorial" then
-		local career_breed = CareerSettings[career].breed
+		local career_breed = career_settings.breed
 
 		if career_breed and career_breed.is_hero then
+			local required_dlc = career_settings.required_dlc
+
 			for i = 1, #expeditions, 1 do
 				local expedition_name = expeditions[i]
 				local achievement_id = "grudge_mark_kills_" .. career .. "_per_" .. expedition_name
@@ -121,6 +123,7 @@ for career, _ in pairs(CareerSettings) do
 					display_completion_ui = false,
 					name = expedition_name .. "_name",
 					icon = "achievement_trophy_" .. achievement_id,
+					required_dlc = required_dlc,
 					completed = function (statistics_db, stats_id, template_data)
 						return statistics_db:get_persistent_stat(stats_id, "grudge_marks_kills_per_career_per_expedition", career, expedition_name) >= 1
 					end
@@ -134,6 +137,7 @@ for career, _ in pairs(CareerSettings) do
 					display_completion_ui = false,
 					name = breed_name,
 					icon = "achievement_trophy_" .. achievement_id,
+					required_dlc = required_dlc,
 					completed = function (statistics_db, stats_id, template_data)
 						return statistics_db:get_persistent_stat(stats_id, "grudge_marks_kills_per_career_per_monster", career, breed_name) >= 1
 					end
@@ -146,6 +150,7 @@ for career, _ in pairs(CareerSettings) do
 				name = "achv_" .. achievement_id .. "_name",
 				desc = "achv_" .. achievement_id .. "_desc",
 				icon = "achievement_trophy_" .. achievement_id,
+				required_dlc = required_dlc,
 				progress = function (statistics_db, stats_id, template_data)
 					local completed = statistics_db:get_persistent_stat(stats_id, "grudge_mark_kills", career)
 
@@ -170,7 +175,7 @@ for career, _ in pairs(CareerSettings) do
 			local achievement_id = "kill_each_monster_grudge_" .. career
 			local icon = "achievement_trophy_" .. achievement_id
 
-			add_meta_challenge(achievements, achievement_id, achievement_group, icon, nil, nil, nil)
+			add_meta_challenge(achievements, achievement_id, achievement_group, icon, required_dlc, nil, nil)
 
 			achievement_group = {}
 
@@ -184,7 +189,7 @@ for career, _ in pairs(CareerSettings) do
 			local achievement_id = "kill_grudge_each_expedition_" .. career
 			local icon = "achievement_trophy_" .. achievement_id
 
-			add_meta_challenge(achievements, achievement_id, achievement_group, icon, nil, nil, nil)
+			add_meta_challenge(achievements, achievement_id, achievement_group, icon, required_dlc, nil, nil)
 
 			achievement_group = {
 				"kill_grudge_each_expedition_" .. career,
@@ -194,7 +199,7 @@ for career, _ in pairs(CareerSettings) do
 			local achievement_id = "complete_all_career_grudge_challenges_" .. career
 			local icon = "achievement_trophy_" .. achievement_id
 
-			add_meta_challenge(achievements, achievement_id, achievement_group, icon, nil, nil, nil)
+			add_meta_challenge(achievements, achievement_id, achievement_group, icon, required_dlc, nil, nil)
 			table.insert(achievement_to_check, achievement_id)
 		end
 	end

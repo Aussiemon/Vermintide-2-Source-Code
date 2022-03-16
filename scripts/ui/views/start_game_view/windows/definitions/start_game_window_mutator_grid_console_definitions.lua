@@ -94,6 +94,34 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	deletion_overlay_background = {
+		vertical_alignment = "center",
+		parent = "menu_root",
+		horizontal_alignment = "center",
+		size = {
+			1920,
+			1080
+		},
+		position = {
+			0,
+			0,
+			20
+		}
+	},
+	deletion_overlay = {
+		vertical_alignment = "center",
+		parent = "menu_root",
+		horizontal_alignment = "center",
+		size = {
+			314,
+			33
+		},
+		position = {
+			0,
+			20,
+			60
+		}
+	},
 	heroic_deed_background = {
 		vertical_alignment = "top",
 		parent = "window",
@@ -283,6 +311,48 @@ local scenegraph_definition = {
 			0,
 			1
 		}
+	},
+	clear_bottons_anchor = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "left",
+		size = {
+			225,
+			50
+		},
+		position = {
+			20,
+			20,
+			1
+		}
+	},
+	delete_bottons_anchor = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "left",
+		size = {
+			225,
+			50
+		},
+		position = {
+			275,
+			20,
+			1
+		}
+	},
+	mark_deeds_text_anchor = {
+		vertical_alignment = "bottom",
+		parent = "window",
+		horizontal_alignment = "left",
+		size = {
+			225,
+			50
+		},
+		position = {
+			170,
+			80,
+			1
+		}
 	}
 }
 local page_number_left_text_style = {
@@ -347,6 +417,21 @@ local heroic_deed_title_style = {
 		2
 	}
 }
+local mark_deeds_text_style = {
+	font_size = 28,
+	upper_case = false,
+	localize = false,
+	use_shadow = true,
+	horizontal_alignment = "center",
+	vertical_alignment = "center",
+	font_type = "hell_shark",
+	text_color = Colors.get_color_table_with_alpha("white", 255),
+	offset = {
+		0,
+		0,
+		2
+	}
+}
 local rows = 5
 local slots_per_row = 7
 local slot_width_spacing = 12
@@ -377,9 +462,30 @@ local widgets = {
 	page_text_right = UIWidgets.create_simple_text("0", "page_text_area", nil, nil, page_number_right_text_style),
 	page_text_area = UIWidgets.create_simple_texture("tab_menu_bg_03", "page_text_area")
 }
+local overlay_widgets = {
+	claim_overlay = UIWidgets.create_simple_rect("deletion_overlay_background", {
+		220,
+		12,
+		12,
+		12
+	}, 36),
+	claim_overlay_fade = UIWidgets.create_simple_texture("options_window_fade_01", "deletion_overlay_background", nil, nil, nil, 37),
+	claim_overlay_loading_glow = UIWidgets.create_simple_texture("loading_title_divider", "deletion_overlay", nil, nil, nil, 1),
+	claim_overlay_loading_frame = UIWidgets.create_simple_texture("loading_title_divider_background", "deletion_overlay")
+}
+local delete_deeds_button_widgets = {
+	mark_deeds_text = UIWidgets.create_simple_text(string.format(Localize("mark_deeds_text"), "$KEY;start_game_view__mouse_middle_press:"), "mark_deeds_text_anchor", {
+		600,
+		100
+	}, nil, mark_deeds_text_style, nil, false, true),
+	button_clear = UIWidgets.create_default_button("clear_bottons_anchor", scenegraph_definition.clear_bottons_anchor.size, nil, nil, Localize("button_clear_all"), 21, nil, nil, nil, true, true),
+	button_delete = UIWidgets.create_default_button("delete_bottons_anchor", scenegraph_definition.delete_bottons_anchor.size, nil, nil, Localize("button_delete_selected"), 21, nil, nil, nil, true, true)
+}
 
 return {
 	widgets = widgets,
 	scenegraph_definition = scenegraph_definition,
-	animation_definitions = animation_definitions
+	animation_definitions = animation_definitions,
+	delete_deeds_button_widgets = delete_deeds_button_widgets,
+	overlay_widgets = overlay_widgets
 }

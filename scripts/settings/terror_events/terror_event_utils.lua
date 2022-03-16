@@ -16,7 +16,7 @@ TerrorEventUtils.set_seed = function (seed)
 end
 
 TerrorEventUtils.random = function (...)
-	local seed, value = Math.next_random(terror_seed, ...)
+	local seed, value = Math.next_random(terror_seed or 0, ...)
 	terror_seed = seed
 
 	return value
@@ -69,6 +69,7 @@ TerrorEventUtils.apply_breed_enhancements = function (unit, breed, optional_data
 
 	local buff_system = Managers.state.entity:system("buff_system")
 	local enhancements = optional_data.enhancements
+	local is_illusion = table.find_by_key(enhancements, "name", "intangible_mirror") ~= nil
 
 	for i = 1, #enhancements, 1 do
 		local enhancement_data = enhancements[i]
@@ -77,10 +78,12 @@ TerrorEventUtils.apply_breed_enhancements = function (unit, breed, optional_data
 			ai_system:set_attribute(unit, enhancement_data.name, "breed_enhancements", true)
 		end
 
-		for i = 1, #enhancement_data, 1 do
-			local buff_name = enhancement_data[i]
+		if not is_illusion or enhancement_data.name == "mirror_base" or enhancement_data.name == "intangible_mirror" then
+			for i = 1, #enhancement_data, 1 do
+				local buff_name = enhancement_data[i]
 
-			buff_system:add_buff(unit, buff_name, unit, true)
+				buff_system:add_buff(unit, buff_name, unit, true)
+			end
 		end
 	end
 end

@@ -354,6 +354,14 @@ GameModeBase.respawn_unit_spawned = function (self, unit)
 	return
 end
 
+GameModeBase.respawn_gate_unit_spawned = function (self, unit)
+	return
+end
+
+GameModeBase.get_respawn_handler = function (self)
+	return nil
+end
+
 GameModeBase.flow_callback_add_spawn_point = function (self, unit)
 	return
 end
@@ -501,6 +509,22 @@ end
 
 GameModeBase.is_about_to_lose = function (self)
 	return self.about_to_lose
+end
+
+GameModeBase.game_mode_hud_disabled = function (self)
+	return self._hud_disabled
+end
+
+GameModeBase.disable_hud = function (self, disable)
+	self._hud_disabled = disable
+end
+
+GameModeBase.photomode_enabled = function (self)
+	return self._photomode_enabled
+end
+
+GameModeBase.set_photomode_enabled = function (self, enabled)
+	self._photomode_enabled = enabled
 end
 
 return

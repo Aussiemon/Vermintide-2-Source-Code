@@ -181,8 +181,12 @@ NetworkClient.rpc_client_connection_state = function (self, channel_id, peer_id,
 end
 
 NetworkClient.rpc_loading_synced = function (self, channel_id)
+	network_printf("rpc_loading_synced. State: %q", self.state)
+
 	if self.state ~= "game_started" then
 		self:set_state("waiting_enter_game")
+	else
+		self._rpc_loading_synced = true
 	end
 end
 
@@ -305,7 +309,15 @@ NetworkClient.update = function (self, dt)
 
 		if Managers.level_transition_handler:all_packages_loaded() then
 			network_printf("All level packages loaded!")
-			self:set_state("loaded")
+
+			if self._rpc_loading_synced then
+				self:set_state("waiting_enter_game")
+
+				self._rpc_loading_synced = false
+			else
+				self:set_state("loaded")
+			end
+
 			self:on_level_loaded(level_transition_handler:get_current_level_keys())
 		end
 	end

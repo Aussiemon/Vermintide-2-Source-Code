@@ -247,12 +247,13 @@ CharacterSelectionView.update = function (self, dt, t)
 		end
 	end
 
+	self._machine:update(dt, t)
+
 	if not transitioning then
 		self:_handle_mouse_input(dt, t, input_service)
 		self:_handle_exit(dt, input_service)
 	end
 
-	self._machine:update(dt, t)
 	self:draw(dt, input_service)
 end
 
@@ -542,6 +543,14 @@ CharacterSelectionView.exit = function (self, return_to_game)
 	self:play_sound("Play_hud_button_close")
 
 	self.exiting = true
+
+	if IS_WINDOWS then
+		Managers.save:auto_save(SaveFileName, SaveData)
+	else
+		Managers.save:auto_save(SaveFileName, SaveData)
+	end
+
+	Managers.backend:commit()
 end
 
 CharacterSelectionView.transitioning = function (self)

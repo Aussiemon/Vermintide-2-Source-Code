@@ -389,18 +389,14 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 		infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 	end
 
-	if infinite_ammo then
-		ammo_used = 0
-	end
-
-	if infinite_ammo or self._infinite_ammo then
+	if (infinite_ammo or self._infinite_ammo) and self.slot_name == "slot_ranged" then
 		ammo_used = 0
 	end
 
 	self._shots_fired = self._shots_fired + ammo_used
 
 	if buff_extension then
-		buff_extension:trigger_procs("on_ammo_used")
+		buff_extension:trigger_procs("on_ammo_used", self)
 		Managers.state.achievement:trigger_event("ammo_used", self.owner_unit)
 
 		if self:total_remaining_ammo() == 0 then

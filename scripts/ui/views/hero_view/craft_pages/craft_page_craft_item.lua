@@ -308,7 +308,7 @@ CraftPageCraftItem._handle_input = function (self, dt, t)
 			items[#items + 1] = backend_id
 		end
 
-		local recipe_available = parent:craft(items)
+		local recipe_available = parent:craft(items, self._recipe_name)
 
 		if recipe_available then
 			self:_set_craft_button_disabled(true)
@@ -414,7 +414,6 @@ CraftPageCraftItem._update_craft_items = function (self)
 			end
 		else
 			self:_add_craft_item(pressed_backend_id)
-			self:setup_recipe_requirements()
 		end
 	end
 
@@ -492,6 +491,8 @@ CraftPageCraftItem._add_craft_item = function (self, backend_id, slot_index, ign
 
 		self._widgets_by_name.item_grid_random_icon.content.visible = false
 	end
+
+	self:setup_recipe_requirements()
 end
 
 CraftPageCraftItem._set_craft_button_disabled = function (self, disabled)

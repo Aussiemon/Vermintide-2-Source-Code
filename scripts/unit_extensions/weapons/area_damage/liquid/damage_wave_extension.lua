@@ -1,6 +1,15 @@
+local stagger_types = require("scripts/utils/stagger_types")
 DamageWaveExtension = class(DamageWaveExtension)
 local unit_alive = Unit.alive
 local position_lookup = POSITION_LOOKUP
+local DEFAULT_STAGGER_REFRESH_TIME = {
+	math.huge,
+	math.huge,
+	math.huge,
+	math.huge,
+	math.huge,
+	math.huge
+}
 local impact_hit_units = {}
 
 DamageWaveExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -33,6 +42,8 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.immune_breeds = template.immune_breeds
 	self.buff_template_name = template.buff_template_name
 	self.buff_template_type = template.buff_template_type
+	self.leave_area_func = template.leave_area_func
+	self.add_buff_func = template.add_buff_func
 	self.buff_wave_impact_template_name = template.buff_wave_impact_name
 	self.buff_wave_impact_impact_type = template.buff_wave_impact_type
 	self.fx_name_filled = template.fx_name_filled
@@ -40,11 +51,15 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.fx_name_impact = template.fx_name_impact
 	self.fx_name_arrived = template.fx_name_arrived
 	local fx_name_init = template.fx_name_init
-	local init_effect_id = World.create_particles(world, fx_name_init, position_lookup[unit], Unit.local_rotation(unit, 0))
 
-	World.link_particles(world, init_effect_id, unit, 0, Matrix4x4.identity(), template.particle_arrived_stop_mode)
+	if fx_name_init then
+		local init_effect_id = World.create_particles(world, fx_name_init, position_lookup[unit], Unit.local_rotation(unit, 0))
 
-	self.init_effect_id = init_effect_id
+		World.link_particles(world, init_effect_id, unit, 0, Matrix4x4.identity(), template.particle_arrived_stop_mode)
+
+		self.init_effect_id = init_effect_id
+	end
+
 	self.blob_separation_dist = template.blob_separation_dist
 	self.fx_separation_dist = template.fx_separation_dist
 	self.max_height = template.max_height
@@ -56,8 +71,8 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.start_speed = template.start_speed
 	self.acceleration = template.acceleration
 	self.max_speed = template.max_speed
-	self.wavefront_radius = template.wave_width / 2
-	self.wave_width = template.wave_width
+	self.player_query_distance = template.player_query_distance
+	self.ai_query_distance = template.ai_query_distance
 	self.travel_dist = 0
 	self.apply_buff_to_ai = template.apply_buff_to_ai
 	self.apply_buff_to_player = template.apply_buff_to_player
@@ -65,6 +80,8 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.apply_impact_buff_to_ai = template.apply_impact_buff_to_ai
 	self.time_of_life = template.time_of_life
 	self.launch_animation = template.launch_animation
+	self._on_arrive_func = template.on_arrive_func
+	self._update_func = template.update_func
 end
 
 DamageWaveExtension.set_update_func = function (self, update_func, init_func, t)
@@ -87,13 +104,14 @@ DamageWaveExtension._calculate_oobb_collision = function (self, width, range, he
 	return oobb_pos, self_rot, size
 end
 
-DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_pos)
+DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_pos, optional_data)
 	local unit = self.unit
 
 	if not Unit.alive(unit) then
 		return
 	end
 
+	self.optional_data = optional_data
 	local target_pos = optional_target_pos
 	target_pos = target_pos or position_lookup[target_unit]
 	local start_speed = self.start_speed
@@ -124,9 +142,9 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 
 	if create_bot_aoe_threat then
 		local threat_duration = (start_speed > 0 and initial_dist / start_speed) or initial_dist
-		local width = self.wave_width * 2
+		local width = self.player_query_distance * 2
 		local range = initial_dist + self.overflow_dist
-		local height = self.wave_width
+		local height = self.player_query_distance
 		local offset_forward = 0
 		local offset_up = 0
 		local obstacle_position, obstacle_rotation, obstacle_size = self:_calculate_oobb_collision(width, range, height, offset_forward, offset_up, position, effect_rotation)
@@ -176,7 +194,7 @@ DamageWaveExtension.destroy = function (self)
 	local player_units_inside = self.player_units_inside
 	local buff_system = self.buff_system
 
-	for target_unit, inside_id in pairs(player_units_inside) do
+	for target_unit, _ in pairs(player_units_inside) do
 		if unit_alive(target_unit) then
 			local status_extension = ScriptUnit.extension(target_unit, "status_system")
 
@@ -184,7 +202,9 @@ DamageWaveExtension.destroy = function (self)
 				StatusUtils.set_in_liquid_network(target_unit, false)
 			end
 
-			buff_system:remove_server_controlled_buff(target_unit, inside_id)
+			if self.leave_area_func then
+				self.leave_area_func(target_unit)
+			end
 		end
 	end
 
@@ -195,18 +215,16 @@ DamageWaveExtension.destroy = function (self)
 
 	for i = 1, num_blobs, 1 do
 		local blob = blobs[i]
-		local ai_units_inside_blob = blob[5]
-
-		for target_unit, inside_id in pairs(ai_units_inside_blob) do
-			if ALIVE[target_unit] then
-				buff_system:remove_server_controlled_buff(target_unit, inside_id)
-			end
-		end
-
 		local volume_id = blob[6]
 
 		if volume_id then
 			ai_system:remove_nav_cost_map_volume(volume_id, cost_map_id)
+		end
+	end
+
+	if self.leave_area_func then
+		for target_unit, _ in pairs(self.ai_units_inside) do
+			self.leave_area_func(target_unit)
 		end
 	end
 
@@ -243,11 +261,13 @@ DamageWaveExtension.abort = function (self)
 		WwiseUtils.trigger_unit_event(self.world, self.impact_wave_sound, unit)
 	end
 
-	local network_manager = self.network_manager
-	local effect_name_id = NetworkLookup.effects[self.fx_name_arrived]
-	local node_id = 0
+	if self.fx_name_arrived then
+		local network_manager = self.network_manager
+		local effect_name_id = NetworkLookup.effects[self.fx_name_arrived]
+		local node_id = 0
 
-	network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, position, rotation, false)
+		network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, position, rotation, false)
+	end
 end
 
 DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
@@ -283,12 +303,12 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	Unit.set_local_position(unit, 0, position)
 
 	if self.blob_separation_dist and self.blob_separation_dist <= self.last_dist - dist_to_target then
-		self:insert_blob(position, self.wave_width, current_rotation, nav_world)
+		self:insert_blob(position, self.ai_query_distance, current_rotation, nav_world)
 
 		self.last_dist = dist_to_target
 	end
 
-	if self.fx_separation_dist <= self.last_fx_dist - dist_to_target and self.fx_name_filled then
+	if self.fx_name_filled and self.fx_separation_dist <= self.last_fx_dist - dist_to_target then
 		local wave_rotation = Quaternion.look(wave_dir, Vector3(0, 0, 1))
 
 		self:insert_fx(position, wave_rotation, 2)
@@ -320,7 +340,9 @@ DamageWaveExtension.on_hit_by_wave = function (hit_unit, unit, parent)
 	local world = parent.world
 	local normal_rotation = Quaternion.look(Vector3.forward(), Vector3.up())
 
-	World.create_particles(world, parent.fx_name_impact, position_lookup[unit], normal_rotation)
+	if parent.fx_name_impact then
+		World.create_particles(world, parent.fx_name_impact, position_lookup[unit], normal_rotation)
+	end
 
 	local impact_wave_sound = parent.impact_wave_sound
 
@@ -383,7 +405,13 @@ DamageWaveExtension.wave_arrived = function (self, t, unit)
 	end
 
 	World.stop_spawning_particles(world, self.effect_id)
-	World.create_particles(world, self.fx_name_arrived, position_lookup[unit], Quaternion.look(self.wave_direction:unbox()))
+
+	local arrive_pos = position_lookup[unit]
+	local arrive_rot = Quaternion.look(self.wave_direction:unbox())
+
+	if self.fx_name_arrived then
+		World.create_particles(world, self.fx_name_arrived, arrive_pos, arrive_rot)
+	end
 
 	local unit_id = self.unit_id
 
@@ -391,7 +419,9 @@ DamageWaveExtension.wave_arrived = function (self, t, unit)
 		self.network_transmit:send_rpc_clients("rpc_damage_wave_set_state", unit_id, NetworkLookup.damage_wave_states.arrived)
 	end
 
-	World.stop_spawning_particles(world, self.init_effect_id)
+	if self.init_effect_id then
+		World.stop_spawning_particles(world, self.init_effect_id)
+	end
 
 	local blobs = self.blobs
 	local num_blobs = #blobs
@@ -412,9 +442,13 @@ DamageWaveExtension.wave_arrived = function (self, t, unit)
 			rim_nodes[#rim_nodes + 1] = Vector3Box(rim_position_forward)
 		end
 	end
+
+	if self._on_arrive_func then
+		self:_on_arrive_func(arrive_pos, arrive_rot)
+	end
 end
 
-DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radius, ai_push_data, attacker_unit, wave_dir)
+DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radius, ai_push_data, attacker_unit, wave_dir, dt)
 	if not ai_push_data then
 		return
 	end
@@ -425,8 +459,13 @@ DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radiu
 	local stagger_impact = ai_push_data.stagger_impact
 	local duration_table = ai_push_data.stagger_duration
 	local stagger_distance = ai_push_data.stagger_distance
+	local stagger_distance_table = ai_push_data.stagger_distance_table
 	local push_along_wave_dir = ai_push_data.push_along_wave_direction
 	local apply_impact_buff_to_ai = self.apply_impact_buff_to_ai
+	local stagger_refresh_time = ai_push_data.stagger_refresh_time or DEFAULT_STAGGER_REFRESH_TIME
+	local wave_drag_vector = ai_push_data.drag_along_wave and wave_dir * self.wave_speed
+	local wave_drag_multiplier = ai_push_data.wave_drag_multiplier
+	local wave_drag_multiplier_table = ai_push_data.wave_drag_multiplier_table
 	local buff_system = self.buff_system
 	local buff_wave_impact_impact_type = self.buff_wave_impact_impact_type
 	local buff_wave_impact_template_name = self.buff_wave_impact_template_name
@@ -436,33 +475,52 @@ DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radiu
 	for i = 1, num_ai_units, 1 do
 		local hit_unit = ai_units[i]
 
-		if not ai_hit_by_wavefront[hit_unit] then
+		if wave_drag_vector or t >= (ai_hit_by_wavefront[hit_unit] or 0) then
+			local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 			local health_extension = ScriptUnit.extension(hit_unit, "health_system")
 			local is_alive = health_extension:is_alive()
-			local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 			local breed_name = hit_unit_blackboard.breed.name
 			local should_stagger = is_alive and not immune_breeds[breed_name]
 
 			if should_stagger then
-				local stagger_type, stagger_duration = DamageUtils.calculate_stagger(stagger_impact, duration_table, hit_unit, attacker_unit)
+				local breed = hit_unit_blackboard.breed
+				local target_unit_armor = breed.stagger_armor_category or breed.primary_armor_category or breed.armor_category or 1
 
-				if stagger_type > 0 then
-					local hit_unit_pos = position_lookup[hit_unit]
-					local direction = (push_along_wave_dir and wave_dir) or Vector3.normalize(hit_unit_pos - impact_position)
+				if t >= (ai_hit_by_wavefront[hit_unit] or 0) then
+					local stagger_type, stagger_duration = DamageUtils.calculate_stagger(stagger_impact, duration_table, hit_unit, attacker_unit)
 
-					AiUtils.stagger(hit_unit, hit_unit_blackboard, attacker_unit, direction, stagger_distance, stagger_type, stagger_duration, nil, t)
+					if stagger_types.none < stagger_type then
+						local hit_unit_pos = position_lookup[hit_unit]
+						local direction = (push_along_wave_dir and wave_dir) or Vector3.normalize(hit_unit_pos - impact_position)
+						local distance = (stagger_distance_table and stagger_distance_table[target_unit_armor]) or stagger_distance
 
-					if apply_impact_buff_to_ai then
-						local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
+						AiUtils.stagger(hit_unit, hit_unit_blackboard, attacker_unit, direction, distance, stagger_type, stagger_duration, nil, t)
 
-						if not buff_extension:has_buff_type(buff_wave_impact_impact_type) then
-							buff_system:add_buff(hit_unit, buff_wave_impact_template_name, attacker_unit)
+						if apply_impact_buff_to_ai then
+							local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
+
+							if not buff_extension:has_buff_type(buff_wave_impact_impact_type) then
+								buff_system:add_buff(hit_unit, buff_wave_impact_template_name, attacker_unit, nil, nil, self.source_unit)
+							end
+						end
+					end
+
+					ai_hit_by_wavefront[hit_unit] = t + stagger_refresh_time[target_unit_armor] * (math.random() / 2 + 0.5)
+				end
+
+				if wave_drag_vector then
+					local hit_unit_blackboard = BLACKBOARDS[hit_unit]
+					local locomotion_extension = hit_unit_blackboard.locomotion_extension
+
+					if locomotion_extension then
+						local wave_drag_str = (wave_drag_multiplier_table and wave_drag_multiplier_table[target_unit_armor]) or wave_drag_multiplier
+
+						if wave_drag_str > 0 then
+							locomotion_extension:set_animation_external_velocity(wave_drag_vector * wave_drag_str)
 						end
 					end
 				end
 			end
-
-			ai_hit_by_wavefront[hit_unit] = true
 		end
 	end
 end
@@ -473,19 +531,21 @@ DamageWaveExtension.check_overlap = function (self, unit, target_unit, wave_radi
 	local pos_projected_on_wave_line = Geometry.closest_point_on_line(test_pos, p1, p2)
 	local to_line_flat = Vector3.flat(test_pos - pos_projected_on_wave_line)
 	local dist_sq = Vector3.length_squared(to_line_flat)
-	local wave_radius_sq = wave_radius^2
-	local inside_id = player_units_inside[target_unit]
+	local wave_radius_sq = wave_radius * wave_radius
+	local already_inside = player_units_inside[target_unit]
 	local status_extension = ScriptUnit.extension(target_unit, "status_system")
 
-	if inside_id then
+	if already_inside then
 		if wave_radius_sq < dist_sq then
 			if status_extension.in_liquid_unit == unit then
 				StatusUtils.set_in_liquid_network(target_unit, false)
 			end
 
-			buff_system:remove_server_controlled_buff(target_unit, inside_id)
-
 			player_units_inside[target_unit] = nil
+
+			if self.leave_area_func then
+				self.leave_area_func(target_unit)
+			end
 		end
 	elseif dist_sq < wave_radius_sq then
 		local line_dist = Vector3.distance(p1, pos_projected_on_wave_line)
@@ -497,12 +557,16 @@ DamageWaveExtension.check_overlap = function (self, unit, target_unit, wave_radi
 		local buff_template_type = self.buff_template_type
 		local buff_extension = ScriptUnit.extension(target_unit, "buff_system")
 
-		if math.abs(test_pos.z - z) < wave_radius and not buff_extension:has_buff_type(buff_template_type) then
+		if math.abs(test_pos.z - z) < wave_radius then
 			if status_extension.in_liquid_unit ~= unit then
 				StatusUtils.set_in_liquid_network(target_unit, true, unit)
 			end
 
-			player_units_inside[target_unit] = buff_system:add_buff(target_unit, buff_template_name, unit, true)
+			if not already_inside then
+				buff_system:add_buff(target_unit, buff_template_name, unit, false, nil, self.source_unit)
+			end
+
+			player_units_inside[target_unit] = true
 		end
 	end
 end
@@ -543,7 +607,7 @@ DamageWaveExtension.update = function (self, unit, input, dt, context, t)
 			AiUtils.push_intersecting_players(unit, self.source_unit, self.displaced_units, player_push_data, t, dt, self.on_hit_by_wave, self)
 		end
 
-		self:wavefront_impact(t, position, self.wavefront_radius, self.template.ai_push_data, self.unit, wave_dir)
+		self:wavefront_impact(t, position, self.ai_query_distance, self.template.ai_push_data, self.unit, wave_dir)
 	elseif state == "arrived" then
 		local to_target_dir, dist = self:move_wave(unit, t, dt, self.overflow_dist)
 
@@ -581,7 +645,8 @@ DamageWaveExtension.insert_blob = function (self, position, radius, rotation, na
 		position[3],
 		radius,
 		{},
-		nav_cost_map_volume_id
+		nav_cost_map_volume_id,
+		blob_index
 	}
 	local rim_nodes = self.rim_nodes
 	local rim_distance = radius + BLOB_EXTRA_SAFE_DISTANCE
@@ -638,6 +703,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 	end
 
 	local unit = self.unit
+	local source_unit = self.source_unit
 	local buff_system = self.buff_system
 	local first_blob = blobs[1]
 	local last_blob = blobs[num_blobs]
@@ -646,7 +712,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 
 	if self.apply_buff_to_player then
 		local enemy_player_and_bot_units = self._source_side.ENEMY_PLAYER_AND_BOT_UNITS
-		local wave_radius = self.wave_width
+		local wave_radius = self.player_query_distance
 
 		for i = 1, #enemy_player_and_bot_units, 1 do
 			local target_unit = enemy_player_and_bot_units[i]
@@ -663,7 +729,6 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 	local blob_index = self.ai_blob_index
 	local amount = math.min(blobs_per_frame, num_blobs)
 	local buff_template_name = self.buff_template_name
-	local buff_template_type = self.buff_template_type
 	local immune_breeds = self.immune_breeds
 	local ai_units_inside = self.ai_units_inside
 	local BLACKBOARDS = BLACKBOARDS
@@ -679,37 +744,76 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 
 		for i = 1, num_ai_units, 1 do
 			local target_unit = ai_units[i]
+			local already_checked = inside_this_frame[target_unit] ~= nil
 			local inside_blob = ai_units_inside[target_unit]
 
-			if AiUtils.unit_alive(target_unit) and (inside_blob == nil or inside_blob == blob) then
+			if not already_checked and AiUtils.unit_alive(target_unit) then
 				local target_position = position_lookup[target_unit]
 				local pos_projected_on_wave_line = Geometry.closest_point_on_line(target_position, first_blob_position, last_blob_position)
 				local to_line_distance_sq = Vector3.distance_squared(target_position, pos_projected_on_wave_line)
 
-				if to_line_distance_sq < blob_radius^2 then
+				if to_line_distance_sq < blob_radius * blob_radius then
 					local target_blackboard = BLACKBOARDS[target_unit]
 					local breed = target_blackboard.breed
 					local breed_name = breed.name
-					local buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
 
-					if buff_extension and not immune_breeds[breed_name] and not buff_extension:has_buff_type(buff_template_type) then
-						ai_units_inside_blob[target_unit] = buff_system:add_buff(target_unit, buff_template_name, unit, true)
+					if not immune_breeds[breed_name] then
+						if buff_template_name and not inside_blob then
+							if self.add_buff_func then
+								self.add_buff_func(target_unit, buff_template_name, unit, source_unit)
+							else
+								buff_system:add_buff(target_unit, buff_template_name, unit, false, nil, source_unit)
+							end
+						elseif inside_blob and inside_blob ~= blob then
+							local ai_units_inside_other_blob = inside_blob[5]
+							ai_units_inside_other_blob[target_unit] = nil
+							ai_units_inside_blob[target_unit] = true
+						end
+
+						ai_units_inside[target_unit] = blob
+						inside_this_frame[target_unit] = true
+					end
+				elseif ai_units_inside[target_unit] then
+					if self.leave_area_func then
+						self.leave_area_func(target_unit)
 					end
 
-					ai_units_inside[target_unit] = blob
-					inside_this_frame[target_unit] = true
+					inside_this_frame[target_unit] = false
+					ai_units_inside[target_unit] = nil
+					ai_units_inside_blob[target_unit] = nil
 				end
 			end
 		end
 
-		for target_unit, inside_id in pairs(ai_units_inside_blob) do
-			if not inside_this_frame[target_unit] then
-				if ALIVE[target_unit] then
-					buff_system:remove_server_controlled_buff(target_unit, inside_id)
-				end
-
-				ai_units_inside[target_unit] = nil
+		for target_unit, _ in pairs(ai_units_inside_blob) do
+			if not AiUtils.unit_alive(target_unit) then
 				ai_units_inside_blob[target_unit] = nil
+				ai_units_inside[target_unit] = nil
+			elseif not inside_this_frame[target_unit] then
+				local target_position = position_lookup[target_unit]
+				local blob_index = blob[7]
+				local pos_projected_on_wave_line = Geometry.closest_point_on_line(target_position, first_blob_position, last_blob_position)
+				local to_line_distance_sq = Vector3.distance_squared(target_position, pos_projected_on_wave_line)
+				local distance_from_start = Vector3.distance(first_blob_position, pos_projected_on_wave_line)
+				local closest_blob_index = math.floor(distance_from_start / self.blob_separation_dist + 0.5) + 1
+				closest_blob_index = math.clamp(closest_blob_index, 1, num_blobs)
+				local closest_blob = blobs[closest_blob_index]
+				local closest_blob_radius = closest_blob[4]
+				local same_index = closest_blob_index == blob_index
+
+				if to_line_distance_sq > closest_blob_radius * closest_blob_radius then
+					ai_units_inside[target_unit] = nil
+					ai_units_inside_blob[target_unit] = nil
+
+					if self.leave_area_func then
+						self.leave_area_func(target_unit)
+					end
+				elseif not same_index then
+					local ai_units_inside_other_blob = closest_blob[5]
+					ai_units_inside_other_blob[target_unit] = ai_units_inside_blob[target_unit]
+					ai_units_inside[target_unit] = closest_blob
+					ai_units_inside_blob[target_unit] = nil
+				end
 			end
 		end
 
@@ -729,7 +833,7 @@ DamageWaveExtension.get_rim_nodes = function (self)
 	return self.rim_nodes, true
 end
 
-DamageWaveExtension.is_position_inside = function (self, position, nav_cost_map_table)
+DamageWaveExtension.is_position_inside = function (self, position, nav_cost_map_table, is_player)
 	local blobs = self.blobs
 	local num_blobs = #blobs
 
@@ -750,9 +854,17 @@ DamageWaveExtension.is_position_inside = function (self, position, nav_cost_map_
 	local last_blob_position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 	local pos_projected_on_wave_line = Geometry.closest_point_on_line(position, first_blob_position, last_blob_position)
 	local distance_sq = Vector3.distance_squared(position, pos_projected_on_wave_line)
-	local wave_radius_sq = self.wave_width^2
+	local wave_radius = (is_player and self.player_query_distance) or self.ai_query_distance
 
-	return distance_sq <= wave_radius_sq
+	return distance_sq <= wave_radius * wave_radius
+end
+
+DamageWaveExtension.is_position_inside_blob = function (self, position, blob)
+	local blob_pos = Vector3(blob[1], blob[2], blob[3])
+	local sqr_dist = Vector3.distance_squared(position, blob_pos)
+	local blob_radius = blob[4]
+
+	return sqr_dist < blob_radius * blob_radius
 end
 
 DamageWaveExtension.hot_join_sync = function (self, peer_id)

@@ -107,9 +107,9 @@ end
 
 StartGameWindowDeusQuickplay._handle_gamepad_activity = function (self)
 	local force_update = self.gamepad_active_last_frame == nil
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 			self._input_index = 1
@@ -149,9 +149,9 @@ end
 StartGameWindowDeusQuickplay._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local input_service = parent:window_input_service()
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		local input_index = self._input_index
 		local input_change = nil
 
@@ -206,7 +206,7 @@ StartGameWindowDeusQuickplay._handle_input = function (self, dt, t)
 					self:_play_sound("Play_hud_hover")
 				end
 
-				if UIUtils.is_button_hover(widget, "info_hotspot") or UIUtils.is_button_hover(self._widgets_by_name.difficulty_info, "widget_hotspot") or (gamepad_active and is_selected) then
+				if UIUtils.is_button_hover(widget, "info_hotspot") or UIUtils.is_button_hover(self._widgets_by_name.difficulty_info, "widget_hotspot") or (not mouse_active and is_selected) then
 					local widgets = {
 						difficulty_info = self._widgets_by_name.difficulty_info,
 						upsell_button = self._widgets_by_name.upsell_button
@@ -354,10 +354,10 @@ StartGameWindowDeusQuickplay._verify_selection_index = function (self, input_ind
 end
 
 StartGameWindowDeusQuickplay._gamepad_selector_input_func = function (self, input_index, input_change)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	input_index = self:_verify_selection_index(input_index, input_change)
 
-	if self._input_index ~= input_index and gamepad_active then
+	if self._input_index ~= input_index and not mouse_active then
 		self._parent:play_sound("play_gui_lobby_button_02_mission_act_click")
 
 		if self._input_index then

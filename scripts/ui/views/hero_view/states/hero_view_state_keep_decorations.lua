@@ -5,8 +5,8 @@ local widget_definitions = definitions.widgets_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local generic_input_actions = definitions.generic_input_actions
 local animation_definitions = definitions.animation_definitions
-local create_entry_widget = definitions.create_entry_widget
-local create_dummy_entry_widget = definitions.create_dummy_entry_widget
+local entry_widget_definition = definitions.entry_widget_definition
+local dummy_entry_widget_definition = definitions.dummy_entry_widget_definition
 local input_actions = definitions.input_actions
 local DO_RELOAD = false
 local LIST_SPACING = 4
@@ -59,13 +59,18 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 		self._default_table = DefaultPaintings
 		self._main_table = Paintings
 		self._ordered_table = PaintingOrder
-		self._empty_decoration_name = "hon_none"
+		self._empty_decoration_name = "hor_none"
 	elseif self._type == "trophy" then
 		self._default_table = DefaultTrophies
 		self._main_table = Trophies
 		self._ordered_table = TrophyOrder
 		self._empty_decoration_name = "hub_trophy_empty"
 	end
+
+	self._default_decorations = {}
+
+	table.append(self._default_decorations, DefaultPaintings)
+	table.append(self._default_decorations, DefaultTrophies)
 
 	local camera_interaction_name = Unit.get_data(interactable_unit, "interaction_data", "camera_interaction_name")
 	local hide_character = Unit.get_data(interactable_unit, "interaction_data", "hide_character")
@@ -115,11 +120,18 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 			self:_set_info_by_decoration_key(selected_decoration, false)
 		else
 			self._customizable_decoration = true
-			local list_entries = self:_setup_decorations_list()
-			local start_index = 1
 
-			if not table.contains(self._default_table, selected_decoration) then
-				start_index = table.find(list_entries, selected_decoration)
+			self:_setup_decorations_list()
+
+			local start_index = 1
+			local widgets = self._list_widgets
+
+			for i = 1, #widgets, 1 do
+				if widgets[i].content.key == selected_decoration then
+					start_index = i
+
+					break
+				end
 			end
 
 			self:_on_list_index_selected(start_index)
@@ -413,9 +425,9 @@ end
 
 HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local input_pressed = input_service:get("toggle_menu")
-	local input_close_pressed = gamepad_active and input_service:get("back")
+	local input_close_pressed = not mouse_active and input_service:get("back")
 	local widgets_by_name = self._widgets_by_name
 
 	self._scrollbar_logic:update(dt, t)
@@ -435,9 +447,15 @@ HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 
 			if self._selected_equipped_decoration then
 				keep_decoration_extension:unequip_decoration()
+
+				self._selected_equipped_decoration = false
+
+				self:_update_confirm_button()
+				self:_update_equipped_widget()
+				self._menu_input_description:set_input_description(input_actions.default)
 				self:_play_sound("Play_hud_select")
-				self:close_menu()
 			else
+				self:_verify_decoration_selection()
 				keep_decoration_extension:confirm_selection()
 				self:_play_sound("hud_add_painting")
 
@@ -451,7 +469,7 @@ HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 
 		local is_list_hovered = false
 
-		if gamepad_active then
+		if not mouse_active then
 			is_list_hovered = true
 
 			self:_handle_gamepad_list_selection(input_service)
@@ -483,6 +501,33 @@ HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
 		self:close_menu()
 
 		return
+	end
+end
+
+HeroViewStateKeepDecorations._verify_decoration_selection = function (self)
+	local keep_decoration_extension = ScriptUnit.extension(self._interactable_unit, "keep_decoration_system")
+	local equipped_decoration = keep_decoration_extension:get_selected_decoration()
+
+	if not table.find(self._default_decorations, equipped_decoration) then
+		return
+	end
+
+	local index = self._selected_list_index
+	local list_widgets = self._list_widgets
+
+	if not index or index > #list_widgets then
+		return
+	end
+
+	local selected_widget = list_widgets[index]
+	local selected_content = selected_widget.content
+	local selected_key = selected_content.key
+	local locked = selected_content.locked
+
+	if locked then
+		return
+	else
+		keep_decoration_extension:decoration_selected(selected_key)
 	end
 end
 
@@ -803,65 +848,6 @@ HeroViewStateKeepDecorations._set_selected_artist = function (self, artist_text)
 	return text_height
 end
 
-HeroViewStateKeepDecorations._populate_list = function (self, layout)
-	local widgets = {}
-	local widget_definition = create_entry_widget()
-	local decoration_system = self._decoration_system
-	local num_entries = #layout
-
-	for i = 1, num_entries, 1 do
-		local entry = layout[i]
-		local key = entry.key
-		local locked = entry.locked
-		local new = ItemHelper.is_new_keep_decoration_id(key)
-		local widget = UIWidget.init(widget_definition)
-		widgets[i] = widget
-		local content = widget.content
-		local style = widget.style
-		local title = entry.display_name
-		local title_style = style.title
-		local max_text_width = title_style.size[1] - 10
-		content.title = UIRenderer.crop_text_width(self._ui_renderer, title, max_text_width, title_style)
-		content.key = key
-		content.locked = locked
-		content.new = new
-		content.in_use = decoration_system:is_decoration_in_use(key)
-	end
-
-	self._list_widgets = widgets
-	self._dummy_list_widgets = {}
-
-	self:_align_list_widgets()
-
-	local content_length = self._total_list_height
-	local list_scrollbar_size = scenegraph_definition.list_scrollbar.size
-	local scrollbar_length = list_scrollbar_size[2]
-	local dummy_list_widgets = {}
-
-	if content_length < scrollbar_length then
-		local dummy_widget_definition = create_dummy_entry_widget()
-		local dummy_count = 0
-		local dummy_height = LIST_SPACING
-
-		while scrollbar_length > content_length + dummy_height do
-			dummy_count = dummy_count + 1
-			local widget = UIWidget.init(dummy_widget_definition)
-
-			table.insert(dummy_list_widgets, widget)
-
-			local content = widget.content
-			local size = content.size
-			local height = size[2]
-			dummy_height = dummy_height + height + LIST_SPACING
-		end
-	end
-
-	self._dummy_list_widgets = dummy_list_widgets
-
-	self:_align_list_widgets()
-	self:_initialize_scrollbar()
-end
-
 HeroViewStateKeepDecorations._update_equipped_widget = function (self)
 	local interactable_unit = self._interactable_unit
 	local keep_decoration_extension = ScriptUnit.extension(interactable_unit, "keep_decoration_system")
@@ -1083,7 +1069,8 @@ end
 HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 	local backend_interface = self._keep_decoration_backend_interface
 	local unlocked_decorations = (backend_interface and backend_interface:get_unlocked_keep_decorations()) or {}
-	local entries = {}
+	local widgets = {}
+	local index = 0
 
 	for _, key in ipairs(self._ordered_table) do
 		if not table.contains(self._default_table, key) then
@@ -1092,27 +1079,70 @@ HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 			if settings then
 				local unlocked = table.contains(unlocked_decorations, key)
 				local display_name = Localize(settings.display_name)
+				local new = ItemHelper.is_new_keep_decoration_id(key)
 
 				if unlocked then
-					entries[#entries + 1] = {
-						key = key,
-						display_name = display_name
-					}
+					local widget = UIWidget.init(entry_widget_definition)
+					index = index + 1
+					widgets[index] = widget
+					local content = widget.content
+					local style = widget.style
+					local title = display_name
+					local title_style = style.title
+					local max_text_width = title_style.size[1] - 10
+					content.title = UIRenderer.crop_text_width(self._ui_renderer, title, max_text_width, title_style)
+					content.key = key
+					content.locked = false
+					content.new = new
+					content.in_use = self._decoration_system:is_decoration_in_use(key)
 				end
 			end
 		end
 	end
 
-	local new_order = {}
+	table.sort(widgets, function (a, b)
+		local a_content = a.content
+		local b_content = b.content
 
-	for _, table in ipairs(entries) do
-		new_order[#new_order + 1] = table.key
+		if a_content.new ~= b_content.new then
+			return a_content.new
+		end
+
+		return Localize(a_content.title) < Localize(b_content.title)
+	end)
+
+	self._list_widgets = widgets
+	self._dummy_list_widgets = {}
+
+	self:_align_list_widgets()
+
+	local content_length = self._total_list_height
+	local list_scrollbar_size = scenegraph_definition.list_scrollbar.size
+	local scrollbar_length = list_scrollbar_size[2]
+	local dummy_list_widgets = {}
+
+	if content_length < scrollbar_length then
+		local dummy_count = 0
+		local dummy_height = LIST_SPACING
+
+		while scrollbar_length > content_length + dummy_height do
+			dummy_count = dummy_count + 1
+			local widget = UIWidget.init(dummy_entry_widget_definition)
+
+			table.insert(dummy_list_widgets, widget)
+
+			local content = widget.content
+			local size = content.size
+			local height = size[2]
+			dummy_height = dummy_height + height + LIST_SPACING
+		end
 	end
 
-	self:_populate_list(entries)
-	self:_update_equipped_widget()
+	self._dummy_list_widgets = dummy_list_widgets
 
-	return new_order
+	self:_align_list_widgets()
+	self:_initialize_scrollbar()
+	self:_update_equipped_widget()
 end
 
 HeroViewStateKeepDecorations._animate_list_entries = function (self, dt, is_list_hovered)
@@ -1211,10 +1241,10 @@ HeroViewStateKeepDecorations._animate_list_widget = function (self, widget, dt, 
 end
 
 HeroViewStateKeepDecorations._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local force_update = self._gamepad_active_last_frame == nil
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self._gamepad_active_last_frame or force_update then
 			self._gamepad_active_last_frame = true
 

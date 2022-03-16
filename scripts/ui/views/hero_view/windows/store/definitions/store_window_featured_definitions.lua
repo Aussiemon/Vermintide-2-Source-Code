@@ -1358,7 +1358,7 @@ local generic_input_actions = {
 		{
 			input_action = "confirm",
 			priority = 3,
-			description_text = "input_description_select"
+			description_text = "buy_now"
 		},
 		{
 			input_action = "back",
@@ -1368,7 +1368,7 @@ local generic_input_actions = {
 		{
 			input_action = "special_1",
 			priority = 5,
-			description_text = "store_login_rewards_button",
+			description_text = "store_login_claim_reward_title",
 			content_check_function = function ()
 				return not GameSettingsDevelopment.use_offline_backend
 			end

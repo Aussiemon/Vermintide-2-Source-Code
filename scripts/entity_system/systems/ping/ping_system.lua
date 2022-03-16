@@ -290,7 +290,7 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 		local social_wheel_event_name = NetworkLookup.social_wheel_events[social_wheel_event_id]
 		social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event_name]
 
-		if not IS_WINDOWS then
+		if not IS_WINDOWS and ping_type ~= PingTypes.LOCAL_ONLY then
 			local party = sender_player:get_party()
 			local pinged_unit_id = (pinged_unit and Managers.state.network:unit_game_object_id(pinged_unit)) or 0
 			local include_spectators = true
@@ -338,6 +338,10 @@ PingSystem._handle_chat = function (self, ping_type, social_wheel_event_id, send
 			execute_func(social_wheel_event_settings.data, pinged_unit, sender_player, social_wheel_category)
 		end
 	end
+end
+
+PingSystem.handle_local_ping = function (self, ping_type, social_wheel_event_id, sender_player, pinger_unit, pinged_unit, chat_messages)
+	self:_handle_chat(ping_type, social_wheel_event_id, sender_player, pinger_unit, pinged_unit, chat_messages)
 end
 
 PingSystem.is_ping_response = function (self, pinged_unit, sender_unique_id, position, sent_ping_type)
@@ -487,6 +491,10 @@ PingSystem._add_unit_ping = function (self, pinger_unit, pinged_unit, flash, pin
 end
 
 PingSystem._add_world_marker = function (self, pinger_unit, pinged_unit, position, ping_type, social_wheel_event_id)
+	if ping_type == PingTypes.LOCAL_ONLY then
+		return
+	end
+
 	local do_ping, chat_messages, chat_message, ping_icon = nil
 
 	for _, data in pairs(PingTemplates) do

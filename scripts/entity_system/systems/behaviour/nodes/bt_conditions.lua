@@ -599,7 +599,7 @@ BTConditions.switching_weapons = function (blackboard)
 end
 
 BTConditions.warcamp_retaliation_aoe = function (blackboard)
-	return blackboard.num_chain_stagger and blackboard.num_chain_stagger > 2
+	return Unit.alive(blackboard.target_unit) and blackboard.num_chain_stagger and blackboard.num_chain_stagger > 2
 end
 
 BTConditions.is_mounted = function (blackboard)

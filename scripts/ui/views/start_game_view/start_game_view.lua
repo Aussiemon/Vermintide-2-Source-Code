@@ -306,6 +306,30 @@ StartGameView.on_enter = function (self, params)
 	self._draw_loading = false
 
 	self:_init_menu_views()
+	self:_handle_new_ui_disclaimer()
+end
+
+StartGameView._handle_new_ui_disclaimer = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local global_disclaimer_states = {
+		deus = {
+			play = false,
+			default = false
+		},
+		adventure = {
+			default = true,
+			leaderboard = false
+		},
+		default = {
+			default = true,
+			leaderboard = false
+		}
+	}
+	local disclaimer_states = global_disclaimer_states[mechanism_name] or global_disclaimer_states.default
+	local on_enter_transition_params = self._on_enter_transition_params
+	local menu_state_name = (on_enter_transition_params and on_enter_transition_params.menu_state_name) or "default"
+
+	Managers.ui:handle_new_ui_disclaimer(disclaimer_states, menu_state_name)
 end
 
 StartGameView.on_enter_sub_state = function (self)

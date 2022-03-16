@@ -222,9 +222,9 @@ StartGameWindowWeaveList._on_list_index_selected = function (self, index)
 end
 
 StartGameWindowWeaveList._handle_gamepad_input = function (self, dt, t)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 
@@ -272,11 +272,11 @@ StartGameWindowWeaveList._handle_gamepad_input = function (self, dt, t)
 		end
 	else
 		if is_matchmaking then
-			if self._is_server and input_service:get("refresh_press") then
+			if self._is_server and (input_service:get("refresh_press") or input_service:get("skip_pressed")) then
 				self._parent:play_sound("Play_hud_hover")
 				Managers.matchmaking:cancel_matchmaking()
 			end
-		elseif self:_can_play() and input_service:get("refresh_press") then
+		elseif self:_can_play() and (input_service:get("refresh_press") or input_service:get("skip_pressed")) then
 			self._play_button_pressed = true
 			local force_close_menu = true
 
@@ -648,13 +648,13 @@ StartGameWindowWeaveList._animate_list_entries = function (self, list_hovered, d
 end
 
 StartGameWindowWeaveList._animate_list_entry = function (self, content, style, dt, optional_hover)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local hotspot = content.button_hotspot or content.hotspot
-	local is_hover = hotspot.is_hover or (gamepad_active and hotspot.has_focus)
+	local is_hover = (hotspot.is_hover or not mouse_active) and hotspot.has_focus
 	local is_selected = hotspot.is_selected
 	local on_hover_enter = hotspot.on_hover_enter
 
-	if not gamepad_active and optional_hover ~= nil and not optional_hover then
+	if mouse_active and optional_hover ~= nil and not optional_hover then
 		is_hover = false
 		on_hover_enter = false
 	end

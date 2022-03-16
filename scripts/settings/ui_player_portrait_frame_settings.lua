@@ -2222,6 +2222,272 @@ UIPlayerPortraitFrameSettings = {
 				255
 			}
 		}
+	},
+	frame_deus_portrait_khorne = {
+		{
+			texture = "deus_portrait_khorne",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_lileath_1 = {
+		{
+			texture = "deus_portrait_lileath_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_lileath_2 = {
+		{
+			texture = "deus_portrait_lileath_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_lileath_3 = {
+		{
+			texture = "deus_portrait_lileath_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_myrmidia_1 = {
+		{
+			texture = "deus_portrait_myrmidia_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_myrmidia_2 = {
+		{
+			texture = "deus_portrait_myrmidia_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_myrmidia_3 = {
+		{
+			texture = "deus_portrait_myrmidia_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_nurgle = {
+		{
+			texture = "deus_portrait_nurgle",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_sigmar_1 = {
+		{
+			texture = "deus_portrait_sigmar_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_sigmar_2 = {
+		{
+			texture = "deus_portrait_sigmar_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_sigmar_3 = {
+		{
+			texture = "deus_portrait_sigmar_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_slaanesh = {
+		{
+			texture = "deus_portrait_slaanesh",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_taal_1 = {
+		{
+			texture = "deus_portrait_taal_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_taal_2 = {
+		{
+			texture = "deus_portrait_taal_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_taal_3 = {
+		{
+			texture = "deus_portrait_taal_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_tzeentch = {
+		{
+			texture = "deus_portrait_tzeentch",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_valaya_1 = {
+		{
+			texture = "deus_portrait_valaya_1",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_valaya_2 = {
+		{
+			texture = "deus_portrait_valaya_2",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_valaya_3 = {
+		{
+			texture = "deus_portrait_valaya_3",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_citadel = {
+		{
+			texture = "deus_portrait_citadel",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_deus_portrait_chaos_gods = {
+		{
+			texture = "deus_portrait_dlc",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "deus_portrait_dlc_effect",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				126,
+				136
+			}
+		}
 	}
 }
 

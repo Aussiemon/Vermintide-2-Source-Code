@@ -5,6 +5,7 @@ local OUT_OF_BOUNDS_DISTANCE_THRESHOLD = 5
 local OUT_OF_BOUNDS_TIME_THRESHOLD = 5
 local OBJECTIVE_MARKER_TIME = 10
 local AHEAD_DISTANCE_RESPAWN = 5
+local OUT_OF_BOUNDS_DISTANCE_TO_OBSTACLE = 0.5
 
 local function get_squared_distance_to_nav_mesh(nav_world, position, search_radius)
 	local nearest_nav_mesh_point = nil
@@ -13,7 +14,7 @@ local function get_squared_distance_to_nav_mesh(nav_world, position, search_radi
 	if success then
 		nearest_nav_mesh_point = Vector3(position.x, position.y, altitude)
 	else
-		local inside_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, search_radius, search_radius, search_radius, search_radius)
+		local inside_position = GwNavQueries.inside_position_from_outside_position(nav_world, position, search_radius, search_radius, search_radius, OUT_OF_BOUNDS_DISTANCE_TO_OBSTACLE)
 
 		if inside_position then
 			nearest_nav_mesh_point = inside_position

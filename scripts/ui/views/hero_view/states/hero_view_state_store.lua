@@ -329,7 +329,7 @@ HeroViewStateStore.change_generic_actions = function (self, wanted_input_actions
 end
 
 HeroViewStateStore._setup_menu_layout = function (self)
-	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or not UISettings.use_pc_menu_layout
 
 	if use_gamepad_layout then
 		self._layout_settings = local_require("scripts/ui/views/hero_view/states/store_window_layout")
@@ -464,8 +464,12 @@ HeroViewStateStore._initial_windows_setups = function (self, params)
 	end
 end
 
-HeroViewStateStore.window_input_service = function (self)
-	return ((self._input_blocked or self._friends_list_active) and FAKE_INPUT_SERVICE) or self:input_service()
+HeroViewStateStore.window_input_service = function (self, force)
+	if force or (not self._input_blocked and not self._friends_list_active) then
+		return self:input_service()
+	else
+		return FAKE_INPUT_SERVICE
+	end
 end
 
 HeroViewStateStore._close_window_at_index = function (self, window_index)
@@ -2444,7 +2448,7 @@ end
 HeroViewStateStore._set_material_diffuse = function (self, gui, material_name, texture_path)
 	local material = Gui.material(gui, material_name)
 
-	if material then
+	if material and Application.can_get("texture", texture_path) then
 		Material.set_texture(material, "diffuse_map", texture_path)
 	end
 end

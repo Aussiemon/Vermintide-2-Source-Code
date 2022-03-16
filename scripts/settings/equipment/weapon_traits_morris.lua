@@ -1,3 +1,7 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
+
+require("scripts/settings/dlcs/morris/tweak_data/buff_tweak_data")
+
 local morris_weapon_traits = {}
 local buff_tweak_data = {
 	armor_breaker_on_armored_kill = {

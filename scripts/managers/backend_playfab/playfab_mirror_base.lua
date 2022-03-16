@@ -167,6 +167,10 @@ PlayFabMirrorBase._parse_claimed_console_dlc_rewards = function (self, read_only
 end
 
 PlayFabMirrorBase._update_dlc_ownership = function (self)
+	if DEDICATED_SERVER then
+		return
+	end
+
 	local unlock_manager = Managers.unlock
 	local installed_dlcs = unlock_manager:get_installed_dlcs()
 	local json_string = cjson.encode(installed_dlcs)
@@ -198,9 +202,8 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
 	local unlock_manager = Managers.unlock
-	local dlcs = unlock_manager:get_dlcs()
 
-	unlock_manager:set_excluded_dlcs(excluded_dlcs)
+	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
 	self:update_owned_dlcs(false)
 
 	if HAS_STEAM then
@@ -604,7 +607,35 @@ PlayFabMirrorBase.user_data_request_cb = function (self, result)
 		end
 	end
 
+	self:_request_twitch_app_access_token()
+end
+
+PlayFabMirrorBase._request_twitch_app_access_token = function (self)
+	local request = {
+		FunctionName = "getTwitchAccessToken",
+		FunctionParameter = {}
+	}
+	local success_callback = callback(self, "_request_twitch_app_access_token_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase._request_twitch_app_access_token_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	self._twitch_app_access_token = false
+	local function_result = result.FunctionResult
+
+	if function_result.success then
+		self._twitch_app_access_token = function_result.access_token
+	end
+
 	self:_weaves_player_setup()
+end
+
+PlayFabMirrorBase.get_twitch_app_access_token = function (self)
+	return self._twitch_app_access_token
 end
 
 PlayFabMirrorBase._weaves_player_setup = function (self)
@@ -859,7 +890,11 @@ PlayFabMirrorBase._request_steam_user_inventory = function (self)
 	self._num_items_to_load = self._num_items_to_load + 1
 
 	local function callback(result, item_list)
-		debug_printf("_request_steam_user_inventory got results")
+		if item_list then
+			debug_printf("_request_steam_user_inventory got results")
+		else
+			debug_printf("_request_steam_user_inventory got no results")
+		end
 
 		local migrate_and_request_characters = true
 
@@ -1467,29 +1502,41 @@ PlayFabMirrorBase._re_evaluate_best_power_level = function (self, item)
 	end
 end
 
-PlayFabMirrorBase.add_item = function (self, backend_id, item)
+PlayFabMirrorBase._add_new_weapon_skin = function (self, item, generate_new_id, optional_skin_name)
+	local fake_item_id = nil
+	local skin_name = optional_skin_name or item.ItemId
+	local create_new_id = not generate_new_id and Managers.account:offline_mode()
+
+	if create_new_id then
+		local ids = self:add_unlocked_weapon_skin(skin_name, item.ItemInstanceId)
+		fake_item_id = item.ItemInstanceId or (ids and ids[1])
+	else
+		local ids = self:add_unlocked_weapon_skin(skin_name)
+		fake_item_id = ids and ids[1]
+	end
+
+	return fake_item_id
+end
+
+PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
 	local inventory_items = self._inventory_items
 	local skin_data = WeaponSkins.skins[item.ItemId]
 
 	if skin_data then
-		local fake_item_id = nil
-
-		if Managers.account:offline_mode() then
-			local ids = self:add_unlocked_weapon_skin(item.ItemId, item.ItemInstanceId)
-			fake_item_id = item.ItemInstanceId or (ids and ids[1])
-		else
-			local ids = self:add_unlocked_weapon_skin(item.ItemId)
-			fake_item_id = ids and ids[1]
-		end
-
-		return fake_item_id
+		return self:_add_new_weapon_skin(item)
 	else
 		inventory_items[backend_id] = item
 
 		self:_update_data(item, backend_id)
-		ItemHelper.mark_backend_id_as_new(backend_id, item)
+		ItemHelper.mark_backend_id_as_new(backend_id, item, skip_autosave)
 		self:_re_evaluate_best_power_level(item)
 		ItemHelper.on_inventory_item_added(item)
+
+		local skin_name = item.CustomData and item.CustomData.skin
+
+		if skin_name and WeaponSkins.skins[skin_name] then
+			self:_add_new_weapon_skin(item, true, skin_name)
+		end
 	end
 end
 
@@ -1921,15 +1968,17 @@ PlayFabMirrorBase._setup_careers = function (self)
 			slots_to_verify = self._verify_slot_keys_per_affiliation[profile.affiliation]
 
 			for career_name, career_data in pairs(character_data.careers) do
-				self._career_data[career_name] = {}
-				self._career_data_mirror[career_name] = {}
-				local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
+				if CareerSettings[career_name] then
+					self._career_data[career_name] = {}
+					self._career_data_mirror[career_name] = {}
+					local broken_slots = self:_set_inital_career_data(career_name, career_data, slots_to_verify)
 
-				if broken_slots then
-					broken_slots_data[career_name] = broken_slots
+					if broken_slots then
+						broken_slots_data[career_name] = broken_slots
 
-					debug_printf("Broken item slots for career: %q", career_name)
-					table.dump(broken_slots)
+						debug_printf("Broken item slots for career: %q", career_name)
+						table.dump(broken_slots)
+					end
 				end
 			end
 		end
@@ -2098,6 +2147,44 @@ PlayFabMirrorBase.handle_new_dlcs = function (self, new_dlcs)
 
 		Managers.save:auto_save(SaveFileName, SaveData)
 	end
+end
+
+PlayFabMirrorBase._snippet_clear_inventory = function (self)
+	local function clear_inventory_cb(result)
+		local broken_slots = {
+			slot_necklace = true,
+			slot_hat = true,
+			slot_trinket_1 = true,
+			slot_skin = true,
+			slot_frame = true,
+			slot_melee = true,
+			slot_ring = true,
+			slot_ranged = true
+		}
+		local careers = PROFILES_BY_CAREER_NAMES
+		local broken_heroes = {}
+
+		for name, data in pairs(careers) do
+			if data.affiliation == "heroes" then
+				broken_heroes[name] = broken_slots
+			end
+		end
+
+		self:_fix_career_data(broken_heroes, "adventure")
+	end
+
+	self._request_queue[#self._request_queue + 1] = {
+		eac_check = false,
+		func = "devClearInventory",
+		args = {
+			exclude_types = {}
+		},
+		success_cb = clear_inventory_cb
+	}
+end
+
+PlayFabMirrorBase.snippet_clear_inventory = function (self)
+	self:_snippet_clear_inventory()
 end
 
 return

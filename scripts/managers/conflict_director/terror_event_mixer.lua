@@ -156,7 +156,7 @@ TerrorEventMixer.init_functions = {
 		local center_unit = event.data.origin_unit
 		local center_position = nil
 
-		if center_unit then
+		if center_unit and Unit.alive(center_unit) then
 			center_position = Unit.local_position(center_unit, 0)
 		else
 			Application.warning("[TerrorEventMixer] spawn_around_origin_unit present in a terror event that is started without an origin_unit, falling back to a random player")
@@ -169,9 +169,14 @@ TerrorEventMixer.init_functions = {
 		local circle_subdivision = element.circle_subdivision
 		local min_distance = element.min_distance
 		local max_distance = element.max_distance
-		local tries = 30
+		local above_max = element.above_max
+		local below_max = element.below_max
+		local tries = element.tries or 30
+		local check_line_of_sight = (center_unit and element.check_line_of_sight) or false
+		local world = Managers.world:world("level_world")
+		local physics_world = World.physics_world(world)
 
-		ConflictUtils.find_positions_around_position(center_position, spawn_positions, nav_world, min_distance, max_distance, num_to_spawn, invalid_pos_list, distance_to_enemies, tries, circle_subdivision, row_distance)
+		ConflictUtils.find_positions_around_position(center_position, spawn_positions, nav_world, min_distance, max_distance, num_to_spawn, invalid_pos_list, distance_to_enemies, tries, circle_subdivision, row_distance, above_max, below_max, check_line_of_sight, physics_world, center_unit)
 
 		event.center_position = Vector3Box(center_position)
 
@@ -189,6 +194,9 @@ TerrorEventMixer.init_functions = {
 		end
 
 		return true
+	end,
+	spawn_around_origin_unit_staggered = function (event, element, t)
+		return TerrorEventMixer.init_functions.spawn_around_origin_unit(event, element, t)
 	end,
 	continue_when = function (event, element, t)
 		if element.duration then
@@ -987,6 +995,65 @@ TerrorEventMixer.run_functions = {
 
 		return false
 	end,
+	spawn_around_origin_unit_staggered = function (event, element, t, dt)
+		if event.spawn_at <= t and (not event.next_spawn_t or event.next_spawn_t <= t) then
+			local conflict_director = Managers.state.conflict
+			local spawn_table = event.spawn_table
+			local optional_data_table = event.optional_data_table
+			local spawn_positions = event.spawn_positions
+			local group_data = event.group_data
+
+			if element.group_template and not group_data then
+				group_data = {
+					id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
+					size = #spawn_positions,
+					template = element.group_template
+				}
+				event.group_data = group_data
+			end
+
+			local center_position_unboxed = event.center_position:unbox()
+			local num_to_spawn = #spawn_positions
+			local num_spawned = event.num_spawned or 1
+			local spawn_batch_size = Math.random(element.staggered_spawn_batch_size[1], element.staggered_spawn_batch_size[2])
+			local next_spawn_count = math.min(num_spawned + spawn_batch_size, num_to_spawn)
+
+			for i = num_spawned, next_spawn_count, 1 do
+				local spawn_pos = spawn_positions[i]
+				local spawn_pos_unboxed = spawn_pos:unbox()
+				local breed_name = spawn_table[i]
+				local breed = Breeds[breed_name]
+				local optional_data = optional_data_table[i]
+				local rotation = nil
+
+				if element.face_unit then
+					local direction = center_position_unboxed - spawn_pos_unboxed
+					rotation = Quaternion.look(direction, Vector3.up())
+				end
+
+				conflict_director:spawn_one(breed, spawn_pos_unboxed, group_data, optional_data, rotation)
+
+				if element.post_spawn_unit_func then
+					element.post_spawn_unit_func(event, element, spawn_pos)
+				end
+			end
+
+			if next_spawn_count <= num_spawned then
+				event.next_spawn_t = nil
+				event.num_spawned = nil
+				event.spawn_positions = nil
+
+				return true
+			end
+
+			event.num_spawned = next_spawn_count
+			local random_min = element.staggered_spawn_delay[1]
+			local random_range = element.staggered_spawn_delay[2] - random_min
+			event.next_spawn_t = t + math.random() * random_range + random_min
+		end
+
+		return false
+	end,
 	continue_when = function (event, element, t, dt)
 		if element.duration and event.ends_at < t then
 			return true
@@ -1388,7 +1455,7 @@ TerrorEventMixer.reset = function ()
 	table.clear(TerrorEventMixer.optional_data)
 end
 
-TerrorEventMixer.add_to_start_event_list = function (event_name, seed, origin_unit)
+TerrorEventMixer.add_to_start_event_list = function (event_name, seed, origin_unit, origin_position)
 	local start_events = TerrorEventMixer.start_event_list
 	start_events[#start_events + 1] = {
 		name = event_name,
@@ -1562,7 +1629,7 @@ local function process_terror_event(data, base_event_name)
 	return processed_elements
 end
 
-TerrorEventMixer.start_event = function (event_name, data)
+TerrorEventMixer.start_event = function (event_name, data, id)
 	if script_data.only_allowed_terror_event ~= event_name and script_data.ai_terror_events_disabled then
 		return
 	end

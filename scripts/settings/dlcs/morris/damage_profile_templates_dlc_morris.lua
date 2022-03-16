@@ -66,35 +66,36 @@ local damage_templates = {
 			}
 		}
 	},
-	we_deus_01 = {
+	we_deus_01_fast = {
 		charge_value = "projectile",
+		allow_dot_finesse_hit = true,
 		no_stagger_damage_reduction_ranged = true,
 		require_damage_for_dot = true,
 		ignore_stagger_reduction = true,
 		critical_strike = {
 			attack_armor_power_modifer = {
+				0.8,
+				0.7,
 				1,
-				0.5,
-				1,
-				1,
+				0.75,
 				1,
 				0.25
 			},
 			impact_armor_power_modifer = {
 				1,
-				0.5,
+				0.7,
 				1,
-				1,
+				0.75,
 				1,
 				0.25
 			}
 		},
 		armor_modifier = {
 			attack = {
-				1,
-				0.5,
-				1,
+				0.6,
+				0.4,
 				0.75,
+				0.5,
 				0.75,
 				0.25
 			},
@@ -102,17 +103,17 @@ local damage_templates = {
 				1,
 				0.5,
 				1,
-				0.75,
+				0.5,
 				0.75,
 				0.25
 			}
 		},
 		armor_modifier_far = {
 			attack = {
-				1,
-				0.5,
-				1,
+				0.6,
+				0.4,
 				0.75,
+				0.5,
 				0.75,
 				0.25
 			},
@@ -131,7 +132,7 @@ local damage_templates = {
 		},
 		default_target = {
 			boost_curve_coefficient_headshot = 1,
-			dot_template_name = "we_deus_01_dot",
+			dot_template_name = "we_deus_01_dot_fast",
 			boost_curve_type = "ninja_curve",
 			boost_curve_coefficient = 0.75,
 			attack_template = "arrow_carbine",
@@ -157,12 +158,12 @@ local damage_templates = {
 		},
 		armor_modifier = {
 			attack = {
-				2,
-				1,
-				3,
-				2,
-				1,
-				0.5
+				1.5,
+				1.2,
+				1.5,
+				1.2,
+				0.75,
+				0.2
 			},
 			impact = {
 				1,
@@ -738,8 +739,12 @@ local damage_templates = {
 				impact = 2
 			}
 		}
-	}
+	},
+	we_deus_01_special_charged = table.clone(damage_templates.we_deus_01_fast)
 }
+damage_templates.we_deus_01_special_charged.default_target.dot_template_name = "we_deus_01_dot_special_charged"
+damage_templates.we_deus_01_charged = table.clone(damage_templates.we_deus_01_fast)
+damage_templates.we_deus_01_charged.default_target.dot_template_name = "we_deus_01_dot_charged"
 DamageProfileTemplates.dr_deus_01 = {
 	charge_value = "projectile",
 	no_stagger_damage_reduction_ranged = true,

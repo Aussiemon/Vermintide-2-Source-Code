@@ -8,7 +8,7 @@ local function save_statistics()
 	backend_manager:commit(true)
 end
 
-local function add_items(items)
+local function add_items(items, skip_autosave)
 	local backend_mirror = Managers.backend._backend_mirror
 	local request = {
 		FunctionName = "devGrantItems",
@@ -22,9 +22,13 @@ local function add_items(items)
 		local item_interface = Managers.backend:get_interface("items")
 
 		for i = 1, #items, 1 do
+			if skip_autosave and i == #items then
+				skip_autosave = nil
+			end
+
 			local item = items[i]
 
-			backend_mirror:add_item(item.ItemInstanceId, item)
+			backend_mirror:add_item(item.ItemInstanceId, item, skip_autosave)
 		end
 	end
 
@@ -86,6 +90,18 @@ local settings = {
 		description = "Allows items from different mechanisms to show in the inventory",
 		is_boolean = true,
 		setting_name = "disable_mechanism_item_filter",
+		category = "Allround useful stuff!"
+	},
+	{
+		description = "Disables the network hash check when connecting",
+		is_boolean = true,
+		setting_name = "ignore_network_hash",
+		category = "Allround useful stuff!"
+	},
+	{
+		description = "Disables the engine revision network hash check when connecting",
+		is_boolean = true,
+		setting_name = "ignore_engine_revision_in_network_hash",
 		category = "Allround useful stuff!"
 	},
 	{
@@ -1823,14 +1839,6 @@ Features that make player mechanics nicer to work with.
 		func = function ()
 			print("All boss enemies are now injected into the main path!")
 			Managers.state.conflict.level_analysis:inject_all_bosses_into_main_path()
-		end
-	},
-	{
-		description = "Debug spawn ogre from closest boss spawner. NOTE: debug_ai_recycler must be true at level load.",
-		category = "AI",
-		setting_name = "debug_draw_respaners",
-		func = function ()
-			Managers.state.spawn.respawn_handler:debug_draw_respaners()
 		end
 	},
 	{
@@ -6197,12 +6205,6 @@ Features that make player mechanics nicer to work with.
 		category = "Performance"
 	},
 	{
-		description = "Enable visual 'profiling' of pool tables.",
-		is_boolean = true,
-		setting_name = "profile_pool_tables",
-		category = "Performance"
-	},
-	{
 		description = "Enable asserts on mismatched profiling scopes.",
 		is_boolean = true,
 		setting_name = "validate_profiling_scopes",
@@ -7043,90 +7045,6 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		description = "",
-		setting_name = "Number of Crafted Items",
-		category = "Progression",
-		item_source = {
-			0,
-			10,
-			20,
-			30,
-			40,
-			50,
-			60,
-			70,
-			80,
-			90,
-			100,
-			200,
-			300,
-			400,
-			500,
-			600,
-			700,
-			800,
-			900,
-			1000,
-			2000,
-			3000,
-			4000,
-			5000
-		},
-		custom_item_source_order = function (item_source, options)
-			for _, v in ipairs(item_source) do
-				local option = v
-				options[#options + 1] = option
-			end
-		end,
-		func = function (options, index)
-			local option = options[index]
-
-			Managers.state.crafting:debug_set_crafted_items_stat(option)
-		end
-	},
-	{
-		description = "",
-		setting_name = "Number of Salvaged Items",
-		category = "Progression",
-		item_source = {
-			0,
-			10,
-			20,
-			30,
-			40,
-			50,
-			60,
-			70,
-			80,
-			90,
-			100,
-			200,
-			300,
-			400,
-			500,
-			600,
-			700,
-			800,
-			900,
-			1000,
-			2000,
-			3000,
-			4000,
-			5000
-		},
-		custom_item_source_order = function (item_source, options)
-			for _, v in ipairs(item_source) do
-				local option = v
-				options[#options + 1] = option
-			end
-		end,
-		func = function (options, index)
-			local option = options[index]
-
-			Managers.state.crafting:debug_set_salvaged_items_stat(option)
-		end
-	},
-	{
 		description = "Set sum of best power levels, ignoring actual value in the backend",
 		category = "Progression",
 		setting_name = "sum_of_best_power_levels_override",
@@ -7403,7 +7321,9 @@ Features that make player mechanics nicer to work with.
 				end
 			end
 
-			add_items(hats)
+			local skip_autosave = true
+
+			add_items(hats, skip_autosave)
 		end
 	},
 	{
@@ -7561,9 +7481,10 @@ Features that make player mechanics nicer to work with.
 				FunctionName = "devUnlockAllWeaponSkins",
 				FunctionParameter = {}
 			}
+			local skip_autosave = true
 
 			local function cb(result)
-				add_items(weapons_to_add)
+				add_items(weapons_to_add, skip_autosave)
 			end
 
 			local request_queue = backend_mirror:request_queue()
@@ -8019,6 +7940,24 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
+		description = "Disregard the store items set by the backend",
+		is_boolean = true,
+		setting_name = "disregard_backend_store_items",
+		category = "Store"
+	},
+	{
+		description = "Prints out the current discounted items on screen",
+		is_boolean = true,
+		setting_name = "show_discounted_store_items",
+		category = "Store"
+	},
+	{
+		description = "Randomizes a bunch of items on sale",
+		is_boolean = true,
+		setting_name = "fake_store_sale",
+		category = "Store"
+	},
+	{
 		description = "Count owned DLCs as installed. Makes it easier to test DLCs through steam console with enable/disable_license",
 		is_boolean = true,
 		setting_name = "count_owned_dlc_as_installed",
@@ -8444,6 +8383,107 @@ Features that make player mechanics nicer to work with.
 		is_boolean = true,
 		setting_name = "deus_shoppify_run",
 		category = "Deus"
+	},
+	{
+		description = "Primes your user setting to trigger the new UI popup",
+		category = "New UI Popup",
+		setting_name = "Activate New Popup UI Prompt",
+		func = function ()
+			Application.set_user_setting("use_pc_menu_layout", false)
+			Application.set_user_setting("use_gamepad_menu_layout", false)
+			Managers.save:auto_save(SaveFileName, SaveData)
+			Application.save_user_settings()
+		end
+	},
+	{
+		description = "",
+		setting_name = "Number of Crafted Items",
+		category = "Crafting",
+		item_source = {
+			0,
+			10,
+			20,
+			30,
+			40,
+			50,
+			60,
+			70,
+			80,
+			90,
+			100,
+			200,
+			300,
+			400,
+			500,
+			600,
+			700,
+			800,
+			900,
+			1000,
+			2000,
+			3000,
+			4000,
+			5000
+		},
+		custom_item_source_order = function (item_source, options)
+			for _, v in ipairs(item_source) do
+				local option = v
+				options[#options + 1] = option
+			end
+		end,
+		func = function (options, index)
+			local option = options[index]
+
+			Managers.state.crafting:debug_set_crafted_items_stat(option)
+		end
+	},
+	{
+		description = "",
+		setting_name = "Number of Salvaged Items",
+		category = "Crafting",
+		item_source = {
+			0,
+			10,
+			20,
+			30,
+			40,
+			50,
+			60,
+			70,
+			80,
+			90,
+			100,
+			200,
+			300,
+			400,
+			500,
+			600,
+			700,
+			800,
+			900,
+			1000,
+			2000,
+			3000,
+			4000,
+			5000
+		},
+		custom_item_source_order = function (item_source, options)
+			for _, v in ipairs(item_source) do
+				local option = v
+				options[#options + 1] = option
+			end
+		end,
+		func = function (options, index)
+			local option = options[index]
+
+			Managers.state.crafting:debug_set_salvaged_items_stat(option)
+		end
+	},
+	{
+		description = "Debug crafting crafting recipes",
+		is_boolean = true,
+		setting_name = "craft_recipe_debug",
+		category = "Crafting"
 	}
 }
 

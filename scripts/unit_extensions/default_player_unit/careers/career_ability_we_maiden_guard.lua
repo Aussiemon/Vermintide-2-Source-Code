@@ -161,15 +161,18 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("shade_stealth_ability")
-		first_person_extension:play_hud_sound_event("Play_career_ability_maiden_guard_charge")
 		first_person_extension:play_remote_unit_sound_event("Play_career_ability_maiden_guard_charge", owner_unit, 0)
 		career_extension:set_state("kerillian_activate_maiden_guard")
+
+		if local_player then
+			first_person_extension:play_hud_sound_event("Play_career_ability_maiden_guard_charge")
+		end
 	end
 
-	status_extension:set_noclip(true)
+	status_extension:add_noclip_stacking()
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
-		status_extension:set_invisible(true)
+		status_extension:add_stealth_stacking()
 	end
 
 	if network_manager:game() then

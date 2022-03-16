@@ -405,6 +405,22 @@ local weapon_template = {
 	wwise_dep_left_hand = {
 		"wwise/steampistol"
 	},
+	weapon_diagram = {
+		light_attack = {
+			[DamageTypes.ARMOR_PIERCING] = 6,
+			[DamageTypes.CLEAVE] = 2,
+			[DamageTypes.SPEED] = 0,
+			[DamageTypes.STAGGER] = 4,
+			[DamageTypes.DAMAGE] = 7
+		},
+		heavy_attack = {
+			[DamageTypes.ARMOR_PIERCING] = 6,
+			[DamageTypes.CLEAVE] = 3,
+			[DamageTypes.SPEED] = 6,
+			[DamageTypes.STAGGER] = 4,
+			[DamageTypes.DAMAGE] = 7
+		}
+	},
 	tooltip_keywords = {
 		"weapon_keyword_high_damage",
 		"weapon_keyword_rapid_fire",

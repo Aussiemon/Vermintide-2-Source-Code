@@ -82,7 +82,8 @@ local RPCS = {
 	"rpc_sync_statistics_number",
 	"rpc_increment_stat",
 	"rpc_increment_stat_group",
-	"rpc_set_local_player_stat"
+	"rpc_set_local_player_stat",
+	"rpc_modify_stat"
 }
 
 StatisticsDatabase.register_network_event_delegate = function (self, network_event_delegate)
@@ -647,6 +648,19 @@ StatisticsDatabase.rpc_sync_statistics_number = function (self, channel_id, peer
 		fassert(persistent_value == 0, "Got non-zero persistent_value for stat %q that didn't have database_name", stat.name)
 		dbprintf("StatisticsDatabase: Synced peer %q stat %30q to %d, persistent_value not present", peer_id, stat.name, value)
 	end
+end
+
+StatisticsDatabase.rpc_modify_stat = function (self, channel_id, stat_id, amount)
+	local stat = NetworkLookup.statistics[stat_id]
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local stats_id = player:stats_id()
+
+	self:modify_stat_by_amount(stats_id, stat, amount)
 end
 
 StatisticsDatabase.get_all_stats = function (self, id)

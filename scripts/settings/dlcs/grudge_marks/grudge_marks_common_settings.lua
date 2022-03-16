@@ -27,7 +27,6 @@ settings.effects = {
 	"fx/grudge_marks_shadow_step",
 	"fx/grudge_marks_illusionist"
 }
-settings.tracked_weapon_kills_per_breed_stats = {}
 settings.unlock_settings = {}
 settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_grudge_marks"

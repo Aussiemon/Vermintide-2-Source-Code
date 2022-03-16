@@ -21,6 +21,16 @@ local buff_tweak_data = {
 		multiplier = 0.05,
 		duration = 8
 	},
+	kerillian_crit_on_career_buff = {
+		max_stacks = 3,
+		duration = 10,
+		bonus = 0.1
+	},
+	kerillian_speed_on_career_buff = {
+		max_stacks = 3,
+		multiplier = 1.1,
+		duration = 10
+	},
 	kerillian_thorn_sister_attack_speed_on_full = {
 		health_threshold = 0.9
 	},
@@ -35,14 +45,25 @@ local buff_tweak_data = {
 		visualizer_percent = 0.3,
 		amount_to_restore_improved = 0.065
 	},
-	kerillian_thorn_sister_avatar = {
-		max_stacks = 1
+	kerillian_thorn_sister_passive_team_buff = {
+		power_multiplier_visualizer = 0.15,
+		duration_visualizer = 10,
+		crit_multiplier_visualizer = 0.05
 	},
-	kerillian_thorn_sister_avatar_buff_1 = {
-		duration = 10
+	kerillian_thorn_sister_passive_set_back = {
+		set_back = 2,
+		reduction_amount_vizualiser = 0.5
 	},
-	kerillian_thorn_sister_reduce_passive_on_elite = {
-		time_removed_per_kill = 1
+	kerillian_thorn_sister_crit_on_any_ability = {
+		amount_to_add = 2
+	},
+	kerillian_thorn_sister_double_poison = {
+		max_stacks = 2
+	},
+	kerillian_thorn_sister_drain_poison_phasing_buff = {
+		visualizer_duration = 5,
+		visualizer_movementspeed = 0.2,
+		visualizer_num_targets = 5
 	},
 	kerillian_thorn_sister_big_push_buff = {
 		duration = 0.2,
@@ -51,18 +72,6 @@ local buff_tweak_data = {
 	kerillian_thorn_sister_big_push_buff_2 = {
 		duration = 0.2,
 		multiplier = 1
-	},
-	kerillian_thorn_sister_crit_on_any_ability = {
-		amount_to_add = 3
-	},
-	kerillian_thorn_sister_free_throw_timer = {
-		duration = 8
-	},
-	kerillian_thorn_sister_free_throw_handler = {
-		time_removed_per_kill = 0
-	},
-	kerillian_thorn_sister_free_throw_buff = {
-		amount_to_heal = 3
 	},
 	kerillian_thorn_sister_tanky_wall = {
 		visualizer_extra_duration = 10
@@ -167,6 +176,17 @@ local talent_buff_templates = {
 			}
 		}
 	},
+	kerillian_thorn_sister_poison_on_hit = {
+		buffs = {
+			{
+				proc_weight = 5,
+				buff_func = "thorn_sister_add_melee_poison",
+				event = "on_hit",
+				improved_poison = "thorn_sister_passive_poison_improved",
+				poison = "thorn_sister_passive_poison"
+			}
+		}
+	},
 	kerillian_thorn_sister_attack_speed_on_full = {
 		buffs = {
 			{
@@ -186,195 +206,13 @@ local talent_buff_templates = {
 			}
 		}
 	},
-	kerillian_power_on_health_gain = {
-		buffs = {
-			{
-				buff_to_add = "kerillian_power_on_health_gain_buff",
-				health_threshold = 1,
-				event = "on_healed",
-				buff_func = "add_buff_on_proc_thorn"
-			}
-		}
-	},
-	kerillian_power_on_health_gain_buff = {
-		buffs = {
-			{
-				refresh_durations = true,
-				icon = "kerillian_thornsister_power_on_health_gain",
-				stat_buff = "power_level"
-			}
-		}
-	},
 	kerillian_thorn_sister_big_bleed = {
 		buffs = {
 			{
 				event = "on_hit",
 				bleed = "thorn_sister_big_bleed",
+				proc_weight = 10,
 				buff_func = "thorn_sister_add_bleed_on_hit"
-			}
-		}
-	},
-	kerillian_thorn_sister_buff_on_passive_crit = {
-		buffs = {
-			{
-				max_stacks = 1,
-				icon = "placeholder_icon",
-				stat_buff = "critical_strike_chance",
-				bonus = 1
-			}
-		}
-	},
-	kerillian_thorn_sister_buff_on_passive_healing = {
-		buffs = {
-			{
-				max_stacks = 1,
-				multiplier = 2,
-				stat_buff = "healing_received"
-			}
-		}
-	},
-	kerillian_thorn_sister_reduce_passive_on_elite = {
-		buffs = {
-			{
-				event = "on_elite_killed",
-				buff_func = "kerillian_thorn_sister_reduce_passive_on_elite"
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar_add = {
-		buffs = {
-			{
-				event = "on_extra_ability_consumed",
-				buff_to_add = "kerillian_thorn_sister_avatar",
-				buff_func = "add_buff"
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar = {
-		buffs = {
-			{
-				reset_on_max_stacks = true,
-				on_max_stacks_func = "kerillian_thorn_sister_avatar",
-				icon = "kerillian_thornsister_avatar",
-				is_cooldown = true,
-				duration = math.huge,
-				max_stack_data = {
-					buffs_to_add = {
-						"kerillian_thorn_sister_avatar_buff_1",
-						"kerillian_thorn_sister_avatar_buff_2",
-						"kerillian_thorn_sister_avatar_buff_3",
-						"kerillian_thorn_sister_avatar_buff_4"
-					}
-				}
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar_buff_1 = {
-		activation_effect = "fx/thornsister_avatar_screenspace",
-		deactivation_sound = "stop_career_ability_kerilian_power_loop",
-		activation_sound = "play_career_ability_kerilian_power_loop",
-		buffs = {
-			{
-				refresh_durations = true,
-				multiplier = 0.2,
-				stat_buff = "attack_speed",
-				continuous_effect = "fx/thornsister_avatar_screenspace_loop",
-				max_stacks = 1,
-				icon = "kerillian_thornsister_avatar",
-				priority_buff = true,
-				particles = {
-					{
-						orphaned_policy = "stop",
-						first_person = false,
-						third_person = true,
-						effect = "fx/thornsister_avatar_3p",
-						continuous = true,
-						destroy_policy = "stop"
-					}
-				}
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar_buff_2 = {
-		buffs = {
-			{
-				refresh_durations = true,
-				multiplier = 1.2,
-				remove_buff_func = "remove_movement_buff",
-				max_stacks = 1,
-				apply_buff_func = "apply_movement_buff",
-				duration = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration,
-				path_to_movement_setting_to_modify = {
-					"move_speed"
-				}
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar_buff_3 = {
-		buffs = {
-			{
-				refresh_durations = true,
-				multiplier = 0.2,
-				stat_buff = "power_level",
-				max_stacks = 1,
-				duration = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration
-			}
-		}
-	},
-	kerillian_thorn_sister_avatar_buff_4 = {
-		buffs = {
-			{
-				refresh_durations = true,
-				multiplier = 0.2,
-				stat_buff = "critical_strike_effectiveness",
-				max_stacks = 1,
-				duration = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration
-			}
-		}
-	},
-	kerillian_thorn_sister_free_throw_handler = {
-		buffs = {
-			{
-				buff_to_add = "kerillian_thorn_sister_free_throw_buff",
-				max_stacks = 1,
-				heal_buff = "kerillian_thorn_sister_free_throw_buff_heal",
-				timer_buff = "kerillian_thorn_sister_free_throw_timer",
-				update_func = "kerillian_thorn_sister_free_throw_handler_update",
-				update_frequency = 0.1
-			}
-		}
-	},
-	kerillian_thorn_sister_free_throw_timer = {
-		buffs = {
-			{
-				is_cooldown = true,
-				icon = "kerillian_thornsister_free_throw",
-				max_stacks = 1
-			}
-		}
-	},
-	kerillian_thorn_sister_free_throw_buff = {
-		buffs = {
-			{
-				buff_to_add = "kerillian_thorn_sister_free_throw_buff_heal",
-				multiplier = -1,
-				stat_buff = "reduced_overcharge",
-				buff_func = "kerillian_thorn_sister_add_buff_remove",
-				max_stacks = 1,
-				icon = "kerillian_thornsister_free_throw",
-				event = "on_ammo_used",
-				perk = buff_perks.infinite_ammo
-			}
-		}
-	},
-	kerillian_thorn_sister_free_throw_buff_heal = {
-		buffs = {
-			{
-				event = "on_damage_dealt",
-				buff_func = "kerillian_thorn_sister_restore_health_on_ranged_hit",
-				max_stacks = 1,
-				duration = 0.5,
-				amount_to_heal = 3
 			}
 		}
 	},
@@ -405,6 +243,57 @@ local talent_buff_templates = {
 				icon = "kerillian_thornsister_crit_on_any_ability",
 				perk = buff_perks.guaranteed_crit,
 				max_stacks = math.huge
+			}
+		}
+	},
+	kerillian_thorn_sister_passive_set_back = {
+		buffs = {
+			{
+				event = "on_damage_taken",
+				amount = -2,
+				buff_func = "kerillian_thorn_sister_set_back"
+			}
+		}
+	},
+	kerillian_thorn_sister_passive_set_back_cooldown = {
+		buffs = {
+			{
+				duration = 0.8
+			}
+		}
+	},
+	kerillian_thorn_sister_passive_team_buff = {
+		buffs = {
+			{
+				event = "on_extra_ability_consumed",
+				buff_to_add = "kerillian_thorn_sister_team_buff_aura",
+				buff_func = "add_buff"
+			}
+		}
+	},
+	kerillian_thorn_sister_team_buff_aura = {
+		buffs = {
+			{
+				buff_to_add = "kerillian_thorn_passive_team_buff",
+				range = 20,
+				remove_buff_func = "remove_aura_buff",
+				icon = "kerillian_thornsister_avatar",
+				max_stacks = 1,
+				update_func = "activate_buff_on_distance",
+				duration = 10
+			}
+		}
+	},
+	kerillian_thorn_sister_drain_poison_phasing_tracker = {
+		buffs = {
+			{}
+		}
+	},
+	kerillian_thorn_sister_crit_aoe_poison = {
+		buffs = {
+			{
+				event = "on_critical_hit",
+				buff_func = "kerillian_thorn_sister_crit_aoe_poison_func"
 			}
 		}
 	},
@@ -444,6 +333,7 @@ local talent_buff_templates = {
 				death_flow_event = "poisoned_death",
 				refresh_durations = true,
 				end_flow_event = "poisoned_end",
+				update_start_delay = 1,
 				apply_buff_func = "start_dot_damage",
 				time_between_dot_damages = 1,
 				max_stacks = 1,
@@ -463,7 +353,7 @@ local talent_trees = {
 		{
 			"kerillian_thorn_sister_attack_speed_on_full",
 			"kerillian_thorn_sister_crit_big_bleed",
-			"kerillian_power_on_health_gain"
+			"kerillian_thorn_sister_crit_on_cast"
 		},
 		{
 			"kerillian_thorn_sister_smiter_unbalance",
@@ -472,17 +362,17 @@ local talent_trees = {
 		},
 		{
 			"kerillian_double_passive",
-			"kerillian_thorn_sister_reduce_passive_on_elite",
-			"kerillian_thorn_sister_avatar"
+			"kerillian_thorn_sister_faster_passive",
+			"kerillian_thorn_sister_passive_team_buff"
 		},
 		{
-			"kerillian_thorn_sister_free_throw",
-			"kerillian_thorn_sister_crit_on_any_ability",
+			"kerillian_thorn_sister_double_poison",
+			"kerillian_thorn_sister_crit_aoe_poison",
 			"kerillian_thorn_sister_big_push"
 		},
 		{
 			"kerillian_thorn_sister_tanky_wall",
-			"kerillian_thorn_sister_explosive_wall",
+			"kerillian_thorn_sister_wall_push",
 			"kerillian_thorn_sister_debuff_wall"
 		}
 	}
@@ -556,7 +446,7 @@ local talents = {
 		}
 	},
 	{
-		description = "kerillian_thorn_sister_crit_big_bleed_desc",
+		description = "kerillian_thorn_sister_crit_big_bleed_desc_2",
 		name = "kerillian_thorn_sister_crit_big_bleed",
 		num_ranks = 1,
 		icon = "kerillian_thornsister_crit_big_bleed",
@@ -566,25 +456,18 @@ local talents = {
 		}
 	},
 	{
-		description = "kerillian_power_on_health_gain_desc",
-		name = "kerillian_power_on_health_gain",
-		buffer = "server",
+		description = "kerillian_thorn_sister_crit_on_cast_desc_2",
+		name = "kerillian_thorn_sister_crit_on_cast",
 		num_ranks = 1,
-		icon = "kerillian_thornsister_power_on_health_gain",
+		icon = "kerillian_thornsister_crit_on_any_ability",
 		description_values = {
 			{
-				value_type = "percent",
-				value = buff_tweak_data.kerillian_power_on_health_gain_buff.multiplier
-			},
-			{
-				value = buff_tweak_data.kerillian_power_on_health_gain_buff.duration
-			},
-			{
-				value = buff_tweak_data.kerillian_power_on_health_gain_buff.max_stacks
+				value = buff_tweak_data.kerillian_thorn_sister_crit_on_any_ability.amount_to_add
 			}
 		},
 		buffs = {
-			"kerillian_power_on_health_gain"
+			"kerillian_thorn_sister_crit_on_any_ability",
+			"kerillian_thorn_sister_crit_on_any_ability_handler"
 		}
 	},
 	{
@@ -657,46 +540,55 @@ local talents = {
 		buffs = {}
 	},
 	{
-		description = "kerillian_thorn_sister_reduce_passive_on_elite_desc",
-		name = "kerillian_thorn_sister_reduce_passive_on_elite",
+		description = "kerillian_thorn_sister_faster_passive_desc",
+		name = "kerillian_thorn_sister_faster_passive",
+		buffer = "server",
 		num_ranks = 1,
 		icon = "kerillian_thornsister_reduce_passive_on_elite",
 		description_values = {
 			{
-				value = buff_tweak_data.kerillian_thorn_sister_reduce_passive_on_elite.time_removed_per_kill
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_thorn_sister_passive_set_back.reduction_amount_vizualiser
+			},
+			{
+				value = buff_tweak_data.kerillian_thorn_sister_passive_set_back.set_back
 			}
 		},
 		buffs = {
-			"kerillian_thorn_sister_reduce_passive_on_elite"
+			"kerillian_thorn_sister_passive_set_back"
 		}
 	},
 	{
-		description = "kerillian_thorn_sister_avatar_desc",
-		name = "kerillian_thorn_sister_avatar",
+		description = "kerillian_thorn_sister_passive_team_buff_desc",
+		name = "kerillian_thorn_sister_passive_team_buff",
 		num_ranks = 1,
 		icon = "kerillian_thornsister_avatar",
 		description_values = {
 			{
-				value = buff_tweak_data.kerillian_thorn_sister_avatar_buff_1.duration
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_thorn_sister_passive_team_buff.power_multiplier_visualizer
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_thorn_sister_passive_team_buff.crit_multiplier_visualizer
+			},
+			{
+				value = buff_tweak_data.kerillian_thorn_sister_passive_team_buff.duration_visualizer
 			}
 		},
 		buffs = {
-			"kerillian_thorn_sister_avatar_add"
+			"kerillian_thorn_sister_passive_team_buff"
 		}
 	},
 	{
-		description = "kerillian_thorn_sister_crit_on_any_ability_desc",
-		name = "kerillian_thorn_sister_crit_on_any_ability",
+		description = "kerillian_thorn_sister_crit_aoe_poison_desc",
+		name = "kerillian_thorn_sister_crit_aoe_poison",
+		buffer = "server",
 		num_ranks = 1,
-		icon = "kerillian_thornsister_crit_on_any_ability",
-		description_values = {
-			{
-				value = buff_tweak_data.kerillian_thorn_sister_crit_on_any_ability.amount_to_add
-			}
-		},
+		icon = "kerillian_thornsister_veinburst_strike",
+		description_values = {},
 		buffs = {
-			"kerillian_thorn_sister_crit_on_any_ability",
-			"kerillian_thorn_sister_crit_on_any_ability_handler"
+			"kerillian_thorn_sister_crit_aoe_poison"
 		}
 	},
 	{
@@ -715,24 +607,19 @@ local talents = {
 		}
 	},
 	{
-		description = "kerillian_thorn_sister_free_throw_desc_2",
-		name = "kerillian_thorn_sister_free_throw",
+		description = "kerillian_thorn_sister_double_poison_desc",
+		name = "kerillian_thorn_sister_double_poison",
 		num_ranks = 1,
-		icon = "kerillian_thornsister_free_throw",
+		icon = "kerillian_thornsister_blackvenom",
 		description_values = {
 			{
-				value = buff_tweak_data.kerillian_thorn_sister_free_throw_timer.duration
-			},
-			{
-				value = buff_tweak_data.kerillian_thorn_sister_free_throw_buff.amount_to_heal
+				value = buff_tweak_data.kerillian_thorn_sister_double_poison.max_stacks
 			}
 		},
-		buffs = {
-			"kerillian_thorn_sister_free_throw_handler"
-		}
+		buffs = {}
 	},
 	{
-		description = "kerillian_thorn_sister_tanky_wall_desc",
+		description = "kerillian_thorn_sister_tanky_wall_desc_2",
 		name = "kerillian_thorn_sister_tanky_wall",
 		num_ranks = 1,
 		icon = "kerillian_thornsister_healing_wall",
@@ -744,15 +631,15 @@ local talents = {
 		buffs = {}
 	},
 	{
-		description = "kerillian_thorn_sister_explosive_wall_desc",
-		name = "kerillian_thorn_sister_explosive_wall",
+		description = "kerillian_thorn_sister_wall_push_desc",
+		name = "kerillian_thorn_sister_wall_push",
 		num_ranks = 1,
 		icon = "kerillian_thornsister_explosive_wall",
 		description_values = {},
 		buffs = {}
 	},
 	{
-		description = "kerillian_thorn_sister_debuff_wall_desc",
+		description = "kerillian_thorn_sister_debuff_wall_desc_2",
 		name = "kerillian_thorn_sister_debuff_wall",
 		num_ranks = 1,
 		icon = "kerillian_thornsister_debuff_wall",

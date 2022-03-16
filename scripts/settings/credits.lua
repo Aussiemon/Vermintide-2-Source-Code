@@ -1243,6 +1243,22 @@ local Credits = {
 			type = "person"
 		},
 		{
+			text = "Yuriy Karpenko",
+			type = "person"
+		},
+		{
+			text = "Anna Kurzakova",
+			type = "person"
+		},
+		{
+			text = "Sergey Orlov",
+			type = "person"
+		},
+		{
+			text = "Vadim Chuvashov",
+			type = "person"
+		},
+		{
 			text = " ",
 			type = "person"
 		},
@@ -1619,6 +1635,82 @@ local Credits = {
 		},
 		{
 			text = "Cubicle7",
+			type = "person"
+		},
+		{
+			text = "Grimalackt",
+			type = "person"
+		},
+		{
+			text = "Iskierka",
+			type = "person"
+		},
+		{
+			text = "Greg Zaal",
+			type = "person"
+		},
+		{
+			text = "grasmann",
+			type = "person"
+		},
+		{
+			text = "Vadim \"Necrossin\"",
+			type = "person"
+		},
+		{
+			text = "-Milbor-",
+			type = "person"
+		},
+		{
+			text = "prop joe",
+			type = "person"
+		},
+		{
+			text = "Lucas \"SirAiedail\" Schwiderski",
+			type = "person"
+		},
+		{
+			text = "Andreas Roth",
+			type = "person"
+		},
+		{
+			text = "Micah \"Fracticality\" Jensen",
+			type = "person"
+		},
+		{
+			text = "S\u0142awomir \"SkacikPL\" Sici\u0144ski",
+			type = "person"
+		},
+		{
+			text = "Madeline \"Skwuruhl\" Marion",
+			type = "person"
+		},
+		{
+			text = "Gohas",
+			type = "person"
+		},
+		{
+			text = "Arkii",
+			type = "person"
+		},
+		{
+			text = "Badwin",
+			type = "person"
+		},
+		{
+			text = "Dan \"raindish\" Reeves",
+			type = "person"
+		},
+		{
+			text = "Matt \"Aussiemon\" Rohrlach",
+			type = "person"
+		},
+		{
+			text = "Johannes \"ElCamino\" Camin",
+			type = "person"
+		},
+		{
+			text = "Siku",
 			type = "person"
 		},
 		{

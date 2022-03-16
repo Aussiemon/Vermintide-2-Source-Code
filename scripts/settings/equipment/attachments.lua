@@ -657,6 +657,17 @@ local dr_helmets_beard_ears = {
 	buffs = {}
 }
 Attachments.dr_helmets_beard_ears = table.clone(dr_helmets_beard_ears)
+local dr_helmets_hide_beard_ears_default_only = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_default_beard_ears",
+	attachment_node_linking = AttachmentNodeLinking.dr_beard,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets_hide_beard_ears_default_only = table.clone(dr_helmets_hide_beard_ears_default_only)
 local dr_hair_tattoo_00 = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",

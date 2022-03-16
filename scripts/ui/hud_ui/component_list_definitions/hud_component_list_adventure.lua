@@ -491,6 +491,15 @@ local components = {
 			"dead",
 			"alive"
 		}
+	},
+	{
+		use_hud_scale = true,
+		class_name = "EmotePhotomodeUI",
+		filename = "scripts/ui/hud_ui/emote_photomode_ui",
+		visibility_groups = {
+			"dead",
+			"alive"
+		}
 	}
 }
 
@@ -597,6 +606,16 @@ local visibility_groups = {
 			local game_mode_disable_hud = game_mode and game_mode.game_mode_hud_disabled and game_mode:game_mode_hud_disabled()
 
 			return game_mode_disable_hud
+		end
+	},
+	{
+		name = "emote_photomode",
+		validation_function = function (ingame_hud)
+			local game_mode_manager = Managers.state.game_mode
+			local game_mode = game_mode_manager and game_mode_manager:game_mode()
+			local photomode_enabled = game_mode and game_mode:photomode_enabled()
+
+			return photomode_enabled
 		end
 	},
 	{

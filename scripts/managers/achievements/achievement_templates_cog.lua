@@ -945,9 +945,6 @@ achievements.cog_long_crank_fire = {
 		end
 	end
 }
-local act_1_levels = GameActs.act_1
-local act_2_levels = GameActs.act_2
-local act_3_levels = GameActs.act_3
 local elite_special_breeds = {}
 
 for breed_name, breed in pairs(Breeds) do
@@ -960,6 +957,77 @@ for breed_name, breed in pairs(Breeds) do
 	end
 end
 
+local kill_register_weapons = table.mirror_array_inplace({
+	"bardin_engineer_career_skill_weapon_heavy",
+	"bardin_engineer_career_skill_weapon"
+})
+achievements.cog_kill_register = {
+	display_completion_ui = false,
+	required_dlc = "cog",
+	events = {
+		"register_kill"
+	},
+	completed = function (statistics_db, stats_id, template_data)
+		local max_count = 0
+
+		for i = 1, #elite_special_breeds, 1 do
+			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_steam_pistol", elite_special_breeds[i])
+			max_count = max_count + count
+		end
+
+		local completed_first = max_count >= 5
+		max_count = 0
+
+		for i = 1, #kill_register_weapons, 1 do
+			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", kill_register_weapons[i], "skaven_ratling_gunner")
+			max_count = max_count + count
+		end
+
+		local completed_second = max_count >= 5
+
+		return completed_first and completed_second
+	end,
+	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local damage_data = event_data[3]
+		local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
+
+		if not damage_source or not kill_register_weapons[damage_source] then
+			return
+		end
+
+		local attacker_unit = damage_data and damage_data[DamageDataIndex.ATTACKER]
+
+		if not ALIVE[attacker_unit] then
+			return
+		end
+
+		local local_player = Managers.player:local_player()
+		local local_player_unit = local_player and local_player.player_unit
+
+		if not local_player_unit or local_player_unit ~= attacker_unit then
+			return
+		end
+
+		local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
+
+		if not career_extension or career_extension:career_name() ~= "dr_engineer" then
+			return false
+		end
+
+		local killed_breed = event_data[4]
+
+		if not table.contains(elite_special_breeds, killed_breed.name) then
+			return false
+		end
+
+		if killed_breed and killed_breed.name then
+			statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", damage_source, killed_breed.name)
+		end
+	end
+}
+local act_1_levels = GameActs.act_1
+local act_2_levels = GameActs.act_2
+local act_3_levels = GameActs.act_3
 local diff = DifficultySettings.hardest.rank
 
 add_levels_complete_per_hero_challenge(achievements, "cog_mission_streak_act1_legend", act_1_levels, diff, "dr_engineer", true, "achievement_trophy_cog_mission_streak_act1_legend_dr_engineer", "cog_upgrade", nil, nil)

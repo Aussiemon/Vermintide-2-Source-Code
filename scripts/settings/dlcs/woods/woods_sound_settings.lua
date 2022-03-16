@@ -30,7 +30,8 @@ settings.network_sound_events = {
 	"thorn_wall_damage_heavy",
 	"thorn_wall_damage_light",
 	"thorn_hit_poison",
-	"career_ability_kerillian_sister_wall_disappear"
+	"career_ability_kerillian_sister_wall_disappear",
+	"career_ability_kerilian_thorngrasp"
 }
 
 return

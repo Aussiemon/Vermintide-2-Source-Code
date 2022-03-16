@@ -1590,10 +1590,10 @@ UIWidgets.create_start_game_difficulty_stepper = function (scenegraph_id, diffic
 					texture_id = "selected_difficulty_text_selected",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.right_arrow_hotspot.is_hover or content.left_arrow_hotspot.is_hover or (Managers.input:is_device_active("gamepad") and content.is_selected)
+						return content.right_arrow_hotspot.is_hover or content.left_arrow_hotspot.is_hover or (not Managers.input:is_device_active("mouse") and content.is_selected)
 					end,
 					content_change_function = function (content, style)
-						style.color[1] = pulsate_glow(Managers.input:is_device_active("gamepad"))
+						style.color[1] = pulsate_glow(not Managers.input:is_device_active("mouse"))
 					end
 				},
 				{
@@ -2248,7 +2248,7 @@ UIWidgets.create_start_game_deus_play_button = function (scenegraph_id, size, te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and button_hotspot.is_hover
+						return not button_hotspot.disable_button and (button_hotspot.is_hover or content.is_selected)
 					end
 				},
 				{
@@ -2268,7 +2268,7 @@ UIWidgets.create_start_game_deus_play_button = function (scenegraph_id, size, te
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not button_hotspot.disable_button and button_hotspot.is_hover
+						return not button_hotspot.disable_button and (button_hotspot.is_hover or content.is_selected)
 					end
 				},
 				{
@@ -3512,9 +3512,9 @@ UIWidgets.create_expedition_widget_func = function (scenegraph_id, i, journey_da
 			texture_id = "icon_glow",
 			pass_type = "texture",
 			content_check_function = function (content)
-				local gamepad_active = Managers.input:is_device_active("gamepad")
+				local mouse_active = Managers.input:is_device_active("mouse")
 
-				return (content.button_hotspot.is_hover or (content.gamepad_selected and gamepad_active)) and not content.button_hotspot.is_selected
+				return (content.button_hotspot.is_hover or (content.gamepad_selected and not mouse_active)) and not content.button_hotspot.is_selected
 			end,
 			content_change_function = function (content, style)
 				style.color[1] = pulsate_glow(content.gamepad_selected)

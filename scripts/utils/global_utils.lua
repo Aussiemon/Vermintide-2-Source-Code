@@ -23,7 +23,15 @@ function UPDATE_POSITION_LOOKUP()
 end
 
 function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
+	local is_minimized = Window.is_minimized()
+	resolution_lookup.minimized = is_minimized
 	local w, h = Application.resolution()
+
+	if is_minimized then
+		w = resolution_lookup.res_w or 1920
+		h = resolution_lookup.res_h or 1080
+	end
+
 	local resolution_modified = w ~= resolution_lookup.res_w or h ~= resolution_lookup.res_h
 	local width_scale = w / 1920
 	local height_scale = h / 1080

@@ -8,6 +8,8 @@ ThornSisterWallExtension.init = function (self, extension_init_context, unit, ex
 	self._owner_peer = extension_init_data.owner
 	self._owner_unit = extension_init_data.owner_unit
 	self._despawn_sound_event = extension_init_data.despawn_sound_event
+	self.wall_index = extension_init_data.wall_index
+	self.group_spawn_index = extension_init_data.group_spawn_index
 	self._despawning = false
 	self._initialized = false
 	self.owner_buff_id = nil
@@ -62,7 +64,6 @@ end
 
 ThornSisterWallExtension.despawn = function (self)
 	local owner_unit = self._owner_unit
-	local do_explosion = self._is_server and self._is_explosive_wall and not self._chain_kill and ALIVE[owner_unit]
 	local segment_count = 1
 	local average_position = Vector3.zero()
 	average_position = average_position + POSITION_LOOKUP[self._unit]
@@ -87,17 +88,6 @@ ThornSisterWallExtension.despawn = function (self)
 
 	if self._is_server and self._despawn_sound_event and (not self.group_spawn_index or self.group_spawn_index == 1) then
 		Managers.state.entity:system("audio_system"):play_audio_position_event(self._despawn_sound_event, average_position / segment_count)
-	end
-
-	if do_explosion then
-		local explosion_template = "we_thornsister_career_skill_debuff_wall_explosion"
-		local position = average_position / segment_count
-		local rotation = self._original_rotation:unbox()
-		local scale = 1
-		local career_power_level = self._owner_career_power_level
-		local area_damage_system = Managers.state.entity:system("area_damage_system")
-
-		area_damage_system:create_explosion(self._owner_unit, position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 	end
 
 	if self._is_server and not self._despawning then

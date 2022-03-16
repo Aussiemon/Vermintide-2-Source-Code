@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
 	no_stagger_duration = false,
@@ -34,7 +35,7 @@ local breed_data = {
 	bone_lod_level = 1,
 	perception_previous_attacker_stickyness_value = -4.5,
 	race = "beastmen",
-	poison_resistance = 100,
+	poison_resistance = 70,
 	armor_category = 1,
 	smart_object_template = "ungor",
 	backstab_player_sound_event = "Play_enemy_ungor_attack_player_back_vce",
@@ -90,20 +91,20 @@ local breed_data = {
 		0,
 		170
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
-		if blackboard.stagger_type == 3 then
-			if stagger == 3 and blackboard.heavy_stagger_immune_time then
-				stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+		if blackboard.stagger_type == stagger_types.heavy then
+			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
-			elseif stagger ~= 3 and blackboard.stagger_immune_time then
-				stagger = 0
+			elseif stagger_type ~= stagger_types.heavy and blackboard.stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	animation_merge_options = {
 		idle_animation_merge_options = {},
@@ -552,10 +553,12 @@ local action_data = {
 				return stagger_anims, "idle"
 			end
 
-			if blackboard.stagger_type == 3 then
+			local stagger_type = stagger_types
+
+			if blackboard.stagger_type == stagger_type.heavy then
 				blackboard.stagger_immune_time = t + 2.25
 				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_type.explosion then
 				blackboard.stagger_immune_time = t + 3.5
 				blackboard.heavy_stagger_immune_time = t + 3
 			end

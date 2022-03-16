@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 30,
 	death_reaction = "ai_default",
@@ -131,20 +132,20 @@ local breed_data = {
 		walk_animation_merge_options = {},
 		move_animation_merge_options = {}
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
-		if blackboard.stagger_type == 3 then
-			if stagger == 3 and blackboard.heavy_stagger_immune_time then
-				stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+		if blackboard.stagger_type == stagger_types.heavy then
+			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
-			elseif stagger ~= 3 and blackboard.stagger_immune_time then
-				stagger = 0
+			elseif stagger_type ~= stagger_types.heavy and blackboard.stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	run_on_spawn = AiBreedSnippets.on_beastmen_bestigor_spawn,
 	run_on_update = AiBreedSnippets.on_beastmen_bestigor_update,
@@ -719,11 +720,11 @@ local action_data = {
 		push_ai = {
 			stagger_distance = 1.5,
 			stagger_impact = {
-				6,
-				6,
-				0,
-				0,
-				6
+				stagger_types.explosion,
+				stagger_types.explosion,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion
 			},
 			stagger_duration = {
 				3,
@@ -786,7 +787,7 @@ local action_data = {
 				return stagger_anims, "idle"
 			end
 
-			if charge_stagger and blackboard.stagger_type ~= 6 and blackboard.stagger_type ~= 1 then
+			if charge_stagger and blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.weak then
 				stagger_anims = action.charge_stagger_anims[blackboard.stagger_type]
 				blackboard.charge_stagger = nil
 				local impact_dir = blackboard.stagger_direction:unbox()
@@ -799,10 +800,10 @@ local action_data = {
 				stagger_anims = action.stagger_anims[blackboard.stagger_type]
 			end
 
-			if blackboard.stagger_type == 3 then
+			if blackboard.stagger_type == stagger_types.heavy then
 				blackboard.stagger_immune_time = t + 2.25
 				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_types.explosion then
 				blackboard.stagger_immune_time = t + 3.5
 				blackboard.heavy_stagger_immune_time = t + 3
 			end

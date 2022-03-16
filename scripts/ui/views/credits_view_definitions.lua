@@ -37,11 +37,10 @@ local credits_widget_definition = {
 	},
 	style = {
 		text = {
-			font_size = 30,
 			dynamic_font = true,
 			horizontal_alignment = "center",
-			pixel_perfect = true,
-			font_type = "hell_shark",
+			font_size = 30,
+			font_type = "arial",
 			text_color = Colors.color_definitions.white
 		}
 	}

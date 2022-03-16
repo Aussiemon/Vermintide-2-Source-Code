@@ -772,6 +772,11 @@ local function create_window(scenegraph_id, size)
 			content_id = "text_input_hotspot"
 		},
 		{
+			scenegraph_id = "root_fit",
+			pass_type = "hotspot",
+			content_id = "screen_hotspot"
+		},
+		{
 			scenegraph_id = "window",
 			pass_type = "hotspot",
 			content_id = "frame_hotspot"
@@ -1076,7 +1081,6 @@ local client_disclaimer_desc_str = "start_game_window_twitch_client_disclaimer_d
 local play_widgets = {
 	mission_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_mission"), nil, nil, nil, scenegraph_definition.game_option_1.size),
 	difficulty_setting = UIWidgets.create_start_game_console_setting_button("game_option_2", Localize("start_game_window_difficulty"), nil, "difficulty_option_1", nil, scenegraph_definition.game_option_2.size, true),
-	play_button_console = UIWidgets.create_start_game_console_play_button("play_button_console"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_play"))
 }
 local client_widgets = {
@@ -1107,7 +1111,8 @@ widgets.disconnect_button_frame.element.passes[1].content_check_function = disco
 local additional_settings_widgets = {}
 local selector_input_definition = {
 	"mission_setting",
-	"difficulty_setting"
+	"difficulty_setting",
+	"play_button"
 }
 
 return {

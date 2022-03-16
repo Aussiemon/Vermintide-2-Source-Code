@@ -33,6 +33,7 @@ StartGameWindowBackgroundConsole._get_with_mechanism = function (self, lookup)
 end
 
 local MOOD_PER_MECHANISM = {
+	versus = "menu_versus",
 	adventure = "default",
 	deus = "menu_chaos_wastes_01"
 }

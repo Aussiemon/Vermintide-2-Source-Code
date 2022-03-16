@@ -190,7 +190,7 @@ LootObjectiveUI._animate_in = function (self, widget, previous_draw_count)
 	local largest_amount = math.max(previous_draw_count, draw_count)
 	local amount_increased = previous_draw_count < draw_count
 
-	for i = 1, largest_amount, 1 do
+	for i = 1, math.min(amount, largest_amount), 1 do
 		local color = texture_colors[i]
 
 		if not amount_increased or i < largest_amount then

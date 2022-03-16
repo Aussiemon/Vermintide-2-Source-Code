@@ -156,6 +156,11 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
+			input_action = "show_gamercard",
+			priority = 2,
+			description_text = "start_menu_switch_hero"
+		},
+		{
 			input_action = "confirm",
 			priority = 3,
 			description_text = "input_description_select"

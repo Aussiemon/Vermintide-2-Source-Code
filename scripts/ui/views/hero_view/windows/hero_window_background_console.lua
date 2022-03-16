@@ -33,6 +33,12 @@ local object_sets_per_layout = {
 	},
 	system = {
 		main_menu = true
+	},
+	character_selection = {
+		keep_current_object_set = true
+	},
+	item_customization = {
+		keep_current_object_set = true
 	}
 }
 local level_events_per_layout = {
@@ -59,19 +65,29 @@ local level_events_per_layout = {
 	},
 	system = {
 		"main_menu"
+	},
+	character_selection = {
+		"equipment_view",
+		"main_menu",
+		"cosmetics_view",
+		"crafting_view"
 	}
 }
 local character_visibility_per_layout = {
-	equipment = true,
-	cosmetics = true,
-	forge = false,
-	crafting_recipe = false,
-	system = false,
+	cosmetics_selection = true,
 	equipment_selection = true,
-	talents = false,
-	cosmetics_selection = true
+	forge = false,
+	cosmetics = true,
+	system = false,
+	equipment = true,
+	character_selection = true,
+	crafting_recipe = false,
+	talents = false
 }
-local camera_move_duration_per_layout = {}
+local camera_move_duration_per_layout = {
+	character_selection = UISettings.console_menu_camera_move_duration
+}
+local disable_camera_position_per_layout = {}
 HeroWindowBackgroundConsole = class(HeroWindowBackgroundConsole)
 HeroWindowBackgroundConsole.NAME = "HeroWindowBackgroundConsole"
 
@@ -104,6 +120,7 @@ HeroWindowBackgroundConsole.on_enter = function (self, params, offset)
 
 	self:create_ui_elements(params, offset)
 	Managers.state.event:register(self, "respawn_hero", "respawn_hero")
+	Managers.state.event:register(self, "despawn_hero", "despawn_hero")
 end
 
 HeroWindowBackgroundConsole._create_viewport_definition = function (self)
@@ -216,6 +233,7 @@ HeroWindowBackgroundConsole.on_exit = function (self, params)
 	self.ui_animator = nil
 
 	Managers.state.event:unregister("respawn_hero", self)
+	Managers.state.event:unregister("despawn_hero", self)
 
 	if self.world_previewer then
 		self.world_previewer:prepare_exit()
@@ -258,8 +276,11 @@ end
 HeroWindowBackgroundConsole._update_character_visibility = function (self, layout_name)
 	local draw_character = character_visibility_per_layout[layout_name] or false
 	local camera_move_duration = camera_move_duration_per_layout[layout_name]
+	local disable_camera_position_update = disable_camera_position_per_layout[layout_name]
 
-	self.world_previewer:_set_character_visibility(draw_character, camera_move_duration)
+	if self._draw_character ~= draw_character then
+		self.world_previewer:_set_character_visibility(draw_character, camera_move_duration, disable_camera_position_update)
+	end
 
 	self._draw_character = draw_character
 
@@ -367,6 +388,16 @@ HeroWindowBackgroundConsole.respawn_hero = function (self, optional_params, over
 	world_previewer:respawn_hero_unit(self.hero_name, self.career_index, false, callback, self._camera_move_duration)
 end
 
+HeroWindowBackgroundConsole.despawn_hero = function (self)
+	local world_previewer = self.world_previewer
+
+	if not world_previewer then
+		return
+	end
+
+	world_previewer:hide_character()
+end
+
 HeroWindowBackgroundConsole._update_animations = function (self, dt)
 	self.ui_animator:update(dt)
 
@@ -446,23 +477,74 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 	local profile = SPProfiles[profile_index]
 	local career_data = profile.careers[career_index]
 	local career_name = career_data.name
+	local hero_attributes = Managers.backend:get_interface("hero_attributes")
+	local hero_experience = hero_attributes:get(hero_name, "experience") or 0
+	local hero_level = ExperienceSettings.get_level(hero_experience)
+	local is_career_unlocked, reason, dlc_name, localized = career_data:is_unlocked_function(hero_name, hero_level)
+	local is_dlc = not is_career_unlocked and dlc_name
 
-	for _, slot in pairs(slots) do
-		local slot_name = slot.name
-		local item = BackendUtils.get_loadout_item(career_name, slot_name)
+	if is_dlc then
+		local preview_items = career_data.preview_items
+		local preview_wield_slot = career_data.preview_wield_slot
+		local preview_animation = career_data.preview_animation
+
+		if preview_items then
+			for _, item_data in ipairs(preview_items) do
+				local item_name = item_data.item_name
+				local item_template = ItemMasterList[item_name]
+				local slot_type = item_template.slot_type
+				local slot_names = InventorySettings.slot_names_by_type[slot_type]
+				local slot_name = slot_names[1]
+				local slot = InventorySettings.slots_by_name[slot_name]
+
+				world_previewer:equip_item(item_name, slot)
+			end
+
+			if preview_wield_slot then
+				world_previewer:wield_weapon_slot(preview_wield_slot)
+			end
+		end
+
+		local career_name = career_data.name
+		local item = BackendUtils.get_loadout_item(career_name, "slot_hat")
 
 		if item then
 			local item_data = item.data
 			local item_name = item_data.name
-			local item_slot_type = slot.type
-			local current_item_name = world_previewer:item_name_by_slot_type(item_slot_type)
+			local backend_id = item.backend_id
+			local slot = InventorySettings.slots_by_name.slot_hat
 
-			if item_name ~= current_item_name or item_slot_type == "melee" or item_slot_type == "ranged" then
-				local backend_id = item.backend_id
-				local item_info = world_previewer:get_equipped_item_info(slot)
+			world_previewer:equip_item(item_name, slot, backend_id)
+		end
 
-				if not item_info or item_info.backend_id ~= backend_id then
-					world_previewer:equip_item(item_name, slot, backend_id)
+		local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
+		local skin_item_data = skin_item and skin_item.data
+
+		if skin_item_data then
+			preview_animation = skin_item_data.career_select_preview_animation or preview_animation
+		end
+
+		if preview_animation then
+			self.world_previewer:play_character_animation(preview_animation)
+		end
+	else
+		for _, slot in pairs(slots) do
+			local slot_name = slot.name
+			local item = BackendUtils.get_loadout_item(career_name, slot_name)
+
+			if item then
+				local item_data = item.data
+				local item_name = item_data.name
+				local item_slot_type = slot.type
+				local current_item_name = world_previewer:item_name_by_slot_type(item_slot_type)
+
+				if item_name ~= current_item_name or item_slot_type == "melee" or item_slot_type == "ranged" then
+					local backend_id = item.backend_id
+					local item_info = world_previewer:get_equipped_item_info(slot)
+
+					if not item_info or item_info.backend_id ~= backend_id then
+						world_previewer:equip_item(item_name, slot, backend_id)
+					end
 				end
 			end
 		end

@@ -120,6 +120,19 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 				local pose = (fx.pose and fx.pose:unbox()) or nil
 				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy, pose)
 
+				if fx.custom_variables then
+					for i = 1, #fx.custom_variables, 1 do
+						local data = fx.custom_variables[i]
+						local name = data.name
+						data.cached_id = data.cached_id or World.find_particles_variable(world, fx.effect, name)
+						local value = data.value:unbox()
+						local unit_scale = Unit.local_scale(unit, 0)
+						value = Vector3.divide_elements(value, unit_scale)
+
+						World.set_particles_variable(world, fx_id, data.cached_id, value)
+					end
+				end
+
 				if fx.continuous then
 					if fx.destroy_policy == "stop" then
 						stop_fx[#stop_fx + 1] = fx_id

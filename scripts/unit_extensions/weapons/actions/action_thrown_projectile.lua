@@ -75,7 +75,7 @@ ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, 
 	end
 
 	if self.state == "shooting" then
-		local procced = self:_check_extra_shot_proc(self._owner_buff_extension)
+		local has_extra_shots = self:_update_extra_shots(self._owner_buff_extension, 1)
 		local add_spread = not self._extra_buff_shot
 
 		if not Managers.player:owner(self.owner_unit).bot_player then
@@ -96,7 +96,7 @@ ActionThrownProjectile.client_owner_post_update = function (self, dt, t, world, 
 			end
 		end
 
-		if procced then
+		if has_extra_shots then
 			self.state = "waiting_to_shoot"
 			self._time_to_shoot = t + 0.1
 			self._extra_buff_shot = true

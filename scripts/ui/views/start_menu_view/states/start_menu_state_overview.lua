@@ -168,6 +168,7 @@ StartMenuStateOverview.update = function (self, dt, t)
 		self._views[active_view]:update(dt, t)
 	elseif not self._prepare_exit then
 		self:_handle_input(dt, t)
+		self:_handle_keyboard_input(dt, t)
 	end
 
 	local wanted_state = self:_wanted_state()
@@ -352,6 +353,105 @@ end
 
 StartMenuStateOverview._set_select_button_enabled = function (self, enabled)
 	self._widgets_by_name.select_button.content.button_hotspot.disable_button = not enabled
+end
+
+StartMenuStateOverview._clear_keyboard_selection = function (self, button_grid)
+	local widgets_by_name = self._widgets_by_name
+
+	for i, data in ipairs(button_grid) do
+		for j, button_name in ipairs(data) do
+			local widget = widgets_by_name[button_name]
+			widget.content.button_hotspot.is_selected = false
+		end
+	end
+
+	self._keyboard_grid_selection = nil
+end
+
+StartMenuStateOverview._handle_keyboard_input = function (self)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
+	local button_grid = {
+		{
+			"play_button",
+			"options_button",
+			"tutorial_button",
+			"credits_button",
+			"quit_button"
+		},
+		{
+			"hero_button"
+		}
+	}
+
+	if mouse_active or gamepad_active then
+		self:_clear_keyboard_selection(button_grid)
+
+		return
+	end
+
+	local button_funcs = {
+		play_button = function ()
+			self.parent:close_menu()
+		end,
+		options_button = function ()
+			menu_functions[1](self)
+		end,
+		tutorial_button = function ()
+			menu_functions[2](self)
+		end,
+		credits_button = function ()
+			menu_functions[3](self)
+		end,
+		quit_button = function ()
+			Boot.quit_game = true
+		end,
+		hero_button = function ()
+			self.parent:requested_screen_change_by_name("character")
+		end
+	}
+	local keyboard_grid_selection = self._keyboard_grid_selection or {}
+	local index_x = keyboard_grid_selection[1] or 1
+	local index_y = keyboard_grid_selection[2] or 1
+	local input_service = self:input_service(true)
+
+	if input_service:get("move_down_hold_continuous") then
+		index_y = index_y + 1
+	elseif input_service:get("move_up_hold_continuous") then
+		index_y = index_y - 1
+	elseif input_service:get("move_right_hold_continuous") then
+		index_x = index_x + 1
+	elseif input_service:get("move_left_hold_continuous") then
+		index_x = index_x - 1
+	elseif input_service:get("confirm_press") then
+		local button_name = button_grid[index_x][index_y]
+		local func = button_funcs[button_name]
+
+		if func then
+			func()
+			self:_play_sound("play_gui_start_menu_button_click")
+		end
+	end
+
+	index_x = math.clamp(index_x, 1, #button_grid)
+	index_y = math.clamp(index_y, 1, #button_grid[index_x])
+	local widgets_by_name = self._widgets_by_name
+
+	if index_x ~= keyboard_grid_selection[1] or index_y ~= keyboard_grid_selection[2] then
+		for grid_index_x, data in ipairs(button_grid) do
+			for grid_index_y, button_name in ipairs(data) do
+				local widget = widgets_by_name[button_name]
+				local button_hotspot = widget.content.button_hotspot
+				button_hotspot.is_selected = grid_index_x == index_x and grid_index_y == index_y
+			end
+		end
+
+		keyboard_grid_selection[1] = index_x
+		keyboard_grid_selection[2] = index_y
+		self._keyboard_grid_selection = keyboard_grid_selection
+
+		self:_play_sound("play_gui_start_menu_button_hover")
+	end
 end
 
 StartMenuStateOverview._handle_input = function (self, dt, t)

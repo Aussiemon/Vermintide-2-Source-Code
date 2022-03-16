@@ -538,7 +538,7 @@ local generic_input_actions = {
 		{
 			input_action = "back",
 			priority = 2,
-			description_text = "input_description_close"
+			description_text = "input_description_back"
 		}
 	}
 }

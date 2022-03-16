@@ -69,6 +69,18 @@ local function pickup_item(callee_profile_name, item_unit, caller_player, settin
 	end
 end
 
+local function play_emote(social_wheel_event_data, pinged_unit, sender_player, social_wheel_category)
+	local unit = sender_player and sender_player.player_unit
+
+	if unit then
+		local cosmetic_extension = ScriptUnit.has_extension(unit, "cosmetic_system")
+
+		if cosmetic_extension then
+			cosmetic_extension:queue_3p_emote(social_wheel_event_data.anim_event, social_wheel_event_data.hide_weapons)
+		end
+	end
+end
+
 local function drop_item(item_name, callee_player_unit, caller_player)
 	local ai_bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
@@ -213,72 +225,219 @@ SocialWheelPriority = {
 		end
 	}
 }
+local general_emotes = {
+	{
+		text = "social_wheel_pose_test_01",
+		name = "social_wheel_general_pose_01",
+		icon = "radial_chat_icon_thank_you",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_01"
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_test_02",
+		name = "social_wheel_general_pose_02",
+		icon = "radial_chat_icon_thank_you",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_02"
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_test_03",
+		name = "social_wheel_general_pose_03",
+		icon = "radial_chat_icon_thank_you",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_03"
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_test_04",
+		name = "social_wheel_general_pose_04",
+		icon = "radial_chat_icon_thank_you",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_04"
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_test_05",
+		name = "social_wheel_general_pose_05",
+		icon = "radial_chat_icon_thank_you",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_05"
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_test_06",
+		name = "social_wheel_general_pose_06",
+		icon = "radial_chat_icon_thank_you",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_06"
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	}
+}
+local unarmed_emotes = {
+	{
+		text = "social_wheel_pose_unarmed_01",
+		name = "social_wheel_general_pose_unarmed_01",
+		icon = "radial_chat_pose_wheel_icon_unarmed",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_unarmed_01",
+			hide_weapons = true
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_unarmed_02",
+		name = "social_wheel_general_pose_unarmed_02",
+		icon = "radial_chat_pose_wheel_icon_unarmed",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_unarmed_02",
+			hide_weapons = true
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_unarmed_03",
+		name = "social_wheel_general_pose_unarmed_03",
+		icon = "radial_chat_pose_wheel_icon_unarmed",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_unarmed_03",
+			hide_weapons = true
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_unarmed_04",
+		name = "social_wheel_general_pose_unarmed_04",
+		icon = "radial_chat_pose_wheel_icon_unarmed",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_unarmed_04",
+			hide_weapons = true
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_unarmed_05",
+		name = "social_wheel_general_pose_unarmed_05",
+		icon = "radial_chat_pose_wheel_icon_unarmed",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_unarmed_05",
+			hide_weapons = true
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	},
+	{
+		text = "social_wheel_pose_unarmed_06",
+		name = "social_wheel_general_pose_unarmed_06",
+		icon = "radial_chat_pose_wheel_icon_unarmed",
+		execute_func = play_emote,
+		data = {
+			anim_event = "anim_pose_unarmed_06",
+			hide_weapons = true
+		},
+		ping_type = PingTypes.LOCAL_ONLY
+	}
+}
+
+local function clone_wheel_settings(settings, unique_name_postfix)
+	local new_settings = table.clone(settings)
+
+	for i = 1, #new_settings, 1 do
+		new_settings[i].name = new_settings[i].name .. unique_name_postfix
+	end
+
+	return new_settings
+end
+
+local general_emotes_gamepad = clone_wheel_settings(general_emotes, "_gp")
+local unarmed_emotes_gamepad = clone_wheel_settings(unarmed_emotes, "_gp")
 SocialWheelSettings = {
 	general = {
 		{
-			text = "social_wheel_general_no",
-			event_text = "social_wheel_general_no",
-			name = "social_wheel_general_no",
-			icon = "radial_chat_icon_no",
-			vo_event_name = "vw_negation",
-			data = {},
-			ping_type = PingTypes.DENY
+			{
+				text = "social_wheel_general_no",
+				event_text = "social_wheel_general_no",
+				name = "social_wheel_general_no",
+				icon = "radial_chat_icon_no",
+				vo_event_name = "vw_negation",
+				data = {},
+				ping_type = PingTypes.DENY
+			},
+			{
+				text = "social_wheel_general_come_here",
+				event_text = "social_wheel_general_come_here",
+				name = "social_wheel_general_come_here",
+				icon = "radial_chat_icon_come_here",
+				vo_event_name = "vw_gather",
+				data = {},
+				ping_type = PingTypes.MOVEMENTY_COME_HERE
+			},
+			{
+				text = "social_wheel_general_patrol",
+				event_text = "social_wheel_general_patrol",
+				name = "social_wheel_general_patrol",
+				icon = "radial_chat_icon_patrol",
+				vo_event_name = "vw_patrol",
+				data = {},
+				ping_type = PingTypes.ENEMY_PATROL
+			},
+			{
+				text = "social_wheel_general_help",
+				event_text = "social_wheel_general_help",
+				name = "social_wheel_general_help",
+				icon = "radial_chat_icon_help",
+				vo_event_name = "vw_help",
+				data = {},
+				ping_type = PingTypes.PLAYER_HELP
+			},
+			{
+				text = "social_wheel_general_boss",
+				event_text = "social_wheel_general_boss",
+				name = "social_wheel_general_boss",
+				icon = "radial_chat_icon_boss",
+				vo_event_name = "vw_boss",
+				data = {},
+				ping_type = PingTypes.ENEMY_BOSS
+			},
+			{
+				text = "social_wheel_general_thank_you",
+				event_text = "social_wheel_general_thank_you",
+				name = "social_wheel_general_thank_you",
+				icon = "radial_chat_icon_thank_you",
+				vo_event_name = "vw_thank_you",
+				data = {},
+				ping_type = PingTypes.PLAYER_THANK_YOU
+			},
+			{
+				text = "social_wheel_general_yes",
+				event_text = "social_wheel_general_yes",
+				name = "social_wheel_general_yes",
+				icon = "radial_chat_icon_yes",
+				vo_event_name = "vw_affirmative",
+				data = {},
+				ping_type = PingTypes.ACKNOWLEDGE
+			}
 		},
-		{
-			text = "social_wheel_general_come_here",
-			event_text = "social_wheel_general_come_here",
-			name = "social_wheel_general_come_here",
-			icon = "radial_chat_icon_come_here",
-			vo_event_name = "vw_gather",
-			data = {},
-			ping_type = PingTypes.MOVEMENTY_COME_HERE
-		},
-		{
-			text = "social_wheel_general_patrol",
-			event_text = "social_wheel_general_patrol",
-			name = "social_wheel_general_patrol",
-			icon = "radial_chat_icon_patrol",
-			vo_event_name = "vw_patrol",
-			data = {},
-			ping_type = PingTypes.ENEMY_PATROL
-		},
-		{
-			text = "social_wheel_general_help",
-			event_text = "social_wheel_general_help",
-			name = "social_wheel_general_help",
-			icon = "radial_chat_icon_help",
-			vo_event_name = "vw_help",
-			data = {},
-			ping_type = PingTypes.PLAYER_HELP
-		},
-		{
-			text = "social_wheel_general_boss",
-			event_text = "social_wheel_general_boss",
-			name = "social_wheel_general_boss",
-			icon = "radial_chat_icon_boss",
-			vo_event_name = "vw_boss",
-			data = {},
-			ping_type = PingTypes.ENEMY_BOSS
-		},
-		{
-			text = "social_wheel_general_thank_you",
-			event_text = "social_wheel_general_thank_you",
-			name = "social_wheel_general_thank_you",
-			icon = "radial_chat_icon_thank_you",
-			vo_event_name = "vw_thank_you",
-			data = {},
-			ping_type = PingTypes.PLAYER_THANK_YOU
-		},
-		{
-			text = "social_wheel_general_yes",
-			event_text = "social_wheel_general_yes",
-			name = "social_wheel_general_yes",
-			icon = "radial_chat_icon_yes",
-			vo_event_name = "vw_affirmative",
-			data = {},
-			ping_type = PingTypes.ACKNOWLEDGE
-		},
+		unarmed_emotes,
 		wedge_adjustment = 0.85,
+		has_pages = true,
 		individual_bg = true,
 		angle = 1.7 * math.pi,
 		size = {
@@ -288,55 +447,59 @@ SocialWheelSettings = {
 	},
 	general_gamepad = {
 		{
-			text = "social_wheel_general_no",
-			event_text = "social_wheel_general_no",
-			name = "social_wheel_general_no_gp",
-			icon = "radial_chat_icon_no",
-			data = {}
+			{
+				text = "social_wheel_general_no",
+				event_text = "social_wheel_general_no",
+				name = "social_wheel_general_no_gp",
+				icon = "radial_chat_icon_no",
+				data = {}
+			},
+			{
+				text = "social_wheel_general_come_here",
+				event_text = "social_wheel_general_come_here",
+				name = "social_wheel_general_come_here_gp",
+				icon = "radial_chat_icon_come_here",
+				data = {}
+			},
+			{
+				text = "social_wheel_general_patrol",
+				event_text = "social_wheel_general_patrol",
+				name = "social_wheel_general_patrol_gp",
+				icon = "radial_chat_icon_patrol",
+				data = {}
+			},
+			{
+				text = "social_wheel_general_help",
+				event_text = "social_wheel_general_help",
+				name = "social_wheel_general_help_gp",
+				icon = "radial_chat_icon_help",
+				data = {}
+			},
+			{
+				text = "social_wheel_general_boss",
+				event_text = "social_wheel_general_boss",
+				name = "social_wheel_general_boss_gp",
+				icon = "radial_chat_icon_boss",
+				data = {}
+			},
+			{
+				text = "social_wheel_general_thank_you",
+				event_text = "social_wheel_general_thank_you",
+				name = "social_wheel_general_thank_you_gp",
+				icon = "radial_chat_icon_thank_you",
+				data = {}
+			},
+			{
+				text = "social_wheel_general_yes",
+				event_text = "social_wheel_general_yes",
+				name = "social_wheel_general_yes_gp",
+				icon = "radial_chat_icon_yes",
+				data = {}
+			}
 		},
-		{
-			text = "social_wheel_general_come_here",
-			event_text = "social_wheel_general_come_here",
-			name = "social_wheel_general_come_here_gp",
-			icon = "radial_chat_icon_come_here",
-			data = {}
-		},
-		{
-			text = "social_wheel_general_patrol",
-			event_text = "social_wheel_general_patrol",
-			name = "social_wheel_general_patrol_gp",
-			icon = "radial_chat_icon_patrol",
-			data = {}
-		},
-		{
-			text = "social_wheel_general_help",
-			event_text = "social_wheel_general_help",
-			name = "social_wheel_general_help_gp",
-			icon = "radial_chat_icon_help",
-			data = {}
-		},
-		{
-			text = "social_wheel_general_boss",
-			event_text = "social_wheel_general_boss",
-			name = "social_wheel_general_boss_gp",
-			icon = "radial_chat_icon_boss",
-			data = {}
-		},
-		{
-			text = "social_wheel_general_thank_you",
-			event_text = "social_wheel_general_thank_you",
-			name = "social_wheel_general_thank_you_gp",
-			icon = "radial_chat_icon_thank_you",
-			data = {}
-		},
-		{
-			text = "social_wheel_general_yes",
-			event_text = "social_wheel_general_yes",
-			name = "social_wheel_general_yes_gp",
-			icon = "radial_chat_icon_yes",
-			data = {}
-		},
+		unarmed_emotes_gamepad,
 		wedge_adjustment = 0.85,
+		has_pages = true,
 		individual_bg = false,
 		angle = 2 * math.pi,
 		size = {
@@ -481,12 +644,24 @@ end
 SocialWheelSettingsLookup = {}
 
 for _, category_settings in pairs(SocialWheelSettings) do
-	for _, setting in ipairs(category_settings) do
-		local name = setting.name
+	if category_settings.has_pages then
+		for i = 1, #category_settings, 1 do
+			for _, setting in ipairs(category_settings[i]) do
+				local name = setting.name
 
-		fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
+				fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
 
-		SocialWheelSettingsLookup[name] = setting
+				SocialWheelSettingsLookup[name] = setting
+			end
+		end
+	else
+		for _, setting in ipairs(category_settings) do
+			local name = setting.name
+
+			fassert(SocialWheelSettingsLookup[name] == nil, "You have a duplicate entry in SocialWheelSettings (%s), each entry must have a unique name!", name)
+
+			SocialWheelSettingsLookup[name] = setting
+		end
 	end
 end
 

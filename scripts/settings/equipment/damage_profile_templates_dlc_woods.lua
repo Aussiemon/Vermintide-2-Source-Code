@@ -367,26 +367,96 @@ local damage_templates = {
 			}
 		}
 	},
+	thorn_sister_talent_explosion = {
+		is_push = true,
+		charge_value = "action_push",
+		damage_type = "push",
+		armor_modifier = {
+			attack = {
+				0.1,
+				0.1,
+				0.1,
+				0.1,
+				0.1
+			},
+			impact = {
+				0.1,
+				0.1,
+				0.1,
+				0.1,
+				0.1
+			}
+		},
+		cleave_distribution = {
+			attack = 0,
+			impact = 0
+		},
+		default_target = {
+			boost_curve_type = "default",
+			damage_type = "push",
+			attack_template = "basic_sweep_push",
+			power_distribution = {
+				attack = 0.01,
+				impact = 0.01
+			}
+		}
+	},
+	thorn_sister_poison = {
+		is_dot = true,
+		charge_value = "n/a",
+		no_stagger_damage_reduction_ranged = true,
+		no_stagger = true,
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.25
+		},
+		armor_modifier = {
+			attack = {
+				0.8,
+				0.8,
+				0.8,
+				0.8,
+				0.5,
+				0.2
+			},
+			impact = {
+				1,
+				1,
+				1,
+				1,
+				0.5,
+				0
+			}
+		},
+		default_target = {
+			attack_template = "arrow_poison_aoe",
+			damage_type = "arrow_poison_dot",
+			power_distribution = {
+				attack = 0.005,
+				impact = 0
+			}
+		}
+	},
 	thorn_wall_explosion_improved_damage = {
 		is_explosion = true,
 		charge_value = "ability",
 		no_stagger_damage_reduction_ranged = true,
 		armor_modifier = {
 			attack = {
-				1,
-				1,
-				2.5,
-				1,
-				0.75,
-				1.1
+				0.1,
+				0.1,
+				0.1,
+				0.1,
+				0.1,
+				1
 			},
 			impact = {
-				1,
-				1,
+				0.35,
+				0.5,
 				100,
-				1,
-				1,
-				10
+				0.5,
+				1.5,
+				1
 			}
 		},
 		cleave_distribution = {
@@ -397,7 +467,7 @@ local damage_templates = {
 			damage_type = "grenade",
 			attack_template = "blade_storm",
 			power_distribution = {
-				attack = 1,
+				attack = 0.01,
 				impact = 2
 			}
 		}

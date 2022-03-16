@@ -2398,6 +2398,14 @@ UITooltipPasses = {
 
 			if player then
 				local career_name = player:career_name()
+				local profile_index = ui_content.profile_index
+				local career_index = ui_content.career_index
+
+				if profile_index and career_index then
+					local profile = SPProfiles[profile_index]
+					career_name = profile.careers[career_index].name
+				end
+
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -2632,6 +2640,14 @@ UITooltipPasses = {
 
 			if player then
 				local career_name = player:career_name()
+				local profile_index = ui_content.profile_index
+				local career_index = ui_content.career_index
+
+				if profile_index and career_index then
+					local profile = SPProfiles[profile_index]
+					career_name = profile.careers[career_index].name
+				end
+
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -2955,6 +2971,14 @@ UITooltipPasses = {
 
 			if player then
 				local career_name = player:career_name()
+				local profile_index = ui_content.profile_index
+				local career_index = ui_content.career_index
+
+				if profile_index and career_index then
+					local profile = SPProfiles[profile_index]
+					career_name = profile.careers[career_index].name
+				end
+
 				local can_wield_table = item_data and item_data.can_wield
 				local can_wield = can_wield_table and table.contains(can_wield_table, career_name)
 
@@ -4144,7 +4168,7 @@ UITooltipPasses = {
 			local position_y = position[2]
 			local position_z = position[3]
 			local title_text = Localize("start_game_window_difficulty")
-			local difficulty_key = item.difficulty
+			local difficulty_key = item.difficulty or "normal"
 			local difficulty_settings = DifficultySettings[difficulty_key]
 			local difficulty_display_name = difficulty_settings.display_name
 			local type_text = Localize(difficulty_display_name)
@@ -5647,6 +5671,15 @@ UITooltipPasses = {
 				if not hero_name or not career_name then
 					return 0
 				end
+			end
+
+			local profile_index = ui_content.profile_index
+			local career_index = ui_content.career_index
+
+			if profile_index and career_index then
+				local profile = SPProfiles[profile_index]
+				hero_name = profile.display_name
+				career_name = profile.careers[career_index].name
 			end
 
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
@@ -8866,6 +8899,491 @@ UITooltipPasses = {
 			position[3] = position_z
 
 			return total_height + bottom_spacing
+		end
+	},
+	special_action_tooltip = {
+		setup_data = function ()
+			local data = {
+				frame_margin = 0,
+				text_pass_data = {
+					text_id = "text"
+				},
+				text_size = {},
+				content = {},
+				style_text = {
+					vertical_alignment = "center",
+					localize = false,
+					horizontal_alignment = "center",
+					word_wrap = true,
+					font_type = "hell_shark",
+					font_size = setup_font_size(16),
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
+					offset = {
+						0,
+						-5,
+						0
+					}
+				},
+				style_background = {
+					color = {
+						255,
+						0,
+						0,
+						0
+					},
+					texture_size = {
+						0,
+						0
+					},
+					offset = {
+						0,
+						0,
+						9
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
+			local item_data = item.data
+			local template_name = item_data.temporary_template or item_data.template
+			local item_template = Weapons[template_name]
+			local tooltip_special_action_description = item_template and item_template.tooltip_special_action_description
+
+			if not tooltip_special_action_description then
+				return 0
+			end
+
+			local alpha = 255 * pass_data.alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local frame_margin = data.frame_margin
+			local text_pass_data = data.text_pass_data
+			local content = data.content
+			local prefix_color = Colors.color_definitions.font_title
+			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("action_three"), Localize(tooltip_special_action_description))
+			content.text = text
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local style_text = data.style_text
+			local text_size = data.text_size
+			local text_width = size[1] - frame_margin * 2
+			text_size[1] = text_width
+			text_size[2] = 0
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text, ui_style_global)
+			local total_height = frame_margin + title_text_height
+			text_size[1] = text_width
+			text_size[2] = title_text_height
+
+			if draw then
+				local background_style = data.style_background
+				local background_size = background_style.texture_size
+				local background_color = background_style.color
+				background_color[1] = alpha
+				background_size[1] = size[1]
+				background_size[2] = total_height
+				position[2] = position_y - background_size[2]
+				position[3] = start_layer + 1
+
+				UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+
+				position[2] = position_y
+				position[3] = position_z
+				position[1] = position[1] + frame_margin + style_text.offset[1]
+				position[2] = (position[2] + frame_margin + style_text.offset[2]) - total_height
+				position[3] = start_layer + 2 + style_text.offset[3]
+				style_text.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, style_text, content, position, text_size, input_service, dt, ui_style_global)
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	console_special_action_tooltip = {
+		setup_data = function ()
+			local data = {
+				frame_margin = 0,
+				text_pass_data = {
+					text_id = "text"
+				},
+				text_size = {},
+				content = {},
+				style_text = {
+					vertical_alignment = "center",
+					localize = false,
+					horizontal_alignment = "center",
+					word_wrap = true,
+					font_type = "hell_shark",
+					font_size = setup_font_size(16),
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
+					offset = {
+						0,
+						0,
+						0
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
+			local item_data = item.data
+			local template_name = item_data.temporary_template or item_data.template
+			local item_template = Weapons[template_name]
+			local tooltip_special_action_description = item_template and item_template.tooltip_special_action_description
+
+			if not tooltip_special_action_description then
+				return 0
+			end
+
+			local alpha = 255 * pass_data.alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local frame_margin = data.frame_margin
+			local text_pass_data = data.text_pass_data
+			local content = data.content
+			local prefix_color = Colors.color_definitions.font_title
+			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("action_three"), Localize(tooltip_special_action_description))
+			content.text = text
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local style_text = data.style_text
+			local text_size = data.text_size
+			local text_width = size[1] - frame_margin * 2
+			text_size[1] = text_width
+			text_size[2] = 0
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text, ui_style_global)
+			local total_height = frame_margin + title_text_height
+			text_size[2] = title_text_height
+
+			if draw then
+				position[1] = position[1] + frame_margin + style_text.offset[1]
+				position[2] = (position[2] + frame_margin + style_text.offset[2]) - total_height
+				position[3] = start_layer + 2 + style_text.offset[3]
+				style_text.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, style_text, content, position, text_size, input_service, dt, ui_style_global)
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	other_equipped_careers_tooltip = {
+		setup_data = function ()
+			local data = {
+				frame_margin = 0,
+				text_pass_data = {
+					text_id = "text"
+				},
+				text_size = {},
+				edge_size = {
+					0,
+					5
+				},
+				edge_holder_size = {
+					9,
+					17
+				},
+				content = {
+					edge_holder_right = "menu_frame_12_divider_right",
+					edge_texture = "menu_frame_12_divider",
+					edge_holder_left = "menu_frame_12_divider_left"
+				},
+				edge = {
+					texture_size = {
+						1,
+						5
+					},
+					color = {
+						255,
+						255,
+						255,
+						255
+					},
+					offset = {
+						0,
+						0,
+						1
+					}
+				},
+				edge_holder = {
+					color = {
+						255,
+						255,
+						255,
+						255
+					},
+					offset = {
+						0,
+						0,
+						1
+					}
+				},
+				style_text = {
+					vertical_alignment = "center",
+					localize = false,
+					horizontal_alignment = "center",
+					word_wrap = true,
+					font_type = "hell_shark",
+					font_size = setup_font_size(16),
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
+					offset = {
+						0,
+						0,
+						0
+					}
+				},
+				style_background = {
+					color = {
+						255,
+						0,
+						0,
+						0
+					},
+					texture_size = {
+						0,
+						0
+					},
+					offset = {
+						0,
+						0,
+						9
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
+			local backend_id = item and item.backend_id
+			local career_names_string = ""
+
+			if backend_id then
+				local local_player = Managers.player:local_player()
+
+				if not local_player then
+					return 0
+				end
+
+				local career_index = local_player:career_index()
+				local profile_index = local_player:profile_index()
+				local current_profile = SPProfiles[profile_index]
+				local current_career_settings = current_profile.careers[career_index]
+				local current_career_name = current_career_settings.name
+				local backend_interface = Managers.backend:get_interface("items")
+				local career_names = backend_interface:equipped_by(backend_id)
+				local index = table.index_of(career_names, current_career_name)
+
+				table.remove(career_names, index)
+
+				local career_names_size = #career_names
+
+				if table.is_empty(career_names) then
+					return 0
+				end
+
+				for i = 1, career_names_size, 1 do
+					local name = career_names[i]
+
+					if i == career_names_size then
+						career_names_string = career_names_string .. Localize(name)
+					else
+						career_names_string = career_names_string .. Localize(name) .. ", "
+					end
+				end
+			end
+
+			local alpha = 255 * pass_data.alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local frame_margin = data.frame_margin
+			local text_pass_data = data.text_pass_data
+			local content = data.content
+			local prefix_color = Colors.color_definitions.font_title
+			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career"), career_names_string)
+			content.text = text
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local style_text = data.style_text
+			local text_size = data.text_size
+			local text_width = size[1] - frame_margin * 2
+			text_size[1] = text_width
+			text_size[2] = 0
+			local title_text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text, ui_style_global)
+			local total_height = frame_margin + title_text_height
+			text_size[1] = text_width
+			text_size[2] = title_text_height
+			local scale_inversed = RESOLUTION_LOOKUP.inv_scale
+
+			if draw then
+				local background_style = data.style_background
+				local background_size = background_style.texture_size
+				local background_color = background_style.color
+				background_color[1] = alpha
+				background_size[1] = size[1]
+				background_size[2] = total_height
+				position[2] = position_y - background_size[2]
+				position[3] = start_layer + 1
+
+				UIRenderer.draw_rect(ui_renderer, position, background_size, background_color)
+
+				position[2] = position_y
+				position[3] = position_z
+				local edge_size = data.edge_size
+				edge_size[1] = size[1]
+				local edge_style = data.edge
+				local edge_color = edge_style.color
+				local edge_texture_size = data.edge.texture_size
+				edge_texture_size[1] = size[1]
+				local edge_texture = content.edge_texture
+				edge_color[1] = alpha
+				local start_position_y = position[2] - frame_margin * 0.5 * scale_inversed
+				position[2] = start_position_y
+				position[3] = start_layer + 4
+
+				UIRenderer.draw_tiled_texture(ui_renderer, edge_texture, position, edge_size, edge_texture_size, edge_color)
+
+				local edge_holder_style = data.edge_holder
+				local edge_holder_size = data.edge_holder_size
+				local edge_holder_color = edge_holder_style.color
+				local edge_holder_left_texture = content.edge_holder_left
+				local edge_holder_right_texture = content.edge_holder_right
+				edge_holder_color[1] = alpha
+				position[1] = position[1] + 3
+				position[2] = start_position_y - 6
+				position[3] = start_layer + 6
+
+				UIRenderer.draw_texture(ui_renderer, edge_holder_left_texture, position, edge_holder_size, edge_holder_color)
+
+				position[1] = (position[1] + edge_size[1]) - (edge_holder_size[1] + 6)
+
+				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
+
+				position[1] = position_x + frame_margin + style_text.offset[1]
+				position[2] = (start_position_y + frame_margin + style_text.offset[2]) - total_height
+				position[3] = start_layer + 2 + style_text.offset[3]
+				style_text.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, style_text, content, position, text_size, input_service, dt, ui_style_global)
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
+		end
+	},
+	console_other_equipped_careers_tooltip = {
+		setup_data = function ()
+			local data = {
+				frame_margin = 0,
+				text_pass_data = {
+					text_id = "text"
+				},
+				text_size = {},
+				content = {},
+				style_text = {
+					vertical_alignment = "center",
+					localize = false,
+					horizontal_alignment = "center",
+					word_wrap = true,
+					font_type = "hell_shark",
+					font_size = setup_font_size(16),
+					text_color = Colors.get_color_table_with_alpha("font_default", 255),
+					offset = {
+						0,
+						0,
+						0
+					}
+				}
+			}
+
+			return data
+		end,
+		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
+			local backend_id = item and item.backend_id
+			local career_names_string = ""
+
+			if backend_id then
+				local local_player = Managers.player:local_player()
+
+				if not local_player then
+					return 0
+				end
+
+				local career_index = local_player:career_index()
+				local profile_index = local_player:profile_index()
+				local current_profile = SPProfiles[profile_index]
+				local current_career_settings = current_profile.careers[career_index]
+				local current_career_name = current_career_settings.name
+				local backend_interface = Managers.backend:get_interface("items")
+				local career_names = backend_interface:equipped_by(backend_id)
+				local index = table.index_of(career_names, current_career_name)
+
+				table.remove(career_names, index)
+
+				local career_names_size = #career_names
+
+				if table.is_empty(career_names) then
+					return 0
+				end
+
+				for i = 1, career_names_size, 1 do
+					local name = career_names[i]
+
+					if i == career_names_size then
+						career_names_string = career_names_string .. Localize(name)
+					else
+						career_names_string = career_names_string .. Localize(name) .. ", "
+					end
+				end
+			end
+
+			local alpha = 255 * pass_data.alpha_multiplier
+			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
+			local frame_margin = data.frame_margin
+			local text_pass_data = data.text_pass_data
+			local content = data.content
+			local prefix_color = Colors.color_definitions.font_title
+			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career"), career_names_string)
+			content.text = text
+			local position_x = position[1]
+			local position_y = position[2]
+			local position_z = position[3]
+			local style_text = data.style_text
+			local text_size = data.text_size
+			local text_width = size[1] - frame_margin * 2
+			text_size[1] = text_width
+			text_size[2] = 0
+			local text_height = UIUtils.get_text_height(ui_renderer, text_size, style_text, text, ui_style_global)
+			local total_height = frame_margin * 0.5 + text_height
+			text_size[2] = text_height
+
+			if draw then
+				position[1] = position_x + frame_margin
+				position[2] = position_y - total_height + 5
+				position[3] = start_layer + 2 + style_text.offset[3]
+				style_text.text_color[1] = alpha
+
+				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, style_text, content, position, text_size, input_service, dt, ui_style_global)
+			end
+
+			position[1] = position_x
+			position[2] = position_y
+			position[3] = position_z
+
+			return total_height
 		end
 	}
 }

@@ -28,7 +28,8 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 		local props_params = {
 			life_time = life_time,
 			owner_unit = source_unit,
-			despawn_sound_event = despawn_sound_event
+			despawn_sound_event = despawn_sound_event,
+			wall_index = wall_index
 		}
 		local health_params = {
 			health = 20
@@ -42,7 +43,7 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 				local life_time_bonus = 4.2
 				area_damage_params.life_time = area_damage_params.life_time * life_time_mult + life_time_bonus
 				props_params.life_time = props_params.life_time * life_time_mult + life_time_bonus
-			elseif source_talent_extension:has_talent("kerillian_thorn_sister_explosive_wall") then
+			elseif source_talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
 				local life_time_mult = 0.17
 				local life_time_bonus = 0
 				area_damage_params.create_nav_tag_volume = false
@@ -83,7 +84,6 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 		local thorn_wall_extension = ScriptUnit.has_extension(wall_unit, "props_system")
 
 		if thorn_wall_extension then
-			thorn_wall_extension.wall_index = wall_index
 			thorn_wall_extension.group_spawn_index = group_spawn_index
 		end
 	end

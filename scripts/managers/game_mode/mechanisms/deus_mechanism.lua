@@ -962,21 +962,12 @@ DeusMechanism._debug_load_seed = function (self, run_seed, difficulty)
 		self._deus_run_controller:debug_shrine_setup()
 	end
 
+	local in_map = false
 	local deus_run_controller = self._deus_run_controller
-	local current_node = deus_run_controller:get_current_node()
-	local current_node_type = current_node.node_type
-	local level_key = current_node.level
-	local level_seed = current_node.level_seed
-	local conflict_settings = current_node.conflict_settings
-	local current_run_progress = current_node.run_progress
-	local mechanism = "deus"
-	local run_difficulty = deus_run_controller:get_run_difficulty()
-	local difficulty_tweak = get_difficulty_tweak_for_progress(current_run_progress)
-	local environment_variation_id = LevelHelper:get_random_variation_id(level_key)
-	local game_mode_key = node_type_to_game_mode(current_node_type)
+	local level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages = get_next_level_data(deus_run_controller, in_map)
 	local level_transition_handler = Managers.level_transition_handler
 
-	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, nil, run_difficulty, difficulty_tweak)
+	level_transition_handler:set_next_level(level_key, environment_variation_id, level_seed, mechanism, game_mode_key, conflict_settings, locked_director_functions, run_difficulty, difficulty_tweak, extra_packages)
 	self:_update_current_state()
 	level_transition_handler:promote_next_level_data()
 end

@@ -11,6 +11,7 @@ CameraTweaks.zoom = {
 local THIRD_PERSON_TRANSITIONS = {
 	revive = CameraTransitionTemplates.reviving,
 	heal_self = CameraTransitionTemplates.reviving,
+	emotes = CameraTransitionTemplates.reviving,
 	zoom_in = CameraTransitionTemplates.zoom,
 	zoom_in_third_person = CameraTransitionTemplates.zoom,
 	increased_zoom_in = CameraTransitionTemplates.zoom,
@@ -168,6 +169,38 @@ CameraSettings.first_person = {
 							z = 0,
 							x = 0,
 							y = 0
+						},
+						node_transitions = {
+							first_person_node = CameraTransitionTemplates.first_person
+						}
+					}
+				},
+				{
+					{
+						_node = {
+							class = "ScalableTransformCamera",
+							name = "emotes",
+							scale_variable = "emote_zoom",
+							offset_position = {
+								z = 0,
+								x = 0,
+								y = -5
+							},
+							scale_function = function (scale)
+								return scale
+							end,
+							node_transitions = {
+								first_person_node = CameraTransitionTemplates.first_person
+							}
+						}
+					},
+					_node = {
+						name = "emotes_offset",
+						class = "TransformCamera",
+						offset_position = {
+							z = 0,
+							x = 0,
+							y = 1
 						},
 						node_transitions = {
 							first_person_node = CameraTransitionTemplates.first_person

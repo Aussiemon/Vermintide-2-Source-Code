@@ -228,8 +228,24 @@ GameModeWeave.set_override_respawn_group = function (self, respawn_group_name, a
 	self._weave_spawning:set_override_respawn_group(respawn_group_name, active)
 end
 
+GameModeWeave.set_respawn_group_enabled = function (self, respawn_group_name, active)
+	self._weave_spawning:set_respawn_group_enabled(respawn_group_name, active)
+end
+
+GameModeWeave.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	self._weave_spawning:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+end
+
 GameModeWeave.respawn_unit_spawned = function (self, unit)
 	self._weave_spawning:respawn_unit_spawned(unit)
+end
+
+GameModeWeave.get_respawn_handler = function (self)
+	return self._weave_spawning:get_respawn_handler()
+end
+
+GameModeWeave.respawn_gate_unit_spawned = function (self, unit)
+	self._weave_spawning:respawn_gate_unit_spawned(unit)
 end
 
 GameModeWeave.set_respawning_enabled = function (self, enabled)
@@ -385,12 +401,13 @@ GameModeWeave._get_first_available_bot_profile = function (self)
 	local display_name = profile.display_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
+	local bot_career_index = hero_attributes:get(display_name, "bot_career") or career_index or 1
 
 	if script_data.wanted_bot_career_index then
-		career_index = script_data.wanted_bot_career_index
+		bot_career_index = script_data.wanted_bot_career_index
 	end
 
-	return profile_index, career_index
+	return profile_index, bot_career_index
 end
 
 GameModeWeave._setup_bot_spawn_priority_lookup = function (self)

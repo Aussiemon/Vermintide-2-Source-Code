@@ -532,7 +532,7 @@ UIPasses.texture = {
 	end,
 	draw = function (ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt)
 		local texture_name = ui_content[pass_definition.texture_id or "texture_id"]
-		local color, masked, saturated = nil
+		local color, masked, saturated, point_sample = nil
 
 		if ui_style then
 			local texture_size = ui_style.texture_size
@@ -546,15 +546,16 @@ UIPasses.texture = {
 			color = ui_style.color
 			masked = ui_style.masked
 			saturated = ui_style.saturated
+			point_sample = ui_style.point_sample
 		end
 
 		if pass_definition.retained_mode then
 			local retained_id = pass_definition.retained_mode and (pass_data.retained_id or true)
-			retained_id = UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, retained_id)
+			retained_id = UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, retained_id, point_sample)
 			pass_data.retained_id = retained_id or pass_data.retained_id
 			pass_data.dirty = false
 		else
-			UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated)
+			UIRenderer_draw_texture(ui_renderer, texture_name, position, size, color, masked, saturated, nil, point_sample)
 		end
 	end
 }
@@ -2062,15 +2063,25 @@ UIPasses.text = {
 				horizontal_alignment_multiplier = 1
 			end
 
+			local max_text_width = 0
 			local alignment_offset = Vector3(0, 0, 0)
 
 			for i = 1, num_texts, 1 do
 				text = texts[i - 1 + text_start_index]
 				local text_length = (text and UTF8Utils.string_length(text)) or 0
+				local width = nil
 
 				if horizontal_alignment ~= "left" then
-					local width = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
+					width = UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
 					alignment_offset.x = (size[1] - width) * horizontal_alignment_multiplier
+				end
+
+				if ui_style.draw_text_rect then
+					width = width or UIRenderer.text_size(ui_renderer, text, font_material, font_size, size[2])
+
+					if max_text_width < width then
+						max_text_width = width or max_text_width
+					end
 				end
 
 				local color = ui_style.text_color
@@ -2101,12 +2112,16 @@ UIPasses.text = {
 				local padding_x = 4
 				local padding_y = 4
 				local rect_pos = position - Vector3(padding_x, padding_y * 2 + text_offset[2], 1)
-				local rect_size = Vector2(size[1] + padding_x * 2, num_texts * -text_offset[2])
+				local rect_size = Vector2(max_text_width + padding_x * 2, num_texts * -text_offset[2])
 
 				if ui_style.masked then
-					UIRenderer_draw_texture(ui_renderer, "rect_masked", rect_pos, rect_size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
+					UIRenderer_draw_texture(ui_renderer, "rect_masked", rect_pos + alignment_offset, rect_size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
 				else
-					UIRenderer.draw_rounded_rect(ui_renderer, rect_pos, rect_size, 5, ui_style.rect_color)
+					UIRenderer.draw_rounded_rect(ui_renderer, rect_pos + alignment_offset, rect_size, 5, ui_style.rect_color)
+
+					if ui_style.draw_rect_border then
+						UIRenderer.draw_rounded_rect(ui_renderer, rect_pos + alignment_offset + Vector3(-1, -1, -1), rect_size + Vector2(2, 2), 5, ui_style.text_color)
+					end
 				end
 			end
 		elseif ui_style.horizontal_scroll then
@@ -3508,6 +3523,8 @@ UIPasses.item_tooltip = {
 			"loot_chest_power_range",
 			"unwieldable",
 			"keywords",
+			"special_action_tooltip",
+			"other_equipped_careers_tooltip",
 			"item_description",
 			"light_attack_stats",
 			"heavy_attack_stats",
@@ -3624,8 +3641,8 @@ UIPasses.item_tooltip = {
 					table.clear(equipped_items)
 
 					local backend_items = Managers.backend:get_interface("items")
-					local profile_index = player:profile_index()
-					local career_index = player:career_index()
+					local profile_index = ui_content.profile_index or player:profile_index()
+					local career_index = ui_content.career_index or player:career_index()
 					local hero_data = SPProfiles[profile_index]
 					local career_data = hero_data.careers[career_index]
 					local career_name = career_data.name
@@ -4356,11 +4373,12 @@ UIPasses.hotspot = {
 			ui_content.is_held = false
 		end
 
-		if ui_content.input_pressed then
-			local left_release = input_service:get("left_release")
+		local left_release = input_service:get("left_release")
 
+		if ui_content.input_pressed then
 			if left_release then
 				ui_content.on_release = true
+				ui_content.on_left_release = true
 				ui_content.is_clicked = 0
 			else
 				ui_content.on_release = false
@@ -4374,12 +4392,15 @@ UIPasses.hotspot = {
 					ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 				end
 			end
+		elseif left_release and is_hover then
+			ui_content.on_left_release = true
 		else
 			if is_hover and not left_pressed and not left_hold and input_service:get("right_press") then
 				ui_content.on_right_click = true
 			end
 
 			ui_content.on_release = false
+			ui_content.on_left_release = false
 			ui_content.is_clicked = (ui_content.is_clicked or 10) + dt
 		end
 	end

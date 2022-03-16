@@ -51,10 +51,10 @@ UIManager.reload_ingame_ui = function (self, reload_sources)
 		for script_path in pairs(package.loaded) do
 			if string.find(script_path, "^scripts/ui") then
 				package.loaded[script_path] = nil
+
+				require(script_path)
 			end
 		end
-
-		require("scripts/ui/views/ingame_ui")
 	end
 
 	self:destroy_ingame_ui()
@@ -117,12 +117,17 @@ UIManager.update = function (self)
 		end
 	end
 
-	local end_screen_active = ingame_ui:end_screen_active()
-	local end_screen_completed = ingame_ui:end_screen_completed()
-
-	if end_screen_active and end_screen_completed then
+	if ingame_ui:end_screen_active() and ingame_ui:end_screen_completed() then
 		Managers.state.event:trigger("end_screen_ui_complete")
 	end
+end
+
+UIManager.end_screen_active = function (self)
+	return self._ingame_ui:end_screen_active()
+end
+
+UIManager.end_screen_completed = function (self)
+	return self._ingame_ui:end_screen_completed()
 end
 
 UIManager.post_update = function (self, dt, t, disable_ingame_ui)
@@ -185,6 +190,25 @@ UIManager.get_active_popup = function (self, popup_name)
 
 	if ingame_ui then
 		return ingame_ui:get_active_popup(popup_name)
+	end
+end
+
+UIManager.handle_new_ui_disclaimer = function (self, disclaimer_states, state)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if gamepad_active or IS_CONSOLE then
+		return
+	end
+
+	local use_gamepad_layout = Application.user_setting("use_gamepad_menu_layout")
+	local use_pc_menu_layout = Application.user_setting("use_pc_menu_layout")
+
+	if use_gamepad_layout == false and use_pc_menu_layout == false and (disclaimer_states[state] or disclaimer_states[state] == nil) then
+		local ingame_ui = self._ingame_ui
+
+		ingame_ui.weave_onboarding:try_show_tutorial(WeaveUITutorials.new_ui_disclaimer)
+		Application.set_user_setting("use_gamepad_menu_layout", nil)
+		Application.save_user_settings()
 	end
 end
 

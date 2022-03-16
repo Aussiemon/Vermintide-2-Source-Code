@@ -42,6 +42,8 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	self._is_spectator = false
 	self._spectated_player = nil
 	self._spectated_player_unit = nil
+	self._numeric_ui_enabled = false
+	self._should_use_gamepad = false
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "add_respawn_counter_event", "add_respawn_counter_event")
@@ -52,6 +54,10 @@ UnitFramesHandler.init = function (self, parent, ingame_ui_context)
 	self:_create_player_unit_frame()
 	self:_create_party_members_unit_frames()
 	self:_align_party_member_frames()
+
+	if Application.user_setting("numeric_ui") then
+		self:_update_numeric_ui()
+	end
 end
 
 UnitFramesHandler.add_respawn_counter_event = function (self, player, is_local_player, spawn_timer)
@@ -654,6 +660,7 @@ UnitFramesHandler._sync_player_stats = function (self, unit_frame)
 		local value = Managers.state.difficulty:get_difficulty_value_from_table(curse_settings_value)
 		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(value, "curse_protection")
 		local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+		cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 		equipment = inventory_extension:equipment()
 		profile_index = career_extension:profile_index()
@@ -1096,6 +1103,7 @@ UnitFramesHandler.update = function (self, dt, t)
 	end
 
 	self:_draw(dt)
+	self:_update_numeric_ui()
 end
 
 UnitFramesHandler.resolution_modified = function (self)
@@ -1127,6 +1135,53 @@ UnitFramesHandler._draw = function (self, dt)
 		local unit_frame = unit_frames[i]
 
 		unit_frame.widget:draw(dt)
+	end
+end
+
+UnitFramesHandler._update_numeric_ui = function (self)
+	local setting_changed = false
+
+	if self._numeric_ui_enabled ~= Application.user_setting("numeric_ui") then
+		self._numeric_ui_enabled = Application.user_setting("numeric_ui")
+		setting_changed = true
+	end
+
+	if self._should_use_gamepad ~= Application.user_setting("use_gamepad_hud_layout") then
+		self._should_use_gamepad = Application.user_setting("use_gamepad_hud_layout")
+		setting_changed = true
+	end
+
+	local unit_frames = self._unit_frames
+
+	for i = 1, #unit_frames, 1 do
+		local unit_frame = unit_frames[i]
+		local widget = unit_frame.widget
+
+		if not widget then
+			return
+		end
+
+		local player_data = unit_frame.player_data
+		local player = player_data.player
+
+		if not player then
+			return
+		end
+
+		local player_unit = player and player.player_unit
+		local go_id = Managers.state.unit_storage:go_id(player_unit)
+		local network_manager = Managers.state.network
+		local game = network_manager:game()
+
+		if player_data and self._numeric_ui_enabled and game and go_id then
+			widget:update_numeric_ui_health(player_data)
+			widget:update_numeric_ui_ammo(player_data)
+			widget:update_numeric_ui_career_ability(game, go_id, player_data)
+		end
+
+		if setting_changed or widget.weapon_changed then
+			widget:set_dirty()
+		end
 	end
 end
 

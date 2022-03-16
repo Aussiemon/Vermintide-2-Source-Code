@@ -5,8 +5,6 @@ require("scripts/unit_extensions/human/ai_player_unit/ai_navigation_extension")
 require("scripts/unit_extensions/human/ai_player_unit/ai_brain")
 require("scripts/unit_extensions/human/ai_player_unit/perception_utils")
 require("scripts/unit_extensions/human/ai_player_unit/target_selection_utils")
-require("scripts/utils/pool_tables/pool_blackboard")
-require("scripts/utils/pool_tables/pool_generic_extension")
 
 local alive = Unit.alive
 AISimpleExtension = class(AISimpleExtension)

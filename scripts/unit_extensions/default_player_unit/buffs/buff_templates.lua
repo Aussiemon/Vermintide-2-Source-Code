@@ -165,6 +165,8 @@ end
 
 ProcEvents = {
 	"on_hit",
+	"on_melee_hit",
+	"on_ranged_hit",
 	"on_kill",
 	"on_kill_elite_special",
 	"on_boss_killed",
@@ -217,6 +219,7 @@ ProcEvents = {
 	"on_inventory_post_apply_buffs",
 	"on_visible",
 	"on_invisible",
+	"on_stealth_stacks_modified",
 	"on_death",
 	"on_damage_dealt",
 	"on_push_used",
@@ -811,6 +814,7 @@ ProcFunctions = {
 		local player_unit = player.player_unit
 
 		if ALIVE[player_unit] then
+			buff.buff_ids = buff.buff_ids or {}
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_amount = #buff.buff_ids
 
@@ -1072,13 +1076,19 @@ ProcFunctions = {
 		if Unit.alive(player_unit) and not status_extension:is_knocked_down() then
 			local health_extension = ScriptUnit.extension(player_unit, "health_system")
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+			local already_unkillable = buff_extension:has_buff_perk("invulnerable") or buff_extension:has_buff_perk("ignore_death")
+
+			if already_unkillable then
+				return false
+			end
+
 			local damage = params[2]
 			local current_health = health_extension:current_health()
 			local killing_blow = current_health <= damage
 			local template = buff.template
 			local buff_to_add = template.buff_to_add
 
-			if killing_blow and not buff_extension:has_buff_perk("ignore_death") then
+			if killing_blow then
 				buff_extension:add_buff(buff_to_add)
 
 				return true
@@ -1368,16 +1378,18 @@ ProcFunctions = {
 
 		if Unit.alive(player_unit) and backstab_multiplier and backstab_multiplier > 1 then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+			if buff_extension:has_buff_type("kerillian_shade_activated_ability_short_blocker") then
+				return
+			end
+
 			local status_extension = ScriptUnit.extension(player_unit, "status_system")
 			local buffs_to_add = {
 				"kerillian_shade_activated_ability_short",
-				"kerillian_shade_end_activated_ability"
+				"kerillian_shade_activated_ability_short_blocker"
 			}
 
 			if local_player or (is_server and bot_player) then
-				status_extension:set_invisible(true)
-				status_extension:set_noclip(true)
-
 				local network_manager = Managers.state.network
 				local network_transmit = network_manager.network_transmit
 
@@ -1394,6 +1406,62 @@ ProcFunctions = {
 					else
 						network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 					end
+				end
+			end
+		end
+	end,
+	kerillian_shade_cooldown_regen_on_backstab_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+		local local_player = player.local_player
+		local bot_player = player.bot_player
+		local killing_blow_table = params[1]
+		local backstab_multiplier = killing_blow_table[DamageDataIndex.BACKSTAB_MULTIPLIER]
+
+		if Unit.alive(player_unit) and backstab_multiplier and backstab_multiplier > 1 then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local status_extension = ScriptUnit.extension(player_unit, "status_system")
+			local buff_template = buff.template
+			local buff_to_add = buff_template.buff_to_add
+
+			if local_player or (is_server and bot_player) then
+				local network_manager = Managers.state.network
+				local network_transmit = network_manager.network_transmit
+
+				buff_extension:add_buff(buff_to_add)
+			end
+		end
+	end,
+	kerillian_shade_buff_on_charged_backstab = function (player, buff, params)
+		local player_unit = player.player_unit
+		local hit_unit = params[1]
+
+		if ALIVE[player_unit] and ALIVE[hit_unit] then
+			local player_unit_pos = POSITION_LOOKUP[player_unit]
+			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
+			local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - player_unit_pos)
+			local hit_unit_direction = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
+			local hit_angle = Vector3.dot(hit_unit_direction, owner_to_hit_dir)
+			local behind_target = hit_angle >= 0.55 and hit_angle <= 1
+			local attack_type = params[2]
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local buff_to_add = buff.template.buff_to_add
+
+			if behind_target and attack_type == "heavy_attack" then
+				if not buff_extension:has_buff_type("kerillian_shade_passive_improved_crit_blocker") then
+					buff_extension:add_buff(buff_to_add)
+					buff_extension:add_buff("kerillian_shade_passive_improved_crit_blocker")
+				end
+			else
+				local buffs_to_remove = buff_extension:num_buff_stacks(buff_to_add)
+
+				for i = 1, buffs_to_remove, 1 do
+					local buff = buff_extension:get_buff_type(buff_to_add)
+
+					if not buff then
+						break
+					end
+
+					buff_extension:remove_buff(buff.id)
 				end
 			end
 		end
@@ -1950,6 +2018,17 @@ ProcFunctions = {
 			end
 		end
 	end,
+	add_buff_local = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			local template = buff.template
+			local buff_name = template.buff_to_add
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+			buff_extension:add_buff(buff_name)
+		end
+	end,
 	add_buff_on_first_target_hit_range = function (player, buff, params)
 		local player_unit = player.player_unit
 
@@ -2144,6 +2223,13 @@ ProcFunctions = {
 
 			if hit_zone and (hit_zone == "head" or hit_zone == "neck") then
 				local buff_template = buff.template
+				local attack_type = params[2]
+				local allowed_attacks = buff_template.allowed_attacks
+
+				if allowed_attacks and not allowed_attacks[attack_type] then
+					return
+				end
+
 				local buff_name = buff_template.buff_to_add
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 				local network_manager = Managers.state.network
@@ -2437,87 +2523,130 @@ ProcFunctions = {
 			end
 		end
 	end,
-	end_shade_activated_ability = function (player, buff, params)
+	shade_activated_ability_on_hit = function (player, buff, params)
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) then
+		if ALIVE[player_unit] then
+			local hit_unit = params[1]
+			local behind_target = ActionUtils.is_backstab(player_unit, hit_unit)
+
+			if behind_target then
+				local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
+
+				if first_person_extension then
+					first_person_extension:play_hud_sound_event("Play_career_ability_shade_backstab")
+				end
+			end
+
 			local talent_extension = ScriptUnit.extension(player_unit, "talent_system")
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local shade_activated_ability_buff = {}
-			local restealth = false
 
-			if talent_extension:has_talent("kerillian_shade_activated_ability_quick_cooldown", "wood_elf", true) then
-				shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_quick_cooldown")
-				buff.restealth_delay = nil
-			end
-
-			if talent_extension:has_talent("kerillian_shade_passive_stealth_on_backstab_kill", "wood_elf", true) then
-				shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_short")
-			end
-
-			if talent_extension:has_talent("kerillian_shade_activated_ability_restealth", "wood_elf", true) then
-				if buff_extension:has_buff_type("kerillian_shade_activated_ability") then
-					restealth = true
-				end
-
+			if talent_extension:has_talent("kerillian_shade_activated_ability_restealth") and buff.template.restealth then
 				local t = Managers.time:time("game")
+				buff.start_time = t - 4.95
+				local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
 
-				if buff.restealth_delay and buff.restealth_delay < t then
-					shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability_quick_cooldown")
+				if first_person_extension then
+					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
+					first_person_extension:animation_event("shade_stealth_ability")
 				end
-			end
-
-			shade_activated_ability_buff[#shade_activated_ability_buff + 1] = buff_extension:get_non_stacking_buff("kerillian_shade_activated_ability")
-
-			if #shade_activated_ability_buff > 0 then
-				for i = 1, #shade_activated_ability_buff, 1 do
-					local buff_to_remove = shade_activated_ability_buff[i]
-
-					if buff_to_remove then
-						local buff_id = buff_to_remove.id
-
-						if buff_id then
-							buff_extension:remove_buff(buff_id)
-						end
-					end
-				end
-			end
-
-			if restealth and not buff_extension:has_buff_type("kerillian_shade_activated_ability_quick_cooldown") then
-				local status_extension = ScriptUnit.extension(player_unit, "status_system")
-
-				status_extension:set_invisible(true)
-				status_extension:set_noclip(true)
-
-				local buff_name = "kerillian_shade_activated_ability_quick_cooldown"
-				local network_manager = Managers.state.network
-				local network_transmit = network_manager.network_transmit
-				local unit_object_id = network_manager:unit_game_object_id(player_unit)
-				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
-				local t = Managers.time:time("game")
-				buff.restealth_delay = t + 0.25
-
-				if is_server() then
-					buff_extension:add_buff(buff_name, {
-						attacker_unit = player_unit
-					})
-					network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
-				else
-					network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
-				end
+			else
+				buff_extension:remove_buff(buff.id)
 			end
 		end
 	end,
-	crit_on_hit_from_stealth = function (player, buff, params)
+	kerillian_shade_cheat_death_damage_taken = function (player, buff, params)
+		if not is_server() then
+			return
+		end
+
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local buff_to_add = buff.template.buff_to_add
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			buff_system:add_buff(player_unit, "kerillian_shade_activated_ability_cheat_death_blocker", player_unit, false)
+			buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+			buff_system:remove_buff_synced(player_unit, buff.id)
+		end
+	end,
+	kerillian_shade_stealth_crits_proc = function (player, buff, params)
+		local unit = player.player_unit
+
+		if ALIVE[unit] then
+			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+			if not status_extension or not buff_extension then
+				return
+			end
+
+			if not buff.old_stealth_counter then
+				buff.old_stealth_counter = 0
+			end
+
+			if not buff.is_buffed then
+				buff.is_buffed = false
+			end
+
+			local stealth_counter = params[1]
+
+			if buff.old_stealth_counter == stealth_counter then
+				return
+			end
+
+			buff.old_stealth_counter = stealth_counter
+
+			if stealth_counter > 0 and not buff.is_buffed then
+				local buff_to_add = buff.template.buff_to_add
+				buff.is_buffed = buff_extension:add_buff(buff_to_add)
+			end
+
+			if stealth_counter < 1 and buff.is_buffed then
+				local has_buff = buff_extension:get_buff_by_id(buff.is_buffed)
+
+				if has_buff then
+					buff_extension:remove_buff(has_buff.id)
+				end
+
+				buff.is_buffed = nil
+			end
+		end
+	end,
+	shade_combo_stealth_on_hit = function (player, buff, params)
 		local player_unit = player.player_unit
 
 		if ALIVE[player_unit] then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-			local is_invis = buff_extension:has_buff_type("kerillian_shade_activated_ability_quick_cooldown") or buff_extension:has_buff_type("kerillian_shade_activated_ability")
 
-			if is_invis then
-				buff_extension:add_buff("kerillian_shade_activated_ability_quick_cooldown_crit")
+			buff_extension:add_buff("kerillian_shade_ult_invis_combo_window")
+		end
+	end,
+	shade_combo_stealth_extend_on_kill = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local has_buff = buff_extension:get_buff_type("kerillian_shade_ult_invis")
+
+			if has_buff then
+				local extend_time = buff.template.extend_time
+				local t = Managers.time:time("game")
+				local new_duration = (extend_time + has_buff.start_time) - t + has_buff.duration
+				has_buff.start_time = t
+				has_buff.duration = new_duration
+				buff.killed_target = true
 			end
+		end
+	end,
+	shade_short_stealth_on_hit = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+			buff_extension:remove_buff(buff.id)
 		end
 	end,
 	shade_backstab_ammo_gain = function (player, buff, params)
@@ -2547,42 +2676,42 @@ ProcFunctions = {
 	end_huntsman_stealth = function (player, buff, params)
 		local player_unit = player.player_unit
 
-		if Unit.alive(player_unit) then
-			if is_local(player_unit) and not is_bot(player_unit) then
-				MOOD_BLACKBOARD.skill_huntsman_stealth = false
-				MOOD_BLACKBOARD.skill_huntsman_surge = true
+		if Unit.alive(player_unit) and is_local(player_unit) then
+			local status_extension = ScriptUnit.extension(player_unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
+			local events = {
+				"Play_career_ability_markus_huntsman_exit",
+				"Stop_career_ability_markus_huntsman_loop_husk"
+			}
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local unit_id = network_manager:unit_game_object_id(player_unit)
+			local node_id = 0
+
+			for _, event in ipairs(events) do
+				local event_id = NetworkLookup.sound_events[event]
+
+				if is_server() then
+					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+				else
+					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+				end
 			end
 
-			if is_local(player_unit) or (is_server() and is_bot(player_unit)) then
-				local status_extension = ScriptUnit.extension(player_unit, "status_system")
+			if not is_bot(player_unit) then
+				local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
 
-				if status_extension:is_invisible() then
-					status_extension:set_invisible(false)
+				if removing_stealth then
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
 
-					local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
-
-					first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
-					first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
-
-					local events = {
-						"Play_career_ability_markus_huntsman_exit",
-						"Stop_career_ability_markus_huntsman_loop_husk"
-					}
-					local network_manager = Managers.state.network
-					local network_transmit = network_manager.network_transmit
-					local unit_id = network_manager:unit_game_object_id(player_unit)
-					local node_id = 0
-
-					for _, event in ipairs(events) do
-						local event_id = NetworkLookup.sound_events[event]
-
-						if is_server() then
-							network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-						else
-							network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-						end
-					end
+					MOOD_BLACKBOARD.skill_shade = false
 				end
+
+				MOOD_BLACKBOARD.skill_huntsman_stealth = false
+				MOOD_BLACKBOARD.skill_huntsman_surge = true
+
+				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
+				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			end
 		end
 	end,
@@ -3760,6 +3889,12 @@ ProcFunctions = {
 			attacker_unit = player_unit
 		})
 	end,
+	kerillian_waywatcher_consume_extra_shot_buff = function (player, buff, params)
+		local is_career_skill = params[1]
+		local should_consume_shot = not is_career_skill
+
+		return should_consume_shot
+	end,
 	reduce_activated_ability_cooldown_boss_hit = function (player, buff, params)
 		local player_unit = player.player_unit
 		local hit_unit = params[1]
@@ -4179,20 +4314,27 @@ ProcFunctions = {
 			end
 		end
 	end,
+	event_hud_sfx = function (player, buff, params)
+		local player_unit = player.player_unit
+		local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
+
+		if first_person_extension then
+			local sound_to_play = buff.template.sound_to_play
+
+			first_person_extension:play_hud_sound_event(sound_to_play, nil, false)
+		end
+	end,
 	dummy_function = function (player, buff, params)
 		return true
 	end
 }
 MaxStackFunctions = {
-	add_remove_buffs = function (player, sub_buff_template)
-		local player_unit = player.player_unit
-
-		if Unit.alive(player_unit) then
+	add_remove_buffs = function (unit, sub_buff_template, new_buff_params)
+		if ALIVE[unit] then
 			local max_stack_data = sub_buff_template.max_stack_data
 
 			if max_stack_data then
-				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
-				local buff_system = Managers.state.entity:system("buff_system")
+				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local buffs_to_add = max_stack_data.buffs_to_add
 
 				if buffs_to_add then
@@ -4204,7 +4346,7 @@ MaxStackFunctions = {
 				local talent_buffs_to_add = max_stack_data.talent_buffs_to_add
 
 				if talent_buffs_to_add then
-					local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+					local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
 					if talent_extension then
 						for name, data in pairs(talent_buffs_to_add) do
@@ -4212,7 +4354,9 @@ MaxStackFunctions = {
 								local buff_to_add = data.buff_to_add
 
 								if data.rpc_sync then
-									buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
+									local buff_system = Managers.state.entity:system("buff_system")
+
+									buff_system:add_buff(unit, buff_to_add, unit, false)
 								else
 									buff_extension:add_buff(buff_to_add)
 								end
@@ -4234,6 +4378,58 @@ MaxStackFunctions = {
 				end
 			end
 		end
+
+		return false
+	end,
+	reapply_buff = function (unit, sub_buff_template, new_buff_params)
+		if ALIVE[unit] then
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local buff_stacks = buff_extension:get_stacking_buff(sub_buff_template.name)
+			local oldest_buff = buff_stacks[1]
+
+			if oldest_buff then
+				buff_extension:remove_buff(oldest_buff.id)
+			end
+		end
+
+		return true
+	end,
+	reapply_infinite_burn = function (unit, sub_buff_template, new_buff_params)
+		if ALIVE[unit] then
+			local buff_extension = ScriptUnit.extension(unit, "buff_system")
+			local burn_buffs = buff_extension:get_stacking_buff(sub_buff_template.name)
+			local oldest_buff = burn_buffs and burn_buffs[1]
+
+			if oldest_buff then
+				if not Unit.alive(oldest_buff.source_attacker_unit or oldest_buff.attacker_unit) then
+					buff_extension:remove_buff(oldest_buff.id)
+
+					return true
+
+					local old_power_level = oldest_buff.power_level or DefaultPowerLevel
+					local new_power_level = new_buff_params.power_level or DefaultPowerLevel
+					local is_same_buff = oldest_buff.template == sub_buff_template and new_power_level <= old_power_level
+
+					if not is_same_buff then
+						local hit_zone = "full"
+						local old_damage = DamageUtils.calculate_dot_buff_damage(unit, oldest_buff.source_attacker_unit or oldest_buff.attacker_unit, hit_zone, oldest_buff.damage_source, oldest_buff.power_level, oldest_buff.template.damage_profile)
+						local new_damage = DamageUtils.calculate_dot_buff_damage(unit, new_buff_params.source_attacker_unit or new_buff_params.attacker_unit, hit_zone, new_buff_params.damage_source, new_buff_params.power_level, sub_buff_template.damage_profile)
+						local old_prio = old_damage / oldest_buff.template.time_between_dot_damages
+						local new_prio = new_damage / sub_buff_template.time_between_dot_damages
+
+						if old_prio < new_prio then
+							buff_extension:remove_buff(oldest_buff.id)
+
+							return true
+						end
+					end
+				end
+
+				return false
+			end
+		end
+
+		return true
 	end
 }
 PotionSpreadTrinketTemplates = {
@@ -5043,6 +5239,7 @@ BuffTemplates = {
 				death_flow_event = "poisoned_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.6,
 				time_between_dot_damages = 0.6,
 				damage_profile = "poison_direct",
 				update_func = "apply_dot_damage",
@@ -5061,6 +5258,7 @@ BuffTemplates = {
 				death_flow_event = "poisoned_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_profile = "poison",
 				update_func = "apply_dot_damage",
@@ -5072,14 +5270,15 @@ BuffTemplates = {
 	weapon_bleed_dot_dagger = {
 		buffs = {
 			{
-				damage_profile = "bleed",
-				name = "weapon bleed dot dagger",
 				duration = 2,
+				name = "weapon bleed dot dagger",
+				max_stacks = 1,
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				hit_zone = "neck",
-				max_stacks = 1,
+				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -5088,14 +5287,15 @@ BuffTemplates = {
 	weapon_bleed_dot_whc = {
 		buffs = {
 			{
-				damage_profile = "bleed",
-				name = "weapon bleed dot whc",
 				duration = 2,
+				name = "weapon bleed dot whc",
+				max_stacks = 3,
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				hit_zone = "neck",
-				max_stacks = 3,
+				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -5104,14 +5304,15 @@ BuffTemplates = {
 	weapon_bleed_dot_maidenguard = {
 		buffs = {
 			{
-				damage_profile = "bleed_maidenguard",
-				name = "weapon bleed dot maidenguard",
 				duration = 4,
+				name = "weapon bleed dot maidenguard",
+				max_stacks = 1,
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.25,
 				time_between_dot_damages = 0.25,
 				hit_zone = "neck",
-				max_stacks = 1,
+				damage_profile = "bleed_maidenguard",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -5147,6 +5348,7 @@ BuffTemplates = {
 				damage_profile = "poison",
 				update_func = "apply_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				perk = buff_perks.poisoned
 			},
 			{
@@ -5163,16 +5365,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 3,
-				name = "burning dot",
+				name = "beam_burning_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5180,16 +5385,18 @@ BuffTemplates = {
 	burning_dot_infinite = {
 		buffs = {
 			{
-				damage_profile = "burning_dot",
-				name = "burning dot",
 				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				damage_type = "burninating",
 				max_stacks = 1,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5199,16 +5406,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 3,
-				name = "burning dot",
+				name = "beam_burning_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "beam_burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5216,16 +5426,18 @@ BuffTemplates = {
 	beam_burning_dot_infinite = {
 		buffs = {
 			{
-				damage_profile = "beam_burning_dot",
-				name = "burning dot",
 				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				damage_type = "burninating",
 				max_stacks = 1,
+				damage_type = "burninating",
+				damage_profile = "beam_burning_dot",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5235,18 +5447,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 1.5,
-				name = "burning dot",
+				name = "burning_flamethrower_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				max_stacks = 1,
-				refresh_durations = true,
+				update_start_delay = 0.65,
 				time_between_dot_damages = 0.65,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "flamethrower_burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5254,15 +5467,16 @@ BuffTemplates = {
 	burning_flamethrower_dot_infinite = {
 		buffs = {
 			{
-				apply_buff_func = "start_dot_damage",
-				name = "burning dot",
+				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
-				max_stacks = 1,
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
-				end_flow_event = "smoke",
-				refresh_durations = true,
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.65,
 				time_between_dot_damages = 0.65,
+				max_stacks = 1,
 				damage_type = "burninating",
 				damage_profile = "flamethrower_burning_dot",
 				update_func = "apply_dot_damage",
@@ -5273,16 +5487,20 @@ BuffTemplates = {
 	sienna_adept_ability_trail = {
 		buffs = {
 			{
-				apply_buff_func = "start_dot_damage",
-				name = "burning dot",
-				start_flow_event = "burn",
-				death_flow_event = "burn_death",
-				remove_buff_func = "remove_dot_damage",
+				leave_linger_time = 1.5,
+				name = "sienna_adept_ability_trail",
 				end_flow_event = "smoke",
+				start_flow_event = "burn",
+				on_max_stacks_overflow_func = "reapply_buff",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.25,
+				death_flow_event = "burn_death",
 				time_between_dot_damages = 0.25,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5290,16 +5508,18 @@ BuffTemplates = {
 	sienna_adept_ability_trail_infinite = {
 		buffs = {
 			{
-				damage_profile = "burning_dot",
-				name = "burning dot",
 				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.25,
 				time_between_dot_damages = 0.25,
-				damage_type = "burninating",
 				max_stacks = 1,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5309,16 +5529,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 6,
-				name = "burning dot",
+				name = "burning_dot_fire_grenade",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot_firegrenade",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5327,16 +5550,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 2,
-				name = "burning dot",
+				name = "burning_1W_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1.5,
 				time_between_dot_damages = 1.5,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5345,18 +5571,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 6,
-				name = "burning dot",
+				name = "burning_1W_dot_unchained_push",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				refresh_durations = true,
+				update_start_delay = 2,
 				time_between_dot_damages = 2,
-				max_stacks = 1,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5365,18 +5592,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 2,
-				name = "burning dot",
+				name = "burning_1W_dot_unchained_pulse",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				refresh_durations = true,
+				update_start_delay = 2,
 				time_between_dot_damages = 2,
-				max_stacks = 1,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5384,16 +5612,18 @@ BuffTemplates = {
 	burning_1W_dot_infinite = {
 		buffs = {
 			{
-				damage_profile = "burning_dot",
-				name = "burning dot",
 				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1.5,
 				time_between_dot_damages = 1.5,
-				damage_type = "burninating",
 				max_stacks = 1,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5403,16 +5633,19 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 3,
-				name = "burning dot",
+				name = "burning_3W_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
+				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
+				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5420,16 +5653,18 @@ BuffTemplates = {
 	burning_3W_dot_infinite = {
 		buffs = {
 			{
-				damage_profile = "burning_dot",
-				name = "burning dot",
 				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				damage_type = "burninating",
 				max_stacks = 1,
+				damage_type = "burninating",
+				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.burning
 			}
@@ -5765,7 +6000,8 @@ BuffTemplates = {
 				time_between_dot_damages = 10,
 				damage_profile = "mutator_player_dot",
 				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage"
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 10
 			}
 		}
 	},
@@ -5853,12 +6089,13 @@ BuffTemplates = {
 			{
 				sound_event = "Play_winds_fire_gameplay_fire_damage_player",
 				name = "mutator_fire_player_dot",
-				icon = "buff_icon_mutator_ticking_bomb",
-				time_between_dot_damages = 1,
-				damage_profile = "mutator_player_dot",
+				update_func = "apply_dot_damage",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
-				update_func = "apply_dot_damage"
+				update_start_delay = 1,
+				time_between_dot_damages = 1,
+				damage_profile = "mutator_player_dot",
+				icon = "buff_icon_mutator_ticking_bomb"
 			}
 		}
 	},
@@ -5866,12 +6103,13 @@ BuffTemplates = {
 		activation_sound = "Play_enemy_on_fire_loop",
 		buffs = {
 			{
-				apply_buff_func = "start_dot_damage",
-				name = "mutator_fire_enemy_dot",
 				start_flow_event = "burn",
+				name = "mutator_fire_enemy_dot",
+				end_flow_event = "smoke",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
-				end_flow_event = "smoke",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				damage_profile = "mutator_player_dot",
 				update_func = "apply_dot_damage"
@@ -8993,7 +9231,8 @@ BuffTemplates = {
 				icon = "troll_vomit_debuff",
 				damage_profile = "bloodlust_debuff",
 				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage"
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1
 			}
 		}
 	},

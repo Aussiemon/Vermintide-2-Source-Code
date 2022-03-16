@@ -1172,8 +1172,8 @@ local input_actions = {
 
 return {
 	input_actions = input_actions,
-	create_entry_widget = create_entry_widget,
-	create_dummy_entry_widget = create_dummy_entry_widget,
+	entry_widget_definition = create_entry_widget(),
+	dummy_entry_widget_definition = create_dummy_entry_widget(),
 	animation_definitions = animation_definitions,
 	generic_input_actions = generic_input_actions,
 	scenegraph_definition = scenegraph_definition,

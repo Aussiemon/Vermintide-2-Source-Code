@@ -444,7 +444,7 @@ local selector_input_definitions = {
 			difficulty_setting_widget.content.is_selected = true
 		end,
 		update = function (self, input_service, dt, t)
-			if input_service:get("confirm_press") then
+			if input_service:get("confirm_press") or input_service:get("skip_press") then
 				self:_option_selected("play_button", nil, t)
 			end
 		end,

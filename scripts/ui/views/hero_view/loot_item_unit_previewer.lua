@@ -250,7 +250,6 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 	local item_type = item_data.item_type
 
 	if item_type == "rune" or item_type == "material" or item_type == "ring" or item_type == "necklace" then
-		item_key = "trinket_reduce_activated_ability_cooldown"
 		item_data = ItemMasterList[item_key]
 	elseif item_type == "weapon_skin" then
 		local matching_item_key = item_data.matching_item_key
@@ -416,8 +415,7 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 	local item_data = ItemMasterList[item_key]
 	local item_type = item_data.item_type
 
-	if item_type == "rune" or item_type == "material" or item_type == "ring" or item_type == "necklace" then
-		item_key = "trinket_reduce_activated_ability_cooldown"
+	if item_type ~= "rune" and item_type ~= "material" and item_type ~= "ring" and item_type == "necklace" then
 	end
 
 	local display_unit_key = self._display_unit_key
@@ -430,6 +428,12 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 	elseif not unit_name then
 		local item_template = ItemHelper.get_template_by_item_name(item_key)
 		unit_name = item_template[display_unit_key] or item_template[default_display_unit_key]
+	end
+
+	if not unit_name or unit_name == "" then
+		Application.warning(string.format("[LootItemUnitPreviewer] Couldn't find any display unit for item %q", item_key))
+
+		return nil
 	end
 
 	local camera_rotation = self:_get_camera_rotation()
@@ -542,7 +546,7 @@ LootItemUnitPreviewer._enable_item_units_visibility = function (self, item_key, 
 			end
 		end
 
-		if not ignore_spin and visible then
+		if not ignore_spin and visible and link_unit then
 			Unit.flow_event(link_unit, "lua_spin_no_fx")
 		end
 	end

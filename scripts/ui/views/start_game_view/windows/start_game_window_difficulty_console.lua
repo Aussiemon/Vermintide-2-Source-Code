@@ -190,9 +190,9 @@ end
 
 StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 	local input_service = self.parent:window_input_service()
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		if input_service:get("move_down_hold_continuous") then
 			self:_update_difficulty_selection(1)
 		elseif input_service:get("move_up_hold_continuous") then
@@ -234,7 +234,7 @@ StartGameWindowDifficultyConsole._handle_input = function (self, dt, t)
 		self:_show_storepage(store_page_url, dlc_name)
 	end
 
-	local gamepad_confirm_pressed = gamepad_active and input_service:get(SELECTION_INPUT, true)
+	local gamepad_confirm_pressed = not mouse_active and input_service:get(SELECTION_INPUT, true)
 
 	if gamepad_confirm_pressed then
 		if self._difficulty_approved then

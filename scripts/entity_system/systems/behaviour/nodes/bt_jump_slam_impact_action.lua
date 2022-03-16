@@ -1,5 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
 local position_lookup = POSITION_LOOKUP
 BTJumpSlamImpactAction = class(BTJumpSlamImpactAction, BTNode)
 
@@ -36,7 +37,9 @@ BTJumpSlamImpactAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.anim_cb_damage then
 		blackboard.anim_cb_damage = nil
 
-		self:jump_slam_impact(unit, blackboard, t)
+		if not blackboard.is_illusion then
+			self:jump_slam_impact(unit, blackboard, t)
+		end
 
 		blackboard.attacking_target = nil
 	elseif blackboard.attack_finished then
@@ -107,7 +110,7 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 				stagger_duration = 1
 				local target_ai_blackboard = BLACKBOARDS[ai_unit]
 
-				if stagger_type > 0 then
+				if stagger_types.none < stagger_type then
 					AiUtils.stagger(ai_unit, target_ai_blackboard, attacking_unit, vector_to_target, stagger_length, stagger_type, stagger_duration, nil, t)
 				end
 

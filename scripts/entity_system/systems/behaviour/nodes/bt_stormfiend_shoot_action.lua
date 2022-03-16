@@ -4,6 +4,8 @@ BTStormfiendShootAction = class(BTStormfiendShootAction, BTNode)
 
 BTStormfiendShootAction.init = function (self, ...)
 	BTStormfiendShootAction.super.init(self, ...)
+
+	self.unit_ids = {}
 end
 
 BTStormfiendShootAction.name = "BTStormfiendShootAction"
@@ -18,6 +20,8 @@ local SPHERE_CAST_RADIUS = 0.4
 local SPHERE_CAST_MAX_NUM_HITS = 10
 
 BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
+	self.unit_ids[unit] = Managers.state.network.unit_storage:go_id(unit)
+	self.network_transmit = self.network_transmit or Managers.state.network.network_transmit
 	local action = self._tree_node.action_data
 	local world = blackboard.world
 	blackboard.action = action
@@ -29,7 +33,7 @@ BTStormfiendShootAction.enter = function (self, unit, blackboard, t)
 
 	if self:init_attack(unit, blackboard, action, t) then
 		local data = blackboard.shoot_data
-		blackboard.anim_locked = t + action.attack_times[data.attack_animation]
+		blackboard.anim_locked = t + action.attack_anims_data[data.attack_animation].full_animation_t
 		blackboard.move_state = "attacking"
 		blackboard.attack_aborted = false
 		blackboard.keep_target = true
@@ -95,7 +99,7 @@ BTStormfiendShootAction._calculate_attack_animation = function (self, right_vect
 		anim = attack_anims.fwd[arm]
 		animation_driven_rotation = false
 	else
-		arm = "attack_right"
+		arm = "attack_left"
 		anim = attack_anims.bwd[arm]
 		animation_driven_rotation = true
 	end
@@ -228,8 +232,9 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		blackboard.locomotion_extension:use_lerp_rotation(not anim_driven)
 		LocomotionUtils.set_animation_driven_movement(unit, anim_driven)
 
+		local attack_anims_data = action.attack_anims_data
+
 		if anim_driven then
-			local attack_anims_data = action.attack_anims_data
 			local rotation_scale = AiAnimUtils.get_animation_rotation_scale(unit, target_position, attack_animation, attack_anims_data)
 
 			LocomotionUtils.set_animation_rotation_scale(unit, rotation_scale)
@@ -239,8 +244,14 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 
 		network_manager:anim_event(unit, attack_animation)
 
-		local aim_constraint_target_name = action.aim_constraint_target[attack_arm]
 		local data = blackboard.shoot_data
+		local anim_data = attack_anims_data[attack_animation]
+		data.start_firing_t = t + anim_data.start_firing_t
+		data.stop_firing_t = t + anim_data.stop_firing_t
+		data.aim_start_t = t + anim_data.aim_start_t
+		data.firing_duration = data.stop_firing_t - data.start_firing_t
+		data.firing_initiated = false
+		local aim_constraint_target_name = action.aim_constraint_target[attack_arm]
 		data.aim_start_position = Vector3Box(aim_start_position)
 		data.current_aim_position = Vector3Box(aim_start_position)
 		data.aim_end_position = Vector3Box(aim_end_position)
@@ -294,6 +305,20 @@ BTStormfiendShootAction.leave = function (self, unit, blackboard, t, reason, des
 		network_manager:anim_event(unit, "aim_at_left_off")
 	end
 
+	local weapon_setup = blackboard.weapon_setup
+
+	if data.beam_active then
+		local go_id = self.unit_ids[unit]
+		local arm_id = NetworkLookup.attack_arm[data.attack_arm]
+
+		self.network_transmit:send_rpc_all("rpc_set_stormfiend_beam", go_id, arm_id, false)
+
+		data.beam_active = false
+	end
+
+	self.unit_ids[unit] = nil
+	data.ratling_gun_active = false
+
 	self:_stop_beam_sfx(unit, blackboard, data)
 
 	local action = blackboard.action
@@ -333,7 +358,7 @@ BTStormfiendShootAction.leave = function (self, unit, blackboard, t, reason, des
 end
 
 BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
-	if not Unit.alive(blackboard.attacking_target) or blackboard.attack_aborted then
+	if blackboard.attack_aborted or not Unit.alive(blackboard.attacking_target) then
 		return "failed"
 	end
 
@@ -341,18 +366,63 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 		local data = blackboard.shoot_data
 		local weapon_setup = blackboard.weapon_setup
 
-		if data.is_firing then
-			if t < data.stop_firing_t then
-				if weapon_setup and weapon_setup == "ratling_gun" then
-					self:_update_ratling_gun(unit, blackboard, t, dt)
+		if t < data.aim_start_t then
+		elseif not data.aim_constrained then
+			self:constrain_aim(unit, blackboard)
+
+			data.aim_constrained = true
+		elseif t < data.start_firing_t then
+		elseif not data.firing_initiated then
+			if weapon_setup and weapon_setup == "ratling_gun" then
+				self:initiate_firing_ratling_gun(blackboard)
+			else
+				self:initiate_firing_warpfire_thrower(unit, blackboard)
+
+				local go_id = self.unit_ids[unit]
+				local arm_id = NetworkLookup.attack_arm[data.attack_arm]
+
+				self.network_transmit:send_rpc_all("rpc_set_stormfiend_beam", go_id, arm_id, true)
+
+				data.beam_active = true
+			end
+		elseif t < data.stop_firing_t then
+			if weapon_setup and weapon_setup == "ratling_gun" then
+				self:_update_ratling_gun(unit, blackboard, t, dt)
+			else
+				self:shoot_hit_check(unit, blackboard)
+			end
+		elseif data.is_firing then
+			if data.beam_active then
+				local go_id = self.unit_ids[unit]
+				local arm_id = NetworkLookup.attack_arm[data.attack_arm]
+
+				self.network_transmit:send_rpc_all("rpc_set_stormfiend_beam", go_id, arm_id, false)
+
+				data.beam_active = false
+			end
+
+			if data.aim_constrained then
+				local network_manager = Managers.state.network
+
+				if data.aim_constraint_animations then
+					local aim_constraint_animation = data.aim_constraint_animations.off
+
+					network_manager:anim_event(unit, aim_constraint_animation)
 				else
-					self:shoot_hit_check(unit, blackboard)
+					network_manager:anim_event(unit, "aim_at_right_off")
+					network_manager:anim_event(unit, "aim_at_left_off")
 				end
-			elseif data.stop_firing_t <= t and blackboard.shoot_sfx_id then
+
+				data.aim_constraint_animations = nil
+			end
+
+			if blackboard.shoot_sfx_id then
 				WwiseWorld.stop_event(Managers.world:wwise_world(blackboard.world), blackboard.shoot_sfx_id)
 
 				blackboard.shoot_sfx_id = nil
 			end
+
+			data.is_firing = false
 		end
 
 		local create_bot_threat_at_t = blackboard.create_bot_threat_at_t
@@ -377,22 +447,6 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.create_bot_threat_at_t = nil
 				blackboard.current_bot_threat_index = nil
 			end
-		end
-
-		if blackboard.attack_finished then
-			blackboard.attack_finished = nil
-			local network_manager = Managers.state.network
-
-			if data.aim_constraint_animations then
-				local aim_constraint_animation = data.aim_constraint_animations.off
-
-				network_manager:anim_event(unit, aim_constraint_animation)
-			else
-				network_manager:anim_event(unit, "aim_at_right_off")
-				network_manager:anim_event(unit, "aim_at_left_off")
-			end
-
-			data.aim_constraint_animations = nil
 		end
 
 		return "running"
@@ -425,6 +479,20 @@ BTStormfiendShootAction._create_bot_aoe_threat = function (self, unit, attack_ro
 	local obstacle_position, obstacle_rotation, obstacle_size = self:_calculate_oobb_collision(bot_threat, bot_threat_range, unit_position, attack_rotation)
 
 	ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, bot_threat_duration)
+end
+
+BTStormfiendShootAction.constrain_aim = function (self, unit, blackboard, called_by_me)
+	local data = blackboard.shoot_data
+
+	if data and data.aim_constraint_animations then
+		local data = blackboard.shoot_data
+		local network_manager = Managers.state.network
+		local aim_constraint_animation = data.aim_constraint_animations.on
+
+		network_manager:anim_event(unit, aim_constraint_animation)
+
+		data.aiming_started = true
+	end
 end
 
 BTStormfiendShootAction.create_firewall = function (self, unit, blackboard, data)
@@ -530,6 +598,25 @@ BTStormfiendShootAction._stop_beam_sfx = function (self, unit, blackboard, shoot
 	audio_system:play_audio_unit_event(event, unit, node_name)
 end
 
+BTStormfiendShootAction.initiate_firing_warpfire_thrower = function (self, unit, blackboard)
+	local action = blackboard.action
+	local data = blackboard.shoot_data
+
+	if data.firewall_start_position then
+		self:create_firewall(unit, blackboard, data)
+	end
+
+	local attack_arm = data.attack_arm
+	local node_name = action.muzzle_nodes[attack_arm]
+	local event = action.beam_sfx_start_event
+	local audio_system = Managers.state.entity:system("audio_system")
+
+	audio_system:play_audio_unit_event(event, unit, node_name)
+
+	data.firing_initiated = true
+	data.is_firing = true
+end
+
 BTStormfiendShootAction._fire_from_position_direction = function (self, unit, blackboard, data, dt)
 	local action = blackboard.action
 	local attack_arm = data.attack_arm
@@ -552,8 +639,8 @@ end
 
 BTStormfiendShootAction._update_ratling_gun = function (self, unit, blackboard, t, dt)
 	local data = blackboard.shoot_data
-	local time_in_shoot_action = t - data.shoot_start
-	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
+	local time_in_shoot_action = t - data.start_firing_t
+	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.firing_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
 	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 
@@ -604,52 +691,16 @@ BTStormfiendShootAction._shoot_ratling_gun = function (self, unit, blackboard, t
 	projectile_system:create_light_weight_projectile(Unit.get_data(unit, "breed").name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
 end
 
-BTStormfiendShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
-	if Managers.state.network:game() then
-		local action = blackboard.action
-		local data = blackboard.shoot_data
-		local time_manager = Managers.time
-		local t = time_manager:time("game")
-
-		if blackboard.weapon_setup == "warpfire_thrower" then
-			if data.firewall_start_position then
-				BTStormfiendShootAction:create_firewall(unit, blackboard, data)
-			end
-
-			local world = blackboard.world
-			local attack_arm = data.attack_arm
-			local node_name = action.muzzle_nodes[attack_arm]
-			local event = action.beam_sfx_start_event
-			local audio_system = Managers.state.entity:system("audio_system")
-
-			audio_system:play_audio_unit_event(event, unit, node_name)
-		elseif blackboard.weapon_setup == "ratling_gun" then
-			data.shoot_start = t
-			data.shoot_duration = 2
-			data.shots_fired = 0
-			data.time_between_shots_at_start = 1 / action.fire_rate_at_start
-			data.time_between_shots_at_end = 1 / action.fire_rate_at_end
-			data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
-			data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.attacking_target])
-		end
-
-		data.is_firing = true
-		data.stop_firing_t = t + action.firing_time
-	end
-end
-
-BTStormfiendShootAction.anim_cb_attack_start = function (self, unit, blackboard)
+BTStormfiendShootAction.initiate_firing_ratling_gun = function (self, blackboard)
+	local action = blackboard.action
 	local data = blackboard.shoot_data
-
-	if Managers.state.network:game() and data and data.aim_constraint_animations then
-		local data = blackboard.shoot_data
-		local network_manager = Managers.state.network
-		local aim_constraint_animation = data.aim_constraint_animations.on
-
-		network_manager:anim_event(unit, aim_constraint_animation)
-
-		data.attack_started = true
-	end
+	data.shots_fired = 0
+	data.time_between_shots_at_start = 1 / action.fire_rate_at_start
+	data.time_between_shots_at_end = 1 / action.fire_rate_at_end
+	data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
+	data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.attacking_target])
+	data.firing_initiated = true
+	data.is_firing = true
 end
 
 BTStormfiendShootAction._debug_firewall = function (self, minimum_length, start_position, wanted_end_pos, projected_start_pos, projected_end_pos)

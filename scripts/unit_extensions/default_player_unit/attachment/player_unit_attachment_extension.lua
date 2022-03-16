@@ -108,6 +108,11 @@ PlayerUnitAttachmentExtension.create_attachment = function (self, slot_name, ite
 
 		if show_attachments_event then
 			Unit.flow_event(self._tp_unit_mesh, show_attachments_event)
+			Unit.flow_event(self._unit, show_attachments_event)
+
+			if self._show_attachments then
+				self:_show_attachment(slot_name, slot_data, true)
+			end
 		end
 	end
 
@@ -189,7 +194,10 @@ PlayerUnitAttachmentExtension._show_attachment = function (self, slot_name, slot
 
 		if show_attachments_event then
 			Unit.flow_event(self._tp_unit_mesh, show_attachments_event)
+			Unit.flow_event(self._unit, show_attachments_event)
 		end
+
+		self._cosmetic_extension:trigger_equip_events(slot_name, unit)
 	else
 		Unit.flow_event(unit, "lua_attachment_hidden")
 	end

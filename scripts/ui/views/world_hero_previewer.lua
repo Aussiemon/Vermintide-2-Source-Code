@@ -213,12 +213,16 @@ HeroPreviewer._update_units_visibility = function (self, dt)
 		end
 	end
 
-	for unit, _ in pairs(self._hidden_units) do
-		if Unit.alive(unit) then
-			Unit.set_unit_visibility(unit, true)
+	if self._draw_character and not table.is_empty(self._hidden_units) then
+		for unit, _ in pairs(self._hidden_units) do
+			if Unit.alive(unit) then
+				Unit.set_unit_visibility(unit, true)
+			end
+
+			self._hidden_units[unit] = nil
 		end
 
-		self._hidden_units[unit] = nil
+		self:_trigger_equip_events()
 	end
 end
 
@@ -288,6 +292,14 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 				Unit.flow_event(data, weapon_lua_event)
 				Unit.set_unit_visibility(data, show_unit)
 
+				if slot_type == "hat" then
+					local equip_hat_event = self.character_unit_skin_data.equip_hat_event
+
+					if equip_hat_event then
+						Unit.flow_event(data, equip_hat_event)
+					end
+				end
+
 				self._hidden_units[data] = nil
 			end
 		end
@@ -312,6 +324,7 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 
 					if show_attachments_event then
 						Unit.flow_event(mesh_unit, show_attachments_event)
+						Unit.flow_event(character_unit, show_attachments_event)
 					end
 				end
 			end
@@ -784,6 +797,7 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 
 		if show_attachments_event and self.character_unit_visible then
 			Unit.flow_event(mesh_unit, show_attachments_event)
+			Unit.flow_event(character_unit, show_attachments_event)
 		end
 
 		if character_material_changes then
@@ -960,6 +974,25 @@ HeroPreviewer._reference_name = function (self)
 	end
 
 	return reference_name
+end
+
+HeroPreviewer._trigger_equip_events = function (self)
+	if not Unit.alive(self.mesh_unit) then
+		return
+	end
+
+	local equipment_units = self._equipment_units
+	local character_unit_skin_data = self.character_unit_skin_data
+
+	if character_unit_skin_data then
+		local hat_index = InventorySettings.slots_by_name.slot_hat.slot_index
+		local hat_data = equipment_units[hat_index]
+		local equip_hat_event = self.character_unit_skin_data.equip_hat_event
+
+		if hat_data and equip_hat_event then
+			Unit.flow_event(hat_data, equip_hat_event)
+		end
+	end
 end
 
 HeroPreviewer._load_packages = function (self, package_names)

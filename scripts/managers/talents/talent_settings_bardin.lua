@@ -1607,10 +1607,11 @@ Talents.dwarf_ranger = {
 		icon = "bardin_ironbreaker_activated_ability_duration",
 		description_values = {
 			{
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration
+				value_type = "percent",
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.display_multiplier
 			},
 			{
-				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.range
+				value = buff_tweak_data.bardin_ironbreaker_activated_ability_taunt_range_and_duration.duration
 			}
 		},
 		buffs = {}

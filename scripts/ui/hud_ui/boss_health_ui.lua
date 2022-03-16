@@ -184,10 +184,13 @@ BossHealthUI._update_enemy_portrait_name_and_attributes = function (self, unit, 
 
 	if grudge_marked then
 		local max_row_width = 430
-		local done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, large_style, max_row_width)
 
-		while not done do
-			done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, fallback_style, max_row_width)
+		if attributes.breed_enhancements then
+			local done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, large_style, max_row_width)
+
+			while not done do
+				done, fallback_style = self:_generate_attributes(attributes.breed_enhancements, widget, fallback_style, max_row_width)
+			end
 		end
 
 		local magic_number = grudge_marked.name_index

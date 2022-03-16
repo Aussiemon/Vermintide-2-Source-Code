@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 breed_data = {
 	detection_radius = 10,
 	walk_speed = 2.5,
@@ -559,10 +560,10 @@ local action_data = {
 		scale_animation_speeds = true,
 		imation_speeds = true,
 		custom_enter_function = function (unit, blackboard, t, action)
-			if blackboard.stagger_type == 3 then
+			if blackboard.stagger_type == stagger_types.heavy then
 				blackboard.stagger_immune_time = t + 1.25
 				blackboard.heavy_stagger_immune_time = t + 0.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_types.explosion then
 				blackboard.stagger_immune_time = t + 2.5
 				blackboard.heavy_stagger_immune_time = t + 2
 			end

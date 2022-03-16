@@ -219,7 +219,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 		projected_start_pos = projected_start_pos or GwNavQueries.inside_position_from_outside_position(nav_world, unit_pos, above, below, 2, 0.5)
 
 		if projected_start_pos then
-			local damage_wave_template_name = "sienna_adept_ability_trail"
+			local damage_wave_template_name = (talent_extension:has_talent("sienna_adept_infinite_burn") and "sienna_adept_ability_trail_infinite") or "sienna_adept_ability_trail"
 			local damage_wave_template_id = NetworkLookup.damage_wave_templates[damage_wave_template_name]
 			local network_manager = self._network_manager
 			local source_unit_id = network_manager:unit_game_object_id(owner_unit)
@@ -240,7 +240,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 
 	locomotion_extension:set_external_velocity_enabled(false)
 	status_extension:reset_move_speed_multiplier()
-	status_extension:set_noclip(true)
+	status_extension:add_noclip_stacking()
 
 	if Managers.state.network:game() then
 		status_extension:set_is_dodging(true)
@@ -265,7 +265,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 					local unit_3p = this.unit
 					local status_ext = ScriptUnit.extension(unit_3p, "status_system")
 
-					status_ext:set_invisible(true)
+					status_ext:add_stealth_stacking()
 				end
 			},
 			{
@@ -316,8 +316,19 @@ CareerAbilityBWAdept._run_ability = function (self)
 					area_damage_system:create_explosion(unit_3p, final_position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 				end
 
-				status_ext:set_noclip(false)
-				status_ext:set_invisible(false)
+				status_ext:remove_noclip_stacking()
+
+				local removing_stealth = status_ext:remove_stealth_stacking()
+				local player = Managers.player:owner(unit_3p)
+				local local_player = player.local_player
+
+				if local_player and removing_stealth then
+					local first_person_extension = ScriptUnit.extension(unit_3p, "first_person_system")
+
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+					MOOD_BLACKBOARD.skill_shade = false
+				end
 
 				if Managers.state.network:game() then
 					status_ext:set_is_dodging(false)

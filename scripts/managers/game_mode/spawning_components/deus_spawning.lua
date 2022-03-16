@@ -226,7 +226,7 @@ DeusSpawning._update_player_status = function (self, t, dt, occupied_slots)
 						for _, buff_data in pairs(buffs) do
 							local template = buff_data.template
 
-							if template.is_persistent then
+							if not buff_data.removed and template.is_persistent then
 								working_persistent_buff_array[index] = template.name
 								index = index + 1
 							end
@@ -499,6 +499,10 @@ DeusSpawning.respawn_unit_spawned = function (self, unit)
 	self._respawn_handler:respawn_unit_spawned(unit)
 end
 
+DeusSpawning.respawn_gate_unit_spawned = function (self, unit)
+	self._respawn_handler:respawn_gate_unit_spawned(unit)
+end
+
 DeusSpawning.remove_respawn_units_due_to_crossroads = function (self, removed_path_distances, total_main_path_length)
 	self._respawn_handler:remove_respawn_units_due_to_crossroads(removed_path_distances, total_main_path_length)
 end
@@ -544,8 +548,20 @@ DeusSpawning.set_override_respawn_group = function (self, respawn_group_name, ac
 	self._respawn_handler:set_override_respawn_group(respawn_group_name, active)
 end
 
+DeusSpawning.set_respawn_group_enabled = function (self, respawn_group_name, enabled)
+	self._respawn_handler:set_respawn_group_enabled(respawn_group_name, enabled)
+end
+
+DeusSpawning.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	self._respawn_handler:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+end
+
 DeusSpawning.get_active_respawn_units = function (self)
 	return self._respawn_handler:get_active_respawn_units()
+end
+
+DeusSpawning.get_respawn_handler = function (self)
+	return self._respawn_handler
 end
 
 return

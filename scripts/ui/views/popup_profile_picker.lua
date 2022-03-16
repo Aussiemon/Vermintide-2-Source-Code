@@ -153,13 +153,14 @@ PopupProfilePicker.draw = function (self, ui_top_renderer, input_service, dt)
 	end
 end
 
-PopupProfilePicker.set_result = function (self, accepted)
+PopupProfilePicker.set_result = function (self, accepted, reason)
 	local selected_hero_name = accepted and self._selected_hero_name
 	local selected_career_name = accepted and self._selected_career_name
 	self._join_lobby_result = {
 		accepted = accepted,
 		selected_hero_name = selected_hero_name,
-		selected_career_name = selected_career_name
+		selected_career_name = selected_career_name,
+		reason = reason
 	}
 end
 
@@ -193,7 +194,7 @@ PopupProfilePicker._handle_input = function (self, dt, t)
 		self:set_result(true)
 	elseif UIUtils.is_button_pressed(widgets_by_name.cancel_button) or input_service:get("back_menu", true) then
 		self:_play_sound("play_gui_start_menu_button_click")
-		self:set_result(false)
+		self:set_result(false, "cancelled")
 	end
 end
 

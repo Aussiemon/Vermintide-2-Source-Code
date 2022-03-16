@@ -35,6 +35,8 @@ ActionMultiShoot._get_barrel_data = function (self, shots_fired)
 
 		current_shot = upper_limit
 	end
+
+	return barrels[1]
 end
 
 ActionMultiShoot._get_total_shots = function (self)

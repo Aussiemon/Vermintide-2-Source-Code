@@ -71,8 +71,10 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 	elseif self._social_wheel_context then
 		local social_wheel_only_released = self._input_extension:get("social_wheel_only_release")
 		local social_wheel_only_held = self._input_extension:get("social_wheel_only_hold")
+		local photomode_only_released = self._input_extension:get("photomode_only_released")
+		local photomode_only_held = self._input_extension:get("photomode_only_hold")
 
-		if social_wheel_only_released or not social_wheel_only_held then
+		if (social_wheel_only_released or not social_wheel_only_held) and (photomode_only_released or not photomode_only_held) then
 			self._social_wheel_context = nil
 		end
 	else
@@ -83,10 +85,10 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 		local ping_only_movement = input_extension:get("ping_only_movement")
 		local ping_only_item = input_extension:get("ping_only_item")
 		local social_wheel_only = input_extension:get("social_wheel_only")
-		local action_three = input_extension:get("action_three")
+		local photomode_only = input_extension:get("photomode_only")
 		local is_ping_only = ping_only or ping_only_enemy or ping_only_movement or ping_only_item
 
-		if ping or is_ping_only or social_wheel_only then
+		if ping or is_ping_only or social_wheel_only or photomode_only then
 			local ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position = self:_check_raycast(unit)
 			local stored_ping_position = nil
 
@@ -146,6 +148,14 @@ ContextAwarePingExtension.update = function (self, unit, input, dt, context, t)
 					unit = social_wheel_unit,
 					ping_context_unit = ping_unit,
 					min_t = t + social_wheel_delay,
+					distance = social_wheel_unit_distance,
+					position = stored_ping_position
+				}
+			elseif photomode_only then
+				self._social_wheel_context = {
+					min_t = 0,
+					show_emotes = true,
+					unit = social_wheel_unit,
 					distance = social_wheel_unit_distance,
 					position = stored_ping_position
 				}

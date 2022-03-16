@@ -43,6 +43,12 @@ PlayerCharacterStateInspecting.update = function (self, unit, input, dt, context
 		return
 	end
 
+	if self.cosmetic_extension:get_queued_3p_emote() then
+		csm:change_state("emote")
+
+		return
+	end
+
 	if not input_extension:get("character_inspecting") then
 		csm:change_state("standing")
 

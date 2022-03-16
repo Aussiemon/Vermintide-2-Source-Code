@@ -334,9 +334,9 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 	local parent = self.parent
 	local input_service = parent:window_input_service()
 	local active_area_widgets = self._active_area_widgets
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		local num_areas = #active_area_widgets
 		local current_area_index = self._selected_area_index
 
@@ -380,7 +380,7 @@ StartGameWindowAreaSelectionConsole._handle_input = function (self, dt, t)
 		end
 	end
 
-	local gamepad_confirm_pressed = gamepad_active and input_service:get("confirm_press", true)
+	local gamepad_confirm_pressed = not mouse_active and input_service:get("confirm_press", true)
 
 	if not self._area_unavailable and gamepad_confirm_pressed then
 		self:_on_select_button_pressed()

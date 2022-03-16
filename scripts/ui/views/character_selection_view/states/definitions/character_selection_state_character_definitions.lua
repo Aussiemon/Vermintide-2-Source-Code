@@ -161,7 +161,7 @@ local scenegraph_definition = {
 		parent = "hero_root",
 		horizontal_alignment = "left",
 		size = {
-			441,
+			641,
 			50
 		},
 		position = {
@@ -181,7 +181,7 @@ local scenegraph_definition = {
 		position = {
 			80,
 			-200,
-			1
+			100
 		}
 	},
 	hero_icon_root = {
@@ -195,7 +195,7 @@ local scenegraph_definition = {
 		position = {
 			-59,
 			0,
-			1
+			100
 		}
 	},
 	info_window = {
@@ -527,6 +527,34 @@ local scenegraph_definition = {
 			25,
 			3
 		}
+	},
+	bot_priority_button = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "left",
+		size = {
+			370,
+			70
+		},
+		position = {
+			135,
+			25,
+			103
+		}
+	},
+	back_button = {
+		vertical_alignment = "bottom",
+		parent = "screen",
+		horizontal_alignment = "left",
+		size = {
+			200,
+			70
+		},
+		position = {
+			135,
+			25,
+			103
+		}
 	}
 }
 local description_text_style = {
@@ -588,7 +616,7 @@ local hero_career_style = {
 	vertical_alignment = "top",
 	dynamic_font_size = true,
 	font_type = "hell_shark_header",
-	text_color = Colors.get_color_table_with_alpha("font_title", 255),
+	text_color = Colors.get_color_table_with_alpha("white", 255),
 	offset = {
 		0,
 		0,
@@ -625,19 +653,19 @@ local hero_level_style = {
 		2
 	}
 }
-local locked_info_text_style = {
-	word_wrap = true,
-	font_size = 26,
+local bot_header_text_style = {
+	word_wrap = false,
+	font_size = 65,
 	localize = false,
 	use_shadow = true,
 	horizontal_alignment = "left",
 	vertical_alignment = "top",
-	font_type = "hell_shark",
-	text_color = Colors.get_color_table_with_alpha("red", 255),
+	font_type = "hell_shark_header",
+	text_color = Colors.get_color_table_with_alpha("font_title", 255),
 	offset = {
 		0,
-		0,
-		2
+		100,
+		20
 	}
 }
 
@@ -698,14 +726,6 @@ local function create_hero_widget(scenegraph_id, size)
 					end
 				},
 				{
-					style_id = "bot_text",
-					pass_type = "text",
-					text_id = "bot_priority",
-					content_check_function = function (content)
-						return content.bot_priority
-					end
-				},
-				{
 					pass_type = "texture_frame",
 					style_id = "frame",
 					texture_id = "frame"
@@ -741,7 +761,9 @@ local function create_hero_widget(scenegraph_id, size)
 					style_id = "hover_frame",
 					texture_id = "hover_frame",
 					content_check_function = function (content)
-						return content.button_hotspot.is_selected
+						local mouse_active = Managers.input:is_device_active("mouse")
+
+						return content.button_hotspot.is_selected and (not content.bot_selection_active or not mouse_active)
 					end
 				}
 			}
@@ -752,6 +774,7 @@ local function create_hero_widget(scenegraph_id, size)
 			lock_texture = "hero_icon_locked",
 			taken_texture = "hero_icon_unavailable",
 			taken = false,
+			bot_selection_active = false,
 			bot_texture = "friends_icon_01",
 			button_hotspot = {},
 			bot_frame = bot_frame_settings.texture,
@@ -981,11 +1004,105 @@ local function create_hero_icon_widget(scenegraph_id, size)
 		element = {
 			passes = {
 				{
+					pass_type = "hover",
+					style_id = "hourglass_icon"
+				},
+				{
+					pass_type = "texture",
+					style_id = "bg",
+					texture_id = "bg",
+					content_check_function = function (content, style)
+						return content.use_empty_icon
+					end
+				},
+				{
+					style_id = "hourglass_icon",
+					texture_id = "hourglass_icon",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return content.use_empty_icon
+					end,
+					content_change_function = function (content, style)
+						local target = (content.is_hover and 255) or 184
+						style.color[1] = math.ceil(style.color[1] + 0.1 * (target - style.color[1]))
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "bot_order_texture",
+					texture_id = "bot_order_texture_id",
+					content_check_function = function (content, style)
+						return content.bot_selection_active
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "bot_order_bg",
+					texture_id = "bot_order_bg_id",
+					content_check_function = function (content, style)
+						return content.bot_selection_active
+					end
+				},
+				{
+					style_id = "bot_order_hotspot",
+					pass_type = "hotspot",
+					content_id = "bot_order_hotspot",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
+				},
+				{
+					style_id = "bot_order_button",
+					texture_id = "bot_order_button",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						local hotspot = content.bot_change_order_hotspot
+
+						return not Managers.input:is_device_active("gamepad") and not hotspot.is_hover and not content.bot_change_order_active and content.bot_selection_active
+					end,
+					content_change_function = function (content, style)
+						style.color[1] = 128
+					end
+				},
+				{
+					style_id = "bot_order_button",
+					texture_id = "bot_order_highlight_button",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						local hotspot = content.bot_change_order_hotspot
+
+						return not Managers.input:is_device_active("gamepad") and hotspot.is_hover and not content.bot_change_order_active and content.bot_selection_active
+					end,
+					content_change_function = function (content, style)
+						style.color[1] = 255
+					end
+				},
+				{
+					style_id = "bot_change_order_hotspot",
+					pass_type = "hotspot",
+					content_id = "bot_change_order_hotspot",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad")
+					end
+				},
+				{
+					style_id = "bot_change_order_button",
+					texture_id = "bot_change_order_button",
+					pass_type = "texture",
+					content_check_function = function (content, style)
+						return not Managers.input:is_device_active("gamepad") and content.bot_change_order_active and content.bot_selection_active and not content.bot_change_order_hotspot.is_hover
+					end,
+					content_change_function = function (content, style)
+						local hotspot = content.bot_change_order_hotspot
+						style.color[1] = (hotspot.is_hover and 255) or 128
+					end
+				},
+				{
 					texture_id = "icon",
 					style_id = "icon",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return not content.selected
+						return not content.selected and not content.bot_selection_active
 					end
 				},
 				{
@@ -993,22 +1110,165 @@ local function create_hero_icon_widget(scenegraph_id, size)
 					style_id = "icon_selected",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.selected
+						return content.selected and not content.bot_selection_active
 					end
 				},
 				{
 					texture_id = "holder",
 					style_id = "holder",
-					pass_type = "texture"
+					pass_type = "texture",
+					content_check_function = function (content)
+						return not content.bot_selection_active
+					end
 				}
 			}
 		},
 		content = {
-			icon = "hero_icon_large_bright_wizard",
+			bot_order_bg_id = "bot_order_base",
 			holder = "divider_vertical_hero_decoration",
-			icon_selected = "hero_icon_large_bright_wizard"
+			bot_order_highlight_button = "cog_icon_selected",
+			bot_selection_active = false,
+			bg = "character_slot_empty",
+			bot_change_order_active = false,
+			hourglass_icon = "icon_hourglass",
+			use_empty_icon = false,
+			bot_order_button = "cog_icon",
+			bot_change_order_button = "athanor_icon_loading",
+			icon = "hero_icon_large_bright_wizard",
+			bot_order_texture_id = "bot_order_1",
+			icon_selected = "hero_icon_large_bright_wizard",
+			bot_order_hotspot = {},
+			bot_change_order_hotspot = {}
 		},
 		style = {
+			bg = {
+				size = {
+					110,
+					130
+				},
+				offset = {
+					58,
+					7,
+					0
+				}
+			},
+			hourglass_icon = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				size = {
+					110,
+					130
+				},
+				texture_size = UIAtlasHelper.get_atlas_settings_by_texture_name("icon_hourglass").size,
+				color = {
+					184,
+					255,
+					255,
+					255
+				},
+				offset = {
+					58,
+					7,
+					0
+				}
+			},
+			bot_order_texture = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					110,
+					130
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			},
+			bot_order_bg = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					110,
+					130
+				}
+			},
+			bot_order_hotspot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "right",
+				area_size = {
+					58,
+					58
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					550,
+					0,
+					100
+				}
+			},
+			bot_order_button = {
+				vertical_alignment = "center",
+				horizontal_alignment = "right",
+				texture_size = {
+					58,
+					58
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					550,
+					0,
+					0
+				}
+			},
+			bot_change_order_button = {
+				vertical_alignment = "center",
+				horizontal_alignment = "right",
+				texture_size = {
+					29,
+					30.16
+				},
+				color = {
+					255,
+					249,
+					239,
+					222
+				},
+				offset = {
+					536.25,
+					0,
+					0
+				}
+			},
+			bot_change_order_hotspot = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				area_size = {
+					1920,
+					144
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					100
+				}
+			},
 			icon = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
@@ -1247,9 +1507,135 @@ local empty_hero_widget = {
 		}
 	}
 }
+
+local function create_background(scenegraph_id, color, layer)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "rect",
+					pass_type = "rect",
+					content_check_function = function (content)
+						return true
+					end
+				}
+			}
+		},
+		content = {},
+		style = {
+			rect = {
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					layer or 0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
+local function create_info_text(text, scenegraph_id)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text",
+					content_change_function = function (content, style)
+						style.text_color = (content.locked and style.locked_text_color) or style.default_text_color
+					end
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text",
+					content_check_function = function (content)
+						return content.use_shadow
+					end
+				}
+			}
+		},
+		content = {
+			use_shadow = true,
+			disable_with_gamepad = true,
+			text = text,
+			original_text = text
+		},
+		style = {
+			text = {
+				word_wrap = true,
+				font_size = 26,
+				localize = false,
+				use_shadow = true,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark",
+				text_color = Colors.get_color_table_with_alpha("red", 255),
+				default_text_color = Colors.get_color_table_with_alpha("light_blue", 255),
+				locked_text_color = Colors.get_color_table_with_alpha("red", 255),
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			text_shadow = {
+				word_wrap = true,
+				font_size = 26,
+				localize = false,
+				font_type = "hell_shark",
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				skip_button_rendering = true,
+				text_color = Colors.get_color_table_with_alpha("black", 255),
+				offset = {
+					2,
+					2,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 local disable_with_gamepad = true
 local widgets = {
-	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm"), nil, nil, nil, nil, disable_with_gamepad),
+	background = create_background("screen", {
+		0,
+		0,
+		0,
+		0
+	}, 100),
+	bottom_panel = UIWidgets.create_simple_uv_texture("menu_panel_bg", {
+		{
+			0,
+			1
+		},
+		{
+			1,
+			0
+		}
+	}, "bottom_panel", nil, nil, UISettings.console_menu_rect_color),
+	info_window_background = UIWidgets.create_rect_with_outer_frame("info_window", scenegraph_definition.info_window.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
 	info_window_video = UIWidgets.create_frame("info_window_video", scenegraph_definition.info_window_video.size, "menu_frame_06"),
 	info_video_edge_left = UIWidgets.create_simple_texture("frame_detail_03", "info_video_edge_left"),
 	info_video_edge_right = UIWidgets.create_simple_uv_texture("frame_detail_03", {
@@ -1262,31 +1648,6 @@ local widgets = {
 			1
 		}
 	}, "info_video_edge_right"),
-	locked_info_text = UIWidgets.create_simple_text("Unlocked at level:", "locked_info_text", nil, nil, locked_info_text_style),
-	hero_info_panel = UIWidgets.create_simple_texture("item_slot_side_fade", "hero_info_panel", nil, nil, {
-		255,
-		0,
-		0,
-		0
-	}),
-	hero_info_panel_glow = UIWidgets.create_simple_texture("item_slot_side_effect", "hero_info_panel", nil, nil, Colors.get_color_table_with_alpha("font_title", 255), 1),
-	hero_info_level_bg = UIWidgets.create_simple_texture("hero_level_bg", "hero_info_level_bg"),
-	hero_info_divider = UIWidgets.create_simple_texture("divider_vertical_hero_middle", "hero_info_divider"),
-	hero_info_divider_edge = UIWidgets.create_simple_texture("divider_vertical_hero_end", "hero_info_divider_edge"),
-	info_career_name = UIWidgets.create_simple_text("n/a", "info_career_name", nil, nil, hero_career_style),
-	info_hero_name = UIWidgets.create_simple_text("n/a", "info_hero_name", nil, nil, hero_name_style),
-	info_hero_level = UIWidgets.create_simple_text("n/a", "info_hero_level", nil, nil, hero_level_style),
-	bottom_panel = UIWidgets.create_simple_uv_texture("menu_panel_bg", {
-		{
-			0,
-			1
-		},
-		{
-			1,
-			0
-		}
-	}, "bottom_panel", nil, nil, UISettings.console_menu_rect_color),
-	info_window_background = UIWidgets.create_rect_with_outer_frame("info_window", scenegraph_definition.info_window.size, "frame_outer_fade_02", 0, UISettings.console_menu_rect_color),
 	perk_title_text = UIWidgets.create_simple_text(Localize("hero_view_perk_title"), "perk_title_text", nil, nil, sub_title_text_style),
 	perk_title_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "perk_title_divider"),
 	career_perk_1 = create_career_perk_text("career_perk_1"),
@@ -1305,21 +1666,85 @@ local widgets = {
 	active_icon = UIWidgets.create_simple_texture("icons_placeholder", "active_icon"),
 	active_icon_frame = UIWidgets.create_simple_texture("talent_frame", "active_icon_frame")
 }
+local info_widgets = {
+	locked_info_text = create_info_text(Localize("career_locked_info"), "locked_info_text"),
+	hero_info_panel = UIWidgets.create_simple_texture("item_slot_side_fade", "hero_info_panel", nil, nil, {
+		255,
+		0,
+		0,
+		0
+	}),
+	hero_info_panel_glow = UIWidgets.create_simple_texture("item_slot_side_effect", "hero_info_panel", nil, nil, Colors.get_color_table_with_alpha("font_title", 255), 1),
+	hero_info_level_bg = UIWidgets.create_simple_texture("hero_level_bg", "hero_info_level_bg"),
+	hero_info_divider = UIWidgets.create_simple_texture("divider_vertical_hero_middle", "hero_info_divider"),
+	hero_info_divider_edge = UIWidgets.create_simple_texture("divider_vertical_hero_end", "hero_info_divider_edge"),
+	info_career_name = UIWidgets.create_simple_text("n/a", "info_career_name", nil, nil, hero_career_style),
+	info_hero_name = UIWidgets.create_simple_text("n/a", "info_hero_name", nil, nil, hero_name_style),
+	info_hero_level = UIWidgets.create_simple_text("n/a", "info_hero_level", nil, nil, hero_level_style),
+	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("input_description_confirm"), nil, nil, nil, nil, disable_with_gamepad),
+	bot_priority_button = UIWidgets.create_default_button("bot_priority_button", scenegraph_definition.bot_priority_button.size, nil, nil, Localize("input_description_prio_bot"), nil, nil, nil, nil, disable_with_gamepad)
+}
+local bot_selection_widgets = {
+	bot_header_text = UIWidgets.create_simple_text(string.upper(Localize("input_description_prio_bot")), "locked_info_text", nil, nil, bot_header_text_style),
+	bot_info_text = create_info_text(Localize("assign_career_tooltip"), "locked_info_text"),
+	back_button = UIWidgets.create_default_button("back_button", scenegraph_definition.back_button.size, nil, nil, Localize("back_menu_button_name"), nil, nil, nil, nil, disable_with_gamepad)
+}
 local generic_input_actions = {
-	default = {},
+	default = {
+		{
+			input_action = "refresh",
+			priority = 1,
+			description_text = "input_description_prio_bot"
+		}
+	},
 	default_back = {
+		{
+			input_action = "refresh",
+			priority = 1,
+			description_text = "input_description_prio_bot"
+		},
 		{
 			input_action = "back",
 			priority = 3,
-			description_text = "input_description_back"
+			description_text = "input_description_close"
 		}
 	},
 	available = {
 		actions = {
 			{
 				input_action = "confirm",
-				priority = 1,
+				priority = 2,
 				description_text = "input_description_select"
+			}
+		}
+	},
+	purchase = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "buy_now"
+			}
+		}
+	},
+	prioritize_bots = {
+		{
+			input_action = "refresh",
+			priority = 1,
+			description_text = "input_description_change_bot_prio"
+		},
+		{
+			input_action = "back",
+			priority = 3,
+			description_text = "input_description_back"
+		}
+	},
+	bot_selection_available = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 2,
+				description_text = "input_description_assign_bot"
 			}
 		}
 	}
@@ -1331,11 +1756,15 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 0.3,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
+				params.render_settings.main_alpha_multiplier = 0
+				params.render_settings.info_alpha_multiplier = 0
+				params.render_settings.bot_selection_window_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
+				params.render_settings.main_alpha_multiplier = anim_progress
+				params.render_settings.info_alpha_multiplier = anim_progress
+				params.render_settings.bot_selection_alpha_multiplier = 0
 				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * (1 - anim_progress)
 				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * (1 - anim_progress)
 			end,
@@ -1350,13 +1779,57 @@ local animation_definitions = {
 			start_progress = 0,
 			end_progress = 1,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
+				params.render_settings.main_alpha_multiplier = 1
+				params.render_settings.info_alpha_multiplier = 1
+				params.render_settings.bot_selection_alpha_multiplier = 0
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
 				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
+				params.render_settings.main_alpha_multiplier = 1 - anim_progress
+				params.render_settings.info_alpha_multiplier = 1 - anim_progress
+				params.render_settings.bot_selection_alpha_multiplier = 0
 				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * anim_progress
 				ui_scenegraph.right_side_root.local_position[1] = scenegraph_definition.right_side_root.position[1] + 100 * anim_progress
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_enter_bot_selection = {
+		{
+			name = "fade_in",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.info_alpha_multiplier = 0
+				params.render_settings.bot_selection_alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.bot_selection_alpha_multiplier = anim_progress
+				params.render_settings.info_alpha_multiplier = 0
+				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * (1 - anim_progress)
+			end,
+			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				return
+			end
+		}
+	},
+	on_exit_bot_selection = {
+		{
+			name = "fade_out",
+			start_progress = 0,
+			end_progress = 0.3,
+			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+				params.render_settings.info_alpha_multiplier = 0
+				params.render_settings.bot_selection_alpha_multiplier = 0
+			end,
+			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+				local anim_progress = math.easeOutCubic(progress)
+				params.render_settings.info_alpha_multiplier = anim_progress
+				params.render_settings.bot_selection_alpha_multiplier = 0
+				ui_scenegraph.left_side_root.local_position[1] = scenegraph_definition.left_side_root.position[1] + -100 * (1 - anim_progress)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return
@@ -1367,6 +1840,8 @@ local animation_definitions = {
 
 return {
 	widgets = widgets,
+	info_widgets = info_widgets,
+	bot_selection_widgets = bot_selection_widgets,
 	hero_widget = create_hero_widget("hero_root", scenegraph_definition.hero_root.size),
 	empty_hero_widget = empty_hero_widget,
 	hero_icon_widget = create_hero_icon_widget("hero_icon_root", scenegraph_definition.hero_icon_root.size),

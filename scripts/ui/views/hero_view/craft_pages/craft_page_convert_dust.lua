@@ -36,6 +36,7 @@ CraftPageConvertDust.on_enter = function (self, params, settings)
 	self.profile_index = params.profile_index
 	self.wwise_world = params.wwise_world
 	self.settings = settings
+	self._recipe_name = settings.name
 	self._animations = {}
 
 	self:create_ui_elements(params)
@@ -99,7 +100,7 @@ CraftPageConvertDust.setup_recipe_requirements = function (self)
 		recipe_name = self:_get_recipe_by_backend_id(added_backend_id)
 	end
 
-	self._recipe_name = recipe_name
+	self._recipe_name = recipe_name or settings.name
 	local has_all_requirements = true
 
 	if not recipe_name then
@@ -346,8 +347,7 @@ CraftPageConvertDust._handle_input = function (self, dt, t)
 			items[#items + 1] = backend_id
 		end
 
-		local recipe_override = self._recipe_name
-		local recipe_available = parent:craft(items, recipe_override)
+		local recipe_available = parent:craft(items, self._recipe_name)
 
 		if recipe_available then
 			self:_set_craft_button_disabled(true)

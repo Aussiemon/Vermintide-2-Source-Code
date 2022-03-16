@@ -383,12 +383,12 @@ StatusSystem.rpc_replenish_fatigue_other_players = function (self, channel_id, f
 	StatusUtils.replenish_stamina_local_players(nil, fatigue_type)
 end
 
-StatusSystem.rpc_set_stagger = function (self, channel_id, game_object_id, stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger_suffered)
+StatusSystem.rpc_set_stagger = function (self, channel_id, game_object_id, stagger_type, stagger_direction, stagger_length, accumulated_stagger, stagger_time, stagger_animation_scale, always_stagger_suffered)
 	local unit = self.unit_storage:unit(game_object_id)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 
 	fassert(status_extension.set_stagger_values)
-	status_extension:set_stagger_values(stagger, stagger_direction, stagger_length, stagger_type, stagger_time, stagger_animation_scale, always_stagger_suffered, false)
+	status_extension:set_stagger_values(stagger_type, stagger_direction, stagger_length, accumulated_stagger, stagger_time, stagger_animation_scale, always_stagger_suffered, false)
 end
 
 return

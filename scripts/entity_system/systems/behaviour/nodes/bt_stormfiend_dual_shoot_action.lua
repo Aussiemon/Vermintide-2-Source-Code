@@ -19,7 +19,7 @@ BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.attack_finished = false
 	blackboard.shoot_data = blackboard.shoot_data or {}
 	blackboard.physics_world = blackboard.physics_world or World.get_data(world, "physics_world")
-	blackboard.anim_locked = t + action.attack_time
+	blackboard.anim_locked = t + action.attack_duration
 	blackboard.move_state = "attacking"
 	blackboard.attack_aborted = false
 	blackboard.keep_target = true
@@ -27,6 +27,7 @@ BTStormfiendDualShootAction.enter = function (self, unit, blackboard, t)
 	blackboard.left_muzzle_node = Unit.node(unit, "fx_left_muzzle")
 	blackboard.right_muzzle_node = Unit.node(unit, "fx_right_muzzle")
 	blackboard.weapon_setup = action.weapon_setup
+	blackboard.shoot_data.start_firing_t = t + action.start_firing_t
 	local network_manager = Managers.state.network
 
 	network_manager:anim_event(unit, action.attack_animation)
@@ -80,22 +81,29 @@ BTStormfiendDualShootAction.run = function (self, unit, blackboard, t, dt)
 		local data = blackboard.shoot_data
 		local weapon_setup = blackboard.weapon_setup
 
-		if data.is_firing then
-			if t < data.stop_firing_t then
-				if weapon_setup and weapon_setup == "ratling_gun" then
-					self:_update_ratling_gun(unit, blackboard, t, dt)
-				else
-					self:shoot_hit_check(unit, blackboard)
-				end
-			elseif data.stop_firing_t <= t and weapon_setup == "warpfire_thrower" then
+		if t < data.start_firing_t then
+		elseif not data.firing_initiated then
+			self:initiate_firing(blackboard, t)
+		elseif t < data.stop_firing_t then
+			if weapon_setup and weapon_setup == "ratling_gun" then
+				self:_update_ratling_gun(unit, blackboard, t, dt)
+			else
+				self:shoot_hit_check(unit, blackboard)
+			end
+		elseif data.is_firing then
+			if weapon_setup and weapon_setup == "warpfire_thrower" then
 				self:_stop_beam_sfx(unit, blackboard, data)
-			elseif data.stop_firing_t <= t and blackboard.shoot_sfx_id_1 then
+			end
+
+			if blackboard.shoot_sfx_id_1 then
 				WwiseWorld.stop_event(Managers.world:wwise_world(blackboard.world), blackboard.shoot_sfx_id_1)
 				WwiseWorld.stop_event(Managers.world:wwise_world(blackboard.world), blackboard.shoot_sfx_id_2)
 
 				blackboard.shoot_sfx_id_1 = nil
 				blackboard.shoot_sfx_id_2 = nil
 			end
+
+			data.is_firing = false
 		end
 
 		if blackboard.attack_finished then
@@ -224,8 +232,8 @@ end
 
 BTStormfiendDualShootAction._update_ratling_gun = function (self, unit, blackboard, t, dt)
 	local data = blackboard.shoot_data
-	local time_in_shoot_action = t - data.shoot_start
-	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
+	local time_in_shoot_action = t - data.start_firing_t
+	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.firing_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
 	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 
@@ -276,42 +284,19 @@ BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboar
 	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
 end
 
-BTStormfiendDualShootAction.anim_cb_attack_fire = function (self, unit, blackboard)
-	if Managers.state.network:game() then
-		local action = blackboard.action
-		local data = blackboard.shoot_data
-		local time_manager = Managers.time
-		local t = time_manager:time("game")
-
-		if blackboard.weapon_setup == "warpfire_thrower" then
-			if data.firewall_start_position then
-				BTStormfiendDualShootAction:create_firewall(unit, data)
-			end
-
-			local world = blackboard.world
-			local attack_arm = data.attack_arm
-			local node_name = action.muzzle_nodes[attack_arm]
-			local event = action.beam_sfx_start_event
-			local audio_system = Managers.state.entity:system("audio_system")
-
-			audio_system:play_audio_unit_event(event, unit, node_name)
-		elseif blackboard.weapon_setup == "ratling_gun" then
-			data.shoot_start = t
-			data.shoot_duration = 2
-			data.shots_fired = 0
-			data.time_between_shots_at_start = 1 / action.fire_rate_at_start
-			data.time_between_shots_at_end = 1 / action.fire_rate_at_end
-			data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
-			data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.target_unit])
-		end
-
-		data.is_firing = true
-		data.stop_firing_t = t + action.firing_time
-	end
-end
-
-BTStormfiendDualShootAction.anim_cb_attack_start = function (self, unit, blackboard)
-	data.attack_started = true
+BTStormfiendDualShootAction.initiate_firing = function (self, blackboard, t)
+	local action = blackboard.action
+	local data = blackboard.shoot_data
+	data.firing_duration = action.firing_duration
+	data.shots_fired = 0
+	data.time_between_shots_at_start = 1 / action.fire_rate_at_start
+	data.time_between_shots_at_end = 1 / action.fire_rate_at_end
+	data.max_fire_rate_at_percentage_modifier = 1 / action.max_fire_rate_at_percentage
+	data.current_gun_aim_position = Vector3Box(POSITION_LOOKUP[blackboard.target_unit])
+	data.start_firing_t = t
+	data.stop_firing_t = t + action.firing_duration
+	data.firing_initiated = true
+	data.is_firing = true
 end
 
 return

@@ -857,4 +857,15 @@ ActionUtils.is_melee_start_sub_action = function (sub_action)
 	return sub_action.melee_start
 end
 
+ActionUtils.is_backstab = function (unit, hit_unit)
+	local origin_pos = POSITION_LOOKUP[unit]
+	local hit_unit_pos = POSITION_LOOKUP[hit_unit]
+	local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - origin_pos)
+	local hit_unit_direction = Quaternion.forward(Unit.local_rotation(hit_unit, 0))
+	local hit_angle = Vector3.dot(hit_unit_direction, owner_to_hit_dir)
+	local behind_target = hit_angle >= 0.55 and hit_angle <= 1
+
+	return behind_target
+end
+
 return

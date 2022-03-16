@@ -3,8 +3,20 @@ require("scripts/managers/game_mode/spawning_components/deus_spawning")
 require("scripts/settings/dlcs/morris/deus_soft_currency_settings")
 require("scripts/utils/hash_utils")
 
-local INTRO_VO_DIALOGUE_PROFILE = "ferry_lady"
 local REAL_PLAYER_LOCAL_ID = 1
+local INTRO_VO_DIALOGUE_PROFILE = "ferry_lady"
+
+local function play_curse_intro_vo(vo_unit, curse)
+	local dialogue_input = ScriptUnit.extension_input(vo_unit, "dialogue_system")
+	local event_data = FrameTable.alloc_table()
+
+	if curse then
+		dialogue_input:trigger_dialogue_event("curse_intro", event_data)
+	else
+		dialogue_input:trigger_dialogue_event("no_curse_intro", event_data)
+	end
+end
+
 GameModeDeus = class(GameModeDeus, GameModeBase)
 
 GameModeDeus.init = function (self, settings, world, network_server, is_server, profile_synchronizer, level_key, statistics_db, game_mode_settings)
@@ -227,10 +239,12 @@ GameModeDeus.get_end_screen_config = function (self, game_won, game_lost, player
 			}
 		end
 
+		local rewards = {
+			reward
+		}
+
 		return "none", {}, {
-			rewards = {
-				reward
-			}
+			rewards = rewards
 		}
 	end
 end
@@ -264,6 +278,9 @@ end
 GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 	local deus_run_controller = self._deus_run_controller
 	local world = self._world
+	local current_level = LevelHelper:current_level(world)
+	local current_node = deus_run_controller:get_current_node()
+	local theme = current_node.theme
 
 	if self._is_initial_spawn then
 		LevelHelper:flow_event(world, "local_player_spawned")
@@ -276,7 +293,6 @@ GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 		camera_system:external_state_change(player, "observer", {})
 	end
 
-	local current_node = deus_run_controller:get_current_node()
 	local level_type = current_node.level_type
 
 	if level_type == "ARENA" then
@@ -285,10 +301,8 @@ GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 		dialogue_system:freeze_story_trigger()
 	end
 
-	local theme = current_node.theme
 	local probe_tint = DeusThemeSettings[theme].light_probe_tint
 	local color = Vector3(probe_tint[1], probe_tint[2], probe_tint[3])
-	local current_level = LevelHelper:current_level(world)
 	local units = Level.units(current_level)
 	local num_units = #units
 
@@ -333,8 +347,24 @@ GameModeDeus.set_override_respawn_group = function (self, respawn_group_name, ac
 	self._deus_spawning:set_override_respawn_group(respawn_group_name, active)
 end
 
+GameModeDeus.set_respawn_group_enabled = function (self, respawn_group_name, active)
+	self._deus_spawning:set_respawn_group_enabled(respawn_group_name, active)
+end
+
+GameModeDeus.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	self._deus_spawning:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+end
+
 GameModeDeus.respawn_unit_spawned = function (self, unit)
 	self._deus_spawning:respawn_unit_spawned(unit)
+end
+
+GameModeDeus.get_respawn_handler = function (self)
+	return self._deus_spawning:get_respawn_handler()
+end
+
+GameModeDeus.respawn_gate_unit_spawned = function (self, unit)
+	self._deus_spawning:respawn_gate_unit_spawned(unit)
 end
 
 GameModeDeus.set_respawning_enabled = function (self, enabled)
@@ -394,17 +424,20 @@ GameModeDeus._get_first_available_bot_profile = function (self)
 	local display_name = profile.display_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
-	local career = profile.careers[career_index]
+	local bot_career_index = hero_attributes:get(display_name, "bot_career") or career_index or 1
+	local career = profile.careers[bot_career_index]
 	local hero_experience = hero_attributes:get(display_name, "experience") or 0
 	local hero_level = ExperienceSettings.get_level(hero_experience)
 
 	if not career or not career:is_unlocked_function(display_name, hero_level) then
 		career_index = 1
+		bot_career_index = 1
 
 		hero_attributes:set(display_name, "career", career_index)
+		hero_attributes:set(display_name, "bot_career", bot_career_index)
 	end
 
-	return profile_index, career_index
+	return profile_index, bot_career_index
 end
 
 GameModeDeus._setup_bot_spawn_priority_lookup = function (self)
@@ -640,9 +673,9 @@ GameModeDeus._get_coins_amount_and_type = function (self, interactable_unit)
 	local ingame_players = #deus_run_controller:get_peers()
 	local dropped_by_breed = pickup_extension:get_dropped_by_breed()
 	local loot_amount_settings = DeusSoftCurrencySettings.loot_amount[dropped_by_breed]
-	local loot_ammount_by_player = loot_amount_settings[ingame_players] or loot_amount_settings[#loot_amount_settings]
-	local min_amount = loot_ammount_by_player.min
-	local max_amount = loot_ammount_by_player.max
+	local loot_amount_by_player = loot_amount_settings[ingame_players] or loot_amount_settings[#loot_amount_settings]
+	local min_amount = loot_amount_by_player.min
+	local max_amount = loot_amount_by_player.max
 	local coins_amount = math.lerp(min_amount, max_amount, random)
 	local type = nil
 
@@ -660,15 +693,10 @@ GameModeDeus.players_left_safe_zone = function (self)
 	local dialogue_extension = intro_vo_unit and ScriptUnit.has_extension(intro_vo_unit, "dialogue_system")
 
 	if dialogue_extension then
-		local dialogue_input = ScriptUnit.extension_input(intro_vo_unit, "dialogue_system")
-		local event_data = FrameTable.alloc_table()
 		local node = self._deus_run_controller:get_current_node()
+		local curse = node.curse
 
-		if node.curse then
-			dialogue_input:trigger_dialogue_event("curse_intro", event_data)
-		else
-			dialogue_input:trigger_dialogue_event("no_curse_intro", event_data)
-		end
+		play_curse_intro_vo(intro_vo_unit, curse)
 	else
 		print("GameModeDeus:players_left_safe_zone - no unit for curse intro vo")
 	end

@@ -1280,7 +1280,7 @@ local generic_input_actions = {
 		{
 			input_action = "back",
 			priority = 3,
-			description_text = "input_description_close"
+			description_text = "input_description_back"
 		}
 	},
 	claim_available = {
@@ -1303,7 +1303,7 @@ local generic_input_actions = {
 		{
 			input_action = "back",
 			priority = 4,
-			description_text = "input_description_close"
+			description_text = "input_description_back"
 		}
 	}
 }

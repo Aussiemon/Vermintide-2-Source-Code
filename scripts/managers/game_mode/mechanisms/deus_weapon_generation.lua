@@ -133,6 +133,16 @@ local function get_possible_skins(item_key, rarity)
 		skins = skin_by_rarity and skin_by_rarity[rarity]
 	end
 
+	if skins then
+		local unlocked_skins = Managers.backend:get_interface("crafting"):get_unlocked_weapon_skins()
+
+		for i = #skins, 1, -1 do
+			if not unlocked_skins[skins[i]] then
+				table.remove(skins, i)
+			end
+		end
+	end
+
 	return skins
 end
 
@@ -149,8 +159,10 @@ local function get_possible_trait_combinations(item_key, rarity)
 	end
 
 	local deus_item_data = DeusWeapons[item_key]
+	local combinations = nil
+	combinations = WeaponTraits.combinations[deus_item_data.trait_table_name]
 
-	return WeaponTraits.combinations[deus_item_data.trait_table_name]
+	return combinations
 end
 
 local function get_possible_archetypes(item_key)
@@ -222,7 +234,7 @@ local function generate_item_from_item_key(item_key, difficulty, run_progress, r
 	end
 
 	local skins = get_possible_skins(item_key, rarity)
-	local skin = skins and #skins > 0 and skins[random_generator(1, #skins)]
+	local skin = (skins and #skins > 0 and skins[random_generator(1, #skins)]) or nil
 
 	return create_item(item_key, properties, traits, skin, powerlevel, rarity)
 end
@@ -294,7 +306,7 @@ local function upgrade_item(item, difficulty, run_progress, target_rarity, rando
 	end
 
 	local skins = get_possible_skins(item_key, target_rarity)
-	local skin = skins and #skins > 0 and skins[random_generator(1, #skins)]
+	local skin = (skins and #skins > 0 and skins[random_generator(1, #skins)]) or nil
 
 	return create_item(item_key, properties, traits, skin, powerlevel, target_rarity)
 end
@@ -387,7 +399,7 @@ DeusWeaponGeneration.get_possibilities_for_item_key = function (item_key, diffic
 		trait_combinations = get_possible_trait_combinations(item_key, rarity)
 	end
 
-	return powerlevel, archetypes, property_combinations, trait_combinations, skins
+	return powerlevel, archetypes, property_combinations, trait_combinations, (skins and #skins > 0 and skins) or nil
 end
 
 DeusWeaponGeneration.generate_item_from_item_key = function (item_key, difficulty, run_progress, rarity, seed)

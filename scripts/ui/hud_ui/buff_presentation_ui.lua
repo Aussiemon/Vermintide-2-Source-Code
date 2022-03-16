@@ -109,18 +109,21 @@ BuffPresentationUI._sync_buffs = function (self)
 
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 		local active_buffs = buff_extension:active_buffs()
-		local num_buffs = #active_buffs
+		local num_buffs = buff_extension._num_buffs
 
 		for i = 1, num_buffs, 1 do
 			local buff = active_buffs[i]
-			local buff_template = buff.template
-			local name = buff_template.name
-			local handle_buff = debug_buffs or (buff_template.icon ~= nil and buff_template.priority_buff and not buffs_to_add[name] and not buffs_presented[name])
 
-			if handle_buff then
-				self:_add_buff(buff)
+			if not buff.removed then
+				local buff_template = buff.template
+				local name = buff_template.name
+				local handle_buff = debug_buffs or (buff_template.icon ~= nil and buff_template.priority_buff and not buffs_to_add[name] and not buffs_presented[name])
 
-				buffs_to_add[name] = buff
+				if handle_buff then
+					self:_add_buff(buff)
+
+					buffs_to_add[name] = buff
+				end
 			end
 		end
 
@@ -146,13 +149,16 @@ BuffPresentationUI._sync_buffs = function (self)
 
 			for i = 1, num_buffs, 1 do
 				local buff = active_buffs[i]
-				local buff_template = buff.template
-				local buff_name = buff_template.name
 
-				if name == buff_name then
-					buff_removed = false
+				if not buff.removed then
+					local buff_template = buff.template
+					local buff_name = buff_template.name
 
-					break
+					if name == buff_name then
+						buff_removed = false
+
+						break
+					end
 				end
 			end
 

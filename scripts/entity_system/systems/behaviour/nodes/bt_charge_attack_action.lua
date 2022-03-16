@@ -1,5 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
 BTChargeAttackAction = class(BTChargeAttackAction, BTNode)
 
 BTChargeAttackAction.init = function (self, ...)
@@ -414,6 +415,10 @@ end
 local broadphase_query_result = {}
 
 BTChargeAttackAction._check_overlap = function (self, unit, blackboard, action)
+	if blackboard.is_illusion then
+		return false, false
+	end
+
 	local t = Managers.time:time("game")
 	local radius = action.radius
 	local head_radius = action.head_radius
@@ -550,7 +555,7 @@ BTChargeAttackAction._hit_ai = function (self, unit, hit_unit, action, blackboar
 	if push_data then
 		local stagger_type, stagger_duration = DamageUtils.calculate_stagger(push_data.stagger_impact, push_data.stagger_duration, hit_unit, unit)
 
-		if stagger_type > 0 then
+		if stagger_types.none < stagger_type then
 			local self_pos = POSITION_LOOKUP[unit]
 			local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 			local direction_to_ai = Vector3.normalize(hit_unit_pos - self_pos)

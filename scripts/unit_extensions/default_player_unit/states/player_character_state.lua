@@ -24,6 +24,7 @@ PlayerCharacterState.init = function (self, character_state_init_context, name)
 	self.locomotion_extension = ScriptUnit.extension(unit, "locomotion_system")
 	self.first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	self.status_extension = ScriptUnit.extension(unit, "status_system")
+	self.cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 	self.ai_extension = ScriptUnit.has_extension(unit, "ai_system") and ScriptUnit.extension(unit, "ai_system")
 end
 

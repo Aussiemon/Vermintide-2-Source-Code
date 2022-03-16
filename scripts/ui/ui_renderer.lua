@@ -56,7 +56,7 @@ local function snap_to_position(position)
 	return position
 end
 
-UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_position, gui_size, color, masked, saturated, retained_id)
+UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_position, gui_size, color, masked, saturated, retained_id, point_sample)
 	local snap_pixel_positions = render_settings and render_settings.snap_pixel_positions
 
 	if snap_pixel_positions == nil then
@@ -88,13 +88,17 @@ UIRenderer.script_draw_bitmap = function (gui, render_settings, material, gui_po
 		local material_name = nil
 
 		if not masked then
-			if not saturated then
-				material_name = texture_settings.material_name
-			else
+			if saturated then
 				material_name = texture_settings.saturated_material_name
+			elseif point_sample then
+				material_name = texture_settings.point_sample_material_name
+			else
+				material_name = texture_settings.material_name
 			end
 		elseif saturated then
 			material_name = texture_settings.masked_saturated_material_name
+		elseif point_sample then
+			material_name = texture_settings.masked_point_sample_material_name
 		else
 			material_name = texture_settings.masked_material_name
 		end
@@ -823,7 +827,7 @@ UIRenderer.draw_texture_flip_horizontal = function (self, material, lower_left_c
 	return UIRenderer.script_draw_bitmap_uv(self.gui, self.render_settings, material, uvs_draw_texture_flip_horizontal, gui_position, size, color, masked, saturated)
 end
 
-UIRenderer.draw_texture = function (self, material, position, size, color, masked, saturated, retained_id)
+UIRenderer.draw_texture = function (self, material, position, size, color, masked, saturated, retained_id, point_sample)
 	local gui = self.gui
 
 	if retained_id then
@@ -836,7 +840,7 @@ UIRenderer.draw_texture = function (self, material, position, size, color, maske
 
 	local scale = RESOLUTION_LOOKUP.scale
 
-	return UIRenderer.script_draw_bitmap(gui, self.render_settings, material, Vector3(position[1] * scale, position[2] * scale, position[3] or 0), Vector3(size[1] * scale, size[2] * scale, size[3] or 0), color, masked, saturated, retained_id)
+	return UIRenderer.script_draw_bitmap(gui, self.render_settings, material, Vector3(position[1] * scale, position[2] * scale, position[3] or 0), Vector3(size[1] * scale, size[2] * scale, size[3] or 0), color, masked, saturated, retained_id, point_sample)
 end
 
 UIRenderer.draw_texture_uv = function (self, material, lower_left_corner, size, uvs, color, masked, saturated, retained_id)
@@ -1652,28 +1656,28 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 	uvs[2][1] = corner_uv_size_x
 	uvs[2][2] = 1
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, y_pos, layer), corner_size_vec, color, masked, saturated)
+	UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, y_pos, layer), corner_size_vec, color, masked, saturated)
 
 	uvs[1][1] = 0
 	uvs[1][2] = 0
 	uvs[2][1] = corner_uv_size_x
 	uvs[2][2] = corner_uv_size_y
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, (y_pos + y_size) - corner_size_y, layer), corner_size_vec, color, masked, saturated)
+	UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, (y_pos + y_size) - corner_size_y, layer), corner_size_vec, color, masked, saturated)
 
 	uvs[1][1] = 1 - corner_uv_size_x
 	uvs[1][2] = 0
 	uvs[2][1] = 1
 	uvs[2][2] = corner_uv_size_y
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3((x_pos + x_size) - corner_size_x, (y_pos + y_size) - corner_size_y, layer), corner_size_vec, color, masked, saturated)
+	UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3((x_pos + x_size) - corner_size_x, (y_pos + y_size) - corner_size_y, layer), corner_size_vec, color, masked, saturated)
 
 	uvs[1][1] = 1 - corner_uv_size_x
 	uvs[1][2] = 1 - corner_uv_size_y
 	uvs[2][1] = 1
 	uvs[2][2] = 1
 
-	UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3((x_pos + x_size) - corner_size_x, y_pos, layer), corner_size_vec, color, masked, saturated)
+	UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3((x_pos + x_size) - corner_size_x, y_pos, layer), corner_size_vec, color, masked, saturated)
 
 	if not skip_background then
 		uvs[1][1] = corner_uv_size_x
@@ -1681,7 +1685,7 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 		uvs[2][1] = 1 - corner_uv_size_x
 		uvs[2][2] = 1 - corner_uv_size_y
 
-		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec * 2, color, masked, saturated)
+		UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos + corner_size_x, y_pos + corner_size_y, layer), size - corner_size_vec * 2, color, masked, saturated)
 	end
 
 	if only_corners then
@@ -1725,8 +1729,8 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 
 			tile_vertical_size_vec[2] = segment_size * tile_vertical_size_y
 
-			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
-			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+			UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+			UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
 
 			tile_pos_y = tile_pos_y + tile_vertical_size_y
 			total_size = total_size - tile_vertical_size_y
@@ -1768,8 +1772,8 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 			uvs_u[2][2] = corner_size_y / texture_size_y
 			tile_horizontal_size_vec[1] = segment_size * tile_horizontal_size_x
 
-			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
-			UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
+			UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
+			UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
 
 			tile_pos_x = tile_pos_x + tile_horizontal_size_x
 			total_size = total_size - tile_horizontal_size_x
@@ -1791,8 +1795,8 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 		local math_floor = math.floor
 		local tile_pos_y = y_pos + corner_size_y
 
-		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
-		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+		UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(x_pos, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
+		UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_r, Vector3((x_pos + x_size) - tile_vertical_size_x, tile_pos_y, layer), tile_vertical_size_vec, color, masked, saturated)
 
 		local tile_horizontal_size_vec = UIScaleVectorToResolution(texture_sizes.horizontal)
 		local tile_horizontal_size_x = tile_horizontal_size_vec[1]
@@ -1809,8 +1813,8 @@ UIRenderer.draw_texture_frame = function (self, position, size, texture_id, text
 		uvs[2][2] = 1
 		local tile_pos_x = x_pos + corner_size_x
 
-		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
-		UIRenderer_script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
+		UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs, Vector3(tile_pos_x, y_pos, layer), tile_horizontal_size_vec, color, masked, saturated)
+		UIRenderer.script_draw_bitmap_uv(gui, self.render_settings, texture_id, uvs_u, Vector3(tile_pos_x, (y_pos + y_size) - tile_horizontal_size_y, layer), tile_horizontal_size_vec, color, masked, saturated)
 	end
 end
 

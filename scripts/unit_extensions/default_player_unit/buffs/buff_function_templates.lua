@@ -2,6 +2,7 @@
 --   Code may be incomplete or incorrect.
 BuffFunctionTemplates = BuffFunctionTemplates or {}
 local unit_is_frozen = Unit.is_frozen
+local dot_tick_sound_events = {}
 
 local function get_variable(path_to_movement_setting_to_modify, unit)
 	fassert(#path_to_movement_setting_to_modify > 0, "movement_setting_exists needs at least a movement_setting_to_modify")
@@ -501,9 +502,6 @@ BuffFunctionTemplates.functions = {
 		local thorns_damage = wind_settings.thorns_damage[wind_strength]
 	end,
 	start_dot_damage = function (unit, buff, params)
-		local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
-		buff.next_poison_damage_time = params.t + random_mod_next_dot_time
-
 		if buff.template.start_flow_event then
 			Unit.flow_event(unit, buff.template.start_flow_event)
 		end
@@ -548,56 +546,71 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	apply_dot_damage = function (unit, buff, params)
+		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local t = params.t
+		local next_poison_damage_time = t
 
-		if buff.next_poison_damage_time < t then
-			local health_extension = ScriptUnit.extension(unit, "health_system")
+		if health_extension:is_alive() then
+			local buff_template = buff.template
+			local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
+			next_poison_damage_time = next_poison_damage_time + random_mod_next_dot_time
 
-			if health_extension:is_alive() then
-				local buff_template = buff.template
-				local random_mod_next_dot_time = 0.75 * buff.template.time_between_dot_damages + math.random() * 0.5 * buff.template.time_between_dot_damages
-				buff.next_poison_damage_time = buff.next_poison_damage_time + random_mod_next_dot_time
+			if Managers.state.network.is_server then
+				local attacker_unit = params.attacker_unit
+				local source_attacker_unit = params.source_attacker_unit
+				local used_attacker_unit = (ALIVE[attacker_unit] and attacker_unit) or (ALIVE[source_attacker_unit] and source_attacker_unit)
 
-				if Managers.state.network.is_server then
-					local attacker_unit = params.attacker_unit
-					local source_attacker_unit = params.source_attacker_unit
-					local used_attacker_unit = (ALIVE[attacker_unit] and attacker_unit) or (ALIVE[source_attacker_unit] and source_attacker_unit)
+				if used_attacker_unit then
+					if buff.template.custom_dot_tick_func then
+						BuffFunctionTemplates.functions[buff.template.custom_dot_tick_func](unit, buff, params)
+					else
+						local target_unit = unit
+						local hit_zone_name = buff.template.hit_zone or "full"
+						local attack_direction = Vector3.down()
+						local hit_ragdoll_actor = nil
+						local damage_source = "dot_debuff"
+						local power_level = buff.power_level or DefaultPowerLevel
+						local damage_profile_name = buff_template.damage_profile or "default"
+						local damage_profile = DamageProfileTemplates[damage_profile_name]
+						local target_index = nil
+						local boost_curve_multiplier = 0
+						local is_critical_strike = false
+						local can_damage = true
+						local can_stagger = false
+						local blocking = false
+						local shield_breaking_hit = false
+						local backstab_multiplier, first_hit, total_hits = nil
 
-					if used_attacker_unit then
-						if buff.template.custom_dot_tick_func then
-							BuffFunctionTemplates.functions[buff.template.custom_dot_tick_func](unit, buff, params)
-						else
-							local target_unit = unit
-							local hit_zone_name = buff.template.hit_zone or "full"
-							local attack_direction = Vector3.down()
-							local hit_ragdoll_actor = nil
-							local damage_source = "dot_debuff"
-							local power_level = buff.power_level or DefaultPowerLevel
-							local damage_profile_name = buff_template.damage_profile or "default"
-							local damage_profile = DamageProfileTemplates[damage_profile_name]
-							local target_index = nil
-							local boost_curve_multiplier = 0
-							local is_critical_strike = false
-							local can_damage = true
-							local can_stagger = false
-							local blocking = false
-							local shield_breaking_hit = false
-							local backstab_multiplier, first_hit, total_hits = nil
-
-							DamageUtils.server_apply_hit(t, used_attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
-						end
+						DamageUtils.server_apply_hit(t, used_attacker_unit, target_unit, hit_zone_name, nil, attack_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit, backstab_multiplier, first_hit, total_hits, source_attacker_unit)
 					end
 				end
 			end
+		end
 
-			if buff.template.sound_event and is_local(unit) then
-				local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+		if buff.template.sound_event and is_local(unit) then
+			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+			if first_person_extension then
+				first_person_extension:play_hud_sound_event(buff.template.sound_event)
+			end
+		end
+
+		local perk = buff.template.perk
+		local dot_tick_sound_event = perk and dot_tick_sound_events[perk]
+
+		if dot_tick_sound_event then
+			local attacker_unit = params.source_attacker_unit or AiUtils.get_actual_attacker_unit(params.attacker_unit)
+
+			if is_local(attacker_unit) then
+				local first_person_extension = ScriptUnit.has_extension(attacker_unit, "first_person_system")
 
 				if first_person_extension then
-					first_person_extension:play_hud_sound_event(buff.template.sound_event)
+					first_person_extension:play_hud_sound_event(dot_tick_sound_event)
 				end
 			end
 		end
+
+		return next_poison_damage_time
 	end,
 	remove_dot_damage = function (unit, buff, params)
 		if unit_is_frozen(unit) then
@@ -642,51 +655,53 @@ BuffFunctionTemplates.functions = {
 				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 			end
 		end
-
-		buff.vomit_next_t = params.t + 0
 	end,
 	update_moving_through_vomit = function (unit, buff, params, world)
 		local t = params.t
-		local vomit_next_t = buff.vomit_next_t
 		local buff_template = buff.template
 
-		if vomit_next_t < t then
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
-					local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
+			if health_extension:is_alive() then
+				local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
+				local liquid_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "area_damage_system")
 
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				if liquid_extension then
+					damage = damage * (liquid_extension.buff_damage_multiplier or 1)
 				end
+
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-
-			if status_extension then
-				status_extension:add_fatigue_points(fatigue_type)
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			buff.vomit_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local fatigue_type = buff_template.fatigue_type
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension then
+			status_extension:add_fatigue_points(fatigue_type)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local vomit_next_t = t + buff_template.time_between_dot_damages
+
+		return vomit_next_t
 	end,
 	remove_moving_through_vomit = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -754,51 +769,48 @@ BuffFunctionTemplates.functions = {
 				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 			end
 		end
-
-		buff.plague_next_t = params.t + 0
 	end,
 	update_moving_through_plague = function (unit, buff, params, world)
 		local t = params.t
-		local plague_next_t = buff.plague_next_t
 		local buff_template = buff.template
 
-		if plague_next_t < t then
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
-					local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
+			if health_extension:is_alive() then
+				local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-
-			if status_extension then
-				status_extension:add_fatigue_points(fatigue_type)
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			buff.plague_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local fatigue_type = buff_template.fatigue_type
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension then
+			status_extension:add_fatigue_points(fatigue_type)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local plague_next_t = t + buff_template.time_between_dot_damages
+
+		return plague_next_t
 	end,
 	remove_moving_through_plague = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -823,44 +835,41 @@ BuffFunctionTemplates.functions = {
 				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
 			end
 		end
-
-		buff.poison_next_t = params.t + 0
 	end,
 	update_mutator_life_thorns_poison = function (unit, buff, params, world)
 		local t = params.t
-		local poison_next_t = buff.poison_next_t
 		local buff_template = buff.template
 
-		if poison_next_t < t then
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
-					local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage
-					local damage_source = buff.damage_source
+			if health_extension:is_alive() then
+				local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage
+				local damage_source = buff.damage_source
 
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-
-			if status_extension then
-				status_extension:add_fatigue_points(fatigue_type)
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			buff.poison_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local fatigue_type = buff_template.fatigue_type
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension then
+			status_extension:add_fatigue_points(fatigue_type)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local poison_next_t = t + buff_template.time_between_dot_damages
+
+		return poison_next_t
 	end,
 	remove_mutator_life_thorns_poison = function (unit, buff, params, world)
 		return
@@ -969,46 +978,43 @@ BuffFunctionTemplates.functions = {
 		local pushed_velocity = pushed_direction * push_speed
 
 		locomotion_extension:add_external_velocity(pushed_velocity)
-
-		buff.vomit_next_t = params.t
 	end,
 	update_vermintide_in_face = function (unit, buff, params, world)
 		local t = params.t
-		local vomit_next_t = buff.vomit_next_t
 		local buff_template = buff.template
 
-		if vomit_next_t < t then
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
-					local attacker_unit = params.attacker_unit
-					attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
+			if health_extension:is_alive() then
+				local attacker_unit = params.attacker_unit
+				attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-
-			if status_extension then
-				status_extension:add_fatigue_points(fatigue_type)
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			buff.vomit_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local fatigue_type = buff_template.fatigue_type
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension then
+			status_extension:add_fatigue_points(fatigue_type)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local next_vomit_t = t + buff_template.time_between_dot_damages
+
+		return next_vomit_t
 	end,
 	remove_vermintide_in_face = function (unit, buff, params, world)
 		return
@@ -1046,6 +1052,11 @@ BuffFunctionTemplates.functions = {
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
 			pushed_direction = Vector3.normalize(to_victim)
+			local attacker_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+			if attacker_buff_extension then
+				buff.buff_damage_multiplier = attacker_buff_extension:apply_buffs_to_value(1, "damage_dealt")
+			end
 		else
 			pushed_direction = Vector3.backward()
 		end
@@ -1055,52 +1066,53 @@ BuffFunctionTemplates.functions = {
 		local pushed_velocity = pushed_direction * push_speed
 
 		locomotion_extension:add_external_velocity(pushed_velocity)
-
-		buff.vomit_next_t = params.t
 	end,
 	update_vomit_in_face = function (unit, buff, params, world)
 		local t = params.t
-		local vomit_next_t = buff.vomit_next_t
 		local buff_template = buff.template
 
-		if vomit_next_t < t then
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
-					local attacker_unit = params.attacker_unit
-					local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
+			if health_extension:is_alive() then
+				local attacker_unit = params.attacker_unit
+				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
+				if buff.buff_damage_multiplier then
+					damage = damage * buff.buff_damage_multiplier
 				end
+
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-
-			if status_extension then
-				status_extension:add_fatigue_points(fatigue_type)
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			buff.vomit_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local fatigue_type = buff_template.fatigue_type
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension then
+			status_extension:add_fatigue_points(fatigue_type)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local vomit_next_t = t + buff_template.time_between_dot_damages
+
+		return vomit_next_t
 	end,
 	remove_vomit_in_face = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1132,52 +1144,49 @@ BuffFunctionTemplates.functions = {
 			local damage_source = (is_enemy and attacker_breed_name) or "dot_debuff"
 			buff.damage_source = damage_source
 		end
-
-		buff.vortex_next_t = params.t
 	end,
 	update_vortex = function (unit, buff, params, world)
 		local t = params.t
-		local vortex_next_t = buff.vortex_next_t
 		local buff_template = buff.template
 
-		if vortex_next_t < t then
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-				if health_extension:is_alive() then
-					local attacker_unit = params.attacker_unit
-					local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
+			if health_extension:is_alive() then
+				local attacker_unit = params.attacker_unit
+				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local fatigue_type = buff_template.fatigue_type
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
-
-			if status_extension then
-				status_extension:add_fatigue_points(fatigue_type)
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			buff.vortex_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local fatigue_type = buff_template.fatigue_type
+		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+		if status_extension then
+			status_extension:add_fatigue_points(fatigue_type)
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local vortex_next_t = t + buff_template.time_between_dot_damages
+
+		return vortex_next_t
 	end,
 	remove_vortex = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1229,8 +1238,6 @@ BuffFunctionTemplates.functions = {
 		buff.warpfire_next_t = params.t + 0.1
 	end,
 	apply_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
-		local difficulty_name = Managers.state.difficulty:get_difficulty()
-		local buff_template = buff.template
 		local breed = Unit.get_data(unit, "breed")
 		buff.armor_type = breed.armor_category or 1
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1247,39 +1254,36 @@ BuffFunctionTemplates.functions = {
 			buff.damage = damage
 			buff.damage_source = (warpfire_unit_breed and warpfire_unit_breed.name) or "dot_debuff"
 		end
-
-		buff.warpfire_next_t = params.t + 0.1
 	end,
 	update_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
 		local t = params.t
-		local warpfire_next_t = buff.warpfire_next_t
+		local buff_template = buff.template
 
-		if warpfire_next_t < t then
-			local buff_template = buff.template
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+			if health_extension:is_alive() then
+				local attacker_unit = params.attacker_unit
+				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local buff_template = buff.template
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-				if health_extension:is_alive() then
-					local attacker_unit = params.attacker_unit
-					local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
-
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			buff.warpfire_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local warpfire_next_t = t + buff_template.time_between_dot_damages
+
+		return warpfire_next_t
 	end,
 	remove_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1290,41 +1294,39 @@ BuffFunctionTemplates.functions = {
 	end,
 	update_moving_through_warpfire = function (unit, buff, params, world)
 		local t = params.t
-		local warpfire_next_t = buff.warpfire_next_t
+		local buff_template = buff.template
 
-		if warpfire_next_t < t then
-			local buff_template = buff.template
+		if Managers.state.network.is_server then
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-			if Managers.state.network.is_server then
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+			if health_extension:is_alive() then
+				local attacker_unit = params.attacker_unit
+				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-				if health_extension:is_alive() then
-					local attacker_unit = params.attacker_unit
-					local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
-
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			local buff_extension = ScriptUnit.extension(unit, "buff_system")
-			local slowdown_buff_name = buff_template.slowdown_buff_name
-
-			if slowdown_buff_name then
-				buff_extension:add_buff(slowdown_buff_name, params)
-			end
-
-			buff.warpfire_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local buff_extension = ScriptUnit.extension(unit, "buff_system")
+		local slowdown_buff_name = buff_template.slowdown_buff_name
+
+		if slowdown_buff_name then
+			buff_extension:add_buff(slowdown_buff_name, params)
+		end
+
+		local warpfire_next_t = t + buff_template.time_between_dot_damages
+
+		return warpfire_next_t
 	end,
 	update_heal_ticks = function (unit, buff, params, world)
 		local t = params.t
@@ -1670,40 +1672,36 @@ BuffFunctionTemplates.functions = {
 				locomotion_extension:add_external_velocity(pushed_velocity)
 			end
 		end
-
-		buff.warpfire_next_t = params.t
 	end,
 	update_warpfirethrower_in_face = function (unit, buff, params, world)
 		local t = params.t
-		local warpfire_next_t = buff.warpfire_next_t
+		local buff_template = buff.template
 
-		if warpfire_next_t < t then
-			local buff_template = buff.template
+		if Managers.state.network.is_server then
+			local attacker_unit_is_alive = ALIVE[params.attacker_unit]
+			local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-			if Managers.state.network.is_server then
-				local attacker_unit_is_alive = ALIVE[params.attacker_unit]
-				local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+			if health_extension:is_alive() then
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-				if health_extension:is_alive() then
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
-
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
-
-				local is_friendly_target = not DamageUtils.is_enemy(attacker_unit, unit)
-				local target_dead = AiUtils.unit_alive(unit)
-
-				if attacker_unit_is_alive and is_friendly_target and target_dead then
-					QuestSettings.check_num_enemies_killed_by_warpfire(unit, attacker_unit)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
 
-			buff.warpfire_next_t = t + buff_template.time_between_dot_damages
+			local is_friendly_target = not DamageUtils.is_enemy(attacker_unit, unit)
+			local target_dead = AiUtils.unit_alive(unit)
+
+			if attacker_unit_is_alive and is_friendly_target and target_dead then
+				QuestSettings.check_num_enemies_killed_by_warpfire(unit, attacker_unit)
+			end
 		end
+
+		local warpfire_next_t = t + buff_template.time_between_dot_damages
+
+		return warpfire_next_t
 	end,
 	remove_warpfirethrower_in_face = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -1762,39 +1760,35 @@ BuffFunctionTemplates.functions = {
 				locomotion_extension:add_external_velocity(pushed_velocity)
 			end
 		end
-
-		buff.warpfire_next_t = params.t
 	end,
 	update_warpfire_in_face = function (unit, buff, params, world)
 		local t = params.t
-		local warpfire_next_t = buff.warpfire_next_t
+		local buff_template = buff.template
 
-		if warpfire_next_t < t then
-			local buff_template = buff.template
+		if Managers.state.network.is_server then
+			local attacker_unit_is_alive = ALIVE[params.attacker_unit]
+			local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
+			local health_extension = ScriptUnit.extension(unit, "health_system")
 
-			if Managers.state.network.is_server then
-				local attacker_unit_is_alive = ALIVE[params.attacker_unit]
-				local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
-				local health_extension = ScriptUnit.extension(unit, "health_system")
+			if health_extension:is_alive() then
+				local armor_type = buff.armor_type
+				local damage_type = buff_template.damage_type
+				local damage = buff.damage[armor_type]
+				local damage_source = buff.damage_source
 
-				if health_extension:is_alive() then
-					local armor_type = buff.armor_type
-					local damage_type = buff_template.damage_type
-					local damage = buff.damage[armor_type]
-					local damage_source = buff.damage_source
-
-					DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
-				end
+				DamageUtils.add_damage_network(unit, attacker_unit, damage, "torso", damage_type, nil, Vector3(1, 0, 0), damage_source)
 			end
-
-			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
-
-			if first_person_extension then
-				first_person_extension:play_hud_sound_event("Play_player_damage_puke")
-			end
-
-			buff.warpfire_next_t = t + buff_template.time_between_dot_damages
 		end
+
+		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+		if first_person_extension then
+			first_person_extension:play_hud_sound_event("Play_player_damage_puke")
+		end
+
+		local warpfire_next_t = t + buff_template.time_between_dot_damages
+
+		return warpfire_next_t
 	end,
 	remove_warpfire_in_face = function (unit, buff, params, world)
 		local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
@@ -3744,6 +3738,11 @@ BuffFunctionTemplates.functions = {
 				local buff_system = Managers.state.entity:system("buff_system")
 				local buff_to_add = template.buff_to_add
 				local has_buff = buff_extension:has_buff_type(buff_to_add)
+
+				if ranged_slot_buff_type == "RANGED" then
+					ranged_slot_buff_type = "MELEE_1H"
+				end
+
 				local add_buff = melee_slot_buff_type == buff_type and ranged_slot_buff_type == buff_type
 
 				if not has_buff then
@@ -4188,12 +4187,22 @@ BuffFunctionTemplates.functions = {
 	end,
 	end_sienna_adept_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
-			local career_extension = ScriptUnit.extension(unit, "career_system")
 			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
 
-			status_extension:set_invisible(false)
-			status_extension:set_noclip(false)
+			status_extension:remove_noclip_stacking()
+
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
 			career_extension:set_state("default")
+
+			if removing_stealth and not is_bot(unit) then
+				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+				MOOD_BLACKBOARD.skill_shade = false
+			end
 		end
 	end,
 	sienna_adept_double_trail_talent_start_ability_cooldown_add = function (unit, buff, params)
@@ -4223,138 +4232,171 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	apply_shade_activated_ability = function (unit, buff, params, world)
-		if is_husk(unit) or (is_server() and is_bot(unit)) then
+		if is_husk(unit) then
 			Unit.flow_event(unit, "vfx_career_ability_start")
 		end
 
-		if is_local(unit) or (is_server() and is_bot(unit)) then
-			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		if is_local(unit) then
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+
+			status_extension:add_stealth_stacking()
+			status_extension:add_noclip_stacking()
+		end
+	end,
+	kerillian_shade_noclip_on = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
 
 			if status_extension then
-				status_extension:add_shade_stealth_counter()
+				status_extension:add_noclip_stacking()
 			end
 		end
 	end,
-	end_shade_activated_ability = function (unit, buff, params, world)
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
-		local allowed_to_trigger = false
-		local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
+	kerillian_shade_noclip_off = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
 
-		if talent_extension and talent_extension:has_talent("kerillian_shade_passive_stealth_on_backstab_kill") then
-			if status_extension and (status_extension:subtract_shade_stealth_counter() == 0 or status_extension:subtract_shade_stealth_counter() == 1) then
-				allowed_to_trigger = true
+			if status_extension then
+				status_extension:remove_noclip_stacking()
+
+				MOOD_BLACKBOARD.skill_huntsman_surge = false
 			end
-		elseif status_extension and status_extension:subtract_shade_stealth_counter() == 0 then
-			allowed_to_trigger = true
+		end
+	end,
+	kerillian_shade_missed_combo_window = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] and not buff.killed_target then
+			local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
+			local has_buff = buff_extension:get_buff_type("kerillian_shade_ult_invis")
+
+			if has_buff then
+				buff_extension:remove_buff(has_buff.id)
+			end
+		end
+	end,
+	shade_activated_ability_on_remove = function (unit, buff, params, world)
+		local status_extension = nil
+
+		if is_local(unit) then
+			status_extension = ScriptUnit.extension(unit, "status_system")
+
+			status_extension:remove_stealth_stacking()
+			status_extension:remove_noclip_stacking()
 		end
 
-		if allowed_to_trigger == true then
-			if is_local(unit) then
+		local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
+		local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+		if not talent_extension or not buff_extension then
+			return
+		end
+
+		if talent_extension:has_talent("kerillian_shade_activated_stealth_combo") then
+			buff_extension:add_buff("kerillian_shade_ult_invis")
+		end
+
+		if talent_extension:has_talent("kerillian_shade_activated_ability_restealth") and buff.template.restealth then
+			buff_extension:add_buff("kerillian_shade_activated_ability_restealth")
+		end
+
+		if talent_extension:has_talent("kerillian_shade_activated_ability_phasing") then
+			buff_extension:add_buff("kerillian_shade_phasing_buff")
+			buff_extension:add_buff("kerillian_shade_movespeed_buff")
+			buff_extension:add_buff("kerillian_shade_power_buff")
+		end
+
+		if is_local(unit) then
+			if not is_bot(unit) and status_extension:current_stealth_counter() == 0 then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
 
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-
-				career_extension:set_state("default")
-
-				local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
-
-				if talent_extension:has_talent("kerillian_shade_activated_ability_quick_cooldown") then
-					local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
-
-					buff_extension:add_buff("kerillian_shade_activated_ability_quick_cooldown_crit")
-				end
-
 				MOOD_BLACKBOARD.skill_shade = false
-
-				if Managers.state.network:game() then
-					local status_extension = ScriptUnit.extension(unit, "status_system")
-
-					status_extension:set_is_dodging(false)
-				end
 			end
 
-			if is_local(unit) or (is_server() and is_bot(unit)) then
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:set_state("default")
+
+			if Managers.state.network:game() then
 				local status_extension = ScriptUnit.extension(unit, "status_system")
 
-				status_extension:set_invisible(false)
-				status_extension:set_noclip(false)
+				status_extension:set_is_dodging(false)
+			end
 
-				local events = {
-					"Play_career_ability_kerillian_shade_exit",
-					"Stop_career_ability_kerillian_shade_loop_husk"
-				}
-				local network_manager = Managers.state.network
-				local network_transmit = network_manager.network_transmit
-				local is_server = Managers.player.is_server
-				local unit_id = network_manager:unit_game_object_id(unit)
-				local node_id = 0
+			local events = {
+				"Play_career_ability_kerillian_shade_exit",
+				"Stop_career_ability_kerillian_shade_loop_husk"
+			}
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local is_server = Managers.player.is_server
+			local unit_id = network_manager:unit_game_object_id(unit)
+			local node_id = 0
 
-				for i = 1, #events, 1 do
-					local event = events[i]
-					local event_id = NetworkLookup.sound_events[event]
+			for i = 1, #events, 1 do
+				local event = events[i]
+				local event_id = NetworkLookup.sound_events[event]
 
-					if is_server then
-						network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-					else
-						network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-					end
+				if is_server then
+					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+				else
+					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
 				end
 			end
+		end
+	end,
+	remove_shade_cheat_death = function (unit, buff, params, world)
+		if ALIVE[unit] then
+			MOOD_BLACKBOARD.skill_huntsman_surge = false
 		end
 	end,
 	end_shade_activated_ability_short = function (unit, buff, params, world)
-		local status_extension = ScriptUnit.has_extension(unit, "status_system")
+		if is_local(unit) then
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
 
-		if status_extension and status_extension:subtract_shade_stealth_counter() == 0 then
-			if is_local(unit) then
+			status_extension:remove_noclip_stacking()
+
+			local events = {
+				"Play_career_ability_kerillian_shade_exit",
+				"Stop_career_ability_kerillian_shade_loop_husk"
+			}
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local is_server = Managers.player.is_server
+			local unit_id = network_manager:unit_game_object_id(unit)
+			local node_id = 0
+
+			for i = 1, #events, 1 do
+				local event = events[i]
+				local event_id = NetworkLookup.sound_events[event]
+
+				if is_server then
+					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+				else
+					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+				end
+			end
+
+			if not is_bot(unit) and removing_stealth then
 				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
 				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
 
-				local career_extension = ScriptUnit.extension(unit, "career_system")
-
-				career_extension:set_state("default")
-
 				MOOD_BLACKBOARD.skill_shade = false
-
-				if Managers.state.network:game() then
-					local status_extension = ScriptUnit.extension(unit, "status_system")
-
-					status_extension:set_is_dodging(false)
-				end
 			end
 
-			if is_local(unit) or (is_server() and is_bot(unit)) then
+			if Managers.state.network:game() then
 				local status_extension = ScriptUnit.extension(unit, "status_system")
 
-				status_extension:set_invisible(false)
-				status_extension:set_noclip(false)
-
-				local events = {
-					"Play_career_ability_kerillian_shade_exit",
-					"Stop_career_ability_kerillian_shade_loop_husk"
-				}
-				local network_manager = Managers.state.network
-				local network_transmit = network_manager.network_transmit
-				local is_server = Managers.player.is_server
-				local unit_id = network_manager:unit_game_object_id(unit)
-				local node_id = 0
-
-				for i = 1, #events, 1 do
-					local event = events[i]
-					local event_id = NetworkLookup.sound_events[event]
-
-					if is_server then
-						network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-					else
-						network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-					end
-				end
+				status_extension:set_is_dodging(false)
 			end
+
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:set_state("default")
 		end
 	end,
 	on_crit_passive_removed = function (unit, buff, params)
@@ -4390,61 +4432,60 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	apply_huntsman_activated_ability = function (unit, buff, params)
-		if is_husk(unit) or (is_server() and is_bot(unit)) then
+		if is_husk(unit) then
 			Unit.flow_event(unit, "vfx_career_ability_start")
+		end
+
+		if is_local(unit) then
+			local status_extension = ScriptUnit.has_extension(unit, "status_system")
+
+			status_extension:add_stealth_stacking()
 		end
 	end,
 	end_huntsman_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
 			local career_extension = ScriptUnit.extension(unit, "career_system")
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-
-			if status_extension:is_invisible() then
-				MOOD_BLACKBOARD.skill_huntsman_stealth = false
-			else
-				MOOD_BLACKBOARD.skill_huntsman_surge = false
-			end
-		end
-
-		if is_local(unit) or (is_server() and is_bot(unit)) then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-			local career_extension = ScriptUnit.extension(unit, "career_system")
 
 			career_extension:set_state("default")
 
-			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
-			local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
+			local events = {
+				"Play_career_ability_markus_huntsman_exit",
+				"Stop_career_ability_markus_huntsman_loop_husk"
+			}
+			local network_manager = Managers.state.network
+			local network_transmit = network_manager.network_transmit
+			local is_server = Managers.player.is_server
+			local unit_id = network_manager:unit_game_object_id(unit)
+			local node_id = 0
 
-			if status_extension:is_invisible() then
-				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			for i = 1, #events, 1 do
+				local event = events[i]
+				local event_id = NetworkLookup.sound_events[event]
 
-				status_extension:set_invisible(false)
-				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
-				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
-
-				local events = {
-					"Play_career_ability_markus_huntsman_exit",
-					"Stop_career_ability_markus_huntsman_loop_husk"
-				}
-				local network_manager = Managers.state.network
-				local network_transmit = network_manager.network_transmit
-				local is_server = Managers.player.is_server
-				local unit_id = network_manager:unit_game_object_id(unit)
-				local node_id = 0
-
-				for i = 1, #events, 1 do
-					local event = events[i]
-					local event_id = NetworkLookup.sound_events[event]
-
-					if is_server then
-						network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-					else
-						network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-					end
+				if is_server then
+					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
+				else
+					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
 				end
 			end
 
-			career_extension:set_state("default")
+			if not is_bot(unit) then
+				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+				if removing_stealth then
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+					MOOD_BLACKBOARD.skill_shade = false
+				end
+
+				MOOD_BLACKBOARD.skill_huntsman_surge = false
+				MOOD_BLACKBOARD.skill_huntsman_stealth = false
+
+				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
+				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
+			end
 		end
 	end,
 	end_slayer_activated_ability = function (unit, buff, params)
@@ -4453,13 +4494,16 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			status_extension:set_noclip(false)
-			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_exit")
+			status_extension:remove_noclip_stacking()
 			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_slayer_exit", unit, 0)
-			first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_slayer_loop")
 			career_extension:set_state("default")
 
-			MOOD_BLACKBOARD.skill_slayer = false
+			if not is_bot(unit) then
+				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_slayer_exit")
+				first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_slayer_loop")
+
+				MOOD_BLACKBOARD.skill_slayer = false
+			end
 		end
 	end,
 	add_victor_zealot_invulnerability_cooldown = function (unit, buff, params)
@@ -4476,13 +4520,16 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			status_extension:set_noclip(false)
-			first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_exit")
+			status_extension:remove_noclip_stacking()
 			first_person_extension:play_remote_unit_sound_event("Play_career_ability_victor_zealot_exit", unit, 0)
-			first_person_extension:play_hud_sound_event("Stop_career_ability_victor_zealot_loop")
 			career_extension:set_state("default")
 
-			MOOD_BLACKBOARD.skill_zealot = false
+			if not is_bot(unit) then
+				first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_exit")
+				first_person_extension:play_hud_sound_event("Stop_career_ability_victor_zealot_loop")
+
+				MOOD_BLACKBOARD.skill_zealot = false
+			end
 		end
 	end,
 	bardin_ironbreaker_stacking_buff_gromril = function (unit, buff, params)
@@ -4492,10 +4539,7 @@ BuffFunctionTemplates.functions = {
 		local has_buff = buff_extension:get_non_stacking_buff(activation_buff)
 
 		if has_buff then
-			if not buff.buff_ids then
-				buff.buff_ids = {}
-			end
-
+			buff.buff_ids = buff.buff_ids or {}
 			local num_stacks = #buff.buff_ids
 
 			if num_stacks < template.max_sub_buff_stacks then
@@ -4503,9 +4547,6 @@ BuffFunctionTemplates.functions = {
 				local stack_buff_id = buff_extension:add_buff(buff_to_add)
 				buff.buff_ids[num_stacks + 1] = stack_buff_id
 			end
-		else
-			local t = Managers.time:time("game")
-			buff._next_update_t = t + 0.5
 		end
 	end,
 	update_bardin_ironbreaker_activated_ability = function (unit, buff, params)
@@ -4536,15 +4577,25 @@ BuffFunctionTemplates.functions = {
 		if is_local(unit) then
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			status_extension:set_invisible(false)
-			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit")
 			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_exit", unit, 0)
-			first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_ranger_loop")
-			career_extension:set_state("default")
 
-			MOOD_BLACKBOARD.skill_ranger = false
+			if not is_bot(unit) then
+				if removing_stealth then
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+					MOOD_BLACKBOARD.skill_shade = false
+				end
+
+				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit")
+				first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_ranger_loop")
+
+				MOOD_BLACKBOARD.skill_ranger = false
+			end
+
+			career_extension:set_state("default")
 		end
 
 		local side = Managers.state.side.side_by_unit[unit]
@@ -4608,28 +4659,35 @@ BuffFunctionTemplates.functions = {
 			career_extension:set_state("bardin_activate_ranger")
 		end
 
-		status_extension:set_invisible(true)
+		status_extension:add_stealth_stacking()
 	end,
 	ranger_activated_ability_buff_remove = function (owner_unit, buff, params)
 		local unit = owner_unit
-		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		if is_local(unit) then
-			local career_extension = ScriptUnit.extension(unit, "career_system")
+			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
 
-			if not is_bot(owner_unit) then
+			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_exit", unit, 0)
+
+			local career_extension = ScriptUnit.extension(unit, "career_system")
+
+			career_extension:set_state("default")
+
+			if not is_bot(unit) then
 				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_bardin_ranger_loop")
 
 				MOOD_BLACKBOARD.skill_ranger = false
+
+				if removing_stealth then
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+					MOOD_BLACKBOARD.skill_shade = false
+				end
 			end
-
-			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_exit", unit, 0)
-			career_extension:set_state("default")
 		end
-
-		status_extension:set_invisible(false)
 	end,
 	bardin_ranger_smoke_buff = function (owner_unit, buff, params)
 		if not owner_unit or not buff.area_buff_unit then
@@ -4762,17 +4820,25 @@ BuffFunctionTemplates.functions = {
 	end,
 	end_maidenguard_activated_ability = function (unit, buff, params)
 		if is_local(unit) then
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
+
+			status_extension:remove_noclip_stacking()
+
 			if not is_bot(unit) then
 				local fov_multiplier = 1
 				local lerp_time = 0.5
 
 				Managers.state.camera:set_additional_fov_multiplier_with_lerp_time(fov_multiplier, lerp_time)
+
+				if removing_stealth then
+					local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+
+					MOOD_BLACKBOARD.skill_shade = false
+				end
 			end
-
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-
-			status_extension:set_invisible(false)
-			status_extension:set_noclip(false)
 
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
@@ -4794,7 +4860,7 @@ BuffFunctionTemplates.functions = {
 		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			status_extension:set_noclip(false)
+			status_extension:remove_noclip_stacking()
 		end
 	end,
 	start_activated_ability_cooldown = function (unit, buff, params)
@@ -4987,38 +5053,43 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	apply_twitch_invisibility_buff = function (unit, buff, params)
-		if is_local(unit) or (is_server() and is_bot(unit)) then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-
-			status_extension:set_invisible(true)
-			status_extension:set_noclip(true)
-		end
-
 		if is_local(unit) then
-			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local applying_stealth = status_extension:add_stealth_stacking()
 
-			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
-			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
+			status_extension:add_noclip_stacking()
 
-			MOOD_BLACKBOARD.skill_shade = true
+			if not is_bot(unit) then
+				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter_small")
+
+				if applying_stealth then
+					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
+				end
+
+				MOOD_BLACKBOARD.skill_shade = true
+			end
 		end
 	end,
 	update_twitch_invisibility_buff = function (unit, buff, params)
 		return
 	end,
 	remove_twitch_invisibility_buff = function (unit, buff, params)
-		if is_local(unit) or (is_server() and is_bot(unit)) then
+		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
 
-			status_extension:set_invisible(false)
-			status_extension:set_noclip(false)
+			status_extension:remove_noclip_stacking()
 
-			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			if removing_stealth and not is_bot(unit) then
+				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
-			first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
+				first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
 
-			MOOD_BLACKBOARD.skill_shade = false
+				MOOD_BLACKBOARD.skill_shade = false
+			end
 		end
 	end,
 	apply_twitch_infinite_bombs = function (unit, buff, params)

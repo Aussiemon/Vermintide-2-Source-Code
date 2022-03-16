@@ -779,7 +779,7 @@ end
 
 HeroViewStateLoot._update_animations = function (self, dt)
 	if self._chest_presentation_active then
-		local gamepad_active = Managers.input:is_device_active("gamepad")
+		local mouse_active = Managers.input:is_device_active("mouse")
 
 		self:_animate_reward_options_entry(dt)
 
@@ -804,7 +804,7 @@ HeroViewStateLoot._update_animations = function (self, dt)
 					self:play_sound(sound_event)
 				end
 
-				local is_console_selected = gamepad_active and self._console_selection_index == index
+				local is_console_selected = not mouse_active and self._console_selection_index == index
 
 				if button_hotspot.is_hover or is_console_selected or self._auto_open_rewards_on_complete then
 					glow_alpha_progress = math.min(glow_alpha_progress + speed, 1)
@@ -1160,9 +1160,9 @@ HeroViewStateLoot._play_sound = function (self, sound_event)
 end
 
 HeroViewStateLoot._handle_gamepad_input = function (self, dt, t)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 

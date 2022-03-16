@@ -106,14 +106,34 @@ local ability_widget_definition = {
 				content_check_function = function (content, style)
 					return Managers.input:is_device_active("gamepad")
 				end
+			},
+			{
+				style_id = "ability_cooldown",
+				pass_type = "text",
+				text_id = "ability_cooldown",
+				retained_mode = RETAINED_MODE_ENABLED,
+				content_check_function = function (content)
+					return Application.user_setting("numeric_ui") and not content.can_use_ability
+				end
+			},
+			{
+				style_id = "ability_cooldown_shadow",
+				pass_type = "text",
+				text_id = "ability_cooldown",
+				retained_mode = RETAINED_MODE_ENABLED,
+				content_check_function = function (content)
+					return Application.user_setting("numeric_ui") and not content.can_use_ability
+				end
 			}
 		}
 	},
 	content = {
 		input_text_gamepad = "$KEY;Player__ability:",
 		ability_bar_highlight = "hud_player_ability_bar_glow",
+		can_use_ability = false,
 		input_text = "",
 		on_cooldown = false,
+		ability_cooldown = "-:-",
 		can_use = false,
 		ability_effect = {
 			texture_id = "ability_effect",
@@ -280,6 +300,48 @@ local ability_widget_definition = {
 				0,
 				22,
 				2
+			}
+		},
+		ability_cooldown = {
+			vertical_alignment = "center",
+			font_type = "hell_shark_header",
+			font_size = 18,
+			horizontal_alignment = "center",
+			text_color = {
+				255,
+				250,
+				250,
+				250
+			},
+			offset = {
+				524,
+				78,
+				22
+			},
+			size = {
+				100,
+				18
+			}
+		},
+		ability_cooldown_shadow = {
+			vertical_alignment = "center",
+			font_type = "hell_shark_header",
+			font_size = 18,
+			horizontal_alignment = "center",
+			text_color = {
+				255,
+				0,
+				0,
+				0
+			},
+			offset = {
+				525,
+				75,
+				21
+			},
+			size = {
+				100,
+				18
 			}
 		}
 	},

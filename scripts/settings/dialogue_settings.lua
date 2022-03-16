@@ -1135,5 +1135,67 @@ SpecialSubtitleEvents = {
 		nbr_vo_evil_sword_pickup_04 = 0
 	}
 }
+local NEUTRAL_COLOR = {
+	255,
+	255,
+	217,
+	192
+}
+local HOSTILE_COLOR = {
+	255,
+	180,
+	37,
+	37
+}
+DialogueSettings.speaker_color_lookup = {
+	default = NEUTRAL_COLOR,
+	bright_wizard = {
+		255,
+		255,
+		93,
+		0
+	},
+	wood_elf = {
+		255,
+		55,
+		123,
+		44
+	},
+	witch_hunter = {
+		255,
+		153,
+		184,
+		193
+	},
+	empire_soldier = {
+		255,
+		204,
+		128,
+		128
+	},
+	dwarf_ranger = {
+		255,
+		187,
+		235,
+		30
+	},
+	inn_keeper = NEUTRAL_COLOR,
+	ferry_lady = NEUTRAL_COLOR,
+	catrinne = NEUTRAL_COLOR,
+	npc_cage_villager = NEUTRAL_COLOR,
+	player_gods = NEUTRAL_COLOR,
+	chaos_exalted_sorcerer_drachenfels = HOSTILE_COLOR,
+	npc_gatekeeper_daemon = HOSTILE_COLOR,
+	npc_whisper_daemon = HOSTILE_COLOR,
+	blightreaper = HOSTILE_COLOR,
+	blightreaper_alt = HOSTILE_COLOR,
+	chaos_exalted_champion = HOSTILE_COLOR,
+	chaos_exalted_champion2 = HOSTILE_COLOR,
+	chaos_exalted_champion_norsca = HOSTILE_COLOR,
+	chaos_exalted_champion_warcamp = HOSTILE_COLOR,
+	chaos_exalted_sorcerer = HOSTILE_COLOR,
+	grey_seer = HOSTILE_COLOR,
+	skaven_storm_vermin_warlord = HOSTILE_COLOR
+}
 
 return

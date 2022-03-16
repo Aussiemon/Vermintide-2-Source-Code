@@ -76,6 +76,9 @@ HeroWindowCosmeticsLoadoutConsole.create_ui_elements = function (self, params, o
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 6, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
+
+	widgets_by_name.loadout_grid.content.profile_index = self.params.profile_index
+	widgets_by_name.loadout_grid.content.career_index = self.params.career_index
 end
 
 HeroWindowCosmeticsLoadoutConsole.on_exit = function (self, params)
@@ -162,9 +165,9 @@ HeroWindowCosmeticsLoadoutConsole._is_button_pressed = function (self, widget)
 end
 
 HeroWindowCosmeticsLoadoutConsole._handle_gamepad_input = function (self, dt, t)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 

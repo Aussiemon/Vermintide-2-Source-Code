@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 50,
 	look_at_range = 40,
@@ -35,7 +36,7 @@ local breed_data = {
 	race = "beastmen",
 	use_backstab_vo = true,
 	proximity_system_check = true,
-	poison_resistance = 100,
+	poison_resistance = 70,
 	armor_category = 1,
 	dialogue_source_name = "beastmen_ungor",
 	headshot_coop_stamina_fatigue_type = "headshot_special",
@@ -84,20 +85,20 @@ local breed_data = {
 	stagger_duration_difficulty_mod = BreedTweaks.stagger_duration_difficulty_mod.default,
 	hit_mass_counts = BreedTweaks.hit_mass_counts.ungor,
 	bloodlust_health = BreedTweaks.bloodlust_health.beastmen_horde,
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
-		if blackboard.stagger_type == 3 then
-			if stagger == 3 and blackboard.heavy_stagger_immune_time then
-				stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+		if blackboard.stagger_type == stagger_types.heavy then
+			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
-			elseif stagger ~= 3 and blackboard.stagger_immune_time then
-				stagger = 0
+			elseif stagger_type ~= stagger_types.heavy and blackboard.stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	wwise_voices = {
 		"ungor_profile_a",
@@ -599,10 +600,10 @@ local action_data = {
 				return stagger_anims, "idle"
 			end
 
-			if blackboard.stagger_type == 3 then
+			if blackboard.stagger_type == stagger_types.heavy then
 				blackboard.stagger_immune_time = t + 2.25
 				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_types.explosion then
 				blackboard.stagger_immune_time = t + 3.5
 				blackboard.heavy_stagger_immune_time = t + 3
 			end

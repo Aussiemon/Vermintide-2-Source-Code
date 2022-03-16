@@ -7,7 +7,7 @@ local buff_tweak_data = {
 		bonus = 0.2
 	},
 	kerillian_shade_passive = {
-		bonus = 0.5
+		bonus = 1
 	},
 	kerillian_shade_passive_crit = {
 		bonus = 0.05
@@ -34,9 +34,22 @@ local buff_tweak_data = {
 	kerillian_shade_stacking_headshot_damage_on_headshot_buff = {
 		max_stacks = 10,
 		multiplier = 0.1,
-		duration = 5
+		duration = 10
+	},
+	kerillian_shade_headshot_backstab_counter = {
+		max_stacks = 2
 	},
 	kerillian_shade_passive_improved = {
+		bonus = 0.25
+	},
+	kerillian_shade_backstabs_cooldown_regeneration_buff = {
+		max_stacks = 1,
+		multiplier = 1,
+		duration = 3
+	},
+	kerillian_shade_charged_backstabs_buff = {
+		max_stacks = 2,
+		duration = 5,
 		bonus = 0.25
 	},
 	kerillian_shade_backstabs_replenishes_ammunition = {
@@ -45,11 +58,14 @@ local buff_tweak_data = {
 	kerillian_shade_backstabs_replenishes_ammunition_cooldown = {
 		duration = 2
 	},
-	kerillian_shade_passive_stealth_on_backstab_kill_buff = {
-		duration = 3
+	kerillian_shade_backstabs_free_shot_buff = {
+		max_stacks = 3
 	},
 	kerillian_shade_activated_ability_short = {
 		duration = 3
+	},
+	kerillian_shade_activated_ability_short_blocker = {
+		duration = 5
 	},
 	kerillian_shade_movement_speed = {
 		multiplier = 1.1
@@ -64,6 +80,31 @@ local buff_tweak_data = {
 	},
 	kerillian_shade_activated_ability_quick_cooldown = {
 		duration = 5
+	},
+	kerillian_shade_activated_ability_power_vs_unarmored = {
+		multiplier = 0.2
+	},
+	kerillian_shade_activated_ability_move_speed = {
+		duration = 12,
+		multiplier = 1.2
+	},
+	kerillian_shade_ult_invis = {
+		duration = 3
+	},
+	kerillian_shade_ult_invis_combo_window = {
+		max_stacks = 1,
+		duration = 0.3,
+		extend_time = 1
+	},
+	kerillian_shade_power_buff = {
+		multiplier = 0.15
+	},
+	kerillian_shade_phasing_buff = {
+		duration = 10
+	},
+	kerillian_shade_movespeed_buff = {
+		multiplier = 1.1,
+		display_multiplier = 0.1
 	},
 	kerillian_maidenguard_ability_cooldown_on_hit = {
 		bonus = 0.25
@@ -180,6 +221,7 @@ local buff_tweak_data = {
 		multiplier = 0.15
 	},
 	kerillian_waywatcher_extra_arrow_melee_kill_buff = {
+		bonus = 1,
 		duration = 10
 	},
 	kerillian_waywatcher_movement_speed_on_special_kill_buff = {
@@ -238,6 +280,33 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
+	kerillian_shade_passive_sfx = {
+		buffs = {
+			{
+				event = "on_backstab",
+				sound_to_play = "Play_career_ability_kerillian_shade_backstab_small",
+				buff_func = "event_hud_sfx"
+			}
+		}
+	},
+	kerillian_shade_stealth_crits = {
+		buffs = {
+			{
+				event = "on_stealth_stacks_modified",
+				buff_to_add = "kerillian_shade_stealth_crits_buff",
+				buff_func = "kerillian_shade_stealth_crits_proc"
+			}
+		}
+	},
+	kerillian_shade_stealth_crits_buff = {
+		buffs = {
+			{
+				icon = "kerillian_shade_perk_dagger_in_the_dark",
+				stat_buff = "critical_strike_chance_melee",
+				bonus = 1
+			}
+		}
+	},
 	kerillian_shade_passive_backstab_killing_blow = {
 		buffs = {
 			{
@@ -245,13 +314,42 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
-	kerillian_shade_end_activated_ability = {
+	kerillian_shade_passive_stealth_parry = {
 		buffs = {
 			{
-				event = "on_hit",
+				event = "on_timed_block",
+				buff_to_add = "kerillian_shade_dash_stealth",
+				buff_func = "add_buff"
+			}
+		}
+	},
+	kerillian_shade_dash_stealth = {
+		buffs = {
+			{
+				buff_to_add = "kerillian_shade_dash_stealth_active",
+				duration = 1.5,
 				max_stacks = 1,
+				buff_func = "kerillian_thorn_sister_add_buff_remove",
+				event = "on_dodge",
+				icon = "kerillian_shade_perk_blur",
+				refresh_durations = true
+			}
+		}
+	},
+	kerillian_shade_dash_stealth_active = {
+		activation_sound = "Play_career_ability_kerillian_shade_enter_small",
+		buffs = {
+			{
+				duration = 1.5,
+				remove_buff_func = "end_shade_activated_ability_short",
 				proc_weight = 5,
-				buff_func = "end_shade_activated_ability"
+				buff_func = "shade_short_stealth_on_hit",
+				event = "on_hit",
+				refresh_durations = true,
+				apply_buff_func = "apply_shade_activated_ability",
+				continuous_effect = "fx/screenspace_shade_skill_01",
+				max_stacks = 1,
+				icon = "kerillian_shade_perk_blur"
 			}
 		}
 	},
@@ -259,13 +357,38 @@ TalentBuffTemplates.wood_elf = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "end_shade_activated_ability",
+				remove_buff_func = "shade_activated_ability_on_remove",
 				name = "kerillian_shade_activated_ability",
+				proc_weight = 5,
+				buff_func = "shade_activated_ability_on_hit",
+				event = "on_hit",
 				refresh_durations = true,
+				apply_buff_func = "apply_shade_activated_ability",
+				restealth = true,
+				perk = "shade_melee_boost",
+				continuous_effect = "fx/screenspace_shade_skill_01",
+				max_stacks = 1,
+				icon = "passive_bonus_kerillian_shade"
+			}
+		}
+	},
+	kerillian_shade_activated_ability_restealth = {
+		deactivation_effect = "fx/screenspace_shade_skill_02",
+		buffs = {
+			{
+				remove_buff_func = "shade_activated_ability_on_remove",
+				name = "kerillian_shade_activated_ability_restealth",
+				proc_weight = 5,
+				buff_func = "shade_activated_ability_on_hit",
+				event = "on_hit",
+				refresh_durations = true,
+				apply_buff_func = "apply_shade_activated_ability",
+				restealth = false,
+				perk = "shade_melee_boost",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
 				icon = "passive_bonus_kerillian_shade",
-				apply_buff_func = "apply_shade_activated_ability"
+				duration = buff_tweak_data.kerillian_shade_activated_ability.duration
 			}
 		}
 	},
@@ -335,10 +458,75 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
-	kerillian_shade_passive_improved = {
+	kerillian_shade_headshot_backstab = {
 		buffs = {
 			{
+				event = "on_hit",
+				buff_to_add = "kerillian_shade_headshot_cooldown",
+				buff_func = "add_buff_on_headshot",
+				allowed_attacks = {
+					heavy_attack = true
+				}
+			}
+		}
+	},
+	kerillian_shade_headshot_cooldown = {
+		buffs = {
+			{
+				duration = 3,
+				multiplier = 0.2,
+				stat_buff = "cooldown_regen",
+				icon = "kerillian_shade_stacking_headshot_damage_on_headshot"
+			}
+		}
+	},
+	kerillian_shade_charged_backstabs = {
+		buffs = {
+			{
+				event = "on_hit",
+				buff_to_add = "kerillian_shade_charged_backstabs_buff",
+				buff_func = "kerillian_shade_buff_on_charged_backstab"
+			}
+		}
+	},
+	kerillian_shade_charged_backstabs_buff = {
+		buffs = {
+			{
+				refresh_durations = true,
+				icon = "kerillian_shade_passive_improved",
 				stat_buff = "backstab_multiplier"
+			}
+		}
+	},
+	kerillian_shade_passive_improved_crit_blocker = {
+		buffs = {
+			{
+				duration = 0.1
+			}
+		}
+	},
+	kerillian_shade_backstabs_cooldown_regeneration = {
+		buffs = {
+			{
+				event = "on_kill",
+				buff_to_add = "kerillian_shade_backstabs_cooldown_regeneration_buff",
+				buff_func = "kerillian_shade_cooldown_regen_on_backstab_kill"
+			}
+		}
+	},
+	kerillian_shade_backstabs_cooldown_regeneration_buff = {
+		buffs = {
+			{
+				refresh_durations = true,
+				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
+				stat_buff = "cooldown_regen"
+			}
+		}
+	},
+	kerillian_shade_backstabs_free_shot_buff = {
+		buffs = {
+			{
+				icon = "kerillian_shade_backstabs_replenishes_ammunition"
 			}
 		}
 	},
@@ -363,17 +551,29 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
+	kerillian_shade_activated_ability_short_blocker = {
+		buffs = {
+			{
+				max_stacks = 1,
+				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
+				debuff = true
+			}
+		}
+	},
 	kerillian_shade_activated_ability_short = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
 				remove_buff_func = "end_shade_activated_ability_short",
 				name = "kerillian_shade_activated_ability_short",
+				proc_weight = 5,
+				buff_func = "shade_short_stealth_on_hit",
+				event = "on_hit",
 				refresh_durations = true,
+				apply_buff_func = "apply_shade_activated_ability",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "kerillian_shade_passive_stealth_on_backstab_kill",
-				apply_buff_func = "apply_shade_activated_ability"
+				icon = "kerillian_shade_passive_stealth_on_backstab_kill"
 			}
 		}
 	},
@@ -430,45 +630,99 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
-	kerillian_shade_activated_ability_quick_cooldown = {
+	kerillian_shade_ult_invis = {
 		deactivation_effect = "fx/screenspace_shade_skill_02",
 		buffs = {
 			{
-				remove_buff_func = "end_shade_activated_ability",
-				name = "kerillian_shade_activated_ability",
+				buff_to_add = "shade_short_stealth_on_hit",
+				name = "kerillian_shade_ult_invis",
+				proc_weight = 4,
+				buff_func = "shade_combo_stealth_on_hit",
+				event = "on_hit",
 				refresh_durations = true,
+				apply_buff_func = "apply_shade_activated_ability",
+				remove_buff_func = "end_shade_activated_ability_short",
 				continuous_effect = "fx/screenspace_shade_skill_01",
 				max_stacks = 1,
-				icon = "passive_bonus_kerillian_shade",
-				apply_buff_func = "apply_shade_activated_ability"
+				icon = "kerillian_shade_activated_ability_quick_cooldown"
 			}
 		}
 	},
-	kerillian_shade_activated_ability_quick_cooldown_buff = {
+	kerillian_shade_ult_invis_combo_window = {
 		buffs = {
 			{
+				refresh_durations = true,
+				max_stacks = 1,
+				extend_time = 1,
+				buff_func = "shade_combo_stealth_extend_on_kill",
+				event = "on_kill_elite_special",
+				duration = 0.3,
+				remove_buff_func = "kerillian_shade_missed_combo_window"
+			}
+		}
+	},
+	kerillian_shade_restealth_blocker = {
+		buffs = {
+			{
+				max_stacks = 1,
+				refresh_durations = true,
+				duration = 0.1,
+				debuff = true
+			}
+		}
+	},
+	kerillian_shade_activated_ability_phasing = {
+		deactivation_effect = "fx/screenspace_shade_skill_02",
+		buffs = {
+			{
+				remove_buff_func = "shade_activated_ability_on_remove",
+				name = "kerillian_shade_activated_ability_phasing",
+				proc_weight = 5,
+				buff_func = "shade_activated_ability_on_hit",
 				event = "on_hit",
-				proc_weight = 10,
-				stat_buff = "activated_cooldown",
-				buff_func = "crit_on_hit_from_stealth"
+				refresh_durations = true,
+				apply_buff_func = "apply_shade_activated_ability",
+				duration = 5,
+				continuous_effect = "fx/screenspace_shade_skill_01",
+				max_stacks = 1,
+				icon = "passive_bonus_kerillian_shade"
 			}
 		}
 	},
-	kerillian_shade_activated_ability_quick_cooldown_crit = {
+	kerillian_shade_phasing_buff = {
 		buffs = {
 			{
+				refresh_durations = true,
+				remove_buff_func = "kerillian_shade_noclip_off",
 				max_stacks = 1,
-				icon = "kerillian_shade_activated_ability_quick_cooldown",
-				stat_buff = "critical_strike_chance_melee",
-				refresh_durations = true
+				icon = "kerillian_shade_activated_ability_dash",
+				apply_buff_func = "kerillian_shade_noclip_on"
 			}
 		}
 	},
-	kerillian_shade_activated_ability_restealth_delay = {
+	kerillian_shade_movespeed_buff = {
 		buffs = {
 			{
+				refresh_durations = true,
+				name = "kerillian_shade_movespeed_buff",
+				remove_buff_func = "remove_movement_buff",
 				max_stacks = 1,
-				duration = 1
+				apply_buff_func = "apply_movement_buff",
+				duration = buff_tweak_data.kerillian_shade_phasing_buff.duration,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			}
+		}
+	},
+	kerillian_shade_power_buff = {
+		buffs = {
+			{
+				refresh_durations = true,
+				name = "kerillian_shade_power_buff",
+				stat_buff = "power_level",
+				max_stacks = 1,
+				duration = buff_tweak_data.kerillian_shade_phasing_buff.duration
 			}
 		}
 	},
@@ -982,12 +1236,12 @@ TalentBuffTemplates.wood_elf = {
 		buffs = {
 			{
 				remove_on_proc = true,
-				icon = "kerillian_waywatcher_extra_arrow_melee_kill",
 				refresh_durations = true,
-				buff_func = "dummy_function",
+				stat_buff = "extra_shot",
+				buff_func = "kerillian_waywatcher_consume_extra_shot_buff",
 				event = "on_ranged_hit",
-				max_stacks = 1,
-				perk = buff_perks.extra_shot
+				icon = "kerillian_waywatcher_extra_arrow_melee_kill",
+				max_stacks = 1
 			}
 		}
 	},
@@ -1093,8 +1347,8 @@ TalentTrees.wood_elf = {
 			"kerillian_shade_power_level_unbalance"
 		},
 		{
-			"kerillian_shade_passive_improved",
-			"kerillian_shade_passive_stealth_on_backstab_kill",
+			"kerillian_shade_charged_backstabs",
+			"kerillian_shade_backstabs_cooldown_regeneration",
 			"kerillian_shade_backstabs_replenishes_ammunition"
 		},
 		{
@@ -1103,8 +1357,8 @@ TalentTrees.wood_elf = {
 			"kerillian_shade_movement_speed"
 		},
 		{
-			"kerillian_shade_activated_ability_quick_cooldown",
-			"kerillian_shade_activated_ability_dash",
+			"kerillian_shade_activated_stealth_combo",
+			"kerillian_shade_activated_ability_phasing",
 			"kerillian_shade_activated_ability_restealth"
 		}
 	},
@@ -1277,33 +1531,39 @@ Talents.wood_elf = {
 		}
 	},
 	{
-		description = "kerillian_shade_passive_improved_desc",
-		name = "kerillian_shade_passive_improved",
+		description = "kerillian_shade_charged_backstabs_desc",
+		name = "kerillian_shade_charged_backstabs",
 		buffer = "both",
 		num_ranks = 1,
 		icon = "kerillian_shade_passive_improved",
 		description_values = {
 			{
 				value_type = "percent",
-				value = buff_tweak_data.kerillian_shade_passive_improved.bonus
+				value = buff_tweak_data.kerillian_shade_charged_backstabs_buff.bonus
+			},
+			{
+				value = buff_tweak_data.kerillian_shade_charged_backstabs_buff.duration
+			},
+			{
+				value = buff_tweak_data.kerillian_shade_charged_backstabs_buff.max_stacks
 			}
 		},
 		buffs = {
-			"kerillian_shade_passive_improved"
+			"kerillian_shade_charged_backstabs"
 		}
 	},
 	{
-		description = "kerillian_shade_passive_stealth_on_backstab_kill_desc",
-		name = "kerillian_shade_passive_stealth_on_backstab_kill",
+		description = "kerillian_shade_backstabs_cooldown_regeneration_desc",
+		name = "kerillian_shade_backstabs_cooldown_regeneration",
 		num_ranks = 1,
 		icon = "kerillian_shade_passive_stealth_on_backstab_kill",
 		description_values = {
 			{
-				value = buff_tweak_data.kerillian_shade_passive_stealth_on_backstab_kill_buff.duration
+				value = buff_tweak_data.kerillian_shade_backstabs_cooldown_regeneration_buff.duration
 			}
 		},
 		buffs = {
-			"kerillian_shade_passive_stealth_on_backstab_kill"
+			"kerillian_shade_backstabs_cooldown_regeneration"
 		}
 	},
 	{
@@ -1376,38 +1636,43 @@ Talents.wood_elf = {
 		}
 	},
 	{
-		description = "kerillian_shade_activated_ability_quick_cooldown_desc_2",
-		name = "kerillian_shade_activated_ability_quick_cooldown",
+		description = "kerillian_shade_activated_stealth_combo_desc",
+		name = "kerillian_shade_activated_stealth_combo",
 		buffer = "both",
 		num_ranks = 1,
 		icon = "kerillian_shade_activated_ability_quick_cooldown",
 		description_values = {
 			{
-				value_type = "percent",
-				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_buff.multiplier
+				value = buff_tweak_data.kerillian_shade_ult_invis.duration
 			},
 			{
-				value_type = "percent",
-				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_crit.bonus
-			},
-			{
-				value = buff_tweak_data.kerillian_shade_activated_ability_quick_cooldown_crit.duration
+				value = buff_tweak_data.kerillian_shade_ult_invis_combo_window.extend_time
 			}
 		},
-		buffs = {
-			"kerillian_shade_activated_ability_quick_cooldown_buff"
-		}
-	},
-	{
-		description = "kerillian_shade_activated_ability_dash_desc",
-		name = "kerillian_shade_activated_ability_dash",
-		num_ranks = 1,
-		icon = "kerillian_shade_activated_ability_dash",
-		description_values = {},
 		buffs = {}
 	},
 	{
-		description = "kerillian_shade_activated_ability_restealth_desc",
+		description = "kerillian_shade_activated_ability_phasing_desc",
+		name = "kerillian_shade_activated_ability_phasing",
+		num_ranks = 1,
+		icon = "kerillian_shade_activated_ability_dash",
+		description_values = {
+			{
+				value_type = "baked_percent",
+				value = buff_tweak_data.kerillian_shade_movespeed_buff.multiplier
+			},
+			{
+				value_type = "percent",
+				value = buff_tweak_data.kerillian_shade_power_buff.multiplier
+			},
+			{
+				value = buff_tweak_data.kerillian_shade_phasing_buff.duration
+			}
+		},
+		buffs = {}
+	},
+	{
+		description = "kerillian_shade_activated_ability_restealth_desc_3",
 		name = "kerillian_shade_activated_ability_restealth",
 		num_ranks = 1,
 		icon = "kerillian_shade_activated_ability_restealth",

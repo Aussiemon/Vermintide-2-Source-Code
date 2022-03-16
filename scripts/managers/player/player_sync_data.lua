@@ -17,6 +17,7 @@ PlayerSyncData.init = function (self, player, network_manager)
 			go_type = NetworkLookup.go_types.player_sync_data,
 			network_id = player:network_id(),
 			local_player_id = player:local_player_id(),
+			is_dev = not player.bot_player and SteamHelper.is_dev(),
 			highest_unlocked_difficulty = NetworkLookup.difficulties[highest_unlocked_difficulty],
 			slot_frame = NetworkLookup.cosmetics.default,
 			slot_skin = NetworkLookup.cosmetics.default,
@@ -52,6 +53,10 @@ PlayerSyncData._calc_highest_unlocked_difficulty = function (self)
 		end
 
 		return highest_unlocked_difficulty
+	end
+
+	if DEDICATED_SERVER then
+		return "versus_base"
 	end
 
 	local best_aquired_power_level = self._player:best_aquired_power_level()

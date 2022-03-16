@@ -26,6 +26,14 @@ math.lerp = function (a, b, p)
 	return a * (1 - p) + b * p
 end
 
+math.inv_lerp = function (a, b, v)
+	return (v - a) / (b - a)
+end
+
+math.remap = function (imin, imax, omin, omax, v)
+	return (v - imin) / (imax - imin) * (omax - omin) + omin
+end
+
 math.radian_lerp = function (a, b, p)
 	local pi = math.pi
 	local half_pi = math.pi * 0.5

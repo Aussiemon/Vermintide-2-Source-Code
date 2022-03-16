@@ -131,18 +131,41 @@ SocialWheelUI._create_ui_elements = function (self)
 	end
 
 	for category_name, category_settings in pairs(SocialWheelSettings) do
-		local num_category_settings = #category_settings
-		local category_widgets = Script.new_array(num_category_settings)
-		self._selection_widgets[category_name] = category_widgets
+		local has_pages = category_settings.has_pages
 
-		for i = 1, num_category_settings, 1 do
-			local widget = definitions.create_social_widget(category_settings[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func)
-			category_widgets[i] = UIWidget.init(widget)
+		if not has_pages then
+			local num_category_settings = #category_settings
+			local category_widgets = Script.new_array(num_category_settings)
+			self._selection_widgets[category_name] = category_widgets
+
+			for i = 1, num_category_settings, 1 do
+				local widget = definitions.create_social_widget(category_settings[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func)
+				category_widgets[i] = UIWidget.init(widget)
+			end
+		else
+			local num_pages = #category_settings
+			local category_widget_pages = Script.new_table(num_pages, 2)
+			category_widget_pages.num_pages = num_pages
+			category_widget_pages.current_page = 1
+			self._selection_widgets[category_name] = category_widget_pages
+
+			for page_idx = 1, num_pages, 1 do
+				local page = category_settings[page_idx]
+				local num_category_settings = #page
+				local category_widgets = Script.new_array(num_category_settings)
+				category_widget_pages[page_idx] = category_widgets
+
+				for i = 1, num_category_settings, 1 do
+					local widget = definitions.create_social_widget(page[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func, page_idx)
+					category_widgets[i] = UIWidget.init(widget)
+				end
+			end
 		end
 	end
 
 	self._arrow_widget = UIWidget.init(definitions.arrow_widget)
 	self._bg_widget = UIWidget.init(definitions.create_bg_widget())
+	self._page_input_widget = UIWidget.init(definitions.page_input_widget)
 
 	UIRenderer.clear_scenegraph_queue(self._ui_top_renderer)
 end
@@ -163,6 +186,12 @@ end
 
 SocialWheelUI.destroy = function (self)
 	self:_unregister_rpcs()
+
+	local player_interactor_ext = ScriptUnit.has_extension(self._player.player_unit, "interactor_system")
+
+	if player_interactor_ext then
+		player_interactor_ext:enable_interactions(true)
+	end
 end
 
 SocialWheelUI._widget_angle = function (self, total_angle, num_elements, i)
@@ -374,6 +403,7 @@ SocialWheelUI._update_input = function (self, dt, t)
 
 	self.previous_ping_held = input_service:get("ping_hold")
 	self.previous_social_wheel_only_held = input_service:get("social_wheel_only_hold")
+	self.previous_photomode_only_held = input_service:get("photomode_only_hold")
 end
 
 SocialWheelUI._draw = function (self, dt, t)
@@ -400,6 +430,10 @@ SocialWheelUI._draw = function (self, dt, t)
 		end
 
 		UIRenderer.draw_widget(ui_renderer, self._arrow_widget)
+
+		if self._current_selection_widget_settings.has_pages then
+			UIRenderer.draw_widget(ui_renderer, self._page_input_widget)
+		end
 
 		if not self._current_selection_widget_settings.individual_bg then
 			UIRenderer.draw_widget(ui_renderer, self._bg_widget)
@@ -497,6 +531,17 @@ SocialWheelUI._social_message_attempt = function (self, social_wheel_event_id, t
 	end
 end
 
+SocialWheelUI._local_ping_attempt = function (self, social_wheel_event_id, target_unit)
+	local player = self._player
+	local player_unit = player.player_unit
+
+	if Unit.alive(player_unit) then
+		local ping_system = Managers.state.entity:system("ping_system")
+
+		ping_system:handle_local_ping(PingTypes.LOCAL_ONLY, social_wheel_event_id, player, player_unit, target_unit, nil)
+	end
+end
+
 SocialWheelUI._play_sound = function (self, sound_event)
 	WwiseWorld.trigger_event(self._wwise_world, sound_event)
 end
@@ -566,7 +611,8 @@ SocialWheelUI._set_current_context = function (self, new_context)
 	end
 end
 
-SocialWheelUI._open_menu = function (self, dt, t, input_service)
+SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
+	self._block_next_input = false
 	local animation_times = ANIMATION_TIMES.OPEN
 	local animations = self._animations
 	self._animations.update_alpha = UIAnimation.init(UIAnimation.function_by_time, self._render_settings, "alpha_multiplier", 0, 1, animation_times.ALPHA, math.easeOutCubic)
@@ -615,6 +661,36 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 	end
 
 	self._current_selection_widgets = self._selection_widgets[category]
+	local selected_category_widgets = self._selection_widgets[category]
+	local category_page = selected_category_widgets.current_page
+	self._page_input_widget.content.visible = true
+
+	if category_page then
+		if increment_page then
+			local num_pages = selected_category_widgets.num_pages
+			category_page = category_page % num_pages + 1
+
+			if active_context.show_emotes and category_page < 2 then
+				category_page = 2
+			end
+		elseif active_context.show_emotes then
+			category_page = 2
+		else
+			category_page = 1
+		end
+
+		selected_category_widgets.current_page = category_page
+		self._current_selection_widgets = selected_category_widgets[category_page]
+	else
+		self._current_selection_widgets = selected_category_widgets
+	end
+
+	if active_context.show_emotes and selected_category_widgets.num_pages and selected_category_widgets.num_pages <= 2 then
+		self._page_input_widget.content.visible = false
+		self._block_next_input = true
+	end
+
+	self._current_selection_category = category
 	local settings = SocialWheelSettings[category]
 
 	fassert(settings, "No settings for category %q.", category)
@@ -646,8 +722,16 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 	self:_set_player_input_scale(0, stop_lerp_time)
 	self:_change_state("update_open")
 
+	local player_interactor_ext = ScriptUnit.extension(self._player.player_unit, "interactor_system")
+
+	player_interactor_ext:enable_interactions(false)
+
 	if self._world_markers_enabled then
 		local function cb(id, widget)
+			if self._world_marker_preview_id then
+				Managers.state.event:trigger("remove_world_marker", self._world_marker_preview_id)
+			end
+
 			self._world_marker_preview_id = id
 			widget.style.text.localize = false
 		end
@@ -657,9 +741,12 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service)
 		if position then
 			local ping_system = Managers.state.entity:system("ping_system")
 			local _, new_position, _ = ping_system:is_ping_response(nil, unique_id, position)
-			new_position = new_position or position
 
-			Managers.state.event:trigger("add_world_marker_position", "ping", new_position, cb)
+			if not self._world_marker_preview_id or (new_position and Vector3.distance_squared(new_position, position) == 0) then
+				local final_position = new_position or position
+
+				Managers.state.event:trigger("add_world_marker_position", "ping", final_position, cb)
+			end
 		end
 	end
 
@@ -673,8 +760,24 @@ SocialWheelUI.update_open = function (self, dt, t, input_service)
 	local ping_released = input_service:get("ping_release") or (self.previous_ping_held and not ping_held)
 	local social_wheel_only_held = input_service:get("social_wheel_only_hold")
 	local social_wheel_only_released = input_service:get("social_wheel_only_release") or (self.previous_social_wheel_only_held and not social_wheel_only_held)
+	local photomode_only_held = input_service:get("photomode_only_hold")
+	local photomode_only_released = input_service:get("photomode_only_release") or (self.previous_photomode_only_held and not photomode_only_held)
 
-	if ping_released or social_wheel_only_released then
+	if photomode_only_held and self._current_selection_widget_settings.has_pages and input_service:get("social_wheel_page") and not self._block_next_input then
+		self:_close_menu(dt, t, input_service, true)
+		self:_open_menu(dt, t, input_service, true)
+
+		return
+	end
+
+	if self._current_selection_widget_settings.has_pages and input_service:get("social_wheel_page") and not self._block_next_input then
+		self:_close_menu(dt, t, input_service, true)
+		self:_open_menu(dt, t, input_service, true)
+
+		return
+	end
+
+	if ping_released or social_wheel_only_released or photomode_only_released then
 		self:_close_menu(dt, t, input_service)
 
 		return
@@ -843,7 +946,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 				local social_wheel_event = new_widget.content.settings.name
 				local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event]
 				local event_text_func = social_wheel_event_settings.event_text_func
-				local event_text = event_text_func(target_unit, social_wheel_event_settings, true)
+				local event_text = (event_text_func and event_text_func(target_unit, social_wheel_event_settings, true)) or social_wheel_event_settings.event_text or Localize(social_wheel_event_settings.text)
 				local bg_widget = self._bg_widget
 				local bg_widget_content = bg_widget.content
 				bg_widget_content.text_id = event_text
@@ -858,7 +961,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 	end
 end
 
-SocialWheelUI._close_menu = function (self, dt, t, input_service)
+SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 	local animation_times = ANIMATION_TIMES.CLOSE
 	local animations = self._animations
 	self._animations.update_alpha = UIAnimation.init(UIAnimation.function_by_time, self._render_settings, "alpha_multiplier", self._render_settings.alpha_multiplier, 0, animation_times.ALPHA, math.easeOutCubic)
@@ -888,7 +991,10 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 			end
 
 			local category_settings = widget.content.category_settings
-			local selected_widget = UIWidget.init(definitions.create_social_widget(social_wheel_event_settings, self:_widget_angle(category_settings.angle, num_selection_widgets, i), category_settings, get_active_context_func))
+			local category = self._current_selection_category
+			local selected_category_widgets = self._selection_widgets[category]
+			local page_idx = selected_category_widgets.current_page
+			local selected_widget = UIWidget.init(definitions.create_social_widget(social_wheel_event_settings, self:_widget_angle(category_settings.angle, num_selection_widgets, i), category_settings, get_active_context_func, page_idx))
 			self._selected_widget = selected_widget
 			local selected_widget_content = selected_widget.content
 			selected_widget_content.selected = true
@@ -925,6 +1031,13 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 		end
 	end
 
+	if page_only then
+		self._open_start_t = nil
+		self._current_index = nil
+
+		return
+	end
+
 	if not IS_WINDOWS then
 		self._console_extension = (self._ingame_ui_context.is_in_inn and "_inn") or ""
 	end
@@ -958,6 +1071,8 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 				social_message_sent = self:_ping_unit_attempt(target_unit, ping_type, social_wheel_event_id)
 			elseif active_context.position and self._world_markers_enabled then
 				social_message_sent = self:_ping_world_position_attempt(active_context.position, ping_type, social_wheel_event_id)
+			elseif ping_type == PingTypes.LOCAL_ONLY then
+				social_message_sent = self:_local_ping_attempt(social_wheel_event_id, target_unit)
 			else
 				social_message_sent = self:_social_message_attempt(social_wheel_event_id, target_unit)
 			end
@@ -983,6 +1098,14 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service)
 
 	self:_set_player_input_scale(1, start_lerp_time)
 	self:_change_state("update_closed")
+
+	local player_interactor_ext = ScriptUnit.extension(self._player.player_unit, "interactor_system")
+
+	player_interactor_ext:enable_interactions(true)
+end
+
+SocialWheelUI.is_active = function (self)
+	return self._active_context ~= nil
 end
 
 return

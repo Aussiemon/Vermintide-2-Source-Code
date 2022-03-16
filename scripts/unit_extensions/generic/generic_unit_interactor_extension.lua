@@ -25,6 +25,7 @@ GenericUnitInteractorExtension.init = function (self, extension_init_context, un
 	local physics_world = World.get_data(world, "physics_world")
 	self.physics_world = physics_world
 	self.is_server = Managers.player.is_server
+	self._interactions_enabled = true
 	self.exclusive_interaction_unit = nil
 	self.units_in_range = {}
 	self.units_in_range_back_buffer = {}
@@ -334,7 +335,7 @@ GenericUnitInteractorExtension._check_if_interactable_in_chest = function (self,
 	local distance = Vector3.length(unit_pos - camera_position)
 
 	if distance > 0 then
-		local dir = Vector3.normalize(unit_pos - camera_position)
+		local dir = unit_pos - camera_position
 		local found_collision, collisionPos, distance, normal, hit_actor = PhysicsWorld.immediate_raycast(self.physics_world, unit_pos, dir, distance, "closest", "types", "both", "collision_filter", "filter_interactable_in_chest")
 
 		if found_collision then
@@ -445,6 +446,10 @@ GenericUnitInteractorExtension.in_range = function (self, interactable_unit, int
 	end
 end
 
+GenericUnitInteractorExtension.enable_interactions = function (self, enable)
+	self._interactions_enabled = enable
+end
+
 GenericUnitInteractorExtension.can_interact = function (self, interactable_unit, interaction_type)
 	local interaction_context = self.interaction_context
 	local unit_to_interact_with = interactable_unit or interaction_context.interactable_unit
@@ -468,6 +473,10 @@ GenericUnitInteractorExtension.can_interact = function (self, interactable_unit,
 	end
 
 	if self.status_extension:is_disabled() then
+		return false
+	end
+
+	if not self._interactions_enabled then
 		return false
 	end
 

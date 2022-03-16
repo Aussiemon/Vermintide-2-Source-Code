@@ -91,7 +91,7 @@ BuffUI._sync_buffs = function (self)
 
 		local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 		local buffs = buff_extension:active_buffs()
-		local num_buffs = #buffs
+		local num_buffs = buff_extension._num_buffs
 
 		for i = 1, #active_buffs, 1 do
 			local data = active_buffs[i]
@@ -102,8 +102,9 @@ BuffUI._sync_buffs = function (self)
 		end
 
 		for i = 1, num_buffs, 1 do
-			repeat
-				local buff = buffs[i]
+			local buff = buffs[i]
+
+			if not buff.removed then
 				local duration = buff.duration
 				local start_time = buff.start_time
 				local buff_template = buff.template
@@ -133,7 +134,7 @@ BuffUI._sync_buffs = function (self)
 						buffs_to_add[#buffs_to_add + 1] = buff_id
 					end
 				end
-			until true
+			end
 		end
 
 		table.clear(widgets_to_remove)
@@ -152,24 +153,27 @@ BuffUI._sync_buffs = function (self)
 			align_widgets = true
 		end
 
-		for i = 1, #buffs, 1 do
+		for i = 1, num_buffs, 1 do
 			local buff = buffs[i]
-			local duration = buff.duration
-			local start_time = buff.start_time
-			local buff_template = buff.template
-			local handle_buff = debug_buffs or buff_template.icon ~= nil
 
-			if handle_buff then
-				for j = 1, #buffs_to_add, 1 do
-					local id = buffs_to_add[j]
+			if not buff.removed then
+				local duration = buff.duration
+				local start_time = buff.start_time
+				local buff_template = buff.template
+				local handle_buff = debug_buffs or buff_template.icon ~= nil
 
-					if id == buff.id then
-						local infinite = not duration
-						local end_time = duration and start_time + duration
-						local added = self:_add_buff(buff, infinite, end_time)
+				if handle_buff then
+					for j = 1, #buffs_to_add, 1 do
+						local id = buffs_to_add[j]
 
-						if added then
-							align_widgets = true
+						if id == buff.id then
+							local infinite = not duration
+							local end_time = duration and start_time + duration
+							local added = self:_add_buff(buff, infinite, end_time)
+
+							if added then
+								align_widgets = true
+							end
 						end
 					end
 				end

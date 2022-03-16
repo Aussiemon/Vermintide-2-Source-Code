@@ -1,4 +1,4 @@
-local weapon_template = weapon_template or {}
+local weapon_template = {}
 local ARROW_HIT_EFFECT = "poison_arrow_impact"
 local ALERT_SOUND_RANGE_FIRE = 4
 local ALERT_SOUND_RANGE_HIT = 2
@@ -132,6 +132,7 @@ weapon_template.actions = {
 			projectile_info = Projectiles.carbine_poison_arrow,
 			impact_data = {
 				damage_profile = "shortbow_hagbane_charged",
+				aoe_on_bounce = true,
 				aoe = ExplosionTemplates.carbine_poison_arrow
 			},
 			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
@@ -289,6 +290,22 @@ weapon_template.buffs = {
 	},
 	change_dodge_speed = {
 		external_optional_multiplier = 1.25
+	}
+}
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 2,
+		[DamageTypes.CLEAVE] = 0,
+		[DamageTypes.SPEED] = 5,
+		[DamageTypes.STAGGER] = 0,
+		[DamageTypes.DAMAGE] = 4
+	},
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 5,
+		[DamageTypes.CLEAVE] = 6,
+		[DamageTypes.SPEED] = 2,
+		[DamageTypes.STAGGER] = 5,
+		[DamageTypes.DAMAGE] = 6
 	}
 }
 weapon_template.tooltip_keywords = {

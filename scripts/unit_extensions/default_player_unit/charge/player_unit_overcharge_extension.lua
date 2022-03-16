@@ -315,7 +315,7 @@ PlayerUnitOverchargeExtension.add_charge = function (self, overcharge_amount, ch
 	overcharge_amount = self._buff_extension:apply_buffs_to_value(overcharge_amount, "reduced_overcharge")
 
 	if buff_extension and not self._ignored_overcharge_types[overcharge_type] then
-		buff_extension:trigger_procs("on_ammo_used")
+		buff_extension:trigger_procs("on_ammo_used", self)
 		buff_extension:trigger_procs("on_overcharge_used", overcharge_amount)
 		Managers.state.achievement:trigger_event("ammo_used", self.owner_unit)
 

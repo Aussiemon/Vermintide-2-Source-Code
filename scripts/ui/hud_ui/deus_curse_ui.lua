@@ -109,8 +109,13 @@ DeusCurseUI.show_curse_info = function (self, theme, curse)
 	local curse_description = Localize(mutator_data.description)
 	local theme_settings = DeusThemeSettings[theme]
 	local theme_color = theme_settings.curse_description_color
-	local icon = theme_settings.icon
-	local title_text = Localize(theme_settings.curse_title)
+	local icon = theme_settings.icon or {
+		255,
+		255,
+		255,
+		255
+	}
+	local title_text = (theme_settings.curse_title and Localize(theme_settings.curse_title)) or ""
 
 	self:_update_description_widget(title_text, curse_name, curse_description, icon, theme_color)
 	self:_start_animation("curse_description_animation", "description_start")

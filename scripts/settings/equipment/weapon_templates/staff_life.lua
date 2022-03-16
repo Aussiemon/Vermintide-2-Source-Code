@@ -1,4 +1,4 @@
-local weapon_template = weapon_template or {}
+local weapon_template = {}
 local anim_scale = 0.9
 weapon_template.actions = {
 	action_one = {
@@ -492,6 +492,22 @@ weapon_template.buffs = {
 	},
 	change_dodge_speed = {
 		external_optional_multiplier = 1
+	}
+}
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 2,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 6,
+		[DamageTypes.STAGGER] = 0,
+		[DamageTypes.DAMAGE] = 4
+	},
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 0,
+		[DamageTypes.CLEAVE] = 0,
+		[DamageTypes.SPEED] = 5,
+		[DamageTypes.STAGGER] = 7,
+		[DamageTypes.DAMAGE] = 0
 	}
 }
 weapon_template.tooltip_keywords = {

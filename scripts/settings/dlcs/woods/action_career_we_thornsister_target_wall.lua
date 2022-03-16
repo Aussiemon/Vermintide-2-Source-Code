@@ -55,13 +55,18 @@ ActionCareerWEThornsisterTargetWall.client_owner_start_action = function (self, 
 	self._vertical_rotation = new_action.vertical_rotation
 	self._wall_shape = WALL_SHAPES.linear
 
-	if self.talent_extension:has_talent("kerillian_thorn_sister_explosive_wall") then
-		self._target_thickness = 3
-		self._target_width = 3
+	if self.talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
+		self._target_thickness = 5
+		self._target_width = 5
 		self._wall_shape = WALL_SHAPES.radial
 		self._num_segmetns_to_check = 3
 		self._radial_center_offset = 0.5
 		self._bot_target_unit = true
+	elseif self.talent_extension:has_talent("kerillian_thorn_sister_tanky_wall") then
+		self._target_width = 8
+		local half_thickness = self._target_thickness / 2
+		self._num_segmetns_to_check = math.floor(self._target_width / half_thickness)
+		self._bot_target_unit = false
 	else
 		local half_thickness = self._target_thickness / 2
 		self._num_segmetns_to_check = math.floor(self._target_width / half_thickness)

@@ -83,23 +83,6 @@ StartGameWindowCustomGameOverviewConsole._create_ui_elements = function (self, p
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
-
-	self:_setup_input_buttons()
-end
-
-StartGameWindowCustomGameOverviewConsole._setup_input_buttons = function (self)
-	local input_service = self._parent:window_input_service()
-	local start_game_input_data = UISettings.get_gamepad_input_texture_data(input_service, START_GAME_INPUT, true)
-	local widgets_by_name = self._widgets_by_name
-	local play_button_console = widgets_by_name.play_button_console
-	local input_texture_style = play_button_console.style.input_texture
-	input_texture_style.horizontal_alignment = "center"
-	input_texture_style.vertical_alignment = "center"
-	input_texture_style.texture_size = {
-		start_game_input_data.size[1],
-		start_game_input_data.size[2]
-	}
-	play_button_console.content.input_texture = start_game_input_data.texture
 end
 
 StartGameWindowCustomGameOverviewConsole.on_exit = function (self, params)
@@ -126,7 +109,6 @@ StartGameWindowCustomGameOverviewConsole.update = function (self, dt, t)
 		self:_handle_input(dt, t)
 	end
 
-	self:_handle_gamepad_activity()
 	self:_draw(dt)
 end
 
@@ -140,9 +122,8 @@ StartGameWindowCustomGameOverviewConsole._update_can_play = function (self)
 	if self._previous_can_play ~= can_play then
 		self._previous_can_play = can_play
 		local play_button = self._widgets_by_name.play_button
-		local play_button_console = self._widgets_by_name.play_button_console
-		play_button_console.content.locked = not can_play
 		play_button.content.button_hotspot.disable_button = not can_play
+		play_button.content.disabled = not can_play
 
 		if can_play then
 			self._parent:set_input_description("play_available")
@@ -288,7 +269,7 @@ StartGameWindowCustomGameOverviewConsole._option_selected = function (self, inpu
 		self._parent:set_layout_by_name(custom_game_settings.layout_name)
 	elseif selected_widget_name == "difficulty_setting" then
 		self._parent:set_layout_by_name("difficulty_selection_custom")
-	elseif selected_widget_name == "play_button_console" then
+	elseif selected_widget_name == "play_button" then
 		self._play_button_pressed = true
 
 		self._parent:play(t, custom_game_settings.game_mode_type)
@@ -298,9 +279,16 @@ StartGameWindowCustomGameOverviewConsole._option_selected = function (self, inpu
 end
 
 StartGameWindowCustomGameOverviewConsole._handle_new_selection = function (self, input_index)
+	local widgets_by_name = self._widgets_by_name
 	local num_inputs = #selector_input_definition
 	input_index = math.clamp(input_index, 1, num_inputs)
-	local widgets_by_name = self._widgets_by_name
+	local widget_name = selector_input_definition[input_index]
+	local widget = widgets_by_name[widget_name]
+	local widget_content = widget.content
+
+	if widget_content.disabled then
+		return
+	end
 
 	for i = 1, #selector_input_definition, 1 do
 		local widget_name = selector_input_definition[i]
@@ -356,25 +344,6 @@ StartGameWindowCustomGameOverviewConsole._draw = function (self, dt)
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
-end
-
-StartGameWindowCustomGameOverviewConsole._handle_gamepad_activity = function (self)
-	local force_update = self.gamepad_active_last_frame == nil
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-
-	if gamepad_active then
-		if not self.gamepad_active_last_frame or force_update then
-			self.gamepad_active_last_frame = true
-			local widgets_by_name = self._widgets_by_name
-			widgets_by_name.play_button.content.visible = false
-			widgets_by_name.play_button_console.content.visible = true
-		end
-	elseif self.gamepad_active_last_frame or force_update then
-		self.gamepad_active_last_frame = false
-		local widgets_by_name = self._widgets_by_name
-		widgets_by_name.play_button.content.visible = true
-		widgets_by_name.play_button_console.content.visible = false
-	end
 end
 
 return

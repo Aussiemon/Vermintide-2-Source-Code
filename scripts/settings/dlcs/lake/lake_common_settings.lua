@@ -40,11 +40,6 @@ settings.anim_lookup = {
 settings.effects = {
 	"fx/grail_knight_active_ability"
 }
-settings.tracked_weapon_kills_per_breed_stats = {
-	markus_questingknight_career_skill_weapon = {
-		"lake"
-	}
-}
 settings.unlock_settings = {
 	lake = {
 		id = "1343500",

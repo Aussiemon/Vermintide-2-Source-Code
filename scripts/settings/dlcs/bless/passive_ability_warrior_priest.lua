@@ -266,20 +266,18 @@ PassiveAbilityWarriorPriest._set_fury_glow_enabled = function (self, enabled)
 		end
 	end
 
-	if self._is_local_player then
-		local equipment = inventory_extension:equipment()
+	local equipment = inventory_extension:equipment()
 
-		if equipment then
-			local left_weapon_3p = equipment.left_hand_wielded_unit_3p
-			local right_weapon_3p = equipment.right_hand_wielded_unit_3p
+	if equipment then
+		local left_weapon_3p = equipment.left_hand_wielded_unit_3p
+		local right_weapon_3p = equipment.right_hand_wielded_unit_3p
 
-			if left_weapon_3p then
-				Unit.flow_event(left_weapon_3p, flow_event)
-			end
+		if left_weapon_3p then
+			Unit.flow_event(left_weapon_3p, flow_event)
+		end
 
-			if right_weapon_3p then
-				Unit.flow_event(right_weapon_3p, flow_event)
-			end
+		if right_weapon_3p then
+			Unit.flow_event(right_weapon_3p, flow_event)
 		end
 	end
 

@@ -611,11 +611,11 @@ local widgets = {
 	heroic_deed_divider = UIWidgets.create_simple_texture("divider_01_top", "heroic_deed_divider"),
 	heroic_deed_description = UIWidgets.create_simple_text(Localize("start_game_window_mutator_desc"), "heroic_deed_description", nil, nil, heroic_deed_description_style),
 	heroic_deed_setting = create_setting_button("game_option_2", Localize("start_game_window_mutator_title"), nil, "icon_deed_normal_01"),
-	play_button_console = UIWidgets.create_start_game_console_play_button("play_button_console"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_play"))
 }
 local selector_input_definition = {
-	"heroic_deed_setting"
+	"heroic_deed_setting",
+	"play_button"
 }
 
 return {

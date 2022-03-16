@@ -7,6 +7,8 @@ BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
 	self._game_mode_specific_items = {}
 	self._backend_mirror = backend_mirror
 	self._modified_templates = {}
+	self._last_id = 0
+	self._delete_deeds_request = {}
 
 	self:_refresh()
 end
@@ -506,6 +508,98 @@ end
 
 BackendInterfaceItemPlayfab.refresh_game_mode_specific_items = function (self)
 	self:make_dirty()
+end
+
+BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list)
+	local id = self:_new_id()
+	local data = {
+		marked_deeds_list = deeds_list,
+		id = id
+	}
+	local delete_marked_deeds_request = {
+		FunctionName = "deleteMarkedDeeds",
+		FunctionParameter = {
+			marked_deeds_list = deeds_list
+		}
+	}
+	local success_callback = callback(self, "delete_marked_deeds_request_cb", data)
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(delete_marked_deeds_request, success_callback, true)
+
+	return id
+end
+
+BackendInterfaceItemPlayfab.delete_marked_deeds_request_cb = function (self, data, result)
+	local function_result = result.FunctionResult
+	local item_revokes = function_result.item_revokes
+	local backend_mirror = self._backend_mirror
+
+	if not function_result then
+		Managers.backend:playfab_api_error(result)
+
+		return
+	elseif function_result.error_message == "no_items_received" then
+		Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_REMOVE_DEEDS_NO_ITEMS_RECEIVED)
+
+		self._delete_deeds_request[data.id] = nil
+
+		return
+	end
+
+	if item_revokes then
+		for i = 1, #item_revokes, 1 do
+			local revoke = item_revokes[i]
+			local item_instance_id = revoke.ItemInstanceId
+
+			backend_mirror:remove_item(item_instance_id)
+		end
+	end
+
+	self._delete_deeds_request[data.id] = true
+
+	Managers.backend:dirtify_interfaces()
+end
+
+BackendInterfaceItemPlayfab.has_deleted_deeds = function (self, id)
+	local deletion_request = self._delete_deeds_request[id]
+
+	if deletion_request then
+		return true
+	end
+
+	return false
+end
+
+BackendInterfaceItemPlayfab._new_id = function (self)
+	self._last_id = self._last_id + 1
+
+	return self._last_id
+end
+
+BackendInterfaceItemPlayfab.can_delete_deeds = function (self, current_deeds, marked_deeds)
+	if #current_deeds == #marked_deeds then
+		return true, current_deeds, marked_deeds
+	end
+
+	local remaining_deeds = {}
+	local deletable_deeds = {}
+	remaining_deeds = current_deeds
+
+	for _, deed in ipairs(marked_deeds) do
+		local idx = table.index_of(remaining_deeds, deed)
+
+		if idx ~= -1 then
+			table.insert(deletable_deeds, deed)
+			table.swap_delete(remaining_deeds, idx)
+		end
+	end
+
+	if table.is_empty(deletable_deeds) then
+		return false, remaining_deeds, nil
+	end
+
+	return true, remaining_deeds, deletable_deeds
 end
 
 return

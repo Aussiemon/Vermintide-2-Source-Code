@@ -79,7 +79,7 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 		local _, procced = buff_extension:apply_buffs_to_value(0, "overcharge_damage_immunity")
 
 		if not procced then
-			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "overcharge", nil, Vector3(0, 1, 0), "overcharge")
+			DamageUtils.add_damage_network(unit, unit, self_damage, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, unit)
 		end
 	end
 

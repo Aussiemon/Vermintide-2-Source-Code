@@ -1389,7 +1389,7 @@ local selector_input_definition = {
 		enter_requirements = function (self)
 			local gamepad_active = Managers.input:is_device_active("gamepad")
 
-			return not gamepad_active and self._is_server
+			return not gamepad_active and self._is_server and Managers.twitch:is_connected()
 		end,
 		on_enter = function (self, dt, t)
 			local selection_widgets_by_name = self._selection_widgets_by_name
@@ -1397,7 +1397,7 @@ local selector_input_definition = {
 			difficulty_setting_widget.content.is_selected = true
 		end,
 		update = function (self, input_service, dt, t)
-			if input_service:get("confirm_press") then
+			if input_service:get("confirm_press") and Managers.twitch:is_connected() then
 				self:_option_selected("play_button", nil, t)
 			end
 		end,

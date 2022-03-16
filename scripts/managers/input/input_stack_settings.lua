@@ -49,7 +49,8 @@ InputStackSettings = {
 	{
 		group_name = "ingame_ui",
 		services = {
-			"ingame_menu"
+			"ingame_menu",
+			"hero_view"
 		}
 	},
 	{

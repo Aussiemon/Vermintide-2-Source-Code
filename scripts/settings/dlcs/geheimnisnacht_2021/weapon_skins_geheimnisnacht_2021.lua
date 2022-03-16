@@ -72,27 +72,27 @@ local skins = {
 }
 local skin_combinations = {
 	es_2h_sword_skins = {
-		geheimnisnacht = {
+		unique = {
 			"es_2h_sword_skin_02_runed_03"
 		}
 	},
 	dr_2h_axe_skins = {
-		geheimnisnacht = {
+		unique = {
 			"dw_2h_axe_skin_05_runed_03"
 		}
 	},
 	bw_dagger_skins = {
-		geheimnisnacht = {
+		unique = {
 			"bw_dagger_skin_04_runed_03"
 		}
 	},
 	we_2h_axe_skins = {
-		geheimnisnacht = {
+		unique = {
 			"we_2h_axe_skin_07_runed_03"
 		}
 	},
 	es_1h_flail_skins = {
-		geheimnisnacht = {
+		unique = {
 			"es_1h_flail_skin_02_runed_03"
 		}
 	}

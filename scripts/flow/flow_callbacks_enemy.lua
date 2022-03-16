@@ -392,7 +392,7 @@ local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsetting
 		local stump_unit_lod_object = Unit.lod_object(stump_unit, "lod")
 
 		LODObject.set_bounding_volume(stump_unit_lod_object, LODObject.bounding_volume(unit_lod_object))
-		LODObject.set_orientation_node(stump_unit_lod_object, unit, LODObject.node(unit_lod_object))
+		World.link_unit(world, stump_unit, LODObject.node(stump_unit_lod_object), unit, LODObject.node(unit_lod_object))
 	end
 
 	return stump_unit

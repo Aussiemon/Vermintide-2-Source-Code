@@ -58,6 +58,7 @@ GenericHealthExtension.init = function (self, extension_init_context, unit, exte
 	self._min_health_percentage = nil
 	self._recent_damage_type = nil
 	self._recent_hit_react_type = nil
+	self._recent_attackers = {}
 	self._last_damage_t = nil
 	self._damage_cap = extension_init_data.damage_cap_per_hit or Unit.get_data(unit, "damage_cap_per_hit")
 	self._damage_cap_per_hit = self._damage_cap or self.health
@@ -268,7 +269,12 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	self._recent_damage_type = damage_type
 	self._recent_hit_react_type = hit_react_type
 	self._recent_damage_source_name = damage_source_name
-	self._last_damage_t = Managers.time:time("game")
+	local damage_t = Managers.time:time("game")
+	self._last_damage_t = damage_t
+
+	if damage_amount > 0 then
+		self:_register_attacker(attacker_unit, source_attacker_unit, damage_t)
+	end
 
 	StatisticsUtil.register_damage(unit, damage_table, self.statistics_db)
 	self:save_kill_feed_data(attacker_unit, damage_table, hit_zone_name, damage_type, damage_source_name, source_attacker_unit)
@@ -295,7 +301,7 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 	if buff_extension and damage_amount > 0 and damage_source_name ~= "temporary_health_degen" then
-		buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type)
+		buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type, attack_type)
 	end
 
 	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, source_attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
@@ -452,6 +458,18 @@ GenericHealthExtension.save_kill_feed_data = function (self, attacker_unit, dama
 			end
 		end
 	end
+end
+
+GenericHealthExtension._register_attacker = function (self, attacker_unit, source_attacker_unit, t)
+	local unit = source_attacker_unit or AiUtils.get_actual_attacker_unit(attacker_unit)
+
+	if unit then
+		self._recent_attackers[unit] = t
+	end
+end
+
+GenericHealthExtension.was_attacked_by = function (self, unit)
+	return self._recent_attackers[unit]
 end
 
 return

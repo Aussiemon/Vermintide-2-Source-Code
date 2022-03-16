@@ -41,6 +41,7 @@ local ignored_damage_types = {
 	vomit_ground = true,
 	warpfire_face = true,
 	wounded_dot = true,
+	overcharge = true,
 	heal = true,
 	knockdown_bleed = true,
 	life_drain = true
@@ -74,6 +75,20 @@ local damage_indicator_widget_definition = {
 				255
 			}
 		}
+	}
+}
+local colors_by_type = {
+	enemy = {
+		255,
+		205,
+		50,
+		50
+	},
+	friendly_fire = {
+		255,
+		50,
+		205,
+		50
 	}
 }
 DamageIndicatorGui = class(DamageIndicatorGui)
@@ -135,7 +150,8 @@ DamageIndicatorGui.update = function (self, dt)
 			local index = (i - 1) * DamageDataIndex.STRIDE
 			local attacker = strided_array[index + DamageDataIndex.ATTACKER]
 			local damage_type = strided_array[index + DamageDataIndex.DAMAGE_TYPE]
-			local show_direction = not ignored_damage_types[damage_type]
+			local self_damage = attacker == player_unit
+			local show_direction = not ignored_damage_types[damage_type] and not self_damage
 
 			if attacker and Unit.alive(attacker) and show_direction then
 				local next_active_indicator = self.num_active_indicators + 1
@@ -153,8 +169,27 @@ DamageIndicatorGui.update = function (self, dt)
 				Vector3Aux.box(indicator_position, attacker_position)
 
 				indicator_position[3] = 0
+				local rotating_texture_color = widget.style.rotating_texture.color
+				local is_friendly_fire = Managers.state.side:is_player_friendly_fire(attacker, player_unit)
+				local target_color = nil
 
-				UIWidget.animate(widget, UIAnimation.init(UIAnimation.function_by_time, widget.style.rotating_texture.color, 1, 255, 0, 1, math.easeInCubic))
+				if is_friendly_fire and not Application.user_setting("friendly_fire_hit_marker") then
+					if false then
+						if false then
+							if is_friendly_fire then
+								target_color = colors_by_type.friendly_fire
+							else
+								target_color = colors_by_type.enemy
+							end
+						end
+
+						rotating_texture_color[2] = target_color[2]
+						rotating_texture_color[3] = target_color[3]
+						rotating_texture_color[4] = target_color[4]
+
+						UIWidget.animate(widget, UIAnimation.init(UIAnimation.function_by_time, rotating_texture_color, 1, 255, 0, 1, math.easeInCubic))
+					end
+				end
 			end
 		end
 	end

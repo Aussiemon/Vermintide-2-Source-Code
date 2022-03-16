@@ -329,6 +329,10 @@ IngameUI.weaves_requirements_fulfilled = function (self)
 	return true
 end
 
+IngameUI.not_in_modded = function (self)
+	return not script_data["eac-untrusted"]
+end
+
 local hotkeys_blocked_during_vote = {
 	"hotkey_map"
 }
@@ -454,7 +458,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	local views = self.views
 	local is_in_inn = self.is_in_inn
 	local input_service = self.input_manager:get_service("ingame_menu")
-	local end_screen_active = self:end_screen_active()
 	local ingame_hud = self.ingame_hud
 	local transition_manager = Managers.transition
 	local end_screen = self.end_screen
@@ -530,32 +533,30 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 		local fade_active = Managers.transition:in_fade_active()
 
-		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not end_screen_active and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then
+		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:end_screen_active() and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then
 			local gamepad_active = Managers.input:is_device_active("gamepad")
-			local use_gamepad_layout = IS_CONSOLE or gamepad_active or UISettings.use_gamepad_menu_layout
+			local use_gamepad_layout = IS_CONSOLE or gamepad_active or not UISettings.use_pc_menu_layout
 
 			if use_gamepad_layout then
-				if not self:cutscene_active() then
-					local menu_state_name = "overview"
+				local menu_state_name = "overview"
 
-					if is_in_inn and gamepad_active then
-						local menu_sub_state_name = (gamepad_active and "equipment") or "system"
-						local transition_params = {
-							menu_state_name = menu_state_name,
-							menu_sub_state_name = menu_sub_state_name
-						}
+				if is_in_inn and gamepad_active then
+					local menu_sub_state_name = (gamepad_active and "equipment") or "system"
+					local transition_params = {
+						menu_state_name = menu_state_name,
+						menu_sub_state_name = menu_sub_state_name
+					}
 
-						self:transition_with_fade("hero_view_force", transition_params)
-					else
-						local menu_sub_state_name = "system"
-						local transition_params = {
-							menu_state_name = menu_state_name,
-							menu_sub_state_name = menu_sub_state_name,
-							force_ingame_menu = IS_WINDOWS
-						}
+					self:transition_with_fade("hero_view_force", transition_params)
+				else
+					local menu_sub_state_name = "system"
+					local transition_params = {
+						menu_state_name = menu_state_name,
+						menu_sub_state_name = menu_sub_state_name,
+						force_ingame_menu = IS_WINDOWS
+					}
 
-						self:handle_transition("hero_view_force", transition_params)
-					end
+					self:handle_transition("hero_view_force", transition_params)
 				end
 			else
 				self:handle_transition("ingame_menu")
@@ -787,11 +788,6 @@ IngameUI.is_transition_allowed = function (self, transition)
 			error_message = "matchmaking_ready_interaction_message_inventory"
 			transition_allowed = false
 		end
-	end
-
-	if Managers.mechanism:current_mechanism_name() == "versus" and (transition == "hero_view" or transition == "hero_view_force") then
-		error_message = "versus_transition_not_allowed"
-		transition_allowed = false
 	end
 
 	if error_message then

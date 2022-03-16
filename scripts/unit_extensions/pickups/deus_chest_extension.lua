@@ -253,9 +253,21 @@ end
 DeusChestExtension.get_purchase_cost = function (self)
 	local chest_type = self._chest_type
 
-	if chest_type == DEUS_CHEST_TYPES.upgrade or chest_type == DEUS_CHEST_TYPES.swap_melee or chest_type == DEUS_CHEST_TYPES.swap_ranged then
+	if chest_type == DEUS_CHEST_TYPES.upgrade then
 		local wielded_weapon = self:_get_wielded_weapon()
 		local equipped_rarity = wielded_weapon.rarity
+
+		return DeusCostSettings.deus_chest[chest_type][equipped_rarity][self._rarity]
+	elseif chest_type == DEUS_CHEST_TYPES.swap_melee then
+		local deus_run_controller = self._deus_run_controller
+		local melee_weapon = deus_run_controller:get_own_loadout()
+		local equipped_rarity = melee_weapon.rarity
+
+		return DeusCostSettings.deus_chest[chest_type][equipped_rarity][self._rarity]
+	elseif chest_type == DEUS_CHEST_TYPES.swap_ranged then
+		local deus_run_controller = self._deus_run_controller
+		local _, ranged_weapon = deus_run_controller:get_own_loadout()
+		local equipped_rarity = ranged_weapon.rarity
 
 		return DeusCostSettings.deus_chest[chest_type][equipped_rarity][self._rarity]
 	elseif chest_type == DEUS_CHEST_TYPES.power_up then
@@ -518,8 +530,6 @@ DeusChestExtension.open_chest = function (self)
 			self._previous_wielded_weapon = wielded_weapon
 		end
 
-		self:_equip_weapon(run_controller, self._stored_purchase)
-
 		local rarity = self:get_rarity()
 		local rarity_sound = sound_events.unlock_chest_rarity_sounds[rarity]
 
@@ -528,6 +538,7 @@ DeusChestExtension.open_chest = function (self)
 		end
 
 		self:_post_chest_unlock(self._stored_purchase)
+		self:_equip_weapon(run_controller, self._stored_purchase)
 		self:_play_sound(sound_events.exchange_weapon)
 	end
 end

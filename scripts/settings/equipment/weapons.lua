@@ -13,6 +13,13 @@ dofile("scripts/settings/equipment/projectiles")
 dofile("scripts/settings/equipment/light_weight_projectiles")
 require("scripts/settings/action_templates")
 
+DamageTypes = {
+	STAGGER = 4,
+	DAMAGE = 5,
+	SPEED = 3,
+	CLEAVE = 2,
+	ARMOR_PIERCING = 1
+}
 Weapons = Weapons or {}
 local weapon_template_files_names = dofile("scripts/settings/equipment/honduras_weapon_templates")
 

@@ -442,14 +442,17 @@ SimpleInventoryExtension.update = function (self, unit, input, dt, context, t)
 
 	local current_ammo, max_ammo = self:current_ammo_status("slot_ranged")
 	local ammo_percentage = 1
-
-	if current_ammo and max_ammo then
-		ammo_percentage = current_ammo / max_ammo
-	end
-
 	local network_manager = Managers.state.network
 	local game = network_manager:game()
 	local go_id = Managers.state.unit_storage:go_id(unit)
+
+	if current_ammo and max_ammo then
+		ammo_percentage = current_ammo / max_ammo
+
+		GameSession.set_game_object_field(game, go_id, "current_ammo", current_ammo)
+		GameSession.set_game_object_field(game, go_id, "max_ammo", max_ammo)
+	end
+
 	ammo_percentage = math.min(1, ammo_percentage)
 
 	GameSession.set_game_object_field(game, go_id, "ammo_percentage", ammo_percentage)
@@ -1049,6 +1052,12 @@ SimpleInventoryExtension.ammo_percentage = function (self)
 	end
 
 	return ammo_percentage
+end
+
+SimpleInventoryExtension.ammo_status = function (self)
+	local current_ammo, max_ammo = self:current_ammo_status("slot_ranged")
+
+	return current_ammo, max_ammo
 end
 
 SimpleInventoryExtension.current_ammo_kind = function (self, slot_name)

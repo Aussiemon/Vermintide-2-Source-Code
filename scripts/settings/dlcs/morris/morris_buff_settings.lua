@@ -177,13 +177,14 @@ local function trigger_deus_potion_end_sound_event(unit, buff, params, world)
 	end
 end
 
-local function spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time)
+local function spawn_barrel(item_name, position, rotation, velocity, explode_time, fuse_time, random_explosion_delay)
 	local network_position = AiAnimUtils.position_network_scale(position, true)
 	local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
 	local network_velocity = AiAnimUtils.velocity_network_scale(velocity, true)
 	local t = Managers.time:time("game")
+	local random_delay = Math.random_range(-random_explosion_delay, random_explosion_delay)
 	local explosion_data = {
-		explode_time = t + explode_time,
+		explode_time = t + explode_time + random_delay,
 		fuse_time = fuse_time
 	}
 	local extension_init_data = {
@@ -701,38 +702,45 @@ dlc_settings.buff_function_templates = {
 		end
 	end,
 	apply_killer_in_the_shadows_buff = function (unit, buff, params)
-		if is_local(unit) or (is_server() and is_bot(unit)) then
-			local status_extension = ScriptUnit.extension(unit, "status_system")
-
-			status_extension:set_invisible(true)
-			status_extension:set_noclip(true)
-		end
-
 		if is_local(unit) then
-			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local applying_stealth = status_extension:add_stealth_stacking()
 
-			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
-			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
+			status_extension:add_noclip_stacking()
 
-			MOOD_BLACKBOARD.skill_shade = true
+			if not is_bot(unit) then
+				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+
+				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter_small")
+
+				if applying_stealth then
+					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
+				end
+
+				MOOD_BLACKBOARD.skill_shade = true
+			end
 		end
 	end,
 	remove_killer_in_the_shadows_buff = function (unit, buff, params, world)
-		if is_local(unit) or (is_server() and is_bot(unit)) then
+		if is_local(unit) then
 			local status_extension = ScriptUnit.extension(unit, "status_system")
+			local removing_stealth = status_extension:remove_stealth_stacking()
 
-			status_extension:set_invisible(false)
-			status_extension:set_noclip(false)
+			status_extension:remove_noclip_stacking()
 
-			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
+			if not is_bot(unit) then
+				if removing_stealth then
+					local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
-			first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_exit")
+					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
 
-			MOOD_BLACKBOARD.skill_shade = false
+					MOOD_BLACKBOARD.skill_shade = false
+				end
+
+				trigger_deus_potion_end_sound_event(unit, buff, params, world)
+			end
 		end
-
-		trigger_deus_potion_end_sound_event(unit, buff, params, world)
 	end,
 	apply_pockets_full_of_bombs_buff = function (unit, buff, params)
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
@@ -1938,7 +1946,7 @@ dlc_settings.proc_functions = {
 					if is_server() then
 						local pickup_system = Managers.state.entity:system("pickup_system")
 
-						pickup_system:spawn_pickup(pickup_name, position, false, rotation, true, pickup_spawn_type)
+						pickup_system:spawn_pickup(pickup_name, position, rotation, true, pickup_spawn_type)
 					else
 						local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
 						local pickup_spawn_type_id = NetworkLookup.pickup_spawn_types[pickup_spawn_type]
@@ -2228,7 +2236,7 @@ dlc_settings.proc_functions = {
 						local pickup_spawn_type = "dropped"
 						local pickup_system = Managers.state.entity:system("pickup_system")
 
-						pickup_system:spawn_pickup(pickup_name, position, false, rotation, true, pickup_spawn_type)
+						pickup_system:spawn_pickup(pickup_name, position, rotation, true, pickup_spawn_type)
 
 						local attacker = player.player_unit
 						local damage_source = "buff"
@@ -2277,7 +2285,21 @@ dlc_settings.proc_functions = {
 				local template = buff.template
 				local damage_to_deal = template.damage_to_deal
 
-				DamageUtils.add_damage_network(player_unit, player_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, player_unit)
+				if template.is_non_lethal then
+					local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
+
+					if health_extension then
+						local current_health = health_extension:current_health()
+						damage_to_deal = math.clamp(damage_to_deal, 0, math.max(current_health - 0.25, 0))
+						damage_to_deal = DamageUtils.networkify_damage(damage_to_deal)
+					else
+						damage_to_deal = 0
+					end
+				end
+
+				if damage_to_deal > 0 then
+					DamageUtils.add_damage_network(player_unit, player_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, player_unit)
+				end
 			end
 		end
 	end,
@@ -2288,7 +2310,7 @@ dlc_settings.proc_functions = {
 			local target_num = params[4]
 			local template = buff.template
 			local targets_to_hit = template.targets_to_hit
-			local attack_type = params[2] == "light_attack" or params[5] == "heavy_attack"
+			local attack_type = params[2] == "light_attack" or params[2] == "heavy_attack"
 
 			if targets_to_hit <= target_num and attack_type then
 				local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
@@ -2542,17 +2564,28 @@ dlc_settings.proc_functions = {
 		if ALIVE[player_unit] then
 			local template = buff.template
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local already_invulnerable = buff_extension:has_buff_perk("invulnerable")
+
+			if already_invulnerable then
+				return
+			end
+
 			local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 			local health_threshold = template.health_threshold
 			local current_health = health_extension:current_health()
 			local max_health = health_extension:get_max_health()
 			local amount = params[2]
-			local current_health_percent = (current_health - amount) / max_health
+			local percent_health_after_damage = (current_health - amount) / max_health
+
+			if percent_health_after_damage <= 0 and buff_extension:has_buff_perk("ignore_death") then
+				return
+			end
+
 			local damage_source = params[3]
 			local has_cooldown = buff_extension:get_non_stacking_buff("deus_second_wind_cooldown")
 
-			if current_health_percent < health_threshold and not has_cooldown and damage_source ~= "life_tap" then
-				local damage_to_deal = max_health * 0.08
+			if percent_health_after_damage < health_threshold and not has_cooldown and damage_source ~= "life_tap" then
+				local damage_to_deal = (percent_health_after_damage > 0 and amount) or current_health - 1
 
 				DamageUtils.add_damage_network(player_unit, player_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, player_unit)
 
@@ -3020,7 +3053,7 @@ dlc_settings.explosion_templates = {
 		explosion = {
 			use_attacker_power_level = true,
 			radius = 5,
-			effect_name = "fx/wpnfx_poison_arrow_impact",
+			effect_name = "fx/cw_enemy_explosion",
 			max_damage_radius = 2,
 			no_prop_damage = true,
 			always_hurt_players = false,
@@ -3489,6 +3522,7 @@ dlc_settings.buff_templates = {
 				damage_profile = "curse_mark_of_nurgle_dot",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 1,
 				time_between_dot_damages = 1,
 				max_stacks = 1,
 				duration = 3
@@ -3578,15 +3612,16 @@ dlc_settings.buff_templates = {
 	curse_blood_storm_dot = {
 		buffs = {
 			{
-				update_func = "apply_dot_damage",
+				duration = 1,
 				name = "curse_blood_storm_dot",
 				max_stacks = 1,
 				refresh_durations = true,
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.5,
 				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm",
-				duration = 1,
+				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -3595,15 +3630,16 @@ dlc_settings.buff_templates = {
 	curse_blood_storm_dot_bots = {
 		buffs = {
 			{
-				update_func = "apply_dot_damage",
+				duration = 1,
 				name = "curse_blood_storm_dot",
 				max_stacks = 1,
 				refresh_durations = true,
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.5,
 				time_between_dot_damages = 0.5,
 				damage_profile = "blood_storm_bots",
-				duration = 1,
+				update_func = "apply_dot_damage",
 				reapply_buff_func = "reapply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -3618,7 +3654,8 @@ dlc_settings.buff_templates = {
 				custom_dot_tick_func = "curse_abundance_of_life_custom_dot_tick",
 				time_between_dot_damages = 2,
 				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage"
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 2
 			},
 			{
 				event = "on_potion_consumed",
@@ -3867,13 +3904,71 @@ dlc_settings.buff_templates = {
 	we_deus_01_dot = {
 		buffs = {
 			{
-				duration = 5,
+				duration = 2,
 				name = "we_deus_01_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
+				time_between_dot_damages = 0.75,
+				damage_type = "burninating",
+				damage_profile = "we_deus_01_dot",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.burning
+			}
+		}
+	},
+	we_deus_01_dot_fast = {
+		buffs = {
+			{
+				end_flow_event = "smoke",
+				name = "we_deus_01_dot_fast",
+				ticks = 2,
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
+				time_between_dot_damages = 0.75,
+				damage_type = "burninating",
+				damage_profile = "we_deus_01_dot",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.burning
+			}
+		}
+	},
+	we_deus_01_dot_special_charged = {
+		buffs = {
+			{
+				end_flow_event = "smoke",
+				name = "we_deus_01_dot_special_charged",
+				ticks = 4,
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
+				time_between_dot_damages = 0.75,
+				damage_type = "burninating",
+				damage_profile = "we_deus_01_dot",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.burning
+			}
+		}
+	},
+	we_deus_01_dot_charged = {
+		buffs = {
+			{
+				end_flow_event = "smoke",
+				name = "we_deus_01_dot_charged",
+				ticks = 6,
+				start_flow_event = "burn",
+				death_flow_event = "burn_death",
+				remove_buff_func = "remove_dot_damage",
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				damage_type = "burninating",
 				damage_profile = "we_deus_01_dot",
@@ -3896,21 +3991,22 @@ dlc_settings.buff_templates = {
 	burning_magma_dot = {
 		buffs = {
 			{
-				duration = 3,
+				reapply_start_flow_event = true,
 				name = "burning_magma_dot",
 				remove_buff_func = "remove_dot_damage",
 				end_flow_event = "smoke",
-				start_flow_event = "burn",
-				reapply_start_flow_event = true,
-				apply_buff_func = "start_dot_damage",
+				duration = 3,
 				death_flow_event = "burn_death",
-				time_between_dot_damages = 0.75,
-				refresh_durations = true,
+				start_flow_event = "burn",
+				update_start_delay = 0.75,
+				max_stacks = 6,
 				damage_type = "burninating",
+				reapply_buff_func = "reapply_dot_damage",
+				refresh_durations = true,
+				apply_buff_func = "start_dot_damage",
+				time_between_dot_damages = 0.75,
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				reapply_buff_func = "reapply_dot_damage",
-				max_stacks = 6,
 				perk = buff_perks.burning
 			}
 		}
@@ -3918,18 +4014,19 @@ dlc_settings.buff_templates = {
 	burning_magma_dot_infinite = {
 		buffs = {
 			{
-				apply_buff_func = "start_dot_damage",
-				name = "burning_magma_dot_infinite",
+				end_flow_event = "smoke",
+				name = "infinite burning dot",
 				start_flow_event = "burn_infinity",
 				death_flow_event = "burn_death",
+				on_max_stacks_overflow_func = "reapply_infinite_burn",
 				remove_buff_func = "remove_dot_damage",
-				end_flow_event = "smoke",
-				max_stacks = 1,
+				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
+				max_stacks = 1,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				reapply_buff_func = "reapply_dot_damage",
 				perk = buff_perks.burning
 			}
 		}

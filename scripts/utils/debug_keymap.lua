@@ -488,7 +488,7 @@ DebugInputFilters.xb1 = InputUtils.keymaps_key_approved("xb1") and {
 			left_thumb = "left_thumb"
 		}
 	},
-	i = {
+	l = {
 		filter_type = "and",
 		input_mappings = {
 			d_down = "d_down",
@@ -698,7 +698,7 @@ DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 			l2 = "l2"
 		}
 	},
-	i = {
+	l = {
 		filter_type = "and",
 		input_mappings = {
 			l3 = "l3",

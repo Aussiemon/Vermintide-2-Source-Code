@@ -1141,20 +1141,6 @@ ProjectileSystem.physics_cb_light_weight_projectile_hit = function (self, projec
 				self:_link_projectile(hit_data, action_data.projectile_linker)
 			end
 
-			if hit_data.hit_player then
-				local local_player_unit = Managers.player:local_player().player_unit
-				local owner_unit = projectile_data.owner_unit
-
-				if local_player_unit and local_player_unit == owner_unit then
-					local attacker_side = Managers.state.side.side_by_unit[owner_unit]
-					local attacker_side_name = attacker_side and attacker_side:name()
-
-					if attacker_side and attacker_side_name == "dark_pact" then
-						WwiseWorld.trigger_event(self._wwise_world, "versus_ui_damage_indicator")
-					end
-				end
-			end
-
 			local hit_unit = hit_data.hit_unit
 
 			if hit_unit and hit_player and action_data.first_person_hit_flow_events and not hit_data.shield_blocked then

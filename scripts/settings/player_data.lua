@@ -1,3 +1,5 @@
+require("scripts/settings/profiles/sp_profiles")
+
 DefaultPlayerData = {
 	controls_version = 18,
 	new_item_data_version = 6,
@@ -6,7 +8,7 @@ DefaultPlayerData = {
 	seen_shop_items_version = 1,
 	viewed_dialogues_version = 1,
 	level_preferences_version = 1,
-	bot_spawn_priority_version = 1,
+	bot_spawn_priority_version = 2,
 	new_sign_in_rewards_data_version = 2,
 	favorite_item_data_version = 1,
 	mission_selection = {},
@@ -17,7 +19,7 @@ DefaultPlayerData = {
 	new_sign_in_rewards = {},
 	controls = {},
 	recent_irc_channels = {},
-	bot_spawn_priority = {},
+	bot_spawn_priority = table.clone(ProfilePriority),
 	viewed_dialogues = {},
 	new_keep_decoration_ids = {},
 	level_preferences = {
@@ -104,7 +106,7 @@ function populate_player_data_from_save(save_data, id, version_match)
 		end
 
 		if DefaultPlayerData.bot_spawn_priority_version ~= player_save_data.bot_spawn_priority_version then
-			player_save_data.bot_spawn_priority = {}
+			player_save_data.bot_spawn_priority = table.clone(ProfilePriority)
 
 			print("Wrong bot_spawn_priority_version for save file, saved: ", player_save_data.bot_spawn_priority_version, " current: ", DefaultPlayerData.bot_spawn_priority_version)
 

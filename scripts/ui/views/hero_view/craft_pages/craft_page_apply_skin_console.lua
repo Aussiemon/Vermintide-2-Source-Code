@@ -39,6 +39,7 @@ CraftPageApplySkinConsole.on_enter = function (self, params, settings)
 	local career_data = hero_data.careers[self.career_index]
 	self.career_name = career_data.name
 	self.settings = settings
+	self._recipe_name = settings.name
 	self._animations = {}
 
 	self:create_ui_elements(params)
@@ -274,7 +275,7 @@ CraftPageApplySkinConsole._handle_input = function (self, dt, t)
 	local craft_input_keyboard = is_button_enabled and not gamepad_active and input_service:get("skip")
 	local craft_input_accepted = false
 
-	if input_service:get("special_1") then
+	if input_service:get("special_1") or (self._craft_item and input_service:get("toggle_menu", true)) then
 		self:reset()
 	elseif (craft_input == 0 or craft_input_gamepad or craft_input_keyboard) and self._craft_item and self._skin_item and self._has_all_requirements then
 		if not self._craft_input_time then
@@ -310,7 +311,7 @@ CraftPageApplySkinConsole._handle_input = function (self, dt, t)
 			items[#items + 1] = backend_id
 		end
 
-		local recipe_available = parent:craft(items)
+		local recipe_available = parent:craft(items, self._recipe_name)
 
 		if recipe_available then
 			self:_set_craft_button_disabled(true)

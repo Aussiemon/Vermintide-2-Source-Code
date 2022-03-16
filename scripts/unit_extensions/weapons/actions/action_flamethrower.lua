@@ -160,6 +160,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 				local check_buffs = true
 
 				for i = 1, #targets, 1 do
+					local processed_hit = false
 					local current_target = targets[i]
 
 					if Unit.alive(current_target) then
@@ -200,11 +201,13 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 							if data.buffs_checked then
 								check_buffs = check_buffs and false
 							end
+
+							processed_hit = true
 						end
 					end
-				end
 
-				self:_clear_targets()
+					targets[current_target] = processed_hit
+				end
 
 				local flamethrower_range = current_action.spray_range or SPRAY_RANGE
 				local physics_world = World.get_data(world, "physics_world")
@@ -224,7 +227,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 						local potential_hit_unit = Actor.unit(hit_actor)
 						local breed = hit_unit and Unit.get_data(hit_unit, "breed")
 
-						if potential_hit_unit ~= self.owner_unit and not breed then
+						if potential_hit_unit ~= self.owner_unit and not targets[potential_hit_unit] and not breed then
 							if table.contains(player_and_bot_units, potential_hit_unit) then
 								if friendly_fire then
 									hit_unit = potential_hit_unit
@@ -240,11 +243,11 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 					end
 
 					if hit_unit and result then
-						local check_buff = false
-
-						DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, is_server, result, current_action, player_direction, check_buff, hit_unit, nil, self._is_critical_strike, self.power_level)
+						DamageUtils.process_projectile_hit(world, self.item_name, self.owner_unit, is_server, result, current_action, player_direction, check_buffs, hit_unit, nil, self._is_critical_strike, self.power_level)
 					end
 				end
+
+				self:_clear_targets()
 			end
 
 			self.damage_timer = self.damage_timer + dt
@@ -339,8 +342,6 @@ ActionFlamethrower._clear_targets = function (self)
 	self.old_targets = current_targets
 end
 
-local hit_units = {}
-
 ActionFlamethrower._select_targets = function (self, world, show_outline)
 	local owner_unit = self.owner_unit
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
@@ -363,21 +364,18 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 	if ai_units_n > 0 then
 		local targets = self.targets
 		local v, q, m = Script.temp_count()
-
-		table.clear(hit_units)
-
 		local num_hit = 0
 
 		for i = 1, ai_units_n, 1 do
 			local hit_unit = ai_units[i]
 			local hit_position = POSITION_LOOKUP[hit_unit] + Vector3.up()
 
-			if not hit_units[hit_unit] then
+			if targets[hit_unit] == nil then
 				local is_enemy = side.enemy_units_lookup[hit_unit]
 
 				if (is_enemy or not ignore_hitting_allies) and self:_is_infront_player(player_position, player_direction, hit_position) and self:_check_within_cone(start_point, player_direction, hit_unit, is_enemy) then
 					targets[#targets + 1] = hit_unit
-					hit_units[hit_unit] = true
+					targets[hit_unit] = false
 
 					if is_enemy and ScriptUnit.extension(hit_unit, "health_system"):is_alive() then
 						num_hit = num_hit + 1

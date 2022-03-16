@@ -1,90 +1,91 @@
-local weapon_template = weapon_template or {}
-weapon_template.actions = {
-	action_one = {
-		default = {
-			kind = "melee_start",
-			weapon_action_hand = "left",
-			total_time = math.huge,
-			allowed_chain_actions = {
-				{
-					sub_action = "dummy_action",
-					start_time = 0,
-					action = "action_one",
-					end_time = 0.4,
-					input = "action_one_release"
-				},
-				{
-					sub_action = "action_throw",
-					start_time = 0.5,
-					action = "action_one",
-					auto_chain = true
+local weapon_template = {
+	actions = {
+		action_one = {
+			default = {
+				kind = "melee_start",
+				weapon_action_hand = "left",
+				total_time = math.huge,
+				allowed_chain_actions = {
+					{
+						sub_action = "dummy_action",
+						start_time = 0,
+						action = "action_one",
+						end_time = 0.4,
+						input = "action_one_release"
+					},
+					{
+						sub_action = "action_throw",
+						start_time = 0.5,
+						action = "action_one",
+						auto_chain = true
+					}
 				}
+			},
+			dummy_action = {
+				kind = "dummy",
+				weapon_action_hand = "left",
+				total_time = 0,
+				allowed_chain_actions = {}
+			},
+			action_throw = {
+				kind = "throw_grimoire",
+				ammo_usage = 1,
+				anim_end_event = "attack_finished",
+				anim_event = "attack_throw",
+				weapon_action_hand = "left",
+				total_time = 0.7,
+				anim_end_event_condition_func = function (unit, end_reason)
+					return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
+				end,
+				allowed_chain_actions = {}
 			}
 		},
-		dummy_action = {
-			kind = "dummy",
-			weapon_action_hand = "left",
-			total_time = 0,
-			allowed_chain_actions = {}
+		action_inspect = ActionTemplates.action_inspect_left,
+		action_wield = ActionTemplates.wield_left
+	},
+	ammo_data = {
+		ammo_hand = "left",
+		destroy_when_out_of_ammo = true,
+		max_ammo = 1,
+		ammo_per_clip = 1,
+		reload_time = 0
+	},
+	left_hand_unit = "units/weapons/player/wpn_grimoire_01/wpn_grimoire_01",
+	left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left,
+	wield_anim = "to_first_aid",
+	gui_texture = "icons_placeholder_melee_01",
+	is_grimoire = true,
+	max_fatigue_points = 1,
+	dodge_count = 3,
+	buffs = {
+		change_dodge_distance = {
+			external_optional_multiplier = 1.2
 		},
-		action_throw = {
-			kind = "throw_grimoire",
-			ammo_usage = 1,
-			anim_end_event = "attack_finished",
-			anim_event = "attack_throw",
-			weapon_action_hand = "left",
-			total_time = 0.7,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action" and end_reason ~= "action_complete"
-			end,
-			allowed_chain_actions = {}
+		change_dodge_speed = {
+			external_optional_multiplier = 1.2
 		}
 	},
-	action_inspect = ActionTemplates.action_inspect_left,
-	action_wield = ActionTemplates.wield_left
-}
-weapon_template.ammo_data = {
-	ammo_hand = "left",
-	destroy_when_out_of_ammo = true,
-	max_ammo = 1,
-	ammo_per_clip = 1,
-	reload_time = 0
-}
-weapon_template.left_hand_unit = "units/weapons/player/wpn_grimoire_01/wpn_grimoire_01"
-weapon_template.left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left
-weapon_template.wield_anim = "to_first_aid"
-weapon_template.gui_texture = "icons_placeholder_melee_01"
-weapon_template.is_grimoire = true
-weapon_template.max_fatigue_points = 1
-weapon_template.dodge_count = 3
-weapon_template.buffs = {
-	change_dodge_distance = {
-		external_optional_multiplier = 1.2
-	},
-	change_dodge_speed = {
-		external_optional_multiplier = 1.2
-	}
-}
-weapon_template.attack_meta_data = {
-	tap_attack = {
-		arc = 0,
-		penetrating = false,
-		max_range = math.huge
-	},
-	hold_attack = {
-		arc = 0,
-		penetrating = false,
-		max_range = math.huge,
-		attack_chain = {
-			start_sub_action_name = "default",
-			start_action_name = "action_one",
-			transitions = {
-				action_one = {
-					default = {
-						wanted_sub_action_name = "action_throw",
-						wanted_action_name = "action_one",
-						bot_wait_input = "hold_attack",
-						bot_wanted_input = "hold_attack"
+	attack_meta_data = {
+		tap_attack = {
+			arc = 0,
+			penetrating = false,
+			max_range = math.huge
+		},
+		hold_attack = {
+			arc = 0,
+			penetrating = false,
+			max_range = math.huge,
+			attack_chain = {
+				start_sub_action_name = "default",
+				start_action_name = "action_one",
+				transitions = {
+					action_one = {
+						default = {
+							wanted_sub_action_name = "action_throw",
+							wanted_action_name = "action_one",
+							bot_wait_input = "hold_attack",
+							bot_wanted_input = "hold_attack"
+						}
 					}
 				}
 			}

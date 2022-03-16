@@ -2,6 +2,9 @@ local start_onboarding = 0
 local before_first_weave = 4
 local after_first_weave = 7
 local after_second_weave = 9
+
+require("scripts/ui/weave_tutorial/custom_popups/new_ui_popup")
+
 WeaveUITutorials = WeaveUITutorials or {}
 WeaveUITutorials.forge_initial = {
 	ui_onboarding_bit = 1,
@@ -118,6 +121,11 @@ WeaveUITutorials.ranked_weave_desc = {
 	onboarding_step = 0,
 	popup_title = "start_game_window_ranked_weave_title",
 	popup_body = "menu_ranked_weaves_body"
+}
+WeaveUITutorials.new_ui_disclaimer = {
+	ui_onboarding_bit = 0,
+	onboarding_step = 0,
+	custom_popup = "NewUIPopup"
 }
 
 return

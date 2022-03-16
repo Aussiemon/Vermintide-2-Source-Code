@@ -21,12 +21,14 @@ end
 SearchUtils.extract_queries = function (query, definitions, results)
 	query = Utf8.lower(query)
 
-	for key, tuple_list in pairs(definitions) do
-		local pattern = Localize("search_filter_" .. key) .. ":"
+	for i = 1, #definitions, 1 do
+		local def = definitions[i]
+		local key = def.key
+		local pattern = Localize("search_filter_" .. key) .. "%s*:%s*"
 		local start_index, keyword_index = string.find(query, pattern)
 
 		if start_index then
-			local value, end_index = find_synonym_match(query, keyword_index + 1, tuple_list)
+			local value, end_index = find_synonym_match(query, keyword_index + 1, def)
 
 			if value ~= nil then
 				results[key] = value

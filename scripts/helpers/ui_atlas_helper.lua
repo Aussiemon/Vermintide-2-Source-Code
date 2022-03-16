@@ -352,14 +352,15 @@ local masked_materials = {
 	gui_items_atlas = "gui_items_atlas_masked"
 }
 local saturated_materials = {
-	gui_menus_atlas = "gui_menus_atlas_saturated",
 	gui_level_images_atlas = "gui_level_images_atlas_saturated",
-	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_saturated",
+	gui_frames_atlas = "gui_frames_atlas_saturated",
 	gui_hud_atlas = "gui_hud_atlas_saturated",
-	gui_mission_selection_atlas = "gui_mission_selection_atlas_saturated",
+	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_saturated",
+	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_saturated",
+	gui_menus_atlas = "gui_menus_atlas_saturated",
 	gui_icons_atlas = "gui_icons_atlas_saturated",
 	gui_items_atlas = "gui_items_atlas_saturated",
-	gui_menu_buttons_atlas = "gui_menu_buttons_atlas_saturated"
+	gui_mission_selection_atlas = "gui_mission_selection_atlas_saturated"
 }
 local masked_saturated_materials = {
 	gui_achievement_icons_atlas = "gui_achievement_icons_atlas_masked_saturated",

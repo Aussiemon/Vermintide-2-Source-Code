@@ -2410,27 +2410,50 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 				{
 					pass_type = "texture",
 					style_id = "ammunition_texture",
-					texture_id = "ammunition_texture"
+					texture_id = "ammunition_texture",
+					content_check_function = function (content)
+						return not content.hide_ammo_ui
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "flame_texture",
+					texture_id = "flame_texture",
+					content_check_function = function (content)
+						return content.hide_ammo_ui
+					end
 				},
 				{
 					style_id = "amount_text",
 					pass_type = "text",
-					text_id = "amount_text"
+					text_id = "amount_text",
+					content_check_function = function (content)
+						return not content.hide_ammo_ui
+					end
 				},
 				{
 					style_id = "amount_text_shadow",
 					pass_type = "text",
-					text_id = "amount_text"
+					text_id = "amount_text",
+					content_check_function = function (content)
+						return not content.hide_ammo_ui
+					end
 				},
 				{
 					style_id = "amount_text_shadow_2",
 					pass_type = "text",
-					text_id = "amount_text"
+					text_id = "amount_text",
+					content_check_function = function (content)
+						return not content.hide_ammo_ui
+					end
 				},
 				{
 					style_id = "amount_text_shadow_3",
 					pass_type = "text",
-					text_id = "amount_text"
+					text_id = "amount_text",
+					content_check_function = function (content)
+						return not content.hide_ammo_ui
+					end
 				},
 				{
 					style_id = "title_text",
@@ -2455,6 +2478,8 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 			}
 		},
 		content = {
+			hide_ammo_ui = false,
+			flame_texture = "icon_fire",
 			ammunition_texture = "icon_ammo",
 			amount_text = amount_text or "-",
 			title_text = Localize("menu_weave_forge_weapon_ammo_regular_title"),
@@ -2479,6 +2504,26 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 				offset = {
 					-12,
 					-25,
+					2
+				}
+			},
+			flame_texture = {
+				vertical_alignment = "center",
+				horizontal_alignment = "left",
+				masked = masked,
+				texture_size = {
+					46,
+					61
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					-5,
 					2
 				}
 			},

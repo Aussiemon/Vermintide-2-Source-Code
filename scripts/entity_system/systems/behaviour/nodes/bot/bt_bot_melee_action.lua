@@ -356,27 +356,14 @@ BTBotMeleeAction._allow_engage = function (self, self_unit, target_unit, blackbo
 			local health = ScriptUnit.extension(target_ally_unit, "health_system"):current_health_percent()
 			local target_blackboard = target_ai_extension:blackboard()
 			local target_breed = target_blackboard.breed
-			local threat_to_aid = health > 0.3 and target_blackboard.target_unit == self_unit and (not force_aid or target_breed.is_bot_aid_threat)
+			local proximite_enemies = blackboard.proximite_enemies
+			local threat_to_aid = health > 0.3 and BTConditions.is_there_threat_to_aid(self_unit, proximite_enemies, force_aid)
 
 			if not threat_to_aid then
 				return false
 			end
 
-			local target_in_proximity = false
-			local proximite_enemies = blackboard.proximite_enemies
-			local num_proximite_enemies = #proximite_enemies
-
-			for i = 1, num_proximite_enemies, 1 do
-				local enemy_unit = proximite_enemies[i]
-
-				if enemy_unit == target_unit then
-					target_in_proximity = true
-
-					break
-				end
-			end
-
-			if not target_in_proximity then
+			if target_unit == blackboard.urgent_target_enemy and blackboard.revive_with_urgent_target then
 				return false
 			end
 		end

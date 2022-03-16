@@ -320,7 +320,8 @@ StoreWindowPanel._play_sound = function (self, event)
 end
 
 StoreWindowPanel._setup_input_buttons = function (self)
-	local input_service = self._parent:window_input_service()
+	local force = true
+	local input_service = self._parent:window_input_service(force)
 	local input_1_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_PREVIOUS, true)
 	local input_2_texture_data = UISettings.get_gamepad_input_texture_data(input_service, INPUT_ACTION_NEXT, true)
 	local widgets_by_name = self._widgets_by_name

@@ -15,6 +15,7 @@ WeaveTutorialPopupUI.init = function (self, ui_context)
 	self.render_settings = {
 		snap_pixel_positions = true
 	}
+	self.ui_context = ui_context
 	self.body_paragraphs = {}
 	self.body_paragraph_heights = {}
 	self._animations = {}
@@ -64,7 +65,7 @@ WeaveTutorialPopupUI._create_ui_elements = function (self)
 	self.ui_animator = UIAnimator:new(self.ui_scenegraph, animation_definitions)
 end
 
-WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_button_2, optional_button_2_func, optional_button_2_input_actions, disable_body_localization)
+WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_button_2, optional_button_2_func, optional_button_2_input_actions, disable_body_localization, data)
 	if self.is_visible then
 		print("WeaveTutorialPopupUI is already visible")
 
@@ -75,8 +76,17 @@ WeaveTutorialPopupUI.show = function (self, title, sub_title, body, optional_but
 
 	self._menu_input_description:set_input_description(optional_button_2_input_actions)
 	self:start_transition_animation("on_show", "transition_enter")
-	self:populate_message(title, sub_title, body, optional_button_2, disable_body_localization)
+	self:populate_message(title, sub_title, body, optional_button_2, disable_body_localization, data)
 
+	self.is_visible = true
+
+	self:_acquire_input()
+end
+
+WeaveTutorialPopupUI.show_custom_popup = function (self, popup_data)
+	local popup_class_name = popup_data.custom_popup
+	local klass = rawget(_G, popup_class_name)
+	self._custom_popup = klass:new(self.ui_context, self)
 	self.is_visible = true
 
 	self:_acquire_input()
@@ -90,6 +100,15 @@ WeaveTutorialPopupUI.hide = function (self)
 	self.is_visible = false
 
 	self:_release_input()
+	self:_destroy_custom_popup()
+end
+
+WeaveTutorialPopupUI._destroy_custom_popup = function (self)
+	if self._custom_popup then
+		self._custom_popup:destroy()
+
+		self._custom_popup = nil
+	end
 end
 
 WeaveTutorialPopupUI.destroy = function (self)
@@ -112,21 +131,25 @@ WeaveTutorialPopupUI.update = function (self, dt)
 
 	local input_service = self.input_manager:get_service("weave_tutorial")
 
-	if UIUtils.is_button_pressed(self.button_1) or input_service:get("toggle_menu", true) or input_service:get("confirm_press", true) then
-		self:hide()
+	if self._custom_popup then
+		self._custom_popup:update(dt, input_service)
+	else
+		if UIUtils.is_button_pressed(self.button_1) or input_service:get("toggle_menu", true) or input_service:get("confirm_press", true) then
+			self:hide()
 
-		return
+			return
+		end
+
+		if self._optional_button_2_func and (UIUtils.is_button_pressed(self.button_2) or input_service:get("special_1_press", true)) then
+			self:_optional_button_2_func()
+			self:hide()
+
+			return
+		end
+
+		self:_update_animations(dt)
+		self:_draw(dt, input_service)
 	end
-
-	if self._optional_button_2_func and (UIUtils.is_button_pressed(self.button_2) or input_service:get("special_1_press", true)) then
-		self:_optional_button_2_func()
-		self:hide()
-
-		return
-	end
-
-	self:_update_animations(dt)
-	self:_draw(dt, input_service)
 end
 
 WeaveTutorialPopupUI._update_animations = function (self, dt)
@@ -148,6 +171,10 @@ WeaveTutorialPopupUI._update_animations = function (self, dt)
 end
 
 WeaveTutorialPopupUI._draw = function (self, dt, input_service)
+	if self._custom_popup then
+		return
+	end
+
 	local ui_top_renderer = self.ui_top_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local render_settings = self.render_settings

@@ -221,6 +221,18 @@ GameModeManager.set_override_respawn_group = function (self, respawn_group_name,
 	end
 end
 
+GameModeManager.set_respawn_group_enabled = function (self, respawn_group_name, enabled)
+	if self._game_mode.set_respawn_group_enabled then
+		self._game_mode:set_respawn_group_enabled(respawn_group_name, enabled)
+	end
+end
+
+GameModeManager.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	if self._game_mode.set_respawn_gate_enabled then
+		self._game_mode:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+	end
+end
+
 GameModeManager.players_left_safe_zone = function (self)
 	self._mutator_handler:players_left_safe_zone()
 
@@ -927,6 +939,10 @@ end
 
 GameModeManager.respawn_unit_spawned = function (self, unit)
 	self._game_mode:respawn_unit_spawned(unit)
+end
+
+GameModeManager.respawn_gate_unit_spawned = function (self, unit)
+	self._game_mode:respawn_gate_unit_spawned(unit)
 end
 
 GameModeManager.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)

@@ -21,7 +21,8 @@ local DEFAULT_READ_ONLY_ATTRIBUTES = {
 	empire_soldier_tutorial_experience = 0
 }
 local DEFAULT_CHARACTER_ATTRIBUTES = {
-	career = 1
+	career = 1,
+	bot_career = 1
 }
 
 BackendInterfaceHeroAttributesPlayFab.init = function (self, backend_mirror)

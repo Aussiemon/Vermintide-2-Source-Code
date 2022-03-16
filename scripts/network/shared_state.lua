@@ -449,7 +449,6 @@ SharedState.set_peer = function (self, owner, key, value)
 	end
 
 	fassert(value ~= nil, "value can't be nil")
-	check_if_key_belongs_to_spec(self._spec.peer, key)
 	fassert(type(value) == self._spec.peer[key.key_type].type, "value type is not the same as the spec defines.")
 	set(self._peer_state, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, value)
 
@@ -537,7 +536,6 @@ SharedState.set_server = function (self, key, value)
 	end
 
 	fassert(value ~= nil, "value can't be nil")
-	check_if_key_belongs_to_spec(self._spec.server, key)
 	fassert(type(value) == self._spec.server[key.key_type].type, "value type is not the same as the spec defines.")
 	set_server(self._server_state, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, value)
 
@@ -570,8 +568,6 @@ SharedState.set_own = function (self, key, value)
 end
 
 SharedState.get_peer = function (self, owner, key)
-	check_if_key_belongs_to_spec(self._spec.peer, key)
-
 	if self:_is_destroyed() then
 		return self._spec.peer[key.key_type].default_value
 	end
@@ -586,8 +582,6 @@ SharedState.get_own = function (self, key)
 end
 
 SharedState.get_server = function (self, key)
-	check_if_key_belongs_to_spec(self._spec.server, key)
-
 	if self:_is_destroyed() then
 		return self._spec.server[key.key_type].default_value
 	end

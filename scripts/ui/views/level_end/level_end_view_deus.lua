@@ -49,11 +49,4 @@ LevelEndViewDeus._setup_pages_defeat = function (self, rewards)
 	return index_by_state_name
 end
 
-LevelEndViewDeus.get_extra_materials = function (self)
-	return {
-		"material",
-		"materials/ui/ui_1080p_morris_icons_atlas"
-	}
-end
-
 return

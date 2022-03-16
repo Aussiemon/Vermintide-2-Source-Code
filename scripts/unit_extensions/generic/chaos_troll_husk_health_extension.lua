@@ -138,7 +138,7 @@ ChaosTrollHuskHealthExtension.rpc_sync_current_max_health = function (self, chan
 		return
 	end
 
-	self.current_max_health = new_max_health
+	self.current_max_health = DamageUtils.networkify_health(new_max_health)
 end
 
 ChaosTrollHuskHealthExtension.destroy = function (self)

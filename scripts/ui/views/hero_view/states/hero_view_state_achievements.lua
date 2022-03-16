@@ -5,6 +5,7 @@ local definitions = local_require("scripts/ui/views/hero_view/states/definitions
 local widget_definitions = definitions.widgets
 local overlay_widget_definitions = definitions.overlay_widgets
 local summary_widget_definitions = definitions.summary_widgets
+local search_widget_definitions = definitions.search_widget_definitions
 local quest_widget_definitions = definitions.quest_widgets
 local achievement_widget_definitions = definitions.achievement_widgets
 local category_tab_widget_definitions = definitions.category_tab_widgets
@@ -22,7 +23,7 @@ local achievement_presentation_amount = definitions.achievement_presentation_amo
 local generic_input_actions = definitions.generic_input_actions
 local console_cursor_definition = definitions.console_cursor_definition
 local quest_scrollbar_bottom_inset = definitions.quest_scrollbar_bottom_inset
-local DO_RELOAD = false
+local create_search_filters_widget = definitions.create_search_filters_widget
 local CHECKLIST_ENTRY_HEIGHT = checklist_entry_size[2]
 local ACHIEVEMENT_DEFAULT_HEIGHT = achievement_entry_size[2]
 local ACHIEVEMENT_WINDOW_HEIGHT = achievement_window_size[2]
@@ -30,118 +31,6 @@ local ACHIEVEMENT_PRESENTATION_AMOUNT = achievement_presentation_amount
 local ACHIEVEMENT_SPACING = achievement_spacing
 HeroViewStateAchievements = class(HeroViewStateAchievements)
 HeroViewStateAchievements.NAME = "HeroViewStateAchievements"
-local ACHIEVEMENT_SEARCH_DEFINITIONS = {
-	reward = {
-		{
-			"currency",
-			"search_keywords_currency"
-		},
-		{
-			"keep_decoration_painting",
-			"search_keywords_decoration"
-		},
-		{
-			"chest",
-			"search_keywords_chest"
-		},
-		{
-			"hat",
-			"search_keywords_hat"
-		},
-		{
-			"skin",
-			"search_keywords_skin"
-		},
-		{
-			"frame",
-			"search_keywords_frame"
-		},
-		{
-			"weapon_skin",
-			"search_keywords_illusion"
-		},
-		{
-			"melee",
-			"search_keywords_melee"
-		},
-		{
-			"ranged",
-			"search_keywords_ranged"
-		},
-		{
-			"necklace",
-			"search_keywords_necklace"
-		},
-		{
-			"charm",
-			"search_keywords_charm"
-		},
-		{
-			"trinket",
-			"search_keywords_trinket"
-		}
-	},
-	rarity = {
-		{
-			"default",
-			"search_keywords_default"
-		},
-		{
-			"plentiful",
-			"search_keywords_plentiful"
-		},
-		{
-			"common",
-			"search_keywords_common"
-		},
-		{
-			"rare",
-			"search_keywords_rare"
-		},
-		{
-			"exotic",
-			"search_keywords_exotic"
-		},
-		{
-			"unique",
-			"search_keywords_unique"
-		},
-		{
-			"promo",
-			"search_keywords_promo"
-		}
-	},
-	claimed = {
-		{
-			true,
-			"search_keywords_true"
-		},
-		{
-			false,
-			"search_keywords_false"
-		}
-	},
-	completed = {
-		{
-			true,
-			"search_keywords_true"
-		},
-		{
-			false,
-			"search_keywords_false"
-		}
-	},
-	locked = {
-		{
-			true,
-			"search_keywords_true"
-		},
-		{
-			false,
-			"search_keywords_false"
-		}
-	}
-}
 
 HeroViewStateAchievements.on_enter = function (self, params)
 	print("[HeroViewState] Enter Substate HeroViewStateAchievements")
@@ -162,6 +51,8 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	self.ingame_ui = ingame_ui_context.ingame_ui
 	self._quest_manager = Managers.state.quest
 	self._achievement_manager = Managers.state.achievement
+	self._claimable_challenge_widgets = {}
+	self._quest_rewards_fail_reason = nil
 	self._search_query = ""
 	self._reward_presentation_queue = {}
 	local reward_params = {
@@ -192,7 +83,7 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
 	local input_service = self:input_service()
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 3, 100, generic_input_actions)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_service, 5, 100, generic_input_actions.default)
 
 	self.menu_input_description:set_input_description(nil)
 
@@ -200,6 +91,10 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	self.career_index = career_index
 	self.profile_index = profile_index
 	self.is_server = self.parent.is_server
+	self._current_gamepad_input_selection = {
+		1,
+		1
+	}
 	self._animations = {}
 	self._ui_animations = {}
 
@@ -221,6 +116,20 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	self:_on_layout_button_pressed(summary_button, nil, "summary")
 	self:play_sound("Play_gui_achivements_menu_open")
 	Managers.input:enable_gamepad_cursor()
+	self:_create_filter_input_service()
+end
+
+HeroViewStateAchievements._create_filter_input_service = function (self)
+	local input_manager = Managers.input
+
+	input_manager:create_input_service("achievement_filter", "IngameMenuKeymaps", "IngameMenuFilters", {
+		hero_view = false
+	})
+	input_manager:map_device_to_service("achievement_filter", "gamepad")
+end
+
+HeroViewStateAchievements.get_filter_input_service = function (self)
+	return Managers.input:get_service("achievement_filter")
 end
 
 HeroViewStateAchievements._update_buttons_new_status = function (self)
@@ -300,28 +209,16 @@ HeroViewStateAchievements.create_ui_elements = function (self, params)
 	self._summary_widgets, self._summary_widgets_by_name = UIUtils.create_widgets(summary_widget_definitions)
 	self._additional_quest_widgets, self._additional_quest_widgets_by_name = UIUtils.create_widgets(quest_widget_definitions)
 	self._additional_achievement_widgets, self._additional_achievement_widgets_by_name = UIUtils.create_widgets(achievement_widget_definitions)
+	self._search_widgets, self._search_widgets_by_name = UIUtils.create_widgets(search_widget_definitions)
 	self._category_tab_widgets = UIUtils.create_widgets(category_tab_widget_definitions)
 
 	for _, widget in pairs(self._category_tab_widgets) do
 		self:_reset_tab(widget)
 	end
 
-	local buffer = {
-		Localize("player_in_need_of_help")
-	}
-
-	for filter_name, enum in pairs(ACHIEVEMENT_SEARCH_DEFINITIONS) do
-		buffer[#buffer + 1] = "\n{#color(34,139,34)}"
-		buffer[#buffer + 1] = Localize("search_filter_" .. filter_name)
-		buffer[#buffer + 1] = "{#color(255,255,255)}   :"
-
-		for _, tuple in pairs(enum) do
-			buffer[#buffer + 1] = "   "
-			buffer[#buffer + 1] = string.match(Localize(tuple[2]), "^[^,]+")
-		end
-	end
-
-	self._widgets_by_name.search_input.content.help_tooltip.text_id = table.concat(buffer)
+	local search_filters_widget = UIWidget.init(create_search_filters_widget("search_filters", self.ui_renderer, UISettings.achievement_search_definitions))
+	self._search_widgets[#self._search_widgets + 1] = search_filters_widget
+	self._search_widgets_by_name.filters = search_filters_widget
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
 
@@ -470,7 +367,8 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 		self._achievement_widgets = nil
 		self._widgets_by_name.achievement_scrollbar.content.visible = false
 		self._widgets_by_name.category_scrollbar.content.visible = false
-		self._widgets_by_name.search_input.content.visible = false
+		self._search_widgets_by_name.input.content.visible = false
+		self._search_widgets_by_name.filters.content.visible = false
 	else
 		if layout_type == "achievements" then
 			self._additional_type_widgets = self._additional_achievement_widgets
@@ -493,7 +391,7 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 
 		self._widgets_by_name.achievement_scrollbar.content.visible = true
 		self._widgets_by_name.category_scrollbar.content.visible = true
-		self._widgets_by_name.search_input.content.visible = true
+		self._search_widgets_by_name.input.content.visible = true
 
 		self:_update_categories_scroll_height(0)
 
@@ -502,6 +400,8 @@ HeroViewStateAchievements._on_layout_button_pressed = function (self, widget, wi
 
 		self:_activate_tab(tab_widget, tab_widget_index, nil, true)
 	end
+
+	self._achievement_layout_type = layout_type
 end
 
 HeroViewStateAchievements._reset_tabs = function (self)
@@ -555,7 +455,7 @@ end
 HeroViewStateAchievements._get_layout = function (self, layout_type)
 	if layout_type == "achievements" then
 		return self._achievement_manager:outline()
-	else
+	elseif layout_type == "quest" then
 		local quest_manager = self._quest_manager
 		local quest_layout = quest_manager:get_quest_outline()
 
@@ -700,6 +600,8 @@ end
 HeroViewStateAchievements._create_entries = function (self, entries, entry_type, entry_subtype)
 	local quest_manager = self._quest_manager
 	local achievement_manager = self._achievement_manager
+	self._claimable_challenge_widgets = {}
+	self._has_claimable_filtered_challenges = nil
 	local widget_definition, manager = nil
 	local can_close = false
 
@@ -713,11 +615,11 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 	end
 
 	local needle = self._search_query
+	local query = self._search_widgets_by_name.filters.content.query
 
 	print("[HeroViewStateAchievements] Using search query: ", needle)
 
-	local query = {}
-	needle = SearchUtils.extract_queries(needle, ACHIEVEMENT_SEARCH_DEFINITIONS, query)
+	needle = SearchUtils.extract_queries(needle, UISettings.achievement_search_definitions, query)
 	local temp_content = {}
 	local claimable_achievement_widgets = {}
 	local unclaimable_achievement_widgets = {}
@@ -930,8 +832,15 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 
 							if completed and not claimed and unlocked then
 								claimable_achievement_widgets[#claimable_achievement_widgets + 1] = widget
+								self._claimable_challenge_widgets[#self._claimable_challenge_widgets + 1] = widget
 							else
 								unclaimable_achievement_widgets[#unclaimable_achievement_widgets + 1] = widget
+							end
+
+							if claimable_achievement_widgets and #claimable_achievement_widgets ~= 0 then
+								self._has_claimable_filtered_challenges = true
+							else
+								self._has_claimable_filtered_challenges = false
 							end
 						end
 					end
@@ -1241,6 +1150,10 @@ HeroViewStateAchievements._update_category_scroll_position = function (self)
 end
 
 HeroViewStateAchievements._on_achievement_pressed = function (self, widget)
+	if self._claim_all then
+		return
+	end
+
 	local content = widget.content
 	local style = widget.style
 	local offset = widget.offset
@@ -1298,7 +1211,6 @@ end
 HeroViewStateAchievements._claim_reward = function (self, widget)
 	local content = widget.content
 	local id = content.id
-	local quest_manager = self._quest_manager
 	local reward_poll_id, reason = nil
 	local achievement_layout_type = self._achievement_layout_type
 
@@ -1323,6 +1235,30 @@ HeroViewStateAchievements._claim_reward = function (self, widget)
 	end
 end
 
+HeroViewStateAchievements._claim_multiple_rewards = function (self, challenge_widgets)
+	local reward_poll_claim_all_id, reason = nil
+	local challenges_ids = {}
+
+	for i = 1, #challenge_widgets, 1 do
+		local widget = challenge_widgets[i]
+		local id = widget.content.id
+		challenges_ids[i] = id
+		widget.content.claiming = true
+	end
+
+	local achievement_layout_type = self._achievement_layout_type
+
+	if achievement_layout_type == "achievements" then
+		reward_poll_claim_all_id = self:_claim_multiple_achievement_rewards(challenges_ids)
+	else
+		reward_poll_claim_all_id, reason = self:_claim_multiple_quest_rewards(challenges_ids)
+	end
+
+	self._reward_poll_claim_all_id = reward_poll_claim_all_id
+	self._reward_poll_type = achievement_layout_type
+	self._quest_rewards_fail_reason = reason
+end
+
 HeroViewStateAchievements._claim_quest_reward = function (self, id)
 	local quest_manager = self._quest_manager
 	local can_claim, claim_error = quest_manager:can_claim_quest_rewards(id)
@@ -1334,6 +1270,21 @@ HeroViewStateAchievements._claim_quest_reward = function (self, id)
 	end
 
 	local claim_id, reason = quest_manager:claim_reward(id)
+
+	return claim_id, reason
+end
+
+HeroViewStateAchievements._claim_multiple_quest_rewards = function (self, keys)
+	local quest_manager = self._quest_manager
+	local can_claim, claimable_quest_keys, claim_error = quest_manager:can_claim_multiple_quest_rewards(keys)
+
+	if not can_claim then
+		print("[HeroViewStateAchievements]:_claim_quest_reward()", can_claim, claim_error, keys)
+
+		return nil, nil
+	end
+
+	local claim_id, reason = quest_manager:claim_multiple_quest_rewards(keys)
 
 	return claim_id, reason
 end
@@ -1353,8 +1304,31 @@ HeroViewStateAchievements._claim_achievement_reward = function (self, id)
 	return claim_id
 end
 
+HeroViewStateAchievements._claim_multiple_achievement_rewards = function (self, achievements_ids)
+	local achievement_manager = self._achievement_manager
+	local claimable_achievements, unclaimable_achievements, error_message = achievement_manager:can_claim_all_achievement_rewards(achievements_ids)
+
+	if not claimable_achievements and not unclaimable_achievements then
+		printf("[HeroViewStateAchievements]: Failed to claim achievement: %s", error_message)
+
+		return nil
+	end
+
+	if unclaimable_achievements then
+		for i = 1, #unclaimable_achievements, 1 do
+			printf("[HeroViewStateAchievements]: %s, %s", error_message, unclaimable_achievements[i])
+		end
+	end
+
+	if claimable_achievements then
+		local claim_id = achievement_manager:claim_multiple_rewards(claimable_achievements)
+
+		return claim_id
+	end
+end
+
 HeroViewStateAchievements._is_polling = function (self)
-	return self._reward_poll_id or self._quest_refresh_poll_id
+	return self._reward_poll_id or self._quest_refresh_poll_id or self._reward_poll_claim_all_id
 end
 
 HeroViewStateAchievements._poll_quest_refresh = function (self, dt)
@@ -1406,6 +1380,38 @@ HeroViewStateAchievements._poll_rewards = function (self, dt)
 	end
 end
 
+HeroViewStateAchievements._poll_all_rewards = function (self, dt)
+	local reward_poll_claim_all_id = self._reward_poll_claim_all_id
+
+	if not reward_poll_claim_all_id then
+		return
+	end
+
+	local is_polling_reward = nil
+	local polling_type = self._reward_poll_type
+
+	if not self._reward_poll_type then
+		return
+	end
+
+	if polling_type == "quest" then
+		local quest_manager = self._quest_manager
+		is_polling_reward = quest_manager:polling_quest_reward()
+	elseif polling_type == "achievements" then
+		local achievement_manager = self._achievement_manager
+		is_polling_reward = achievement_manager:polling_reward()
+	else
+		ferror("Unknown reward_poll_type (%s)", polling_type)
+	end
+
+	if not is_polling_reward then
+		self:_on_all_rewards_claimed(reward_poll_claim_all_id, polling_type)
+
+		self._reward_poll_claim_all_id = nil
+		self._reward_poll_type = nil
+	end
+end
+
 HeroViewStateAchievements._on_reward_claimed = function (self, reward_poll_id, polling_type)
 	local widget = self._reward_claim_widget
 	local content = widget.content
@@ -1426,6 +1432,38 @@ HeroViewStateAchievements._on_reward_claimed = function (self, reward_poll_id, p
 		self:_activate_tab(tab_widget, tab_index, 1, true)
 	end
 
+	self:_update_new_status_for_current_tab()
+	self:_update_buttons_new_status()
+	self:_handle_claim_all_challenges()
+end
+
+HeroViewStateAchievements._on_all_rewards_claimed = function (self, reward_poll_id, polling_type)
+	local rewards_widgets = self._claimable_challenge_widgets
+
+	for i = 1, #rewards_widgets, 1 do
+		local widget = rewards_widgets[i]
+		local content = widget.content
+		local style = widget.style
+		content.claimed = true
+		content.claiming = false
+		style.reward_icon.saturated = true
+	end
+
+	self._claimable_challenge_widgets = nil
+	self._has_claimable_filtered_challenges = nil
+
+	self:_setup_reward_presentation(reward_poll_id, polling_type)
+
+	if polling_type == "quest" then
+		self:_setup_layout("quest")
+
+		local tab_widget = self._active_tab
+		local tab_index = self._active_tab_index
+
+		self:_activate_tab(tab_widget, tab_index, 1, true)
+	end
+
+	self:_handle_claim_all_challenges()
 	self:_update_new_status_for_current_tab()
 	self:_update_buttons_new_status()
 end
@@ -1694,12 +1732,6 @@ HeroViewStateAchievements.input_service = function (self)
 end
 
 HeroViewStateAchievements.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:create_ui_elements()
-	end
-
 	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 
 	if self.reward_popup then
@@ -1710,6 +1742,8 @@ HeroViewStateAchievements.update = function (self, dt, t)
 	self:_update_summary_quest_timers(dt)
 	self:draw(input_service, dt)
 	self:_update_transition_timer(dt)
+	self:_handle_claim_all_challenges()
+	self:_handle_gamepad_activity()
 
 	local transitioning = self.parent:transitioning()
 	local wanted_state = self:_wanted_state()
@@ -1722,8 +1756,10 @@ HeroViewStateAchievements.update = function (self, dt, t)
 				self:close_menu(ignore_sound_on_close_menu)
 			else
 				self:_handle_input(dt, t)
+				self:_handle_input_desc()
 				self:_poll_quest_refresh(dt)
 				self:_poll_rewards(dt)
+				self:_poll_all_rewards(dt)
 				self._quest_manager:update_quests()
 			end
 		end
@@ -1733,6 +1769,12 @@ HeroViewStateAchievements.update = function (self, dt, t)
 
 			return wanted_state or self._new_state
 		end
+	end
+
+	if self._claim_all then
+		self:_claim_multiple_rewards(self._claimable_challenge_widgets)
+
+		self._claim_all = false
 	end
 end
 
@@ -1802,7 +1844,81 @@ HeroViewStateAchievements._set_button_force_hover = function (self, widget, forc
 	hotspot.force_hover = forced
 end
 
+HeroViewStateAchievements._handle_gamepad_filter_input = function (self, dt, t)
+	if not self._gamepad_filter_active then
+		return false
+	end
+
+	local input_service = self:get_filter_input_service()
+	local current_row = self._current_gamepad_input_selection[2]
+	local current_column = self._current_gamepad_input_selection[1]
+	local filter_widget = self._search_widgets_by_name.filters
+	local filter_content = filter_widget.content
+
+	if input_service:get("back") or input_service:get("refresh") then
+		self:_enable_gamepad_filters(false)
+	elseif input_service:get("confirm") then
+		local search_definition = UISettings.achievement_search_definitions[current_row]
+		local query_key = search_definition.key
+		local query_value = search_definition[current_column][1]
+
+		if filter_content.query[query_key] == query_value then
+			filter_content.query[query_key] = nil
+		else
+			filter_content.query[query_key] = query_value
+		end
+
+		local input_content = self._search_widgets_by_name.input.content
+
+		self:_do_search(input_content.search_query)
+	else
+		local search_definitions = UISettings.achievement_search_definitions
+		local max_rows = #search_definitions
+		local max_columns = #search_definitions[current_row]
+
+		if input_service:get("move_down") then
+			current_row = math.min(current_row + 1, max_rows)
+		elseif input_service:get("move_up") then
+			current_row = math.max(current_row - 1, 1)
+		elseif input_service:get("move_right") then
+			current_column = math.min(current_column + 1, max_columns)
+		elseif input_service:get("move_left") then
+			current_column = math.max(current_column - 1, 1)
+		end
+
+		if current_row ~= self._current_gamepad_input_selection[2] or current_column ~= self._current_gamepad_input_selection[1] then
+			local max_columns = #search_definitions[current_row]
+			current_column = math.min(current_column, max_columns)
+			filter_content.gamepad_button_index = {
+				current_column,
+				current_row
+			}
+			self._current_gamepad_input_selection[2] = current_row
+			self._current_gamepad_input_selection[1] = current_column
+		end
+	end
+
+	return true
+end
+
+HeroViewStateAchievements._enable_gamepad_filters = function (self, enable)
+	self._gamepad_filter_active = enable
+	self._gamepad_filer_selection_index = 1
+	local filter_widget = self._search_widgets_by_name.filters
+	filter_widget.content.visible = enable
+
+	if enable then
+		self:block_input()
+	else
+		self:unblock_input()
+	end
+end
+
 HeroViewStateAchievements._handle_input = function (self, dt, t)
+	if self:_handle_gamepad_filter_input(dt, t) then
+		return
+	end
+
 	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
 
 	if self:_handle_search_input(dt, t, input_service) then
@@ -1814,14 +1930,26 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 	local input_close_pressed = gamepad_active and input_service:get("back")
 	local widgets_by_name = self._widgets_by_name
 	local summary_widgets_by_name = self._summary_widgets_by_name
+	local achievement_widgets = self._additional_achievement_widgets_by_name
+	local quest_widgets = self._additional_quest_widgets_by_name
 	local exit_button = widgets_by_name.exit_button
 	local quests_button = widgets_by_name.quests_button
 	local summary_button = widgets_by_name.summary_button
 	local achievements_button = widgets_by_name.achievements_button
 	local achievement_window_button = summary_widgets_by_name.summary_right_window_button
 	local quest_window_button = summary_widgets_by_name.summary_left_window_button
+	local claim_all_button = (self._achievement_layout_type == "achievements" and achievement_widgets.claim_all_achievements) or quest_widgets.claim_all_quests
 
 	self:_handle_layout_buttons_hovered()
+
+	local achievement_layout_type = self._achievement_layout_type
+	local activate_gamepad_filters = gamepad_active and input_service:get("refresh")
+
+	if activate_gamepad_filters and achievement_layout_type ~= "summary" then
+		self:_enable_gamepad_filters(true)
+
+		return
+	end
 
 	if UIUtils.is_button_hover_enter(exit_button) then
 		self:play_sound("play_gui_equipment_button_hover")
@@ -1870,6 +1998,14 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		self:play_sound("Play_gui_achivements_menu_achivements_tab")
 	end
 
+	local within_display_range = UIUtils.is_button_hover(claim_all_button, "hover_hotspot")
+
+	if UIUtils.is_button_pressed(claim_all_button) and within_display_range then
+		self._claim_all = true
+	end
+
+	UIWidgetUtils.animate_default_button(claim_all_button, dt)
+	self:_animate_claim_button(claim_all_button, within_display_range, dt, t)
 	self._category_scrollbar:update(dt, t, false)
 	self:_update_category_scroll_position()
 
@@ -2115,6 +2251,8 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 
 	local snap_pixel_positions = render_settings.snap_pixel_positions
 	local alpha_multiplier = render_settings.alpha_multiplier or 1
+
+	UIRenderer.draw_all_widgets(ui_renderer, self._search_widgets)
 
 	for _, widget in ipairs(self._widgets) do
 		if widget.snap_pixel_positions ~= nil then
@@ -2529,21 +2667,66 @@ HeroViewStateAchievements._set_uvs_scale_progress = function (self, scenegraph_i
 	uvs[2][2] = 1 - width_zoom_fraction
 end
 
-HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_service)
-	local search_input = self._widgets_by_name.search_input
-	local content = search_input.content
+HeroViewStateAchievements._handle_input_desc = function (self)
+	local query = self._search_widgets_by_name.filters.content.query
+	local input_desc = nil
 
-	if content.clear_hotspot.on_pressed then
-		content.text_index = 1
-		content.caret_index = 1
-		content.search_query = ""
+	if self._achievement_layout_type ~= "summary" then
+		if self._gamepad_filter_active then
+		elseif not table.is_empty(query) then
+			input_desc = "filter_available"
+		else
+			input_desc = "filter_unavailable"
+		end
+	end
+
+	if input_desc ~= self._current_input_desc then
+		self.menu_input_description:set_input_description(generic_input_actions[input_desc])
+
+		self._current_input_desc = input_desc
+	end
+end
+
+HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_service)
+	local input_content = self._search_widgets_by_name.input.content
+	local filters_content = self._search_widgets_by_name.filters.content
+
+	if input_content.clear_hotspot.on_pressed then
+		input_content.text_index = 1
+		input_content.caret_index = 1
+		input_content.search_query = ""
+	end
+
+	if filters_content.query_dirty then
+		self:_do_search(input_content.search_query)
+
+		filters_content.query_dirty = false
+	end
+
+	local do_toggle = input_content.search_filters_hotspot.on_pressed
+
+	if filters_content.visible and (input_service:get("toggle_menu", true) or input_service:get("back", true)) then
+		do_toggle = true
+	end
+
+	if do_toggle then
+		local filters_active = not filters_content.visible
+		filters_content.visible = filters_active
+		input_content.filters_active = filters_active
+
+		return false
+	end
+
+	if input_service:get("special_1") and self._achievement_layout_type ~= "summary" and not table.is_empty(filters_content.query) then
+		table.clear(filters_content.query)
+		self:_do_search(input_content.search_query)
 	end
 
 	if not self._keyboard_id then
-		content.input_active = false
+		input_content.input_active = false
 
-		if content.hotspot.on_pressed then
-			content.input_active = true
+		if input_content.hotspot.on_pressed then
+			input_content.input_active = true
 
 			if IS_WINDOWS then
 				self:_set_input_blocked(true)
@@ -2565,32 +2748,31 @@ HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_se
 			return true
 		end
 
-		return false
+		return filters_content.visible
 	end
 
 	Managers.chat:block_chat_input_for_one_frame()
 
 	if IS_WINDOWS then
 		local keystrokes = Keyboard.keystrokes()
-		local content = search_input.content
-		content.search_query, content.caret_index = KeystrokeHelper.parse_strokes(content.search_query, content.caret_index, "insert", keystrokes)
+		input_content.search_query, input_content.caret_index = KeystrokeHelper.parse_strokes(input_content.search_query, input_content.caret_index, "insert", keystrokes)
 
 		if input_service:get("execute_chat_input", true) then
-			self:_do_search(content.search_query)
+			self:_do_search(input_content.search_query)
 			self:_set_input_blocked(false)
 
-			content.input_active = false
+			input_content.input_active = false
 			self._keyboard_id = nil
 		elseif input_service:get("toggle_menu", true) or self._achievement_layout_type == "summary" then
 			self:_set_input_blocked(false)
 
-			content.input_active = false
+			input_content.input_active = false
 			self._keyboard_id = nil
 		end
 	elseif IS_XB1 then
 		if not XboxInterface.interface_active() then
 			local search_query = XboxInterface.get_keyboard_result()
-			content.caret_index = #search_query
+			input_content.caret_index = #search_query
 
 			self:_do_search(search_query)
 
@@ -2601,7 +2783,7 @@ HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_se
 
 		if done then
 			if success then
-				content.caret_index = #search_query
+				input_content.caret_index = #search_query
 
 				self:_do_search(search_query)
 			end
@@ -2610,16 +2792,16 @@ HeroViewStateAchievements._handle_search_input = function (self, dt, t, input_se
 		end
 	end
 
-	if content.hotspot.on_pressed then
+	if input_content.hotspot.on_pressed then
 		return true
 	end
 
-	return false
+	return filters_content.visible
 end
 
 HeroViewStateAchievements._do_search = function (self, search_query)
 	self._search_query = search_query
-	self._widgets_by_name.search_input.content.search_query = search_query
+	self._search_widgets_by_name.input.content.search_query = search_query
 	local layout_type = self._achievement_layout_type
 	local layout = self:_get_layout(layout_type)
 	local entries = {}
@@ -2657,6 +2839,106 @@ HeroViewStateAchievements._set_input_blocked = function (self, blocked)
 	end
 
 	self.parent:set_input_blocked(blocked)
+end
+
+HeroViewStateAchievements._handle_claim_all_challenges = function (self)
+	local achievement_layout_type = self._achievement_layout_type
+	local active_tab_index = self._active_tab_index
+	local active_list_index = self._active_list_index
+	local layout = self:_get_layout(achievement_layout_type)
+	local achievement_widgets = self._additional_achievement_widgets_by_name
+	local quest_widgets = self._additional_quest_widgets_by_name
+	local claim_all_button = (achievement_layout_type == "achievements" and achievement_widgets.claim_all_achievements) or quest_widgets.claim_all_quests
+	local active_tab = self._active_tab
+
+	if not active_tab then
+		return
+	end
+
+	local categories = layout.categories
+
+	if not categories then
+		return
+	end
+
+	local category = categories[active_tab_index]
+
+	if not category then
+		return
+	end
+
+	local sub_categories = category.categories
+	local sub_category = sub_categories and sub_categories[active_list_index]
+	local has_unclaimed_challenges = false
+
+	if sub_category and active_list_index then
+		has_unclaimed_challenges = self:_has_any_unclaimed_completed_challenge_in_category(sub_category)
+	else
+		has_unclaimed_challenges = self:_has_any_unclaimed_completed_challenge_in_category(category)
+	end
+
+	local has_claimable_widgets = (self._claimable_challenge_widgets and #self._claimable_challenge_widgets > 0 and true) or false
+
+	if ((has_unclaimed_challenges and has_claimable_widgets) or self._has_claimable_filtered_challenges) and not script_data["eac-untrusted"] and not self:_is_polling() then
+		claim_all_button.content.visible = true
+	else
+		claim_all_button.content.visible = false
+	end
+end
+
+HeroViewStateAchievements._animate_claim_button = function (self, widget, within_display_range, dt, t)
+	local visible = widget.content.visible
+
+	if not visible then
+		return
+	end
+
+	local offset = widget.offset
+	local style = widget.style
+	local cooldown_duration = 2
+	local should_glow = (offset[2] < 0 and not within_display_range and true) or false
+
+	if offset[2] < 10 and within_display_range then
+		self._button_hide_cooldown = nil
+		local increment = 200 * dt
+
+		if offset[2] >= 10 then
+		else
+			offset[2] = offset[2] + increment
+		end
+	end
+
+	if not within_display_range then
+		if not self._button_hide_cooldown then
+			self._button_hide_cooldown = t
+		end
+
+		local increment = 200 * dt
+
+		if offset[2] < -20 then
+			self._button_hide_cooldown = nil
+		elseif t >= self._button_hide_cooldown + cooldown_duration then
+			offset[2] = offset[2] - increment
+		end
+	end
+
+	if should_glow then
+		style.button_glow.color[1] = 195 + 60 * math.sin(7.5 * Managers.time:time("ui"))
+	end
+end
+
+HeroViewStateAchievements._handle_gamepad_activity = function (self)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
+
+	if self._gamepad_active_last_frame ~= gamepad_active then
+		self:_enable_gamepad_filters(false)
+
+		local filter_widget = self._search_widgets_by_name.filters
+		local filter_content = filter_widget.content
+		filter_widget.scenegraph_id = (gamepad_active and "gamepad_search_filters") or "search_filters"
+	end
+
+	self._gamepad_active_last_frame = gamepad_active
 end
 
 return

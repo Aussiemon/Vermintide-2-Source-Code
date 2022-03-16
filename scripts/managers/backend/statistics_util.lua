@@ -72,26 +72,7 @@ local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_item)
 	end
 end
 
-local _tracked_weapon_kills_per_breed_stats = {}
-
-DLCUtils.merge("tracked_weapon_kills_per_breed_stats", _tracked_weapon_kills_per_breed_stats)
 DLCUtils.merge("_tracked_weapon_kill_stats", _tracked_weapon_kill_stats)
-
-local function _track_weapon_kills_per_breed_stats(statistics_db, stats_id, weapon_name, target_breed)
-	local weapon_stats_dlcs = weapon_name and _tracked_weapon_kills_per_breed_stats[weapon_name]
-
-	if weapon_stats_dlcs then
-		local dlc_manager = Managers.unlock
-
-		for dlc_id = 1, #weapon_stats_dlcs, 1 do
-			local dlc_name = weapon_stats_dlcs[dlc_id]
-
-			if dlc_manager:is_dlc_unlocked(dlc_name) then
-				statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", weapon_name, target_breed)
-			end
-		end
-	end
-end
 
 local _tracked_levels_complted_w_weapons_levels = {
 	warcamp = {
@@ -257,10 +238,6 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				end
 
 				_track_weapon_kill_stats(statistics_db, stats_id, master_list_item)
-
-				if Breeds[breed_killed_name] then
-					_track_weapon_kills_per_breed_stats(statistics_db, stats_id, damage_source, breed_killed.name)
-				end
 			end
 		end
 	end
@@ -279,7 +256,9 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 				stats_id = attacker_player:stats_id()
 			end
 
-			Managers.state.event:trigger("add_coop_feedback_kill", stats_id .. breed_killed_name, local_human, predicate, breed_attacker_name, breed_killed_name, attacker_player, victim_player)
+			local hash = stats_id .. (breed_killed.killfeed_fold_with or breed_killed_name)
+
+			Managers.state.event:trigger("add_coop_feedback_kill", hash, local_human, predicate, breed_attacker_name, breed_killed_name, attacker_player, victim_player)
 		end
 	end
 

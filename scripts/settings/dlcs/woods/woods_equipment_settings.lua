@@ -191,10 +191,10 @@ settings.explosion_templates = {
 	we_thornsister_career_skill_explosive_wall_explosion = {
 		explosion = {
 			use_attacker_power_level = true,
-			radius = 3.4,
-			explosion_right_scaling = 0.5,
+			radius = 4.5,
+			explosion_right_scaling = 0.1,
 			hit_sound_event = "thorn_wall_damage_heavy",
-			dot_template_name = "thorn_sister_wall_bleed",
+			dot_template_name = "thorn_sister_passive_poison",
 			effect_name = "fx/thornwall_spike_damage",
 			sound_event_name = "career_ability_kerilian_sister_wall_spawn_damage",
 			hit_sound_event_cap = 1,
@@ -206,40 +206,22 @@ settings.explosion_templates = {
 			explosion_forward_scaling = 0.5
 		}
 	},
-	we_thornsister_career_skill_debuff_wall_spawn_explosion = {
+	we_thornsister_career_skill_explosive_wall_explosion_improved = {
 		explosion = {
 			use_attacker_power_level = true,
-			radius = 3.5,
-			damage_type = "kinetic",
-			hit_sound_event = "thorn_wall_damage_light",
-			alert_enemies = true,
-			alert_enemies_radius = 10,
+			radius = 4.5,
+			explosion_right_scaling = 0.1,
+			hit_sound_event = "thorn_wall_damage_heavy",
+			dot_template_name = "thorn_sister_passive_poison_improved",
+			effect_name = "fx/thornwall_spike_damage",
+			sound_event_name = "career_ability_kerilian_sister_wall_spawn_damage",
 			hit_sound_event_cap = 1,
-			sound_event_name = "career_ability_kerilian_sister_wall_spawn_poison",
-			damage_profile = "thorn_wall_explosion",
-			explosion_forward_scaling = 0.2
-		}
-	},
-	we_thornsister_career_skill_debuff_wall_explosion = {
-		explosion = {
-			use_attacker_power_level = true,
-			radius = 8,
-			damage_type = "kinetic",
-			hit_sound_event = "thorn_hit_poison",
-			effect_name = "fx/thornwall_poison_spikes",
-			no_friendly_fire = true,
-			no_prop_damage = true,
-			hit_sound_event_cap = 3,
-			always_hurt_players = false,
 			alert_enemies = true,
-			sound_event_name = "career_ability_kerillian_sister_wall_poison_disappear",
-			damage_profile = "ability_push",
+			no_friendly_fire = true,
 			alert_enemies_radius = 10,
-			ignore_attacker_unit = true,
-			explosion_forward_scaling = 0.7,
-			enemy_debuff = {
-				"kerillian_thorn_sister_debuff_wall_buff"
-			}
+			damage_type = "kinetic",
+			damage_profile = "thorn_wall_explosion_improved_damage",
+			explosion_forward_scaling = 0.5
 		}
 	},
 	we_thornsister_career_skill_stagger_spell = {
@@ -274,6 +256,38 @@ settings.explosion_templates = {
 			power_level = 500,
 			ignore_attacker_unit = true,
 			effect_name = "fx/thornsister_overcharge_explosion"
+		}
+	},
+	kerillian_thorn_sister_talent_poison_aoe = {
+		explosion = {
+			use_attacker_power_level = true,
+			max_damage_radius_min = 0.2,
+			alert_enemies_radius = 3,
+			radius_max = 2.5,
+			effect_name = "fx/thornwall_poison_spikes",
+			sound_event_name = "thorn_hit_poison",
+			radius_min = 0.2,
+			dot_template_name = "thorn_sister_passive_poison",
+			max_damage_radius_max = 2.5,
+			alert_enemies = true,
+			damage_profile = "thorn_sister_talent_explosion",
+			no_friendly_fire = true
+		}
+	},
+	kerillian_thorn_sister_talent_poison_aoe_improved = {
+		explosion = {
+			use_attacker_power_level = true,
+			max_damage_radius_min = 0.2,
+			alert_enemies_radius = 3,
+			radius_max = 2.5,
+			effect_name = "fx/thornwall_poison_spikes",
+			sound_event_name = "thorn_hit_poison",
+			radius_min = 0.2,
+			dot_template_name = "thorn_sister_passive_poison_improved",
+			max_damage_radius_max = 2.5,
+			alert_enemies = true,
+			damage_profile = "thorn_sister_talent_explosion",
+			no_friendly_fire = true
 		}
 	}
 }

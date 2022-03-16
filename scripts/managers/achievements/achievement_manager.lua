@@ -369,7 +369,7 @@ AchievementManager.update = function (self, dt, t)
 
 	self._curr_template_idx = template_idx
 
-	self:_update_reward_polling(dt, t)
+	self:_update_reward_polling()
 	self:_check_for_completed_achievements()
 	self:_update_timed_events(dt, t)
 end
@@ -479,9 +479,40 @@ AchievementManager.can_claim_achievement_rewards = function (self, achievement_i
 	return true
 end
 
+AchievementManager.can_claim_all_achievement_rewards = function (self, achievement_ids)
+	if not self._enabled then
+		return nil, nil, "AchievementManager not enabled"
+	end
+
+	if not self.initialized then
+		return nil, nil, "AchievementManager not initialized"
+	end
+
+	local backend_interface_loot = self._backend_interface_loot
+	local can_claim, claimable_achievements, failed_achivements = backend_interface_loot:can_claim_all_achievement_rewards(achievement_ids)
+
+	if can_claim and #failed_achivements > 1 then
+		return claimable_achievements, failed_achivements, "Some of the achievements have already been claimed!"
+	end
+
+	if not can_claim then
+		return nil, nil, "None of the achievements could be claimed."
+	end
+
+	return claimable_achievements, nil, nil
+end
+
 AchievementManager.claim_reward = function (self, achievement_id)
 	local backend_interface_loot = self._backend_interface_loot
 	local reward_poll_id = backend_interface_loot:claim_achievement_rewards(achievement_id)
+	self._reward_poll_id = reward_poll_id
+
+	return reward_poll_id
+end
+
+AchievementManager.claim_multiple_rewards = function (self, achievement_ids)
+	local backend_interface_loot = self._backend_interface_loot
+	local reward_poll_id = backend_interface_loot:claim_multiple_achievement_rewards(achievement_ids)
 	self._reward_poll_id = reward_poll_id
 
 	return reward_poll_id

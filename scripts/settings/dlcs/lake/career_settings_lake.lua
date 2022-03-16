@@ -30,6 +30,7 @@ CareerSettings.es_questingknight = {
 	portrait_image = "unit_frame_portrait_kruber_questingknight",
 	portrait_thumbnail = "portrait_kruber_questingknight_thumbnail",
 	sort_order = 1,
+	required_dlc = "lake",
 	breed = PlayerBreeds.hero_es_questingknight,
 	item_types = {},
 	activated_ability = ActivatedAbilitySettings.es_4,

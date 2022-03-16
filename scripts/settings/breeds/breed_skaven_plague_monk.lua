@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local MOVING_STAGGERS = {
 	"stagger_run_light_bwd",
 	"stagger_run_light_bwd_2"
@@ -589,9 +590,9 @@ local action_data = {
 			local combo = blackboard.combo_attack_data
 
 			if combo and combo.aborted then
-				local berzerker_stagger_multiplier = (blackboard.stagger_type < 4 and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
+				local berzerker_stagger_multiplier = (blackboard.stagger_type <= stagger_types.heavy and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
 
-				if blackboard.stagger_type ~= 6 and blackboard.stagger_type ~= 3 then
+				if blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.heavy then
 					blackboard.stagger_ignore_anim_cb = true
 					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time * berzerker_stagger_multiplier
 				end
@@ -953,10 +954,10 @@ local frenzy_attack = {
 			anim = "attack_wild_flailing",
 			staggers_allowed = OPENING_ALLOWED_STAGGERS,
 			push_non_targets = {
-				close_impact_radius = 2,
+				close_impact_radius = 1.5,
 				lateral_impact_speed = 1.75,
 				forward_impact_speed = 1,
-				far_impact_radius = 3
+				far_impact_radius = 2
 			}
 		}
 	},
@@ -1000,10 +1001,10 @@ action_data.frenzy_attack_ranged.combo_attacks.attack_1 = {
 	difficulty_attack_intensity = AttackIntensityPerDifficulty,
 	staggers_allowed = JUMPATTACK_ALLOWED_STAGGERS,
 	push_non_targets = {
-		close_impact_radius = 3,
+		close_impact_radius = 1.5,
 		lateral_impact_speed = 1.75,
 		forward_impact_speed = 1,
-		far_impact_radius = 4
+		far_impact_radius = 2
 	}
 }
 BreedActions.skaven_plague_monk = table.create_copy(BreedActions.skaven_plague_monk, action_data)

@@ -258,6 +258,11 @@ local generic_input_actions = {
 			ignore_keybinding = true
 		},
 		{
+			input_action = "show_gamercard",
+			priority = 2,
+			description_text = "start_menu_switch_hero"
+		},
+		{
 			input_action = "hotkey_mark_favorite_item",
 			priority = 3,
 			description_text = "lb_add_to_favorites"

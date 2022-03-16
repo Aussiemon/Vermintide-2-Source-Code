@@ -12,14 +12,15 @@ settings.buff_templates = {
 	weapon_bleed_dot_javelin = {
 		buffs = {
 			{
-				damage_profile = "bleed_maidenguard",
-				name = "weapon bleed dot javelin",
 				duration = 4,
+				name = "weapon bleed dot javelin",
+				max_stacks = 1,
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.5,
 				time_between_dot_damages = 0.5,
 				hit_zone = "neck",
-				max_stacks = 1,
+				damage_profile = "bleed_maidenguard",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -28,30 +29,72 @@ settings.buff_templates = {
 	thorn_sister_big_bleed = {
 		buffs = {
 			{
-				damage_profile = "bleed",
-				name = "thorn sister big bleed",
 				duration = 5,
+				name = "thorn sister big bleed",
+				max_stacks = 3,
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
 				hit_zone = "neck",
-				max_stacks = 5,
+				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.bleeding
+			}
+		}
+	},
+	thorn_sister_passive_poison = {
+		buffs = {
+			{
+				duration = 10,
+				name = "thorn sister passive poison",
+				stat_buff = "damage_taken",
+				multiplier = 0.12,
+				max_stacks = 1,
+				remove_buff_func = "kerillian_thorn_sister_remove_buff_from_attacker",
+				apply_buff_func = "start_dot_damage_kerillian",
+				update_start_delay = 0.8,
+				refresh_durations = true,
+				time_between_dot_damages = 0.8,
+				hit_zone = "neck",
+				damage_profile = "thorn_sister_poison",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.poisoned
+			}
+		}
+	},
+	thorn_sister_passive_poison_improved = {
+		buffs = {
+			{
+				duration = 10,
+				name = "thorn sister passive poison improved",
+				stat_buff = "damage_taken",
+				multiplier = 0.12,
+				max_stacks = 2,
+				remove_buff_func = "kerillian_thorn_sister_remove_buff_from_attacker",
+				apply_buff_func = "start_dot_damage_kerillian",
+				update_start_delay = 0.8,
+				refresh_durations = true,
+				time_between_dot_damages = 0.8,
+				hit_zone = "neck",
+				damage_profile = "thorn_sister_poison",
+				update_func = "apply_dot_damage",
+				perk = buff_perks.poisoned
 			}
 		}
 	},
 	thorn_sister_wall_bleed = {
 		buffs = {
 			{
-				damage_profile = "bleed",
-				name = "thorn_sister_wall_bleed",
 				duration = 10,
+				name = "thorn_sister_wall_bleed",
+				max_stacks = 1,
 				refresh_durations = true,
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.25,
 				time_between_dot_damages = 0.25,
 				hit_zone = "neck",
-				max_stacks = 1,
+				damage_profile = "bleed",
 				update_func = "apply_dot_damage",
 				perk = buff_perks.bleeding
 			}
@@ -116,6 +159,48 @@ settings.buff_templates = {
 				duration = wall_slow_duration
 			}
 		}
+	},
+	kerillian_thorn_passive_team_buff = {
+		buffs = {
+			{
+				name = "kerillian_thorn_passive_team_buff",
+				multiplier = 0.15,
+				stat_buff = "power_level",
+				max_stacks = 1,
+				icon = "kerillian_thornsister_avatar"
+			},
+			{
+				max_stacks = 1,
+				name = "kerillian_thorn_passive_team_buff_2",
+				stat_buff = "critical_strike_chance",
+				bonus = 0.05
+			}
+		}
+	},
+	kerillian_thorn_sister_drain_poison_phasing_buff = {
+		buffs = {
+			{
+				refresh_durations = true,
+				name = "kerillian_thorn_sister_poison_phasing",
+				duration = 5,
+				remove_buff_func = "kerillian_thorn_sister_noclip_off",
+				max_stacks = 1,
+				icon = "kerillian_thornsister_big_push",
+				apply_buff_func = "kerillian_thorn_sister_noclip_on"
+			},
+			{
+				refresh_durations = true,
+				name = "kerillian_thorn_sister_poison_movespeed",
+				remove_buff_func = "remove_movement_buff",
+				max_stacks = 1,
+				duration = 5,
+				apply_buff_func = "apply_movement_buff",
+				multiplier = 1.2,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			}
+		}
 	}
 }
 settings.proc_functions = {
@@ -157,6 +242,28 @@ settings.proc_functions = {
 			end
 		end
 	end,
+	kerillian_thorn_sister_set_back = function (player, buff, params, world)
+		local player_unit = player.player_unit
+		local attacker_unit = params[1]
+
+		if ALIVE[player_unit] and ALIVE[attacker_unit] then
+			local side = Managers.state.side.side_by_unit[player_unit]
+			local attacker_side = Managers.state.side.side_by_unit[attacker_unit]
+
+			if side == attacker_side then
+				return
+			end
+
+			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+
+			if not buff_extension:has_buff_type("kerillian_thorn_sister_passive_set_back_cooldown") then
+				local career_extension = ScriptUnit.extension(player_unit, "career_system")
+
+				career_extension:modify_extra_ability_charge(buff.template.amount)
+				buff_extension:add_buff("kerillian_thorn_sister_passive_set_back_cooldown")
+			end
+		end
+	end,
 	thorn_sister_transfer_temp_health_at_full = function (player, buff, params, world)
 		local heal_type = params[3]
 		local healer_unit = params[1]
@@ -194,8 +301,9 @@ settings.proc_functions = {
 	end,
 	add_buff_reff_buff_stack = function (player, buff, params)
 		local player_unit = player.player_unit
+		local triggering_unit = params[1]
 
-		if ALIVE[player_unit] then
+		if ALIVE[player_unit] and triggering_unit == player_unit then
 			local template = buff.template
 			local buff_name = template.buff_to_add
 			local amount_to_add = template.amount_to_add
@@ -229,11 +337,75 @@ settings.proc_functions = {
 	thorn_sister_add_bleed_on_hit = function (player, buff, params)
 		local player_unit = player.player_unit
 		local hit_unit = params[1]
-		local is_crit = params[6]
 
-		if ALIVE[player_unit] and ALIVE[hit_unit] and is_crit then
+		if ALIVE[player_unit] and ALIVE[hit_unit] then
 			local template = buff.template
 			local bleed = template.bleed
+			local buff_system = Managers.state.entity:system("buff_system")
+			local career_extension = ScriptUnit.extension(player_unit, "career_system")
+			local power_level = career_extension:get_career_power_level()
+			local target_buff_extension = ScriptUnit.has_extension(hit_unit, "buff_system")
+
+			if not target_buff_extension or not target_buff_extension:has_buff_perk(buff_perks.poisoned) then
+				return false
+			end
+
+			local buff_params = {
+				power_level = power_level,
+				attacker_unit = player_unit
+			}
+
+			buff_system:add_buff_synced(hit_unit, bleed, BuffSyncType.LocalAndServer, buff_params)
+		end
+	end,
+	kerillian_thorn_sister_crit_aoe_poison_func = function (player, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
+		local player_unit = player.player_unit
+		local hit_num = params[4]
+
+		if ALIVE[player_unit] and hit_num <= 1 then
+			local area_damage_system = Managers.state.entity:system("area_damage_system")
+			local career_extension = ScriptUnit.extension(player_unit, "career_system")
+			local power_level = career_extension:get_career_power_level()
+			local hit_unit = params[1]
+			local position = POSITION_LOOKUP[hit_unit]
+			local damage_source = "buff"
+			local explosion_template = "kerillian_thorn_sister_talent_poison_aoe"
+			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+
+			if talent_extension and talent_extension:has_talent("kerillian_thorn_sister_double_poison") then
+				explosion_template = "kerillian_thorn_sister_talent_poison_aoe_improved"
+			end
+
+			local rotation = Quaternion.identity()
+			local scale = 1
+			local is_critical_strike = false
+
+			area_damage_system:create_explosion(player_unit, position, rotation, explosion_template, scale, damage_source, power_level, is_critical_strike)
+		end
+	end,
+	thorn_sister_add_melee_poison = function (player, buff, params)
+		local player_unit = player.player_unit
+		local hit_unit = params[1]
+
+		if ALIVE[player_unit] and AiUtils.unit_alive(hit_unit) then
+			local attack_type = params[2]
+
+			if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+				return
+			end
+
+			local template = buff.template
+			local poison = template.poison
+			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
+
+			if talent_extension and talent_extension:has_talent("kerillian_thorn_sister_double_poison") then
+				poison = template.improved_poison
+			end
+
 			local buff_system = Managers.state.entity:system("buff_system")
 			local career_extension = ScriptUnit.extension(player_unit, "career_system")
 			local power_level = career_extension:get_career_power_level()
@@ -248,7 +420,7 @@ settings.proc_functions = {
 				attacker_unit = player_unit
 			}
 
-			buff_system:add_buff_synced(hit_unit, bleed, BuffSyncType.LocalAndServer, buff_params)
+			buff_system:add_buff_synced(hit_unit, poison, BuffSyncType.LocalAndServer, buff_params)
 		end
 	end,
 	thorn_sister_big_push = function (player, buff, params, world)
@@ -358,6 +530,32 @@ settings.proc_functions = {
 
 			career_extension:modify_extra_ability_charge(time_to_remove)
 		end
+	end,
+	kerillian_thorn_sister_team_buff_on_passive = function (player, buff, params)
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] then
+			local side = Managers.state.side.side_by_unit[player_unit]
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+			local num_targets = #player_and_bot_units
+			local range = 40
+			local buff_template = buff.template
+			local owner_position = POSITION_LOOKUP[player_unit]
+			local range_squared = range * range
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			for i = 1, num_targets, 1 do
+				local target_unit = player_and_bot_units[i]
+				local ally_position = POSITION_LOOKUP[target_unit]
+				local distance_squared = Vector3.distance_squared(owner_position, ally_position)
+
+				if distance_squared < range_squared then
+					local buff_to_add_1 = buff_template.buff_to_add_1
+
+					buff_system:add_buff(target_unit, buff_to_add_1, player_unit, false)
+				end
+			end
+		end
 	end
 }
 settings.buff_function_templates = {
@@ -377,6 +575,31 @@ settings.buff_function_templates = {
 						buff.duration = 0
 						buff.aborted = 0
 					end
+				end
+			end
+		end
+	end,
+	start_dot_damage_kerillian = function (unit, buff, params)
+		if buff.template.start_flow_event then
+			Unit.flow_event(unit, buff.template.start_flow_event)
+		end
+
+		local attacker_unit = buff.attacker_unit
+
+		if ALIVE[attacker_unit] then
+			local talent_extension = ScriptUnit.has_extension(attacker_unit, "talent_system")
+
+			if talent_extension and talent_extension:has_talent("kerillian_thorn_sister_phasing") then
+				local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+				if not buff_extension then
+					return
+				end
+
+				buff.added_id = buff_extension:add_buff("kerillian_thorn_sister_drain_poison_phasing_tracker")
+
+				if buff_extension:num_buff_type("kerillian_thorn_sister_drain_poison_phasing_tracker") >= 5 then
+					buff_extension:add_buff("kerillian_thorn_sister_drain_poison_phasing_buff")
 				end
 			end
 		end
@@ -441,43 +664,49 @@ settings.buff_function_templates = {
 			end
 		end
 	end,
-	kerillian_thorn_sister_free_throw_handler_update = function (owner_unit, buff, params)
+	kerillian_thorn_sister_passive_health_convert = function (owner_unit, buff, params)
+		if not Managers.state.network.is_server then
+			return
+		end
+
 		local player_unit = owner_unit
 
 		if ALIVE[player_unit] then
-			local template = buff.template
-			local timer_buff_to_add = template.timer_buff
-			local buff_to_add = template.buff_to_add
-			local t = params.t
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+			local health_extension = ScriptUnit.has_extension(player_unit, "health_system")
+			local template = buff.template
+			local thp_to_lose = template.thp_to_lose
+			local has_thp = health_extension and thp_to_lose < health_extension:current_temporary_health()
 
-			if not buff.timer_buff then
-				buff.timer_buff = buff_extension:get_non_stacking_buff(timer_buff_to_add)
-			end
+			if buff_extension:has_buff_type("kerillian_thorn_sister_free_ability_stack") and has_thp then
+				local hp_to_gain = template.hp_to_gain
 
-			local timer_buff = buff.timer_buff
-			local time_remaining = 0
+				DamageUtils.heal_network(player_unit, player_unit, hp_to_gain, "career_passive")
 
-			if buff.timer_buff then
-				local end_time = timer_buff.start_time + timer_buff.duration
-				time_remaining = end_time - t
-			end
-
-			if not timer_buff or time_remaining <= 0 then
-				local has_buff = buff_extension:has_buff_type(buff_to_add)
-
-				if not has_buff and not buff.buffed then
-					local buff_system = Managers.state.entity:system("buff_system")
-
-					buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
-
-					buff.buffed = true
-				elseif not has_buff and buff.buffed then
-					buff_extension:add_buff(timer_buff_to_add)
-
-					buff.timer_buff = nil
-					buff.buffed = nil
+				if thp_to_lose - hp_to_gain > 0 then
+					DamageUtils.add_damage_network(player_unit, player_unit, thp_to_lose - hp_to_gain, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, player_unit)
 				end
+			end
+		end
+	end,
+	kerillian_thorn_sister_add_buff_to_attacker = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local buff_to_add = buff.template.buff_to_add
+			local kerillian_unit = buff.attacker_unit
+			local buff_extension = ScriptUnit.has_extension(kerillian_unit, "buff_system")
+
+			if buff_extension then
+				buff.added_id = buff_extension:add_buff(buff_to_add)
+			end
+		end
+	end,
+	kerillian_thorn_sister_remove_buff_from_attacker = function (owner_unit, buff, params)
+		if buff.added_id then
+			local kerillian_unit = buff.attacker_unit
+			local buff_extension = ScriptUnit.has_extension(kerillian_unit, "buff_system")
+
+			if buff_extension then
+				buff_extension:remove_buff(buff.added_id)
 			end
 		end
 	end,
@@ -487,6 +716,24 @@ settings.buff_function_templates = {
 			local buff_system = Managers.state.entity:system("buff_system")
 
 			buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
+		end
+	end,
+	kerillian_thorn_sister_noclip_on = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+
+			if status_extension then
+				status_extension:add_noclip_stacking()
+			end
+		end
+	end,
+	kerillian_thorn_sister_noclip_off = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+
+			if status_extension then
+				status_extension:remove_noclip_stacking()
+			end
 		end
 	end
 }

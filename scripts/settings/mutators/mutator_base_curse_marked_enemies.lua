@@ -9,7 +9,7 @@ local function on_marked_enemy_killed(dialogue_event, killer_unit)
 	end
 end
 
-return function (display_name, description, icon, buff, difficulty_data, markable_enemies)
+return function (display_name, description, icon, buff, difficulty_data, markable_enemies, should_spawn_func)
 	return {
 		marked_enemy_killed_dialogue_event = "curse_killed_marked_enemy",
 		display_name = display_name,
@@ -35,7 +35,11 @@ return function (display_name, description, icon, buff, difficulty_data, markabl
 					data.seed, random = Math.next_random(data.seed)
 
 					if random <= data.mark_chance then
-						return true
+						if should_spawn_func then
+							return should_spawn_func()
+						else
+							return true
+						end
 					end
 				end
 			end

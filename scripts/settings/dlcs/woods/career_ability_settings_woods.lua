@@ -18,14 +18,14 @@ PassiveAbilitySettings.we_thornsister = {
 	buffs = {
 		"kerillian_thorn_sister_passive_healing_received_aura",
 		"kerillian_thorn_sister_passive_temp_health_funnel_aura",
-		"kerillian_thorn_sister_damage_vs_wounded_enemies",
+		"kerillian_thorn_sister_poison_on_hit",
 		"thorn_sister_ability_cooldown_on_hit",
 		"thorn_sister_ability_cooldown_on_damage_taken"
 	},
 	perks = {
 		{
-			display_name = "career_passive_name_we_thornsister_a",
-			description = "career_passive_desc_we_thornsister_a"
+			display_name = "career_passive_name_we_thornsister_a_2",
+			description = "career_passive_desc_we_thornsister_a_2"
 		},
 		{
 			display_name = "career_passive_name_we_thornsister_b",

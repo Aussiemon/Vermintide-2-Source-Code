@@ -1070,9 +1070,10 @@ PickupSystem.hot_join_sync = function (self, sender)
 	return
 end
 
-PickupSystem.spawn_pickup = function (self, pickup_name, position, physics, rotation, with_physics, spawn_type)
+PickupSystem.spawn_pickup = function (self, pickup_name, position, rotation, with_physics, spawn_type, velocity, override_unit_template_name)
 	local pickup_settings = AllPickups[pickup_name]
-	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type)
+	local owner_peer_id, spawn_limit = nil
+	local pickup_unit, _ = self:_spawn_pickup(pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name)
 
 	return pickup_unit
 end
@@ -1104,7 +1105,7 @@ PickupSystem.buff_spawn_pickup = function (self, pickup_name, position, raycast_
 	end
 end
 
-PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit)
+PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, position, rotation, with_physics, spawn_type, owner_peer_id, spawn_limit, velocity, override_unit_template_name)
 	local next_index = self._next_index
 
 	if self._taken[next_index] then
@@ -1133,12 +1134,12 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 		projectile_locomotion_system = {
 			network_position = AiAnimUtils.position_network_scale(position, true),
 			network_rotation = AiAnimUtils.rotation_network_scale(rotation, true),
-			network_velocity = AiAnimUtils.velocity_network_scale(Vector3.zero(), true),
+			network_velocity = AiAnimUtils.velocity_network_scale(velocity or Vector3.zero(), true),
 			network_angular_velocity = AiAnimUtils.velocity_network_scale(Vector3.zero(), true)
 		}
 	}
 	self._next_index = next_index + 1
-	local unit_template_name = pickup_settings.unit_template_name or "pickup_unit"
+	local unit_template_name = override_unit_template_name or pickup_settings.unit_template_name or "pickup_unit"
 	local additional_data_func = pickup_settings.additional_data_func
 
 	if additional_data_func then

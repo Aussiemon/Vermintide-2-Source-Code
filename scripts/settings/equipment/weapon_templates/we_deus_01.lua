@@ -1,4 +1,3 @@
-local ARROW_HIT_EFFECT = "we_deus_01_arrow_impact"
 local ALERT_SOUND_RANGE_FIRE = 4
 local ALERT_SOUND_RANGE_HIT = 2
 
@@ -8,363 +7,359 @@ local function check_energy_condition_func(unit, input_extension, ammo_extension
 	return energy_extension and energy_extension:is_drainable()
 end
 
-local weapon_template = weapon_template or {}
-weapon_template.actions = {
-	action_one = {
-		default = {
-			kind = "bow_energy",
-			charge_value = "arrow_hit",
-			weapon_action_hand = "left",
-			apply_recoil = true,
-			ammo_usage = 0,
-			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.3,
-			anim_event_last_ammo = "attack_shoot_fast",
-			fire_sound_event = "player_combat_weapon_we_deus_01_fire_light",
-			speed = 9000,
-			drain_amount = 5,
-			aim_assist_ramp_multiplier = 0.4,
-			anim_event = "attack_shoot_fast",
-			total_time = 0.83,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.5,
-					end_time = 0.3,
-					buff_name = "planted_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.6,
-					action = "action_wield",
-					input = "action_wield"
+local weapon_template = {
+	actions = {
+		action_one = {
+			default = {
+				kind = "bow_energy",
+				charge_value = "arrow_hit",
+				weapon_action_hand = "left",
+				apply_recoil = true,
+				ammo_usage = 0,
+				aim_assist_max_ramp_multiplier = 0.8,
+				aim_assist_ramp_decay_delay = 0.3,
+				anim_event_last_ammo = "attack_shoot_fast",
+				fire_sound_event = "player_combat_weapon_we_deus_01_fire_light",
+				speed = 9000,
+				drain_amount = 5,
+				aim_assist_ramp_multiplier = 0.4,
+				anim_event = "attack_shoot_fast",
+				total_time = 0.83,
+				buff_data = {
+					{
+						start_time = 0,
+						external_multiplier = 0.5,
+						end_time = 0.3,
+						buff_name = "planted_decrease_movement"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.65,
-					action = "action_one",
-					release_required = "action_one_hold",
-					input = "action_one",
-					end_time = math.huge
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.6,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.65,
+						action = "action_one",
+						release_required = "action_one_hold",
+						input = "action_one",
+						end_time = math.huge
+					},
+					{
+						softbutton_threshold = 0.75,
+						start_time = 0.65,
+						action = "action_one",
+						sub_action = "default",
+						input = "action_one_softbutton_gamepad",
+						end_time = math.huge
+					},
+					{
+						sub_action = "default",
+						start_time = 0.6,
+						action = "action_two",
+						input = "action_two_hold",
+						end_time = math.huge
+					},
+					{
+						sub_action = "default",
+						start_time = 0.65,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
 				},
-				{
-					softbutton_threshold = 0.75,
-					start_time = 0.65,
-					action = "action_one",
-					sub_action = "default",
-					input = "action_one_softbutton_gamepad",
-					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0.6,
-					action = "action_two",
-					input = "action_two_hold",
-					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0.65,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:clear_input_buffer()
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:clear_input_buffer()
 
-				return input_extension:reset_release_input()
-			end,
-			condition_func = check_energy_condition_func,
-			chain_condition_func = check_energy_condition_func,
-			hit_effect = ARROW_HIT_EFFECT,
-			projectile_info = Projectiles.we_deus_01,
-			impact_data = {
-				damage_profile = "we_deus_01"
+					return input_extension:reset_release_input()
+				end,
+				condition_func = check_energy_condition_func,
+				chain_condition_func = check_energy_condition_func,
+				projectile_info = Projectiles.we_deus_01,
+				impact_data = {
+					damage_profile = "we_deus_01_fast"
+				},
+				alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
+				alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
+				recoil_settings = {
+					horizontal_climb = -0.5,
+					restore_duration = 0.2,
+					vertical_climb = -1.5,
+					climb_duration = 0.1,
+					climb_function = math.easeInCubic,
+					restore_function = math.ease_out_quad
+				}
 			},
-			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
-			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
-			recoil_settings = {
-				horizontal_climb = -0.5,
-				restore_duration = 0.2,
-				vertical_climb = -1.5,
-				climb_duration = 0.1,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
+			shoot_charged = {
+				reset_aim_on_attack = true,
+				anim_time_scale = 1.25,
+				kind = "bow_energy",
+				attack_template = "arrow_carbine",
+				charge_value = "zoomed_arrow_hit",
+				weapon_action_hand = "left",
+				apply_recoil = true,
+				anim_event_last_ammo = "attack_shoot",
+				minimum_hold_time = 0.4,
+				anim_end_event = "to_unzoom",
+				ammo_usage = 0,
+				fire_sound_event = "player_combat_weapon_we_deus_01_fire_heavy",
+				speed = 16000,
+				drain_amount = 7,
+				hold_input = "action_two_hold",
+				anim_event = "attack_shoot",
+				scale_total_time_on_mastercrafted = true,
+				total_time = 0.6,
+				anim_end_event_condition_func = function (unit, end_reason)
+					return end_reason ~= "new_interupting_action"
+				end,
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.5,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.25,
+						action = "action_one",
+						release_required = "action_two_hold",
+						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.55,
+						action = "action_two",
+						input = "action_two_hold",
+						end_time = math.huge
+					},
+					{
+						sub_action = "default",
+						start_time = 0.55,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
+				},
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:clear_input_buffer()
+
+					return input_extension:reset_release_input()
+				end,
+				chain_condition_func = check_energy_condition_func,
+				projectile_info = Projectiles.we_deus_01,
+				impact_data = {
+					damage_profile = "we_deus_01_charged"
+				},
+				alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
+				alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
+				recoil_settings = {
+					horizontal_climb = -0.5,
+					restore_duration = 0.2,
+					vertical_climb = -1.5,
+					climb_duration = 0.1,
+					climb_function = math.easeInCubic,
+					restore_function = math.ease_out_quad
+				}
+			},
+			shoot_special_charged = {
+				reset_aim_on_attack = true,
+				anim_end_event = "to_unzoom",
+				kind = "bow_energy",
+				charge_value = "zoomed_arrow_hit",
+				weapon_action_hand = "left",
+				apply_recoil = true,
+				anim_time_scale = 1.25,
+				anim_event_last_ammo = "attack_shoot",
+				minimum_hold_time = 0.4,
+				ammo_usage = 0,
+				fire_sound_event = "player_combat_weapon_we_deus_01_fire_heavy",
+				speed = 16000,
+				drain_amount = 6,
+				hold_input = "action_two_hold",
+				anim_event = "attack_shoot",
+				scale_total_time_on_mastercrafted = true,
+				total_time = 0.6,
+				anim_end_event_condition_func = function (unit, end_reason)
+					return end_reason ~= "new_interupting_action"
+				end,
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.5,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.25,
+						action = "action_one",
+						release_required = "action_two_hold",
+						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.55,
+						action = "action_two",
+						input = "action_two_hold",
+						end_time = math.huge
+					},
+					{
+						sub_action = "default",
+						start_time = 0.55,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
+				},
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:clear_input_buffer()
+
+					return input_extension:reset_release_input()
+				end,
+				projectile_info = Projectiles.we_deus_01,
+				impact_data = {
+					damage_profile = "we_deus_01_special_charged"
+				},
+				alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
+				alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
+				chain_condition_func = check_energy_condition_func,
+				recoil_settings = {
+					horizontal_climb = -0.5,
+					restore_duration = 0.2,
+					vertical_climb = -1.5,
+					climb_duration = 0.1,
+					climb_function = math.easeInCubic,
+					restore_function = math.ease_out_quad
+				}
 			}
 		},
-		shoot_charged = {
-			reset_aim_on_attack = true,
-			anim_time_scale = 1.25,
-			kind = "bow_energy",
-			attack_template = "arrow_carbine",
-			charge_value = "zoomed_arrow_hit",
-			weapon_action_hand = "left",
-			anim_event_last_ammo = "attack_shoot",
-			minimum_hold_time = 0.4,
-			apply_recoil = true,
-			ammo_usage = 0,
-			fire_sound_event = "player_combat_weapon_we_deus_01_fire_heavy",
-			anim_end_event = "to_unzoom",
-			speed = 16000,
-			drain_amount = 7,
-			hold_input = "action_two_hold",
-			anim_event = "attack_shoot",
-			scale_total_time_on_mastercrafted = true,
-			total_time = 0.6,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_wield",
-					input = "action_wield"
+		action_two = {
+			default = {
+				default_zoom = "zoom_in_trueflight",
+				kind = "aim_energy",
+				ammo_usage = 0,
+				weapon_action_hand = "left",
+				aim_zoom_delay = 0.01,
+				anim_time_scale = 1.25,
+				aim_sound_delay = 0.5,
+				aim_at_gaze_setting = "tobii_aim_at_gaze_longbow",
+				anim_end_event = "draw_cancel",
+				aim_sound_event = "player_combat_weapon_we_deus_01_tighten_grip_loop",
+				minimum_hold_time = 0.2,
+				aim_assist_ramp_multiplier = 0.6,
+				aim_assist_ramp_decay_delay = 0.2,
+				drain_rate = 0,
+				unaim_sound_event = "stop_player_combat_weapon_we_deus_01_tighten_grip_loop",
+				charge_time = 0.5,
+				aim_assist_max_ramp_multiplier = 0.8,
+				hold_input = "action_two_hold",
+				anim_event = "draw_bow",
+				allow_hold_toggle = true,
+				reload_when_out_of_ammo = true,
+				anim_end_event_condition_func = function (unit, end_reason)
+					return end_reason ~= "new_interupting_action"
+				end,
+				total_time = math.huge,
+				buff_data = {
+					{
+						start_time = 0,
+						external_multiplier = 0.25,
+						buff_name = "planted_charging_decrease_movement"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.25,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.3,
+						action = "action_wield",
+						input = "action_wield",
+						end_time = math.huge
+					},
+					{
+						sub_action = "shoot_special_charged",
+						start_time = 0.3,
+						action = "action_one",
+						end_time = 0.65,
+						input = "action_one"
+					},
+					{
+						sub_action = "shoot_charged",
+						start_time = 0.65,
+						action = "action_one",
+						input = "action_one",
+						end_time = math.huge
+					},
+					{
+						softbutton_threshold = 0.75,
+						start_time = 0.5,
+						action = "action_one",
+						sub_action = "shoot_charged",
+						input = "action_one_softbutton_gamepad",
+						end_time = math.huge
+					},
+					{
+						sub_action = "default",
+						start_time = 0.65,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.55,
-					action = "action_two",
-					input = "action_two_hold",
-					end_time = math.huge
+				condition_func = check_energy_condition_func,
+				action_on_energy_drained = {
+					action_name = "action_one",
+					sub_action_name = "shoot_charged"
 				},
-				{
-					sub_action = "default",
-					start_time = 0.55,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:clear_input_buffer()
-
-				return input_extension:reset_release_input()
-			end,
-			chain_condition_func = check_energy_condition_func,
-			hit_effect = ARROW_HIT_EFFECT,
-			projectile_info = Projectiles.we_deus_01,
-			impact_data = {
-				damage_profile = "we_deus_01",
-				aoe = ExplosionTemplates.we_deus_01_large
-			},
-			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
-			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
-			recoil_settings = {
-				horizontal_climb = -0.5,
-				restore_duration = 0.2,
-				vertical_climb = -1.5,
-				climb_duration = 0.1,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
+				buffed_zoom_thresholds = {
+					"zoom_in_trueflight",
+					"zoom_in"
+				},
+				zoom_condition_function = function ()
+					return true
+				end,
+				unzoom_condition_function = function (end_reason)
+					return end_reason ~= "new_interupting_action"
+				end
 			}
 		},
-		shoot_special_charged = {
-			reset_aim_on_attack = true,
-			anim_time_scale = 1.25,
-			kind = "bow_energy",
-			charge_value = "zoomed_arrow_hit",
-			weapon_action_hand = "left",
-			anim_end_event = "to_unzoom",
-			apply_recoil = true,
-			anim_event_last_ammo = "attack_shoot",
-			minimum_hold_time = 0.4,
-			ammo_usage = 0,
-			fire_sound_event = "player_combat_weapon_we_deus_01_fire_heavy",
-			speed = 16000,
-			drain_amount = 6,
-			hold_input = "action_two_hold",
-			anim_event = "attack_shoot",
-			scale_total_time_on_mastercrafted = true,
-			total_time = 0.6,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.5,
-					action = "action_wield",
-					input = "action_wield"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.25,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.55,
-					action = "action_two",
-					input = "action_two_hold",
-					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0.55,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:clear_input_buffer()
-
-				return input_extension:reset_release_input()
-			end,
-			hit_effect = ARROW_HIT_EFFECT,
-			projectile_info = Projectiles.we_deus_01,
-			impact_data = {
-				damage_profile = "we_deus_01",
-				aoe = ExplosionTemplates.we_deus_01_small
-			},
-			alert_sound_range_fire = ALERT_SOUND_RANGE_FIRE,
-			alert_sound_range_hit = ALERT_SOUND_RANGE_HIT,
-			chain_condition_func = check_energy_condition_func,
-			recoil_settings = {
-				horizontal_climb = -0.5,
-				restore_duration = 0.2,
-				vertical_climb = -1.5,
-				climb_duration = 0.1,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
-			}
-		}
+		weapon_reload = ActionTemplates.reload,
+		action_inspect = ActionTemplates.action_inspect_left,
+		action_wield = ActionTemplates.wield_left,
+		action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
+		action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
+		action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
+		action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
+		action_instant_equip_tome = ActionTemplates.instant_equip_tome,
+		action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
+		action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
+		action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
 	},
-	action_two = {
-		default = {
-			default_zoom = "zoom_in_trueflight",
-			kind = "aim_energy",
-			ammo_usage = 0,
-			weapon_action_hand = "left",
-			aim_zoom_delay = 0.01,
-			anim_time_scale = 1.25,
-			aim_sound_delay = 0.5,
-			aim_at_gaze_setting = "tobii_aim_at_gaze_longbow",
-			anim_end_event = "draw_cancel",
-			aim_sound_event = "player_combat_weapon_we_deus_01_tighten_grip_loop",
-			minimum_hold_time = 0.2,
-			aim_assist_ramp_multiplier = 0.6,
-			aim_assist_ramp_decay_delay = 0.2,
-			drain_rate = 0,
-			unaim_sound_event = "stop_player_combat_weapon_we_deus_01_tighten_grip_loop",
-			charge_time = 0.5,
-			aim_assist_max_ramp_multiplier = 0.8,
-			hold_input = "action_two_hold",
-			anim_event = "draw_bow",
-			allow_hold_toggle = true,
-			reload_when_out_of_ammo = true,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.25,
-					buff_name = "planted_charging_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "action_wield",
-					input = "action_wield",
-					end_time = math.huge
-				},
-				{
-					sub_action = "shoot_special_charged",
-					start_time = 0.3,
-					action = "action_one",
-					end_time = 0.65,
-					input = "action_one"
-				},
-				{
-					sub_action = "shoot_charged",
-					start_time = 0.65,
-					action = "action_one",
-					input = "action_one",
-					end_time = math.huge
-				},
-				{
-					softbutton_threshold = 0.75,
-					start_time = 0.5,
-					action = "action_one",
-					sub_action = "shoot_charged",
-					input = "action_one_softbutton_gamepad",
-					end_time = math.huge
-				},
-				{
-					sub_action = "default",
-					start_time = 0.65,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			condition_func = check_energy_condition_func,
-			action_on_energy_drained = {
-				action_name = "action_one",
-				sub_action_name = "shoot_charged"
-			},
-			buffed_zoom_thresholds = {
-				"zoom_in_trueflight",
-				"zoom_in"
-			},
-			zoom_condition_function = function ()
-				return true
-			end,
-			unzoom_condition_function = function (end_reason)
-				return end_reason ~= "new_interupting_action"
-			end
-		}
+	ammo_data = {
+		hide_ammo_ui = true,
+		ammo_per_reload = 1,
+		infinite_ammo = true,
+		ammo_per_clip = 1,
+		ammo_hand = "left",
+		max_ammo = 1,
+		reload_on_ammo_pickup = true,
+		reload_time = 0,
+		ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
 	},
-	weapon_reload = ActionTemplates.reload,
-	action_inspect = ActionTemplates.action_inspect_left,
-	action_wield = ActionTemplates.wield_left,
-	action_instant_grenade_throw = ActionTemplates.instant_equip_grenade,
-	action_instant_heal_self = ActionTemplates.instant_equip_and_heal_self,
-	action_instant_heal_other = ActionTemplates.instant_equip_and_heal_other,
-	action_instant_drink_potion = ActionTemplates.instant_equip_and_drink_potion,
-	action_instant_equip_tome = ActionTemplates.instant_equip_tome,
-	action_instant_equip_grimoire = ActionTemplates.instant_equip_grimoire,
-	action_instant_equip_grenade = ActionTemplates.instant_equip_grenade_only,
-	action_instant_equip_healing_draught = ActionTemplates.instant_equip_and_drink_healing_draught
-}
-weapon_template.ammo_data = {
-	hide_ammo_ui = true,
-	ammo_per_reload = 1,
-	infinite_ammo = true,
-	ammo_per_clip = 1,
-	ammo_hand = "left",
-	max_ammo = 1,
-	reload_on_ammo_pickup = true,
-	reload_time = 0,
-	ammo_unit_attachment_node_linking = AttachmentNodeLinking.arrow
-}
-weapon_template.attack_meta_data = {
-	aim_at_node = "j_head",
-	minimum_charge_time = 0.55,
-	charged_attack_action_name = "shoot_special_charged",
-	can_charge_shot = true,
-	max_range = 30,
-	aim_at_node_charged = "j_spine1",
-	max_range_charged = 50,
-	ignore_enemies_for_obstruction_charged = true,
-	charge_above_range = 30,
-	charge_when_obstructed = false,
-	ignore_enemies_for_obstruction = false,
-	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.SuperArmor, BreedCategory.Boss),
-	effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.Shielded, BreedCategory.SuperArmor, BreedCategory.Boss)
+	attack_meta_data = {
+		aim_at_node = "j_head",
+		minimum_charge_time = 0.55,
+		charged_attack_action_name = "shoot_special_charged",
+		can_charge_shot = true,
+		max_range = 30,
+		aim_at_node_charged = "j_spine1",
+		max_range_charged = 50,
+		ignore_enemies_for_obstruction_charged = true,
+		charge_above_range = 30,
+		charge_when_obstructed = false,
+		ignore_enemies_for_obstruction = false,
+		effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.SuperArmor, BreedCategory.Boss),
+		effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Special, BreedCategory.Shielded, BreedCategory.SuperArmor, BreedCategory.Boss)
+	}
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {
@@ -409,8 +404,24 @@ weapon_template.aim_assist_settings = {
 		skaven_slave = 1
 	}
 }
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 3,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 4,
+		[DamageTypes.STAGGER] = 3,
+		[DamageTypes.DAMAGE] = 4
+	},
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 5,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 2,
+		[DamageTypes.STAGGER] = 4,
+		[DamageTypes.DAMAGE] = 7
+	}
+}
 weapon_template.tooltip_keywords = {
-	"weapon_keyword_armour_piercing",
+	"weapon_keyword_damage_over_time",
 	"weapon_keyword_sniper",
 	"weapon_keyword_versatile"
 }

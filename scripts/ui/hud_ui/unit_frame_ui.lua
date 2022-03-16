@@ -24,6 +24,9 @@ UnitFrameUI.init = function (self, ingame_ui_context, definitions, data, frame_i
 	self._frame_type = frame_type
 
 	self:_create_ui_elements(frame_index)
+
+	self._ammo_ui_data = {}
+	self.weapon_changed = false
 end
 
 UnitFrameUI._create_ui_elements = function (self, frame_index)
@@ -655,6 +658,7 @@ UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_
 	local widget_style = widget.style
 	local widget_content = widget.content
 	local total_health_bar_content = widget_content.total_health_bar
+	local hp_bar_content = widget_content.hp_bar
 	local total_health_bar_style = widget_style.total_health_bar
 	total_health_bar_content.draw_health_bar = show_health_bar
 	total_health_bar_content.is_knocked_down = is_knocked_down
@@ -673,10 +677,12 @@ UnitFrameUI.set_health_bar_status = function (self, show_health_bar, is_knocked_
 		color[2] = 255
 		color[3] = 0
 		color[4] = 0
+		hp_bar_content.hide = true
 	else
 		color[2] = 255
 		color[3] = 255
 		color[4] = 255
+		hp_bar_content.hide = false
 	end
 
 	self:_set_widget_dirty(widget)
@@ -1287,6 +1293,161 @@ UnitFrameUI._update_connection_animation = function (self, dt)
 
 		return true
 	end
+end
+
+UnitFrameUI.update_numeric_ui_health = function (self, player_data)
+	local widget = self:_widget_by_feature("health", "dynamic")
+	local player = player_data.player
+	local player_unit = player and player.player_unit
+
+	if not ALIVE[player_unit] then
+		widget.content.numeric_health = ""
+
+		return
+	end
+
+	local extensions = player_data.extensions
+	local health_extension = extensions and extensions.health
+
+	if not health_extension then
+		return
+	end
+
+	local max_health = math.ceil(health_extension:get_max_health())
+	local current_permanent_health = math.ceil(health_extension:current_permanent_health())
+	local current_temporary_health = math.ceil(health_extension:current_temporary_health())
+
+	if not widget.content.numeric_health then
+		return
+	end
+
+	local is_player = self._frame_type == "player"
+
+	if is_player then
+		widget.content.numeric_health = string.format("%d(%d)/%d", current_permanent_health, current_temporary_health, max_health)
+	else
+		widget.content.numeric_health = string.format("%d/%d", current_permanent_health, max_health)
+	end
+
+	self:_set_widget_dirty(widget)
+end
+
+UnitFrameUI.update_numeric_ui_ammo = function (self, player_data)
+	if self._frame_type == "player" then
+		return
+	end
+
+	local ammo_ui_data = self._ammo_ui_data
+	local widget = self:_widget_by_name("default_dynamic")
+	local player = player_data.player
+	local player_unit = player and player.player_unit
+
+	if not ALIVE[player_unit] then
+		widget.content.has_ranged_weapon = false
+
+		return
+	end
+
+	local extensions = player_data.extensions
+	local inventory_extension = extensions and extensions.inventory
+
+	if not inventory_extension then
+		return
+	end
+
+	if self._frame_type == "team" then
+		local equipment = inventory_extension:equipment()
+		local equipment_slots = equipment.slots
+		local slot = InventorySettings.slots_by_name.slot_ranged
+		local slot_name = slot.name
+
+		if slot_name == "slot_ranged" then
+			local slot_data = equipment_slots[slot_name]
+
+			if not slot_data then
+				widget.content.has_ranged_weapon = false
+
+				return
+			end
+
+			local item_template = slot_data.item_template
+
+			if not item_template then
+				return
+			end
+
+			local ammo_data = item_template.ammo_data
+
+			if ammo_data and ammo_data.hide_ammo_ui then
+				return
+			end
+
+			local current_ammo, max_ammo = inventory_extension:ammo_status()
+
+			if ammo_data and current_ammo and max_ammo then
+				widget.content.has_ranged_weapon = true
+				widget.content.ammo_count = string.format("%d / %d", current_ammo, max_ammo)
+
+				if ammo_ui_data[player.peer_id] ~= item_template.name then
+					ammo_ui_data[player.peer_id] = item_template.name
+					self.weapon_changed = true
+				else
+					self.weapon_changed = false
+				end
+			else
+				widget.content.has_ranged_weapon = false
+			end
+		end
+	end
+
+	self:_set_widget_dirty(widget)
+end
+
+UnitFrameUI.update_numeric_ui_career_ability = function (self, game, go_id, player_data)
+	local widget = self:_widget_by_name("default_dynamic")
+	local player = player_data.player
+	local player_unit = player and player.player_unit
+
+	if not ALIVE[player_unit] then
+		widget.content.ability_cooldown = ""
+
+		return
+	end
+
+	if not widget.content.ability_cooldown then
+		return
+	end
+
+	local extensions = player_data.extensions
+	local career_extension = extensions and extensions.career
+
+	if not career_extension then
+		return
+	end
+
+	local career_name = career_extension:career_name()
+	local ability_percentage = GameSession.game_object_field(game, go_id, "ability_percentage")
+	local on_cooldown = (ability_percentage > 0.01 and true) or false
+	widget.content.on_cooldown = on_cooldown
+
+	if not on_cooldown then
+		return
+	end
+
+	local settings = CareerSettings[career_name]
+	local playfab_name = settings.playfab_name
+	local max_cooldown = nil
+
+	if not playfab_name then
+		_, max_cooldown = career_extension:current_ability_cooldown()
+	else
+		max_cooldown = ActivatedAbilitySettings[playfab_name][1].cooldown
+	end
+
+	local ability_cooldown = max_cooldown * ability_percentage
+	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
+
+	self:_set_widget_dirty(widget)
 end
 
 return

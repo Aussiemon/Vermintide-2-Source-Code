@@ -683,6 +683,14 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 	blackboard.ally_distance = ally_dist
 
 	if blackboard.target_ally_unit and in_need_type then
+		if not blackboard.target_ally_needs_aid and in_need_type ~= "in_need_of_attention_look" then
+			local follow_bb = blackboard.follow
+
+			if follow_bb then
+				follow_bb.needs_target_position_refresh = true
+			end
+		end
+
 		blackboard.target_ally_needs_aid = true
 		blackboard.target_ally_need_type = in_need_type
 	elseif blackboard.target_ally_needs_aid then
@@ -926,9 +934,10 @@ PlayerBotBase._select_ally_by_utility = function (self, unit, blackboard, breed,
 								local boss_unit = alive_bosses[i]
 								local boss_position = POSITION_LOOKUP[boss_unit]
 								local self_to_boss_distance_sq = Vector3.distance_squared(self_pos, boss_position)
-								local boss_target = BLACKBOARDS[boss_unit].target_unit
+								local boss_bb = BLACKBOARDS[boss_unit]
+								local boss_target = boss_bb.override_target_unit or boss_bb.target_unit
 
-								if boss_target == unit and self_to_boss_distance_sq < 36 then
+								if boss_target == unit and self_to_boss_distance_sq < 10 then
 									in_need_type = nil
 									utility = 0
 

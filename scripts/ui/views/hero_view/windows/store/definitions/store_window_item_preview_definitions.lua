@@ -1190,7 +1190,7 @@ local generic_input_actions = {
 		{
 			input_action = "confirm",
 			priority = 2,
-			description_text = "input_description_select"
+			description_text = "buy_now"
 		},
 		{
 			input_action = "back",
@@ -1221,7 +1221,7 @@ local generic_input_actions = {
 		{
 			input_action = "back",
 			priority = 6,
-			description_text = "input_description_back"
+			description_text = "input_description_close"
 		}
 	},
 	item_preview_purchase_no_details = {
@@ -1288,7 +1288,7 @@ local generic_input_actions = {
 		{
 			input_action = "back",
 			priority = 6,
-			description_text = "input_description_back"
+			description_text = "input_description_close"
 		}
 	},
 	dlc_preview_owned = {

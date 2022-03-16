@@ -410,6 +410,25 @@ function flow_callback_respawn_unit_spawned(params)
 	end
 end
 
+function flow_callback_force_move_dead_players(params)
+	local state = Managers.state
+	local game_mode_manager = state and state.game_mode
+	local game_mode = game_mode_manager and game_mode_manager:game_mode()
+	local respawn_handler = game_mode and game_mode:get_respawn_handler()
+
+	if respawn_handler then
+		respawn_handler:queue_force_move_dead_players()
+	end
+end
+
+function flow_callback_respawn_gate_unit_spawned(params)
+	local game_mode = Managers.state.game_mode
+
+	if game_mode then
+		game_mode:respawn_gate_unit_spawned(params.unit)
+	end
+end
+
 function flow_callback_respawn_enabled(params)
 	if not Managers.player.is_server then
 		return
@@ -2658,10 +2677,6 @@ function flow_callback_objective_complete_current_objective_by_name(params)
 end
 
 function flow_callback_objective_is_objective_completed(params)
-	if not Managers.player.is_server then
-		return false
-	end
-
 	local objective_system = get_objective_system()
 
 	if not objective_system then
@@ -3919,12 +3934,12 @@ function flow_callback_link_objects_in_units_and_store(params)
 
 		World.link_unit(world, childunit, childnodeindex, parentunit, parentnodeindex)
 
-		if params.parent_lod_object and params.child_lod_object then
+		if params.parent_lod_object and params.child_lod_object and Unit.has_lod_object(parentunit, params.parent_lod_object) and Unit.has_lod_object(childunit, params.child_lod_object) then
 			local parent_lod_object = Unit.lod_object(parentunit, params.parent_lod_object)
 			local child_lod_object = Unit.lod_object(childunit, params.child_lod_object)
 
 			LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-			LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+			World.link_unit(world, childunit, LODObject.node(child_lod_object), parentunit, LODObject.node(parent_lod_object))
 		end
 	end
 
@@ -3998,7 +4013,7 @@ function flow_callback_attach_unit(params)
 		local child_lod_object = Unit.lod_object(childunit, index_offset)
 
 		LODObject.set_bounding_volume(child_lod_object, LODObject.bounding_volume(parent_lod_object))
-		LODObject.set_orientation_node(child_lod_object, parentunit, LODObject.node(parent_lod_object))
+		World.link_unit(world, childunit, LODObject.node(child_lod_object), parentunit, LODObject.node(parent_lod_object))
 	end
 
 	if params.store_in_parent then
@@ -4032,14 +4047,6 @@ function flow_callback_unattach_unit(params)
 	return {
 		unlinked = true
 	}
-end
-
-function flow_callback_attach_player_hat(params)
-	return
-end
-
-function flow_callback_remove_player_hat(params)
-	return
 end
 
 function flow_callback_attach_player_item(params)

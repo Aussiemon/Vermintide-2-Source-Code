@@ -74,6 +74,7 @@ if not _G.FOUNDATION_patches_applied and (IS_CONSOLE or DEDICATED_SERVER) then
 	Window.has_focus = NOP
 	Window.is_closing = NOP
 	Window.is_resizable = NOP
+	Window.is_minimized = NOP
 	Window.minimize = NOP
 	Window.mouse_focus = NOP
 	Window.open = NOP

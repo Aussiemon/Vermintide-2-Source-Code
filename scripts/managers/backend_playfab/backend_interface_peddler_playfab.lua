@@ -22,6 +22,7 @@ BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
 	self._login_rewards_cooldown = 0
 	self._is_done_claiming = true
 	self._discounted_shilling_items = {}
+	self._dlc_item_lookup = {}
 
 	self:refresh_stock()
 	self:refresh_chips()
@@ -73,6 +74,207 @@ end
 
 BackendInterfacePeddlerPlayFab.is_discounted_shilling_item = function (self, item_key)
 	return self._discounted_shilling_items[item_key] ~= nil
+end
+
+BackendInterfacePeddlerPlayFab.discounted_shilling_items = function (self)
+	return self._discounted_shilling_items
+end
+
+local EMPTY_DISCOUNT_TABLE = {}
+
+BackendInterfacePeddlerPlayFab.get_discounted_items = function (self)
+	if IS_WINDOWS and HAS_STEAM then
+		return self:_get_discounted_steam_prices()
+	elseif IS_XB1 then
+		return self:_get_discounted_xb1_prices()
+	elseif IS_PS4 then
+		return self:_get_discounted_ps4_prices()
+	else
+		return EMPTY_DISCOUNT_TABLE
+	end
+end
+
+BackendInterfacePeddlerPlayFab._get_discounted_steam_prices = function (self)
+	local discounted_shilling_items = self._discounted_shilling_items
+	local discounted_dlcs = {}
+	local discounted_items = {}
+	local discounted_bundles = {}
+
+	for id, data in pairs(self._app_prices) do
+		local discount_is_active = data.regular_price ~= data.current_price
+
+		if discount_is_active then
+			local dlc_name = Managers.unlock:dlc_name_from_id(id)
+
+			if dlc_name and StoreDlcSettingsByName[dlc_name] then
+				discounted_dlcs[dlc_name] = {
+					type = "dlc",
+					id = dlc_name,
+					item = data
+				}
+			end
+		end
+	end
+
+	for id, item in pairs(self._peddler_stock) do
+		local discount_is_active = item.steam_data and item.steam_data.discount_is_active
+
+		if discount_is_active then
+			local item_data = item.data
+			local item_type = item_data.item_type
+			local item_key = item.key
+
+			if item_type == "bundle" then
+				discounted_bundles[item_key] = {
+					type = "item",
+					id = item_key,
+					item = item
+				}
+			else
+				discounted_items[item_key] = {
+					type = "item",
+					id = item_key,
+					item = item
+				}
+			end
+		end
+	end
+
+	local discounts = {
+		shilling_items = discounted_shilling_items,
+		dlc = discounted_dlcs,
+		items = discounted_items,
+		bundles = discounted_bundles
+	}
+
+	return discounts
+end
+
+BackendInterfacePeddlerPlayFab._get_discounted_xb1_prices = function (self)
+	local discounted_shilling_items = self._discounted_shilling_items
+	local discounted_dlcs = {}
+	local discounted_items = {}
+	local discounted_bundles = {}
+
+	for dlc_name, data in pairs(self._app_prices) do
+		local availability = (data.availabilities and data.availabilities[1]) or {}
+		local display_original_price = availability.DisplayListPrice
+		local display_price = availability.DisplayPrice
+		local discount_is_active = display_price ~= display_original_price
+
+		if discount_is_active then
+			local dlc_settings = StoreDlcSettingsByName[dlc_name]
+
+			if dlc_settings then
+				if dlc_settings.is_bundle then
+					discounted_bundles[dlc_name] = {
+						type = "dlc",
+						id = dlc_name,
+						item = data
+					}
+				else
+					discounted_dlcs[dlc_name] = {
+						type = "dlc",
+						id = dlc_name,
+						item = data
+					}
+				end
+			else
+				local item_data = self._dlc_item_lookup[dlc_name]
+
+				if item_data then
+					discounted_items[dlc_name] = {
+						type = "item",
+						id = item_data.key,
+						item = item_data
+					}
+				end
+			end
+		end
+	end
+
+	local discounts = {
+		shilling_items = discounted_shilling_items,
+		dlc = discounted_dlcs,
+		items = discounted_items,
+		bundles = discounted_bundles
+	}
+
+	return discounts
+end
+
+BackendInterfacePeddlerPlayFab._get_discounted_ps4_prices = function (self)
+	local discounted_shilling_items = self._discounted_shilling_items
+	local discounted_dlcs = {}
+	local discounted_items = {}
+	local discounted_bundles = {}
+	local has_ps_plus = false
+
+	if not Managers.account:offline_mode() then
+		has_ps_plus = Managers.account:has_access("playstation_plus")
+	end
+
+	for dlc_name, data in pairs(self._app_prices) do
+		local is_plus_price = data.is_plus_price
+		local original_price = data.original_price
+		local display_original_price = data.display_original_price
+		local display_price = data.display_price
+		local display_plus_upsell_price = data.display_plus_upsell_price
+		local discount_is_active = nil
+
+		if not original_price and not display_plus_upsell_price and not is_plus_price then
+			discount_is_active = false
+		elseif original_price and not display_plus_upsell_price and not is_plus_price then
+			discount_is_active = true
+		elseif original_price and not display_plus_upsell_price and is_plus_price then
+			discount_is_active = true
+		elseif not original_price and display_plus_upsell_price and not is_plus_price then
+			discount_is_active = true
+		elseif original_price and display_plus_upsell_price and not is_plus_price then
+			discount_is_active = true
+		else
+			discount_is_active = false
+		end
+
+		if discount_is_active then
+			local dlc_settings = StoreDlcSettingsByName[dlc_name]
+
+			if dlc_settings then
+				if dlc_settings.is_bundle then
+					discounted_bundles[dlc_name] = {
+						type = "dlc",
+						id = dlc_name,
+						item = data
+					}
+				else
+					discounted_dlcs[dlc_name] = {
+						type = "dlc",
+						id = dlc_name,
+						item = data
+					}
+				end
+			else
+				local item_data = self._dlc_item_lookup[dlc_name]
+
+				if item_data then
+					discounted_items[dlc_name] = {
+						type = "item",
+						id = item_data.key,
+						item = item_data
+					}
+				end
+			end
+		end
+	end
+
+	local discounts = {
+		shilling_items = discounted_shilling_items,
+		dlc = discounted_dlcs,
+		items = discounted_items,
+		bundles = discounted_bundles
+	}
+
+	return discounts
 end
 
 BackendInterfacePeddlerPlayFab.get_unseen_currency_rewards = function (self)
@@ -155,6 +357,7 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 	local stock = result.Store
 
 	table.clear(self._discounted_shilling_items)
+	table.clear(self._dlc_item_lookup)
 
 	local peddler_stock = self._peddler_stock
 	local mirror = self._backend_mirror
@@ -203,7 +406,17 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 				local current_price = current_prices and current_prices.SM
 
 				if regular_price and current_price and current_price < regular_price then
-					self._discounted_shilling_items[key] = item_data
+					self._discounted_shilling_items[key] = {
+						type = "item",
+						id = key,
+						item = item_data
+					}
+				end
+
+				local dlc_name = data.dlc_name
+
+				if dlc_name then
+					self._dlc_item_lookup[dlc_name] = item_data
 				end
 
 				peddler_stock[stock_index] = item_data

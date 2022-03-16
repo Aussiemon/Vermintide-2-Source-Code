@@ -23,7 +23,7 @@ local scenegraph_definition = {
 			window_size[1]
 		},
 		position = {
-			40,
+			90,
 			-110,
 			1
 		}
@@ -39,6 +39,11 @@ local generic_input_actions = {
 			priority = 1,
 			description_text = "input_description_navigate",
 			ignore_keybinding = true
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 2,
+			description_text = "start_menu_switch_hero"
 		},
 		{
 			input_action = "confirm",

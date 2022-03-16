@@ -450,7 +450,9 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 						local buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
 
 						if buff_extension then
-							buff_extension:trigger_procs("on_ranged_hit")
+							local is_career_skill = self._current_action.career_skill
+
+							buff_extension:trigger_procs("on_ranged_hit", is_career_skill)
 						end
 					elseif breed.is_player then
 						self:hit_player(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, has_ranged_boost, ranged_boost_curve_multiplier)
@@ -892,40 +894,38 @@ PlayerProjectileUnitExtension.hit_level_unit = function (self, impact_data, hit_
 		buffed_bounces = owner_buff_extension:apply_buffs_to_value(buffed_bounces, "projectile_bounces")
 	end
 
-	local bounce_linking = false
+	local finished_bouncing = false
 
 	if bounce then
 		local num_bounces = self._num_bounces
 		local max_bounces = impact_data.max_bounces or 0
+		local locomotion_extension = self._locomotion_extension
 		max_bounces = max_bounces + buffed_bounces
 
-		if num_bounces < max_bounces then
-			local locomotion_extension = self._locomotion_extension
+		if locomotion_extension.bounce and num_bounces < max_bounces then
+			locomotion_extension:bounce(hit_position, hit_direction, hit_normal)
 
-			if locomotion_extension.bounce then
-				locomotion_extension:bounce(hit_position, hit_direction, hit_normal)
-
-				self._num_bounces = self._num_bounces + 1
-
-				return
-			end
+			self._num_bounces = self._num_bounces + 1
 		else
-			bounce_linking = true
+			finished_bouncing = true
 		end
 	end
 
-	if (not bounce or (bounce and bounce_linking)) and (self._num_additional_penetrations == 0 or not health_extension or impact_data.grenade) then
-		self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, false, true, false, false)
-	end
-
 	local aoe_data = impact_data.aoe
+	local aoe_on_bounce = impact_data.aoe_on_bounce
 
-	if aoe_data then
+	if aoe_data and (not bounce or finished_bouncing or aoe_on_bounce) then
 		self:do_aoe(aoe_data, hit_position)
 
 		if impact_data.grenade and owner_buff_extension then
 			owner_buff_extension:trigger_procs("on_grenade_exploded", impact_data, hit_position, self._is_critical_strike, self.item_name, Unit.local_rotation(self._projectile_unit, 0), self.scale, self.power_level)
 		end
+	end
+
+	if bounce and not finished_bouncing then
+		return
+	elseif self._num_additional_penetrations == 0 or not health_extension or impact_data.grenade then
+		self:_handle_linking(impact_data, hit_unit, hit_position, hit_direction, hit_normal, hit_actor, false, true, false, false)
 	end
 
 	if health_extension and self._num_additional_penetrations > 0 and not impact_data.grenade then

@@ -839,9 +839,6 @@ WeaponTraits.combinations = {
 		},
 		{
 			"melee_shield_on_assist"
-		},
-		{
-			"melee_heal_on_crit"
 		}
 	},
 	ranged_ammo = {
@@ -862,9 +859,6 @@ WeaponTraits.combinations = {
 		},
 		{
 			"ranged_consecutive_hits_increase_power"
-		},
-		{
-			"ranged_movespeed_on_damage_taken"
 		}
 	},
 	ranged_heat = {
@@ -885,9 +879,6 @@ WeaponTraits.combinations = {
 		},
 		{
 			"ranged_consecutive_hits_increase_power"
-		},
-		{
-			"ranged_movespeed_on_damage_taken"
 		}
 	},
 	offence_accessory = {
@@ -896,9 +887,6 @@ WeaponTraits.combinations = {
 		},
 		{
 			"ring_potion_spread"
-		},
-		{
-			"ring_not_consume_potion_damage"
 		},
 		{
 			"ring_all_potions"

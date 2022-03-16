@@ -36,6 +36,7 @@ CraftPageUpgradeItemConsole.on_enter = function (self, params, settings)
 	self.profile_index = params.profile_index
 	self.wwise_world = params.wwise_world
 	self.settings = settings
+	self._recipe_name = settings.name
 	self._animations = {}
 
 	self:create_ui_elements(params)
@@ -305,8 +306,7 @@ CraftPageUpgradeItemConsole._handle_input = function (self, dt, t)
 			items[#items + 1] = backend_id
 		end
 
-		local recipe_override = self._recipe_name
-		local recipe_available = parent:craft(items, recipe_override)
+		local recipe_available = parent:craft(items, self._recipe_name)
 
 		if recipe_available then
 			self:_set_craft_button_disabled(true)
@@ -405,7 +405,6 @@ CraftPageUpgradeItemConsole._update_craft_items = function (self)
 			self:_remove_craft_item(pressed_backend_id)
 		else
 			self:_add_craft_item(pressed_backend_id)
-			self:setup_recipe_requirements()
 		end
 	end
 
@@ -480,6 +479,8 @@ CraftPageUpgradeItemConsole._add_craft_item = function (self, backend_id, slot_i
 			self:_play_sound("play_gui_craft_item_drop")
 		end
 	end
+
+	self:setup_recipe_requirements()
 end
 
 CraftPageUpgradeItemConsole._set_craft_button_disabled = function (self, disabled)

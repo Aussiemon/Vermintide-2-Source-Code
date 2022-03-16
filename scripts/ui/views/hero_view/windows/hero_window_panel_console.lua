@@ -3,6 +3,8 @@ local widget_definitions = definitions.widgets
 local title_button_definitions = definitions.title_button_definitions
 local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animation_definitions
+local create_bot_warning = definitions.create_bot_warning
+local create_bot_cusomization_button = definitions.create_bot_cusomization_button
 local layout_name_by_index = {
 	"equipment",
 	"talents",
@@ -57,7 +59,8 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 
 	self.conditions_params = {
 		hero_name = self.hero_name,
-		career_name = career_name
+		career_name = career_name,
+		rarities_to_ignore = table.enum("magic")
 	}
 	local title_button_widgets = self._title_button_widgets
 	self.button_widgets_by_news_template = {
@@ -81,6 +84,17 @@ HeroWindowPanelConsole.on_enter = function (self, params, offset)
 	self:_validate_product_owner()
 end
 
+HeroWindowPanelConsole._start_transition_animation = function (self, animation_name)
+	local params = {
+		wwise_world = self.wwise_world,
+		render_settings = self.render_settings,
+		ui_scenegraph = self.ui_scenegraph
+	}
+	local widgets = self._widgets_by_name
+	local anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
+	self._animations[animation_name] = anim_id
+end
+
 HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
@@ -92,6 +106,9 @@ HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 		widgets_by_name[name] = widget
 	end
 
+	local widget = UIWidget.init(create_bot_cusomization_button(self.ui_renderer))
+	widgets[#widgets + 1] = widget
+	widgets_by_name.bot_customization_button = widget
 	self._widgets = widgets
 	self._widgets_by_name = widgets_by_name
 	local title_button_widgets = {}
@@ -101,6 +118,9 @@ HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 		title_button_widgets[#title_button_widgets + 1] = widget
 	end
 
+	assert(title_button_widgets[3].content.text_field == "hero_window_crafting")
+
+	title_button_widgets[3].content.button_hotspot.disable_button = script_data["eac-untrusted"]
 	self._title_button_widgets = title_button_widgets
 
 	UIRenderer.clear_scenegraph_queue(self.ui_renderer)
@@ -113,6 +133,8 @@ HeroWindowPanelConsole.create_ui_elements = function (self, params, offset)
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
+
+	self._widgets_by_name.bot_customization_button.content.visible = not self.force_ingame_menu
 end
 
 HeroWindowPanelConsole.on_exit = function (self, params)
@@ -130,6 +152,7 @@ HeroWindowPanelConsole.update = function (self, dt, t)
 
 	self:_handle_gamepad_activity()
 	self:_handle_back_button_visibility()
+	self:_handle_bot_warning()
 
 	if self.is_in_inn and not self.force_ingame_menu then
 		self:_sync_news(dt, t)
@@ -142,6 +165,46 @@ end
 
 HeroWindowPanelConsole.post_update = function (self, dt, t)
 	self:_handle_input(dt, t)
+end
+
+HeroWindowPanelConsole._handle_bot_warning = function (self)
+	local is_bot_career = self.parent:is_bot_career()
+
+	if is_bot_career then
+		local current_profile_index, current_career_index = self.parent:get_career_data()
+
+		if current_profile_index ~= self._current_profile_index or current_career_index ~= self._current_career_index then
+			self:_set_bot_information(current_profile_index, current_career_index)
+
+			self._current_profile_index = current_profile_index
+			self._current_career_index = current_career_index
+
+			self:_start_transition_animation("bot_info_enter")
+		end
+	elseif self._current_profile_index or self._current_career_index then
+		self:_start_transition_animation("bot_info_exit")
+
+		local widget = self._widgets_by_name.bot_customization_button
+		widget.content.managing_career_name = ""
+		widget.content.playing_career_name = ""
+		self._current_profile_index = nil
+		self._current_career_index = nil
+	end
+end
+
+HeroWindowPanelConsole._set_bot_information = function (self, current_profile_index, current_career_index)
+	local local_player = Managers.player:local_player()
+	local playing_profile_index = local_player:profile_index()
+	local playing_career_index = local_player:career_index()
+	local playing_profile = SPProfiles[playing_profile_index]
+	local playing_career = playing_profile.careers[playing_career_index]
+	local playing_career_name = playing_career.display_name
+	local managing_profile = SPProfiles[current_profile_index]
+	local managing_career = managing_profile.careers[current_career_index]
+	local managing_career_name = managing_career.display_name
+	local widget = self._widgets_by_name.bot_customization_button
+	widget.content.managing_career_name = Localize(managing_career_name)
+	widget.content.playing_career_name = Localize(playing_career_name)
 end
 
 HeroWindowPanelConsole._update_animations = function (self, dt)
@@ -174,6 +237,7 @@ HeroWindowPanelConsole._update_animations = function (self, dt)
 	end
 
 	self:_animate_title_entry(self._widgets_by_name.system_button, dt)
+	self:_animate_title_entry(self._widgets_by_name.bot_customization_button, dt)
 	self:_animate_back_button(self._widgets_by_name.back_button, dt)
 	self:_animate_back_button(self._widgets_by_name.close_button, dt)
 
@@ -311,6 +375,16 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 
 			self:_open_marketplace_xb1()
 		end
+
+		local bot_customization_button = widgets_by_name.bot_customization_button
+
+		if UIUtils.is_button_hover_enter(bot_customization_button) then
+			self:_play_sound("Play_hud_hover")
+		end
+
+		if UIUtils.is_button_pressed(bot_customization_button) or input_service:get("show_gamercard") then
+			self.parent:set_layout_by_name("character_selection")
+		end
 	end
 end
 
@@ -344,6 +418,10 @@ HeroWindowPanelConsole._update_selected_option = function (self)
 
 		self._selected_index = selected_index
 	end
+
+	local widget = self._widgets_by_name.bot_customization_button
+	widget.content.button_hotspot.is_selected = selected_layout_name == "character_selection"
+	widget.content.button_hotspot.hover_progress = (widget.content.button_hotspot.is_selected and 1) or widget.content.button_hotspot.hover_progress
 end
 
 HeroWindowPanelConsole.draw = function (self, dt)
@@ -361,6 +439,10 @@ HeroWindowPanelConsole.draw = function (self, dt)
 		for _, widget in ipairs(self._title_button_widgets) do
 			UIRenderer.draw_widget(ui_renderer, widget)
 		end
+	end
+
+	if self._bot_warning_widget then
+		UIRenderer.draw_widget(ui_renderer, self._bot_warning_widget)
 	end
 
 	UIRenderer.end_pass(ui_renderer)

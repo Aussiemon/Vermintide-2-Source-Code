@@ -64,12 +64,12 @@ ActionShotgun._use_ammo = function (self)
 	local ammo_usage = current_action.ammo_usage
 	local num_shots_total = current_action.shot_count or 1
 
-	if current_action.special_ammo_thing and not self.extra_buff_shot then
+	if current_action.special_ammo_thing then
 		ammo_usage = ammo_extension:current_ammo()
 		num_shots_total = ammo_usage
 	end
 
-	if ammo_extension and not self.extra_buff_shot then
+	if ammo_extension then
 		ammo_extension:use_ammo(ammo_usage)
 	end
 
@@ -80,7 +80,7 @@ ActionShotgun._add_overcharge = function (self)
 	local current_action = self.current_action
 	local overcharge_type = current_action.overcharge_type
 
-	if overcharge_type and not self.extra_buff_shot then
+	if overcharge_type then
 		local overcharge_amount = PlayerUnitStatusSettings.overcharge_values[overcharge_type]
 		local owner_unit = self.owner_unit
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
@@ -116,8 +116,10 @@ ActionShotgun._start_shooting = function (self)
 		})
 	end
 
-	self:_use_ammo()
-	self:_add_overcharge()
+	if not self.extra_buff_shot then
+		self:_use_ammo()
+		self:_add_overcharge()
+	end
 
 	if current_action.alert_sound_range_fire then
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
@@ -141,16 +143,22 @@ ActionShotgun._shooting = function (self, t, final_frame)
 		num_shots_this_frame = math.min(num_shots_this_frame, MAX_SHOTS_PER_FRAME)
 	end
 
+	local extra_shots = self:_update_extra_shots(self.owner_buff_extension)
+
 	self:_shoot(num_shots_total, num_shots_this_frame)
 
-	local procced = self:_check_extra_shot_proc(self.owner_buff_extension)
+	if self._num_shots_total - self._shots_fired <= 0 then
+		if extra_shots then
+			self._num_shots_total = num_shots_total + extra_shots
 
-	if procced then
-		self.state = "waiting_to_shoot"
-		self.time_to_shoot = t + 0.2
-		self.extra_buff_shot = true
-	elseif self._num_shots_total - self._shots_fired <= 0 then
-		self.state = "shot"
+			self:_update_extra_shots(self.owner_buff_extension, extra_shots)
+
+			self.state = "waiting_to_shoot"
+			self.time_to_shoot = t + 0.15
+			self.extra_buff_shot = true
+		else
+			self.state = "shot"
+		end
 	end
 end
 

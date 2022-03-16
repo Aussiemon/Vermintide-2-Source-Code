@@ -19,7 +19,7 @@ local OBJECTIVE_MARKER_TIMEOUT = 60
 local function drop_pickup(pickup_system, chest_unit, pickup_name)
 	local position = POSITION_LOOKUP[chest_unit] + Vector3(math.random(-0.5, 0.5), math.random(-0.5, 0.5), 2)
 
-	pickup_system:spawn_pickup(pickup_name, position, true, Quaternion.identity(), true, "dropped")
+	pickup_system:spawn_pickup(pickup_name, position, Quaternion.identity(), true, "dropped")
 end
 
 DeusCursedChestExtension.init = function (self, extension_init_context, unit, extension_init_data)

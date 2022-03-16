@@ -462,7 +462,7 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 			local level_settings = LevelSettings[level_key]
 			mechanism = level_settings.mechanism
 		else
-			mechanism = Development.parameter("mechanism") or SaveData.last_mechanism or "adventure"
+			mechanism = SaveData.last_mechanism or "adventure"
 		end
 	end
 
@@ -480,14 +480,14 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 	locked_director_functions = locked_director_functions or {}
 	difficulty = script_data.current_difficulty_setting or difficulty or "normal"
 	difficulty_tweak = script_data.current_difficulty_tweak_setting or difficulty_tweak or 0
-	level_seed = level_seed or 0
+	level_seed = tonumber(level_seed or Development.parameter("level_seed") or GameMechanismManager.create_level_seed())
 	optional_extra_packages = optional_extra_packages or {}
 
 	return level_key, environment_variation_id, level_seed, mechanism, game_mode, conflict_director, locked_director_functions, difficulty, difficulty_tweak, optional_extra_packages
 end
 
 LevelTransitionHandler._update_debug = function (self)
-	if script_data.debug_level_packages then
+	if script_data.debug_level_seed_and_level_packages then
 		local level_seed = self:get_current_level_seed()
 
 		for level_name, is_loaded in pairs(self.loaded_levels) do

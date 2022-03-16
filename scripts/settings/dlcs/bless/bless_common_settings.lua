@@ -21,7 +21,8 @@ settings.statistics_lookup = {
 	"bless_punch_back",
 	"bless_saved_by_perk",
 	"bless_block_attacks",
-	"bless_righteous_stagger"
+	"bless_righteous_stagger",
+	"bless_unbreakable_damage_block"
 }
 settings.hero_hud_components = {
 	"PriestResourceBarUI"

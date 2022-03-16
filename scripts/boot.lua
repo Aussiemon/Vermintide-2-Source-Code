@@ -54,10 +54,7 @@ local function foundation_require(path, ...)
 end
 
 print("Active feature-flags:")
-print("PLATFORM_win32")
-print("FEATURE_store_onboarding")
-print("FEATURE_warrior_priest")
-print("FEATURE_amd_fsr")
+Application.print_strip_tags()
 print("")
 require("scripts/settings/dlc_settings")
 require("scripts/helpers/dlc_utils")
@@ -811,7 +808,7 @@ Boot.game_update = function (self, real_world_dt)
 	end
 
 	if Managers.unlock then
-		Managers.unlock:update(dt)
+		Managers.unlock:update(dt, t)
 	end
 
 	if Managers.popup then

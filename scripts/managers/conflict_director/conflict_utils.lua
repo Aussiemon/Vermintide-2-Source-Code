@@ -8,6 +8,13 @@ local distance_squared = Vector3.distance_squared
 local math_random = Math.random
 local quaternion_look = Quaternion.look
 
+local function get_with_override(settings, key, difficulty, fallback_difficulty)
+	local overrides = settings.difficulty_overrides
+	local override_settings = overrides and (overrides[difficulty] or overrides[fallback_difficulty])
+
+	return (override_settings and override_settings[key]) or settings[key]
+end
+
 ConflictUtils.random_interval = function (numbers)
 	if type(numbers) == "table" then
 		return math_random(numbers[1], numbers[2])
@@ -466,12 +473,12 @@ ConflictUtils.is_position_inside_no_spawn_volume = function (level, nav_tag_volu
 end
 
 ConflictUtils.find_center_tri = function (nav_world, pos, above_max, below_max)
-	local success, altitude = GwNavQueries.triangle_from_position(nav_world, pos, above_max or 30, below_max or 30)
+	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, pos, above_max or 30, below_max or 30)
 
 	if success then
 		pos.z = altitude
 
-		return pos
+		return pos, p1, p2, p3
 	end
 end
 
@@ -529,13 +536,15 @@ ConflictUtils.get_spawn_pos_on_cake_slice = function (nav_world, center_pos, rad
 end
 
 ConflictUtils.get_spawn_pos_on_circle = function (nav_world, center_pos, dist, spread, tries, check_no_spawn_volumes, level, nav_tag_volume_handler, above_max, below_max)
+	local p1, p2, p3 = nil
+
 	for i = 1, tries, 1 do
 		local add_vec = Vector3(dist + (math.random() - 0.5) * spread, 0, 1)
 		local pos = center_pos + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360))), add_vec)
-		pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
+		pos, p1, p2, p3 = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
 		if pos and (not check_no_spawn_volumes or not ConflictUtils.is_position_inside_no_spawn_volume(level, nav_tag_volume_handler, pos)) then
-			return pos
+			return pos, p1, p2, p3
 		end
 	end
 
@@ -932,10 +941,12 @@ ConflictUtils.add_breeds_from_event = function (event_name, event, difficulty, d
 	end
 end
 
-local function add_breeds_from_boss_settings(boss_settings, difficulty, output)
+local function add_breeds_from_boss_settings(boss_settings, difficulty, fallback_difficulty, output)
 	local difficulty_rank = DifficultySettings[difficulty].rank
 
-	for _, settings in pairs(boss_settings) do
+	for key, _ in pairs(boss_settings) do
+		local settings = get_with_override(boss_settings, key, difficulty, fallback_difficulty)
+
 		if type(settings) == "table" then
 			local event_lookup = settings.event_lookup
 
@@ -952,15 +963,15 @@ local function add_breeds_from_boss_settings(boss_settings, difficulty, output)
 	end
 end
 
-local function add_breeds_from_special_settings(special_settings, difficulty, output)
-	local breeds = special_settings.breeds
+local function add_breeds_from_special_settings(special_settings, difficulty, fallback_difficulty, output)
+	local breeds = get_with_override(special_settings, "breeds", difficulty, fallback_difficulty)
 
 	for i = 1, #breeds, 1 do
 		local breed_name = breeds[i]
 		output[breed_name] = true
 	end
 
-	local rush_intervention = special_settings.rush_intervention
+	local rush_intervention = get_with_override(special_settings, "rush_intervention", difficulty, fallback_difficulty)
 	local rush_intervention_breeds = rush_intervention.breeds
 
 	for i = 1, #rush_intervention_breeds, 1 do
@@ -968,7 +979,7 @@ local function add_breeds_from_special_settings(special_settings, difficulty, ou
 		output[breed_name] = true
 	end
 
-	local speed_running_intervention = special_settings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
+	local speed_running_intervention = get_with_override(special_settings, "speed_running_intervention", difficulty, fallback_difficulty) or SpecialsSettings.default.speed_running_intervention
 	local speed_running_intervention_breeds = speed_running_intervention.breeds
 
 	for i = 1, #speed_running_intervention_breeds, 1 do
@@ -1019,8 +1030,8 @@ local function add_breeds_from_breed_packs(breed_packs, difficulty, output)
 	end
 end
 
-local function add_breeds_from_pack_spawning_settings(pack_spawning_settings, difficulty, output)
-	local roaming_set = pack_spawning_settings.roaming_set
+local function add_breeds_from_pack_spawning_settings(pack_spawning_settings, difficulty, fallback_difficulty, output)
+	local roaming_set = get_with_override(pack_spawning_settings, "roaming_set", difficulty, fallback_difficulty)
 	local breed_packs_name = roaming_set.breed_packs
 	local breed_packs = BreedPacks[breed_packs_name]
 
@@ -1038,9 +1049,9 @@ local function add_breeds_from_pack_spawning_settings(pack_spawning_settings, di
 	end
 end
 
-local function add_breeds_from_horde_settings(horde_settings, difficulty, output)
-	local compositions_pacing = horde_settings.compositions_pacing
-	local ambush_composition = horde_settings.ambush_composition
+local function add_breeds_from_horde_settings(horde_settings, difficulty, fallback_difficulty, output)
+	local compositions_pacing = get_with_override(horde_settings, "compositions_pacing", difficulty, fallback_difficulty)
+	local ambush_composition = get_with_override(horde_settings, "ambush_composition", difficulty, fallback_difficulty)
 
 	if type(ambush_composition) == "table" then
 		for i = 1, #ambush_composition, 1 do
@@ -1166,31 +1177,19 @@ ConflictUtils.find_conflict_director_breeds = function (conflict_director, diffi
 	local fallback_difficulty = DifficultySettings[difficulty].fallback_difficulty
 
 	if not conflict_director.boss.disabled then
-		local boss_settings = table.clone(conflict_director.boss)
-
-		ConflictUtils.patch_settings_with_difficulty(boss_settings, difficulty, fallback_difficulty)
-		add_breeds_from_boss_settings(boss_settings, difficulty, output)
+		add_breeds_from_boss_settings(conflict_director.boss, difficulty, fallback_difficulty, output)
 	end
 
 	if not conflict_director.specials.disabled then
-		local special_settings = table.clone(conflict_director.specials)
-
-		ConflictUtils.patch_settings_with_difficulty(special_settings, difficulty, fallback_difficulty)
-		add_breeds_from_special_settings(special_settings, difficulty, output)
+		add_breeds_from_special_settings(conflict_director.specials, difficulty, fallback_difficulty, output)
 	end
 
 	if not conflict_director.pack_spawning.disabled then
-		local pack_spawning_settings = table.clone(conflict_director.pack_spawning)
-
-		ConflictUtils.patch_settings_with_difficulty(pack_spawning_settings, difficulty, fallback_difficulty)
-		add_breeds_from_pack_spawning_settings(pack_spawning_settings, difficulty, output)
+		add_breeds_from_pack_spawning_settings(conflict_director.pack_spawning, difficulty, fallback_difficulty, output)
 	end
 
 	if not conflict_director.horde.disabled then
-		local horde_settings = table.clone(conflict_director.horde)
-
-		ConflictUtils.patch_settings_with_difficulty(horde_settings, difficulty, fallback_difficulty)
-		add_breeds_from_horde_settings(horde_settings, difficulty, output)
+		add_breeds_from_horde_settings(conflict_director.horde, difficulty, fallback_difficulty, output)
 	end
 
 	return output
@@ -1339,7 +1338,17 @@ ConflictUtils.override_extension_init_data = function (breed, extension_init_dat
 	end
 end
 
-ConflictUtils.find_positions_around_position = function (center_position, output_position_list, nav_world, min_distance, max_distance, num_of_positions, forbidden_position_list, distance_to_forbidden_position_list, tries, circle_subdivision, row_distance)
+local function check_if_in_line_of_sight(physics_world, unit, from, to)
+	local dir = to - from
+	local dist = Vector3.length(dir)
+	dir = Vector3.normalize(dir)
+	local hit, hit_position, _, _, hit_actor = PhysicsWorld.raycast(physics_world, from, dir, dist, "closest", "collision_filter", "filter_ai_line_of_sight_check")
+	local hit_unit = hit and Actor.unit(hit_actor)
+
+	return not hit or hit_unit == unit
+end
+
+ConflictUtils.find_positions_around_position = function (center_position, output_position_list, nav_world, min_distance, max_distance, num_of_positions, forbidden_position_list, distance_to_forbidden_position_list, tries, circle_subdivision, row_distance, above_max, below_max, check_line_of_sight, physics_world, line_of_sight_target)
 	distance_to_forbidden_position_list = distance_to_forbidden_position_list or 1
 
 	local function filter_func(pos)
@@ -1363,43 +1372,52 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 			end
 		end
 
+		if check_line_of_sight then
+			local ground_offset = Vector3(0, 0, 1)
+			local offset_pos = pos + ground_offset
+			local offset_center_position = center_position + ground_offset
+			local in_line_of_sight = check_if_in_line_of_sight(physics_world, line_of_sight_target, offset_pos, offset_center_position)
+
+			return in_line_of_sight
+		end
+
 		return true
 	end
 
 	local spread = max_distance - min_distance
 	local distance = min_distance + spread * 0.5
-	local radian_subdivision = circle_subdivision or math.pi * 0.5
+	circle_subdivision = circle_subdivision or 4
+	local radian_subdivision = (math.pi * 2) / circle_subdivision
 	local spread_delta = row_distance or 2
 	local two_pi = 2 * math.pi
 	local start_spread = (math.random() - 0.5) * spread
 	local current_spread = start_spread
 	local start_radians = math.random() * two_pi
 	local current_radians = start_radians
-	local radians_delta = two_pi / radian_subdivision
-	local current_radian_delta_count = 0
+	local current_subdivision_count = 0
 	tries = tries or 30
 
 	local function get_next_pos()
-		current_radians = current_radians + radians_delta
+		current_radians = current_radians + radian_subdivision
 
 		if two_pi < current_radians then
 			current_radians = current_radians - two_pi
 		end
 
-		current_radian_delta_count = current_radian_delta_count + 1
+		current_subdivision_count = current_subdivision_count + 1
 
-		if radian_subdivision < current_radian_delta_count then
+		if circle_subdivision < current_subdivision_count then
 			current_spread = current_spread + spread_delta
 
 			if current_spread > spread * 0.5 then
 				current_spread = current_spread - spread
 			end
 
-			current_radian_delta_count = 0
+			current_subdivision_count = 0
 			current_radians = math.random() * two_pi
 		end
 
-		local add_vec = Vector3(distance + current_spread, 0, 1)
+		local add_vec = Vector3(distance + current_spread, 0, 0)
 		local pos = center_position + Quaternion.rotate(Quaternion(Vector3.up(), current_radians), add_vec)
 
 		return pos
@@ -1408,10 +1426,14 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 	for i = 1, num_of_positions, 1 do
 		for try = 1, tries, 1 do
 			local pos = get_next_pos()
-			local spawn_pos = ConflictUtils.find_center_tri(nav_world, pos)
+			local spawn_pos = ConflictUtils.find_center_tri(nav_world, pos, above_max, below_max)
 
-			if spawn_pos and filter_func(spawn_pos) then
-				output_position_list[#output_position_list + 1] = spawn_pos
+			if spawn_pos then
+				local valid_position = filter_func(spawn_pos)
+
+				if valid_position then
+					output_position_list[#output_position_list + 1] = spawn_pos
+				end
 
 				break
 			end
@@ -1419,6 +1441,79 @@ ConflictUtils.find_positions_around_position = function (center_position, output
 	end
 
 	return output_position_list
+end
+
+local function check_if_above_ground(physics_world, origin_position, distance)
+	local hit, _, _, _, _ = PhysicsWorld.raycast(physics_world, origin_position, Vector3(0, 0, -1), distance, "closest", "types", "statics", "collision_filter", "filter_environment_overlap")
+
+	return not hit
+end
+
+ConflictUtils.find_visible_positions_in_sphere_around_player = function (physics_world, position_count, player_unit, radius, from_pitch, to_pitch, pitch_delta, from_yaw, to_yaw, yaw_delta, forbidden_position_list, distance_to_forbidden_position_list, distance_between_positions, min_distance_from_floor)
+	distance_to_forbidden_position_list = distance_to_forbidden_position_list or 0
+	local distance_between_positions_sqr = math.pow(distance_between_positions, 2)
+	local distance_to_forbidden_position_list_sqr = math.pow(distance_to_forbidden_position_list, 2)
+	local center_position = POSITION_LOOKUP[player_unit]
+	local full_pitch_delta = to_pitch - from_pitch
+	local full_yaw_delta = to_yaw - from_yaw
+	local start_pitch = from_pitch + full_pitch_delta * math.random()
+	local start_yaw = from_yaw + full_yaw_delta * math.random()
+	local start_pitch_switch_count = full_pitch_delta / pitch_delta
+	local start_yaw_switch_count = full_yaw_delta / yaw_delta
+	local pitch = start_pitch
+	local pitch_switch_count = 0
+	local yaw_switch_count = 0
+	local yaw = start_yaw
+	local valid_positions = {}
+
+	while position_count > #valid_positions do
+		pitch = pitch + pitch_delta
+		pitch_switch_count = pitch_switch_count + 1
+
+		if start_pitch_switch_count <= pitch_switch_count then
+			pitch = start_pitch
+			pitch_switch_count = 0
+			yaw = yaw + yaw_delta
+			yaw_switch_count = yaw_switch_count + 1
+
+			if start_yaw_switch_count <= yaw_switch_count then
+				break
+			end
+		end
+
+		local new_position = center_position + Quaternion.rotate(Quaternion.from_yaw_pitch_roll(yaw, pitch, 0), Vector3.forward()) * radius
+		local failed = false
+
+		if forbidden_position_list then
+			for i = 1, #forbidden_position_list, 1 do
+				local forbidden_position = forbidden_position_list[i]
+
+				if Vector3.distance_squared(new_position, forbidden_position) < distance_to_forbidden_position_list_sqr then
+					failed = true
+
+					break
+				end
+			end
+		end
+
+		if not failed then
+			for i = 1, #valid_positions, 1 do
+				local valid_position = valid_positions[i]
+
+				if Vector3.distance_squared(new_position, valid_position) < distance_between_positions_sqr then
+					failed = true
+
+					break
+				end
+			end
+
+			if not failed and check_if_in_line_of_sight(physics_world, player_unit, new_position, center_position) and check_if_above_ground(physics_world, new_position, min_distance_from_floor) then
+				valid_positions[#valid_positions + 1] = new_position
+			end
+		end
+	end
+
+	return valid_positions
 end
 
 return

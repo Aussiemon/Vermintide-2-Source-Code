@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local pushed_data = {
 	ahead_dist = 1.5,
 	push_width = 1.25,
@@ -5,10 +6,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 4,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -284,16 +285,16 @@ local breed_data = {
 		bot_poison_wind = 1.5,
 		fire_grenade = 10
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
 		local t = Managers.time:time("game")
 
 		if blackboard.stagger_immune_time and t < blackboard.stagger_immune_time then
-			stagger = 0
+			stagger_type = stagger_types.none
 			duration = 0
 			length = 0
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	difficulty_kill_achievements = {
 		"kill_chaos_exalted_champion_difficulty_rank",
@@ -924,11 +925,11 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						6,
-						0,
-						0,
-						6
+						stagger_types.explosion,
+						stagger_types.explosion,
+						stagger_types.none,
+						stagger_types.none,
+						stagger_types.explosion
 					},
 					stagger_duration = {
 						4.5,
@@ -1021,7 +1022,7 @@ local action_data = {
 		custom_enter_function = function (unit, blackboard, t, action)
 			local stagger_anims = blackboard.action.stagger_anims[blackboard.stagger_type]
 
-			if blackboard.stagger_type == 6 then
+			if blackboard.stagger_type == stagger_types.explosion then
 				if blackboard.chain_stagger_resistant_t and blackboard.chain_stagger_resistant_t < t then
 					blackboard.chain_stagger_resistant_t = nil
 					blackboard.num_chain_stagger = nil
@@ -1030,12 +1031,12 @@ local action_data = {
 				local num_chain_stagger = blackboard.num_chain_stagger or 0
 				blackboard.num_chain_stagger = num_chain_stagger + 1
 
-				if not blackboard.chain_stagger_resistant_t and blackboard.num_chain_stagger > 1 and blackboard.stagger_type == 6 then
+				if not blackboard.chain_stagger_resistant_t and blackboard.num_chain_stagger > 1 and blackboard.stagger_type == stagger_types.explosion then
 					blackboard.chain_stagger_resistant_t = t + 8
 				end
 
 				if blackboard.chain_stagger_resistant_t and t < blackboard.chain_stagger_resistant_t then
-					stagger_anims = blackboard.action.stagger_anims[3]
+					stagger_anims = blackboard.action.stagger_anims[stagger_types.heavy]
 					blackboard.stagger_time = t + 2
 				end
 			end

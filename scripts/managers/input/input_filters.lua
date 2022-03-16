@@ -517,6 +517,30 @@ InputFilters.and = {
 		return value
 	end
 }
+InputFilters.multiple_and = {
+	init = function (filter_data)
+		return table.clone(filter_data)
+	end,
+	update = function (filter_data, input_service)
+		for _, input_mapping_table in ipairs(filter_data.input_mappings) do
+			local value = nil
+
+			for _, input_mapping in pairs(input_mapping_table) do
+				if not input_service:get(input_mapping) then
+					value = false
+				elseif value == nil then
+					value = true
+				end
+			end
+
+			if value then
+				return value
+			end
+		end
+
+		return false
+	end
+}
 InputFilters.sub = {
 	init = function (filter_data)
 		return table.clone(filter_data)

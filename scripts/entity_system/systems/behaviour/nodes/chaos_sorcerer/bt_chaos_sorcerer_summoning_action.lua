@@ -869,8 +869,10 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 						local damage_profile = DamageProfileTemplates[damage_profile_name]
 						local difficulty_rank = Managers.state.difficulty:get_difficulty()
 						local actual_power_level = action.power_level[difficulty_rank]
+						local hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier = nil
+						local source_attacker_unit = unit
 
-						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, hit_unit, unit, "torso", POSITION_LOOKUP[hit_unit], Vector3.up(), "undefined")
+						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, hit_unit, unit, "torso", POSITION_LOOKUP[hit_unit], Vector3.up(), "undefined", hit_ragdoll_actor, boost_curve_multiplier, is_critical_strike, added_dot, first_hit, total_hits, backstab_multiplier, source_attacker_unit)
 					end
 				end
 

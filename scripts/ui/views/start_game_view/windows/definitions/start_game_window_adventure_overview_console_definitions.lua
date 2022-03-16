@@ -272,11 +272,11 @@ local widgets = {
 	adventure_divider = UIWidgets.create_simple_texture("divider_01_top", "adventure_divider"),
 	adventure_description = UIWidgets.create_simple_text(Localize("start_game_window_adventure_desc"), "adventure_description", nil, nil, adventure_description_style),
 	difficulty_setting = UIWidgets.create_start_game_console_setting_button("game_option_1", Localize("start_game_window_difficulty"), nil, "difficulty_option_1", nil, scenegraph_definition.game_option_1.size, true),
-	play_button_console = UIWidgets.create_start_game_console_play_button("play_button_console"),
 	play_button = UIWidgets.create_icon_and_name_button("play_button", "options_button_icon_quickplay", Localize("start_game_window_play"))
 }
 local selector_input_definition = {
-	"difficulty_setting"
+	"difficulty_setting",
+	"play_button"
 }
 
 return {

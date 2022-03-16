@@ -241,8 +241,24 @@ GameModeAdventure.set_override_respawn_group = function (self, respawn_group_nam
 	self._adventure_spawning:set_override_respawn_group(respawn_group_name, active)
 end
 
+GameModeAdventure.set_respawn_group_enabled = function (self, respawn_group_name, enabled)
+	self._adventure_spawning:set_respawn_group_enabled(respawn_group_name, enabled)
+end
+
+GameModeAdventure.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	self._adventure_spawning:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+end
+
 GameModeAdventure.respawn_unit_spawned = function (self, unit)
 	self._adventure_spawning:respawn_unit_spawned(unit)
+end
+
+GameModeAdventure.respawn_gate_unit_spawned = function (self, unit)
+	self._adventure_spawning:respawn_gate_unit_spawned(unit)
+end
+
+GameModeAdventure.get_respawn_handler = function (self)
+	return self._adventure_spawning:get_respawn_handler()
 end
 
 GameModeAdventure.set_respawning_enabled = function (self, enabled)
@@ -298,18 +314,21 @@ GameModeAdventure._get_first_available_bot_profile = function (self)
 	local display_name = profile.display_name
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 	local career_index = hero_attributes:get(display_name, "career")
-	local career = profile.careers[career_index]
+	local bot_career_index = hero_attributes:get(display_name, "bot_career") or career_index or 1
+	local career = profile.careers[bot_career_index]
 	local hero_experience = hero_attributes:get(display_name, "experience") or 0
 	local hero_level = ExperienceSettings.get_level(hero_experience)
 
 	if not career and not career:is_unlocked_function(display_name, hero_level) then
 		career_index = 1
+		bot_career_index = 1
 		career = profile.careers[career_index]
 
 		hero_attributes:set(display_name, "career", career_index)
+		hero_attributes:set(display_name, "bot_career", bot_career_index)
 	end
 
-	return profile_index, career_index
+	return profile_index, bot_career_index
 end
 
 GameModeAdventure._setup_bot_spawn_priority_lookup = function (self)

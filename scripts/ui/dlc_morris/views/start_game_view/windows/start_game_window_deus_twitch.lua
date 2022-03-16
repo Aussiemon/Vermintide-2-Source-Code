@@ -406,10 +406,10 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 
 	local parent = self._parent
 	local input_service = parent:window_input_service()
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
 	if self._is_server then
-		if gamepad_active then
+		if not mouse_active then
 			local input_change = nil
 			local input_index = self._input_index
 
@@ -727,9 +727,9 @@ end
 
 StartGameWindowDeusTwitch._handle_gamepad_activity = function (self, dt, t)
 	local force_update = self.gamepad_active_last_frame == nil
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self.gamepad_active_last_frame or force_update then
 			self.gamepad_active_last_frame = true
 			self._input_index = 1
@@ -773,10 +773,10 @@ StartGameWindowDeusTwitch._verify_selection_index = function (self, input_index,
 end
 
 StartGameWindowDeusTwitch._gamepad_selector_input_func = function (self, input_index, input_change)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	input_index = self:_verify_selection_index(input_index, input_change)
 
-	if self._input_index ~= input_index and gamepad_active then
+	if self._input_index ~= input_index and not mouse_active then
 		self._parent:play_sound("play_gui_lobby_button_02_mission_act_click")
 
 		if self._input_index then

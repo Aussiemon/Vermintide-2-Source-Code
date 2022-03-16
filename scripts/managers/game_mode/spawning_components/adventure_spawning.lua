@@ -197,7 +197,7 @@ AdventureSpawning.server_update = function (self, t, dt)
 			self._respawn_handler:server_update(dt, t, occupied_slots)
 		end
 
-		self:_update_spawning(dt, t, occupied_slots)
+		self:_update_spawning(dt, t, occupied_slots, party.party_id)
 		self:_update_joining_clients(dt, t)
 	end
 end
@@ -286,10 +286,17 @@ AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)
 	end
 end
 
-AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
+AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, party_id)
 	if self._spawning then
 		local own_peer_id = Network.peer_id()
 		local local_player_is_ready = false
+		local ignore_local_player_for_party = false
+
+		if not DEDICATED_SERVER then
+			local local_player = Managers.player:local_player()
+			local local_party = local_player:get_party()
+			ignore_local_player_for_party = party_id ~= local_party
+		end
 
 		for i = 1, #occupied_slots, 1 do
 			local status = occupied_slots[i]
@@ -300,7 +307,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots)
 				return
 			end
 
-			if other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID then
+			if DEDICATED_SERVER or ignore_local_player_for_party or (other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID) then
 				local_player_is_ready = true
 			end
 		end
@@ -517,6 +524,10 @@ AdventureSpawning.respawn_unit_spawned = function (self, unit)
 	self._respawn_handler:respawn_unit_spawned(unit)
 end
 
+AdventureSpawning.respawn_gate_unit_spawned = function (self, unit)
+	self._respawn_handler:respawn_gate_unit_spawned(unit)
+end
+
 AdventureSpawning.remove_respawn_units_due_to_crossroads = function (self, removed_path_distances, total_main_path_length)
 	self._respawn_handler:remove_respawn_units_due_to_crossroads(removed_path_distances, total_main_path_length)
 end
@@ -558,12 +569,24 @@ AdventureSpawning.set_override_respawn_group = function (self, respawn_group_nam
 	self._respawn_handler:set_override_respawn_group(respawn_group_name, active)
 end
 
+AdventureSpawning.set_respawn_group_enabled = function (self, respawn_group_name, enabled)
+	self._respawn_handler:set_respawn_group_enabled(respawn_group_name, enabled)
+end
+
+AdventureSpawning.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	self._respawn_handler:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+end
+
 AdventureSpawning.get_active_respawn_units = function (self)
 	return self._respawn_handler:get_active_respawn_units()
 end
 
 AdventureSpawning.set_move_dead_players_to_next_respawn = function (self, value)
 	self._respawn_handler:set_move_dead_players_to_next_respawn(value)
+end
+
+AdventureSpawning.get_respawn_handler = function (self)
+	return self._respawn_handler
 end
 
 return

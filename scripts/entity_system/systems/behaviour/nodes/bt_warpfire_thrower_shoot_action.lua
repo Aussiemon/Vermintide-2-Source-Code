@@ -1,5 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
 BTWarpfireThrowerShootAction = class(BTWarpfireThrowerShootAction, BTNode)
 
 BTWarpfireThrowerShootAction.init = function (self, ...)
@@ -358,7 +359,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 							local direction = Vector3.normalize(hit_unit_pos - muzzle_pos)
 							local hit_unit_blackboard = BLACKBOARDS[hit_unit]
 
-							if stagger_type > 0 then
+							if stagger_types.none < stagger_type then
 								AiUtils.stagger(hit_unit, hit_unit_blackboard, unit, direction, stagger_distance, stagger_type, stagger_duration, nil, t)
 							end
 

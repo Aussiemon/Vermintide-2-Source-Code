@@ -150,15 +150,13 @@ local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_l
 	local peers_with_full_profiles = state:get_peers_with_full_profiles()
 
 	for _, other_peer in ipairs(peers_with_full_profiles) do
-		if not other_peer.is_bot then
-			local other_peer_id = other_peer.peer_id
+		local other_peer_id = other_peer.peer_id
 
-			if not ignore_loading_peers or state:is_peer_ingame(other_peer_id) then
-				local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
+		if not ignore_loading_peers or state:is_peer_ingame(other_peer_id) then
+			local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
 
-				if inventory_id ~= loaded_inventory_id then
-					return false
-				end
+			if inventory_id ~= loaded_inventory_id then
+				return false
 			end
 		end
 	end

@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
@@ -261,10 +262,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 7,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -568,11 +569,11 @@ local action_data = {
 		push_ai = {
 			stagger_distance = 1.5,
 			stagger_impact = {
-				6,
-				6,
-				0,
-				0,
-				6
+				stagger_types.explosion,
+				stagger_types.explosion,
+				stagger_types.none,
+				stagger_types.none,
+				stagger_types.explosion
 			},
 			stagger_duration = {
 				3,
@@ -630,11 +631,11 @@ local action_data = {
 		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked,
 		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		stagger_impact = {
-			1,
-			2,
-			0,
-			0,
-			1
+			stagger_types.weak,
+			stagger_types.medium,
+			stagger_types.none,
+			stagger_types.none,
+			stagger_types.weak
 		},
 		bot_threats = {
 			{
@@ -760,11 +761,11 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0,
-						6
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none,
+						stagger_types.explosion
 					},
 					stagger_duration = {
 						4.5,
@@ -853,11 +854,11 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0,
-						6
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none,
+						stagger_types.explosion
 					},
 					stagger_duration = {
 						4.5,

@@ -437,6 +437,162 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	Managers.backend:dirtify_interfaces()
 end
 
+BackendInterfaceLootPlayfab.can_claim_all_achievement_rewards = function (self, achievement_ids)
+	local claimable_achievements = {}
+	local unclaimable_achievements = {}
+	local mirror = self._backend_mirror
+	local claimed_achievements = mirror:get_claimed_achievements()
+
+	for i = 0, #achievement_ids, 1 do
+		local achievement_id = achievement_ids[i]
+
+		if not claimed_achievements[achievement_id] then
+			table.insert(claimable_achievements, achievement_id)
+		else
+			table.insert(unclaimable_achievements, achievement_id)
+		end
+	end
+
+	if table.is_empty(claimable_achievements) then
+		return false, nil, unclaimable_achievements
+	else
+		return true, claimable_achievements, unclaimable_achievements
+	end
+end
+
+BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self, achievement_ids)
+	local challenge_data = {}
+	local id = self:_new_id()
+
+	for i = 1, #achievement_ids, 1 do
+		local achievement_id = achievement_ids[i]
+		local data = {
+			achievement_id = achievement_id
+		}
+		challenge_data[#challenge_data + 1] = data
+	end
+
+	local generate_achievement_rewards_request = {
+		FunctionName = "generateAchievementRewards",
+		FunctionParameter = {
+			achievement_ids = challenge_data,
+			id = id
+		}
+	}
+	local success_callback = callback(self, "claim_multiple_achievement_rewards_request_cb", challenge_data, id)
+	local request_queue = self._backend_mirror:request_queue()
+
+	request_queue:enqueue(generate_achievement_rewards_request, success_callback, true)
+
+	return id
+end
+
+BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = function (self, data, id, result)
+	print("[BackendInterfaceLootPlayfab]:claim_all_achievement_rewards_request_cb: Firing!")
+
+	local function_result = result.FunctionResult
+	local id = id
+
+	if not function_result then
+		Managers.backend:playfab_api_error(result)
+
+		return
+	elseif function_result == "reward_claimed" then
+		Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_PLAYFAB_ACHIEVEMENT_REWARD_CLAIMED)
+
+		self._loot_requests[id] = {}
+
+		return
+	end
+
+	local items = function_result.items
+	local achievement_ids = function_result.achievement_id
+	local currency_added = function_result.currency_added
+	local chips = function_result.chips
+	local backend_mirror = self._backend_mirror
+	local loot = {}
+
+	if items then
+		for i = 1, #items, 1 do
+			local item = items[i]
+			local backend_id = item.ItemInstanceId
+			local amount = item.UsesIncrementedBy or 1
+
+			backend_mirror:add_item(backend_id, item)
+
+			loot[#loot + 1] = {
+				type = "item",
+				backend_id = backend_id,
+				amount = amount
+			}
+		end
+	end
+
+	local new_keep_decorations = function_result.new_keep_decorations
+
+	if new_keep_decorations then
+		for i = 1, #new_keep_decorations, 1 do
+			local keep_decoration_name = new_keep_decorations[i]
+
+			backend_mirror:add_keep_decoration(keep_decoration_name)
+
+			loot[#loot + 1] = {
+				type = "keep_decoration_painting",
+				keep_decoration_name = keep_decoration_name
+			}
+		end
+	end
+
+	local new_weapon_skins = function_result.new_weapon_skins
+
+	if new_weapon_skins then
+		for i = 1, #new_weapon_skins, 1 do
+			local weapon_skin_name = new_weapon_skins[i]
+
+			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
+
+			loot[#loot + 1] = {
+				type = "weapon_skin",
+				weapon_skin_name = weapon_skin_name
+			}
+		end
+	end
+
+	local rewarded_currency = {}
+
+	if currency_added then
+		for _, data in ipairs(currency_added) do
+			local code = data.code
+			local amount = data.amount
+			loot[#loot + 1] = {
+				type = "currency",
+				currency_code = code,
+				amount = amount
+			}
+		end
+	end
+
+	if chips then
+		local peddler_interface = Managers.backend:get_interface("peddler")
+
+		if peddler_interface then
+			for chip_type, amount in pairs(chips) do
+				peddler_interface:set_chips(chip_type, amount)
+			end
+		end
+	end
+
+	for i = 1, #achievement_ids, 1 do
+		local achievement_id = achievement_ids[i].achievement_id
+
+		backend_mirror:set_achievement_claimed(achievement_id)
+	end
+
+	self._loot_requests[id] = loot
+
+	Managers.backend:dirtify_interfaces()
+end
+
 BackendInterfaceLootPlayfab.is_loot_generated = function (self, id)
 	local loot_request = self._loot_requests[id]
 

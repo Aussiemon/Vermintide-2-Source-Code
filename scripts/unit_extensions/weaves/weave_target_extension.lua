@@ -60,7 +60,7 @@ WeaveTargetExtension.activate = function (self, game_object_id, objective_data)
 end
 
 WeaveTargetExtension.complete = function (self)
-	if self._on_complete_func then
+	if self._is_server and self._on_complete_func then
 		self._on_complete_func(self._unit)
 	end
 

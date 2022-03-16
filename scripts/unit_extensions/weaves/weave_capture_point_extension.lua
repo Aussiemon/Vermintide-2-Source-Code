@@ -130,7 +130,7 @@ WeaveCapturePointExtension.complete = function (self)
 
 	audio_system:play_audio_unit_event("Play_winds_gameplay_capture_success", self._unit)
 
-	if self._on_complete_func then
+	if self._is_server and self._on_complete_func then
 		self._on_complete_func(self._unit)
 	end
 

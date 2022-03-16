@@ -1,5 +1,5 @@
 local RPC = RPC
-local dummy_table = {}
+local shared_scratchpad_table = {}
 
 function call_RPC(rpc_func_name, peer_id, ...)
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
@@ -138,7 +138,7 @@ NetworkTransmit.send_rpc_party_clients = function (self, rpc_name, party, includ
 	end
 
 	local occupied_slots = party.occupied_slots
-	local peer_ids = dummy_table
+	local peer_ids = shared_scratchpad_table
 
 	table.clear(peer_ids)
 
@@ -188,7 +188,7 @@ NetworkTransmit.send_rpc_party = function (self, rpc_name, party, include_specta
 	end
 
 	local occupied_slots = party.occupied_slots
-	local peer_ids = dummy_table
+	local peer_ids = shared_scratchpad_table
 
 	table.clear(peer_ids)
 
@@ -237,7 +237,7 @@ NetworkTransmit.send_rpc_side_clients = function (self, rpc_name, side, include_
 	end
 
 	local player_units = side.PLAYER_UNITS
-	local peer_ids = dummy_table
+	local peer_ids = shared_scratchpad_table
 
 	table.clear(peer_ids)
 
@@ -332,7 +332,7 @@ NetworkTransmit.send_rpc_side_clients_except = function (self, rpc_name, side, i
 	end
 
 	local player_units = side.PLAYER_UNITS
-	local peer_ids = dummy_table
+	local peer_ids = shared_scratchpad_table
 
 	table.clear(peer_ids)
 

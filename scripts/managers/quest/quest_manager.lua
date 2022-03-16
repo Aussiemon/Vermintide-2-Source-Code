@@ -131,12 +131,26 @@ QuestManager.update = function (self, dt, t)
 		if poll_completed then
 			local rewards = backend_interface_quests:get_quest_rewards(reward_poll_id)
 			local quest_key = rewards.quest_key
-			local stat_names = QuestSettings.stat_mappings[quest_key]
 
-			for i = 1, #stat_names, 1 do
-				local stat_name = stat_names[i]
+			if type(quest_key) == "string" then
+				local stat_names = QuestSettings.stat_mappings[quest_key]
 
-				statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
+				for i = 1, #stat_names, 1 do
+					local stat_name = stat_names[i]
+
+					statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
+				end
+			else
+				for i = 1, #quest_key, 1 do
+					local quest_key = quest_key[i]
+					local stat_names = QuestSettings.stat_mappings[quest_key]
+
+					for i = 1, #stat_names, 1 do
+						local stat_name = stat_names[i]
+
+						statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
+					end
+				end
 			end
 
 			Managers.backend:commit()
@@ -414,6 +428,33 @@ QuestManager.claim_reward = function (self, quest_id)
 	return reward_poll_id
 end
 
+QuestManager.claim_multiple_quest_rewards = function (self, quest_ids)
+	if self._reward_poll_id or self._refresh_poll_id then
+		return nil, "Polling in progress."
+	end
+
+	local backend_interface_quests = self._backend_interface_quests
+	local claimable_quest_keys = {}
+
+	for i = 1, #quest_ids, 1 do
+		local quest_id = quest_ids[i]
+		local quest_key = backend_interface_quests:get_quest_key(quest_id)
+
+		if quest_key then
+			claimable_quest_keys[#claimable_quest_keys + 1] = quest_key
+		end
+	end
+
+	if table.is_empty(claimable_quest_keys) then
+		return nil, "Unable to find any of the quests"
+	end
+
+	local reward_poll_id = backend_interface_quests:claim_multiple_quest_rewards(claimable_quest_keys)
+	self._reward_poll_id = reward_poll_id
+
+	return reward_poll_id
+end
+
 QuestManager.polling_quest_reward = function (self)
 	return (self._reward_poll_id and true) or false
 end
@@ -437,6 +478,36 @@ QuestManager.can_claim_quest_rewards = function (self, quest_id)
 	end
 
 	return true
+end
+
+QuestManager.can_claim_multiple_quest_rewards = function (self, quest_ids)
+	local backend_interface_quests = self._backend_interface_quests
+	local claimable_quest_keys = {}
+
+	for i = 1, #quest_ids, 1 do
+		local quest_id = quest_ids[i]
+		local quest_key = backend_interface_quests:get_quest_key(quest_id)
+
+		if quest_key then
+			claimable_quest_keys[#claimable_quest_keys + 1] = quest_key
+		end
+	end
+
+	if table.is_empty(claimable_quest_keys) then
+		return nil, nil, "No quest currently active"
+	end
+
+	local can_claim, claimable_keys = backend_interface_quests:can_claim_multiple_quest_rewards(claimable_quest_keys)
+
+	if not can_claim then
+		return nil, nil, "Quest already claimed."
+	end
+
+	if self._reward_poll_id or self._refresh_poll_id then
+		return nil, nil, "Polling in progress."
+	end
+
+	return true, claimable_keys
 end
 
 QuestManager.time_until_new_daily_quest = function (self)

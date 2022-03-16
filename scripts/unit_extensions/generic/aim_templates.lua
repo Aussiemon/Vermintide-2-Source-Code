@@ -823,11 +823,11 @@ AimTemplates.stormfiend = {
 				use_head_constraint = true
 				local shoot_data = blackboard.shoot_data
 
-				if shoot_data.attack_started then
+				if shoot_data.aiming_started then
 					local start_position = shoot_data.aim_start_position:unbox()
 					local current_aim_position = nil
 
-					if shoot_data.is_firing then
+					if shoot_data.firing_initiated then
 						local end_position = nil
 
 						if blackboard.weapon_setup == "ratling_gun" then
@@ -836,7 +836,7 @@ AimTemplates.stormfiend = {
 							end_position = shoot_data.aim_end_position:unbox()
 						end
 
-						local firing_time = shoot_data.firing_time
+						local firing_time = shoot_data.stop_firing_t - shoot_data.start_firing_t
 						local remaining_t = shoot_data.stop_firing_t - t
 						local anim_align_lerp = math.min((firing_time - remaining_t) / firing_time, 1)
 						current_aim_position = Vector3.lerp(start_position, end_position, anim_align_lerp)

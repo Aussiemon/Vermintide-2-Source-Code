@@ -413,27 +413,101 @@ local function create_dynamic_portait_widget()
 					content_check_function = function (content)
 						return true
 					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "ammo_indicator",
+					texture_id = "numeric_ui_ammo_indicator",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						local ammo_progress = content.ammo_percent
+						local should_hide = ammo_progress and ((ammo_progress > 0 and ammo_progress <= 0.33) or ammo_progress <= 0)
+
+						return Application.user_setting("numeric_ui") and content.has_ranged_weapon and not should_hide
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "ability_cooldown_indicator",
+					texture_id = "ability_cooldown_indicator",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and content.on_cooldown
+					end
+				},
+				{
+					style_id = "ammo_count",
+					pass_type = "text",
+					text_id = "ammo_count",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and content.has_ranged_weapon
+					end
+				},
+				{
+					style_id = "ammo_count_shadow",
+					pass_type = "text",
+					text_id = "ammo_count",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and content.has_ranged_weapon
+					end
+				},
+				{
+					style_id = "ability_cooldown",
+					pass_type = "text",
+					text_id = "ability_cooldown",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and content.on_cooldown
+					end
+				},
+				{
+					style_id = "ability_cooldown_shadow",
+					pass_type = "text",
+					text_id = "ability_cooldown",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and content.on_cooldown
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "brush_stroke",
+					texture_id = "brush_stroke",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui")
+					end
 				}
 			}
 		},
 		content = {
-			respawn_timer = 0,
-			ammo_indicator_empty = "unit_frame_ammo_empty",
+			talk_indicator_highlight = "voip_wave",
+			ability_cooldown_indicator = "numeric_ui_ultimatecd_icon",
 			display_portrait_icon = false,
 			state = "hidden",
-			last_counts = 4,
+			brush_stroke = "numeric_ui_brush_stroke",
 			portrait_icon = "status_icon_needs_assist",
-			talk_indicator_highlight = "voip_wave",
+			can_use_ability = false,
 			total_countdown_time = 0,
+			ammo_indicator_empty = "unit_frame_ammo_empty",
 			respawn_countdown_text = "",
-			total_fadeout_time = 0.66,
 			connecting_icon = "matchmaking_connecting_icon",
 			talk_indicator_highlight_glow = "voip_wave_glow",
+			respawn_timer = 0,
+			on_cooldown = false,
+			last_counts = 4,
 			talk_indicator_glow = "voip_speaker_glow",
+			ability_cooldown = "",
 			connecting = false,
+			total_fadeout_time = 0.66,
 			bar_start_side = "left",
+			has_ranged_weapon = false,
 			display_portrait_overlay = false,
+			numeric_ui_ammo_indicator = "unit_frame_ammo",
 			talk_indicator = "voip_speaker",
+			ammo_count = "",
 			ammo_indicator = "unit_frame_ammo_low",
 			ammo_bar = {
 				bar_value = 1,
@@ -591,6 +665,114 @@ local function create_dynamic_portait_widget()
 					0,
 					0,
 					16
+				}
+			},
+			ability_cooldown_indicator = {
+				size = {
+					32,
+					32
+				},
+				offset = {
+					60,
+					((health_bar_offset[2] + health_bar_size[2] / 2) - 6 - 1 + 1) - 45,
+					5
+				},
+				color = {
+					255,
+					255,
+					255,
+					255
+				}
+			},
+			ammo_count = {
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				font_size = 18,
+				horizontal_alignment = "left",
+				text_color = {
+					255,
+					250,
+					250,
+					250
+				},
+				offset = {
+					health_bar_offset[1] + health_bar_size[1] + 50,
+					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5 - 1 + 1,
+					health_bar_offset[3] + 22
+				},
+				size = health_bar_size
+			},
+			ammo_count_shadow = {
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				font_size = 18,
+				horizontal_alignment = "left",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					health_bar_offset[1] + health_bar_size[1] + 50 + 1,
+					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5 - 1 + 1,
+					health_bar_offset[3] + 21
+				},
+				size = health_bar_size
+			},
+			ability_cooldown = {
+				vertical_alignment = "center",
+				font_size = 18,
+				horizontal_alignment = "left",
+				word_wrap = true,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					250,
+					250,
+					250
+				},
+				offset = {
+					health_bar_offset[1] + health_bar_size[1] + 50,
+					((health_bar_offset[2] + health_bar_size[2] / 2) - 6 - 1 + 1) - 32,
+					health_bar_offset[3] + 22
+				},
+				size = health_bar_size
+			},
+			ability_cooldown_shadow = {
+				vertical_alignment = "center",
+				font_size = 18,
+				horizontal_alignment = "left",
+				word_wrap = true,
+				font_type = "hell_shark_header",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					health_bar_offset[1] + health_bar_size[1] + 50 + 1,
+					((health_bar_offset[2] + health_bar_size[2] / 2) - 6 - 1 + 1) - 32,
+					health_bar_offset[3] + 21
+				},
+				size = health_bar_size
+			},
+			brush_stroke = {
+				size = {
+					210,
+					74
+				},
+				offset = {
+					-60,
+					-76,
+					0
+				},
+				color = {
+					255,
+					0,
+					0,
+					0
 				}
 			}
 		},
@@ -1183,6 +1365,24 @@ local function create_dynamic_health_widget()
 					content_check_function = function (content)
 						return content.display_portrait_icon
 					end
+				},
+				{
+					style_id = "numeric_health",
+					pass_type = "text",
+					text_id = "numeric_health",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui")
+					end
+				},
+				{
+					style_id = "numeric_health_shadow",
+					pass_type = "text",
+					text_id = "numeric_health",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui")
+					end
 				}
 			}
 		},
@@ -1190,6 +1390,7 @@ local function create_dynamic_health_widget()
 			grimoire_debuff_divider = "hud_teammate_hp_bar_grim_divider",
 			hp_bar_highlight = "hud_teammate_hp_bar_highlight",
 			bar_start_side = "left",
+			numeric_health = "-/-",
 			hp_bar_mask = "teammate_hp_bar_mask",
 			hp_bar = {
 				bar_value = 1,
@@ -1304,6 +1505,50 @@ local function create_dynamic_health_widget()
 					255,
 					255,
 					255
+				}
+			},
+			numeric_health = {
+				vertical_alignment = "center",
+				font_size = 12,
+				horizontal_alignment = "center",
+				word_wrap = true,
+				font_type = "arial",
+				text_color = {
+					255,
+					250,
+					250,
+					250
+				},
+				offset = {
+					health_bar_offset[1] - 4,
+					health_bar_offset[2] - 10,
+					health_bar_offset[3] + 22
+				},
+				size = {
+					100,
+					30
+				}
+			},
+			numeric_health_shadow = {
+				vertical_alignment = "center",
+				font_size = 12,
+				horizontal_alignment = "center",
+				word_wrap = true,
+				font_type = "arial",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					health_bar_offset[1] - 4 + 1,
+					health_bar_offset[2] - 10 + 1,
+					health_bar_offset[3] + 21
+				},
+				size = {
+					100,
+					30
 				}
 			}
 		},

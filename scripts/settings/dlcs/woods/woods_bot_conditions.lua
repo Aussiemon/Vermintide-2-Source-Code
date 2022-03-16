@@ -14,7 +14,7 @@ local wall_placement_bias = 1.5
 BTConditions.can_activate.we_thornsister = function (blackboard)
 	local self_unit = blackboard.unit
 	local talent_extension = ScriptUnit.has_extension(self_unit, "talent_system")
-	local is_smiter_ability = talent_extension and talent_extension:has_talent("kerillian_thorn_sister_explosive_wall")
+	local is_smiter_ability = talent_extension and talent_extension:has_talent("kerillian_thorn_sister_debuff_wall")
 
 	if not is_smiter_ability then
 		local threat, num_enemies = Managers.state.conflict:get_threat_value()

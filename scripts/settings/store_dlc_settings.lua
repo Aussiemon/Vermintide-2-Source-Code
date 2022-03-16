@@ -1,5 +1,401 @@
 StoreDlcSettings = {
 	{
+		information_text = "description_q1_collection_bundle",
+		name = "display_name_q1_collection_bundle",
+		slideshow_texture = "store_slideshow_bundle_q1_collection_bundle",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_collection_bundle",
+		optional_dlc_display_name = "display_name_q1_collection_bundle",
+		dlc_name = "q1_collection_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_collection_bundle",
+		optional_dlc_subtitle = "five_career_bundle_0001_subtitle",
+		slideshow_text = "description_q1_collection_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_q1_collection_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_dr_ranger_1001",
+			"ranger_hat_1005",
+			"skin_ww_waywatcher_1001",
+			"waywatcher_hat_1004",
+			"skin_es_knight_1001",
+			"knight_hat_1003",
+			"skin_bw_unchained_1001",
+			"unchained_hat_1003",
+			"skin_wh_captain_1001",
+			"witchhunter_hat_1003"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		},
+		layout_console = {
+			{
+				id = "dlc_logo",
+				type = "big_image",
+				settings = {
+					text = "",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_collection_bundle",
+					localize = false,
+					show_frame = true,
+					texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_collection_bundle",
+					image_size = {
+						800.4,
+						591.6
+					},
+					size = {
+						800.4,
+						591.6
+					}
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_dr_ranger_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "ranger_hat_1005",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_q1_ranger_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_q1_ranger_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_ww_waywatcher_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "waywatcher_hat_1004",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_q1_waywatcher_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_q1_waywatcher_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_es_knight_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "knight_hat_1003",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_q1_footknight_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_q1_footknight_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_bw_unchained_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "unchained_hat_1003",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_q1_unchained_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_q1_unchained_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_wh_captain_1001",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "witchhunter_hat_1003",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_q1_wh_captain_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_q1_wh_captain_bundle",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			}
+		}
+	},
+	{
+		information_text = "description_q1_ranger_bundle",
+		name = "display_name_q1_ranger_bundle",
+		slideshow_texture = "store_slideshow_bundle_q1_ranger_bundle",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_ranger_bundle",
+		optional_dlc_display_name = "display_name_q1_ranger_bundle",
+		dlc_name = "q1_ranger_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_ranger_bundle",
+		optional_dlc_subtitle = "dr_ranger",
+		slideshow_text = "description_q1_ranger_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_q1_ranger_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_dr_ranger_1001",
+			"ranger_hat_1005"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_q1_waywatcher_bundle",
+		name = "display_name_q1_waywatcher_bundle",
+		slideshow_texture = "store_slideshow_bundle_q1_waywatcher_bundle",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_waywatcher_bundle",
+		optional_dlc_display_name = "display_name_q1_waywatcher_bundle",
+		dlc_name = "q1_waywatcher_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_waywatcher_bundle",
+		optional_dlc_subtitle = "we_waywatcher",
+		slideshow_text = "description_q1_waywatcher_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_q1_waywatcher_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_ww_waywatcher_1001",
+			"waywatcher_hat_1004"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_q1_footknight_bundle",
+		name = "display_name_q1_footknight_bundle",
+		slideshow_texture = "store_slideshow_bundle_q1_footknight_bundle",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_footknight_bundle",
+		optional_dlc_display_name = "display_name_q1_footknight_bundle",
+		dlc_name = "q1_footknight_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_footknight_bundle",
+		optional_dlc_subtitle = "es_knight",
+		slideshow_text = "description_q1_footknight_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_q1_footknight_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_es_knight_1001",
+			"knight_hat_1003"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_q1_unchained_bundle",
+		name = "display_name_q1_unchained_bundle",
+		slideshow_texture = "store_slideshow_bundle_q1_unchained_bundle",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_unchained_bundle",
+		optional_dlc_display_name = "display_name_q1_unchained_bundle",
+		dlc_name = "q1_unchained_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_unchained_bundle",
+		optional_dlc_subtitle = "bw_unchained",
+		slideshow_text = "description_q1_unchained_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_q1_unchained_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_bw_unchained_1001",
+			"unchained_hat_1003"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		information_text = "description_q1_wh_captain_bundle",
+		name = "display_name_q1_wh_captain_bundle",
+		slideshow_texture = "store_slideshow_bundle_q1_wh_captain_bundle",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_wh_captain_bundle",
+		optional_dlc_display_name = "display_name_q1_wh_captain_bundle",
+		dlc_name = "q1_wh_captain_bundle",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_wh_captain_bundle",
+		optional_dlc_subtitle = "wh_captain",
+		slideshow_text = "description_q1_wh_captain_bundle",
+		store_banner_texture_paths = "gui/1080p/single_textures/store_bundle/store_item_icon_q1_wh_captain_bundle",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_wh_captain_1001",
+			"witchhunter_hat_1003"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
 		name = "store_bless_title",
 		dlc_name = "bless",
 		show_in_slideshow = true,

@@ -193,8 +193,24 @@ GameModeTutorial.set_override_respawn_group = function (self, respawn_group_name
 	self._adventure_spawning:set_override_respawn_group(respawn_group_name, active)
 end
 
+GameModeTutorial.set_respawn_group_enabled = function (self, respawn_group_name, active)
+	self._adventure_spawning:set_respawn_group_enabled(respawn_group_name, active)
+end
+
+GameModeTutorial.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	self._adventure_spawning:set_respawn_gate_enabled(respawn_gate_unit, enabled)
+end
+
 GameModeTutorial.respawn_unit_spawned = function (self, unit)
 	self._adventure_spawning:respawn_unit_spawned(unit)
+end
+
+GameModeTutorial.get_respawn_handler = function (self)
+	return self._adventure_spawning:get_respawn_handler()
+end
+
+GameModeTutorial.respawn_gate_unit_spawned = function (self, unit)
+	self._adventure_spawning:respawn_gate_unit_spawned(unit)
 end
 
 GameModeTutorial.set_respawning_enabled = function (self, enabled)

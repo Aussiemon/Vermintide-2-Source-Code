@@ -108,7 +108,8 @@ GenericStatusExtension.init = function (self, extension_init_context, unit, exte
 	end
 
 	self._intoxication_level = 0
-	self.shade_stealth_counter = 0
+	self.stealth_counter = 0
+	self.noclip_counter = 0
 	self._incapacitated_outline_ids = {}
 	self._assisted_respawn_outline_id = -1
 	self._invisible_outline_id = -1
@@ -472,7 +473,7 @@ GenericStatusExtension._get_current_max_fatigue_points = function (self)
 		local item_data = slot_data.item_data
 		local item_template = slot_data.item_template or BackendUtils.get_item_template(item_data)
 		local max_fatigue_points = item_template.max_fatigue_points
-		max_fatigue_points = max_fatigue_points and self.buff_extension:apply_buffs_to_value(max_fatigue_points, "max_fatigue")
+		max_fatigue_points = max_fatigue_points and math.clamp(self.buff_extension:apply_buffs_to_value(max_fatigue_points, "max_fatigue"), 1, 100)
 
 		return max_fatigue_points
 	end
@@ -565,6 +566,18 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 	local player = self.player
 
 	if player then
+		local buff_extension = self.buff_extension
+		local all_blocks_parry_buff = "power_up_deus_block_procs_parry_exotic"
+		local all_blocks_parry = buff_extension:has_buff_type(all_blocks_parry_buff)
+		local is_timed_block = false
+		local t = Managers.time:time("game")
+
+		if self.timed_block and (t < self.timed_block or all_blocks_parry) then
+			buff_extension:trigger_procs("on_timed_block", attacking_unit)
+
+			is_timed_block = true
+		end
+
 		if not player.remote then
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local first_person_unit = first_person_extension:get_first_person_unit()
@@ -579,7 +592,11 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 			local weapon_template_name = equipment.wielded.template or equipment.wielded.temporary_template
 			local weapon_template = Weapons[weapon_template_name]
 
-			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
+			if is_timed_block then
+				first_person_extension:play_hud_sound_event("Play_player_parry_success", nil, false)
+			end
+
+			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier, is_timed_block)
 
 			local parry_reaction = "parry_hit_reaction"
 
@@ -611,7 +628,7 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 			blocking_unit = equipment.right_hand_wielded_unit_3p or equipment.left_hand_wielded_unit_3p
 
 			QuestSettings.handle_bastard_block(unit, attacking_unit, true)
-			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier)
+			self:add_fatigue_points(fatigue_type, attacking_unit, blocking_unit, fatigue_point_costs_multiplier, is_timed_block)
 			Unit.animation_event(unit, "parry_hit_reaction")
 		end
 
@@ -702,7 +719,7 @@ GenericStatusExtension.fatigued = function (self)
 	return (max_fatigue_points == 0 and true) or self.fatigue > max_fatigue - max_fatigue / max_fatigue_points
 end
 
-GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attacking_unit, blocking_weapon_unit, fatigue_point_costs_multiplier)
+GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attacking_unit, blocking_weapon_unit, fatigue_point_costs_multiplier, is_timed_block)
 	local buff_extension = self.buff_extension
 
 	if Development.parameter("disable_fatigue_system") then
@@ -714,13 +731,9 @@ GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attack
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 	local fatigue_cost = amount * max_fatigue / max_fatigue_points * (fatigue_point_costs_multiplier or 1)
-	local all_blocks_parry_buff = "power_up_deus_block_procs_parry_exotic"
-	local all_blocks_parry = buff_extension:has_buff_type(all_blocks_parry_buff)
 
-	if blocking_weapon_unit and self.timed_block and (t < self.timed_block or all_blocks_parry) then
+	if is_timed_block then
 		fatigue_cost = buff_extension:apply_buffs_to_value(fatigue_cost, "timed_block_cost")
-
-		buff_extension:trigger_procs("on_timed_block", attacking_unit, fatigue_type, blocking_weapon_unit)
 	end
 
 	if amount and fatigue_point_costs_multiplier and amount < 2 and fatigue_point_costs_multiplier < 1 and buff_extension:has_buff_perk("in_arc_block_cost_reduction") then
@@ -1074,7 +1087,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 		buff_extension:trigger_procs("on_knocked_down")
 
 		local local_player = Managers.player:local_player()
-		local local_player_unit = local_player.player_unit
+		local local_player_unit = local_player and local_player.player_unit
 
 		if local_player_unit then
 			local local_player_buff_extension = ScriptUnit.has_extension(local_player_unit, "buff_system")
@@ -2014,16 +2027,59 @@ GenericStatusExtension.has_blocked = function (self)
 	return self._has_blocked
 end
 
-GenericStatusExtension.add_shade_stealth_counter = function (self)
-	self.shade_stealth_counter = self.shade_stealth_counter + 1
+GenericStatusExtension.add_stealth_stacking = function (self)
+	if self.stealth_counter <= 0 then
+		self:set_invisible(true)
+	end
 
-	return self.shade_stealth_counter
+	self.stealth_counter = self.stealth_counter + 1
+	local buff_extension = self.buff_extension
+
+	if buff_extension then
+		buff_extension:trigger_procs("on_stealth_stacks_modified", self.stealth_counter)
+	end
+
+	return self.stealth_counter == 1
 end
 
-GenericStatusExtension.subtract_shade_stealth_counter = function (self)
-	self.shade_stealth_counter = math.max(self.shade_stealth_counter - 1, 0)
+GenericStatusExtension.remove_stealth_stacking = function (self)
+	self.stealth_counter = math.max(self.stealth_counter - 1, 0)
 
-	return self.shade_stealth_counter
+	if self.stealth_counter <= 0 then
+		self:set_invisible(false)
+	end
+
+	local buff_extension = self.buff_extension
+
+	if buff_extension then
+		buff_extension:trigger_procs("on_stealth_stacks_modified", self.stealth_counter)
+	end
+
+	return self.stealth_counter == 0
+end
+
+GenericStatusExtension.current_stealth_counter = function (self)
+	return self.stealth_counter
+end
+
+GenericStatusExtension.add_noclip_stacking = function (self)
+	if self.noclip_counter <= 0 then
+		self:set_noclip(true)
+	end
+
+	self.noclip_counter = self.noclip_counter + 1
+
+	return self.noclip_counter == 1
+end
+
+GenericStatusExtension.remove_noclip_stacking = function (self)
+	self.noclip_counter = math.max(self.noclip_counter - 1, 0)
+
+	if self.noclip_counter <= 0 then
+		self:set_noclip(false)
+	end
+
+	return self.noclip_counter == 0
 end
 
 GenericStatusExtension.reset_move_speed_multiplier = function (self)

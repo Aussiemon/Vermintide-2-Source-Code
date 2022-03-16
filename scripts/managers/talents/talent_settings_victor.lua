@@ -277,10 +277,11 @@ TalentBuffTemplates.witch_hunter = {
 			{
 				buff_to_add = "victor_zealot_invulnerability_on_lethal_damage_taken",
 				remove_on_proc = true,
-				max_stacks = 1,
+				proc_weight = 5,
 				buff_func = "victor_zealot_gain_invulnerability",
 				event = "on_damage_taken",
-				icon = "victor_zealot_passive_invulnerability"
+				icon = "victor_zealot_passive_invulnerability",
+				max_stacks = 1
 			}
 		}
 	},
@@ -366,7 +367,7 @@ TalentBuffTemplates.witch_hunter = {
 				icon = "victor_zealot_crit_count",
 				max_stack_data = {
 					buffs_to_add = {
-						"markus_mercenary_crit_count_buff"
+						"victor_zealot_crit_count_buff"
 					}
 				},
 				duration = math.huge

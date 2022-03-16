@@ -1,37 +1,37 @@
 local DEFAULT_BOSS_RANGE = {
 	{
-		max = 104,
+		max = 94,
 		min = 43
 	},
 	{
-		max = 90,
+		max = 80,
 		min = 37
 	},
 	{
-		max = 78,
+		max = 68,
 		min = 32
 	},
 	{
-		max = 68,
+		max = 58,
 		min = 28
 	}
 }
 local DEFAULT_RANGE = {
 	{
-		max = 59,
-		min = 28
-	},
-	{
-		max = 51,
-		min = 24
-	},
-	{
 		max = 44,
-		min = 21
+		min = 23
 	},
 	{
-		max = 38,
-		min = 18
+		max = 36,
+		min = 19
+	},
+	{
+		max = 29,
+		min = 16
+	},
+	{
+		max = 23,
+		min = 13
 	}
 }
 DeusSoftCurrencySettings = DeusSoftCurrencySettings or {

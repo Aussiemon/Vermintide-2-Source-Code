@@ -1,292 +1,293 @@
-local weapon_template = weapon_template or {}
-weapon_template.actions = {
-	action_one = {
-		default = {
-			is_spell = true,
-			alert_sound_range_hit = 2,
-			fire_at_gaze_setting = "tobii_fire_at_gaze_fireball",
-			fire_time = 0.27,
-			kind = "charged_projectile",
-			fire_sound_event_parameter = "drakegun_charge_fire",
-			charge_value = "light_attack",
-			aim_assist_max_ramp_multiplier = 0.8,
-			aim_assist_ramp_decay_delay = 0.3,
-			hit_effect = "fireball_impact",
-			apply_recoil = true,
-			overcharge_type = "fireball_basic",
-			alert_sound_range_fire = 12,
-			fire_sound_event = "player_combat_weapon_staff_fireball_fire",
-			fire_sound_on_husk = true,
-			speed = 7000,
-			aim_assist_ramp_multiplier = 0.4,
-			anim_event = "attack_shoot_fireball",
-			total_time = 0.6,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
+local weapon_template = {
+	actions = {
+		action_one = {
+			default = {
+				is_spell = true,
+				alert_sound_range_hit = 2,
+				fire_at_gaze_setting = "tobii_fire_at_gaze_fireball",
+				fire_time = 0.27,
+				kind = "charged_projectile",
+				fire_sound_event_parameter = "drakegun_charge_fire",
+				charge_value = "light_attack",
+				aim_assist_max_ramp_multiplier = 0.8,
+				aim_assist_ramp_decay_delay = 0.3,
+				hit_effect = "fireball_impact",
+				apply_recoil = true,
+				overcharge_type = "fireball_basic",
+				alert_sound_range_fire = 12,
+				fire_sound_event = "player_combat_weapon_staff_fireball_fire",
+				fire_sound_on_husk = true,
+				speed = 7000,
+				aim_assist_ramp_multiplier = 0.4,
+				anim_event = "attack_shoot_fireball",
+				total_time = 0.6,
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.4,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.75,
+						action = "action_one",
+						release_required = "action_one_hold",
+						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.6,
+						action = "action_two",
+						input = "action_two"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.4,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.75,
-					action = "action_one",
-					release_required = "action_one_hold",
-					input = "action_one"
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:clear_input_buffer()
+
+					return input_extension:reset_release_input()
+				end,
+				projectile_info = Projectiles.fireball,
+				impact_data = {
+					damage_profile = "staff_fireball"
 				},
-				{
-					sub_action = "default",
-					start_time = 0.6,
-					action = "action_two",
-					input = "action_two"
+				timed_data = {
+					life_time = 1.5,
+					aoe = ExplosionTemplates.fireball
 				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "weapon_reload",
-					input = "weapon_reload"
+				recoil_settings = {
+					horizontal_climb = 0,
+					restore_duration = 0.2,
+					vertical_climb = -1,
+					climb_duration = 0.2,
+					climb_function = math.easeInCubic,
+					restore_function = math.ease_out_quad
 				}
 			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:clear_input_buffer()
-
-				return input_extension:reset_release_input()
-			end,
-			projectile_info = Projectiles.fireball,
-			impact_data = {
-				damage_profile = "staff_fireball"
-			},
-			timed_data = {
-				life_time = 1.5,
-				aoe = ExplosionTemplates.fireball
-			},
-			recoil_settings = {
-				horizontal_climb = 0,
-				restore_duration = 0.2,
-				vertical_climb = -1,
-				climb_duration = 0.2,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
+			geiser_launch = {
+				damage_window_start = 0.1,
+				damage_window_end = 0,
+				fire_at_gaze_setting = "tobii_fire_at_gaze_geiser",
+				aoe_name = "conflag",
+				kind = "geiser",
+				particle_radius_variable = "spawn_cylinder",
+				damage_profile = "geiser",
+				anim_end_event = "attack_finished",
+				overcharge_type_heavy = "geiser_charged_2",
+				alert_enemies = true,
+				fire_sound_event_parameter = "drakegun_charge_fire",
+				fire_sound_on_husk = true,
+				fire_sound_event = "player_combat_weapon_staff_geiser_fire",
+				is_spell = true,
+				particle_effect = "fx/wpnfx_staff_geiser_fire",
+				overcharge_type = "geiser_charged",
+				alert_sound_range_fire = 12,
+				fire_time = 0,
+				apply_recoil = true,
+				speed = 1600,
+				anim_event = "attack_geiser_placed",
+				total_time = 1,
+				buff_data = {
+					{
+						start_time = 0,
+						external_multiplier = 0.75,
+						buff_name = "planted_fast_decrease_movement"
+					}
+				},
+				projectile_info = Projectiles.default,
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.4,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.6,
+						action = "action_one",
+						release_required = "action_two_hold",
+						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.4,
+						action = "action_two",
+						input = "action_two"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.2,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
+				},
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:reset_release_input()
+					input_extension:clear_input_buffer()
+				end,
+				recoil_settings = {
+					horizontal_climb = -1,
+					restore_duration = 0.3,
+					vertical_climb = 5,
+					climb_duration = 0.4,
+					climb_function = math.easeInCubic,
+					restore_function = math.ease_out_quad
+				}
 			}
 		},
-		geiser_launch = {
-			damage_window_start = 0.1,
-			damage_window_end = 0,
-			fire_at_gaze_setting = "tobii_fire_at_gaze_geiser",
-			aoe_name = "conflag",
-			kind = "geiser",
-			particle_radius_variable = "spawn_cylinder",
-			damage_profile = "geiser",
-			anim_end_event = "attack_finished",
-			overcharge_type_heavy = "geiser_charged_2",
-			alert_enemies = true,
-			fire_sound_event_parameter = "drakegun_charge_fire",
-			fire_sound_on_husk = true,
-			fire_sound_event = "player_combat_weapon_staff_geiser_fire",
-			is_spell = true,
-			particle_effect = "fx/wpnfx_staff_geiser_fire",
-			overcharge_type = "geiser_charged",
-			alert_sound_range_fire = 12,
-			fire_time = 0,
-			apply_recoil = true,
-			speed = 1600,
-			anim_event = "attack_geiser_placed",
-			total_time = 1,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.75,
-					buff_name = "planted_fast_decrease_movement"
-				}
-			},
-			projectile_info = Projectiles.default,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_wield",
-					input = "action_wield"
+		action_two = {
+			default = {
+				charge_sound_stop_event = "player_combat_weapon_staff_charge_down",
+				scale_chain_window_by_charge_time_buff = true,
+				charge_ready_sound_event = "hud_gameplay_stance_deactivate",
+				min_radius = 0.75,
+				kind = "geiser_targeting",
+				debug_draw = false,
+				scale_anim_by_charge_time_buff = false,
+				crosshair_style = "dot",
+				attack_template = "wizard_staff",
+				overcharge_interval = 0.3,
+				charge_sound_switch = "projectile_charge_sound",
+				charge_sound_husk_stop_event = "stop_player_combat_weapon_staff_charge_husk",
+				angle = 0,
+				minimum_hold_time = 0.2,
+				particle_effect = "fx/wpnfx_staff_geiser_charge",
+				anim_end_event = "attack_geiser_end",
+				fire_time = 0.1,
+				speed = 15,
+				anim_event = "attack_geiser_start",
+				charge_sound_name = "player_combat_weapon_staff_charge",
+				height = 6,
+				fire_at_gaze_setting = "tobii_fire_at_gaze_geiser",
+				charge_sound_husk_name = "player_combat_weapon_staff_charge_husk",
+				gravity = -9.82,
+				overcharge_type = "charging",
+				charge_time = 1.8,
+				hold_input = "action_two_hold",
+				max_radius = 3.5,
+				anim_end_event_condition_func = function (unit, end_reason)
+					return end_reason ~= "new_interupting_action"
+				end,
+				total_time = math.huge,
+				buff_data = {
+					{
+						start_time = 0,
+						external_multiplier = 0.1,
+						buff_name = "planted_casting_long_decrease_movement"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.6,
-					action = "action_one",
-					release_required = "action_two_hold",
-					input = "action_one"
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0,
+						action = "action_wield",
+						input = "action_wield"
+					},
+					{
+						sub_action = "geiser_launch",
+						start_time = 0.2,
+						action = "action_one",
+						input = "action_one"
+					},
+					{
+						sub_action = "default",
+						start_time = 0.3,
+						action = "weapon_reload",
+						input = "weapon_reload"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.4,
-					action = "action_two",
-					input = "action_two"
-				},
-				{
-					sub_action = "default",
-					start_time = 0.2,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:reset_release_input()
-				input_extension:clear_input_buffer()
-			end,
-			recoil_settings = {
-				horizontal_climb = -1,
-				restore_duration = 0.3,
-				vertical_climb = 5,
-				climb_duration = 0.4,
-				climb_function = math.easeInCubic,
-				restore_function = math.ease_out_quad
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:reset_release_input()
+					input_extension:clear_input_buffer()
+				end
 			}
-		}
-	},
-	action_two = {
-		default = {
-			charge_sound_stop_event = "player_combat_weapon_staff_charge_down",
-			scale_chain_window_by_charge_time_buff = true,
-			charge_ready_sound_event = "hud_gameplay_stance_deactivate",
-			min_radius = 0.75,
-			kind = "geiser_targeting",
-			debug_draw = false,
-			scale_anim_by_charge_time_buff = false,
-			crosshair_style = "dot",
-			attack_template = "wizard_staff",
-			overcharge_interval = 0.3,
-			charge_sound_switch = "projectile_charge_sound",
-			charge_sound_husk_stop_event = "stop_player_combat_weapon_staff_charge_husk",
-			angle = 0,
-			minimum_hold_time = 0.2,
-			particle_effect = "fx/wpnfx_staff_geiser_charge",
-			anim_end_event = "attack_geiser_end",
-			fire_time = 0.1,
-			speed = 15,
-			anim_event = "attack_geiser_start",
-			charge_sound_name = "player_combat_weapon_staff_charge",
-			height = 6,
-			fire_at_gaze_setting = "tobii_fire_at_gaze_geiser",
-			charge_sound_husk_name = "player_combat_weapon_staff_charge_husk",
-			gravity = -9.82,
-			overcharge_type = "charging",
-			charge_time = 1.8,
-			hold_input = "action_two_hold",
-			max_radius = 3.5,
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.1,
-					buff_name = "planted_casting_long_decrease_movement"
-				}
-			},
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0,
-					action = "action_wield",
-					input = "action_wield"
+		},
+		weapon_reload = {
+			default = {
+				charge_sound_stop_event = "stop_player_combat_weapon_staff_cooldown",
+				hold_input = "weapon_reload_hold",
+				charge_effect_material_variable_name = "intensity",
+				kind = "charge",
+				charge_sound_parameter_name = "drakegun_charge_fire",
+				do_not_validate_with_hold = true,
+				charge_effect_material_name = "Fire",
+				minimum_hold_time = 0.5,
+				vent_overcharge = true,
+				anim_end_event = "attack_finished",
+				charge_sound_switch = "projectile_charge_sound",
+				charge_time = 3,
+				uninterruptible = true,
+				anim_event = "cooldown_start",
+				charge_sound_name = "player_combat_weapon_staff_cooldown",
+				anim_end_event_condition_func = function (unit, end_reason)
+					return end_reason ~= "new_interupting_action"
+				end,
+				total_time = math.huge,
+				buff_data = {
+					{
+						start_time = 0,
+						external_multiplier = 0.2,
+						buff_name = "planted_fast_decrease_movement",
+						end_time = math.huge
+					}
 				},
-				{
-					sub_action = "geiser_launch",
-					start_time = 0.2,
-					action = "action_one",
-					input = "action_one"
+				enter_function = function (attacker_unit, input_extension)
+					input_extension:reset_release_input()
+					input_extension:clear_input_buffer()
+				end,
+				allowed_chain_actions = {
+					{
+						sub_action = "default",
+						start_time = 0.2,
+						action = "action_wield",
+						input = "action_wield"
+					}
 				},
-				{
-					sub_action = "default",
-					start_time = 0.3,
-					action = "weapon_reload",
-					input = "weapon_reload"
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:reset_release_input()
-				input_extension:clear_input_buffer()
-			end
-		}
-	},
-	weapon_reload = {
-		default = {
-			charge_sound_stop_event = "stop_player_combat_weapon_staff_cooldown",
-			hold_input = "weapon_reload_hold",
-			charge_effect_material_variable_name = "intensity",
-			kind = "charge",
-			charge_sound_parameter_name = "drakegun_charge_fire",
-			do_not_validate_with_hold = true,
-			charge_effect_material_name = "Fire",
-			minimum_hold_time = 0.5,
-			vent_overcharge = true,
-			anim_end_event = "attack_finished",
-			charge_sound_switch = "projectile_charge_sound",
-			charge_time = 3,
-			uninterruptible = true,
-			anim_event = "cooldown_start",
-			charge_sound_name = "player_combat_weapon_staff_cooldown",
-			anim_end_event_condition_func = function (unit, end_reason)
-				return end_reason ~= "new_interupting_action"
-			end,
-			total_time = math.huge,
-			buff_data = {
-				{
-					start_time = 0,
-					external_multiplier = 0.2,
-					buff_name = "planted_fast_decrease_movement",
-					end_time = math.huge
-				}
-			},
-			enter_function = function (attacker_unit, input_extension)
-				input_extension:reset_release_input()
-				input_extension:clear_input_buffer()
-			end,
-			allowed_chain_actions = {
-				{
-					sub_action = "default",
-					start_time = 0.2,
-					action = "action_wield",
-					input = "action_wield"
-				}
-			},
-			condition_func = function (action_user, input_extension)
-				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
+				condition_func = function (action_user, input_extension)
+					local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension:get_overcharge_value() ~= 0
-			end,
-			chain_condition_func = function (action_user, input_extension)
-				local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
+					return overcharge_extension:get_overcharge_value() ~= 0
+				end,
+				chain_condition_func = function (action_user, input_extension)
+					local overcharge_extension = ScriptUnit.extension(action_user, "overcharge_system")
 
-				return overcharge_extension:get_overcharge_value() ~= 0
-			end
-		}
+					return overcharge_extension:get_overcharge_value() ~= 0
+				end
+			}
+		},
+		action_inspect = ActionTemplates.action_inspect,
+		action_wield = ActionTemplates.wield
 	},
-	action_inspect = ActionTemplates.action_inspect,
-	action_wield = ActionTemplates.wield
-}
-weapon_template.overcharge_data = {
-	explosion_template = "overcharge_explosion_brw",
-	overcharge_threshold = 10,
-	hit_overcharge_threshold_sound = "ui_special_attack_ready",
-	time_until_overcharge_decreases = 0.5,
-	overcharge_value_decrease_rate = 1
-}
-weapon_template.attack_meta_data = {
-	aim_at_node = "j_head",
-	obstruction_fuzzyness_range_charged = 3.5,
-	charged_attack_action_name = "geiser_launch",
-	can_charge_shot = true,
-	charge_when_outside_max_range_charged = true,
-	minimum_charge_time = 1,
-	max_range = 50,
-	aim_at_node_charged = "j_spine1",
-	max_range_charged = 18,
-	ignore_enemies_for_obstruction_charged = true,
-	charge_when_obstructed = true,
-	ignore_enemies_for_obstruction = false,
-	effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special),
-	effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Shielded)
+	overcharge_data = {
+		explosion_template = "overcharge_explosion_brw",
+		overcharge_threshold = 10,
+		hit_overcharge_threshold_sound = "ui_special_attack_ready",
+		time_until_overcharge_decreases = 0.5,
+		overcharge_value_decrease_rate = 1
+	},
+	attack_meta_data = {
+		aim_at_node = "j_head",
+		obstruction_fuzzyness_range_charged = 3.5,
+		charged_attack_action_name = "geiser_launch",
+		can_charge_shot = true,
+		charge_when_outside_max_range_charged = true,
+		minimum_charge_time = 1,
+		max_range = 50,
+		aim_at_node_charged = "j_spine1",
+		max_range_charged = 18,
+		ignore_enemies_for_obstruction_charged = true,
+		charge_when_obstructed = true,
+		ignore_enemies_for_obstruction = false,
+		effective_against = bit.bor(BreedCategory.Berserker, BreedCategory.Special),
+		effective_against_charged = bit.bor(BreedCategory.Infantry, BreedCategory.Berserker, BreedCategory.Armored, BreedCategory.Shielded)
+	}
 }
 local action = weapon_template.actions.action_one.default
 weapon_template.default_loaded_projectile_settings = {
@@ -329,6 +330,22 @@ weapon_template.aim_assist_settings = {
 		skaven_storm_vermin = 1,
 		skaven_clan_rat = 1,
 		skaven_slave = 1
+	}
+}
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 3,
+		[DamageTypes.CLEAVE] = 1,
+		[DamageTypes.SPEED] = 3,
+		[DamageTypes.STAGGER] = 2,
+		[DamageTypes.DAMAGE] = 4
+	},
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 2,
+		[DamageTypes.CLEAVE] = 7,
+		[DamageTypes.SPEED] = 3,
+		[DamageTypes.STAGGER] = 6,
+		[DamageTypes.DAMAGE] = 1
 	}
 }
 weapon_template.tooltip_keywords = {

@@ -4842,7 +4842,7 @@ SettingsWidgetTypeTemplate = {
 					content.active = true
 					list_style.active = true
 
-					if Managers.input:is_device_active("gamepad") then
+					if not Managers.input:is_device_active("mouse") then
 						local current_selection = content.current_selection
 
 						if current_selection then

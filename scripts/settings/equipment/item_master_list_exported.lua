@@ -3355,7 +3355,7 @@ ItemMasterList.crafting_material_weapon_skin_tool = {
 }
 ItemMasterList.bw_gate_0000 = {
 	description = "description_bw_gate_0001",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_bw_gate_0001",
 	template = "bw_gates",
 	inventory_icon = "icon_hat_witchhunter_01",
@@ -3953,7 +3953,7 @@ ItemMasterList.bw_gate_0008 = {
 }
 ItemMasterList.dr_helmet_0000 = {
 	description = "description_dr_helmet_0001",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_dr_helmet_0001",
 	template = "dr_helmets_no_ear",
 	inventory_icon = "icon_hat_witchhunter_01",
@@ -4728,7 +4728,7 @@ ItemMasterList.dr_slayer_hair_0002 = {
 }
 ItemMasterList.es_hat_0000 = {
 	description = "description_es_hat_0001",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_es_hat_0001",
 	template = "es_hats",
 	inventory_icon = "icon_hat_witchhunter_01",
@@ -5296,7 +5296,7 @@ ItemMasterList.es_helmet_0003 = {
 }
 ItemMasterList.wh_hat_0000 = {
 	description = "description_wh_hat_0001",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_wh_hat_0001",
 	template = "wh_hats",
 	inventory_icon = "icon_hat_witchhunter_01",
@@ -5890,7 +5890,7 @@ ItemMasterList.wh_hat_0009 = {
 }
 ItemMasterList.ww_hood_0000 = {
 	description = "description_ww_hood_0001",
-	rarity = "default",
+	rarity = "plentiful",
 	display_name = "display_name_ww_hood_0001",
 	template = "ww_hoods",
 	inventory_icon = "icon_hat_witchhunter_01",

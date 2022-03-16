@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 local settings = DLCSettings.bless
 local on_damage_taken_hit_unit = 1
@@ -90,11 +91,11 @@ settings.buff_templates = {
 				update_frequency = 0.1,
 				perk = buff_perks.no_ranged_knockback,
 				stagger_impact = {
-					2,
-					0,
-					0,
-					0,
-					0
+					stagger_types.medium,
+					stagger_types.none,
+					stagger_types.none,
+					stagger_types.none,
+					stagger_types.none
 				},
 				no_clip_filter = {
 					true,
@@ -117,6 +118,7 @@ settings.buff_templates = {
 				death_flow_event = "burn_death",
 				remove_buff_func = "remove_dot_damage",
 				apply_buff_func = "start_dot_damage",
+				update_start_delay = 0.7,
 				time_between_dot_damages = 0.7,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",

@@ -81,6 +81,9 @@ HeroWindowLoadoutConsole.create_ui_elements = function (self, params, offset)
 	self._menu_input_description = MenuInputDescriptionUI:new(nil, self.ui_top_renderer, input_service, 5, gui_layer, generic_input_actions.default, true)
 
 	self._menu_input_description:set_input_description(nil)
+
+	widgets_by_name.loadout_grid.content.profile_index = self.params.profile_index
+	widgets_by_name.loadout_grid.content.career_index = self.params.career_index
 end
 
 HeroWindowLoadoutConsole.on_exit = function (self, params)
@@ -126,15 +129,18 @@ end
 HeroWindowLoadoutConsole._update_input_description = function (self)
 	local params = self.params
 	local hero_statistics_active = self.params.hero_statistics_active
+	local input_desc = "default"
 
-	if hero_statistics_active ~= self._hero_statistics_active then
-		self._hero_statistics_active = hero_statistics_active
+	if hero_statistics_active then
+		input_desc = "details"
+	elseif not self:_is_selected_item_customizable() then
+		input_desc = "default_no_customization"
+	end
 
-		if hero_statistics_active then
-			self._menu_input_description:change_generic_actions(generic_input_actions.details)
-		else
-			self._menu_input_description:change_generic_actions(generic_input_actions.default)
-		end
+	if self._current_input_desc ~= input_desc then
+		self._menu_input_description:change_generic_actions(generic_input_actions[input_desc])
+
+		self._current_input_desc = input_desc
 	end
 end
 
@@ -167,9 +173,9 @@ HeroWindowLoadoutConsole._is_button_pressed = function (self, widget)
 end
 
 HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 
@@ -207,7 +213,16 @@ HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	end
 
 	if input_service:get("confirm", true) then
+		self:_play_sound("play_gui_equipment_selection_click")
 		parent:set_layout_by_name("equipment_selection")
+	elseif input_service:get("refresh", true) and self:_is_selected_item_customizable() then
+		self:_play_sound("play_gui_equipment_selection_click")
+
+		local item = self:_get_selected_item()
+
+		if item then
+			self:_customize_item(item)
+		end
 	end
 end
 
@@ -226,6 +241,21 @@ HeroWindowLoadoutConsole._handle_input = function (self, dt, t)
 		self:_play_sound("play_gui_equipment_selection_click")
 		parent:set_layout_by_name("equipment_selection")
 	end
+
+	local customize_item_pressed = self:_is_customize_item_pressed()
+
+	if customize_item_pressed then
+		self:_play_sound("play_gui_equipment_selection_click")
+		self:_customize_item(customize_item_pressed)
+	end
+end
+
+HeroWindowLoadoutConsole._customize_item = function (self, item)
+	local item_data = item.data
+	local slot_type = item_data.slot_type
+	self.params.item_to_customize = item
+
+	self.parent:set_layout_by_name("item_customization")
 end
 
 HeroWindowLoadoutConsole._update_selected_loadout_slot_index = function (self)
@@ -398,6 +428,63 @@ HeroWindowLoadoutConsole._is_equipment_slot_right_clicked = function (self)
 
 			if slot_hotspot.on_right_click then
 				return i
+			end
+		end
+	end
+end
+
+HeroWindowLoadoutConsole._is_customize_item_pressed = function (self)
+	local widget = self._widgets_by_name.loadout_grid
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "customize_hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+
+			if slot_hotspot.on_pressed then
+				return content["item" .. name_sufix]
+			end
+		end
+	end
+end
+
+HeroWindowLoadoutConsole._is_selected_item_customizable = function (self)
+	local widget = self._widgets_by_name.loadout_grid
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+
+			if slot_hotspot.is_selected then
+				return not content["item" .. name_sufix .. "_disabled"]
+			end
+		end
+	end
+end
+
+HeroWindowLoadoutConsole._get_selected_item = function (self)
+	local widget = self._widgets_by_name.loadout_grid
+	local content = widget.content
+	local rows = content.rows
+	local columns = content.columns
+
+	for i = 1, rows, 1 do
+		for k = 1, columns, 1 do
+			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
+			local hotspot_name = "hotspot" .. name_sufix
+			local slot_hotspot = content[hotspot_name]
+
+			if slot_hotspot.is_selected then
+				return content["item" .. name_sufix]
 			end
 		end
 	end

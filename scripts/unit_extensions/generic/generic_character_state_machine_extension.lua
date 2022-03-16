@@ -16,6 +16,7 @@ require("scripts/unit_extensions/default_player_unit/states/player_character_sta
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_pounced_down")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_standing")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_inspecting")
+require("scripts/unit_extensions/default_player_unit/states/player_character_state_emote")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_walking")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_dodging")
 require("scripts/unit_extensions/default_player_unit/states/player_character_state_lunging")

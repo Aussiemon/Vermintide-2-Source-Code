@@ -1,4 +1,4 @@
-local credits = require("scripts/settings/credits")
+local credits = local_require("scripts/settings/credits")
 local definitions = local_require("scripts/ui/views/credits_view_definitions")
 local colors = {
 	header = Colors.color_definitions.credits_header,
@@ -22,7 +22,10 @@ CreditsView.init = function (self, ingame_ui_context)
 	input_manager:map_device_to_service("credits_view", "keyboard")
 	input_manager:map_device_to_service("credits_view", "mouse")
 	input_manager:map_device_to_service("credits_view", "gamepad")
+	self:_create_ui_elements()
+end
 
+CreditsView._create_ui_elements = function (self)
 	self._num_credits = #credits.entries
 	self._current_offset = 0
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
@@ -100,19 +103,19 @@ CreditsView.update = function (self, dt)
 		if entry.type == "header" then
 			style.text.text_color = colors.header
 			style.text.font_size = font_sizes.normal
-			current_offset = current_offset - 84
+			current_offset = current_offset - 84 - 5
 		elseif entry.type == "title" then
 			style.text.text_color = colors.title
 			style.text.font_size = font_sizes.normal
-			current_offset = current_offset - 64
+			current_offset = current_offset - 64 - 5
 		elseif entry.type == "legal" then
 			style.text.text_color = colors.normal
 			style.text.font_size = font_sizes.legal
-			current_offset = current_offset - 15
+			current_offset = current_offset - 15 - 5
 		else
 			style.text.text_color = colors.normal
 			style.text.font_size = font_sizes.normal
-			current_offset = current_offset - 30
+			current_offset = current_offset - 30 - 5
 		end
 
 		if current_offset < -84 then

@@ -881,8 +881,11 @@ settings.death_reactions = {
 	"scripts/settings/dlcs/morris/morris_death_reactions"
 }
 settings.dot_type_lookup = {
+	we_deus_01_dot_fast = "burning_dot",
+	burning_magma_dot = "burning_dot",
 	we_deus_01_dot = "burning_dot",
-	burning_magma_dot = "burning_dot"
+	we_deus_01_dot_special_charged = "burning_dot",
+	we_deus_01_dot_charged = "burning_dot"
 }
 settings.infinite_burn_dot_lookup = {
 	burning_magma_dot = "burning_magma_dot_infinite"

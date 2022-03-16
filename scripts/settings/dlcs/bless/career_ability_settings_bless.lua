@@ -21,6 +21,9 @@ PassiveAbilitySettings.wh_priest = {
 		"victor_priest_ability_cooldown_on_hit",
 		"victor_priest_ability_cooldown_on_damage_taken"
 	},
+	husk_buffs = {
+		"victor_priest_curse_resistance"
+	},
 	perks = {
 		{
 			display_name = "career_passive_name_wh_priest_a",

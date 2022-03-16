@@ -2,6 +2,7 @@ RespawnHandler = class(RespawnHandler)
 local RESPAWN_DISTANCE = 70
 local END_OF_LEVEL_BUFFER = 35
 local RESPAWN_TIME = 30
+local RESPAWN_MOVE_TIME = 10
 local RPCS = {
 	"rpc_to_client_respawn_player",
 	"rpc_respawn_confirmed"
@@ -10,10 +11,18 @@ local RPCS = {
 RespawnHandler.init = function (self, profile_synchronizer)
 	self._profile_synchronizer = profile_synchronizer
 	self._respawn_units = {}
+	self._respawn_gate_units = {}
+	self._respawn_gate_units_n = 0
 	self._respawner_groups = {}
+	self._disabled_respawn_groups = {}
 	self._active_overridden_units = {}
+	self._active_overrides = {}
 	self._delayed_respawn_queue = {}
 	self._world = Managers.world:world("level_world")
+	self._id = 0
+	self._path_break_points = {}
+	self._boss_door_dist_lookup = {}
+	self._next_move_players_t = 0
 end
 
 RespawnHandler.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -31,6 +40,14 @@ RespawnHandler.unregister_rpcs = function (self)
 end
 
 RespawnHandler.set_respawn_unit_available = function (self, unit)
+	local respawn_data = self:find_respawn_data_from_unit(unit)
+
+	if respawn_data then
+		respawn_data.available = true
+	end
+end
+
+RespawnHandler.find_respawn_data_from_unit = function (self, unit)
 	local respawn_units = self._respawn_units
 	local num_respawn_units = #respawn_units
 
@@ -38,11 +55,11 @@ RespawnHandler.set_respawn_unit_available = function (self, unit)
 		local respawn_data = respawn_units[i]
 
 		if unit == respawn_data.unit then
-			respawn_data.available = true
-
-			break
+			return respawn_data
 		end
 	end
+
+	return nil
 end
 
 local function comparator(a, b)
@@ -67,14 +84,49 @@ RespawnHandler.set_override_respawn_group = function (self, group_id, enable)
 	print("Override Player Respawning", group_id, enable)
 
 	local active_overridden = self._active_overridden_units
+	local active_overrides = self._active_overrides
 
 	if enable then
+		active_overrides[group_id] = true
+
 		for unit, respawn_data in pairs(group_data) do
 			active_overridden[unit] = respawn_data
 		end
 	else
+		active_overrides[group_id] = nil
+
 		for unit, respawn_data in pairs(group_data) do
 			active_overridden[unit] = nil
+		end
+	end
+end
+
+RespawnHandler.set_respawn_group_enabled = function (self, respawn_group_name, enabled)
+	print("Setting player respawning group enabled", respawn_group_name, enabled)
+
+	local disabled_respawn_groups = self._disabled_respawn_groups
+
+	if not enabled then
+		disabled_respawn_groups[respawn_group_name] = true
+	else
+		disabled_respawn_groups[respawn_group_name] = nil
+	end
+end
+
+RespawnHandler.set_respawn_gate_enabled = function (self, respawn_gate_unit, enabled)
+	print("Setting player respawning gate enabled", enabled)
+
+	local respawn_gate_units = self._respawn_gate_units
+
+	for i = 1, self._respawn_gate_units_n, 1 do
+		local gate = respawn_gate_units[i]
+
+		if gate.unit == respawn_gate_unit then
+			print("gate at travel distance set enabled", gate.distance_through_level, enabled)
+
+			gate.enabled = enabled
+
+			return
 		end
 	end
 end
@@ -82,10 +134,13 @@ end
 RespawnHandler.respawn_unit_spawned = function (self, unit)
 	local distance_through_level = Unit.get_data(unit, "distance_through_level")
 	local group_id = Unit.get_data(unit, "respawn_group_id")
+	self._id = self._id + 1
 	local respawn_data = {
 		available = true,
+		id = self._id,
 		unit = unit,
-		distance_through_level = distance_through_level
+		distance_through_level = distance_through_level,
+		group_id = group_id
 	}
 	self._respawn_units[#self._respawn_units + 1] = respawn_data
 
@@ -106,22 +161,18 @@ RespawnHandler.respawn_unit_spawned = function (self, unit)
 	end
 end
 
-RespawnHandler.debug_draw_respaners = function (self)
-	local up = Vector3(0, 0, 1)
-	local respawners = self._respawn_units
-	local unit_local_position = Unit.local_position
+RespawnHandler.respawn_gate_unit_spawned = function (self, unit)
+	local distance_through_level = Unit.get_data(unit, "distance_through_level")
+	local enabled = Unit.get_data(unit, "gate_enabled")
+	local gate_data = {
+		unit = unit,
+		distance_through_level = distance_through_level,
+		enabled = enabled
+	}
+	self._respawn_gate_units_n = self._respawn_gate_units_n + 1
+	self._respawn_gate_units[self._respawn_gate_units_n] = gate_data
 
-	for i = 1, #respawners, 1 do
-		local respawner = respawners[i]
-		local best_point, best_travel_dist, move_percent, best_sub_index, best_main_path = MainPathUtils.closest_pos_at_main_path(nil, unit_local_position(respawner.unit, 0))
-		local pos = unit_local_position(respawner.unit, 0) + up
-
-		QuickDrawerStay:sphere(pos, 0.53, Color(255, 200, 0))
-
-		local s = string.format("respawer %d, dist: %.1f, newdist: %.1f", i, respawner.distance_through_level, best_travel_dist)
-
-		Debug.world_sticky_text(pos, s, "yellow")
-	end
+	table.sort(self._respawn_gate_units, comparator)
 end
 
 RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_path_distances, total_main_path_length)
@@ -215,6 +266,7 @@ end
 RespawnHandler.server_update = function (self, dt, t, slots)
 	self._all_synced_checked = false
 	self._all_synced = false
+	local any_player_respawned = false
 
 	for i = 1, #slots, 1 do
 		local status = slots[i]
@@ -248,13 +300,12 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 
 		if is_dead and data.ready_for_respawn and status.peer_id and self:_check_all_synced() then
 			local data_respawn_unit = data.respawn_unit
-			local respawn_unit = self:get_respawn_unit()
 			local respawn_unit_to_use = nil
 
 			if data_respawn_unit and Unit.alive(data_respawn_unit) then
 				respawn_unit_to_use = data_respawn_unit
 			else
-				respawn_unit_to_use = respawn_unit
+				respawn_unit_to_use = self:find_best_respawn_point(true, false)
 			end
 
 			if respawn_unit_to_use then
@@ -274,7 +325,11 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 					local potion = data.consumables.slot_potion
 					local grenade = data.consumables.slot_grenade
 
-					self:_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items)
+					if data.spawn_state == "spawned" then
+						self:_delayed_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items)
+					else
+						self:_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items)
+					end
 				else
 					local respawn_unit_id = Managers.state.network:level_object_id(respawn_unit_to_use)
 					local network_consumables = SpawningHelper.netpack_consumables(data.consumables)
@@ -286,11 +341,9 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			end
 		elseif self._move_players and data.health_state == "respawn" and self:_check_all_synced() then
 			local current_respawn_unit = data.respawn_unit
-			local current_respawn_position = Unit.local_position(current_respawn_unit, 0)
-			local _, _, _, _, path_index = MainPathUtils.closest_pos_at_main_path(nil, current_respawn_position, nil)
-			local ahead_path_index = Managers.state.conflict.main_path_info.current_path_index
+			local current_respawn_data = self:find_respawn_data_from_unit(current_respawn_unit)
 
-			if path_index < ahead_path_index then
+			if not self:_is_respawn_reachable(current_respawn_data) or self._force_move then
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
 
@@ -299,7 +352,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 					local player_unit = player.player_unit
 					local player_unit_id = Managers.state.network:unit_game_object_id(player_unit)
 					local locomotion_extension = ScriptUnit.extension(player_unit, "locomotion_system")
-					local new_respawn_unit = self:get_respawn_unit()
+					local new_respawn_unit = self:find_best_respawn_point(true, false)
 					local position = Unit.local_position(new_respawn_unit, 0)
 					local rotation = Unit.local_rotation(new_respawn_unit, 0)
 
@@ -312,15 +365,26 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 				end
 			end
 		end
+
+		any_player_respawned = any_player_respawned or data.health_state == "respawn"
 	end
 
 	if self._move_players and self:_check_all_synced() then
 		self._move_players = false
+		self._force_move = false
+	elseif any_player_respawned and self._next_move_players_t < t then
+		self._next_move_players_t = t + RESPAWN_MOVE_TIME
+		self._move_players = true
 	end
 end
 
 RespawnHandler.set_move_dead_players_to_next_respawn = function (self, value)
 	self._move_players = value
+end
+
+RespawnHandler.queue_force_move_dead_players = function (self)
+	self._move_players = true
+	self._force_move = true
 end
 
 local BOSS_TERROR_EVENT_LOOKUP = {
@@ -330,122 +394,6 @@ local BOSS_TERROR_EVENT_LOOKUP = {
 	boss_event_minotaur = true,
 	boss_event_rat_ogre = true
 }
-
-RespawnHandler.get_respawn_unit = function (self, ignore_boss_doors)
-	local respawn_units = self._respawn_units
-	local active_overridden = self._active_overridden_units
-	local override_respawn_data = nil
-
-	if next(active_overridden) then
-		for unit, respawn_data in pairs(active_overridden) do
-			if respawn_data.available then
-				print("[RespawnHandler] Found available override unit")
-
-				override_respawn_data = respawn_data
-
-				break
-			end
-		end
-
-		if not override_respawn_data then
-			print("[RespawnHandler] There were active respawn override units but none was available. Players might spawn outside the event.")
-		end
-	end
-
-	local conflict = Managers.state.conflict
-	local level_analysis = conflict.level_analysis
-	local main_paths = level_analysis:get_main_paths()
-	local ahead_position = POSITION_LOOKUP[conflict.main_path_info.ahead_unit]
-	local ahead_main_path_index = conflict.main_path_info.current_path_index
-
-	if not ahead_position then
-		return
-	end
-
-	local _, ahead_unit_travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, ahead_position)
-	local total_path_dist = MainPathUtils.total_path_dist()
-	local ahead_pos = MainPathUtils.point_on_mainpath(main_paths, ahead_unit_travel_dist + RESPAWN_DISTANCE)
-
-	if not ahead_pos then
-		print("respawner: far ahead not found, using spawner behind")
-
-		ahead_pos = MainPathUtils.point_on_mainpath(main_paths, total_path_dist - END_OF_LEVEL_BUFFER)
-
-		fassert(ahead_pos, "Cannot find point on mainpath to respawn cage")
-	end
-
-	local path_pos, wanted_respawn_travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, ahead_pos)
-	local door_system = Managers.state.entity:system("door_system")
-	local boss_door_units = door_system:get_boss_door_units()
-	local enemy_recycler = conflict.enemy_recycler
-	local current_terror_event = enemy_recycler.main_path_events[enemy_recycler.current_main_path_event_id]
-	local current_terror_event_type = current_terror_event and current_terror_event[3]
-	local has_upcoming_boss_terror_event = BOSS_TERROR_EVENT_LOOKUP[current_terror_event_type]
-	local current_terror_event_travel_dist = enemy_recycler.current_main_path_event_activation_dist
-	local boss_door_between_travel_dist = nil
-	local closest_boss_door_travel_dist = 0
-	local closest_door_dist = math.huge
-	local has_close_boss_door = nil
-
-	for i = 1, #boss_door_units, 1 do
-		local door_unit = boss_door_units[i]
-		local door_position = Unit.world_position(door_unit, 0)
-		local door_extension = ScriptUnit.extension(door_unit, "door_system")
-		local door_state = door_extension.current_state
-		local _, door_travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, door_position)
-		local dist_to_door = door_travel_dist - ahead_unit_travel_dist
-
-		if closest_door_dist > dist_to_door and dist_to_door >= 0 and ((door_state and door_state == "closed") or (has_upcoming_boss_terror_event and current_terror_event_travel_dist < door_travel_dist)) then
-			closest_door_dist = dist_to_door
-			closest_boss_door_travel_dist = door_travel_dist
-			has_close_boss_door = true
-		end
-	end
-
-	local num_spawners = #respawn_units
-	local greatest_distance = 0
-	local selected_unit_index = nil
-
-	for i = 1, num_spawners, 1 do
-		local respawn_data = respawn_units[i]
-
-		if respawn_data.available then
-			local distance_through_level = respawn_data.distance_through_level
-
-			if has_close_boss_door then
-				if wanted_respawn_travel_dist <= distance_through_level and distance_through_level < closest_boss_door_travel_dist then
-					selected_unit_index = i
-
-					break
-				elseif greatest_distance < distance_through_level and distance_through_level < closest_boss_door_travel_dist then
-					selected_unit_index = i
-					greatest_distance = distance_through_level
-				end
-			elseif wanted_respawn_travel_dist <= distance_through_level then
-				selected_unit_index = i
-
-				break
-			elseif greatest_distance < distance_through_level then
-				selected_unit_index = i
-				greatest_distance = distance_through_level
-			end
-		end
-	end
-
-	if not selected_unit_index then
-		return nil
-	end
-
-	local respawn_data = respawn_units[selected_unit_index]
-
-	if override_respawn_data and override_respawn_data.distance_through_level < respawn_data.distance_through_level then
-		respawn_data = override_respawn_data
-	end
-
-	respawn_data.available = false
-
-	return respawn_data.unit
-end
 
 RespawnHandler.destroy = function (self)
 	return
@@ -537,6 +485,205 @@ RespawnHandler._delayed_respawn_player = function (self, player, profile_index, 
 	}
 
 	table.insert(self._delayed_respawn_queue, respawn_entry)
+end
+
+RespawnHandler.is_respawn_enabled = function (self, respawn_point)
+	local active_overridden = self._active_overridden_units
+
+	if next(active_overridden) then
+		return active_overridden[respawn_point.unit]
+	end
+
+	return not self._disabled_respawn_groups[respawn_point.group_id]
+end
+
+RespawnHandler.is_spawn_group_override_active = function (self, group_id)
+	return self._active_overrides[group_id]
+end
+
+RespawnHandler.get_boss_door_dist = function (self, main_paths, door_unit)
+	local door_dist = self._boss_door_dist_lookup[door_unit]
+
+	if door_dist then
+		return door_dist
+	end
+
+	local door_position = Unit.world_position(door_unit, 0)
+	local _, door_travel_dist = MainPathUtils.closest_pos_at_main_path(main_paths, door_position)
+	self._boss_door_dist_lookup[door_unit] = door_travel_dist
+
+	return door_travel_dist
+end
+
+RespawnHandler.get_next_boss_door_dist = function (self, main_path_info, ahead_unit_travel_dist)
+	local main_paths = main_path_info.main_paths
+	local conflict = Managers.state.conflict
+	local enemy_recycler = conflict.enemy_recycler
+	local current_terror_event = enemy_recycler.main_path_events[enemy_recycler.current_main_path_event_id]
+	local current_terror_event_type = current_terror_event and current_terror_event[3]
+	local has_upcoming_boss_terror_event = BOSS_TERROR_EVENT_LOOKUP[current_terror_event_type]
+	local current_terror_event_travel_dist = enemy_recycler.current_main_path_event_activation_dist
+	local door_system = Managers.state.entity:system("door_system")
+	local boss_door_units = door_system:get_boss_door_units()
+	local closest_door_dist = math.huge
+	local closest_boss_door_travel_dist = math.huge
+	local closest_terror_door_dist = math.huge
+	local closest_terror_door_travel_dist = math.huge
+
+	for i = 1, #boss_door_units, 1 do
+		local door_unit = boss_door_units[i]
+		local door_travel_dist = self:get_boss_door_dist(main_paths, door_unit)
+		local dist_to_door = door_travel_dist - ahead_unit_travel_dist
+
+		if closest_door_dist > dist_to_door and dist_to_door >= 0 then
+			local door_extension = ScriptUnit.extension(door_unit, "door_system")
+			local door_state = door_extension.current_state
+
+			if door_state and door_state == "closed" then
+				closest_door_dist = dist_to_door
+				closest_boss_door_travel_dist = door_travel_dist
+			end
+		end
+
+		if has_upcoming_boss_terror_event then
+			local dist_to_terror_door = door_travel_dist - current_terror_event_travel_dist
+
+			if dist_to_terror_door >= 0 and dist_to_terror_door < closest_terror_door_dist then
+				closest_terror_door_dist = dist_to_door
+				closest_terror_door_travel_dist = door_travel_dist
+			end
+		end
+	end
+
+	return math.min(closest_boss_door_travel_dist, closest_terror_door_travel_dist)
+end
+
+RespawnHandler.get_next_respawn_gate_dist = function (self, ahead_unit_travel_dist)
+	local respawn_gate_units = self._respawn_gate_units
+
+	for i = 1, self._respawn_gate_units_n, 1 do
+		local gate = respawn_gate_units[i]
+
+		if gate.enabled and ahead_unit_travel_dist < gate.distance_through_level then
+			return gate.distance_through_level
+		end
+	end
+
+	return math.huge
+end
+
+RespawnHandler.get_main_path_segment_start = function (self, main_path_info)
+	local current_path_index = main_path_info.current_path_index
+	local current_path_segment = main_path_info.main_paths[current_path_index]
+	local current_path_nodes_dist = current_path_segment.travel_dist
+
+	return current_path_nodes_dist[1]
+end
+
+RespawnHandler.get_behind_unit_segment_start = function (self, main_path_info)
+	local behind_unit = main_path_info.behind_unit
+
+	if ALIVE[behind_unit] then
+		local behind_unit_position = Unit.local_position(behind_unit, 0)
+		local _, _, _, _, path_index = MainPathUtils.closest_pos_at_main_path(nil, behind_unit_position, nil)
+		local behind_path_segment = main_path_info.main_paths[path_index]
+		local behind_path_nodes_dist = behind_path_segment.travel_dist
+
+		return behind_path_nodes_dist[1]
+	end
+
+	return 0
+end
+
+RespawnHandler.get_respawn_dist_range = function (self, main_path_info, ahead_unit_travel_dist)
+	local min_dist = self:get_main_path_segment_start(main_path_info)
+	local max_dist = math.huge
+	local next_boss_door_dist = self:get_next_boss_door_dist(main_path_info, ahead_unit_travel_dist)
+	max_dist = math.min(max_dist, next_boss_door_dist)
+	local get_next_respawn_gate_dist = self:get_next_respawn_gate_dist(ahead_unit_travel_dist)
+	max_dist = math.min(max_dist, get_next_respawn_gate_dist)
+
+	return min_dist, max_dist
+end
+
+RespawnHandler._is_respawn_reachable = function (self, respawn_data)
+	local main_path_info = Managers.state.conflict.main_path_info
+	local min_dist = self:get_behind_unit_segment_start(main_path_info)
+	local respawn_unit_dist = respawn_data.distance_through_level
+
+	return min_dist < respawn_unit_dist
+end
+
+RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_all)
+	local main_path_info = Managers.state.conflict.main_path_info
+	local ahead_unit_travel_dist = main_path_info.ahead_travel_dist
+	local preferred_spawn_travel_dist = ahead_unit_travel_dist + RESPAWN_DISTANCE
+	local min_dist, max_dist = self:get_respawn_dist_range(main_path_info, ahead_unit_travel_dist)
+	local respawn_units = self._respawn_units
+	local override_respawn_units = self._active_overridden_units
+	local has_overrides = next(override_respawn_units) ~= nil
+	local disabled_respawn_groups = self._disabled_respawn_groups
+	local best_respawn = nil
+	local best_score = 0
+
+	for i = 1, #respawn_units, 1 do
+		local respawn_data = respawn_units[i]
+		local respawn_dist = respawn_data.distance_through_level
+		local score = 0
+
+		if respawn_data.available then
+			if override_respawn_units[respawn_data.unit] then
+				score = 3
+			elseif not disabled_respawn_groups[respawn_data.group_id] and respawn_dist <= max_dist then
+				if not has_overrides and preferred_spawn_travel_dist <= respawn_dist then
+					score = 3
+				elseif ahead_unit_travel_dist <= respawn_dist then
+					score = 2
+				elseif min_dist <= respawn_dist then
+					score = 1
+				end
+			end
+		end
+
+		if not best_respawn or best_score < score or (best_score == score and ((score < 3 and best_respawn.distance_through_level < respawn_dist and respawn_dist < preferred_spawn_travel_dist) or (score >= 3 and respawn_dist < best_respawn.distance_through_level))) then
+			best_score = score
+			best_respawn = respawn_data
+
+			if not evaluate_all and (score >= 3 or max_dist < respawn_dist) then
+				break
+			end
+		end
+	end
+
+	if best_respawn then
+		if reserve_best then
+			best_respawn.available = false
+		end
+
+		local best_respawn_unit = best_respawn.unit
+
+		if has_overrides and not override_respawn_units[best_respawn_unit] then
+			print("[RespawnHandler] Overrides active, but no respawn units available, falling back to noraml respawn point.")
+			print(string.format("[RespawnHandler] min_dist %.2f, max_dist %.2f, ahead_unit_travel_dist %.2f", min_dist, max_dist, ahead_unit_travel_dist))
+			print("[RespawnHandler] Active Override:")
+
+			for name in pairs(self._active_overrides) do
+				print(name)
+			end
+		end
+
+		if not evaluate_all then
+			print(string.format("[RespawnHandler] Picking spawn point at %.2f, params: min_dist %.2f, max_dist %.2f, ahead_unit_travel_dist %.2f", best_respawn.distance_through_level, min_dist, max_dist, ahead_unit_travel_dist))
+
+			local ahead_unit = main_path_info.ahead_unit
+
+			print("[RespawnHandler] Ahead player position", POSITION_LOOKUP[ahead_unit])
+		end
+
+		return best_respawn_unit
+	end
+
+	return nil
 end
 
 return

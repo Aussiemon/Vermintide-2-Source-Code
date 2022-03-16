@@ -60,6 +60,15 @@ SimpleHuskInventoryExtension.ammo_percentage = function (self)
 	end
 end
 
+SimpleHuskInventoryExtension.ammo_status = function (self)
+	if GameSession.game_object_exists(self._game, self._game_object_id) then
+		local current_ammo = GameSession.game_object_field(self._game, self._game_object_id, "current_ammo")
+		local max_ammo = GameSession.game_object_field(self._game, self._game_object_id, "max_ammo")
+
+		return current_ammo, max_ammo
+	end
+end
+
 SimpleHuskInventoryExtension.destroy = function (self)
 	if Managers.player.is_server then
 		for slot_name, slot_data in pairs(self._equipment.slots) do

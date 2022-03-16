@@ -333,7 +333,8 @@ DeusRunController.rpc_deus_set_initial_soft_currency = function (self, sender_ch
 	if not self._run_state:get_peer_initialized(sender) then
 		local progress = nil
 		local current_node_key = self._run_state:get_current_node_key()
-		local current_node = self._path_graph[current_node_key]
+		local path_graph = self:_get_graph_data()
+		local current_node = path_graph[current_node_key]
 
 		if current_node.node_type == "ingame" then
 			progress = current_node.run_progress
@@ -341,7 +342,7 @@ DeusRunController.rpc_deus_set_initial_soft_currency = function (self, sender_ch
 			local traversed_nodes = self._run_state:get_traversed_nodes()
 
 			for i = #traversed_nodes, 1, -1 do
-				local node = self._path_graph[traversed_nodes[i]]
+				local node = path_graph[traversed_nodes[i]]
 
 				if node.node_type == "ingame" then
 					progress = node.run_progress
@@ -466,7 +467,8 @@ DeusRunController.handle_level_won = function (self)
 
 	self._run_state:set_traversed_nodes(traversed_nodes)
 
-	local current_node = self._path_graph[current_node_key]
+	local path_graph = self:_get_graph_data()
+	local current_node = path_graph[current_node_key]
 
 	if current_node.curse then
 		local peers = self._network_handler:get_peers()
@@ -518,7 +520,7 @@ DeusRunController.get_unreachable_nodes = function (self)
 		reachable_nodes[traversed_node_key] = true
 	end
 
-	local graph_data = self._path_graph
+	local graph_data = self:_get_graph_data()
 
 	local function add_to_reachable_from(node_key)
 		local node = graph_data[node_key]
@@ -561,7 +563,7 @@ DeusRunController.get_completed_level_count = function (self)
 end
 
 DeusRunController.get_map_visibility = function (self)
-	local graph_data = self._path_graph
+	local graph_data = self:_get_graph_data()
 	local current_node_key = self._run_state:get_current_node_key()
 	local traversed_nodes = self._run_state:get_traversed_nodes() or {}
 	local level_data = {}
@@ -616,7 +618,8 @@ DeusRunController.get_end_of_level_rewards_arguments = function (self, game_won,
 	local own_peer_id = self._run_state:get_own_peer_id()
 	local soft_currency = self._run_state:get_player_soft_currency(own_peer_id, REAL_PLAYER_LOCAL_ID)
 	local current_node_key = self._run_state:get_current_node_key()
-	local current_node = self._path_graph[current_node_key]
+	local graph_data = self:_get_graph_data()
+	local current_node = graph_data[current_node_key]
 	local run_progress = current_node.run_progress
 	local difficulty = self._run_state:get_run_difficulty()
 	local loot_chest_name = loot_chest_rewards[difficulty][1]
@@ -960,7 +963,8 @@ DeusRunController.generate_random_power_ups = function (self, count, availabilit
 	extra_seed = extra_seed or "0"
 	local local_peer_id = self._run_state:get_own_peer_id()
 	local current_node_key = self._run_state:get_current_node_key()
-	local current_node = self._path_graph[current_node_key]
+	local graph_data = self:_get_graph_data()
+	local current_node = graph_data[current_node_key]
 	local node_power_up_seed = current_node.system_seeds.power_ups or 0
 	local power_up_seed = HashUtils.fnv32_hash(extra_seed .. "_" .. local_peer_id .. "_" .. node_power_up_seed)
 	local run_progress = current_node.run_progress
@@ -994,14 +998,16 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 		local new_power_ups_string = DeusPowerUpUtils.power_ups_to_string(new_power_ups)
 		local server_peer_id = self._run_state:get_server_peer_id()
 		local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
+		local granted_by_end_of_level_node_key = ""
 
-		RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string)
+		RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string, granted_by_end_of_level_node_key)
 	end
 end
 
 DeusRunController.try_grant_end_of_level_deus_power_up = function (self)
 	local current_node_key = self:get_current_node_key()
-	local current_node = self._path_graph[current_node_key]
+	local path_graph = self:_get_graph_data()
+	local current_node = path_graph[current_node_key]
 	local power_up_name = current_node.terror_event_power_up
 	local power_up_rarity = current_node.terror_event_power_up_rarity
 
@@ -1018,7 +1024,7 @@ DeusRunController.try_grant_end_of_level_deus_power_up = function (self)
 	end
 end
 
-DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, power_ups_string)
+DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, power_ups_string, granted_by_end_of_level_node_key)
 	local sender = CHANNEL_TO_PEER_ID[sender_channel_id]
 	local new_power_ups = DeusPowerUpUtils.string_to_power_ups(power_ups_string)
 	local profile_index, career_index = self._run_state:get_player_profile(sender, REAL_PLAYER_LOCAL_ID)
@@ -1048,7 +1054,8 @@ DeusRunController.generate_random_blessing_name = function (self)
 	local random_blessing_name = nil
 	local blessing_keys = {}
 	local current_node_key = self._run_state:get_current_node_key()
-	local current_node = self._path_graph[current_node_key]
+	local path_graph = self:_get_graph_data()
+	local current_node = path_graph[current_node_key]
 	local seed = current_node.system_seeds.blessings or 0
 	local blessing_settings = DeusBlessingSettings
 	local blessings = self._run_state:get_blessings()
@@ -1566,6 +1573,10 @@ DeusRunController.save_persistent_buffs = function (self, peer_id, local_player_
 end
 
 DeusRunController.get_graph_data = function (self)
+	return self:_get_graph_data()
+end
+
+DeusRunController._get_graph_data = function (self)
 	return self._path_graph
 end
 
@@ -1579,12 +1590,15 @@ end
 
 DeusRunController.get_current_node = function (self)
 	local current_node_key = self:get_current_node_key()
+	local path_graph = self:_get_graph_data()
 
-	return self._path_graph[current_node_key]
+	return path_graph[current_node_key]
 end
 
 DeusRunController.get_node = function (self, node_key)
-	return self._path_graph[node_key]
+	local path_graph = self:_get_graph_data()
+
+	return path_graph[node_key]
 end
 
 DeusRunController.get_weapon_pool = function (self)
@@ -1845,7 +1859,8 @@ DeusRunController.get_deus_weapon_chest_type = function (self)
 	if not chest_distribution or #chest_distribution == 0 then
 		local run_state = self._run_state
 		local current_node_key = run_state:get_current_node_key()
-		local current_node = self._path_graph[current_node_key]
+		local path_graph = self:_get_graph_data()
+		local current_node = path_graph[current_node_key]
 		local level_key = current_node.level
 		local level_settings = LevelSettings[level_key]
 		local distribution = level_settings.deus_weapon_chest_distribution
@@ -1882,7 +1897,8 @@ DeusRunController.get_level_ended_tracking_data = function (self, statistics_db,
 	local level_duration_in_seconds = os.difftime(os.time(), level_start_time)
 	local run_state = self._run_state
 	local current_node_key = run_state:get_current_node_key()
-	local current_node = self._path_graph[current_node_key]
+	local path_graph = self:_get_graph_data()
+	local current_node = path_graph[current_node_key]
 	local run_progress = current_node.run_progress
 	local own_peer_id = self._run_state:get_own_peer_id()
 	local stats_id = PlayerUtils.unique_player_id(own_peer_id, REAL_PLAYER_LOCAL_ID)
@@ -1911,7 +1927,8 @@ end
 DeusRunController.get_level_started_tracking_data = function (self, statistics_db, num_bots)
 	local run_state = self._run_state
 	local current_node_key = run_state:get_current_node_key()
-	local current_node = self._path_graph[current_node_key]
+	local path_graph = self:_get_graph_data()
+	local current_node = path_graph[current_node_key]
 	local run_progress = current_node.run_progress
 	local difficulty_tweak = math.round(math.lerp(-DifficultyTweak.range, DifficultyTweak.range, run_progress))
 
@@ -1944,9 +1961,10 @@ DeusRunController.get_run_tracking_data = function (self, game_won)
 	local shops_visited = 0
 	local completed_travel_levels = 0
 	local completed_signature_levels = 0
+	local path_graph = self:_get_graph_data()
 
 	for _, traversed_node_key in ipairs(traversed_nodes) do
-		local node = self._path_graph[traversed_node_key]
+		local node = path_graph[traversed_node_key]
 		completed_levels[#completed_levels + 1] = node.level
 
 		if node.level_type == "SIGNATURE" then

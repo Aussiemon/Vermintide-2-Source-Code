@@ -41,20 +41,10 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 			end
 
-			if local_player then
-				local first_person_extension = self._first_person_extension
-
-				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
-				first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
-				first_person_extension:animation_event("shade_stealth_ability")
-				career_extension:set_state("kerillian_activate_shade")
-
-				MOOD_BLACKBOARD.skill_shade = true
-			end
-
 			if local_player or (is_server and bot_player) then
-				status_extension:set_invisible(true)
-				status_extension:set_noclip(true)
+				local applying_stealth = status_extension:add_stealth_stacking()
+
+				status_extension:add_noclip_stacking()
 
 				local events = {
 					"Play_career_ability_kerillian_shade_enter",
@@ -71,6 +61,20 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 					else
 						network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
 					end
+				end
+
+				if not bot_player then
+					local first_person_extension = self._first_person_extension
+
+					if applying_stealth then
+						first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_loop")
+					end
+
+					first_person_extension:play_hud_sound_event("Play_career_ability_kerillian_shade_enter")
+					first_person_extension:animation_event("shade_stealth_ability")
+					career_extension:set_state("kerillian_activate_shade")
+
+					MOOD_BLACKBOARD.skill_shade = true
 				end
 			end
 		end,
@@ -148,10 +152,6 @@ CareerAbilityWEShadeDash._ability_available = function (self)
 	local status_extension = self._status_extension
 	local talent_extension = ScriptUnit.extension(self._owner_unit, "talent_system")
 	local available = false
-
-	if talent_extension:has_talent("kerillian_shade_activated_ability_dash") then
-		available = true
-	end
 
 	return available and career_extension:can_use_activated_ability() and not status_extension:is_disabled()
 end

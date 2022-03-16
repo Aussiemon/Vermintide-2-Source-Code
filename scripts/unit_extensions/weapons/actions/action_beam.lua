@@ -48,10 +48,10 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	local go_id = self.unit_id
 
 	if self.is_server or LEVEL_EDITOR_TEST then
-		self.network_transmit:send_rpc_clients("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
-
 		if self.owner_player.bot_player then
 			self.network_transmit:queue_local_rpc("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
+		else
+			self.network_transmit:send_rpc_clients("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
 		end
 	else
 		self.network_transmit:send_rpc_server("rpc_start_beam", go_id, beam_effect_lookup_id, beam_end_effect_lookup_id, new_action.range)
@@ -317,10 +317,10 @@ ActionBeam._stop_client_vfx = function (self)
 		local go_id = self.unit_id
 
 		if self.is_server or LEVEL_EDITOR_TEST then
-			self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
-
 			if self.owner_player.bot_player then
 				self.network_transmit:queue_local_rpc("rpc_end_beam", go_id)
+			else
+				self.network_transmit:send_rpc_clients("rpc_end_beam", go_id)
 			end
 		else
 			self.network_transmit:send_rpc_server("rpc_end_beam", go_id)

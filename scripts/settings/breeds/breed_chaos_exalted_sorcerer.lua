@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 9999999,
 	walk_speed = 0.65,
@@ -54,19 +55,19 @@ local breed_data = {
 	},
 	max_health = BreedTweaks.max_health.exalted_sorcerer,
 	bloodlust_health = BreedTweaks.bloodlust_health.monster,
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if not blackboard.unit then
-			return stagger, duration, length
+			return stagger_type, duration, length
 		end
 
-		if blackboard.stagger_count >= 3 then
-			stagger = 0
+		if stagger_types.heavy <= blackboard.stagger_count then
+			stagger_type = stagger_types.none
 			blackboard.stagger_ignore_anim_cb = true
 		else
 			blackboard.stagger_ignore_anim_cb = false
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	debug_color = {
 		255,

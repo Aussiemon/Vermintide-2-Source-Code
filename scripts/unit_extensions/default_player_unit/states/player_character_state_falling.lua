@@ -76,6 +76,9 @@ PlayerCharacterStateFalling.on_enter = function (self, unit, input, dt, context,
 	if previous_state ~= "jumping" and previous_state ~= "leaping" and previous_state ~= "overcharge_exploding" and previous_state ~= "lunging" then
 		ScriptUnit.extension(unit, "whereabouts_system"):set_fell()
 	end
+
+	local player = Managers.player:owner(unit)
+	self.is_bot = player and player.bot_player
 end
 
 PlayerCharacterStateFalling.on_exit = function (self, unit, input, dt, context, t, next_state)
@@ -211,7 +214,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 		end
 	end
 
-	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) and not CharacterStateHelper.handle_bot_ledge_hanging_failsafe(unit, self.is_bot) then
 		csm:change_state("ledge_hanging", self.temp_params)
 
 		return

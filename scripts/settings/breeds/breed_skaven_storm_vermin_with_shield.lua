@@ -467,6 +467,7 @@ local COMBO_ALLOWED_STAGGERS = {
 	false
 }
 Breeds.skaven_storm_vermin_with_shield = table.create_copy(Breeds.skaven_storm_vermin_with_shield, breed_data)
+Breeds.skaven_storm_vermin_with_shield.killfeed_fold_with = "skaven_storm_vermin"
 local action_data = {
 	alerted = {
 		no_hesitation = true,

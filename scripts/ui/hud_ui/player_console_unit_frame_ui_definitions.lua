@@ -423,7 +423,7 @@ local function create_dynamic_health_widget()
 					content_id = "hp_bar",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
-						return content.draw_health_bar
+						return content.draw_health_bar and not content.hide
 					end
 				},
 				{
@@ -455,6 +455,24 @@ local function create_dynamic_health_widget()
 						size[1] = bar_length * (1 - grim_progress)
 						offset[1] = 2 + settings.hp_bar.x + bar_length * grim_progress
 					end
+				},
+				{
+					style_id = "numeric_health",
+					pass_type = "text",
+					text_id = "numeric_health",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function ()
+						return Application.user_setting("numeric_ui") and (UISettings.use_gamepad_hud_layout == "always" or (Managers.input:is_device_active("gamepad") and UISettings.use_gamepad_hud_layout ~= "never"))
+					end
+				},
+				{
+					style_id = "numeric_health_shadow",
+					pass_type = "text",
+					text_id = "numeric_health",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function ()
+						return Application.user_setting("numeric_ui") and (UISettings.use_gamepad_hud_layout == "always" or (Managers.input:is_device_active("gamepad") and UISettings.use_gamepad_hud_layout ~= "never"))
+					end
 				}
 			}
 		},
@@ -462,11 +480,13 @@ local function create_dynamic_health_widget()
 			grimoire_debuff_divider = "hud_player_hp_bar_grim_divider",
 			hp_bar_highlight = "hud_player_hp_bar_highlight",
 			bar_start_side = "left",
+			numeric_health = "-/-",
 			hp_bar = {
 				bar_value = 1,
-				internal_bar_value = 0,
+				hide = false,
 				texture_id = "player_hp_bar_color_tint",
-				draw_health_bar = true
+				draw_health_bar = true,
+				internal_bar_value = 0
 			},
 			total_health_bar = {
 				bar_value = 1,
@@ -574,6 +594,48 @@ local function create_dynamic_health_widget()
 					255,
 					255,
 					255
+				}
+			},
+			numeric_health = {
+				vertical_alignment = "center",
+				font_type = "arial",
+				font_size = 18,
+				horizontal_alignment = "center",
+				text_color = {
+					255,
+					250,
+					250,
+					250
+				},
+				offset = {
+					-276.5,
+					settings.hp_bar.y - 3,
+					settings.hp_bar.z + 30
+				},
+				size = {
+					553,
+					18
+				}
+			},
+			numeric_health_shadow = {
+				vertical_alignment = "center",
+				font_type = "arial",
+				font_size = 18,
+				horizontal_alignment = "center",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					-275.5,
+					settings.hp_bar.y - 3 - 1,
+					settings.hp_bar.z + 29
+				},
+				size = {
+					553,
+					18
 				}
 			}
 		},

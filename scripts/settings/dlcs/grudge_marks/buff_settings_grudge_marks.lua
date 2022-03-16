@@ -181,7 +181,7 @@ settings.buff_templates = {
 				name = "grudge_mark_intangible",
 				update_func = "ai_spawn_mirror_images",
 				update_dialogue_delay = 1,
-				update_frequency_time = 30,
+				update_frequency_time = 45,
 				update_start_delay = 5
 			}
 		}
@@ -189,13 +189,13 @@ settings.buff_templates = {
 	grudge_mark_intangible_mirror = {
 		buffs = {
 			{
-				multiplier = -0.9,
+				multiplier = -1,
 				name = "grudge_mark_intangible_mirror_damage",
 				stat_buff = "damage_dealt",
 				remove_buff_func = "remove_intangible_mirror_damage"
 			},
 			{
-				multiplier = -0.95,
+				multiplier = -10,
 				name = "grudge_mark_intangible_mirror_health_stat",
 				stat_buff = "max_health"
 			},
@@ -331,15 +331,14 @@ settings.buff_templates = {
 	grudge_mark_crushing_blow_debuff = {
 		buffs = {
 			{
-				duration = 5,
+				duration = 8,
 				name = "grudge_mark_crushing_blow_debuff",
-				stat_buff = "fatigue_regen",
-				multiplier = -1,
-				refresh_durations = true,
-				apply_buff_func = "remove_all_stamina",
+				stat_buff = "max_fatigue",
 				debuff = true,
-				max_stacks = 1,
-				icon = "troll_vomit_debuff"
+				max_stacks = 20,
+				refresh_durations = true,
+				icon = "troll_vomit_debuff",
+				bonus = -1
 			}
 		}
 	},
@@ -355,6 +354,164 @@ settings.buff_templates = {
 				on_hit_delay = 3
 			}
 		}
+	},
+	grudge_mark_periodic_curse_aura = {
+		buffs = {
+			{
+				buff_to_add = "grudge_mark_curse",
+				name = "grudge_mark_periodic_curse_aura",
+				update_frequency = 0.5,
+				time_between_curses = 2,
+				update_start_delay = 0,
+				max_distance = 4,
+				update_func = "apply_curse_to_nearby_players",
+				sound_on_enter = "enemy_grudge_cursed_enter",
+				particles = {
+					{
+						orphaned_policy = "stop",
+						first_person = false,
+						third_person = true,
+						effect = "fx/gm_cursed_aoe",
+						continuous = true,
+						destroy_policy = "stop",
+						custom_variables = {
+							{
+								name = "radius",
+								value = Vector3Box(4, 4, 1)
+							},
+							{
+								name = "diameter",
+								value = Vector3Box(8, 8, 1)
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	grudge_mark_curse = {
+		deactivation_sound = "enemy_grudge_cursed_exit",
+		activation_sound = "enemy_grudge_cursed_damage",
+		buffs = {
+			{
+				icon = "buff_icon_grimoire_health_debuff",
+				name = "grudge_mark_curse",
+				stat_buff = "health_curse",
+				debuff = true,
+				max_stacks = 20,
+				duration = 5,
+				refresh_durations = true,
+				bonus = -0.05
+			}
+		}
+	},
+	grudge_mark_commander = {
+		buffs = {
+			{
+				update_frequency = 30,
+				name = "grudge_mark_commander",
+				update_func = "trigger_terror_event",
+				update_start_delay = 5,
+				faction_terror_events = {
+					default = "grudge_mark_commander_terror_event_skaven",
+					skaven = "grudge_mark_commander_terror_event_skaven",
+					beastmen = "grudge_mark_commander_terror_event_beastmen",
+					chaos = "grudge_mark_commander_terror_event_chaos"
+				}
+			}
+		}
+	},
+	grudge_mark_frenzy = {
+		buffs = {
+			{
+				buff_to_add = "grudge_mark_frenzy_handler",
+				name = "grudge_mark_frenzy",
+				stacking_buff = "grudge_mark_frenzy_stack",
+				buff_func = "add_frenzy_handler",
+				event = "on_damage_taken",
+				remove_buff_func = "remove_frenzy_handlers"
+			}
+		}
+	},
+	grudge_mark_frenzy_handler = {
+		buffs = {
+			{
+				buff_to_add = "grudge_mark_frenzy_stack",
+				name = "grudge_mark_frenzy_handler",
+				blocker_buff = "grudge_mark_frenzy_buff",
+				buff_func = "add_frenzy_stack",
+				event = "on_melee_hit",
+				apply_buff_func = "add_extra_frenzy_stack"
+			}
+		}
+	},
+	grudge_mark_frenzy_stack = {
+		buffs = {
+			{
+				reset_on_max_stacks = true,
+				name = "grudge_mark_frenzy_stack",
+				icon = "deus_curse_khorne_01",
+				max_stacks = 10,
+				refresh_durations = true,
+				debuff = true,
+				on_max_stacks_func = "add_remove_buffs",
+				duration = 3,
+				max_stack_data = {
+					buffs_to_add = {
+						"grudge_mark_frenzy_buff"
+					}
+				}
+			}
+		}
+	},
+	grudge_mark_frenzy_buff = {
+		deactivation_sound = "enemy_grudge_frenzy_end",
+		buffs = {
+			{
+				buff_to_add = "grudge_mark_frenzy_buff",
+				name = "grudge_mark_frenzy_buff",
+				icon = "deus_curse_khorne_01",
+				buff_func = "add_buff",
+				event = "on_melee_hit",
+				refresh_durations = true,
+				apply_buff_func = "apply_frenzy_func",
+				remove_buff_func = "remove_frenzy_func",
+				max_stacks = 1,
+				duration = 5
+			},
+			{
+				name = "grudge_mark_frenzy_buff_attack_speed",
+				multiplier = 0.25,
+				stat_buff = "attack_speed",
+				duration = 5,
+				max_stacks = 1,
+				refresh_durations = true
+			},
+			{
+				refresh_durations = true,
+				name = "grudge_mark_frenzy_buff_move_speed",
+				multiplier = 1.25,
+				max_stacks = 1,
+				remove_buff_func = "remove_movement_buff",
+				apply_buff_func = "apply_movement_buff",
+				duration = 5,
+				path_to_movement_setting_to_modify = {
+					"move_speed"
+				}
+			},
+			{
+				refresh_durations = true,
+				multiplier = 0.2,
+				stat_buff = "power_level_melee",
+				buff_func = "deus_reckless_swings_buff_on_hit",
+				event = "on_melee_hit",
+				damage_to_deal = 10,
+				name = "grudge_mark_frenzy_buff_reckless_swings",
+				is_non_lethal = true,
+				max_stacks = 1,
+				duration = 5
+			}
+		}
 	}
 }
 settings.buff_function_templates = {
@@ -367,6 +524,32 @@ settings.buff_function_templates = {
 					health_threshold = 0
 				}
 				blackboard.stagger_immunity = stagger_immunity
+			end
+		end
+	end,
+	apply_buff_to_all_players = function (unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		if ALIVE[unit] then
+			local side = Managers.state.side:get_side_from_name("heroes")
+			local buff_name = buff.template.buff_to_add
+			local buff_system = Managers.state.entity:system("buff_system")
+			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+
+			for i = 1, #player_and_bot_units, 1 do
+				local player_unit = player_and_bot_units[i]
+
+				buff_system:add_buff(player_unit, buff_name, unit, false)
+			end
+
+			local effect_name = buff.template.effect_name
+
+			if effect_name then
+				local unit_pos = POSITION_LOOKUP[unit]
+
+				Managers.state.network:rpc_play_particle_effect(nil, NetworkLookup.effects[effect_name], NetworkConstants.invalid_game_object_id, 0, unit_pos, Quaternion.identity(), false)
 			end
 		end
 	end,
@@ -501,6 +684,7 @@ settings.buff_function_templates = {
 							spawned_func = function (ai_unit, breed, optional_data)
 								local blackboard = BLACKBOARDS[ai_unit]
 								blackboard.deny_kill_loot = true
+								blackboard.is_illusion = true
 								local mirror_units = buff._mirror_units
 
 								if mirror_units then
@@ -606,6 +790,73 @@ settings.buff_function_templates = {
 			end
 		end
 	end,
+	apply_curse_to_nearby_players = function (unit, buff, params, world)
+		local template = buff.template
+		local buff_to_add = template.buff_to_add
+		local max_distance = template.max_distance
+		local position = POSITION_LOOKUP[unit]
+		buff.cursed_players = buff.cursed_players or {}
+		buff.inside_last_frame = buff.inside_last_frame or {}
+		local inside_last_frame = buff.inside_last_frame
+		local cursed_players = buff.cursed_players
+		local local_player = Managers.player:local_player().player_unit
+		local proximity_system = Managers.state.entity:system("proximity_system")
+		local player_broadphase = proximity_system.player_units_broadphase
+		local nearby_players = FrameTable.alloc_table()
+		local nearby_players_n = Broadphase.query(player_broadphase, position, max_distance, nearby_players)
+		local inside_this_frame = FrameTable.alloc_table()
+
+		for i = 1, nearby_players_n, 1 do
+			local player_unit = nearby_players[i]
+			inside_this_frame[player_unit] = true
+
+			if not inside_last_frame[player_unit] then
+				local player = Managers.player:owner(player_unit)
+
+				if player_unit == local_player then
+					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
+					local buff_to_add = template.buff_to_add
+					local num_stacks = buff_extension:num_buff_stacks(buff_to_add)
+
+					if not num_stacks or num_stacks == 0 then
+						local wwise_world = Managers.world:wwise_world(world)
+
+						WwiseWorld.trigger_event(wwise_world, template.sound_on_enter)
+					end
+				end
+
+				cursed_players[player_unit] = true
+				inside_last_frame[player_unit] = true
+			end
+		end
+
+		if is_server() then
+			local t = Managers.time:time("game")
+			buff.last_curse_t = buff.last_curse_t or t
+			local time_between_curses = template.time_between_curses
+			local next_curse_t = buff.last_curse_t + time_between_curses
+			local should_apply_buff = t >= next_curse_t
+
+			for cursed_player, _ in pairs(cursed_players) do
+				if should_apply_buff then
+					if inside_this_frame[cursed_player] then
+						local buff_to_add = template.buff_to_add
+						local buff_system = Managers.state.entity:system("buff_system")
+
+						buff_system:add_buff(cursed_player, buff_to_add, unit)
+					else
+						cursed_players[cursed_player] = nil
+					end
+				end
+
+				inside_last_frame[cursed_player] = (inside_this_frame[cursed_player] and true) or nil
+			end
+
+			buff.last_curse_t = (should_apply_buff and next_curse_t) or buff.last_curse_t
+		else
+			inside_last_frame[local_player] = (inside_this_frame[local_player] and true) or nil
+		end
+	end,
 	ai_create_explosion = function (unit, buff, params, world)
 		if not is_server() or not ALIVE[unit] then
 			return
@@ -670,9 +921,169 @@ settings.buff_function_templates = {
 				status_extension:add_fatigue_points("complete", params.attacker_unit)
 			end
 		end
+	end,
+	trigger_terror_event = function (owner_unit, buff, params)
+		if not is_server() or not ALIVE[owner_unit] then
+			return
+		end
+
+		local buff_template = buff.template
+		local faction_terror_events = buff_template.faction_terror_events
+		local blackboard = BLACKBOARDS[owner_unit]
+		local breed = blackboard and blackboard.breed
+		local faction = breed and breed.race
+		local terror_event = faction_terror_events[faction] or faction_terror_events.default
+		local seed = buff.seed or Managers.mechanism:get_level_seed()
+
+		Managers.state.conflict:start_terror_event(terror_event, seed, owner_unit)
+
+		buff.seed = Math.next_random(seed)
+	end,
+	add_extra_frenzy_stack = function (unit, buff, params)
+		if ALIVE[unit] then
+			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
+
+			if buff_extension then
+				buff_extension:add_buff(buff.template.buff_to_add)
+			end
+		end
+	end,
+	frenzy_damage_over_time = function (unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		if ALIVE[unit] then
+			local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+			if not health_extension then
+				return
+			end
+
+			local current_health = health_extension:current_health()
+			local damage_per_tick = buff.template.damage_per_tick
+
+			if current_health <= damage_per_tick then
+				damage_per_tick = current_health - 1
+			end
+
+			if damage_per_tick > 0 then
+				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "buff", nil, Vector3(0, 0, 0), "buff", nil, unit)
+			end
+		end
+	end,
+	frenzy_damage_over_time = function (unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		if ALIVE[unit] then
+			local health_extension = ScriptUnit.has_extension(unit, "health_system")
+
+			if not health_extension then
+				return
+			end
+
+			local current_health = health_extension:current_health()
+			local damage_per_tick = buff.template.damage_per_tick
+
+			if current_health <= damage_per_tick then
+				damage_per_tick = current_health - 1
+			end
+
+			if damage_per_tick > 0 then
+				DamageUtils.add_damage_network(unit, unit, damage_per_tick, "torso", "buff", nil, Vector3(0, 0, 0), "buff", nil, unit)
+			end
+		end
+	end,
+	apply_frenzy_func = function (unit, buff, params)
+		if ALIVE[unit] then
+			local player = Managers.player:owner(unit)
+
+			if player and not player.remote then
+				MOOD_BLACKBOARD.skill_zealot = true
+			end
+
+			local first_person_extension = ScriptUnit.has_extension(unit, "first_person_system")
+
+			if first_person_extension then
+				first_person_extension:play_hud_sound_event("enemy_grudge_frenzy_start")
+			end
+		end
+	end,
+	remove_frenzy_func = function (unit, buff, params)
+		if ALIVE[unit] then
+			local player = Managers.player:owner(unit)
+
+			if player and not player.remote then
+				MOOD_BLACKBOARD.skill_zealot = false
+			end
+		end
+	end,
+	remove_frenzy_handlers = function (unit, buff, params)
+		if buff.buff_ids then
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			for unit, buff_id in pairs(buff.buff_ids) do
+				if ALIVE[unit] then
+					buff_system:remove_server_controlled_buff(unit, buff_id)
+				end
+			end
+		end
+	end,
+	add_noclip = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+
+			status_extension:add_noclip_stacking()
+		end
+	end,
+	remove_noclip = function (owner_unit, buff, params)
+		if ALIVE[owner_unit] then
+			local status_extension = ScriptUnit.has_extension(owner_unit, "status_system")
+
+			status_extension:remove_noclip_stacking()
+		end
 	end
 }
 settings.proc_functions = {
+	add_frenzy_handler = function (owner_unit, buff, params)
+		if not is_server() then
+			return
+		end
+
+		local attacker_unit = params[1]
+		local attack_type = params[4]
+
+		if ALIVE[owner_unit] and ALIVE[attacker_unit] and not RangedAttackTypes[attack_type] then
+			local buff_to_add = buff.template.buff_to_add
+			local buff_system = Managers.state.entity:system("buff_system")
+
+			if not buff.buff_ids then
+				buff.buff_ids = {}
+			end
+
+			if not buff.buff_ids[attacker_unit] then
+				buff.buff_ids[attacker_unit] = buff_system:add_buff(attacker_unit, buff_to_add, owner_unit, true)
+			end
+		end
+	end,
+	add_frenzy_stack = function (player, buff, params)
+		local hit_unit = params[1]
+		local player_unit = player.player_unit
+
+		if ALIVE[player_unit] and ALIVE[hit_unit] then
+			if not buff.attacker_unit or hit_unit ~= buff.attacker_unit then
+				return
+			end
+
+			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
+
+			if buff_extension and not buff_extension:has_buff_type(buff.template.blocker_buff) then
+				buff_extension:add_buff(buff.template.buff_to_add)
+			end
+		end
+	end,
 	spawn_liquid_forward = function (owner_unit, buff, params)
 		if not is_server() then
 			return
@@ -781,10 +1192,35 @@ settings.proc_functions = {
 			local buff_extension = ScriptUnit.extension(attacked_unit, "buff_system")
 			local buff_template = buff.template
 			local buff_name = buff_template.buff_to_add
+			local action = blackboard.action
 
-			if not buff_extension:has_buff_type(buff_name) then
-				local proc_mod_table = params[param_order.PROC_MODIFIABLE]
-				proc_mod_table.damage_amount = 0
+			if action and action.fatigue_type then
+				local can_block, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction = status_extension:can_block(owner_unit)
+				local fatigue_type = action.fatigue_type
+
+				if type(fatigue_type) == "table" then
+					local difficulty_manager = Managers.state.difficulty
+					fatigue_type = difficulty_manager:get_difficulty_value_from_table(fatigue_type)
+				end
+
+				status_extension:blocked_attack(fatigue_type, owner_unit, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction)
+
+				if is_server() then
+					local network_manager = Managers.state.network
+					local unit_storage = Managers.state.unit_storage
+					local go_id = unit_storage:go_id(attacked_unit)
+					local fatigue_type_id = NetworkLookup.fatigue_types[fatigue_type]
+					local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(owner_unit)
+
+					network_manager.network_transmit:send_rpc_clients("rpc_player_blocked_attack", go_id, fatigue_type_id, attacker_unit_id, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction, attacker_is_level_unit)
+				end
+			end
+
+			local proc_mod_table = params[param_order.PROC_MODIFIABLE]
+			proc_mod_table.damage_amount = 0
+
+			if action and action.blocked_damage then
+				proc_mod_table.damage_amount = action.blocked_damage
 			end
 
 			local network_manager = Managers.state.network

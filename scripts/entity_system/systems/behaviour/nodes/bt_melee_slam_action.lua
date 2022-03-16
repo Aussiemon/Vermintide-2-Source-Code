@@ -129,6 +129,12 @@ BTMeleeSlamAction._create_bot_aoe_threat = function (self, unit, attack_rotation
 end
 
 BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
+	if blackboard.is_illusion then
+		blackboard.rotate_towards_target = false
+
+		return
+	end
+
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
 	local action = blackboard.action
@@ -197,6 +203,10 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 				AiUtils.stagger_target(unit, hit_unit, action.stagger_distance, action.stagger_impact, direction, t)
 
 				damage = action.damage
+
+				if BLACKBOARDS[hit_unit].is_illusion then
+					damage = nil
+				end
 			elseif ScriptUnit.has_extension(hit_unit, "ladder_system") then
 				local ladder_ext = ScriptUnit.extension(hit_unit, "ladder_system")
 
@@ -204,7 +214,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 			end
 
 			if damage then
-				AiUtils.damage_target(hit_unit, unit, action, action.damage)
+				AiUtils.damage_target(hit_unit, unit, action, damage)
 			end
 
 			hit_units[hit_unit] = true

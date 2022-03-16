@@ -625,6 +625,84 @@ local gameplay_settings_definition = {
 		}
 	},
 	{
+		setting_name = "motion_sickness_hit",
+		widget_type = "drop_down",
+		options = {
+			{
+				value = "normal",
+				text = Localize("menu_settings_normal")
+			},
+			{
+				value = "low",
+				text = Localize("menu_settings_low")
+			},
+			{
+				value = "lower",
+				text = Localize("menu_settings_lower")
+			},
+			{
+				value = "lowest",
+				text = Localize("menu_settings_lowest")
+			},
+			{
+				value = "off",
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "motion_sickness_swing",
+		widget_type = "drop_down",
+		options = {
+			{
+				value = "normal",
+				text = Localize("menu_settings_normal")
+			},
+			{
+				value = "low",
+				text = Localize("menu_settings_low")
+			},
+			{
+				value = "lower",
+				text = Localize("menu_settings_lower")
+			},
+			{
+				value = "lowest",
+				text = Localize("menu_settings_lowest")
+			},
+			{
+				value = "off",
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "motion_sickness_misc_cam",
+		widget_type = "drop_down",
+		options = {
+			{
+				value = "normal",
+				text = Localize("menu_settings_normal")
+			},
+			{
+				value = "no_career_camera",
+				text = Localize("menu_settings_no_career")
+			},
+			{
+				value = "no_dodge_camera",
+				text = Localize("menu_settings_no_dodge")
+			},
+			{
+				value = "no_player_hit_camera",
+				text = Localize("menu_settings_no_player_hit")
+			},
+			{
+				value = "no_misc_camera",
+				text = Localize("menu_settings_no_misc")
+			}
+		}
+	},
+	{
 		setting_name = "camera_shake",
 		widget_type = "stepper",
 		options = {
@@ -682,54 +760,10 @@ local gameplay_settings_definition = {
 		widget_type = "title"
 	},
 	{
-		setup = "cb_hud_custom_scale_setup",
-		saved_value = "cb_hud_custom_scale_saved_value",
-		callback = "cb_hud_custom_scale",
-		tooltip_text = "tooltip_hud_custom_scale",
-		widget_type = "stepper"
-	},
-	{
-		setup = "cb_hud_scale_setup",
-		callback_on_release = true,
-		saved_value = "cb_hud_scale_saved_value",
-		callback = "cb_hud_scale",
-		name = "hud_scale",
-		tooltip_text = "tooltip_hud_scale",
-		widget_type = "slider"
-	},
-	{
-		setup = "cb_hud_clamp_ui_scaling_setup",
-		saved_value = "cb_hud_clamp_ui_scaling_saved_value",
-		callback = "cb_hud_clamp_ui_scaling",
-		tooltip_text = "tooltip_hud_clamp_ui_scaling",
-		widget_type = "stepper"
-	},
-	{
-		setup = "cb_enabled_crosshairs_setup",
-		saved_value = "cb_enabled_crosshairs_saved_value",
-		callback = "cb_enabled_crosshairs",
-		tooltip_text = "tooltip_enabled_crosshairs",
-		widget_type = "stepper"
-	},
-	{
-		setup = "cb_overcharge_opacity_setup",
-		saved_value = "cb_overcharge_opacity_saved_value",
-		callback = "cb_overcharge_opacity",
-		tooltip_text = "tooltip_overcharge_opacity",
-		widget_type = "slider"
-	},
-	{
-		setup = "cb_enabled_gamepad_menu_layout_setup",
-		saved_value = "cb_enabled_gamepad_menu_layout_saved_value",
-		callback = "cb_enabled_gamepad_menu_layout",
-		tooltip_text = "tooltip_enabled_gamepad_menu_layout",
-		widget_type = "stepper"
-	},
-	{
-		setup = "cb_enabled_gamepad_hud_layout_setup",
-		saved_value = "cb_enabled_gamepad_hud_layout_saved_value",
-		callback = "cb_enabled_gamepad_hud_layout",
-		tooltip_text = "tooltip_enabled_gamepad_hud_layout",
+		setup = "cb_enabled_pc_menu_layout_setup",
+		saved_value = "cb_enabled_pc_menu_layout_saved_value",
+		callback = "cb_enabled_pc_menu_layout",
+		tooltip_text = "tooltip_enabled_pc_menu_layout",
 		widget_type = "stepper"
 	},
 	{
@@ -782,6 +816,130 @@ local gameplay_settings_definition = {
 			{
 				text = Localize("visibility_public"),
 				value = PrivacyLevels.public
+			}
+		}
+	},
+	{
+		size_y = 30,
+		widget_type = "empty"
+	},
+	{
+		text = "settings_view_header_hud_customization",
+		widget_type = "title"
+	},
+	{
+		setup = "cb_enabled_gamepad_hud_layout_setup",
+		saved_value = "cb_enabled_gamepad_hud_layout_saved_value",
+		callback = "cb_enabled_gamepad_hud_layout",
+		tooltip_text = "tooltip_enabled_gamepad_hud_layout",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_hud_custom_scale_setup",
+		saved_value = "cb_hud_custom_scale_saved_value",
+		callback = "cb_hud_custom_scale",
+		tooltip_text = "tooltip_hud_custom_scale",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_hud_scale_setup",
+		callback_on_release = true,
+		saved_value = "cb_hud_scale_saved_value",
+		callback = "cb_hud_scale",
+		name = "hud_scale",
+		tooltip_text = "tooltip_hud_scale",
+		widget_type = "slider"
+	},
+	{
+		setup = "cb_hud_clamp_ui_scaling_setup",
+		saved_value = "cb_hud_clamp_ui_scaling_saved_value",
+		callback = "cb_hud_clamp_ui_scaling",
+		tooltip_text = "tooltip_hud_clamp_ui_scaling",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_enabled_crosshairs_setup",
+		saved_value = "cb_enabled_crosshairs_saved_value",
+		callback = "cb_enabled_crosshairs",
+		tooltip_text = "tooltip_enabled_crosshairs",
+		widget_type = "stepper"
+	},
+	{
+		setup = "cb_overcharge_opacity_setup",
+		saved_value = "cb_overcharge_opacity_saved_value",
+		callback = "cb_overcharge_opacity",
+		tooltip_text = "tooltip_overcharge_opacity",
+		widget_type = "slider"
+	},
+	{
+		setting_name = "numeric_ui",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "crosshair_kill_confirm",
+		widget_type = "drop_down",
+		options = {
+			{
+				text = Localize("menu_settings_off"),
+				value = CrosshairKillConfirmSettingsGroups.off
+			},
+			{
+				text = Localize("crosshair_kill_confirm_all"),
+				value = CrosshairKillConfirmSettingsGroups.all
+			},
+			{
+				text = Localize("crosshair_kill_confirm_elites_above"),
+				value = CrosshairKillConfirmSettingsGroups.elites_above
+			},
+			{
+				text = Localize("crosshair_kill_confirm_bosses_specials"),
+				value = CrosshairKillConfirmSettingsGroups.bosses_specials
+			},
+			{
+				text = Localize("crosshair_kill_confirm_elites_specials"),
+				value = CrosshairKillConfirmSettingsGroups.elites_specials
+			},
+			{
+				text = Localize("crosshair_kill_confirm_specials_only"),
+				value = CrosshairKillConfirmSettingsGroups.specials_only
+			}
+		}
+	},
+	{
+		setting_name = "friendly_fire_crosshair",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
+		setting_name = "friendly_fire_hit_marker",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
 			}
 		}
 	},
@@ -874,21 +1032,6 @@ local gameplay_settings_definition = {
 				text = Localize("percent_200")
 			}
 		}
-	},
-	{
-		size_y = 30,
-		widget_type = "empty"
-	},
-	{
-		text = "settings_view_header_bots",
-		widget_type = "title"
-	},
-	{
-		setup = "cb_bot_spawn_priority_setup",
-		saved_value = "cb_bot_spawn_priority_saved_value",
-		callback = "cb_bot_spawn_priority",
-		tooltip_text = "tooltip_bot_spawn_priority",
-		widget_type = "sorted_list"
 	},
 	{
 		size_y = 30,
@@ -1237,6 +1380,15 @@ local keybind_settings_definition = {
 		}
 	},
 	{
+		keybind_description = "photomode_only",
+		widget_type = "keybind",
+		actions = {
+			"photomode_only",
+			"photomode_only_hold",
+			"photomode_only_release"
+		}
+	},
+	{
 		keybind_description = "interact",
 		widget_type = "keybind",
 		actions = {
@@ -1350,6 +1502,14 @@ local keybind_settings_definition = {
 		actions = {
 			"hotkey_inventory",
 			"hotkey_deus_inventory"
+		}
+	},
+	{
+		keybind_description = "hotkey_loot",
+		keymappings_key = "IngameMenuKeymaps",
+		widget_type = "keybind",
+		actions = {
+			"hotkey_loot"
 		}
 	},
 	{

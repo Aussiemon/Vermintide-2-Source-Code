@@ -55,10 +55,15 @@ DeusSwapWeaponInteractionUI._create_ui_elements = function (self)
 end
 
 DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit)
-	if Managers.mechanism:current_mechanism_name() ~= "deus" then
+	local mechanism = Managers.mechanism:game_mechanism()
+	local deus_run_controller = mechanism.get_deus_run_controller and mechanism:get_deus_run_controller()
+
+	if not deus_run_controller then
 		return
 	end
 
+	local inventory_extension = ScriptUnit.has_extension(player_unit, "inventory_system")
+	local wielded_slot_name = inventory_extension and inventory_extension:get_wielded_slot_name()
 	local interactable_ext = ScriptUnit.extension(player_unit, "interactor_system")
 	local interactable_unit = interactable_ext:interactable_unit()
 	local network_manager = Managers.state.network
@@ -68,26 +73,20 @@ DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit
 	self._others_actually_ingame = others_actually_ingame
 
 	if self._current_interactable_unit ~= interactable_unit or prev_others_actually_ingame ~= others_actually_ingame then
-		self:_populate_widget(interactable_unit)
+		self:_populate_widget(interactable_unit, wielded_slot_name)
 		self:_start_animation("on_enter")
 	else
-		self:_check_currency(interactable_unit)
-	end
-end
+		local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
+		local weapon_slot_name = (wielded_slot_name == "slot_melee" and "slot_melee") or "slot_ranged"
+		local wielded_weapon = (weapon_slot_name == "slot_melee" and melee_weapon) or ranged_weapon
+		local new_weapon = not self._wielded_weapon or wielded_weapon ~= self._wielded_weapon
+		self._wielded_weapon = new_weapon
+		local peer_id = deus_run_controller:get_own_peer_id()
+		local soft_currency = deus_run_controller:get_player_soft_currency(peer_id)
 
-DeusSwapWeaponInteractionUI._check_currency = function (self, interactable_unit)
-	local mechanism = Managers.mechanism:game_mechanism()
-	local deus_run_controller = mechanism:get_deus_run_controller()
-
-	if not deus_run_controller then
-		return
-	end
-
-	local peer_id = deus_run_controller:get_own_peer_id()
-	local soft_currency = deus_run_controller:get_player_soft_currency(peer_id)
-
-	if soft_currency ~= self._soft_currency_amount then
-		self:_populate_widget(interactable_unit)
+		if new_weapon or soft_currency ~= self._soft_currency_amount then
+			self:_populate_widget(interactable_unit, wielded_slot_name)
+		end
 	end
 end
 
@@ -101,7 +100,7 @@ DeusSwapWeaponInteractionUI._start_animation = function (self, animation_name)
 	self._animations[animation_name] = self._ui_animator:start_animation(animation_name, self._widgets, self._ui_scenegraph, params, nil, 0)
 end
 
-DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit)
+DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit, wielded_slot_name)
 	local mechanism = Managers.mechanism:game_mechanism()
 	local deus_run_controller = mechanism:get_deus_run_controller()
 

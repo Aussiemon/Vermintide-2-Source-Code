@@ -2295,13 +2295,14 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size, scroll_area_scenegra
 			pass_type = "scroll",
 			content_id = "scroll_area_hotspot",
 			scroll_function = function (ui_scenegraph, ui_style, ui_content, input_service, scroll_axis, dt)
+				local gamepad_active = Managers.input:is_device_active("gamepad")
 				local axis_input = scroll_axis.y * -1
 				local parent_content = ui_content.parent
 				local scroll_bar_info = parent_content.scroll_bar_info
 				local total_scroll_height = scroll_bar_info.total_scroll_height
 				local scroll_amount = scroll_bar_info.scroll_amount
 
-				if axis_input ~= 0 and ui_content.is_hover then
+				if axis_input ~= 0 and (ui_content.is_hover or gamepad_active) then
 					scroll_bar_info.axis_input = axis_input
 					local previous_scroll_add = scroll_bar_info.scroll_add or 0
 					scroll_bar_info.scroll_add = previous_scroll_add + axis_input * scroll_amount
@@ -5593,7 +5594,7 @@ UIWidgets.create_simple_uv_rotated_texture = function (texture, uvs, angle, pivo
 	}
 end
 
-UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, offset)
+UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, masked, retained, color, offset, disable_with_gamepad)
 	if type(offset) ~= "table" then
 		offset = {
 			0,
@@ -5617,7 +5618,8 @@ UIWidgets.create_simple_uv_texture = function (texture, uvs, scenegraph_id, mask
 			texture_id = {
 				uvs = uvs,
 				texture_id = texture
-			}
+			},
+			disable_with_gamepad = disable_with_gamepad
 		},
 		style = {
 			texture_id = {

@@ -222,7 +222,7 @@ CareerAbilityESKnight._run_ability = function (self)
 		end
 	end
 
-	status_extension:set_noclip(true)
+	status_extension:add_noclip_stacking()
 
 	local hold_duration = 0.03
 	local windup_duration = 0.15

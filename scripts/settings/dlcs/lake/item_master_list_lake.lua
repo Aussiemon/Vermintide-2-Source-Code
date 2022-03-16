@@ -7,7 +7,7 @@ ItemMasterList.skin_es_questingknight = {
 	slot_type = "skin",
 	information_text = "information_text_character_skin",
 	hud_icon = "unit_frame_portrait_empire_soldier",
-	rarity = "promo",
+	rarity = "plentiful",
 	skin_type = "unit",
 	item_type = "skin",
 	required_dlc = "lake_upgrade",
@@ -109,7 +109,7 @@ ItemMasterList.markus_questingknight_career_skill_weapon = {
 }
 ItemMasterList.questing_knight_hat_0000 = {
 	description = "description_questing_knight_hat_0000",
-	rarity = "promo",
+	rarity = "plentiful",
 	display_name = "display_name_questing_knight_hat_0000",
 	template = "es_hats_no_ear_moustache",
 	inventory_icon = "icon_questing_knight_hat_0000",

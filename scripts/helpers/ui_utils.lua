@@ -336,13 +336,17 @@ UIUtils.get_text_width = function (ui_renderer, text_style, text, ui_style_globa
 	return text_width
 end
 
-UIUtils.is_button_pressed = function (widget, hotspot_name)
+UIUtils.is_button_pressed = function (widget, hotspot_name, keyboard_input)
 	if widget then
 		local content = widget.content
 		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
 
 		if hotspot.on_release then
 			hotspot.on_release = false
+
+			return true
+		elseif hotspot.is_selected and keyboard_input then
+			hotspot.is_selected = false
 
 			return true
 		end
@@ -392,6 +396,17 @@ UIUtils.is_button_selected = function (widget, hotspot_name)
 		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
 
 		return hotspot.is_selected
+	end
+
+	return false
+end
+
+UIUtils.is_left_button_released = function (widget, hotspot_name)
+	if widget then
+		local content = widget.content
+		local hotspot = content[hotspot_name] or content.button_hotspot or content.hotspot
+
+		return hotspot.on_left_release
 	end
 
 	return false

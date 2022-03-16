@@ -189,6 +189,8 @@ ActionRangedBase._shooting = function (self, t, action_ended)
 		num_shots_this_frame = math.min(num_shots_this_frame, MAX_SHOTS_PER_FRAME)
 	end
 
+	self:_update_extra_shots(self.buff_extension)
+
 	self._num_projectiles_spawned = self:shoot(num_shots_this_frame, num_projectiles_spawned, num_projectiles_per_shot)
 
 	if num_projectiles_per_shot - self._num_projectiles_spawned <= 0 then
@@ -197,7 +199,7 @@ ActionRangedBase._shooting = function (self, t, action_ended)
 		if self._num_shots_fired < self._num_shots_total then
 			self._state = "waiting_to_shoot"
 			self._time_to_shoot = t + self._burst_shot_delay
-		elseif self:_check_extra_shot_proc(self.buff_extension) then
+		elseif self:_update_extra_shots(self.buff_extension, 1) then
 			self._state = "waiting_to_shoot"
 			self._time_to_shoot = t + self._extra_shot_delay
 			self._extra_buff_shot = true

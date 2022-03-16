@@ -158,7 +158,11 @@ BackendManagerPlayFab._create_interfaces = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 
 	self:_create_items_interface(settings)
-	self:_create_quests_interface(settings)
+
+	if not DEDICATED_SERVER then
+		self:_create_quests_interface(settings)
+	end
+
 	self:_create_crafting_interface(settings)
 	self:_create_talents_interface(settings)
 	self:_create_loot_interface(settings)
@@ -401,7 +405,7 @@ BackendManagerPlayFab._update_state = function (self)
 	local settings = GameSettingsDevelopment.backend_settings
 	local signin = self._backend_signin
 
-	if (not settings.allow_backend or self._local_save_loaded) and self._need_signin then
+	if (not settings.allow_backend or self._local_save_loaded or DEDICATED_SERVER) and self._need_signin then
 		local result_data = signin:update_signin()
 
 		if result_data then
@@ -881,7 +885,7 @@ BackendManagerPlayFab.commit = function (self, skip_queue, commit_complete_callb
 end
 
 BackendManagerPlayFab.has_loaded = function (self)
-	return self._local_save_loaded
+	return self._local_save_loaded or DEDICATED_SERVER
 end
 
 BackendManagerPlayFab._are_profiles_loaded = function (self)
@@ -1092,7 +1096,7 @@ BackendManagerPlayFab.player_id = function (self)
 end
 
 BackendManagerPlayFab.load_mechanism_loadout = function (self, mechanism_key)
-	self._backend_mirror:request_characters()
+	self._backend_mirror:request_characters(mechanism_key)
 end
 
 BackendManagerPlayFab.is_pending_request = function (self)
@@ -1149,6 +1153,14 @@ end
 
 BackendManagerPlayFab.get_metadata = function (self)
 	return self._metadata
+end
+
+BackendManagerPlayFab.get_backend_mirror = function (self)
+	return self._backend_mirror
+end
+
+BackendManagerPlayFab.get_twitch_app_access_token = function (self)
+	return self._backend_mirror:get_twitch_app_access_token()
 end
 
 return

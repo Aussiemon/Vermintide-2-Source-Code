@@ -418,6 +418,7 @@ ExplosionTemplates = {
 			attacker_power_level_offset = 0.25,
 			always_hurt_players = false,
 			attack_template = "drakegun",
+			no_friendly_fire = true,
 			damage_profile_glance = "overcharge_explosion_glance_ability",
 			sound_event_name = "player_combat_weapon_staff_overcharge_explosion",
 			damage_profile = "overcharge_explosion_ability",

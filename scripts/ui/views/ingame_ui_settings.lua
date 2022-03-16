@@ -44,14 +44,14 @@ local transitions = {
 			return
 		end
 
-		local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("leave_game_popup_text")
+		local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("quit_game_popup_text")
 		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup", Localize("popup_choice_no"))
 	end,
 	quit_game_hero_view = function (self)
 		self:_cancel_popup()
 
 		local warning_message_data = Managers.mechanism:mechanism_setting("progress_loss_warning_message_data")
-		local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("leave_game_popup_text")
+		local text = (warning_message_data ~= nil and warning_message_data.is_allowed() and Localize("exit_game_popup_text") .. "\n\n" .. Localize(warning_message_data.message)) or Localize("quit_game_popup_text")
 		self.popup_id = Managers.popup:queue_popup(text, Localize("popup_exit_game_topic"), "end_game", Localize("popup_choice_yes"), "cancel_popup_hero_view", Localize("popup_choice_no"))
 	end,
 	return_to_title_screen = function (self)
@@ -365,6 +365,9 @@ local transitions = {
 	hero_view = function (self)
 		self.current_view = "hero_view"
 	end,
+	spoils_of_war = function (self)
+		self.current_view = "hero_view"
+	end,
 	start_game_view_force = function (self)
 		self.current_view = "start_game_view"
 		self.views[self.current_view].exit_to_game = true
@@ -543,6 +546,11 @@ local view_settings = {
 		end
 
 		if IS_WINDOWS then
+			materials[#materials + 1] = "material"
+			materials[#materials + 1] = "video/ui_option"
+		end
+
+		if IS_WINDOWS then
 			return UIRenderer.create(world, unpack(materials))
 		else
 			return UIRenderer.create(world, unpack(materials))
@@ -679,6 +687,15 @@ local view_settings = {
 			error_message = "matchmaking_ready_interaction_message_inventory",
 			view = "hero_view",
 			transition_state = "overview",
+			disable_when_matchmaking_ready = true,
+			in_transition_menu = "hero_view"
+		},
+		hotkey_loot = {
+			can_interact_func = "not_in_modded",
+			in_transition = "hero_view_force",
+			error_message = "matchmaking_ready_interaction_message_loot",
+			view = "hero_view",
+			transition_state = "loot",
 			disable_when_matchmaking_ready = true,
 			in_transition_menu = "hero_view"
 		},

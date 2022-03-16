@@ -129,6 +129,14 @@ GameModeInn.respawn_unit_spawned = function (self, unit)
 	self._adventure_spawning:respawn_unit_spawned(unit)
 end
 
+GameModeInn.get_respawn_handler = function (self)
+	return self._adventure_spawning:get_respawn_handler()
+end
+
+GameModeInn.respawn_gate_unit_spawned = function (self, unit)
+	self._adventure_spawning:respawn_gate_unit_spawned(unit)
+end
+
 GameModeInn.force_respawn = function (self, peer_id, local_player_id)
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 

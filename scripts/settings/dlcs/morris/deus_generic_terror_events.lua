@@ -1,5 +1,6 @@
 require("scripts/settings/dlcs/morris/deus_terror_event_tags")
 
+local stagger_types = require("scripts/utils/stagger_types")
 local RECRUIT = 2
 local VETERAN = 3
 local CHAMPION = 4
@@ -22,7 +23,7 @@ local function cursed_chest_enemy_spawned_func(unit, breed, optional_data)
 	buff_system:add_buff(unit, "cursed_chest_objective_unit", unit)
 end
 
-local function cursed_chest_spawn_function(unit, breed, optional_data)
+local function cursed_chest_boss_spawn_function(unit, breed, optional_data)
 	local buff_system = Managers.state.entity:system("buff_system")
 
 	buff_system:add_buff(unit, "objective_unit", unit)
@@ -45,7 +46,7 @@ GenericTerrorEvents.cursed_chest_prototype = {
 		},
 		optional_data = {
 			prevent_killed_enemy_dialogue = true,
-			spawned_func = cursed_chest_spawn_function
+			spawned_func = cursed_chest_boss_spawn_function
 		},
 		faction_requirement_list = {
 			"skaven",
@@ -63,7 +64,7 @@ GenericTerrorEvents.cursed_chest_prototype = {
 		},
 		optional_data = {
 			prevent_killed_enemy_dialogue = true,
-			spawned_func = cursed_chest_spawn_function
+			spawned_func = cursed_chest_boss_spawn_function
 		},
 		faction_requirement_list = {
 			"skaven",
@@ -88,6 +89,193 @@ GenericTerrorEvents.cursed_chest_prototype = {
 		condition = function (counter)
 			return counter.cursed_chest_boss <= 0
 		end
+	}
+}
+
+local function grudge_mark_commander_enemy_spawned_func(unit, breed, optional_data)
+	if not breed.special and not breed.boss then
+		local player_unit = PlayerUtils.get_random_alive_hero()
+
+		AiUtils.aggro_unit_of_enemy(unit, player_unit)
+	end
+
+	local teleport_effect = "fx/grudge_marks_shadow_step"
+	local effect_name_id = NetworkLookup.effects[teleport_effect]
+	local node_id = 0
+	local network_manager = Managers.state.network
+
+	network_manager:rpc_play_particle_effect_no_rotation(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, POSITION_LOOKUP[unit], false)
+
+	local blackboard = BLACKBOARDS[unit]
+
+	if blackboard then
+		local world = blackboard.world
+
+		WwiseUtils.trigger_unit_event(world, "Play_normal_spawn_stinger", unit, 0)
+
+		local direction = Quaternion.forward(Quaternion.axis_angle(Vector3.up(), math.pi * 2 * math.random()))
+		local distance = 0.5
+		local stagger_type = stagger_types.medium
+		local stun_duration = 0.5
+		local t = Managers.time:time("game")
+
+		AiUtils.stagger(unit, blackboard, unit, direction, distance, stagger_type, stun_duration, nil, t)
+	end
+end
+
+local GRUDGE_MARK_COMMANDER_SPAWN_COMMON = {
+	"spawn_around_origin_unit_staggered",
+	max_distance = 5,
+	spawn_counter_category = "grudge_mark_commander_enemies",
+	min_distance = 2,
+	optional_data = {
+		prevent_killed_enemy_dialogue = true,
+		spawned_func = grudge_mark_commander_enemy_spawned_func
+	},
+	staggered_spawn_batch_size = {
+		1,
+		3
+	},
+	staggered_spawn_delay = {
+		0.25,
+		0.5
+	}
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_skaven_storm = {
+	table.merge({
+		breed_name = "skaven_storm_vermin_commander",
+		difficulty_amount = {
+			hardest = 4,
+			hard = 2,
+			harder = 3,
+			cataclysm = 4,
+			normal = 2
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_skaven_storm_shield = {
+	table.merge({
+		breed_name = "skaven_storm_vermin_with_shield",
+		difficulty_amount = {
+			hardest = 2,
+			hard = 2,
+			harder = 2,
+			cataclysm = 3,
+			normal = 1
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_skaven = {
+	{
+		"inject_event",
+		weighted_event_names = {
+			{
+				weight = 3,
+				event_name = "grudge_mark_commander_terror_event_skaven_storm"
+			},
+			{
+				weight = 3,
+				event_name = "grudge_mark_commander_terror_event_skaven_storm_shield"
+			}
+		}
+	}
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_chaos_raiders = {
+	table.merge({
+		breed_name = "chaos_raider",
+		difficulty_amount = {
+			hardest = 4,
+			hard = 2,
+			harder = 3,
+			cataclysm = 4,
+			normal = 2
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_chaos_warriors = {
+	table.merge({
+		breed_name = "chaos_warrior",
+		difficulty_amount = {
+			hardest = 2,
+			hard = 1,
+			harder = 2,
+			cataclysm = 2,
+			normal = 1
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON),
+	table.merge({
+		breed_name = "chaos_marauder",
+		difficulty_amount = {
+			hardest = 5,
+			hard = 3,
+			harder = 4,
+			cataclysm = 6,
+			normal = 2
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_chaos = {
+	{
+		"inject_event",
+		weighted_event_names = {
+			{
+				weight = 3,
+				event_name = "grudge_mark_commander_terror_event_chaos_raiders"
+			},
+			{
+				weight = 3,
+				event_name = "grudge_mark_commander_terror_event_chaos_warriors"
+			}
+		}
+	}
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_beastmen_bestigors = {
+	table.merge({
+		breed_name = "beastmen_bestigor",
+		difficulty_amount = {
+			hardest = 3,
+			hard = 2,
+			harder = 2,
+			cataclysm = 3,
+			normal = 1
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_beastmen_double_action = {
+	table.merge({
+		breed_name = "beastmen_bestigor",
+		difficulty_amount = {
+			hardest = 2,
+			hard = 1,
+			harder = 2,
+			cataclysm = 2,
+			normal = 1
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON),
+	table.merge({
+		breed_name = "beastmen_gor",
+		difficulty_amount = {
+			hardest = 5,
+			hard = 4,
+			harder = 4,
+			cataclysm = 6,
+			normal = 4
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
+}
+GenericTerrorEvents.grudge_mark_commander_terror_event_beastmen = {
+	{
+		"inject_event",
+		weighted_event_names = {
+			{
+				weight = 3,
+				event_name = "grudge_mark_commander_terror_event_beastmen_bestigors"
+			},
+			{
+				weight = 3,
+				event_name = "grudge_mark_commander_terror_event_beastmen_double_action"
+			}
+		}
 	}
 }
 GenericTerrorEvents.deus_generic_terror_event_with_interception_and_escape = {

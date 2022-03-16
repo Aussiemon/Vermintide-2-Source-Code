@@ -302,7 +302,7 @@ CareerAbilityDRSlayer._do_leap = function (self)
 
 	locomotion_extension:set_external_velocity_enabled(false)
 	status_extension:reset_move_speed_multiplier()
-	status_extension:set_noclip(true)
+	status_extension:add_noclip_stacking()
 
 	if Managers.state.network:game() then
 		status_extension:set_is_dodging(true)
@@ -349,7 +349,7 @@ CareerAbilityDRSlayer._do_leap = function (self)
 					area_damage_system:create_explosion(unit_3p, final_position, rotation, explosion_template, scale, "career_ability", career_power_level, false)
 				end
 
-				ScriptUnit.extension(unit_3p, "status_system"):set_noclip(false)
+				ScriptUnit.extension(unit_3p, "status_system"):remove_noclip_stacking()
 
 				local game = Managers.state.network:game()
 

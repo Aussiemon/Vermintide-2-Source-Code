@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
 	aoe_height = 1.4,
@@ -101,20 +102,20 @@ local breed_data = {
 		40,
 		40
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
-		if blackboard.stagger_type == 3 then
-			if stagger == 3 and blackboard.heavy_stagger_immune_time then
-				stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+		if blackboard.stagger_type == stagger_types.heavy then
+			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
-			elseif stagger ~= 3 and blackboard.stagger_immune_time then
-				stagger = 0
+			elseif stagger_type ~= stagger_types.heavy and blackboard.stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	BTHesitationVariations = {
 		hesitate = {
@@ -767,10 +768,10 @@ local action_data = {
 	stagger = {
 		scale_animation_speeds = true,
 		custom_enter_function = function (unit, blackboard, t, action)
-			if blackboard.stagger_type == 3 then
+			if blackboard.stagger_type == stagger_types.heavy then
 				blackboard.stagger_immune_time = t + 2.25
 				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_types.explosion then
 				blackboard.stagger_immune_time = t + 3.5
 				blackboard.heavy_stagger_immune_time = t + 3
 			end

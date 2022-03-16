@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 TargetOverrideExtension = class(TargetOverrideExtension)
 local OVERRIDE_RADIUS = 0.75
 local OVERRIDE_LIFETIME = 5
@@ -6,11 +7,11 @@ TargetOverrideExtension.init = function (self, extension_init_context, unit, ext
 	self._unit = unit
 	self._result_table = {}
 	self._stagger_impact = {
-		2,
-		1,
-		6,
-		0,
-		2
+		stagger_types.medium,
+		stagger_types.weak,
+		stagger_types.explosion,
+		stagger_types.none,
+		stagger_types.medium
 	}
 end
 
@@ -18,7 +19,7 @@ TargetOverrideExtension.destroy = function (self)
 	return
 end
 
-TargetOverrideExtension.taunt = function (self, radius, duration, stagger, taunt_bosses)
+TargetOverrideExtension.taunt = function (self, radius, duration, do_stagger, taunt_bosses)
 	local self_unit = self._unit
 	local t = Managers.time:time("game")
 	local taunt_end_time = t + duration
@@ -43,7 +44,7 @@ TargetOverrideExtension.taunt = function (self, radius, duration, stagger, taunt
 			ai_blackboard.target_unit = self_unit
 			ai_blackboard.target_unit_found_time = t
 
-			if stagger then
+			if do_stagger then
 				local stagger_direction = POSITION_LOOKUP[ai_unit] - position
 
 				AiUtils.stagger_target(self_unit, ai_unit, 1, self._stagger_impact, stagger_direction, t)

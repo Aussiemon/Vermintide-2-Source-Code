@@ -28,7 +28,6 @@ require("scripts/helpers/status_utils")
 require("scripts/utils/debug_screen")
 require("scripts/utils/debug_key_handler")
 require("scripts/utils/function_call_profiler")
-require("scripts/utils/pool_table_visualizer")
 require("scripts/utils/visual_assert_log")
 require("scripts/helpers/graph_helper")
 require("scripts/network/network_event_delegate")
@@ -213,7 +212,6 @@ StateIngame.on_enter = function (self)
 	VisualAssertLog.setup(world)
 	DebugKeyHandler.setup(world, self.input_manager)
 	FunctionCallProfiler.setup(world)
-	PoolTableVisualizer.setup(world)
 
 	if not script_data.debug_enabled then
 		DebugKeyHandler.set_enabled(false)
@@ -933,21 +931,6 @@ StateIngame.update = function (self, dt, main_t)
 	self._fps_reporter:update(dt, t)
 	self._ping_reporter:update(dt, t)
 	self:_update_onclose_check(dt, t)
-
-	if script_data.debug_enabled then
-		Managers.state.debug:update(dt, t)
-		Debug.update(t, dt)
-		VisualAssertLog.update(dt)
-
-		local debug_input_service = self.input_manager:get_service("DebugMenu")
-
-		DebugScreen.update(dt, t, debug_input_service, self.input_manager)
-		DebugKeyHandler.render()
-		DebugKeyHandler.frame_clear()
-		FunctionCallProfiler.render()
-		PoolTableVisualizer.render(t)
-	end
-
 	self:_generate_ingame_clock()
 	self._camera_carrier:update(dt)
 
@@ -2272,7 +2255,11 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	local nav_world = ai_system:nav_world()
 	local physics_world = World.get_data(world, "physics_world")
 	Managers.state.bot_nav_transition = BotNavTransitionManager:new(world, physics_world, nav_world, is_server, network_event_delegate)
-	Managers.state.quest = QuestManager:new(self.statistics_db)
+
+	if not DEDICATED_SERVER then
+		Managers.state.quest = QuestManager:new(self.statistics_db)
+	end
+
 	Managers.state.badge = BadgeManager:new(self.statistics_db, network_event_delegate, is_server)
 	Managers.state.achievement = AchievementManager:new(self.world, self.statistics_db)
 

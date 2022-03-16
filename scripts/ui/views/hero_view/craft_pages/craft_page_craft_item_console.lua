@@ -36,13 +36,18 @@ CraftPageCraftItemConsole.on_enter = function (self, params, settings)
 	self.profile_index = params.profile_index
 	self.wwise_world = params.wwise_world
 	self.settings = settings
+	self._recipe_name = settings.name
 	self._animations = {}
 
 	self:create_ui_elements(params)
 
+	self._params = {
+		profile_index = self.profile_index,
+		career_index = self.career_index
+	}
 	self._craft_items = {}
 	self._material_items = {}
-	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	self._item_grid = ItemGridUI:new(category_settings, self._widgets_by_name.item_grid, self.hero_name, self.career_index, self._params)
 
 	self._item_grid:disable_locked_items(true)
 	self._item_grid:mark_locked_items(true)
@@ -391,7 +396,6 @@ CraftPageCraftItemConsole._update_craft_items = function (self)
 			self:_remove_craft_item(pressed_backend_id)
 		else
 			self:_add_craft_item(pressed_backend_id)
-			self:setup_recipe_requirements()
 		end
 	end
 
@@ -466,6 +470,8 @@ CraftPageCraftItemConsole._add_craft_item = function (self, backend_id, slot_ind
 
 		self._widgets_by_name.item_grid_random_icon.content.visible = false
 	end
+
+	self:setup_recipe_requirements()
 end
 
 CraftPageCraftItemConsole._clear_item_grid = function (self)

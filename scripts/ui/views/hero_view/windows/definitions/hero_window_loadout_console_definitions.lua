@@ -23,7 +23,7 @@ local scenegraph_definition = {
 			window_size[1]
 		},
 		position = {
-			40,
+			90,
 			-250,
 			1
 		}
@@ -73,7 +73,7 @@ local disclaimer_text_style = {
 }
 local num_equipment_slots = #InventorySettings.equipment_slots
 local widgets = {
-	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing),
+	loadout_grid = UIWidgets.create_loadout_grid_console("loadout_grid", scenegraph_definition.loadout_grid.size, num_equipment_slots, loadout_grid_spacing, nil, true),
 	disclaimer_text = UIWidgets.create_simple_text(Localize("inventory_morris_note"), "disclaimer_text", scenegraph_definition.disclaimer_text.size, nil, disclaimer_text_style),
 	disclaimer_text_background = UIWidgets.create_rect_with_outer_frame("disclaimer_text_background", scenegraph_definition.disclaimer_text_background.size, "frame_outer_fade_02", nil, Colors.get_color_table_with_alpha("black", 125))
 }
@@ -84,6 +84,39 @@ local generic_input_actions = {
 			priority = 1,
 			description_text = "input_description_navigate",
 			ignore_keybinding = true
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 2,
+			description_text = "start_menu_swap_inventory"
+		},
+		{
+			input_action = "refresh",
+			priority = 3,
+			description_text = "start_menu_customize_item"
+		},
+		{
+			input_action = "confirm",
+			priority = 4,
+			description_text = "input_description_select"
+		},
+		{
+			input_action = "back",
+			priority = 5,
+			description_text = "input_description_close"
+		}
+	},
+	default_no_customization = {
+		{
+			input_action = "d_vertical",
+			priority = 1,
+			description_text = "input_description_navigate",
+			ignore_keybinding = true
+		},
+		{
+			input_action = "show_gamercard",
+			priority = 2,
+			description_text = "start_menu_swap_inventory"
 		},
 		{
 			input_action = "confirm",

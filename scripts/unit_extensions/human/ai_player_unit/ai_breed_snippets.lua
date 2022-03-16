@@ -152,6 +152,7 @@ AiBreedSnippets.on_stormfiend_death = function (unit, blackboard)
 
 	conflict_director:freeze_intensity_decay(1)
 	conflict_director:remove_unit_from_bosses(unit)
+	print("stormfiend died!")
 
 	local breed = blackboard.breed
 	local breed_name = breed.name
@@ -663,6 +664,7 @@ AiBreedSnippets.on_chaos_spawn_death = function (unit, blackboard)
 
 	conflict_director:freeze_intensity_decay(1)
 	conflict_director:remove_unit_from_bosses(unit)
+	print("chaos spawn died!")
 
 	if blackboard.is_angry then
 		conflict_director:add_angry_boss(-1)

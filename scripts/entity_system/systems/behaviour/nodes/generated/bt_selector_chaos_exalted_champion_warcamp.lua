@@ -123,7 +123,7 @@ BTSelector_chaos_exalted_champion_warcamp.run = function (self, unit, blackboard
 	end
 
 	local node_retaliation_aoe = children[5]
-	local condition_result = blackboard.num_chain_stagger and blackboard.num_chain_stagger > 2
+	local condition_result = Unit.alive(blackboard.target_unit) and blackboard.num_chain_stagger and blackboard.num_chain_stagger > 2
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_retaliation_aoe, "aborted")

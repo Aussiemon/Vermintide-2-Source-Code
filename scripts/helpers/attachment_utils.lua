@@ -30,7 +30,7 @@ AttachmentUtils.create_attachment = function (world, owner_unit, attachments, sl
 		local attachment_lod_object = Unit.lod_object(unit, 0)
 
 		LODObject.set_bounding_volume(attachment_lod_object, LODObject.bounding_volume(owner_lod_object))
-		LODObject.set_orientation_node(attachment_lod_object, owner_unit, LODObject.node(owner_lod_object))
+		World.link_unit(world, unit, LODObject.node(attachment_lod_object), owner_unit, LODObject.node(owner_lod_object))
 	end
 
 	local slot_data = {

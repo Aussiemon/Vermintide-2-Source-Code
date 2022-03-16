@@ -17,7 +17,7 @@ PassiveAbilityThornsister.extensions_ready = function (self, world, unit)
 
 	local talent_extension = ScriptUnit.has_extension(unit, "talent_system")
 
-	self:_update_max_extra_abilities(talent_extension)
+	self:_update_extra_abilities_info(talent_extension)
 	self:_register_events()
 end
 
@@ -122,10 +122,10 @@ PassiveAbilityThornsister.on_talents_changed = function (self, unit, talent_exte
 		self._num_stack_buffs = 0
 	end
 
-	self:_update_max_extra_abilities(talent_extension)
+	self:_update_extra_abilities_info(talent_extension)
 end
 
-PassiveAbilityThornsister._update_max_extra_abilities = function (self, talent_extension)
+PassiveAbilityThornsister._update_extra_abilities_info = function (self, talent_extension)
 	if not talent_extension then
 		return
 	end
@@ -143,6 +143,14 @@ PassiveAbilityThornsister._update_max_extra_abilities = function (self, talent_e
 	end
 
 	career_ext:update_extra_ability_uses_max(max_uses)
+
+	local cooldown = self._ability_init_data.cooldown
+
+	if talent_extension:has_talent("kerillian_thorn_sister_faster_passive") then
+		cooldown = cooldown * 0.5
+	end
+
+	career_ext:update_extra_ability_charge(cooldown)
 end
 
 return

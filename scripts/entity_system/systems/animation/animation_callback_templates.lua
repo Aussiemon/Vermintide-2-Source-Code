@@ -668,21 +668,6 @@ AnimationCallbackTemplates.server.anim_cb_vomit_end = function (unit, param)
 	blackboard.is_puking = nil
 end
 
-AnimationCallbackTemplates.server.anim_cb_attack_fire = function (unit, param)
-	local blackboard = BLACKBOARDS[unit]
-	local active_node = blackboard.active_node
-
-	if not active_node or blackboard.attack_aborted then
-		return
-	end
-
-	local anim_cb = active_node.anim_cb_attack_fire
-
-	if anim_cb then
-		anim_cb(anim_cb, unit, blackboard)
-	end
-end
-
 AnimationCallbackTemplates.server.anim_cb_dodge_finished = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
 	blackboard.anim_cb_dodge_finished = true
@@ -825,24 +810,6 @@ end
 AnimationCallbackTemplates.client.anim_cb_climb_rotation_start = function (unit, param)
 	local status_extension = ScriptUnit.extension(unit, "status_system")
 	status_extension.start_climb_rotation = true
-end
-
-AnimationCallbackTemplates.client.anim_cb_start_stormfiend_right_beam = function (unit, param)
-	local beam_effect_extension = ScriptUnit.extension(unit, "ai_beam_effect_system")
-
-	beam_effect_extension:anim_cb_start_stormfiend_beam("right")
-end
-
-AnimationCallbackTemplates.client.anim_cb_start_stormfiend_left_beam = function (unit, param)
-	local beam_effect_extension = ScriptUnit.extension(unit, "ai_beam_effect_system")
-
-	beam_effect_extension:anim_cb_start_stormfiend_beam("left")
-end
-
-AnimationCallbackTemplates.client.anim_cb_stop_stormfiend_beam = function (unit, param)
-	local beam_effect_extension = ScriptUnit.extension(unit, "ai_beam_effect_system")
-
-	beam_effect_extension:anim_cb_stop_stormfiend_beam()
 end
 
 AnimationCallbackTemplates.server.anim_cb_chew_attack = function (unit, param)

@@ -262,8 +262,12 @@ MenuWorldPreviewer._update_units_visibility = function (self, dt)
 	MenuWorldPreviewer.super._update_units_visibility(self, dt)
 end
 
-MenuWorldPreviewer._set_character_visibility = function (self, visible, camera_move_duration)
+MenuWorldPreviewer._set_character_visibility = function (self, visible, camera_move_duration, disable_camera_position_update)
 	MenuWorldPreviewer.super._set_character_visibility(self, visible)
+
+	if disable_camera_position_update then
+		return
+	end
 
 	local camera_move_duration = camera_move_duration or self._camera_move_duration
 
@@ -435,6 +439,8 @@ MenuWorldPreviewer.request_spawn_hero_unit = function (self, profile_name, caree
 	end
 
 	self:clear_units(reset_camera)
+
+	self._draw_character = true
 end
 
 MenuWorldPreviewer.request_spawn_unit = function (self, unit_name, unit_type, cb)
@@ -674,6 +680,10 @@ MenuWorldPreviewer.clear_units = function (self, reset_camera)
 	end
 
 	self._units = {}
+end
+
+MenuWorldPreviewer.hide_character = function (self)
+	self._draw_character = false
 end
 
 MenuWorldPreviewer.trigger_unit_flow_event = function (self, unit, event_name)

@@ -11,6 +11,9 @@ settings.network_sound_events = {
 	"enemy_grudge_crippling_hit",
 	"enemy_grudge_warping",
 	"enemy_grudge_intangible",
+	"enemy_grudge_siren",
+	"enemy_grudge_siren_target",
+	"enemy_grudge_siren_break",
 	"enemy_grudge_intangible_destroy"
 }
 

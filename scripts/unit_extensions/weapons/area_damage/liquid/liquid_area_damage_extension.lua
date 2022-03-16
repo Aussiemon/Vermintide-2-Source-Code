@@ -96,6 +96,11 @@ LiquidAreaDamageExtension.init = function (self, extension_init_context, unit, e
 	else
 		source_attacker_unit_data.attacker_unique_id = nil
 		source_attacker_unit_data.attacker_side = nil
+		local attacker_buff_extension = ScriptUnit.has_extension(source_attacker_unit, "buff_system")
+
+		if attacker_buff_extension then
+			self.buff_damage_multiplier = attacker_buff_extension:apply_buffs_to_value(1, "damage_dealt")
+		end
 	end
 
 	if use_nav_cost_map_volumes then

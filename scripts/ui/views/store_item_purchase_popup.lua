@@ -1461,9 +1461,8 @@ end
 
 StoreItemPurchasePopup._popup_update = function (self, input_service, dt, t)
 	local input_pressed = input_service:get("toggle_menu", true)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
-	local back_pressed = gamepad_active and input_service:get("back_menu", true)
-	local purchase_pressed = gamepad_active and input_service:get("confirm_press", true)
+	local back_pressed = input_service:get("back_menu", true)
+	local purchase_pressed = input_service:get("confirm_press", true)
 	local widgets_by_name = self._widgets_by_name
 	local purchase_button = widgets_by_name.purchase_button
 	local close_button = widgets_by_name.close_button

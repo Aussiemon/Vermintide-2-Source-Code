@@ -663,7 +663,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			220,
+			180,
 			0
 		}
 	},

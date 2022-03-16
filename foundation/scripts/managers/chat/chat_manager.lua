@@ -506,7 +506,7 @@ ChatManager.send_chat_message = function (self, channel_id, local_player_id, mes
 	local is_system_message = false
 	local pop_chat = true
 	local peer_id = self.my_peer_id
-	local is_dev = SteamHelper.is_dev(peer_id) and local_player_id == 1
+	local is_dev = SteamHelper.is_dev() and local_player_id == 1
 
 	if type(localization_parameters) ~= "table" then
 		local old_parameter = localization_parameters
@@ -773,8 +773,9 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	local sender_player = player_manager:player_from_peer_id(message_sender, local_player_id)
 	local is_bot = false
 
-	if sender_player then
+	if sender_player and sender_player:sync_data_active() then
 		is_bot = not sender_player:is_player_controlled()
+		is_dev = is_dev or sender_player:get_data("is_dev")
 	end
 
 	if Application.user_setting("profanity_check") and not is_system_message then

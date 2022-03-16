@@ -192,15 +192,15 @@ SubtitleGui.update = function (self, dt)
 							self:_remove_subtitle(unit)
 						end
 
-						local speaker_key = "subtitle_name_" .. currently_playing_dialogue.speaker_name
-						local speaker_name = Localize(speaker_key)
-						local color = Colors.color_definitions[speaker_key] or Colors.color_definitions.font_title
+						local speaker_name = currently_playing_dialogue.speaker_name
+						local localized_speaker_name = Localize("subtitle_name_" .. speaker_name)
+						local color = DialogueSettings.speaker_color_lookup[speaker_name] or DialogueSettings.speaker_color_lookup.default
 
 						if color then
-							speaker_name = string.format("{#color(%d,%d,%d)}%s{#reset()}", color[2], color[3], color[4], speaker_name)
+							localized_speaker_name = string.format("{#color(%d,%d,%d)}%s{#reset()}", color[2], color[3], color[4], localized_speaker_name)
 						end
 
-						self:_add_subtitle(unit, speaker_name, dialogue_text)
+						self:_add_subtitle(unit, localized_speaker_name, dialogue_text)
 					end
 				end
 			end

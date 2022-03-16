@@ -14,6 +14,7 @@ local RPCS = {
 	"rpc_end_beam",
 	"rpc_start_flamethrower",
 	"rpc_end_flamethrower",
+	"rpc_set_stormfiend_beam",
 	"rpc_start_geiser",
 	"rpc_end_geiser",
 	"rpc_weapon_blood",
@@ -658,6 +659,20 @@ WeaponSystem.rpc_summon_vortex = function (self, channel_id, owner_unit_id, targ
 					Managers.state.unit_spawner:request_spawn_network_unit("vortex_unit", storm_spawn_position, Quaternion.identity(), unit, 0)
 				end
 			end
+		end
+	end
+end
+
+WeaponSystem.rpc_set_stormfiend_beam = function (self, channel_id, unit_id, arm_id, active)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if ALIVE[unit] then
+		local beam_extension = ScriptUnit.extension(unit, "ai_beam_effect_system")
+
+		if beam_extension then
+			local arm = NetworkLookup.attack_arm[arm_id]
+
+			beam_extension:set_beam(arm, active)
 		end
 	end
 end

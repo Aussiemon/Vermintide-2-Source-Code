@@ -135,7 +135,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		return
 	end
 
-	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
+	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) and not CharacterStateHelper.handle_bot_ledge_hanging_failsafe(unit, self.is_bot) then
 		csm:change_state("ledge_hanging", self.temp_params)
 
 		return
@@ -364,6 +364,17 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		csm:change_state("interacting", params)
 
 		return
+	end
+
+	if self.cosmetic_extension:get_queued_3p_emote() then
+		local _, right_hand_weapon_extension, left_hand_weapon_extension = CharacterStateHelper.get_item_data_and_weapon_extensions(self.inventory_extension)
+		local current_action_settings = CharacterStateHelper.get_current_action_data(left_hand_weapon_extension, right_hand_weapon_extension)
+
+		if not current_action_settings then
+			csm:change_state("emote")
+
+			return
+		end
 	end
 
 	CharacterStateHelper.move_on_ground(first_person_extension, input_extension, locomotion_extension, move_input_direction, final_move_speed, unit)

@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local default_bot_threat_difficulty_data = BotConstants and BotConstants.default.DEFAULT_BOT_THREAT_DIFFICULTY_DATA
 local breed_data = {
 	detection_radius = 9999999,
@@ -362,8 +363,8 @@ local action_data = {
 		beam_sfx_start_event = "Play_stormfiend_torch_loop",
 		damage_type = "warpfire_ground",
 		start_distance = 4,
-		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
 		maximum_length = 15,
+		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
 		action_weight = 1,
 		global_sound_parameter = "stormfiend_mood",
 		considerations = UtilityConsiderations.stormfiend_shoot,
@@ -387,7 +388,7 @@ local action_data = {
 				attack_left = "attack_fire_left_arm"
 			},
 			bwd = {
-				attack_right = "attack_fire_turn_bwd"
+				attack_left = "attack_fire_turn_bwd"
 			},
 			left = {
 				attack_left = "attack_fire_turn_left"
@@ -399,31 +400,44 @@ local action_data = {
 		attack_anims_data = {
 			attack_fire_left_arm = {
 				rad = 0,
-				dir = 1
+				aim_start_t = 0.14,
+				start_firing_t = 0.27,
+				full_animation_t = 1.6,
+				dir = 1,
+				stop_firing_t = 1.5
 			},
 			attack_fire_right_arm = {
 				rad = 0,
-				dir = 1
+				aim_start_t = 0.14,
+				start_firing_t = 0.27,
+				full_animation_t = 1.6,
+				dir = 1,
+				stop_firing_t = 1.5
 			},
 			attack_fire_turn_bwd = {
+				aim_start_t = 0.67,
+				start_firing_t = 0.9,
+				full_animation_t = 2.3,
 				dir = 1,
+				stop_firing_t = 2.1,
 				rad = math.pi
 			},
 			attack_fire_turn_left = {
+				aim_start_t = 0.47,
+				start_firing_t = 0.8,
+				full_animation_t = 2.3,
 				dir = 1,
+				stop_firing_t = 1.9,
 				rad = math.pi / 2
 			},
 			attack_fire_turn_right = {
+				aim_start_t = 0.47,
+				start_firing_t = 0.8,
+				full_animation_t = 2.3,
 				dir = -1,
+				stop_firing_t = 1.9,
 				rad = math.pi / 2
 			}
-		},
-		attack_times = {
-			attack_fire_right_arm = 1.6,
-			attack_fire_turn_left = 2.3,
-			attack_fire_turn_bwd = 2.3,
-			attack_fire_left_arm = 1.6,
-			attack_fire_turn_right = 2.3
 		},
 		shoulder_nodes = {
 			attack_right = "j_rightshoulder",
@@ -659,10 +673,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -769,11 +783,11 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						6,
-						0,
-						0,
-						6
+						stagger_types.explosion,
+						stagger_types.explosion,
+						stagger_types.none,
+						stagger_types.none,
+						stagger_types.explosion
 					},
 					stagger_duration = {
 						4.5,

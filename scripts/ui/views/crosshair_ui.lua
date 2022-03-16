@@ -12,17 +12,20 @@ local CROSSHAIR_STYLE_FUNCTIONS = {
 	arrows = "draw_arrows_style_crosshair",
 	projectile = "draw_projectile_style_crosshair"
 }
-local MELEE_CROSSHAIR_STYLES = {
-	dot = true
-}
-local RANGED_CROSSHAIR_STYLES = {
-	default = true,
-	circle = true,
-	wh_priest = true,
-	shotgun = true,
-	arrows = true,
-	projectile = true
-}
+local MELEE_CROSSHAIR_STYLES = UISettings.crosshair_styles.melee
+local RANGED_CROSSHAIR_STYLES = UISettings.crosshair_styles.ranged
+local kill_confirm_settings = require("scripts/ui/views/crosshair_kill_confirm_settings")
+local kill_confirm_enemy_types = kill_confirm_settings.kill_confirm_enemy_types
+local kill_confirm_group_settings = kill_confirm_settings.kill_confirm_group_settings
+local kill_confirm_types = kill_confirm_settings.kill_confirm_types
+local kill_confirm_type_colors = kill_confirm_settings.kill_confirm_type_colors
+local kill_confirm_enemy_prio = kill_confirm_settings.kill_confirm_enemy_prio
+local kill_confirm_weakspot_zones = kill_confirm_settings.kill_confirm_weakspot_zones
+local kill_confirm_enemy_type_widget_map = kill_confirm_settings.kill_confirm_enemy_type_widget_map
+local kill_confirm_styles = kill_confirm_settings.kill_confirm_styles
+local kill_confirm_duration = 0.5
+local kill_confirm_assist_duration = 30
+local kill_confirm_cutoff_alpha = 120
 
 CrosshairUI.init = function (self, parent, ingame_ui_context)
 	self._parent = parent
@@ -36,6 +39,12 @@ CrosshairUI.init = function (self, parent, ingame_ui_context)
 	self._small_career_portrait = "small_unit_frame_portrait_default"
 
 	Managers.state.event:register(self, "on_set_ability_target_name", "_set_crosshair_target_info")
+
+	self._kill_confirm_enabled = false
+	self._kill_confirm_enabled_groups = kill_confirm_group_settings.off
+
+	Managers.state.event:register(self, "on_game_options_changed", "update_game_options")
+	self:update_game_options()
 	self:create_ui_elements()
 	self:update_enabled_crosshair_styles()
 end
@@ -67,6 +76,15 @@ CrosshairUI.create_ui_elements = function (self)
 	self.hit_markers = hit_markers
 	self.hit_markers_n = hit_markers_n
 	self.hit_marker_animations = {}
+	local kill_confirm_widgets = {}
+
+	for name, texture in pairs(kill_confirm_styles) do
+		definitions.widget_definitions.kill_confirm.content.texture_id = texture
+		kill_confirm_widgets[name] = UIWidget.init(definitions.widget_definitions.kill_confirm)
+	end
+
+	self.kill_confirm_widgets = kill_confirm_widgets
+	self._last_kill_confirm_t = 0
 end
 
 CrosshairUI.update = function (self, dt, t, player)
@@ -85,7 +103,7 @@ CrosshairUI.update = function (self, dt, t, player)
 	self:update_enabled_crosshair_styles()
 	self:update_crosshair_style(equipment)
 	self:update_hit_markers(dt)
-	self:update_spread(dt, equipment)
+	self:update_spread(dt, t, equipment)
 	self:_update_self_to_ally_transition()
 	self:_update_animations(dt)
 end
@@ -99,20 +117,20 @@ CrosshairUI.update_enabled_crosshair_styles = function (self)
 		table.clear(crosshairs)
 
 		if enabled_style == "melee" then
-			for style, value in pairs(MELEE_CROSSHAIR_STYLES) do
-				crosshairs[style] = value
+			for style, data in pairs(MELEE_CROSSHAIR_STYLES) do
+				crosshairs[style] = data.enabled
 			end
 		elseif enabled_style == "ranged" then
-			for style, value in pairs(RANGED_CROSSHAIR_STYLES) do
-				crosshairs[style] = value
+			for style, data in pairs(RANGED_CROSSHAIR_STYLES) do
+				crosshairs[style] = data.enabled
 			end
 		elseif enabled_style == "all" then
-			for style, value in pairs(MELEE_CROSSHAIR_STYLES) do
-				crosshairs[style] = value
+			for style, data in pairs(MELEE_CROSSHAIR_STYLES) do
+				crosshairs[style] = data.enabled
 			end
 
-			for style, value in pairs(RANGED_CROSSHAIR_STYLES) do
-				crosshairs[style] = value
+			for style, data in pairs(RANGED_CROSSHAIR_STYLES) do
+				crosshairs[style] = data.enabled
 			end
 		end
 
@@ -197,6 +215,10 @@ CrosshairUI.update_hit_markers = function (self, dt)
 end
 
 CrosshairUI.set_hit_marker_animation = function (self, hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data)
+	if not Application.user_setting("friendly_fire_crosshair") then
+		return
+	end
+
 	for i = 1, hit_markers_n, 1 do
 		local hit_marker = hit_markers[i]
 		local additional_hit_icon = self:configure_hit_marker_color_and_size(hit_marker, hit_marker_data)
@@ -295,7 +317,7 @@ CrosshairUI.update_hit_marker_animation = function (self, hit_markers, hit_marke
 	end
 end
 
-CrosshairUI.update_spread = function (self, dt, equipment)
+CrosshairUI.update_spread = function (self, dt, t, equipment)
 	local wielded_item_data = equipment.wielded
 	local item_template = BackendUtils.get_item_template(wielded_item_data)
 	local pitch = 0
@@ -317,10 +339,10 @@ CrosshairUI.update_spread = function (self, dt, equipment)
 	local pitch_offset = math.lerp(0, definitions.max_spread_pitch, pitch_percentage)
 	local yaw_offset = math.lerp(0, definitions.max_spread_yaw, yaw_percentage)
 
-	self:draw(dt, pitch_percentage, yaw_percentage)
+	self:draw(dt, t, pitch_percentage, yaw_percentage)
 end
 
-CrosshairUI.draw = function (self, dt, pitch_percentage, yaw_percentage)
+CrosshairUI.draw = function (self, dt, t, pitch_percentage, yaw_percentage)
 	local ui_renderer = self.ui_renderer
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("ingame_menu")
@@ -331,9 +353,11 @@ CrosshairUI.draw = function (self, dt, pitch_percentage, yaw_percentage)
 	local crosshair_style = self.crosshair_style
 
 	if self._enabled_crosshair_styles[crosshair_style] then
-		local draw_func_name = CROSSHAIR_STYLE_FUNCTIONS[crosshair_style]
+		for i, _ in pairs(CROSSHAIR_STYLE_FUNCTIONS) do
+			local draw_func_name = CROSSHAIR_STYLE_FUNCTIONS[crosshair_style]
 
-		self[draw_func_name](self, ui_renderer, pitch_percentage, yaw_percentage)
+			self[draw_func_name](self, ui_renderer, pitch_percentage, yaw_percentage, i)
+		end
 	end
 
 	local hit_markers = self.hit_markers
@@ -349,6 +373,7 @@ CrosshairUI.draw = function (self, dt, pitch_percentage, yaw_percentage)
 		UIRenderer.draw_widget(ui_renderer, self.hit_marker_armored)
 	end
 
+	self:_draw_kill_confirm(dt, t, ui_renderer)
 	UIRenderer.end_pass(ui_renderer)
 end
 
@@ -486,6 +511,90 @@ end
 
 CrosshairUI.destroy = function (self)
 	Managers.state.event:unregister("on_set_ability_target_name", self)
+	Managers.state.event:unregister("on_game_options_changed", self)
+end
+
+CrosshairUI.update_game_options = function (self)
+	local kill_confirm_setting_group = Application.user_setting("crosshair_kill_confirm")
+	local kill_confirm_enabled = kill_confirm_setting_group ~= CrosshairKillConfirmSettingsGroups.off
+	self._kill_confirm_enabled_groups = kill_confirm_group_settings[kill_confirm_setting_group]
+
+	if kill_confirm_enabled and not self._kill_confirm_enabled then
+		self._kill_confirm_enabled = true
+
+		Managers.state.event:register(self, "on_player_killed_enemy", "_register_kill_confirm")
+	elseif not kill_confirm_enabled and self._kill_confirm_enabled then
+		self._kill_confirm_enabled = false
+
+		Managers.state.event:unregister("on_player_killed_enemy", self)
+
+		self._current_kill_confirm_widget = nil
+	end
+end
+
+CrosshairUI._register_kill_confirm = function (self, killing_blow, breed_killed, ai_unit)
+	if not self._kill_confirm_enabled_groups or self._kill_confirm_enabled_groups == kill_confirm_group_settings.off then
+		return
+	end
+
+	local player_unit = self.local_player.player_unit
+	local kill_confirm_type = nil
+
+	if killing_blow[DamageDataIndex.ATTACKER] == player_unit or killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] == player_unit then
+		if killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME] == "dot_debuff" then
+			kill_confirm_type = kill_confirm_types.kill_dot
+		elseif kill_confirm_weakspot_zones[killing_blow[DamageDataIndex.HIT_ZONE]] then
+			kill_confirm_type = kill_confirm_types.kill_weakpoint
+		else
+			kill_confirm_type = kill_confirm_types.kill
+		end
+	end
+
+	if kill_confirm_type then
+		local kill_confirm_enemy_type = kill_confirm_enemy_types.infantry
+
+		if breed_killed.elite then
+			kill_confirm_enemy_type = kill_confirm_enemy_types.elite
+		elseif breed_killed.special then
+			kill_confirm_enemy_type = kill_confirm_enemy_types.special
+		elseif breed_killed.boss then
+			kill_confirm_enemy_type = kill_confirm_enemy_types.boss
+		end
+
+		if self._kill_confirm_enabled_groups[kill_confirm_enemy_type] and (not self._current_kill_confirm_type or not self._current_kill_confirm_widget or kill_confirm_enemy_prio[self._current_kill_confirm_type] <= kill_confirm_enemy_prio[kill_confirm_enemy_type] or self._current_kill_confirm_widget.style.color[1] <= kill_confirm_cutoff_alpha) then
+			local type_to_style = kill_confirm_enemy_type_widget_map[kill_confirm_enemy_type]
+			local current_kill_confirm_widget = self.kill_confirm_widgets[type_to_style]
+
+			if current_kill_confirm_widget then
+				current_kill_confirm_widget.style.color = kill_confirm_type_colors[kill_confirm_type]
+			end
+
+			self._current_kill_confirm_widget = current_kill_confirm_widget
+			self._current_kill_confirm_type = kill_confirm_enemy_type
+			self._last_kill_confirm_t = Managers.time:time("ui")
+		end
+	end
+end
+
+CrosshairUI._draw_kill_confirm = function (self, dt, t, ui_renderer)
+	if not self._current_kill_confirm_widget then
+		return
+	end
+
+	local last_kill_dt = t - self._last_kill_confirm_t
+
+	if kill_confirm_duration < last_kill_dt then
+		self._current_kill_confirm_widget = nil
+		self._current_kill_confirm_type = nil
+
+		return
+	end
+
+	local alpha = (1 - math.easeInCubic(last_kill_dt / kill_confirm_duration)) * 255
+	local kill_confirm_widget = self._current_kill_confirm_widget
+	kill_confirm_widget.style.color[1] = alpha
+
+	UIRenderer.draw_widget(ui_renderer, kill_confirm_widget)
 end
 
 return

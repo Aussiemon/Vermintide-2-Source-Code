@@ -848,9 +848,9 @@ end
 StartGameWindowMissionSelectionConsole._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local input_service = parent:window_input_service()
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if gamepad_active then
+	if not mouse_active then
 		if input_service:get("move_down_hold_continuous") then
 			self:_update_grid_navigation(1, 0)
 		elseif input_service:get("move_up_hold_continuous") then
@@ -888,7 +888,7 @@ StartGameWindowMissionSelectionConsole._handle_input = function (self, dt, t)
 		end
 	end
 
-	local gamepad_confirm_pressed = gamepad_active and input_service:get(SELECTION_INPUT, true)
+	local gamepad_confirm_pressed = not mouse_active and input_service:get(SELECTION_INPUT, true)
 
 	if gamepad_confirm_pressed and self:_level_is_unlocked(self._selected_level_id) then
 		self:_play_sound("play_gui_lobby_button_02_mission_select")

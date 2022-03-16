@@ -106,14 +106,34 @@ local function create_ability_widget()
 					content_check_function = function (content)
 						return (not content.on_cooldown or content.always_show_activated_ability_input or content.usable or content.usable) and not content.gamepad_active
 					end
+				},
+				{
+					style_id = "ability_cooldown",
+					pass_type = "text",
+					text_id = "ability_cooldown",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and not content.can_use_ability
+					end
+				},
+				{
+					style_id = "ability_cooldown_shadow",
+					pass_type = "text",
+					text_id = "ability_cooldown",
+					retained_mode = RETAINED_MODE_ENABLED,
+					content_check_function = function (content)
+						return Application.user_setting("numeric_ui") and not content.can_use_ability
+					end
 				}
 			}
 		},
 		content = {
-			on_cooldown = true,
-			ability_top_texture_id = "icon_rotarygun",
+			can_use_ability = false,
+			ability_cooldown = "-:-",
 			ability_effect = "gamepad_ability_effect_cog",
-			input_text = ""
+			input_text = "",
+			on_cooldown = true,
+			ability_top_texture_id = "icon_rotarygun"
 		},
 		style = {
 			input_text = {
@@ -207,6 +227,48 @@ local function create_ability_widget()
 					-45,
 					140,
 					111
+				}
+			},
+			ability_cooldown = {
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				font_size = 22,
+				horizontal_alignment = "center",
+				text_color = {
+					255,
+					250,
+					250,
+					250
+				},
+				offset = {
+					-115,
+					148,
+					22
+				},
+				size = {
+					100,
+					18
+				}
+			},
+			ability_cooldown_shadow = {
+				vertical_alignment = "center",
+				font_type = "hell_shark_header",
+				font_size = 22,
+				horizontal_alignment = "center",
+				text_color = {
+					255,
+					0,
+					0,
+					0
+				},
+				offset = {
+					-114,
+					147,
+					21
+				},
+				size = {
+					100,
+					18
 				}
 			}
 		},

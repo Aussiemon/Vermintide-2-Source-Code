@@ -44,7 +44,7 @@ CameraStateFollowThirdPerson.on_enter = function (self, unit, input, dt, context
 	local yaw = math.atan2(root_look_dir.y, root_look_dir.x)
 
 	camera_manager:set_pitch_yaw(viewport_name, -0.6, yaw)
-	Unit.set_data(unit, "camera", "settings_node", "heal_self")
+	Unit.set_data(unit, "camera", "settings_node", params.camera_node or "heal_self")
 end
 
 CameraStateFollowThirdPerson.on_exit = function (self, unit, input, dt, context, t, next_state)

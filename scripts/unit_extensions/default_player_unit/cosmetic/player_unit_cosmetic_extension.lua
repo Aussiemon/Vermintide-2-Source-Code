@@ -128,6 +128,17 @@ PlayerUnitCosmeticExtension.always_hide_attachment_slot = function (self, slot_n
 	return true
 end
 
+PlayerUnitCosmeticExtension.trigger_equip_events = function (self, slot_name, unit)
+	if slot_name == "slot_hat" then
+		local skin_data = self._cosmetics.skin
+		local equip_hat_event = skin_data.equip_hat_event
+
+		if equip_hat_event then
+			Unit.flow_event(unit, equip_hat_event)
+		end
+	end
+end
+
 PlayerUnitCosmeticExtension.hot_join_sync = function (self, sender)
 	return
 end
@@ -162,6 +173,10 @@ PlayerUnitCosmeticExtension._init_mesh_attachment = function (self, world, unit,
 	end
 end
 
+PlayerUnitCosmeticExtension.update = function (self, unit, dummy_input, dt, context, t)
+	self._queue_3p_event_name = nil
+end
+
 PlayerUnitCosmeticExtension.get_third_person_mesh_unit = function (self)
 	return self._tp_unit_mesh
 end
@@ -182,6 +197,19 @@ PlayerUnitCosmeticExtension.show_third_person_mesh = function (self, show)
 			end
 		end
 	end
+end
+
+PlayerUnitCosmeticExtension.queue_3p_emote = function (self, event_name, hide_weapons)
+	self._queue_3p_event_name = event_name
+	self._queue_3p_hide_weapons = hide_weapons
+end
+
+PlayerUnitCosmeticExtension.get_queued_3p_emote = function (self)
+	return self._queue_3p_event_name, self._queue_3p_hide_weapons
+end
+
+PlayerUnitCosmeticExtension.consume_queued_3p_emote = function (self)
+	self._queue_3p_event_name = nil
 end
 
 return

@@ -44,20 +44,6 @@ TwitchManager.init = function (self)
 
 	debug_print(Application.settings("twitch"))
 
-	if IS_XB1 then
-		self._headers = {
-			"Accept",
-			"application/vnd.twitchtv.v5+json",
-			"Client-ID",
-			self._twitch_settings.client_id
-		}
-	else
-		self._headers = {
-			"Accept: application/vnd.twitchtv.v5+json",
-			"Client-ID: " .. self._twitch_settings.client_id
-		}
-	end
-
 	TwitchSettings.default_downtime = Application.user_setting("twitch_time_between_votes")
 	TwitchSettings.default_vote_time = Application.user_setting("twitch_vote_time")
 	TwitchSettings.difficulty = Application.user_setting("twitch_difficulty")
@@ -113,13 +99,33 @@ end
 TwitchManager.connect = function (self, twitch_user_name, optional_connection_failure_callback, optional_connection_success_callback)
 	fassert(twitch_user_name, "[TwitchManager] You need to provide a user name to connect")
 
-	local url = "https://api.twitch.tv/kraken/users?login=" .. twitch_user_name
+	local url = "https://api.twitch.tv/helix/users?login=" .. twitch_user_name
 	local options = {}
 
 	if IS_WINDOWS then
 		options[Managers.curl._curl.OPT_SSL_OPTIONS] = Managers.curl._curl.SSLOPT_NO_REVOKE
 	end
 
+	local headers = nil
+
+	if IS_CONSOLE then
+		headers = {
+			"Content-Type",
+			"application/json",
+			"Client-ID",
+			self._twitch_settings.client_id,
+			"Authorization",
+			"Bearer " .. Managers.backend:get_twitch_app_access_token()
+		}
+	else
+		headers = {
+			"Content-Type: application/json",
+			"Client-ID: " .. self._twitch_settings.client_id,
+			"Authorization: Bearer " .. Managers.backend:get_twitch_app_access_token()
+		}
+	end
+
+	self._headers = headers
 	self._connecting = true
 	self._connection_failure_callback = optional_connection_failure_callback
 	self._connection_success_callback = optional_connection_success_callback
@@ -146,16 +152,16 @@ TwitchManager.cb_on_user_info_received = function (self, success, code, headers,
 				if self._connection_failure_callback then
 					self._connection_failure_callback(message)
 				end
-			elseif result_data._total > 0 then
-				local user_data = result_data.users[1]
-				local user_id = user_data._id
-				local twitch_user_name = user_data.name
+			elseif result_data.data and #result_data.data > 0 then
+				local user_data = result_data.data[1]
+				local user_id = user_data.id
+				local twitch_user_name = user_data.login
 
 				if self._connection_success_callback then
 					self._connection_success_callback(user_data)
 				end
 
-				local url = "https://api.twitch.tv/kraken/streams/" .. user_id
+				local url = "https://api.twitch.tv/helix/streams?user_id=" .. user_id
 				local options = {}
 
 				self._rest_interface:get(url, self._headers, callback(self, "cb_on_user_streams_received"), {
@@ -203,13 +209,13 @@ TwitchManager.cb_on_user_streams_received = function (self, success, code, heade
 		local result_data = cjson.decode(data)
 
 		if result_data then
-			local stream = result_data.stream
+			local stream = result_data.data[1]
 
 			if stream and type(stream) == "table" then
-				local channel = stream.channel
+				local channel = stream.user_login
 
 				if channel then
-					local channel_name = "#" .. channel.name
+					local channel_name = "#" .. channel
 					local settings = {
 						port = 6667,
 						allow_send = false,

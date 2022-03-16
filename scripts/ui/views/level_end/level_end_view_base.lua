@@ -1401,7 +1401,7 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 		"material",
 		"materials/fonts/gw_fonts"
 	}
-	local extra_materials = self.get_extra_materials and self:get_extra_materials()
+	local extra_materials = self.get_extra_materials
 
 	if extra_materials then
 		for _, extra_material in ipairs(extra_materials) do

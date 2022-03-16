@@ -28,7 +28,6 @@ DLCSettings = DLCSettings or {
 	morris = {
 		platform_specific = "resource_packages/dlcs/morris_platform_specific",
 		package_name = "resource_packages/dlcs/morris",
-		localization = "localization/morris",
 		additional_settings = {
 			level = "scripts/settings/dlcs/morris/morris_level_settings",
 			ai = "scripts/settings/dlcs/morris/morris_ai_settings",
@@ -66,7 +65,6 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	penny_part_1 = {
-		localization = "localization/penny",
 		package_name = "resource_packages/dlcs/penny_part_1",
 		additional_settings = {
 			common = "scripts/settings/dlcs/penny/penny_common_settings_part_1",
@@ -236,7 +234,6 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	grudge_marks = {
-		localization = "localization/grudge_marks",
 		package_name = "resource_packages/dlcs/grudge_marks",
 		additional_settings = {
 			common = "scripts/settings/dlcs/grudge_marks/grudge_marks_common_settings",
@@ -246,7 +243,6 @@ DLCSettings = DLCSettings or {
 		}
 	},
 	geheimnisnacht_2021 = {
-		localization = "localization/geheimnisnacht_2021",
 		package_name = "resource_packages/dlcs/geheimnisnacht_2021",
 		additional_settings = {
 			common = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_common_settings",
@@ -258,6 +254,14 @@ DLCSettings = DLCSettings or {
 		package_name = "resource_packages/dlcs/fall_collection_2021",
 		additional_settings = {
 			common = "scripts/settings/dlcs/fall_collection_2021/fall_collection_2021_common_settings"
+		}
+	},
+	cosmetics_2022_q1 = {
+		localization = "localization/cosmetics_2022_q1",
+		package_name = "resource_packages/dlcs/cosmetics_2022_q1",
+		additional_settings = {
+			common = "scripts/settings/dlcs/cosmetics_2022_q1/cosmetics_2022_q1_common_settings",
+			equipment = "scripts/settings/dlcs/cosmetics_2022_q1/cosmetics_2022_q1_equipment_settings"
 		}
 	}
 }

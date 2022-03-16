@@ -12,14 +12,15 @@ PresenceHelper.lobby_difficulty = function ()
 	return diff
 end
 
+local hub_presence_lookup = {
+	versus = "versus_hub",
+	deus = "deus_hub"
+}
+
 PresenceHelper.get_hub_presence = function ()
 	local mechanism = Managers.mechanism:current_mechanism_name()
 
-	if mechanism == "deus" then
-		return "deus_hub"
-	end
-
-	return "adventure_hub"
+	return hub_presence_lookup[mechanism] or "adventure_hub"
 end
 
 PresenceHelper.lobby_gamemode = function (lobby_data)
@@ -55,6 +56,16 @@ PresenceHelper.lobby_gamemode = function (lobby_data)
 		else
 			return "gamemode_deus_none"
 		end
+	elseif mechanism == "versus" then
+		local state = Managers.mechanism:get_state()
+
+		if state == "round_1" then
+			return "gamemode_versus_round_1"
+		elseif state == "round_2" then
+			return "gamemode_versus_round_2"
+		end
+
+		return "gamemode_versus_none"
 	elseif is_twitch_enabled then
 		return "gamemode_twitch"
 	elseif is_quick_game then

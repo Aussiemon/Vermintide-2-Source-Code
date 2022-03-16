@@ -207,10 +207,10 @@ StoreWindowCategoryList._update_gamepad_focus = function (self)
 end
 
 StoreWindowCategoryList._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local force_update = self._gamepad_active_last_frame == nil
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self._gamepad_active_last_frame or force_update then
 			self._gamepad_active_last_frame = true
 			self._params.category_focused = true

@@ -40,6 +40,8 @@ TestCases = {
 				Testify:make_request("wait_for_cutscene_to_finish")
 			end
 
+			Testify:make_request("clear_backend_inventory")
+			Testify:make_request("wait_for_players_inventory_ready")
 			TestifySnippets.set_script_data({
 				ai_bots_disabled = true,
 				allow_same_bots = true

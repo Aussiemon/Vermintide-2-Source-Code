@@ -176,6 +176,14 @@ AILocomotionExtensionC.set_external_velocity = function (self, external_velocity
 	EngineOptimizedExtensions.ai_locomotion_set_external_velocity(self._engine_extension_id, external_velocity)
 end
 
+AILocomotionExtensionC.set_animation_external_velocity = function (self, external_velocity)
+	if not self._engine_extension_id then
+		return
+	end
+
+	EngineOptimizedExtensions.ai_locomotion_set_animation_external_velocity(self._engine_extension_id, external_velocity)
+end
+
 AILocomotionExtensionC.set_wanted_rotation = function (self, rotation)
 	if not self._engine_extension_id then
 		return

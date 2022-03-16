@@ -11,7 +11,7 @@ curse_change_of_tzeentch.server_start_function = function (context, data)
 	data.seed = Managers.mechanism:get_level_seed("mutator")
 end
 
-curse_change_of_tzeentch.server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data)
+curse_change_of_tzeentch.server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data, killing_blow)
 	local random = nil
 	data.seed, random = Math.next_random(data.seed)
 
@@ -19,7 +19,7 @@ curse_change_of_tzeentch.server_ai_killed_function = function (context, data, ki
 		return
 	end
 
-	base_splitting_enemies.server_ai_killed_function(context, data, killed_unit, killer_unit, death_data)
+	base_splitting_enemies.server_ai_killed_function(context, data, killed_unit, killer_unit, death_data, killing_blow)
 end
 
 curse_change_of_tzeentch.on_split_enemy = function (killer_unit)

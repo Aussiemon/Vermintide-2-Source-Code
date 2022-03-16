@@ -152,13 +152,39 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 		self._head_bob = head_bob
 	end
 
-	if self.profile.supports_no_wobble then
-		local no_wobble = Application.user_setting("no_wobble")
+	if self.profile.supports_motion_sickness_modes then
+		local motion_sickness_hit = Application.user_setting("motion_sickness_hit")
 
-		if self._no_wobble ~= no_wobble then
-			Unit.animation_event(self.first_person_unit, (no_wobble and "motion_sickness_prevention_on") or "motion_sickness_prevention_off")
+		if self._motion_sickness_hit ~= motion_sickness_hit then
+			local event_name = "motion_sickness_hit_" .. motion_sickness_hit
 
-			self._no_wobble = no_wobble
+			Unit.animation_event(self.first_person_unit, event_name)
+
+			self._motion_sickness_hit = motion_sickness_hit
+		end
+
+		local motion_sickness_swing = Application.user_setting("motion_sickness_swing")
+
+		if self._motion_sickness_swing ~= motion_sickness_swing then
+			local event_name = "motion_sickness_swing_" .. motion_sickness_swing
+
+			Unit.animation_event(self.first_person_unit, event_name)
+
+			self._motion_sickness_swing = motion_sickness_swing
+		end
+
+		if motion_sickness_swing == "off" and motion_sickness_hit == "off" then
+			Unit.animation_event(self.first_person_unit, "motion_sickness_both_muted")
+		end
+
+		local motion_sickness_misc_cam = Application.user_setting("motion_sickness_misc_cam")
+
+		if self._motion_sickness_misc_cam ~= motion_sickness_misc_cam then
+			local event_name = "motion_sickness_misc_" .. motion_sickness_misc_cam
+
+			Unit.animation_event(self.first_person_unit, event_name)
+
+			self._motion_sickness_misc_cam = motion_sickness_misc_cam
 		end
 	end
 

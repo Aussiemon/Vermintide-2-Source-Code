@@ -16,11 +16,7 @@ local UI_RENDERER_MATERIALS = {
 	"material",
 	"materials/fonts/gw_fonts",
 	"material",
-	"materials/ui/ui_1080p_morris_icons_atlas",
-	"material",
-	"materials/ui/ui_1080p_morris_single_textures",
-	"material",
-	"materials/ui/ui_1080p_morris_start_game_atlas"
+	"materials/ui/ui_1080p_morris_single_textures"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -126,7 +122,7 @@ GameModeMapDeus.local_player_ready_to_start = function (self, player)
 	local profile_index = player:profile_index()
 	local career_index = player:career_index()
 
-	if profile_index == 0 or career_index == 0 then
+	if profile_index == 0 or career_index == 0 or profile_index == nil or career_index == nil then
 		return false
 	end
 

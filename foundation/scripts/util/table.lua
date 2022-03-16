@@ -636,12 +636,6 @@ table.remove_if = function (t, predicate)
 	end
 end
 
-local _enum_index_metatable = {
-	__index = function (_, k)
-		return error("Don't know `" .. tostring(k) .. "` for enum.")
-	end
-}
-
 table.enum = function (...)
 	local t = {}
 
@@ -649,8 +643,6 @@ table.enum = function (...)
 		local v = select(i, ...)
 		t[v] = v
 	end
-
-	setmetatable(t, _enum_index_metatable)
 
 	return t
 end

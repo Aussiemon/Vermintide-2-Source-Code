@@ -432,6 +432,14 @@ SummonedVortexExtension._update_attract_outside_ai = function (self, vortex_data
 
 							Managers.state.achievement:trigger_event("vortex_caught_unit", self._owner_unit, ai_unit)
 
+							local ai_simple_extension = ScriptUnit.has_extension(ai_unit, "ai_system")
+
+							if ai_simple_extension then
+								target_blackboard.only_trust_your_own_eyes = false
+
+								AiUtils.aggro_unit_of_enemy(ai_unit, self._owner_unit)
+							end
+
 							target_blackboard.eject_height = ConflictUtils.random_interval(vortex_template.ai_eject_height)
 							ai_units_inside[ai_unit] = true
 

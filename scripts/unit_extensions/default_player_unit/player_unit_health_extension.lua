@@ -135,13 +135,14 @@ PlayerUnitHealthExtension._calculate_max_health = function (self)
 	local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
 	local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
 	local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+	cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 
 	if health_state == "knocked_down" then
 		num_slayer_curses = 0
 		cursed_health = 0
 	end
 
-	if num_grimoires + num_twitch_grimoires + num_slayer_curses + num_mutator_curses + cursed_health > 0 then
+	if num_grimoires + num_twitch_grimoires + num_slayer_curses + num_mutator_curses + -cursed_health > 0 then
 		modifier = 1 + num_grimoires * grimoire_multiplier + num_twitch_grimoires * twitch_grimoire_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 	end
 
@@ -671,9 +672,9 @@ end
 PlayerUnitHealthExtension.destroy = function (self)
 	if self.is_server and self.health_game_object_id then
 		self.network_manager:destroy_game_object(self.health_game_object_id)
-
-		self.health_game_object_id = nil
 	end
+
+	self.health_game_object_id = nil
 end
 
 PlayerUnitHealthExtension.reset = function (self)

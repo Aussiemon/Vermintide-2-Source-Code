@@ -193,15 +193,17 @@ LevelUnlockUtils.unlocked_journeys = function (statistics_db, player_stats_id)
 	local journeys = {}
 
 	for i = 1, #AvailableJourneyOrder, 1 do
+		local journey_name = AvailableJourneyOrder[i]
+
 		if i == 1 then
-			journeys[#journeys + 1] = AvailableJourneyOrder[i]
+			journeys[#journeys + 1] = journey_name
 		else
 			local difficulty = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, player_stats_id, AvailableJourneyOrder[i - 1])
 
 			if not script_data.unlock_all_levels and (not difficulty or difficulty == 0) then
 				break
 			else
-				journeys[#journeys + 1] = AvailableJourneyOrder[i]
+				journeys[#journeys + 1] = journey_name
 			end
 		end
 	end

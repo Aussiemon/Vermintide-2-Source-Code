@@ -104,7 +104,7 @@ ProximitySystem.on_add_extension = function (self, world, unit, extension_name, 
 		extension.raycast_timer = 0
 		extension.hear_timer = 0
 		extension.player_broadphase_id = Broadphase.add(self.player_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)
-		local breed = extension_init_data.breed
+		local breed = extension_init_data.breed or extension_init_data.profile.breed
 
 		if breed and breed.proximity_system_check then
 			extension.special_broadphase_id = Broadphase.add(self.special_units_broadphase, unit, Unit.world_position(unit, 0), 0.5)

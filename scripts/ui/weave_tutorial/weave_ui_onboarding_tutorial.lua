@@ -100,7 +100,7 @@ WeaveUIOnboardingTutorial.get_tutorial_state = function (self)
 end
 
 WeaveUIOnboardingTutorial.has_popup = function (self, tutorial)
-	return tutorial and tutorial.popup_body
+	return tutorial and (tutorial.popup_body or tutorial.custom_popup)
 end
 
 WeaveUIOnboardingTutorial.needs_to_show = function (self, tutorial_data)
@@ -109,15 +109,20 @@ end
 
 WeaveUIOnboardingTutorial.show_tutorial = function (self, tutorial_data)
 	if tutorial_data and self.tutorial_popup then
-		local title = tutorial_data.popup_title
-		local sub_title = tutorial_data.popup_sub_title
-		local body = tutorial_data.popup_body
-		local optional_button_2 = tutorial_data.optional_button_2
-		local optional_button_2_func = tutorial_data.optional_button_2_func
-		local optional_button_2_input_actions = tutorial_data.optional_button_2_input_actions
-		local disable_body_localization = tutorial_data.disable_body_localization
+		if tutorial_data.custom_popup then
+			self.tutorial_popup:show_custom_popup(tutorial_data)
+		else
+			local title = tutorial_data.popup_title
+			local sub_title = tutorial_data.popup_sub_title
+			local body = tutorial_data.popup_body
+			local optional_button_2 = tutorial_data.optional_button_2
+			local optional_button_2_func = tutorial_data.optional_button_2_func
+			local optional_button_2_input_actions = tutorial_data.optional_button_2_input_actions
+			local disable_body_localization = tutorial_data.disable_body_localization
 
-		self.tutorial_popup:show(title, sub_title, body, optional_button_2, optional_button_2_func, optional_button_2_input_actions, disable_body_localization)
+			self.tutorial_popup:show(title, sub_title, body, optional_button_2, optional_button_2_func, optional_button_2_input_actions, disable_body_localization, tutorial_data)
+		end
+
 		self:set_completed(tutorial_data)
 	end
 end

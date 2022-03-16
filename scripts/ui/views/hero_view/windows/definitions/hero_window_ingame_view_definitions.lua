@@ -263,7 +263,7 @@ local function create_title_button(scenegraph_id, text, font_size, optional_offs
 end
 
 local title_button_definitions = {}
-local num_buttons = 10
+local num_buttons = 11
 
 for i = 1, num_buttons, 1 do
 	title_button_definitions[i] = create_title_button("title_entry", "n/a", 52, {

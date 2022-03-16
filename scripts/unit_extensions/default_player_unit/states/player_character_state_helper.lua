@@ -1827,4 +1827,36 @@ CharacterStateHelper.ghost_mode = function (ghost_mode_extension, input_extensio
 	end
 end
 
+CharacterStateHelper.handle_bot_ledge_hanging_failsafe = function (unit, is_bot)
+	if is_bot and ALIVE[unit] then
+		local blackboard = BLACKBOARDS[unit]
+		local locomotion_extension = blackboard.locomotion_extension
+
+		if locomotion_extension.external_velocity then
+			return false
+		else
+			local best_position = blackboard.navigation_extension:current_goal()
+
+			if not best_position then
+				local follow_unit = blackboard.ai_bot_group_extension.data.follow_unit
+
+				if ALIVE[follow_unit] then
+					local follow_unit_whereabouts_extension = ScriptUnit.extension(follow_unit, "whereabouts_system")
+					best_position = follow_unit_whereabouts_extension:last_position_on_navmesh()
+				else
+					best_position = blackboard.navigation_extension:destination()
+				end
+			end
+
+			if best_position then
+				locomotion_extension:teleport_to(best_position)
+
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
 return

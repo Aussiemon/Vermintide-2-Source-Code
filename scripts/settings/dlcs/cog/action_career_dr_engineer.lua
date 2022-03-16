@@ -95,12 +95,11 @@ ActionCareerDREngineer._waiting_to_shoot = function (self, t)
 		local num_projectilise = math.floor(rounds_to_fire)
 
 		if num_projectilise > 0 then
-			self._extra_shots_procced = false
-			local extra_shots = 0
+			local override_extra_shots = true
+			local extra_shots = self:_update_extra_shots(self.buff_extension, 0, override_extra_shots) or 0
 
-			if self:_check_extra_shot_proc(self.buff_extension) then
+			if extra_shots > 0 then
 				self.extra_buff_shot = true
-				extra_shots = 1 + self._extra_shots
 				self._num_extra_shots = extra_shots
 			end
 

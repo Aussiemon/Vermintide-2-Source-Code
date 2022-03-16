@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 50,
 	walk_speed = 0.65,
@@ -49,8 +50,8 @@ local breed_data = {
 		12,
 		15
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
-		return 0, 0, 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
+		return stagger_types.none, 0, 0
 	end,
 	debug_color = {
 		255,

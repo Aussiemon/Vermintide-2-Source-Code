@@ -1616,6 +1616,8 @@ PopupHandler.update = function (self, dt, from_manager)
 
 						self:play_sound("Play_hud_select")
 					end
+
+					result = result or self:_handle_keyboard_input(current_popup)
 				end
 			end
 		end
@@ -1646,6 +1648,52 @@ PopupHandler.update = function (self, dt, from_manager)
 		end
 
 		UIRenderer.end_pass(ui_renderer)
+	end
+end
+
+PopupHandler._handle_keyboard_input = function (self, current_popup)
+	local n_args = current_popup.n_args
+	local button_widgets = self.button_widgets[n_args]
+	local mouse_active = Managers.input:is_device_active("mouse")
+
+	if mouse_active then
+		for _, button_data in pairs(button_widgets) do
+			local button_widget = button_data
+			button_widget.content.button_hotspot.is_selected = false
+		end
+
+		current_popup.button_index = nil
+
+		return
+	end
+
+	local index = current_popup.button_index or 1
+	local input_service = Managers.input:get_service("popup")
+
+	if input_service:get("move_right_hold_continuous") then
+		index = math.clamp(index + 1, 1, n_args)
+	elseif input_service:get("move_left_hold_continuous") then
+		index = math.clamp(index - 1, 1, n_args)
+	elseif input_service:get("confirm_press") and current_popup.button_enabled_state[index] then
+		local args = current_popup.args
+
+		self:play_sound("Play_hud_select")
+		print("Popup Choice:", args[index * 2 - 1])
+
+		current_popup.button_index = nil
+
+		return args[index * 2 - 1]
+	end
+
+	if index ~= current_popup.button_index then
+		for idx, button_data in ipairs(button_widgets) do
+			local button_widget = button_data
+			button_widget.content.button_hotspot.is_selected = index == idx
+		end
+
+		current_popup.button_index = index
+
+		self:play_sound("Play_hud_hover")
 	end
 end
 

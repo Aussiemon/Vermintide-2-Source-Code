@@ -12,6 +12,7 @@ HeroWindowCraftingInventoryConsole.NAME = "HeroWindowCraftingInventoryConsole"
 HeroWindowCraftingInventoryConsole.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate HeroWindowCraftingInventoryConsole")
 
+	self.params = params
 	self.parent = params.parent
 	local ingame_ui_context = params.ingame_ui_context
 	self.ui_renderer = ingame_ui_context.ui_renderer
@@ -33,10 +34,14 @@ HeroWindowCraftingInventoryConsole.on_enter = function (self, params, offset)
 	self.hero_name = params.hero_name
 	self.career_index = params.career_index
 	self.profile_index = params.profile_index
+	params = {
+		profile_index = self.profile_index,
+		career_index = self.career_index
+	}
 
 	self:_setup_input_buttons()
 
-	local item_grid = ItemGridUI:new(crafting_recipes, self._widgets_by_name.item_grid, self.hero_name, self.career_index)
+	local item_grid = ItemGridUI:new(crafting_recipes, self._widgets_by_name.item_grid, self.hero_name, self.career_index, params)
 	self._item_grid = item_grid
 
 	item_grid:mark_equipped_items(true)
@@ -85,6 +90,9 @@ HeroWindowCraftingInventoryConsole.create_ui_elements = function (self, params, 
 		window_position[2] = window_position[2] + offset[2]
 		window_position[3] = window_position[3] + offset[3]
 	end
+
+	widgets_by_name.item_tooltip.content.profile_index = self.params.profile_index
+	widgets_by_name.item_tooltip.content.career_index = self.params.career_index
 end
 
 HeroWindowCraftingInventoryConsole.on_exit = function (self, params)
@@ -174,9 +182,9 @@ HeroWindowCraftingInventoryConsole._is_button_hovered = function (self, widget)
 end
 
 HeroWindowCraftingInventoryConsole._handle_gamepad_input = function (self, dt, t)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 
-	if not gamepad_active then
+	if mouse_active then
 		return
 	end
 
@@ -507,10 +515,10 @@ HeroWindowCraftingInventoryConsole._set_gamepad_input_buttons_visibility = funct
 end
 
 HeroWindowCraftingInventoryConsole._handle_gamepad_activity = function (self, forced_update)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	forced_update = forced_update or self.gamepad_active_last_frame == nil
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self.gamepad_active_last_frame or forced_update then
 			self.gamepad_active_last_frame = true
 			local item_grid = self._item_grid

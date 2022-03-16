@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	bots_should_flank = true,
 	target_selection_angry = "pick_rat_ogre_target_with_weights",
@@ -417,11 +418,11 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						6,
-						0,
-						0,
-						6
+						stagger_types.explosion,
+						stagger_types.explosion,
+						stagger_types.none,
+						stagger_types.none,
+						stagger_types.explosion
 					},
 					stagger_duration = {
 						4.5,
@@ -547,10 +548,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 4,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -739,10 +740,10 @@ local action_data = {
 				push_ai = {
 					stagger_distance = 3,
 					stagger_impact = {
-						6,
-						3,
-						0,
-						0
+						stagger_types.explosion,
+						stagger_types.heavy,
+						stagger_types.none,
+						stagger_types.none
 					},
 					stagger_duration = {
 						4.5,
@@ -868,18 +869,18 @@ local action_data = {
 		beam_sfx_start_event = "Play_stormfiend_torch_loop",
 		damage_type = "warpfire_ground",
 		start_distance = 4,
-		warpfire_switch_range = 8,
-		aim_start_offset = -1,
-		environment_intensity_increase_per_firewall = 10,
-		sync_with_linked_unit = false,
-		minimum_length = 2,
 		maximum_length = 15,
+		warpfire_switch_range = 8,
+		sync_with_linked_unit = false,
+		environment_intensity_increase_per_firewall = 10,
+		minimum_length = 2,
+		aim_start_offset = -1,
 		beam_sfx_stop_event = "Stop_stormfiend_torch_loop",
 		action_weight = 1,
 		max_fire_rate_at_percentage = 0.75,
+		light_weight_projectile_template_name = "stormfiend_boss",
 		global_sound_parameter = "stormfiend_mood",
 		weapon_setup = "ratling_gun",
-		light_weight_projectile_template_name = "stormfiend_boss",
 		considerations = UtilityConsiderations.stormfiend_boss_shoot,
 		ratling_gun_switch_range = math.huge,
 		aim_constraint_target = {
@@ -902,7 +903,7 @@ local action_data = {
 				attack_left = "attack_fire_left_arm"
 			},
 			bwd = {
-				attack_right = "attack_fire_turn_bwd"
+				attack_left = "attack_fire_turn_bwd"
 			},
 			left = {
 				attack_left = "attack_fire_turn_left"
@@ -914,31 +915,44 @@ local action_data = {
 		attack_anims_data = {
 			attack_fire_left_arm = {
 				rad = 0,
-				dir = 1
+				aim_start_t = 0.2,
+				start_firing_t = 0.3,
+				full_animation_t = 3,
+				dir = 1,
+				stop_firing_t = 2.7
 			},
 			attack_fire_right_arm = {
 				rad = 0,
-				dir = 1
+				aim_start_t = 0.2,
+				start_firing_t = 0.3,
+				full_animation_t = 3,
+				dir = 1,
+				stop_firing_t = 2.7
 			},
 			attack_fire_turn_bwd = {
+				aim_start_t = 0.2,
+				start_firing_t = 1,
+				full_animation_t = 3,
 				dir = 1,
+				stop_firing_t = 2.7,
 				rad = math.pi
 			},
 			attack_fire_turn_left = {
+				aim_start_t = 0.2,
+				start_firing_t = 0.8,
+				full_animation_t = 3,
 				dir = 1,
+				stop_firing_t = 2.7,
 				rad = math.pi / 2
 			},
 			attack_fire_turn_right = {
+				aim_start_t = 0.2,
+				start_firing_t = 0.8,
+				full_animation_t = 3,
 				dir = -1,
+				stop_firing_t = 2.7,
 				rad = math.pi / 2
 			}
-		},
-		attack_times = {
-			attack_fire_right_arm = 3,
-			attack_fire_turn_left = 3,
-			attack_fire_turn_bwd = 3,
-			attack_fire_left_arm = 3,
-			attack_fire_turn_right = 3
 		},
 		shoulder_nodes = {
 			attack_right = "j_rightshoulder",
@@ -1078,22 +1092,23 @@ local action_data = {
 	dual_shoot_intro = {
 		fire_rate_at_start = 25,
 		minimum_length = 2,
-		firing_time = 2,
-		aim_start_offset = -1,
+		start_firing_t = 1.06,
+		firing_duration = 2,
+		attack_duration = 4,
 		rotation_time = 2,
 		fire_rate_at_end = 35,
 		stop_shoot_sfx = "Stop_stormfiend_shooting_loop",
-		max_fire_rate_at_percentage = 0.35,
 		attack_animation = "intro_frenzy",
 		light_weight_projectile_template_name = "stormfiend_boss_dual_intro",
 		damage_type = "warpfire_ground",
 		start_distance = 4,
 		maximum_length = 15,
 		warpfire_switch_range = 8,
+		max_fire_rate_at_percentage = 0.35,
 		action_weight = 2,
+		aim_start_offset = -1,
 		shoot_sfx = "Play_stormfiend_shooting_loop",
 		weapon_setup = "ratling_gun",
-		attack_time = 4,
 		considerations = UtilityConsiderations.stormfiend_boss_shoot,
 		ratling_gun_switch_range = math.huge,
 		damage = {

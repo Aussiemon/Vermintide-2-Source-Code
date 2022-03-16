@@ -21,7 +21,7 @@ PlayFabMirrorAdventure.init = function (self, signin_result)
 	self.super.init(self, signin_result)
 end
 
-PlayFabMirrorAdventure.request_characters = function (self)
+PlayFabMirrorAdventure.request_characters = function (self, mechanism_key)
 	self:_verify_dlc_careers()
 end
 

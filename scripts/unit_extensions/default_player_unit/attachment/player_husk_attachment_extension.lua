@@ -57,6 +57,7 @@ PlayerHuskAttachmentExtension.create_attachment = function (self, slot_name, ite
 
 	if show_attachments_event then
 		Unit.flow_event(self._tp_unit_mesh, show_attachments_event)
+		Unit.flow_event(unit, show_attachments_event)
 	end
 
 	self:_show_attachment(slot_name, slot_data, true)
@@ -136,6 +137,7 @@ PlayerHuskAttachmentExtension._show_attachment = function (self, slot_name, slot
 
 		if should_show then
 			Unit.flow_event(unit, "lua_attachment_unhidden")
+			self._cosmetic_extension:trigger_equip_events(slot_name, unit)
 		else
 			Unit.flow_event(unit, "lua_attachment_hidden")
 		end

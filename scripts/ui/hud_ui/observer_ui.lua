@@ -235,6 +235,7 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		local num_mutator_curses = buff_extension:num_buff_perk("mutator_curse")
 		local mutator_curse_multiplier = buff_extension:apply_buffs_to_value(WindSettings.light.curse_settings.value[difficulty_name], "curse_protection")
 		local cursed_health = buff_extension:apply_buffs_to_value(0, "health_curse")
+		cursed_health = buff_extension:apply_buffs_to_value(cursed_health, "curse_protection")
 		active_percentage = 1 + num_grimoires * multiplier + num_twitch_grimoires * twitch_multiplier + num_slayer_curses * slayer_curse_multiplier + num_mutator_curses * mutator_curse_multiplier + cursed_health
 	else
 		health_percent = 0

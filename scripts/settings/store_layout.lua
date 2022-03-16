@@ -467,6 +467,12 @@ StoreLayoutConfig.make_sort_key = function (item)
 		end
 	end
 
+	prio = 4096 - prio
+
+	if prio <= 0 then
+		prio = 1
+	end
+
 	local sort_key = string.format("%01x%-16.16s%03x%04x%01x", owned, item_type, prio, price, ORDER_RARITY[rarity] or 0)
 
 	return sort_key

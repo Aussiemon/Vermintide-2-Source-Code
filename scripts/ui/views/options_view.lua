@@ -1742,10 +1742,10 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		UISettings.use_custom_hud_scale = use_custom_hud_scale
 	end
 
-	local use_gamepad_menu_layout = user_settings.use_gamepad_menu_layout
+	local use_pc_menu_layout = user_settings.use_pc_menu_layout
 
-	if use_gamepad_menu_layout ~= nil then
-		UISettings.use_gamepad_menu_layout = use_gamepad_menu_layout
+	if use_pc_menu_layout ~= nil then
+		UISettings.use_pc_menu_layout = use_pc_menu_layout
 	end
 
 	local use_gamepad_hud_layout = user_settings.use_gamepad_hud_layout
@@ -2430,11 +2430,12 @@ OptionsView.update = function (self, dt)
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("options_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
+	local mouse_active = input_manager:is_device_active("mouse")
 	local selected_widget = self.selected_widget
 
 	self:update_apply_button()
 
-	if gamepad_active and not self:has_popup() and not transitioning and not disable_all_input then
+	if not mouse_active and not self:has_popup() and not transitioning and not disable_all_input then
 		self:handle_controller_navigation_input(dt, input_service)
 	end
 
@@ -3399,7 +3400,7 @@ OptionsView.change_gamepad_generic_input_action = function (self, reset_input_de
 end
 
 OptionsView._find_next_title_tab = function (self)
-	local selected_title = self.selected_title + 1
+	local selected_title = 1 + self.selected_title % self.title_buttons_n
 	local new_tab_index = nil
 
 	for i = selected_title, self.title_buttons_n, 1 do
@@ -3506,10 +3507,10 @@ OptionsView.handle_controller_navigation_input = function (self, dt, input_servi
 
 		local new_tab_index = nil
 
-		if input_service:get("cycle_next") then
-			new_tab_index = self:_find_next_title_tab()
-		elseif input_service:get("cycle_previous") then
+		if input_service:get("cycle_previous") then
 			new_tab_index = self:_find_previous_title_tab()
+		elseif input_service:get("cycle_next") then
+			new_tab_index = self:_find_next_title_tab()
 		end
 
 		if new_tab_index then
@@ -4161,7 +4162,7 @@ OptionsView.cb_hud_custom_scale = function (self, content)
 	UPDATE_RESOLUTION_LOOKUP(force_update)
 end
 
-OptionsView.cb_enabled_gamepad_menu_layout_setup = function (self)
+OptionsView.cb_enabled_pc_menu_layout_setup = function (self)
 	local options = {
 		{
 			value = false,
@@ -4173,30 +4174,30 @@ OptionsView.cb_enabled_gamepad_menu_layout_setup = function (self)
 		}
 	}
 
-	if not Application.user_setting("use_gamepad_menu_layout") then
-		local use_gamepad_menu_layout = false
+	if not Application.user_setting("use_pc_menu_layout") then
+		local use_pc_menu_layout = false
 	end
 
-	if use_gamepad_menu_layout then
+	if use_pc_menu_layout then
 		slot3 = 2
 	else
 		local selection = 1
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_gamepad_menu_layout") then
+	if DefaultUserSettings.get("user_settings", "use_pc_menu_layout") then
 		slot4 = 2
 	else
 		local default_value = 1
 	end
 
-	return selection, options, "settings_menu_enabled_gamepad_menu_layout", default_value
+	return selection, options, "settings_menu_enabled_pc_menu_layout", default_value
 end
 
-OptionsView.cb_enabled_gamepad_menu_layout_saved_value = function (self, widget)
-	local use_gamepad_menu_layout = assigned(self.changed_user_settings.use_gamepad_menu_layout, Application.user_setting("use_gamepad_menu_layout"))
+OptionsView.cb_enabled_pc_menu_layout_saved_value = function (self, widget)
+	local use_pc_menu_layout = assigned(self.changed_user_settings.use_pc_menu_layout, Application.user_setting("use_pc_menu_layout"))
 	slot3 = widget.content
 
-	if use_gamepad_menu_layout then
+	if use_pc_menu_layout then
 		slot4 = 2
 	else
 		slot4 = 1
@@ -4205,10 +4206,10 @@ OptionsView.cb_enabled_gamepad_menu_layout_saved_value = function (self, widget)
 	slot3.current_selection = slot4
 end
 
-OptionsView.cb_enabled_gamepad_menu_layout = function (self, content)
+OptionsView.cb_enabled_pc_menu_layout = function (self, content)
 	local options_values = content.options_values
 	local current_selection = content.current_selection
-	self.changed_user_settings.use_gamepad_menu_layout = options_values[current_selection]
+	self.changed_user_settings.use_pc_menu_layout = options_values[current_selection]
 end
 
 OptionsView.cb_enabled_gamepad_hud_layout_setup = function (self)
@@ -9644,249 +9645,6 @@ OptionsView.cb_chat_font_size_saved_value = function (self, widget)
 	end
 
 	widget.content.current_selection = selected_option
-end
-
-OptionsView.cb_bot_spawn_priority = function (self, content, style, new_priority_order)
-	local list_content = content.list_content
-
-	if new_priority_order then
-		local list_style = style.list_style
-		local item_styles = list_style.item_styles
-
-		for i = 1, #new_priority_order, 1 do
-			local profile_id = new_priority_order[i]
-			local current_priority_index = nil
-
-			for j = i, #list_content, 1 do
-				local item_content = list_content[j]
-
-				if item_content.profile_id == profile_id then
-					current_priority_index = j
-
-					break
-				end
-			end
-
-			fassert(current_priority_index, "cb_bot_spawn_priority: Could not find profile index %s in priority order list.", profile_id)
-
-			list_content[current_priority_index].index_text = list_content[i].index_text
-			list_content[i].index_text = list_content[current_priority_index].index_text
-			list_content[current_priority_index] = list_content[i]
-			list_content[i] = list_content[current_priority_index]
-			item_styles[current_priority_index] = item_styles[i]
-			item_styles[i] = item_styles[current_priority_index]
-		end
-	end
-
-	local original_bot_spawn_priority = self.original_bot_spawn_priority
-	local session_bot_spawn_priority = self.session_bot_spawn_priority
-	local order_changed = false
-
-	for i = 1, #list_content, 1 do
-		local profile_id = original_bot_spawn_priority[i]
-		local new_profile_id = list_content[i].profile_id
-
-		if profile_id ~= new_profile_id then
-			order_changed = true
-		end
-
-		self.session_bot_spawn_priority[i] = new_profile_id
-	end
-
-	self.changed_bot_spawn_priority = order_changed
-end
-
-OptionsView.cb_bot_spawn_priority_setup = function (self)
-	local list_contents = {}
-	local list_styles = {}
-	local icon_size = {
-		34,
-		34
-	}
-	local text = "menu_settings_bot_spawn_priority"
-	local enabled_text_color = Colors.get_color_table_with_alpha("font_default", 255)
-	local disabled_text_color = Colors.get_color_table_with_alpha("red", 200)
-	local default_priority = ProfilePriority
-	local saved_priority = self.session_bot_spawn_priority
-
-	if #saved_priority <= 0 or not saved_priority then
-		local profile_priority = default_priority
-	end
-
-	local num_entries = #profile_priority
-
-	for i = 1, num_entries, 1 do
-		local profile_id = profile_priority[i]
-		local profile = SPProfiles[profile_id]
-
-		if not profile.tutorial_profile then
-			local unit_name = profile.unit_name
-			local display_name = profile.ingame_display_name
-			local content = {
-				background_highlight_texture = "playerlist_hover",
-				selected = false,
-				hotspot = {},
-				texture = string.format("tabs_class_icon_%s_normal", unit_name),
-				highlight_texture = string.format("tabs_class_icon_%s_selected", unit_name),
-				profile_id = profile_id,
-				text = display_name,
-				index_text = string.format("%d.", i)
-			}
-			local style = {
-				size = {
-					icon_size[1] + 280 + 28,
-					icon_size[2]
-				},
-				color = {
-					50,
-					255,
-					255,
-					255
-				},
-				texture = {
-					masked = true,
-					offset = {
-						280,
-						0,
-						25
-					},
-					color = Colors.get_color_table_with_alpha("white", 255),
-					size = icon_size
-				},
-				background_highlight_texture = {
-					masked = true,
-					offset = {
-						0,
-						0,
-						25
-					},
-					color = Colors.get_color_table_with_alpha("white", 150),
-					size = {
-						icon_size[1] + 280 + 28,
-						icon_size[2]
-					}
-				},
-				background_selected_texture = {
-					masked = true,
-					offset = {
-						0,
-						0,
-						25
-					},
-					color = Colors.get_color_table_with_alpha("white", 255),
-					size = {
-						icon_size[1] + 280 + 28,
-						icon_size[2]
-					}
-				},
-				highlight_texture = {
-					masked = true,
-					offset = {
-						280,
-						0,
-						25
-					},
-					color = Colors.get_color_table_with_alpha("white", 255),
-					size = icon_size
-				},
-				text = {
-					upper_case = false,
-					localize = true,
-					font_size = 16,
-					dynamic_font = true,
-					font_type = "hell_shark_masked",
-					offset = {
-						28,
-						5,
-						25
-					},
-					text_color = enabled_text_color,
-					enabled_color = enabled_text_color,
-					disabled_color = disabled_text_color
-				},
-				index_text = {
-					upper_case = false,
-					localize = false,
-					font_size = 16,
-					dynamic_font = true,
-					font_type = "hell_shark_masked",
-					offset = {
-						0,
-						5,
-						25
-					},
-					text_color = enabled_text_color,
-					enabled_color = enabled_text_color,
-					disabled_color = disabled_text_color
-				}
-			}
-			list_contents[i] = content
-			list_styles[i] = style
-		end
-	end
-
-	local function item_content_change_function(content, style, index)
-		if style.text_color then
-			if index > PlayerManager.MAX_PLAYERS or not style.enabled_color then
-				slot3 = style.disabled_color
-			end
-
-			style.text_color = slot3
-		end
-	end
-
-	return text, list_contents, list_styles, icon_size, item_content_change_function, default_priority
-end
-
-OptionsView.cb_bot_spawn_priority_saved_value = function (self, widget)
-	local content = widget.content
-	local list_content = content.list_content
-	local default_priority = content.default_value
-	local style = widget.style
-	local list_style = style.list_style
-	local item_styles = list_style.item_styles
-	local selected_index = content.current_selection
-
-	if selected_index then
-		local item_content = list_content[selected_index]
-		local hotspot = item_content.hotspot
-		hotspot.is_selected = false
-		content.current_selection = nil
-		local up_hotspot = content.up_hotspot
-		up_hotspot.active = false
-		local down_hotspot = content.down_hotspot
-		down_hotspot.active = false
-	end
-
-	local original_bot_spawn_priority = self.original_bot_spawn_priority
-
-	if #original_bot_spawn_priority <= 0 or not original_bot_spawn_priority then
-		local profile_priority = default_priority
-	end
-
-	for i = 1, #profile_priority, 1 do
-		local profile_id = profile_priority[i]
-		local current_priority_index = nil
-
-		for j = i, #list_content, 1 do
-			local item_content = list_content[j]
-
-			if item_content.profile_id == profile_id then
-				current_priority_index = j
-
-				break
-			end
-		end
-
-		fassert(current_priority_index, "cb_bot_spawn_priority_saved_value: Could not find profile index %s in priority order list.", profile_id)
-
-		list_content[current_priority_index].index_text = list_content[i].index_text
-		list_content[i].index_text = list_content[current_priority_index].index_text
-		list_content[current_priority_index] = list_content[i]
-		list_content[i] = list_content[current_priority_index]
-		item_styles[current_priority_index] = item_styles[i]
-		item_styles[i] = item_styles[current_priority_index]
-	end
 end
 
 OptionsView.cb_clan_tag_setup = function (self)

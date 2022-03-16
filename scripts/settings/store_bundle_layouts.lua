@@ -510,6 +510,262 @@ StoreBundleLayouts = {
 		{
 			type = "spacing"
 		}
+	},
+	q1_collection_bundle = {
+		{
+			id = "dlc_logo",
+			type = "big_image",
+			settings = {
+				text = "",
+				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_q1_collection_bundle",
+				localize = false,
+				show_frame = true,
+				texture_package = "resource_packages/store/bundle_icons/store_item_icon_q1_collection_bundle",
+				image_size = {
+					800.4,
+					591.6
+				},
+				size = {
+					800.4,
+					591.6
+				}
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "divider_horizontal"
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "header_text",
+			settings = {
+				text = "menu_store_dlc_title_including",
+				localize = true
+			}
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_dr_ranger_1001",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "ranger_hat_1005",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_q1_ranger_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_q1_ranger_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_ww_waywatcher_1001",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "waywatcher_hat_1004",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_q1_waywatcher_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_q1_waywatcher_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_es_knight_1001",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "knight_hat_1003",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_q1_footknight_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_q1_footknight_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_bw_unchained_1001",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "unchained_hat_1003",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_q1_unchained_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_q1_unchained_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_wh_captain_1001",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "witchhunter_hat_1003",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_q1_wh_captain_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_q1_wh_captain_bundle",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "divider_horizontal"
+		},
+		{
+			type = "spacing"
+		}
 	}
 }
 

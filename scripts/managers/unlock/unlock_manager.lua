@@ -71,7 +71,7 @@ end
 
 local POPUP_IDS_TO_REMOVE = {}
 
-UnlockManager.update = function (self, dt)
+UnlockManager.update = function (self, dt, t)
 	if IS_XB1 then
 		if self._update_unlocks then
 			self._dlc_status_changed = nil
@@ -102,7 +102,7 @@ UnlockManager.update = function (self, dt)
 		if not table.is_empty(self._popup_ids) then
 			self:_handle_popups()
 		else
-			self:_update_backend_unlocks()
+			self:_update_backend_unlocks(t)
 		end
 	end
 end
@@ -517,6 +517,16 @@ UnlockManager.dlc_id = function (self, name)
 	return unlock:id()
 end
 
+UnlockManager.dlc_name_from_id = function (self, id)
+	for dlc_name, unlock in pairs(self._unlocks) do
+		local dlc_id = unlock:id()
+
+		if dlc_id == id then
+			return dlc_name
+		end
+	end
+end
+
 UnlockManager.open_dlc_page = function (self, dlc_name)
 	if IS_WINDOWS and HAS_STEAM then
 		local dlc_settings = StoreDlcSettingsByName[dlc_name]
@@ -625,7 +635,7 @@ UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
 	self._state = "removing_reward"
 end
 
-UnlockManager._update_backend_unlocks = function (self)
+UnlockManager._update_backend_unlocks = function (self, t)
 	if self._state == "handle_reminder_popup" then
 		if SaveData.new_dlcs_unlocks and not self._handled_reminders_popups then
 			for dlc_name, first_time in pairs(SaveData.new_dlcs_unlocks) do

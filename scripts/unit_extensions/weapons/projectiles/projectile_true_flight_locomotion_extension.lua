@@ -33,6 +33,7 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 	self.raycast_timer = 0
 	self.target_vector = extension_init_data.target_vector
 	self.current_direction = Vector3Box(self.target_vector)
+	self.current_rotation = QuaternionBox(Quaternion.look(self.target_vector))
 	self.target_vector = Vector3.normalize(Vector3.flat(self.target_vector))
 	self.target_vector_boxed = Vector3Box(self.target_vector)
 	self.owner_unit = extension_init_data.owner_unit
@@ -178,8 +179,10 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 		has_good_target, can_see_target = self:_check_target_valid(new_target, current_position, template)
 	end
 
+	local new_rotation = nil
+
 	if can_see_target then
-		new_position = self:_update_towards_target_func(current_position, t, dt)
+		new_position, new_rotation = self:_update_towards_target_func(current_position, t, dt)
 	elseif has_good_target then
 		local position, _ = self:update_seeking_target(current_position, dt, t, false)
 		new_position = position
@@ -204,28 +207,29 @@ ProjectileTrueFlightLocomotionExtension.update = function (self, unit, input, dt
 	end
 
 	local direction = Vector3.normalize(velocity)
-	local rotation = Quaternion.look(direction)
+	local new_rotation = new_rotation or Quaternion.look(direction)
 
-	self:_unit_set_position_rotation(unit, new_position, rotation)
+	self:_unit_set_position_rotation(unit, new_position, new_rotation)
 
 	local game = Managers.state.network:game()
 	local id = Managers.state.unit_storage:go_id(unit)
 
 	if game and id then
 		GameSession.set_game_object_field(game, id, "position", new_position)
-		GameSession.set_game_object_field(game, id, "rotation", rotation)
+		GameSession.set_game_object_field(game, id, "rotation", new_rotation)
 	end
 
 	self._current_position:store(new_position)
 	self.velocity:store(velocity)
 	self.current_direction:store(direction)
+	self.current_rotation:store(new_rotation)
 
 	self.t = t
 
 	self.target_vector_boxed:store(Vector3.normalize(Vector3.flat(direction)))
 	self.initial_position_boxed:store(new_position)
 
-	self.radians = math.degrees_to_radians(ActionUtils.pitch_from_rotation(rotation))
+	self.radians = math.degrees_to_radians(ActionUtils.pitch_from_rotation(new_rotation))
 	self.moved = true
 end
 
@@ -435,47 +439,6 @@ ProjectileTrueFlightLocomotionExtension.update_towards_target = function (self, 
 	if self.target_players and create_bot_threat then
 		self:update_bot_threat(target_unit, distance)
 	end
-
-	return new_position
-end
-
-ProjectileTrueFlightLocomotionExtension.update_towards_target_ability = function (self, position, t, dt)
-	local target_unit = self.target_unit
-	local current_direction = self.current_direction:unbox()
-	local template = TrueFlightTemplates[self.true_flight_template_name]
-	local dot_threshold = template.dot_threshold
-	local lerp_squared_distance_threshold = template.lerp_squared_distance_threshold
-	local lerp_distance_threshold = template.lerp_distance_threshold
-	local lerp_constant = template.lerp_constant
-	local speed_multiplier = template.speed_multiplier
-	local target_position = get_target_head_node_position(target_unit, self.target_node)
-	local required_velocity = target_position - position
-	local distance = Vector3.length(required_velocity)
-	local wanted_direction = Vector3.normalize(required_velocity)
-	local new_direction = current_direction
-	local life_time_factor = math.min(t - self.spawn_time, template.life_time_factor or 1)
-	local dot_value = Vector3.dot(current_direction, wanted_direction)
-
-	if math.abs(dot_value) < dot_threshold then
-		local current_rotation = Quaternion.look(current_direction)
-		local wanted_rotation = Quaternion.look(wanted_direction)
-		local lerp_modifier = nil
-
-		if lerp_squared_distance_threshold then
-			lerp_modifier = math.max(lerp_squared_distance_threshold - distance * distance, 1) / lerp_squared_distance_threshold
-		elseif lerp_distance_threshold then
-			lerp_modifier = math.max(lerp_distance_threshold - distance, 1) / lerp_distance_threshold
-		end
-
-		lerp_modifier = lerp_modifier * life_time_factor
-		lerp_modifier = lerp_modifier * lerp_modifier
-		local lerp_value = dt * lerp_modifier * lerp_constant
-		local new_rotation = Quaternion.lerp(current_rotation, wanted_rotation, lerp_value)
-		new_direction = Quaternion.forward(new_rotation)
-	end
-
-	local speed = self.speed * speed_multiplier
-	local new_position = position + new_direction * speed * dt
 
 	return new_position
 end

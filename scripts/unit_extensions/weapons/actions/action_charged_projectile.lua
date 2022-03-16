@@ -84,15 +84,16 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 	end
 end
 
-ActionChargedProjectile._check_extra_shot_proc = function (self, buff_extension)
+ActionChargedProjectile._update_extra_shots = function (self, buff_extension, shots_to_consume)
 	if self._is_grenade then
-		local extra_shot = self._extra_grenades > 0
-		self._extra_grenades = self._extra_grenades - 1
+		if shots_to_consume then
+			self._extra_grenades = self._extra_grenades - shots_to_consume
+		end
 
-		return extra_shot
+		return self._extra_grenades > 0
 	end
 
-	return ActionChargedProjectile.super._check_extra_shot_proc(self, buff_extension)
+	return ActionChargedProjectile.super._update_extra_shots(self, buff_extension, shots_to_consume)
 end
 
 ActionChargedProjectile._shoot = function (self, t)
@@ -116,7 +117,6 @@ ActionChargedProjectile._shoot = function (self, t)
 		end
 	end
 
-	local extra_shot_procced = self:_check_extra_shot_proc(self.owner_buff_extension)
 	local add_spread = not self.extra_buff_shot
 
 	if self._is_grenade then
@@ -128,7 +128,7 @@ ActionChargedProjectile._shoot = function (self, t)
 			self._free_grenade = free_grenade_proc or free_grenade_perk
 		end
 
-		if not extra_shot_procced then
+		if not self.extra_buff_shot then
 			if not self._free_grenade then
 				self.ammo_extension:use_ammo(ammo_usage)
 			end
@@ -150,7 +150,7 @@ ActionChargedProjectile._shoot = function (self, t)
 		})
 	end
 
-	if extra_shot_procced then
+	if self:_update_extra_shots(self.owner_buff_extension, 1) then
 		self.state = "waiting_to_shoot"
 		self.time_to_shoot = t + 0.1
 		self.extra_buff_shot = true

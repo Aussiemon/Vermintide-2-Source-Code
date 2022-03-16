@@ -111,7 +111,13 @@ return {
 	on_split_enemy = function (killer_unit)
 		return
 	end,
-	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data)
+	server_ai_killed_function = function (context, data, killed_unit, killer_unit, death_data, killing_blow)
+		local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
+
+		if killing_blow[DamageDataIndex.DAMAGE_SOURCE_NAME] == "suicide" and (damage_type == "volume_insta_kill" or damage_type == "forced") then
+			return
+		end
+
 		local breed_tier_list = data.breed_tier_list
 		local breed_explosion_templates = data.breed_explosion_templates
 		local blackboard = BLACKBOARDS[killed_unit]

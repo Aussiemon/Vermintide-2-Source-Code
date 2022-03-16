@@ -52,6 +52,61 @@ for breed_name, breed in pairs(Breeds) do
 	end
 end
 
+achievements.lake_kill_register = {
+	display_completion_ui = false,
+	required_dlc = "lake_upgrade",
+	events = {
+		"register_kill"
+	},
+	completed = function (statistics_db, stats_id, template_data)
+		local max_count = 0
+
+		for i = 1, #boss_breeds, 1 do
+			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "markus_questingknight_career_skill_weapon", boss_breeds[i])
+			max_count = max_count + count
+		end
+
+		return max_count >= 5
+	end,
+	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
+		local damage_data = event_data[3]
+		local attacker_unit = damage_data and damage_data[DamageDataIndex.ATTACKER]
+
+		if not ALIVE[attacker_unit] then
+			return
+		end
+
+		local local_player = Managers.player:local_player()
+		local local_player_unit = local_player and local_player.player_unit
+
+		if not local_player_unit or local_player_unit ~= attacker_unit then
+			return
+		end
+
+		local career_extension = ScriptUnit.has_extension(attacker_unit, "career_system")
+
+		if not career_extension or career_extension:career_name() ~= "es_questingknight" then
+			return false
+		end
+
+		local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
+
+		if not damage_source or damage_source ~= "markus_questingknight_career_skill_weapon" then
+			return false
+		end
+
+		local killed_breed = event_data[4]
+
+		if not table.contains(boss_breeds, killed_breed.name) then
+			return false
+		end
+
+		if damage_source and killed_breed and killed_breed.name then
+			statistics_db:increment_stat(stats_id, "weapon_kills_per_breed", damage_source, killed_breed.name)
+		end
+	end
+}
+
 add_weapon_kills_per_breeds_challenge(achievements, "lake_boss_killblow", {
 	"markus_questingknight_career_skill_weapon"
 }, boss_breeds, 5, nil, "lake_upgrade", true, nil, nil)

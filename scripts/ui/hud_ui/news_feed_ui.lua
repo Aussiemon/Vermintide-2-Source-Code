@@ -41,7 +41,9 @@ NewsFeedUI._create_ui_elements = function (self)
 	self._news_widgets = news_widgets
 	self._unused_news_widgets = unused_news_widgets
 	self._active_news = {}
-	self.conditions_params = {}
+	self.conditions_params = {
+		rarities_to_ignore = table.enum("magic")
+	}
 	self.templates_on_cooldown = {}
 	self.feed_sync_delay = SYNC_WAIT_DURATION_TIME
 

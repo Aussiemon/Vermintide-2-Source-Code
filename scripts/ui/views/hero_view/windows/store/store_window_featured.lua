@@ -9,6 +9,59 @@ local SLIDESHOW_WAIT_TIME = 8
 local PRODUCT_PLACEHOLDER_TEXTURE_PATH = "gui/1080p/single_textures/generic/transparent_placeholder_texture"
 StoreWindowFeatured = class(StoreWindowFeatured)
 StoreWindowFeatured.NAME = "StoreWindowFeatured"
+local GRID_SIZE = {
+	3,
+	3
+}
+local GRID_SIZE_BY_TYPE = {
+	dlc = {
+		1,
+		3
+	},
+	bundle = {
+		1,
+		3
+	},
+	item = {
+		1,
+		1
+	},
+	weapon_skin = {
+		1,
+		1
+	},
+	hat = {
+		1,
+		1
+	},
+	skin = {
+		1,
+		1
+	}
+}
+local BACKFILL_ITEM_ORDER = {
+	"dlc",
+	"bundles",
+	"items",
+	"shilling_items"
+}
+local PRODUCT_SORT_ORDER = {
+	default = 15,
+	discounted_item = 7,
+	item = 11,
+	bundle = 2,
+	premium_hat = 5,
+	skin = 12,
+	premium_weapon_skin = 6,
+	premium_item = 3,
+	weapon_skin = 14,
+	discounted_hat = 9,
+	dlc = 1,
+	discounted_skin = 8,
+	premium_skin = 4,
+	hat = 13,
+	discounted_weapon_skin = 10
+}
 
 StoreWindowFeatured.on_enter = function (self, params, offset)
 	print("[HeroViewWindow] Enter Substate StoreWindowFeatured")
@@ -49,10 +102,6 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 
 	self:_sort_slideshow(slideshow_content)
 	self:_trim_slideshow(slideshow_content)
-
-	if grid_content and #grid_content == 0 then
-		grid_content = self:_get_default_featured_grid_content()
-	end
 
 	local content_widgets_by_name = self._content_widgets_by_name
 
@@ -304,10 +353,10 @@ StoreWindowFeatured._play_sound = function (self, event)
 end
 
 StoreWindowFeatured._handle_gamepad_activity = function (self)
-	local gamepad_active = Managers.input:is_device_active("gamepad")
+	local mouse_active = Managers.input:is_device_active("mouse")
 	local force_update = self._gamepad_active_last_frame == nil
 
-	if gamepad_active then
+	if not mouse_active then
 		if not self._gamepad_active_last_frame or force_update then
 			self._gamepad_active_last_frame = true
 
@@ -502,14 +551,17 @@ StoreWindowFeatured._get_default_featured_slideshow_content = function (self)
 	return slideshow_content
 end
 
-StoreWindowFeatured._get_default_featured_grid_content = function (self)
+StoreWindowFeatured._get_default_featured_grid_content = function (self, optional_num_items, optional_used_ids)
 	local default_grid_content = {}
 	local peddler_interface = Managers.backend:get_interface("peddler")
 	local peddler_items = peddler_interface:get_peddler_stock()
 	local backend_common = Managers.backend:get_interface("common")
+	local backend_items = Managers.backend:get_interface("items")
 	local hero_filter = "can_wield_by_current_hero and not owned"
 	local hero_items = backend_common:filter_items(peddler_items, hero_filter)
 	local os_time = os.time() * 1000
+	local num_items = optional_num_items or 9
+	local used_ids = optional_used_ids or {}
 
 	local function comparator(a, b)
 		if a.steam_itemdefid or b.steam_itemdefid then
@@ -533,8 +585,21 @@ StoreWindowFeatured._get_default_featured_grid_content = function (self)
 
 	table.sort(hero_items, comparator)
 
-	for i = 1, 9, 1 do
-		default_grid_content[i] = hero_items[i]
+	local cnt = 0
+	local i = 1
+
+	while i <= #hero_items and cnt < num_items do
+		local item = hero_items[i]
+		local item_key = item.key
+		local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key)
+
+		if not used_ids[item_key] and not item_owned then
+			default_grid_content[#default_grid_content + 1] = hero_items[i]
+			used_ids[item_key] = true
+			cnt = cnt + 1
+		end
+
+		i = i + 1
 	end
 
 	ItemHelper.update_featured_unseen(default_grid_content, self._parent.tab_cat)
@@ -544,52 +609,198 @@ end
 
 StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 	local layout = {}
+	local layout_ids = {}
+	local grid_occupied = 0
 
 	for i = 1, #grid_content, 1 do
 		local product_data = grid_content[i]
-		local product_id = product_data.id
-		local product_type = product_data.type
-		local product = nil
-
-		if product_type == "dlc" then
-			local dlc_settings = StoreDlcSettingsByName[product_id]
-
-			if dlc_settings then
-				product = {
-					dlc_settings = dlc_settings,
-					type = product_type,
-					product_id = product_id
-				}
-			else
-				printf("[StoreWindowFeatured] Warning: dlc %q not found", product_id)
-			end
-		elseif product_type == "item" then
-			local item = self._parent:get_item_by_key(product_id)
-
-			if item then
-				product = {
-					item = item,
-					type = product_type,
-					product_id = product_id,
-					settings = {
-						mask_price_strike_through_hack = true
-					}
-				}
-			else
-				printf("[StoreWindowFeatured] Warning: item %q not found", product_id)
-			end
-		else
-			printf("[StoreWindowFeatured] Warning: %s %q not found", product_type, product_id)
-		end
+		local product, product_type = self:_add_product(product_data)
+		local grid_size = GRID_SIZE_BY_TYPE[product_type]
+		grid_occupied = grid_occupied + grid_size[1] * grid_size[2]
 
 		if product then
 			layout[#layout + 1] = product
+			layout_ids[product.product_id] = #layout
 		end
 	end
+
+	if not GameSettingsDevelopment.use_offline_backend then
+		self:_backfill_grid_items(grid_occupied, layout, layout_ids)
+	end
+
+	local function sort_by_product_type(a, b)
+		local a_discounted = a.discounted
+		local a_item = a.item
+		local a_item_data = a_item and a_item.data
+		local a_item_premium = a_item_data and a_item_data.dlc_name
+		local a_item_type = a_item_data and a_item_data.item_type
+		local a_type = a_item_type or a.type
+		local a_discounted_type = a_discounted and "discounted_" .. a_type
+		local a_premium_type = a_item_premium and "premium_" .. a_type
+		local a_prio = PRODUCT_SORT_ORDER[a_premium_type] or PRODUCT_SORT_ORDER[a_discounted_type] or PRODUCT_SORT_ORDER[a_type] or PRODUCT_SORT_ORDER.default
+		local b_discounted = b.discounted
+		local b_item = b.item
+		local b_item_data = b_item and b_item.data
+		local b_item_premium = b_item_data and b_item_data.dlc_name
+		local b_item_type = b_item_data and b_item_data.item_type
+		local b_type = b_item_type or b.type
+		local b_discounted_type = b_discounted and "discounted_" .. b_type
+		local b_premium_type = b_item_premium and "premium_" .. b_type
+		local b_prio = PRODUCT_SORT_ORDER[b_premium_type] or PRODUCT_SORT_ORDER[b_discounted_type] or PRODUCT_SORT_ORDER[b_type] or PRODUCT_SORT_ORDER.default
+
+		return a_prio < b_prio
+	end
+
+	table.sort(layout, sort_by_product_type)
 
 	self._layout = layout
 
 	self:_create_product_widgets(layout)
+end
+
+StoreWindowFeatured._add_product = function (self, product_data)
+	local product_id = product_data.id
+	local product_type = product_data.type
+	local product, item_type = nil
+
+	if product_type == "dlc" then
+		local dlc_settings = StoreDlcSettingsByName[product_id]
+
+		if dlc_settings then
+			product = {
+				dlc_settings = dlc_settings,
+				type = product_type,
+				product_id = product_id
+			}
+		else
+			printf("[StoreWindowFeatured] Warning: dlc %q not found", product_id)
+		end
+	elseif product_type == "item" then
+		local item = self._parent:get_item_by_key(product_id)
+
+		if item then
+			product = {
+				item = item,
+				type = product_type,
+				product_id = product_id,
+				settings = {
+					mask_price_strike_through_hack = true
+				}
+			}
+			local item_data = item.data
+			item_type = item_data.item_type
+		else
+			printf("[StoreWindowFeatured] Warning: item %q not found", product_id)
+		end
+	else
+		printf("[StoreWindowFeatured] Warning: %s %q not found", product_type, product_id)
+	end
+
+	return product, item_type or product_type
+end
+
+StoreWindowFeatured._backfill_grid_items = function (self, grid_occupied, layout, layout_ids)
+	local peddler_interface = Managers.backend:get_interface("peddler")
+	local item_interface = Managers.backend:get_interface("items")
+	local discounted_items = peddler_interface:get_discounted_items()
+	self._discounted_items = discounted_items
+	self._backend_content = self:_create_backend_content(layout)
+	local max_grid_size = GRID_SIZE[1] * GRID_SIZE[2]
+
+	if grid_occupied >= max_grid_size then
+		return
+	end
+
+	local unlock_manager = Managers.unlock
+
+	for _, discount_type in ipairs(BACKFILL_ITEM_ORDER) do
+		local discounts = discounted_items[discount_type]
+
+		for name, product_data in pairs(discounts) do
+			local item = product_data.item
+			local product_id = product_data.id
+
+			if (not unlock_manager:dlc_exists(product_id) or not unlock_manager:is_dlc_unlocked(product_id)) and not item_interface:has_item(product_id) and not item_interface:has_weapon_illusion(product_id) then
+				local item_owned = item_interface:has_bundle_contents(item.data and item.data.bundle_contains)
+			end
+
+			if item and not item_owned and not layout_ids[product_id] then
+				local product, product_type = self:_add_product(product_data)
+				product.discounted = true
+				local product_grid_size = GRID_SIZE_BY_TYPE[product_type]
+
+				if product_grid_size then
+					local grid_slots = product_grid_size[1] * product_grid_size[2]
+
+					if max_grid_size >= grid_occupied + grid_slots then
+						layout[#layout + 1] = product
+						layout_ids[product.product_id] = #layout
+						grid_occupied = grid_occupied + grid_slots
+
+						if max_grid_size <= grid_occupied then
+							return
+						end
+					end
+				end
+			end
+		end
+	end
+
+	local default_grid_content = self:_get_default_featured_grid_content(max_grid_size - grid_occupied, layout_ids)
+
+	for _, data in pairs(default_grid_content) do
+		if not data.owned then
+			local product, product_type = self:_add_product(data)
+			local product_grid_size = GRID_SIZE_BY_TYPE[product_type]
+
+			if product_grid_size then
+				local grid_slots = product_grid_size[1] * product_grid_size[2]
+
+				if max_grid_size >= grid_occupied + grid_slots then
+					layout[#layout + 1] = product
+					grid_occupied = grid_occupied + grid_slots
+
+					if max_grid_size <= grid_occupied then
+						return
+					end
+				end
+			end
+		end
+	end
+end
+
+StoreWindowFeatured._create_backend_content = function (self, layout)
+	local backend_store = Managers.backend:get_interface("peddler")
+	local backend_content = {}
+
+	for _, content_name in pairs(BACKFILL_ITEM_ORDER) do
+		backend_content[content_name] = {}
+	end
+
+	for _, data in pairs(layout) do
+		local product_id = data.product_id
+		local content_type = data.type
+
+		if content_type == "item" then
+			local items = backend_store:get_filtered_items("item_key == " .. product_id)
+			local item = items[1]
+			local item_data = item.data
+			local item_type = item_data.item_type
+			local steam_itemdefid = item_data.steam_itemdefid
+
+			if item_type == "bundle" then
+				backend_content.bundles[#backend_content.bundles + 1] = product_id
+			elseif steam_itemdefid then
+				backend_content.items[#backend_content.items + 1] = product_id
+			else
+				backend_content.shilling_items[#backend_content.shilling_items + 1] = product_id
+			end
+		else
+			backend_content.dlc[#backend_content.dlc + 1] = product_id
+		end
+	end
+
+	return backend_content
 end
 
 StoreWindowFeatured._setup_slideshow = function (self, widget, data)
@@ -633,8 +844,8 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 				local material_name = self:_setup_backend_image_material(reference_name, backend_texture_name)
 				slideshow.reference_name = reference_name
 				slideshow.texture = material_name
-			else
-				slideshow.texture = slideshow.texture or "icons_placeholder"
+			elseif not slideshow.texture or not Gui.material(self._ui_top_renderer.gui, slideshow.texture) then
+				slideshow.texture = "icons_placeholder"
 			end
 
 			slideshow.is_discounted = is_discounted

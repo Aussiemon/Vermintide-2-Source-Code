@@ -71,20 +71,6 @@ settings.anim_lookup = {
 	"to_engineer_career_skill"
 }
 settings.effects = {}
-settings.tracked_weapon_kills_per_breed_stats = {
-	dr_2h_cog_hammer = {
-		"cog"
-	},
-	dr_steam_pistol = {
-		"cog"
-	},
-	bardin_engineer_career_skill_weapon = {
-		"cog"
-	},
-	bardin_engineer_career_skill_weapon_heavy = {
-		"cog"
-	}
-}
 settings._tracked_weapon_kill_stats = {
 	bardin_engineer_career_skill_weapon = {
 		"cog"

@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	flingable = true,
 	has_inventory = true,
@@ -267,11 +268,11 @@ local action_data = {
 		ai_push_data = {
 			stagger_distance = 1,
 			stagger_impact = {
-				2,
-				2,
-				2,
-				1,
-				1
+				stagger_types.medium,
+				stagger_types.medium,
+				stagger_types.medium,
+				stagger_types.weak,
+				stagger_types.weak
 			},
 			stagger_duration = {
 				2,

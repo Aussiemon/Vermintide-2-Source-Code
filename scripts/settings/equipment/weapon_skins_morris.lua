@@ -151,7 +151,7 @@ local skins = {
 		name = "es_deus_01_skin_02",
 		data = {
 			description = "es_deus_01_skin_02_description",
-			rarity = "rare",
+			rarity = "exotic",
 			display_name = "es_deus_01_skin_02_name",
 			right_hand_unit = "units/weapons/player/wpn_es_deus_spear_02/wpn_es_deus_spear_02",
 			inventory_icon = "icon_wpn_empire_spearshield_t2",
@@ -279,7 +279,7 @@ local skins = {
 		name = "bw_deus_01_skin_02",
 		data = {
 			description = "bw_deus_01_skin_02_description",
-			rarity = "unique",
+			rarity = "exotic",
 			right_hand_unit = "units/weapons/player/wpn_bw_deus_02/wpn_bw_deus_02",
 			display_name = "bw_deus_01_skin_02_name",
 			inventory_icon = "icon_wpn_brw_magmastaff_t2",
@@ -385,7 +385,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -400,7 +400,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -415,7 +415,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -430,7 +430,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -445,7 +445,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -460,7 +460,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_02_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -475,7 +475,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -490,7 +490,7 @@ local skins = {
 			template = "we_deus_01_template_1",
 			ammo_unit_3p = "units/weapons/player/wpn_we_quiver_t1/wpn_we_deus_arrow_01_3p",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_bow"
 		}
 	},
 	{
@@ -504,7 +504,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01",
 			template = "wh_deus_01_template_1",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 		}
 	},
 	{
@@ -518,7 +518,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_deus_01/wpn_wh_deus_01_runed",
 			template = "wh_deus_01_template_1",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 		}
 	},
 	{
@@ -532,7 +532,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02",
 			template = "wh_deus_01_template_1",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 		}
 	},
 	{
@@ -574,7 +574,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_deus_02/wpn_wh_deus_02_runed",
 			template = "wh_deus_01_template_1",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 		}
 	},
 	{
@@ -588,7 +588,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03",
 			template = "wh_deus_01_template_1",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 		}
 	},
 	{
@@ -602,7 +602,7 @@ local skins = {
 			left_hand_unit = "units/weapons/player/wpn_wh_deus_03/wpn_wh_deus_03_runed",
 			template = "wh_deus_01_template_1",
 			hud_icon = "weapon_generic_icon_bow",
-			display_unit = "units/weapons/weapon_display/display_1h_weapon"
+			display_unit = "units/weapons/weapon_display/display_drakefire_pistols"
 		}
 	}
 }

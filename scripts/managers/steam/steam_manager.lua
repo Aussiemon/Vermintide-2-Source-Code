@@ -48,13 +48,14 @@ SteamManager.on_inventory_result = function (self, handle, result)
 			table.dump(item_list, "ITEM-LIST", 3)
 		end
 	else
-		if self._request_user_inventory_callback then
-			print("[SteamManager] failed empty on_inventory_result callback")
-		end
-
 		print("[SteamManager] on_inventory_result FAILED, error-code:", result)
 
-		if self._purchase_item_callback then
+		if self._request_user_inventory_callback then
+			print("[SteamManager] failed empty on_inventory_result callback")
+			self._request_user_inventory_callback(result)
+
+			self._request_user_inventory_callback = nil
+		elseif self._purchase_item_callback then
 			self._purchase_item_callback(result)
 
 			self._purchase_item_callback = nil

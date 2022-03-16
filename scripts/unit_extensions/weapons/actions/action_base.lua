@@ -62,22 +62,19 @@ ActionBase._do_critical_strike_procs = function (self, buff_extension, proc_type
 	end
 end
 
-ActionBase._check_extra_shot_proc = function (self, buff_extension)
-	if not self._extra_shots_procced then
+ActionBase._update_extra_shots = function (self, buff_extension, shots_to_consume, override)
+	if not self._extra_shots_procced or override then
 		local extra_shots = buff_extension:apply_buffs_to_value(0, "extra_shot")
-
-		if buff_extension:has_buff_perk("extra_shot") then
-			extra_shots = extra_shots + 1
-		end
-
 		self._extra_shots = math.floor(extra_shots)
 		self._extra_shots_procced = true
 	end
 
 	if self._extra_shots > 0 then
-		self._extra_shots = self._extra_shots - 1
+		if shots_to_consume then
+			self._extra_shots = self._extra_shots - shots_to_consume
+		end
 
-		return true
+		return self._extra_shots
 	end
 end
 

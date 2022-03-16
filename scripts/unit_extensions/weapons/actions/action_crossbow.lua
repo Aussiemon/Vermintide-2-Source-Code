@@ -148,8 +148,6 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			end
 		end
 
-		local procced = self:_check_extra_shot_proc(self.owner_buff_extension)
-
 		if current_action.apply_burst_recoil then
 			if self.num_projectiles_shot == 2 then
 				first_person_extension:apply_recoil()
@@ -160,13 +158,27 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 			end
 		end
 
-		if procced then
-			self.state = "waiting_to_shoot"
-			self.time_to_shoot = t + 0.1
-			self.extra_buff_shot = true
-		elseif current_action.burst and self.num_projectiles_shot <= self.num_projectiles then
+		local extra_shots = self:_update_extra_shots(self.owner_buff_extension)
+
+		if current_action.burst and self.num_projectiles_shot <= self.num_projectiles then
 			self.state = "waiting_to_shoot"
 			self.time_to_shoot = t + 0.075
+			self.extra_buff_shot = false
+		elseif extra_shots then
+			self.state = "waiting_to_shoot"
+			self.extra_buff_shot = true
+
+			if current_action.burst then
+				self.time_to_shoot = t + 0.075
+				self.num_projectiles = 1
+
+				self:_update_extra_shots(self.owner_buff_extension, 1)
+			else
+				self.time_to_shoot = t + 0.1
+				self.num_projectiles = extra_shots
+
+				self:_update_extra_shots(self.owner_buff_extension, extra_shots)
+			end
 		else
 			self.state = "shot"
 		end

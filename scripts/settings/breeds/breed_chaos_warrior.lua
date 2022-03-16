@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local pushed_data = {
 	ahead_dist = 1.5,
 	push_width = 1.25,
@@ -5,10 +6,10 @@ local pushed_data = {
 	push_stagger_distance = 1,
 	player_pushed_speed = 4,
 	push_stagger_impact = {
-		2,
-		2,
-		0,
-		0
+		stagger_types.medium,
+		stagger_types.medium,
+		stagger_types.none,
+		stagger_types.none
 	},
 	push_stagger_duration = {
 		1.5,
@@ -141,20 +142,20 @@ local breed_data = {
 	},
 	run_on_spawn = AiBreedSnippets.on_chaos_warrior_spawn,
 	run_on_update = AiBreedSnippets.on_chaos_warrior_update,
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed, direction)
-		if blackboard.stagger_type == 3 or blackboard.stagger_type == 6 then
-			if stagger == 3 and blackboard.heavy_stagger_immune_time then
-				stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed, direction)
+		if blackboard.stagger_type == stagger_types.heavy or blackboard.stagger_type == stagger_types.explosion then
+			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
-			elseif stagger ~= 3 and blackboard.stagger_immune_time then
-				stagger = 0
+			elseif stagger_type ~= stagger_types.heavy and blackboard.stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	hitzone_multiplier_types = {
 		head = "headshot",
@@ -791,10 +792,10 @@ local action_data = {
 	},
 	stagger = {
 		custom_enter_function = function (unit, blackboard, t, action)
-			if blackboard.stagger_type == 3 then
+			if blackboard.stagger_type == stagger_types.heavy then
 				blackboard.stagger_immune_time = t + 2.25
 				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_types.explosion then
 				blackboard.stagger_immune_time = t + 4.5
 				blackboard.heavy_stagger_immune_time = t + 4
 			end

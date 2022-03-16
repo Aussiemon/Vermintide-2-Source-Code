@@ -1,4 +1,4 @@
-BreedEnhancements = {
+BreedEnhancements = BreedEnhancements or {
 	base = {
 		base = {
 			"grudge_mark_health",
@@ -51,6 +51,18 @@ BreedEnhancements = {
 		intangible_mirror = {
 			display_name = "display_name_intangible",
 			dummy_enhancement = true
+		},
+		periodic_curse = {
+			"grudge_mark_periodic_curse_aura",
+			display_name = "display_name_periodic_curse"
+		},
+		commander = {
+			"grudge_mark_commander",
+			display_name = "display_name_commander"
+		},
+		frenzy = {
+			"grudge_mark_frenzy",
+			display_name = "display_name_frenzy"
 		}
 	}
 }
@@ -104,12 +116,6 @@ BreedEnhancementExclusionList = {
 	}
 }
 BreedEnhancementBannedBreeds = {
-	beastmen_minotaur = {
-		crushing = true
-	},
-	chaos_spawn = {
-		crushing = true
-	},
 	chaos_troll = {
 		periodic_shield = true
 	}

@@ -39,6 +39,10 @@ local function can_add_ingame_menu(params)
 	return params[variable_name]
 end
 
+local function can_add_versus_menu(params)
+	return Managers.state.game_mode:game_mode_key() == "inn_vs" and can_add_ingame_menu(params)
+end
+
 if IS_PS4 then
 	menu_layouts = {
 		in_menu = {
@@ -689,10 +693,30 @@ else
 					can_add_function = can_add_ingame_menu
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "interact_loot",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "loot",
+					transition = "spoils_of_war",
+					force_open = true,
+					can_add_function = can_add_ingame_menu
+				},
+				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
 					disable_when_matchmaking_ready = true
+				},
+				{
+					disable_when_matchmaking_ready = true,
+					display_name = "versus_pre_game_view",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "character",
+					transition = "versus_pre_game_view",
+					force_open = true,
+					can_add_function = can_add_versus_menu
 				},
 				{
 					fade = false,
@@ -730,10 +754,30 @@ else
 					can_add_function = can_add_ingame_menu
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "interact_loot",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "loot",
+					transition = "spoils_of_war",
+					force_open = true,
+					can_add_function = can_add_ingame_menu
+				},
+				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
 					disable_when_matchmaking_ready = true
+				},
+				{
+					disable_when_matchmaking_ready = true,
+					display_name = "versus_pre_game_view",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "character",
+					transition = "versus_pre_game_view",
+					force_open = true,
+					can_add_function = can_add_versus_menu
 				},
 				{
 					fade = false,
@@ -776,10 +820,30 @@ else
 					can_add_function = can_add_ingame_menu
 				},
 				{
+					disable_when_matchmaking_ready = true,
+					display_name = "interact_loot",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "loot",
+					transition = "spoils_of_war",
+					force_open = true,
+					can_add_function = can_add_ingame_menu
+				},
+				{
 					fade = true,
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
 					disable_when_matchmaking_ready = true
+				},
+				{
+					disable_when_matchmaking_ready = true,
+					display_name = "versus_pre_game_view",
+					requires_player_unit = true,
+					fade = true,
+					transition_state = "character",
+					transition = "versus_pre_game_view",
+					force_open = true,
+					can_add_function = can_add_versus_menu
 				},
 				{
 					fade = false,
@@ -992,6 +1056,17 @@ local full_access_layout = {
 		can_add_function = can_add_ingame_menu
 	},
 	{
+		requires_player_unit = true,
+		transition_sub_state = "cosmetics",
+		display_name = "hero_window_cosmetics",
+		force_open = true,
+		fade = true,
+		transition = "hero_view",
+		transition_state = "overview",
+		disable_when_matchmaking_ready = true,
+		can_add_function = can_add_ingame_menu
+	},
+	{
 		display_name = "achievements",
 		requires_player_unit = true,
 		fade = true,
@@ -1009,6 +1084,16 @@ local full_access_layout = {
 		transition = "options_menu",
 		display_name = "options_menu_button_name",
 		disable_when_matchmaking_ready = true
+	},
+	{
+		disable_when_matchmaking_ready = true,
+		display_name = "versus_pre_game_view",
+		requires_player_unit = true,
+		fade = true,
+		transition_state = "character",
+		transition = "versus_pre_game_view",
+		force_open = true,
+		can_add_function = can_add_versus_menu
 	},
 	{
 		fade = true,

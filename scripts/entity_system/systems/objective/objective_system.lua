@@ -262,6 +262,7 @@ end
 
 ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 	local extension = self._main_objectives[game_object_id]
+	local event_name = nil
 
 	if extension then
 		self._main_objectives[game_object_id] = nil
@@ -271,6 +272,8 @@ ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 			self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 			self._temp_optional = extension.is_optional and extension:is_optional()
 		end
+
+		event_name = "main_objective_completed"
 	else
 		extension = self._sub_objectives[game_object_id]
 		self._sub_objectives[game_object_id] = nil
@@ -281,9 +284,14 @@ ObjectiveSystem.game_object_destroyed = function (self, game_object_id)
 			self._num_completed_main_objectives = self._num_completed_main_objectives + 1
 			self._current_num_completed_main_objectives = self._current_num_completed_main_objectives + 1
 		end
+
+		event_name = "sub_objective_completed"
 	end
 
-	extension:deactivate()
+	if not self._server then
+		extension:complete()
+		LevelHelper:flow_event(self._world, event_name)
+	end
 
 	if table.size(self._main_objectives) < 1 and table.size(self._sub_objectives) < 1 then
 		self:_reset_current_statistics()

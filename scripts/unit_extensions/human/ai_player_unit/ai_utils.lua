@@ -1,3 +1,5 @@
+local stagger_types = require("scripts/utils/stagger_types")
+
 require("scripts/entity_system/systems/behaviour/utility/utility")
 
 local unit_get_data = Unit.get_data
@@ -870,6 +872,12 @@ end
 AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound)
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
+	local stagger_priority = stagger_type
+
+	if blackboard.stagger_priority and stagger_priority < blackboard.stagger_priority then
+		return
+	end
+
 	local difficulty_modifier = Managers.state.difficulty:get_difficulty_settings().stagger_modifier
 	blackboard.pushing_unit = attacker_unit
 	blackboard.stagger_direction = Vector3Box(stagger_direction)
@@ -878,6 +886,7 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	local stagger_value_to_add = stagger_value or 1
 	blackboard.stagger = (blackboard.stagger and blackboard.stagger + stagger_value_to_add) or stagger_value_to_add
 	blackboard.stagger_type = stagger_type
+	blackboard.stagger_priority = stagger_priority
 	blackboard.stagger_animation_scale = stagger_animation_scale
 	blackboard.always_stagger_suffered = always_stagger
 	blackboard.stagger_was_push = is_push
@@ -919,7 +928,7 @@ AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_di
 	end
 
 	if active_node:stagger_override(unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push) then
-		assert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
+		assert(stagger_types.none < stagger_type, "Tried to use invalid stagger type %q", stagger_type)
 
 		if unit ~= attacker_unit and ScriptUnit.has_extension(unit, "ai_system") then
 			local ai_extension = ScriptUnit.extension(unit, "ai_system")
@@ -1516,6 +1525,33 @@ AiUtils.get_bot_weapon_extension = function (blackboard)
 	end
 
 	return nil
+end
+
+AiUtils.taunt_unit = function (ai_unit, taunt_unit, duration, taunt_bosses)
+	local blackboard = BLACKBOARDS[ai_unit]
+
+	if blackboard then
+		local breed = blackboard.breed
+		local taunt_target = breed and not breed.ignore_taunts and (not breed.boss or taunt_bosses)
+
+		if taunt_target then
+			local t = Managers.time:time("game")
+			local taunt_end_time = t + duration
+
+			if blackboard.taunt_unit == taunt_unit then
+				blackboard.taunt_end_time = taunt_end_time
+			else
+				if blackboard.target_unit == taunt_unit then
+					blackboard.no_taunt_hesitate = true
+				end
+
+				blackboard.taunt_unit = taunt_unit
+				blackboard.taunt_end_time = taunt_end_time
+				blackboard.target_unit = taunt_unit
+				blackboard.target_unit_found_time = t
+			end
+		end
+	end
 end
 
 return

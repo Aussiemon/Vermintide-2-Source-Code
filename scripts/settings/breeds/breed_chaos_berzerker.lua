@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local MOVING_STAGGERS = {
 	"run_stagger_left"
 }
@@ -39,7 +40,7 @@ local breed_data = {
 	race = "chaos",
 	attack_player_sound_event = "Play_enemy_berserker_attack_player_vce",
 	proximity_system_check = true,
-	poison_resistance = 70,
+	poison_resistance = 100,
 	armor_category = 5,
 	attack_general_sound_event = "Play_enemy_berserker_attack_husk_vce",
 	uses_attack_sfx_callback = true,
@@ -92,20 +93,20 @@ local breed_data = {
 		"move_fwd_5",
 		"move_fwd_6"
 	},
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
-		if blackboard.stagger_type == 3 then
-			if stagger == 3 and blackboard.heavy_stagger_immune_time then
-				stagger = 0
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
+		if blackboard.stagger_type == stagger_types.heavy then
+			if stagger_type == stagger_types.heavy and blackboard.heavy_stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
-			elseif stagger ~= 3 and blackboard.stagger_immune_time then
-				stagger = 0
+			elseif stagger_type ~= stagger_types.heavy and blackboard.stagger_immune_time then
+				stagger_type = stagger_types.none
 				duration = 0
 				length = 0
 			end
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	animation_merge_options = {
 		idle_animation_merge_options = {},
@@ -636,18 +637,18 @@ local action_data = {
 			local combo = blackboard.combo_attack_data
 
 			if combo and combo.aborted then
-				local berzerker_stagger_multiplier = (blackboard.stagger_type < 3 and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
+				local berzerker_stagger_multiplier = (blackboard.stagger_type < stagger_types.heavy and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
 
-				if blackboard.stagger_type ~= 6 and blackboard.stagger_type ~= 3 then
+				if blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.heavy then
 					blackboard.stagger_ignore_anim_cb = true
 					blackboard.stagger_time = t + blackboard.breed.berzerking_stagger_time * berzerker_stagger_multiplier
 				end
 			end
 
-			if blackboard.stagger_type == 3 then
+			if blackboard.stagger_type == stagger_types.heavy then
 				blackboard.stagger_immune_time = t + 2.25
 				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == 6 then
+			elseif blackboard.stagger_type == stagger_types.explosion then
 				blackboard.stagger_immune_time = t + 3.5
 			end
 

@@ -226,6 +226,7 @@ GamePadAbilityUI.update = function (self, dt, t)
 
 		self:_sync_ability_cooldown()
 		self:_handle_resolution_modified()
+		self:_update_muneric_ui_ability_cooldown()
 		self:draw(dt)
 	end
 end
@@ -394,6 +395,39 @@ GamePadAbilityUI.set_alpha = function (self, alpha)
 	self._render_settings.alpha_multiplier = alpha
 
 	self:set_dirty()
+end
+
+GamePadAbilityUI._update_muneric_ui_ability_cooldown = function (self)
+	local player = Managers.player:local_player()
+
+	if not player then
+		return
+	end
+
+	local player_unit = player.player_unit
+
+	if not ALIVE[player_unit] then
+		return
+	end
+
+	local widget = self._widgets_by_name.ability
+
+	if not widget then
+		return
+	end
+
+	local career_extension = ScriptUnit.extension(player_unit, "career_system")
+	local can_use_ability = career_extension:can_use_activated_ability(1)
+	widget.content.can_use_ability = can_use_ability
+
+	if can_use_ability then
+		return
+	end
+
+	local ability_cooldown, max_cooldown = career_extension:current_ability_cooldown()
+	widget.content.ability_cooldown = UIUtils.format_time(ability_cooldown)
+
+	self:_set_widget_dirty(widget)
 end
 
 return

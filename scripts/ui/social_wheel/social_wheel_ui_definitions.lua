@@ -92,6 +92,20 @@ local scenegraph_definition = {
 			0,
 			0
 		}
+	},
+	next_page_input = {
+		vertical_alignment = "center",
+		parent = "screen",
+		horizontal_alignment = "center",
+		size = {
+			300,
+			50
+		},
+		position = {
+			450,
+			300,
+			0
+		}
 	}
 }
 
@@ -99,10 +113,10 @@ if not IS_WINDOWS then
 	scenegraph_definition.screen.scale = "hud_fit"
 end
 
-local function create_social_widget(settings, widget_angle, category_settings, get_active_context_func)
+local function create_social_widget(settings, widget_angle, category_settings, get_active_context_func, page_idx)
 	local size = category_settings.size
 	local dir = Vector3(math.cos(widget_angle), math.sin(widget_angle), 0)
-	local num_wedges = #category_settings
+	local num_wedges = (page_idx and #category_settings[page_idx]) or #category_settings
 	local divider_angle = widget_angle + 2 * math.pi * 1 / num_wedges * 0.5
 	local divider_dir = Vector3(math.cos(divider_angle), math.sin(divider_angle), 0)
 	local wedge_size = (1 / num_wedges * 360) / 90 * category_settings.wedge_adjustment
@@ -855,6 +869,90 @@ local function create_arrow_widget()
 	}
 end
 
+local function create_page_input_widget()
+	return {
+		scenegraph_id = "next_page_input",
+		element = {
+			passes = {
+				{
+					style_id = "text",
+					pass_type = "text",
+					text_id = "text_id"
+				},
+				{
+					style_id = "text_shadow",
+					pass_type = "text",
+					text_id = "text_id"
+				},
+				{
+					texture_id = "background",
+					style_id = "background",
+					pass_type = "texture"
+				}
+			}
+		},
+		content = {
+			background = "hud_brushstroke",
+			text_id = Localize("input_description_next_page") .. ": $KEY;Player__social_wheel_page:"
+		},
+		style = {
+			text = {
+				word_wrap = false,
+				localize = false,
+				font_size = 32,
+				pixel_perfect = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				font_type = "hell_shark_header",
+				text_color = Colors.get_color_table_with_alpha("white", 255),
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			text_shadow = {
+				font_size = 32,
+				font_type = "hell_shark_header",
+				localize = false,
+				word_wrap = false,
+				pixel_perfect = true,
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				dynamic_font_size = true,
+				skip_button_rendering = true,
+				text_color = Colors.get_color_table_with_alpha("black", 128),
+				offset = {
+					2,
+					-2,
+					1
+				}
+			},
+			background = {
+				horizontal_alignment = "center",
+				vertical_alignment = "center",
+				color = {
+					150,
+					100,
+					100,
+					100
+				},
+				offset = {
+					-20,
+					0,
+					0
+				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		}
+	}
+end
+
 local function create_social_text_event(social_event_setting, texture, text, is_local_player)
 	local color = nil
 
@@ -1129,5 +1227,6 @@ return {
 	arrow_widget = create_arrow_widget(),
 	create_social_text_event = create_social_text_event,
 	create_social_icon = create_social_icon,
-	create_bg_widget = create_bg_widget
+	create_bg_widget = create_bg_widget,
+	page_input_widget = create_page_input_widget()
 }

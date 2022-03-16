@@ -208,6 +208,20 @@ local scenegraph_definition = {
 			-30,
 			1
 		}
+	},
+	kill_confirm = {
+		vertical_alignment = "center",
+		parent = "crosshair_root",
+		horizontal_alignment = "center",
+		position = {
+			0,
+			0,
+			1
+		},
+		size = {
+			75,
+			75
+		}
 	}
 }
 local widget_definitions = {
@@ -223,6 +237,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_projectile = {
@@ -237,6 +256,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_arrow = {
@@ -256,6 +280,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_line = {
@@ -275,6 +304,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_shotgun = {
@@ -294,6 +328,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	critical_hit_indication = {
@@ -308,6 +347,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_1 = {
@@ -339,6 +383,11 @@ local widget_definitions = {
 					4
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_2 = {
@@ -370,6 +419,11 @@ local widget_definitions = {
 					4
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_3 = {
@@ -401,6 +455,11 @@ local widget_definitions = {
 					4
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_4 = {
@@ -432,6 +491,11 @@ local widget_definitions = {
 					4
 				}
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_armored_no_damage = {
@@ -460,6 +524,11 @@ local widget_definitions = {
 				55,
 				50
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_armored_damage = {
@@ -488,6 +557,11 @@ local widget_definitions = {
 				42,
 				46
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_armored_break = {
@@ -516,6 +590,11 @@ local widget_definitions = {
 				75,
 				52
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_hit_armored_open = {
@@ -544,6 +623,11 @@ local widget_definitions = {
 				42,
 				46
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_circle = {
@@ -558,6 +642,11 @@ local widget_definitions = {
 				0,
 				0
 			}
+		},
+		offset = {
+			0,
+			0,
+			0
 		}
 	},
 	crosshair_wh_priest = {
@@ -735,6 +824,31 @@ local widget_definitions = {
 					-40,
 					3
 				}
+			}
+		},
+		offset = {
+			0,
+			0,
+			0
+		}
+	},
+	kill_confirm = {
+		scenegraph_id = "kill_confirm",
+		element = UIElements.SimpleTexture,
+		content = {
+			texture_id = "crosshair_02"
+		},
+		style = {
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				0
 			}
 		}
 	}

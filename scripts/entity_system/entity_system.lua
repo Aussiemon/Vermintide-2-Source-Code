@@ -176,6 +176,15 @@ local projectile_locomotion_extensions = {
 	"ProjectileScriptUnitLocomotionExtension",
 	"ProjectileTrueFlightLocomotionExtension"
 }
+local ai_supplementary_system_extension = {
+	"TentacleSplineExtension",
+	"VortexExtension",
+	"VortexHuskExtension",
+	"ThrownUnitHuskExtension",
+	"BeastmenStandardExtension",
+	"UnitSynchronizationExtension",
+	"GrudgeMarkSirenChainExtension"
+}
 EntitySystem = class(EntitySystem)
 
 EntitySystem.init = function (self, entity_system_creation_context)
@@ -316,14 +325,7 @@ EntitySystem._init_systems = function (self, entity_system_creation_context)
 		"LureWhereaboutsExtension",
 		"JumpsWhereaboutsExtension"
 	}, nil, no_pre_update)
-	self:_add_system("ai_supplementary_system", ExtensionSystemBase, entity_system_creation_context, {
-		"TentacleSplineExtension",
-		"VortexExtension",
-		"VortexHuskExtension",
-		"ThrownUnitHuskExtension",
-		"BeastmenStandardExtension",
-		"UnitSynchronizationExtension"
-	})
+	self:_add_system("ai_supplementary_system", ExtensionSystemBase, entity_system_creation_context, ai_supplementary_system_extension)
 	self:_add_system("ai_beam_effect_system", ExtensionSystemBase, entity_system_creation_context, {
 		"CorruptorBeamExtension",
 		"StormfiendBeamExtension",

@@ -4,24 +4,12 @@
 --   Code may be incomplete or incorrect.
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
-local achievement_settings = DLCSettings.woods
+local achievement_settings = DLCSettings.bless
 local rpc_increment_stat = AchievementTemplateHelper.rpc_increment_stat
+local rpc_modify_stat = AchievementTemplateHelper.rpc_modify_stat
 local add_levels_complete_per_hero_challenge = AchievementTemplateHelper.add_levels_complete_per_hero_challenge
 local add_career_mission_count_challenge = AchievementTemplateHelper.add_career_mission_count_challenge
 local add_meta_challenge = AchievementTemplateHelper.add_meta_challenge
-
-local function rpc_increment_stat(unit, stat_name)
-	local player = Managers.player:unit_owner(unit)
-
-	if player and not player.bot_player then
-		local peer_id = player:network_id()
-		local network_manager = Managers.state.network
-		local stat_id = NetworkLookup.statistics[stat_name]
-
-		network_manager.network_transmit:send_rpc("rpc_increment_stat", peer_id, stat_id)
-	end
-end
-
 local XB1_ACHIEVEMENT_ID = {}
 local PS4_ACHIEVEMENT_ID = {}
 local register_damage_stats_id = 1
@@ -58,7 +46,6 @@ add_career_mission_count_challenge(achievements, "bless_complete_25_missions", "
 local bless_heal_allies_amount = 1500
 achievements.bless_heal_allies = {
 	name = "achv_bless_heal_allies_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_heal_allies_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_heal_allies",
@@ -104,7 +91,6 @@ achievements.bless_heal_allies = {
 local bless_saved_by_perk_amount = 5
 achievements.bless_saved_by_perk = {
 	name = "achv_bless_saved_by_perk_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_saved_by_perk_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_saved_by_perk",
@@ -168,7 +154,8 @@ achievements.bless_saved_by_perk = {
 			local current_victim_handle = timer_handles[victim_unit]
 
 			if current_victim_handle and current_victim_handle.valid then
-				timer_handles[victim_unit] = Managers.state.achievement:cancel_timed_event(current_victim_handle)
+				Managers.state.achievement:cancel_timed_event(current_victim_handle)
+
 				timer_handles[victim_unit] = nil
 			end
 		end
@@ -176,7 +163,7 @@ achievements.bless_saved_by_perk = {
 	on_timed_event = function (statistics_db, stats_id, template_data, event_data)
 		local victim_unit = event_data
 
-		if ALIVE[victim_unit] and AiUtils.unit_alive(victim_unit) then
+		if AiUtils.unit_alive(victim_unit) then
 			statistics_db:increment_stat(stats_id, "bless_saved_by_perk")
 
 			template_data.timer_handles[victim_unit] = nil
@@ -186,7 +173,6 @@ achievements.bless_saved_by_perk = {
 bless_book_run_amount = 5
 achievements.bless_book_run = {
 	name = "achv_bless_book_run_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_book_run_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_book_run",
@@ -240,7 +226,6 @@ local bless_fast_shield_amount = 10
 local bless_fast_shield_window = 1
 achievements.bless_fast_shield = {
 	name = "achv_bless_fast_shield_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_fast_shield_desc",
 	display_completion_ui = true,
 	icon = "achievement_trophy_bless_fast_shield",
@@ -312,9 +297,9 @@ achievements.bless_fast_shield = {
 }
 local bless_unbreakable_damage_block_amount = 500
 achievements.bless_unbreakable_damage_block = {
-	display_completion_ui = true,
+	always_run = true,
 	name = "achv_bless_unbreakable_damage_block_name",
-	required_dlc_extra = "bless",
+	display_completion_ui = true,
 	desc = "achv_bless_unbreakable_damage_block_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_unbreakable_damage_block",
@@ -336,9 +321,8 @@ achievements.bless_unbreakable_damage_block = {
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local victim_unit = event_data[1]
 		local damage_amount = event_data[2]
-		local local_player_unit = Managers.player:local_player().player_unit
 
-		if not damage_amount or not victim_unit or local_player_unit ~= victim_unit then
+		if not damage_amount or not victim_unit then
 			return
 		end
 
@@ -354,19 +338,18 @@ achievements.bless_unbreakable_damage_block = {
 
 		damage_amount = DamageUtils.networkify_damage(damage_amount)
 
-		statistics_db:modify_stat_by_amount(stats_id, "bless_unbreakable_damage_block", damage_amount)
+		rpc_modify_stat(victim_unit, "bless_unbreakable_damage_block", damage_amount)
 	end
 }
 local bless_punch_back_time_window = 3
 achievements.bless_punch_back = {
-	required_dlc = "bless",
+	always_run = true,
 	name = "achv_bless_punch_back_name",
-	required_dlc_extra = "bless",
 	display_completion_ui = true,
 	desc = "achv_bless_punch_back_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_punch_back",
-	always_run = true,
+	required_dlc = "bless",
 	events = {
 		"register_damage_taken",
 		"register_damage"
@@ -457,7 +440,6 @@ achievements.bless_punch_back = {
 achievements.bless_cluch_revive = {
 	display_completion_ui = true,
 	name = "achv_bless_cluch_revive_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_cluch_revive_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_cluch_revive",
@@ -529,7 +511,6 @@ local bless_ranged_raki_breeds = {
 achievements.bless_ranged_raki = {
 	display_completion_ui = true,
 	name = "achv_bless_ranged_raki_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_ranged_raki_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_ranged_raki",
@@ -588,7 +569,6 @@ local bless_chaos_warriors_count = 5
 achievements.bless_chaos_warriors = {
 	display_completion_ui = true,
 	name = "achv_bless_chaos_warriors_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_chaos_warriors_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_chaos_warriors",
@@ -625,7 +605,6 @@ local bless_very_righteous_length = 50
 achievements.bless_very_righteous = {
 	display_completion_ui = true,
 	name = "achv_bless_very_righteous_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_very_righteous_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_very_righteous",
@@ -656,7 +635,6 @@ local bless_smite_enemies_amount = 250
 achievements.bless_smite_enemies = {
 	display_completion_ui = true,
 	name = "achv_bless_smite_enemies_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_smite_enemies_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_smite_enemies",
@@ -710,7 +688,6 @@ local bless_great_hammer_headshots_count = 40
 achievements.bless_great_hammer_headshots = {
 	display_completion_ui = true,
 	name = "achv_bless_great_hammer_headshots_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_great_hammer_headshots_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_great_hammer_headshots",
@@ -783,7 +760,6 @@ local bless_kill_specials_hammer_book_complete = 255
 achievements.bless_kill_specials_hammer_book = {
 	display_completion_ui = true,
 	name = "achv_bless_kill_specials_hammer_book_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_kill_specials_hammer_book_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_kill_specials_hammer_book",
@@ -885,7 +861,6 @@ achievements.bless_kill_specials_hammer_book = {
 achievements.bless_mighty_blow = {
 	display_completion_ui = true,
 	name = "achv_bless_mighty_blow_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_mighty_blow_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_mighty_blow",
@@ -936,14 +911,13 @@ achievements.bless_mighty_blow = {
 }
 local bless_block_attacks_count = 800
 achievements.bless_block_attacks = {
-	required_dlc = "bless",
+	always_run = true,
 	name = "achv_bless_block_attacks_name",
-	required_dlc_extra = "bless",
 	display_completion_ui = true,
 	desc = "achv_bless_block_attacks_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_block_attacks",
-	always_run = true,
+	required_dlc = "bless",
 	events = {
 		"register_damage_resisted_immune"
 	},
@@ -996,14 +970,13 @@ achievements.bless_block_attacks = {
 }
 local bless_righteous_stagger_count = 800
 achievements.bless_righteous_stagger = {
-	required_dlc = "bless",
+	always_run = true,
 	name = "achv_bless_righteous_stagger_name",
-	required_dlc_extra = "bless",
 	display_completion_ui = true,
 	desc = "achv_bless_righteous_stagger_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_righteous_stagger",
-	always_run = true,
+	required_dlc = "bless",
 	events = {
 		"register_ai_stagger"
 	},
@@ -1048,7 +1021,6 @@ local bless_charged_hammer_hit_window = 0.2
 achievements.bless_charged_hammer = {
 	display_completion_ui = true,
 	name = "achv_bless_charged_hammer_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_charged_hammer_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_charged_hammer",
@@ -1119,7 +1091,6 @@ local bless_protected_killing_count = 50
 achievements.bless_protected_killing = {
 	display_completion_ui = true,
 	name = "achv_bless_protected_killing_name",
-	required_dlc_extra = "bless",
 	desc = "achv_bless_protected_killing_desc",
 	required_career = "wh_priest",
 	icon = "achievement_trophy_bless_protected_killing",

@@ -806,6 +806,12 @@ InteractionDefinitions.pickup_object = {
 				return InteractionResult.FAILURE
 			end
 
+			local interactable_health_extension = ScriptUnit.has_extension(interactable_unit, "health_system")
+
+			if interactable_health_extension and interactable_health_extension.exploded then
+				return InteractionResult.FAILURE
+			end
+
 			if data.done_time < t then
 				return InteractionResult.SUCCESS
 			end

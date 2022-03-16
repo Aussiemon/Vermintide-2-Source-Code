@@ -152,7 +152,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			if this_hash == other_hash then
 				mm_printf("Network hashes matches, waiting to connect to host with user name '%s'...", tostring(host_name))
 
-				self._state = "verify_game_mode"
+				self._state = "verify_not_blocked"
 			else
 				mm_printf("Network hashes differ. lobby_id=%s, host_id:%s, this_hash:%q, other_hash:%q", lobby_id, host_name, this_hash, other_hash)
 				self:_join_fail_popup(string.format(Localize("failure_start_join_server_incorrect_hash"), this_hash, other_hash))
@@ -164,6 +164,17 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 
 			return self:_join_game_failed("lobby_data_timeout", t, true)
 		end
+	elseif state == "verify_not_blocked" then
+		if not DEDICATED_SERVER and IS_WINDOWS then
+			local host_peer_id = lobby_client:lobby_host()
+			local relationship = Friends.relationship(host_peer_id)
+
+			if relationship == Friends.IGNORED or relationship == Friends.IGNORED_FRIEND then
+				return self:_join_game_failed("user_blocked", t, false)
+			end
+		end
+
+		self._state = "verify_game_mode"
 	elseif state == "verify_game_mode" then
 		local matchmaking_type_id = lobby_client:lobby_data("matchmaking_type")
 

@@ -641,6 +641,7 @@ UnitVariationSettings.chaos_exalted_champion = {
 		}
 	}
 }
+UnitVariationSettings.chaos_exalted_champion_norsca = table.create_copy(UnitVariationSettings.chaos_exalted_champion_norsca, UnitVariationSettings.chaos_exalted_champion)
 UnitVariationSettings.chaos_marauder = {
 	enabled_from_start = {
 		"lower_body",

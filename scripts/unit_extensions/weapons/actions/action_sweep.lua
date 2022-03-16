@@ -500,7 +500,7 @@ ActionSweep._check_backstab = function (self, breed, is_dummy_unit, hit_unit, ow
 		local hit_angle = Vector3.dot(hit_unit_direction, owner_to_hit_dir)
 		local behind_target = hit_angle >= 0.55 and hit_angle <= 1
 
-		if behind_target then
+		if behind_target or (buff_extension and buff_extension:has_buff_perk("guaranteed_backstab")) then
 			backstab_multiplier = buff_extension:apply_buffs_to_value(backstab_multiplier, "backstab_multiplier")
 
 			if script_data.debug_legendary_traits then

@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	walk_speed = 5,
 	has_inventory = false,
@@ -72,9 +73,9 @@ local breed_data = {
 	run_on_update = AiBreedSnippets.on_grey_seer_update,
 	run_on_death = AiBreedSnippets.on_grey_seer_death,
 	run_on_despawn = AiBreedSnippets.on_grey_seer_despawn,
-	stagger_modifier_function = function (stagger, duration, length, hit_zone_name, blackboard, breed)
+	stagger_modifier_function = function (stagger_type, duration, length, hit_zone_name, blackboard, breed)
 		if not blackboard.unit then
-			return stagger, duration, length
+			return stagger_type, duration, length
 		end
 
 		local health_extension = ScriptUnit.extension(blackboard.unit, "health_system")
@@ -90,13 +91,13 @@ local breed_data = {
 		end
 
 		if (blackboard.mounted_data and not blackboard.knocked_off_mount) or blackboard.stagger_count >= 5 then
-			stagger = 0
+			stagger_type = stagger_types.none
 			blackboard.stagger_ignore_anim_cb = true
 		else
 			blackboard.stagger_ignore_anim_cb = false
 		end
 
-		return stagger, duration, length
+		return stagger_type, duration, length
 	end,
 	hitzone_multiplier_types = {
 		head = "headshot"

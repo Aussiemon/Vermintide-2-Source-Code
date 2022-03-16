@@ -288,6 +288,48 @@ HeroView.on_enter = function (self, params)
 	Managers.music:duck_sounds()
 
 	self._draw_loading = false
+
+	self:_handle_new_ui_disclaimer()
+end
+
+HeroView._handle_new_ui_disclaimer = function (self)
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+	local global_disclaimer_states = {
+		deus = {
+			store = false,
+			default = true,
+			loot = false,
+			system = false,
+			achievements = false,
+			keep_decorations = false
+		},
+		adventure = {
+			store = false,
+			default = true,
+			loot = false,
+			system = false,
+			achievements = false,
+			keep_decorations = false
+		},
+		default = {
+			store = false,
+			default = true,
+			loot = false,
+			system = false,
+			achievements = false,
+			keep_decorations = false
+		}
+	}
+	local disclaimer_states = global_disclaimer_states[mechanism_name] or global_disclaimer_states.default
+	local on_enter_transition_params = self._on_enter_transition_params
+	local menu_state_name = (on_enter_transition_params and on_enter_transition_params.menu_state_name) or "default"
+	local menu_sub_state_name = on_enter_transition_params and on_enter_transition_params.menu_sub_state_name
+
+	if disclaimer_states[menu_sub_state_name] ~= nil then
+		menu_state_name = menu_sub_state_name or menu_state_name
+	end
+
+	Managers.ui:handle_new_ui_disclaimer(disclaimer_states, menu_state_name)
 end
 
 HeroView.set_current_hero = function (self, profile_index)

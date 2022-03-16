@@ -146,7 +146,7 @@ end
 
 StartGameStateSettingsOverview._setup_menu_layout = function (self, mechanism_name)
 	local layout_settings = nil
-	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or UISettings.use_gamepad_menu_layout or MechanismSettings[mechanism_name].use_gamepad_layout
+	local use_gamepad_layout = IS_CONSOLE or Managers.input:is_device_active("gamepad") or not UISettings.use_pc_menu_layout or MechanismSettings[mechanism_name].use_gamepad_layout
 
 	if use_gamepad_layout then
 		layout_settings = local_require("scripts/ui/views/start_game_view/states/start_game_window_layout_console")

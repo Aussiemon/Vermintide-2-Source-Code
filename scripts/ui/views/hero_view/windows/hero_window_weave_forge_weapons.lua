@@ -1438,10 +1438,13 @@ HeroWindowWeaveForgeWeapons._setup_weapon_stats = function (self, item)
 			local reload_time = ammo_data.reload_time
 			local max_ammo = ammo_data.max_ammo
 			local ammo_per_clip = ammo_data.ammo_per_clip
-			local ammunition_text = nil
+			local hide_ammo_ui = ammo_data.hide_ammo_ui
+			local ammunition_text, description_text = nil
 
 			if single_clip then
 				ammunition_text = tostring(max_ammo) .. "/0"
+			elseif hide_ammo_ui then
+				description_text = Localize("menu_weave_forge_weapon_ammo_burn_description")
 			else
 				ammunition_text = tostring(ammo_per_clip) .. "/" .. tostring(max_ammo - ammo_per_clip)
 			end
@@ -1450,6 +1453,11 @@ HeroWindowWeaveForgeWeapons._setup_weapon_stats = function (self, item)
 			widgets[#widgets + 1] = item_ammunition_widget
 			item_ammunition_widget.offset[2] = -total_height
 			total_height = total_height + entry_height + item_option_spacing
+
+			if hide_ammo_ui then
+				item_ammunition_widget.content.hide_ammo_ui = hide_ammo_ui
+				item_ammunition_widget.content.description_text = description_text
+			end
 		else
 			local item_overheat_widget = self:_create_item_overheat_option_entry(item_option_size)
 			widgets[#widgets + 1] = item_overheat_widget

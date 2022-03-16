@@ -1564,6 +1564,22 @@ weapon_template.aim_assist_settings = {
 		skaven_slave = 1
 	}
 }
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 3,
+		[DamageTypes.CLEAVE] = 2,
+		[DamageTypes.SPEED] = 3,
+		[DamageTypes.STAGGER] = 3,
+		[DamageTypes.DAMAGE] = 5
+	},
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 3,
+		[DamageTypes.CLEAVE] = 6,
+		[DamageTypes.SPEED] = 1,
+		[DamageTypes.STAGGER] = 5,
+		[DamageTypes.DAMAGE] = 5
+	}
+}
 weapon_template.tooltip_keywords = {
 	"weapon_keyword_ignore_shields",
 	"weapon_keyword_wide_sweeps",
@@ -1584,5 +1600,5 @@ weapon_template.wwise_dep_right_hand = {
 }
 
 return {
-	one_handed_flails_flaming_template = table.clone(weapon_template)
+	one_handed_flails_flaming_template = weapon_template
 }

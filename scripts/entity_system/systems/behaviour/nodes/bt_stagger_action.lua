@@ -1,5 +1,6 @@
 require("scripts/entity_system/systems/behaviour/nodes/bt_node")
 
+local stagger_types = require("scripts/utils/stagger_types")
 BTStaggerAction = class(BTStaggerAction, BTNode)
 
 BTStaggerAction.init = function (self, ...)
@@ -51,7 +52,7 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 		stagger_anims = action_data.stagger_anims[blackboard.stagger_type]
 	end
 
-	if action_data.custom_weakspot_function and blackboard.stagger_type == 8 then
+	if action_data.custom_weakspot_function and blackboard.stagger_type == stagger_types.weakspot then
 		action_data.custom_weakspot_function(unit, blackboard, t, action_data)
 	end
 
@@ -86,7 +87,7 @@ BTStaggerAction.enter = function (self, unit, blackboard, t)
 		LocomotionUtils.set_animation_driven_movement(unit, true, true, false)
 	end
 
-	if blackboard.stagger_type == 3 or blackboard.stagger_type == 6 then
+	if blackboard.stagger_type == stagger_types.heavy or blackboard.stagger_type == stagger_types.explosion then
 		local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 		hit_reaction_extension.force_ragdoll_on_death = true
 	end
@@ -177,6 +178,7 @@ BTStaggerAction.clean_blackboard = function (self, blackboard)
 	blackboard.stagger_length = nil
 	blackboard.stagger_time = nil
 	blackboard.stagger_type = nil
+	blackboard.stagger_priority = nil
 	blackboard.staggering_id = nil
 	blackboard.active_node = nil
 end

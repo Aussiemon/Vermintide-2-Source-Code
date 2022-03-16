@@ -109,6 +109,12 @@ BuffSystem._clean_up_server_controller_buffs = function (self, unit)
 end
 
 BuffSystem.on_remove_extension = function (self, unit, extension_name)
+	local extension = self.unit_extension_data[unit]
+
+	if extension then
+		extension:clear()
+	end
+
 	self.frozen_unit_extension_data[unit] = nil
 	self.unit_extension_data[unit] = nil
 	self.active_buff_units[unit] = nil
