@@ -1513,945 +1513,6 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pbw_morris_mordrek_end = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pbw_morris_mordrek_end_01",
-				"pbw_morris_mordrek_end_02",
-				"pbw_morris_mordrek_end_03",
-				"pbw_morris_mordrek_end_04"
-			},
-			localization_strings = {
-				"pbw_morris_mordrek_end_01",
-				"pbw_morris_mordrek_end_02",
-				"pbw_morris_mordrek_end_03",
-				"pbw_morris_mordrek_end_04"
-			},
-			sound_events_duration = {
-				3.1462082862854,
-				4.7419581413269,
-				3.0745625495911,
-				5.1782293319702
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_level_conversations_mordrek_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events = {
-				[1.0] = "pbw_morris_level_conversations_mordrek_ten_01"
-			},
-			localization_strings = {
-				[1.0] = "pbw_morris_level_conversations_mordrek_ten_01"
-			},
-			sound_events_duration = {
-				[1.0] = 1.7461249828339
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_mordrek_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_mordrek_ten_01"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_mordrek_ten_01"
-			},
-			sound_events_duration = {
-				[1.0] = 1.0143749713898
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwh_morris_level_conversations_mordrek_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_mordrek_ten_02"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_mordrek_ten_02"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6717500686645
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_mordrek_ward = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwe_morris_mordrek_ward_01",
-				"pwe_morris_mordrek_ward_02",
-				"pwe_morris_mordrek_ward_03",
-				"pwe_morris_mordrek_ward_04"
-			},
-			localization_strings = {
-				"pwe_morris_mordrek_ward_01",
-				"pwe_morris_mordrek_ward_02",
-				"pwe_morris_mordrek_ward_03",
-				"pwe_morris_mordrek_ward_04"
-			},
-			sound_events_duration = {
-				4.2874794006348,
-				3.0387291908264,
-				2.9235208034515,
-				3.5151875019074
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_level_conversations_mordrek_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pes_morris_level_conversations_mordrek_ten_02"
-			},
-			localization_strings = {
-				[1.0] = "pes_morris_level_conversations_mordrek_ten_02"
-			},
-			sound_events_duration = {
-				[1.0] = 1.0766249895096
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_mordrek_siege_camp = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pes_morris_mordrek_siege_camp_01",
-				"pes_morris_mordrek_siege_camp_02",
-				"pes_morris_mordrek_siege_camp_03",
-				"pes_morris_mordrek_siege_camp_04"
-			},
-			localization_strings = {
-				"pes_morris_mordrek_siege_camp_01",
-				"pes_morris_mordrek_siege_camp_02",
-				"pes_morris_mordrek_siege_camp_03",
-				"pes_morris_mordrek_siege_camp_04"
-			},
-			sound_events_duration = {
-				1.8118749856949,
-				3.6644999980927,
-				2.6672084331513,
-				4.3441042900085
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_level_conversations_mordrek_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_01"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_01"
-			},
-			sound_events_duration = {
-				[1.0] = 6.0424585342407
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwh_morris_level_conversations_mordrek_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pwh_morris_level_conversations_mordrek_ten_01"
-			},
-			localization_strings = {
-				[1.0] = "pwh_morris_level_conversations_mordrek_ten_01"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2728958129883
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pes_morris_mordrek_breach = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pes_morris_mordrek_breach_01",
-				"pes_morris_mordrek_breach_02",
-				"pes_morris_mordrek_breach_03",
-				"pes_morris_mordrek_breach_04"
-			},
-			localization_strings = {
-				"pes_morris_mordrek_breach_01",
-				"pes_morris_mordrek_breach_02",
-				"pes_morris_mordrek_breach_03",
-				"pes_morris_mordrek_breach_04"
-			},
-			sound_events_duration = {
-				2.5262498855591,
-				3.0886874198914,
-				1.1261041164398,
-				1.2403333187103
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mordrek_end = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwh_morris_mordrek_end_01",
-				"pwh_morris_mordrek_end_02",
-				"pwh_morris_mordrek_end_03",
-				"pwh_morris_mordrek_end_04"
-			},
-			localization_strings = {
-				"pwh_morris_mordrek_end_01",
-				"pwh_morris_mordrek_end_02",
-				"pwh_morris_mordrek_end_03",
-				"pwh_morris_mordrek_end_04"
-			},
-			sound_events_duration = {
-				6.6747918128967,
-				5.4203958511353,
-				4.5714168548584,
-				5.023916721344
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mordrek_ward = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwh_morris_mordrek_ward_01",
-				"pwh_morris_mordrek_ward_02",
-				"pwh_morris_mordrek_ward_03",
-				"pwh_morris_mordrek_ward_04"
-			},
-			localization_strings = {
-				"pwh_morris_mordrek_ward_01",
-				"pwh_morris_mordrek_ward_02",
-				"pwh_morris_mordrek_ward_03",
-				"pwh_morris_mordrek_ward_04"
-			},
-			sound_events_duration = {
-				5.9040622711182,
-				4.2625207901001,
-				2.964124917984,
-				6.2891459465027
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pbw_morris_mordrek_pits = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pbw_morris_mordrek_pits_01",
-				"pbw_morris_mordrek_pits_02",
-				"pbw_morris_mordrek_pits_03",
-				"pbw_morris_mordrek_pits_04"
-			},
-			localization_strings = {
-				"pbw_morris_mordrek_pits_01",
-				"pbw_morris_mordrek_pits_02",
-				"pbw_morris_mordrek_pits_03",
-				"pbw_morris_mordrek_pits_04"
-			},
-			sound_events_duration = {
-				2.7827916145325,
-				3.3989584445953,
-				4.7066459655762,
-				2.9737708568573
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_mordrek_pits = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pdr_morris_mordrek_pits_01",
-				"pdr_morris_mordrek_pits_02",
-				"pdr_morris_mordrek_pits_03",
-				"pdr_morris_mordrek_pits_04"
-			},
-			localization_strings = {
-				"pdr_morris_mordrek_pits_01",
-				"pdr_morris_mordrek_pits_02",
-				"pdr_morris_mordrek_pits_03",
-				"pdr_morris_mordrek_pits_04"
-			},
-			sound_events_duration = {
-				3.5228854417801,
-				3.3348542451858,
-				4.603635430336,
-				3.9865312576294
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_level_conversations_mordrek_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_01"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_01"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6414999961853
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_mordrek_end = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwe_morris_mordrek_end_01",
-				"pwe_morris_mordrek_end_02",
-				"pwe_morris_mordrek_end_03",
-				"pwe_morris_mordrek_end_04"
-			},
-			localization_strings = {
-				"pwe_morris_mordrek_end_01",
-				"pwe_morris_mordrek_end_02",
-				"pwe_morris_mordrek_end_03",
-				"pwe_morris_mordrek_end_04"
-			},
-			sound_events_duration = {
-				4.4720001220703,
-				3.091979265213,
-				4.6647291183472,
-				3.8442499637604
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mordrek_ward = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pes_morris_mordrek_ward_01",
-				"pes_morris_mordrek_ward_02",
-				"pes_morris_mordrek_ward_03",
-				"pes_morris_mordrek_ward_04"
-			},
-			localization_strings = {
-				"pes_morris_mordrek_ward_01",
-				"pes_morris_mordrek_ward_02",
-				"pes_morris_mordrek_ward_03",
-				"pes_morris_mordrek_ward_04"
-			},
-			sound_events_duration = {
-				1.4052916765213,
-				1.9460624456406,
-				2.2632501125336,
-				0.97402083873749
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mordrek_pits = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwe_morris_mordrek_pits_01",
-				"pwe_morris_mordrek_pits_02",
-				"pwe_morris_mordrek_pits_03",
-				"pwe_morris_mordrek_pits_04"
-			},
-			localization_strings = {
-				"pwe_morris_mordrek_pits_01",
-				"pwe_morris_mordrek_pits_02",
-				"pwe_morris_mordrek_pits_03",
-				"pwe_morris_mordrek_pits_04"
-			},
-			sound_events_duration = {
-				2.3802499771118,
-				2.6645624637604,
-				3.6997082233429,
-				5.6866874694824
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_mordrek_breach = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pdr_morris_mordrek_breach_01",
-				"pdr_morris_mordrek_breach_02",
-				"pdr_morris_mordrek_breach_03",
-				"pdr_morris_mordrek_breach_04"
-			},
-			localization_strings = {
-				"pdr_morris_mordrek_breach_01",
-				"pdr_morris_mordrek_breach_02",
-				"pdr_morris_mordrek_breach_03",
-				"pdr_morris_mordrek_breach_04"
-			},
-			sound_events_duration = {
-				2.6295729875565,
-				4.9156354665756,
-				5.3546144962311,
-				3.8678957223892
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mordrek_breach = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwe_morris_mordrek_breach_01",
-				"pwe_morris_mordrek_breach_02",
-				"pwe_morris_mordrek_breach_03",
-				"pwe_morris_mordrek_breach_04"
-			},
-			localization_strings = {
-				"pwe_morris_mordrek_breach_01",
-				"pwe_morris_mordrek_breach_02",
-				"pwe_morris_mordrek_breach_03",
-				"pwe_morris_mordrek_breach_04"
-			},
-			sound_events_duration = {
-				2.596937417984,
-				2.7022292613983,
-				5.3356041908264,
-				3.914541721344
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mordrek_pits = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwh_morris_mordrek_pits_01",
-				"pwh_morris_mordrek_pits_02",
-				"pwh_morris_mordrek_pits_03",
-				"pwh_morris_mordrek_pits_04"
-			},
-			localization_strings = {
-				"pwh_morris_mordrek_pits_01",
-				"pwh_morris_mordrek_pits_02",
-				"pwh_morris_mordrek_pits_03",
-				"pwh_morris_mordrek_pits_04"
-			},
-			sound_events_duration = {
-				4.3064999580383,
-				5.3552083969116,
-				3.2930417060852,
-				6.8399791717529
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_level_conversations_mordrek_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "default",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_02"
-			},
-			localization_strings = {
-				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_02"
-			},
-			sound_events_duration = {
-				[1.0] = 1.1530833244324
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pwe_morris_level_conversations_mordrek_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events = {
-				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_02"
-			},
-			localization_strings = {
-				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_02"
-			},
-			sound_events_duration = {
-				[1.0] = 8.2913541793823
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			}
-		},
-		pbw_morris_mordrek_breach = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pbw_morris_mordrek_breach_01",
-				"pbw_morris_mordrek_breach_02",
-				"pbw_morris_mordrek_breach_03",
-				"pbw_morris_mordrek_breach_04"
-			},
-			localization_strings = {
-				"pbw_morris_mordrek_breach_01",
-				"pbw_morris_mordrek_breach_02",
-				"pbw_morris_mordrek_breach_03",
-				"pbw_morris_mordrek_breach_04"
-			},
-			sound_events_duration = {
-				3.3617708683014,
-				3.3438124656677,
-				2.6459584236145,
-				2.0494582653046
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mordrek_breach = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwh_morris_mordrek_breach_01",
-				"pwh_morris_mordrek_breach_02",
-				"pwh_morris_mordrek_breach_03",
-				"pwh_morris_mordrek_breach_04"
-			},
-			localization_strings = {
-				"pwh_morris_mordrek_breach_01",
-				"pwh_morris_mordrek_breach_02",
-				"pwh_morris_mordrek_breach_03",
-				"pwh_morris_mordrek_breach_04"
-			},
-			sound_events_duration = {
-				1.8890000581741,
-				5.1642918586731,
-				4.1789999008179,
-				2.4440624713898
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwh_morris_mordrek_siege_camp = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwh_morris_mordrek_siege_camp_01",
-				"pwh_morris_mordrek_siege_camp_02",
-				"pwh_morris_mordrek_siege_camp_03",
-				"pwh_morris_mordrek_siege_camp_04"
-			},
-			localization_strings = {
-				"pwh_morris_mordrek_siege_camp_01",
-				"pwh_morris_mordrek_siege_camp_02",
-				"pwh_morris_mordrek_siege_camp_03",
-				"pwh_morris_mordrek_siege_camp_04"
-			},
-			sound_events_duration = {
-				5.6578125953674,
-				5.7633123397827,
-				2.911229133606,
-				5.1541666984558
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pwe_morris_mordrek_siege_camp = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pwe_morris_mordrek_siege_camp_01",
-				"pwe_morris_mordrek_siege_camp_02",
-				"pwe_morris_mordrek_siege_camp_03",
-				"pwe_morris_mordrek_siege_camp_04"
-			},
-			localization_strings = {
-				"pwe_morris_mordrek_siege_camp_01",
-				"pwe_morris_mordrek_siege_camp_02",
-				"pwe_morris_mordrek_siege_camp_03",
-				"pwe_morris_mordrek_siege_camp_04"
-			},
-			sound_events_duration = {
-				5.2223334312439,
-				4.1322083473206,
-				3.4310207366943,
-				5.069375038147
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pdr_morris_mordrek_end = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
-			},
-			sound_events = {
-				"pdr_morris_mordrek_end_01",
-				"pdr_morris_mordrek_end_02",
-				"pdr_morris_mordrek_end_03",
-				"pdr_morris_mordrek_end_04"
-			},
-			localization_strings = {
-				"pdr_morris_mordrek_end_01",
-				"pdr_morris_mordrek_end_02",
-				"pdr_morris_mordrek_end_03",
-				"pdr_morris_mordrek_end_04"
-			},
-			sound_events_duration = {
-				1.7351875305176,
-				5.4075627326965,
-				2.476104259491,
-				4.2430210113525
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
 		pdr_morris_mordrek_siege_camp = {
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_sig_mordrek",
@@ -2459,11 +1520,11 @@ return function ()
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events = {
 				"pdr_morris_mordrek_siege_camp_01",
@@ -2483,91 +1544,230 @@ return function ()
 				4.9003019332886,
 				3.295739531517
 			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
-		},
-		pes_morris_mordrek_end = {
-			face_animations_n = 4,
-			database = "hero_conversations_dlc_morris_sig_mordrek",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 4,
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			sound_events = {
-				"pes_morris_mordrek_end_01",
-				"pes_morris_mordrek_end_02",
-				"pes_morris_mordrek_end_03",
-				"pes_morris_mordrek_end_04"
-			},
-			localization_strings = {
-				"pes_morris_mordrek_end_01",
-				"pes_morris_mordrek_end_02",
-				"pes_morris_mordrek_end_03",
-				"pes_morris_mordrek_end_04"
-			},
-			sound_events_duration = {
-				1.8268333673477,
-				3.4955832958221,
-				2.0024166107178,
-				1.9286458492279
-			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
+			randomize_indexes = {}
 		},
-		pes_morris_mordrek_pits = {
+		pdr_morris_mordrek_breach = {
 			face_animations_n = 4,
 			database = "hero_conversations_dlc_morris_sig_mordrek",
 			sound_events_n = 4,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pdr_morris_mordrek_breach_01",
+				"pdr_morris_mordrek_breach_02",
+				"pdr_morris_mordrek_breach_03",
+				"pdr_morris_mordrek_breach_04"
+			},
+			localization_strings = {
+				"pdr_morris_mordrek_breach_01",
+				"pdr_morris_mordrek_breach_02",
+				"pdr_morris_mordrek_breach_03",
+				"pdr_morris_mordrek_breach_04"
+			},
+			sound_events_duration = {
+				2.6295729875565,
+				4.9156354665756,
+				5.3546144962311,
+				3.8678957223892
+			},
 			face_animations = {
 				"face_calm",
 				"face_calm",
 				"face_calm",
 				"face_calm"
 			},
-			sound_events = {
-				"pes_morris_mordrek_pits_01",
-				"pes_morris_mordrek_pits_02",
-				"pes_morris_mordrek_pits_03",
-				"pes_morris_mordrek_pits_04"
-			},
-			localization_strings = {
-				"pes_morris_mordrek_pits_01",
-				"pes_morris_mordrek_pits_02",
-				"pes_morris_mordrek_pits_03",
-				"pes_morris_mordrek_pits_04"
-			},
-			sound_events_duration = {
-				2.9395208358765,
-				1.8403958082199,
-				2.5746250152588,
-				2.4405624866486
-			},
-			randomize_indexes = {},
+			randomize_indexes = {}
+		},
+		pwh_morris_mordrek_siege_camp = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
+			},
+			sound_events = {
+				"pwh_morris_mordrek_siege_camp_01",
+				"pwh_morris_mordrek_siege_camp_02",
+				"pwh_morris_mordrek_siege_camp_03",
+				"pwh_morris_mordrek_siege_camp_04"
+			},
+			localization_strings = {
+				"pwh_morris_mordrek_siege_camp_01",
+				"pwh_morris_mordrek_siege_camp_02",
+				"pwh_morris_mordrek_siege_camp_03",
+				"pwh_morris_mordrek_siege_camp_04"
+			},
+			sound_events_duration = {
+				5.6578125953674,
+				5.7633123397827,
+				2.911229133606,
+				5.1541666984558
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pbw_morris_mordrek_breach = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pbw_morris_mordrek_breach_01",
+				"pbw_morris_mordrek_breach_02",
+				"pbw_morris_mordrek_breach_03",
+				"pbw_morris_mordrek_breach_04"
+			},
+			localization_strings = {
+				"pbw_morris_mordrek_breach_01",
+				"pbw_morris_mordrek_breach_02",
+				"pbw_morris_mordrek_breach_03",
+				"pbw_morris_mordrek_breach_04"
+			},
+			sound_events_duration = {
+				3.3617708683014,
+				3.3438124656677,
+				2.6459584236145,
+				2.0494582653046
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwh_morris_level_conversations_mordrek_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pwh_morris_level_conversations_mordrek_ten_01"
+			},
+			localization_strings = {
+				[1.0] = "pwh_morris_level_conversations_mordrek_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2728958129883
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			}
+		},
+		pwe_morris_mordrek_siege_camp = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwe_morris_mordrek_siege_camp_01",
+				"pwe_morris_mordrek_siege_camp_02",
+				"pwe_morris_mordrek_siege_camp_03",
+				"pwe_morris_mordrek_siege_camp_04"
+			},
+			localization_strings = {
+				"pwe_morris_mordrek_siege_camp_01",
+				"pwe_morris_mordrek_siege_camp_02",
+				"pwe_morris_mordrek_siege_camp_03",
+				"pwe_morris_mordrek_siege_camp_04"
+			},
+			sound_events_duration = {
+				5.2223334312439,
+				4.1322083473206,
+				3.4310207366943,
+				5.069375038147
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwe_morris_mordrek_ward = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwe_morris_mordrek_ward_01",
+				"pwe_morris_mordrek_ward_02",
+				"pwe_morris_mordrek_ward_03",
+				"pwe_morris_mordrek_ward_04"
+			},
+			localization_strings = {
+				"pwe_morris_mordrek_ward_01",
+				"pwe_morris_mordrek_ward_02",
+				"pwe_morris_mordrek_ward_03",
+				"pwe_morris_mordrek_ward_04"
+			},
+			sound_events_duration = {
+				4.2874794006348,
+				3.0387291908264,
+				2.9235208034515,
+				3.5151875019074
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
 		},
 		pbw_morris_mordrek_siege_camp = {
 			face_animations_n = 4,
@@ -2576,11 +1776,11 @@ return function ()
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events = {
 				"pbw_morris_mordrek_siege_camp_01",
@@ -2600,12 +1800,461 @@ return function ()
 				4.2818956375122,
 				3.9918124675751
 			},
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pes_morris_mordrek_ward = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_morris_mordrek_ward_01",
+				"pes_morris_mordrek_ward_02",
+				"pes_morris_mordrek_ward_03",
+				"pes_morris_mordrek_ward_04"
+			},
+			localization_strings = {
+				"pes_morris_mordrek_ward_01",
+				"pes_morris_mordrek_ward_02",
+				"pes_morris_mordrek_ward_03",
+				"pes_morris_mordrek_ward_04"
+			},
+			sound_events_duration = {
+				1.4052916765213,
+				1.9460624456406,
+				2.2632501125336,
+				0.97402083873749
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pbw_morris_level_conversations_mordrek_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pbw_morris_level_conversations_mordrek_ten_01"
+			},
+			localization_strings = {
+				[1.0] = "pbw_morris_level_conversations_mordrek_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.7461249828339
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			}
+		},
+		pwh_morris_level_conversations_mordrek_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pwh_morris_level_conversations_mordrek_ten_02"
+			},
+			localization_strings = {
+				[1.0] = "pwh_morris_level_conversations_mordrek_ten_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6717500686645
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			}
+		},
+		pes_morris_level_conversations_mordrek_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_mordrek_ten_01"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_mordrek_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.0143749713898
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			}
+		},
+		pbw_morris_mordrek_end = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pbw_morris_mordrek_end_01",
+				"pbw_morris_mordrek_end_02",
+				"pbw_morris_mordrek_end_03",
+				"pbw_morris_mordrek_end_04"
+			},
+			localization_strings = {
+				"pbw_morris_mordrek_end_01",
+				"pbw_morris_mordrek_end_02",
+				"pbw_morris_mordrek_end_03",
+				"pbw_morris_mordrek_end_04"
+			},
+			sound_events_duration = {
+				3.1462082862854,
+				4.7419581413269,
+				3.0745625495911,
+				5.1782293319702
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pes_morris_mordrek_pits = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_morris_mordrek_pits_01",
+				"pes_morris_mordrek_pits_02",
+				"pes_morris_mordrek_pits_03",
+				"pes_morris_mordrek_pits_04"
+			},
+			localization_strings = {
+				"pes_morris_mordrek_pits_01",
+				"pes_morris_mordrek_pits_02",
+				"pes_morris_mordrek_pits_03",
+				"pes_morris_mordrek_pits_04"
+			},
+			sound_events_duration = {
+				2.9395208358765,
+				1.8403958082199,
+				2.5746250152588,
+				2.4405624866486
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwe_morris_mordrek_pits = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwe_morris_mordrek_pits_01",
+				"pwe_morris_mordrek_pits_02",
+				"pwe_morris_mordrek_pits_03",
+				"pwe_morris_mordrek_pits_04"
+			},
+			localization_strings = {
+				"pwe_morris_mordrek_pits_01",
+				"pwe_morris_mordrek_pits_02",
+				"pwe_morris_mordrek_pits_03",
+				"pwe_morris_mordrek_pits_04"
+			},
+			sound_events_duration = {
+				2.3802499771118,
+				2.6645624637604,
+				3.6997082233429,
+				5.6866874694824
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pes_morris_level_conversations_mordrek_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pes_morris_level_conversations_mordrek_ten_02"
+			},
+			localization_strings = {
+				[1.0] = "pes_morris_level_conversations_mordrek_ten_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.0766249895096
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			}
+		},
+		pwh_morris_mordrek_end = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwh_morris_mordrek_end_01",
+				"pwh_morris_mordrek_end_02",
+				"pwh_morris_mordrek_end_03",
+				"pwh_morris_mordrek_end_04"
+			},
+			localization_strings = {
+				"pwh_morris_mordrek_end_01",
+				"pwh_morris_mordrek_end_02",
+				"pwh_morris_mordrek_end_03",
+				"pwh_morris_mordrek_end_04"
+			},
+			sound_events_duration = {
+				6.6747918128967,
+				5.4203958511353,
+				4.5714168548584,
+				5.023916721344
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwe_morris_mordrek_end = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwe_morris_mordrek_end_01",
+				"pwe_morris_mordrek_end_02",
+				"pwe_morris_mordrek_end_03",
+				"pwe_morris_mordrek_end_04"
+			},
+			localization_strings = {
+				"pwe_morris_mordrek_end_01",
+				"pwe_morris_mordrek_end_02",
+				"pwe_morris_mordrek_end_03",
+				"pwe_morris_mordrek_end_04"
+			},
+			sound_events_duration = {
+				4.4720001220703,
+				3.091979265213,
+				4.6647291183472,
+				3.8442499637604
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwe_morris_level_conversations_mordrek_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_01"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.0424585342407
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			}
+		},
+		pdr_morris_level_conversations_mordrek_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_02"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.1530833244324
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			}
+		},
+		pdr_morris_level_conversations_mordrek_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_01"
+			},
+			localization_strings = {
+				[1.0] = "pdr_morris_level_conversations_mordrek_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6414999961853
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			}
+		},
+		pwe_morris_mordrek_breach = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwe_morris_mordrek_breach_01",
+				"pwe_morris_mordrek_breach_02",
+				"pwe_morris_mordrek_breach_03",
+				"pwe_morris_mordrek_breach_04"
+			},
+			localization_strings = {
+				"pwe_morris_mordrek_breach_01",
+				"pwe_morris_mordrek_breach_02",
+				"pwe_morris_mordrek_breach_03",
+				"pwe_morris_mordrek_breach_04"
+			},
+			sound_events_duration = {
+				2.596937417984,
+				2.7022292613983,
+				5.3356041908264,
+				3.914541721344
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwe_morris_level_conversations_mordrek_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			sound_events = {
+				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_02"
+			},
+			localization_strings = {
+				[1.0] = "pwe_morris_level_conversations_mordrek_eleven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2913541793823
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			}
 		},
 		pdr_morris_mordrek_ward = {
@@ -2615,11 +2264,11 @@ return function ()
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events = {
 				"pdr_morris_mordrek_ward_01",
@@ -2639,13 +2288,13 @@ return function ()
 				4.0296040773392,
 				3.2404583692551
 			},
-			randomize_indexes = {},
-			dialogue_animations = {
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk",
-				"dialogue_talk"
-			}
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
 		},
 		pbw_morris_mordrek_ward = {
 			face_animations_n = 4,
@@ -2654,11 +2303,11 @@ return function ()
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 4,
-			face_animations = {
-				"face_calm",
-				"face_calm",
-				"face_calm",
-				"face_calm"
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
 			},
 			sound_events = {
 				"pbw_morris_mordrek_ward_01",
@@ -2678,13 +2327,364 @@ return function ()
 				3.3378748893738,
 				2.7712500095367
 			},
-			randomize_indexes = {},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pdr_morris_mordrek_end = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
 			dialogue_animations = {
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk",
 				"dialogue_talk"
-			}
+			},
+			sound_events = {
+				"pdr_morris_mordrek_end_01",
+				"pdr_morris_mordrek_end_02",
+				"pdr_morris_mordrek_end_03",
+				"pdr_morris_mordrek_end_04"
+			},
+			localization_strings = {
+				"pdr_morris_mordrek_end_01",
+				"pdr_morris_mordrek_end_02",
+				"pdr_morris_mordrek_end_03",
+				"pdr_morris_mordrek_end_04"
+			},
+			sound_events_duration = {
+				1.7351875305176,
+				5.4075627326965,
+				2.476104259491,
+				4.2430210113525
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwh_morris_mordrek_ward = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwh_morris_mordrek_ward_01",
+				"pwh_morris_mordrek_ward_02",
+				"pwh_morris_mordrek_ward_03",
+				"pwh_morris_mordrek_ward_04"
+			},
+			localization_strings = {
+				"pwh_morris_mordrek_ward_01",
+				"pwh_morris_mordrek_ward_02",
+				"pwh_morris_mordrek_ward_03",
+				"pwh_morris_mordrek_ward_04"
+			},
+			sound_events_duration = {
+				5.9040622711182,
+				4.2625207901001,
+				2.964124917984,
+				6.2891459465027
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pes_morris_mordrek_siege_camp = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_morris_mordrek_siege_camp_01",
+				"pes_morris_mordrek_siege_camp_02",
+				"pes_morris_mordrek_siege_camp_03",
+				"pes_morris_mordrek_siege_camp_04"
+			},
+			localization_strings = {
+				"pes_morris_mordrek_siege_camp_01",
+				"pes_morris_mordrek_siege_camp_02",
+				"pes_morris_mordrek_siege_camp_03",
+				"pes_morris_mordrek_siege_camp_04"
+			},
+			sound_events_duration = {
+				1.8118749856949,
+				3.6644999980927,
+				2.6672084331513,
+				4.3441042900085
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pes_morris_mordrek_end = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_morris_mordrek_end_01",
+				"pes_morris_mordrek_end_02",
+				"pes_morris_mordrek_end_03",
+				"pes_morris_mordrek_end_04"
+			},
+			localization_strings = {
+				"pes_morris_mordrek_end_01",
+				"pes_morris_mordrek_end_02",
+				"pes_morris_mordrek_end_03",
+				"pes_morris_mordrek_end_04"
+			},
+			sound_events_duration = {
+				1.8268333673477,
+				3.4955832958221,
+				2.0024166107178,
+				1.9286458492279
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pes_morris_mordrek_breach = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pes_morris_mordrek_breach_01",
+				"pes_morris_mordrek_breach_02",
+				"pes_morris_mordrek_breach_03",
+				"pes_morris_mordrek_breach_04"
+			},
+			localization_strings = {
+				"pes_morris_mordrek_breach_01",
+				"pes_morris_mordrek_breach_02",
+				"pes_morris_mordrek_breach_03",
+				"pes_morris_mordrek_breach_04"
+			},
+			sound_events_duration = {
+				2.5262498855591,
+				3.0886874198914,
+				1.1261041164398,
+				1.2403333187103
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwh_morris_mordrek_pits = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwh_morris_mordrek_pits_01",
+				"pwh_morris_mordrek_pits_02",
+				"pwh_morris_mordrek_pits_03",
+				"pwh_morris_mordrek_pits_04"
+			},
+			localization_strings = {
+				"pwh_morris_mordrek_pits_01",
+				"pwh_morris_mordrek_pits_02",
+				"pwh_morris_mordrek_pits_03",
+				"pwh_morris_mordrek_pits_04"
+			},
+			sound_events_duration = {
+				4.3064999580383,
+				5.3552083969116,
+				3.2930417060852,
+				6.8399791717529
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pwh_morris_mordrek_breach = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pwh_morris_mordrek_breach_01",
+				"pwh_morris_mordrek_breach_02",
+				"pwh_morris_mordrek_breach_03",
+				"pwh_morris_mordrek_breach_04"
+			},
+			localization_strings = {
+				"pwh_morris_mordrek_breach_01",
+				"pwh_morris_mordrek_breach_02",
+				"pwh_morris_mordrek_breach_03",
+				"pwh_morris_mordrek_breach_04"
+			},
+			sound_events_duration = {
+				1.8890000581741,
+				5.1642918586731,
+				4.1789999008179,
+				2.4440624713898
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pbw_morris_mordrek_pits = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pbw_morris_mordrek_pits_01",
+				"pbw_morris_mordrek_pits_02",
+				"pbw_morris_mordrek_pits_03",
+				"pbw_morris_mordrek_pits_04"
+			},
+			localization_strings = {
+				"pbw_morris_mordrek_pits_01",
+				"pbw_morris_mordrek_pits_02",
+				"pbw_morris_mordrek_pits_03",
+				"pbw_morris_mordrek_pits_04"
+			},
+			sound_events_duration = {
+				2.7827916145325,
+				3.3989584445953,
+				4.7066459655762,
+				2.9737708568573
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
+		},
+		pdr_morris_mordrek_pits = {
+			face_animations_n = 4,
+			database = "hero_conversations_dlc_morris_sig_mordrek",
+			sound_events_n = 4,
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 4,
+			dialogue_animations = {
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk",
+				"dialogue_talk"
+			},
+			sound_events = {
+				"pdr_morris_mordrek_pits_01",
+				"pdr_morris_mordrek_pits_02",
+				"pdr_morris_mordrek_pits_03",
+				"pdr_morris_mordrek_pits_04"
+			},
+			localization_strings = {
+				"pdr_morris_mordrek_pits_01",
+				"pdr_morris_mordrek_pits_02",
+				"pdr_morris_mordrek_pits_03",
+				"pdr_morris_mordrek_pits_04"
+			},
+			sound_events_duration = {
+				3.5228854417801,
+				3.3348542451858,
+				4.603635430336,
+				3.9865312576294
+			},
+			face_animations = {
+				"face_calm",
+				"face_calm",
+				"face_calm",
+				"face_calm"
+			},
+			randomize_indexes = {}
 		}
 	})
 end

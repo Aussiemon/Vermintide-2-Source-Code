@@ -183,6 +183,16 @@ assert(DialogueLookup[DialogueLookup_n + 182] == nil)
 assert(DialogueLookup[DialogueLookup_n + 183] == nil)
 assert(DialogueLookup[DialogueLookup_n + 184] == nil)
 assert(DialogueLookup[DialogueLookup_n + 185] == nil)
+assert(DialogueLookup[DialogueLookup_n + 186] == nil)
+assert(DialogueLookup[DialogueLookup_n + 187] == nil)
+assert(DialogueLookup[DialogueLookup_n + 188] == nil)
+assert(DialogueLookup[DialogueLookup_n + 189] == nil)
+assert(DialogueLookup[DialogueLookup_n + 190] == nil)
+assert(DialogueLookup[DialogueLookup_n + 191] == nil)
+assert(DialogueLookup[DialogueLookup_n + 192] == nil)
+assert(DialogueLookup[DialogueLookup_n + 193] == nil)
+assert(DialogueLookup[DialogueLookup_n + 194] == nil)
+assert(DialogueLookup[DialogueLookup_n + 195] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "nfl_morris_intro_curse_skulls_of_fury"
 DialogueLookup[DialogueLookup_n + 2] = "nfl_morris_intro_curse_champions"
@@ -369,6 +379,16 @@ DialogueLookup[DialogueLookup_n + 182] = "pes_arena_ice_continue"
 DialogueLookup[DialogueLookup_n + 183] = "pes_arena_citadel_start"
 DialogueLookup[DialogueLookup_n + 184] = "pes_arena_citadel_continue"
 DialogueLookup[DialogueLookup_n + 185] = "pes_arena_citadel_final"
-DialogueLookup_n = DialogueLookup_n + 185
+DialogueLookup[DialogueLookup_n + 186] = "pwe_gameplay_cursed_chest"
+DialogueLookup[DialogueLookup_n + 187] = "pes_gameplay_cursed_chest"
+DialogueLookup[DialogueLookup_n + 188] = "pdr_gameplay_cursed_chest"
+DialogueLookup[DialogueLookup_n + 189] = "pbw_gameplay_cursed_chest"
+DialogueLookup[DialogueLookup_n + 190] = "pwh_gameplay_cursed_chest"
+DialogueLookup[DialogueLookup_n + 191] = "pwe_gameplay_cursed_chest_ping"
+DialogueLookup[DialogueLookup_n + 192] = "pes_gameplay_cursed_chest_ping"
+DialogueLookup[DialogueLookup_n + 193] = "pdr_gameplay_cursed_chest_ping"
+DialogueLookup[DialogueLookup_n + 194] = "pbw_gameplay_cursed_chest_ping"
+DialogueLookup[DialogueLookup_n + 195] = "pwh_gameplay_cursed_chest_ping"
+DialogueLookup_n = DialogueLookup_n + 195
 
 return

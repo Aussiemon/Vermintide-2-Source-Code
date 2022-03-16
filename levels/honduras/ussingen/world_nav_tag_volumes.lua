@@ -1310,7 +1310,7 @@ local nav_tag_volumes = {
 			}
 		}
 	},
-	[""] = {
+	volume_023 = {
 		delay_nav_tag_volume_creation = true,
 		alt_max = 5.081032752990723,
 		alt_min = 1.3029249906539917,
