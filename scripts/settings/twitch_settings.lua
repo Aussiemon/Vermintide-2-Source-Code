@@ -96,8 +96,6 @@ for name, template in pairs(TwitchVoteTemplates) do
 	end
 end
 
-fassert(min_diff <= TwitchSettings.max_diff, "[TwitchSettings] The minimum difference between vote templates exceeeds %s", TwitchSettings.max_diff)
-
 TwitchVoteTemplatesLookup = {}
 TwitchMultipleChoiceVoteTemplatesLookup = {}
 TwitchStandardVoteTemplatesLookup = {}
@@ -167,5 +165,7 @@ for _, dlc in pairs(DLCSettings) do
 		end
 	end
 end
+
+fassert(min_diff <= TwitchSettings.max_diff, "[TwitchSettings] The minimum difference between vote templates exceeeds %s", TwitchSettings.max_diff)
 
 return

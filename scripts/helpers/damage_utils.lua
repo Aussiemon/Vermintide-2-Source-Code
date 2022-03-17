@@ -1380,10 +1380,14 @@ DamageUtils.create_explosion = function (world, attacker_unit, impact_position, 
 				local distance_factor = 1
 
 				if max_damage_radius < hit_distance then
-					distance_factor = 1 - (hit_distance - max_damage_radius) / (radius - max_damage_radius)
+					local distance_scale_range = radius - max_damage_radius
 
-					if exponential_falloff then
-						distance_factor = distance_factor * distance_factor
+					if distance_scale_range > 0 then
+						distance_factor = 1 - (hit_distance - max_damage_radius) / distance_scale_range
+
+						if exponential_falloff then
+							distance_factor = distance_factor * distance_factor
+						end
 					end
 				end
 

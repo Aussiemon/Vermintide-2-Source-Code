@@ -44,8 +44,10 @@ PlayerCharacterStateEmote.on_exit = function (self, unit, input, dt, context, t,
 	CharacterStateHelper.change_camera_state(self.player, "follow")
 	self.first_person_extension:toggle_visibility(CameraTransitionSettings.perspective_transition_time)
 	self.status_extension:set_inspecting(false)
-	CharacterStateHelper.play_animation_event(unit, "anim_pose_cancel")
-	CharacterStateHelper.show_inventory_3p(unit, true, true, Managers.player.is_server, self.inventory_extension)
+
+	local unit_id = self.unit_storage:go_id(self.unit)
+
+	self.network_transmit:send_rpc_server("rpc_server_cancel_emote", unit_id)
 
 	local game_mode = Managers.state.game_mode:game_mode()
 
@@ -57,9 +59,7 @@ end
 
 PlayerCharacterStateEmote.update = function (self, unit, input, dt, context, t)
 	local csm = self.csm
-	local unit = self.unit
 	local input_extension = self.input_extension
-	local interactor_extension = self.interactor_extension
 	local camera_manager = Managers.state.camera
 	local status_extension = self.status_extension
 	local first_person_extension = self.first_person_extension
@@ -152,8 +152,10 @@ PlayerCharacterStateEmote._update_emote = function (self)
 	local emote_anim_event, hide_weapons = self.cosmetic_extension:get_queued_3p_emote()
 
 	if emote_anim_event then
-		CharacterStateHelper.play_animation_event(self.unit, emote_anim_event)
-		CharacterStateHelper.show_inventory_3p(self.unit, not hide_weapons, true, Managers.player.is_server, self.inventory_extension)
+		local unit_id = self.unit_storage:go_id(self.unit)
+		local anim_event_id = NetworkLookup.anims[emote_anim_event]
+
+		self.network_transmit:send_rpc_server("rpc_server_request_emote", unit_id, anim_event_id, hide_weapons)
 		self.cosmetic_extension:consume_queued_3p_emote()
 	end
 end

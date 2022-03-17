@@ -2029,37 +2029,37 @@ DeusWeaponGroups = DeusWeaponGroups or {
 	},
 	wh_1h_hammer = {
 		default = "deus_wh_1h_hammer",
-		slot_type = "ranged",
+		slot_type = "melee",
 		can_wield = ItemMasterList.wh_1h_hammer.can_wield,
 		items_per_rarity = {}
 	},
 	wh_2h_hammer = {
 		default = "deus_wh_2h_hammer",
-		slot_type = "ranged",
+		slot_type = "melee",
 		can_wield = ItemMasterList.wh_2h_hammer.can_wield,
 		items_per_rarity = {}
 	},
 	wh_hammer_shield = {
 		default = "deus_wh_hammer_shield",
-		slot_type = "ranged",
+		slot_type = "melee",
 		can_wield = ItemMasterList.wh_hammer_shield.can_wield,
 		items_per_rarity = {}
 	},
 	wh_flail_shield = {
 		default = "deus_wh_flail_shield",
-		slot_type = "ranged",
+		slot_type = "melee",
 		can_wield = ItemMasterList.wh_flail_shield.can_wield,
 		items_per_rarity = {}
 	},
 	wh_dual_hammer = {
 		default = "deus_wh_dual_hammer",
-		slot_type = "ranged",
+		slot_type = "melee",
 		can_wield = ItemMasterList.wh_dual_hammer.can_wield,
 		items_per_rarity = {}
 	},
 	wh_hammer_book = {
 		default = "deus_wh_hammer_book",
-		slot_type = "ranged",
+		slot_type = "melee",
 		can_wield = ItemMasterList.wh_hammer_book.can_wield,
 		items_per_rarity = {}
 	}

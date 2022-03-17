@@ -394,7 +394,7 @@ settings.buff_templates = {
 		activation_sound = "enemy_grudge_cursed_damage",
 		buffs = {
 			{
-				icon = "buff_icon_grimoire_health_debuff",
+				icon = "grudge_mark_cursed_debuff",
 				name = "grudge_mark_curse",
 				stat_buff = "health_curse",
 				debuff = true,
@@ -450,7 +450,7 @@ settings.buff_templates = {
 			{
 				reset_on_max_stacks = true,
 				name = "grudge_mark_frenzy_stack",
-				icon = "deus_curse_khorne_01",
+				icon = "grudge_mark_frenzy_debuff",
 				max_stacks = 10,
 				refresh_durations = true,
 				debuff = true,
@@ -470,7 +470,7 @@ settings.buff_templates = {
 			{
 				buff_to_add = "grudge_mark_frenzy_buff",
 				name = "grudge_mark_frenzy_buff",
-				icon = "deus_curse_khorne_01",
+				icon = "grudge_mark_frenzy_debuff",
 				buff_func = "add_buff",
 				event = "on_melee_hit",
 				refresh_durations = true,

@@ -914,6 +914,8 @@ HeroViewStateOverview._set_loadout_item = function (self, item, strict_slot_name
 
 			cosmetic_system:set_equipped_frame(unit, frame_name)
 		end
+	elseif slot_type == "hat" then
+		self.skin_sync_id = self.skin_sync_id + 1
 	end
 
 	self.loadout_sync_id = self.loadout_sync_id + 1

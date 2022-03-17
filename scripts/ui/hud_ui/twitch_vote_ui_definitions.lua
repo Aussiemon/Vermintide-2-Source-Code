@@ -341,7 +341,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			-114,
+			-64,
 			1
 		}
 	},

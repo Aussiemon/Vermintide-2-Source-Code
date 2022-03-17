@@ -33,6 +33,14 @@ local WEAPON_CHEST_TO_SLOTS = {
 		swap_ranged = {
 			"melee"
 		}
+	},
+	wh_priest = {
+		swap_melee = {
+			"melee"
+		},
+		swap_ranged = {
+			"melee"
+		}
 	}
 }
 local LUA_UPDATE_RARITY_EVENTS = {}

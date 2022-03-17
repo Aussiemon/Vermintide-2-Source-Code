@@ -1333,8 +1333,8 @@ UISettings.dlc_order_data = {
 		display_name = "display_name_q1_footknight_bundle"
 	},
 	{
-		dlc = "q1_unchained_bundle ",
-		display_name = "display_name_q1_unchained_bundle "
+		dlc = "q1_unchained_bundle",
+		display_name = "display_name_q1_unchained_bundle"
 	},
 	{
 		dlc = "q1_wh_captain_bundle",

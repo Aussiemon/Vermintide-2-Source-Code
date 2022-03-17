@@ -2,7 +2,9 @@ require("scripts/unit_extensions/default_player_unit/cosmetic/player_unit_cosmet
 
 CosmeticSystem = class(CosmeticSystem, ExtensionSystemBase)
 local RPCS = {
-	"rpc_set_equipped_frame"
+	"rpc_set_equipped_frame",
+	"rpc_server_request_emote",
+	"rpc_server_cancel_emote"
 }
 local extension_list = {
 	"PlayerUnitCosmeticExtension"
@@ -16,6 +18,8 @@ CosmeticSystem.init = function (self, entity_system_creation_context, system_nam
 	self._network_event_delegate = entity_system_creation_context.network_event_delegate
 
 	self._network_event_delegate:register(self, unpack(RPCS))
+
+	self._emote_states = {}
 end
 
 CosmeticSystem.destroy = function (self)
@@ -71,6 +75,54 @@ CosmeticSystem.rpc_set_equipped_frame = function (self, channel_id, unit_id, fra
 		local ext = ScriptUnit.extension(unit, "cosmetic_system")
 
 		ext:set_equipped_frame(frame_name)
+	end
+end
+
+CosmeticSystem.rpc_server_request_emote = function (self, channel_id, unit_id, anim_event_id, hide_weapons)
+	fassert(self.is_server, "Error! Only the server should process emote requests.")
+
+	local unit = self.unit_storage:unit(unit_id)
+
+	if unit then
+		local anim_event = NetworkLookup.anims[anim_event_id]
+		self._emote_states[unit_id] = {
+			anim_event = anim_event,
+			hide_weapons = hide_weapons
+		}
+
+		CharacterStateHelper.play_animation_event(unit, anim_event)
+
+		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+
+		CharacterStateHelper.show_inventory_3p(unit, not hide_weapons, true, true, inventory_extension)
+	end
+end
+
+CosmeticSystem.rpc_server_cancel_emote = function (self, channel_id, unit_id)
+	fassert(self.is_server, "Error! Only the server should cancel emotes.")
+
+	local unit = self.unit_storage:unit(unit_id)
+
+	if unit then
+		CharacterStateHelper.play_animation_event(unit, "anim_pose_cancel")
+
+		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")
+
+		CharacterStateHelper.show_inventory_3p(unit, true, true, true, inventory_extension)
+	end
+
+	self._emote_states[unit_id] = nil
+end
+
+CosmeticSystem.hot_join_sync = function (self, peer_id)
+	local network_transmit = self.network_transmit
+	local unit_storage = self.unit_storage
+
+	for unit_id, emote_state in pairs(self._emote_states) do
+		local event_id = NetworkLookup.anims[emote_state.anim_event]
+
+		network_transmit:send_rpc("rpc_anim_event", peer_id, event_id, unit_id)
+		network_transmit:send_rpc("rpc_show_inventory", peer_id, unit_id, not emote_state.hide_weapons)
 	end
 end
 

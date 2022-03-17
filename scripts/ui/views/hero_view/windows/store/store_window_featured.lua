@@ -103,6 +103,10 @@ StoreWindowFeatured.on_enter = function (self, params, offset)
 	self:_sort_slideshow(slideshow_content)
 	self:_trim_slideshow(slideshow_content)
 
+	if grid_content and #grid_content == 0 then
+		grid_content = self:_get_default_featured_grid_content()
+	end
+
 	local content_widgets_by_name = self._content_widgets_by_name
 
 	self:_setup_slideshow(content_widgets_by_name.slideshow, slideshow_content)
@@ -624,35 +628,6 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 		end
 	end
 
-	if not GameSettingsDevelopment.use_offline_backend then
-		self:_backfill_grid_items(grid_occupied, layout, layout_ids)
-	end
-
-	local function sort_by_product_type(a, b)
-		local a_discounted = a.discounted
-		local a_item = a.item
-		local a_item_data = a_item and a_item.data
-		local a_item_premium = a_item_data and a_item_data.dlc_name
-		local a_item_type = a_item_data and a_item_data.item_type
-		local a_type = a_item_type or a.type
-		local a_discounted_type = a_discounted and "discounted_" .. a_type
-		local a_premium_type = a_item_premium and "premium_" .. a_type
-		local a_prio = PRODUCT_SORT_ORDER[a_premium_type] or PRODUCT_SORT_ORDER[a_discounted_type] or PRODUCT_SORT_ORDER[a_type] or PRODUCT_SORT_ORDER.default
-		local b_discounted = b.discounted
-		local b_item = b.item
-		local b_item_data = b_item and b_item.data
-		local b_item_premium = b_item_data and b_item_data.dlc_name
-		local b_item_type = b_item_data and b_item_data.item_type
-		local b_type = b_item_type or b.type
-		local b_discounted_type = b_discounted and "discounted_" .. b_type
-		local b_premium_type = b_item_premium and "premium_" .. b_type
-		local b_prio = PRODUCT_SORT_ORDER[b_premium_type] or PRODUCT_SORT_ORDER[b_discounted_type] or PRODUCT_SORT_ORDER[b_type] or PRODUCT_SORT_ORDER.default
-
-		return a_prio < b_prio
-	end
-
-	table.sort(layout, sort_by_product_type)
-
 	self._layout = layout
 
 	self:_create_product_widgets(layout)
@@ -697,110 +672,6 @@ StoreWindowFeatured._add_product = function (self, product_data)
 	end
 
 	return product, item_type or product_type
-end
-
-StoreWindowFeatured._backfill_grid_items = function (self, grid_occupied, layout, layout_ids)
-	local peddler_interface = Managers.backend:get_interface("peddler")
-	local item_interface = Managers.backend:get_interface("items")
-	local discounted_items = peddler_interface:get_discounted_items()
-	self._discounted_items = discounted_items
-	self._backend_content = self:_create_backend_content(layout)
-	local max_grid_size = GRID_SIZE[1] * GRID_SIZE[2]
-
-	if grid_occupied >= max_grid_size then
-		return
-	end
-
-	local unlock_manager = Managers.unlock
-
-	for _, discount_type in ipairs(BACKFILL_ITEM_ORDER) do
-		local discounts = discounted_items[discount_type]
-
-		for name, product_data in pairs(discounts) do
-			local item = product_data.item
-			local product_id = product_data.id
-
-			if (not unlock_manager:dlc_exists(product_id) or not unlock_manager:is_dlc_unlocked(product_id)) and not item_interface:has_item(product_id) and not item_interface:has_weapon_illusion(product_id) then
-				local item_owned = item_interface:has_bundle_contents(item.data and item.data.bundle_contains)
-			end
-
-			if item and not item_owned and not layout_ids[product_id] then
-				local product, product_type = self:_add_product(product_data)
-				product.discounted = true
-				local product_grid_size = GRID_SIZE_BY_TYPE[product_type]
-
-				if product_grid_size then
-					local grid_slots = product_grid_size[1] * product_grid_size[2]
-
-					if max_grid_size >= grid_occupied + grid_slots then
-						layout[#layout + 1] = product
-						layout_ids[product.product_id] = #layout
-						grid_occupied = grid_occupied + grid_slots
-
-						if max_grid_size <= grid_occupied then
-							return
-						end
-					end
-				end
-			end
-		end
-	end
-
-	local default_grid_content = self:_get_default_featured_grid_content(max_grid_size - grid_occupied, layout_ids)
-
-	for _, data in pairs(default_grid_content) do
-		if not data.owned then
-			local product, product_type = self:_add_product(data)
-			local product_grid_size = GRID_SIZE_BY_TYPE[product_type]
-
-			if product_grid_size then
-				local grid_slots = product_grid_size[1] * product_grid_size[2]
-
-				if max_grid_size >= grid_occupied + grid_slots then
-					layout[#layout + 1] = product
-					grid_occupied = grid_occupied + grid_slots
-
-					if max_grid_size <= grid_occupied then
-						return
-					end
-				end
-			end
-		end
-	end
-end
-
-StoreWindowFeatured._create_backend_content = function (self, layout)
-	local backend_store = Managers.backend:get_interface("peddler")
-	local backend_content = {}
-
-	for _, content_name in pairs(BACKFILL_ITEM_ORDER) do
-		backend_content[content_name] = {}
-	end
-
-	for _, data in pairs(layout) do
-		local product_id = data.product_id
-		local content_type = data.type
-
-		if content_type == "item" then
-			local items = backend_store:get_filtered_items("item_key == " .. product_id)
-			local item = items[1]
-			local item_data = item.data
-			local item_type = item_data.item_type
-			local steam_itemdefid = item_data.steam_itemdefid
-
-			if item_type == "bundle" then
-				backend_content.bundles[#backend_content.bundles + 1] = product_id
-			elseif steam_itemdefid then
-				backend_content.items[#backend_content.items + 1] = product_id
-			else
-				backend_content.shilling_items[#backend_content.shilling_items + 1] = product_id
-			end
-		else
-			backend_content.dlc[#backend_content.dlc + 1] = product_id
-		end
-	end
-
-	return backend_content
 end
 
 StoreWindowFeatured._setup_slideshow = function (self, widget, data)
