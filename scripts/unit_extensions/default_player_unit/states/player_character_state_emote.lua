@@ -45,9 +45,13 @@ PlayerCharacterStateEmote.on_exit = function (self, unit, input, dt, context, t,
 	self.first_person_extension:toggle_visibility(CameraTransitionSettings.perspective_transition_time)
 	self.status_extension:set_inspecting(false)
 
-	local unit_id = self.unit_storage:go_id(self.unit)
+	local game = Managers.state.network:game()
 
-	self.network_transmit:send_rpc_server("rpc_server_cancel_emote", unit_id)
+	if game then
+		local unit_id = self.unit_storage:go_id(self.unit)
+
+		self.network_transmit:send_rpc_server("rpc_server_cancel_emote", unit_id)
+	end
 
 	local game_mode = Managers.state.game_mode:game_mode()
 
