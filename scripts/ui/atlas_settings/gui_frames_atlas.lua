@@ -33,26 +33,26 @@ frames_atlas = {
 			4
 		},
 		uv00 = {
-			0.296875,
+			0.299316,
 			0.212646
 		},
 		uv11 = {
-			0.297119,
+			0.299561,
 			0.213623
 		}
 	},
-	menu_frame_12_divider = {
+	menu_frame_09_divider_vertical = {
 		size = {
-			1,
-			5
+			5,
+			1
 		},
 		uv00 = {
-			0.300293,
+			0.299316,
 			0.211426
 		},
 		uv11 = {
 			0.300537,
-			0.212646
+			0.21167
 		}
 	},
 	menu_frame_09_divider = {
@@ -61,11 +61,11 @@ frames_atlas = {
 			5
 		},
 		uv00 = {
-			0.299072,
+			0.298096,
 			0.211426
 		},
 		uv11 = {
-			0.299316,
+			0.29834,
 			0.212646
 		}
 	},
@@ -75,12 +75,12 @@ frames_atlas = {
 			1
 		},
 		uv00 = {
-			0.296875,
-			0.211426
+			0.294678,
+			0.212646
 		},
 		uv11 = {
-			0.298096,
-			0.21167
+			0.295898,
+			0.212891
 		}
 	},
 	menu_frame_09_divider = {
@@ -89,40 +89,40 @@ frames_atlas = {
 			5
 		},
 		uv00 = {
-			0.295654,
+			0.296875,
+			0.211426
+		},
+		uv11 = {
+			0.297119,
+			0.212646
+		}
+	},
+	menu_frame_09_divider_vertical = {
+		size = {
+			5,
+			1
+		},
+		uv00 = {
+			0.294678,
 			0.211426
 		},
 		uv11 = {
 			0.295898,
-			0.212646
+			0.21167
 		}
 	},
-	menu_frame_09_divider_vertical = {
+	menu_frame_12_divider = {
 		size = {
-			5,
-			1
-		},
-		uv00 = {
-			0.293457,
-			0.212646
-		},
-		uv11 = {
-			0.294678,
-			0.212891
-		}
-	},
-	menu_frame_09_divider_vertical = {
-		size = {
-			5,
-			1
+			1,
+			5
 		},
 		uv00 = {
 			0.293457,
 			0.211426
 		},
 		uv11 = {
-			0.294678,
-			0.21167
+			0.293701,
+			0.212646
 		}
 	},
 	store_menu_frame = {
@@ -160,28 +160,14 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.742432,
-			0.072021
-		},
-		uv11 = {
-			0.744873,
-			0.075684
-		}
-	},
-	menu_frame_12_divider_left = {
-		size = {
-			9,
-			17
-		},
-		uv00 = {
-			0.742432,
 			0.066895
 		},
 		uv11 = {
-			0.744629,
-			0.071045
+			0.744873,
+			0.070557
 		}
 	},
-	menu_frame_09_divider_top = {
+	menu_frame_12_divider_bottom = {
 		size = {
 			17,
 			9
@@ -195,7 +181,7 @@ frames_atlas = {
 			0.213623
 		}
 	},
-	menu_frame_12_divider_top = {
+	menu_frame_09_divider_top = {
 		size = {
 			17,
 			9
@@ -206,6 +192,20 @@ frames_atlas = {
 		},
 		uv11 = {
 			0.282959,
+			0.213623
+		}
+	},
+	menu_frame_12_divider_top = {
+		size = {
+			17,
+			9
+		},
+		uv00 = {
+			0.273682,
+			0.211426
+		},
+		uv11 = {
+			0.277832,
 			0.213623
 		}
 	},
@@ -223,18 +223,18 @@ frames_atlas = {
 			0.065674
 		}
 	},
-	menu_frame_12_divider_bottom = {
+	menu_frame_12_divider_left = {
 		size = {
-			17,
-			9
+			9,
+			17
 		},
 		uv00 = {
-			0.273682,
-			0.211426
+			0.741943,
+			0.056396
 		},
 		uv11 = {
-			0.277832,
-			0.213623
+			0.744141,
+			0.060547
 		}
 	},
 	menu_frame_09_divider_bottom = {
@@ -258,11 +258,11 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.741943,
-			0.056396
+			0.05127
 		},
 		uv11 = {
 			0.744141,
-			0.060547
+			0.05542
 		}
 	},
 	title_detail_01_right = {
@@ -271,12 +271,12 @@ frames_atlas = {
 			17
 		},
 		uv00 = {
-			0.741943,
-			0.05127
+			0.743164,
+			0.041016
 		},
 		uv11 = {
-			0.743652,
-			0.05542
+			0.744873,
+			0.045166
 		}
 	},
 	menu_frame_09_divider_left = {
@@ -299,12 +299,12 @@ frames_atlas = {
 			17
 		},
 		uv00 = {
-			0.52832,
-			0.206055
+			0.741943,
+			0.041016
 		},
 		uv11 = {
-			0.528564,
-			0.210205
+			0.742188,
+			0.045166
 		}
 	},
 	title_detail_01_left = {
@@ -313,12 +313,12 @@ frames_atlas = {
 			17
 		},
 		uv00 = {
-			0.741943,
-			0.041016
+			0.535889,
+			0.208008
 		},
 		uv11 = {
-			0.743652,
-			0.045166
+			0.537598,
+			0.212158
 		}
 	},
 	menu_frame_12_divider_middle = {
@@ -397,12 +397,12 @@ frames_atlas = {
 			22
 		},
 		uv00 = {
-			0.535156,
-			0.208008
+			0.527588,
+			0.206055
 		},
 		uv11 = {
-			0.536133,
-			0.213379
+			0.528564,
+			0.211426
 		}
 	},
 	menu_frame_11_divider_top = {
@@ -411,26 +411,12 @@ frames_atlas = {
 			22
 		},
 		uv00 = {
-			0.533203,
-			0.208008
+			0.525635,
+			0.206055
 		},
 		uv11 = {
-			0.53418,
-			0.213379
-		}
-	},
-	tab_selection_01_right = {
-		size = {
-			11,
-			22
-		},
-		uv00 = {
-			0.529541,
-			0.208008
-		},
-		uv11 = {
-			0.532227,
-			0.213379
+			0.526611,
+			0.211426
 		}
 	},
 	input_frame_01 = {
@@ -439,26 +425,12 @@ frames_atlas = {
 			18
 		},
 		uv00 = {
-			0.521973,
-			0.206055
+			0.529541,
+			0.208008
 		},
 		uv11 = {
-			0.527344,
-			0.210449
-		}
-	},
-	tab_selection_01_stretch = {
-		size = {
-			1,
-			22
-		},
-		uv00 = {
-			0.527588,
-			0.197754
-		},
-		uv11 = {
-			0.527832,
-			0.203125
+			0.534912,
+			0.212402
 		}
 	},
 	tab_selection_01_left = {
@@ -467,26 +439,40 @@ frames_atlas = {
 			22
 		},
 		uv00 = {
+			0.521973,
+			0.206055
+		},
+		uv11 = {
+			0.524658,
+			0.211426
+		}
+	},
+	tab_selection_01_right = {
+		size = {
+			11,
+			22
+		},
+		uv00 = {
+			0.525146,
+			0.197754
+		},
+		uv11 = {
+			0.527832,
+			0.203125
+		}
+	},
+	tab_selection_01_stretch = {
+		size = {
+			1,
+			22
+		},
+		uv00 = {
 			0.523926,
 			0.197754
 		},
 		uv11 = {
-			0.526611,
+			0.52417,
 			0.203125
-		}
-	},
-	edge_fade_small = {
-		size = {
-			10,
-			30
-		},
-		uv00 = {
-			0.525146,
-			0.189453
-		},
-		uv11 = {
-			0.527588,
-			0.196777
 		}
 	},
 	tabs_glow = {
@@ -495,11 +481,25 @@ frames_atlas = {
 			30
 		},
 		uv00 = {
+			0.527344,
+			0.189453
+		},
+		uv11 = {
+			0.527588,
+			0.196777
+		}
+	},
+	edge_fade_small = {
+		size = {
+			10,
+			30
+		},
+		uv00 = {
 			0.523926,
 			0.189453
 		},
 		uv11 = {
-			0.52417,
+			0.526367,
 			0.196777
 		}
 	},
@@ -643,7 +643,7 @@ frames_atlas = {
 			0.20166
 		}
 	},
-	morris_panel_divider = {
+	morris_panel_highlight = {
 		size = {
 			52,
 			30
@@ -657,7 +657,7 @@ frames_atlas = {
 			0.20874
 		}
 	},
-	morris_panel_highlight = {
+	morris_panel_divider = {
 		size = {
 			52,
 			30
@@ -669,20 +669,6 @@ frames_atlas = {
 		uv11 = {
 			0.520996,
 			0.213379
-		}
-	},
-	curse_description_01 = {
-		size = {
-			54,
-			54
-		},
-		uv00 = {
-			0.389648,
-			0.845947
-		},
-		uv11 = {
-			0.402832,
-			0.859131
 		}
 	},
 	curse_description_glow_02 = {
@@ -699,6 +685,20 @@ frames_atlas = {
 			0.211426
 		}
 	},
+	curse_description_01 = {
+		size = {
+			54,
+			54
+		},
+		uv00 = {
+			0.389648,
+			0.845947
+		},
+		uv11 = {
+			0.402832,
+			0.859131
+		}
+	},
 	frame_detail_04 = {
 		size = {
 			55,
@@ -713,7 +713,7 @@ frames_atlas = {
 			0.212891
 		}
 	},
-	menu_frame_06 = {
+	menu_frame_03_morris = {
 		size = {
 			58,
 			58
@@ -727,7 +727,7 @@ frames_atlas = {
 			0.844971
 		}
 	},
-	menu_frame_03_morris = {
+	menu_frame_06 = {
 		size = {
 			58,
 			58
@@ -755,10 +755,10 @@ frames_atlas = {
 			0.629395
 		}
 	},
-	button_detail_02_hover_morris = {
+	symbol_skaven_small_01 = {
 		size = {
 			60,
-			53
+			60
 		},
 		uv00 = {
 			0.219482,
@@ -766,7 +766,7 @@ frames_atlas = {
 		},
 		uv11 = {
 			0.234131,
-			0.507813
+			0.509521
 		}
 	},
 	button_detail_03_morris = {
@@ -783,10 +783,10 @@ frames_atlas = {
 			0.159912
 		}
 	},
-	symbol_skaven_small_01 = {
+	button_detail_02_hover_morris = {
 		size = {
 			60,
-			60
+			53
 		},
 		uv00 = {
 			0.219482,
@@ -794,7 +794,7 @@ frames_atlas = {
 		},
 		uv11 = {
 			0.234131,
-			0.493896
+			0.492188
 		}
 	},
 	button_frame_03_gold = {
@@ -811,45 +811,17 @@ frames_atlas = {
 			0.126221
 		}
 	},
-	button_frame_02_gold = {
+	menu_frame_02_morris = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.700684,
+			0.723145,
 			0.338623
 		},
 		uv11 = {
-			0.716309,
-			0.354248
-		}
-	},
-	menu_frame_09 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.684082,
-			0.338623
-		},
-		uv11 = {
-			0.699707,
-			0.354248
-		}
-	},
-	frame_corner_detail_01 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.66748,
-			0.338623
-		},
-		uv11 = {
-			0.683105,
+			0.73877,
 			0.354248
 		}
 	},
@@ -859,11 +831,39 @@ frames_atlas = {
 			64
 		},
 		uv00 = {
-			0.650879,
+			0.706543,
 			0.338623
 		},
 		uv11 = {
-			0.666504,
+			0.722168,
+			0.354248
+		}
+	},
+	frame_corner_detail_01 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.689941,
+			0.338623
+		},
+		uv11 = {
+			0.705566,
+			0.354248
+		}
+	},
+	menu_frame_09 = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.67334,
+			0.338623
+		},
+		uv11 = {
+			0.688965,
 			0.354248
 		}
 	},
@@ -873,25 +873,25 @@ frames_atlas = {
 			64
 		},
 		uv00 = {
-			0.634277,
+			0.656738,
 			0.338623
 		},
 		uv11 = {
-			0.649902,
+			0.672363,
 			0.354248
 		}
 	},
-	menu_frame_12_gold = {
+	frame_corner_detail_01_gold = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
-			0.617676,
+			0.640137,
 			0.338623
 		},
 		uv11 = {
-			0.633301,
+			0.655762,
 			0.354248
 		}
 	},
@@ -901,25 +901,11 @@ frames_atlas = {
 			64
 		},
 		uv00 = {
-			0.601074,
+			0.623535,
 			0.338623
 		},
 		uv11 = {
-			0.616699,
-			0.354248
-		}
-	},
-	button_frame_01 = {
-		size = {
-			64,
-			64
-		},
-		uv00 = {
-			0.584473,
-			0.338623
-		},
-		uv11 = {
-			0.600098,
+			0.63916,
 			0.354248
 		}
 	},
@@ -929,15 +915,29 @@ frames_atlas = {
 			64
 		},
 		uv00 = {
-			0.567871,
+			0.606934,
 			0.338623
 		},
 		uv11 = {
-			0.583496,
+			0.622559,
 			0.354248
 		}
 	},
-	button_frame_01_gold = {
+	menu_frame_01_morris = {
+		size = {
+			64,
+			64
+		},
+		uv00 = {
+			0.590332,
+			0.338623
+		},
+		uv11 = {
+			0.605957,
+			0.354248
+		}
+	},
+	button_frame_02_gold = {
 		size = {
 			64,
 			64
@@ -951,7 +951,7 @@ frames_atlas = {
 			0.337402
 		}
 	},
-	menu_frame_02_morris = {
+	button_frame_01_gold = {
 		size = {
 			64,
 			64
@@ -965,21 +965,21 @@ frames_atlas = {
 			0.280029
 		}
 	},
-	frame_corner_detail_01_gold = {
+	menu_frame_12_gold = {
 		size = {
 			64,
 			64
 		},
 		uv00 = {
 			0.441895,
-			0.982666
+			0.979248
 		},
 		uv11 = {
 			0.45752,
-			0.998291
+			0.994873
 		}
 	},
-	menu_frame_01_morris = {
+	button_frame_01 = {
 		size = {
 			64,
 			64
@@ -1007,7 +1007,7 @@ frames_atlas = {
 			0.83374
 		}
 	},
-	frame_outer_glow_01_white = {
+	frame_outer_glow_04 = {
 		size = {
 			68,
 			68
@@ -1021,7 +1021,7 @@ frames_atlas = {
 			0.814941
 		}
 	},
-	frame_outer_glow_02 = {
+	frame_outer_glow_03 = {
 		size = {
 			68,
 			68
@@ -1035,7 +1035,7 @@ frames_atlas = {
 			0.656982
 		}
 	},
-	frame_outer_glow_01 = {
+	frame_outer_glow_01_white = {
 		size = {
 			68,
 			68
@@ -1063,7 +1063,7 @@ frames_atlas = {
 			0.621826
 		}
 	},
-	frame_outer_glow_03 = {
+	frame_outer_glow_01 = {
 		size = {
 			68,
 			68
@@ -1077,7 +1077,7 @@ frames_atlas = {
 			0.690674
 		}
 	},
-	frame_outer_glow_04 = {
+	frame_outer_glow_02 = {
 		size = {
 			68,
 			68
@@ -1119,7 +1119,7 @@ frames_atlas = {
 			0.57251
 		}
 	},
-	morris_arrow_highlight = {
+	morris_arrow_neutral_morris = {
 		size = {
 			52,
 			71
@@ -1133,7 +1133,7 @@ frames_atlas = {
 			0.54834
 		}
 	},
-	morris_arrow_neutral_morris = {
+	morris_arrow_neutral = {
 		size = {
 			52,
 			71
@@ -1147,7 +1147,7 @@ frames_atlas = {
 			0.106934
 		}
 	},
-	morris_arrow_neutral = {
+	morris_arrow_highlight = {
 		size = {
 			52,
 			71
@@ -1159,20 +1159,6 @@ frames_atlas = {
 		uv11 = {
 			0.741455,
 			0.084229
-		}
-	},
-	icon_talent_frame = {
-		size = {
-			80,
-			80
-		},
-		uv00 = {
-			0.2146,
-			0.510498
-		},
-		uv11 = {
-			0.234131,
-			0.530029
 		}
 	},
 	frame_title_detail_06 = {
@@ -1189,17 +1175,31 @@ frames_atlas = {
 			0.123779
 		}
 	},
+	icon_talent_frame = {
+		size = {
+			80,
+			80
+		},
+		uv00 = {
+			0.2146,
+			0.510498
+		},
+		uv11 = {
+			0.234131,
+			0.530029
+		}
+	},
 	frame_outer_glow_04_big = {
 		size = {
 			84,
 			84
 		},
 		uv00 = {
-			0.546387,
+			0.568848,
 			0.338623
 		},
 		uv11 = {
-			0.566895,
+			0.589355,
 			0.359131
 		}
 	},
@@ -1209,11 +1209,11 @@ frames_atlas = {
 			84
 		},
 		uv00 = {
-			0.524902,
+			0.547363,
 			0.338623
 		},
 		uv11 = {
-			0.54541,
+			0.567871,
 			0.359131
 		}
 	},
@@ -1223,11 +1223,11 @@ frames_atlas = {
 			84
 		},
 		uv00 = {
-			0.503418,
+			0.525879,
 			0.338623
 		},
 		uv11 = {
-			0.523926,
+			0.546387,
 			0.359131
 		}
 	},
@@ -1243,6 +1243,20 @@ frames_atlas = {
 		uv11 = {
 			0.47876,
 			0.210205
+		}
+	},
+	frame_inner_glow_03 = {
+		size = {
+			88,
+			88
+		},
+		uv00 = {
+			0.503418,
+			0.338623
+		},
+		uv11 = {
+			0.524902,
+			0.360107
 		}
 	},
 	frame_inner_glow_02 = {
@@ -1273,7 +1287,7 @@ frames_atlas = {
 			0.285889
 		}
 	},
-	shadow_frame_01 = {
+	shadow_frame_02 = {
 		size = {
 			92,
 			92
@@ -1287,7 +1301,7 @@ frames_atlas = {
 			0.286865
 		}
 	},
-	shadow_frame_02 = {
+	shadow_frame_01 = {
 		size = {
 			92,
 			92
@@ -1315,7 +1329,7 @@ frames_atlas = {
 			0.687256
 		}
 	},
-	experience_bar_holder_left = {
+	experience_bar_holder_right = {
 		size = {
 			50,
 			102
@@ -1329,7 +1343,7 @@ frames_atlas = {
 			0.201904
 		}
 	},
-	experience_bar_holder_right = {
+	experience_bar_holder_left = {
 		size = {
 			50,
 			102
@@ -1343,7 +1357,7 @@ frames_atlas = {
 			0.065918
 		}
 	},
-	icon_tzeentch = {
+	icon_khorne = {
 		size = {
 			102,
 			106
@@ -1357,46 +1371,18 @@ frames_atlas = {
 			0.314697
 		}
 	},
-	icon_slaanesh = {
-		size = {
-			102,
-			106
-		},
-		uv00 = {
-			0.441895,
-			0.955811
-		},
-		uv11 = {
-			0.466797,
-			0.981689
-		}
-	},
 	button_detail_01_morris = {
 		size = {
 			106,
 			92
 		},
 		uv00 = {
-			0.443848,
-			0.919678
+			0.441895,
+			0.955811
 		},
 		uv11 = {
-			0.469727,
-			0.942139
-		}
-	},
-	icon_khorne = {
-		size = {
-			102,
-			106
-		},
-		uv00 = {
-			0.443848,
-			0.892822
-		},
-		uv11 = {
-			0.46875,
-			0.918701
+			0.467773,
+			0.978271
 		}
 	},
 	icon_nurgle = {
@@ -1406,11 +1392,25 @@ frames_atlas = {
 		},
 		uv00 = {
 			0.443848,
-			0.865967
+			0.91626
 		},
 		uv11 = {
 			0.46875,
-			0.891846
+			0.942139
+		}
+	},
+	icon_slaanesh = {
+		size = {
+			102,
+			106
+		},
+		uv00 = {
+			0.443848,
+			0.889404
+		},
+		uv11 = {
+			0.46875,
+			0.915283
 		}
 	},
 	button_detail_01_hover_morris = {
@@ -1419,12 +1419,26 @@ frames_atlas = {
 			92
 		},
 		uv00 = {
+			0.443848,
+			0.865967
+		},
+		uv11 = {
+			0.469727,
+			0.888428
+		}
+	},
+	icon_tzeentch = {
+		size = {
+			102,
+			106
+		},
+		uv00 = {
 			0.437256,
 			0.577881
 		},
 		uv11 = {
-			0.463135,
-			0.600342
+			0.462158,
+			0.60376
 		}
 	},
 	tooltip_power_level_header = {
@@ -1511,7 +1525,7 @@ frames_atlas = {
 			0.864502
 		}
 	},
-	matchmaking_icon_effect_morris = {
+	matchmaking_icon_morris = {
 		size = {
 			141,
 			141
@@ -1525,7 +1539,7 @@ frames_atlas = {
 			0.323242
 		}
 	},
-	matchmaking_icon_morris = {
+	matchmaking_icon_effect_morris = {
 		size = {
 			141,
 			141
@@ -1539,7 +1553,7 @@ frames_atlas = {
 			0.323242
 		}
 	},
-	menu_frame_01 = {
+	menu_frame_01_marked = {
 		size = {
 			147,
 			147
@@ -1553,7 +1567,7 @@ frames_atlas = {
 			0.324707
 		}
 	},
-	menu_frame_01_marked = {
+	menu_frame_01 = {
 		size = {
 			147,
 			147
@@ -1763,7 +1777,7 @@ frames_atlas = {
 			0.859131
 		}
 	},
-	background_tiled_morris = {
+	button_round_bought = {
 		size = {
 			200,
 			200
@@ -1775,6 +1789,20 @@ frames_atlas = {
 		uv11 = {
 			0.52002,
 			0.337646
+		}
+	},
+	tooltip_power_level_header_glow = {
+		size = {
+			200,
+			50
+		},
+		uv00 = {
+			0.35498,
+			0.817627
+		},
+		uv11 = {
+			0.403809,
+			0.829834
 		}
 	},
 	morris_header_end = {
@@ -1791,7 +1819,7 @@ frames_atlas = {
 			0.176025
 		}
 	},
-	button_round_bought = {
+	background_tiled_morris = {
 		size = {
 			200,
 			200
@@ -1803,20 +1831,6 @@ frames_atlas = {
 		uv11 = {
 			0.983154,
 			0.263428
-		}
-	},
-	tooltip_power_level_header_glow = {
-		size = {
-			200,
-			50
-		},
-		uv00 = {
-			0.35498,
-			0.817627
-		},
-		uv11 = {
-			0.403809,
-			0.829834
 		}
 	},
 	tooltip_power_level_header_glow_faded = {
@@ -1875,7 +1889,21 @@ frames_atlas = {
 			0.2771
 		}
 	},
-	bg_tile = {
+	panel_tiled_h = {
+		size = {
+			256,
+			64
+		},
+		uv00 = {
+			0.458008,
+			0.189453
+		},
+		uv11 = {
+			0.520508,
+			0.205078
+		}
+	},
+	menu_frame_bg_03 = {
 		size = {
 			256,
 			256
@@ -1903,21 +1931,7 @@ frames_atlas = {
 			0.2771
 		}
 	},
-	panel_tiled_h = {
-		size = {
-			256,
-			64
-		},
-		uv00 = {
-			0.458008,
-			0.189453
-		},
-		uv11 = {
-			0.520508,
-			0.205078
-		}
-	},
-	menu_frame_bg_03 = {
+	bg_tile = {
 		size = {
 			256,
 			256
@@ -2001,7 +2015,7 @@ frames_atlas = {
 			0.287842
 		}
 	},
-	morris_difficulty_select_highlight = {
+	morris_difficulty_select_border = {
 		size = {
 			305,
 			52
@@ -2015,7 +2029,7 @@ frames_atlas = {
 			0.781982
 		}
 	},
-	morris_difficulty_select_background = {
+	morris_difficulty_select_highlight = {
 		size = {
 			305,
 			52
@@ -2029,7 +2043,7 @@ frames_atlas = {
 			0.604248
 		}
 	},
-	morris_difficulty_select_border = {
+	morris_difficulty_select_background = {
 		size = {
 			305,
 			52
@@ -2197,7 +2211,7 @@ frames_atlas = {
 			0.762695
 		}
 	},
-	shrine_powerup_bg_frame = {
+	shrine_powerup_bg = {
 		size = {
 			478,
 			114
@@ -2211,7 +2225,7 @@ frames_atlas = {
 			0.960693
 		}
 	},
-	shrine_powerup_bg_hover = {
+	shrine_powerup_bg_frame = {
 		size = {
 			478,
 			114
@@ -2225,7 +2239,7 @@ frames_atlas = {
 			0.997803
 		}
 	},
-	shrine_powerup_bg = {
+	shrine_powerup_bg_hover = {
 		size = {
 			478,
 			114
@@ -2253,7 +2267,7 @@ frames_atlas = {
 			0.931885
 		}
 	},
-	shrine_blessing_bg_hover = {
+	shrine_blessing_frame = {
 		size = {
 			484,
 			194
@@ -2267,7 +2281,7 @@ frames_atlas = {
 			0.86499
 		}
 	},
-	shrine_blessing_bg = {
+	shrine_blessing_bg_hover = {
 		size = {
 			484,
 			194
@@ -2281,7 +2295,7 @@ frames_atlas = {
 			0.81665
 		}
 	},
-	shrine_blessing_frame = {
+	shrine_blessing_bg = {
 		size = {
 			484,
 			194
@@ -2463,7 +2477,7 @@ frames_atlas = {
 			0.554443
 		}
 	},
-	header_vote_morris = {
+	frame_title_bg_02 = {
 		size = {
 			570,
 			60
@@ -2477,7 +2491,7 @@ frames_atlas = {
 			0.509521
 		}
 	},
-	frame_title_bg_02 = {
+	header_vote_morris = {
 		size = {
 			570,
 			60
@@ -2533,7 +2547,7 @@ frames_atlas = {
 			0.905518
 		}
 	},
-	vote_switch_mechanism_adventure_background = {
+	vote_switch_mechanism_morris_background = {
 		size = {
 			500,
 			700
@@ -2547,7 +2561,7 @@ frames_atlas = {
 			0.171387
 		}
 	},
-	vote_switch_mechanism_morris_background = {
+	vote_switch_mechanism_adventure_background = {
 		size = {
 			500,
 			700
@@ -2561,7 +2575,7 @@ frames_atlas = {
 			0.171387
 		}
 	},
-	frame_detail_02 = {
+	frame_detail_01 = {
 		size = {
 			772,
 			86
@@ -2575,7 +2589,7 @@ frames_atlas = {
 			0.110596
 		}
 	},
-	frame_detail_01 = {
+	frame_detail_02 = {
 		size = {
 			772,
 			86

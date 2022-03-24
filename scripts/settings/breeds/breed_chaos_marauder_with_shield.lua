@@ -555,7 +555,7 @@ local action_data = {
 			local using_shield = not ai_shield_extension.shield_broken
 
 			if using_shield and not blackboard.stagger_immune_time and blocked_previous_attack then
-				local is_blocking = blackboard.stagger <= 2
+				local is_blocking = blackboard.stagger <= 2 and blackboard.stagger_type ~= stagger_types.explosion
 
 				ai_shield_extension:set_is_blocking(is_blocking)
 

@@ -53,10 +53,13 @@ end
 BackendUtils.get_item_from_masterlist = function (backend_id)
 	local backend_items = Managers.backend:get_interface("items")
 	local item_master_list_data = backend_items:get_item_masterlist_data(backend_id)
-	local item_data = table.clone(item_master_list_data)
-	item_data.backend_id = backend_id
 
-	return item_data
+	if item_master_list_data then
+		local item_data = table.clone(item_master_list_data)
+		item_data.backend_id = backend_id
+
+		return item_data
+	end
 end
 
 BackendUtils.get_hero_power_level_from_level = function (profile_name)

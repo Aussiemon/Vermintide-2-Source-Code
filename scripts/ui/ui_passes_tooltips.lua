@@ -9080,8 +9080,10 @@ UITooltipPasses = {
 	},
 	other_equipped_careers_tooltip = {
 		setup_data = function ()
+			local prefix_color = Colors.color_definitions.font_title
 			local data = {
 				frame_margin = 0,
+				prefix = string.format("{#color(%d,%d,%d)}%s:{#reset()} ", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career")),
 				text_pass_data = {
 					text_id = "text"
 				},
@@ -9166,50 +9168,29 @@ UITooltipPasses = {
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			local backend_id = item and item.backend_id
-			local career_names_string = ""
 
-			if backend_id then
-				local local_player = Managers.player:local_player()
-
-				if not local_player then
-					return 0
-				end
-
-				local career_index = local_player:career_index()
-				local profile_index = local_player:profile_index()
-				local current_profile = SPProfiles[profile_index]
-				local current_career_settings = current_profile.careers[career_index]
-				local current_career_name = current_career_settings.name
-				local backend_interface = Managers.backend:get_interface("items")
-				local career_names = backend_interface:equipped_by(backend_id)
-				local index = table.index_of(career_names, current_career_name)
-
-				table.remove(career_names, index)
-
-				local career_names_size = #career_names
-
-				if table.is_empty(career_names) then
-					return 0
-				end
-
-				for i = 1, career_names_size, 1 do
-					local name = career_names[i]
-
-					if i == career_names_size then
-						career_names_string = career_names_string .. Localize(name)
-					else
-						career_names_string = career_names_string .. Localize(name) .. ", "
-					end
-				end
+			if not backend_id then
+				return 0
 			end
 
+			local backend_interface = Managers.backend:get_interface("items")
+			local career_names = backend_interface:equipped_by(backend_id)
+
+			if #career_names == 0 then
+				return 0
+			end
+
+			for i = 1, #career_names, 1 do
+				career_names[i] = Localize(career_names[i])
+			end
+
+			local career_names_string = table.concat(career_names, ", ")
 			local alpha = 255 * pass_data.alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin
 			local text_pass_data = data.text_pass_data
 			local content = data.content
-			local prefix_color = Colors.color_definitions.font_title
-			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career"), career_names_string)
+			local text = data.prefix .. career_names_string
 			content.text = text
 			local position_x = position[1]
 			local position_y = position[2]
@@ -9286,8 +9267,10 @@ UITooltipPasses = {
 	},
 	console_other_equipped_careers_tooltip = {
 		setup_data = function ()
+			local prefix_color = Colors.color_definitions.font_title
 			local data = {
 				frame_margin = 0,
+				prefix = string.format("{#color(%d,%d,%d)}%s:{#reset()} ", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career")),
 				text_pass_data = {
 					text_id = "text"
 				},
@@ -9313,50 +9296,29 @@ UITooltipPasses = {
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			local backend_id = item and item.backend_id
-			local career_names_string = ""
 
-			if backend_id then
-				local local_player = Managers.player:local_player()
-
-				if not local_player then
-					return 0
-				end
-
-				local career_index = local_player:career_index()
-				local profile_index = local_player:profile_index()
-				local current_profile = SPProfiles[profile_index]
-				local current_career_settings = current_profile.careers[career_index]
-				local current_career_name = current_career_settings.name
-				local backend_interface = Managers.backend:get_interface("items")
-				local career_names = backend_interface:equipped_by(backend_id)
-				local index = table.index_of(career_names, current_career_name)
-
-				table.remove(career_names, index)
-
-				local career_names_size = #career_names
-
-				if table.is_empty(career_names) then
-					return 0
-				end
-
-				for i = 1, career_names_size, 1 do
-					local name = career_names[i]
-
-					if i == career_names_size then
-						career_names_string = career_names_string .. Localize(name)
-					else
-						career_names_string = career_names_string .. Localize(name) .. ", "
-					end
-				end
+			if not backend_id then
+				return 0
 			end
 
+			local backend_interface = Managers.backend:get_interface("items")
+			local career_names = backend_interface:equipped_by(backend_id)
+
+			if #career_names == 0 then
+				return 0
+			end
+
+			for i = 1, #career_names, 1 do
+				career_names[i] = Localize(career_names[i])
+			end
+
+			local career_names_string = table.concat(career_names, ", ")
 			local alpha = 255 * pass_data.alpha_multiplier
 			local start_layer = pass_data.start_layer or DEFAULT_START_LAYER
 			local frame_margin = data.frame_margin
 			local text_pass_data = data.text_pass_data
 			local content = data.content
-			local prefix_color = Colors.color_definitions.font_title
-			local text = string.format("{#color(%d,%d,%d)}%s:{#reset()} %s", prefix_color[2], prefix_color[3], prefix_color[4], Localize("equipped_on_other_career"), career_names_string)
+			local text = data.prefix .. career_names_string
 			content.text = text
 			local position_x = position[1]
 			local position_y = position[2]

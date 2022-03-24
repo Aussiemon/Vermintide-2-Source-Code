@@ -1014,7 +1014,7 @@ TerrorEventMixer.run_functions = {
 
 			local center_position_unboxed = event.center_position:unbox()
 			local num_to_spawn = #spawn_positions
-			local num_spawned = event.num_spawned or 1
+			local num_spawned = (event.num_spawned and event.num_spawned + 1) or 1
 			local spawn_batch_size = Math.random(element.staggered_spawn_batch_size[1], element.staggered_spawn_batch_size[2])
 			local next_spawn_count = math.min(num_spawned + spawn_batch_size, num_to_spawn)
 

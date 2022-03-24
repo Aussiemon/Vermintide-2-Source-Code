@@ -585,7 +585,7 @@ local action_data = {
 			"attack_slam_3",
 			"attack_slam_4"
 		},
-		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack_blocked,
+		blocked_difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		difficulty_damage = BreedTweaks.difficulty_damage.boss_slam_attack,
 		stagger_impact = {
 			stagger_types.weak,

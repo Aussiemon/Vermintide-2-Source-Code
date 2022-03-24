@@ -219,7 +219,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 		projected_start_pos = projected_start_pos or GwNavQueries.inside_position_from_outside_position(nav_world, unit_pos, above, below, 2, 0.5)
 
 		if projected_start_pos then
-			local damage_wave_template_name = (talent_extension:has_talent("sienna_adept_infinite_burn") and "sienna_adept_ability_trail_infinite") or "sienna_adept_ability_trail"
+			local damage_wave_template_name = "sienna_adept_ability_trail"
 			local damage_wave_template_id = NetworkLookup.damage_wave_templates[damage_wave_template_name]
 			local network_manager = self._network_manager
 			local source_unit_id = network_manager:unit_game_object_id(owner_unit)

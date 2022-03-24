@@ -204,9 +204,17 @@ CrosshairUI.update_hit_markers = function (self, dt)
 	local hit_marker_data = hud_extension.hit_marker_data
 
 	if hit_marker_data.hit_enemy then
-		hit_marker_data.hit_enemy = nil
+		local do_show = true
 
-		self:set_hit_marker_animation(hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data)
+		if hit_marker_data.friendly_fire and not Application.user_setting("friendly_fire_crosshair") then
+			do_show = false
+		end
+
+		if do_show then
+			self:set_hit_marker_animation(hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data)
+		end
+
+		hit_marker_data.hit_enemy = nil
 	end
 
 	if hit_marker_animations[1] then
@@ -215,10 +223,6 @@ CrosshairUI.update_hit_markers = function (self, dt)
 end
 
 CrosshairUI.set_hit_marker_animation = function (self, hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data)
-	if not Application.user_setting("friendly_fire_crosshair") then
-		return
-	end
-
 	for i = 1, hit_markers_n, 1 do
 		local hit_marker = hit_markers[i]
 		local additional_hit_icon = self:configure_hit_marker_color_and_size(hit_marker, hit_marker_data)
@@ -258,16 +262,12 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 
 	local target_color, target_size = nil
 
-	if is_armored then
-		if shield_break then
-			additional_hit_icon = hit_armored_markers.armor_break
-		elseif shield_open then
-			additional_hit_icon = hit_armored_markers.armor_open
-		elseif damage_amount > 0 then
-			additional_hit_icon = hit_armored_markers.damage
-		else
-			additional_hit_icon = hit_armored_markers.no_damage
-		end
+	if shield_break then
+		additional_hit_icon = hit_armored_markers.armor_break
+	elseif shield_open then
+		additional_hit_icon = hit_armored_markers.armor_open
+	elseif is_armored and damage_amount == 0 then
+		additional_hit_icon = hit_armored_markers.no_damage
 	end
 
 	if is_critical then

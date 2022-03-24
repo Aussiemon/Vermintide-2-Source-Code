@@ -237,6 +237,13 @@ HeroWindowCharacterSelectionConsole._setup_hero_selection_widgets = function (se
 				content.frame = content.frame .. "_gold"
 			end
 
+			local career_index = hero_attributes:get(hero_name, "career")
+			local bot_career_index = hero_attributes:get(hero_name, "bot_career") or career_index or 1
+
+			if bot_career_index == j then
+				content.bot_selected = true
+			end
+
 			if current_profile_index == profile_index and current_career_index == j then
 				content.is_currently_selected_character = true
 			end

@@ -12,6 +12,10 @@ RangedBuffTypes = {
 	RANGED_ABILITY = true
 }
 AttackTypes = table.enum("light_attack", "heavy_attack", "action_push", "projectile", "instant_projectile", "grenade")
+MeleeAttackTypes = {
+	[AttackTypes.light_attack] = true,
+	[AttackTypes.heavy_attack] = true
+}
 RangedAttackTypes = {
 	[AttackTypes.projectile] = true,
 	[AttackTypes.instant_projectile] = true,
@@ -2620,7 +2624,9 @@ ProcFunctions = {
 		if ALIVE[player_unit] then
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-			buff_extension:add_buff("kerillian_shade_ult_invis_combo_window")
+			if not buff_extension:has_buff_type("kerillian_shade_ult_invis_combo_blocker") then
+				buff_extension:add_buff("kerillian_shade_ult_invis_combo_window")
+			end
 		end
 	end,
 	shade_combo_stealth_extend_on_kill = function (player, buff, params)
@@ -2679,39 +2685,20 @@ ProcFunctions = {
 		if Unit.alive(player_unit) and is_local(player_unit) then
 			local status_extension = ScriptUnit.extension(player_unit, "status_system")
 			local removing_stealth = status_extension:remove_stealth_stacking()
-			local events = {
-				"Play_career_ability_markus_huntsman_exit",
-				"Stop_career_ability_markus_huntsman_loop_husk"
-			}
-			local network_manager = Managers.state.network
-			local network_transmit = network_manager.network_transmit
-			local unit_id = network_manager:unit_game_object_id(player_unit)
-			local node_id = 0
 
-			for _, event in ipairs(events) do
-				local event_id = NetworkLookup.sound_events[event]
-
-				if is_server() then
-					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				else
-					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				end
-			end
-
-			if not is_bot(player_unit) then
+			if removing_stealth then
 				local first_person_extension = ScriptUnit.extension(player_unit, "first_person_system")
 
-				if removing_stealth then
-					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
+				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit", nil, true)
+				first_person_extension:play_remote_hud_sound_event("Stop_career_ability_markus_huntsman_loop_husk")
 
+				if not is_bot(player_unit) then
 					MOOD_BLACKBOARD.skill_shade = false
+					MOOD_BLACKBOARD.skill_huntsman_stealth = false
+					MOOD_BLACKBOARD.skill_huntsman_surge = true
+
+					first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 				end
-
-				MOOD_BLACKBOARD.skill_huntsman_stealth = false
-				MOOD_BLACKBOARD.skill_huntsman_surge = true
-
-				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
-				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			end
 		end
 	end,
@@ -4451,11 +4438,10 @@ PotionSpreadTrinketTemplates = {
 }
 TrinketSpreadDistance = 10
 InfiniteBurnDotLookup = {
-	sienna_adept_ability_trail = "sienna_adept_ability_trail_infinite",
+	burning_3W_dot = "burning_3W_dot_infinite",
 	burning_dot = "burning_dot_infinite",
 	burning_1W_dot = "burning_1W_dot_infinite",
 	burning_flamethrower_dot = "burning_flamethrower_dot_infinite",
-	burning_3W_dot = "burning_3W_dot_infinite",
 	beam_burning_dot = "beam_burning_dot_infinite"
 }
 BuffTemplates = {
@@ -5365,7 +5351,7 @@ BuffTemplates = {
 		buffs = {
 			{
 				duration = 3,
-				name = "beam_burning_dot",
+				name = "burning_dot",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",
 				death_flow_event = "burn_death",
@@ -5373,11 +5359,9 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 0.75,
 				time_between_dot_damages = 0.75,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5414,11 +5398,9 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "beam_burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5505,26 +5487,6 @@ BuffTemplates = {
 			}
 		}
 	},
-	sienna_adept_ability_trail_infinite = {
-		buffs = {
-			{
-				end_flow_event = "smoke",
-				name = "infinite burning dot",
-				start_flow_event = "burn_infinity",
-				death_flow_event = "burn_death",
-				on_max_stacks_overflow_func = "reapply_infinite_burn",
-				remove_buff_func = "remove_dot_damage",
-				apply_buff_func = "start_dot_damage",
-				update_start_delay = 0.25,
-				time_between_dot_damages = 0.25,
-				max_stacks = 1,
-				damage_type = "burninating",
-				damage_profile = "burning_dot",
-				update_func = "apply_dot_damage",
-				perk = buff_perks.burning
-			}
-		}
-	},
 	burning_dot_fire_grenade = {
 		buffs = {
 			{
@@ -5558,11 +5520,9 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1.5,
 				time_between_dot_damages = 1.5,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}
@@ -5641,11 +5601,9 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}

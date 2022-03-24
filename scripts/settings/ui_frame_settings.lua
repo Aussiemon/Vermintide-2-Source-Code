@@ -659,6 +659,27 @@ UIFrameSettings = {
 			}
 		}
 	},
+	frame_inner_glow_03 = {
+		texture = "frame_inner_glow_03",
+		texture_size = {
+			88,
+			88
+		},
+		texture_sizes = {
+			corner = {
+				31,
+				31
+			},
+			vertical = {
+				31,
+				1
+			},
+			horizontal = {
+				1,
+				31
+			}
+		}
+	},
 	item_hover_01 = {
 		texture = "item_icon_hover",
 		outer_frame = true,

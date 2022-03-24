@@ -3214,6 +3214,18 @@ ItemMasterList.frame_skulls_2021 = {
 	item_type = "frame",
 	can_wield = CanWieldAllItemTemplates
 }
+ItemMasterList.frame_skulls_2022 = {
+	description = "portrait_frame_skulls_2022_description",
+	temporary_template = "frame_skulls_2022",
+	display_name = "portrait_frame_skulls_2022_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_skulls2022",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
 ItemMasterList.crafting_material_scrap = {
 	description = "crafting_material_scrap_description",
 	rarity = "plentiful",

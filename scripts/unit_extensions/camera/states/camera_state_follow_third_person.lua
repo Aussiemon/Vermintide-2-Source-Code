@@ -71,8 +71,9 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 
 	local external_state_change = camera_extension.external_state_change
 	local external_state_change_params = camera_extension.external_state_change_params
+	local force_state_change = external_state_change_params and external_state_change_params.force_state_change
 
-	if external_state_change and external_state_change ~= self.name then
+	if external_state_change and (external_state_change ~= self.name or force_state_change) then
 		csm:change_state(external_state_change, external_state_change_params)
 		camera_extension:set_external_state_change(nil)
 

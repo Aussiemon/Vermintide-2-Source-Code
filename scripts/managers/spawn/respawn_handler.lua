@@ -343,7 +343,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			local current_respawn_unit = data.respawn_unit
 			local current_respawn_data = self:find_respawn_data_from_unit(current_respawn_unit)
 
-			if not self:_is_respawn_reachable(current_respawn_data) or self._force_move then
+			if (current_respawn_data and not self:_is_respawn_reachable(current_respawn_data)) or self._force_move then
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
 
@@ -607,11 +607,15 @@ RespawnHandler.get_respawn_dist_range = function (self, main_path_info, ahead_un
 end
 
 RespawnHandler._is_respawn_reachable = function (self, respawn_data)
+	if not respawn_data then
+		return false
+	end
+
 	local main_path_info = Managers.state.conflict.main_path_info
 	local min_dist = self:get_behind_unit_segment_start(main_path_info)
 	local respawn_unit_dist = respawn_data.distance_through_level
 
-	return min_dist < respawn_unit_dist
+	return respawn_unit_dist >= min_dist - 0.01
 end
 
 RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_all)

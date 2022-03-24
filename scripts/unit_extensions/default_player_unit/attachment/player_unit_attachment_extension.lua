@@ -223,6 +223,13 @@ end
 
 PlayerUnitAttachmentExtension.create_attachment_in_slot = function (self, slot_name, backend_id)
 	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
+
+	if not item_data then
+		Crashify.print_exception("PlayerUnitAttachmentExtension", "Tried to create attachment %q in slot %q but was unable to find item", backend_id, slot_name)
+
+		return
+	end
+
 	local slot_data = self._attachments.slots[slot_name]
 	local attachment_already_equiped = slot_data and slot_data.item_data == item_data
 	local item_name = item_data.name

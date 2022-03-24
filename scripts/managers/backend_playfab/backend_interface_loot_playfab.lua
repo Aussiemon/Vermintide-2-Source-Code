@@ -582,13 +582,20 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 		end
 	end
 
-	for i = 1, #achievement_ids, 1 do
-		local achievement_id = achievement_ids[i].achievement_id
+	if achievement_ids then
+		for i = 1, #achievement_ids, 1 do
+			local achievement_id = achievement_ids[i].achievement_id
 
-		backend_mirror:set_achievement_claimed(achievement_id)
+			backend_mirror:set_achievement_claimed(achievement_id)
+		end
+
+		self._loot_requests[id] = loot
+	else
+		local requested_achievement_ids = function_result.requested_achievement_ids or {}
+
+		table.dump(requested_achievement_ids)
+		Crashify.print_exception("Failed to claim multiple challenges")
 	end
-
-	self._loot_requests[id] = loot
 
 	Managers.backend:dirtify_interfaces()
 end

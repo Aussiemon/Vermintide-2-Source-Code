@@ -1199,6 +1199,13 @@ end
 
 SimpleInventoryExtension.create_equipment_in_slot = function (self, slot_id, backend_id, ammo_percent)
 	local item_data = BackendUtils.get_item_from_masterlist(backend_id)
+
+	if not item_data then
+		Crashify.print_exception("SimpleInventoryExtension", "Tried create equip %q in slot %q but was unable to find item", backend_id, slot_name)
+
+		return
+	end
+
 	local slot_data = self._equipment.slots[slot_id]
 	local weapon_already_equiped = nil
 

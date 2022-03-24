@@ -124,12 +124,18 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 	local network_transmit = network_manager.network_transmit
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
+	local buff_extension = self._buff_extension
 	local talent_extension = ScriptUnit.extension(owner_unit, "talent_system")
 	local buff_names = {
 		"kerillian_maidenguard_activated_ability"
 	}
 
 	if talent_extension:has_talent("kerillian_maidenguard_activated_ability_invis_duration", "wood_elf", true) then
+		if buff_extension and buff_extension:has_buff_type("kerillian_maidenguard_activated_ability_invis_duration") then
+			status_extension:remove_noclip_stacking()
+			status_extension:remove_stealth_stacking()
+		end
+
 		buff_names = {
 			"kerillian_maidenguard_activated_ability_invis_duration"
 		}
@@ -146,8 +152,6 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
 		if is_server then
-			local buff_extension = self._buff_extension
-
 			buff_extension:add_buff(buff_name, {
 				attacker_unit = owner_unit
 			})

@@ -134,7 +134,7 @@ local GRUDGE_MARK_COMMANDER_SPAWN_COMMON = {
 	},
 	staggered_spawn_batch_size = {
 		1,
-		3
+		2
 	},
 	staggered_spawn_delay = {
 		0.25,
@@ -145,10 +145,20 @@ GenericTerrorEvents.grudge_mark_commander_terror_event_skaven_storm = {
 	table.merge({
 		breed_name = "skaven_storm_vermin_commander",
 		difficulty_amount = {
-			hardest = 4,
+			hardest = 3,
 			hard = 2,
-			harder = 3,
-			cataclysm = 4,
+			harder = 2,
+			cataclysm = 3,
+			normal = 2
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON),
+	table.merge({
+		breed_name = "skaven_clan_rat",
+		difficulty_amount = {
+			hardest = 2,
+			hard = 2,
+			harder = 2,
+			cataclysm = 3,
 			normal = 2
 		}
 	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
@@ -158,10 +168,20 @@ GenericTerrorEvents.grudge_mark_commander_terror_event_skaven_storm_shield = {
 		breed_name = "skaven_storm_vermin_with_shield",
 		difficulty_amount = {
 			hardest = 2,
-			hard = 2,
-			harder = 2,
-			cataclysm = 3,
+			hard = 1,
+			harder = 1,
+			cataclysm = 2,
 			normal = 1
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON),
+	table.merge({
+		breed_name = "skaven_clan_rat_with_shield",
+		difficulty_amount = {
+			hardest = 2,
+			hard = 2,
+			harder = 3,
+			cataclysm = 3,
+			normal = 2
 		}
 	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
 }
@@ -184,10 +204,20 @@ GenericTerrorEvents.grudge_mark_commander_terror_event_chaos_raiders = {
 	table.merge({
 		breed_name = "chaos_raider",
 		difficulty_amount = {
-			hardest = 4,
+			hardest = 3,
 			hard = 2,
-			harder = 3,
-			cataclysm = 4,
+			harder = 2,
+			cataclysm = 3,
+			normal = 1
+		}
+	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON),
+	table.merge({
+		breed_name = "chaos_marauder",
+		difficulty_amount = {
+			hardest = 2,
+			hard = 2,
+			harder = 2,
+			cataclysm = 3,
 			normal = 2
 		}
 	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
@@ -196,20 +226,20 @@ GenericTerrorEvents.grudge_mark_commander_terror_event_chaos_warriors = {
 	table.merge({
 		breed_name = "chaos_warrior",
 		difficulty_amount = {
-			hardest = 2,
+			hardest = 1,
 			hard = 1,
-			harder = 2,
-			cataclysm = 2,
+			harder = 1,
+			cataclysm = 1,
 			normal = 1
 		}
 	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON),
 	table.merge({
 		breed_name = "chaos_marauder",
 		difficulty_amount = {
-			hardest = 5,
-			hard = 3,
-			harder = 4,
-			cataclysm = 6,
+			hardest = 3,
+			hard = 2,
+			harder = 2,
+			cataclysm = 4,
 			normal = 2
 		}
 	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
@@ -255,11 +285,11 @@ GenericTerrorEvents.grudge_mark_commander_terror_event_beastmen_double_action = 
 	table.merge({
 		breed_name = "beastmen_gor",
 		difficulty_amount = {
-			hardest = 5,
-			hard = 4,
-			harder = 4,
-			cataclysm = 6,
-			normal = 4
+			hardest = 3,
+			hard = 3,
+			harder = 3,
+			cataclysm = 4,
+			normal = 2
 		}
 	}, GRUDGE_MARK_COMMANDER_SPAWN_COMMON)
 }

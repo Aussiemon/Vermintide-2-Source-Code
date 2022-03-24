@@ -1,5 +1,5 @@
 PlayerCharacterStateEmote = class(PlayerCharacterStateEmote, PlayerCharacterState)
-local zoom_sensitivity = 0.25
+local zoom_sensitivity = 0.05
 local zoom_sensitivity_gamepad = 0.03
 local zoom_lerp_speed = 5
 
@@ -13,9 +13,10 @@ PlayerCharacterStateEmote.on_enter = function (self, unit, input, dt, context, t
 	self.locomotion_extension:set_wanted_velocity(Vector3.zero())
 
 	local camera_settings = {
-		allow_camera_movement = true,
 		override_node_name = "camera_attach",
 		camera_node = "emotes",
+		force_state_change = true,
+		allow_camera_movement = true,
 		override_follow_unit = unit
 	}
 
@@ -79,6 +80,12 @@ PlayerCharacterStateEmote.update = function (self, unit, input, dt, context, t)
 
 	if CharacterStateHelper.is_ledge_hanging(world, unit, self.temp_params) then
 		csm:change_state("ledge_hanging", self.temp_params)
+
+		return
+	end
+
+	if CharacterStateHelper.is_overcharge_exploding(status_extension) then
+		csm:change_state("overcharge_exploding")
 
 		return
 	end

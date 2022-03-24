@@ -3,6 +3,7 @@ local scenegraph_definition = definitions.scenegraph_definition
 local animation_definitions = definitions.animations_definitions
 EquipmentUI = class(EquipmentUI)
 local AMMO_PRESENTATION_DURATION = 2
+local PERSISTENT_AMMO_COUNTER = Application.user_setting("persistent_ammo_counter")
 local slot_size = definitions.slot_size
 local NUM_SLOTS = definitions.NUM_SLOTS
 local input_actions_by_slot = {
@@ -691,9 +692,64 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 		end
 	elseif self._draw_ammo then
 		local ammo_widgets_by_name = self._ammo_widgets_by_name
-		self._ammo_counter_fade_delay = AMMO_PRESENTATION_DURATION
-		self._ammo_counter_fade_progress = 1
-		self._ammo_counter_fade_progress = (focus and 1) or nil
+
+		if not PERSISTENT_AMMO_COUNTER or focus then
+			self._ammo_counter_fade_progress = 1
+			self._ammo_counter_fade_delay = AMMO_PRESENTATION_DURATION
+
+			self:_set_ammo_counter_alpha(255)
+		end
+
+		if not PERSISTENT_AMMO_COUNTER and (self._ammo_count ~= nil or self._remaining_ammo ~= nil) then
+			local multiplier = 1
+			local color = (focus and ammo_colors.focus) or ammo_colors.unfocused
+			local ammo_background_widget = self._widgets_by_name.ammo_background
+			ammo_background_widget.content.visible = focus
+
+			self:_set_widget_dirty(ammo_background_widget)
+
+			local ammo_clip_widget = ammo_widgets_by_name.ammo_text_clip
+			ammo_clip_widget.content.visible = focus
+
+			self:_set_widget_dirty(ammo_clip_widget)
+
+			local ammo_remaining_widget = ammo_widgets_by_name.ammo_text_remaining
+			ammo_remaining_widget.content.visible = focus
+
+			self:_set_widget_dirty(ammo_remaining_widget)
+
+			local ammo_center_widget = ammo_widgets_by_name.ammo_text_center
+			ammo_center_widget.content.visible = focus
+
+			self:_set_widget_dirty(ammo_center_widget)
+			self:set_dirty()
+		end
+	end
+
+	if not PERSISTENT_AMMO_COUNTER then
+		self._show_ammo_meter = focus
+
+		if not focus then
+			local widgets_by_name = self._widgets_by_name
+			local ammo_widgets_by_name = self._ammo_widgets_by_name
+			local fg_widget = widgets_by_name.overcharge
+			local bg_widget = widgets_by_name.overcharge_background
+			local ammo_background_widget = widgets_by_name.ammo_background
+			local ammo_clip_widget = ammo_widgets_by_name.ammo_text_clip
+			local ammo_remaining_widget = ammo_widgets_by_name.ammo_text_remaining
+			local ammo_center_widget = ammo_widgets_by_name.ammo_text_center
+			local reload_tip_widget = ammo_widgets_by_name.reload_tip_text
+
+			self:_set_widget_visibility(fg_widget, false)
+			self:_set_widget_visibility(bg_widget, false)
+			self:_set_widget_visibility(ammo_background_widget, false)
+			self:_set_widget_visibility(ammo_clip_widget, false)
+			self:_set_widget_visibility(ammo_remaining_widget, false)
+			self:_set_widget_visibility(ammo_center_widget, false)
+			self:_set_widget_visibility(reload_tip_widget, false)
+
+			self._ammo_dirty = true
+		end
 	end
 end
 
@@ -1135,11 +1191,13 @@ EquipmentUI.draw = function (self, dt)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	render_settings.alpha_multiplier = self.ammo_alpha_multiplier or alpha_multiplier
-	render_settings.snap_pixel_positions = true
+	if PERSISTENT_AMMO_COUNTER or self._show_ammo_meter or self._ammo_dirty then
+		render_settings.alpha_multiplier = self.ammo_alpha_multiplier or alpha_multiplier
+		render_settings.snap_pixel_positions = true
 
-	for _, widget in ipairs(self._ammo_widgets) do
-		UIRenderer.draw_widget(ui_renderer, widget)
+		for _, widget in ipairs(self._ammo_widgets) do
+			UIRenderer.draw_widget(ui_renderer, widget)
+		end
 	end
 
 	UIRenderer.end_pass(ui_renderer)

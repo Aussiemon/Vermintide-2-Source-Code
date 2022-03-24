@@ -2111,16 +2111,17 @@ UIPasses.text = {
 			if ui_style.draw_text_rect then
 				local padding_x = 4
 				local padding_y = 4
-				local rect_pos = position - Vector3(padding_x, padding_y * 2 + text_offset[2], 1)
+				local rect_offset_x = (size[1] - max_text_width) * horizontal_alignment_multiplier
+				local rect_pos = position - Vector3(padding_x - rect_offset_x, padding_y * 2 + text_offset[2], 1)
 				local rect_size = Vector2(max_text_width + padding_x * 2, num_texts * -text_offset[2])
 
 				if ui_style.masked then
-					UIRenderer_draw_texture(ui_renderer, "rect_masked", rect_pos + alignment_offset, rect_size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
+					UIRenderer_draw_texture(ui_renderer, "rect_masked", rect_pos, rect_size, ui_style.rect_color, ui_style.masked, ui_style and ui_style.saturated)
 				else
-					UIRenderer.draw_rounded_rect(ui_renderer, rect_pos + alignment_offset, rect_size, 5, ui_style.rect_color)
+					UIRenderer.draw_rounded_rect(ui_renderer, rect_pos, rect_size, 5, ui_style.rect_color)
 
 					if ui_style.draw_rect_border then
-						UIRenderer.draw_rounded_rect(ui_renderer, rect_pos + alignment_offset + Vector3(-1, -1, -1), rect_size + Vector2(2, 2), 5, ui_style.text_color)
+						UIRenderer.draw_rounded_rect(ui_renderer, rect_pos + Vector3(-1, -1, -1), rect_size + Vector2(2, 2), 5, ui_style.text_color)
 					end
 				end
 			end

@@ -3457,7 +3457,7 @@ end
 
 local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinable, completed_difficulty_index)
 	local host_name = (IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host)) or lobby_data.name or "UNKNOWN"
-	local num_players = lobby_data.num_players
+	local num_players = lobby_data.num_players or 0
 	local country_code = lobby_data.country_code
 	local matchmaking_type_id = lobby_data.matchmaking_type
 	local matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]

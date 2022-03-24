@@ -407,6 +407,17 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 	local parent = self._parent
 	local input_service = parent:window_input_service()
 	local mouse_active = Managers.input:is_device_active("mouse")
+	local frame_widget = self._widgets_by_name.frame_widget
+	local frame_widget_content = frame_widget.content
+
+	if frame_widget_content.text_field_active then
+		input_service:get("move_up", true)
+		input_service:get("move_down", true)
+		input_service:get("move_left", true)
+		input_service:get("move_right", true)
+		input_service:get("cycle_next", true)
+		input_service:get("cycle_previous", true)
+	end
 
 	if self._is_server then
 		if not mouse_active then

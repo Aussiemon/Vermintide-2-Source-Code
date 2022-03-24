@@ -53,7 +53,7 @@ StoreWorldMarkerExtension.update = function (self, unit, dummy_input, dt, contex
 		return
 	end
 
-	local should_show = self._unseen_shop_items
+	local should_show = false
 	local login_rewards = not GameSettingsDevelopment.use_offline_backend and self._backend_store:get_login_rewards()
 
 	if login_rewards and login_rewards.next_claim_timestamp < os.time() then

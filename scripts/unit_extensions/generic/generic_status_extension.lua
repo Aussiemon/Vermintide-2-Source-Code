@@ -2043,6 +2043,7 @@ GenericStatusExtension.add_stealth_stacking = function (self)
 end
 
 GenericStatusExtension.remove_stealth_stacking = function (self)
+	local about_to_remove_stealth = self.stealth_counter == 1
 	self.stealth_counter = math.max(self.stealth_counter - 1, 0)
 
 	if self.stealth_counter <= 0 then
@@ -2055,7 +2056,7 @@ GenericStatusExtension.remove_stealth_stacking = function (self)
 		buff_extension:trigger_procs("on_stealth_stacks_modified", self.stealth_counter)
 	end
 
-	return self.stealth_counter == 0
+	return about_to_remove_stealth and self.stealth_counter == 0
 end
 
 GenericStatusExtension.current_stealth_counter = function (self)

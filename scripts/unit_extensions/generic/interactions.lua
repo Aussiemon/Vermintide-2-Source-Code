@@ -1551,6 +1551,8 @@ InteractionDefinitions.give_item = {
 
 								Managers.state.network.network_transmit:send_rpc_server("rpc_give_equipment", interactor_game_object_id, game_object_id, slot_id, item_name_id, position)
 							end
+
+							inventory_extension:wield_previous_weapon()
 						end
 					end
 				end

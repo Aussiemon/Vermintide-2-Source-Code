@@ -408,10 +408,10 @@ settings.buff_templates = {
 	grudge_mark_commander = {
 		buffs = {
 			{
-				update_frequency = 30,
+				update_frequency = 40,
 				name = "grudge_mark_commander",
 				update_func = "trigger_terror_event",
-				update_start_delay = 5,
+				update_start_delay = 8,
 				faction_terror_events = {
 					default = "grudge_mark_commander_terror_event_skaven",
 					skaven = "grudge_mark_commander_terror_event_skaven",
@@ -811,14 +811,12 @@ settings.buff_function_templates = {
 			inside_this_frame[player_unit] = true
 
 			if not inside_last_frame[player_unit] then
-				local player = Managers.player:owner(player_unit)
-
-				if player_unit == local_player then
+				if player_unit == local_player and ALIVE[player_unit] then
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 					local buff_to_add = template.buff_to_add
 					local num_stacks = buff_extension:num_buff_stacks(buff_to_add)
 
-					if not num_stacks or num_stacks == 0 then
+					if num_stacks == 0 then
 						local wwise_world = Managers.world:wwise_world(world)
 
 						WwiseWorld.trigger_event(wwise_world, template.sound_on_enter)
@@ -853,7 +851,7 @@ settings.buff_function_templates = {
 			end
 
 			buff.last_curse_t = (should_apply_buff and next_curse_t) or buff.last_curse_t
-		else
+		elseif ALIVE[local_player] then
 			inside_last_frame[local_player] = (inside_this_frame[local_player] and true) or nil
 		end
 	end,
@@ -1055,7 +1053,7 @@ settings.proc_functions = {
 		local attacker_unit = params[1]
 		local attack_type = params[4]
 
-		if ALIVE[owner_unit] and ALIVE[attacker_unit] and not RangedAttackTypes[attack_type] then
+		if ALIVE[owner_unit] and ALIVE[attacker_unit] and MeleeAttackTypes[attack_type] then
 			local buff_to_add = buff.template.buff_to_add
 			local buff_system = Managers.state.entity:system("buff_system")
 

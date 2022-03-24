@@ -85,6 +85,13 @@ end
 
 SteamManager.on_start_purchase = function (self, result, order_id, transaction_id)
 	print("[SteamManager] on_start_purchase result=", result, "order_id=", order_id, ", transaction_id=", transaction_id)
+
+	if result ~= 1 then
+		local fmt = Localize("start_game_window_twitch_error_connection")
+		local message = string.format(fmt, Localize("backend_err_auth_steam"), ">=k_EResultFail", result or 0)
+
+		Managers.simple_popup:queue_popup(message, Localize("popup_error_topic"), "ok", Localize("popup_choice_ok"))
+	end
 end
 
 SteamManager.request_user_inventory = function (self, callback)
@@ -101,7 +108,9 @@ SteamManager.request_item_prices = function (self, callback)
 end
 
 SteamManager.request_purchase_item = function (self, steam_itemdefid, amount, callback)
-	print("[SteamManager] request_purchase_item")
+	local item_name = SteamitemdefidToMasterList[steam_itemdefid]
+
+	printf("[SteamManager] request_purchase_item(steam_itemdefid=%s %q, amount=%s)", steam_itemdefid, item_name or "n/a", amount)
 	SteamInventory.start_purchase(steam_itemdefid, amount)
 
 	self._purchase_item_callback = callback

@@ -33,6 +33,8 @@ OutlineSystem.init = function (self, context, system_name)
 	self.current_index = 0
 	self.darkness_system = Managers.state.entity:system("darkness_system")
 	self.cutscene_system = Managers.state.entity:system("cutscene_system")
+	local game_mode_manager = Managers.state.game_mode
+	self._game_mode = game_mode_manager and game_mode_manager:game_mode()
 	self._pulsing_units = {}
 end
 
@@ -338,6 +340,12 @@ OutlineSystem._is_cutscene_active = function (self)
 	return cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
 end
 
+OutlineSystem._is_photomode_active = function (self)
+	local game_mode = self._game_mode
+
+	return game_mode and game_mode:photomode_enabled()
+end
+
 OutlineSystem.set_disabled = function (self, disabled)
 	if disabled and not self._disabled then
 		local units = self.units
@@ -383,7 +391,7 @@ OutlineSystem.update = function (self, context, t)
 	local current_index = self.current_index
 	local units = self.units
 	local extensions = self.unit_extension_data
-	local active_cutscene = self:_is_cutscene_active()
+	local active_cutscene = self:_is_cutscene_active() or self:_is_photomode_active()
 
 	for i = 1, num_to_check_per_frame, 1 do
 		current_index = current_index % num_units + 1

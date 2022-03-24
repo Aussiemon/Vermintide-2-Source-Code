@@ -661,6 +661,15 @@ TalentBuffTemplates.wood_elf = {
 			}
 		}
 	},
+	kerillian_shade_ult_invis_combo_blocker = {
+		buffs = {
+			{
+				max_stacks = 1,
+				refresh_durations = true,
+				duration = 0.1
+			}
+		}
+	},
 	kerillian_shade_restealth_blocker = {
 		buffs = {
 			{

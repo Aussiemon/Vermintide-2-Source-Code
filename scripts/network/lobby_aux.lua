@@ -148,7 +148,27 @@ end
 local function difficulty_exists_locally(lobby)
 	local difficulty = lobby.difficulty
 
-	if difficulty and not DifficultySettings[difficulty] then
+	if not difficulty or not DifficultySettings[difficulty] then
+		return false
+	end
+
+	return true
+end
+
+local function matchmaking_type_exists_locally(lobby)
+	local matchmaking_type = tonumber(lobby.matchmaking_type)
+
+	if not matchmaking_type or not NetworkLookup.matchmaking_types[matchmaking_type] then
+		return false
+	end
+
+	return true
+end
+
+local function mechanism_exists_locally(lobby)
+	local mechanism = lobby.mechanism
+
+	if not mechanism or not MechanismSettings[mechanism] then
 		return false
 	end
 
@@ -161,6 +181,14 @@ LobbyAux.verify_lobby_data = function (lobby)
 	end
 
 	if not difficulty_exists_locally(lobby) then
+		return false
+	end
+
+	if not matchmaking_type_exists_locally(lobby) then
+		return false
+	end
+
+	if not mechanism_exists_locally(lobby) then
 		return false
 	end
 

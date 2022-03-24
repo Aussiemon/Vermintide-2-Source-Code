@@ -26,6 +26,7 @@ end
 PresenceHelper.lobby_gamemode = function (lobby_data)
 	local mechanism = lobby_data.mechanism
 	local is_in_prologue = lobby_data.mission_id == "prologue"
+	local is_in_plaza = lobby_data.mission_id == "plaza"
 	local matchmakin_type = lobby_data.matchmaking_type
 	local quick_game = to_boolean(lobby_data.quick_game)
 	local is_weekly_event = tonumber(matchmakin_type) == NetworkLookup.matchmaking_types.event
@@ -72,10 +73,10 @@ PresenceHelper.lobby_gamemode = function (lobby_data)
 		return "gamemode_quick_play"
 	elseif is_playing_deed then
 		return "gamemode_deed"
+	elseif is_custom_game or is_in_plaza then
+		return "gamemode_custom"
 	elseif is_weekly_event then
 		return "gamemode_event"
-	elseif is_custom_game then
-		return "gamemode_custom"
 	end
 
 	return "gamemode_none"

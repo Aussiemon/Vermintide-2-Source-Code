@@ -1039,6 +1039,13 @@ local gameplay_settings_definition = {
 	}
 }
 
+local function get_slider_value(min, max, value)
+	local range = max - min
+	local norm_value = math.clamp(value, min, max) - min
+
+	return norm_value / range
+end
+
 local function set_function(self, user_setting_name, widget_type, content, style, value_set_function)
 	local new_value = nil
 
@@ -1063,7 +1070,7 @@ local function setup_function(self, user_setting_name, widget_type, options)
 		local min = options.min
 		local max = options.max
 		local decimals = options.decimals
-		local value = math.clamp(current_value / (max - min), 0, 1)
+		local value = get_slider_value(min, max, current_value)
 
 		return value, min, max, decimals, "menu_settings_" .. user_setting_name, default_value
 	else
@@ -1109,7 +1116,7 @@ local function saved_value_function(self, user_setting_name, widget_type, widget
 		local min = content.min
 		local max = content.max
 		saved_value = math.clamp(saved_value, min, max)
-		content.internal_value = saved_value / (max - min)
+		content.internal_value = get_slider_value(min, max, saved_value)
 		content.value = saved_value
 	else
 		content.current_selection = table.find(content.options_values, saved_value) or table.find(content.options_values, default_value)

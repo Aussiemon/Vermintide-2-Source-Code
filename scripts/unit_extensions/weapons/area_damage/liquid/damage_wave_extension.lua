@@ -82,6 +82,11 @@ DamageWaveExtension.init = function (self, extension_init_context, unit, extensi
 	self.launch_animation = template.launch_animation
 	self._on_arrive_func = template.on_arrive_func
 	self._update_func = template.update_func
+	local init_func = template.init_func
+
+	if init_func then
+		init_func(self)
+	end
 end
 
 DamageWaveExtension.set_update_func = function (self, update_func, init_func, t)
@@ -760,7 +765,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 					if not immune_breeds[breed_name] then
 						if buff_template_name and not inside_blob then
 							if self.add_buff_func then
-								self.add_buff_func(target_unit, buff_template_name, unit, source_unit)
+								self:add_buff_func(target_unit, buff_template_name, unit, source_unit)
 							else
 								buff_system:add_buff(target_unit, buff_template_name, unit, false, nil, source_unit)
 							end

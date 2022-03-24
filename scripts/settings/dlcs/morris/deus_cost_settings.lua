@@ -6,14 +6,14 @@ DeusCostSettings = DeusCostSettings or {
 			potion = 250
 		},
 		blessings = {
-			blessing_of_isha = 150,
+			blessing_of_isha = 200,
 			blessing_of_shallya = 200,
-			blessing_of_grimnir = 150,
-			blessing_of_power = 150,
+			blessing_of_grimnir = 200,
+			blessing_of_power = 100,
 			blessing_of_abundance = 200,
 			blessing_holy_hand_grenade = 200,
-			blessing_rally_flag = 250,
-			blessing_of_ranald = 100
+			blessing_rally_flag = 200,
+			blessing_of_ranald = 200
 		},
 		power_ups = {
 			exotic = 250,
@@ -23,7 +23,7 @@ DeusCostSettings = DeusCostSettings or {
 		}
 	},
 	deus_chest = {
-		power_up = 150,
+		power_up = 200,
 		swap_ranged = {
 			plentiful = {
 				common = 40,

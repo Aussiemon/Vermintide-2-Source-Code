@@ -181,8 +181,12 @@ ItemHelper.has_new_backend_ids_by_career_name_and_slot_type = function (career_n
 							if rarities_to_ignore then
 								local item = BackendUtils.get_item_from_masterlist(item_backend_id)
 
-								if not rarities_to_ignore[item.rarity] then
-									return true
+								if item then
+									if not rarities_to_ignore[item.rarity] then
+										return true
+									end
+								else
+									ItemHelper.unmark_backend_id_as_new(item_backend_id)
 								end
 							else
 								return true
@@ -208,8 +212,12 @@ ItemHelper.has_new_backend_ids_by_slot_type = function (slot_type_name, rarities
 						if rarities_to_ignore then
 							local item = BackendUtils.get_item_from_masterlist(item_backend_id)
 
-							if not rarities_to_ignore[item.rarity] then
-								return true
+							if item then
+								if not rarities_to_ignore[item.rarity] then
+									return true
+								end
+							else
+								ItemHelper.unmark_backend_id_as_new(item_backend_id)
 							end
 						else
 							return true
@@ -234,8 +242,12 @@ ItemHelper.has_new_backend_ids_by_career_name = function (career_name, rarities_
 						if rarities_to_ignore then
 							local item = BackendUtils.get_item_from_masterlist(item_backend_id)
 
-							if not rarities_to_ignore[item.rarity] then
-								return true
+							if item then
+								if not rarities_to_ignore[item.rarity] then
+									return true
+								end
+							else
+								ItemHelper.unmark_backend_id_as_new(item_backend_id)
 							end
 						else
 							return true

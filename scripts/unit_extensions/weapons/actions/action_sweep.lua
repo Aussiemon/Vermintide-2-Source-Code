@@ -933,6 +933,10 @@ ActionSweep._do_overlap = function (self, dt, t, unit, owner_unit, current_actio
 						if (charge_value == "heavy_attack" and buff_extension:has_buff_perk("shield_break")) or buff_extension:has_buff_perk("potion_armor_penetration") then
 							shield_break_procc = true
 						end
+
+						local shield_breaking_hit = not breed.unbreakable_shield and (damage_profile.shield_break or shield_break_procc)
+
+						DamageUtils.handle_hit_indication(owner_unit, hit_unit, 0, hit_zone_name, false, not shield_breaking_hit, shield_breaking_hit)
 					else
 						local send_to_server = true
 						local number_of_hit_enemies = self._number_of_hit_enemies

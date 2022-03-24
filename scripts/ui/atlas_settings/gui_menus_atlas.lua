@@ -146,11 +146,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.840576,
-			0.230225
+			0.236084
 		},
 		uv11 = {
 			0.845459,
-			0.235107
+			0.240967
 		}
 	},
 	stats_star = {
@@ -160,11 +160,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.840576,
-			0.224365
+			0.230225
 		},
 		uv11 = {
 			0.845459,
-			0.229248
+			0.235107
 		}
 	},
 	journal_page_divider_02_small = {
@@ -215,12 +215,12 @@ menus_atlas = {
 			20
 		},
 		uv00 = {
-			0.577881,
-			0.1521
+			0.840576,
+			0.224365
 		},
 		uv11 = {
-			0.582764,
-			0.156982
+			0.845459,
+			0.229248
 		}
 	},
 	journal_page_divider_04_small = {
@@ -235,6 +235,20 @@ menus_atlas = {
 		uv11 = {
 			0.584229,
 			0.141113
+		}
+	},
+	bot_selected_icon = {
+		size = {
+			20,
+			20
+		},
+		uv00 = {
+			0.577881,
+			0.1521
+		},
+		uv11 = {
+			0.582764,
+			0.156982
 		}
 	},
 	menu_marker_01 = {
@@ -307,18 +321,32 @@ menus_atlas = {
 			0.258057
 		}
 	},
-	achievement_checkbox = {
+	achievement_refresh_white = {
 		size = {
 			25,
 			25
 		},
 		uv00 = {
 			0.266357,
-			0.846436
+			0.859619
 		},
 		uv11 = {
 			0.272461,
-			0.852539
+			0.865723
+		}
+	},
+	achievement_refresh_off = {
+		size = {
+			25,
+			25
+		},
+		uv00 = {
+			0.259277,
+			0.859619
+		},
+		uv11 = {
+			0.265381,
+			0.865723
 		}
 	},
 	achievement_checkmark = {
@@ -327,26 +355,26 @@ menus_atlas = {
 			25
 		},
 		uv00 = {
-			0.259277,
-			0.846436
+			0.268311,
+			0.678467
 		},
 		uv11 = {
-			0.265381,
-			0.852539
+			0.274414,
+			0.68457
 		}
 	},
-	chain_end_vertical = {
+	achievement_checkbox = {
 		size = {
 			25,
-			9
+			25
 		},
 		uv00 = {
-			0.458496,
-			0.030273
+			0.268311,
+			0.671387
 		},
 		uv11 = {
-			0.4646,
-			0.032471
+			0.274414,
+			0.67749
 		}
 	},
 	chain_end = {
@@ -363,18 +391,18 @@ menus_atlas = {
 			0.135254
 		}
 	},
-	achievement_refresh_off = {
+	chain_end_vertical = {
 		size = {
 			25,
-			25
+			9
 		},
 		uv00 = {
-			0.268311,
-			0.665283
+			0.458496,
+			0.030273
 		},
 		uv11 = {
-			0.274414,
-			0.671387
+			0.4646,
+			0.032471
 		}
 	},
 	achievement_refresh_on = {
@@ -384,25 +412,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.268311,
-			0.658203
-		},
-		uv11 = {
-			0.274414,
 			0.664307
-		}
-	},
-	achievement_refresh_white = {
-		size = {
-			25,
-			25
-		},
-		uv00 = {
-			0.268311,
-			0.651123
 		},
 		uv11 = {
 			0.274414,
-			0.657227
+			0.67041
 		}
 	},
 	other_options_checkbox = {
@@ -419,18 +433,18 @@ menus_atlas = {
 			0.25293
 		}
 	},
-	menu_exp_edge = {
+	matchmaking_globe_icon = {
 		size = {
-			21,
+			28,
 			28
 		},
 		uv00 = {
-			0.70874,
-			0.23877
+			0.268066,
+			0.70166
 		},
 		uv11 = {
-			0.713867,
-			0.245605
+			0.274902,
+			0.708496
 		}
 	},
 	button_small_icon_back = {
@@ -440,11 +454,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.268311,
-			0.643311
+			0.656494
 		},
 		uv11 = {
 			0.274902,
-			0.650146
+			0.66333
 		}
 	},
 	divider_vertical_hero_end = {
@@ -461,18 +475,18 @@ menus_atlas = {
 			0.106689
 		}
 	},
-	matchmaking_globe_icon = {
+	menu_exp_edge = {
 		size = {
-			28,
+			21,
 			28
 		},
 		uv00 = {
-			0.268066,
-			0.688477
+			0.70874,
+			0.23877
 		},
 		uv11 = {
-			0.274902,
-			0.695313
+			0.713867,
+			0.245605
 		}
 	},
 	divider_horizontal_hero_end = {
@@ -496,14 +510,14 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.259277,
-			0.874512
+			0.887695
 		},
 		uv11 = {
 			0.266357,
-			0.881592
+			0.894775
 		}
 	},
-	matchmaking_light_01 = {
+	matchmaking_light_02 = {
 		size = {
 			30,
 			30
@@ -517,7 +531,7 @@ menus_atlas = {
 			0.907715
 		}
 	},
-	matchmaking_light_02 = {
+	matchmaking_light_01 = {
 		size = {
 			30,
 			30
@@ -529,20 +543,6 @@ menus_atlas = {
 		uv11 = {
 			0.334473,
 			0.899414
-		}
-	},
-	achievement_marker = {
-		size = {
-			31,
-			31
-		},
-		uv00 = {
-			0.327148,
-			0.883545
-		},
-		uv11 = {
-			0.334717,
-			0.891113
 		}
 	},
 	hero_grid_arrow = {
@@ -559,6 +559,20 @@ menus_atlas = {
 			0.149658
 		}
 	},
+	achievement_marker = {
+		size = {
+			31,
+			31
+		},
+		uv00 = {
+			0.327148,
+			0.883545
+		},
+		uv11 = {
+			0.334717,
+			0.891113
+		}
+	},
 	glow_subtle = {
 		size = {
 			32,
@@ -573,20 +587,6 @@ menus_atlas = {
 			0.01123
 		}
 	},
-	kick_player_icon = {
-		size = {
-			34,
-			34
-		},
-		uv00 = {
-			0.990967,
-			0.380371
-		},
-		uv11 = {
-			0.999268,
-			0.388672
-		}
-	},
 	athanor_icon_unlock = {
 		size = {
 			30,
@@ -594,39 +594,25 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.267334,
-			0.711914
+			0.725098
 		},
 		uv11 = {
 			0.274658,
-			0.720215
+			0.733398
 		}
 	},
-	crafting_button_fg_glow = {
+	kick_player_icon = {
 		size = {
-			35,
-			33
+			34,
+			34
 		},
 		uv00 = {
-			0.237061,
-			0.990967
+			0.635498,
+			0.471191
 		},
 		uv11 = {
-			0.245605,
-			0.999023
-		}
-	},
-	athanor_level_lock = {
-		size = {
-			35,
-			35
-		},
-		uv00 = {
-			0.227539,
-			0.990967
-		},
-		uv11 = {
-			0.236084,
-			0.999512
+			0.643799,
+			0.479492
 		}
 	},
 	chest_upgrade_fill_glow = {
@@ -636,11 +622,39 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.265381,
-			0.742676
+			0.755859
 		},
 		uv11 = {
 			0.273926,
-			0.75
+			0.763184
+		}
+	},
+	athanor_level_lock = {
+		size = {
+			35,
+			35
+		},
+		uv00 = {
+			0.497559,
+			0.699707
+		},
+		uv11 = {
+			0.506104,
+			0.708252
+		}
+	},
+	crafting_button_fg_glow = {
+		size = {
+			35,
+			33
+		},
+		uv00 = {
+			0.990967,
+			0.380371
+		},
+		uv11 = {
+			0.999512,
+			0.388428
 		}
 	},
 	athanor_icon_loading = {
@@ -649,12 +663,12 @@ menus_atlas = {
 			36
 		},
 		uv00 = {
-			0.625,
-			0.279541
+			0.497559,
+			0.689941
 		},
 		uv11 = {
-			0.633789,
-			0.28833
+			0.506348,
+			0.69873
 		}
 	},
 	illusion_button_arrow = {
@@ -664,11 +678,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.267334,
-			0.701904
+			0.715088
 		},
 		uv11 = {
 			0.274414,
-			0.710938
+			0.724121
 		}
 	},
 	scoreboard_divider_02 = {
@@ -713,18 +727,46 @@ menus_atlas = {
 			0.126465
 		}
 	},
-	tab_menu_icon_02 = {
+	tab_menu_icon_03 = {
 		size = {
 			40,
 			40
 		},
 		uv00 = {
-			0.713135,
+			0.687256,
 			0.655029
 		},
 		uv11 = {
-			0.7229,
+			0.697021,
 			0.664795
+		}
+	},
+	tab_menu_icon_01 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.676514,
+			0.655029
+		},
+		uv11 = {
+			0.686279,
+			0.664795
+		}
+	},
+	timeline_fg_02 = {
+		size = {
+			40,
+			40
+		},
+		uv00 = {
+			0.92334,
+			0.525879
+		},
+		uv11 = {
+			0.933105,
+			0.535645
 		}
 	},
 	chest_reward_bar_divider = {
@@ -741,35 +783,7 @@ menus_atlas = {
 			0.022217
 		}
 	},
-	timeline_fg_02 = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.702393,
-			0.655029
-		},
-		uv11 = {
-			0.712158,
-			0.664795
-		}
-	},
-	tab_menu_icon_01 = {
-		size = {
-			40,
-			40
-		},
-		uv00 = {
-			0.92334,
-			0.525879
-		},
-		uv11 = {
-			0.933105,
-			0.535645
-		}
-	},
-	tab_menu_icon_04 = {
+	tab_menu_icon_02 = {
 		size = {
 			40,
 			40
@@ -783,7 +797,7 @@ menus_atlas = {
 			0.535645
 		}
 	},
-	tab_menu_icon_03 = {
+	tab_menu_icon_04 = {
 		size = {
 			40,
 			40
@@ -797,7 +811,7 @@ menus_atlas = {
 			0.535645
 		}
 	},
-	tab_menu_icon_05 = {
+	page_indicator = {
 		size = {
 			40,
 			40
@@ -817,12 +831,12 @@ menus_atlas = {
 			31
 		},
 		uv00 = {
-			0.216797,
-			0.990967
+			0.237305,
+			0.98999
 		},
 		uv11 = {
-			0.226563,
-			0.998535
+			0.24707,
+			0.997559
 		}
 	},
 	athanor_icon_upgrade = {
@@ -832,14 +846,14 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.268066,
-			0.677734
+			0.690918
 		},
 		uv11 = {
 			0.274902,
-			0.6875
+			0.700684
 		}
 	},
-	experience_bar_edge_glow = {
+	tab_menu_icon_05 = {
 		size = {
 			40,
 			40
@@ -853,7 +867,7 @@ menus_atlas = {
 			0.892334
 		}
 	},
-	page_indicator = {
+	page_indicator_selection = {
 		size = {
 			40,
 			40
@@ -867,7 +881,7 @@ menus_atlas = {
 			0.479248
 		}
 	},
-	page_indicator_selection = {
+	experience_bar_edge_glow = {
 		size = {
 			40,
 			40
@@ -937,7 +951,21 @@ menus_atlas = {
 			0.716064
 		}
 	},
-	athanor_tooltip_icon_trait = {
+	quest_close = {
+		size = {
+			42,
+			48
+		},
+		uv00 = {
+			0.495605,
+			0.934082
+		},
+		uv11 = {
+			0.505859,
+			0.945801
+		}
+	},
+	athanor_tooltip_icon_talent = {
 		size = {
 			48,
 			48
@@ -951,7 +979,7 @@ menus_atlas = {
 			0.703857
 		}
 	},
-	athanor_tooltip_icon_property = {
+	athanor_tooltip_icon_trait = {
 		size = {
 			48,
 			48
@@ -963,20 +991,6 @@ menus_atlas = {
 		uv11 = {
 			0.675293,
 			0.691162
-		}
-	},
-	quest_close = {
-		size = {
-			42,
-			48
-		},
-		uv00 = {
-			0.495605,
-			0.934082
-		},
-		uv11 = {
-			0.505859,
-			0.945801
 		}
 	},
 	page_button_arrow_glow = {
@@ -993,7 +1007,7 @@ menus_atlas = {
 			0.933105
 		}
 	},
-	athanor_tooltip_icon_talent = {
+	athanor_tooltip_icon_property = {
 		size = {
 			48,
 			48
@@ -1007,35 +1021,7 @@ menus_atlas = {
 			0.678467
 		}
 	},
-	trial_bg = {
-		size = {
-			49,
-			44
-		},
-		uv00 = {
-			0.689453,
-			0.655029
-		},
-		uv11 = {
-			0.701416,
-			0.665771
-		}
-	},
 	trial_goal_01 = {
-		size = {
-			49,
-			44
-		},
-		uv00 = {
-			0.676514,
-			0.655029
-		},
-		uv11 = {
-			0.688477,
-			0.665771
-		}
-	},
-	trial_goal_02 = {
 		size = {
 			49,
 			44
@@ -1056,11 +1042,39 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.979736
+			0.982422
 		},
 		uv11 = {
 			0.652588,
-			0.990479
+			0.993164
+		}
+	},
+	trial_goal_02 = {
+		size = {
+			49,
+			44
+		},
+		uv00 = {
+			0.640625,
+			0.970703
+		},
+		uv11 = {
+			0.652588,
+			0.981445
+		}
+	},
+	trial_bg = {
+		size = {
+			49,
+			44
+		},
+		uv00 = {
+			0.640625,
+			0.958984
+		},
+		uv11 = {
+			0.652588,
+			0.969727
 		}
 	},
 	trial_goal_03 = {
@@ -1069,15 +1083,29 @@ menus_atlas = {
 			44
 		},
 		uv00 = {
-			0.640625,
-			0.968018
+			0.62207,
+			0.279541
 		},
 		uv11 = {
-			0.652588,
-			0.97876
+			0.634033,
+			0.290283
 		}
 	},
-	item_tier_exotic = {
+	icon_switch = {
+		size = {
+			50,
+			45
+		},
+		uv00 = {
+			0.640625,
+			0.947021
+		},
+		uv11 = {
+			0.652832,
+			0.958008
+		}
+	},
+	item_tier_upgrade = {
 		size = {
 			37,
 			50
@@ -1091,7 +1119,7 @@ menus_atlas = {
 			0.92041
 		}
 	},
-	item_tier_plentiful = {
+	item_tier_exotic = {
 		size = {
 			37,
 			50
@@ -1105,7 +1133,7 @@ menus_atlas = {
 			0.907227
 		}
 	},
-	item_tier_empty = {
+	item_tier_plentiful = {
 		size = {
 			37,
 			50
@@ -1119,21 +1147,7 @@ menus_atlas = {
 			0.881592
 		}
 	},
-	icon_switch = {
-		size = {
-			50,
-			45
-		},
-		uv00 = {
-			0.640625,
-			0.956055
-		},
-		uv11 = {
-			0.652832,
-			0.967041
-		}
-	},
-	item_tier_rare = {
+	item_tier_common = {
 		size = {
 			37,
 			50
@@ -1145,34 +1159,6 @@ menus_atlas = {
 		uv11 = {
 			0.505371,
 			0.868408
-		}
-	},
-	item_tier_common = {
-		size = {
-			37,
-			50
-		},
-		uv00 = {
-			0.496338,
-			0.843018
-		},
-		uv11 = {
-			0.505371,
-			0.855225
-		}
-	},
-	item_tier_upgrade = {
-		size = {
-			37,
-			50
-		},
-		uv00 = {
-			0.990234,
-			0.466309
-		},
-		uv11 = {
-			0.999268,
-			0.478516
 		}
 	},
 	weave_highscore_ribbon = {
@@ -1189,7 +1175,35 @@ menus_atlas = {
 			0.147217
 		}
 	},
+	item_tier_empty = {
+		size = {
+			37,
+			50
+		},
+		uv00 = {
+			0.496338,
+			0.843018
+		},
+		uv11 = {
+			0.505371,
+			0.855225
+		}
+	},
 	item_tier_unique = {
+		size = {
+			37,
+			50
+		},
+		uv00 = {
+			0.990234,
+			0.466309
+		},
+		uv11 = {
+			0.999268,
+			0.478516
+		}
+	},
+	item_tier_rare = {
 		size = {
 			37,
 			50
@@ -1203,18 +1217,18 @@ menus_atlas = {
 			0.465332
 		}
 	},
-	button_illusion_default = {
+	button_illusion_locked = {
 		size = {
 			51,
 			45
 		},
 		uv00 = {
 			0.640625,
-			0.944092
+			0.935059
 		},
 		uv11 = {
 			0.653076,
-			0.955078
+			0.946045
 		}
 	},
 	button_illusion_unique = {
@@ -1224,25 +1238,25 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.932129
+			0.923096
 		},
 		uv11 = {
 			0.653076,
-			0.943115
+			0.934082
 		}
 	},
-	button_illusion_locked = {
+	button_illusion_default = {
 		size = {
 			51,
 			45
 		},
 		uv00 = {
 			0.640625,
-			0.920166
+			0.911133
 		},
 		uv11 = {
 			0.653076,
-			0.931152
+			0.922119
 		}
 	},
 	button_illusion_common = {
@@ -1252,11 +1266,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.908203
+			0.89917
 		},
 		uv11 = {
 			0.653076,
-			0.919189
+			0.910156
 		}
 	},
 	button_illusion_rare = {
@@ -1266,11 +1280,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.89624
+			0.887207
 		},
 		uv11 = {
 			0.653076,
-			0.907227
+			0.898193
 		}
 	},
 	button_illusion_exotic = {
@@ -1280,11 +1294,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.884277
+			0.875244
 		},
 		uv11 = {
 			0.653076,
-			0.895264
+			0.88623
 		}
 	},
 	button_illusion_promo = {
@@ -1315,18 +1329,18 @@ menus_atlas = {
 			0.542236
 		}
 	},
-	matchmaking_loading_icon_part_02 = {
+	matchmaking_loading_icon_part_03 = {
 		size = {
 			52,
 			52
 		},
 		uv00 = {
 			0.640625,
-			0.870605
+			0.861572
 		},
 		uv11 = {
 			0.65332,
-			0.883301
+			0.874268
 		}
 	},
 	matchmaking_loading_icon_part_01 = {
@@ -1336,11 +1350,25 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.856934
+			0.8479
 		},
 		uv11 = {
 			0.65332,
-			0.869629
+			0.860596
+		}
+	},
+	matchmaking_loading_icon_part_02 = {
+		size = {
+			52,
+			52
+		},
+		uv00 = {
+			0.640625,
+			0.834229
+		},
+		uv11 = {
+			0.65332,
+			0.846924
 		}
 	},
 	athanor_entry_connector = {
@@ -1357,20 +1385,6 @@ menus_atlas = {
 			0.056641
 		}
 	},
-	matchmaking_loading_icon_part_03 = {
-		size = {
-			52,
-			52
-		},
-		uv00 = {
-			0.640625,
-			0.843262
-		},
-		uv11 = {
-			0.65332,
-			0.855957
-		}
-	},
 	matchmaking_connecting_icon = {
 		size = {
 			53,
@@ -1378,11 +1392,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.829346
+			0.820313
 		},
 		uv11 = {
 			0.653564,
-			0.842285
+			0.833252
 		}
 	},
 	weave_highscore_sigil = {
@@ -1392,11 +1406,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.81543
+			0.806396
 		},
 		uv11 = {
 			0.653564,
-			0.828369
+			0.819336
 		}
 	},
 	ping_icon_02 = {
@@ -1406,11 +1420,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.802246
+			0.793213
 		},
 		uv11 = {
 			0.653809,
-			0.814453
+			0.80542
 		}
 	},
 	ping_icon_03 = {
@@ -1420,11 +1434,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.987305
+			0.986816
 		},
 		uv11 = {
 			0.56543,
-			0.999512
+			0.999023
 		}
 	},
 	ping_icon_01 = {
@@ -1462,11 +1476,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.787842
+			0.778809
 		},
 		uv11 = {
 			0.652832,
-			0.80127
+			0.792236
 		}
 	},
 	console_crafting_slot_connection = {
@@ -1475,11 +1489,11 @@ menus_atlas = {
 			36
 		},
 		uv00 = {
-			0.610596,
+			0.607666,
 			0.279541
 		},
 		uv11 = {
-			0.624023,
+			0.621094,
 			0.28833
 		}
 	},
@@ -1490,11 +1504,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.88208
+			0.837158
 		},
 		uv11 = {
 			0.565674,
-			0.894287
+			0.849365
 		}
 	},
 	crafting_icon_02 = {
@@ -1518,11 +1532,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.265381,
-			0.728027
+			0.741211
 		},
 		uv11 = {
 			0.274658,
-			0.741699
+			0.754883
 		}
 	},
 	cog_icon_selected = {
@@ -1532,11 +1546,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.772705
+			0.763672
 		},
 		uv11 = {
 			0.654785,
-			0.786865
+			0.777832
 		}
 	},
 	hero_panel_frame_01_edge_diagonal = {
@@ -1559,12 +1573,12 @@ menus_atlas = {
 			58
 		},
 		uv00 = {
-			0.640625,
-			0.757568
+			0.552246,
+			0.97168
 		},
 		uv11 = {
-			0.654785,
-			0.771729
+			0.566406,
+			0.98584
 		}
 	},
 	cog_icon = {
@@ -1595,7 +1609,7 @@ menus_atlas = {
 			0.999512
 		}
 	},
-	achievement_arrow_hover = {
+	achievement_arrow = {
 		size = {
 			59,
 			31
@@ -1606,20 +1620,6 @@ menus_atlas = {
 		},
 		uv11 = {
 			0.583252,
-			0.258057
-		}
-	},
-	achievement_arrow = {
-		size = {
-			59,
-			31
-		},
-		uv00 = {
-			0.553467,
-			0.250488
-		},
-		uv11 = {
-			0.567871,
 			0.258057
 		}
 	},
@@ -1637,6 +1637,20 @@ menus_atlas = {
 			0.991943
 		}
 	},
+	achievement_arrow_hover = {
+		size = {
+			59,
+			31
+		},
+		uv00 = {
+			0.553467,
+			0.250488
+		},
+		uv11 = {
+			0.567871,
+			0.258057
+		}
+	},
 	icon_heavy_attack = {
 		size = {
 			59,
@@ -1644,67 +1658,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.836182
+			0.881836
 		},
 		uv11 = {
 			0.56665,
-			0.848877
-		}
-	},
-	trials_icon_speedrun = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.640625,
-			0.741943
-		},
-		uv11 = {
-			0.655273,
-			0.756592
-		}
-	},
-	trials_icon_survival = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.552246,
-			0.97168
-		},
-		uv11 = {
-			0.566895,
-			0.986328
-		}
-	},
-	icon_stamina = {
-		size = {
-			56,
-			60
-		},
-		uv00 = {
-			0.492188,
-			0.961914
-		},
-		uv11 = {
-			0.505859,
-			0.976563
-		}
-	},
-	trials_icon_puzzle = {
-		size = {
-			60,
-			60
-		},
-		uv00 = {
-			0.552246,
-			0.956055
-		},
-		uv11 = {
-			0.566895,
-			0.970703
+			0.894531
 		}
 	},
 	matchmaking_player_icon_normal = {
@@ -1721,18 +1679,18 @@ menus_atlas = {
 			0.842041
 		}
 	},
-	trials_icon_night = {
+	icon_stamina = {
 		size = {
-			60,
+			56,
 			60
 		},
 		uv00 = {
-			0.552246,
-			0.94043
+			0.492188,
+			0.961914
 		},
 		uv11 = {
-			0.566895,
-			0.955078
+			0.505859,
+			0.976563
 		}
 	},
 	matchmaking_player_icon_lit = {
@@ -1763,6 +1721,48 @@ menus_atlas = {
 			0.406738
 		}
 	},
+	trials_icon_speedrun = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.552246,
+			0.956055
+		},
+		uv11 = {
+			0.566895,
+			0.970703
+		}
+	},
+	trials_icon_survival = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.552246,
+			0.94043
+		},
+		uv11 = {
+			0.566895,
+			0.955078
+		}
+	},
+	trials_icon_night = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.552246,
+			0.911133
+		},
+		uv11 = {
+			0.566895,
+			0.925781
+		}
+	},
 	console_difficulty_icon_03 = {
 		size = {
 			40,
@@ -1775,6 +1775,20 @@ menus_atlas = {
 		uv11 = {
 			0.424072,
 			0.990479
+		}
+	},
+	trials_icon_puzzle = {
+		size = {
+			60,
+			60
+		},
+		uv00 = {
+			0.552246,
+			0.895508
+		},
+		uv11 = {
+			0.566895,
+			0.910156
 		}
 	},
 	console_difficulty_icon_02 = {
@@ -1798,11 +1812,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.26416,
-			0.751221
+			0.764404
 		},
 		uv11 = {
 			0.273926,
-			0.765869
+			0.779053
 		}
 	},
 	trials_icon_extermination = {
@@ -1812,11 +1826,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.911133
+			0.866211
 		},
 		uv11 = {
 			0.566895,
-			0.925781
+			0.880859
 		}
 	},
 	salvage_item_icon = {
@@ -1840,11 +1854,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.895508
+			0.850586
 		},
 		uv11 = {
 			0.566895,
-			0.910156
+			0.865234
 		}
 	},
 	trials_icon_evening = {
@@ -1854,11 +1868,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.866455
+			0.821533
 		},
 		uv11 = {
 			0.566895,
-			0.881104
+			0.836182
 		}
 	},
 	menu_divider = {
@@ -1910,53 +1924,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.850586
+			0.805664
 		},
 		uv11 = {
 			0.566895,
-			0.865479
-		}
-	},
-	crafting_random = {
-		size = {
-			37,
-			62
-		},
-		uv00 = {
-			0.98999,
-			0.085205
-		},
-		uv11 = {
-			0.999023,
-			0.100342
-		}
-	},
-	icon_trait = {
-		size = {
-			62,
-			59
-		},
-		uv00 = {
-			0.552246,
-			0.820801
-		},
-		uv11 = {
-			0.567383,
-			0.835205
-		}
-	},
-	icon_crosshair_02 = {
-		size = {
-			62,
-			59
-		},
-		uv00 = {
-			0.490967,
-			0.805908
-		},
-		uv11 = {
-			0.506104,
-			0.820313
+			0.820557
 		}
 	},
 	crafting_icon_hover = {
@@ -1973,6 +1945,48 @@ menus_atlas = {
 			0.033203
 		}
 	},
+	icon_trait = {
+		size = {
+			62,
+			59
+		},
+		uv00 = {
+			0.490967,
+			0.803955
+		},
+		uv11 = {
+			0.506104,
+			0.818359
+		}
+	},
+	crafting_random = {
+		size = {
+			37,
+			62
+		},
+		uv00 = {
+			0.98999,
+			0.085205
+		},
+		uv11 = {
+			0.999023,
+			0.100342
+		}
+	},
+	icon_crosshair_02 = {
+		size = {
+			62,
+			59
+		},
+		uv00 = {
+			0.490967,
+			0.788574
+		},
+		uv11 = {
+			0.506104,
+			0.802979
+		}
+	},
 	button_illusion_glow = {
 		size = {
 			63,
@@ -1980,11 +1994,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.490967,
-			0.791016
+			0.773682
 		},
 		uv11 = {
 			0.506348,
-			0.804932
+			0.787598
 		}
 	},
 	button_illusion_glow_white = {
@@ -1994,39 +2008,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.490967,
-			0.776123
+			0.758789
 		},
 		uv11 = {
 			0.506348,
-			0.790039
-		}
-	},
-	timer_fg_greyscale = {
-		size = {
-			64,
-			16
-		},
-		uv00 = {
-			0.973145,
-			0.006348
-		},
-		uv11 = {
-			0.98877,
-			0.010254
-		}
-	},
-	icon_damage_vs_armor = {
-		size = {
-			64,
-			58
-		},
-		uv00 = {
-			0.552246,
-			0.805664
-		},
-		uv11 = {
-			0.567871,
-			0.819824
+			0.772705
 		}
 	},
 	icon_block = {
@@ -2035,12 +2021,26 @@ menus_atlas = {
 			64
 		},
 		uv00 = {
+			0.552246,
+			0.778809
+		},
+		uv11 = {
+			0.567871,
+			0.794434
+		}
+	},
+	icon_damage_vs_armor = {
+		size = {
+			64,
+			58
+		},
+		uv00 = {
 			0.951904,
 			0.526123
 		},
 		uv11 = {
 			0.967529,
-			0.541748
+			0.540283
 		}
 	},
 	icon_block = {
@@ -2055,6 +2055,20 @@ menus_atlas = {
 		uv11 = {
 			0.950928,
 			0.541748
+		}
+	},
+	timer_fg_greyscale = {
+		size = {
+			64,
+			16
+		},
+		uv00 = {
+			0.973145,
+			0.006348
+		},
+		uv11 = {
+			0.98877,
+			0.010254
 		}
 	},
 	icon_crosshair_06 = {
@@ -2133,12 +2147,12 @@ menus_atlas = {
 			67
 		},
 		uv00 = {
-			0.490967,
-			0.758789
+			0.108398,
+			0.981201
 		},
 		uv11 = {
-			0.505615,
-			0.775146
+			0.123047,
+			0.997559
 		}
 	},
 	icon_targets = {
@@ -2203,26 +2217,26 @@ menus_atlas = {
 			36
 		},
 		uv00 = {
-			0.255859,
-			0.896729
+			0.219727,
+			0.98999
 		},
 		uv11 = {
-			0.272461,
-			0.905518
+			0.236328,
+			0.998779
 		}
 	},
-	athanor_skilltree_slot_property_locked = {
+	athanor_skilltree_slot_property_unlocked = {
 		size = {
 			70,
 			70
 		},
 		uv00 = {
 			0.552246,
-			0.778809
+			0.760742
 		},
 		uv11 = {
 			0.569336,
-			0.795898
+			0.777832
 		}
 	},
 	leaderboard_bar_slot_base = {
@@ -2239,6 +2253,20 @@ menus_atlas = {
 			0.54248
 		}
 	},
+	athanor_skilltree_slot_property_locked = {
+		size = {
+			70,
+			70
+		},
+		uv00 = {
+			0.552246,
+			0.733887
+		},
+		uv11 = {
+			0.569336,
+			0.750977
+		}
+	},
 	crafting_bg_04 = {
 		size = {
 			67,
@@ -2246,25 +2274,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.552246,
-			0.760742
+			0.71582
 		},
 		uv11 = {
 			0.568604,
-			0.777832
-		}
-	},
-	athanor_skilltree_slot_property_unlocked = {
-		size = {
-			70,
-			70
-		},
-		uv00 = {
-			0.552246,
-			0.734375
-		},
-		uv11 = {
-			0.569336,
-			0.751465
+			0.73291
 		}
 	},
 	scoreboard_marker = {
@@ -2273,12 +2287,12 @@ menus_atlas = {
 			39
 		},
 		uv00 = {
-			0.128418,
-			0.961182
+			0.255859,
+			0.895752
 		},
 		uv11 = {
-			0.145752,
-			0.970703
+			0.273193,
+			0.905273
 		}
 	},
 	hero_panel_button_hero_up = {
@@ -2302,11 +2316,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.25,
-			0.986572
+			0.985596
 		},
 		uv11 = {
 			0.267578,
-			0.998291
+			0.997314
 		}
 	},
 	player_disconnected = {
@@ -2329,12 +2343,12 @@ menus_atlas = {
 			72
 		},
 		uv00 = {
-			0.552246,
-			0.71582
+			0.978271,
+			0.523926
 		},
 		uv11 = {
-			0.569824,
-			0.733398
+			0.99585,
+			0.541504
 		}
 	},
 	crafting_icon_dust = {
@@ -2357,12 +2371,12 @@ menus_atlas = {
 			46
 		},
 		uv00 = {
-			0.255859,
-			0.882568
+			0.124268,
+			0.983154
 		},
 		uv11 = {
-			0.273926,
-			0.893799
+			0.142334,
+			0.994385
 		}
 	},
 	button_round_bg = {
@@ -2371,12 +2385,12 @@ menus_atlas = {
 			74
 		},
 		uv00 = {
-			0.978271,
-			0.523926
+			0.128418,
+			0.938965
 		},
 		uv11 = {
-			0.996338,
-			0.541992
+			0.146484,
+			0.957031
 		}
 	},
 	keep_decorations_divider_02 = {
@@ -2400,25 +2414,25 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.259277,
-			0.854248
+			0.867432
 		},
 		uv11 = {
 			0.274902,
-			0.873535
+			0.886719
 		}
 	},
-	reward_pop_up_item_frame = {
+	reward_pop_up_item_bg = {
 		size = {
 			80,
 			80
 		},
 		uv00 = {
 			0.640625,
-			0.721436
+			0.743164
 		},
 		uv11 = {
 			0.660156,
-			0.740967
+			0.762695
 		}
 	},
 	achievement_sigil_head_glow = {
@@ -2428,11 +2442,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.640625,
-			0.700928
+			0.722656
 		},
 		uv11 = {
 			0.660156,
-			0.720459
+			0.742188
 		}
 	},
 	athanor_upgrade_kettle_inactive = {
@@ -2442,14 +2456,14 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.259277,
-			0.825928
+			0.839111
 		},
 		uv11 = {
 			0.274902,
-			0.845459
+			0.858643
 		}
 	},
-	achievement_sigil_head = {
+	reward_pop_up_item_frame = {
 		size = {
 			80,
 			80
@@ -2463,7 +2477,7 @@ menus_atlas = {
 			0.710693
 		}
 	},
-	reward_pop_up_item_bg = {
+	achievement_sigil_head = {
 		size = {
 			80,
 			80
@@ -2498,25 +2512,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.313477,
-			0.486572
+			0.487061
 		},
 		uv11 = {
 			0.333496,
-			0.503418
-		}
-	},
-	athanor_panel_back = {
-		size = {
-			64,
-			84
-		},
-		uv00 = {
-			0.259277,
-			0.797607
-		},
-		uv11 = {
-			0.274902,
-			0.818115
+			0.503906
 		}
 	},
 	end_glow_greyscale = {
@@ -2526,11 +2526,25 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.262207,
-			0.772217
+			0.7854
 		},
 		uv11 = {
 			0.273193,
-			0.792725
+			0.805908
+		}
+	},
+	athanor_panel_back = {
+		size = {
+			64,
+			84
+		},
+		uv00 = {
+			0.259277,
+			0.810791
+		},
+		uv11 = {
+			0.274902,
+			0.831299
 		}
 	},
 	layout_button_close = {
@@ -2539,15 +2553,43 @@ menus_atlas = {
 			85
 		},
 		uv00 = {
+			0.640625,
+			0.700928
+		},
+		uv11 = {
+			0.6604,
+			0.72168
+		}
+	},
+	athanor_skilltree_slot_trait_locked = {
+		size = {
+			85,
+			85
+		},
+		uv00 = {
 			0.978271,
 			0.502197
 		},
 		uv11 = {
-			0.998047,
+			0.999023,
 			0.522949
 		}
 	},
-	athanor_skilltree_slot_trait_locked = {
+	console_map_screen_arrow = {
+		size = {
+			30,
+			85
+		},
+		uv00 = {
+			0.990479,
+			0.03418
+		},
+		uv11 = {
+			0.997803,
+			0.054932
+		}
+	},
+	athanor_skilltree_slot_trait_unlocked = {
 		size = {
 			85,
 			85
@@ -2568,39 +2610,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.313477,
-			0.464844
+			0.465332
 		},
 		uv11 = {
 			0.333252,
-			0.485596
-		}
-	},
-	athanor_skilltree_slot_trait_unlocked = {
-		size = {
-			85,
-			85
-		},
-		uv00 = {
-			0.313477,
-			0.443115
-		},
-		uv11 = {
-			0.334229,
-			0.463867
-		}
-	},
-	console_map_screen_arrow = {
-		size = {
-			30,
-			85
-		},
-		uv00 = {
-			0.990479,
-			0.03418
-		},
-		uv11 = {
-			0.997803,
-			0.054932
+			0.486084
 		}
 	},
 	hero_icon_locked_gold = {
@@ -2609,12 +2623,12 @@ menus_atlas = {
 			87
 		},
 		uv00 = {
-			0.254395,
-			0.907471
+			0.313477,
+			0.443115
 		},
 		uv11 = {
-			0.272949,
-			0.928711
+			0.332031,
+			0.464355
 		}
 	},
 	icon_hourglass = {
@@ -2623,12 +2637,12 @@ menus_atlas = {
 			87
 		},
 		uv00 = {
-			0.128418,
-			0.938965
+			0.254395,
+			0.906494
 		},
 		uv11 = {
-			0.146973,
-			0.960205
+			0.272949,
+			0.927734
 		}
 	},
 	hero_icon_locked = {
@@ -2687,7 +2701,7 @@ menus_atlas = {
 			0.644775
 		}
 	},
-	achievement_button_icon_quests_glow = {
+	achievement_button_icon_achievements = {
 		size = {
 			90,
 			90
@@ -2701,7 +2715,7 @@ menus_atlas = {
 			0.644775
 		}
 	},
-	achievement_button_icon_achievements = {
+	achievement_button_icon_achievements_glow = {
 		size = {
 			90,
 			90
@@ -2715,21 +2729,21 @@ menus_atlas = {
 			0.999268
 		}
 	},
-	achievement_button_icon_achievements_glow = {
+	achievement_button_icon_quests_glow = {
 		size = {
 			90,
 			90
 		},
 		uv00 = {
 			0.252686,
-			0.931152
+			0.930176
 		},
 		uv11 = {
 			0.274658,
-			0.953125
+			0.952148
 		}
 	},
-	loot_presentation_glow_01 = {
+	loot_presentation_glow_02 = {
 		size = {
 			93,
 			86
@@ -2743,7 +2757,7 @@ menus_atlas = {
 			0.58667
 		}
 	},
-	loot_presentation_glow_02 = {
+	loot_presentation_glow_01 = {
 		size = {
 			93,
 			86
@@ -2820,11 +2834,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.124268,
-			0.97168
+			0.958496
 		},
 		uv11 = {
 			0.145508,
-			0.995361
+			0.982178
 		}
 	},
 	crafting_bg_03 = {
@@ -2848,14 +2862,14 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.25,
-			0.961182
+			0.960205
 		},
 		uv11 = {
 			0.274414,
-			0.985596
+			0.984619
 		}
 	},
-	character_customization_side_decoration = {
+	character_customization_side_decoration_selected = {
 		size = {
 			103,
 			105
@@ -2869,7 +2883,7 @@ menus_atlas = {
 			0.47876
 		}
 	},
-	character_customization_side_decoration_selected = {
+	character_customization_side_decoration = {
 		size = {
 			103,
 			105
@@ -2881,20 +2895,6 @@ menus_atlas = {
 		uv11 = {
 			0.865479,
 			0.47876
-		}
-	},
-	menu_options_button_glow_03 = {
-		size = {
-			28,
-			108
-		},
-		uv00 = {
-			0.128906,
-			0.863525
-		},
-		uv11 = {
-			0.135742,
-			0.889893
 		}
 	},
 	console_crafting_salvage_cross = {
@@ -2909,6 +2909,20 @@ menus_atlas = {
 		uv11 = {
 			0.839355,
 			0.479492
+		}
+	},
+	menu_options_button_glow_03 = {
+		size = {
+			28,
+			108
+		},
+		uv00 = {
+			0.128906,
+			0.863525
+		},
+		uv11 = {
+			0.135742,
+			0.889893
 		}
 	},
 	menu_options_button_glow_02 = {
@@ -3149,7 +3163,7 @@ menus_atlas = {
 			0.220215
 		}
 	},
-	console_crafting_recipe_icon_salvage = {
+	console_crafting_recipe_icon_properties = {
 		size = {
 			128,
 			128
@@ -3163,7 +3177,7 @@ menus_atlas = {
 			0.654053
 		}
 	},
-	console_crafting_recipe_icon_extract = {
+	console_crafting_recipe_icon_dust = {
 		size = {
 			128,
 			128
@@ -3177,7 +3191,7 @@ menus_atlas = {
 			0.654053
 		}
 	},
-	athanor_skilltree_slot_talent_locked = {
+	athanor_skilltree_slot_property_hover = {
 		size = {
 			128,
 			128
@@ -3191,7 +3205,7 @@ menus_atlas = {
 			0.654053
 		}
 	},
-	console_crafting_recipe_icon_trait = {
+	console_crafting_recipe_icon_craft = {
 		size = {
 			128,
 			128
@@ -3205,7 +3219,7 @@ menus_atlas = {
 			0.654053
 		}
 	},
-	search_filters_bg = {
+	athanor_skilltree_slot_property_active = {
 		size = {
 			128,
 			128
@@ -3219,7 +3233,7 @@ menus_atlas = {
 			0.654053
 		}
 	},
-	character_customization_bag_icon_selected = {
+	athanor_skilltree_slot_talent_active = {
 		size = {
 			128,
 			128
@@ -3233,7 +3247,7 @@ menus_atlas = {
 			0.976318
 		}
 	},
-	console_crafting_recipe_icon_apply = {
+	console_crafting_recipe_icon_salvage = {
 		size = {
 			128,
 			128
@@ -3247,7 +3261,7 @@ menus_atlas = {
 			0.944092
 		}
 	},
-	athanor_skilltree_slot_talent_hover = {
+	search_filters_icon = {
 		size = {
 			128,
 			128
@@ -3261,7 +3275,7 @@ menus_atlas = {
 			0.911865
 		}
 	},
-	athanor_skilltree_slot_trait_hover = {
+	console_crafting_disc_small = {
 		size = {
 			128,
 			128
@@ -3275,7 +3289,7 @@ menus_atlas = {
 			0.879639
 		}
 	},
-	search_filters_icon = {
+	athanor_skilltree_slot_trait_active = {
 		size = {
 			128,
 			128
@@ -3289,7 +3303,7 @@ menus_atlas = {
 			0.847412
 		}
 	},
-	console_crafting_recipe_icon_upgrade = {
+	character_customization_bag_icon_selected = {
 		size = {
 			128,
 			128
@@ -3303,7 +3317,7 @@ menus_atlas = {
 			0.815186
 		}
 	},
-	athanor_skilltree_slot_talent_active = {
+	athanor_skilltree_slot_talent_hover = {
 		size = {
 			128,
 			128
@@ -3317,7 +3331,7 @@ menus_atlas = {
 			0.782959
 		}
 	},
-	athanor_skilltree_slot_property_hover = {
+	search_filters_bg = {
 		size = {
 			128,
 			128
@@ -3331,7 +3345,7 @@ menus_atlas = {
 			0.750732
 		}
 	},
-	console_crafting_disc_small = {
+	character_customization_bag_icon_unselected = {
 		size = {
 			128,
 			128
@@ -3345,7 +3359,7 @@ menus_atlas = {
 			0.718506
 		}
 	},
-	console_crafting_recipe_icon_craft = {
+	console_crafting_recipe_icon_apply = {
 		size = {
 			128,
 			128
@@ -3359,7 +3373,7 @@ menus_atlas = {
 			0.686279
 		}
 	},
-	console_crafting_recipe_icon_dust = {
+	console_crafting_recipe_icon_extract = {
 		size = {
 			128,
 			128
@@ -3373,7 +3387,7 @@ menus_atlas = {
 			0.654053
 		}
 	},
-	character_customization_bag_icon_unselected = {
+	search_filters_icon_glow = {
 		size = {
 			128,
 			128
@@ -3387,7 +3401,7 @@ menus_atlas = {
 			0.619873
 		}
 	},
-	athanor_skilltree_slot_trait_active = {
+	console_crafting_recipe_icon_trait = {
 		size = {
 			128,
 			128
@@ -3401,7 +3415,7 @@ menus_atlas = {
 			0.619873
 		}
 	},
-	athanor_skilltree_slot_property_active = {
+	console_crafting_recipe_icon_upgrade = {
 		size = {
 			128,
 			128
@@ -3415,7 +3429,7 @@ menus_atlas = {
 			0.619873
 		}
 	},
-	search_filters_icon_glow = {
+	athanor_skilltree_slot_trait_hover = {
 		size = {
 			128,
 			128
@@ -3429,7 +3443,7 @@ menus_atlas = {
 			0.619873
 		}
 	},
-	console_crafting_recipe_icon_properties = {
+	athanor_skilltree_slot_talent_locked = {
 		size = {
 			128,
 			128
@@ -3443,7 +3457,7 @@ menus_atlas = {
 			0.619873
 		}
 	},
-	bot_order_1 = {
+	bot_order_2 = {
 		size = {
 			110,
 			130
@@ -3457,7 +3471,7 @@ menus_atlas = {
 			0.620361
 		}
 	},
-	bot_order_base = {
+	bot_order_3 = {
 		size = {
 			110,
 			130
@@ -3471,7 +3485,7 @@ menus_atlas = {
 			0.620361
 		}
 	},
-	bot_order_4 = {
+	bot_order_1 = {
 		size = {
 			110,
 			130
@@ -3485,7 +3499,7 @@ menus_atlas = {
 			0.620361
 		}
 	},
-	bot_order_3 = {
+	bot_order_base = {
 		size = {
 			110,
 			130
@@ -3513,7 +3527,7 @@ menus_atlas = {
 			0.620361
 		}
 	},
-	bot_order_2 = {
+	bot_order_4 = {
 		size = {
 			110,
 			130
@@ -3525,20 +3539,6 @@ menus_atlas = {
 		uv11 = {
 			0.669434,
 			0.620361
-		}
-	},
-	scoreboard_topic_bg_highlight = {
-		size = {
-			132,
-			39
-		},
-		uv00 = {
-			0.520264,
-			0.247559
-		},
-		uv11 = {
-			0.55249,
-			0.25708
 		}
 	},
 	summary_screen_fill_glow = {
@@ -3556,6 +3556,20 @@ menus_atlas = {
 		}
 	},
 	scoreboard_topic_bg = {
+		size = {
+			132,
+			39
+		},
+		uv00 = {
+			0.520264,
+			0.247559
+		},
+		uv11 = {
+			0.55249,
+			0.25708
+		}
+	},
+	scoreboard_topic_bg_highlight = {
 		size = {
 			132,
 			39
@@ -3611,20 +3625,6 @@ menus_atlas = {
 			0.991211
 		}
 	},
-	character_slot_empty = {
-		size = {
-			120,
-			140
-		},
-		uv00 = {
-			0.570801,
-			0.922363
-		},
-		uv11 = {
-			0.600098,
-			0.956543
-		}
-	},
 	hero_power_bg_hover = {
 		size = {
 			140,
@@ -3639,7 +3639,21 @@ menus_atlas = {
 			0.44751
 		}
 	},
-	matchmaking_icon = {
+	character_slot_empty = {
+		size = {
+			120,
+			140
+		},
+		uv00 = {
+			0.570801,
+			0.922363
+		},
+		uv11 = {
+			0.600098,
+			0.956543
+		}
+	},
+	matchmaking_icon_effect = {
 		size = {
 			141,
 			141
@@ -3653,7 +3667,7 @@ menus_atlas = {
 			0.921387
 		}
 	},
-	matchmaking_icon_effect = {
+	matchmaking_icon = {
 		size = {
 			141,
 			141
@@ -3665,20 +3679,6 @@ menus_atlas = {
 		uv11 = {
 			0.605225,
 			0.885986
-		}
-	},
-	menu_exp_bg = {
-		size = {
-			144,
-			8
-		},
-		uv00 = {
-			0.955566,
-			0.003418
-		},
-		uv11 = {
-			0.990723,
-			0.005371
 		}
 	},
 	divider_vertical_hero_decoration = {
@@ -3702,25 +3702,25 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.955566,
+			0.003418
+		},
+		uv11 = {
+			0.990723,
+			0.005371
+		}
+	},
+	menu_exp_bg = {
+		size = {
+			144,
+			8
+		},
+		uv00 = {
+			0.955566,
 			0.000488
 		},
 		uv11 = {
 			0.990723,
 			0.002441
-		}
-	},
-	career_slot_gold = {
-		size = {
-			114,
-			149
-		},
-		uv00 = {
-			0.570801,
-			0.814209
-		},
-		uv11 = {
-			0.598633,
-			0.850586
 		}
 	},
 	loot_chest_icon = {
@@ -3737,6 +3737,20 @@ menus_atlas = {
 			0.418457
 		}
 	},
+	career_slot_gold = {
+		size = {
+			114,
+			149
+		},
+		uv00 = {
+			0.570801,
+			0.814209
+		},
+		uv11 = {
+			0.598633,
+			0.850586
+		}
+	},
 	difficulty_option_5 = {
 		size = {
 			150,
@@ -3751,7 +3765,7 @@ menus_atlas = {
 			0.813232
 		}
 	},
-	difficulty_option_6 = {
+	difficulty_option_4 = {
 		size = {
 			150,
 			150
@@ -3765,7 +3779,7 @@ menus_atlas = {
 			0.775635
 		}
 	},
-	difficulty_option_1 = {
+	loot_loading = {
 		size = {
 			150,
 			150
@@ -3793,7 +3807,7 @@ menus_atlas = {
 			0.700439
 		}
 	},
-	difficulty_option_2 = {
+	difficulty_option_6 = {
 		size = {
 			150,
 			150
@@ -3807,7 +3821,7 @@ menus_atlas = {
 			0.662842
 		}
 	},
-	difficulty_option_4 = {
+	difficulty_option_2 = {
 		size = {
 			150,
 			150
@@ -3821,7 +3835,7 @@ menus_atlas = {
 			0.625244
 		}
 	},
-	loot_loading = {
+	difficulty_option_1 = {
 		size = {
 			150,
 			150
@@ -3863,7 +3877,7 @@ menus_atlas = {
 			0.581299
 		}
 	},
-	achievement_background = {
+	quests_background = {
 		size = {
 			50,
 			156
@@ -3877,7 +3891,7 @@ menus_atlas = {
 			0.826416
 		}
 	},
-	quests_background = {
+	achievement_background = {
 		size = {
 			50,
 			156
@@ -3891,7 +3905,7 @@ menus_atlas = {
 			0.787354
 		}
 	},
-	weaves_select_level_glow = {
+	weaves_select_level_gloss = {
 		size = {
 			160,
 			160
@@ -3905,7 +3919,7 @@ menus_atlas = {
 			0.582764
 		}
 	},
-	weaves_select_level_gloss = {
+	weaves_select_level_background = {
 		size = {
 			160,
 			160
@@ -3919,7 +3933,7 @@ menus_atlas = {
 			0.582764
 		}
 	},
-	weaves_select_level_background = {
+	weaves_select_level_glow = {
 		size = {
 			160,
 			160
@@ -3989,7 +4003,7 @@ menus_atlas = {
 			0.586914
 		}
 	},
-	map_frame_04 = {
+	map_frame_02 = {
 		size = {
 			180,
 			180
@@ -4003,7 +4017,7 @@ menus_atlas = {
 			0.587646
 		}
 	},
-	map_frame_lock = {
+	map_frame_fade = {
 		size = {
 			180,
 			180
@@ -4017,7 +4031,7 @@ menus_atlas = {
 			0.587646
 		}
 	},
-	map_frame_01 = {
+	map_frame_00 = {
 		size = {
 			180,
 			180
@@ -4031,7 +4045,7 @@ menus_atlas = {
 			0.587646
 		}
 	},
-	map_frame_03 = {
+	map_frame_glow_03 = {
 		size = {
 			180,
 			180
@@ -4045,7 +4059,7 @@ menus_atlas = {
 			0.984375
 		}
 	},
-	map_frame_05 = {
+	map_frame_01 = {
 		size = {
 			180,
 			180
@@ -4059,7 +4073,7 @@ menus_atlas = {
 			0.939453
 		}
 	},
-	map_frame_00 = {
+	map_frame_05 = {
 		size = {
 			180,
 			180
@@ -4073,7 +4087,7 @@ menus_atlas = {
 			0.894531
 		}
 	},
-	map_frame_fade = {
+	map_frame_lock = {
 		size = {
 			180,
 			180
@@ -4087,7 +4101,7 @@ menus_atlas = {
 			0.849609
 		}
 	},
-	map_frame_02 = {
+	map_frame_03 = {
 		size = {
 			180,
 			180
@@ -4101,7 +4115,7 @@ menus_atlas = {
 			0.804688
 		}
 	},
-	map_frame_glow_03 = {
+	map_frame_04 = {
 		size = {
 			180,
 			180
@@ -4143,7 +4157,7 @@ menus_atlas = {
 			0.525146
 		}
 	},
-	console_crafting_slot_01 = {
+	loadout_item_slot_glow_console = {
 		size = {
 			185,
 			182
@@ -4157,7 +4171,7 @@ menus_atlas = {
 			0.524902
 		}
 	},
-	loadout_item_slot_glow_console = {
+	console_crafting_slot_01 = {
 		size = {
 			185,
 			182
@@ -4227,7 +4241,7 @@ menus_atlas = {
 			0.032227
 		}
 	},
-	journal_page_divider_01_medium = {
+	journal_page_divider_04_medium = {
 		size = {
 			200,
 			20
@@ -4239,48 +4253,6 @@ menus_atlas = {
 		uv11 = {
 			0.576904,
 			0.162842
-		}
-	},
-	journal_page_divider_02_medium = {
-		size = {
-			200,
-			20
-		},
-		uv00 = {
-			0.528076,
-			0.1521
-		},
-		uv11 = {
-			0.576904,
-			0.156982
-		}
-	},
-	journal_page_divider_04_medium = {
-		size = {
-			200,
-			20
-		},
-		uv00 = {
-			0.530518,
-			0.14209
-		},
-		uv11 = {
-			0.579346,
-			0.146973
-		}
-	},
-	journal_page_divider_03_medium = {
-		size = {
-			200,
-			20
-		},
-		uv00 = {
-			0.530518,
-			0.13623
-		},
-		uv11 = {
-			0.579346,
-			0.141113
 		}
 	},
 	difficulty_gradient = {
@@ -4295,6 +4267,48 @@ menus_atlas = {
 		uv11 = {
 			0.978516,
 			0.106689
+		}
+	},
+	journal_page_divider_03_medium = {
+		size = {
+			200,
+			20
+		},
+		uv00 = {
+			0.528076,
+			0.1521
+		},
+		uv11 = {
+			0.576904,
+			0.156982
+		}
+	},
+	journal_page_divider_01_medium = {
+		size = {
+			200,
+			20
+		},
+		uv00 = {
+			0.530518,
+			0.14209
+		},
+		uv11 = {
+			0.579346,
+			0.146973
+		}
+	},
+	journal_page_divider_02_medium = {
+		size = {
+			200,
+			20
+		},
+		uv00 = {
+			0.530518,
+			0.13623
+		},
+		uv11 = {
+			0.579346,
+			0.141113
 		}
 	},
 	playername_bg_01 = {
@@ -4325,7 +4339,7 @@ menus_atlas = {
 			0.023438
 		}
 	},
-	loot_presentation_glow_03_new = {
+	loot_presentation_glow_04_new = {
 		size = {
 			204,
 			204
@@ -4339,7 +4353,7 @@ menus_atlas = {
 			0.530273
 		}
 	},
-	loot_presentation_glow_04_new = {
+	loot_presentation_glow_03_new = {
 		size = {
 			204,
 			204
@@ -4423,7 +4437,7 @@ menus_atlas = {
 			0.777832
 		}
 	},
-	icon_add_trait = {
+	icon_add_property = {
 		size = {
 			217,
 			217
@@ -4437,7 +4451,7 @@ menus_atlas = {
 			0.724121
 		}
 	},
-	icon_add_property = {
+	icon_add_trait = {
 		size = {
 			217,
 			217
@@ -4493,7 +4507,7 @@ menus_atlas = {
 			0.193359
 		}
 	},
-	console_menu_system = {
+	console_menu_bot_cusomization_highlight = {
 		size = {
 			254,
 			114
@@ -4521,7 +4535,7 @@ menus_atlas = {
 			0.508301
 		}
 	},
-	console_menu_bot_cusomization_highlight = {
+	console_menu_system_highlight = {
 		size = {
 			254,
 			114
@@ -4535,7 +4549,7 @@ menus_atlas = {
 			0.537109
 		}
 	},
-	console_menu_system_highlight = {
+	console_menu_system = {
 		size = {
 			254,
 			114
@@ -4563,20 +4577,6 @@ menus_atlas = {
 			0.669678
 		}
 	},
-	play_glow_mask = {
-		size = {
-			256,
-			126
-		},
-		uv00 = {
-			0.428711,
-			0.961914
-		},
-		uv11 = {
-			0.491211,
-			0.992676
-		}
-	},
 	achievement_background_leather = {
 		size = {
 			256,
@@ -4591,18 +4591,18 @@ menus_atlas = {
 			0.606201
 		}
 	},
-	loot_image_trinket = {
+	play_glow_mask = {
 		size = {
-			150,
-			260
+			256,
+			126
 		},
 		uv00 = {
-			0.275879,
-			0.443115
+			0.428711,
+			0.961914
 		},
 		uv11 = {
-			0.3125,
-			0.506592
+			0.491211,
+			0.992676
 		}
 	},
 	esc_menu_top = {
@@ -4631,6 +4631,20 @@ menus_atlas = {
 		uv11 = {
 			0.58374,
 			0.209961
+		}
+	},
+	loot_image_trinket = {
+		size = {
+			150,
+			260
+		},
+		uv00 = {
+			0.275879,
+			0.443115
+		},
+		uv11 = {
+			0.3125,
+			0.506592
 		}
 	},
 	weave_forge_slot_divider_tooltip = {
@@ -4703,20 +4717,6 @@ menus_atlas = {
 			0.826416
 		}
 	},
-	chest_upgrade_bg = {
-		size = {
-			278,
-			30
-		},
-		uv00 = {
-			0.922119,
-			0.380371
-		},
-		uv11 = {
-			0.98999,
-			0.387695
-		}
-	},
 	loot_image_deed = {
 		size = {
 			278,
@@ -4731,18 +4731,32 @@ menus_atlas = {
 			0.757813
 		}
 	},
+	chest_upgrade_bg = {
+		size = {
+			278,
+			30
+		},
+		uv00 = {
+			0.922119,
+			0.380371
+		},
+		uv11 = {
+			0.98999,
+			0.387695
+		}
+	},
 	chest_upgrade_fill = {
 		size = {
 			278,
 			30
 		},
 		uv00 = {
-			0.147949,
-			0.990967
+			0.538818,
+			0.279541
 		},
 		uv11 = {
-			0.21582,
-			0.998291
+			0.606689,
+			0.286865
 		}
 	},
 	crafting_bg_conversion = {
@@ -4765,12 +4779,12 @@ menus_atlas = {
 			38
 		},
 		uv00 = {
-			0.538818,
-			0.279541
+			0.147949,
+			0.98999
 		},
 		uv11 = {
-			0.609619,
-			0.288818
+			0.21875,
+			0.999268
 		}
 	},
 	playername_bg_02 = {
@@ -4843,20 +4857,6 @@ menus_atlas = {
 			0.288818
 		}
 	},
-	talent_bg_glow_01 = {
-		size = {
-			314,
-			100
-		},
-		uv00 = {
-			0.922119,
-			0.35498
-		},
-		uv11 = {
-			0.998779,
-			0.379395
-		}
-	},
 	quest_right = {
 		size = {
 			314,
@@ -4869,6 +4869,20 @@ menus_atlas = {
 		uv11 = {
 			0.505371,
 			0.602539
+		}
+	},
+	talent_bg_glow_01 = {
+		size = {
+			314,
+			100
+		},
+		uv00 = {
+			0.922119,
+			0.35498
+		},
+		uv11 = {
+			0.998779,
+			0.379395
 		}
 	},
 	loot_image_jewellery = {
@@ -4955,7 +4969,7 @@ menus_atlas = {
 			0.023193
 		}
 	},
-	achievement_button_background_summary = {
+	menu_options_button_image_07 = {
 		size = {
 			350,
 			108
@@ -4969,7 +4983,7 @@ menus_atlas = {
 			0.479492
 		}
 	},
-	menu_options_button_image_03 = {
+	menu_options_button_image_02 = {
 		size = {
 			350,
 			108
@@ -4983,7 +4997,7 @@ menus_atlas = {
 			0.479492
 		}
 	},
-	menu_options_button_image_01 = {
+	menu_options_button_image_06 = {
 		size = {
 			350,
 			108
@@ -4997,7 +5011,7 @@ menus_atlas = {
 			0.452148
 		}
 	},
-	button_image_09 = {
+	menu_options_button_image_03 = {
 		size = {
 			350,
 			108
@@ -5011,7 +5025,7 @@ menus_atlas = {
 			0.452148
 		}
 	},
-	menu_options_button_image_02 = {
+	menu_options_button_image_05 = {
 		size = {
 			350,
 			108
@@ -5025,7 +5039,7 @@ menus_atlas = {
 			0.452148
 		}
 	},
-	menu_options_button_image_04 = {
+	menu_options_button_image_08 = {
 		size = {
 			350,
 			108
@@ -5039,7 +5053,7 @@ menus_atlas = {
 			0.452148
 		}
 	},
-	lobby_browser_icon = {
+	menu_options_button_image_01 = {
 		size = {
 			350,
 			108
@@ -5067,7 +5081,7 @@ menus_atlas = {
 			0.452148
 		}
 	},
-	menu_options_button_image_06 = {
+	menu_options_button_image_04 = {
 		size = {
 			350,
 			108
@@ -5095,7 +5109,7 @@ menus_atlas = {
 			0.418457
 		}
 	},
-	menu_options_button_image_05 = {
+	button_image_09 = {
 		size = {
 			350,
 			108
@@ -5109,7 +5123,7 @@ menus_atlas = {
 			0.418457
 		}
 	},
-	menu_options_button_image_08 = {
+	lobby_browser_icon = {
 		size = {
 			350,
 			108
@@ -5123,7 +5137,7 @@ menus_atlas = {
 			0.418457
 		}
 	},
-	menu_options_button_image_07 = {
+	achievement_button_background_summary = {
 		size = {
 			350,
 			108
@@ -5165,14 +5179,14 @@ menus_atlas = {
 			0.974854
 		}
 	},
-	loot_presentation_fg_02_fade = {
+	loot_presentation_fg_02 = {
 		size = {
 			364,
-			95
+			364
 		},
 		uv00 = {
 			0.335693,
-			0.862305
+			0.796631
 		},
 		uv11 = {
 			0.424561,
@@ -5186,17 +5200,17 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.335693,
-			0.772461
+			0.706787
 		},
 		uv11 = {
 			0.424561,
-			0.861328
+			0.795654
 		}
 	},
-	loot_presentation_fg_02 = {
+	loot_presentation_fg_02_fade = {
 		size = {
 			364,
-			364
+			95
 		},
 		uv00 = {
 			0.335693,
@@ -5204,7 +5218,7 @@ menus_atlas = {
 		},
 		uv11 = {
 			0.424561,
-			0.771484
+			0.705811
 		}
 	},
 	loot_presentation_fg_01_fade = {
@@ -5235,6 +5249,20 @@ menus_atlas = {
 			0.681641
 		}
 	},
+	athanor_entry_talent_bg_hover = {
+		size = {
+			377,
+			230
+		},
+		uv00 = {
+			0.335693,
+			0.53418
+		},
+		uv11 = {
+			0.427734,
+			0.590332
+		}
+	},
 	tab_menu_bg_01 = {
 		size = {
 			377,
@@ -5242,28 +5270,14 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.335693,
-			0.563477
-		},
-		uv11 = {
-			0.427734,
-			0.590332
-		}
-	},
-	athanor_entry_talent_bg = {
-		size = {
-			377,
-			230
-		},
-		uv00 = {
-			0.335693,
 			0.506348
 		},
 		uv11 = {
 			0.427734,
-			0.5625
+			0.533203
 		}
 	},
-	athanor_entry_talent_bg_hover = {
+	athanor_entry_talent_frame = {
 		size = {
 			377,
 			230
@@ -5277,7 +5291,7 @@ menus_atlas = {
 			0.505371
 		}
 	},
-	athanor_entry_talent_frame = {
+	athanor_entry_talent_bg = {
 		size = {
 			377,
 			230
@@ -5333,7 +5347,7 @@ menus_atlas = {
 			0.387939
 		}
 	},
-	athanor_entry_property_bg = {
+	athanor_entry_property_bg_hover = {
 		size = {
 			381,
 			124
@@ -5361,7 +5375,7 @@ menus_atlas = {
 			0.289307
 		}
 	},
-	athanor_entry_property_bg_hover = {
+	athanor_entry_property_bg = {
 		size = {
 			381,
 			124
@@ -5417,7 +5431,7 @@ menus_atlas = {
 			0.387695
 		}
 	},
-	matchmaking_window_01 = {
+	matchmaking_window_02 = {
 		size = {
 			400,
 			150
@@ -5429,20 +5443,6 @@ menus_atlas = {
 		uv11 = {
 			0.634521,
 			0.365723
-		}
-	},
-	crafting_bar = {
-		size = {
-			400,
-			6
-		},
-		uv00 = {
-			0.359863,
-			0.030273
-		},
-		uv11 = {
-			0.45752,
-			0.031738
 		}
 	},
 	athanor_info_panel_bg = {
@@ -5459,7 +5459,7 @@ menus_atlas = {
 			0.010986
 		}
 	},
-	matchmaking_window_02 = {
+	matchmaking_window_01 = {
 		size = {
 			400,
 			150
@@ -5471,6 +5471,20 @@ menus_atlas = {
 		uv11 = {
 			0.634521,
 			0.328125
+		}
+	},
+	crafting_bar = {
+		size = {
+			400,
+			6
+		},
+		uv00 = {
+			0.359863,
+			0.030273
+		},
+		uv11 = {
+			0.45752,
+			0.031738
 		}
 	},
 	loot_presentation_glow_03 = {
@@ -5536,11 +5550,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.961182
+			0.960205
 		},
 		uv11 = {
 			0.249023,
-			0.98999
+			0.989014
 		}
 	},
 	crafting_bar_fg = {
@@ -5564,14 +5578,14 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.931152
+			0.930176
 		},
 		uv11 = {
 			0.251709,
-			0.960205
+			0.959229
 		}
 	},
-	journal_page_divider_03_large = {
+	journal_page_divider_01_large = {
 		size = {
 			430,
 			20
@@ -5585,7 +5599,7 @@ menus_atlas = {
 			0.029297
 		}
 	},
-	journal_page_divider_04_large = {
+	journal_page_divider_03_large = {
 		size = {
 			430,
 			20
@@ -5613,7 +5627,7 @@ menus_atlas = {
 			0.029297
 		}
 	},
-	journal_page_divider_01_large = {
+	journal_page_divider_04_large = {
 		size = {
 			430,
 			20
@@ -5634,11 +5648,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.907471
+			0.906494
 		},
 		uv11 = {
 			0.253418,
-			0.930176
+			0.929199
 		}
 	},
 	console_crafting_recipe_bg = {
@@ -5662,11 +5676,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.896729
+			0.895752
 		},
 		uv11 = {
 			0.254883,
-			0.906494
+			0.905518
 		}
 	},
 	achievement_banner = {
@@ -5675,12 +5689,12 @@ menus_atlas = {
 			54
 		},
 		uv00 = {
-			0.147949,
-			0.882568
+			0.000488,
+			0.981201
 		},
 		uv11 = {
-			0.254883,
-			0.895752
+			0.107422,
+			0.994385
 		}
 	},
 	party_selection_glow = {
@@ -5704,11 +5718,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.854248
+			0.867432
 		},
 		uv11 = {
 			0.258301,
-			0.881592
+			0.894775
 		}
 	},
 	athanor_button_upgrade_highlight = {
@@ -5718,11 +5732,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.825928
+			0.839111
 		},
 		uv11 = {
 			0.258301,
-			0.853271
+			0.866455
 		}
 	},
 	athanor_button_upgrade = {
@@ -5732,11 +5746,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.797607
+			0.810791
 		},
 		uv11 = {
 			0.258301,
-			0.824951
+			0.838135
 		}
 	},
 	bot_customization_info_bar = {
@@ -5746,11 +5760,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.772217
+			0.7854
 		},
 		uv11 = {
 			0.26123,
-			0.796631
+			0.809814
 		}
 	},
 	reward_pop_up_01_bg = {
@@ -5760,11 +5774,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.751221
+			0.764404
 		},
 		uv11 = {
 			0.263184,
-			0.77124
+			0.784424
 		}
 	},
 	wom_button = {
@@ -5774,11 +5788,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.728027
+			0.741211
 		},
 		uv11 = {
 			0.264404,
-			0.750244
+			0.763428
 		}
 	},
 	extreme_difficulty_bg = {
@@ -5788,11 +5802,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.701904
+			0.715088
 		},
 		uv11 = {
 			0.266357,
-			0.727051
+			0.740234
 		}
 	},
 	keep_decorations_01 = {
@@ -5802,11 +5816,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.677734
+			0.690918
 		},
 		uv11 = {
 			0.26709,
-			0.700928
+			0.714111
 		}
 	},
 	hero_power_bg_console = {
@@ -5816,25 +5830,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.643311
+			0.656494
 		},
 		uv11 = {
 			0.267334,
-			0.676758
-		}
-	},
-	console_level_filter_frame_02 = {
-		size = {
-			500,
-			71
-		},
-		uv00 = {
-			0.585693,
-			0.23877
-		},
-		uv11 = {
-			0.707764,
-			0.256104
+			0.689941
 		}
 	},
 	console_level_filter_frame_01 = {
@@ -5844,11 +5844,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.147949,
-			0.616211
+			0.629395
 		},
 		uv11 = {
 			0.27002,
-			0.642334
+			0.655518
 		}
 	},
 	summary_bottom = {
@@ -5865,6 +5865,20 @@ menus_atlas = {
 			0.009766
 		}
 	},
+	console_level_filter_frame_02 = {
+		size = {
+			500,
+			71
+		},
+		uv00 = {
+			0.585693,
+			0.23877
+		},
+		uv11 = {
+			0.707764,
+			0.256104
+		}
+	},
 	bg_center_fade = {
 		size = {
 			503,
@@ -5872,11 +5886,11 @@ menus_atlas = {
 		},
 		uv00 = {
 			0.000488,
-			0.97168
+			0.958496
 		},
 		uv11 = {
 			0.123291,
-			0.993408
+			0.980225
 		}
 	},
 	matchmaking_window = {
@@ -5921,18 +5935,18 @@ menus_atlas = {
 			0.237793
 		}
 	},
-	crafting_bg = {
+	crafting_bg_top = {
 		size = {
 			520,
-			400
+			221
 		},
 		uv00 = {
 			0.147949,
-			0.517578
+			0.574463
 		},
 		uv11 = {
 			0.274902,
-			0.615234
+			0.628418
 		}
 	},
 	crafting_bg_bottom = {
@@ -5941,12 +5955,26 @@ menus_atlas = {
 			167
 		},
 		uv00 = {
+			0.000488,
+			0.916748
+		},
+		uv11 = {
+			0.127441,
+			0.95752
+		}
+	},
+	crafting_bg = {
+		size = {
+			520,
+			400
+		},
+		uv00 = {
 			0.147949,
 			0.47583
 		},
 		uv11 = {
 			0.274902,
-			0.516602
+			0.573486
 		}
 	},
 	crafting_bg_top_edge = {
@@ -5963,21 +5991,7 @@ menus_atlas = {
 			0.053223
 		}
 	},
-	crafting_bg_top = {
-		size = {
-			520,
-			221
-		},
-		uv00 = {
-			0.000488,
-			0.916748
-		},
-		uv11 = {
-			0.127441,
-			0.970703
-		}
-	},
-	crafting_fg = {
+	crafting_fg_glow = {
 		size = {
 			520,
 			440
@@ -5991,7 +6005,7 @@ menus_atlas = {
 			0.474854
 		}
 	},
-	crafting_fg_glow = {
+	crafting_fg = {
 		size = {
 			520,
 			440
@@ -6145,7 +6159,7 @@ menus_atlas = {
 			0.052002
 		}
 	},
-	achievement_challenges_bg = {
+	achievement_summary_bg = {
 		size = {
 			530,
 			678
@@ -6173,7 +6187,7 @@ menus_atlas = {
 			0.223389
 		}
 	},
-	achievement_summary_bg = {
+	achievement_challenges_bg = {
 		size = {
 			530,
 			678
@@ -6201,7 +6215,7 @@ menus_atlas = {
 			0.007813
 		}
 	},
-	achievement_paper_bottom = {
+	achievement_paper_middle = {
 		size = {
 			800,
 			100
@@ -6215,7 +6229,7 @@ menus_atlas = {
 			0.107666
 		}
 	},
-	achievement_paper_middle = {
+	achievement_paper_bottom = {
 		size = {
 			800,
 			100
@@ -6341,7 +6355,7 @@ menus_atlas = {
 			0.033203
 		}
 	},
-	lb_list_item_clicked = {
+	lb_list_item_hover = {
 		size = {
 			1554,
 			45
@@ -6383,7 +6397,7 @@ menus_atlas = {
 			0.011475
 		}
 	},
-	lb_list_item_hover = {
+	lb_list_item_clicked = {
 		size = {
 			1554,
 			45

@@ -78,9 +78,8 @@ DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit
 	else
 		local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
 		local weapon_slot_name = (wielded_slot_name == "slot_melee" and "slot_melee") or "slot_ranged"
-		local wielded_weapon = (weapon_slot_name == "slot_melee" and melee_weapon) or ranged_weapon
-		local new_weapon = not self._wielded_weapon or wielded_weapon ~= self._wielded_weapon
-		self._wielded_weapon = new_weapon
+		local new_weapon = not self._weapon_slot_name or weapon_slot_name ~= self._weapon_slot_name
+		self._weapon_slot_name = weapon_slot_name
 		local peer_id = deus_run_controller:get_own_peer_id()
 		local soft_currency = deus_run_controller:get_player_soft_currency(peer_id)
 

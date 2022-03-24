@@ -206,10 +206,10 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		end
 	end
 
-	if local_player then
-		local first_person_extension = self._first_person_extension
+	local first_person_extension = self._first_person_extension
 
-		first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_enter")
+	if local_player then
+		first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_enter", nil, true)
 		first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_loop")
 		first_person_extension:animation_event("shade_stealth_ability")
 		career_extension:set_state("markus_activate_huntsman")
@@ -222,23 +222,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		local status_extension = self._status_extension
 
 		status_extension:set_invisible(true)
-
-		local events = {
-			"Play_career_ability_markus_huntsman_enter",
-			"Play_career_ability_markus_huntsman_loop_husk"
-		}
-		local unit_id = network_manager:unit_game_object_id(owner_unit)
-		local node_id = 0
-
-		for _, event in ipairs(events) do
-			local event_id = NetworkLookup.sound_events[event]
-
-			if is_server then
-				network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-			else
-				network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-			end
-		end
+		first_person_extension:play_remote_hud_sound_event("Play_career_ability_markus_huntsman_loop_husk")
 	end
 
 	if not skip_cooldown then

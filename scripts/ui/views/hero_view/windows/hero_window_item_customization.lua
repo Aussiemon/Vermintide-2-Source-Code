@@ -2370,7 +2370,7 @@ HeroWindowItemCustomization._apply_weapon_skin_craft_complete = function (self, 
 	local item_skin = item.skin or WeaponSkins.default_skins[item_key]
 	local item_data = item.data
 	local slot_type = item_data.slot_type
-	local slot_name = InventorySettings.slot_names_by_type[slot_type][1]
+	local slot_name = self._equipment_slot_name or InventorySettings.slot_names_by_type[slot_type][1]
 
 	self._parent:_set_loadout_item(item, slot_name)
 	self:_present_item(item, true)

@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
 	walk_speed = 2.75,
@@ -557,7 +558,7 @@ local action_data = {
 			local using_shield = not ai_shield_extension.shield_broken
 
 			if using_shield then
-				local is_blocking = blackboard.stagger <= 1
+				local is_blocking = blackboard.stagger <= 1 and blackboard.stagger_type ~= stagger_types.explosion
 
 				ai_shield_extension:set_is_blocking(is_blocking)
 

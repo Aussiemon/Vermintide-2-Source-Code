@@ -178,7 +178,6 @@ BTStaggerAction.clean_blackboard = function (self, blackboard)
 	blackboard.stagger_length = nil
 	blackboard.stagger_time = nil
 	blackboard.stagger_type = nil
-	blackboard.stagger_priority = nil
 	blackboard.staggering_id = nil
 	blackboard.active_node = nil
 end

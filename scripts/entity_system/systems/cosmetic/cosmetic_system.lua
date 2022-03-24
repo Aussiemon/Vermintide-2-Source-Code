@@ -83,7 +83,7 @@ CosmeticSystem.rpc_server_request_emote = function (self, channel_id, unit_id, a
 
 	local unit = self.unit_storage:unit(unit_id)
 
-	if unit then
+	if unit and ALIVE[unit] then
 		local anim_event = NetworkLookup.anims[anim_event_id]
 		self._emote_states[unit_id] = {
 			anim_event = anim_event,
@@ -103,7 +103,7 @@ CosmeticSystem.rpc_server_cancel_emote = function (self, channel_id, unit_id)
 
 	local unit = self.unit_storage:unit(unit_id)
 
-	if unit then
+	if unit and ALIVE[unit] then
 		CharacterStateHelper.play_animation_event(unit, "anim_pose_cancel")
 
 		local inventory_extension = ScriptUnit.has_extension(unit, "inventory_system")

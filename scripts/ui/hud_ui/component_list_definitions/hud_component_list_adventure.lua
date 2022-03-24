@@ -314,8 +314,7 @@ local components = {
 		class_name = "CrosshairUI",
 		filename = "scripts/ui/views/crosshair_ui",
 		visibility_groups = {
-			"alive",
-			"realism"
+			"alive"
 		}
 	},
 	{

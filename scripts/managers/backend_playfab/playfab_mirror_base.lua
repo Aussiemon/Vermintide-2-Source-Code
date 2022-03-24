@@ -1542,6 +1542,11 @@ end
 
 PlayFabMirrorBase.remove_item = function (self, backend_id)
 	local inventory_items = self._inventory_items
+
+	if ItemHelper.is_new_backend_id(backend_id) then
+		ItemHelper.unmark_backend_id_as_new(backend_id)
+	end
+
 	inventory_items[backend_id] = nil
 end
 

@@ -1841,7 +1841,7 @@ local HIT_CRITICAL_MULTIPLIER_TYPES = {
 	"weakspot"
 }
 
-DamageUtils.handle_hit_indication = function (attacker_unit, victim_unit, damage_amount, hit_zone_name, added_dot, invulnerable)
+DamageUtils.handle_hit_indication = function (attacker_unit, victim_unit, damage_amount, hit_zone_name, added_dot, invulnerable, shield_break)
 	local hud_extension = ScriptUnit.has_extension(attacker_unit, "hud_system")
 
 	if hud_extension then
@@ -1866,7 +1866,7 @@ DamageUtils.handle_hit_indication = function (attacker_unit, victim_unit, damage
 				local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name, is_dummy)
 				local hit_critical = table.contains(HIT_CRITICAL_MULTIPLIER_TYPES, multiplier_type)
 				local override_armored = breed and breed.armored_on_no_damage
-				hit_marker_data.shield_break = false
+				hit_marker_data.shield_break = shield_break
 				hit_marker_data.shield_open = false
 				hit_marker_data.hit_enemy = true
 				hit_marker_data.friendly_fire = friendly_fire
@@ -2224,9 +2224,7 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 				damage = buff_extension:apply_buffs_to_value(damage, stat_buff)
 			end
 
-			if damage_type == "burninating" then
-				damage = buff_extension:apply_buffs_to_value(damage, "increased_burn_damage")
-			elseif is_melee or is_ranged then
+			if is_melee or is_ranged then
 				damage = buff_extension:apply_buffs_to_value(damage, "reduced_non_burn_damage")
 			end
 		end
@@ -2237,6 +2235,10 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 			if has_poison_or_bleed then
 				damage = buff_extension:apply_buffs_to_value(damage, "increased_weapon_damage_poisoned_or_bleeding")
 			end
+		end
+
+		if damage_type == "burninating" then
+			damage = buff_extension:apply_buffs_to_value(damage, "increased_burn_damage")
 		end
 	end
 

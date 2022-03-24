@@ -279,7 +279,7 @@ local function create_hero_widget(scenegraph_id, size)
 	local hover_frame_width = hover_frame_settings.texture_sizes.horizontal[2]
 	local currently_selected_frame_settings = UIFrameSettings.frame_outer_glow_01_white
 	local currently_selected_frame_width = currently_selected_frame_settings.texture_sizes.horizontal[2]
-	local bot_frame_style = "frame_inner_glow_02"
+	local bot_frame_style = "frame_inner_glow_03"
 	local bot_frame_settings = UIFrameSettings[bot_frame_style]
 
 	return {
@@ -407,7 +407,7 @@ local function create_hero_widget(scenegraph_id, size)
 			taken_texture = "hero_icon_unavailable",
 			taken = false,
 			is_currently_selected_character = false,
-			bot_texture = "friends_icon_01",
+			bot_texture = "bot_selected_icon",
 			button_hotspot = {},
 			bot_frame = bot_frame_settings.texture,
 			frame = frame_settings.texture,
@@ -490,10 +490,10 @@ local function create_hero_widget(scenegraph_id, size)
 				texture_size = bot_frame_settings.texture_size,
 				texture_sizes = bot_frame_settings.texture_sizes,
 				color = {
-					200,
 					255,
-					255,
-					255
+					244,
+					171,
+					135
 				},
 				offset = {
 					0,
@@ -503,18 +503,18 @@ local function create_hero_widget(scenegraph_id, size)
 			},
 			bot_texture = {
 				texture_size = {
-					40,
-					40
+					20,
+					20
 				},
 				color = {
 					255,
-					200,
+					255,
 					255,
 					255
 				},
 				offset = {
-					0,
-					0,
+					10,
+					10,
 					6
 				}
 			},

@@ -1,3 +1,4 @@
+local stagger_types = require("scripts/utils/stagger_types")
 local breed_data = {
 	detection_radius = 12,
 	aoe_height = 1.7,
@@ -713,7 +714,7 @@ local action_data = {
 			local stagger_anims, idle_event = nil
 
 			if shield_user and stagger then
-				if not blocked and stagger <= block_count and action.shield_block_anims and blocked_previous_attack then
+				if not blocked and stagger <= block_count and action.shield_block_anims and blocked_previous_attack and blackboard.stagger_type ~= stagger_types.explosion then
 					blackboard.stagger_time = blackboard.stagger_time + math.max(0.5, stagger / block_count) * breed.block_stagger_mod
 					stagger_anims = action.shield_block_anims[stagger_type]
 

@@ -671,6 +671,13 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 		end
 	else
 		local item = self:get_item_by_key(product_id)
+
+		if not item then
+			Crashify.print_exception("HeroViewStateStore", "go_to_product on an unknown product")
+
+			return
+		end
+
 		local item_type = item.data.item_type
 
 		if item_type == "bundle" then

@@ -4291,6 +4291,7 @@ BuffFunctionTemplates.functions = {
 		end
 
 		if talent_extension:has_talent("kerillian_shade_activated_stealth_combo") then
+			buff_extension:add_buff("kerillian_shade_ult_invis_combo_blocker")
 			buff_extension:add_buff("kerillian_shade_ult_invis")
 		end
 
@@ -4450,30 +4451,12 @@ BuffFunctionTemplates.functions = {
 
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local removing_stealth = status_extension:remove_stealth_stacking()
-			local events = {
-				"Play_career_ability_markus_huntsman_exit",
-				"Stop_career_ability_markus_huntsman_loop_husk"
-			}
-			local network_manager = Managers.state.network
-			local network_transmit = network_manager.network_transmit
-			local is_server = Managers.player.is_server
-			local unit_id = network_manager:unit_game_object_id(unit)
-			local node_id = 0
+			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 
-			for i = 1, #events, 1 do
-				local event = events[i]
-				local event_id = NetworkLookup.sound_events[event]
-
-				if is_server then
-					network_transmit:send_rpc_clients("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				else
-					network_transmit:send_rpc_server("rpc_play_husk_unit_sound_event", unit_id, node_id, event_id)
-				end
-			end
+			first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit", nil, true)
+			first_person_extension:play_remote_hud_sound_event("Stop_career_ability_markus_huntsman_loop_husk")
 
 			if not is_bot(unit) then
-				local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
-
 				if removing_stealth then
 					first_person_extension:play_hud_sound_event("Stop_career_ability_kerillian_shade_loop")
 
@@ -4483,7 +4466,6 @@ BuffFunctionTemplates.functions = {
 				MOOD_BLACKBOARD.skill_huntsman_surge = false
 				MOOD_BLACKBOARD.skill_huntsman_stealth = false
 
-				first_person_extension:play_hud_sound_event("Play_career_ability_markus_huntsman_exit")
 				first_person_extension:play_hud_sound_event("Stop_career_ability_markus_huntsman_loop")
 			end
 		end

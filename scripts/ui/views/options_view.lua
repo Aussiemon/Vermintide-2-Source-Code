@@ -2669,6 +2669,7 @@ OptionsView.handle_apply_popup_results = function (self, result)
 end
 
 OptionsView.restart = function (self)
+	self:exit()
 	self.ingame_ui:handle_transition("leave_game")
 end
 

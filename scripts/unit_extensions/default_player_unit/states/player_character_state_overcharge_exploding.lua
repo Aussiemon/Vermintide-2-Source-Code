@@ -71,7 +71,7 @@ PlayerCharacterStateOverchargeExploding.explode = function (self)
 		overcharge_extension:reset()
 	end
 
-	if not self.inside_inn then
+	if not self.inside_inn and not self.status_extension:is_knocked_down() then
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local self_damage = health_extension:get_max_health()
 		self_damage = self_damage * (self.percent_health_lost or 1)

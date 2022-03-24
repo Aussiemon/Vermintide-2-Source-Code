@@ -263,7 +263,6 @@ settings.bt_leave_hooks = {
 
 		blackboard.stagger = nil
 		blackboard.stagger_immune_time = t + 2
-		blackboard.stagger_priority = nil
 	end
 }
 settings.utility_considerations_file_names = {

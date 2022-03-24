@@ -153,6 +153,11 @@ end
 
 InventorySystem.rpc_show_inventory = function (self, channel_id, unit_id, show_inventory)
 	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit or not ALIVE[unit] then
+		return
+	end
+
 	local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
 	inventory_extension:show_third_person_inventory(show_inventory)

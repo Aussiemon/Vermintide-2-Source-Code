@@ -872,9 +872,11 @@ end
 AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound)
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
-	local stagger_priority = stagger_type
+	local is_staggered = blackboard.stagger
+	local current_stagger_is_explosion = is_staggered and blackboard.stagger_type == stagger_types.explosion
+	local new_stagger_is_explosion = stagger_type == stagger_types.explosion
 
-	if blackboard.stagger_priority and stagger_priority < blackboard.stagger_priority then
+	if not always_stagger and not is_push and current_stagger_is_explosion and not new_stagger_is_explosion then
 		return
 	end
 
@@ -886,7 +888,6 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	local stagger_value_to_add = stagger_value or 1
 	blackboard.stagger = (blackboard.stagger and blackboard.stagger + stagger_value_to_add) or stagger_value_to_add
 	blackboard.stagger_type = stagger_type
-	blackboard.stagger_priority = stagger_priority
 	blackboard.stagger_animation_scale = stagger_animation_scale
 	blackboard.always_stagger_suffered = always_stagger
 	blackboard.stagger_was_push = is_push

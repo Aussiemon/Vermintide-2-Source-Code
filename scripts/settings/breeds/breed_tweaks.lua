@@ -521,14 +521,14 @@ BreedTweaks.difficulty_damage = {
 		easy = 15
 	},
 	boss_slam_attack_blocked = {
-		harder = 40,
-		hard = 25,
-		normal = 15,
-		hardest = 60,
-		cataclysm = 60,
-		cataclysm_3 = 60,
-		cataclysm_2 = 60,
-		easy = 15
+		harder = 9,
+		hard = 7,
+		normal = 2,
+		hardest = 10,
+		cataclysm = 10,
+		cataclysm_3 = 10,
+		cataclysm_2 = 10,
+		easy = 2
 	},
 	boss_combo_attack = {
 		harder = 25,
