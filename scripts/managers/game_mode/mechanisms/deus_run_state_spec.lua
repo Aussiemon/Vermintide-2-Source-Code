@@ -513,6 +513,30 @@ local spec = {
 			default_value = 0,
 			type = "number",
 			composite_keys = {}
+		},
+		arena_belakor_node = {
+			default_value = "",
+			type = "string",
+			composite_keys = {}
+		},
+		seen_arena_belakor_node = {
+			default_value = false,
+			type = "boolean",
+			composite_keys = {
+				peer_id = true
+			}
+		},
+		granted_non_party_end_of_level_power_ups = {
+			type = "table",
+			default_value = {},
+			composite_keys = {
+				peer_id = true,
+				career_index = true,
+				profile_index = true,
+				local_player_id = true
+			},
+			encode = encode_comma_separated_string_array,
+			decode = decode_comma_separated_string_array
 		}
 	},
 	peer = {

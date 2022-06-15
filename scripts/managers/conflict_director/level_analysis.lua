@@ -1678,7 +1678,11 @@ LevelAnalysis.get_waypoint_spline = function (self, spline_id)
 	end
 end
 
-LevelAnalysis.get_closest_waypoint_spline = function (self, pos, spline_type)
+LevelAnalysis.get_closest_waypoint_spline = function (self, pos)
+	if not self.waypoint_lookup_table then
+		return
+	end
+
 	local min_dist = math.huge
 	local best_id = nil
 

@@ -315,7 +315,7 @@ local ability_widget_definition = {
 			},
 			offset = {
 				524,
-				78,
+				90,
 				22
 			},
 			size = {
@@ -336,7 +336,7 @@ local ability_widget_definition = {
 			},
 			offset = {
 				525,
-				75,
+				87,
 				21
 			},
 			size = {

@@ -1,10 +1,10 @@
 local spawn_functions = {
-	spawn_pickup_at_unit = function (pickup_name, position)
+	spawn_pickup_at_unit = function (pickup_name, position, pickup_data, last_attacker_id)
 		local pickup_system = Managers.state.entity:system("pickup_system")
 
 		return pickup_system:buff_spawn_pickup(pickup_name, position, true, "spawn_pickup")
 	end,
-	spawn_ignited_barrel_at_unit = function (pickup_name, position, pickup_data)
+	spawn_ignited_barrel_at_unit = function (pickup_name, position, pickup_data, last_attacker_id)
 		local rotation = Quaternion.identity()
 		local network_position = AiAnimUtils.position_network_scale(position, true)
 		local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
@@ -14,7 +14,8 @@ local spawn_functions = {
 		local t = Managers.time:time("game")
 		local explosion_data = {
 			explode_time = t + explode_time,
-			fuse_time = fuse_time
+			fuse_time = fuse_time,
+			attacker_unit_id = last_attacker_id
 		}
 		local extension_init_data = {
 			projectile_locomotion_system = {

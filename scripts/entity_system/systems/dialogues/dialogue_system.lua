@@ -82,6 +82,8 @@ DialogueSystem.init = function (self, entity_system_creation_context, system_nam
 		end
 	end
 
+	self._use_story_lines = Managers.state.game_mode:setting("use_story_lines")
+
 	if Application.can_get("lua", dialogue_filename) then
 		self.tagquery_loader:load_file(dialogue_filename)
 	end
@@ -861,7 +863,10 @@ DialogueSystem.physics_async_update = function (self, context, t)
 			end
 		end
 
-		self:_update_story_lines(t)
+		if self._use_story_lines then
+			self:_update_story_lines(t)
+		end
+
 		self:_update_player_jumping(t)
 	end
 

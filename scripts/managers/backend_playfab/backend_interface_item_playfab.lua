@@ -9,6 +9,7 @@ BackendInterfaceItemPlayfab.init = function (self, backend_mirror)
 	self._modified_templates = {}
 	self._last_id = 0
 	self._delete_deeds_request = {}
+	self._is_deleting_deeds = false
 
 	self:_refresh()
 end
@@ -35,6 +36,7 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 	local backend_mirror = self._backend_mirror
 	local items = backend_mirror:get_all_inventory_items()
 	local unlocked_weapon_skins = backend_mirror:get_unlocked_weapon_skins()
+	local unlocked_cosmetics = backend_mirror:get_unlocked_cosmetics()
 
 	for _, item in pairs(items) do
 		if not item.bypass_skin_ownership_check and item.skin and not unlocked_weapon_skins[item.skin] then
@@ -206,6 +208,12 @@ BackendInterfaceItemPlayfab.get_item_from_id = function (self, backend_id)
 	return item
 end
 
+BackendInterfaceItemPlayfab.get_backend_id_from_cosmetic_item = function (self, item_name)
+	local unlocked_cosmetics = self._backend_mirror:get_unlocked_cosmetics()
+
+	return unlocked_cosmetics[item_name]
+end
+
 BackendInterfaceItemPlayfab.get_item_from_key = function (self, item_key)
 	local items = self:get_all_backend_items()
 
@@ -253,6 +261,13 @@ end
 BackendInterfaceItemPlayfab.get_loadout_item_id = function (self, career_name, slot_name)
 	local loadouts = self:get_loadout()
 	local loadout = loadouts[career_name]
+	local item_id = loadout and loadout[slot_name]
+
+	if CosmeticUtils.is_cosmetic_slot(slot_name) and item_id then
+		local cosmetics = self._backend_mirror:get_unlocked_cosmetics()
+
+		return cosmetics[item_id]
+	end
 
 	return loadout and loadout[slot_name]
 end
@@ -302,6 +317,10 @@ BackendInterfaceItemPlayfab.set_loadout_item = function (self, item_id, career_n
 		return false
 	end
 
+	if CosmeticUtils.is_cosmetic_slot(slot_name) then
+		item_id = item.override_id or item.ItemId
+	end
+
 	self._backend_mirror:set_character_data(career_name, slot_name, item_id)
 
 	self._dirty = true
@@ -330,7 +349,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		local reward = unseen_rewards[index]
 		local reward_type = reward.reward_type
 
-		if reward_type == "item" or reward_type == "keep_decoration_painting" then
+		if reward_type == "item" or reward_type == "keep_decoration_painting" or CosmeticUtils.is_cosmetic_item(reward_type) then
 			unseen_items = unseen_items or {}
 			unseen_items[#unseen_items + 1] = reward
 
@@ -510,27 +529,51 @@ BackendInterfaceItemPlayfab.refresh_game_mode_specific_items = function (self)
 	self:make_dirty()
 end
 
-BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list)
+local DEEDS_CHUNK_LIMIT = 300
+
+BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list, start_index, end_index)
+	self._is_deleting_deeds = true
+	start_index = start_index or 1
+	end_index = end_index or DEEDS_CHUNK_LIMIT
 	local id = self:_new_id()
-	local data = {
-		marked_deeds_list = deeds_list,
-		id = id
-	}
+	local temp_deeds = nil
+	local num_elements = #deeds_list
+
+	if start_index > 1 then
+		temp_deeds = table.slice(deeds_list, start_index, num_elements)
+	else
+		temp_deeds = deeds_list
+	end
+
+	local reduced_deeds_list = table.map(temp_deeds, function (entry)
+		return {
+			ItemInstanceId = entry.ItemInstanceId
+		}
+	end)
+
+	if end_index < num_elements then
+		for i = DEEDS_CHUNK_LIMIT + 1, num_elements, 1 do
+			reduced_deeds_list[i] = nil
+		end
+	end
+
 	local delete_marked_deeds_request = {
 		FunctionName = "deleteMarkedDeeds",
 		FunctionParameter = {
-			marked_deeds_list = deeds_list
+			marked_deeds_list = reduced_deeds_list
 		}
 	}
-	local success_callback = callback(self, "delete_marked_deeds_request_cb", data)
+	local data = {
+		marked_deeds_list = reduced_deeds_list,
+		id = id
+	}
+	local success_callback = callback(self, "delete_marked_deeds_request_cb", data, end_index, start_index, deeds_list)
 	local request_queue = self._backend_mirror:request_queue()
 
 	request_queue:enqueue(delete_marked_deeds_request, success_callback, true)
-
-	return id
 end
 
-BackendInterfaceItemPlayfab.delete_marked_deeds_request_cb = function (self, data, result)
+BackendInterfaceItemPlayfab.delete_marked_deeds_request_cb = function (self, data, end_index, start_index, deeds_list, result)
 	local function_result = result.FunctionResult
 	local item_revokes = function_result.item_revokes
 	local backend_mirror = self._backend_mirror
@@ -541,8 +584,6 @@ BackendInterfaceItemPlayfab.delete_marked_deeds_request_cb = function (self, dat
 		return
 	elseif function_result.error_message == "no_items_received" then
 		Managers.backend:playfab_error(BACKEND_PLAYFAB_ERRORS.ERR_REMOVE_DEEDS_NO_ITEMS_RECEIVED)
-
-		self._delete_deeds_request[data.id] = nil
 
 		return
 	end
@@ -556,19 +597,22 @@ BackendInterfaceItemPlayfab.delete_marked_deeds_request_cb = function (self, dat
 		end
 	end
 
-	self._delete_deeds_request[data.id] = true
+	local num_elements = #deeds_list
 
-	Managers.backend:dirtify_interfaces()
+	if end_index < num_elements then
+		local next_start_index = start_index + DEEDS_CHUNK_LIMIT
+		local next_end_index = end_index + DEEDS_CHUNK_LIMIT
+
+		self:delete_marked_deeds(deeds_list, next_start_index, next_end_index)
+	else
+		self._is_deleting_deeds = false
+
+		Managers.backend:dirtify_interfaces()
+	end
 end
 
-BackendInterfaceItemPlayfab.has_deleted_deeds = function (self, id)
-	local deletion_request = self._delete_deeds_request[id]
-
-	if deletion_request then
-		return true
-	end
-
-	return false
+BackendInterfaceItemPlayfab.is_deleting_deeds = function (self)
+	return self._is_deleting_deeds
 end
 
 BackendInterfaceItemPlayfab._new_id = function (self)

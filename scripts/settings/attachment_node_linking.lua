@@ -6032,7 +6032,7 @@ AttachmentNodeLinking = {
 		unwielded = {
 			{
 				target = 0,
-				source = "a_shield"
+				source = "j_leftweaponattach"
 			}
 		}
 	},

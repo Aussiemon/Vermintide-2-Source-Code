@@ -32,6 +32,7 @@ StartGameWindowDeusCustomGame.on_enter = function (self, params, offset)
 	self._animations = {}
 	self._dlc_name = nil
 	self._current_difficulty = self._parent:get_difficulty_option(true) or Managers.state.difficulty:get_difficulty()
+	self._backend_deus = Managers.backend:get_interface("deus")
 
 	self:_create_ui_elements(params, offset)
 	self:_set_expedition_text_highlight_offset(self._ui_renderer)
@@ -47,6 +48,7 @@ StartGameWindowDeusCustomGame.on_enter = function (self, params, offset)
 	end
 
 	self:_start_transition_animation("on_enter")
+	Managers.state.event:register(self, "_update_additional_curse_frame", "_update_additional_curse_frame")
 end
 
 StartGameWindowDeusCustomGame._start_transition_animation = function (self, animation_name)
@@ -99,6 +101,7 @@ StartGameWindowDeusCustomGame.on_exit = function (self, params)
 	end
 
 	self._parent:set_difficulty_option(self._current_difficulty)
+	Managers.state.event:unregister("_update_additional_curse_frame", self)
 end
 
 StartGameWindowDeusCustomGame.set_focus = function (self, focused)
@@ -166,6 +169,7 @@ StartGameWindowDeusCustomGame._setup_journey_widgets = function (self)
 
 	for i = 1, #available_journey_order, 1 do
 		local journey_name = AvailableJourneyOrder[i]
+		local with_belakor = self._backend_deus:deus_journey_with_belakor(journey_name)
 		local journey_data = DeusJourneySettings[journey_name]
 		local index = #expedition_widgets + 1
 		local next_journey = available_journey_order[index + 1]
@@ -185,6 +189,7 @@ StartGameWindowDeusCustomGame._setup_journey_widgets = function (self)
 		content.locked = not is_unlocked
 		content.frame = selection_frame_texture
 		content.journey_name = journey_name
+		content.level_icon_frame = (with_belakor and "morris_expedition_select_border_belakor") or "morris_expedition_select_border"
 		content.draw_path = next_journey ~= nil
 		content.draw_path_fill = unlocked_journeys[next_journey]
 		widget.style.path.texture_size[1] = settings.spacing_x
@@ -296,10 +301,17 @@ StartGameWindowDeusCustomGame._update_modifier_timer = function (self, current_t
 end
 
 StartGameWindowDeusCustomGame._refresh_journey_cycle = function (self)
-	local backend_deus = Managers.backend:get_interface("deus")
-	self._journey_cycle = backend_deus:get_journey_cycle()
+	self._journey_cycle = self._backend_deus:get_journey_cycle()
 
 	self:_update_journey_god_icons()
+end
+
+StartGameWindowDeusCustomGame._update_additional_curse_frame = function (self, journey_name)
+	for _, widget in ipairs(self._expedition_widgets) do
+		local content = widget.content
+		local with_belakor = content.journey_name == journey_name
+		content.level_icon_frame = (with_belakor and "morris_expedition_select_border_belakor") or "morris_expedition_select_border"
+	end
 end
 
 StartGameWindowDeusCustomGame._update_journey_god_icons = function (self)

@@ -1086,7 +1086,7 @@ local function create_power_up(scenegraph_id)
 				vertical_alignment = "top",
 				area_size = {
 					320,
-					120
+					100
 				},
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {

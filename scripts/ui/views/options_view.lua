@@ -892,6 +892,8 @@ OptionsView.create_ui_elements = function (self)
 		if GameSettingsDevelopment.allow_keyboard_mouse then
 			settings_lists.keybind_settings = self:build_settings_list(settings_definitions.keybind_settings_definition, "keybind_settings_list")
 		end
+
+		settings_lists.accessibility_settings = self:build_settings_list(settings_definitions.accessibility_settings_definition, "accessibility_settings_list")
 	else
 		if Managers.voice_chat or self.voip then
 			settings_lists.audio_settings = self:build_settings_list(settings_definitions.audio_settings_definition, "audio_settings_list")
@@ -903,6 +905,7 @@ OptionsView.create_ui_elements = function (self)
 		settings_lists.display_settings = self:build_settings_list(settings_definitions.display_settings_definition, "display_settings_list")
 		settings_lists.gamepad_settings = self:build_settings_list(settings_definitions.gamepad_settings_definition, "gamepad_settings_list")
 		settings_lists.motion_control_settings = self:build_settings_list(settings_definitions.motion_control_settings_definition, "motion_control_settings_list")
+		settings_lists.accessibility_settings = self:build_settings_list(settings_definitions.accessibility_settings_definition, "accessibility_settings_list")
 	end
 
 	self.settings_lists = settings_lists
@@ -3425,6 +3428,11 @@ end
 
 OptionsView._find_previous_title_tab = function (self)
 	local selected_title = self.selected_title - 1
+
+	if selected_title < 1 then
+		selected_title = self.title_buttons_n
+	end
+
 	local new_tab_index = nil
 
 	for i = selected_title, 1, -1 do

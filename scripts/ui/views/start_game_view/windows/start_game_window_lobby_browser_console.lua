@@ -121,7 +121,9 @@ StartGameWindowLobbyBrowserConsole.post_update = function (self, dt, t)
 end
 
 StartGameWindowLobbyBrowserConsole._is_refreshing = function (self)
-	return self._lobby_finder:is_refreshing()
+	local is_refreshing = self._lobby_finder:is_refreshing()
+
+	return is_refreshing
 end
 
 StartGameWindowLobbyBrowserConsole.play_sound = function (self, event)
@@ -174,8 +176,9 @@ local empty_lobby_list = {}
 
 StartGameWindowLobbyBrowserConsole.get_lobbies = function (self)
 	local lobby_finder = self._lobby_finder
+	local lobbies = lobby_finder:lobbies() or empty_lobby_list
 
-	return lobby_finder:lobbies() or empty_lobby_list
+	return lobbies
 end
 
 local REQUIRED_DLCS = {}
@@ -626,7 +629,7 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 		end
 	else
 		local level_key = mission_id
-		local level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
+		local level_unlocked = level_key == "any" or LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, level_key)
 
 		if not level_unlocked then
 			local settings = LevelSettings[level_key]

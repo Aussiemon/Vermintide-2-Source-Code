@@ -82,6 +82,7 @@ FatigueUI.start_fade_in = function (self)
 		local from = 0
 		local to = 255
 
+		UIWidget.stop_animations(shield)
 		UIWidget.animate(shield, UIAnimation.init(UIAnimation.function_by_time, style.color, 1, from, to, 0.2, math.easeInCubic))
 		UIWidget.animate(shield, UIAnimation.init(UIAnimation.function_by_time, style.texture_glow_id.color, 1, from, to, 0.2, math.easeInCubic))
 	end
@@ -97,6 +98,7 @@ FatigueUI.start_fade_out = function (self)
 		local from = style.color[1]
 		local to = 0
 
+		UIWidget.stop_animations(shield)
 		UIWidget.animate(shield, UIAnimation.init(UIAnimation.function_by_time, style.color, 1, from, to, 0.2, math.easeInCubic))
 		UIWidget.animate(shield, UIAnimation.init(UIAnimation.function_by_time, style.texture_glow_id.color, 1, from, to, 0.2, math.easeInCubic))
 	end

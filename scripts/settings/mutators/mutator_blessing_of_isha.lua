@@ -87,16 +87,8 @@ return {
 		data.hero_side = hero_side
 		data.buff_ids = {}
 	end,
-	try_activate_blessing = function (context, data, needed_not_disabled_units, blessed_unit)
-		local not_disabled_units = data.template.temp_not_disabled_units
-
-		table.clear(not_disabled_units)
-
-		local player_units = data.hero_side.PLAYER_UNITS
-
-		get_not_disabled_units(player_units, not_disabled_units)
-
-		if #not_disabled_units == needed_not_disabled_units and ALIVE[blessed_unit] then
+	try_activate_blessing = function (context, data, blessed_unit)
+		if ALIVE[blessed_unit] then
 			stagger_enemies(STAGGER_RADIUS, blessed_unit, EXPLOSION_TEMPLATE_NAME)
 			remove_invincibility_buffs(data.buff_ids)
 			display_effect(blessed_unit)
@@ -108,19 +100,21 @@ return {
 			local dialogue_input = ScriptUnit.extension_input(blessed_unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 
-			dialogue_input:trigger_dialogue_event("blessing_isha_resurrected", event_data)
+			dialogue_input:trigger_networked_dialogue_event("blessing_isha_resurrected", event_data)
 
 			local audio_system = Managers.state.entity:system("audio_system")
 
 			audio_system:play_2d_audio_event(SOUND_EVENTS.player_resurrected)
 			remove_blessing("blessing_of_isha")
 
-			local player = Managers.player:owner(blessed_unit)
-			local local_human = player and player.local_player
+			local player_manager = Managers.player
+			local player = player_manager:owner(blessed_unit)
+			local local_player = player_manager:local_player()
+			local local_human = player == local_player
+			local predicate = "collected_isha_reward"
 
-			if local_human then
-				Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, "collected_isha_reward", player, player)
-			end
+			Managers.state.event:trigger("add_coop_feedback", player:stats_id(), local_human, predicate, player, player)
+			Managers.state.network.network_transmit:send_rpc_clients("rpc_coop_feedback", player:network_id(), player:local_player_id(), NetworkLookup.coop_feedback[predicate], player:network_id(), player:local_player_id())
 
 			return true
 		end
@@ -128,12 +122,19 @@ return {
 		return false
 	end,
 	server_player_disabled_function = function (context, data, disabling_event, target_unit, attacker_unit)
+		if not data.buff_active then
+			return
+		end
+
 		if not VALID_DISABLE_EVENTS[disabling_event] then
 			return
 		end
 
-		local needed_not_disabled_units = 0
-		local successful = data.template.try_activate_blessing(context, data, needed_not_disabled_units, target_unit)
+		if not data.hero_side then
+			return
+		end
+
+		local successful = data.template.try_activate_blessing(context, data, target_unit)
 
 		if successful and disabling_event == "corruptor_grab" then
 			local position = POSITION_LOOKUP[attacker_unit]
@@ -143,22 +144,30 @@ return {
 		end
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)
+		if not data.buff_active then
+			return
+		end
+
+		if not data.hero_side then
+			return
+		end
+
 		local health_extension = ScriptUnit.extension(hit_unit, "health_system")
-		local damage = hit_data[1]
 		local health = health_extension:current_health()
-		local killing_blow = health <= damage
 
-		if killing_blow then
-			local needed_not_disabled_units = 1
-
-			data.template.try_activate_blessing(context, data, needed_not_disabled_units, hit_unit)
+		if health == 1 then
+			data.template.try_activate_blessing(context, data, hit_unit)
 		end
 	end,
 	server_update_function = function (context, data, dt, t)
+		if not data.hero_side then
+			return
+		end
+
 		local not_disabled_units = data.template.temp_not_disabled_units
 
 		table.clear(not_disabled_units)
-		get_not_disabled_units(data.hero_side.PLAYER_UNITS, not_disabled_units)
+		get_not_disabled_units(data.hero_side.PLAYER_AND_BOT_UNITS, not_disabled_units)
 
 		if #not_disabled_units == 1 then
 			local unit = not_disabled_units[1]
@@ -169,8 +178,12 @@ return {
 				local buff_id = buff_extension:add_buff("blessing_of_isha_invincibility")
 				data.buff_ids[unit] = buff_id
 			end
+
+			data.buff_active = true
 		else
 			remove_invincibility_buffs(data.buff_ids)
+
+			data.buff_active = false
 		end
 	end
 }

@@ -792,7 +792,7 @@ Boot.game_update = function (self, real_world_dt)
 	end
 
 	Managers.telemetry:update(dt, t)
-	Managers.invite:update(dt)
+	Managers.invite:update(dt, t)
 	Managers.admin:update(dt)
 
 	if Managers.account then

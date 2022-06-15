@@ -17,6 +17,10 @@ AlwaysUnlocked.id = function (self)
 	return self._id
 end
 
+AlwaysUnlocked.set_status_changed = function (self, value)
+	return
+end
+
 AlwaysUnlocked.backend_reward_id = function (self)
 	return
 end

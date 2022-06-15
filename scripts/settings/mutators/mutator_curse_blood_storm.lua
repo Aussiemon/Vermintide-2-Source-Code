@@ -1,4 +1,5 @@
 local refactored_mutator = nil
+refactored_mutator = require("scripts/settings/mutators/mutator_curse_blood_storm_v2")
 
 if refactored_mutator then
 	return refactored_mutator

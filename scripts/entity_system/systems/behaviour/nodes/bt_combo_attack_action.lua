@@ -559,7 +559,7 @@ BTComboAttackAction.get_attack_cooldown_finished_at = function (self, unit, blac
 
 	local has_ai_slot_extension = ScriptUnit.has_extension(attacking_target, "ai_slot_system")
 
-	if not has_ai_slot_extension then
+	if not has_ai_slot_extension or not has_ai_slot_extension.has_slots_attached then
 		return false, 0
 	end
 

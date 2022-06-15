@@ -3,6 +3,8 @@ require("scripts/unit_extensions/weapons/projectiles/generic_impact_projectile_u
 require("scripts/unit_extensions/weapons/projectiles/player_projectile_unit_extension")
 require("scripts/unit_extensions/weapons/projectiles/player_projectile_husk_extension")
 require("scripts/unit_extensions/weapons/projectiles/projectile_true_flight_locomotion_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_homing_skull_locomotion_extension")
+require("scripts/unit_extensions/weapons/projectiles/projectile_extrapolated_husk_locomotion_extension")
 require("scripts/settings/light_weight_projectile_effects")
 
 ProjectileSystem = class(ProjectileSystem, ExtensionSystemBase)

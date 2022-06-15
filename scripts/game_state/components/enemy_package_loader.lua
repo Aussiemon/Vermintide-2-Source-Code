@@ -72,6 +72,8 @@ EnemyPackageLoader.init = function (self)
 	self._currently_loading_breeds = {}
 	self._locked_breeds = {}
 	self.random_director_list = nil
+	self._unload_package_queue = {}
+	self._load_package_queue = {}
 
 	self:_reset_dynamic_breed_lookups()
 end
@@ -437,6 +439,35 @@ EnemyPackageLoader._unload_package = function (self, breed_name, breed_category_
 
 	self:_set_breed_processed(breed_name, false)
 	self:report_if_synced_to_server()
+end
+
+EnemyPackageLoader.update = function (self)
+	local unload_package_queue = self._unload_package_queue
+	local unload_queue_n = #unload_package_queue
+
+	if unload_queue_n > 0 then
+		local package_manager = Managers.package
+		local breed_to_package_name = self._breed_to_package_name
+
+		for i = unload_queue_n, 1, -1 do
+			local breed_name = unload_package_queue[i]
+			local package_name = breed_to_package_name[breed_name]
+
+			if package_manager:can_unload(package_name) then
+				self:_unload_package(unload_package_queue[i])
+				table.swap_delete(unload_package_queue, i)
+			end
+		end
+	end
+
+	local load_package_queue = self._load_package_queue
+	local load_queue_n = #load_package_queue
+
+	for i = 1, load_queue_n, 1 do
+		self:_start_loading_package(load_package_queue[i])
+
+		load_package_queue[i] = nil
+	end
 end
 
 EnemyPackageLoader.load_sync_done_for_peer = function (self, peer_id)
@@ -1139,7 +1170,8 @@ EnemyPackageLoader.rpc_from_server_load_breed_package = function (self, channel_
 	local breed_name = NetworkLookup.breeds[breed_id]
 
 	printf("[EnemyPackageLoader] rpc_from_server_load_breed_package (peer_id=%s, connection_key=%d, breed_name=%s)", peer_id, connection_key, breed_name)
-	self:_start_loading_package(breed_name)
+
+	self._load_package_queue[#self._load_package_queue + 1] = breed_name
 end
 
 EnemyPackageLoader.rpc_from_server_unload_breed_package = function (self, channel_id, connection_key, breed_id)
@@ -1160,7 +1192,8 @@ EnemyPackageLoader.rpc_from_server_unload_breed_package = function (self, channe
 	local breed_name = NetworkLookup.breeds[breed_id]
 
 	printf("[EnemyPackageLoader] rpc_from_server_unload_breed_package (peer_id=%s, connection_key=%d, breed_name=%s)", peer_id, connection_key, breed_name)
-	self:_unload_package(breed_name)
+
+	self._unload_package_queue[#self._unload_package_queue + 1] = breed_name
 end
 
 EnemyPackageLoader.rpc_from_client_loading_breed_package_done = function (self, channel_id, connection_key, breed_id)

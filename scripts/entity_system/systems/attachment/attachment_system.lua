@@ -21,49 +21,6 @@ AttachmentSystem.init = function (self, entity_system_creation_context, system_n
 	network_event_delegate:register(self, unpack(RPCS))
 end
 
-AttachmentSystem.update = function (self, context, t)
-	AttachmentSystem.super.update(self, context, t)
-
-	if self._delayed_create_attachment_params then
-		local params = self._delayed_create_attachment_params
-		local unit_storage = self.unit_storage
-		local unit = unit_storage:unit(params.unit_go_id)
-
-		if unit then
-			print("[AttachmentSystem] Creating attachment through delayed means")
-			self:create_attachment(params.unit_go_id, params.slot_id, params.item_name_id)
-
-			self._delayed_create_attachment_params = nil
-		end
-	end
-
-	if self._delayed_remove_attachment_params then
-		local params = self._delayed_remove_attachment_params
-		local unit_storage = self.unit_storage
-		local unit = unit_storage:unit(params.unit_go_id)
-
-		if unit then
-			print("[AttachmentSystem] Removing attachment through delayed means")
-			self:remove_attachment(params.unit_go_id, params.slot_id)
-
-			self._delayed_remove_attachment_params = nil
-		end
-	end
-
-	if self._delayed_add_attachment_buffs_params then
-		local params = self._delayed_add_attachment_buffs_params
-		local unit_storage = self.unit_storage
-		local unit = unit_storage:unit(params.unit_go_id)
-
-		if unit then
-			print("[AttachmentSystem] Adding attachment buffs through delayed means")
-			self:add_attachment_buffs(unit, params.slot_id, params.num_buffs, params.buff_ids, params.buff_value_type_ids, params.buff_values)
-
-			self._delayed_add_attachment_buffs_params = nil
-		end
-	end
-end
-
 AttachmentSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 
@@ -110,17 +67,7 @@ AttachmentSystem.rpc_create_attachment = function (self, channel_id, unit_go_id,
 	local unit_storage = self.unit_storage
 	local unit = unit_storage:unit(unit_go_id)
 
-	if unit then
-		self:create_attachment(unit, slot_id, item_name_id)
-	else
-		print("[AttachmentSystem] Unit not found, delaying creation of attachment", unit)
-
-		self._delayed_create_attachment_params = {
-			unit_go_id = unit_go_id,
-			slot_id = slot_id,
-			item_name_id = item_name_id
-		}
-	end
+	self:create_attachment(unit, slot_id, item_name_id)
 end
 
 AttachmentSystem.rpc_remove_attachment = function (self, channel_id, unit_go_id, slot_id)
@@ -133,16 +80,7 @@ AttachmentSystem.rpc_remove_attachment = function (self, channel_id, unit_go_id,
 	local unit_storage = self.unit_storage
 	local unit = unit_storage:unit(unit_go_id)
 
-	if unit then
-		self:remove_attachment(unit, slot_id)
-	else
-		print("[AttachmentSystem] Unit not found, delaying deletion of attachment", unit)
-
-		self._delayed_remove_attachment_params = {
-			unit_go_id = unit_go_id,
-			slot_id = slot_id
-		}
-	end
+	self:remove_attachment(unit, slot_id)
 end
 
 AttachmentSystem.rpc_add_attachment_buffs = function (self, channel_id, go_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
@@ -152,22 +90,10 @@ AttachmentSystem.rpc_add_attachment_buffs = function (self, channel_id, go_id, s
 		self.network_transmit:send_rpc_clients_except("rpc_add_attachment_buffs", peer_id, go_id, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 	end
 
-	local unit = self.unit_storage:unit(go_id)
+	local unit_storage = self.unit_storage
+	local unit = unit_storage:unit(go_id)
 
-	if unit then
-		self:add_attachment_buffs(unit, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
-	else
-		print("[AttachmentSystem] Unit not found, delaying addition of buffs to attachment", unit)
-
-		self._delayed_add_attachment_buffs_params = {
-			unit_go_id = go_id,
-			slot_id = slot_id,
-			num_buffs = num_buffs,
-			buff_ids = buff_ids,
-			buff_value_type_ids = buff_value_type_ids,
-			buff_values = buff_values
-		}
-	end
+	self:add_attachment_buffs(unit, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 end
 
 return

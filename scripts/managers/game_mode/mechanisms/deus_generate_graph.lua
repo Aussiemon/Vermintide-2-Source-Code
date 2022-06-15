@@ -4,7 +4,7 @@ require("scripts/managers/game_mode/mechanisms/deus_populate_graph")
 
 local base_graphs = require("scripts/settings/dlcs/morris/deus_map_baked_base_graphs")
 
-function deus_generate_graph(seed, journey_name, dominant_god, populate_config)
+function deus_generate_graph(seed, journey_name, dominant_god, populate_config, with_belakor)
 	if type(seed) == "string" and string.starts_with(seed, "DEBUG_SPECIFIC_NODE") then
 		local graph = table.clone(DeusDebugSpecificNodeGraph)
 		local start_node = graph.start
@@ -56,6 +56,15 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config)
 			start_node.theme = theme
 		end
 
+		if level == "arena_belakor" then
+			start_node.theme = "belakor"
+		end
+
+		if script_data.deus_force_load_curse then
+			start_node.curse = script_data.deus_force_load_curse
+			start_node.theme = (theme ~= "wastes" and theme) or "khorne"
+		end
+
 		return graph
 	elseif type(seed) == "string" and string.starts_with(seed, "DEBUG_SHRINE_NODE") then
 		return DeusDebugShrineNodeGraph
@@ -77,7 +86,7 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config)
 		seed_number, keys_index = Math.next_random(seed_number, 1, #keys)
 		local chosen_graph = keys[keys_index]
 		local base_graph = graphs[chosen_graph]
-		local complete_graph = deus_populate_graph(base_graph, seed_number, populate_config, dominant_god)
+		local complete_graph = deus_populate_graph(base_graph, seed_number, populate_config, dominant_god, with_belakor)
 
 		return complete_graph
 	end

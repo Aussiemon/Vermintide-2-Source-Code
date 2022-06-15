@@ -1117,7 +1117,7 @@ AIBotGroupSystem._update_priority_targets = function (self, dt, t)
 					target = status_ext:get_pouncer_unit()
 				elseif status_ext:is_grabbed_by_pack_master() then
 					target = status_ext:get_pack_master_grabber()
-				elseif status_ext:is_overpowered() then
+				elseif status_ext:is_overpowered() and status_ext:is_overpowered_by_attacker() then
 					target = status_ext.overpowered_attacking_unit
 				end
 

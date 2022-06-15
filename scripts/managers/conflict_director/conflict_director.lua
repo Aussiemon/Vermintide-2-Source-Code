@@ -34,6 +34,9 @@ local BLACKBOARDS = BLACKBOARDS
 local distance_squared = Vector3.distance_squared
 local RecycleSettings = RecycleSettings
 local FORM_GROUPS_IN_ONE_FRAME = true
+local RPCS = {
+	"rpc_terror_event_trigger_flow"
+}
 local script_data = script_data
 script_data.debug_terror = script_data.debug_terror or Development.parameter("debug_terror")
 script_data.ai_roaming_spawning_disabled = script_data.ai_roaming_spawning_disabled or Development.parameter("ai_roaming_spawning_disabled")
@@ -96,7 +99,6 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self._num_spawned_during_event = 0
 	self._num_angry_bosses = 0
 	self._next_horde_time = math.huge
-	self._crumbs = {}
 	self._player_directions = {}
 	self._drop_crumb_time = 0
 	self.world_gui = World.create_world_gui(world, Matrix4x4.identity(), 1, 1, "immediate", "material", "materials/fonts/gw_fonts")
@@ -115,17 +117,28 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self.spawn_queue_size = 0
 	self.spawn_queue_id = 0
 	self.main_path_player_info = {}
-	local side = Managers.state.side:get_side_from_name("heroes")
+
+	self:_setup_sides_to_update_recycler()
+
+	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
 	self._hero_side = side
 	local player_units = side.PLAYER_UNITS
+	local ahead_unit, behind_unit = nil
+
+	if side then
+		local player_units = side.PLAYER_UNITS
+		ahead_unit = player_units[1]
+		behind_unit = player_units[1]
+	end
+
 	self.main_path_info = {
 		current_path_index = 1,
 		behind_percent = 1,
 		ahead_percent = 0,
 		ahead_travel_dist = 0,
 		main_path_player_info_index = 0,
-		ahead_unit = player_units[1],
-		behind_unit = player_units[1],
+		ahead_unit = ahead_unit,
+		behind_unit = behind_unit,
 		player_info_by_travel_distance = {}
 	}
 	self._main_path_obstacles = {}
@@ -150,7 +163,7 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self.level_analysis = LevelAnalysis:new(nil, false, level_name, level_seed)
 	self._network_event_delegate = network_event_delegate
 
-	network_event_delegate:register(self, "rpc_terror_event_trigger_flow")
+	network_event_delegate:register(self, unpack(RPCS))
 
 	self.frozen_intensity_decay_until = 0
 	self.threat_value = 0
@@ -161,6 +174,23 @@ ConflictDirector.init = function (self, world, level_key, network_event_delegate
 	self.delay_specials_threat_value = (CurrentPacing.delay_specials_threat_value and DifficultyTweak.converters.tweaked_delay_threat_value(difficulty, difficulty_tweak, CurrentPacing.delay_specials_threat_value)) or math.huge
 
 	Managers.state.event:register(self, "event_delay_pacing", "event_delay_pacing")
+end
+
+ConflictDirector._setup_sides_to_update_recycler = function (self)
+	local sides_to_update = {}
+	local sides = Managers.state.side:sides()
+	local j = 1
+
+	for i = 1, #sides, 1 do
+		local side = sides[i]
+
+		if side.using_enemy_recycler then
+			sides_to_update[j] = side
+			j = j + 1
+		end
+	end
+
+	self.sides_to_update_recycler = sides_to_update
 end
 
 ConflictDirector.rpc_terror_event_trigger_flow = function (self, channel_id, event_id)
@@ -408,7 +438,7 @@ ConflictDirector.main_path_player_far_away_check = function (self, data, travel_
 	return far_away
 end
 
-ConflictDirector.update_main_path_player_info = function (self, t)
+ConflictDirector.update_main_path_player_info = function (self, side, t)
 	local main_path_info = self.main_path_info
 
 	if not main_path_info.main_paths then
@@ -418,9 +448,8 @@ ConflictDirector.update_main_path_player_info = function (self, t)
 	local main_path_player_info = self.main_path_player_info
 	local index = main_path_info.main_path_player_info_index
 	index = index + 1
-	local hero_side = self._hero_side
-	local player_and_bot_units = hero_side.PLAYER_AND_BOT_UNITS
-	local player_and_bot_positions = hero_side.PLAYER_AND_BOT_POSITIONS
+	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+	local player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
 	local num_units = #player_and_bot_units
 
 	if index > num_units then
@@ -540,46 +569,45 @@ ConflictDirector.get_main_path_player_data = function (self, unit)
 	return self.main_path_player_info[unit]
 end
 
-ConflictDirector.get_cluster_and_loneliness = function (self, min_dist)
+ConflictDirector.get_cluster_and_loneliness = function (self, min_dist, position_list, unit_list)
 	if self._cluster_and_loneliness[min_dist] then
 		local stored = self._cluster_and_loneliness[min_dist]
 
 		return stored[1], stored[2], stored[3], stored[4]
 	end
 
-	local hero_side = self._hero_side
-	local positions = hero_side.PLAYER_AND_BOT_POSITIONS
-	local units = hero_side.PLAYER_AND_BOT_UNITS
-	local cluster_utility, loneliness_index, loneliness_value = ConflictUtils.cluster_weight_and_loneliness(positions, min_dist or 10)
-	local loneliest_player_unit = units[loneliness_index]
+	local cluster_utility, loneliness_index, loneliness_value = ConflictUtils.cluster_weight_and_loneliness(position_list, min_dist or 10)
+	local loneliest_player_unit = unit_list[loneliness_index]
 	local fill = FrameTable.alloc_table()
 	fill[1] = cluster_utility
-	fill[2] = positions[loneliness_index]
+	fill[2] = position_list[loneliness_index]
 	fill[3] = loneliness_value
 	fill[4] = loneliest_player_unit
 	self._cluster_and_loneliness[min_dist] = fill
 
-	return cluster_utility, positions[loneliness_index], loneliness_value, loneliest_player_unit
+	return cluster_utility, position_list[loneliness_index], loneliness_value, loneliest_player_unit
 end
 
-ConflictDirector.update_player_areas = function (self)
+ConflictDirector.update_player_areas = function (self, sides)
 	local player_areas = self._player_areas
 
 	table.clear_array(player_areas, #player_areas)
 
 	if self.navigation_group_manager.operational then
-		local side = self._hero_side
-		local player_units = side.PLAYER_UNITS
+		for j = 1, #sides, 1 do
+			local side = sides[j]
+			local player_units = side.PLAYER_UNITS
 
-		for i = 1, #player_units, 1 do
-			local unit = player_units[i]
-			local last_pos_on_mesh = ScriptUnit.extension(unit, "whereabouts_system"):last_position_on_navmesh()
-			local area = last_pos_on_mesh and self.navigation_group_manager:get_group_from_position(last_pos_on_mesh)
+			for i = 1, #player_units, 1 do
+				local unit = player_units[i]
+				local last_pos_on_mesh = ScriptUnit.extension(unit, "whereabouts_system"):last_position_on_navmesh()
+				local area = last_pos_on_mesh and self.navigation_group_manager:get_group_from_position(last_pos_on_mesh)
 
-			if area then
-				player_areas[i] = area
-			else
-				player_areas[i] = false
+				if area then
+					player_areas[i] = area
+				else
+					player_areas[i] = false
+				end
 			end
 		end
 	end
@@ -927,10 +955,10 @@ ConflictDirector.get_horde_data = function (self)
 	return self._next_horde_time, self.horde_spawner.hordes, self._multiple_horde_count
 end
 
-ConflictDirector.start_terror_event = function (self, event_name, optional_seed, origin_unit)
+ConflictDirector.start_terror_event = function (self, event_name, optional_seed, origin_unit, origin_position)
 	local seed = optional_seed or 0
 
-	TerrorEventMixer.add_to_start_event_list(event_name, seed, origin_unit)
+	return TerrorEventMixer.add_to_start_event_list(event_name, seed, origin_unit, origin_position)
 end
 
 ConflictDirector.terror_event_finished = function (self, event_name)
@@ -1113,9 +1141,8 @@ ConflictDirector.handle_speed_runners = function (self, t)
 	end
 end
 
-ConflictDirector.handle_alone_player = function (self, t)
-	local side = self._hero_side
-	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+ConflictDirector.handle_alone_player = function (self, t, enemy_side)
+	local player_and_bot_units = enemy_side.ENEMY_PLAYER_AND_BOT_UNITS
 	local data = self.rushing_intervention_data
 	local disable_rush_intervention = Managers.state.game_mode:setting("disable_rush_intervention")
 
@@ -1138,7 +1165,7 @@ ConflictDirector.handle_alone_player = function (self, t)
 
 	if ahead_unit then
 		local rush_intervention = CurrentSpecialsSettings.rush_intervention
-		local _, _, loneliness_value, loneliest_player_unit = self:get_cluster_and_loneliness(10)
+		local _, _, loneliness_value, loneliest_player_unit = self:get_cluster_and_loneliness(10, enemy_side.ENEMY_PLAYER_AND_BOT_POSITIONS, enemy_side.ENEMY_PLAYER_AND_BOT_UNITS)
 		data.loneliness_value = loneliness_value
 
 		if ahead_unit == loneliest_player_unit or #player_and_bot_units == 2 then
@@ -1292,9 +1319,19 @@ ConflictDirector.update = function (self, dt, t)
 		Testify:poll_requests_through_handler(conflict_director_testify, self)
 	end
 
+	local all_player_positions = {}
+	local sides = self.sides_to_update_recycler
+
+	for i = 1, #sides, 1 do
+		table.append(all_player_positions, sides[i].PLAYER_AND_BOT_POSITIONS)
+	end
+
 	if self.level_analysis then
 		self.level_analysis:update(t, dt)
-		self:update_main_path_player_info(t)
+
+		if self._hero_side then
+			self:update_main_path_player_info(self._hero_side, t)
+		end
 	end
 
 	if self.disabled then
@@ -1323,26 +1360,29 @@ ConflictDirector.update = function (self, dt, t)
 	if not script_data.ai_pacing_disabled and not conflict_settings.pacing.disabled then
 		if self._next_pacing_update < t then
 			local side = self._hero_side
-			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			pacing:update(t, dt, player_and_bot_units)
+			if side then
+				local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			self._next_pacing_update = t + 1
-			local pacing_state = pacing:get_state()
+				pacing:update(t, dt, player_and_bot_units)
 
-			if pacing_state == "pacing_relax" then
-				local rushing = self:are_players_rushing(t)
+				self._next_pacing_update = t + 1
+				local pacing_state = pacing:get_state()
 
-				if rushing then
-					if CurrentPacing.leave_relax_if_rushing then
-						print("players are progressing too fast, leave relax")
-						pacing:advance_pacing(t, "players are rushing")
-					end
+				if pacing_state == "pacing_relax" then
+					local rushing = self:are_players_rushing(t)
 
-					if CurrentPacing.horde_in_relax_if_rushing then
-						print("players are progressing too fast, punish with a horde")
+					if rushing then
+						if CurrentPacing.leave_relax_if_rushing then
+							print("players are progressing too fast, leave relax")
+							pacing:advance_pacing(t, "players are rushing")
+						end
 
-						self._next_horde_time = t
+						if CurrentPacing.horde_in_relax_if_rushing then
+							print("players are progressing too fast, punish with a horde")
+
+							self._next_horde_time = t
+						end
 					end
 				end
 			end
@@ -1351,7 +1391,7 @@ ConflictDirector.update = function (self, dt, t)
 		if not script_data.ai_rush_intervention_disabled and self._next_rushing_intervention_time < t then
 			self._next_rushing_intervention_time = t + 1
 
-			self:handle_alone_player(t)
+			self:handle_alone_player(t, self._enemy_side)
 		end
 
 		local settings = CurrentSpecialsSettings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
@@ -1386,10 +1426,8 @@ ConflictDirector.update = function (self, dt, t)
 	else
 		if not conflict_settings.specials.disabled and self.specials_pacing and not script_data.ai_specials_spawning_disabled and not Managers.state.game_mode:setting("ai_specials_spawning_disabled") then
 			local specials_population = pacing:specials_population()
-			local side = self._hero_side
-			local player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
 
-			self.specials_pacing:update(t, self._alive_specials, specials_population, player_and_bot_positions)
+			self.specials_pacing:update(t, self._alive_specials, specials_population, all_player_positions)
 		end
 
 		if not script_data.ai_horde_spawning_disabled and not conflict_settings.horde.disabled and not Managers.state.game_mode:setting("horde_spawning_disabled") then
@@ -1426,9 +1464,7 @@ ConflictDirector.update = function (self, dt, t)
 		end
 	end
 
-	local side = self._hero_side
-	local player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
-	local recycler_positions = player_and_bot_positions
+	local recycler_positions = all_player_positions
 
 	if self.enemy_recycler and not script_data.ai_roaming_spawning_disabled and not conflict_settings.roaming.disabled then
 		local threat_population = pacing:threat_population()
@@ -1474,7 +1510,7 @@ ConflictDirector.update = function (self, dt, t)
 			end
 		end
 
-		self:update_player_areas()
+		self:update_player_areas(sides)
 		self.enemy_recycler:update(t, dt, recycler_positions, threat_population, self._player_areas, use_player_areas)
 	end
 
@@ -2035,13 +2071,18 @@ ConflictDirector.check_pacing_event_delay = function (self)
 	end
 end
 
+local source_attacker_unit_index = DamageDataIndex.SOURCE_ATTACKER_UNIT
+
 ConflictDirector.register_unit_killed = function (self, unit, blackboard, killer_unit, killing_blow)
 	self:_remove_unit_from_spawned(unit, blackboard)
 
 	local side = self._hero_side
-	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-	self.pacing:enemy_killed(unit, player_and_bot_units)
+	if side then
+		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
+
+		self.pacing:enemy_killed(unit, player_and_bot_units)
+	end
 
 	local breed = blackboard.breed
 	local breed_name = breed.name
@@ -2054,6 +2095,8 @@ ConflictDirector.register_unit_killed = function (self, unit, blackboard, killer
 	if breed_enhancements then
 		Managers.telemetry.events:ai_died(blackboard.enemy_id, breed_name, death_pos)
 	end
+
+	Managers.state.event:trigger("on_unit_killed", unit, killer_unit, killing_blow)
 end
 
 ConflictDirector.register_unit_destroyed = function (self, unit, reason)
@@ -2142,24 +2185,19 @@ ConflictDirector.destroy_all_units = function (self, except_immune)
 	self._living_horde = 0
 end
 
-ConflictDirector.destroy_close_units = function (self, except_unit, dist_squared)
+ConflictDirector.destroy_close_units = function (self, position, except_unit, dist_squared)
 	local network_manager = Managers.state.network
 
 	if not network_manager:game() then
 		return
 	end
 
-	local player_manager = Managers.player
-	local player = player_manager:player_from_peer_id(Network.peer_id())
-	local player_unit = player.player_unit
+	position = position or POSITION_LOOKUP[Managers.player:local_player().player_unit]
 
-	if not player_unit then
-		print("can't destroy close units - player is dead")
-
+	if not position then
 		return
 	end
 
-	local player_pos = Unit.local_position(player_unit, 0)
 	local spawned = self._spawned
 	local list_size = #spawned
 	local i = 1
@@ -2172,7 +2210,7 @@ ConflictDirector.destroy_close_units = function (self, except_unit, dist_squared
 
 		if ALIVE[unit] and unit ~= except_unit then
 			local unit_pos = Unit.local_position(unit, 0)
-			remove_unit = distance_squared(player_pos, unit_pos) < dist_squared
+			remove_unit = distance_squared(position, unit_pos) < dist_squared
 		else
 			remove_unit = false
 		end
@@ -2261,20 +2299,9 @@ ConflictDirector.destroy_specials = function (self)
 	end
 end
 
-ConflictDirector.get_debug_breed = function (self)
-	local breed_name = self.debug_breed_picker:current_item_name()
+ConflictDirector.debug_spawn_breed = function (self, breed_name, delayed, override_pos, extra_data)
 	local breed = Breeds[breed_name]
-
-	return breed
-end
-
-ConflictDirector.get_debug_breed_name = function (self)
-	return self.debug_breed_picker:current_item_name()
-end
-
-ConflictDirector.debug_spawn_breed = function (self, t, delayed, override_pos)
-	local breed = self:get_debug_breed()
-	local item = self.debug_breed_picker:current_item()
+	local item = extra_data
 	local text = item[1]
 	local func = item[2]
 
@@ -2368,11 +2395,10 @@ ConflictDirector.debug_spawn_all_breeds = function (self, except_these_breeds, u
 	return true
 end
 
-ConflictDirector.debug_spawn_breed_at_hidden_spawner = function (self, t)
-	local breed = self:get_debug_breed()
-	self._show_switch_breed = t + 1
+ConflictDirector.debug_spawn_breed_at_hidden_spawner = function (self, breed_name)
+	local breed = Breeds[breed_name]
 
-	print("Debug spawning from hidden spawner: " .. breed.name)
+	print("Debug spawning from hidden spawner: " .. breed_name)
 
 	local side = self._hero_side
 	local player_positions = side.PLAYER_POSITIONS
@@ -2399,22 +2425,38 @@ ConflictDirector.debug_spawn_breed_at_hidden_spawner = function (self, t)
 	end
 end
 
-ConflictDirector.debug_spawn_group = function (self, t)
-	local breed = self:get_debug_breed()
+ConflictDirector.rpc_debug_conflict_director_command = function (self, channel_id, command_name, breed_name, position, enhancements_string, extra_data)
+	self._debug_spawn_breed_position = position
+	self._debug_spawn_breed_enhancements = table.set(string.split(enhancements_string, ","))
 
-	if not breed then
-		print("no breed selected, can't spawn a group")
-
-		return
-	else
-		local id = self.debug_breed_picker:current_item_name()
-		local formation = PatrolFormationSettings[id]
-
-		if formation then
-		end
+	if command_name == "debug_spawn_breed" then
+		self:debug_spawn_breed(breed_name, false, position, extra_data)
+	elseif command_name == "debug_spawn_group" then
+		self:debug_spawn_group(breed_name)
+	elseif command_name == "debug_spawn_roaming_patrol" then
+		self:debug_spawn_roaming_patrol(position)
+	elseif command_name == "debug_spawn_group_at_main_path" then
+		self:debug_spawn_group_at_main_path(nil, nil)
+	elseif command_name == "debug_spawn_breed_at_hidden_spawner" then
+		self:debug_spawn_breed_at_hidden_spawner(breed_name)
+	elseif command_name == "destroy_close_units" then
+		self:destroy_close_units(position, nil, 144)
+	elseif command_name == "destroy_all_units" then
+		self:destroy_all_units(true)
+	elseif command_name == "destroy_specials" then
+		self:destroy_specials()
 	end
 
-	print("Spawning group: " .. breed.name)
+	self._debug_spawn_breed_position = nil
+	self._debug_spawn_breed_enhancements = nil
+end
+
+ConflictDirector.rpc_debug_conflict_director_command = NOP
+
+ConflictDirector.debug_spawn_group = function (self, breed_name)
+	local breed = Breeds[breed_name]
+
+	print("Spawning group: " .. breed_name)
 	self:aim_spawning_group(breed, true)
 end
 
@@ -2426,6 +2468,7 @@ ConflictDirector.debug_spawn_group_at_main_path = function (self, main_path_inde
 	local main_path = (main_path_index and main_paths[main_path_index]) or main_paths[math.random(1, #main_paths)]
 	local sub_node = (sub_node_index and main_path.nodes[sub_node_index]) or main_path.nodes[math.random(1, #main_path.nodes)]
 	local data = {
+		wanted_size = 5,
 		group_type = "main_path_patrol",
 		breed = breed
 	}
@@ -2487,33 +2530,39 @@ ConflictDirector.debug_speed_running_intervention = function (self, t)
 	end
 end
 
-ConflictDirector.player_aim_raycast = function (self, world, only_breed, filter)
-	local player_manager = Managers.player
-	local player = player_manager:local_player(1)
-	local player_unit = player.player_unit
-	local result = nil
+local function player_aim_direction()
 	local in_free_flight = Managers.free_flight:active("global")
 
 	if in_free_flight then
 		local input_service = Managers.free_flight.input_manager:get_service("FreeFlight")
 		local data = Managers.free_flight.data.global
 		local world = Managers.world:world(data.viewport_world_name)
-		local physics_world = World.get_data(world, "physics_world")
 		local viewport = ScriptWorld.global_free_flight_viewport(world)
 		local camera = data.frustum_freeze_camera or ScriptViewport.camera(viewport)
 		local mouse = input_service:get("cursor")
 		local position = Camera.screen_to_world(camera, Vector3(mouse.x, mouse.y, 0), 0)
 		local direction = Camera.screen_to_world(camera, Vector3(mouse.x, mouse.y, 0), 1) - position
 		local raycast_dir = Vector3.normalize(direction)
-		result = PhysicsWorld.immediate_raycast(physics_world, position, raycast_dir, 100, "all", "collision_filter", filter)
+
+		return position, raycast_dir
 	else
+		local player_manager = Managers.player
+		local player = player_manager:local_player(1)
 		local camera_position = Managers.state.camera:camera_position(player.viewport_name)
 		local camera_rotation = Managers.state.camera:camera_rotation(player.viewport_name)
 		local camera_direction = Quaternion.forward(camera_rotation)
-		local filter = filter or "filter_ray_projectile"
-		local physics_world = World.get_data(world, "physics_world")
-		result = PhysicsWorld.immediate_raycast(physics_world, camera_position, camera_direction, 100, "all", "collision_filter", filter)
+
+		return camera_position, camera_direction
 	end
+end
+
+ConflictDirector.player_aim_raycast = function (self, world, only_breed, filter)
+	local position, raycast_dir = player_aim_direction()
+	local player_manager = Managers.player
+	local player = player_manager:local_player(1)
+	local player_unit = player.player_unit
+	local physics_world = World.get_data(world, "physics_world")
+	local result = PhysicsWorld.immediate_raycast(physics_world, position, raycast_dir, 100, "all", "collision_filter", filter)
 
 	if result then
 		local num_hits = #result
@@ -2612,6 +2661,45 @@ ConflictDirector.set_debug_spawn_side = function (self, side_id)
 	self.debug_spawn_side_id = side_id
 end
 
+ConflictDirector.cycle_debug_spawn_side = function (self)
+	self.debug_spawn_side_id = self.debug_spawn_side_id % #Managers.state.side:sides() + 1
+end
+
+ConflictDirector.aim_spawning_air = function (self, breed, on_navmesh, optional_delayed, optional_override_pos)
+	local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
+	local spawn_category = "debug_spawn"
+	local rot = Quaternion.identity()
+
+	if not position then
+		local raycast_dir = nil
+		position, raycast_dir = player_aim_direction()
+		position = position + raycast_dir * breed.air_spawning_distance
+	elseif breed.inside_wall_spawn_distance then
+		position = position - normal * breed.inside_wall_spawn_distance
+	end
+
+	local optional_data = breed.debug_spawn_optional_data or {}
+	optional_data.side_id = self.debug_spawn_side_id
+
+	optional_data.spawned_func = function (unit, breed, optional_data)
+		if breed.special then
+			self._alive_specials[#self._alive_specials + 1] = unit
+		end
+
+		local entity_manager = Managers.state.entity
+		local ai_system = entity_manager:system("ai_system")
+
+		if ai_system.ai_debugger and not AiUtils.unit_alive(ai_system.ai_debugger.active_unit) and not script_data.ai_disable_auto_ai_debugger_target then
+			ai_system.ai_debugger.active_unit = unit
+			script_data.debug_unit = unit
+		end
+	end
+
+	optional_data.ignore_breed_limits = true
+
+	self:spawn_queued_unit(breed, Vector3Box(position), QuaternionBox(rot), spawn_category, nil, nil, optional_data)
+end
+
 ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_delayed, optional_override_pos, additional_data)
 	local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
 
@@ -2619,6 +2707,8 @@ ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_dela
 		return position
 	elseif optional_override_pos then
 		position = optional_override_pos
+	elseif self._debug_spawn_breed_position then
+		position = self._debug_spawn_breed_position
 	end
 
 	if not position then
@@ -2664,9 +2754,7 @@ ConflictDirector.aim_spawning = function (self, breed, on_navmesh, optional_dela
 	end
 end
 
-ConflictDirector.debug_spawn_roaming_patrol = function (self)
-	local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
-
+ConflictDirector.debug_spawn_roaming_patrol = function (self, position)
 	if not position then
 		return
 	end
@@ -2736,6 +2824,10 @@ end
 ConflictDirector.aim_spawning_group = function (self, breed, on_navmesh, formation_name)
 	local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
 
+	if self._debug_spawn_breed_position then
+		position = self._debug_spawn_breed_position
+	end
+
 	if not position then
 		return
 	end
@@ -2804,7 +2896,7 @@ local spawn_group_positions = {}
 ConflictDirector.spawn_group = function (self, patrol_template_name, position, data)
 	local group_type = data.group_type
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
-	local wanted_size = data.wanted_size
+	local wanted_size = data.wanted_size or 0
 	local num_attempts = 8
 	local group_size = 0
 	local spawn_in_grid = group_type == "grid"
@@ -3075,6 +3167,11 @@ end
 
 ConflictDirector.debug_spawn_at_raw = function (self, breed, optional_data, side_id)
 	local pos = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
+
+	if self._debug_spawn_breed_position then
+		pos = self._debug_spawn_breed_position
+	end
+
 	local rot = Quaternion.identity()
 	optional_data = optional_data or {}
 
@@ -3166,7 +3263,10 @@ ConflictDirector.ai_ready = function (self, level_seed)
 		fassert(self.default_enemy_side_id, "default enemy side id is missing")
 	else
 		self.default_enemy_side_id = 2
+		enemy_side = Managers.state.side:get_side(2)
 	end
+
+	self._enemy_side = enemy_side
 
 	print("CurrentConflictSettings", self.current_conflict_settings)
 
@@ -3308,49 +3408,9 @@ ConflictDirector.level_flow_event = function (self, event_name)
 	LevelHelper:flow_event(self._world, event_name)
 end
 
-SPARSE_GRID = {}
-local cell_size_xy = 0.3
-local cell_size_z = 0.3
-
-ConflictDirector.draw_sparse_grid = function (self, pos)
-	if not pos then
-		return
-	end
-
-	local floor = math.floor
-	local xp = floor(pos.x / cell_size_xy + 0.5)
-	local yp = floor(pos.y / cell_size_xy + 0.5)
-	local zp = floor(pos.z / cell_size_z + 0.5)
-	local hash = xp * 0.0001 + yp + zp * 10000
-
-	QuickDrawer:sphere(Vector3(floor(pos.x / cell_size_xy) * cell_size_xy, floor(pos.y / cell_size_xy) * cell_size_xy, floor(pos.z / cell_size_z) * cell_size_z), cell_size_xy * 0.5 - 0.01, Color(0, 200, 200))
-	QuickDrawer:sphere(pos, 0.1, Color(255, 200, 100))
-
-	for hash, cell in pairs(SPARSE_GRID) do
-		QuickDrawer:sphere(Vector3(cell.x, cell.y, cell.z), cell_size_xy * 0.5, Color(0, 0, 200))
-	end
-end
-
-ConflictDirector.sparse_grid_test = function (self, pos, unit)
-	local floor = math.floor
-	local xp = floor(pos.x / cell_size_xy + 0.5)
-	local yp = floor(pos.y / cell_size_xy + 0.5)
-	local zp = floor(pos.z / cell_size_z + 0.5)
-	local hash = xp * 0.0001 + yp + zp * 10000
-
-	if SPARSE_GRID[hash] then
-		Debug.text("SPARSE GRID: OCCUPIED")
-	else
-		SPARSE_GRID[hash] = {
-			u = unit,
-			x = xp * cell_size_xy,
-			y = yp * cell_size_xy,
-			z = zp * cell_size_z
-		}
-
-		print("SPARSE GRID:", hash, pos)
-		QuickDrawer:sphere(pos, 0.7, Color(200, 0, 0))
-	end
+ConflictDirector.jslots = function (self, unit, attacker_unit)
+	local p1 = POSITION_LOOKUP[unit]
+	local p2 = POSITION_LOOKUP[unit]
 end
 
 ConflictDirector.update_server_debug = function (self, t, dt)
@@ -3361,47 +3421,10 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		self.spawn_zone_baker:draw_zone_info_on_screen()
 	end
 
-	self:update_kill_tester()
-
 	if script_data.debug_current_threat_value then
 		local value, num = self:get_threat_value()
 
 		Debug.text("DELAY: HORDE %s, SPECIALS %s, MINI_PATROL %s, Threat value: %.2f, num aggroed: %d", tostring(self.delay_horde), tostring(self.delay_specials), tostring(self.delay_mini_patrol), value, num)
-	end
-
-	if DebugKeyHandler.key_pressed("y", "test cover points", "ai", "left shift") then
-		if false then
-			if not player_positions[1] then
-				return
-			end
-
-			local bp = self.level_analysis.cover_points_broadphase
-			local green = Color(255, 0, 240, 0)
-			local red = Color(255, 240, 0, 0)
-			local found_units = {}
-
-			Broadphase.query(bp, player_positions[1], 20, found_units)
-
-			local player_pos = player_positions[1]
-
-			for i = 1, #found_units, 1 do
-				local unit = found_units[i]
-				local pos = Unit.local_position(unit, 0)
-				local rot = Unit.local_rotation(unit, 0)
-				local to_cover_point = Vector3.normalize(player_pos - pos)
-				local valid = Vector3.dot(Quaternion.forward(rot), to_cover_point) > 0.9
-
-				if valid then
-					QuickDrawerStay:sphere(pos, 1, green)
-					QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), green)
-				else
-					QuickDrawerStay:sphere(pos, 1, red)
-					QuickDrawerStay:line(pos + Vector3(0, 0, 1), pos + Quaternion.forward(rot) * 2 + Vector3(0, 0, 1), red)
-				end
-			end
-		end
-
-		self.specials_pacing:get_special_spawn_pos()
 	end
 
 	if script_data.show_current_conflict_settings then
@@ -3419,30 +3442,11 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		end
 	end
 
-	local side = self._hero_side
-	local PLAYER_POSITIONS = side.PLAYER_POSITIONS
-
-	if self.ik_tentacle then
-		self.ik_tentacle:set_target_pos(PLAYER_POSITIONS[1] + Vector3(0, 0, 1), 20)
-		self.ik_tentacle:solve(t, dt)
-	end
-
-	if self.drag_test then
-		local drag_test = self.drag_test
-		local apos = drag_test.apos:unbox()
-		local bpos = drag_test.bpos:unbox()
-		local apos_new = PLAYER_POSITIONS[1] + Vector3(0, 0, 1.8)
-		local pole_vec = Vector3.normalize(bpos - apos_new) * drag_test.pole_length
-		local bpos_new = apos_new + pole_vec
-
-		drag_test.bpos:store(bpos_new)
-		drag_test.apos:store(apos_new)
-		QuickDrawer:sphere(bpos_new, 0.3, Color(0, 200, 40))
-		QuickDrawer:line(bpos_new, apos_new, Color(0, 200, 40))
-	end
+	local side = Managers.state.side:get_side(self.default_enemy_side_id)
+	slot6 = side.units_lookup
 
 	if DebugKeyHandler.key_pressed("t", "test terror", "ai", "left shift") then
-		return
+		print("Pressed t")
 
 		local position, distance, normal, actor = self:player_aim_raycast(self._world, false, "filter_ray_horde_spawn")
 
@@ -3452,66 +3456,32 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 			return
 		end
 
-		local extension_init_data = {
-			props_system = {
-				start_size = 0.3,
-				duration = 0.5,
-				end_size = 1
+		local event_data = {
+			side_id = self.debug_spawn_side_id,
+			debug_pos = position,
+			debug_dir = {
+				0,
+				1
 			}
 		}
-		local spawn_unit_name = "units/props/nurgle_liquid_blob/nurgle_liquid_blob_01"
-		local network_template_name = "nurgle_liquid_blob"
-		local blob_unit = Managers.state.unit_spawner:spawn_network_unit(spawn_unit_name, "nurgle_liquid_blob", extension_init_data, position)
+
+		TerrorEventMixer.start_event("encampment", event_data)
+
+		local event_data = {
+			side_id = 1,
+			debug_pos = position + Vector3(0, 8, 0),
+			debug_dir = {
+				0,
+				-1
+			}
+		}
+
+		TerrorEventMixer.start_event("encampment", event_data)
 
 		return
 
-		print("Creating tentacle")
-
-		local start_pos = PLAYER_POSITIONS[1] + Vector3(1, 0, 0)
-		local target_pos = PLAYER_POSITIONS[1] + Vector3(0, 0, 1)
-		local joints = {}
-
-		for i = 1, 14, 1 do
-			joints[i] = Vector3(0, 0, i * 0.5)
-		end
-
-		self.ik_tentacle = IkChain:new(joints, start_pos, target_pos, 0.01, 0.8)
-
-		self.ik_tentacle:solve(t, dt)
-		print("Pressed t")
-
-		return
-
-		self._next_horde_time = 0
-
-		TerrorEventMixer.start_event("test_event_patrol")
-
-		return
-
-		print("Creating tentacle")
-
-		local start_pos = PLAYER_POSITIONS[1] + Vector3(1, 0, 0)
-		local target_pos = PLAYER_POSITIONS[1] + Vector3(0, 0, 1)
-		local joints = {}
-
-		for i = 1, 30, 1 do
-			joints[i] = Vector3(0, 0, i * 0.5)
-		end
-
-		self.ik_tentacle = IkChain:new(joints, start_pos, target_pos, 0.01, 0.8)
-
-		self.ik_tentacle:solve(t, dt)
-
-		return
-
-		local debug_breed = self:get_debug_breed()
-
-		if debug_breed == Breeds.skaven_clan_rat or debug_breed == Breeds.skaven_slave or debug_breed == Breeds.skaven_storm_vermin then
-			local event_data = {}
-
-			TerrorEventMixer.start_event("steady_70_horde", event_data)
-		else
-			Debug.sticky_text("Can't spawn horde of breed type %s", self:get_debug_breed_name())
+		if ConflictDirectorTests.start_test(self, t, dt) then
+			return
 		end
 	end
 
@@ -3567,49 +3537,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 	if script_data.show_where_ai_is then
 		ConflictUtils.show_where_ai_is(self._spawned)
-	end
-
-	local debug_breed_name = self:get_debug_breed_name()
-
-	if DebugKeyHandler.key_pressed("o", "switch spawn breed", "ai") then
-		self.debug_breed_picker:activate()
-	end
-
-	self.debug_breed_picker:update(t, dt)
-
-	if DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "left ctrl") then
-		self:debug_spawn_group(t)
-	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "right ctrl") then
-		self:debug_spawn_roaming_patrol()
-	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "left alt") then
-		self:debug_spawn_group_at_main_path(nil, nil)
-	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai") then
-		self:debug_spawn_breed(t)
-	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "left shift") then
-		local pos = self:debug_spawn_breed(t, true)
-
-		if pos then
-			self._debug_spawn_breed_pos = Vector3Box(pos)
-			self._debug_spawn_breed_delayed = t + 3
-		end
-	elseif DebugKeyHandler.key_pressed("o", "spawn hidden " .. debug_breed_name, "ai", "left ctrl") then
-		self:debug_spawn_breed_at_hidden_spawner(t)
-	end
-
-	if self._debug_spawn_breed_delayed and self._debug_spawn_breed_delayed < t then
-		self._debug_spawn_breed_delayed = nil
-
-		self:debug_spawn_breed(t, false, self._debug_spawn_breed_pos:unbox())
-	end
-
-	if DebugKeyHandler.key_pressed("u", "unspawn close AIs", "ai") then
-		self:destroy_close_units(nil, 144)
-	elseif DebugKeyHandler.key_pressed("l", "unspawn all AIs", "ai") then
-		self:destroy_all_units(true)
-	end
-
-	if DebugKeyHandler.key_pressed("m", "unspawn all AI specials", "ai") then
-		self:destroy_specials()
 	end
 
 	if DebugKeyHandler.key_pressed("o", "draw spawn zones", "ai", "left shift") then
@@ -3686,47 +3613,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		end
 	end
 
-	local test = false
-
-	if test then
-		if DebugKeyHandler.key_pressed("r", "test", "ai") then
-			print("ASTAR")
-
-			local start, goal = self.level_analysis:get_start_and_finish()
-			local tri1 = GwNavTraversal.get_seed_triangle(self.nav_world, player_positions[1])
-			local tri2 = GwNavTraversal.get_seed_triangle(self.nav_world, goal:unbox())
-
-			if not tri1 or not tri2 then
-				return false
-			end
-
-			local group1 = self.navigation_group_manager:get_polygon_group(tri1)
-			local group2 = self.navigation_group_manager:get_polygon_group(tri2)
-			local nav_groups = self.navigation_group_manager._navigation_groups
-			local path, length = LuaAStar.a_star_plain(nav_groups, group1, group2)
-			self.path = path
-
-			print("Generated path:", #path, length)
-		end
-
-		if self.path then
-			local path = self.path
-			local old_pos = nil
-
-			for i = 1, #path, 1 do
-				local pos = path[i]:get_group_center():unbox()
-
-				QuickDrawer:sphere(pos, 2)
-
-				if old_pos then
-					QuickDrawer:line(pos + Vector3(0, 0, 1), old_pos + Vector3(0, 0, 1), Color(255, 244, 143, 7))
-				end
-
-				old_pos = pos
-			end
-		end
-	end
-
 	if DebugKeyHandler.key_pressed("h", "spawn_horde", "ai") and not DamageUtils.is_in_inn then
 		self:debug_spawn_horde()
 	end
@@ -3758,7 +3644,8 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if script_data.debug_player_positioning then
-		local cluster_utility, lonliness_pos, loneliness_value, lonliest_player_unit = self:get_cluster_and_loneliness(10)
+		local enemy_side = self._enemy_side
+		local cluster_utility, lonliness_pos, loneliness_value, lonliest_player_unit = self:get_cluster_and_loneliness(10, enemy_side.ENEMY_PLAYER_POSITIONS, enemy_side.ENEMY_PLAYER_UNITS)
 
 		if lonliest_player_unit then
 			QuickDrawer:sphere(position_lookup[lonliest_player_unit], 0.88)
@@ -3780,9 +3667,6 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 		local main_path_info = self.main_path_info
 		local ahead_unit = main_path_info.ahead_unit
 		local dist_to_intervention = 0
-
-		for slot25, slot26 in pairs(self.main_path_player_info) do
-		end
 
 		if ahead_unit then
 			local player_info = self.main_path_player_info[ahead_unit]
@@ -3907,72 +3791,6 @@ local colors = {
 		255
 	}
 }
-local cylinder_obstacles = {}
-local cylinder_state = "spawn"
-local cut_type = "soft"
-
-ConflictDirector.spawn_mesh_cut = function (self)
-	local world = self._world
-	local nav_world = self.nav_world
-	local position, distance, normal, actor = self:player_aim_raycast(world, false, "filter_ray_horde_spawn")
-
-	if not position then
-		print("No spawn pos found")
-
-		return
-	end
-
-	for o, _ in pairs(cylinder_obstacles) do
-		GwNavCylinderObstacle.set_does_trigger_tagvolume(o, false)
-		GwNavCylinderObstacle.remove_from_world(o)
-		GwNavCylinderObstacle.destroy(o)
-	end
-
-	table.clear(cylinder_obstacles)
-
-	local spawn_pos = LocomotionUtils.pos_on_mesh(self.nav_world, position)
-
-	if not spawn_pos then
-		print("No mesh found at spawn pos")
-
-		return
-	end
-
-	local xc = 1
-	local yc = 2
-	local cell_size = 2
-	local radius = cell_size / 2 + 0.3
-
-	for i = -xc, xc, 1 do
-		for j = -yc, yc, 1 do
-			local pos = spawn_pos + Vector3(i * cell_size, j * cell_size, -1)
-
-			QuickDrawerStay:sphere(pos, radius)
-
-			local o = nil
-
-			if cut_type == "soft" then
-				o = GwNavCylinderObstacle.create(nav_world, pos, 3, radius, false, Color(255, 255, 0), LAYER_ID_MAPPING.fire_grenade)
-
-				GwNavCylinderObstacle.add_to_world(o)
-				GwNavCylinderObstacle.set_does_trigger_tagvolume(o, true)
-			elseif cut_type == "hard" then
-				o = GwNavCylinderObstacle.create_exclusive(nav_world, pos, 3, radius)
-
-				GwNavCylinderObstacle.add_to_world(o)
-				GwNavCylinderObstacle.set_does_trigger_tagvolume(o, true)
-			else
-				local t = GwNavTraversal.get_seed_triangle(nav_world, pos)
-				local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, t)
-
-				GwNavTraversal.get_neighboring_triangles(poly)
-				GwNavNavTagVolume.create(nav_world, poly_line, pos.z - 2, pos.z + 2, false, Color(0, 200, 45), LAYER_ID_MAPPING.fire_grenade)
-			end
-
-			cylinder_obstacles[o] = true
-		end
-	end
-end
 
 ConflictDirector.client_ready = function (self)
 	local level_settings = LevelSettings[self._level_key]
@@ -3993,61 +3811,6 @@ ConflictDirector.hot_join_sync = function (self, peer_id)
 	end
 end
 
-ConflictDirector.update_kill_tester = function (self)
-	if not script_data.kill_test then
-		return
-	end
-
-	local breeds = {
-		"skaven_slave",
-		"skaven_slave",
-		"skaven_slave",
-		"skaven_clan_rat",
-		"chaos_marauder",
-		"chaos_fanatic",
-		"chaos_fanatic",
-		"chaos_fanatic"
-	}
-
-	if not self._kill_list then
-		self._kill_list = {}
-		self._kill_spawn_index = 1
-	end
-
-	local kill_spawn_index = self._kill_spawn_index % #breeds + 1
-	self._kill_spawn_index = kill_spawn_index
-	local kill_list = self._kill_list
-	local breed_name = breeds[kill_spawn_index]
-	local breed = Breeds[breed_name]
-	local optional_data = {
-		ignore_breed_limits = true,
-		spawned_func = function (ai_unit, breed, optional_data)
-			table.insert(self._kill_list, 1, ai_unit)
-		end
-	}
-	local spawn_pos = Vector3Box(Vector3(0, 0, 0) + Vector3(kill_spawn_index * 1, 0, 0))
-	local spawn_rot = QuaternionBox()
-
-	self:spawn_queued_unit(breed, spawn_pos, spawn_rot, "debug_spawn", nil, nil, optional_data)
-
-	local size = #kill_list
-
-	if size >= 3 then
-		local kill_unit = kill_list[size]
-		kill_list[size] = nil
-		local health_extension = ScriptUnit.has_extension(kill_unit, "health_system")
-
-		if health_extension and health_extension:is_alive() then
-			local damage_amount = 255
-			local hit_zone_name = "full"
-			local damage_type = "forced"
-			local damage_direction = Vector3(0, 0, 1)
-
-			DamageUtils.add_damage_network(kill_unit, kill_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, "debug")
-		end
-	end
-end
-
 ConflictDirector.set_peaks = function (self, peaks)
 	self._peak_delayer:set_peaks(peaks)
 end
@@ -4056,8 +3819,12 @@ ConflictDirector.get_peaks = function (self)
 	return self._peak_delayer:get_peaks()
 end
 
+ConflictDirector.is_near_or_in_a_peak = function (self)
+	return self._peak_delayer:is_near_or_in_a_peak()
+end
+
 ConflictDirector.spawn_breed_func = function (self, breed_name)
-	local picked_enhancements = self.debug_breed_picker.picked_enhancements
+	local picked_enhancements = self._debug_spawn_breed_enhancements
 
 	if picked_enhancements and next(picked_enhancements) then
 		self:debug_spawn_variant(breed_name, picked_enhancements)

@@ -270,4 +270,20 @@ DeathSystem.rpc_forced_kill = function (self, channel_id, unit_go_id, damage_typ
 	end
 end
 
+DeathSystem.get_dead = function (self, fill_table)
+	local sum = 0
+	local active_reactions = self.active_reactions
+
+	for network_type, templates in pairs(active_reactions) do
+		for template, units in pairs(templates) do
+			for unit, extension in pairs(units) do
+				sum = sum + 1
+				fill_table[unit] = true
+			end
+		end
+	end
+
+	return sum
+end
+
 return

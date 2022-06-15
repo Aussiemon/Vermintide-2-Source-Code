@@ -377,11 +377,19 @@ settings.buff_templates = {
 						custom_variables = {
 							{
 								name = "radius",
-								value = Vector3Box(4, 4, 1)
+								value = {
+									z = 1,
+									x = 4,
+									y = 4
+								}
 							},
 							{
 								name = "diameter",
-								value = Vector3Box(8, 8, 1)
+								value = {
+									z = 1,
+									x = 8,
+									y = 8
+								}
 							}
 						}
 					}

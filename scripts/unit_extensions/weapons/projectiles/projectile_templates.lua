@@ -234,6 +234,43 @@ ProjectileTemplates.impact_templates = {
 				return true
 			end
 		}
+	},
+	no_owner_direct_impact = {
+		server = {
+			execute = function (world, damage_source, projectile_unit, recent_impacts, num_impacts, owner_unit, explosion_template)
+				if explosion_template then
+					if explosion_template.explosion then
+						local blackboard = BLACKBOARDS[owner_unit]
+
+						AiUtils.ai_explosion(projectile_unit, owner_unit, blackboard, damage_source, explosion_template)
+					end
+
+					local first_hit_position = nil
+
+					if explosion_template.aoe then
+						first_hit_position = Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+
+						DamageUtils.create_aoe(world, owner_unit, first_hit_position, damage_source, explosion_template)
+					end
+
+					if explosion_template.server_hit_func then
+						first_hit_position = first_hit_position or Vector3Box.unbox(recent_impacts[ProjectileImpactDataIndex.POSITION])
+
+						explosion_template.server_hit_func(projectile_unit, damage_source, owner_unit, first_hit_position, recent_impacts, explosion_template)
+					end
+				end
+
+				return true
+			end
+		},
+		client = {
+			execute = function (world, damage_source, unit, recent_impacts, num_impacts, owner_unit)
+				Unit.set_unit_visibility(unit, false)
+				Unit.flow_event(unit, "lua_projectile_impact")
+
+				return true
+			end
+		}
 	}
 }
 

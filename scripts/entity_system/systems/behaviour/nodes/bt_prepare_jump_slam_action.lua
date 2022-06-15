@@ -129,7 +129,7 @@ BTPrepareJumpSlamAction.test_trajectory_new = function (blackboard, p1, p2, segm
 	local wedge = Vector3(0, 0, 0.05)
 	local in_los, velocity, time_of_flight = nil
 	local target_locomotion = ScriptUnit.extension(blackboard.target_unit, "locomotion_system")
-	local target_velocity = target_locomotion.velocity_current:unbox()
+	local target_velocity = target_locomotion:current_velocity()
 	local target_speed_squared = Vector3.length_squared(target_velocity)
 
 	if target_speed_squared < 0.2 then

@@ -5,7 +5,9 @@ GameModeSettings = GameModeSettings or {}
 GameModeSettings.base = {
 	cap_power_level = true,
 	class_name = "GameModeBase",
+	use_level_progress = true,
 	visible = false,
+	use_story_lines = true,
 	object_sets = {},
 	game_mode_states = {
 		"initial_state"

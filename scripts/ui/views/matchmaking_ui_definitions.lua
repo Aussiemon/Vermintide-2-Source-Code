@@ -193,6 +193,20 @@ local scenegraph_definition = {
 			1
 		}
 	},
+	slot_reservations = {
+		vertical_alignment = "center",
+		parent = "detailed_info_box",
+		horizontal_alignment = "center",
+		size = {
+			556,
+			160
+		},
+		position = {
+			0,
+			-30,
+			1
+		}
+	},
 	timer_bg = {
 		vertical_alignment = "top",
 		parent = "detailed_info_box",
@@ -315,6 +329,118 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
+			0,
+			2
+		}
+	},
+	versus_cancel_text_input = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			100,
+			0,
+			2
+		}
+	},
+	versus_cancel_text_prefix = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			100,
+			0,
+			2
+		}
+	},
+	versus_cancel_text_suffix = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			100,
+			0,
+			2
+		}
+	},
+	versus_cancel_icon = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			36,
+			26
+		},
+		position = {
+			-100,
+			0,
+			2
+		}
+	},
+	versus_menu_text_input = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			300,
+			0,
+			2
+		}
+	},
+	versus_menu_text_prefix = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			300,
+			0,
+			2
+		}
+	},
+	versus_menu_text_suffix = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			400,
+			50
+		},
+		position = {
+			300,
+			0,
+			2
+		}
+	},
+	versus_menu_icon = {
+		vertical_alignment = "center",
+		parent = "cancel_text_field",
+		horizontal_alignment = "center",
+		size = {
+			36,
+			26
+		},
+		position = {
+			100,
 			0,
 			2
 		}
@@ -449,19 +575,23 @@ local widget_definitions = {
 	status_text = UIWidgets.create_simple_text("n/a", "status_text", nil, nil, matchmaking_status_text_style),
 	player_status_1 = create_status_widget("matchmaking_light_02", {
 		-89,
-		43
+		43,
+		1
 	}),
 	player_status_2 = create_status_widget("matchmaking_light_02", {
 		-71,
-		22
+		22,
+		1
 	}),
 	player_status_3 = create_status_widget("matchmaking_light_02", {
 		-45,
-		12
+		12,
+		1
 	}),
 	player_status_4 = create_status_widget("matchmaking_light_02", {
 		-18,
-		15
+		15,
+		1
 	})
 }
 local widget_detail_definitions = {
@@ -952,6 +1082,7 @@ return {
 	deus_widget_definitions = deus_widget_definitions,
 	deus_widget_detail_definitions = deus_widget_detail_definitions,
 	cancel_input_widgets = cancel_input_widgets,
+	versus_input_widgets = versus_input_widgets,
 	debug_widget_definitions = debug_widget_definitions,
 	scenegraph_definition = scenegraph_definition
 }

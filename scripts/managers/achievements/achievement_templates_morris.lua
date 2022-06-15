@@ -176,6 +176,7 @@ add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journ
 add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_khorne", DEUS_GOD_TYPES.KHORNE, DifficultySettings.normal.rank, "achievement_morris_khorne", "morris", 96, nil)
 add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_slaanesh", DEUS_GOD_TYPES.SLAANESH, DifficultySettings.normal.rank, "achievement_morris_slaanesh", "morris", 97, nil)
 add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_tzeentch", DEUS_GOD_TYPES.TZEENTCH, DifficultySettings.normal.rank, "achievement_morris_tzeentch", "morris", 98, nil)
+add_journey_dominant_god_complete_challenge(achievements, "morris_complete_journey_dominant_god_belakor", DEUS_GOD_TYPES.BELAKOR, DifficultySettings.normal.rank, "achievement_morris_tzeentch", "belakor", 99, nil)
 
 local difficulties = {
 	"harder",

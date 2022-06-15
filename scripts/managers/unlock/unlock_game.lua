@@ -28,6 +28,10 @@ UnlockGame.remove_backend_reward_id = function (self)
 	return
 end
 
+UnlockGame.set_status_changed = function (self, value)
+	return
+end
+
 UnlockGame.unlocked = function (self)
 	return
 end

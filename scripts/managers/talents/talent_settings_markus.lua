@@ -1473,8 +1473,9 @@ TalentBuffTemplates.empire_soldier = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
-				max_stacks = 5,
 				on_max_stacks_func = "add_remove_buffs",
+				max_stacks = 5,
+				is_cooldown = true,
 				icon = "markus_mercenary_crit_count",
 				max_stack_data = {
 					buffs_to_add = {

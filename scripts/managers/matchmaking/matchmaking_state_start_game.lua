@@ -311,9 +311,25 @@ MatchmakingStateStartGame.get_transition = function (self)
 	end
 end
 
+MatchmakingStateStartGame._send_rpc_clients = function (self, rpc_name, ...)
+	if self.state_context.clients_not_in_game_session then
+		local my_peer_id = Network.peer_id()
+		local lobby_members = self._lobby:members()
+		local members = lobby_members:get_members()
+
+		for _, peer_id in pairs(members) do
+			if peer_id ~= my_peer_id then
+				self._network_transmit:send_rpc(rpc_name, peer_id, ...)
+			end
+		end
+	else
+		self._network_transmit:send_rpc_clients(rpc_name, ...)
+	end
+end
+
 MatchmakingStateStartGame._start_game = function (self)
 	self:_capture_telemetry()
-	self._network_transmit:send_rpc_clients("rpc_matchmaking_join_game")
+	self:_send_rpc_clients("rpc_matchmaking_join_game")
 
 	local game_server_lobby_client = self.state_context.game_server_lobby_client
 
@@ -324,7 +340,7 @@ MatchmakingStateStartGame._start_game = function (self)
 		}
 		local ip_address = game_server_lobby_client:ip_address()
 
-		self._network_transmit:send_rpc_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
+		self:_send_rpc_clients("rpc_matchmaking_broadcast_game_server_ip_address", ip_address)
 	else
 		Managers.state.game_mode:complete_level()
 	end

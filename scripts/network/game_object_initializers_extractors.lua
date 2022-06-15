@@ -2214,7 +2214,8 @@ go_type_table = {
 				cosmetic_system = {
 					profile = profile,
 					skin_name = skin_name,
-					frame_name = frame_name
+					frame_name = frame_name,
+					player = player
 				},
 				buff_system = {
 					is_husk = true

@@ -31,34 +31,34 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 
 	local target_position = POSITION_LOOKUP[target_unit]
 	local distance_target_sq = Vector3.distance_squared(target_position, position)
+	local closest_position = nil
+	local best_score = math.huge
+	local reach_distance_squared = blackboard.breed.reach_distance^2
 	local position_list, target_on_mesh = nil
 	local whereabouts_extension = ScriptUnit.has_extension(target_unit, "whereabouts_system")
 
 	if whereabouts_extension then
 		position_list, target_on_mesh = whereabouts_extension:closest_positions_when_outside_navmesh()
-	end
 
-	blackboard.target_outside_navmesh = not target_on_mesh
-	local closest_position = nil
-	local best_score = math.huge
-	local reach_distance_squared = blackboard.breed.reach_distance^2
+		for i = 1, #position_list, 1 do
+			local test_position = position_list[i]:unbox()
+			local score = 0
+			local distance_enemy_and_target_sq = Vector3.distance_squared(target_position, test_position)
 
-	for i = 1, #position_list, 1 do
-		local test_position = position_list[i]:unbox()
-		local score = 0
-		local distance_enemy_and_target_sq = Vector3.distance_squared(target_position, test_position)
+			if distance_enemy_and_target_sq < reach_distance_squared * 4 then
+				score = distance_enemy_and_target_sq
+			else
+				local distance_point_sq = Vector3.distance_squared(test_position, position)
+				score = score + distance_point_sq + distance_target_sq
+			end
 
-		if distance_enemy_and_target_sq < reach_distance_squared * 4 then
-			score = distance_enemy_and_target_sq
-		else
-			local distance_point_sq = Vector3.distance_squared(test_position, position)
-			score = score + distance_point_sq + distance_target_sq
+			if best_score > score then
+				closest_position = test_position
+				best_score = score
+			end
 		end
 
-		if best_score > score then
-			closest_position = test_position
-			best_score = score
-		end
+		blackboard.target_outside_navmesh = not target_on_mesh
 	end
 
 	local navigation_extension = blackboard.navigation_extension

@@ -300,10 +300,13 @@ StatusUtils = {
 		if not LEVEL_EDITOR_TEST then
 			local network_manager = Managers.state.network
 			local go_id = network_manager:unit_game_object_id(affected_unit)
-			local other_go_id = network_manager:unit_game_object_id(attacking_unit) or NetworkConstants.invalid_game_object_id
-			local status_int = (overpowered and NetworkLookup.overpowered_templates[overpowered_template_name]) or 0
 
-			network_manager.network_transmit:send_rpc_clients("rpc_status_change_int_and_unit", NetworkLookup.statuses.overpowered, status_int, go_id, other_go_id)
+			if go_id and go_id ~= NetworkConstants.invalid_game_object_id then
+				local other_go_id = network_manager:unit_game_object_id(attacking_unit) or NetworkConstants.invalid_game_object_id
+				local status_int = (overpowered and NetworkLookup.overpowered_templates[overpowered_template_name]) or 0
+
+				network_manager.network_transmit:send_rpc_clients("rpc_status_change_int_and_unit", NetworkLookup.statuses.overpowered, status_int, go_id, other_go_id)
+			end
 		end
 	end,
 	set_overcharge_exploding = function (unit, exploding)

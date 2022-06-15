@@ -536,11 +536,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = {
 			600,
-			window_size[2]
+			window_size[2] - 220
 		},
 		position = {
 			0,
-			-25,
+			-145,
 			0
 		}
 	},
@@ -550,11 +550,11 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = {
 			600,
-			window_size[2]
+			window_size[2] - 220
 		},
 		position = {
 			10,
-			0,
+			-120,
 			1
 		}
 	},
@@ -564,7 +564,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "right",
 		size = {
 			600,
-			window_size[2]
+			window_size[2] - 220
 		}
 	}
 }
@@ -892,7 +892,7 @@ local chat_output_widget = {
 			name_color_system = Colors.get_table("gold"),
 			offset = {
 				0,
-				-10,
+				45,
 				10
 			}
 		}

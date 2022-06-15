@@ -72,7 +72,7 @@ EmotePhotomodeUI._draw = function (self, dt, t)
 		UIRenderer.draw_widget(ui_renderer, widget)
 	end
 
-	local gamepad_active = Managers.input:is_device_active("gamepad") or not IS_WINDOWS
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 
 	if gamepad_active then
 		for _, widget in pairs(self._widgets_gamepad) do

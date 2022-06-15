@@ -127,6 +127,7 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 			group_type = extension_init_data.group_type,
 			group_start_position = extension_init_data.group_start_position,
 			despawn_at_end = despawn_at_end,
+			side_id = extension_init_data.side_id,
 			side = extension_init_data.side
 		}
 		local spline_name = group.spline_name
@@ -148,6 +149,8 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 		if setup_group then
 			setup_group(self.world, self.nav_world, group, unit)
 		end
+	elseif extension_init_data.insert_into_group then
+		group.size = group.size + 1
 	end
 
 	local breed = extension_init_data.breed

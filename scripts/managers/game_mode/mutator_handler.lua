@@ -30,7 +30,8 @@ MutatorHandler.init = function (self, mutators, is_server, has_local_client, wor
 	network_event_delegate:register(self, unpack(RPCS))
 
 	local mutator_context = {
-		world = world
+		world = world,
+		is_server = is_server
 	}
 	self._mutator_context = mutator_context
 	local active_mutators = {}
@@ -607,6 +608,10 @@ MutatorHandler._activate_mutator = function (self, name, active_mutators, mutato
 		end
 	end
 
+	if template.register_rpcs then
+		template.register_rpcs(mutator_context, mutator_data, self.network_event_delegate)
+	end
+
 	active_mutators[name] = mutator_data
 
 	if self._is_server then
@@ -623,6 +628,10 @@ MutatorHandler._deactivate_mutator = function (self, name, active_mutators, muta
 
 	local template = MutatorTemplates[name]
 	local mutator_data = active_mutators[name]
+
+	if template.unregister_rpcs then
+		template.unregister_rpcs(mutator_context, mutator_data)
+	end
 
 	if self._is_server then
 		local server_template = template.server

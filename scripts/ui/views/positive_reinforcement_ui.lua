@@ -27,8 +27,6 @@ PositiveReinforcementUI.init = function (self, parent, ingame_ui_context)
 
 	self._positive_enforcement_events = {}
 	self._positive_enforcement_lookup = {}
-	self._hash_order = {}
-	self._hash_widget_lookup = {}
 	self._animations = {}
 	local event_manager = Managers.state.event
 
@@ -105,7 +103,6 @@ PositiveReinforcementUI.add_event = function (self, hash, is_local_player, color
 	if not script_data.disable_reinforcement_ui then
 		local events = self._positive_enforcement_events
 		local full_hash = hash .. event_type
-		local hash_order = self._hash_order
 		local settings_positive_reinforcement = UISettings.positive_reinforcement
 		local t = Managers.time:time("ui")
 		local increment_duration = settings_positive_reinforcement.increment_duration
@@ -287,15 +284,8 @@ local customizer_data = {
 	registry_key = "kill_feed",
 	drag_scenegraph_id = "pivot_dragger"
 }
-local DO_RELOAD = false
 
 PositiveReinforcementUI.update = function (self, dt, t)
-	if DO_RELOAD then
-		self:create_ui_elements()
-
-		DO_RELOAD = false
-	end
-
 	HudCustomizer.run(self.ui_renderer, self.ui_scenegraph, customizer_data)
 
 	local ui_renderer = self.ui_renderer

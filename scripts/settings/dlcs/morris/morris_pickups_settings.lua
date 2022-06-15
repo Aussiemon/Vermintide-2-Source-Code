@@ -141,6 +141,21 @@ settings.pickups = {
 			hud_description = "deus_rally_flag_01_hud_desc",
 			pickup_sound_event = "pickup_medkit",
 			can_spawn_func = can_spawn_deus_pickup
+		},
+		tiny_explosive_barrel = {
+			only_once = true,
+			individual_pickup = false,
+			type = "explosive_inventory_item",
+			item_description = "explosive_barrel",
+			spawn_weighting = 1,
+			debug_pickup_category = "level_event",
+			slot_name = "slot_level_event",
+			item_name = "explosive_barrel",
+			unit_name = "units/weapons/player/pup_explosive_barrel/pup_tiny_explosive_barrel_01",
+			additional_data_func = "explosive_barrel",
+			unit_template_name = "explosive_pickup_projectile_unit",
+			wield_on_pickup = true,
+			hud_description = "explosive_barrel"
 		}
 	},
 	deus_potions = {

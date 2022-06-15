@@ -25,15 +25,40 @@ CosmeticUtils.color_tint_unit = function (unit, hero_name, gradient_variation, g
 end
 
 local cosmetic_slots = {
+	slot_frame = true,
+	slot_hat = true,
+	slot_skin = true
+}
+local cosmetic_items = {
+	frame = true,
+	skin = true,
+	hat = true
+}
+local cosmetic_and_weapon_slots = {
 	"slot_ranged",
 	"slot_melee",
 	"slot_skin",
 	"slot_hat",
 	"slot_frame"
 }
+local cosmetic_and_weapon_slots_lookup = {
+	slot_hat = true,
+	slot_skin = true,
+	slot_frame = true,
+	slot_melee = true,
+	slot_ranged = true
+}
+
+CosmeticUtils.is_cosmetic_slot = function (slot_name)
+	return cosmetic_slots[slot_name] ~= nil
+end
+
+CosmeticUtils.is_cosmetic_item = function (item_type)
+	return cosmetic_items[item_type] ~= nil
+end
 
 CosmeticUtils.update_cosmetic_slot = function (player, slot, item_name, skin_name)
-	if not table.contains(cosmetic_slots, slot) then
+	if not cosmetic_and_weapon_slots_lookup[slot] then
 		return
 	end
 
@@ -57,7 +82,7 @@ CosmeticUtils.update_cosmetic_slot = function (player, slot, item_name, skin_nam
 end
 
 CosmeticUtils.get_cosmetic_slot = function (player, slot)
-	if not table.contains(cosmetic_slots, slot) then
+	if not cosmetic_and_weapon_slots_lookup[slot] then
 		return nil
 	end
 
@@ -110,24 +135,12 @@ CosmeticUtils.is_weapon_slot = function (slot)
 	return slot == "slot_melee" or slot == "slot_ranged"
 end
 
-CosmeticUtils.get_all_cosmetics = function (player)
-	local cosmetics = {}
-
-	for i = 1, #cosmetic_slots, 1 do
-		local slot = cosmetic_slots[i]
-		local data = CosmeticUtils.get_cosmetic_slot(player, slot)
-		cosmetics[slot] = data
-	end
-
-	return cosmetics
-end
-
 CosmeticUtils.is_valid = function (item_data)
 	return item_data and item_data.item_name
 end
 
 CosmeticUtils.get_default_cosmetic_slot = function (career_settings, slot_name)
-	if not table.contains(cosmetic_slots, slot_name) then
+	if not cosmetic_and_weapon_slots_lookup[slot_name] then
 		return nil
 	end
 
@@ -173,7 +186,7 @@ CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, car
 	local careers = profile.careers
 	local career = careers[career_index]
 	local career_name = career.name
-	local slots_n = #cosmetic_slots
+	local slots_n = #cosmetic_and_weapon_slots
 	local preview_items = career.preview_items
 
 	if preview_items then
@@ -192,7 +205,7 @@ CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, car
 	CosmeticUtils.update_cosmetic_slot(player, "slot_skin", career.base_skin)
 
 	for i = 1, slots_n, 1 do
-		local slot_name = cosmetic_slots[i]
+		local slot_name = cosmetic_and_weapon_slots[i]
 		local item = BackendUtils.get_loadout_item(career_name, slot_name)
 
 		if item then

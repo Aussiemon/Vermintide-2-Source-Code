@@ -151,7 +151,7 @@ local function ai_default_unit_pre_start(unit, context, t, killing_blow)
 end
 
 local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
-	local killer_unit = killing_blow[DamageDataIndex.ATTACKER]
+	local killer_unit = killing_blow[DamageDataIndex.SOURCE_ATTACKER_UNIT] or killing_blow[DamageDataIndex.ATTACKER]
 	local death_hit_zone = killing_blow[DamageDataIndex.HIT_ZONE]
 	local damage_type = killing_blow[DamageDataIndex.DAMAGE_TYPE]
 	local damaged_by_other = unit ~= killer_unit
@@ -2134,6 +2134,20 @@ DeathReactions.templates = {
 		}
 	}
 }
+DeathReactions.templates.shadow_skull = table.clone(DeathReactions.templates.ai_default)
+
+DeathReactions.templates.shadow_skull.unit.start = function (unit, context, t, killing_blow, is_server)
+	local data, result = DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+	local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+
+	projectile_extension:destroy()
+
+	local projectile_locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+
+	projectile_locomotion_extension:destroy()
+
+	return data, result
+end
 
 DLCUtils.map_list("death_reactions", function (file)
 	return table.merge(DeathReactions.templates, require(file))

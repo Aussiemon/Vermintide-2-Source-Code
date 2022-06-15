@@ -25,7 +25,7 @@ ThornSisterWallExtension.init = function (self, extension_init_context, unit, ex
 
 	self._original_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
 	local side_manager = Managers.state.side
-	local side = side_manager:get_side_from_name("heroes")
+	local side = side_manager.side_by_unit[self._owner_unit]
 	local side_id = side.side_id
 
 	side_manager:add_unit_to_side(unit, side_id)
@@ -118,6 +118,10 @@ ThornSisterWallExtension.die = function (self)
 		local t = Managers.time:time("game")
 		self._despawn_t = t + DESPAWN_ANIM_TIME
 	end
+end
+
+ThornSisterWallExtension.owner = function (self)
+	return self._owner_unit
 end
 
 return

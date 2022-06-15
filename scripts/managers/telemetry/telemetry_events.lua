@@ -574,6 +574,14 @@ TelemetryEvents.tech_system = function (self, system_info, adapter_index)
 	self.manager:register_event("tech_system", params)
 end
 
+TelemetryEvents.ui_settings = function (self, use_pc_menu_layout)
+	table.clear(params)
+
+	params.use_pc_menu_layout = use_pc_menu_layout
+
+	self.manager:register_event("ui_menu_layout", params)
+end
+
 TelemetryEvents.vo_event_played = function (self, category, dialogue, sound_event, unit_name)
 	table.clear(params)
 

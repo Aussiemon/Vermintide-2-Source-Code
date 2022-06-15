@@ -1793,6 +1793,10 @@ DamageUtils.add_damage_network_player = function (damage_profile, target_index, 
 			no_crit_headshot_damage = DamageUtils.calculate_damage(DamageOutput, hit_unit, attacker_unit, "torso", power_level, boost_curve, boost_curve_multiplier, false, damage_profile, target_index, backstab_multiplier, damage_source)
 		end
 
+		if damage_profile.deal_min_damage then
+			damage_amount = math.max(damage_amount, 0.25)
+		end
+
 		ON_DAMAGE_DEALT_PROC_MODIFIABLE.damage_amount = damage_amount
 		local buff_extension = buff_extension or source_buff_extension
 
@@ -2087,6 +2091,17 @@ DamageUtils.apply_buffs_to_damage = function (current_damage, attacked_unit, att
 
 		local boss_elite_damage_cap = buff_extension:get_buff_value("max_damage_taken_from_boss_or_elite")
 		local all_damage_cap = buff_extension:get_buff_value("max_damage_taken")
+		local has_anti_oneshot = buff_extension:has_buff_perk("anti_oneshot")
+
+		if has_anti_oneshot then
+			local max_health = health_extension:get_max_health()
+			local max_damage_allowed = max_health * 0.3
+
+			if damage > max_damage_allowed then
+				damage = max_damage_allowed
+			end
+		end
+
 		local breed = ALIVE[attacker_unit] and unit_get_data(attacker_unit, "breed")
 
 		if breed and (breed.boss or breed.elite) then
@@ -2522,6 +2537,12 @@ DamageUtils.check_block = function (attacking_unit, target_unit, fatigue_type, o
 			end
 
 			status_extension:blocked_attack(fatigue_type, attacking_unit, fatigue_point_costs_multiplier, improved_block, enemy_weapon_direction)
+
+			local attacker_buff_extension = ScriptUnit.has_extension(attacking_unit, "buff_system")
+
+			if attacker_buff_extension then
+				attacker_buff_extension:trigger_procs("on_attack_blocked")
+			end
 
 			if not LEVEL_EDITOR_TEST and Managers.player.is_server then
 				local unit_storage = Managers.state.unit_storage
@@ -3055,9 +3076,9 @@ DamageUtils._projectile_hit_character = function (current_action, owner_unit, ow
 			local enemy_type = breed.name
 
 			if is_critical_strike and critical_hit_effect then
-				EffectHelper.play_skinned_surface_material_effects(critical_hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked)
+				EffectHelper.play_skinned_surface_material_effects(critical_hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, breed)
 			else
-				EffectHelper.play_skinned_surface_material_effects(hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked)
+				EffectHelper.play_skinned_surface_material_effects(hit_effect, world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, breed)
 			end
 
 			if Managers.state.network:game() then
@@ -3381,8 +3402,8 @@ local function action_ignores_stagger(blackboard, attack_template, stagger_type,
 	end
 end
 
-DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocked, damage_source)
-	if not DamageUtils.is_enemy(attacker_unit, target_unit) then
+DamageUtils.stagger_ai = function (t, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocked, damage_source, source_attacker_unit)
+	if not damage_profile.always_stagger_ai and not DamageUtils.is_enemy(source_attacker_unit or attacker_unit, target_unit) then
 		return
 	end
 
@@ -3535,7 +3556,7 @@ DamageUtils.server_apply_hit = function (t, attacker_unit, target_unit, hit_zone
 			stagger_power_level = 0
 		end
 
-		DamageUtils.stagger_ai(t, damage_profile, target_index, stagger_power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocking, damage_source)
+		DamageUtils.stagger_ai(t, damage_profile, target_index, stagger_power_level, target_unit, attacker_unit, hit_zone_name, attack_direction, boost_curve_multiplier, is_critical_strike, blocking, damage_source, source_attacker_unit)
 	end
 
 	if unit_get_data(target_unit, "is_dummy") and not damage_profile.no_stagger and can_stagger then
@@ -3582,15 +3603,33 @@ DamageUtils.apply_dot = function (damage_profile, target_index, power_level, tar
 		local breed = AiUtils.unit_breed(target_unit)
 		local is_dummy = unit_get_data(target_unit, "is_dummy")
 		local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name, is_dummy)
-		local is_finesse_hit = is_critical_strike or multiplier_type == "headshot" or multiplier_type == "weakspot" or multiplier_type == "protected_weakspot"
+		local is_finesse_hit = multiplier_type == "headshot" or multiplier_type == "weakspot" or multiplier_type == "protected_weakspot"
 
-		if is_finesse_hit then
+		if is_finesse_hit or is_critical_strike then
 			local boost_coefficient_headshot = target_settings.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
 			local boost_curve = BoostCurves[target_settings.boost_curve_type]
 			local modified_boost_curve_head_shot = DamageUtils.get_modified_boost_curve(boost_curve, boost_coefficient_headshot)
 			local fallback_armor_type = 1
 			local target_unit_armor, _, target_unit_primary_armor, _ = ActionUtils.get_target_armor(hit_zone_name, breed, fallback_armor_type)
 			local head_shot_boost_amount = get_head_shot_boost_amount(target_settings, damage_profile, is_finesse_hit, multiplier_type, true, target_unit_armor, target_unit_primary_armor)
+			local attacker_buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
+
+			if attacker_buff_extension then
+				if is_finesse_hit then
+					head_shot_boost_amount = attacker_buff_extension:apply_buffs_to_value(head_shot_boost_amount, "headshot_multiplier")
+				end
+
+				if is_critical_strike then
+					head_shot_boost_amount = attacker_buff_extension:apply_buffs_to_value(head_shot_boost_amount, "critical_strike_effectiveness")
+				end
+			end
+
+			local target_unit_buff_extension = ScriptUnit.has_extension(target_unit, "buff_system")
+
+			if target_unit_buff_extension and is_finesse_hit then
+				head_shot_boost_amount = target_unit_buff_extension:apply_buffs_to_value(head_shot_boost_amount, "headshot_vulnerability")
+			end
+
 			local head_shot_boost_multiplier = DamageUtils.get_boost_curve_multiplier(modified_boost_curve_head_shot or boost_curve, head_shot_boost_amount)
 			power_level = power_level + power_level * head_shot_boost_multiplier
 		end

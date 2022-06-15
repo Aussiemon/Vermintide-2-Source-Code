@@ -108,6 +108,8 @@
 --   Code may be incomplete or incorrect.
 -- WARNING: Error occurred during decompilation.
 --   Code may be incomplete or incorrect.
+-- WARNING: Error occurred during decompilation.
+--   Code may be incomplete or incorrect.
 require("scripts/managers/game_mode/mechanisms/deus_layout_base_graph")
 require("scripts/managers/game_mode/mechanisms/deus_base_graph_generator")
 require("scripts/managers/game_mode/mechanisms/deus_populate_graph")
@@ -480,7 +482,7 @@ DeusDebugMapUI._draw_final_graph = function (self, graph, dt, t)
 
 
 	-- Decompilation error in this vicinity:
-	--- BLOCK #1 24-371, warpins: 0 ---
+	--- BLOCK #1 24-414, warpins: 0 ---
 	for key, node in pairs(graph) do
 
 		-- Decompilation error in this vicinity:
@@ -640,7 +642,7 @@ DeusDebugMapUI._draw_final_graph = function (self, graph, dt, t)
 
 
 		-- Decompilation error in this vicinity:
-		--- BLOCK #5 292-369, warpins: 2 ---
+		--- BLOCK #5 292-372, warpins: 2 ---
 		local key_text = key .. " (" .. math.floor(node.run_progress * 100) / 100 .. ")"
 		min, max = Gui.text_extents(gui, key_text, font, font_size)
 		text_width = max.x - min.x
@@ -653,6 +655,22 @@ DeusDebugMapUI._draw_final_graph = function (self, graph, dt, t)
 		y_delta = y_delta + 10
 
 		Gui.text(gui, level_seed_text, font, font_size, font_material, Vector3(pos_x - text_width * 0.5, pos_y - y_delta, 0), Color(255, 0, 0, 0))
+
+		if node.possible_arena_belakor_nodes then
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #0 373-412, warpins: 1 ---
+			local possible_arena_belakor_nodes_text = "arena_belakor_nodes: " .. table.concat(node.possible_arena_belakor_nodes, ", ")
+			min, max = Gui.text_extents(gui, possible_arena_belakor_nodes_text, font, font_size)
+			text_width = max.x - min.x
+			y_delta = y_delta + 10
+
+			Gui.text(gui, possible_arena_belakor_nodes_text, font, font_size, font_material, Vector3(pos_x - text_width * 0.5, pos_y - y_delta, 0), Color(255, 0, 0, 0))
+			--- END OF BLOCK #0 ---
+
+
+
+		end
 		--- END OF BLOCK #5 ---
 
 		FLOW; TARGET BLOCK #6
@@ -660,7 +678,7 @@ DeusDebugMapUI._draw_final_graph = function (self, graph, dt, t)
 
 
 		-- Decompilation error in this vicinity:
-		--- BLOCK #6 370-371, warpins: 2 ---
+		--- BLOCK #6 413-414, warpins: 3 ---
 		--- END OF BLOCK #6 ---
 
 
@@ -674,7 +692,7 @@ DeusDebugMapUI._draw_final_graph = function (self, graph, dt, t)
 
 
 	-- Decompilation error in this vicinity:
-	--- BLOCK #2 372-372, warpins: 1 ---
+	--- BLOCK #2 415-415, warpins: 1 ---
 	return
 	--- END OF BLOCK #2 ---
 

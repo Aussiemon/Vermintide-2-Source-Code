@@ -101,7 +101,8 @@ BTNinjaVanishAction.find_escape_position = function (unit, blackboard)
 	local center_position = nil
 
 	if blackboard.action.stalk_lonliest_player then
-		local cluster_utility, lonliest_pos, loneliness_value = Managers.state.conflict:get_cluster_and_loneliness(7)
+		local side = blackboard.side
+		local cluster_utility, lonliest_pos, loneliness_value = Managers.state.conflict:get_cluster_and_loneliness(7, side.ENEMY_PLAYER_POSITIONS, side.ENEMY_PLAYER_UNITS)
 		center_position = lonliest_pos
 	else
 		center_position = POSITION_LOOKUP[unit]

@@ -276,7 +276,22 @@ PlayerProjectileUnitExtension.handle_timed_events = function (self, t)
 		local aoe_data = timed_data.aoe
 
 		if aoe_data then
-			self:do_aoe(aoe_data, POSITION_LOOKUP[unit])
+			local position = POSITION_LOOKUP[unit]
+
+			self:do_aoe(aoe_data, position)
+
+			local grenade = timed_data.grenade
+
+			if grenade then
+				local owner_unit = self._owner_unit
+				local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+
+				if owner_buff_extension then
+					local rotation = Unit.local_rotation(unit, 0)
+
+					owner_buff_extension:trigger_procs("on_grenade_exploded", timed_data, position, self._is_critical_strike, self.item_name, rotation, self.scale, self.power_level)
+				end
+			end
 		end
 
 		local sound_event = self._timed_data.life_time_activate_sound_stop_event
@@ -532,7 +547,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	local grenade = impact_data.grenade
 
-	if grenade or (aoe_data and self._max_mass <= self._amount_of_mass_hit) then
+	if self._num_additional_penetrations == 0 and (grenade or (aoe_data and self._max_mass <= self._amount_of_mass_hit)) then
 		self:do_aoe(aoe_data, hit_position)
 
 		if grenade then
@@ -708,7 +723,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	end
 
 	if hit_effect then
-		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, invulnerable)
+		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, breed)
 	end
 
 	if hit_zone_name == "head" and not shield_blocked then

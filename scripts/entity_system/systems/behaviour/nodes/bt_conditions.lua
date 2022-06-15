@@ -26,7 +26,7 @@ BTConditions.ask_target_before_attacking = function (blackboard, condition_args,
 		return blackboard.attack_token
 	end
 
-	local want_an_attack = false
+	local want_an_attack = true
 	local target_unit = blackboard.target_unit
 	local target_unit_attack_intensity_extension = ScriptUnit.has_extension(target_unit, "attack_intensity_system")
 

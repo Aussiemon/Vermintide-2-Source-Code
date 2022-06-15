@@ -147,7 +147,7 @@ DeusMapUI._draw = function (self, dt, t)
 	UIRenderer.end_pass(ui_renderer)
 end
 
-DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, minor_modifier_group, director_name, terror_event_power_up, selected, selectable, profile_index, career_index)
+DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, minor_modifier_group, director_name, terror_event_power_up, grant_random_power_up_count, terror_event_power_up_rarity, selected, selectable, profile_index, career_index)
 	local ui_pos = UIInverseScaleVectorToResolution(screen_pos)
 	local scene_graph_position = self._ui_scenegraph.node_info_pivot.position
 	scene_graph_position[1] = ui_pos[1]
@@ -190,6 +190,20 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 		local terror_event_power_up_text = string.format(suffix, power_up_text_name)
 		widget.content.node_info.terror_event_power_up_text = terror_event_power_up_text
 		widget.content.node_info.terror_event_power_up_icon = power_up.icon
+	elseif grant_random_power_up_count then
+		if grant_random_power_up_count > 1 then
+			local base_text = Localize("end_of_level_reward_hover_text_random_power_up_multiple")
+			local rarity_settings = RaritySettings[terror_event_power_up_rarity]
+			local rarity_display_name = Localize(rarity_settings.display_name)
+			local formatted_text = string.format(base_text, grant_random_power_up_count, rarity_display_name)
+			content_node_info.terror_event_power_up_text = formatted_text
+		else
+			local base_text = Localize("end_of_level_reward_hover_text_random_power_up_singular")
+			local rarity_settings = RaritySettings[terror_event_power_up_rarity]
+			local rarity_display_name = Localize(rarity_settings.display_name)
+			local formatted_text = string.format(base_text, rarity_display_name)
+			content_node_info.terror_event_power_up_text = formatted_text
+		end
 	else
 		content_node_info.terror_event_power_up_text = ""
 	end

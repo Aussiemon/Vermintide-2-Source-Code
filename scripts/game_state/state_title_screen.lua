@@ -268,7 +268,7 @@ StateTitleScreen.update = function (self, dt, t)
 	self._machine:update(dt, t)
 
 	if Managers.backend and not Managers.backend:is_disconnected() then
-		Managers.backend:update(dt)
+		Managers.backend:update(dt, t)
 	end
 
 	self:_update_play_go_progress(dt, t)

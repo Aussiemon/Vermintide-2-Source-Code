@@ -7,9 +7,9 @@ require("scripts/entity_system/systems/ai/ai_group_system")
 require("scripts/entity_system/systems/ai/ai_inventory_system")
 require("scripts/entity_system/systems/ai/ai_inventory_item_system")
 require("scripts/entity_system/systems/ai/ai_interest_point_system")
-require("scripts/entity_system/systems/ai/ai_commander_system")
 require("scripts/entity_system/systems/ai/ai_navigation_system")
 require("scripts/entity_system/systems/ai/ai_slot_system")
+require("scripts/entity_system/systems/ai/ai_slot_system_2")
 require("scripts/entity_system/systems/ai/nav_graph_system")
 require("scripts/entity_system/systems/animation/animation_system")
 require("scripts/entity_system/systems/animation/aim_system")
@@ -174,7 +174,9 @@ local projectile_locomotion_extensions = {
 	"ProjectilePhysicsHuskLocomotionExtension",
 	"ProjectilePhysicsUnitLocomotionExtension",
 	"ProjectileScriptUnitLocomotionExtension",
-	"ProjectileTrueFlightLocomotionExtension"
+	"ProjectileTrueFlightLocomotionExtension",
+	"ProjectileHomingSkullLocomotionExtension",
+	"ProjectileExtrapolatedHuskLocomotionExtension"
 }
 local ai_supplementary_system_extension = {
 	"TentacleSplineExtension",

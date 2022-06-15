@@ -187,7 +187,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 	end
 end
 
-EffectHelper.play_skinned_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked)
+EffectHelper.play_skinned_surface_material_effects = function (effect_name, world, hit_unit, position, rotation, normal, husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, breed)
 	local effect_settings = MaterialEffectMappings[effect_name]
 
 	if not effect_settings then
@@ -203,7 +203,7 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 		material = "armored"
 	else
 		skip_particles = not BloodSettings.enemy_blood.enabled
-		material = "flesh"
+		material = (breed and breed.flesh_material) or "flesh"
 	end
 
 	if shield_blocked then

@@ -144,7 +144,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		position = {
 			20,
-			-475,
+			-525,
 			1
 		},
 		offset = {
@@ -486,7 +486,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		position = {
 			0,
-			-150,
+			-100,
 			1
 		},
 		size = MUTATOR_SUMMARY_SIZE
@@ -497,7 +497,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "left",
 		position = {
 			0,
-			-150,
+			-100,
 			1
 		},
 		size = MUTATOR_SUMMARY_SIZE
@@ -777,9 +777,10 @@ local function create_vertical_edge_divider(scenegraph_id, size)
 	return widget
 end
 
-local function create_loot_widget(texture, text)
+local function create_loot_widget(texture, text, scale)
 	local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
 	local texture_size = texture_settings.size
+	scale = scale or 1
 
 	return {
 		scenegraph_id = "loot_objective",
@@ -851,8 +852,8 @@ local function create_loot_widget(texture, text)
 				horizontal_alignment = "left",
 				text_color = Colors.get_table("font_title"),
 				offset = {
-					texture_size[1],
-					texture_size[2] - 50,
+					scale * texture_size[1],
+					scale * texture_size[2] - 50,
 					1
 				}
 			},
@@ -863,8 +864,8 @@ local function create_loot_widget(texture, text)
 				horizontal_alignment = "left",
 				text_color = Colors.get_table("black"),
 				offset = {
-					texture_size[1] + 1,
-					texture_size[2] - 50 - 1,
+					scale * texture_size[1] + 1,
+					scale * texture_size[2] - 50 - 1,
 					0
 				}
 			},
@@ -875,7 +876,7 @@ local function create_loot_widget(texture, text)
 				horizontal_alignment = "left",
 				text_color = Colors.get_table("font_default"),
 				offset = {
-					texture_size[1],
+					scale * texture_size[1],
 					-40,
 					1
 				}
@@ -892,7 +893,7 @@ local function create_loot_widget(texture, text)
 					130
 				},
 				offset = {
-					texture_size[1],
+					scale * texture_size[1],
 					-40,
 					1
 				}
@@ -904,7 +905,7 @@ local function create_loot_widget(texture, text)
 				horizontal_alignment = "left",
 				text_color = Colors.get_table("black"),
 				offset = {
-					texture_size[1] + 1,
+					scale * texture_size[1] + 1,
 					-41,
 					0
 				}
@@ -923,7 +924,10 @@ local function create_loot_widget(texture, text)
 					0,
 					1
 				},
-				texture_size = texture_size
+				texture_size = {
+					scale * texture_size[1],
+					scale * texture_size[2]
+				}
 			},
 			background_icon = {
 				vertical_alignment = "top",
@@ -939,7 +943,10 @@ local function create_loot_widget(texture, text)
 					0,
 					0
 				},
-				texture_size = texture_size
+				texture_size = {
+					scale * texture_size[1],
+					scale * texture_size[2]
+				}
 			},
 			glow_icon = {
 				vertical_alignment = "top",
@@ -955,7 +962,10 @@ local function create_loot_widget(texture, text)
 					0,
 					2
 				},
-				texture_size = texture_size
+				texture_size = {
+					scale * texture_size[1],
+					scale * texture_size[2]
+				}
 			}
 		},
 		offset = {
@@ -1114,7 +1124,7 @@ local function create_node_info_widget()
 		},
 		content = {
 			divider_id = "infoslate_frame_02_horizontal",
-			text_id = string.upper(Localize("hero_view_prestige_information")),
+			text_id = Utf8.upper(Localize("hero_view_prestige_information")),
 			node_info = {
 				terror_event_power_up_text = "terror_event_power_up_text",
 				curse_icon = "deus_icons_map_khorne",
@@ -4002,7 +4012,7 @@ local mutator_pass_styles = {
 			vertical_alignment = "top",
 			area_size = {
 				540,
-				150
+				100
 			},
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			line_colors = {
@@ -4019,7 +4029,7 @@ local mutator_pass_styles = {
 			vertical_alignment = "top",
 			area_size = {
 				540,
-				150
+				100
 			},
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
@@ -4071,14 +4081,14 @@ local widget_definitions = {
 	}, nil, mutator_pass_styles)
 }
 local weave_objective_widgets = {
-	weave_objective_header = UIWidgets.create_simple_text(string.upper(Localize("menu_weave_play_objective_title")), "weave_objective_header", 22, nil, right_banner_header),
+	weave_objective_header = UIWidgets.create_simple_text(Utf8.upper(Localize("menu_weave_play_objective_title")), "weave_objective_header", 22, nil, right_banner_header),
 	weave_objective_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "weave_objective_divider"),
 	main_objective_text = UIWidgets.create_simple_text(Localize("menu_weave_play_objective_sub_title"), "weave_main_objective", 22, nil, main_weave_objective_style)
 }
 local specific_widget_definitions = {
 	reward_header = UIWidgets.create_simple_text(Localize("deed_reward_title"), "reward_divider", 22, nil, rewards_title),
 	reward_divider = UIWidgets.create_simple_texture("divider_01_top", "reward_divider"),
-	collectibles_name = UIWidgets.create_simple_text(string.upper("Collectibles"), "collectibles_name", 22, nil, right_banner_header),
+	collectibles_name = UIWidgets.create_simple_text(Utf8.upper(Localize("collectibles_name")), "collectibles_name", 22, nil, right_banner_header),
 	collectibles_divider = UIWidgets.create_simple_texture("infoslate_frame_02_horizontal", "collectibles_divider"),
 	level_description = create_description_text("", "level_description"),
 	input_description_text = UIWidgets.create_simple_text("player_list_show_mouse_description", "player_list_input_description", nil, nil, input_description_style),

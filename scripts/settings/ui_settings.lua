@@ -1343,6 +1343,30 @@ UISettings.dlc_order_data = {
 	{
 		dlc = "q1_collection_bundle",
 		display_name = "display_name_q1_collection_bundle"
+	},
+	{
+		dlc = "ironbreaker_bundle_0002",
+		display_name = "display_name_ironbreaker_bundle_0002"
+	},
+	{
+		dlc = "maidenguard_bundle_0002",
+		display_name = "display_name_maidenguard_bundle_0002"
+	},
+	{
+		dlc = "huntsman_bundle_0002",
+		display_name = "display_name_huntsman_bundle_0002"
+	},
+	{
+		dlc = "scholar_bundle_0002",
+		display_name = "display_name_scholar_bundle_0002"
+	},
+	{
+		dlc = "zealot_bundle_0002",
+		display_name = "display_name_zealot_bundle_0002"
+	},
+	{
+		dlc = "five_career_bundle_0004",
+		display_name = "display_name_five_career_bundle_0004"
 	}
 }
 local pc_button_icon = {

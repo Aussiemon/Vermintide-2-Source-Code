@@ -487,6 +487,7 @@ AdventureMechanism._build_side_compositions = function (self, state)
 			add_these_settings = {
 				using_grims_and_tomes = true,
 				show_damage_feedback = false,
+				using_enemy_recycler = true,
 				available_profiles = available_profiles
 			}
 		},

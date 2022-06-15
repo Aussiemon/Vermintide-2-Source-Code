@@ -518,7 +518,7 @@ new_template("medium_slashing_smiter_stab", nil, "medium_spear_smiter_stab", "he
 
 DamageProfileTemplates.medium_spear_smiter_stab.default_target = "default_target_spear_stab_smiter_M"
 
-new_template("medium_slashing_smiter_stab", "_elf", nil, "heavy_attack")
+new_template("medium_slashing_smiter_stab", "_elf", nil, "light_attack")
 
 DamageProfileTemplates.medium_slashing_smiter_stab_elf.default_target = "default_target_stab_smiter_M_elf"
 

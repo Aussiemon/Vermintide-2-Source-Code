@@ -2,10 +2,10 @@ require("scripts/settings/dlcs/morris/deus_map_visibility_settings")
 
 DeusMapScene = class(DeusMapScene)
 local START_NODE_UNIT = "units/morris_map/deus_starting_position_token_01"
-local SIG_NODE_UNIT = "units/morris_map/deus_map_base_sig_01"
-local TRAVEL_NODE_UNIT = "units/morris_map/deus_map_base_travel_01"
+local SIG_NODE_UNIT = "units/morris_map/deus_map_base_sig_belakor_01"
+local TRAVEL_NODE_UNIT = "units/morris_map/deus_map_base_travel_belakor_01"
 local SHRINE_NODE_UNIT = "units/morris_map/deus_map_base_shrine_01"
-local ARENA_NODE_UNIT = "units/morris_map/deus_map_base_arena_01"
+local ARENA_NODE_UNIT = "units/morris_map/deus_map_base_arena_belakor_01"
 local EDGE_UNIT = "units/morris_map/deus_map_symbol_03"
 local TOKEN_WH = "units/morris_map/player_token/victor_token"
 local TOKEN_BW = "units/morris_map/player_token/sienna_token"
@@ -830,6 +830,12 @@ DeusMapScene.get_screen_pos_of_node = function (self, node_key)
 	local unit = self._nodes_to_units[node_key]
 
 	return Camera.world_to_screen(self._camera, Unit.local_position(unit, 0))
+end
+
+DeusMapScene.animate_arena_belakor_node = function (self, node_key)
+	local unit = self._nodes_to_units[node_key]
+
+	Unit.flow_event(unit, "first_time_seeing_arena_belakor_node")
 end
 
 DeusMapScene._place_token = function (self, profile_index, slot, node_key)

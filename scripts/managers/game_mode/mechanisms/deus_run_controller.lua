@@ -19,7 +19,8 @@ local RPCS = {
 	"rpc_deus_set_initial_soft_currency",
 	"rpc_deus_set_initial_setup",
 	"rpc_deus_chest_unlocked",
-	"rpc_deus_soft_currency_picked_up"
+	"rpc_deus_soft_currency_picked_up",
+	"rpc_deus_grant_end_of_level_power_ups"
 }
 local REAL_PLAYER_LOCAL_ID = 1
 local DISCOUNT_CONVERSION_EPSILON = 10000
@@ -261,14 +262,15 @@ DeusRunController.handle_run_ended = function (self)
 	self._run_state:set_run_ended(true)
 end
 
-DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name, dominant_god, initial_own_soft_currency, telemetry_id)
+DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name, dominant_god, initial_own_soft_currency, telemetry_id, with_belakor)
 	self._run_state:set_run_seed(run_seed)
 	self._run_state:set_run_difficulty(difficulty)
 	self._run_state:set_journey_name(journey_name)
 	self._run_state:set_dominant_god(dominant_god)
+	self._run_state:set_belakor_enabled(with_belakor)
 
 	local populate_config = DEUS_MAP_POPULATE_SETTINGS[journey_name] or DEUS_MAP_POPULATE_SETTINGS.default
-	self._path_graph = deus_generate_graph(run_seed, journey_name, dominant_god, populate_config)
+	self._path_graph = deus_generate_graph(run_seed, journey_name, dominant_god, populate_config, with_belakor)
 
 	self._run_state:set_current_node_key("start")
 
@@ -313,14 +315,14 @@ DeusRunController.setup_run = function (self, run_seed, difficulty, journey_name
 
 		RPC.rpc_deus_set_initial_soft_currency(server_channel_id, initial_own_soft_currency)
 
-		if profile_index ~= 0 and not self._run_state:get_profile_initialized(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index) then
+		if profile_index ~= 0 then
 			self:_add_initial_talents_as_power_ups(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, initial_talents_for_career)
 			self:_add_initial_weapons_to_loadout(own_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 			RPC.rpc_deus_set_initial_setup(server_channel_id, profile_index, career_index, initial_talents_for_career, melee_item_string, ranged_item_string)
 		end
 	end
 
-	print(sprintf("starting <%s> with seed <%s> on difficulty <%s> and dominant god <%s>", journey_name, run_seed, difficulty, dominant_god))
+	print(sprintf("starting <%s> with seed <%s> on difficulty <%s> and dominant god <%s> with belakor <%s>", journey_name, run_seed, difficulty, dominant_god, with_belakor))
 end
 
 DeusRunController.get_state_revision = function (self)
@@ -370,6 +372,44 @@ DeusRunController.rpc_deus_set_initial_setup = function (self, sender_channel_id
 		self:_add_initial_weapons_to_loadout(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, melee_item_string, ranged_item_string)
 		self._run_state:set_profile_initialized(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, true)
 	end
+
+	local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+
+	for node_key, node in pairs(self:_get_graph_data()) do
+		local granted_random_power_up_count = node.grant_random_power_up_count
+
+		if granted_random_power_up_count and table.index_of(granted_non_party_end_of_level_power_ups, node_key) == -1 then
+			RPC.rpc_deus_grant_end_of_level_power_ups(sender_channel_id, node_key)
+		end
+	end
+end
+
+DeusRunController.rpc_deus_grant_end_of_level_power_ups = function (self, sender_channel_id, node_key)
+	local path_graph = self:_get_graph_data()
+	local node = path_graph[node_key]
+	local granted_random_power_up_count = node.grant_random_power_up_count
+	local power_up_rarity = node.terror_event_power_up_rarity
+	local local_peer_id = self._run_state:get_own_peer_id()
+	local node_power_up_seed = node.system_seeds.power_ups or 0
+	local power_up_seed = HashUtils.fnv32_hash(local_peer_id .. "_" .. node_power_up_seed)
+	local run_progress = node.run_progress
+	local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
+	local existing_power_ups = self._run_state:get_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+	local profile = SPProfiles[profile_index]
+	local career_name = profile.careers[career_index].name
+	local new_power_ups = nil
+	_, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
+	local skip_metatable = true
+	existing_power_ups = table.clone(existing_power_ups, skip_metatable)
+
+	table.append(existing_power_ups, new_power_ups)
+
+	local new_power_ups_string = DeusPowerUpUtils.power_ups_to_string(new_power_ups)
+	local server_peer_id = self._run_state:get_server_peer_id()
+	local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
+	local granted_by_end_of_level_node_key = node_key
+
+	RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string, granted_by_end_of_level_node_key)
 end
 
 DeusRunController.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)
@@ -480,6 +520,24 @@ DeusRunController.handle_level_won = function (self)
 			self._run_state:set_cursed_levels_completed(peer, cursed_nodes_completed)
 		end
 	end
+end
+
+DeusRunController.handle_map_exited = function (self)
+	local arena_belakor_node = self._run_state:get_arena_belakor_node()
+
+	if arena_belakor_node then
+		local peers = self._network_handler:get_peers()
+
+		for _, peer in ipairs(peers) do
+			if not self._run_state:get_seen_arena_belakor_node(peer) then
+				self._run_state:set_seen_arena_belakor_node(peer, true)
+			end
+		end
+	end
+end
+
+DeusRunController.get_belakor_enabled = function (self)
+	return self._run_state:get_belakor_enabled()
 end
 
 DeusRunController.has_completed_current_node = function (self)
@@ -606,6 +664,12 @@ DeusRunController.get_map_visibility = function (self)
 		end
 
 		spread_from_node("start")
+	end
+
+	local arena_belakor = self._run_state:get_arena_belakor_node()
+
+	if arena_belakor then
+		level_data[arena_belakor] = 0
 	end
 
 	level_data.final = 0
@@ -1004,24 +1068,73 @@ DeusRunController.add_power_ups = function (self, new_power_ups, local_player_id
 	end
 end
 
-DeusRunController.try_grant_end_of_level_deus_power_up = function (self)
+DeusRunController.try_grant_end_of_level_deus_power_ups = function (self)
 	local current_node_key = self:get_current_node_key()
 	local path_graph = self:_get_graph_data()
 	local current_node = path_graph[current_node_key]
-	local power_up_name = current_node.terror_event_power_up
+	local granted_random_power_up_count = current_node.grant_random_power_up_count
 	local power_up_rarity = current_node.terror_event_power_up_rarity
 
-	if power_up_name then
-		local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, power_up_rarity)
-		local party_power_ups = self._run_state:get_party_power_ups()
+	if granted_random_power_up_count then
+		local local_peer_id = self._run_state:get_own_peer_id()
+		local node_power_up_seed = current_node.system_seeds.power_ups or 0
+		local power_up_seed = HashUtils.fnv32_hash(local_peer_id .. "_" .. node_power_up_seed)
+		local run_progress = current_node.run_progress
+		local profile_index, career_index = self._run_state:get_player_profile(local_peer_id, REAL_PLAYER_LOCAL_ID)
+		local existing_power_ups = self._run_state:get_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+		local profile = SPProfiles[profile_index]
+		local career_name = profile.careers[career_index].name
+		local new_power_ups = nil
+		_, new_power_ups = DeusPowerUpUtils.generate_random_power_ups(power_up_seed, granted_random_power_up_count, existing_power_ups, self._run_state:get_run_difficulty(), run_progress, DeusPowerUpAvailabilityTypes.weapon_chest, career_name, power_up_rarity)
 		local skip_metatable = true
-		party_power_ups = table.clone(party_power_ups, skip_metatable)
-		party_power_ups[#party_power_ups + 1] = power_up
+		existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
-		self._run_state:set_party_power_ups(party_power_ups)
+		table.append(existing_power_ups, new_power_ups)
+		self._run_state:set_player_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, existing_power_ups)
 
-		return power_up
+		local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+		granted_non_party_end_of_level_power_ups = table.clone(granted_non_party_end_of_level_power_ups, skip_metatable)
+		granted_non_party_end_of_level_power_ups[#granted_non_party_end_of_level_power_ups + 1] = current_node_key
+
+		self._run_state:set_granted_non_party_end_of_level_power_ups(local_peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, granted_non_party_end_of_level_power_ups)
+
+		if not self._run_state:is_server() then
+			local new_power_ups_string = DeusPowerUpUtils.power_ups_to_string(new_power_ups)
+			local server_peer_id = self._run_state:get_server_peer_id()
+			local server_channel_id = PEER_ID_TO_CHANNEL[server_peer_id]
+			local granted_by_end_of_level_node_key = current_node_key
+
+			RPC.rpc_deus_add_power_ups(server_channel_id, new_power_ups_string, granted_by_end_of_level_node_key)
+		end
+
+		return new_power_ups
+	else
+		local power_up_name = current_node.terror_event_power_up
+
+		if power_up_name then
+			local power_up = DeusPowerUpUtils.generate_specific_power_up(power_up_name, power_up_rarity)
+			local party_power_ups = self._run_state:get_party_power_ups()
+			local skip_metatable = true
+			party_power_ups = table.clone(party_power_ups, skip_metatable)
+			party_power_ups[#party_power_ups + 1] = power_up
+
+			self._run_state:set_party_power_ups(party_power_ups)
+
+			return {
+				power_up
+			}
+		end
 	end
+end
+
+DeusRunController.get_arena_belakor_node = function (self)
+	return self._run_state:get_arena_belakor_node()
+end
+
+DeusRunController.has_own_seen_arena_belakor_node = function (self)
+	local local_peer_id = self._run_state:get_own_peer_id()
+
+	return self._run_state:get_seen_arena_belakor_node(local_peer_id)
 end
 
 DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, power_ups_string, granted_by_end_of_level_node_key)
@@ -1034,6 +1147,14 @@ DeusRunController.rpc_deus_add_power_ups = function (self, sender_channel_id, po
 
 	table.append(new_power_ups, power_ups)
 	self._run_state:set_player_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, new_power_ups)
+
+	if granted_by_end_of_level_node_key ~= "" then
+		local granted_non_party_end_of_level_power_ups = self._run_state:get_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index)
+		granted_non_party_end_of_level_power_ups = table.clone(granted_non_party_end_of_level_power_ups, skip_metatable)
+		granted_non_party_end_of_level_power_ups[#granted_non_party_end_of_level_power_ups + 1] = granted_by_end_of_level_node_key
+
+		self._run_state:set_granted_non_party_end_of_level_power_ups(sender, REAL_PLAYER_LOCAL_ID, profile_index, career_index, granted_non_party_end_of_level_power_ups)
+	end
 end
 
 DeusRunController.get_blessings = function (self)
@@ -1577,6 +1698,24 @@ DeusRunController.get_graph_data = function (self)
 end
 
 DeusRunController._get_graph_data = function (self)
+	local current_arena_belakor_node = self._run_state:get_arena_belakor_node()
+
+	if current_arena_belakor_node and not self._swapped_arena_belakor_node then
+		local node_to_edit = self._path_graph[current_arena_belakor_node]
+		node_to_edit.minor_modifier_group = {}
+		node_to_edit.level_type = "ARENA"
+		node_to_edit.base_level = "arena_belakor"
+		node_to_edit.theme = "belakor"
+		node_to_edit.level = "arena_belakor"
+		node_to_edit.path = 1
+		node_to_edit.mutators = {}
+		node_to_edit.grant_random_power_up_count = 2
+		node_to_edit.curse = nil
+		node_to_edit.terror_event_power_up = nil
+		node_to_edit.terror_event_power_up_rarity = "unique"
+		self._swapped_arena_belakor_node = true
+	end
+
 	return self._path_graph
 end
 
@@ -1586,6 +1725,14 @@ end
 
 DeusRunController.get_current_node_key = function (self)
 	return self._run_state:get_current_node_key()
+end
+
+DeusRunController.get_coins_spent = function (self)
+	return self._run_state:get_coins_spent()
+end
+
+DeusRunController.get_cursed_chests_purified = function (self, peer_id)
+	return self._run_state:get_cursed_chests_purified(peer_id)
 end
 
 DeusRunController.get_current_node = function (self)
@@ -1599,6 +1746,44 @@ DeusRunController.get_node = function (self, node_key)
 	local path_graph = self:_get_graph_data()
 
 	return path_graph[node_key]
+end
+
+DeusRunController.can_spawn_belakor_locus = function (self)
+	local path_graph = self:_get_graph_data()
+	local current_node_key = self._run_state:get_current_node_key()
+	local current_node = path_graph[current_node_key]
+
+	if current_node.base_level == "arena_belakor" then
+		return true
+	end
+
+	local theme = current_node.theme
+
+	if theme ~= "belakor" then
+		return false
+	end
+
+	return current_node.possible_arena_belakor_nodes ~= nil
+end
+
+DeusRunController.unlock_arena_belakor = function (self)
+	if not self._run_state:is_server() then
+		ferror("DeusRunController:unlock_arena_belakor is designed to only be called on the server")
+	end
+
+	local path_graph = self:_get_graph_data()
+	local current_node_key = self._run_state:get_current_node_key()
+	local current_node = path_graph[current_node_key]
+	local possible_arena_belakor_nodes = current_node.possible_arena_belakor_nodes
+
+	if possible_arena_belakor_nodes then
+		local seed = current_node.level_seed
+		local next_index = nil
+		seed, next_index = Math.next_random(seed, 1, #possible_arena_belakor_nodes)
+		local arena_belakor_node = possible_arena_belakor_nodes[next_index]
+
+		self._run_state:set_arena_belakor_node(arena_belakor_node)
+	end
 end
 
 DeusRunController.get_weapon_pool = function (self)

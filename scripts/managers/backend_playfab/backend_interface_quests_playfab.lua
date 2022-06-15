@@ -360,6 +360,28 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		end
 	end
 
+	local new_cosmetics = function_result.new_cosmetics
+
+	if new_cosmetics then
+		local item_master_list = ItemMasterList
+
+		for i = 1, #new_cosmetics, 1 do
+			local cosmetic_name = new_cosmetics[i]
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = cosmetic_name
+			})
+
+			if backend_id then
+				local item = item_master_list[cosmetic_name]
+				loot[#loot + 1] = {
+					amount = 1,
+					type = item.slot_type,
+					backend_id = backend_id
+				}
+			end
+		end
+	end
+
 	local rewarded_currency = {}
 
 	if currency_added then
@@ -559,6 +581,28 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 				type = "weapon_skin",
 				weapon_skin_name = weapon_skin_name
 			}
+		end
+	end
+
+	local new_cosmetics = function_result.new_cosmetics
+
+	if new_cosmetics then
+		local item_master_list = ItemMasterList
+
+		for i = 1, #new_cosmetics, 1 do
+			local cosmetic_name = new_cosmetics[i]
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = cosmetic_name
+			})
+
+			if backend_id then
+				local item = item_master_list[cosmetic_name]
+				loot[#loot + 1] = {
+					amount = 1,
+					type = item.slot_type,
+					backend_id = backend_id
+				}
+			end
 		end
 	end
 

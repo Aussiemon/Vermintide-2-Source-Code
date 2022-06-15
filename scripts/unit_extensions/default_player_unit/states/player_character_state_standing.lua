@@ -167,6 +167,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
+		params.allow_rotation_update = config.allow_rotation_update
 
 		csm:change_state("interacting", params)
 
@@ -183,6 +184,7 @@ PlayerCharacterStateStanding.update = function (self, unit, input, dt, context, 
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
+		params.allow_rotation_update = config.allow_rotation_update
 
 		csm:change_state("interacting", params)
 

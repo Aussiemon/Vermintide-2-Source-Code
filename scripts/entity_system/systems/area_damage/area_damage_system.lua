@@ -373,6 +373,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local t = Managers.time:time("game")
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index = nil
+		target_index = target_number
 		local boost_curve_multiplier = 0
 		local backstab_multiplier = 1
 		is_critical_strike = false
@@ -385,7 +386,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		local target_alive = AiUtils.unit_alive(hit_unit)
 
 		if target_alive then
-			DamageUtils.stagger_ai(t, damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, hit_direction, boost_curve_multiplier, is_critical_strike, shield_blocked, damage_source)
+			DamageUtils.stagger_ai(t, damage_profile, target_index, actual_power_level, hit_unit, attacker_unit, hit_zone_name, hit_direction, boost_curve_multiplier, is_critical_strike, shield_blocked, damage_source, source_attacker_unit)
 		elseif explosion_data.on_death_func then
 			explosion_data.on_death_func(hit_unit)
 		end

@@ -639,7 +639,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 					hit_direction.z
 				},
 				push_actors = push_actors,
-				death_velocity = self.locomotion_extension.death_velocity_boxed
+				death_velocity = self.locomotion_extension and self.locomotion_extension.death_velocity_boxed
 			}
 		end
 	end
@@ -712,6 +712,8 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local buff_extension = attacker_unit and ScriptUnit.has_extension(attacker_unit, "buff_system")
 
 	if buff_extension then
+		buff_extension:trigger_procs("on_body_pushed")
+
 		distal_force = buff_extension:apply_buffs_to_value(distal_force, "hit_force")
 		lateral_force = buff_extension:apply_buffs_to_value(lateral_force, "hit_force")
 		vertical_force = buff_extension:apply_buffs_to_value(vertical_force, "hit_force")

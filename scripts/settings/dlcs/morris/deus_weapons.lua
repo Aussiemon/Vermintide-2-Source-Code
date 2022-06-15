@@ -2446,6 +2446,23 @@ for _, data in pairs(DeusWeapons) do
 	local base_item = ItemMasterList[data.base_item]
 	data.property_table_name = data.property_table_name or property_table_mapping[base_item.property_table_name] or base_item.property_table_name
 	data.trait_table_name = data.trait_table_name or trait_table_mapping[base_item.trait_table_name] or base_item.trait_table_name
+	local trait_combinations = WeaponTraits.combinations[data.trait_table_name]
+	local baked_trait_combinations = {}
+
+	for _, combination in ipairs(trait_combinations) do
+		local valid = true
+
+		for _, trait_name in ipairs(combination) do
+			local trait_data = WeaponTraits.traits[trait_name]
+			valid = valid and (not trait_data.compatible_weapon_list or trait_data.compatible_weapon_list[data.base_item])
+		end
+
+		if valid then
+			baked_trait_combinations[#baked_trait_combinations + 1] = combination
+		end
+	end
+
+	data.baked_trait_combinations = baked_trait_combinations
 end
 
 fassert(DeusStarterWeaponPowerLevels.default, "DeusStarterWeaponPowerLevels must define a default config")

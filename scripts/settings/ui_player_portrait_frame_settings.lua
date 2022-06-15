@@ -2500,6 +2500,18 @@ UIPlayerPortraitFrameSettings = {
 				136
 			}
 		}
+	},
+	frame_deus_portrait_belakor = {
+		{
+			texture = "deus_portrait_belakor",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
 	}
 }
 

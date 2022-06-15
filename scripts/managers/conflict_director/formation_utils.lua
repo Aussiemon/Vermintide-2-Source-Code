@@ -103,7 +103,7 @@ FormationUtils.draw_formation = function (formation, pos, rot, color, drawer)
 	end
 end
 
-FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, group_template)
+FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, group_template, side_id)
 	local conflict_director = Managers.state.conflict
 	local nav_world = conflict_director.nav_world
 	local arrangement = formation.arrangement
@@ -123,23 +123,28 @@ FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, grou
 			local spawn_category = "encampment"
 			local breed = Breeds[breed_name]
 			local optional_data = nil
+			optional_data = {
+				side_id = side_id
+			}
 
 			conflict_director:spawn_queued_unit(breed, Vector3Box(spawn_pos), QuaternionBox(formation_rot), spawn_category, nil, spawn_type, optional_data, group_template)
 		end
 	end
 end
 
-FormationUtils.spawn_encampment = function (encampment, pos, rot, unit_composition)
+FormationUtils.spawn_encampment = function (encampment, pos, rot, unit_composition, side_id)
 	local group_template = {
 		template = "encampment",
 		id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 		size = encampment.army_size,
 		group_data = {
-			idle = true,
 			sneaky = true,
+			idle = true,
 			encampment = encampment,
-			spawn_time = Managers.time:time("game")
-		}
+			spawn_time = Managers.time:time("game"),
+			side_id = side_id
+		},
+		side_id = side_id
 	}
 	encampment.pos = Vector3Box(pos)
 
@@ -148,7 +153,7 @@ FormationUtils.spawn_encampment = function (encampment, pos, rot, unit_compositi
 		local breed_name = unit_composition[formation.formation_template.category]
 		local fpos = pos + Quaternion.rotate(rot, Vector2(formation.x, formation.y))
 
-		FormationUtils.spawn_formation(formation, fpos, rot, breed_name, group_template)
+		FormationUtils.spawn_formation(formation, fpos, rot, breed_name, group_template, side_id)
 	end
 end
 

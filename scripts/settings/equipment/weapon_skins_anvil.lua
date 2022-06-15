@@ -98,10 +98,11 @@ local skins = {
 			description = "es_2h_heavy_spear_skin_01_description",
 			rarity = "promo",
 			hud_icon = "weapon_generic_icon_falken",
-			right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_01/wpn_emp_boar_spear_01",
+			display_unit = "units/weapons/weapon_display/display_2h_heavy_spears",
 			inventory_icon = "icon_emp_boar_spear_01",
 			display_name = "es_2h_heavy_spear_skin_01_name",
-			template = "two_handed_heavy_spears_template"
+			template = "two_handed_heavy_spears_template",
+			right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_01/wpn_emp_boar_spear_01"
 		}
 	},
 	{
@@ -110,10 +111,11 @@ local skins = {
 			description = "es_2h_heavy_spear_skin_01_runed_01_description",
 			rarity = "promo",
 			hud_icon = "weapon_generic_icon_falken",
-			right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_01/wpn_emp_boar_spear_01_runed_01",
+			display_unit = "units/weapons/weapon_display/display_2h_heavy_spears",
 			inventory_icon = "icon_emp_boar_spear_01_runed_01",
 			display_name = "es_2h_heavy_spear_skin_01_runed_01_name",
-			template = "two_handed_heavy_spears_template"
+			template = "two_handed_heavy_spears_template",
+			right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_01/wpn_emp_boar_spear_01_runed_01"
 		}
 	},
 	{
@@ -122,10 +124,11 @@ local skins = {
 			description = "es_2h_heavy_spear_skin_02_description",
 			rarity = "promo",
 			hud_icon = "weapon_generic_icon_falken",
-			right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_02/wpn_emp_boar_spear_02",
+			display_unit = "units/weapons/weapon_display/display_2h_heavy_spears",
 			inventory_icon = "icon_emp_boar_spear_02",
 			display_name = "es_2h_heavy_spear_skin_02_name",
-			template = "two_handed_heavy_spears_template"
+			template = "two_handed_heavy_spears_template",
+			right_hand_unit = "units/weapons/player/wpn_emp_boar_spear_02/wpn_emp_boar_spear_02"
 		}
 	},
 	{

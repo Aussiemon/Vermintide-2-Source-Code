@@ -28,5 +28,14 @@ AttackTemplates.skulls_of_fury = {
 	stagger_value = 2,
 	damage_type = "skulls_of_fury"
 }
+AttackTemplates.thorn_skin = {
+	sound_type = "light",
+	damage_type = "blade_storm"
+}
+AttackTemplates.belakor_arena_finish = {
+	stagger_value = 2,
+	sound_type = "medium",
+	damage_type = "belakor_arena_finish"
+}
 
 return

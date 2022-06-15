@@ -58,6 +58,10 @@ UnlockDlc.set_owned = function (self, value, set_status_change)
 	self._owned = value
 end
 
+UnlockDlc.set_status_changed = function (self, value)
+	self._status_changed = value
+end
+
 UnlockDlc.update_is_installed = function (self)
 	if not HAS_STEAM then
 		return self._installed

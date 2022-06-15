@@ -2144,6 +2144,7 @@ AISlotSystem.on_add_extension = function (self, world, unit, extension_name, ext
 		extension.index = target_index
 		extension.debug_color_name = SLOT_COLORS[debug_color_index][1]
 		extension.num_occupied_slots = 0
+		extension.has_slots_attached = true
 		extension.delayed_num_occupied_slots = 0
 		extension.delayed_slot_decay_t = 0
 		extension.full_slots_at_t = {}

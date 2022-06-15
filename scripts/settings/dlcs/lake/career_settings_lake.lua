@@ -13,20 +13,21 @@ PlayerBreeds.hero_es_questingknight = {
 }
 CareerSettings.es_questingknight = {
 	profile_name = "empire_soldier",
-	name = "es_questingknight",
 	display_name = "es_questingknight",
-	portrait_image_picking = "picking_portrait_kruber_questingknight",
 	package_name = "resource_packages/careers/es_questingknight",
+	name = "es_questingknight",
 	preview_idle_animation = "career_idle_04",
 	preview_animation = "career_select_04",
-	sound_character = "empire_soldier_bretonnian_knight",
 	icon = "icons_placeholder",
-	talent_tree_index = 4,
-	description = "markus_3_desc",
 	base_skin = "skin_es_questingknight_blue_and_white",
 	picking_image = "medium_unit_frame_portrait_kruber_questingknight",
 	preview_wield_slot = "melee",
 	playfab_name = "es_4",
+	category_image = "icons_placeholder",
+	sound_character = "empire_soldier_bretonnian_knight",
+	portrait_image_picking = "picking_portrait_kruber_questingknight",
+	talent_tree_index = 4,
+	description = "markus_3_desc",
 	portrait_image = "unit_frame_portrait_kruber_questingknight",
 	portrait_thumbnail = "portrait_kruber_questingknight_thumbnail",
 	sort_order = 1,
@@ -70,12 +71,12 @@ CareerSettings.es_questingknight = {
 			return false, reason, dlc_name
 		end
 
-		return true
+		return true, reason, dlc_name
 	end,
 	is_dlc_unlocked = function (career)
 		if Managers.unlock:is_dlc_unlocked("lake") then
 			if IS_WINDOWS or Managers.backend:dlc_unlocked_at_signin("lake") then
-				return true
+				return true, nil, "lake"
 			else
 				return false, "popup_needs_restart_topic", "lake"
 			end

@@ -95,7 +95,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectivePickupTutorialExtension" then
 		extension.approach_text = Unit.get_data(unit, "approach_text") or "<approach_text not set>"
-		extension.disregard = false
+		extension.disregard = Unit.get_data(unit, "disable_objective_ui") or false
 	end
 
 	if extension_name == "ObjectiveSocketTutorialExtension" then
@@ -105,7 +105,18 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	if extension_name == "ObjectiveUnitExtension" then
 		local server_only = Unit.get_data(unit, "objective_server_only")
-		local network_synced, activate_func = nil
+		local network_synced = nil
+		local level_transition_handler = Managers.level_transition_handler
+		local level_key = level_transition_handler:get_current_level_keys()
+		local level_settings = LevelSettings[level_key]
+
+		if level_settings.hub_level then
+			network_synced = Unit.get_data(unit, "network_synced")
+		else
+			network_synced = true
+		end
+
+		local activate_func = nil
 
 		if Managers.player.is_server and not server_only then
 			function activate_func(extension, active)
@@ -113,15 +124,7 @@ TutorialSystem.on_add_extension = function (self, world, unit, extension_name, e
 					Application.warning("[ObjectiveUnitExtension] Trying to set active on unit %q to %q when it's already %q", tostring(unit), active, extension.active)
 				else
 					extension.active = active
-					local level_transition_handler = Managers.level_transition_handler
-					local level_key = level_transition_handler:get_current_level_keys()
-					local level_settings = LevelSettings[level_key]
-
-					if level_settings.hub_level then
-						network_synced = Unit.get_data(unit, "network_synced")
-					else
-						network_synced = true
-					end
+					local network_synced = extension.network_synced
 
 					if network_synced then
 						local network_manager = Managers.state.network

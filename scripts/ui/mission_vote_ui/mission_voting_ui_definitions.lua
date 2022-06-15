@@ -1062,7 +1062,15 @@ local function create_settings_option_deus(scenegraph_id, size, title_text, icon
 					style_id = "journey_border",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.icon_visible and content.show_journey_border
+						return content.icon_visible and content.show_journey_border and not content.with_belakor
+					end
+				},
+				{
+					texture_id = "belakor_journey_border",
+					style_id = "belakor_journey_border",
+					pass_type = "texture",
+					content_check_function = function (content)
+						return content.icon_visible and content.show_journey_border and content.with_belakor
 					end
 				},
 				{
@@ -1089,7 +1097,9 @@ local function create_settings_option_deus(scenegraph_id, size, title_text, icon
 		},
 		content = {
 			journey_border = "vote_expedition_border",
+			with_belakor = false,
 			show_journey_border = false,
+			belakor_journey_border = "vote_icon_border_belakor",
 			option_text = "",
 			icon_mask = "mask_rect",
 			frame = frame_settings.texture,
@@ -1187,6 +1197,19 @@ local function create_settings_option_deus(scenegraph_id, size, title_text, icon
 				texture_size = {
 					180,
 					180
+				},
+				offset = {
+					size[1] / 2 - 120,
+					0,
+					5
+				}
+			},
+			belakor_journey_border = {
+				vertical_alignment = "center",
+				horizontal_alignment = "center",
+				texture_size = {
+					210,
+					210
 				},
 				offset = {
 					size[1] / 2 - 120,

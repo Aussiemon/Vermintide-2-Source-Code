@@ -86,6 +86,8 @@ for level_key, level_settings in pairs(DEUS_LEVEL_SETTINGS) do
 				"dialogues/generated/hero_conversations_dlc_morris_level_banter_themed",
 				"dialogues/generated/hero_conversations_dlc_morris_ingame",
 				"dialogues/generated/hero_conversations_dlc_morris_extras",
+				"dialogues/generated/hero_conversations_dlc_cowbell_ingame",
+				"dialogues/generated/hero_conversations_dlc_cowbell_banter",
 				dialogue_settings_file_name
 			}
 		end

@@ -764,7 +764,7 @@ local weapon_template = {
 					},
 					{
 						sub_action = "default",
-						start_time = 0.52,
+						start_time = 0,
 						action = "action_two",
 						input = "action_two_hold"
 					},
@@ -915,7 +915,7 @@ local weapon_template = {
 					},
 					{
 						sub_action = "default",
-						start_time = 0.4,
+						start_time = 0,
 						action = "action_two",
 						input = "action_two_hold"
 					},

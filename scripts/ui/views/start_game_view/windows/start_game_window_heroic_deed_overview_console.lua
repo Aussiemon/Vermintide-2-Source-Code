@@ -209,6 +209,13 @@ StartGameWindowHeroicDeedOverviewConsole._handle_input = function (self, dt, t)
 end
 
 StartGameWindowHeroicDeedOverviewConsole._can_play = function (self)
+	local item_interface = Managers.backend:get_interface("items")
+	local item = item_interface:get_item_from_id(self._selected_backend_id)
+
+	if not item then
+		self._selected_backend_id = nil
+	end
+
 	local can_play = self._selected_backend_id ~= nil
 
 	return can_play

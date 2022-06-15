@@ -128,7 +128,7 @@ AIDebugger.update = function (self, t, dt)
 	end
 
 	if DebugKeyHandler.key_pressed("j", "kill all but selected AI", "ai", "left shift") then
-		Managers.state.conflict:destroy_close_units(self.active_unit, 262144)
+		Managers.state.conflict:destroy_close_units(nil, self.active_unit, 262144)
 	elseif DebugKeyHandler.key_pressed("j", "damage selected AI", "ai", "left alt") then
 		local kill_unit = self.active_unit
 
@@ -454,10 +454,13 @@ end
 
 AIDebugger.draw_active_unit = function (self, t)
 	local drawer = self.drawer
-	local position = Unit.local_position(self.active_unit, 0)
+	local unit = self.active_unit
+	local position = Unit.local_position(unit, 0) + Vector3.up() * 2
+	local direction = Quaternion.forward(Unit.local_rotation(unit, 0))
 
-	drawer:sphere(position + Vector3.up() * 2, 0.1, Color(255, 255, 255, 0))
-	self:draw_nearby_navmesh(self.active_unit)
+	drawer:sphere(position, 0.1, Color(255, 255, 0))
+	drawer:vector(position, direction, Color(255, 255, 0))
+	self:draw_nearby_navmesh(unit)
 end
 
 local color_table = {}

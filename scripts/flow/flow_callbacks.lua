@@ -2056,8 +2056,9 @@ function flow_is_carrying_torch(params)
 
 	if weapon_unit then
 		local weapon_extension = ScriptUnit.extension(weapon_unit, "weapon_system")
+		local item_name = weapon_extension.item_name
 
-		if weapon_extension.item_name == "torch" then
+		if item_name == "torch" or item_name == "shadow_torch" then
 			flow_return_table.has_torch = true
 		end
 	end

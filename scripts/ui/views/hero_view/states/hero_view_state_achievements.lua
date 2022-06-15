@@ -686,7 +686,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 							elseif type(reward) == "table" then
 								local reward_type = reward.reward_type
 
-								if reward_type == "item" or reward_type == "frame" then
+								if reward_type == "item" or CosmeticUtils.is_cosmetic_item(reward_type) then
 									local item_key = reward.item_name
 									local item_template = ItemMasterList[item_key]
 									local custom_data = reward.custom_data
@@ -1434,6 +1434,10 @@ HeroViewStateAchievements._on_reward_claimed = function (self, reward_poll_id, p
 
 	self:_update_new_status_for_current_tab()
 	self:_update_buttons_new_status()
+
+	local idx = table.index_of(self._claimable_challenge_widgets, widget)
+
+	table.swap_delete(self._claimable_challenge_widgets, idx)
 	self:_handle_claim_all_challenges()
 end
 
@@ -1535,7 +1539,7 @@ HeroViewStateAchievements._setup_reward_presentation = function (self, reward_po
 		for _, data in ipairs(rewards) do
 			local reward_type = data.type
 
-			if reward_type == "item" or reward_type == "frame" then
+			if reward_type == "item" or CosmeticUtils.is_cosmetic_item(reward_type) then
 				local backend_id = data.backend_id
 				local amount = data.amount
 				local entry = {}
@@ -2879,7 +2883,7 @@ HeroViewStateAchievements._handle_claim_all_challenges = function (self)
 
 	local has_claimable_widgets = (self._claimable_challenge_widgets and #self._claimable_challenge_widgets > 0 and true) or false
 
-	if ((has_unclaimed_challenges and has_claimable_widgets) or self._has_claimable_filtered_challenges) and not script_data["eac-untrusted"] and not self:_is_polling() then
+	if has_claimable_widgets and (has_unclaimed_challenges or self._has_claimable_filtered_challenges) and not script_data["eac-untrusted"] and not self:_is_polling() then
 		claim_all_button.content.visible = true
 	else
 		claim_all_button.content.visible = false

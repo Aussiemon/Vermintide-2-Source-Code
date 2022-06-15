@@ -196,7 +196,21 @@ PlayerProjectileHuskExtension.handle_timed_events = function (self, t)
 		local aoe_data = timed_data.aoe
 
 		if aoe_data then
-			self:do_aoe(aoe_data, POSITION_LOOKUP[unit])
+			local position = POSITION_LOOKUP[unit]
+
+			self:do_aoe(aoe_data, position)
+
+			local grenade = timed_data.grenade
+
+			if grenade then
+				local owner_unit = self._owner_unit
+				local owner_buff_extension = ScriptUnit.has_extension(owner_unit, "buff_system")
+				local rotation = Unit.local_rotation(unit, 0)
+
+				if owner_buff_extension then
+					owner_buff_extension:trigger_procs("on_grenade_exploded", timed_data, position, self._is_critical_strike, self.item_name, rotation, self.scale, self.power_level)
+				end
+			end
 		end
 
 		local sound_event = self._timed_data.life_time_activate_sound_stop_event
@@ -432,7 +446,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 	end
 
 	if hit_effect then
-		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name)
+		EffectHelper.play_skinned_surface_material_effects(hit_effect, self._world, hit_unit, hit_position, hit_rotation, hit_normal, is_husk, enemy_type, damage_sound, no_damage, hit_zone_name, shield_blocked, breed)
 	end
 
 	return hit_zone_name ~= "ward", forced_penetration

@@ -1539,8 +1539,9 @@ InteractionDefinitions.give_item = {
 
 						if template.can_give_other then
 							local ammo_extension = inventory_extension:get_item_slot_extension(item_slot_name, "ammo_system")
+							local given = true
 
-							ammo_extension:use_ammo(1)
+							ammo_extension:use_ammo(1, given)
 
 							if not LEVEL_EDITOR_TEST then
 								local interactor_game_object_id = Managers.state.unit_storage:go_id(interactor_unit)

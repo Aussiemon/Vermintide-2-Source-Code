@@ -11,6 +11,14 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	self._cosmetics = {}
 	self._skin_material_changes = {}
 	self._tp_mesh_visible = true
+	self._player_afk_data = {
+		tickrate = 1,
+		triggered = false,
+		last_tick = 0,
+		trigger_event_dt = 120,
+		last_player_move_t = 0,
+		last_player_pos = Vector3Box()
+	}
 	local skin_name = extension_init_data.skin_name
 	local frame_name = extension_init_data.frame_name
 	local profile = extension_init_data.profile
@@ -46,6 +54,8 @@ PlayerUnitCosmeticExtension.destroy = function (self)
 end
 
 PlayerUnitCosmeticExtension.extensions_ready = function (self, world, unit)
+	self._status_extension = ScriptUnit.extension(unit, "status_system")
+	self._attachment_extension = ScriptUnit.extension(unit, "attachment_system")
 	local hero_name = self._profile.display_name
 	local skin_data = self._cosmetics.skin
 	local material_changes = skin_data.material_changes
@@ -174,6 +184,8 @@ end
 
 PlayerUnitCosmeticExtension.update = function (self, unit, dummy_input, dt, context, t)
 	self._queue_3p_event_name = nil
+
+	self:_update_player_standing_still_events(t)
 end
 
 PlayerUnitCosmeticExtension.get_third_person_mesh_unit = function (self)
@@ -209,6 +221,51 @@ end
 
 PlayerUnitCosmeticExtension.consume_queued_3p_emote = function (self)
 	self._queue_3p_event_name = nil
+end
+
+PlayerUnitCosmeticExtension.trigger_ability_activated_events = function (self)
+	local hat_data = self._attachment_extension:get_slot_data("slot_hat")
+
+	if hat_data then
+		Unit.flow_event(hat_data.unit, "ability_activated")
+	end
+end
+
+PlayerUnitCosmeticExtension._update_player_standing_still_events = function (self, t)
+	local unit = self._unit
+	local afk_data = self._player_afk_data
+	local last_tick = afk_data.last_tick
+
+	if t > last_tick + afk_data.tickrate then
+		local last_pos = afk_data.last_player_pos:unbox()
+		local current_pos = POSITION_LOOKUP[unit]
+
+		if Vector3.distance_squared(last_pos, current_pos) > 0.1 then
+			afk_data.last_player_move_t = t
+
+			afk_data.last_player_pos:store(current_pos)
+
+			if afk_data.triggered then
+				local hat_data = self._attachment_extension:get_slot_data("slot_hat")
+
+				if hat_data then
+					Unit.flow_event(hat_data.unit, "player_break_prolonged_standing_still")
+				end
+			end
+
+			afk_data.triggered = false
+		elseif not afk_data.triggered and t > afk_data.last_player_move_t + afk_data.trigger_event_dt and not self._status_extension:is_disabled() then
+			local hat_data = self._attachment_extension:get_slot_data("slot_hat")
+
+			if hat_data then
+				Unit.flow_event(hat_data.unit, "player_prolonged_standing_still")
+			end
+
+			afk_data.triggered = true
+		end
+
+		afk_data.last_tick = t
+	end
 end
 
 return

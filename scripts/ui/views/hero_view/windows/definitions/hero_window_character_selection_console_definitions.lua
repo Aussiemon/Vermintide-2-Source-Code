@@ -367,7 +367,7 @@ local function create_hero_widget(scenegraph_id, size)
 						if content.dlc_name then
 							local button_hotspot = content.button_hotspot
 
-							return not button_hotspot.is_hover and not button_hotspot.is_selected
+							return not button_hotspot.is_hover and not button_hotspot.is_selected and content.locked
 						else
 							return content.locked
 						end
@@ -379,7 +379,7 @@ local function create_hero_widget(scenegraph_id, size)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return content.dlc_name and (button_hotspot.is_hover or button_hotspot.is_selected)
+						return content.dlc_name and (button_hotspot.is_hover or button_hotspot.is_selected) and content.locked
 					end
 				},
 				{

@@ -42,8 +42,10 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self._request_queue = PlayFabRequestQueue:new()
 	self._quest_data = {}
 	self._fake_inventory_items = {}
+	self._unlocked_cosmetics = {}
 	self._best_power_levels = nil
 	self.sum_best_power_levels = nil
+	self._belakor_data_loaded = false
 	self._playfab_id = signin_result.PlayFabId
 	local info_result_payload = signin_result.InfoResultPayload
 	local read_only_data = info_result_payload.UserReadOnlyData or {}
@@ -92,7 +94,7 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = 1
 
-	self:_update_dlc_ownership()
+	self:_migrate_cosmetics()
 end
 
 PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_values)
@@ -151,6 +153,32 @@ PlayFabMirrorBase._parse_unlocked_weapon_skins = function (self, read_only_data_
 	return unlocked_weapon_skins
 end
 
+PlayFabMirrorBase._parse_unlocked_cosmetics = function (self, read_only_data_values)
+	local unlocked_cosmetics = {}
+	local unlocked_cosmetics_string = read_only_data_values.unlocked_cosmetics
+	local unlock_manager = Managers.unlock
+
+	if unlocked_cosmetics_string then
+		local decoded = cjson.decode(unlocked_cosmetics_string)
+
+		if decoded then
+			for _, cosmetics in pairs(decoded) do
+				for i = 1, #cosmetics, 1 do
+					local cosmetic_name = cosmetics[i]
+					local item_data = rawget(ItemMasterList, cosmetic_name)
+					local required_dlc = item_data and item_data.required_dlc
+
+					if not required_dlc or unlock_manager:is_dlc_unlocked(required_dlc) then
+						unlocked_cosmetics[cosmetic_name] = true
+					end
+				end
+			end
+		end
+	end
+
+	return unlocked_cosmetics
+end
+
 PlayFabMirrorBase._parse_claimed_console_dlc_rewards = function (self, read_only_data_values)
 	local claimed_rewards = {}
 	local claimed_rewards_string = read_only_data_values.claimed_console_dlc_rewards
@@ -164,6 +192,38 @@ PlayFabMirrorBase._parse_claimed_console_dlc_rewards = function (self, read_only
 	end
 
 	return claimed_rewards
+end
+
+PlayFabMirrorBase._migrate_cosmetics = function (self)
+	if DEDICATED_SERVER then
+		return
+	end
+
+	local request = {
+		FunctionName = "migrateCosmetics"
+	}
+	local success_callback = callback(self, "migrate_cosmetics_request_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.migrate_cosmetics_request_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+	local data = result.FunctionResult
+	local unlocked_cosmetics = data.unlocked_cosmetics
+	local characters_data = data.characters_data
+
+	if unlocked_cosmetics then
+		self:set_read_only_data("unlocked_cosmetics", unlocked_cosmetics, true)
+	end
+
+	if characters_data then
+		self:set_read_only_data("characters_data", characters_data, true)
+	end
+
+	self:_update_dlc_ownership()
 end
 
 PlayFabMirrorBase._update_dlc_ownership = function (self)
@@ -199,21 +259,43 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	local platform_dlcs = function_result.platform_dlcs
 	local excluded_dlcs = function_result.excluded_dlcs
 	local new_dlcs = function_result.new_dlcs
+	local revoked_dlcs = function_result.revoked_dlcs
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
 	local unlock_manager = Managers.unlock
 
-	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
+	unlock_manager:handle_exclude_dlcs(excluded_dlcs, owned_dlcs)
 	self:update_owned_dlcs(false)
 
 	if HAS_STEAM then
 		self:handle_new_dlcs(new_dlcs)
 	end
 
+	if revoked_dlcs and #revoked_dlcs > 0 then
+		local unlocked_keep_decorations = function_result.unlocked_keep_decorations
+
+		if unlocked_keep_decorations then
+			self:set_read_only_data("unlocked_keep_decorations", unlocked_keep_decorations, true)
+		end
+
+		local unlocked_cosmetics = function_result.unlocked_cosmetics
+
+		if unlocked_cosmetics then
+			self:set_read_only_data("unlocked_cosmetics", unlocked_cosmetics, true)
+		end
+
+		local unlocked_weapon_skins = function_result.unlocked_weapon_skins
+
+		if unlocked_cosmetics then
+			self:set_read_only_data("unlocked_weapon_skins", unlocked_weapon_skins, true)
+		end
+	end
+
 	local read_only_data_values = self._read_only_data
 	self._claimed_achievements = self:_parse_claimed_achievements(read_only_data_values)
 	self._claimed_event_quests = self:_parse_claimed_event_quests(read_only_data_values)
 	self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(read_only_data_values)
+	self._unlocked_cosmetics = self:_parse_unlocked_cosmetics(read_only_data_values)
 	local unlocked_keep_decorations_json = read_only_data_values.unlocked_keep_decorations or "{}"
 	self._unlocked_keep_decorations = cjson.decode(unlocked_keep_decorations_json)
 
@@ -266,6 +348,21 @@ PlayFabMirrorBase._sync_unseen_rewards = function (self, new_rewards)
 			unseen_rewards[#unseen_rewards + 1] = reward
 
 			self:add_keep_decoration(item_id)
+		elseif CosmeticUtils.is_cosmetic_item(item_type) then
+			local backend_id = self:add_item(nil, {
+				ItemId = item_id
+			})
+
+			if backend_id then
+				local reward = {
+					reward_type = item_type,
+					backend_id = backend_id,
+					rewarded_from = item.Data.rewarded_from,
+					item_type = item_type,
+					item_id = item_id
+				}
+				unseen_rewards[#unseen_rewards + 1] = reward
+			end
 		else
 			local data = get_item_from_item_master_list(item_id)
 			local custom_data = item.CustomData
@@ -409,6 +506,16 @@ PlayFabMirrorBase.sign_in_reward_request_cb = function (self, result)
 				self:add_keep_decoration(keep_decoration)
 			end
 		end
+
+		local unlocked_cosmetics = reward_data.unlocked_cosmetics
+
+		if unlocked_cosmetics then
+			for i = 1, #unlocked_cosmetics, 1 do
+				self:add_item(nil, {
+					ItemId = unlocked_cosmetics[i]
+				})
+			end
+		end
 	end
 
 	self:_request_quests()
@@ -475,6 +582,8 @@ PlayFabMirrorBase.fix_inventory_data_1_request_cb = function (self, result)
 
 			if key == "unlocked_weapon_skins" then
 				self._unlocked_weapon_skins = self:_parse_unlocked_weapon_skins(new_read_only_data)
+			elseif key == "unlocked_cosmetics" then
+				self._unlocked_cosmetics = self:_parse_unlocked_cosmetics(new_read_only_data)
 			end
 		end
 	end
@@ -697,6 +806,10 @@ PlayFabMirrorBase.fix_total_collected_essence_cb = function (self, result)
 		self:_request_win_tracks()
 	elseif DLCSettings.morris then
 		self:_deus_player_setup()
+
+		if self:belakor_active() then
+			self:_deus_setup_belakor_data()
+		end
 	else
 		self:_set_up_additional_account_data()
 	end
@@ -732,6 +845,10 @@ PlayFabMirrorBase.win_tracks_request_cb = function (self, result)
 
 	if DLCSettings.morris then
 		self:_deus_player_setup()
+
+		if self:belakor_active() then
+			self:_deus_setup_belakor_data()
+		end
 	else
 		self:_set_up_additional_account_data()
 	end
@@ -758,6 +875,60 @@ PlayFabMirrorBase.deus_player_setup_request_cb = function (self, result)
 
 	self:handle_deus_result(result)
 	self:_set_up_additional_account_data()
+end
+
+PlayFabMirrorBase.deus_refresh_belakor_data = function (self)
+	self:_deus_setup_belakor_data()
+end
+
+PlayFabMirrorBase.has_loaded_belakor_data = function (self)
+	return self._belakor_data_loaded
+end
+
+PlayFabMirrorBase.set_has_loaded_belakor_data = function (self, value)
+	self._belakor_data_loaded = value
+end
+
+PlayFabMirrorBase.belakor_active = function (self)
+	local backend_manager = Managers.backend
+	local belakor_active = backend_manager:get_title_data("belakor_active")
+
+	if not belakor_active then
+		return true
+	end
+
+	belakor_active = cjson.decode(belakor_active)
+	local active = belakor_active.active
+
+	return active
+end
+
+PlayFabMirrorBase._deus_setup_belakor_data = function (self)
+	local request = {
+		FunctionName = "deusSetBelakorCurse",
+		FunctionParameter = {}
+	}
+	local success_callback = callback(self, "deus_setup_belakor_data_request_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._belakor_data_loaded = false
+end
+
+PlayFabMirrorBase.deus_setup_belakor_data_request_cb = function (self, result)
+	self._belakor_data_loaded = true
+	local function_result = result.FunctionResult
+	local deus_belakor_curse_data = function_result.deus_belakor_curse_data
+
+	if deus_belakor_curse_data then
+		local current_time = Managers.time:time("main")
+		self._deus_belakor_curse_data = {
+			time_of_update = current_time,
+			span = deus_belakor_curse_data.span_ms / 1000,
+			remaining_time = deus_belakor_curse_data.remaining_time_ms / 1000,
+			cycle_count = deus_belakor_curse_data.cycle_count
+		}
+	end
 end
 
 PlayFabMirrorBase._set_up_additional_account_data = function (self, steps_completed)
@@ -843,8 +1014,9 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 				self:_update_data(item, backend_id)
 
 				local filter = false
+				local item_type = item.data.item_type
 
-				if item.data.item_type == "weapon_skin" then
+				if item_type == "weapon_skin" or CosmeticUtils.is_cosmetic_item(item_type) then
 					filter = true
 				end
 
@@ -872,8 +1044,11 @@ PlayFabMirrorBase.inventory_request_cb = function (self, result)
 
 	local unlocked_weapon_skins = self:get_unlocked_weapon_skins()
 	unlocked_weapon_skins = unlocked_weapon_skins or {}
+	local unlocked_cosmetics = self:get_unlocked_cosmetics()
+	unlocked_cosmetics = unlocked_cosmetics or {}
 
-	self:_create_fake_inventory_items(unlocked_weapon_skins)
+	self:_create_fake_inventory_items(unlocked_weapon_skins, "weapon_skins")
+	self:_create_fake_inventory_items(unlocked_cosmetics, "cosmetics")
 
 	if DEDICATED_SERVER then
 		self:request_characters()
@@ -905,7 +1080,9 @@ PlayFabMirrorBase._request_steam_user_inventory = function (self)
 end
 
 PlayFabMirrorBase._migrate_characters = function (self)
-	if not self._read_only_data.characters_data then
+	local characters_data = self._read_only_data.characters_data
+
+	if not characters_data or characters_data == "{}" or characters_data == "" or (type(characters_data) == "table" and table.is_empty(characters_data)) then
 		local request = {
 			FunctionName = "migrateCharacters",
 			FunctionParameter = {}
@@ -966,10 +1143,7 @@ PlayFabMirrorBase._cb_steam_user_inventory = function (self, result, item_list, 
 					ItemInstanceId = backend_id
 				}
 
-				self:_update_data(steam_item, backend_id)
-
-				self._inventory_items[backend_id] = steam_item
-
+				self:add_item(backend_id, steam_item, true)
 				debug_printf("Steam Item: %q, %q, %q, %q, %q", item_key, steam_itemdefid, steam_backend_unique_id, flags, amount)
 			end
 		end
@@ -1002,6 +1176,12 @@ PlayFabMirrorBase._set_inital_career_data = function (self, career_name, charact
 
 		if not slot_item_value then
 			broken_slots[slot_name] = true
+		elseif CosmeticUtils.is_cosmetic_slot(slot_name) then
+			local cosmetic = self._unlocked_cosmetics[slot_item_value]
+
+			if not cosmetic then
+				broken_slots[slot_name] = true
+			end
 		else
 			local item = self._inventory_items[slot_item_value]
 
@@ -1044,18 +1224,31 @@ PlayFabMirrorBase._verify_items_are_usable = function (self, broken_slots, chara
 
 			if value then
 				local item = self._inventory_items[value]
-				local item_data = item.data
-				local can_wield = item_data.can_wield
 
-				if not table.contains(can_wield, career_name) then
-					broken_slots[slot_name] = true
+				if CosmeticUtils.is_cosmetic_slot(slot_name) then
+					local backend_id = self._unlocked_cosmetics[value]
+
+					if backend_id then
+						item = self._inventory_items[backend_id]
+					end
 				end
 
-				local accepted_slot_types = item_slot_types_by_slot_name[slot_name]
-				local item_slot_type = item_data.slot_type
-				local item_rarity = item_data.rarity
+				if item then
+					local item_data = item.data
+					local can_wield = item_data.can_wield
 
-				if not table.contains(accepted_slot_types, item_slot_type) or item_rarity == "magic" then
+					if not table.contains(can_wield, career_name) then
+						broken_slots[slot_name] = true
+					end
+
+					local accepted_slot_types = item_slot_types_by_slot_name[slot_name]
+					local item_slot_type = item_data.slot_type
+					local item_rarity = item_data.rarity
+
+					if not table.contains(accepted_slot_types, item_slot_type) or item_rarity == "magic" then
+						broken_slots[slot_name] = true
+					end
+				else
 					broken_slots[slot_name] = true
 				end
 			end
@@ -1132,13 +1325,13 @@ PlayFabMirrorBase.ready = function (self)
 	return self._inventory_items and self._num_items_to_load == 0
 end
 
-PlayFabMirrorBase.update = function (self, dt)
+PlayFabMirrorBase.update = function (self, dt, t)
 	local error_code, request_id = nil
 
 	if self._request_queue_error then
 		return
 	else
-		error_code, request_id = self._request_queue:update(dt)
+		error_code, request_id = self._request_queue:update(dt, t)
 	end
 
 	if error_code then
@@ -1370,6 +1563,14 @@ PlayFabMirrorBase.get_unlocked_weapon_skins = function (self)
 	return self._unlocked_weapon_skins
 end
 
+PlayFabMirrorBase.get_unlocked_cosmetics = function (self)
+	return self._unlocked_cosmetics
+end
+
+PlayFabMirrorBase.get_unlocked_cosmetics = function (self)
+	return self._unlocked_cosmetics
+end
+
 PlayFabMirrorBase.get_unlocked_keep_decorations = function (self)
 	return self._unlocked_keep_decorations
 end
@@ -1398,28 +1599,72 @@ end
 
 local new_fake_inventory_items = {}
 
-PlayFabMirrorBase._create_fake_inventory_items = function (self, unlocked_weapon_skins)
+PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_items, items_type)
 	table.clear(new_fake_inventory_items)
 
-	for skin_name, optional_offline_backend_id in pairs(unlocked_weapon_skins) do
-		local item_key, rarity = WeaponSkins.matching_weapon_skin_item_key(skin_name)
+	local lookup_table = nil
 
-		if item_key and rarity then
-			if rarity == "bogenhafen" then
-				rarity = "unique"
-			end
+	if items_type == "weapon_skins" then
+		lookup_table = self._unlocked_weapon_skins
+		local weapon_skins = WeaponSkins
 
-			local fake_item = {
-				ItemId = item_key,
-				ItemInstanceId = (type(optional_offline_backend_id) == "string" and optional_offline_backend_id) or guid(),
-				CustomData = {
-					skin = skin_name,
-					rarity = rarity
+		for skin_name, optional_offline_backend_id in pairs(fake_inventory_items) do
+			local item_key, rarity = weapon_skins.matching_weapon_skin_item_key(skin_name)
+
+			if item_key and rawget(ItemMasterList, item_key) then
+				if rarity and rarity == "bogenhafen" then
+					rarity = "unique"
+				end
+
+				new_fake_inventory_items[#new_fake_inventory_items + 1] = {
+					ItemId = item_key,
+					ItemInstanceId = (type(optional_offline_backend_id) == "string" and optional_offline_backend_id) or guid(),
+					CustomData = {
+						skin = skin_name,
+						rarity = rarity
+					}
 				}
-			}
-
-			table.insert(new_fake_inventory_items, fake_item)
+			else
+				lookup_table[skin_name] = nil
+			end
 		end
+	elseif items_type == "cosmetics" then
+		lookup_table = self._unlocked_cosmetics
+
+		for cosmetic_name, optional_offline_backend_id in pairs(fake_inventory_items) do
+			local master_list_item = rawget(ItemMasterList, cosmetic_name)
+
+			if master_list_item then
+				local existing_backend_id = lookup_table[cosmetic_name]
+				local backend_id, override_id = nil
+
+				if type(existing_backend_id) == "string" then
+					backend_id = existing_backend_id
+				elseif type(optional_offline_backend_id) == "string" then
+					backend_id = optional_offline_backend_id
+
+					if master_list_item.steam_itemdefid ~= nil then
+						override_id = backend_id
+					end
+				else
+					backend_id = guid()
+				end
+
+				new_fake_inventory_items[#new_fake_inventory_items + 1] = {
+					ItemId = cosmetic_name,
+					ItemInstanceId = backend_id,
+					override_id = override_id
+				}
+			else
+				lookup_table[lookup_table] = nil
+			end
+		end
+	else
+		fassert(false, "Invalid items_typs: %q", items_type)
+	end
+
+	if not self._inventory_items then
+		self._inventory_items = {}
 	end
 
 	local new_fake_ids = {}
@@ -1427,6 +1672,7 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, unlocked_weapon
 	for i = 1, #new_fake_inventory_items, 1 do
 		local fake_item = new_fake_inventory_items[i]
 		local backend_id = fake_item.ItemInstanceId
+		lookup_table[fake_item.override_id or fake_item.ItemId] = backend_id
 
 		self:_update_data(fake_item, backend_id)
 
@@ -1525,6 +1771,12 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
 	if skin_data then
 		return self:_add_new_weapon_skin(item)
 	else
+		local master_list_item = ItemMasterList[item.ItemId]
+
+		if CosmeticUtils.is_cosmetic_item(master_list_item.slot_type) then
+			return self:add_unlocked_cosmetic(item.ItemId, backend_id)
+		end
+
 		inventory_items[backend_id] = item
 
 		self:_update_data(item, backend_id)
@@ -1576,7 +1828,21 @@ PlayFabMirrorBase.add_unlocked_weapon_skin = function (self, weapon_skin, offlin
 
 		return self:_create_fake_inventory_items({
 			[weapon_skin] = offline_backend_id or true
-		})
+		}, "weapon_skins")
+	end
+end
+
+PlayFabMirrorBase.add_unlocked_cosmetic = function (self, cosmetic_name, offline_backend_id)
+	if self._unlocked_cosmetics then
+		local backend_id = self:_create_fake_inventory_items({
+			[cosmetic_name] = offline_backend_id or true
+		}, "cosmetics")
+
+		if #backend_id > 0 then
+			self._unlocked_cosmetics[cosmetic_name] = backend_id[1]
+
+			return backend_id[1]
+		end
 	end
 end
 
@@ -1610,6 +1876,10 @@ end
 
 PlayFabMirrorBase.get_deus_journey_cycle_data = function (self)
 	return self._deus_journey_cycle_data
+end
+
+PlayFabMirrorBase.get_deus_belakor_curse_data = function (self)
+	return self._deus_belakor_curse_data
 end
 
 PlayFabMirrorBase.handle_deus_result = function (self, result)
@@ -2027,8 +2297,9 @@ PlayFabMirrorBase.fix_career_data_request_cb = function (self, result)
 	self._characters_data_mirror = table.clone(character_starting_gear)
 
 	for character_names, character_data in pairs(character_starting_gear) do
+		local mirror_data = self._characters_data_mirror[character_names]
 		local careers = character_data.careers
-		local mirror_careers = self._characters_data_mirror[character_names]
+		local mirror_careers = mirror_data and mirror_data.careers
 
 		table.merge(current_career_data, careers)
 		table.merge(mirror_career_data, mirror_careers)
@@ -2081,21 +2352,25 @@ PlayFabMirrorBase._check_career_data = function (self, careers_data, career_data
 	for career_name, career_data in pairs(careers_data) do
 		local mirror_data = career_data_mirror[career_name]
 
-		for _, loadout_key in pairs(keys) do
-			local loadout_value = career_data[loadout_key]
-			local mirror_loadout_value = mirror_data[loadout_key]
+		if mirror_data then
+			for _, loadout_key in pairs(keys) do
+				local loadout_value = career_data[loadout_key]
+				local mirror_loadout_value = mirror_data[loadout_key]
 
-			if loadout_value ~= mirror_loadout_value then
-				for _, data in pairs(characters_data) do
-					if data.careers[career_name] then
-						data.careers[career_name][loadout_key] = loadout_value
+				if loadout_value ~= mirror_loadout_value then
+					for _, data in pairs(characters_data) do
+						if data.careers[career_name] then
+							data.careers[career_name][loadout_key] = loadout_value
 
-						break
+							break
+						end
 					end
-				end
 
-				dirty = true
+					dirty = true
+				end
 			end
+		else
+			debug_printf("Cannot find mirrored data for '%q'. Is it a revoked dlc?", career_name)
 		end
 	end
 

@@ -399,9 +399,10 @@ AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 		return
 	end
 
-	local attacker_is_player = Managers.player:owner(enemy_unit)
+	local self_unit = self._unit
+	local attacked_by_ally = not Managers.state.side:is_enemy(self_unit, enemy_unit)
 
-	if not attacker_is_player then
+	if attacked_by_ally then
 		return
 	end
 
@@ -410,10 +411,10 @@ AISimpleExtension.enemy_aggro = function (self, alerting_unit, enemy_unit)
 	AiUtils.activate_unit(blackboard)
 
 	blackboard.no_hesitation = true
-	local self_unit = self._unit
+	local slot_extension = ScriptUnit.has_extension(self_unit, "ai_slot_system")
 
-	if ScriptUnit.has_extension(self_unit, "ai_slot_system") then
-		ScriptUnit.extension(self_unit, "ai_slot_system").do_search = true
+	if slot_extension then
+		slot_extension.do_search = true
 	end
 
 	if ScriptUnit.has_extension(self_unit, "ai_inventory_system") then
@@ -440,9 +441,9 @@ AISimpleExtension.enemy_alert = function (self, alerting_unit, enemy_unit)
 		self:enemy_aggro(alerting_unit, enemy_unit)
 	end
 
-	local attacker_is_player = Managers.player:owner(enemy_unit)
+	local attacked_by_ally = not Managers.state.side:is_enemy(self._unit, enemy_unit)
 
-	if not attacker_is_player then
+	if attacked_by_ally then
 		return
 	end
 

@@ -996,7 +996,7 @@ GenericStatusExtension.set_pounced_down = function (self, pounced_down, pouncer_
 	if pounced_down then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-		buff_extension:trigger_procs("on_player_disabled", "assassin_pounced")
+		buff_extension:trigger_procs("on_player_disabled", "assassin_pounced", pouncer_unit)
 		Managers.state.event:trigger("on_player_disabled", "assassin_pounced", unit, pouncer_unit)
 		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
@@ -1612,7 +1612,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 	if is_grabbed then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-		buff_extension:trigger_procs("on_player_disabled", "pack_master_grab")
+		buff_extension:trigger_procs("on_player_disabled", "pack_master_grab", grabber_unit)
 		Managers.state.event:trigger("on_player_disabled", "pack_master_grab", unit, grabber_unit)
 		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
@@ -1785,7 +1785,7 @@ GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status
 	if is_grabbed then
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
 
-		buff_extension:trigger_procs("on_player_disabled", "corruptor_grab")
+		buff_extension:trigger_procs("on_player_disabled", "corruptor_grab", self.corruptor_unit)
 		Managers.state.event:trigger("on_player_disabled", "corruptor_grab", unit, self.corruptor_unit)
 		Managers.state.achievement:trigger_event("register_player_disabled", unit)
 	end
@@ -2208,6 +2208,10 @@ end
 
 GenericStatusExtension.is_overpowered = function (self)
 	return self.overpowered
+end
+
+GenericStatusExtension.is_overpowered_by_attacker = function (self)
+	return self.overpowered_attacking_unit ~= self.unit
 end
 
 GenericStatusExtension.can_dodge = function (self, t)

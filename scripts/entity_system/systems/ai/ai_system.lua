@@ -3,6 +3,7 @@ require("scripts/helpers/level_helper")
 require("scripts/helpers/network_utils")
 require("scripts/settings/terror_events/terror_event_utils")
 
+UNIT_UNIQUE_IDS = UNIT_UNIQUE_IDS or 0
 VISUAL_DEBUGGING_ENABLED = VISUAL_DEBUGGING_ENABLED or false
 GLOBAL_AI_NAVWORLD = GLOBAL_AI_NAVWORLD or {}
 AISystem = class(AISystem, ExtensionSystemBase)
@@ -508,6 +509,8 @@ AISystem.set_default_blackboard_values = function (self, unit, blackboard)
 	blackboard.target_speed_away_small_sample = 0
 	blackboard.spawn = true
 	blackboard.about_to_be_destroyed = nil
+	UNIT_UNIQUE_IDS = UNIT_UNIQUE_IDS + 1
+	blackboard.unique_id = UNIT_UNIQUE_IDS
 end
 
 AISystem.on_remove_extension = function (self, unit, extension_name)
@@ -1136,11 +1139,14 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 		local target_unit_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
-		if target_unit_slot_extension then
+		if target_unit_slot_extension and target_unit_slot_extension.has_slots_attached then
 			local num_occupied_slots = target_unit_slot_extension.num_occupied_slots
 			blackboard.total_occupied_slots = num_occupied_slots
 			local disabled_slots_count = ai_slot_system:disabled_slots_count(target_unit)
 			blackboard.target_num_disabled_slots = (blackboard.have_slot > 0 and 0) or disabled_slots_count
+		else
+			blackboard.total_occupied_slots = 0
+			blackboard.target_num_disabled_slots = 0
 		end
 	else
 		blackboard.target_speed_away = 0
@@ -1160,9 +1166,10 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 	local attacking_target = blackboard.attacking_target
 	local has_attacking_target = unit_alive(attacking_target)
-	local attacking_target_is_valid = not has_attacking_target or blackboard.side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_target]
+	local is_valid_attacking_target = not has_attacking_target or blackboard.side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[attacking_target]
+	blackboard.target_num_occupied_slots = 0
 
-	if target_alive and attacking_target_is_valid then
+	if target_alive and is_valid_attacking_target then
 		local unit_position = POSITION_LOOKUP[unit]
 		local target_position = POSITION_LOOKUP[target_unit]
 		local offset = target_position - unit_position
@@ -1182,21 +1189,20 @@ local function update_blackboard(unit, blackboard, t, dt)
 
 		if target_slot_extension then
 			local slots_n = target_slot_extension.num_occupied_slots
-			blackboard.target_num_occupied_slots = slots_n
+			blackboard.target_num_occupied_slots = slots_n or 0
 		else
 			blackboard.target_num_occupied_slots = 0
 		end
 
 		return inside_priority_distance
-	elseif not target_alive or not attacking_target_is_valid then
+	elseif not target_alive or not is_valid_attacking_target then
 		blackboard.target_unit = nil
 		blackboard.target_dist = math.huge
 		blackboard.target_dist_z_abs = math.huge
 		blackboard.target_dist_xy_sq = math.huge
 		blackboard.slot_dist_z = math.huge
-		blackboard.target_num_occupied_slots = 0
 
-		if not attacking_target_is_valid then
+		if not is_valid_attacking_target then
 			blackboard.attack_aborted = true
 		end
 	end

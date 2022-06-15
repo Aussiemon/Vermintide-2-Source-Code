@@ -129,10 +129,16 @@ local function get_available_power_ups_array(career_name, excluded_power_ups, ex
 	return available_power_ups
 end
 
-local function generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name)
+local function generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 	local possible_power_ups = {}
 	local rarity = nil
-	seed, rarity = get_random_power_up_rarity(seed, difficulty, run_progress)
+
+	if forced_rarity then
+		rarity = forced_rarity
+	else
+		seed, rarity = get_random_power_up_rarity(seed, difficulty, run_progress)
+	end
+
 	local start_rarity_index = table.index_of(DeusPowerUpRarities, rarity)
 
 	for current_rarity_index = start_rarity_index, 1, -1 do
@@ -291,14 +297,14 @@ DeusPowerUpUtils.generate_specific_power_up = function (power_up_name, rarity)
 	return generate_specific_power_up(power_up_name, rarity)
 end
 
-DeusPowerUpUtils.generate_random_power_ups = function (seed, count, existing_power_ups, difficulty, run_progress, availability_type, career_name)
+DeusPowerUpUtils.generate_random_power_ups = function (seed, count, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 	local new_power_ups = {}
 	local skip_metatable = true
 	existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
 	for i = 1, count, 1 do
 		local power_up = nil
-		seed, power_up = generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name)
+		seed, power_up = generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 
 		table.insert(new_power_ups, power_up)
 		table.insert(existing_power_ups, power_up)

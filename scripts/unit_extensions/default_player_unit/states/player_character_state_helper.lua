@@ -411,7 +411,7 @@ CharacterStateHelper.do_common_state_transitions = function (status_extension, c
 		return true
 	end
 
-	if in_state ~= "overpowered" and status_extension.overpowered then
+	if in_state ~= "overpowered" and in_state ~= "ledge_hanging" and status_extension.overpowered then
 		local params = PlayerUnitMovementSettings.overpowered_templates[status_extension.overpowered_template]
 
 		csm:change_state("overpowered", params)

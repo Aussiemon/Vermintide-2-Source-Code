@@ -955,11 +955,17 @@ for breed_name, breed in pairs(Breeds) do
 	if Breeds[breed_name].special == true then
 		elite_special_breeds[#elite_special_breeds + 1] = breed_name
 	end
+
+	if breed_name == "chaos_exalted_sorcerer" then
+		elite_special_breeds[#elite_special_breeds + 1] = breed_name
+	end
 end
 
 local kill_register_weapons = table.mirror_array_inplace({
 	"bardin_engineer_career_skill_weapon_heavy",
-	"bardin_engineer_career_skill_weapon"
+	"bardin_engineer_career_skill_weapon",
+	"dr_steam_pistol",
+	"dr_2h_cog_hammer"
 })
 achievements.cog_kill_register = {
 	display_completion_ui = false,
@@ -975,17 +981,19 @@ achievements.cog_kill_register = {
 			max_count = max_count + count
 		end
 
-		local completed_first = max_count >= 5
+		local completed_first = max_count >= 150
 		max_count = 0
+		local heavy_count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "bardin_engineer_career_skill_weapon_heavy", "skaven_ratling_gunner")
+		max_count = max_count + heavy_count
+		local light_count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "bardin_engineer_career_skill_weapon", "skaven_ratling_gunner")
+		max_count = max_count + light_count
+		local completed_second = max_count >= 15
+		local corruptor = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_2h_cog_hammer", "chaos_vortex_sorcerer")
+		local vortex = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_2h_cog_hammer", "chaos_corruptor_sorcerer")
+		local halescourge = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_2h_cog_hammer", "chaos_exalted_sorcerer")
+		local completed_third = corruptor >= 1 and vortex >= 1 and halescourge >= 1
 
-		for i = 1, #kill_register_weapons, 1 do
-			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", kill_register_weapons[i], "skaven_ratling_gunner")
-			max_count = max_count + count
-		end
-
-		local completed_second = max_count >= 5
-
-		return completed_first and completed_second
+		return completed_first and completed_second and completed_third
 	end,
 	on_event = function (statistics_db, stats_id, template_data, event_name, event_data)
 		local damage_data = event_data[3]

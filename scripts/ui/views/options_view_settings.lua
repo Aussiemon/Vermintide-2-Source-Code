@@ -886,6 +886,20 @@ local gameplay_settings_definition = {
 		}
 	},
 	{
+		setting_name = "persistent_ammo_counter",
+		widget_type = "stepper",
+		options = {
+			{
+				value = true,
+				text = Localize("menu_settings_on")
+			},
+			{
+				value = false,
+				text = Localize("menu_settings_off")
+			}
+		}
+	},
+	{
 		setting_name = "crosshair_kill_confirm",
 		widget_type = "drop_down",
 		options = {

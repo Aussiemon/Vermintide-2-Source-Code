@@ -16,7 +16,9 @@ local UI_RENDERER_MATERIALS = {
 	"material",
 	"materials/fonts/gw_fonts",
 	"material",
-	"materials/ui/ui_1080p_morris_single_textures"
+	"materials/ui/ui_1080p_morris_single_textures",
+	"material",
+	"materials/ui/ui_1080p_belakor_atlas"
 }
 
 for _, dlc in pairs(DLCSettings) do
@@ -372,6 +374,8 @@ GameModeMapDeus.evaluate_end_conditions = function (self, round_started)
 	end
 
 	if self._final_node_selected then
+		self._deus_run_controller:handle_map_exited()
+
 		return true, "won", self._final_node_selected
 	end
 end

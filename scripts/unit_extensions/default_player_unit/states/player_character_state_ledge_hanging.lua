@@ -116,7 +116,7 @@ PlayerCharacterStateLedgeHanging.update = function (self, unit, input, dt, conte
 		end
 	end
 
-	if CharacterStateHelper.do_common_state_transitions(status_extension, csm) then
+	if CharacterStateHelper.do_common_state_transitions(status_extension, csm, "ledge_hanging") then
 		return
 	end
 

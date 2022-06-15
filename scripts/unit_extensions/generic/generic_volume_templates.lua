@@ -135,6 +135,12 @@ GenericVolumeTemplates.functions = {
 					if event then
 						Level.trigger_event(data.level, event)
 					end
+
+					local on_triggered = data.params.on_triggered
+
+					if on_triggered then
+						on_triggered()
+					end
 				end
 			end
 		},
@@ -147,6 +153,12 @@ GenericVolumeTemplates.functions = {
 
 					if event then
 						Level.trigger_event(data.level, event)
+					end
+
+					local on_triggered = data.params.on_triggered
+
+					if on_triggered then
+						on_triggered()
 					end
 				end
 			end
@@ -161,6 +173,12 @@ GenericVolumeTemplates.functions = {
 					if event then
 						Level.trigger_event(data.level, event)
 					end
+
+					local on_triggered = data.params.on_triggered
+
+					if on_triggered then
+						on_triggered()
+					end
 				end
 			end
 		},
@@ -174,6 +192,12 @@ GenericVolumeTemplates.functions = {
 
 					data.all_players_inside = true
 				end
+
+				local on_triggered = data.params.on_triggered
+
+				if should_trigger_enter_event and on_triggered then
+					on_triggered()
+				end
 			end,
 			on_exit = function (unit, data)
 				local event = data.params.event_on_exit
@@ -183,6 +207,12 @@ GenericVolumeTemplates.functions = {
 					Level.trigger_event(data.level, event)
 
 					data.all_players_inside = false
+				end
+
+				local on_exit = data.params.callback_on_exit
+
+				if should_trigger_exit_event and on_exit then
+					on_exit()
 				end
 			end
 		},
@@ -196,6 +226,12 @@ GenericVolumeTemplates.functions = {
 
 					data.all_players_inside = true
 				end
+
+				local on_triggered = data.params.on_triggered
+
+				if should_trigger_enter_event and on_triggered then
+					on_triggered()
+				end
 			end,
 			on_exit = function (unit, data)
 				local event = data.params.event_on_exit
@@ -205,6 +241,12 @@ GenericVolumeTemplates.functions = {
 					Level.trigger_event(data.level, event)
 
 					data.all_players_inside = false
+				end
+
+				local on_exit = data.params.on_exit
+
+				if should_trigger_exit_event and on_exit then
+					on_exit()
 				end
 			end
 		},
@@ -218,6 +260,12 @@ GenericVolumeTemplates.functions = {
 
 					data.params.player_entered = true
 				end
+
+				local on_triggered = data.params.on_triggered
+
+				if should_trigger_enter_event and on_triggered then
+					on_triggered()
+				end
 			end,
 			on_exit = function (unit, data)
 				local volume_system = Managers.state.entity:system("volume_system")
@@ -227,6 +275,12 @@ GenericVolumeTemplates.functions = {
 
 					if event then
 						Level.trigger_event(data.level, event)
+					end
+
+					local on_exit = data.params.on_exit
+
+					if on_exit then
+						on_exit()
 					end
 
 					data.params.player_entered = false
@@ -240,6 +294,12 @@ GenericVolumeTemplates.functions = {
 				if event then
 					Level.trigger_event(data.level, event)
 				end
+
+				local on_triggered = data.params.on_triggered
+
+				if on_triggered then
+					on_triggered()
+				end
 			end
 		},
 		players_inside = {
@@ -251,6 +311,12 @@ GenericVolumeTemplates.functions = {
 					Level.trigger_event(data.level, event)
 
 					data.params.player_entered = true
+				end
+
+				local on_triggered = data.params.on_triggered
+
+				if should_trigger_enter_event and on_triggered then
+					on_triggered()
 				end
 			end,
 			on_exit = function (unit, data)
@@ -264,6 +330,11 @@ GenericVolumeTemplates.functions = {
 					end
 
 					data.params.player_entered = false
+					local on_exit = data.params.on_exit
+
+					if on_exit then
+						on_exit()
+					end
 				end
 			end
 		}
@@ -271,6 +342,12 @@ GenericVolumeTemplates.functions = {
 	despawn_volume = {
 		pickup_projectiles = {
 			on_enter = function (unit, dt, t, data)
+				local kill_volume_handler_extension = ScriptUnit.has_extension(unit, "kill_volume_handler_system")
+
+				if kill_volume_handler_extension and kill_volume_handler_extension:on_hit_kill_volume() then
+					return
+				end
+
 				Managers.state.unit_spawner:mark_for_deletion(unit)
 			end
 		}

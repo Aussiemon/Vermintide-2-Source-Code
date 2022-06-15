@@ -272,7 +272,103 @@ math.closest_position = function (p0, p1, p2)
 	end
 end
 
+math.dot2D = function (v1, v2)
+	return v1.x * v2.x + v1.y * v2.y
+end
+
 Geometry = Geometry or {}
+
+Geometry.ccw = function (a, b, c)
+	return (b.x - a.x) * (c.y - a.y) > (b.y - a.y) * (c.x - a.x)
+end
+
+local function left_to_right(left, right)
+	return left.x < right.x
+end
+
+local ccw = Geometry.ccw
+local dot2D = math.dot2D
+
+Geometry.convex_hull = function (points, hull)
+	local num_points = #points
+
+	if num_points == 0 then
+		return hull, 0
+	end
+
+	table.sort(points, left_to_right)
+
+	local num = 0
+
+	for i = 1, num_points, 1 do
+		local pt = points[i]
+
+		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) do
+			num = num - 1
+		end
+
+		num = num + 1
+		hull[num] = pt
+	end
+
+	local t = num + 1
+
+	for i = num_points, 1, -1 do
+		local pt = points[i]
+
+		while t <= num and not ccw(hull[num - 1], hull[num], pt) do
+			num = num - 1
+		end
+
+		num = num + 1
+		hull[num] = pt
+	end
+
+	num = num - 1
+
+	return hull, num
+end
+
+Geometry.concave_hull = function (points, hull)
+	local num_points = #points
+
+	if num_points == 0 then
+		return hull, 0
+	end
+
+	table.sort(points, left_to_right)
+
+	local num = 0
+
+	for i = 1, num_points, 1 do
+		local pt = points[i]
+
+		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) and dot2D(hull[num] - hull[num - 1], pt - hull[num]) <= 0.1 do
+			num = num - 1
+		end
+
+		num = num + 1
+		hull[num] = pt
+	end
+
+	local upper_starts_num = num
+	local t = num + 1
+
+	for i = num_points, 1, -1 do
+		local pt = points[i]
+
+		while t <= num and not ccw(hull[num - 1], hull[num], pt) and dot2D(hull[num] - hull[num - 1], pt - hull[num]) <= 0.1 do
+			num = num - 1
+		end
+
+		num = num + 1
+		hull[num] = pt
+	end
+
+	num = num - 1
+
+	return hull, num, upper_starts_num
+end
 
 Geometry.is_point_inside_triangle = function (point_on_plane, tri_a, tri_b, tri_c)
 	local pa = tri_a - point_on_plane

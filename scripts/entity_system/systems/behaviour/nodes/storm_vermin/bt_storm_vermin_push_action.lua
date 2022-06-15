@@ -96,11 +96,12 @@ BTStormVerminPushAction.anim_cb_stormvermin_push = function (self, unit, blackbo
 	end
 
 	local action = blackboard.action
-	local status_extension = ScriptUnit.extension(target_unit, "status_system")
 
 	AiUtils.damage_target(target_unit, unit, action, action.damage)
 
-	if not status_extension:is_disabled() then
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+
+	if status_extension and not status_extension:is_disabled() then
 		StatusUtils.set_pushed_network(target_unit, true)
 
 		local velocity = Quaternion.forward(Unit.local_rotation(unit, 0)) * action.impact_push_speed

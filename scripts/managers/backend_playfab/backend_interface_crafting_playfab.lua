@@ -132,4 +132,10 @@ BackendInterfaceCraftingPlayfab.get_unlocked_weapon_skins = function (self)
 	return mirror:get_unlocked_weapon_skins()
 end
 
+BackendInterfaceCraftingPlayfab.get_unlocked_cosmetics = function (self)
+	local mirror = self._backend_mirror
+
+	return mirror:get_unlocked_cosmetics()
+end
+
 return

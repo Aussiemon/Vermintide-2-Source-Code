@@ -429,7 +429,7 @@ BTAttackAction._get_attack_cooldown_finished_at = function (self, unit, blackboa
 
 	local target_unit_slot_extension = ScriptUnit.has_extension(attacking_target, "ai_slot_system")
 
-	if not target_unit_slot_extension then
+	if not target_unit_slot_extension or not target_unit_slot_extension.has_slots_attached then
 		return false, 0
 	end
 

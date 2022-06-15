@@ -1146,6 +1146,48 @@ UIFrameSettings = {
 				10
 			}
 		}
+	},
+	upsell_image_keyart_frame = {
+		texture = "upsell_image_keyart_frame",
+		texture_size = {
+			256,
+			256
+		},
+		texture_sizes = {
+			corner = {
+				27,
+				27
+			},
+			vertical = {
+				27,
+				202
+			},
+			horizontal = {
+				202,
+				27
+			}
+		}
+	},
+	upsell_image_button_frame = {
+		texture = "upsell_image_button_frame",
+		texture_size = {
+			64,
+			64
+		},
+		texture_sizes = {
+			corner = {
+				10,
+				10
+			},
+			vertical = {
+				10,
+				44
+			},
+			horizontal = {
+				44,
+				10
+			}
+		}
 	}
 }
 

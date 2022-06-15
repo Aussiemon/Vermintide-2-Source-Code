@@ -1233,6 +1233,181 @@ DeusDefaultGraphs = DeusDefaultGraphs or {
 			},
 			next = {}
 		}
+	},
+	BELAKOR_VERTICAL_SLICE = {
+		start = {
+			base_level = "dlc_morris_map",
+			layout_x = 0.1,
+			weapon_pickup_seed = 0,
+			theme = "wastes",
+			node_type = "start",
+			level_seed = 0,
+			path = 0,
+			conflict_settings = "disabled",
+			layout_y = 0.1,
+			run_progress = 0,
+			level = "dlc_morris_map",
+			system_seeds = {
+				blessings = 0,
+				mutator = 0,
+				power_ups = 0,
+				pickups = 0
+			},
+			next = {
+				"node_1"
+			}
+		},
+		node_1 = {
+			path = 0,
+			curse = "curse_shadow_homing_skulls",
+			weapon_pickup_seed = 0,
+			theme = "belakor",
+			node_type = "ingame",
+			level_seed = 0,
+			base_level = "sig_gorge",
+			layout_x = 0.3,
+			run_progress = 0,
+			layout_y = 0.3,
+			level_type = "SIGNATURE",
+			conflict_settings = "deus_skaven_chaos",
+			level = "sig_gorge_belakor_path4",
+			mutators = {
+				"deus_pacing_tweak",
+				"deus_difficulty_tweak"
+			},
+			system_seeds = {
+				blessings = 0,
+				mutator = 0,
+				power_ups = 0,
+				pickups = 0
+			},
+			next = {
+				"node_2"
+			}
+		},
+		node_2 = {
+			path = 0,
+			curse = "curse_belakor_totems",
+			weapon_pickup_seed = 0,
+			theme = "belakor",
+			node_type = "ingame",
+			level_seed = 0,
+			base_level = "sig_gorge",
+			layout_x = 0.5,
+			run_progress = 0.3,
+			layout_y = 0.5,
+			level_type = "SIGNATURE",
+			conflict_settings = "deus_skaven_chaos",
+			level = "sig_gorge_belakor_path4",
+			mutators = {
+				"deus_pacing_tweak",
+				"deus_difficulty_tweak"
+			},
+			system_seeds = {
+				blessings = 0,
+				mutator = 0,
+				power_ups = 0,
+				pickups = 0
+			},
+			next = {
+				"final"
+			}
+		},
+		final = {
+			path = 0,
+			layout_x = 0.9,
+			theme = "belakor",
+			weapon_pickup_seed = 0,
+			node_type = "ingame",
+			level_seed = 0,
+			base_level = "arena_belakor",
+			run_progress = 0.9999,
+			conflict_settings = "deus_skaven_chaos",
+			layout_y = 0.9,
+			level_type = "ARENA",
+			level = "arena_belakor",
+			mutators = {},
+			system_seeds = {
+				blessings = 0,
+				mutator = 0,
+				power_ups = 0,
+				pickups = 0
+			},
+			next = {}
+		}
+	},
+	BELAKOR_ONLY_NEW_ARENA = {
+		start = {
+			base_level = "dlc_morris_map",
+			layout_x = 0.1,
+			weapon_pickup_seed = 0,
+			theme = "wastes",
+			node_type = "start",
+			level_seed = 0,
+			path = 0,
+			conflict_settings = "disabled",
+			layout_y = 0.1,
+			run_progress = 0,
+			level = "dlc_morris_map",
+			system_seeds = {
+				blessings = 0,
+				mutator = 0,
+				power_ups = 0,
+				pickups = 0
+			},
+			next = {
+				"node_1"
+			}
+		},
+		node_1 = {
+			terror_event_power_up_rarity = "unique",
+			base_level = "arena_belakor",
+			run_progress = 0,
+			level_seed = 0,
+			path = 0,
+			layout_y = 0.3,
+			level = "arena_belakor",
+			layout_x = 0.3,
+			theme = "belakor",
+			node_type = "ingame",
+			weapon_pickup_seed = 0,
+			conflict_settings = "deus_skaven_chaos",
+			grant_random_power_up_count = 2,
+			level_type = "ARENA",
+			mutators = {},
+			system_seeds = {
+				blessings = 0,
+				mutator = 0,
+				power_ups = 0,
+				pickups = 0
+			},
+			next = {
+				"final"
+			}
+		},
+		final = {
+			path = 1,
+			curse = "curse_khorne_champions",
+			weapon_pickup_seed = 111112,
+			theme = "khorne",
+			node_type = "ingame",
+			level_seed = 111112,
+			base_level = "arena_ruin",
+			layout_x = 0.9,
+			run_progress = 0.9999999,
+			layout_y = 0.9,
+			level_type = "ARENA",
+			conflict_settings = "deus_skaven_chaos",
+			level = "arena_ruin_khorne_path1",
+			mutators = {},
+			system_seeds = {
+				blessings = 567890,
+				mutator = 654321,
+				power_ups = 567890,
+				pickups = 111112
+			},
+			next = {}
+		}
 	}
 }
 DeusDebugShrineNodeGraph = DeusDebugShrineNodeGraph or {

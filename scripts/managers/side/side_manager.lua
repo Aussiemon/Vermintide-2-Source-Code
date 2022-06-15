@@ -281,6 +281,8 @@ local function is_valid_target(unit)
 	return not status_ext:is_in_end_zone() and not status_ext:is_invisible() and dlc_valid and not status_ext.spawn_grace and ScriptUnit.extension(unit, "health_system"):is_alive()
 end
 
+SideManager.is_valid_target = is_valid_target
+
 local function is_valid_aggro_target(unit)
 	if not ALIVE[unit] then
 		return false

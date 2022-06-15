@@ -402,6 +402,7 @@ local damage_templates = {
 		}
 	},
 	thorn_sister_poison = {
+		deal_min_damage = true,
 		is_dot = true,
 		charge_value = "n/a",
 		no_stagger_damage_reduction_ranged = true,

@@ -77,14 +77,15 @@ MatchmakingUI.create_ui_elements = function (self)
 	self.debug_lobbies_widget = UIWidget.init(debug_widget_definitions.debug_lobbies)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	self.scenegraph_definition = scenegraph_definition
+	self._input_to_widget_mapping = {}
 	local cancel_input_widgets_by_name = self._cancel_input_widgets_by_name
-	self._input_to_widget_mapping = {
-		cancel_matchmaking = {
+	self._input_to_widget_mapping[#self._input_to_widget_mapping + 1] = {
+		input_action = "cancel_matchmaking",
+		widgets = {
 			text_widget = cancel_input_widgets_by_name.cancel_text_input,
 			text_widget_prefix = cancel_input_widgets_by_name.cancel_text_prefix,
 			text_widget_suffix = cancel_input_widgets_by_name.cancel_text_suffix,
-			input_icon_widget = cancel_input_widgets_by_name.cancel_icon,
-			background = cancel_input_widgets_by_name.cancel_input_backround
+			input_icon_widget = cancel_input_widgets_by_name.cancel_icon
 		}
 	}
 
@@ -122,10 +123,6 @@ end
 MatchmakingUI.update = function (self, dt, t)
 	if RESOLUTION_LOOKUP.modified then
 		self:_update_button_prompts()
-	end
-
-	if Managers.mechanism:current_mechanism_name() == "versus" then
-		return
 	end
 
 	local parent = self._parent
@@ -296,6 +293,7 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 
 	local matchmaking_type = matchmaking_info.matchmaking_type
 	local mechanism = matchmaking_info.mechanism
+	self._active_mechanism = mechanism
 
 	if mechanism == "weave" then
 		local quick_game = matchmaking_info.quick_game
@@ -393,25 +391,63 @@ MatchmakingUI._update_matchmaking_info = function (self, t)
 end
 
 MatchmakingUI._update_status = function (self, dt)
-	local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
-	self._rotation_progresss = rotation_progresss
-	local anim_progress = math.easeCubic(rotation_progresss)
-	local rotation_angle = anim_progress * 360
-	local radians = math.degrees_to_radians(rotation_angle)
-	local loading_icon = self:_get_widget("loading_status_frame")
-	loading_icon.style.texture_id.angle = radians
-	local connecting_rotation_speed = 200
-	local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
-	local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
+	if self._active_mechanism == "versus" then
+		local slot_reservations = Managers.matchmaking:get_reserved_slots()
 
-	for i = 1, 4, 1 do
-		local widget_name = "party_slot_" .. i
-		local widget = self:_get_detail_widget(widget_name)
-		local content = widget.content
-		local style = widget.style
-		local is_connecting = content.is_connecting
-		local connecting_icon_style = style.connecting_icon
-		connecting_icon_style.angle = (is_connecting and connecting_icon_style.angle + connecting_radians) or 0
+		if slot_reservations then
+			local slot_reservations_widget = self._detail_widgets_versus_by_name.slot_reservations
+			local slot_reservations_widget_style = slot_reservations_widget.style
+
+			for party_id, reservations in pairs(slot_reservations) do
+				local party_style_name = "ready_light_party_" .. party_id
+				local style = slot_reservations_widget_style[party_style_name]
+
+				if style then
+					local party_reservations = slot_reservations[party_id]
+
+					for idx, texture_color in ipairs(style.texture_colors) do
+						texture_color[1] = (idx <= party_reservations and 255) or 0
+					end
+				end
+			end
+		else
+			local slot_reservations_widget = self._detail_widgets_versus_by_name.slot_reservations
+			local slot_reservations_widget_style = slot_reservations_widget.style
+			local party_id = 1
+			local party_style_name = "ready_light_party_" .. party_id
+			local style = slot_reservations_widget_style[party_style_name]
+
+			while style do
+				for idx, texture_color in ipairs(style.texture_colors) do
+					texture_color[1] = 0
+				end
+
+				party_id = party_id + 1
+				local party_style_name = "ready_light_party_" .. party_id
+				style = slot_reservations_widget_style[party_style_name]
+			end
+		end
+	else
+		local rotation_progresss = ((self._rotation_progresss or 0) + dt * 0.2) % 1
+		self._rotation_progresss = rotation_progresss
+		local anim_progress = math.easeCubic(rotation_progresss)
+		local rotation_angle = anim_progress * 360
+		local radians = math.degrees_to_radians(rotation_angle)
+		local loading_icon = self:_get_widget("loading_status_frame")
+		loading_icon.style.texture_id.angle = radians
+		local connecting_rotation_speed = 200
+		local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
+		local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
+
+		for i = 1, 4, 1 do
+			local widget_name = "party_slot_" .. i
+			local widget = self:_get_detail_widget(widget_name)
+			local content = widget.content
+			local style = widget.style
+			local is_connecting = content.is_connecting
+			local connecting_icon_style = style.connecting_icon
+			connecting_icon_style.angle = (is_connecting and connecting_icon_style.angle + connecting_radians) or 0
+		end
 	end
 end
 
@@ -625,13 +661,16 @@ MatchmakingUI.get_input_texture_data = function (self, input_action)
 end
 
 MatchmakingUI._update_button_prompts = function (self)
+	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local ui_scenegraph = self.ui_scenegraph
 
-	for input_action, widgets in pairs(self._input_to_widget_mapping) do
+	for _, mapping in ipairs(self._input_to_widget_mapping) do
+		local widgets = mapping.widgets
 		local text_widget = widgets.text_widget
 		local text_widget_prefix = widgets.text_widget_prefix
 		local text_widget_suffix = widgets.text_widget_suffix
 		local input_icon_widget = widgets.input_icon_widget
+		local input_action = mapping.input_action
 		local texture_data, input_text, prefix_text = self:get_input_texture_data(input_action)
 		text_widget_prefix.content.text = (prefix_text and Localize(prefix_text)) or ""
 
@@ -660,7 +699,6 @@ MatchmakingUI._update_button_prompts = function (self)
 			local input_icon_scenegraph_id = input_icon_widget.scenegraph_id
 			local input_icon_scenegraph = ui_scenegraph[input_icon_scenegraph_id]
 			text_width_input = icon_size[1]
-			input_icon_scenegraph.local_position[1] = text_width_input * 0.5
 			input_icon_scenegraph.size[1] = text_width_input
 			input_icon_scenegraph.size[2] = icon_size[2]
 		end
@@ -676,7 +714,7 @@ MatchmakingUI._update_button_prompts = function (self)
 			text_widget_suffix.style.text.offset[1] = offset + text_width_prefix + text_width_input
 			text_widget_suffix.style.text_shadow.offset[1] = offset + text_width_prefix + text_width_input + 2
 		else
-			input_icon_widget.style.texture_id.offset[1] = offset + text_width_prefix
+			input_icon_widget.style.texture_id.offset[1] = offset
 			text_widget_prefix.style.text.offset[1] = offset
 			text_widget_prefix.style.text_shadow.offset[1] = offset + 2
 			text_widget_suffix.style.text.offset[1] = offset + text_width_prefix + text_width_input
@@ -686,6 +724,10 @@ MatchmakingUI._update_button_prompts = function (self)
 end
 
 MatchmakingUI._update_portraits = function (self, has_mission_vote)
+	if self._active_mechanism == "versus" then
+		return
+	end
+
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
 	local lobby = self.lobby
@@ -821,6 +863,10 @@ MatchmakingUI._get_party_slot_index_by_peer_id = function (self, peer_id)
 end
 
 MatchmakingUI._sync_players_ready_state = function (self, dt)
+	if self._active_mechanism == "versus" then
+		return
+	end
+
 	local player_manager = Managers.player
 	local human_players = player_manager:human_players()
 
@@ -862,6 +908,11 @@ end
 
 MatchmakingUI._set_player_voted_yes = function (self, index, voted_yes)
 	local widget = self:_get_detail_widget("party_slot_" .. index)
+
+	if not widget then
+		return
+	end
+
 	widget.content.voted_yes = voted_yes
 end
 

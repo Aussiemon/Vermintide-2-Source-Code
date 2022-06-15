@@ -647,7 +647,6 @@ DeusShopView._acquire_input = function (self, ignore_cursor_stack)
 		"gamepad",
 		"mouse"
 	}, 1, input_service_name, "DeusShopView")
-	input_manager:block_device_except_service(input_service_name, "mouse")
 
 	if not ignore_cursor_stack then
 		ShowCursorStack.push()
@@ -665,7 +664,6 @@ DeusShopView._release_input = function (self, ignore_cursor_stack)
 		"gamepad",
 		"mouse"
 	}, 1, self._input_service_name, "DeusShopView")
-	input_manager:device_unblock_all_services("mouse")
 
 	if not ignore_cursor_stack and self._acquiring_input then
 		ShowCursorStack.pop()

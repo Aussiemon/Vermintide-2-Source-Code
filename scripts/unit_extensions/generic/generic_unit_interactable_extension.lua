@@ -20,6 +20,10 @@ GenericUnitInteractableExtension.interaction_type = function (self)
 	return self.interactable_type
 end
 
+GenericUnitInteractableExtension.set_interactable_type = function (self, new_interactable_type)
+	self.interactable_type = new_interactable_type
+end
+
 GenericUnitInteractableExtension.set_is_being_interacted_with = function (self, interactor_unit, interaction_result)
 	local unit = self.unit
 	local interaction_type = self.interactable_type

@@ -5,6 +5,7 @@ require("scripts/utils/hash_utils")
 
 local REAL_PLAYER_LOCAL_ID = 1
 local INTRO_VO_DIALOGUE_PROFILE = "ferry_lady"
+local INTRO_VO_VOLUME_ID = "volume_intro_vo"
 
 local function play_curse_intro_vo(vo_unit, curse)
 	local dialogue_input = ScriptUnit.extension_input(vo_unit, "dialogue_system")
@@ -44,6 +45,16 @@ GameModeDeus.init = function (self, settings, world, network_server, is_server, 
 	event_manager:register(self, "level_start_local_player_spawned", "event_local_player_spawned")
 
 	self._local_player_spawned = false
+end
+
+GameModeDeus.on_round_end = function (self)
+	local volume_system = Managers.state.entity:system("volume_system")
+	local level = LevelHelper:current_level(self._world)
+	local has_volume = Level.has_volume(level, INTRO_VO_VOLUME_ID)
+
+	if volume_system and has_volume then
+		volume_system:unregister_volume(INTRO_VO_VOLUME_ID)
+	end
 end
 
 GameModeDeus.destroy = function (self)
@@ -225,23 +236,23 @@ GameModeDeus.get_end_screen_config = function (self, game_won, game_lost, player
 			previous_completed_difficulty_index = previous_completed_difficulty_index
 		}
 	else
-		local reward = nil
-		local granted_power_up = self._deus_run_controller:try_grant_end_of_level_deus_power_up()
+		local rewards = {}
+		local granted_power_ups = self._deus_run_controller:try_grant_end_of_level_deus_power_ups()
 
-		if granted_power_up then
-			reward = {
-				type = "deus_power_up_end_of_level",
-				sounds = {
-					"hud_morris_weapon_chest_unlock",
-					"morris_reliquarys_get_boon"
-				},
-				power_up = granted_power_up
-			}
+		if granted_power_ups then
+			for i = 1, #granted_power_ups, 1 do
+				local granted_power_up = granted_power_ups[i]
+				local reward = {
+					type = "deus_power_up_end_of_level",
+					sounds = {
+						"hud_morris_weapon_chest_unlock",
+						"morris_reliquarys_get_boon"
+					},
+					power_up = granted_power_up
+				}
+				rewards[#rewards + 1] = reward
+			end
 		end
-
-		local rewards = {
-			reward
-		}
 
 		return "none", {}, {
 			rewards = rewards
@@ -285,6 +296,32 @@ GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 	if self._is_initial_spawn then
 		LevelHelper:flow_event(world, "local_player_spawned")
 		LevelHelper:flow_event(world, "level_start_local_player_spawned")
+	end
+
+	local has_volume = Level.has_volume(current_level, INTRO_VO_VOLUME_ID)
+
+	if self._is_server and has_volume and theme == DEUS_THEME_TYPES.BELAKOR then
+		local volume_system = Managers.state.entity:system("volume_system")
+
+		volume_system:register_volume(INTRO_VO_VOLUME_ID, "trigger_volume", {
+			sub_type = "players_inside",
+			on_triggered = function ()
+				if self._enter_vo_has_triggered then
+					return
+				end
+
+				local intro_vo_unit = LevelHelper:find_dialogue_unit(self._world, INTRO_VO_DIALOGUE_PROFILE)
+				local dialogue_extension = intro_vo_unit and ScriptUnit.has_extension(intro_vo_unit, "dialogue_system")
+
+				if dialogue_extension then
+					self._enter_vo_has_triggered = true
+
+					play_curse_intro_vo(intro_vo_unit, current_node.curse)
+				else
+					print("GameModeDeus:local_player_game_starts - No unit for curse intro vo")
+				end
+			end
+		})
 	end
 
 	if not player.player_unit then
@@ -689,6 +726,13 @@ GameModeDeus._get_coins_amount_and_type = function (self, interactable_unit)
 end
 
 GameModeDeus.players_left_safe_zone = function (self)
+	local mechanism = Managers.mechanism:game_mechanism()
+	local theme = mechanism and mechanism:get_current_node_theme()
+
+	if theme == DEUS_THEME_TYPES.BELAKOR then
+		return
+	end
+
 	local intro_vo_unit = LevelHelper:find_dialogue_unit(self._world, INTRO_VO_DIALOGUE_PROFILE)
 	local dialogue_extension = intro_vo_unit and ScriptUnit.has_extension(intro_vo_unit, "dialogue_system")
 

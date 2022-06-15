@@ -528,14 +528,22 @@ DeusMechanism.game_round_ended = function (self, t, dt, reason, reason_data)
 
 		journey_name = script_data.deus_journey or journey_name
 		dominant_god = script_data.deus_dominant_god or dominant_god
+		local with_belakor = false
+		local deus_backend = Managers.backend:get_interface("deus")
 
-		self:_setup_run(run_id, run_seed, true, Network.peer_id(), difficulty, journey_name, dominant_god)
+		if deus_backend then
+			deus_backend:get_belakor_cycle()
+
+			with_belakor = deus_backend:deus_journey_with_belakor(journey_name)
+		end
+
+		self:_setup_run(run_id, run_seed, true, Network.peer_id(), difficulty, journey_name, dominant_god, with_belakor)
 
 		local difficulty_id = NetworkLookup.difficulties[difficulty]
 		local journey_name_id = NetworkLookup.deus_journeys[journey_name]
 		local dominant_god_id = NetworkLookup.deus_themes[dominant_god]
 
-		Managers.mechanism:send_rpc_clients("rpc_deus_setup_run", run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id)
+		Managers.mechanism:send_rpc_clients("rpc_deus_setup_run", run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id, with_belakor)
 
 		next_state = self:_transition_next_node("start")
 	else
@@ -742,6 +750,7 @@ DeusMechanism._build_side_compositions = function (self, state)
 			add_these_settings = {
 				using_grims_and_tomes = true,
 				show_damage_feedback = false,
+				using_enemy_recycler = true,
 				available_profiles = available_profiles
 			}
 		},
@@ -825,7 +834,14 @@ end
 
 DeusMechanism.can_spawn_pickup = function (self, spawner_unit, pickup_name)
 	local can_spawn = nil
-	can_spawn = Pickups.deus_potions[pickup_name] and Unit.get_data(spawner_unit, "deus_potion")
+
+	if Pickups.deus_potions[pickup_name] then
+		can_spawn = Unit.get_data(spawner_unit, "deus_potion")
+	end
+
+	if pickup_name == "deus_02" then
+		can_spawn = Unit.get_data(spawner_unit, "deus_cursed_chest") or Unit.get_data(spawner_unit, "deus_02")
+	end
 
 	return can_spawn
 end
@@ -880,9 +896,10 @@ DeusMechanism.sync_mechanism_data = function (self, peer_id, mechanism_newly_ini
 		local difficulty_id = NetworkLookup.difficulties[deus_run_controller:get_run_difficulty()]
 		local journey_name_id = NetworkLookup.deus_journeys[deus_run_controller:get_journey_name()]
 		local dominant_god_id = NetworkLookup.deus_themes[deus_run_controller:get_dominant_god()]
+		local with_belakor = deus_run_controller:get_belakor_enabled()
 		local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-		RPC.rpc_deus_setup_run(channel_id, self._run_id, self._run_seed, difficulty_id, journey_name_id, dominant_god_id)
+		RPC.rpc_deus_setup_run(channel_id, self._run_id, self._run_seed, difficulty_id, journey_name_id, dominant_god_id, with_belakor)
 	end
 end
 
@@ -972,7 +989,7 @@ DeusMechanism._debug_load_seed = function (self, run_seed, difficulty)
 	level_transition_handler:promote_next_level_data()
 end
 
-DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_peer_id, difficulty, journey_name, dominant_god)
+DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_peer_id, difficulty, journey_name, dominant_god, with_belakor)
 	local deus_backend = Managers.backend:get_interface("deus")
 	local own_peer_id = Network.peer_id()
 	self._run_id = run_id
@@ -1054,7 +1071,7 @@ DeusMechanism._setup_run = function (self, run_id, run_seed, is_server, server_p
 	local rolled_over_coins = deus_backend:get_rolled_over_soft_currency()
 	local backend_id = Managers.backend:player_id() or ""
 
-	self._deus_run_controller:setup_run(run_seed, difficulty, journey_name, dominant_god, rolled_over_coins, backend_id)
+	self._deus_run_controller:setup_run(run_seed, difficulty, journey_name, dominant_god, rolled_over_coins, backend_id, with_belakor)
 	self._deus_run_controller:full_sync()
 	self:_update_own_avatar_info()
 
@@ -1094,13 +1111,13 @@ DeusMechanism._update_own_avatar_info = function (self)
 	self._deus_run_controller:set_own_player_avatar_info(level, name, frame_name)
 end
 
-DeusMechanism.rpc_deus_setup_run = function (self, channel_id, run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id)
+DeusMechanism.rpc_deus_setup_run = function (self, channel_id, run_id, run_seed, difficulty_id, journey_name_id, dominant_god_id, with_belakor)
 	local difficulty = NetworkLookup.difficulties[difficulty_id]
 	local journey_name = NetworkLookup.deus_journeys[journey_name_id]
 	local dominant_god = NetworkLookup.deus_themes[dominant_god_id]
 	local server_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
-	self:_setup_run(run_id, run_seed, false, server_peer_id, difficulty, journey_name, dominant_god)
+	self:_setup_run(run_id, run_seed, false, server_peer_id, difficulty, journey_name, dominant_god, with_belakor)
 end
 
 DeusMechanism.should_play_level_introduction = function (self)
@@ -1140,6 +1157,7 @@ DeusMechanism.get_level_dialogue_context = function (self)
 	local times_shrine_was_in_range = 0
 	local times_shrine_visited = 0
 	local level_theme = nil
+	local map_has_belakor = false
 	local deus_run_controller = self._deus_run_controller
 
 	if deus_run_controller then
@@ -1168,6 +1186,9 @@ DeusMechanism.get_level_dialogue_context = function (self)
 		local level_name = deus_run_controller:get_current_node().level
 		local level_settings = LevelSettings[level_name]
 		level_theme = level_settings.theme
+		local journey_name = deus_run_controller:get_journey_name()
+		local backend_deus = Managers.backend:get_interface("deus")
+		map_has_belakor = backend_deus:deus_journey_with_belakor(journey_name)
 	end
 
 	return {
@@ -1176,7 +1197,8 @@ DeusMechanism.get_level_dialogue_context = function (self)
 		current_theme = level_theme,
 		times_shrine_visited = times_shrine_visited,
 		deus_current_curse = self:get_current_node_curse(),
-		is_final_round = self:is_final_round()
+		is_final_round = self:is_final_round(),
+		map_has_belakor = map_has_belakor
 	}
 end
 

@@ -253,9 +253,10 @@ HealthSystem.update_debug = function (self)
 						local max_health = health_extension.health
 						local p = current_health / max_health
 						local color = (p > 0.99 and color1) or (p > 0.25 and color2) or color3
+						local blackboard = BLACKBOARDS[unit]
 
 						if p <= 0 then
-							local text = string.format("dead", current_health, health_extension.health)
+							local text = string.format("dead")
 
 							debug_text_manager:output_unit_text(text, 0.16, unit, head_node, offset_vector, nil, "health", deadcolor, viewport_name)
 						else

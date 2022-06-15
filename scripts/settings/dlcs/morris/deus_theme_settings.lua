@@ -93,6 +93,26 @@ DeusThemeSettings = DeusThemeSettings or {
 			73,
 			156
 		}
+	},
+	belakor = {
+		curse_title = "deus_curse_title_belakor",
+		deity_name = "display_name_belakor",
+		journey_description = "deus_theme_description_belakor",
+		text_icon = "deus_icon_belakor_small",
+		icon = "deus_icon_belakor",
+		journey_title = "deus_theme_title_belakor",
+		light_probe_tint = {
+			0.76,
+			0.76,
+			1
+		},
+		color = Colors.get_color_table_with_alpha("belakor", 255),
+		curse_description_color = {
+			255,
+			172,
+			134,
+			218
+		}
 	}
 }
 DEUS_THEME_TYPES = DEUS_THEME_TYPES or {
@@ -100,26 +120,30 @@ DEUS_THEME_TYPES = DEUS_THEME_TYPES or {
 	TZEENTCH = "tzeentch",
 	SLAANESH = "slaanesh",
 	NURGLE = "nurgle",
-	KHORNE = "khorne"
+	KHORNE = "khorne",
+	BELAKOR = "belakor"
 }
 DEUS_THEME_INDEX = DEUS_THEME_INDEX or {
 	"wastes",
 	"khorne",
 	"nurgle",
 	"tzeentch",
-	"slaanesh"
+	"slaanesh",
+	"belakor"
 }
 DEUS_GOD_TYPES = DEUS_GOD_TYPES or {
 	NURGLE = "nurgle",
-	KHORNE = "khorne",
 	TZEENTCH = "tzeentch",
-	SLAANESH = "slaanesh"
+	SLAANESH = "slaanesh",
+	KHORNE = "khorne",
+	BELAKOR = "belakor"
 }
 DEUS_GOD_INDEX = DEUS_GOD_INDEX or {
 	"khorne",
 	"nurgle",
 	"tzeentch",
-	"slaanesh"
+	"slaanesh",
+	"belakor"
 }
 
 return

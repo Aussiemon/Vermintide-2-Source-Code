@@ -11,11 +11,6 @@ DeusCurseUI.init = function (self, parent, ingame_ui_context)
 	self._curse = mechanism and mechanism:get_current_node_curse()
 	self._theme = mechanism and mechanism:get_current_node_theme()
 	self._has_curse = self._curse and self._theme
-
-	if not script_data.debug_enabled and not self._has_curse then
-		return
-	end
-
 	self._world = ingame_ui_context.world_manager:world("level_world")
 	self._player_unit = ingame_ui_context.player.player_unit
 	self._mission_system = Managers.state.entity:system("mission_system")
@@ -97,6 +92,35 @@ DeusCurseUI.on_timer_ended = function (self)
 
 	hud_extension:block_current_location_ui(false)
 	self._mission_system:block_mission_ui(false)
+end
+
+DeusCurseUI.show_special_message = function (self, theme, name, description, duration)
+	self._timer = duration
+	local theme_settings = DeusThemeSettings[theme]
+	local theme_color = theme_settings.curse_description_color
+	local icon = theme_settings.icon or {
+		255,
+		255,
+		255,
+		255
+	}
+	local title_text = (theme_settings.curse_title and Localize(theme_settings.curse_title)) or ""
+	name = Localize(name)
+	description = Localize(description)
+
+	self:_update_description_widget(title_text, name, description, icon, theme_color)
+	self:_start_animation("curse_description_animation", "description_start")
+
+	self._has_curse = true
+
+	if not self._player_unit then
+		return
+	end
+
+	local hud_extension = ScriptUnit.extension(self._player_unit, "hud_system")
+
+	hud_extension:block_current_location_ui(true)
+	self._mission_system:block_mission_ui(true)
 end
 
 DeusCurseUI.show_curse_info = function (self, theme, curse)

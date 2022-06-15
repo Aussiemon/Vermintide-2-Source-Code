@@ -15,7 +15,7 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 
 	for name, level_data in pairs(LevelSettings) do
 		if type(level_data) == "table" and (not only_release or not DebugLevels[name]) then
-			local game_mode = level_data.game_mode
+			local game_mode = level_data.game_mode or level_data.mechanism
 
 			if game_mode and game_mode ~= "tutorial" and game_mode ~= "demo" then
 				local unlockable = level_data.unlockable and not level_data.default

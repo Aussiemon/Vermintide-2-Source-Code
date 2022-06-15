@@ -209,6 +209,13 @@ DeusMapDecisionView._start = function (self)
 	end
 
 	self._scene:select_node(current_node_key)
+
+	local arena_belakor_node = self._deus_run_controller:get_arena_belakor_node()
+	local seen_arena_belakor_node = self._deus_run_controller:has_own_seen_arena_belakor_node()
+
+	if arena_belakor_node and not seen_arena_belakor_node then
+		self._scene:animate_arena_belakor_node(arena_belakor_node)
+	end
 end
 
 DeusMapDecisionView.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -436,7 +443,7 @@ DeusMapDecisionView._enable_hover = function (self, node_key)
 	local own_peer_id = self._deus_run_controller:get_own_peer_id()
 	local profile_index, career_index = self._deus_run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
 
-	self._ui:enable_hover_text(self._scene:get_screen_pos_of_node(node_key), node.level_type, (reveal_base_level and node.base_level) or nil, (reveal_theme and node.theme) or nil, (reveal_minor_modifier and node.minor_modifier_group) or nil, (reveal_conflict_settings and node.conflict_settings) or nil, (reveal_terror_event_power_up and node.terror_event_power_up) or nil, self._shared_state:get_own(self._shared_state:get_key("vote")) == node_key, table.contains(current_node.next, node_key), profile_index, career_index)
+	self._ui:enable_hover_text(self._scene:get_screen_pos_of_node(node_key), node.level_type, (reveal_base_level and node.base_level) or nil, (reveal_theme and node.theme) or nil, (reveal_minor_modifier and node.minor_modifier_group) or nil, (reveal_conflict_settings and node.conflict_settings) or nil, (reveal_terror_event_power_up and node.terror_event_power_up) or nil, (reveal_terror_event_power_up and node.grant_random_power_up_count) or nil, (reveal_terror_event_power_up and node.terror_event_power_up_rarity) or nil, self._shared_state:get_own(self._shared_state:get_key("vote")) == node_key, table.contains(current_node.next, node_key), profile_index, career_index)
 	self._scene:hover_node(node_key)
 
 	self._hovered_node = node_key

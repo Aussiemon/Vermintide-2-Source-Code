@@ -218,7 +218,6 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 			if not target_is_friendly_player and (breed or dummy) and not hit_units[hit_unit] then
 				hit_units[hit_unit] = true
-				self._num_targets_hit = self._num_targets_hit + 1
 
 				if hit_unit == target_breed_unit then
 					break
@@ -237,7 +236,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 				local hit_zone_id = NetworkLookup.hit_zones[target_hit_zone_name]
 
 				if self:_is_infront_player(self_pos, unit_forward, hit_position) then
-					local distance_to_inner_position_sq = math.min(Vector3.distance_squared(target_hit_position, inner_attack_pos), Vector3.distance_squared(target_hit_position, inner_attack_pos_near))
+					local distance_to_inner_position_sq = math.min(Vector3.distance_squared(hit_position, inner_attack_pos), Vector3.distance_squared(hit_position, inner_attack_pos_near))
 
 					if distance_to_inner_position_sq <= inner_radius_sq then
 						inner_hit_units[hit_unit] = true
@@ -255,6 +254,8 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 						if not dummy then
 							ActionSweep._play_character_impact(self, is_server, owner_unit, hit_unit, breed, hit_position, target_hit_zone_name, current_action, damage_profile, target_index, power_level, attack_direction, shield_blocked, self.melee_boost_curve_multiplier, is_critical_strike)
 						end
+
+						self._num_targets_hit = self._num_targets_hit + 1
 
 						weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, self.damage_profile_aoe_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", self._is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
 					end
@@ -347,6 +348,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 			local damage_source_id = NetworkLookup.damage_sources[self.item_name]
 			local weapon_system = self.weapon_system
+			self._num_targets_hit = self._num_targets_hit + 1
 
 			weapon_system:send_rpc_attack_hit(damage_source_id, attacker_unit_id, hit_unit_id, hit_zone_id, hit_position, attack_direction, damage_profile_id, "power_level", power_level, "hit_target_index", target_index, "blocking", shield_blocked, "shield_break_procced", false, "boost_curve_multiplier", self.melee_boost_curve_multiplier, "is_critical_strike", is_critical_strike, "can_damage", true, "can_stagger", true, "first_hit", self._num_targets_hit == 1)
 

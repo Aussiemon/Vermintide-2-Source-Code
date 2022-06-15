@@ -152,6 +152,12 @@ CareerSystem.rpc_ability_activated = function (self, channel_id, unit_game_objec
 		units_buff_extension:trigger_procs("on_ability_activated", unit, ability_id)
 	end
 
+	local units_cosmetic_extension = ScriptUnit.has_extension(unit, "cosmetic_system")
+
+	if units_cosmetic_extension then
+		units_cosmetic_extension:trigger_ability_activated_events()
+	end
+
 	if self.is_server then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 

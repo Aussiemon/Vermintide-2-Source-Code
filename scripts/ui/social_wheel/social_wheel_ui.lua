@@ -631,7 +631,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	local category = nil
 
 	if side_settings then
-		category = side_settings[side_name]
+		category = side_settings[side_name] or "general"
 	else
 		category = "general"
 	end

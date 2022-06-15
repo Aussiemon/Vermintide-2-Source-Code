@@ -515,7 +515,8 @@ EditAiUtility.draw_realtime_utility = function (gui, action_name, consideration,
 	local blackboard_action_data = blackboard.utility_actions[action_name]
 
 	if blackboard_action_data then
-		local blackboard_value = blackboard_action_data[consideration.blackboard_input] or blackboard[consideration.blackboard_input]
+		local blackboard_input = consideration.blackboard_input
+		local blackboard_value = blackboard_action_data[blackboard_input] or blackboard[blackboard_input]
 		local norm_value = math.clamp(blackboard_value / consideration.max_value, 0, 1)
 		local x = pos.x + win_size.x * norm_value
 		local y1 = pos.y

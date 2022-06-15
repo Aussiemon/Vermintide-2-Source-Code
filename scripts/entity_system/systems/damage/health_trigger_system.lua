@@ -95,7 +95,7 @@ HealthTriggerSystem.update = function (self, context, t)
 			local health_loss_threshold = rapid_health_loss.tick_loss_threshold
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
-			if health_loss_threshold < health_loss and not status_extension:is_wounded() then
+			if health_loss_threshold < health_loss and not status_extension:is_wounded() and current_health_percent > 0 then
 				local target_name = ScriptUnit.extension(unit, "dialogue_system").context.player_profile
 				local event_data = FrameTable.alloc_table()
 				event_data.trigger_type = "losing_rapidly"

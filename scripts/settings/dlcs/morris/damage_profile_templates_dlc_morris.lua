@@ -740,6 +740,164 @@ local damage_templates = {
 			}
 		}
 	},
+	thorn_skin = {
+		charge_value = "light_attack",
+		no_stagger_damage_reduction_ranged = true,
+		no_stagger = true,
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.25
+		},
+		armor_modifier = {
+			attack = {
+				1,
+				0.5,
+				1,
+				1,
+				0.5,
+				0
+			},
+			impact = {
+				1,
+				0.5,
+				1,
+				1,
+				0.5,
+				0
+			}
+		},
+		default_target = {
+			damage_type = "cutting",
+			attack_template = "armor_breaker"
+		}
+	},
+	static_charge = {
+		charge_value = "aoe",
+		is_explosion = true,
+		ignore_stagger_reduction = true,
+		no_stagger_damage_reduction_ranged = true,
+		armor_modifier = {
+			attack = {
+				1,
+				0,
+				1.5,
+				1,
+				0.75,
+				0
+			},
+			impact = {
+				0.3,
+				0.3,
+				6,
+				1,
+				0.3,
+				0
+			}
+		},
+		default_target = {
+			attack_template = "armor_breaker",
+			damage_type = "cutting",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.7
+			}
+		}
+	},
+	homing_skull_explosion = {
+		charge_value = "aoe",
+		is_explosion = true,
+		stagger_distance_modifier = 0.2,
+		ignore_stagger_reduction = true,
+		no_stagger_damage_reduction_ranged = true,
+		always_stagger_ai = true,
+		armor_modifier = {
+			attack = {
+				1,
+				0,
+				1.5,
+				1,
+				0.75,
+				0
+			},
+			impact = {
+				0.3,
+				0.3,
+				6,
+				1,
+				0.3,
+				0
+			}
+		},
+		default_target = {
+			attack_template = "armor_breaker",
+			damage_type = "cutting",
+			power_distribution = {
+				attack = 0.1,
+				impact = 0.7
+			}
+		}
+	},
+	static_blade = {
+		charge_value = "light_attack",
+		no_stagger_damage_reduction_ranged = true,
+		no_stagger = true,
+		cleave_distribution = {
+			attack = 0.25,
+			impact = 0.25
+		},
+		armor_modifier = {
+			attack = {
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45
+			},
+			impact = {
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45,
+				0.45
+			}
+		},
+		default_target = {
+			damage_type = "buff",
+			attack_template = "armor_breaker"
+		}
+	},
+	belakor_arena_finish = {
+		instant_death = true,
+		charge_value = "aoe",
+		is_explosion = true,
+		no_stagger_damage_reduction_ranged = true,
+		armor_modifier = {
+			attack = {
+				1,
+				0.5,
+				100,
+				1,
+				1
+			},
+			impact = {
+				1,
+				0.5,
+				1.5,
+				1,
+				1
+			}
+		},
+		default_target = {
+			attack_template = "belakor_arena_finish",
+			damage_type = "belakor_arena_finish",
+			power_distribution = {
+				attack = 5,
+				impact = 0.5
+			}
+		}
+	},
 	we_deus_01_special_charged = table.clone(damage_templates.we_deus_01_fast)
 }
 damage_templates.we_deus_01_special_charged.default_target.dot_template_name = "we_deus_01_dot_special_charged"

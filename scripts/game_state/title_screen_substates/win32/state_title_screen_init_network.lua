@@ -51,7 +51,7 @@ StateTitleScreenInitNetwork.update = function (self, dt, t)
 	end
 
 	if not Managers.backend:is_disconnected() then
-		Managers.backend:update(dt)
+		Managers.backend:update(dt, t)
 	end
 
 	if self._popup_id then

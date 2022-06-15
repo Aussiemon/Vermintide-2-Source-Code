@@ -9,6 +9,12 @@ UnlockReminderPopup.create_ui_elements = function (self)
 	self._widgets_by_name.window_background.content.texture_id = reminder_settings.background_texture
 	self._widgets_by_name.body_text.content.text = reminder_settings.body_text
 	self._widgets_by_name.ok_button.content.title_text = Localize(reminder_settings.button_text)
+
+	if reminder_settings.top_detail_texture then
+		self._widgets_by_name.window_top_detail.content.texture_id = reminder_settings.top_detail_texture.texture
+		self._widgets_by_name.window_top_detail.style.texture_id.size = reminder_settings.top_detail_texture.size
+		self._widgets_by_name.window_top_detail.style.texture_id.offset = reminder_settings.top_detail_texture.offset
+	end
 end
 
 UnlockReminderPopup.update = function (self, dt)

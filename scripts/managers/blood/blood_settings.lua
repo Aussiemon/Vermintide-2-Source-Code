@@ -70,7 +70,10 @@ end
 
 BloodSettings.get_hit_effect_for_race = function (self, race)
 	if self.hit_effects.enabled then
-		return self.hit_effects.first_person_per_race[race] or self.hit_effects.first_person_per_race.default
+		local race_blood = self.hit_effects.first_person_per_race[race]
+		local default_race_blood = self.hit_effects.first_person_per_race.default
+
+		return race_blood or (race_blood == nil and default_race_blood)
 	end
 
 	return nil

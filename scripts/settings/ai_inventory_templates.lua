@@ -1094,6 +1094,36 @@ local items = {
 	wpn_beastmen_minotaur_dual_axes_right = {
 		unit_name = "units/weapons/enemy/wpn_bm_minotaur_set_01/wpn_bm_minotaur_axe_02",
 		attachment_node_linking = AttachmentNodeLinking.ai_beastmen_minotaur_dual.right
+	},
+	wpn_chaos_2h_axe_blk_shadow_lieutenant_1 = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_blk_2h_axe_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
+	},
+	wpn_chaos_2h_axe_blk_shadow_lieutenant_2 = {
+		drop_on_hit = true,
+		unit_name = "units/weapons/enemy/wpn_chaos_set/wpn_blk_2h_axe_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_2h
+	},
+	woc_helmet_blk_shadow_lieutenant_01 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/addons/blk_shadow_lieutenant/blk_helmet_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	woc_helmet_blk_shadow_lieutenant_02 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/addons/blk_shadow_lieutenant/blk_helmet_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	woc_helmet_blk_shadow_lieutenant_03 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/addons/blk_shadow_lieutenant/blk_helmet_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	woc_helmet_blk_shadow_lieutenant_04 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/enemies/addons/blk_shadow_lieutenant/blk_helmet_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
 	}
 }
 local item_categories = {
@@ -1506,6 +1536,16 @@ local item_categories = {
 	},
 	beastmen_standard = {
 		items.wpn_bm_standard_01
+	},
+	blk_shadow_lieutenant_warrior_helmet = {
+		items.woc_helmet_blk_shadow_lieutenant_01,
+		items.woc_helmet_blk_shadow_lieutenant_02,
+		items.woc_helmet_blk_shadow_lieutenant_03,
+		items.woc_helmet_blk_shadow_lieutenant_04
+	},
+	blk_shadow_lieutenant_axe = {
+		items.wpn_chaos_2h_axe_blk_shadow_lieutenant_1,
+		items.wpn_chaos_2h_axe_blk_shadow_lieutenant_2
 	}
 }
 local drop_reasons_shield = {
@@ -1996,6 +2036,14 @@ InventoryConfigurations = {
 		multiple_configurations = {
 			"beastmen_2h_axe_standard",
 			"beastmen_standard_bearer_2h_axe"
+		}
+	},
+	warrior_axe_blk_shadow_lieutenant = {
+		enemy_hit_sound = "spear",
+		anim_state_event = "to_spear",
+		items = {
+			item_categories.blk_shadow_lieutenant_axe,
+			item_categories.blk_shadow_lieutenant_warrior_helmet
 		}
 	}
 }

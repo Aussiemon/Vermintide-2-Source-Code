@@ -32,7 +32,8 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local target_unit = blackboard.target_unit
-	blackboard.target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system") or nil
+	local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system") or nil
+	blackboard.target_unit_status_extension = target_unit_status_extension
 	blackboard.attacking_target = blackboard.target_unit
 
 	self:_init_attack(unit, blackboard, t)
@@ -43,35 +44,48 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 	end
 
 	blackboard.spawn_to_running = nil
-	local breed = blackboard.breed
 
-	if breed.use_backstab_vo then
-		local player = Managers.player:unit_owner(target_unit)
+	if target_unit_status_extension then
+		local breed = blackboard.breed
 
-		if player and not player.bot_player then
-			local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
+		if breed.use_backstab_vo then
+			local player = Managers.player:unit_owner(target_unit)
 
-			if player.local_player then
-				if is_flanking then
-					local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
-					local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, unit, dialogue_extension.voice_node)
-					local sound_event = breed.backstab_player_sound_event
-					local audio_system_extension = Managers.state.entity:system("audio_system")
+			if player and not player.bot_player then
+				local is_flanking = AiUtils.unit_is_flanking_player(unit, target_unit)
 
-					audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
+				if player.local_player then
+					if is_flanking then
+						local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
+						local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(blackboard.world, unit, dialogue_extension.voice_node)
+						local sound_event = breed.backstab_player_sound_event
+						local audio_system_extension = Managers.state.entity:system("audio_system")
+
+						audio_system_extension:_play_event_with_source(wwise_world, sound_event, wwise_source)
+					end
+				else
+					local network_manager = Managers.state.network
+					local network_transmit = network_manager.network_transmit
+					local unit_id = network_manager:unit_game_object_id(unit)
+					local peer_id = player:network_id()
+
+					network_transmit:send_rpc("rpc_check_trigger_backstab_sfx", peer_id, unit_id)
 				end
-			else
-				local network_manager = Managers.state.network
-				local network_transmit = network_manager.network_transmit
-				local unit_id = network_manager:unit_game_object_id(unit)
-				local peer_id = player:network_id()
-
-				network_transmit:send_rpc("rpc_check_trigger_backstab_sfx", peer_id, unit_id)
 			end
+		end
+
+		AiUtils.add_attack_intensity(target_unit, action, blackboard)
+
+		if blackboard.moving_attack and ScriptUnit.has_extension(unit, "ai_slot_system") then
+			local ai_slot_system = Managers.state.entity:system("ai_slot_system")
+
+			ai_slot_system:set_release_slot_lock(unit, true)
+
+			blackboard.keep_target = true
 		end
 	end
 
-	AiUtils.add_attack_intensity(target_unit, action, blackboard)
+	blackboard.attacking_target_is_ai_breed = target_unit_status_extension == nil
 
 	if action.attack_finished_duration then
 		local difficulty = Managers.state.difficulty:get_difficulty()
@@ -80,14 +94,6 @@ BTStormVerminAttackAction.enter = function (self, unit, blackboard, t)
 		if attack_finished_duration then
 			blackboard.attack_finished_t = t + Math.random_range(attack_finished_duration[1], attack_finished_duration[2])
 		end
-	end
-
-	if blackboard.moving_attack and ScriptUnit.has_extension(unit, "ai_slot_system") then
-		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-
-		ai_slot_system:set_release_slot_lock(unit, true)
-
-		blackboard.keep_target = true
 	end
 end
 
@@ -205,6 +211,8 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 
 	if target_is_valid then
 		self:attack(unit, t, dt, blackboard)
+	else
+		return "done"
 	end
 
 	if blackboard.catapult_hit then
@@ -438,6 +446,10 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 				end
 			end
 		end
+	end
+
+	if blackboard.attacking_target_is_ai_breed then
+		AiUtils.damage_target(blackboard.attacking_target, unit, action, action.damage)
 	end
 end
 

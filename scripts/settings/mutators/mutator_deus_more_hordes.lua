@@ -1,8 +1,8 @@
 local horde_size_multiplier = 1
-local horde_frequency_modifier = 0.7
-local horde_startup_time_modifier = 0.7
-local relax_duration_modifier = 0.7
-local max_delay_modifier = 0.7
+local horde_frequency_modifier = 0.4
+local horde_startup_time_modifier = 0.4
+local relax_duration_modifier = 0.4
+local max_delay_modifier = 0.4
 
 return {
 	description = "mutator_deus_more_hordes_desc",

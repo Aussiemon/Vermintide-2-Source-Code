@@ -130,6 +130,8 @@ LevelTransitionHandler.update = function (self)
 
 		self._has_loaded_all_packages = true
 	end
+
+	self.enemy_package_loader:update()
 end
 
 LevelTransitionHandler.promote_next_level_data = function (self)
@@ -475,6 +477,17 @@ LevelTransitionHandler.apply_defaults_to_level_data = function (level_key, envir
 
 	local level_settings = LevelSettings[level_key]
 	game_mode = game_mode or level_settings.game_mode
+
+	if not game_mode then
+		local mechanism_settings = MechanismSettings[mechanism]
+
+		if level_settings.hub_level then
+			game_mode = game_mode or mechanism_settings.gamemode_lookup.keep
+		else
+			game_mode = game_mode or mechanism_settings.gamemode_lookup.default
+		end
+	end
+
 	environment_variation_id = environment_variation_id or 0
 	conflict_director = script_data.override_conflict_settings or conflict_director or level_settings.conflict_settings or "default"
 	locked_director_functions = locked_director_functions or {}

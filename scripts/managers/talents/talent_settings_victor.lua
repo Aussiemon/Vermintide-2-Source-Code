@@ -361,16 +361,15 @@ TalentBuffTemplates.witch_hunter = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
+				on_max_stacks_func = "add_remove_buffs",
 				max_stacks = 5,
 				is_cooldown = true,
-				on_max_stacks_func = "add_remove_buffs",
 				icon = "victor_zealot_crit_count",
 				max_stack_data = {
 					buffs_to_add = {
 						"victor_zealot_crit_count_buff"
 					}
-				},
-				duration = math.huge
+				}
 			}
 		}
 	},

@@ -81,9 +81,16 @@ StartGameWindowAreaSelectionConsole._setup_area_widgets = function (self)
 	local sorted_area_settings = {}
 
 	for _, settings in pairs(AreaSettings) do
-		local sort_order = settings.sort_order
-		sorted_area_settings[sort_order] = settings
+		if not settings.exclude_from_area_selection then
+			sorted_area_settings[#sorted_area_settings + 1] = settings
+		end
 	end
+
+	local function sort_func(a, b)
+		return a.sort_order < b.sort_order
+	end
+
+	table.sort(sorted_area_settings, sort_func)
 
 	local num_areas = #sorted_area_settings
 	local widget_size = scenegraph_definition.area_root.size

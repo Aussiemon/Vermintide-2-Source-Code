@@ -648,7 +648,7 @@ BackendInterfacePeddlerPlayFab._exchange_chips_success_cb = function (self, exte
 	local request_cb = callback(self, "_store_purchase_made_cb")
 	local request_queue = self._backend_mirror:request_queue()
 
-	request_queue:enqueue(request, request_cb, false)
+	request_queue:enqueue(request, request_cb, true)
 	external_cb(true, items)
 end
 
@@ -760,6 +760,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	self:refresh_chips()
 
 	local granted_items = result.FunctionResult.items
+	local rewards_claimed = false
 
 	if granted_items then
 		local backend_mirror = self._backend_mirror
@@ -770,11 +771,29 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 			local amount = item.UsesIncrementedBy or 1
 
 			backend_mirror:add_item(backend_id, item)
-		end
 
-		if not table.is_empty(granted_items) then
-			Managers.telemetry.events:store_calendar_rewards_claimed(result.FunctionResult)
+			rewards_claimed = true
 		end
+	end
+
+	local new_cosmetics = result.FunctionResult.new_cosmetics
+
+	if new_cosmetics then
+		local backend_mirror = self._backend_mirror
+
+		for i = 1, #new_cosmetics, 1 do
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = item
+			})
+
+			if backend_id then
+				rewards_claimed = true
+			end
+		end
+	end
+
+	if rewards_claimed then
+		Managers.telemetry.events:store_calendar_rewards_claimed(result.FunctionResult)
 	end
 
 	self._is_done_claiming = true

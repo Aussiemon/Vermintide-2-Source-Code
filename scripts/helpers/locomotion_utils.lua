@@ -48,8 +48,13 @@ LocomotionUtils.follow_target_ogre = function (unit, blackboard, t, dt)
 	end
 
 	local pos = POSITION_LOOKUP[unit]
-	local status_extension = ScriptUnit.extension(target_unit, "status_system")
-	local is_on_ladder, ladder_unit = status_extension:get_is_on_ladder()
+	local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+	local is_on_ladder, ladder_unit = nil
+
+	if status_extension then
+		is_on_ladder, ladder_unit = status_extension:get_is_on_ladder()
+	end
+
 	local threat_position, goal_pos = nil
 
 	if is_on_ladder then

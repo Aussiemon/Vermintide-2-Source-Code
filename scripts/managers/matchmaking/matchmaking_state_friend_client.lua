@@ -4,6 +4,9 @@ MatchmakingStateFriendClient.NAME = "MatchmakingStateFriendClient"
 MatchmakingStateFriendClient.init = function (self, params)
 	self.matchmaking_manager = params.matchmaking_manager
 	self.wwise_world = params.wwise_world
+	self.lobby = params.lobby
+	self.network_transmit = params.network_transmit
+	self.params = params
 end
 
 MatchmakingStateFriendClient.destroy = function (self)
@@ -12,6 +15,7 @@ end
 
 MatchmakingStateFriendClient.on_enter = function (self, state_context)
 	self._game_server_data = nil
+	self._state_context = state_context
 end
 
 MatchmakingStateFriendClient.on_exit = function (self)

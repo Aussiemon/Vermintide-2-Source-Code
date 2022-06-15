@@ -3429,8 +3429,6 @@ HordeCompositions = {
 		},
 		{
 			{
-				"skaven_storm_vermin_commander",
-				1,
 				name = "plain",
 				weight = 10,
 				breeds = {
@@ -3438,7 +3436,9 @@ HordeCompositions = {
 					{
 						19,
 						21
-					}
+					},
+					"skaven_storm_vermin_commander",
+					1
 				}
 			},
 			{
@@ -3460,8 +3460,6 @@ HordeCompositions = {
 		},
 		{
 			{
-				"skaven_storm_vermin_commander",
-				3,
 				name = "plain",
 				weight = 10,
 				breeds = {
@@ -3469,7 +3467,9 @@ HordeCompositions = {
 					{
 						22,
 						24
-					}
+					},
+					"skaven_storm_vermin_commander",
+					3
 				}
 			},
 			{
@@ -3491,11 +3491,6 @@ HordeCompositions = {
 		},
 		{
 			{
-				"skaven_storm_vermin_commander",
-				{
-					4,
-					5
-				},
 				name = "plain",
 				weight = 10,
 				breeds = {
@@ -3503,6 +3498,11 @@ HordeCompositions = {
 					{
 						25,
 						27
+					},
+					"skaven_storm_vermin_commander",
+					{
+						4,
+						5
 					}
 				}
 			},

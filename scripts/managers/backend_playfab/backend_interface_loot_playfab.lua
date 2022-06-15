@@ -46,6 +46,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	local function_result = result.FunctionResult
 	local items = function_result.items
 	local unlocked_weapon_skins = function_result.unlocked_weapon_skins
+	local new_cosmetics = function_result.new_cosmetics
 	local updated_statistics = function_result.updated_statistics
 	local consume_data = function_result.consumed_chest
 	local chest_backend_id = consume_data and consume_data.ItemInstanceId
@@ -72,6 +73,18 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	if unlocked_weapon_skins then
 		for i = 1, #unlocked_weapon_skins, 1 do
 			backend_mirror:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
+		end
+	end
+
+	if new_cosmetics then
+		for i = 1, #new_cosmetics, 1 do
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = new_cosmetics[i]
+			})
+
+			if backend_id then
+				loot[#loot + 1] = backend_id
+			end
 		end
 	end
 
@@ -150,6 +163,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	local items = function_result.ItemsGranted or function_result.Result
 	local currency_granted = function_result.CurrencyGranted
 	local essence_rewards = function_result.EssenceRewards
+	local cosmetic_rewards = function_result.cosmetic_rewards
 	local items_revoked = function_result.ItemsRevoked
 	local consumed_deed_result = function_result.ConsumedDeedResult
 	local num_items = #items
@@ -179,6 +193,20 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 		end
 
 		backend_mirror:add_item(backend_id, item)
+	end
+
+	if cosmetic_rewards then
+		for reward_key, item in pairs(cosmetic_rewards) do
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = item
+			})
+
+			if backend_id then
+				loot_request[reward_key] = {
+					backend_id = backend_id
+				}
+			end
+		end
 	end
 
 	if items_revoked then
@@ -406,6 +434,27 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 		end
 	end
 
+	local new_cosmetics = function_result.new_cosmetics
+
+	if new_cosmetics then
+		local item_master_list = ItemMasterList
+
+		for i = 1, #new_cosmetics, 1 do
+			local cosmetic_name = new_cosmetics[i]
+			local item = rawget(item_master_list, cosmetic_name)
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = cosmetic_name
+			})
+
+			if backend_id then
+				loot[#loot + 1] = {
+					type = item.slot_type,
+					backend_id = backend_id
+				}
+			end
+		end
+	end
+
 	local rewarded_currency = {}
 
 	if currency_added then
@@ -555,6 +604,27 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 				type = "weapon_skin",
 				weapon_skin_name = weapon_skin_name
 			}
+		end
+	end
+
+	local new_cosmetics = function_result.new_cosmetics
+
+	if new_cosmetics then
+		local item_master_list = ItemMasterList
+
+		for i = 1, #new_cosmetics, 1 do
+			local cosmetic_name = new_cosmetics[i]
+			local item = rawget(item_master_list, cosmetic_name)
+			local backend_id = backend_mirror:add_item(nil, {
+				ItemId = cosmetic_name
+			})
+
+			if backend_id then
+				loot[#loot + 1] = {
+					type = item.slot_type,
+					backend_id = backend_id
+				}
+			end
 		end
 	end
 

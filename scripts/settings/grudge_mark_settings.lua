@@ -231,6 +231,9 @@ GrudgeMarkedNames = {
 		"name_grudge_minotaur_019",
 		"name_grudge_minotaur_020"
 	},
+	shadow_lieutenant = {
+		"name_shadow_lieutenant"
+	},
 	skaven = {
 		"name_grudge_skaven_001"
 	},

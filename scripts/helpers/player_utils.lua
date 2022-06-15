@@ -8,7 +8,7 @@ PlayerUtils = {
 		return result[1], tonumber(result[2])
 	end,
 	get_random_alive_hero = function ()
-		local side = Managers.state.side:get_side_from_name("heroes")
+		local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:sides()[1]
 		local players = side.PLAYER_AND_BOT_UNITS
 		local unit_list = {}
 		local unit_list_n = 0

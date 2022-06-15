@@ -290,11 +290,10 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
-				max_stacks = 5,
 				on_max_stacks_func = "add_remove_buffs",
-				icon = "bardin_engineer_ranged_crit_count",
+				max_stacks = 5,
 				is_cooldown = true,
-				duration = math.huge,
+				icon = "bardin_engineer_ranged_crit_count",
 				max_stack_data = {
 					buffs_to_add = {
 						"bardin_engineer_ranged_crit_count_buff"
@@ -341,16 +340,15 @@ local talent_buff_templates = {
 		buffs = {
 			{
 				reset_on_max_stacks = true,
+				on_max_stacks_func = "add_remove_buffs",
 				max_stacks = 5,
 				is_cooldown = true,
-				on_max_stacks_func = "add_remove_buffs",
 				icon = "bardin_engineer_melee_power_free_shot",
 				max_stack_data = {
 					buffs_to_add = {
 						"bardin_engineer_melee_power_range_power_starter"
 					}
-				},
-				duration = math.huge
+				}
 			}
 		}
 	},

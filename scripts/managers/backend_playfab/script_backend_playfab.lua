@@ -152,7 +152,10 @@ end
 
 ScriptBackendPlayFab._set_up_initial_account = function (self)
 	local initial_account_set_up = {
-		FunctionName = "initialAccountSetUp"
+		FunctionName = "initialAccountSetUp",
+		FunctionParameter = {
+			metadata = self._metadata
+		}
 	}
 	local initial_setup_request_cb = callback(self, "initial_setup_request_cb")
 

@@ -22,34 +22,6 @@ DeusPowerUpBuffTemplates = {
 			}
 		}
 	},
-	deus_ammo_pickup_range_pen_buff = {
-		buffs = {
-			{
-				refresh_durations = true,
-				name = "deus_ammo_pickup_range_pen_buff",
-				stat_buff = "ranged_additional_penetrations",
-				icon = "deus_icon_ammo_pickup_range_pen",
-				max_stacks = 1,
-				bonus = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.bonus,
-				duration = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.duration
-			}
-		}
-	},
-	deus_ammo_pickup_reload_speed_buff = {
-		buffs = {
-			{
-				name = "deus_ammo_pickup_reload_speed_buff",
-				stat_buff = "reload_speed",
-				refresh_durations = true,
-				remove_buff_func = "remove_ammo_reload_speed_buff",
-				apply_buff_func = "apply_ammo_reload_speed_buff",
-				max_stacks = 1,
-				icon = "deus_icon_ammo_pickup_reload_speed",
-				multiplier = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.multiplier,
-				duration = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.duration
-			}
-		}
-	},
 	deus_large_ammo_pickup_infinite_ammo_buff = {
 		buffs = {
 			{
@@ -130,21 +102,6 @@ DeusPowerUpBuffTemplates = {
 				apply_buff_func = "apply_damage_reduction_on_incapacitated",
 				multiplier = MorrisBuffTweakData.deus_damage_reduction_on_incapacitated_buff.multiplier,
 				duration = MorrisBuffTweakData.deus_damage_reduction_on_incapacitated_buff.duration
-			}
-		}
-	},
-	deus_consumable_extra_shot_buff = {
-		buffs = {
-			{
-				name = "deus_consumable_extra_shot_buff",
-				stat_buff = "extra_shot",
-				refresh_durations = true,
-				remove_buff_func = "on_extra_shot_buff_remove",
-				apply_buff_func = "on_extra_shot_buff_apply",
-				max_stacks = 1,
-				icon = "deus_icon_consumable_extra_shot",
-				bonus = MorrisBuffTweakData.deus_consumable_extra_shot_buff.bonus,
-				duration = MorrisBuffTweakData.deus_consumable_extra_shot_buff.duration
 			}
 		}
 	},
@@ -240,19 +197,6 @@ DeusPowerUpBuffTemplates = {
 				max_stacks = 1,
 				multiplier = MorrisBuffTweakData.deus_reckless_swings_buff.multiplier,
 				damage_to_deal = MorrisBuffTweakData.deus_reckless_swings_buff.damage_to_deal
-			}
-		}
-	},
-	deus_big_swing_stagger_buff = {
-		buffs = {
-			{
-				refresh_durations = true,
-				name = "deus_big_swing_stagger_buff",
-				stat_buff = "power_level_impact",
-				icon = "deus_icon_big_swing_stagger",
-				max_stacks = 1,
-				duration = MorrisBuffTweakData.deus_big_swing_stagger_buff.duration,
-				multiplier = MorrisBuffTweakData.deus_big_swing_stagger_buff.multiplier
 			}
 		}
 	},
@@ -429,28 +373,6 @@ DeusPowerUpBuffTemplates = {
 				icon = "deus_icon_cooldown_reg_not_hit",
 				multiplier = MorrisBuffTweakData.cooldown_reg_not_hit_buff.multiplier,
 				max_stacks = MorrisBuffTweakData.cooldown_reg_not_hit_buff.max_stacks
-			}
-		}
-	},
-	deus_always_blocking_buff = {
-		buffs = {
-			{
-				remove_buff_func = "remove_always_blocking",
-				name = "deus_always_blocking_buff",
-				apply_buff_func = "apply_always_blocking",
-				icon = "deus_icon_always_blocking_01"
-			}
-		}
-	},
-	deus_always_blocking_lock_out = {
-		buffs = {
-			{
-				refresh_durations = true,
-				name = "deus_always_blocking_lock_out",
-				icon = "deus_icon_always_blocking_01",
-				debuff = true,
-				max_stacks = 1,
-				duration = 10
 			}
 		}
 	}
@@ -1123,36 +1045,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			}
 		}
 	},
-	always_blocking = {
-		rectangular_icon = true,
-		advanced_description = "description_always_blocking",
-		max_amount = 1,
-		icon = "deus_icon_always_blocking_01",
-		display_name = "display_name_always_blocking",
-		buff_template = {
-			buffs = {
-				{
-					buff_to_add = "deus_always_blocking_buff",
-					name = "always_blocking",
-					buff_func = "always_blocking_weapon_swap",
-					event = "on_inventory_post_apply_buffs",
-					update_func = "always_blocking_update",
-					apply_buff_func = "always_blocking_init"
-				},
-				{
-					event = "on_block_broken",
-					name = "block_broken_remove_buff",
-					buff_func = "always_blocking_temporarily_remove"
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "duration",
-				value = MorrisBuffTweakData.deus_always_blocking.duration
-			}
-		}
-	},
 	deus_transmute_into_coins = {
 		rectangular_icon = true,
 		advanced_description = "description_deus_transmute_into_coins",
@@ -1343,38 +1235,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			{
 				value_type = "amount",
 				value = MorrisBuffTweakData.deus_reckless_swings_buff.damage_to_deal
-			}
-		}
-	},
-	deus_big_swing_stagger = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_big_swing_stagger",
-		max_amount = 1,
-		icon = "deus_icon_big_swing_stagger",
-		display_name = "display_name_deus_big_swing_stagger",
-		buff_template = {
-			buffs = {
-				{
-					buff_to_add = "deus_big_swing_stagger_buff",
-					name = "deus_big_swing_stagger",
-					buff_func = "deus_big_swing_stagger_on_hit",
-					event = "on_hit",
-					targets_to_hit = MorrisBuffTweakData.deus_big_swing_stagger_buff.targets_to_hit
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "amount",
-				value = MorrisBuffTweakData.deus_big_swing_stagger_buff.targets_to_hit
-			},
-			{
-				value_type = "percent",
-				value = MorrisBuffTweakData.deus_big_swing_stagger_buff.multiplier
-			},
-			{
-				value_type = "duration",
-				value = MorrisBuffTweakData.deus_big_swing_stagger_buff.duration
 			}
 		}
 	},
@@ -1627,114 +1487,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			}
 		}
 	},
-	deus_crit_chain_lightning = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_crit_chain_lightning",
-		max_amount = 1,
-		icon = "deus_icon_crit_chain_lightning",
-		display_name = "display_name_deus_crit_chain_lightning",
-		buff_template = {
-			buffs = {
-				{
-					sound_event = "morris_power_ups_lightning_strike",
-					name = "deus_crit_chain_lightning",
-					authority = "server",
-					buff_func = "chain_lightning",
-					event = "on_player_damage_dealt",
-					damage_profile = "beam_shot",
-					particle_name = "",
-					damage_source = "buff",
-					max_targets = MorrisBuffTweakData.deus_crit_chain_lightning.max_targets,
-					max_chain_range = MorrisBuffTweakData.deus_crit_chain_lightning.max_chain_range
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "targets",
-				value = MorrisBuffTweakData.deus_crit_chain_lightning.max_targets
-			}
-		}
-	},
-	deus_ranged_crit_explosion = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_ranged_crit_explosion",
-		max_amount = 1,
-		icon = "deus_ranged_crit_explosion",
-		display_name = "display_name_deus_ranged_crit_explosion",
-		buff_template = {
-			buffs = {
-				{
-					sound_event = "morris_power_ups_ammo_explosion",
-					name = "deus_ranged_crit_explosion",
-					authority = "server",
-					buff_func = "explosion_on_damage_dealt",
-					event = "on_hit",
-					explosion_template = "deus_ranged_crit_explosion",
-					valid_attack_types = {
-						instant_projectile = true,
-						projectile = true
-					},
-					power_scale = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "percent",
-				value = MorrisBuffTweakData.deus_ranged_crit_explosion.multiplier
-			}
-		}
-	},
-	deus_extra_shot = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_extra_shot",
-		max_amount = 1,
-		icon = "deus_icon_extra_shot",
-		display_name = "display_name_deus_extra_shot",
-		buff_template = {
-			buffs = {
-				{
-					name = "deus_extra_shot",
-					stat_buff = "extra_shot",
-					bonus = MorrisBuffTweakData.deus_extra_shot.bonus
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "bonus",
-				value = MorrisBuffTweakData.deus_extra_shot.bonus
-			}
-		}
-	},
-	deus_consumable_extra_shot = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_consumable_extra_shot",
-		max_amount = 1,
-		icon = "deus_icon_consumable_extra_shot",
-		display_name = "display_name_deus_consumable_extra_shot",
-		buff_template = {
-			buffs = {
-				{
-					event = "on_potion_consumed",
-					name = "deus_consumable_extra_shot",
-					buff_to_add = "deus_consumable_extra_shot_buff",
-					buff_func = "add_buff"
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "bonus",
-				value = MorrisBuffTweakData.deus_consumable_extra_shot_buff.bonus
-			},
-			{
-				value_type = "duration",
-				value = MorrisBuffTweakData.deus_consumable_extra_shot_buff.duration
-			}
-		}
-	},
 	deus_push_increased_cleave = {
 		rectangular_icon = true,
 		advanced_description = "description_deus_push_increased_cleave",
@@ -1759,32 +1511,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			{
 				value_type = "duration",
 				value = MorrisBuffTweakData.deus_push_increased_cleave_buff.duration
-			}
-		}
-	},
-	deus_collateral_damage_on_melee_killing_blow = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_collateral_damage_on_melee_killing_blow",
-		max_amount = 1,
-		icon = "deus_icon_collateral_damage_on_melee_killing_blow",
-		display_name = "display_name_deus_collateral_damage_on_melee_killing_blow",
-		buff_template = {
-			buffs = {
-				{
-					name = "deus_collateral_damage_on_melee_killing_blow",
-					authority = "server",
-					buff_func = "deus_collateral_damage_on_melee_killing_blow_func",
-					event = "on_kill",
-					sound_event = "morris_power_ups_extra_damage",
-					max_range = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.max_range,
-					proc_chance = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.proc_chance
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "percent",
-				value = MorrisBuffTweakData.deus_collateral_damage_on_melee_killing_blow.proc_chance
 			}
 		}
 	},
@@ -1996,38 +1722,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			}
 		}
 	},
-	deus_ammo_pickup_range_pen = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_ammo_pickup_range_pen",
-		max_amount = 1,
-		icon = "deus_icon_ammo_pickup_range_pen",
-		display_name = "display_name_deus_ammo_pickup_range_pen",
-		buff_template = {
-			buffs = {
-				{
-					name = "deus_ammo_pickup_range_pen",
-					authority = "client",
-					buff_func = "add_buff_on_pickup",
-					event = "on_consumable_picked_up",
-					pickup_types = {
-						ammo = {
-							"deus_ammo_pickup_range_pen_buff"
-						}
-					}
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "bonus",
-				value = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.bonus
-			},
-			{
-				value_type = "duration",
-				value = MorrisBuffTweakData.deus_ammo_pickup_range_pen_buff.duration
-			}
-		}
-	},
 	deus_ammo_pickup_heal = {
 		rectangular_icon = true,
 		advanced_description = "description_deus_ammo_pickup_heal",
@@ -2055,38 +1749,6 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 			{
 				value_type = "amount",
 				value = MorrisBuffTweakData.deus_ammo_pickup_heal.amount
-			}
-		}
-	},
-	deus_ammo_pickup_reload_speed = {
-		rectangular_icon = true,
-		advanced_description = "description_deus_ammo_pickup_reload_speed",
-		max_amount = 1,
-		icon = "deus_icon_ammo_pickup_reload_speed",
-		display_name = "display_name_deus_ammo_pickup_reload_speed",
-		buff_template = {
-			buffs = {
-				{
-					name = "deus_ammo_pickup_reload_speed",
-					authority = "client",
-					buff_func = "add_buff_on_pickup",
-					event = "on_consumable_picked_up",
-					pickup_types = {
-						ammo = {
-							"deus_ammo_pickup_reload_speed_buff"
-						}
-					}
-				}
-			}
-		},
-		description_values = {
-			{
-				value_type = "percent",
-				value = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.multiplier
-			},
-			{
-				value_type = "range",
-				value = MorrisBuffTweakData.deus_ammo_pickup_reload_speed_buff.duration
 			}
 		}
 	},
@@ -2715,6 +2377,950 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		talent = true,
 		max_amount = 1,
 		talent_index = 3
+	},
+	deus_power_up_quest_granted_test_01 = {
+		rectangular_icon = true,
+		advanced_description = "description_deus_power_up_quest_granted_test_01",
+		max_amount = 1,
+		icon = "melee_killing_spree_speed",
+		display_name = "display_name_deus_power_up_quest_granted_test_01",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_kill",
+					name = "deus_power_up_quest_granted_test_01",
+					buff_func = "spawn_orb",
+					orb_settings = {
+						orb_name = "test_orb_01"
+					}
+				}
+			}
+		},
+		description_values = {}
+	},
+	melee_wave = {
+		rectangular_icon = true,
+		advanced_description = "description_melee_wave",
+		max_amount = 1,
+		icon = "deus_icon_melee_wave",
+		display_name = "display_name_melee_wave",
+		buff_template = {
+			create_parent_buff_shared_table = true,
+			buffs = {
+				{
+					buff_to_add = "melee_wave_buff",
+					name = "melee_wave",
+					buff_func = "add_melee_wave_stacks",
+					event = "on_ability_activated",
+					stacks_to_add = MorrisBuffTweakData.melee_wave.stacks_to_add
+				},
+				{
+					event = "on_hit",
+					name = "melee_wave_on_hit",
+					explosion_template = "melee_wave",
+					buff_func = "melee_wave_effect"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.melee_wave.stacks_to_add
+			}
+		}
+	},
+	money_magnet = {
+		display_name = "display_name_money_magnet",
+		advanced_description = "description_money_magnet",
+		max_amount = 1,
+		icon = "deus_icon_money_magnet",
+		buff_template = {
+			buffs = {
+				{
+					update_every = 1,
+					name = "money_magnet",
+					update_func = "money_magnet_update",
+					apply_buff_func = "money_magnet_start",
+					magnet_distance = MorrisBuffTweakData.money_magnet.magnet_distance
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.money_magnet.magnet_distance
+			}
+		}
+	},
+	skill_by_block = {
+		rectangular_icon = true,
+		advanced_description = "description_skill_by_block",
+		max_amount = 1,
+		icon = "deus_icon_skill_by_block",
+		display_name = "display_name_skill_by_block",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_block",
+					name = "skill_by_block",
+					buff_func = "reduce_activated_ability_cooldown_on_block"
+				}
+			}
+		},
+		description_values = {}
+	},
+	speed_over_stamina = {
+		rectangular_icon = true,
+		advanced_description = "description_speed_over_stamina",
+		max_amount = 1,
+		icon = "deus_icon_speed_over_stamina",
+		display_name = "display_name_speed_over_stamina",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_block_broken",
+					name = "speed_over_stamina",
+					buff_to_add = "speed_over_stamina_buff",
+					buff_func = "add_buff"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.speed_over_stamina_buff.multiplier
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.speed_over_stamina_buff.duration
+			}
+		}
+	},
+	missing_health_power_up = {
+		rectangular_icon = true,
+		advanced_description = "description_missing_health_power_up",
+		max_amount = 1,
+		icon = "deus_icon_missing_health_power_up",
+		display_name = "display_name_missing_health_power_up",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "missing_health_power_up_buff",
+					name = "missing_health_power_up",
+					update_func = "activate_buff_stacks_based_on_health_chunks",
+					chunk_size = MorrisBuffTweakData.missing_health_power_up_buff.chunk_size,
+					max_stacks = MorrisBuffTweakData.missing_health_power_up_buff.max_stacks
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.missing_health_power_up_buff.multiplier
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.missing_health_power_up_buff.chunk_size
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.missing_health_power_up_buff.max_stacks
+			}
+		}
+	},
+	detect_weakness = {
+		rectangular_icon = true,
+		advanced_description = "description_detect_weakness",
+		max_amount = 1,
+		icon = "deus_icon_kill_the_marked",
+		display_name = "display_name_detect_weakness",
+		buff_template = {
+			buffs = {
+				{
+					name = "detect_weakness",
+					update_func = "update_generic_aoe",
+					mark_buff = "detect_weakness_marked_enemy",
+					remove_buff_func = "remove_generic_aoe",
+					apply_buff_func = "apply_generic_aoe",
+					mark_cooldown = 20,
+					range_check = {
+						only_ai = true,
+						randomize_result = true,
+						update_rate = 0.5,
+						radius = 10,
+						unit_left_range_func = "detect_weakness_unit_left_range",
+						unit_entered_range_func = "detect_weakness_unit_entered_range"
+					},
+					markable_enemies = {
+						chaos_marauder = true,
+						chaos_raider = true,
+						skaven_plague_monk = true,
+						beastmen_bestigor = true,
+						chaos_berzerker = true,
+						skaven_clan_rat_with_shield = true,
+						skaven_storm_vermin_with_shield = true,
+						chaos_marauder_with_shield = true,
+						chaos_fanatic = true,
+						skaven_slave = true,
+						skaven_clan_rat = true,
+						beastmen_ungor = true,
+						chaos_warrior = true,
+						skaven_storm_vermin_commander = true,
+						skaven_storm_vermin = true,
+						beastmen_gor = true,
+						skaven_storm_vermin_champion = true
+					}
+				},
+				{
+					name = "detect_weakness_on_kill",
+					kill_buff = "detect_weakness_buff",
+					buff_func = "detect_weakness_on_kill",
+					event = "on_kill",
+					mark_buff = "detect_weakness_marked_enemy"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.detect_weakness_buff.multiplier
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.detect_weakness_buff.duration
+			}
+		}
+	},
+	squats = {
+		rectangular_icon = true,
+		advanced_description = "description_squats",
+		max_amount = 1,
+		icon = "deus_icon_squats",
+		display_name = "display_name_squats",
+		buff_template = {
+			buffs = {
+				{
+					actual_buff = "squats_buff",
+					name = "squats",
+					build_up_buff = "squats_build_up_buff",
+					buff_func = "squats_add_buff",
+					event = "on_crouch",
+					buff_to_add = "squats_buff",
+					stack_count_to_trigger_actual_buff = MorrisBuffTweakData.squats_build_up_buff.max_stacks
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.squats_buff.multiplier
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.squats_buff.duration
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.squats_buff.max_stacks
+			}
+		}
+	},
+	pyrotechnical_echo = {
+		rectangular_icon = true,
+		advanced_description = "description_pyrotechnical_echo",
+		max_amount = 1,
+		icon = "deus_icon_pyrotechnical_echo",
+		display_name = "display_name_pyrotechnical_echo",
+		buff_template = {
+			buffs = {
+				{
+					name = "pyrotechnical_echo",
+					explosion_delay = 1,
+					buff_func = "pyrotechnical_echo_on_grenade_exploded",
+					event = "on_grenade_exploded",
+					update_func = "pyrotechnical_echo_update"
+				}
+			}
+		},
+		description_values = {}
+	},
+	blazing_revenge = {
+		rectangular_icon = true,
+		advanced_description = "description_blazing_revenge",
+		max_amount = 1,
+		icon = "deus_icon_blazing_revenge",
+		display_name = "display_name_blazing_revenge",
+		buff_template = {
+			create_parent_buff_shared_table = true,
+			buffs = {
+				{
+					explosion_template = "blazing_revenge",
+					name = "blazing_revenge_on_knocked_down",
+					radius = 2,
+					buff_func = "blazing_revenge_on_knocked_down",
+					event = "on_knocked_down",
+					remove_buff_func = "blazing_revenge_clear_aoe",
+					sound_start_event = "boon_blazing_revenge_start",
+					sound_end_event = "boon_blazing_revenge_end"
+				},
+				{
+					event = "on_revived",
+					name = "blazing_revenge_on_revived",
+					sound_end_event = "boon_blazing_revenge_end",
+					buff_func = "blazing_revenge_clear_aoe"
+				},
+				{
+					event = "on_death",
+					name = "blazing_revenge_on_death",
+					sound_end_event = "boon_blazing_revenge_end",
+					buff_func = "blazing_revenge_clear_aoe"
+				}
+			}
+		},
+		description_values = {}
+	},
+	cluster_barrel = {
+		rectangular_icon = true,
+		advanced_description = "description_cluster_barrel",
+		max_amount = 1,
+		icon = "deus_icon_cluster_barrel",
+		display_name = "display_name_cluster_barrel",
+		buff_template = {
+			buffs = {
+				{
+					item_name = "tiny_explosive_barrel",
+					name = "cluster_barrel",
+					buff_func = "cluster_barrel_on_barrel_exploded",
+					event = "on_barrel_exploded",
+					max_horizontal_velocity = 4,
+					fuse_time = 3,
+					vertical_velocity = 7,
+					barrel_count = 4,
+					random_explosion_delay = 0.8,
+					explode_time = 2
+				}
+			}
+		},
+		description_values = {}
+	},
+	wolfpack = {
+		rectangular_icon = true,
+		advanced_description = "description_wolfpack",
+		max_amount = 1,
+		icon = "deus_icon_wolfpack",
+		display_name = "display_name_wolfpack",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "wolfpack_buff",
+					name = "wolfpack",
+					update_func = "wolfpack_update",
+					remove_buff_func = "wolfpack_remove",
+					apply_buff_func = "wolfpack_apply",
+					range_check = {
+						radius = 20,
+						update_rate = 3,
+						only_players = true,
+						unit_left_range_func = "wolfpack_left_range",
+						unit_entered_range_func = "wolfpack_entered_range"
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.wolfpack_buff.multiplier
+			}
+		}
+	},
+	comradery = {
+		rectangular_icon = true,
+		advanced_description = "description_comradery",
+		max_amount = 1,
+		icon = "deus_icon_comradery",
+		display_name = "display_name_comradery",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "comradery_buff",
+					name = "comradery",
+					update_func = "comradery_update",
+					remove_buff_func = "comradery_remove",
+					apply_buff_func = "comradery_apply",
+					range_check = {
+						radius = 10,
+						update_rate = 3,
+						only_players = true,
+						unit_left_range_func = "comradery_left_range",
+						unit_entered_range_func = "comradery_entered_range"
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.comradery_buff.multiplier
+			}
+		}
+	},
+	invigorating_strike = {
+		rectangular_icon = true,
+		advanced_description = "description_invigorating_strike",
+		max_amount = 1,
+		icon = "deus_icon_invigorating_strike",
+		display_name = "display_name_invigorating_strike",
+		buff_template = {
+			create_parent_buff_shared_table = true,
+			buffs = {
+				{
+					damage_to_heal_conversion_multiplier = 0.4,
+					name = "invigorating_strike",
+					buff_func = "invigorating_strike_on_damage_dealt",
+					event = "on_damage_dealt",
+					cooldown_buff = "invigorating_strike_cooldown"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.invigorating_strike_cooldown.duration
+			}
+		}
+	},
+	staggering_force = {
+		rectangular_icon = true,
+		advanced_description = "description_staggering_force",
+		max_amount = 1,
+		icon = "deus_icon_staggering_force",
+		display_name = "display_name_staggering_force",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "staggering_force_buff",
+					name = "staggering_force",
+					buff_func = "staggering_force_on_stagger",
+					event = "on_stagger",
+					enemy_count = MorrisBuffTweakData.staggering_force.enemy_count
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.staggering_force.enemy_count
+			},
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.staggering_force_buff.multiplier
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.staggering_force_buff.duration
+			}
+		}
+	},
+	thorn_skin = {
+		rectangular_icon = true,
+		advanced_description = "description_thorn_skin",
+		max_amount = 1,
+		icon = "deus_icon_thorn_skin",
+		display_name = "display_name_thorn_skin",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_damage_taken",
+					name = "thorn_skin",
+					explosion_template = "thorn_skin",
+					buff_func = "thorn_skin_effect"
+				}
+			}
+		},
+		description_values = {}
+	},
+	pyrrhic_strength = {
+		rectangular_icon = true,
+		advanced_description = "description_pyrrhic_strength",
+		max_amount = 1,
+		icon = "deus_icon_pyrrhic_strength",
+		display_name = "display_name_pyrrhic_strength",
+		buff_template = {
+			buffs = {
+				{
+					name = "pyrrhic_strength_power",
+					stat_buff = "power_level",
+					multiplier = MorrisBuffTweakData.pyrrhic_strength_power.multiplier
+				},
+				{
+					name = "pyrrhic_strength_health",
+					stat_buff = "health_curse",
+					bonus = MorrisBuffTweakData.pyrrhic_strength_health.bonus
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.pyrrhic_strength_power.multiplier
+			},
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.pyrrhic_strength_health.bonus
+			}
+		}
+	},
+	tenacious = {
+		rectangular_icon = true,
+		advanced_description = "description_tenacious",
+		max_amount = 1,
+		icon = "deus_icon_tenacious",
+		display_name = "display_name_tenacious",
+		buff_template = {
+			buffs = {
+				{
+					name = "tenacious",
+					update_func = "tenacious_update",
+					tick = 1,
+					health_per_tick = MorrisBuffTweakData.tenacious.health_per_tick,
+					health_threshold = MorrisBuffTweakData.tenacious.health_threshold
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.tenacious.health_per_tick
+			},
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.tenacious.health_threshold
+			}
+		}
+	},
+	lucky = {
+		rectangular_icon = true,
+		advanced_description = "description_lucky",
+		max_amount = 1,
+		icon = "deus_icon_lucky",
+		display_name = "display_name_lucky",
+		buff_template = {
+			create_parent_buff_shared_table = true,
+			buffs = {
+				{
+					event = "on_non_critical_action",
+					name = "lucky_on_non_crit",
+					buff_to_add = "lucky_buff",
+					buff_func = "lucky_on_non_crit"
+				},
+				{
+					event = "on_critical_action",
+					name = "lucky_on_crit",
+					buff_func = "lucky_on_crit"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.lucky_buff.bonus
+			}
+		}
+	},
+	hidden_escape = {
+		rectangular_icon = true,
+		advanced_description = "description_hidden_escape",
+		max_amount = 1,
+		icon = "deus_icon_hidden_escape",
+		display_name = "display_name_hidden_escape",
+		buff_template = {
+			create_parent_buff_shared_table = true,
+			buffs = {
+				{
+					buff_to_add = "hidden_escape_buff",
+					name = "hidden_escape",
+					buff_func = "hidden_escape_on_damage_taken",
+					event = "on_damage_taken",
+					cooldown_buff = "hidden_escape_cooldown_buff",
+					invisibility_cooldown = 60,
+					invalid_damage_sources = {
+						temporary_health_degen = true,
+						overcharge = true,
+						life_tap = true,
+						ground_impact = true,
+						life_drain = true
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.hidden_escape_cooldown_buff.duration
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.hidden_escape_buff.duration
+			}
+		}
+	},
+	curative_empowerment = {
+		rectangular_icon = true,
+		advanced_description = "description_curative_empowerment",
+		max_amount = 1,
+		icon = "deus_icon_curative_empowerment",
+		display_name = "display_name_curative_empowerment",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "curative_empowerment_buff",
+					heal_type = "bandage",
+					name = "curative_empowerment",
+					buff_func = "curative_empowerment_on_healed_ally",
+					event = "on_healed_ally"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.curative_empowerment_buff.multiplier
+			},
+			{
+				value = MorrisBuffTweakData.curative_empowerment_buff.duration
+			}
+		}
+	},
+	pent_up_anger = {
+		rectangular_icon = true,
+		advanced_description = "description_pent_up_anger",
+		max_amount = 1,
+		icon = "deus_icon_pent_up_anger",
+		display_name = "display_name_pent_up_anger",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "pent_up_anger_buff",
+					name = "pent_up_anger",
+					crit_buff = "pent_up_anger_guaranteed_crit_buff",
+					buff_func = "pent_up_anger_on_block",
+					event = "on_block"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.pent_up_anger_buff.max_stacks
+			}
+		}
+	},
+	surprise_strike = {
+		rectangular_icon = true,
+		advanced_description = "description_surprise_strike",
+		max_amount = 1,
+		icon = "deus_icon_surprise_strike",
+		display_name = "display_name_surprise_strike",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_visible",
+					name = "surprise_strike",
+					buff_to_add = "surprise_strike_guaranteed_crit_buff",
+					buff_func = "surprise_strike_add_buff"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.surprise_strike_guaranteed_crit_buff.duration
+			}
+		}
+	},
+	bad_breath = {
+		rectangular_icon = true,
+		advanced_description = "description_bad_breath",
+		max_amount = 1,
+		icon = "deus_icon_bad_breath",
+		display_name = "display_name_bad_breath",
+		buff_template = {
+			buffs = {
+				{
+					name = "bad_breath",
+					rescue_delay = 0.5,
+					buff_func = "start_bad_breath_timer",
+					event = "on_player_disabled",
+					update_func = "update_bad_breath",
+					cooldown_buff = "bad_breath_cooldown_buff",
+					explosion_template = "bad_breath",
+					rescuable_disable_types = {
+						pack_master_grab = true,
+						assassin_pounced = true,
+						corruptor_grab = true
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.bad_breath_cooldown_buff.duration
+			}
+		}
+	},
+	boulder_bro = {
+		rectangular_icon = true,
+		advanced_description = "description_boulder_bro",
+		max_amount = 1,
+		icon = "deus_icon_boulder_bro",
+		display_name = "display_name_boulder_bro",
+		buff_template = {
+			buffs = {
+				{
+					buff_to_add = "boulder_bro_buff",
+					name = "boulder_bro",
+					apply_buff_func = "boulder_bro_add_buff"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.boulder_bro_cooldown_buff.duration
+			}
+		}
+	},
+	static_blade = {
+		rectangular_icon = true,
+		advanced_description = "description_static_blade",
+		max_amount = 1,
+		icon = "deus_icon_static_blade",
+		display_name = "display_name_static_blade",
+		buff_template = {
+			buffs = {
+				{
+					sound_event = "boon_static_blade",
+					name = "static_blade",
+					fx = "fx/cw_chain_lightning",
+					damage_profile_name = "static_blade",
+					event = "on_timed_block",
+					buff_func = "static_blade_on_timed_block",
+					explosion_template = "static_blade",
+					damage_source = "buff",
+					cooldown_buff = "static_blade_cooldown_buff"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.static_blade_cooldown_buff.duration
+			}
+		}
+	},
+	resolve = {
+		rectangular_icon = true,
+		advanced_description = "description_resolve",
+		max_amount = 1,
+		icon = "deus_icon_resolve",
+		display_name = "display_name_resolve",
+		buff_template = {
+			buffs = {
+				{
+					full_heal_buff = "resolve_buff",
+					name = "resolve",
+					buff_func = "resolve_on_revived",
+					event = "on_revived",
+					update_func = "resolve_update",
+					cooldown_buff = "resolve_cooldown_buff"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.resolve.cooldown
+			}
+		}
+	},
+	indomitable = {
+		rectangular_icon = true,
+		advanced_description = "description_indomitable",
+		max_amount = 1,
+		icon = "deus_icon_indomitable",
+		display_name = "display_name_indomitable",
+		buff_template = {
+			buffs = {
+				{
+					name = "indomitable",
+					perk = buff_perks.infinite_wounds
+				}
+			}
+		},
+		description_values = {}
+	},
+	health_orbs = {
+		rectangular_icon = true,
+		advanced_description = "description_health_orbs",
+		max_amount = 1,
+		icon = "deus_icon_health_orbs",
+		display_name = "display_name_health_orbs",
+		buff_template = {
+			buffs = {
+				{
+					name = "health_orbs",
+					buff_func = "on_damage_taken_health_orbs",
+					event = "on_damage_taken",
+					health_per_orb = MorrisBuffTweakData.health_orbs.health_per_orb,
+					orb_settings = {
+						orb_name = "health_orb"
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.health_orbs.health_per_orb
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.health_orbs.orb_health
+			}
+		}
+	},
+	static_charge = {
+		rectangular_icon = true,
+		advanced_description = "description_static_charge",
+		max_amount = 1,
+		icon = "deus_icon_static_charge",
+		display_name = "display_name_static_charge",
+		buff_template = {
+			buffs = {
+				{
+					name = "static_charge",
+					buff_func = "on_kill_static_charge",
+					event = "on_kill",
+					kills_per_orb = MorrisBuffTweakData.static_charge.kills_per_orb,
+					orb_settings = {
+						orb_name = "static_charge"
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.static_charge.kills_per_orb
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.static_charge.orb_duration
+			}
+		}
+	},
+	sharing_is_caring = {
+		rectangular_icon = true,
+		advanced_description = "description_sharing_is_caring",
+		max_amount = 1,
+		icon = "deus_icon_sharing_is_caring",
+		display_name = "display_name_sharing_is_caring",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_potion_consumed",
+					name = "sharing_is_caring",
+					buff_func = "on_potion_consumed_sharing_is_caring"
+				}
+			}
+		},
+		description_values = {}
+	},
+	protection_orbs = {
+		rectangular_icon = true,
+		advanced_description = "description_protection_orbs",
+		max_amount = 1,
+		icon = "deus_icon_protection",
+		display_name = "display_name_protection_orbs",
+		buff_template = {
+			buffs = {
+				{
+					event = "on_timed_block",
+					name = "protection_orbs",
+					buff_func = "on_timed_block_protection_orbs",
+					cooldown = MorrisBuffTweakData.protection_orbs.trigger_cooldown,
+					orb_settings = {
+						orb_name = "protection_orb"
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = -MorrisBuffTweakData.protection_orb.multiplier
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.protection_orb.duration
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.protection_orbs.trigger_cooldown
+			}
+		}
+	},
+	focused_accuracy = {
+		rectangular_icon = true,
+		advanced_description = "description_focused_accuracy",
+		max_amount = 1,
+		icon = "deus_icon_focussed_accuracy",
+		display_name = "display_name_focused_accuracy",
+		buff_template = {
+			buffs = {
+				{
+					name = "focused_accuracy",
+					buff_func = "focused_accuracy_on_hit",
+					event = "on_hit",
+					cooldown_buff = "focused_accuracy_cooldown",
+					orb_settings = {
+						orb_name = "ability_cooldown_reduction_orb"
+					}
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.focused_accuracy.cooldown_duration
+			},
+			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.ability_cooldown_reduction_orb.duration
+			}
+		}
+	},
+	boon_deus_coins_greed = {
+		advanced_description = "description_properties_deus_coins_greed",
+		display_name = "properties_deus_coins_greed",
+		max_amount = 1,
+		icon = "bardin_ironbreaker_gromril_armour",
+		plain_display_name = "properties_deus_coins_greed",
+		buff_template = {
+			buffs = {
+				{
+					stat_buff = "deus_coins_greed"
+				}
+			}
+		},
+		description_values = {
+			{
+				value_type = "percent",
+				value = MorrisBuffTweakData.boon_deus_coins_greed.multiplier
+			}
+		}
 	}
 }
 DeusPowerUpIncompatibilityPairs = DeusPowerUpIncompatibilityPairs or {
@@ -2831,6 +3437,10 @@ DeusPowerUpIncompatibilityPairs = DeusPowerUpIncompatibilityPairs or {
 		{
 			"talent_4_2",
 			"talent_4_3"
+		},
+		{
+			"talent_2_3",
+			"lucky"
 		}
 	},
 	es_questingknight = {
@@ -2857,43 +3467,32 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 		talent_3_2 = true
 	},
 	wh_priest = {
-		deus_ammo_pickup_heal = true,
 		talent_3_1 = true,
-		deus_extra_shot = true,
-		deus_ammo_pickup_give_allies_ammo = true,
-		deus_ranged_crit_explosion = true,
-		deus_ammo_pickup_reload_speed = true,
-		talent_3_2 = true,
-		deus_larger_clip = true,
-		deus_ammo_pickup_range_pen = true,
-		deus_consumable_extra_shot = true,
+		deus_ammo_pickup_heal = true,
 		deus_large_ammo_pickup_infinite_ammo = true,
+		deus_ammo_pickup_give_allies_ammo = true,
 		talent_3_3 = true,
-		deus_timed_block_free_shot = true
+		deus_timed_block_free_shot = true,
+		talent_3_2 = true,
+		deus_larger_clip = true
 	},
 	bw_scholar = {
-		deus_ammo_pickup_range_pen = true,
 		talent_3_1 = true,
-		deus_ammo_pickup_heal = true,
 		talent_3_3 = true,
-		deus_ammo_pickup_reload_speed = true,
-		talent_3_2 = true
+		talent_3_2 = true,
+		deus_ammo_pickup_heal = true
 	},
 	bw_adept = {
-		deus_ammo_pickup_range_pen = true,
 		talent_3_1 = true,
-		deus_ammo_pickup_heal = true,
 		talent_3_3 = true,
-		deus_ammo_pickup_reload_speed = true,
-		talent_3_2 = true
+		talent_3_2 = true,
+		deus_ammo_pickup_heal = true
 	},
 	bw_unchained = {
-		deus_ammo_pickup_range_pen = true,
 		talent_3_1 = true,
-		deus_ammo_pickup_heal = true,
 		talent_3_3 = true,
-		deus_ammo_pickup_reload_speed = true,
-		talent_3_2 = true
+		talent_3_2 = true,
+		deus_ammo_pickup_heal = true
 	},
 	dr_ironbreaker = {
 		talent_3_1 = true,
@@ -2902,17 +3501,12 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 	},
 	dr_slayer = {
 		deus_ammo_pickup_heal = true,
-		deus_ammo_pickup_range_pen = true,
-		deus_extra_shot = true,
+		talent_3_1 = true,
+		deus_ammo_pickup_give_allies_ammo = true,
 		heal_on_dot_damage_dealt = true,
-		deus_ranged_crit_explosion = true,
-		deus_ammo_pickup_reload_speed = true,
 		talent_3_2 = true,
 		deus_larger_clip = true,
-		talent_3_1 = true,
-		deus_consumable_extra_shot = true,
 		deus_large_ammo_pickup_infinite_ammo = true,
-		deus_ammo_pickup_give_allies_ammo = true,
 		talent_3_3 = true,
 		deus_timed_block_free_shot = true
 	},
@@ -2969,21 +3563,16 @@ DeusPowerUpExclusionList = DeusPowerUpExclusionList or {
 	},
 	es_questingknight = {
 		deus_ammo_pickup_heal = true,
-		deus_ammo_pickup_reload_speed = true,
-		talent_4_2 = true,
+		talent_3_1 = true,
+		deus_ammo_pickup_give_allies_ammo = true,
 		heal_on_dot_damage_dealt = true,
-		deus_ammo_pickup_range_pen = true,
+		deus_large_ammo_pickup_infinite_ammo = true,
 		talent_3_2 = true,
 		deus_larger_clip = true,
-		talent_3_1 = true,
+		talent_4_2 = true,
 		talent_4_1 = true,
-		deus_timed_block_free_shot = true,
-		deus_ammo_pickup_give_allies_ammo = true,
-		deus_ranged_crit_explosion = true,
-		deus_extra_shot = true,
-		deus_large_ammo_pickup_infinite_ammo = true,
-		deus_consumable_extra_shot = true,
 		talent_3_3 = true,
+		deus_timed_block_free_shot = true,
 		talent_4_3 = true
 	}
 }
@@ -3282,23 +3871,7 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 			}
 		},
 		{
-			"deus_ammo_pickup_range_pen",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
 			"deus_ammo_pickup_heal",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
-			"deus_ammo_pickup_reload_speed",
 			{
 				DeusPowerUpAvailabilityTypes.cursed_chest,
 				DeusPowerUpAvailabilityTypes.weapon_chest,
@@ -3366,6 +3939,148 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 				DeusPowerUpAvailabilityTypes.cursed_chest,
 				DeusPowerUpAvailabilityTypes.weapon_chest,
 				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"money_magnet",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"speed_over_stamina",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"missing_health_power_up",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"cluster_barrel",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"wolfpack",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"comradery",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"staggering_force",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"tenacious",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"lucky",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"hidden_escape",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"pent_up_anger",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"surprise_strike",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"resolve",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"health_orbs",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"sharing_is_caring",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"protection_orbs",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"focused_accuracy",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"boon_deus_coins_greed",
+			{
+				DeusPowerUpAvailabilityTypes.terror_event
 			}
 		}
 	},
@@ -3451,14 +4166,6 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 			}
 		},
 		{
-			"deus_consumable_extra_shot",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
 			"deus_max_health",
 			{
 				DeusPowerUpAvailabilityTypes.cursed_chest,
@@ -3476,14 +4183,6 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 		},
 		{
 			"deus_powerup_attack_speed",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
-			"deus_big_swing_stagger",
 			{
 				DeusPowerUpAvailabilityTypes.cursed_chest,
 				DeusPowerUpAvailabilityTypes.weapon_chest,
@@ -3608,6 +4307,89 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 				DeusPowerUpAvailabilityTypes.weapon_chest,
 				DeusPowerUpAvailabilityTypes.shrine
 			}
+		},
+		{
+			"deus_power_up_quest_granted_test_01",
+			{}
+		},
+		{
+			"boulder_bro",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"static_charge",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"pyrrhic_strength",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"invigorating_strike",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"pyrotechnical_echo",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"blazing_revenge",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"detect_weakness",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"skill_by_block",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"melee_wave",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"static_blade",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
 		}
 	},
 	unique = {
@@ -3636,31 +4418,7 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 			}
 		},
 		{
-			"deus_crit_chain_lightning",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
-			"deus_ranged_crit_explosion",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
 			"drop_item_on_ability_use",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
-			"deus_collateral_damage_on_melee_killing_blow",
 			{
 				DeusPowerUpAvailabilityTypes.cursed_chest,
 				DeusPowerUpAvailabilityTypes.weapon_chest,
@@ -3676,23 +4434,7 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 			}
 		},
 		{
-			"always_blocking",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
 			"deus_knockdown_damage_immunity_aura",
-			{
-				DeusPowerUpAvailabilityTypes.cursed_chest,
-				DeusPowerUpAvailabilityTypes.weapon_chest,
-				DeusPowerUpAvailabilityTypes.shrine
-			}
-		},
-		{
-			"deus_extra_shot",
 			{
 				DeusPowerUpAvailabilityTypes.cursed_chest,
 				DeusPowerUpAvailabilityTypes.weapon_chest,
@@ -3733,6 +4475,38 @@ DeusPowerUpRarityPool = DeusPowerUpRarityPool or {
 		},
 		{
 			"deus_push_increased_cleave",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"indomitable",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"bad_breath",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"curative_empowerment",
+			{
+				DeusPowerUpAvailabilityTypes.cursed_chest,
+				DeusPowerUpAvailabilityTypes.weapon_chest,
+				DeusPowerUpAvailabilityTypes.shrine
+			}
+		},
+		{
+			"thorn_skin",
 			{
 				DeusPowerUpAvailabilityTypes.cursed_chest,
 				DeusPowerUpAvailabilityTypes.weapon_chest,

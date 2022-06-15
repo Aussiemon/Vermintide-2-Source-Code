@@ -5,9 +5,9 @@ local MEDIUM_FONT_SIZE = 22
 local FONT_SIZE = 26
 local FONT = "arial"
 local FONT_MTRL = "materials/fonts/" .. FONT
-local TINY_FONT_SIZE = 16
 local TINY_FONT = "arial"
 local TINY_FONT_MTRL = "materials/fonts/" .. TINY_FONT
+local TINY_FONT_SIZE = 12
 local LAYER = 100
 local RES_X, RES_Y = Application.resolution()
 local NODE_HEIGHT = 0.04
@@ -246,12 +246,21 @@ local function present_perception(gui, x, y, blackboard)
 		local ai_system = Managers.state.entity:system("ai_system")
 		local col1 = Color(200, 200, 200)
 		local colh = Color(240, 240, 140)
+		local colr = Color(100, 190, 190)
 		local extension = ai_system.ai_units_perception[blackboard.unit]
 
 		if extension then
+			local target_unit_text = ""
+			local target_unit = blackboard.target_unit
+
+			if target_unit and BLACKBOARDS[target_unit] then
+				target_unit_text = BLACKBOARDS[target_unit].breed.name .. "  (" .. ((AiUtils.unit_alive(target_unit) and "alive") or "dead") .. ")"
+			end
+
 			y2 = y2 + 10
 
 			ScriptGUI.ictext(gui, RES_X, RES_Y, "normal:", FONT_MTRL, SMALL_FONT_SIZE, FONT, x1, y2, 400, colh)
+			ScriptGUI.ictext(gui, RES_X, RES_Y, target_unit_text, FONT_MTRL, TINY_FONT_SIZE, FONT, x1 + 70, y2, 400, colr)
 
 			y2 = y2 + 17
 			local p = "p: " .. extension._perception_func_name

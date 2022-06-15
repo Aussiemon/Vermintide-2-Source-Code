@@ -7,6 +7,7 @@ LocomotionTemplates.AILocomotionExtensionC = {
 
 		if units_to_kill then
 			local ScriptUnit_extension = ScriptUnit.extension
+			local ScriptUnit_has_extension = ScriptUnit.has_extension
 			local conflict_director = Managers.state.conflict
 			local statistics_db = Managers.player:statistics_db()
 			local network_manager = Managers.state.network
@@ -33,6 +34,11 @@ LocomotionTemplates.AILocomotionExtensionC = {
 				local blackboard = ai_extension._blackboard
 				killing_blow[DamageDataIndex.ATTACKER] = unit
 				killing_blow[DamageDataIndex.POSITION] = Unit.world_position(unit, 0)
+				local buff_extenstion = ScriptUnit_has_extension(unit, "buff_system")
+
+				if buff_extenstion then
+					buff_extenstion:trigger_procs("on_death", unit)
+				end
 
 				StatisticsUtil.register_kill(unit, killing_blow, statistics_db, true)
 

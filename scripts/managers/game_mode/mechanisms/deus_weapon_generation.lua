@@ -160,7 +160,7 @@ local function get_possible_trait_combinations(item_key, rarity)
 
 	local deus_item_data = DeusWeapons[item_key]
 	local combinations = nil
-	combinations = WeaponTraits.combinations[deus_item_data.trait_table_name]
+	combinations = deus_item_data.baked_trait_combinations
 
 	return combinations
 end

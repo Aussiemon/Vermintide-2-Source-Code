@@ -364,10 +364,13 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 			local unit_pos = POSITION_LOOKUP[unit]
 			local direction = POSITION_LOOKUP[target_unit] - unit_pos
 			local raycast_pos = unit_pos + Vector3(0, 0, 1)
-			local result, hit_pos, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, blackboard.target_dist, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
 
-			if not result then
-				AiUtils.alert_nearby_friends_of_enemy(unit, blackboard.group_blackboard.broadphase, target_unit, breed.friends_alert_range or DEFAULT_FRIENDS_ALERT_RANGE)
+			if Vector3.length_squared(direction) > 0 then
+				local result, hit_pos, hit_distance, normal = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, blackboard.target_dist, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
+
+				if not result then
+					AiUtils.alert_nearby_friends_of_enemy(unit, blackboard.group_blackboard.broadphase, target_unit, breed.friends_alert_range or DEFAULT_FRIENDS_ALERT_RANGE)
+				end
 			end
 		end
 	end
@@ -378,7 +381,7 @@ BTClanRatFollowAction._calculate_run_speed = function (self, unit, target_unit, 
 	local destination_distance = blackboard.destination_dist
 	local chase_factor = 0
 
-	if target_locomotion and CHASE_MIN_REQUIRED_MOVEMENT_DISTANCE < destination_distance and target_distance < CHASE_MAX_TARGET_DISTANCE then
+	if target_locomotion and target_locomotion.average_velocity and CHASE_MIN_REQUIRED_MOVEMENT_DISTANCE < destination_distance and target_distance < CHASE_MAX_TARGET_DISTANCE then
 		local current_position = POSITION_LOOKUP[unit]
 		local navigation_extension = blackboard.navigation_extension
 		local destination = navigation_extension:destination()

@@ -229,6 +229,7 @@ holy_hand_grenade.actions.action_one.throw = {
 	timed_data = {
 		activate_life_time_on_impact = true,
 		life_time = 5,
+		grenade = true,
 		aoe = ExplosionTemplates.holy_hand_grenade
 	},
 	angular_velocity = {

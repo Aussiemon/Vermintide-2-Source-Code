@@ -266,7 +266,6 @@ settings.mechanism_settings = {
 		display_name = "area_selection_morris_name",
 		start_game_play_sound_event = "hud_morris_start_menu_play",
 		server_port = 27017,
-		use_alt_horde_spawning = true,
 		default_inventory = true,
 		start_game_open_sound_event = "hud_morris_start_menu_open",
 		vote_switch_mechanism_text = "vote_switch_mechanism_morris_description",
@@ -278,6 +277,7 @@ settings.mechanism_settings = {
 		party_lobby_max_members = 4,
 		steam_port = 8766,
 		server_universe = "deus",
+		use_alt_horde_spawning = true,
 		vote_switch_mechanism_background = "vote_switch_mechanism_morris_background",
 		check_matchmaking_hero_availability = true,
 		max_members = 4,
@@ -308,7 +308,8 @@ settings.mechanism_settings = {
 			is_allowed = function ()
 				return Managers.mechanism:get_state() ~= "inn_deus"
 			end
-		}
+		},
+		gamemode_lookup = {}
 	}
 }
 settings.game_mode_files = {
@@ -351,7 +352,10 @@ settings.husk_lookup = {
 	"units/weapons/player/wpn_emp_holy_hand_grenade_01_t1/wpn_emp_holy_hand_grenade_01_t1_3p",
 	"units/props/egg_of_tzeentch",
 	"units/decals/deus_decal_aoe_bluefire_02",
-	"units/props/deus_pinata/deus_pinata_01"
+	"units/props/deus_pinata/deus_pinata_01",
+	"units/weapons/player/pup_explosive_barrel/pup_tiny_explosive_barrel_01",
+	"units/props/level_hero_assets/deus_portal_02",
+	"units/decals/deus_decal_aoe_cursedchest_01"
 }
 settings.hit_effects = {
 	"scripts/settings/hit_effects/hit_effects_chaos_greed_pinata"

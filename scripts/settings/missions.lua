@@ -104,11 +104,6 @@ Missions = {
 		mission_template_name = "collect",
 		collect_amount = 8
 	},
-	wizard_defend_wards = {
-		text = "mission_objective_wizard_defend_wards",
-		defend_amount = 4,
-		mission_template_name = "defend"
-	},
 	mission_objective_city_walls_destroy_chains = {
 		text = "mission_objective_city_walls_destroy_chains",
 		mission_template_name = "collect",
@@ -448,30 +443,6 @@ Missions.end_boss_stop_seer = {
 Missions.end_boss_escape = {
 	mission_template_name = "goal",
 	text = "mission_goal_end_boss_escape"
-}
-Missions.wizard_search_apothecary = {
-	mission_template_name = "goal",
-	text = "mission_goal_wizard_search_apothecary"
-}
-Missions.wizard_find_wizard = {
-	mission_template_name = "goal",
-	text = "mission_goal_wizard_find_wizard"
-}
-Missions.wizard_find_wizard_2 = {
-	mission_template_name = "goal",
-	text = "mission_goal_wizard_find_wizard"
-}
-Missions.wizard_establish_illusion = {
-	mission_template_name = "simple",
-	text = "mission_goal_wizard_establish_illusion"
-}
-Missions.wizard_escape = {
-	mission_template_name = "goal",
-	text = "mission_goal_wizard_escape"
-}
-Missions.wizard_open_door = {
-	mission_template_name = "goal",
-	text = "mission_objective_wizard_open_door"
 }
 Missions.survival_wave = {
 	text = "dlc1_2_survival_mission_waves_completed",

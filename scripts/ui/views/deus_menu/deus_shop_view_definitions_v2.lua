@@ -897,7 +897,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 		},
 		size = {
 			size[1] - 160,
-			100
+			90
 		}
 	}
 	local sub_text_disabled = table.clone(sub_text)

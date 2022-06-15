@@ -82,28 +82,10 @@ local BUFF_SIZE = {
 	66
 }
 local BUFF_SPACING = 8
-local buff_widget_definition_template = {
+local buff_widget_definition = {
 	scenegraph_id = "buff_pivot",
 	element = {
 		passes = {
-			{
-				style_id = "texture_icon",
-				texture_id = "texture_icon",
-				pass_type = "texture",
-				retained_mode = RETAINED_MODE_ENABLED,
-				content_check_function = function (content)
-					return content.is_cooldown
-				end,
-				content_change_function = function (content, style, _, dt)
-					if content.set_unsaturated then
-						if content.is_cooldown then
-							style.saturated = true
-						end
-					else
-						style.saturated = false
-					end
-				end
-			},
 			{
 				pass_type = "texture",
 				style_id = "texture_icon_bg",
@@ -111,19 +93,21 @@ local buff_widget_definition_template = {
 				retained_mode = RETAINED_MODE_ENABLED
 			},
 			{
+				pass_type = "texture",
+				style_id = "texture_icon",
+				texture_id = "texture_icon",
+				retained_mode = RETAINED_MODE_ENABLED,
+				content_check_function = function (content)
+					return content.is_cooldown
+				end
+			},
+			{
 				style_id = "icon_mask",
 				texture_id = "icon_mask",
 				pass_type = "texture",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_change_function = function (content, style, _, dt)
-					if content.set_unsaturated then
-						if content.is_cooldown then
-							local progress_amount = 255 * (1 - content.progress)
-							style.color[1] = progress_amount
-						end
-					elseif content.is_cooldown then
-						style.color[1] = 0
-					end
+					style.color[1] = 255 * (1 - content.progress)
 				end
 			},
 			{
@@ -138,9 +122,7 @@ local buff_widget_definition_template = {
 				text_id = "stack_count",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
-					local stack_count = content.stack_count
-
-					return stack_count and stack_count > 1
+					return content.stack_count > 1
 				end
 			},
 			{
@@ -149,9 +131,7 @@ local buff_widget_definition_template = {
 				text_id = "stack_count",
 				retained_mode = RETAINED_MODE_ENABLED,
 				content_check_function = function (content)
-					local stack_count = content.stack_count
-
-					return stack_count and stack_count > 1
+					return content.stack_count > 1
 				end
 			},
 			{
@@ -163,14 +143,7 @@ local buff_widget_definition_template = {
 					return content.is_cooldown
 				end,
 				content_change_function = function (content, style, _, dt)
-					if content.set_unsaturated then
-						if content.is_cooldown then
-							local progress_amount = 255 * (1 - content.progress)
-							style.color[1] = progress_amount
-						end
-					elseif content.is_cooldown then
-						style.color[1] = 0
-					end
+					style.color[1] = 255 * (1 - content.progress)
 				end
 			},
 			{
@@ -178,17 +151,11 @@ local buff_widget_definition_template = {
 				texture_id = "texture_duration",
 				pass_type = "gradient_mask_texture",
 				retained_mode = RETAINED_MODE_ENABLED,
+				content_check_function = function (content)
+					return not content.is_cooldown
+				end,
 				content_change_function = function (content, style, _, dt)
-					if content.set_unsaturated then
-						if content.is_cooldown then
-							style.color[1] = 0
-						else
-							local progress_amount = 255 * (1 - content.progress)
-							style.color[1] = progress_amount
-						end
-					elseif not content.is_cooldown then
-						style.color[1] = 255
-					end
+					style.color[1] = 255 * (1 - content.progress)
 				end
 			}
 		}
@@ -199,7 +166,6 @@ local buff_widget_definition_template = {
 		texture_cooldown = "buff_cooldown_gradient",
 		progress = 0,
 		texture_frame = "buff_frame",
-		is_expired = false,
 		stack_count = 1,
 		texture_icon = "teammate_consumable_icon_medpack",
 		last_stack_count = 1,
@@ -358,11 +324,6 @@ local buff_widget_definition_template = {
 local MAX_BUFF_ROWS = 3
 local MAX_BUFF_COLUMNS = 5
 local MAX_NUMBER_OF_BUFFS = MAX_BUFF_ROWS * MAX_BUFF_COLUMNS
-local buff_widget_definitions = {}
-
-for i = 1, MAX_NUMBER_OF_BUFFS, 1 do
-	buff_widget_definitions[i] = buff_widget_definition_template
-end
 
 return {
 	BUFF_SIZE = BUFF_SIZE,
@@ -371,5 +332,5 @@ return {
 	MAX_BUFF_ROWS = MAX_BUFF_ROWS,
 	MAX_BUFF_COLUMNS = MAX_BUFF_COLUMNS,
 	scenegraph_definition = scenegraph_definition,
-	buff_widget_definitions = buff_widget_definitions
+	buff_widget_definition = buff_widget_definition
 }

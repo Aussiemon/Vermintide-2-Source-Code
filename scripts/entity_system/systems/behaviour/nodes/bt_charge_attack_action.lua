@@ -919,8 +919,8 @@ BTChargeAttackAction._run_lunge = function (self, unit, blackboard, t, dt)
 		self:_check_unit_and_wall_collision(unit, blackboard, dt, false)
 
 		if not blackboard.triggered_dodge_sound then
-			local target_status_ext = ScriptUnit.extension(blackboard.attacking_target, "status_system")
-			local target_dodged = target_status_ext:get_is_dodging()
+			local target_status_ext = ScriptUnit.has_extension(blackboard.attacking_target, "status_system")
+			local target_dodged = target_status_ext and target_status_ext:get_is_dodging()
 
 			if target_dodged then
 				local push_sound_event = action.dodge_past_sound_event or "Play_generic_pushed_impact_small"
@@ -1081,9 +1081,12 @@ BTChargeAttackAction.anim_cb_charge_start_finished = function (self, unit, black
 
 		if charge_notification_sound_event and Unit.alive(blackboard.attacking_target) then
 			local player = Managers.player:unit_owner(blackboard.attacking_target)
-			local peer_id = player:network_id()
 
-			Managers.state.network.network_transmit:send_rpc("rpc_server_audio_event", peer_id, NetworkLookup.sound_events[charge_notification_sound_event])
+			if player then
+				local peer_id = player:network_id()
+
+				Managers.state.network.network_transmit:send_rpc("rpc_server_audio_event", peer_id, NetworkLookup.sound_events[charge_notification_sound_event])
+			end
 		end
 	end
 end

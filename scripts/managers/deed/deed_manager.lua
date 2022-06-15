@@ -137,25 +137,28 @@ end
 
 DeedManager.delete_marked_deeds = function (self, deed_list)
 	local item_interface = Managers.backend:get_interface("items")
-	local deed_removal_id = item_interface:delete_marked_deeds(deed_list)
-	self._deed_removal_id = deed_removal_id
 
-	return deed_removal_id
+	item_interface:delete_marked_deeds(deed_list)
+
+	local is_deleting_deeds = item_interface:is_deleting_deeds()
+	self._is_deleting_deeds = is_deleting_deeds
+
+	return is_deleting_deeds
 end
 
 DeedManager.is_deleting_deeds = function (self)
-	return (self._deed_removal_id and true) or false
+	return (self._is_deleting_deeds and true) or false
 end
 
 DeedManager._update_deed_deletion = function (self)
-	local deed_removal_id = self._deed_removal_id
+	local is_deleting_deeds = self._is_deleting_deeds
 
-	if deed_removal_id then
+	if is_deleting_deeds then
 		local item_interface = Managers.backend:get_interface("items")
-		local removal_completed = item_interface:has_deleted_deeds(deed_removal_id)
+		local deletion_completed = item_interface:is_deleting_deeds()
 
-		if removal_completed then
-			self._deed_removal_id = nil
+		if not deletion_completed then
+			self._is_deleting_deeds = nil
 		end
 	end
 end

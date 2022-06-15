@@ -1535,6 +1535,12 @@ Features that make player mechanics nicer to work with.
 		category = "AI"
 	},
 	{
+		description = "Players deal no direct damage to enemies.",
+		is_boolean = true,
+		setting_name = "players_deal_no_damage",
+		category = "AI"
+	},
+	{
 		description = "Enables horde logging in console",
 		is_boolean = true,
 		setting_name = "ai_horde_logging",
@@ -7112,9 +7118,15 @@ Features that make player mechanics nicer to work with.
 		end
 	},
 	{
-		description = "Will display all active buffs on the player (max 30 at once)",
+		description = "Shows test buffs in the buff tray for debugging.",
 		is_boolean = true,
-		setting_name = "debug_player_buffs",
+		setting_name = "debug_buff_ui",
+		category = "HUD"
+	},
+	{
+		description = "Show more things in the player list UI right-hand panel for debugging.",
+		is_boolean = true,
+		setting_name = "debug_player_list_ui",
 		category = "HUD"
 	},
 	{
@@ -8385,6 +8397,36 @@ Features that make player mechanics nicer to work with.
 		category = "Deus"
 	},
 	{
+		description = "Force only the new boons to be in the pool",
+		is_boolean = true,
+		setting_name = "belakor_force_new_boons",
+		category = "Deus"
+	},
+	{
+		description = "Force a specific map layout on the belakor journey for the vertical slice build",
+		is_boolean = true,
+		setting_name = "belakor_force_vertical_slice_seed",
+		category = "Deus"
+	},
+	{
+		description = "Forces all levels to be cursed by belakor where applicable",
+		is_boolean = true,
+		setting_name = "belakor_force_curses_on_map",
+		category = "Deus"
+	},
+	{
+		description = "Hides the belakor journey from the UI",
+		is_boolean = true,
+		setting_name = "belakor_hide_journey",
+		category = "Deus"
+	},
+	{
+		description = "While playing a belakor level, all possible positions for a Locus will be occupied by one",
+		is_boolean = true,
+		setting_name = "belakor_force_locus_on_all_positions",
+		category = "Deus"
+	},
+	{
 		description = "Primes your user setting to trigger the new UI popup",
 		category = "New UI Popup",
 		setting_name = "Activate New Popup UI Prompt",
@@ -8831,7 +8873,7 @@ if IS_CONSOLE then
 					elseif selected_value == "Unspawn All Breed" then
 						conflict_director:destroy_all_units()
 					elseif selected_value == "Unspawn Nearby Breed" then
-						conflict_director:destroy_close_units(nil, 144)
+						conflict_director:destroy_close_units(nil, nil, 144)
 					elseif selected_value == "Unspawn Specials" then
 						conflict_director:destroy_specials()
 					end

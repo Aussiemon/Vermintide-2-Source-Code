@@ -13,12 +13,6 @@ ActionTemplates.action_career_wh_priest = {
 				return false
 			end
 
-			local inventory_extension = ScriptUnit.extension(action_user, "inventory_system")
-
-			if not inventory_extension:can_wield() then
-				return false
-			end
-
 			local career_extension = ScriptUnit.extension(action_user, "career_system")
 			local activated_ability_data = career_extension:get_activated_ability_data()
 

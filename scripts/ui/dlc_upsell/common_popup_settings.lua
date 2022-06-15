@@ -111,5 +111,33 @@ CommonPopupSettings.bless = {
 		}
 	}
 }
+CommonPopupSettings.belakor = {
+	popup_type = "reminder",
+	button_text = "menu_accept",
+	body_text = "belakor_upsell_popup",
+	class_name = "UnlockReminderPopup",
+	background_texture = "upsell_image_keyart",
+	definitions = local_require("scripts/ui/dlc_upsell/alterantive_reminder_popup_definitions"),
+	top_detail_texture = {
+		texture = "upsell_image_logo",
+		size = {
+			431,
+			247
+		},
+		offset = {
+			-190.5,
+			-123.5
+		}
+	},
+	input_desc = {
+		actions = {
+			{
+				input_action = "confirm",
+				priority = 1,
+				description_text = "menu_accept"
+			}
+		}
+	}
+}
 
 return

@@ -1,6 +1,7 @@
 AudioSystem = class(AudioSystem, ExtensionSystemBase)
 local RPCS = {
 	"rpc_play_2d_audio_event",
+	"rpc_play_2d_audio_unit_event_for_peer",
 	"rpc_server_audio_event",
 	"rpc_server_audio_event_at_pos",
 	"rpc_server_audio_position_event",
@@ -87,6 +88,17 @@ AudioSystem.play_2d_audio_event = function (self, event)
 	else
 		self.network_transmit:send_rpc_server("rpc_play_2d_audio_event", sound_event_id)
 	end
+end
+
+AudioSystem.play_2d_audio_unit_event_for_peer = function (self, event, peer_id)
+	if not event then
+		return
+	end
+
+	local network_manager = Managers.state.network
+	local sound_event_id = NetworkLookup.sound_events[event]
+
+	network_manager.network_transmit:send_rpc("rpc_play_2d_audio_unit_event_for_peer", peer_id, sound_event_id)
 end
 
 AudioSystem.play_audio_unit_event = function (self, event, unit, object)
@@ -223,6 +235,13 @@ AudioSystem.rpc_play_2d_audio_event = function (self, channel_id, event_id)
 		self.network_transmit:send_rpc_clients_except("rpc_play_2d_audio_event", peer_id, event_id)
 	end
 
+	local event = NetworkLookup.sound_events[event_id]
+	local wwise_world = Managers.world:wwise_world(self.world)
+
+	WwiseWorld.trigger_event(wwise_world, event)
+end
+
+AudioSystem.rpc_play_2d_audio_unit_event_for_peer = function (self, channel_id, event_id)
 	local event = NetworkLookup.sound_events[event_id]
 	local wwise_world = Managers.world:wwise_world(self.world)
 

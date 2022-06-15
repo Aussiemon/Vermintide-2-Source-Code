@@ -118,7 +118,7 @@ StateDedicatedServerInit.update = function (self, dt, t)
 		end
 	end
 
-	Managers.backend:update(dt)
+	Managers.backend:update(dt, t)
 
 	return nil
 end

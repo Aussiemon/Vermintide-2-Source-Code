@@ -30,6 +30,24 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	self.ramping_interval = 1
 	self.consecutive_hits = 0
 	self.power_level = power_level
+	self.do_zoom = new_action.do_zoom
+	self.damage_interval = new_action.damage_interval
+	self.charge_damage_profiles = new_action.charge_damage_profiles
+	self.damage_profile = new_action.damage_profile
+	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 0
+	self.power_level = power_level + power_level * self.charge_level
+	self.damage_interval = self.damage_interval - self.damage_interval / 2 * self.charge_level
+
+	if self.charge_damage_profiles then
+		for i = 1, #self.charge_damage_profiles, 1 do
+			local info = self.charge_damage_profiles[i]
+
+			if info.threshold < self.charge_level then
+				self.damage_profile = info.damage_profile
+			end
+		end
+	end
+
 	self._is_critical_strike = false
 	self._num_hits = 0
 	local beam_effect = new_action.particle_effect_trail
@@ -116,14 +134,16 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 	local buff_extension = self.owner_buff_extension
 	local status_extension = self.status_extension
 
-	if not status_extension:is_zooming() then
-		status_extension:set_zooming(true)
-	end
+	if self.do_zoom then
+		if not status_extension:is_zooming() then
+			status_extension:set_zooming(true)
+		end
 
-	if buff_extension:has_buff_type("increased_zoom") and status_extension:is_zooming() and input_extension:get("action_three") then
-		status_extension:switch_variable_zoom(current_action.buffed_zoom_thresholds)
-	elseif current_action.zoom_thresholds and status_extension:is_zooming() and input_extension:get("action_three") then
-		status_extension:switch_variable_zoom(current_action.zoom_thresholds)
+		if buff_extension:has_buff_type("increased_zoom") and status_extension:is_zooming() and input_extension:get("action_three") then
+			status_extension:switch_variable_zoom(current_action.buffed_zoom_thresholds)
+		elseif current_action.zoom_thresholds and status_extension:is_zooming() and input_extension:get("action_three") then
+			status_extension:switch_variable_zoom(current_action.zoom_thresholds)
+		end
 	end
 
 	if self.state == "waiting_to_shoot" and self.time_to_shoot <= t then
@@ -206,7 +226,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						self._num_hits = 0
 					end
 
-					if self.damage_timer >= current_action.damage_interval * self.ramping_interval then
+					if self.damage_timer >= self.damage_interval * self.ramping_interval then
 						Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], 5)
 
 						self.damage_timer = 0
@@ -223,27 +243,26 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 						self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, "on_critical_shot", nil)
 
 						if health_extension then
-							local override_damage_profile = nil
+							local damage_profile = self.damage_profile
 							local power_level = self.power_level
 							power_level = power_level * self.ramping_interval
 
 							if hit_unit ~= self.current_target then
 								self.consecutive_hits = 0
 								power_level = power_level * 0.5
-								override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 							else
 								self.consecutive_hits = self.consecutive_hits + 1
+							end
 
-								if self.consecutive_hits < 3 then
-									override_damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
-								end
+							if not self.charge_damage_profiles then
+								damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 							end
 
 							first_person_extension:play_hud_sound_event("staff_beam_hit_enemy", nil, false)
 
 							local check_buffs = self._num_hits > 1
 
-							DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, check_buffs, nil, nil, self._is_critical_strike, power_level, override_damage_profile)
+							DamageUtils.process_projectile_hit(world, self.item_name, owner_unit, is_server, result, current_action, direction, check_buffs, nil, nil, self._is_critical_strike, power_level, damage_profile)
 
 							self._num_hits = self._num_hits + 1
 
@@ -273,7 +292,8 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 
 		if self.beam_effect_id then
 			local weapon_unit = self.weapon_unit
-			local end_of_staff_position = Unit.world_position(weapon_unit, Unit.node(weapon_unit, "fx_muzzle"))
+			local weapon_muzzle = current_action.weapon_muzzle or Unit.node(weapon_unit, "fx_muzzle")
+			local end_of_staff_position = Unit.world_position(weapon_unit, weapon_muzzle)
 			local distance = Vector3.distance(end_of_staff_position, beam_end_position)
 			local beam_direction = Vector3.normalize(end_of_staff_position - beam_end_position)
 			local rotation = Quaternion.look(beam_direction)
@@ -329,7 +349,10 @@ ActionBeam._stop_client_vfx = function (self)
 end
 
 ActionBeam.finish = function (self, reason)
-	self.status_extension:set_zooming(false)
+	if self.do_zoom then
+		self.status_extension:set_zooming(false)
+	end
+
 	self:_stop_client_vfx()
 	self:_stop_fx()
 	self:_proc_spell_used(self.owner_buff_extension)

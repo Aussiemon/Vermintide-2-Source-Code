@@ -7,6 +7,7 @@ end
 PlayerCharacterStateInteracting.on_enter = function (self, unit, input, dt, context, t, previous_state, params)
 	self.has_started_interacting = false
 	self.swap_to_3p = params.swap_to_3p
+	self.allow_rotation_update = params.allow_rotation_update
 	local locomotion_extension = self.locomotion_extension
 
 	locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -174,7 +175,10 @@ PlayerCharacterStateInteracting.update = function (self, unit, input, dt, contex
 		return
 	end
 
-	self.locomotion_extension:set_disable_rotation_update()
+	if not self.allow_rotation_update then
+		self.locomotion_extension:set_disable_rotation_update()
+	end
+
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
 end
 

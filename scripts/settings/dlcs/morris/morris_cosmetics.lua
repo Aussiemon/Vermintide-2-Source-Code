@@ -61,5 +61,8 @@ return {
 	},
 	frame_deus_portrait_chaos_gods = {
 		icon = "deus_portrait_citadel"
+	},
+	frame_deus_portrait_belakor = {
+		icon = "deus_icon_portrait_belakor"
 	}
 }

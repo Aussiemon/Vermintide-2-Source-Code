@@ -334,7 +334,6 @@ local ui_atlas_setting_tables = {
 	gui_menus_atlas = menus_atlas,
 	gui_frames_atlas = frames_atlas,
 	gui_level_images_atlas = level_images_atlas,
-	gui_level_images_atlas = level_images_atlas,
 	gui_country_flags_atlas = country_flags_atlas
 }
 local masked_materials = {

@@ -382,6 +382,8 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 		pickup_settings = level_pickup_settings.default or level_pickup_settings[1]
 	end
 
+	local ignore_sections = level_settings.ignore_sections_in_pickup_spawning
+
 	local function comparator(a, b)
 		local percentage_a = Unit.get_data(a, "percentage_through_level")
 		local percentage_b = Unit.get_data(b, "percentage_through_level")
@@ -399,14 +401,14 @@ PickupSystem.populate_pickups = function (self, checkpoint_data)
 	local primary_pickup_settings = pickup_settings.primary or pickup_settings
 	primary_pickup_settings = mutator_handler:pickup_settings_updated_settings(primary_pickup_settings)
 
-	self:_spawn_spread_pickups(primary_pickup_spawners, primary_pickup_settings, comparator, 1)
+	self:_spawn_spread_pickups(primary_pickup_spawners, primary_pickup_settings, comparator, 1, ignore_sections)
 
 	local secondary_pickup_spawners = self.secondary_pickup_spawners
 	local secondary_pickup_settings = pickup_settings.secondary
 	secondary_pickup_settings = mutator_handler:pickup_settings_updated_settings(secondary_pickup_settings)
 
 	if secondary_pickup_settings then
-		self:_spawn_spread_pickups(secondary_pickup_spawners, secondary_pickup_settings, comparator, 2)
+		self:_spawn_spread_pickups(secondary_pickup_spawners, secondary_pickup_settings, comparator, 2, ignore_sections)
 	end
 end
 
@@ -424,7 +426,7 @@ local pickups_to_spawn = {}
 local section_spawners = {}
 local used_spawners = {}
 
-PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, comparator, priority)
+PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, comparator, priority, ignore_sections)
 	table.sort(spawners, comparator)
 
 	for pickup_type, value in pairs(pickup_settings) do
@@ -473,6 +475,10 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 			section_start_point = section_start_point_offset
 		end
 
+		if ignore_sections then
+			num_sections = 1
+		end
+
 		for i = 1, num_sections, 1 do
 			table.clear(section_spawners)
 			table.clear(used_spawners)
@@ -484,7 +490,7 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 				local spawner_unit = spawners[j]
 				local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
 
-				if (section_start_point <= percentage_through_level and percentage_through_level < section_end_point) or (num_sections == i and percentage_through_level == 1) then
+				if ignore_sections or (section_start_point <= percentage_through_level and percentage_through_level < section_end_point) or (num_sections == i and percentage_through_level == 1) then
 					section_spawners[#section_spawners + 1] = spawner_unit
 				end
 			end
@@ -497,7 +503,10 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 				local pickups_in_section = math.min(1 + math.ceil(spawn_debt / remaining_sections), num_section_spawners)
 				local rnd = self:_random()
 				local bonus_spawn = remaining_sections ~= 1 and pickups_in_section == 1 and rnd < NearPickupSpawnChance[pickup_type]
-				pickups_in_section = pickups_in_section + ((bonus_spawn and 1) or 0)
+
+				if not ignore_sections or not #pickups_to_spawn then
+					pickups_in_section = pickups_in_section + ((bonus_spawn and 1) or 0)
+				end
 
 				self:_shuffle(section_spawners)
 
@@ -1147,6 +1156,12 @@ PickupSystem._spawn_pickup = function (self, pickup_settings, pickup_name, posit
 		extra_extension_init_data = self[additional_data_func](self, pickup_settings, position, rotation)
 
 		table.merge(extension_init_data, extra_extension_init_data)
+	end
+
+	local additional_data = pickup_settings.additional_data
+
+	if additional_data then
+		table.merge(extension_init_data, additional_data)
 	end
 
 	local unit_name = pickup_settings.unit_name

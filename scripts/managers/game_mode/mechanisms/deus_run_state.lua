@@ -376,6 +376,48 @@ DeusRunState.set_host_migration_count = function (self, value)
 	self._shared_state:set_server(key, value)
 end
 
+DeusRunState.get_belakor_enabled = function (self)
+	return self._belakor_enabled
+end
+
+DeusRunState.set_belakor_enabled = function (self, belakor_enabled)
+	self._belakor_enabled = belakor_enabled
+end
+
+DeusRunState.get_arena_belakor_node = function (self)
+	local key = self._shared_state:get_key("arena_belakor_node")
+	local value = self._shared_state:get_server(key)
+
+	return (value ~= "" and value) or nil
+end
+
+DeusRunState.set_arena_belakor_node = function (self, value)
+	local key = self._shared_state:get_key("arena_belakor_node")
+
+	self._shared_state:set_server(key, value)
+end
+
+DeusRunState.get_seen_arena_belakor_node = function (self, peer_id)
+	local key = self._shared_state:get_key("seen_arena_belakor_node", peer_id)
+	local value = self._shared_state:get_server(key)
+
+	return (value ~= "" and value) or nil
+end
+
+DeusRunState.set_seen_arena_belakor_node = function (self, peer_id, value)
+	local key = self._shared_state:get_key("seen_arena_belakor_node", peer_id)
+
+	self._shared_state:set_server(key, value)
+end
+
+DeusRunState.get_granted_non_party_end_of_level_power_ups = function (self, peer_id, local_player_id, profile_index, career_index)
+	return self._shared_state:get_server(self._shared_state:get_key("granted_non_party_end_of_level_power_ups", peer_id, local_player_id, profile_index, career_index))
+end
+
+DeusRunState.set_granted_non_party_end_of_level_power_ups = function (self, peer_id, local_player_id, profile_index, career_index, granted_non_party_end_of_level_power_ups_array)
+	self._shared_state:set_server(self._shared_state:get_key("granted_non_party_end_of_level_power_ups", peer_id, local_player_id, profile_index, career_index), granted_non_party_end_of_level_power_ups_array)
+end
+
 DeusRunState.get_player_profile = function (self, peer_id, local_player_id)
 	local profile_index, career_index = self._network_handler.profile_synchronizer:profile_by_peer(peer_id, local_player_id)
 

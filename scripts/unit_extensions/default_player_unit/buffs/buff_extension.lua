@@ -1,6 +1,7 @@
 require("scripts/helpers/pseudo_random_distribution")
 
 local bpc = dofile("scripts/settings/bpc")
+local buff_perk_functions = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_functions")
 script_data.buff_debug = script_data.buff_debug or Development.parameter("buff_debug")
 BuffExtension = class(BuffExtension)
 buff_extension_function_params = buff_extension_function_params or Script.new_map(15)
@@ -145,6 +146,7 @@ BuffExtension.add_buff = function (self, template_name, params)
 	local id = self.id
 	local world = self.world
 	self.id = id + 1
+	local is_server = self.is_server
 
 	if self._num_buffs == 0 then
 		Managers.state.entity:system("buff_system"):set_buff_ext_active(unit, true)
@@ -335,6 +337,15 @@ BuffExtension.add_buff = function (self, template_name, params)
 
 			if perk then
 				local perk_count = self._perks[perk] or 0
+
+				if perk_count == 0 then
+					local perk_funcs = buff_perk_functions[perk]
+
+					if perk_funcs and perk_funcs.added then
+						perk_funcs.added(self, unit, is_server)
+					end
+				end
+
 				self._perks[perk] = perk_count + 1
 			end
 
@@ -806,7 +817,17 @@ BuffExtension._remove_sub_buff = function (self, buff, index, buff_extension_fun
 	local perk = template.perk
 
 	if perk then
-		self._perks[perk] = self._perks[perk] - 1
+		local perk_count = self._perks[perk] - 1
+
+		if perk_count == 0 then
+			local perk_funcs = buff_perk_functions[perk]
+
+			if perk_funcs and perk_funcs.removed then
+				perk_funcs.removed(self, self._unit, self.is_server)
+			end
+		end
+
+		self._perks[perk] = perk_count
 	end
 
 	buffs[index] = _removed_buff
@@ -1216,7 +1237,7 @@ BuffExtension._stop_screen_effect = function (self, effect_id)
 end
 
 BuffExtension.active_buffs = function (self)
-	return self._buffs
+	return self._buffs, self._num_buffs
 end
 
 BuffExtension.initial_buff_names = function (self)

@@ -224,7 +224,9 @@ ProcEvents = {
 	"on_visible",
 	"on_invisible",
 	"on_stealth_stacks_modified",
+	"on_body_pushed",
 	"on_death",
+	"on_attack_blocked",
 	"on_damage_dealt",
 	"on_push_used",
 	"on_backstab",
@@ -2547,7 +2549,7 @@ ProcFunctions = {
 
 			if talent_extension:has_talent("kerillian_shade_activated_ability_restealth") and buff.template.restealth then
 				local t = Managers.time:time("game")
-				buff.start_time = t - 4.95
+				buff.start_time = t - buff.template.duration - 0.05
 				local first_person_extension = ScriptUnit.has_extension(player_unit, "first_person_system")
 
 				if first_person_extension then
@@ -5499,11 +5501,9 @@ BuffTemplates = {
 				apply_buff_func = "start_dot_damage",
 				update_start_delay = 1,
 				time_between_dot_damages = 1,
-				refresh_durations = true,
 				damage_type = "burninating",
 				damage_profile = "burning_dot_firegrenade",
 				update_func = "apply_dot_damage",
-				max_stacks = 1,
 				perk = buff_perks.burning
 			}
 		}

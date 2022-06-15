@@ -10,6 +10,8 @@ PlayFabRequestQueue.init = function (self)
 	self._id = 0
 	self._eac_id = 0
 	self._metadata = Managers.backend:get_metadata()
+	self._throttle_per_func = {}
+	self._max_requests = 15
 end
 
 PlayFabRequestQueue.is_pending_request = function (self)
@@ -69,7 +71,47 @@ PlayFabRequestQueue.enqueue_api_request = function (self, api_function_name, req
 	return id
 end
 
-PlayFabRequestQueue.update = function (self, dt)
+PlayFabRequestQueue._need_throttle = function (self, funcName, t)
+	if not self._throttle_per_func[funcName] then
+		local data = {
+			num_requests = 0,
+			time = t + 15
+		}
+	end
+
+	self._throttle_per_func[funcName] = data
+	local new_num_requests = data.num_requests + 1
+
+	if self._max_requests <= new_num_requests then
+		return true
+	end
+
+	data.num_requests = new_num_requests
+
+	return false
+end
+
+PlayFabRequestQueue._update_throttling = function (self, t, entry)
+	for key, data in pairs(self._throttle_per_func) do
+		if data.time <= t then
+			self._throttle_per_func[key] = nil
+		end
+	end
+
+	if entry.send_eac_challenge and self:_need_throttle("generateChallenge", t) then
+		return false
+	end
+
+	local name = (entry.request and entry.request.FunctionName) or entry.api_function_name
+
+	if self:_need_throttle(name, t) then
+		return false
+	end
+
+	return true
+end
+
+PlayFabRequestQueue.update = function (self, dt, t)
 	local active_entry = self._active_entry
 
 	if active_entry then
@@ -98,6 +140,10 @@ PlayFabRequestQueue.update = function (self, dt)
 	end
 
 	if table.is_empty(self._queue) then
+		return
+	end
+
+	if not self:_update_throttling(t, self._queue[1]) then
 		return
 	end
 

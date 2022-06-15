@@ -664,7 +664,7 @@ StateLoading.update = function (self, dt, t)
 		VisualAssertLog.update(dt)
 	end
 
-	Managers.backend:update(dt)
+	Managers.backend:update(dt, t)
 	Managers.input:update(dt)
 	level_transition_handler:update(dt)
 
@@ -1118,6 +1118,12 @@ StateLoading._destroy_lobby_client = function (self)
 	self.parent.loading_context.lobby_client = nil
 
 	Managers.account:set_current_lobby(nil)
+
+	if self._voip then
+		self._voip:destroy()
+
+		self._voip = nil
+	end
 
 	if self._level_end_view_wrappers then
 		for i, level_end_view_wrapper in ipairs(self._level_end_view_wrappers) do
@@ -2172,7 +2178,7 @@ StateLoading.waiting_for_cleanup = function (self)
 	return self._waiting_for_cleanup
 end
 
-StateLoading.setup_join_lobby = function (self, optional_wait_time)
+StateLoading.setup_join_lobby = function (self, optional_wait_time, setup_voip)
 	if IS_XB1 and (not Managers.account:all_lobbies_freed() or optional_wait_time) then
 		self._waiting_for_cleanup = true
 		self._cleanup_done_func = callback(self, "setup_join_lobby")
@@ -2207,6 +2213,14 @@ StateLoading.setup_join_lobby = function (self, optional_wait_time)
 
 		local main_time = Managers.time:time("main")
 		self._lobby_finder_timeout = main_time + StateLoading.join_lobby_timeout
+	end
+
+	if setup_voip then
+		local voip_params = {
+			is_server = false,
+			lobby = self._lobby_client
+		}
+		self._voip = Voip:new(voip_params)
 	end
 end
 
@@ -2457,6 +2471,8 @@ StateLoading.clear_network_loading_context = function (self)
 
 		Managers.account:set_current_lobby(nil)
 	end
+
+	loading_context.setup_voip = nil
 end
 
 StateLoading.setup_network_client = function (self, clear_peer_state, lobby_client)
@@ -2477,7 +2493,7 @@ StateLoading.setup_network_client = function (self, clear_peer_state, lobby_clie
 	local host = self._lobby_client:lobby_host()
 	local wanted_profile_index = self.parent.loading_context.wanted_profile_index
 	local wanted_party_index = self.parent.loading_context.wanted_party_index or 0
-	self._network_client = NetworkClient:new(host, wanted_profile_index, wanted_party_index, clear_peer_state, self._lobby_client)
+	self._network_client = NetworkClient:new(host, wanted_profile_index, wanted_party_index, clear_peer_state, self._lobby_client, self._voip)
 	self._network_transmit = NetworkTransmit:new(false, self._network_client.server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -2485,6 +2501,7 @@ StateLoading.setup_network_client = function (self, clear_peer_state, lobby_clie
 
 	self._profile_synchronizer = self._network_client.profile_synchronizer
 	self._handle_new_lobby_connection = nil
+	self._voip = nil
 
 	self._network_client.voip:set_input_manager(self._input_manager)
 
@@ -2525,13 +2542,15 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 		if level_setting.hub_level then
 			stored_lobby_host_data.matchmaking = "false"
 			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "n/a") or NetworkLookup.matchmaking_types["n/a"]
-			stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
 			stored_lobby_host_data.selected_mission_id = level_key
 		end
 
 		if level_key == "prologue" then
 			stored_lobby_host_data.matchmaking = "false"
 			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "tutorial") or NetworkLookup.matchmaking_types.tutorial
+		end
+
+		if not stored_lobby_host_data.mechanism then
 			stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
 		end
 

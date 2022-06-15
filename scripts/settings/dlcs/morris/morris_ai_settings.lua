@@ -15,7 +15,7 @@ settings.vortex_templates = {
 		min_fx_radius = 2,
 		inner_fx_name = "fx/deus_bloodstorm_vortex_small",
 		windup_time = 3,
-		random_wander = false,
+		random_wander = true,
 		max_height = 10,
 		start_sound_event_name = "Play_curse_blood_storm_loop",
 		full_inner_radius = 4,
@@ -29,6 +29,10 @@ settings.vortex_templates = {
 		time_of_life = {
 			8,
 			10
+		},
+		time_of_life = {
+			4,
+			6
 		},
 		damage = {
 			5,

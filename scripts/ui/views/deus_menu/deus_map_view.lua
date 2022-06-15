@@ -27,7 +27,9 @@ DeusMapView.start = function (self, params)
 	self._active = true
 	local input_manager = self._input_manager
 
-	input_manager:block_device_except_service(INPUT_SERVICE_NAME, "mouse")
+	input_manager:capture_input({
+		"mouse"
+	}, 1, INPUT_SERVICE_NAME, "DeusMapView")
 	ShowCursorStack.push()
 	input_manager:enable_gamepad_cursor()
 
@@ -41,7 +43,9 @@ end
 DeusMapView._finish = function (self)
 	local input_manager = self._input_manager
 
-	input_manager:device_unblock_all_services("mouse")
+	input_manager:release_input({
+		"mouse"
+	}, 1, INPUT_SERVICE_NAME, "DeusMapView")
 	ShowCursorStack.pop()
 	input_manager:disable_gamepad_cursor()
 

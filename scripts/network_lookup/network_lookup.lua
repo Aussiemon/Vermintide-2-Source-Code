@@ -1031,6 +1031,7 @@ NetworkLookup.damage_types = {
 	"sync_health",
 	"killing_blow",
 	"military_finish",
+	"belakor_arena_finish",
 	"life_tap",
 	"volume_generic_dot",
 	"volume_insta_kill",
@@ -1111,7 +1112,8 @@ NetworkLookup.coop_feedback = {
 	"heal",
 	"assisted_respawn",
 	"revive",
-	"discarded_grimoire"
+	"discarded_grimoire",
+	"collected_isha_reward"
 }
 NetworkLookup.projectile_templates = {
 	"throw_trajectory",
@@ -1123,7 +1125,8 @@ NetworkLookup.projectile_templates = {
 	"explosion",
 	"spawn_pickup",
 	"skull_staff",
-	"direct_impact"
+	"direct_impact",
+	"no_owner_direct_impact"
 }
 NetworkLookup.overpowered_templates = create_lookup({}, PlayerUnitMovementSettings.overpowered_templates)
 NetworkLookup.vortex_templates = create_lookup({}, VortexTemplates)
@@ -1164,7 +1167,8 @@ NetworkLookup.level_keys = create_lookup({
 NetworkLookup.mission_ids = create_lookup({
 	"weave_any",
 	"next_level",
-	"n/a"
+	"n/a",
+	"any"
 }, LevelSettings)
 NetworkLookup.mission_ids = create_lookup(NetworkLookup.mission_ids, WeaveSettings.templates)
 NetworkLookup.act_keys = create_lookup({
@@ -1264,7 +1268,8 @@ NetworkLookup.light_weight_projectile_effects = create_lookup({}, LightWeightPro
 NetworkLookup.flow_events = {
 	"arrow_left",
 	"arrow_right",
-	"arrow_center"
+	"arrow_center",
+	"despawned"
 }
 NetworkLookup.localized_strings = {
 	"level_completed",

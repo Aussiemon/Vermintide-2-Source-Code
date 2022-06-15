@@ -31,6 +31,7 @@ MissionSystem.init = function (self, entity_system_creation_context, system_name
 	self.network_transmit = network_manager.network_transmit
 	self.is_server = entity_system_creation_context.is_server
 	self._percentage_completed = {}
+	self._use_level_progress = Managers.state.game_mode:setting("use_level_progress ")
 end
 
 MissionSystem.create_checkpoint_data = function (self)
@@ -107,7 +108,9 @@ MissionSystem.update = function (self, context, t)
 		end
 	end
 
-	self:_update_level_progress(dt)
+	if self._use_level_progress then
+		self:_update_level_progress(dt)
+	end
 
 	if script_data.debug_mission_system then
 		self:debug_draw(dt)

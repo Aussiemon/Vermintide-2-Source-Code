@@ -18,6 +18,10 @@ local all_curses = {
 		"curse_greed_pinata",
 		"curse_empathy",
 		"curse_abundance_of_life"
+	},
+	belakor = {
+		"curse_shadow_homing_skulls",
+		"curse_belakor_totems"
 	}
 }
 local default_config = {
@@ -25,6 +29,7 @@ local default_config = {
 	CURSES_HOT_SPOTS_MAX_COUNT = 1,
 	CURSES_HOT_SPOT_MIN_RANGE = 0.2,
 	CURSES_MIN_PROGRESS = 0.35,
+	ARENA_BELAKOR_SHOWS_UP_IN_DEPTH = 2,
 	CURSES_HOT_SPOTS_MIN_COUNT = 1,
 	MINOR_MODIFIABLE_MIN_PROGRESS = -0.1,
 	POWER_UP_LOOKAHEAD = 2,
@@ -53,7 +58,8 @@ local default_config = {
 			},
 			slaanesh = {
 				"curse_empathy"
-			}
+			},
+			belakor = {}
 		}
 	},
 	CURSEABLE_NODE_TYPES = {
@@ -185,7 +191,7 @@ local default_config = {
 		sig_snare_nurgle_path5 = "sig_snare_e_nurgle_path1",
 		sig_snare_khorne_path2 = "sig_snare_b_khorne_path1",
 		sig_snare_slaanesh_path5 = "sig_snare_e_slaanesh_path1",
-		sig_snare_tzeentch_path5 = "sig_snare_e_tzeentch_path1",
+		sig_snare_belakor_path2 = "sig_snare_b_belakor_path1",
 		sig_snare_nurgle_path3 = "sig_snare_c_nurgle_path1",
 		sig_snare_slaanesh_path1 = "sig_snare_a_slaanesh_path1",
 		sig_snare_nurgle_path4 = "sig_snare_d_nurgle_path1",
@@ -198,10 +204,16 @@ local default_config = {
 		sig_snare_khorne_path4 = "sig_snare_d_khorne_path1",
 		sig_snare_wastes_path5 = "sig_snare_e_wastes_path1",
 		sig_snare_tzeentch_path2 = "sig_snare_b_tzeentch_path1",
+		arena_belakor_belakor_path1 = "arena_belakor",
+		sig_snare_belakor_path5 = "sig_snare_e_belakor_path1",
+		sig_snare_belakor_path3 = "sig_snare_c_belakor_path1",
 		sig_snare_khorne_path5 = "sig_snare_e_khorne_path1",
+		sig_snare_belakor_path4 = "sig_snare_d_belakor_path1",
 		sig_snare_tzeentch_path1 = "sig_snare_a_tzeentch_path1",
+		sig_snare_tzeentch_path5 = "sig_snare_e_tzeentch_path1",
 		sig_snare_tzeentch_path4 = "sig_snare_d_tzeentch_path1",
 		sig_snare_wastes_path4 = "sig_snare_d_wastes_path1",
+		sig_snare_belakor_path1 = "sig_snare_a_belakor_path1",
 		sig_snare_khorne_path1 = "sig_snare_a_khorne_path1"
 	},
 	LEVEL_AVAILABILITY = {},
@@ -245,6 +257,10 @@ local default_config = {
 		},
 		{
 			"crit_boost",
+			"rare"
+		},
+		{
+			"power_vs_large",
 			"rare"
 		},
 		{
@@ -447,6 +463,14 @@ DEUS_MAP_POPULATE_SETTINGS.journey_ruin.LEVEL_AVAILABILITY = {
 				DEUS_THEME_TYPES.NURGLE,
 				DEUS_THEME_TYPES.SLAANESH,
 				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.WASTES
+			},
+			themes = {
+				DEUS_THEME_TYPES.KHORNE,
+				DEUS_THEME_TYPES.NURGLE,
+				DEUS_THEME_TYPES.SLAANESH,
+				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.BELAKOR,
 				DEUS_THEME_TYPES.WASTES
 			},
 			paths = {
@@ -664,6 +688,14 @@ DEUS_MAP_POPULATE_SETTINGS.journey_cave.LEVEL_AVAILABILITY = {
 				DEUS_THEME_TYPES.TZEENTCH,
 				DEUS_THEME_TYPES.WASTES
 			},
+			themes = {
+				DEUS_THEME_TYPES.KHORNE,
+				DEUS_THEME_TYPES.NURGLE,
+				DEUS_THEME_TYPES.SLAANESH,
+				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.BELAKOR,
+				DEUS_THEME_TYPES.WASTES
+			},
 			paths = {
 				1,
 				2,
@@ -877,6 +909,14 @@ DEUS_MAP_POPULATE_SETTINGS.journey_ice.LEVEL_AVAILABILITY = {
 				DEUS_THEME_TYPES.NURGLE,
 				DEUS_THEME_TYPES.SLAANESH,
 				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.WASTES
+			},
+			themes = {
+				DEUS_THEME_TYPES.KHORNE,
+				DEUS_THEME_TYPES.NURGLE,
+				DEUS_THEME_TYPES.SLAANESH,
+				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.BELAKOR,
 				DEUS_THEME_TYPES.WASTES
 			},
 			paths = {
@@ -1096,6 +1136,14 @@ DEUS_MAP_POPULATE_SETTINGS.journey_citadel.LEVEL_AVAILABILITY = {
 				DEUS_THEME_TYPES.NURGLE,
 				DEUS_THEME_TYPES.SLAANESH,
 				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.WASTES
+			},
+			themes = {
+				DEUS_THEME_TYPES.KHORNE,
+				DEUS_THEME_TYPES.NURGLE,
+				DEUS_THEME_TYPES.SLAANESH,
+				DEUS_THEME_TYPES.TZEENTCH,
+				DEUS_THEME_TYPES.BELAKOR,
 				DEUS_THEME_TYPES.WASTES
 			},
 			paths = {

@@ -56,6 +56,7 @@ TerrorEventMixer.active_events = TerrorEventMixer.active_events or {}
 TerrorEventMixer.start_event_list = TerrorEventMixer.start_event_list or {}
 TerrorEventMixer.finished_events = TerrorEventMixer.finished_events or {}
 TerrorEventMixer.optional_data = TerrorEventMixer.optional_data or {}
+TerrorEventMixer.incrementing_id = 1
 TerrorEventMixer.init_functions = {
 	text = function (event, element, t)
 		event.ends_at = t + ConflictUtils.random_interval(element.duration)
@@ -154,12 +155,12 @@ TerrorEventMixer.init_functions = {
 		event.optional_data_table = optional_data_table
 		event.spawn_table = spawn_table
 		local center_unit = event.data.origin_unit
-		local center_position = nil
+		local center_position = event.data.origin_position
 
 		if center_unit and Unit.alive(center_unit) then
 			center_position = Unit.local_position(center_unit, 0)
-		else
-			Application.warning("[TerrorEventMixer] spawn_around_origin_unit present in a terror event that is started without an origin_unit, falling back to a random player")
+		elseif not center_position then
+			Application.warning("[TerrorEventMixer] spawn_around_origin_unit present in a terror event that is started without an origin_unit or origin_position, falling back to a random player")
 
 			local random_player = PlayerUtils.get_random_alive_hero()
 			center_position = POSITION_LOOKUP[random_player]
@@ -307,9 +308,12 @@ TerrorEventMixer.init_functions = {
 		print("starting terror event: ", element.start_event_name)
 
 		local start_events = TerrorEventMixer.start_event_list
+		local id = TerrorEventMixer.incrementing_id
+		TerrorEventMixer.incrementing_id = TerrorEventMixer.incrementing_id + 1
 		start_events[#start_events + 1] = {
 			name = element.start_event_name,
-			data = {}
+			data = {},
+			id = id
 		}
 	end,
 	stop_event = function (event, element, t)
@@ -353,14 +357,19 @@ TerrorEventMixer.init_functions = {
 	end,
 	play_stinger = function (event, element, t)
 		local stinger_name = element.stinger_name or "enemy_terror_event_stinger"
-		local optional_pos = element.optional_pos
-		local wwise_world = Managers.world:wwise_world(Managers.state.conflict._world)
+		local use_origin_unit_position = element.use_origin_unit_position
+		local origin_unit = event.data.origin_unit
+		local optional_pos = element.optional_pos or (use_origin_unit_position and Unit.alive(origin_unit) and Unit.local_position(origin_unit, 0))
+		local world = Managers.state.conflict._world
+		local wwise_world = Managers.world:wwise_world(world)
 
 		if optional_pos then
 			local pos = Vector3(optional_pos[1], optional_pos[2], optional_pos[3])
-			local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, stinger_name)
+			local wwise_playing_id = (optional_pos and WwiseUtils.trigger_position_event(world, stinger_name, optional_pos)) or WwiseWorld.trigger_event(wwise_world, stinger_name)
+			local wwise_source_id = nil
+			local rpc = (optional_pos and "rpc_server_audio_position_event") or "rpc_server_audio_event"
 
-			Managers.state.network.network_transmit:send_rpc_clients("rpc_server_audio_event", NetworkLookup.sound_events[stinger_name], pos)
+			Managers.state.network.network_transmit:send_rpc_clients(rpc, NetworkLookup.sound_events[stinger_name], pos)
 		else
 			local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, stinger_name)
 
@@ -428,19 +437,20 @@ TerrorEventMixer.init_functions = {
 		local encampment_id, unit_compositions_id, rotation = nil
 		local event_data = event.data
 
-		if event_data then
+		if event_data.gizmo_unit then
 			encampment_id = event_data.encampment_id
 			unit_compositions_id = event_data.unit_compositions_id
 			rotation = Unit.local_rotation(event_data.gizmo_unit, 0)
 		else
 			encampment_id = element.encampment_id
 			unit_compositions_id = element.unit_compositions_id
-			dir = event_data.dir
+			local dir = event_data.dir
 			rotation = (dir and Quaternion.look(Vector3(dir[1], dir[2], 0))) or Quaternion.look(Vector3(0, 1, 0))
 		end
 
+		local side_id = event_data.side_id or element.side_id or 2
 		local position = nil
-		local pos_from_recycler = event_data and event_data.optional_pos
+		local pos_from_recycler = event_data.optional_pos
 
 		if pos_from_recycler then
 			position = pos_from_recycler:unbox()
@@ -455,7 +465,7 @@ TerrorEventMixer.init_functions = {
 		local encampment = FormationUtils.make_encampment(encampment_template)
 		local unit_composition = encampment_template.unit_compositions[unit_compositions_id]
 
-		FormationUtils.spawn_encampment(encampment, position, rotation, unit_composition)
+		FormationUtils.spawn_encampment(encampment, position, rotation, unit_composition, side_id)
 	end,
 	teleport_player = function (event, element, t)
 		local local_player = Managers.player:local_player()
@@ -981,6 +991,34 @@ TerrorEventMixer.run_functions = {
 					rotation = Quaternion.look(direction, Vector3.up())
 				end
 
+				if element.face_nearest_player_of_side then
+					local side = Managers.state.side:get_side_from_name(element.face_nearest_player_of_side)
+					local player_positions = side.PLAYER_AND_BOT_POSITIONS
+					local player_units = side.PLAYER_AND_BOT_UNITS
+
+					if #player_positions then
+						local nearest_distance_squared = math.huge
+						local nearest_position = nil
+
+						for player_position_index = 1, #player_positions, 1 do
+							local player_position = player_positions[player_position_index]
+							local distance_squared = Vector3.length_squared(spawn_pos_unboxed - player_position)
+							local player_unit = player_units[player_position_index]
+
+							if ALIVE[player_unit] and not ScriptUnit.extension(player_unit, "status_system"):is_invisible() and distance_squared < nearest_distance_squared then
+								nearest_position = player_position
+							end
+						end
+
+						if nearest_position then
+							local direction = nearest_position - spawn_pos_unboxed
+							rotation = Quaternion.look(direction, Vector3.up())
+						end
+					end
+				end
+
+				rotation = rotation or Quaternion.identity()
+
 				conflict_director:spawn_one(breed, spawn_pos_unboxed, group_data, optional_data, rotation)
 
 				if element.post_spawn_unit_func then
@@ -1457,13 +1495,19 @@ end
 
 TerrorEventMixer.add_to_start_event_list = function (event_name, seed, origin_unit, origin_position)
 	local start_events = TerrorEventMixer.start_event_list
+	local id = TerrorEventMixer.incrementing_id
+	TerrorEventMixer.incrementing_id = TerrorEventMixer.incrementing_id + 1
 	start_events[#start_events + 1] = {
 		name = event_name,
 		data = {
 			seed = seed,
-			origin_unit = origin_unit
-		}
+			origin_unit = origin_unit,
+			origin_position = origin_position
+		},
+		id = id
 	}
+
+	return id
 end
 
 TerrorEventMixer.start_random_event = function (event_chunk_name)
@@ -1483,9 +1527,11 @@ TerrorEventMixer.start_random_event = function (event_chunk_name)
 	local index = LoadedDice.roll_easy(event_chunk.loaded_probability_table)
 	index = index * 2 - 1
 	local event_name = event_chunk[index]
+	local id = TerrorEventMixer.add_to_start_event_list(event_name)
 
-	TerrorEventMixer.add_to_start_event_list(event_name)
 	print("TerrorEventMixer.start_random_event:", event_chunk_name, "->", event_name)
+
+	return id
 end
 
 local function is_element_available(element, data)
@@ -1651,6 +1697,11 @@ TerrorEventMixer.start_event = function (event_name, data, id)
 
 	Managers.state.game_mode:post_process_terror_event(elements)
 
+	if not id then
+		id = TerrorEventMixer.incrementing_id
+		TerrorEventMixer.incrementing_id = TerrorEventMixer.incrementing_id + 1
+	end
+
 	if #elements > 0 then
 		local new_event = {
 			index = 1,
@@ -1658,7 +1709,8 @@ TerrorEventMixer.start_event = function (event_name, data, id)
 			name = event_name,
 			elements = elements,
 			data = data,
-			max_active_enemies = math.huge
+			max_active_enemies = math.huge,
+			id = id
 		}
 		active_events[#active_events + 1] = new_event
 		local element = elements[1]
@@ -1704,6 +1756,32 @@ TerrorEventMixer.find_event = function (event_name)
 	end
 end
 
+TerrorEventMixer.is_event_id_active_or_pending = function (id)
+	local active_events = TerrorEventMixer.active_events
+	local num_events = #active_events
+
+	for i = 1, num_events, 1 do
+		local event = active_events[i]
+
+		if event.id == id then
+			return true
+		end
+	end
+
+	local start_event_list = TerrorEventMixer.start_event_list
+	num_events = #start_event_list
+
+	for i = 1, num_events, 1 do
+		local event = start_event_list[i]
+
+		if event.id == id then
+			return true
+		end
+	end
+
+	return false
+end
+
 TerrorEventMixer.update = function (t, dt, gui)
 	local active_events = TerrorEventMixer.active_events
 	local num_events = #active_events
@@ -1737,8 +1815,9 @@ TerrorEventMixer.update = function (t, dt, gui)
 		local event = start_events[i]
 		local event_name = event.name
 		local data = event.data
+		local id = event.id
 
-		TerrorEventMixer.start_event(event_name, data)
+		TerrorEventMixer.start_event(event_name, data, id)
 
 		start_events[i] = nil
 	end

@@ -676,47 +676,41 @@ else
 				},
 				{
 					disable_when_matchmaking_ready = true,
-					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
+					display_name = "profile_menu_button_name",
+					disable_when_matchmaking_in_versus = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection"
 				},
 				{
-					disable_when_matchmaking_ready = true,
+					requires_player_unit = true,
 					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
+					force_open = true,
 					fade = true,
-					transition_state = "overview",
 					transition = "hero_view",
-					force_open = true,
-					can_add_function = can_add_ingame_menu
-				},
-				{
+					disable_when_matchmaking_in_versus = true,
+					transition_state = "overview",
 					disable_when_matchmaking_ready = true,
-					display_name = "interact_loot",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "loot",
-					transition = "spoils_of_war",
-					force_open = true,
 					can_add_function = can_add_ingame_menu
 				},
 				{
+					requires_player_unit = true,
+					display_name = "interact_loot",
+					force_open = true,
 					fade = true,
+					transition = "spoils_of_war",
+					disable_when_matchmaking_in_versus = true,
+					transition_state = "loot",
+					disable_when_matchmaking_ready = true,
+					can_add_function = can_add_ingame_menu
+				},
+				{
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					disable_when_matchmaking_ready = true,
-					display_name = "versus_pre_game_view",
-					requires_player_unit = true,
+					disable_when_matchmaking_in_versus = true,
 					fade = true,
-					transition_state = "character",
-					transition = "versus_pre_game_view",
-					force_open = true,
-					can_add_function = can_add_versus_menu
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -737,47 +731,41 @@ else
 				},
 				{
 					disable_when_matchmaking_ready = true,
-					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
+					display_name = "profile_menu_button_name",
+					disable_when_matchmaking_in_versus = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection"
 				},
 				{
-					disable_when_matchmaking_ready = true,
+					requires_player_unit = true,
 					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
+					force_open = true,
 					fade = true,
-					transition_state = "overview",
 					transition = "hero_view",
-					force_open = true,
-					can_add_function = can_add_ingame_menu
-				},
-				{
+					disable_when_matchmaking_in_versus = true,
+					transition_state = "overview",
 					disable_when_matchmaking_ready = true,
-					display_name = "interact_loot",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "loot",
-					transition = "spoils_of_war",
-					force_open = true,
 					can_add_function = can_add_ingame_menu
 				},
 				{
+					requires_player_unit = true,
+					display_name = "interact_loot",
+					force_open = true,
 					fade = true,
+					transition = "spoils_of_war",
+					disable_when_matchmaking_in_versus = true,
+					transition_state = "loot",
+					disable_when_matchmaking_ready = true,
+					can_add_function = can_add_ingame_menu
+				},
+				{
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					disable_when_matchmaking_ready = true,
-					display_name = "versus_pre_game_view",
-					requires_player_unit = true,
+					disable_when_matchmaking_in_versus = true,
 					fade = true,
-					transition_state = "character",
-					transition = "versus_pre_game_view",
-					force_open = true,
-					can_add_function = can_add_versus_menu
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -803,47 +791,41 @@ else
 				},
 				{
 					disable_when_matchmaking_ready = true,
-					display_name = "profile_menu_button_name",
 					requires_player_unit = true,
+					display_name = "profile_menu_button_name",
+					disable_when_matchmaking_in_versus = true,
 					fade = true,
 					transition_state = "character",
 					transition = "character_selection"
 				},
 				{
-					disable_when_matchmaking_ready = true,
+					requires_player_unit = true,
 					display_name = "inventory_menu_button_name",
-					requires_player_unit = true,
+					force_open = true,
 					fade = true,
-					transition_state = "overview",
 					transition = "hero_view",
-					force_open = true,
-					can_add_function = can_add_ingame_menu
-				},
-				{
+					disable_when_matchmaking_in_versus = true,
+					transition_state = "overview",
 					disable_when_matchmaking_ready = true,
-					display_name = "interact_loot",
-					requires_player_unit = true,
-					fade = true,
-					transition_state = "loot",
-					transition = "spoils_of_war",
-					force_open = true,
 					can_add_function = can_add_ingame_menu
 				},
 				{
+					requires_player_unit = true,
+					display_name = "interact_loot",
+					force_open = true,
 					fade = true,
+					transition = "spoils_of_war",
+					disable_when_matchmaking_in_versus = true,
+					transition_state = "loot",
+					disable_when_matchmaking_ready = true,
+					can_add_function = can_add_ingame_menu
+				},
+				{
 					transition = "options_menu",
 					display_name = "options_menu_button_name",
-					disable_when_matchmaking_ready = true
-				},
-				{
-					disable_when_matchmaking_ready = true,
-					display_name = "versus_pre_game_view",
-					requires_player_unit = true,
+					disable_when_matchmaking_in_versus = true,
 					fade = true,
-					transition_state = "character",
-					transition = "versus_pre_game_view",
-					force_open = true,
-					can_add_function = can_add_versus_menu
+					disable_when_matchmaking_ready = true
 				},
 				{
 					fade = false,
@@ -1027,41 +1009,45 @@ end
 
 local full_access_layout = {
 	{
-		display_name = "profile_menu_button_name",
 		requires_player_unit = true,
+		display_name = "profile_menu_button_name",
+		disable_when_matchmaking_in_versus = true,
 		fade = true,
 		transition_state = "character",
 		transition = "character_selection",
 		disable_when_matchmaking = false
 	},
 	{
-		disable_when_matchmaking_ready = true,
-		display_name = "inventory_menu_button_name",
 		requires_player_unit = true,
-		fade = true,
-		transition_state = "overview",
-		transition = "hero_view",
+		display_name = "inventory_menu_button_name",
 		force_open = true,
+		fade = true,
+		transition = "hero_view",
+		disable_when_matchmaking_in_versus = true,
+		transition_state = "overview",
+		disable_when_matchmaking_ready = true,
 		can_add_function = can_add_ingame_menu
 	},
 	{
-		requires_player_unit = true,
+		force_open = true,
 		transition_sub_state = "talents",
 		display_name = "hero_window_talents",
-		force_open = true,
+		requires_player_unit = true,
 		fade = true,
 		transition = "hero_view",
+		disable_when_matchmaking_in_versus = true,
 		transition_state = "overview",
 		disable_when_matchmaking_ready = true,
 		can_add_function = can_add_ingame_menu
 	},
 	{
-		requires_player_unit = true,
+		force_open = true,
 		transition_sub_state = "cosmetics",
 		display_name = "hero_window_cosmetics",
-		force_open = true,
+		requires_player_unit = true,
 		fade = true,
 		transition = "hero_view",
+		disable_when_matchmaking_in_versus = true,
 		transition_state = "overview",
 		disable_when_matchmaking_ready = true,
 		can_add_function = can_add_ingame_menu
@@ -1074,31 +1060,24 @@ local full_access_layout = {
 		transition = "hero_view"
 	},
 	{
-		fade = false,
-		transition = "start_menu_view",
+		disable_when_matchmaking_in_versus = true,
 		display_name = "start_menu_view",
-		requires_player_unit = true
+		requires_player_unit = true,
+		fade = false,
+		transition = "start_menu_view"
 	},
 	{
-		fade = true,
 		transition = "options_menu",
 		display_name = "options_menu_button_name",
+		disable_when_matchmaking_in_versus = true,
+		fade = true,
 		disable_when_matchmaking_ready = true
 	},
 	{
-		disable_when_matchmaking_ready = true,
-		display_name = "versus_pre_game_view",
-		requires_player_unit = true,
-		fade = true,
-		transition_state = "character",
-		transition = "versus_pre_game_view",
-		force_open = true,
-		can_add_function = can_add_versus_menu
-	},
-	{
-		fade = true,
 		transition = "console_friends_menu",
 		display_name = "console_friends_menu_button_name",
+		disable_when_matchmaking_in_versus = true,
+		fade = true,
 		disable_when_matchmaking_ready = true
 	},
 	{

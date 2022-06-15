@@ -3,7 +3,6 @@ local scenegraph_definition = definitions.scenegraph_definition
 local definition_settings = definitions.settings
 local vote_texts_definition = definitions.vote_texts
 local DEBUG_VOTE_UI = false
-local DO_RELOAD = false
 local RESULT_TIMER = 3
 local INIT_AUDIO_COUNTDOWN_AT = 5
 TwitchVoteUI = class(TwitchVoteUI)
@@ -182,16 +181,6 @@ local customizer_data = {
 }
 
 TwitchVoteUI.update = function (self, dt, t)
-	if DO_RELOAD then
-		DO_RELOAD = false
-
-		self:_create_elements()
-
-		self._ui_animations = {}
-		self._animation_callbacks = {}
-		self._active_vote = nil
-	end
-
 	HudCustomizer.run(self._ui_renderer, self._ui_scenegraph, customizer_data)
 
 	if not self.active then

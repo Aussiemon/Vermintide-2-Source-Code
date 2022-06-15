@@ -39,7 +39,7 @@ local ConflictDirectorTestify = {
 		conflict_director:start_terror_event(event_name)
 	end,
 	kill_nearby_enemies = function (_, conflict_director)
-		conflict_director:destroy_close_units(nil, 64)
+		conflict_director:destroy_close_units(nil, nil, 64)
 	end
 }
 

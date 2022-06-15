@@ -583,6 +583,10 @@ StateIngame.on_enter = function (self)
 
 	Managers.telemetry.events:tech_system(system_info, adapter_index)
 
+	local use_pc_menu_layout = Application.user_setting("use_pc_menu_layout")
+
+	Managers.telemetry.events:ui_settings(use_pc_menu_layout)
+
 	if IS_XB1 then
 		Managers.account:set_presence("playing")
 	elseif IS_PS4 then
@@ -821,7 +825,7 @@ StateIngame.update = function (self, dt, main_t)
 	local Managers = Managers
 
 	Managers.state.network:update(dt)
-	Managers.backend:update(dt)
+	Managers.backend:update(dt, main_t)
 	self.input_manager:update(dt, main_t)
 	Managers.state.badge:update(dt, main_t)
 	Managers.level_transition_handler:update()
@@ -1296,6 +1300,7 @@ StateIngame._check_exit = function (self, t)
 			end
 
 			self.parent.loading_context.join_lobby_data = join_lobby_data
+			self.parent.loading_context.setup_voip = IS_PS4
 
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed)
 			Managers.transition:show_loading_icon()

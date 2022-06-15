@@ -576,7 +576,7 @@ BuffFunctionTemplates.functions = {
 						local boost_curve_multiplier = 0
 						local is_critical_strike = false
 						local can_damage = true
-						local can_stagger = false
+						local can_stagger = damage_profile.dot_stagger
 						local blocking = false
 						local shield_breaking_hit = false
 						local backstab_multiplier, first_hit, total_hits = nil
@@ -2616,10 +2616,12 @@ BuffFunctionTemplates.functions = {
 				local buff_extension = ScriptUnit.extension(unit, "buff_system")
 				local stack_ids = buff.stack_ids[unit]
 
-				for i = 1, #stack_ids, 1 do
-					local buff_id = table.remove(stack_ids)
+				if stack_ids then
+					for i = 1, #stack_ids, 1 do
+						local buff_id = table.remove(stack_ids)
 
-					buff_system:remove_server_controlled_buff(unit, buff_id)
+						buff_system:remove_server_controlled_buff(unit, buff_id)
+					end
 				end
 			end
 		end

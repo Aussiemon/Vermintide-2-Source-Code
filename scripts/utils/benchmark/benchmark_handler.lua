@@ -87,7 +87,7 @@ end
 BenchmarkHandler.story_destroy_close_units = function (self, element, t)
 	local radius_squared = element.radius_squared or 900
 
-	Managers.state.conflict:destroy_close_units(nil, radius_squared)
+	Managers.state.conflict:destroy_close_units(nil, nil, radius_squared)
 end
 
 BenchmarkHandler.story_teleport_party = function (self, element, t)
@@ -431,7 +431,7 @@ BenchmarkHandler._update_main_path = function (self, dt, t, total_proximate_enem
 	self._time_since_last_teleport = self._time_since_last_teleport + dt
 
 	if BenchmarkSettings.destroy_close_enemies_timer < self._time_since_last_teleport then
-		Managers.state.conflict:destroy_close_units(nil, BenchmarkSettings.destroy_close_enemies_radius)
+		Managers.state.conflict:destroy_close_units(nil, nil, BenchmarkSettings.destroy_close_enemies_radius)
 
 		self._time_since_last_teleport = 0
 

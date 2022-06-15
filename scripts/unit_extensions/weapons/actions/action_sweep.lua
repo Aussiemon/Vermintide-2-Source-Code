@@ -7,6 +7,7 @@ local unit_local_rotation = Unit.local_rotation
 local unit_flow_event = Unit.flow_event
 local unit_set_flow_variable = Unit.set_flow_variable
 local unit_node = Unit.node
+local unit_has_node = Unit.has_node
 local unit_actor = Unit.actor
 local unit_animation_event = Unit.animation_event
 local unit_has_animation_event = Unit.has_animation_event
@@ -95,7 +96,7 @@ ActionSweep.check_precision_target = function (self, owner_unit, owner_player, d
 	local rot = first_person_extension:current_rotation()
 	local direction = Quaternion.forward(rot)
 	local node = "j_spine"
-	local target_position = unit_world_position(current_target, unit_node(current_target, node))
+	local target_position = (unit_has_node(current_target, "j_spine") and unit_world_position(current_target, unit_node(current_target, node))) or unit_world_position(current_target, 0)
 	local good_target = false
 	local player_to_target_vector = target_position - pos
 	local player_to_target_distance = Vector3.length(player_to_target_vector)
@@ -186,7 +187,6 @@ ActionSweep.client_owner_start_action = function (self, new_action, t, chain_act
 	table.clear(self._hit_units)
 	buff_extension:trigger_procs("on_sweep")
 
-	self._ignore_mass_and_armour = buff_extension:has_buff_type("ignore_mass_and_armour")
 	local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, first_person_extension, "on_critical_sweep", "Play_player_combat_crit_swing_2D")
@@ -1196,7 +1196,7 @@ ActionSweep._play_character_impact = function (self, is_server, attacker_unit, h
 		hit_effect = current_action.armour_impact_particle_effect or "fx/hit_armored"
 	elseif predicted_damage <= 0 then
 		hit_effect = current_action.no_damage_impact_particle_effect
-	else
+	elseif not breed.no_blood_splatter_on_damage then
 		hit_effect = current_action.impact_particle_effect or BloodSettings:get_hit_effect_for_race(breed.race)
 
 		EffectHelper.player_critical_hit(world, is_critical_strike, attacker_unit, hit_unit, hit_position)

@@ -314,6 +314,12 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 
 						Managers.state.achievement:trigger_event("any_ability_used", unit, ability_id, local_player, other_player)
 					end
+
+					local cosmetic_extension = ScriptUnit.has_extension(player_unit, "cosmetic_system")
+
+					if cosmetic_extension then
+						cosmetic_extension:trigger_ability_activated_events()
+					end
 				end
 			end
 		end

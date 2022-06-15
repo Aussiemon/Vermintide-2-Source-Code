@@ -97,17 +97,20 @@ for level_key, level_data in pairs(LevelSettings) do
 	local valid_level = validate_level_data(level_key, level_data)
 
 	if valid_level then
-		local game_mode = level_data.game_mode
+		local game_mode = level_data.game_mode or level_data.mechanism
 
-		if not LevelGameModeTypes[game_mode] then
-			LevelGameModeTypes[game_mode] = true
+		if game_mode then
+			if not LevelGameModeTypes[game_mode] then
+				LevelGameModeTypes[game_mode] = true
+			end
+
+			if not UnlockableLevelsByGameMode[game_mode] then
+				UnlockableLevelsByGameMode[game_mode] = {}
+			end
+
+			UnlockableLevelsByGameMode[game_mode][#UnlockableLevelsByGameMode[game_mode] + 1] = level_key
 		end
 
-		if not UnlockableLevelsByGameMode[game_mode] then
-			UnlockableLevelsByGameMode[game_mode] = {}
-		end
-
-		UnlockableLevelsByGameMode[game_mode][#UnlockableLevelsByGameMode[game_mode] + 1] = level_key
 		local act = level_data.act
 
 		if not GameActs[act] then

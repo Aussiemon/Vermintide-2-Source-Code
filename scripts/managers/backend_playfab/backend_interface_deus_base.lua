@@ -145,6 +145,18 @@ BackendInterfaceDeusBase.get_journey_cycle = function (self)
 	ferror("must be implemented by subclass")
 end
 
+BackendInterfaceDeusBase.refresh_belakor_cycle = function (self)
+	ferror("must be implemented by subclass")
+end
+
+BackendInterfaceDeusBase.has_loaded_belakor_data = function (self)
+	ferror("must be implemented by subclass")
+end
+
+BackendInterfaceDeusBase.set_has_loaded_belakor_data = function (self, value)
+	ferror("must be implemented by subclass")
+end
+
 BackendInterfaceDeusBase._generate_journey_cycle = function (self, current_time, remaining_time, cycle)
 	local dominant_god_base_index = cycle % #DeusJourneyCycleGods
 	local journey_data = {}
@@ -161,6 +173,10 @@ BackendInterfaceDeusBase._generate_journey_cycle = function (self, current_time,
 		time_of_update = current_time,
 		journey_data = journey_data
 	}
+end
+
+BackendInterfaceDeusBase._generate_belakor_curse_cycle = function (self, current_time, remaining_time, cycle)
+	ferror("must be implemented by subclass")
 end
 
 BackendInterfaceDeusBase.debug_clear_meta_progression = function (self)

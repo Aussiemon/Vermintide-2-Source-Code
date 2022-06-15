@@ -1,9 +1,11 @@
 local AiUtils_unit_alive = AiUtils.unit_alive
 local unit_knocked_down = AiUtils.unit_knocked_down
+local vector3_distance = Vector3.distance
 local POSITION_LOOKUP = POSITION_LOOKUP
 local AI_TARGET_UNITS = AI_TARGET_UNITS
 local AI_UTILS = AI_UTILS
 local ScriptUnit_extension = ScriptUnit.extension
+local result_table = {}
 
 PerceptionUtils.pick_closest_target = function (ai_unit, blackboard, breed)
 	local ai_pos = POSITION_LOOKUP[ai_unit]
@@ -270,8 +272,9 @@ PerceptionUtils.pick_solitary_target = function (unit, blackboard, breed)
 			urgency_to_engage = 5
 		end
 	else
-		local dummy, enemy_pos, loneliness_value = nil
-		dummy, enemy_pos, loneliness_value, enemy_unit = Managers.state.conflict:get_cluster_and_loneliness(10)
+		local side = blackboard.side
+		local loneliness_value, dummy = nil
+		dummy, dummy, loneliness_value, enemy_unit = Managers.state.conflict:get_cluster_and_loneliness(10, side.ENEMY_PLAYER_POSITIONS, side.ENEMY_PLAYER_UNITS)
 
 		if loneliness_value > 4 and AiUtils.is_of_interest_to_gutter_runner(unit, enemy_unit, blackboard) then
 			if loneliness_value > 15 then
@@ -397,10 +400,10 @@ PerceptionUtils.horde_pick_closest_target_with_spillover = function (ai_unit, bl
 	local distance_to_target_sq = nil
 	local using_override_target = false
 	local override_targets = blackboard.override_targets
-	local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local VALID_ENEMIES = side.enemy_units_lookup
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
-		local target_unit_valid = VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
+		local target_unit_valid = VALID_ENEMIES[target_unit]
 
 		if not target_unit_valid or end_of_override_t < t or ScriptUnit.extension(target_unit, "status_system"):is_disabled() then
 			override_targets[target_unit] = nil
@@ -584,10 +587,10 @@ PerceptionUtils.pick_closest_target_with_spillover = function (ai_unit, blackboa
 	local raycast_pos = Unit.world_position(ai_unit, Unit.node(ai_unit, "j_head"))
 	local using_override_target = false
 	local override_targets = blackboard.override_targets
-	local VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS = side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS
+	local VALID_ENEMIES = side.enemy_units_lookup
 
 	for target_unit, end_of_override_t in pairs(override_targets) do
-		local target_unit_valid = VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
+		local target_unit_valid = VALID_ENEMIES[target_unit]
 
 		if not target_unit_valid or end_of_override_t < t or ScriptUnit.extension(target_unit, "status_system"):is_disabled() then
 			override_targets[target_unit] = nil
@@ -978,6 +981,7 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 	local best_score = -1000
 	local group_blackboard = blackboard.group_blackboard
 	local is_horde = blackboard.spawn_type == "horde" or blackboard.spawn_type == "horde_hidden"
+	local pos = POSITION_LOOKUP[unit]
 
 	for i = 1, num_enemies, 1 do
 		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
@@ -1002,7 +1006,6 @@ PerceptionUtils.pick_rat_ogre_target_with_weights = function (unit, blackboard, 
 			end
 
 			local enemy_pos = POSITION_LOOKUP[enemy_unit]
-			local pos = POSITION_LOOKUP[unit]
 			dist = vector3_distance(pos, enemy_pos)
 			local distance_valid_target = dist < breed.detection_radius
 
@@ -1067,6 +1070,7 @@ PerceptionUtils.pick_bestigor_target_with_weights = function (unit, blackboard, 
 	local line_of_sight_system = ScriptUnit.extension(unit, "ai_line_of_sight_system")
 	local los_check = nil
 	local confirmed_player_sighting = blackboard.confirmed_player_sighting
+	local pos = POSITION_LOOKUP[unit]
 
 	if not confirmed_player_sighting and (not blackboard.next_los_check or (blackboard.next_los_check and blackboard.next_los_check < t)) then
 		los_check = FrameTable.alloc_table()
@@ -1109,7 +1113,6 @@ PerceptionUtils.pick_bestigor_target_with_weights = function (unit, blackboard, 
 				end
 
 				local enemy_pos = POSITION_LOOKUP[enemy_unit]
-				local pos = POSITION_LOOKUP[unit]
 				dist = vector3_distance(pos, enemy_pos)
 				local distance_valid_target = dist < breed.detection_radius
 
@@ -1179,6 +1182,7 @@ PerceptionUtils.pick_chaos_troll_target_with_weights = function (unit, blackboar
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local best_score = -1000
 	local group_blackboard = blackboard.group_blackboard
+	local pos = POSITION_LOOKUP[unit]
 
 	for i = 1, num_enemies, 1 do
 		local enemy_unit = PLAYER_AND_BOT_UNITS[i]
@@ -1204,7 +1208,6 @@ PerceptionUtils.pick_chaos_troll_target_with_weights = function (unit, blackboar
 			end
 
 			local enemy_pos = POSITION_LOOKUP[enemy_unit]
-			local pos = POSITION_LOOKUP[unit]
 			dist = vector3_distance(pos, enemy_pos)
 			local distance_valid_target = dist < breed.detection_radius
 
@@ -1282,9 +1285,14 @@ PerceptionUtils.debug_ai_perception = function (unit, ai_ext, blackboard, t, gui
 
 	if ALIVE[target_unit] then
 		local target_player = Managers.player:owner(target_unit)
-		local profile_index = target_player:profile_index()
-		local profile = SPProfiles[profile_index]
-		unit_name = (profile and profile.unit_name) or "client"
+
+		if target_player then
+			local profile_index = target_player:profile_index()
+			local profile = SPProfiles[profile_index]
+			unit_name = (profile and profile.unit_name) or "client"
+		else
+			unit_name = "AI"
+		end
 	end
 
 	ScriptGUI.ictext(gui, resx, resy, "Perception: " .. blackboard.breed.name, tiny_font_mtrl, tiny_font_size, tiny_font, x1 - 10, y2, layer, header_color)

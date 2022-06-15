@@ -62,7 +62,7 @@ GameNetworkManager.init = function (self, world, lobby, is_server, event_delegat
 
 	self._event_delegate = event_delegate
 
-	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit")
+	event_delegate:register(self, "rpc_play_particle_effect_no_rotation", "rpc_play_particle_effect", "rpc_play_particle_effect_with_variable", "rpc_gm_event_end_conditions_met", "rpc_gm_event_round_started", "rpc_gm_event_initial_peers_spawned", "rpc_surface_mtr_fx", "rpc_surface_mtr_fx_lvl_unit", "rpc_skinned_surface_mtr_fx", "rpc_play_melee_hit_effects", "game_object_created", "game_session_disconnect", "game_object_destroyed", "rpc_enemy_is_alerted", "rpc_assist", "rpc_coop_feedback", "rpc_ladder_shake", "rpc_request_spawn_network_unit", "rpc_flow_event")
 end
 
 GameNetworkManager.lobby = function (self)
@@ -1153,6 +1153,20 @@ GameNetworkManager.rpc_coop_feedback = function (self, channel_id, player1_peer_
 	end
 
 	Managers.state.event:trigger("add_coop_feedback", player1:stats_id() .. player2:stats_id(), local_human, predicate, player1, player2)
+end
+
+GameNetworkManager.rpc_flow_event = function (self, channel_id, unit_id, event_id)
+	local unit = self.unit_storage:unit(unit_id)
+
+	if not unit then
+		printf("unit from game_object_id %d is nil", unit_id)
+
+		return
+	end
+
+	local event_name = NetworkLookup.flow_events[event_id]
+
+	Unit.flow_event(unit, event_name)
 end
 
 GameNetworkManager.anim_event = function (self, unit, event)

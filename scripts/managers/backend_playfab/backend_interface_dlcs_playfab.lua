@@ -48,24 +48,46 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	local platform_dlcs = function_result.platform_dlcs
 	local excluded_dlcs = function_result.excluded_dlcs
 	local new_dlcs = function_result.new_dlcs
+	local revoked_dlcs = function_result.revoked_dlcs
 	self._owned_dlcs = owned_dlcs or {}
 	self._platform_dlcs = platform_dlcs
+	local unlock_manager = Managers.unlock
 
-	Managers.unlock:set_excluded_dlcs(excluded_dlcs)
+	unlock_manager:handle_exclude_dlcs(excluded_dlcs, owned_dlcs)
 	self._backend_mirror:set_owned_dlcs(owned_dlcs)
 	self._backend_mirror:set_platform_dlcs(platform_dlcs)
 	print("Finished Updating Owned DLCS")
 	table.dump(self._owned_dlcs, nil, 2)
 	self._backend_mirror:update_owned_dlcs(true)
 
-	if script_data["eac-untrusted"] then
-		self._updating_dlc_ownership = false
-	else
+	if revoked_dlcs and #revoked_dlcs > 0 then
+		local unlocked_keep_decorations = function_result.unlocked_keep_decorations
+
+		if unlocked_keep_decorations then
+			self._backend_mirror:set_read_only_data("unlocked_keep_decorations", unlocked_keep_decorations, true)
+		end
+
+		local unlocked_cosmetics = function_result.unlocked_cosmetics
+
+		if unlocked_cosmetics then
+			self._backend_mirror:set_read_only_data("unlocked_cosmetics", unlocked_cosmetics, true)
+		end
+
+		local unlocked_weapon_skins = function_result.unlocked_weapon_skins
+
+		if unlocked_cosmetics then
+			self._backend_mirror:set_read_only_data("unlocked_weapon_skins", unlocked_weapon_skins, true)
+		end
+	end
+
+	if not script_data["eac-untrusted"] and (not new_dlcs or not revoked_dlcs or #new_dlcs > 0 or #revoked_dlcs > 0) then
 		self:_execute_dlc_specific_logic()
 
 		if HAS_STEAM then
 			self._backend_mirror:handle_new_dlcs(new_dlcs)
 		end
+	else
+		self._updating_dlc_ownership = false
 	end
 end
 
@@ -101,6 +123,21 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 			unseen_rewards[#unseen_rewards + 1] = reward
 
 			self._backend_mirror:add_keep_decoration(item_id)
+		elseif CosmeticUtils.is_cosmetic_item(item_type) then
+			local backend_id = self._backend_mirror:add_item(nil, {
+				ItemId = item_id
+			})
+
+			if backend_id then
+				local reward = {
+					reward_type = item_type,
+					backend_id = backend_id,
+					rewarded_from = item.Data.rewarded_from,
+					item_type = item_type,
+					item_id = item_id
+				}
+				unseen_rewards[#unseen_rewards + 1] = reward
+			end
 		else
 			local data = ItemMasterList[item_id]
 			local custom_data = item.CustomData

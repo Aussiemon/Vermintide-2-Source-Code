@@ -1412,6 +1412,12 @@ Colors.color_definitions = {
 		230,
 		81
 	},
+	belakor = {
+		255,
+		172,
+		134,
+		218
+	},
 	deus_potion = {
 		255,
 		155,

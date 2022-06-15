@@ -174,10 +174,10 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 		return "failed"
 	end
 
-	local target_unit = blackboard.target_unit
-	local target_unit_status_extension = (ScriptUnit.has_extension(target_unit, "status_system") and ScriptUnit.extension(target_unit, "status_system")) or nil
-
 	if t < blackboard.anim_locked then
+		local target_unit = blackboard.target_unit
+		local target_unit_status_extension = ScriptUnit.has_extension(target_unit, "status_system")
+
 		if blackboard.is_puking then
 			if not blackboard.check_puke_time then
 				blackboard.check_puke_time = t + 0.2
@@ -186,7 +186,7 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			if blackboard.check_puke_time < t then
 				self.player_vomit_hit_check(unit, blackboard.puke_position:unbox(), blackboard.physics_world, blackboard)
 			end
-		elseif t < blackboard.rotation_time and not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible() and blackboard.update_puke_pos_at_t < t then
+		elseif t < blackboard.rotation_time and (not target_unit_status_extension or (not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible())) and blackboard.update_puke_pos_at_t < t then
 			local puke_position, puke_distance_sq, puke_direction = self:_get_vomit_position(unit, blackboard)
 
 			if puke_position and puke_direction then

@@ -529,12 +529,13 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			end
 		end
 
-		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI") or ingame_hud:component("VersusTabUI")
+		local gamepad_active = Managers.input:is_device_active("gamepad")
+		local allowed_to_access_menu = true
+		local ingame_player_list_ui = ingame_hud:component("IngamePlayerListUI")
 		local player_list_active = ingame_player_list_ui and ingame_player_list_ui:is_active()
 		local fade_active = Managers.transition:in_fade_active()
 
-		if not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:end_screen_active() and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then
-			local gamepad_active = Managers.input:is_device_active("gamepad")
+		if allowed_to_access_menu and not player_list_active and not disable_toggle_menu and not self:pending_transition() and not fade_active and not self:end_screen_active() and not self.menu_active and not self.leave_game and not self.return_to_title_screen and not self:get_active_popup("profile_picker") and input_service:get("toggle_menu", true) then
 			local use_gamepad_layout = IS_CONSOLE or gamepad_active or not UISettings.use_pc_menu_layout
 
 			if use_gamepad_layout then

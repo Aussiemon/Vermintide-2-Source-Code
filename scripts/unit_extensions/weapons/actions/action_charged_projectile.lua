@@ -79,6 +79,15 @@ ActionChargedProjectile.client_owner_post_update = function (self, dt, t, world,
 	end
 
 	if self.state == "shooting" then
+		if self:_update_extra_shots(self.owner_buff_extension, 1) then
+			self.state = "waiting_to_shoot"
+			self.time_to_shoot = t + 0.1
+			self.extra_buff_shot = true
+		else
+			self.extra_buff_shot = false
+			self.state = "shot"
+		end
+
 		self:_shoot(t)
 		self:_proc_spell_used(self.owner_buff_extension)
 	end
@@ -86,11 +95,13 @@ end
 
 ActionChargedProjectile._update_extra_shots = function (self, buff_extension, shots_to_consume)
 	if self._is_grenade then
+		local extra_grenades = self._extra_grenades
+
 		if shots_to_consume then
 			self._extra_grenades = self._extra_grenades - shots_to_consume
 		end
 
-		return self._extra_grenades > 0
+		return extra_grenades > 0
 	end
 
 	return ActionChargedProjectile.super._update_extra_shots(self, buff_extension, shots_to_consume)
@@ -148,14 +159,6 @@ ActionChargedProjectile._shoot = function (self, t)
 		Managers.state.controller_features:add_effect("rumble", {
 			rumble_effect = "handgun_fire"
 		})
-	end
-
-	if self:_update_extra_shots(self.owner_buff_extension, 1) then
-		self.state = "waiting_to_shoot"
-		self.time_to_shoot = t + 0.1
-		self.extra_buff_shot = true
-	else
-		self.state = "shot"
 	end
 
 	local first_person_unit = self.first_person_unit
@@ -292,13 +295,14 @@ ActionChargedProjectile.finish = function (self, reason)
 
 		for i = 1, max_iteration_count, 1 do
 			self:_shoot(t)
+			self:_proc_spell_used(self.owner_buff_extension)
 
-			if self.state == "shot" then
+			self.extra_buff_shot = true
+
+			if not self:_update_extra_shots(self.owner_buff_extension, 1) then
 				break
 			end
 		end
-
-		self:_proc_spell_used(self.owner_buff_extension)
 	end
 
 	local ammo_extension = self.ammo_extension

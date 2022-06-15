@@ -58,6 +58,30 @@ InputStackSettings = {
 		services = {
 			"cutscene"
 		}
+	},
+	{
+		group_name = "console_friends_view",
+		services = {
+			"console_friends_view"
+		}
+	},
+	{
+		group_name = "hud_player_list",
+		services = {
+			"player_list_input"
+		}
+	},
+	{
+		group_name = "deus_shop",
+		services = {
+			"deus_shop_view"
+		}
+	},
+	{
+		group_name = "deus_map_view",
+		services = {
+			"deus_map_input_service_name"
+		}
 	}
 }
 InputServiceToGroupMap = {}

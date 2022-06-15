@@ -209,7 +209,7 @@ local talent_buff_templates = {
 	kerillian_thorn_sister_big_bleed = {
 		buffs = {
 			{
-				event = "on_hit",
+				event = "on_melee_hit",
 				bleed = "thorn_sister_big_bleed",
 				proc_weight = 10,
 				buff_func = "thorn_sister_add_bleed_on_hit"

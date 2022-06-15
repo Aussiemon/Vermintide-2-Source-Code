@@ -142,7 +142,7 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		multiplier = 0.2
 	},
 	power_vs_large = {
-		multiplier = 0.2
+		multiplier = 0.4
 	},
 	power_vs_frenzy = {
 		multiplier = 0.2
@@ -257,7 +257,7 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		damage_to_deal = 3
 	},
 	deus_big_swing_stagger_buff = {
-		multiplier = 0.5,
+		multiplier = 0.7,
 		duration = 3,
 		targets_to_hit = 5
 	},
@@ -285,7 +285,7 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		duration = 2
 	},
 	deus_standing_still_damage_reduction_buff = {
-		multiplier = -0.3
+		multiplier = -0.6
 	},
 	triple_melee_headshot_power_boost = {
 		duration = 10,
@@ -339,10 +339,14 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		max_chain_range = 15
 	},
 	deus_ranged_crit_explosion = {
+		cooldown_duration = 10,
 		multiplier = 0.3
 	},
 	deus_extra_shot = {
 		bonus = 1
+	},
+	follow_up_cooldown = {
+		duration = 3
 	},
 	deus_collateral_damage_on_melee_killing_blow = {
 		max_range = 3,
@@ -393,6 +397,129 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 	},
 	deus_free_potion_use_on_ability = {
 		proc_chance = 0.5
+	},
+	melee_wave = {
+		stacks_to_add = 3
+	},
+	money_magnet = {
+		magnet_distance = 10
+	},
+	skill_by_block = {
+		bonus = 2
+	},
+	speed_over_stamina_buff = {
+		duration = 15,
+		multiplier = 0.15
+	},
+	missing_health_power_up_buff = {
+		max_stacks = 5,
+		multiplier = -0.05,
+		chunk_size = 20
+	},
+	detect_weakness_buff = {
+		duration = 10,
+		multiplier = 0.3
+	},
+	squats_build_up_buff = {
+		max_stacks = 5,
+		duration = 3
+	},
+	squats_buff = {
+		duration = 25,
+		multiplier = 0.5
+	},
+	comradery_buff = {
+		multiplier = 0.05
+	},
+	wolfpack_buff = {
+		multiplier = 0.05
+	},
+	invigorating_strike_cooldown = {
+		duration = 10
+	},
+	staggering_force = {
+		enemy_count = 5
+	},
+	staggering_force_buff = {
+		multiplier = 0.2,
+		duration = 5
+	},
+	piercing_projectiles = {
+		bonus = 1
+	},
+	pyrrhic_strength_health = {
+		bonus = -0.5
+	},
+	pyrrhic_strength_power = {
+		multiplier = 0.25
+	},
+	tenacious = {
+		health_per_tick = 2,
+		health_threshold = 0.3
+	},
+	crescendo_strike_buff = {
+		max_stacks = 10,
+		duration = 10,
+		bonus = 0.05
+	},
+	lucky_buff = {
+		bonus = 0.05
+	},
+	hidden_escape_buff = {
+		duration = 5
+	},
+	hidden_escape_cooldown_buff = {
+		duration = 30
+	},
+	curative_empowerment = {
+		health_percentage_chunk = 0.1
+	},
+	curative_empowerment_buff = {
+		duration = 40,
+		multiplier = 0.2
+	},
+	pent_up_anger_buff = {
+		max_stacks = 3
+	},
+	bad_breath_cooldown_buff = {
+		duration = 45
+	},
+	boulder_bro_cooldown_buff = {
+		duration = 1
+	},
+	static_blade_cooldown_buff = {
+		duration = 8
+	},
+	health_orbs = {
+		health_per_orb = 10,
+		orb_health = 5
+	},
+	static_charge = {
+		orb_duration = 5,
+		kills_per_orb = 10
+	},
+	protection_orb = {
+		duration = 10,
+		multiplier = -0.5
+	},
+	protection_orbs = {
+		trigger_cooldown = 3
+	},
+	focused_accuracy = {
+		cooldown_duration = 3
+	},
+	ability_cooldown_reduction_orb = {
+		duration = 0.5,
+		multiplier = 4.5
+	},
+	resolve = {
+		cooldown = 120
+	},
+	surprise_strike_guaranteed_crit_buff = {
+		duration = 2
+	},
+	boon_deus_coins_greed = {
+		multiplier = 0.15
 	}
 }
 

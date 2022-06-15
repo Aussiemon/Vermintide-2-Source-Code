@@ -240,8 +240,16 @@ RespawnHandler.update = function (self, dt, t)
 	for i = queue_size, 1, -1 do
 		local respawn_data = respawn_queue[i]
 		local player = respawn_data[1]
+		local status = respawn_data[9]
+		local current_slot_player = Managers.player:player(status.peer_id, status.local_player_id)
 
-		if player then
+		if current_slot_player ~= player then
+			local data = status.game_mode_data
+			data.health_state = "dead"
+
+			table.swap_delete(respawn_queue, i)
+			print("Player changed before respawn queue was being processed, resetting state to dead.", status.peer_id, status.local_player_id)
+		elseif player then
 			local player_unit = player.player_unit
 
 			if player_unit == nil or not Unit.alive(player_unit) then
@@ -326,7 +334,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 					local grenade = data.consumables.slot_grenade
 
 					if data.spawn_state == "spawned" then
-						self:_delayed_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items)
+						self:_delayed_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items, status)
 					else
 						self:_respawn_player(player, profile_index, career_index, respawn_unit_to_use, health_kit, potion, grenade, additional_items)
 					end
@@ -472,7 +480,7 @@ RespawnHandler.force_respawn_dead_players = function (self, party)
 	end
 end
 
-RespawnHandler._delayed_respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade, additional_items)
+RespawnHandler._delayed_respawn_player = function (self, player, profile_index, career_index, respawn_unit, health_kit, potion, grenade, additional_items, status)
 	local respawn_entry = {
 		player,
 		profile_index,
@@ -481,7 +489,8 @@ RespawnHandler._delayed_respawn_player = function (self, player, profile_index, 
 		health_kit,
 		potion,
 		grenade,
-		additional_items
+		additional_items,
+		status
 	}
 
 	table.insert(self._delayed_respawn_queue, respawn_entry)

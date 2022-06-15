@@ -86,7 +86,10 @@ EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_
 				end
 
 				local system_name = self._extension_to_system_map[extension_name]
-				reverse_lookup[system_name] = extension_name
+
+				if system_name then
+					reverse_lookup[system_name] = extension_name
+				end
 			until true
 		end
 
@@ -402,8 +405,6 @@ EntityManager2.add_ignore_extensions = function (self, ignore_extensions)
 	for i = 1, num_extensions, 1 do
 		local extension_name = ignore_extensions[i]
 		ignore_extensions_list[extension_name] = true
-
-		print("ignoring extension", extension_name)
 	end
 end
 

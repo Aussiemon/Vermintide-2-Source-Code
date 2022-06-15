@@ -592,7 +592,8 @@ ProjectileTrueFlightLocomotionExtension.legitimate_never = function (self, unit,
 end
 
 ProjectileTrueFlightLocomotionExtension.legitimate_only_dot_check = function (self, unit, position)
-	local target_position = Unit.world_position(unit, Unit.node(unit, "c_spine"))
+	local node = (Unit.has_node(unit, "c_spine") and Unit.node(unit, "c_spine")) or 0
+	local target_position = Unit.world_position(unit, node)
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
 	local wanted_direction = Vector3.normalize(direction_to_target)

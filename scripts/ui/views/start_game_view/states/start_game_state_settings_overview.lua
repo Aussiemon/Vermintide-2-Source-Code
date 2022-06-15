@@ -450,6 +450,7 @@ StartGameStateSettingsOverview._set_new_save_data_table = function (self, table_
 		self:set_selected_level_id(table.level_id)
 		self:set_difficulty_option(table.difficulty_key)
 		self:set_selected_weave_id(table.weave_id)
+		self:set_dedicated_or_player_hosted_search(table.use_dedicated_win_servers, table.use_dedicated_aws_servers, table.use_player_hosted)
 	else
 		self._layout_save_settings = nil
 	end
@@ -1040,20 +1041,6 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		}
 
 		self.parent:start_game(params)
-	elseif vote_type == "versus" then
-		local params = {
-			strict_matchmaking = false,
-			always_host = true,
-			matchmaking_type = "standard",
-			mechanism = "versus",
-			quick_game = false,
-			mission_id = self:get_selected_level_id(),
-			difficulty = self._selected_difficulty_key,
-			private_game = self:is_private_option_enabled(),
-			request_type = vote_type
-		}
-
-		self.parent:start_game(params)
 	elseif vote_type == "weave" then
 		local weave_name = self:get_selected_weave_id()
 		local weave_template = WeaveSettings.templates[weave_name]
@@ -1134,7 +1121,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 
 		self.parent:start_game(params)
 	else
-		ferror("Unknown matchmaking_type(%s)", matchmaking_type)
+		ferror("Unknown vote_type(%s)", vote_type)
 	end
 end
 
@@ -1435,6 +1422,26 @@ StartGameStateSettingsOverview.get_difficulty_option = function (self, ignore_ap
 	end
 
 	return selected_difficulty_key
+end
+
+StartGameStateSettingsOverview.set_dedicated_or_player_hosted_search = function (self, use_dedicated_win_servers, use_dedicated_aws_servers, use_player_hosted)
+	self._use_dedicated_win_servers = (use_dedicated_win_servers == nil and true) or use_dedicated_win_servers
+	self._use_dedicated_aws_servers = (use_dedicated_aws_servers == nil and true) or use_dedicated_aws_servers
+	self._use_player_hosted = (use_player_hosted == nil and true) or use_player_hosted
+
+	if self._layout_save_settings then
+		self._layout_save_settings.use_dedicated_win_servers = use_dedicated_win_servers
+		self._layout_save_settings.use_dedicated_aws_servers = use_dedicated_aws_servers
+		self._layout_save_settings.use_player_hosted = use_player_hosted
+	end
+end
+
+StartGameStateSettingsOverview.using_player_hosted_search = function (self)
+	return self._use_player_hosted
+end
+
+StartGameStateSettingsOverview.using_dedicated_servers_search = function (self)
+	return self._use_dedicated_win_servers, self._use_dedicated_aws_servers
 end
 
 StartGameStateSettingsOverview.set_play_button_enabled = function (self, enabled)

@@ -56,6 +56,11 @@ if InputUtils.keymaps_key_approved("win32") then
 			"v",
 			"released"
 		},
+		action_middle = {
+			"mouse",
+			"middle",
+			"pressed"
+		},
 		action_inspect = {
 			"keyboard",
 			"z",

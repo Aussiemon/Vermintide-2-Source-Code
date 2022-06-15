@@ -698,6 +698,11 @@ NetworkServer.peer_disconnected = function (self, peer_id)
 	self.profile_synchronizer:clear_peer_data(peer_id)
 
 	self._peer_initialized_mechanisms[peer_id] = nil
+	local slot_reservation_handler = Managers.mechanism:get_slot_reservation_handler()
+
+	if slot_reservation_handler and slot_reservation_handler.remove_peer_reservations then
+		slot_reservation_handler:remove_peer_reservations(peer_id)
+	end
 end
 
 NetworkServer.get_peer_initialized_mechanism = function (self, peer_id)

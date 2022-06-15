@@ -26,7 +26,7 @@ DifficultyManager.set_difficulty = function (self, difficulty, tweak)
 	self.difficulty_tweak = tweak
 	self.difficulty_rank = DifficultySettings[difficulty].rank
 
-	SET_BREED_DIFFICULTY()
+	SET_BREED_DIFFICULTY(difficulty)
 
 	if self.is_server then
 		local lobby_data = self.lobby_host:get_stored_lobby_data()

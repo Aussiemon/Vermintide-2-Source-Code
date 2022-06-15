@@ -339,7 +339,7 @@ NetworkedFlowStateManager._sync_states = function (self, peer)
 	local network_manager = Managers.state.network
 
 	for unit, unit_states in pairs(self._object_states) do
-		fassert(Unit.alive(unit), "[NetworkedFlowStateManager] Trying to hot join sync state variable for destroyed unit.")
+		fassert(Unit.alive(unit), "[NetworkedFlowStateManager] Trying to hot join sync state variable for destroyed unit %s.", unit_states.unit_debug_name)
 
 		local unit_id, is_level_id = network_manager:game_object_or_level_id(unit)
 		local channel_id = PEER_ID_TO_CHANNEL[peer]

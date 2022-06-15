@@ -76,6 +76,17 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, network_
 		max_size = max_size
 	}
 	local mutators = self._game_mode:mutators()
+	local level_settings = LevelSettings[self._level_key]
+	local level_mutators = level_settings.mutators
+
+	if level_mutators then
+		mutators = mutators or {}
+
+		for i = 1, #level_mutators, 1 do
+			mutators[#mutators + 1] = level_mutators[i]
+		end
+	end
+
 	local has_local_client = not DEDICATED_SERVER
 	self._mutator_handler = MutatorHandler:new(mutators, self.is_server, has_local_client, world, network_event_delegate, network_transmit)
 	self._looping_event_timers = {}
@@ -1039,6 +1050,14 @@ GameModeManager._update_end_level_areas = function (self)
 		end
 
 		return num_non_disabled_players > 0
+	end
+end
+
+GameModeManager.on_round_end = function (self)
+	local game_mode = self._game_mode
+
+	if game_mode and game_mode.on_round_end then
+		game_mode:on_round_end()
 	end
 end
 

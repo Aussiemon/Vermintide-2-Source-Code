@@ -21,6 +21,10 @@ PlayerEquipmentWorldMarkerExtension._extensions_ready = function (self)
 		return
 	end
 
+	if Managers.level_transition_handler:in_hub_level() then
+		return
+	end
+
 	local unit = self._unit
 	self._status_extension = ScriptUnit.extension(unit, "status_system")
 	local local_player = Managers.player:local_player()

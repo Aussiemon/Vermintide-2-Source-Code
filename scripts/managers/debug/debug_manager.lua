@@ -187,6 +187,8 @@ DebugManager.update = function (self, dt, t)
 		self._cycle_patch_items_at = nil
 	end
 
+	self:_update_unit_spawning(dt, t)
+
 	if script_data.debug_unit and script_data.debug_behaviour_trees then
 		local debug_unit = script_data.debug_unit
 
@@ -808,6 +810,77 @@ DebugManager._load_resource = function (self, unit_name)
 
 	Managers.package:load(unit_name, "debug_patch", NO_CALLBACK, SYNCHRONOUS, PRIORITIZE)
 	Managers.package:load(unit_name_3p, "debug_patch", NO_CALLBACK, SYNCHRONOUS, PRIORITIZE)
+end
+
+DebugManager.send_conflict_director_command = function (self, method, breed_name, position, extra_data)
+	breed_name = breed_name or ""
+
+	if not position then
+		local player_unit = Managers.player:local_player().player_unit
+		local player_position = POSITION_LOOKUP[player_unit]
+		local conflict = Managers.state.conflict
+		position = conflict:player_aim_raycast(self._world, false, "filter_ray_horde_spawn") or player_position or Vector3.zero()
+	end
+
+	local enhancements_string = ""
+	local picked_enhancements = self.debug_breed_picker.picked_enhancements
+
+	if picked_enhancements and next(picked_enhancements) then
+		enhancements_string = table.concat(table.keys(picked_enhancements), ",")
+	end
+
+	Managers.state.network.network_transmit:send_rpc_server("rpc_debug_conflict_director_command", method, breed_name, position, enhancements_string, extra_data or {})
+end
+
+DebugManager._update_unit_spawning = function (self, dt, t)
+	if DebugKeyHandler.key_pressed("o", "switch spawn breed", "ai") then
+		self.debug_breed_picker:activate()
+	end
+
+	if self.debug_breed_picker.active and self.is_server then
+		if DebugKeyHandler.key_pressed("i", "switch spawn breed", "ai", "left shift") then
+			Managers.state.conflict:cycle_debug_spawn_side()
+		end
+
+		Debug.text("Debug spawn side: %s", Managers.state.conflict.debug_spawn_side_id)
+	end
+
+	self.debug_breed_picker:update(t, dt)
+
+	local debug_breed_name = self.debug_breed_picker:current_item_name()
+
+	if DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "left ctrl") then
+		self:send_conflict_director_command("debug_spawn_group", debug_breed_name)
+	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "right ctrl") then
+		self:send_conflict_director_command("debug_spawn_roaming_patrol")
+	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai", "left alt") then
+		self:send_conflict_director_command("debug_spawn_group_at_main_path")
+	elseif DebugKeyHandler.key_pressed("p", "spawn " .. debug_breed_name, "ai") then
+		local current_item = self.debug_breed_picker:current_item()
+
+		self:send_conflict_director_command("debug_spawn_breed", debug_breed_name, nil, current_item)
+	elseif DebugKeyHandler.key_pressed("o", "spawn hidden " .. debug_breed_name, "ai", "left ctrl") then
+		self:send_conflict_director_command("debug_spawn_breed_at_hidden_spawner", debug_breed_name)
+	end
+
+	if DebugKeyHandler.key_pressed("u", "unspawn close AIs", "ai") then
+		local player_unit = Managers.player:local_player().player_unit
+		local position = POSITION_LOOKUP[player_unit]
+
+		if not position then
+			print("can't destroy close units - player is dead")
+
+			return
+		end
+
+		self:send_conflict_director_command("destroy_close_units", nil, position)
+	elseif DebugKeyHandler.key_pressed("l", "unspawn all AIs", "ai") then
+		self:send_conflict_director_command("destroy_all_units")
+	end
+
+	if DebugKeyHandler.key_pressed("m", "unspawn all AI specials", "ai") then
+		self:send_conflict_director_command("destroy_specials")
+	end
 end
 
 return

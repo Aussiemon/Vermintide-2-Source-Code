@@ -242,6 +242,21 @@ DLCSettings = DLCSettings or {
 			buff = "scripts/settings/dlcs/grudge_marks/buff_settings_grudge_marks"
 		}
 	},
+	belakor = {
+		localization = "localization/belakor",
+		package_name = "resource_packages/dlcs/belakor",
+		additional_settings = {
+			buff = "scripts/settings/dlcs/belakor/belakor_buff_settings",
+			ai = "scripts/settings/dlcs/belakor/belakor_ai_settings",
+			common = "scripts/settings/dlcs/belakor/belakor_common_settings",
+			sound = "scripts/settings/dlcs/belakor/belakor_sound_settings",
+			achievements = "scripts/settings/dlcs/belakor/belakor_achievements_settings",
+			challenges = "scripts/settings/dlcs/belakor/belakor_ingame_challenge_settings",
+			equipment = "scripts/settings/dlcs/belakor/belakor_equipment_settings",
+			pickups = "scripts/settings/dlcs/belakor/belakor_pickup_settings",
+			ui = "scripts/settings/dlcs/belakor/belakor_ui_settings"
+		}
+	},
 	geheimnisnacht_2021 = {
 		package_name = "resource_packages/dlcs/geheimnisnacht_2021",
 		additional_settings = {
@@ -262,6 +277,14 @@ DLCSettings = DLCSettings or {
 		additional_settings = {
 			common = "scripts/settings/dlcs/cosmetics_2022_q1/cosmetics_2022_q1_common_settings",
 			equipment = "scripts/settings/dlcs/cosmetics_2022_q1/cosmetics_2022_q1_equipment_settings"
+		}
+	},
+	cosmetics_2022_q2 = {
+		localization = "localization/cosmetics_2022_q2",
+		package_name = "resource_packages/dlcs/cosmetics_2022_q2",
+		additional_settings = {
+			common = "scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_2022_q2_common_settings",
+			equipment = "scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_2022_q2_equipment_settings"
 		}
 	}
 }

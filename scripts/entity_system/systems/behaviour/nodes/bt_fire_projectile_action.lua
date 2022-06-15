@@ -230,7 +230,7 @@ BTFireProjectileAction._fire_from_position_direction = function (self, blackboar
 	local fire_node = Unit.node(unit, "j_lefthand")
 	local fire_position = Unit.world_position(unit, fire_node)
 	local target_locomotion = ScriptUnit.has_extension(attacking_target, "locomotion_system")
-	local target_current_velocity = target_locomotion:small_sample_size_average_velocity()
+	local target_current_velocity = (target_locomotion.small_sample_size_average_velocity and target_locomotion:small_sample_size_average_velocity()) or Vector3.zero()
 	local target_current_speed = Vector3.length(target_current_velocity)
 
 	if target_current_speed > 4 then

@@ -225,16 +225,32 @@ IngamePlayerListUI._setup_mutator_data = function (self)
 	end
 end
 
-IngamePlayerListUI._setup_chaos_wastes_info = function (self)
+IngamePlayerListUI._get_deus_current_node = function (self)
 	local game_mode_key = Managers.state.game_mode:game_mode_key()
 
 	if game_mode_key ~= "deus" then
 		return
 	end
 
+	local mechanism_name = Managers.mechanism:current_mechanism_name()
+
+	if mechanism_name ~= "deus" then
+		return
+	end
+
 	local mechanism = Managers.mechanism:game_mechanism()
-	local deus_run_controller = mechanism:get_deus_run_controller()
-	local current_node = deus_run_controller:get_current_node()
+	local deus_run_controller = mechanism and mechanism:get_deus_run_controller()
+
+	return deus_run_controller:get_current_node()
+end
+
+IngamePlayerListUI._setup_chaos_wastes_info = function (self)
+	local current_node = self:_get_deus_current_node()
+
+	if not current_node then
+		return
+	end
+
 	local theme = current_node.theme
 	local minor_modifier_group = current_node.minor_modifier_group
 	local terror_event_power_up = current_node.terror_event_power_up
@@ -347,8 +363,13 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 			local mission_name = setting.mission_name
 			local widget_name = setting.widget_name
 			local texture = setting.texture
+			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
+			local texture_size = texture_settings.size
+			local size_w = texture_size[1]
+			local size_h = texture_size[2]
+			local size_scale = 1
 			local title_text = Localize(setting.title_text)
-			local widget_definition = create_loot_widget(texture, title_text)
+			local widget_definition = create_loot_widget(texture, title_text, size_scale)
 			local widget = UIWidget.init(widget_definition)
 			local data = {
 				name = key,
@@ -356,8 +377,8 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 				mission_name = mission_name,
 				widget = widget
 			}
-			local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture)
-			local texture_size = texture_settings.size
+			size_w = size_w * size_scale
+			size_h = size_h * size_scale
 			local text_style = widget.style.text
 			local text_width = UIUtils.get_text_width(ui_renderer, text_style, title_text) + 20
 
@@ -369,7 +390,7 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 			column = mission_count % entries_per_row
 
 			if column > 0 then
-				offset_x = offset_x + texture_size[1] + longest_row_text
+				offset_x = offset_x + size_w + longest_row_text
 				longest_row_text = 0
 			else
 				offset_x = 0
@@ -377,7 +398,7 @@ IngamePlayerListUI._setup_mission_data = function (self, level_settings)
 
 			local offset = widget.offset
 			offset[1] = offset_x
-			offset[2] = -(row - 1) * texture_size[2]
+			offset[2] = -(row - 1) * size_h
 			settings_data[key] = data
 			widgets_by_name[widget_name] = widget
 			widgets[#widgets + 1] = widget
@@ -903,9 +924,11 @@ IngamePlayerListUI.update = function (self, dt, t)
 
 				if not self._cursor_active then
 					ShowCursorStack.push()
-					input_manager:block_device_except_service("player_list_input", "keyboard")
-					input_manager:block_device_except_service("player_list_input", "mouse")
-					input_manager:block_device_except_service("player_list_input", "gamepad")
+					input_manager:capture_input({
+						"keyboard",
+						"gamepad",
+						"mouse"
+					}, 1, "player_list_input", "IngamePlayerListUI")
 
 					self._cursor_active = true
 				end
@@ -922,9 +945,11 @@ IngamePlayerListUI.update = function (self, dt, t)
 	if self._active then
 		if input_service:get("activate_ingame_player_list") and not self._cursor_active then
 			ShowCursorStack.push()
-			input_manager:block_device_except_service("player_list_input", "keyboard")
-			input_manager:block_device_except_service("player_list_input", "mouse")
-			input_manager:block_device_except_service("player_list_input", "gamepad")
+			input_manager:capture_input({
+				"keyboard",
+				"gamepad",
+				"mouse"
+			}, 1, "player_list_input", "IngamePlayerListUI")
 
 			self._cursor_active = true
 		end
@@ -1077,9 +1102,14 @@ IngamePlayerListUI._set_active = function (self, active)
 
 		local input_manager = self._input_manager
 
-		input_manager:device_unblock_all_services("keyboard")
-		input_manager:device_unblock_all_services("mouse")
-		input_manager:device_unblock_all_services("gamepad")
+		input_manager:release_input({
+			"keyboard",
+			"gamepad",
+			"mouse"
+		}, 1, "player_list_input", "IngamePlayerListUI", true)
+		input_manager:device_unblock_service("keyboard", 1, "player_list_input")
+		input_manager:device_unblock_service("gamepad", 1, "player_list_input")
+		input_manager:device_unblock_service("mouse", 1, "player_list_input")
 
 		self._cursor_active = false
 	end

@@ -103,6 +103,7 @@ end
 
 local pockets_full_of_bombs_potion_template = generate_non_refreshable_potion_template("pockets_full_of_bombs")
 pockets_full_of_bombs_potion_template.ammo_data.wield_previous_weapon_when_destroyed = false
+pockets_full_of_bombs_potion_template.ammo_data.force_wield_previous_weapon_when_ammo_given = true
 
 return {
 	liquid_bravado_potion = generate_non_refreshable_potion_template("liquid_bravado"),

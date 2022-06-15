@@ -45,7 +45,7 @@ StateTitleScreenInitNetwork.update = function (self, dt, t)
 	end
 
 	Network.update(dt, self._network_event_delegate.event_table)
-	Managers.backend:update(dt)
+	Managers.backend:update(dt, t)
 
 	return self:_next_state()
 end

@@ -22,7 +22,9 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._start_ammo = math.round(ammo_percent * self._max_ammo)
 	self._ammo_per_clip = ammo_data.ammo_per_clip or self._max_ammo
 	self._ammo_per_reload = ammo_data.ammo_per_reload
-	self._current_ammo = 0
+	self._starting_loaded_ammo = ammo_data.starting_loaded_ammo
+	self._current_ammo = ammo_data.starting_loaded_ammo or 0
+	self._starting_reserve_ammo = ammo_data.starting_reserve_ammo
 	self._original_max_ammo = self._max_ammo
 	self._original_ammo_percent = ammo_percent
 	self._original_ammo_per_clip = self._ammo_per_clip
@@ -32,6 +34,12 @@ GenericAmmoUserExtension.init = function (self, extension_init_context, unit, ex
 	self._has_wield_reload_anim = ammo_data.has_wield_reload_anim
 	self._destroy_when_out_of_ammo = ammo_data.destroy_when_out_of_ammo
 	self._unwield_when_out_of_ammo = ammo_data.unwield_when_out_of_ammo
+
+	if ammo_data.force_wield_previous_weapon_when_ammo_given ~= nil then
+		self._force_wield_previous_weapon_when_ammo_given = ammo_data.force_wield_previous_weapon_when_ammo_given
+	else
+		self._force_wield_previous_weapon_when_ammo_given = false
+	end
 
 	if ammo_data.wield_previous_weapon_when_destroyed ~= nil then
 		self._wield_previous_weapon_when_destroyed = ammo_data.wield_previous_weapon_when_destroyed
@@ -103,14 +111,15 @@ end
 
 GenericAmmoUserExtension.reset = function (self)
 	local no_ammo = self._initialized and self:total_remaining_ammo() == 0
+	local start_ammo = self._starting_loaded_ammo or self._start_ammo
 
 	if self._ammo_immediately_available then
-		self._current_ammo = self._start_ammo
+		self._current_ammo = start_ammo
 	else
-		self._current_ammo = math.min(self._ammo_per_clip, self._start_ammo)
+		self._current_ammo = math.min(self._ammo_per_clip, start_ammo)
 	end
 
-	self._available_ammo = self._start_ammo - self._current_ammo
+	self._available_ammo = self._starting_reserve_ammo or self._start_ammo - self._current_ammo
 	self._shots_fired = 0
 
 	self:_update_anim_ammo()
@@ -156,7 +165,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 
 					inventory_extension:destroy_slot(self.slot_name, false, true)
 
-					if self._wield_previous_weapon_when_destroyed then
+					if (self._last_ammo_used_was_given and self._force_wield_previous_weapon_when_ammo_given) or self._wield_previous_weapon_when_destroyed then
 						local grabbed_by_packmaster = status_extension and CharacterStateHelper.pack_master_status(status_extension)
 
 						if not grabbed_by_packmaster then
@@ -381,7 +390,7 @@ GenericAmmoUserExtension.add_ammo_to_reserve = function (self, amount)
 	self:_update_anim_ammo()
 end
 
-GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
+GenericAmmoUserExtension.use_ammo = function (self, ammo_used, given)
 	local buff_extension = self.owner_buff_extension
 	local infinite_ammo = false
 
@@ -396,7 +405,7 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 	self._shots_fired = self._shots_fired + ammo_used
 
 	if buff_extension then
-		buff_extension:trigger_procs("on_ammo_used", self)
+		buff_extension:trigger_procs("on_ammo_used", self, ammo_used)
 		Managers.state.achievement:trigger_event("ammo_used", self.owner_unit)
 
 		if self:total_remaining_ammo() == 0 then
@@ -421,6 +430,9 @@ GenericAmmoUserExtension.use_ammo = function (self, ammo_used)
 	end
 
 	self:_update_anim_ammo()
+
+	self._last_ammo_used_was_given = given
+
 	fassert(self:ammo_count() >= 0, "ammo went below 0")
 end
 
@@ -546,6 +558,12 @@ end
 
 GenericAmmoUserExtension.ammo_blocked = function (self)
 	return self._block_ammo_pickup
+end
+
+GenericAmmoUserExtension.add_ammo_to_clip = function (self, ammo)
+	self._current_ammo = self._current_ammo + ammo
+
+	self:_update_anim_ammo()
 end
 
 GenericAmmoUserExtension.instant_reload = function (self, bonus_ammo, reload_anim_event)

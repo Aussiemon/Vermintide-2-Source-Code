@@ -16,6 +16,7 @@ BTMoveToGoalAction.enter = function (self, unit, blackboard, t)
 
 	blackboard.navigation_extension:move_to(goal_destination)
 
+	blackboard.new_move_to_goal = nil
 	local network_manager = Managers.state.network
 	local breed = blackboard.breed
 	local passive_in_patrol = breed.passive_in_patrol == nil or (breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol)

@@ -13,7 +13,7 @@ local function network_printf(format, ...)
 	end
 end
 
-NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wanted_party_index, clear_peer_states, lobby_client)
+NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wanted_party_index, clear_peer_states, lobby_client, voip)
 	self:set_state("connecting")
 
 	self.server_peer_id = server_peer_id
@@ -52,11 +52,16 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 		RPC.rpc_clear_peer_state(channel_id)
 	end
 
-	local voip_params = {
-		is_server = is_server,
-		lobby = lobby_client
-	}
-	self.voip = Voip:new(voip_params)
+	if voip then
+		self.voip = voip
+	else
+		local voip_params = {
+			is_server = is_server,
+			lobby = lobby_client
+		}
+		self.voip = Voip:new(voip_params)
+	end
+
 	self.connecting_timeout = 0
 
 	EAC.before_join()

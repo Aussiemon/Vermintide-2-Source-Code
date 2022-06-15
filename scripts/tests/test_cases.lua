@@ -887,6 +887,62 @@ TestCases.equip_deus_power_ups = function (case_settings)
 	end)
 end
 
+local LevelSettingsMorris = require("levels/honduras_dlcs/morris/level_settings_morris")
+
+TestCases.write_morris_levels_to_file = function ()
+	Testify:run_case(function (dt, t)
+		local filename = "load_all_deus_levels.yaml"
+		local file = io.open(filename, "w")
+		local suite_definition = {
+			"suites_definition:",
+			"  - suite_id: load_all_deus_levels",
+			"    name: Load All Deus Levels",
+			"    abort_if_n_first_cases_failed: 3",
+			"    sessions:",
+			"      - project_config_type: game_host",
+			"        extra_session_args: -skip-splash -disable-intro-trailer -debug-testify -use-local-backend -mechanism deus"
+		}
+
+		for i = 1, 7, 1 do
+			file:write(suite_definition[i], "\n")
+		end
+
+		file:write("\n", "    cases:", "\n")
+
+		local case_definition = {
+			"      - case_definition_id: load_level",
+			nil,
+			nil,
+			"        script_args:",
+			nil,
+			"          - true"
+		}
+
+		for level_name, level_settings in pairs(LevelSettingsMorris) do
+			local level_key = level_settings.level_key
+
+			if level_key then
+				local is_deus_level = level_name == level_key
+
+				if is_deus_level then
+					case_definition[2] = "        case_id: load_deus_level_" .. level_key
+					case_definition[3] = "        name: Load Deus Level - " .. level_key
+					case_definition[5] = "          - " .. level_key
+
+					for i = 1, 6, 1 do
+						file:write(case_definition[i], "\n")
+					end
+
+					file:write("\n")
+				end
+			end
+		end
+
+		file:flush()
+		file:close()
+	end)
+end
+
 TestCases.equip_hats = function ()
 	Testify:run_case(function (dt, t)
 		TestifySnippets.load_level({

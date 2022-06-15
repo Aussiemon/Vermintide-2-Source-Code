@@ -490,7 +490,7 @@ BackendManagerPlayFab._update_interface = function (self, interface_name, dt)
 	end
 end
 
-BackendManagerPlayFab.update = function (self, dt)
+BackendManagerPlayFab.update = function (self, dt, t)
 	if self:_are_profiles_loaded() and not self._profiles_loaded then
 		self._profiles_loaded = true
 
@@ -506,7 +506,7 @@ BackendManagerPlayFab.update = function (self, dt)
 	local error_data = nil
 
 	if mirror then
-		error_data = mirror:update(dt)
+		error_data = mirror:update(dt, t)
 	end
 
 	if queue then

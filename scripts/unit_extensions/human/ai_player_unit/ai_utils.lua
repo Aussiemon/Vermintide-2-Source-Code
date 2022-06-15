@@ -5,6 +5,8 @@ require("scripts/entity_system/systems/behaviour/utility/utility")
 local unit_get_data = Unit.get_data
 local script_data = script_data
 local unit_alive = Unit.alive
+local unit_local_rotation = Unit.local_rotation
+local unit_animation_event = Unit.animation_event
 local BLACKBOARDS = BLACKBOARDS
 
 function aiprint(...)
@@ -172,8 +174,8 @@ AiUtils.breed_name = function (unit)
 	return Unit.get_data(unit, "breed").name
 end
 
-AiUtils.stagger_target = function (unit, hit_unit, distance, impact, direction, t)
-	local stagger_type, stagger_duration = DamageUtils.calculate_stagger(impact, nil, hit_unit, unit)
+AiUtils.stagger_target = function (unit, hit_unit, distance, impact, direction, t, duration_table, attack_template, hit_zone_name, blocked)
+	local stagger_type, stagger_duration = DamageUtils.calculate_stagger(impact, duration_table, hit_unit, unit, attack_template, hit_zone_name, blocked)
 
 	if stagger_type > 0 then
 		local hit_unit_blackboard = BLACKBOARDS[hit_unit]
@@ -199,7 +201,7 @@ AiUtils.damage_target = function (target_unit, attacker_unit, action, damage_tri
 		local diminishing_damage_data = action.diminishing_damage
 		local target_slot_extension = ScriptUnit.has_extension(target_unit, "ai_slot_system")
 
-		if diminishing_damage_data and target_slot_extension then
+		if diminishing_damage_data and target_slot_extension and target_slot_extension.has_slots_attached then
 			local slots_n = target_slot_extension.delayed_num_occupied_slots
 
 			if slots_n > 0 then
@@ -1076,13 +1078,13 @@ end
 
 AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_type, damage_direction, damage_source)
 	local damage_amount = NetworkConstants.damage.max
-	local attacker_unit = attacker_unit or victim_unit
+	attacker_unit = attacker_unit or victim_unit
 
 	if ALIVE[victim_unit] then
-		local hit_zone_name = hit_zone_name or "full"
-		local damage_type = damage_type or "kinetic"
-		local damage_source = damage_source or "suicide"
-		local damage_direction = damage_direction or Vector3(0, 0, 1)
+		hit_zone_name = hit_zone_name or "full"
+		damage_type = damage_type or "kinetic"
+		damage_source = damage_source or "suicide"
+		damage_direction = damage_direction or Vector3(0, 0, 1)
 		local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
 
 		for i = 1, math.ceil(health / damage_amount), 1 do

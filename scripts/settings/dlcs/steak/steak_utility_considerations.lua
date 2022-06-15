@@ -5,6 +5,10 @@ UtilityConsiderations.minotaur_melee_shove = {
 		blackboard_input = "target_dist",
 		spline = {
 			0,
+			0,
+			0.15,
+			0,
+			0.16,
 			1,
 			0.5233333333333333,
 			1,

@@ -37,6 +37,10 @@ UnlockClan.remove_backend_reward_id = function (self)
 	self._backend_reward_id = nil
 end
 
+UnlockClan.set_status_changed = function (self, value)
+	return
+end
+
 UnlockClan.unlocked = function (self)
 	return self._unlocked
 end

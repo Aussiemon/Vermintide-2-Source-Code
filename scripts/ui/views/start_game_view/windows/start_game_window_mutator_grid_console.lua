@@ -85,6 +85,14 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 
 	self:create_ui_elements(params, offset)
 
+	self._previously_selected_backend_id = self.parent:get_selected_heroic_deed_backend_id()
+	local item_interface = Managers.backend:get_interface("items")
+	local item = item_interface:get_item_from_id(self._previously_selected_backend_id)
+
+	if not item then
+		self._previously_selected_backend_id = nil
+	end
+
 	local hero_name = "empire_soldier"
 	local career_index = 1
 	local item_grid = ItemGridUI:new(grid_settings, self._widgets_by_name.item_grid, hero_name, career_index)
@@ -95,7 +103,6 @@ StartGameWindowMutatorGridConsole.on_enter = function (self, params, offset)
 	self:_setup_input_buttons()
 
 	self._item_grid = item_grid
-	self._previously_selected_backend_id = self.parent:get_selected_heroic_deed_backend_id()
 
 	self.parent:set_input_description("select_heroic_deed")
 	self:_start_transition_animation("on_enter")

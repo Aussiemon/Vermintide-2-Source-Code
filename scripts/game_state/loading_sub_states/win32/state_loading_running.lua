@@ -42,7 +42,7 @@ StateLoadingRunning._init_network = function (self)
 	if loading_context.join_lobby_data or loading_context.join_server_data then
 		self.parent:set_matchmaking(false)
 		Managers.lobby:setup_network_options()
-		self.parent:setup_join_lobby()
+		self.parent:setup_join_lobby(nil, loading_context.setup_voip)
 		self.parent:clear_network_loading_context()
 		Managers.transition:show_icon_background()
 	elseif loading_context.start_lobby_data then

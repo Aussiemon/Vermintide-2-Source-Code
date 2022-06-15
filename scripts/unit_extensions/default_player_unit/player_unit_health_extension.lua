@@ -1,3 +1,4 @@
+local buff_perks = require("scripts/unit_extensions/default_player_unit/buffs/settings/buff_perk_names")
 PlayerUnitHealthExtension = class(PlayerUnitHealthExtension, GenericHealthExtension)
 
 PlayerUnitHealthExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -250,6 +251,11 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 						health = 0
 						temporary_health = max_health / 2
 					end
+
+					if buff_extension:has_buff_perk(buff_perks.full_health_revive) then
+						health = max_health
+						temporary_health = 0
+					end
 				end
 			elseif max_health ~= previous_max_health then
 				local previous_health_percentage, previous_temporary_health_percentage = nil
@@ -449,7 +455,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		end
 	end
 
-	if Script.type_name(damage_amount) == "number" and damage_type ~= "temporary_health_degen" and damage_source_name ~= "temporary_health_degen" then
+	if Script.type_name(damage_amount) == "number" and damage_amount > 0 and damage_type ~= "temporary_health_degen" and damage_source_name ~= "temporary_health_degen" then
 		local player = Managers.player:owner(unit)
 		local position = POSITION_LOOKUP[unit]
 

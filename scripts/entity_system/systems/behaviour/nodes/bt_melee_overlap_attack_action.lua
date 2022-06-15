@@ -421,7 +421,7 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 			local locomotion_extension = blackboard.locomotion_extension
 			local target_status_extension = blackboard.target_unit_status_extension
 
-			if t < blackboard.attack_rotation_update_timer and target_status_extension and not target_status_extension:is_invisible() and (attack.ignores_dodging or not target_status_extension:get_is_dodging()) then
+			if t < blackboard.attack_rotation_update_timer and (not target_status_extension or (not target_status_extension:is_invisible() and (attack.ignores_dodging or not target_status_extension:get_is_dodging()))) then
 				local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.locked_target_unit)
 				local rotation_speed = attack.rotation_speed
 

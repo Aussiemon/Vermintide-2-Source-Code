@@ -23,6 +23,7 @@ CareerSettings.wh_priest = {
 	picking_image = "medium_unit_frame_portrait_victor_priest",
 	preview_wield_slot = "melee",
 	playfab_name = "wh_priest",
+	category_image = "store_category_icon_priest",
 	sound_character = "witch_hunter_priest",
 	portrait_image_picking = "picking_portrait_victor_priest",
 	talent_tree_index = 4,
@@ -71,11 +72,11 @@ CareerSettings.wh_priest = {
 			return false, reason, dlc_name
 		end
 
-		return true
+		return true, reason, dlc_name
 	end,
 	is_dlc_unlocked = function (career)
 		if Managers.unlock:is_dlc_unlocked("bless") then
-			return true
+			return true, nil, "bless"
 		else
 			return false, "dlc_not_owned", "bless"
 		end

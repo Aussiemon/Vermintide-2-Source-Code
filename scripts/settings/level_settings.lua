@@ -1868,11 +1868,10 @@ LevelSettings.warcamp = {
 for level_key, level_data in pairs(LevelSettings) do
 	if level_data.display_name then
 		level_data.level_id = level_key
-		level_data.game_mode = level_data.game_mode or "adventure"
 		level_data.mechanism = level_data.mechanism or "adventure"
 		level_data.act_unlock_order = level_data.act_unlock_order or 0
 
-		if level_data.game_mode == "adventure" then
+		if level_data.mechanism == "adventure" then
 			level_data.loot_objectives = level_data.loot_objectives or {
 				loot_die = 0,
 				tome = 3,

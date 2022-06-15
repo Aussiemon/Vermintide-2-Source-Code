@@ -2,7 +2,7 @@ local deus_rally_flag_template = {
 	max_fatigue_points = 4,
 	left_hand_unit = "units/weapons/player/wpn_deus_folded_rally_flag_01/wpn_deus_folded_rally_flag_01",
 	gui_texture = "hud_consumable_icon_potion",
-	wield_anim = "to_potion",
+	wield_anim = "to_first_aid",
 	can_give_other = true,
 	actions = {
 		action_one = {
@@ -50,7 +50,7 @@ local deus_rally_flag_template = {
 		reload_time = 0,
 		ignore_ammo_pickup = true
 	},
-	left_hand_attachment_node_linking = AttachmentNodeLinking.barrel,
+	left_hand_attachment_node_linking = AttachmentNodeLinking.one_handed_melee_weapon.left,
 	buffs = {
 		change_dodge_distance = {
 			external_optional_multiplier = 1

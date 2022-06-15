@@ -13,6 +13,7 @@ BeastmenStandardExtension.init = function (self, extension_init_context, unit, e
 	self.standard_template_name = standard_template_name
 	self.standard_template_buff_name = standard_template.buff_template_name
 	self.standard_bearer_unit = extension_init_data.standard_bearer_unit
+	self.side = Managers.state.side.side_by_unit[self.standard_bearer_unit]
 	self.apply_buff_frequency = 0.5
 	local t = Managers.time:time("game")
 	self.next_apply_buff_t = t
@@ -235,8 +236,7 @@ end
 BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t)
 	local player_astar_data = self.player_astar_data
 	local nav_world = self.nav_world
-	local side = Managers.state.side:get_side_from_name("dark_pact")
-	local player_units = side.ENEMY_PLAYER_UNITS
+	local player_units = self.side.ENEMY_PLAYER_UNITS
 	local num_player_units = #player_units
 
 	for i = 1, num_player_units, 1 do

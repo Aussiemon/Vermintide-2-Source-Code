@@ -85,6 +85,10 @@ PeakDelayer.update = function (self, current_travel_dist, current_time)
 	end
 end
 
+PeakDelayer.is_near_or_in_a_peak = function (self)
+	return self._state ~= DELAY_STATES.WAITING_TO_REACH_DELAY
+end
+
 PeakDelayer.set_peaks = function (self, peaks)
 	self._peaks = table.clone(peaks)
 end

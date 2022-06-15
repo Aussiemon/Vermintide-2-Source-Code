@@ -637,7 +637,7 @@ CharacterSelectionStateCharacter._set_bot_selection = function (self, index)
 	self._base_icon_y_offset = nil
 	local input_service = self:input_service()
 	local cursor = input_service:get("cursor")
-	self._base_cursor_y_offset = cursor and cursor[2]
+	self._base_cursor_y_offset = cursor and cursor[2] * RESOLUTION_LOOKUP.inv_scale
 	local hero_widget_index = 1
 
 	for row = 1, #PlayerData.bot_spawn_priority, 1 do
@@ -732,7 +732,7 @@ CharacterSelectionStateCharacter._handle_mouse_bot_selection = function (self, i
 			end
 
 			local cursor = input_service:get("cursor")
-			local y_offset = cursor[2]
+			local y_offset = cursor[2] * RESOLUTION_LOOKUP.inv_scale
 			local diff = y_offset - self._base_cursor_y_offset
 			local max_offset = -((#PlayerData.bot_spawn_priority - 1) * 144)
 			local offset_y = math.clamp(self._base_y_offset + diff, max_offset, 0)
@@ -1332,7 +1332,7 @@ CharacterSelectionStateCharacter._set_select_button_enabled = function (self, en
 		if enabled then
 			button_content.title_text = Localize("input_description_confirm")
 			button_content.button_hotspot.disable_button = false
-			button_content.verify_dlc_name = not IS_WINDOWS and dlc_name
+			button_content.verify_dlc_name = dlc_name
 			button_content.dlc_name = nil
 
 			self.menu_input_description:set_input_description(generic_input_actions.available)

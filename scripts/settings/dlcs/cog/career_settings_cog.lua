@@ -14,9 +14,9 @@ PlayerBreeds.hero_dr_engineer = {
 CareerSettings.dr_engineer = {
 	profile_name = "dwarf_ranger",
 	display_name = "dr_engineer",
-	sound_character = "dwarf_engineer",
 	package_name = "resource_packages/careers/dr_engineer",
 	name = "dr_engineer",
+	sound_character = "dwarf_engineer",
 	preview_idle_animation = "career_idle_04",
 	preview_animation = "career_select_04",
 	icon = "icons_placeholder",
@@ -24,6 +24,7 @@ CareerSettings.dr_engineer = {
 	picking_image = "medium_unit_frame_portrait_bardin_engineer",
 	preview_wield_slot = "ranged",
 	playfab_name = "dr_4",
+	category_image = "icons_placeholder",
 	should_reload_career_weapon = true,
 	portrait_image_picking = "picking_portrait_bardin_engineer",
 	talent_tree_index = 4,
@@ -67,11 +68,11 @@ CareerSettings.dr_engineer = {
 			return false, reason, dlc_name
 		end
 
-		return true
+		return true, reason, dlc_name
 	end,
 	is_dlc_unlocked = function (career)
 		if Managers.unlock:is_dlc_unlocked("cog") then
-			return true
+			return true, nil, "cog"
 		else
 			return false, "dlc_not_owned", "cog"
 		end

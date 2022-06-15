@@ -14,8 +14,8 @@ PlayerBreeds.hero_we_thornsister = {
 CareerSettings.we_thornsister = {
 	profile_name = "wood_elf",
 	display_name = "we_thornsister",
-	package_name = "resource_packages/careers/we_thornsister",
 	store_tag_icon = "store_tag_icon_we_thornsister",
+	package_name = "resource_packages/careers/we_thornsister",
 	name = "we_thornsister",
 	preview_idle_animation = "career_idle_04",
 	preview_animation = "career_select_04",
@@ -24,6 +24,7 @@ CareerSettings.we_thornsister = {
 	picking_image = "medium_unit_frame_portrait_kerillian_thornsister",
 	preview_wield_slot = "ranged",
 	playfab_name = "we_thornsister",
+	category_image = "icons_placeholder",
 	sound_character = "wood_elf_sister",
 	portrait_image_picking = "picking_portrait_kerillian_thornsister",
 	talent_tree_index = 4,
@@ -71,11 +72,11 @@ CareerSettings.we_thornsister = {
 			return false, reason, dlc_name
 		end
 
-		return true
+		return true, reason, dlc_name
 	end,
 	is_dlc_unlocked = function (career)
 		if Managers.unlock:is_dlc_unlocked("woods") then
-			return true
+			return true, nil, "woods"
 		else
 			return false, "dlc_not_owned", "woods"
 		end

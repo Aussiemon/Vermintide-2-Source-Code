@@ -6,11 +6,11 @@ MechanismSettings = {
 		display_name = "game_mode_adventure",
 		default_inventory = true,
 		server_universe = "carousel",
-		check_matchmaking_hero_availability = true,
 		tobii_available = true,
 		max_members = 4,
 		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
 		vote_switch_mechanism_text = "vote_switch_mechanism_adventure_description",
+		check_matchmaking_hero_availability = true,
 		class_name = "AdventureMechanism",
 		states = {
 			"inn",
@@ -30,6 +30,10 @@ MechanismSettings = {
 				name = "heroes",
 				num_slots = 4
 			}
+		},
+		gamemode_lookup = {
+			default = "adventure",
+			keep = "inn"
 		}
 	},
 	weave = {
@@ -37,8 +41,8 @@ MechanismSettings = {
 		display_name = "game_mode_adventure",
 		default_inventory = true,
 		server_port = 27015,
-		check_matchmaking_hero_availability = true,
 		tobii_available = true,
+		check_matchmaking_hero_availability = true,
 		class_name = "AdventureMechanism",
 		server_universe = "carousel",
 		vote_switch_mechanism_background = "vote_switch_mechanism_adventure_background",
@@ -108,7 +112,11 @@ MechanismSettings = {
 			end
 
 			return true
-		end
+		end,
+		gamemode_lookup = {
+			default = "weave",
+			keep = "inn"
+		}
 	}
 }
 
@@ -1059,6 +1067,12 @@ end
 GameMechanismManager.get_player_level_fallback = function (self, player)
 	if self._game_mechanism and self._game_mechanism.get_player_level_fallback then
 		return self._game_mechanism:get_player_level_fallback(player)
+	end
+end
+
+GameMechanismManager.get_slot_reservation_handler = function (self)
+	if self._game_mechanism.get_slot_reservation_handler then
+		return self._game_mechanism:get_slot_reservation_handler()
 	end
 end
 

@@ -5122,7 +5122,7 @@ UITooltipPasses = {
 			local item_data = item.data
 			local item_type = item_data.item_type
 
-			if item_type == "crafting_material" or item_type == "skin" or item_type == "hat" or item_type == "weapon_skin" or item_type == "frame" or item_type == "keep_decoration_painting" then
+			if item_type == "crafting_material" or item_type == "weapon_skin" or item_type == "keep_decoration_painting" or CosmeticUtils.is_cosmetic_item(item_type) then
 				local style = data.style
 				local content = data.content
 				local position_x = position[1]

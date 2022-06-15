@@ -221,7 +221,8 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 		cosmetic_system = {
 			profile = profile,
 			skin_name = skin_name,
-			frame_name = frame_name
+			frame_name = frame_name,
+			player = self
 		},
 		buff_system = {
 			is_husk = false

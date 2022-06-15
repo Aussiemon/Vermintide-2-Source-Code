@@ -57,7 +57,7 @@ ProfileRequester._request_profile = function (self, peer_id, local_player_id, re
 	local profile_name, career_name = hero_and_career_name_from_index(profile_index, career_index)
 	local allowed_to_switch_to_profile = nil
 	local mechanism = Managers.mechanism:game_mechanism()
-	allowed_to_switch_to_profile = (not mechanism.name or mechanism.name ~= "Versus" or Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)) and allowed_to_switch_to_profile and self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)
+	allowed_to_switch_to_profile = (mechanism.name ~= "Versus" or Managers.mechanism:profile_available_for_peer(peer_id, local_player_id, profile_name, career_name)) and allowed_to_switch_to_profile and self._profile_synchronizer:try_reserve_profile_for_peer(peer_id, profile_index)
 	local result_id = nil
 
 	if allowed_to_switch_to_profile then

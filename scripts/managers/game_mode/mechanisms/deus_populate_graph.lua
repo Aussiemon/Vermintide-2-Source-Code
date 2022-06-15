@@ -116,6 +116,49 @@ local function get_all_ancestors_and_descendants(nodes, node_key)
 	return all_nodes
 end
 
+local function get_first_playable_descendants(nodes, node_key)
+	if #nodes[node_key].next == 0 then
+		return {}
+	end
+
+	local playable_descendants = {}
+
+	for _, next in ipairs(nodes[node_key].next) do
+		local next_type = nodes[next].type
+
+		if next_type == "SIGNATURE" or next_type == "TRAVEL" or next_type == "ARENA" then
+			playable_descendants[#playable_descendants + 1] = next
+		else
+			local other_playable_descendants = get_first_playable_descendants(nodes, next)
+
+			for _, other_non_dummy_descendent in ipairs(other_playable_descendants) do
+				playable_descendants[#playable_descendants + 1] = other_non_dummy_descendent
+			end
+		end
+	end
+
+	return playable_descendants
+end
+
+local function get_descendants(nodes, node_key, depth)
+	if depth > 1 then
+		depth = depth - 1
+		local all_descendants = {}
+
+		for _, next_node_key in ipairs(nodes[node_key].next) do
+			local visibles_from_descendant = get_descendants(nodes, next_node_key, depth)
+
+			for visible_from_descendant_node_key, visible_from_descendant in pairs(visibles_from_descendant) do
+				all_descendants[visible_from_descendant_node_key] = visible_from_descendant
+			end
+		end
+
+		return all_descendants
+	else
+		return nodes[node_key].next
+	end
+end
+
 local function prevent_same_level_choice(config, working_graph, node_key, level)
 	local prev = working_graph[node_key].prev
 
@@ -661,6 +704,122 @@ local function spread_curse(context, working_graph)
 	end
 end
 
+local function spread_belakor(context, working_graph)
+	local possible_belakor_nodes = {}
+	local depth = context.config.ARENA_BELAKOR_SHOWS_UP_IN_DEPTH
+
+	for node_key, node in pairs(working_graph) do
+		if node.type ~= "START" and node.type ~= "SHOP" and node.type ~= "ARENA" then
+			local final_nodes = nil
+			local possible_arena_belakor_nodes = get_descendants(working_graph, node_key, depth)
+			local possible_arena_belakor_nodes_without_shops = {}
+
+			for _, possible_node_key in ipairs(possible_arena_belakor_nodes) do
+				local possible_node = working_graph[possible_node_key]
+
+				if possible_node.type == "SHOP" then
+					local shop_playable_connections = get_first_playable_descendants(working_graph, possible_node_key)
+
+					for _, shop_playable_connection_node_key in ipairs(shop_playable_connections) do
+						possible_arena_belakor_nodes_without_shops[#possible_arena_belakor_nodes_without_shops + 1] = shop_playable_connection_node_key
+					end
+				else
+					possible_arena_belakor_nodes_without_shops[#possible_arena_belakor_nodes_without_shops + 1] = possible_node_key
+				end
+			end
+
+			for _, possible_node_key in ipairs(possible_arena_belakor_nodes_without_shops) do
+				local possible_node = working_graph[possible_node_key]
+
+				repeat
+					if #possible_node.next == 0 then
+						possible_node = nil
+
+						break
+					end
+
+					possible_node = working_graph[possible_node.next[1]]
+				until possible_node.type == "SIGNATURE" or possible_node.type == "TRAVEL"
+
+				if possible_node then
+					final_nodes = final_nodes or {}
+					final_nodes[possible_node_key] = true
+				end
+			end
+
+			if final_nodes then
+				local final_list = {}
+
+				for final_node_key, _ in pairs(final_nodes) do
+					final_list[#final_list + 1] = final_node_key
+				end
+
+				node.possible_arena_belakor_nodes = final_list
+				possible_belakor_nodes[#possible_belakor_nodes + 1] = node_key
+			end
+		end
+	end
+
+	local belakor_node_map = table.mirror_array_inplace(possible_belakor_nodes)
+	local first_playable_nodes = get_first_playable_descendants(working_graph, "start")
+	local belakor_paths = {}
+
+	for i = 1, #first_playable_nodes, 1 do
+		local path_start_node = first_playable_nodes[i]
+
+		if belakor_node_map[path_start_node] then
+			local path = {}
+			local path_n = 1
+			belakor_paths[#belakor_paths + 1] = path
+			path[path_n] = first_playable_nodes[i]
+			local path_next = get_descendants(working_graph, path_start_node, 1)
+
+			for j = 1, #path_next, 1 do
+				if belakor_node_map[path_next[j]] then
+					path_n = path_n + 1
+					path[path_n] = path_next[j]
+				end
+			end
+		end
+	end
+
+	local random_generator = context.random_generator
+	local belakor_nodes = {}
+
+	for path_id = 1, #belakor_paths, 1 do
+		local path = belakor_paths[path_id]
+		local path_n = #path
+
+		if path_n > 0 then
+			local rand_node = random_generator(1, path_n)
+			local rand_node_name = path[rand_node]
+			belakor_nodes[#belakor_nodes + 1] = rand_node_name
+
+			for next_path_id = path_id + 1, #belakor_paths, 1 do
+				local next_path = belakor_paths[next_path_id]
+
+				if table.contains(next_path, rand_node_name) then
+					table.clear(next_path)
+				else
+					for i = 1, #path, 1 do
+						local overlapping_node_idx = table.find(next_path, path[i])
+
+						if overlapping_node_idx then
+							table.remove(next_path, overlapping_node_idx)
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for i = 1, #belakor_nodes, 1 do
+		local belakor_node_key = belakor_nodes[i]
+
+		assign_random_curse(context, working_graph[belakor_node_key], "belakor")
+	end
+end
+
 local function spread_minor_modifier_groups(context, working_graph)
 	local nodes_above_progress = get_nodes_above_progress(working_graph, context.config.MINOR_MODIFIABLE_MIN_PROGRESS)
 	local possible_minor_modifiable_nodes = filter_node_types(nodes_above_progress, context.config.MINOR_MODIFIABLE_NODE_TYPES)
@@ -785,7 +944,7 @@ function deus_generate_seeds(level_seed)
 	}
 end
 
-function deus_populate_graph(base_graph, seed, config, dominant_god)
+function deus_populate_graph(base_graph, seed, config, dominant_god, with_belakor)
 	local random_generator = DeusGenUtils.create_random_generator(seed)
 	local working_graph = table.clone(base_graph)
 	local context = {
@@ -849,6 +1008,11 @@ function deus_populate_graph(base_graph, seed, config, dominant_god)
 
 	calculate_progress(context, working_graph)
 	spread_curse(context, working_graph)
+
+	if with_belakor then
+		spread_belakor(context, working_graph)
+	end
+
 	spread_minor_modifier_groups(context, working_graph)
 	assign_conflict_settings(context, working_graph)
 	spread_terror_event_power_ups(context, working_graph)
@@ -882,6 +1046,7 @@ function deus_populate_graph(base_graph, seed, config, dominant_god)
 			mutators = config.MUTATORS[base_node.type],
 			terror_event_power_up = base_node.terror_event_power_up,
 			terror_event_power_up_rarity = base_node.terror_event_power_up_rarity,
+			possible_arena_belakor_nodes = base_node.possible_arena_belakor_nodes,
 			next = table.clone(base_node.next)
 		}
 

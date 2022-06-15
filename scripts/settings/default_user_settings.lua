@@ -82,6 +82,7 @@ local default_user_settings = {
 	use_razer_chroma = false,
 	friendly_fire_crosshair = true,
 	language_id = "en",
+	persistent_ammo_counter = false,
 	friendly_fire_hit_marker = true,
 	subtitles_font_size = 20,
 	subtitles_background_opacity = 20,

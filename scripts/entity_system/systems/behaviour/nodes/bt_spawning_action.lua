@@ -12,7 +12,10 @@ local unit_alive = Unit.alive
 BTSpawningAction.enter = function (self, unit, blackboard, t)
 	Unit.set_animation_root_mode(unit, "ignore")
 
-	if blackboard.spawn_type == "horde" then
+	local breed = blackboard.breed
+	blackboard.uses_spawn_animation = blackboard.spawn_type == "horde" or breed.uses_spawn_animation
+
+	if blackboard.uses_spawn_animation then
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 		local animation_translation_scale = 1 / ai_extension:size_variation()
 
@@ -28,7 +31,6 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local network_manager = Managers.state.network
-	local breed = blackboard.breed
 	local wield_inventory_on_spawn = breed.wield_inventory_on_spawn
 	local is_horde = blackboard.spawn_type == "horde" or blackboard.spawn_type == "horde_hidden"
 
@@ -39,6 +41,11 @@ BTSpawningAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local spawn_animation = blackboard.spawn_animation or breed.default_spawn_animation or "idle"
+
+	if type(spawn_animation) == "table" then
+		local random_index = Math.random(1, #spawn_animation)
+		spawn_animation = spawn_animation[random_index]
+	end
 
 	network_manager:anim_event(unit, spawn_animation)
 
@@ -54,7 +61,7 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	ai_navigation:init_position()
 
-	if (blackboard.spawn_type == "horde" or blackboard.spawn_type == "horde_hidden") and not destroy and not blackboard.about_to_be_destroyed then
+	if (blackboard.uses_spawn_animation or blackboard.spawn_type == "horde_hidden") and not destroy and not blackboard.about_to_be_destroyed then
 		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
 		ai_extension:force_enemy_detection(t)
@@ -73,7 +80,7 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 		locomotion_extension:set_movement_type("snap_to_navmesh")
 
-		if blackboard.spawn_type == "horde" then
+		if blackboard.uses_spawn_animation then
 			locomotion_extension:use_lerp_rotation(true)
 			LocomotionUtils.set_animation_driven_movement(unit, false)
 
@@ -92,6 +99,20 @@ BTSpawningAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 
 BTSpawningAction.run = function (self, unit, blackboard, t, dt)
+	local breed = blackboard.breed
+
+	if breed.interrupt_spawning_on_stagger and blackboard.stagger then
+		blackboard.spawning_finished = true
+	end
+
+	if breed.interrupt_spawning_on_health_percentage then
+		local percent = ScriptUnit.extension(unit, "health_system"):current_health_percent()
+
+		if percent < breed.interrupt_spawning_on_health_percentage then
+			blackboard.spawning_finished = true
+		end
+	end
+
 	local locomotion_extension = blackboard.locomotion_extension
 	local spawning_finished = blackboard.spawning_finished
 	local nav_world = blackboard.nav_world

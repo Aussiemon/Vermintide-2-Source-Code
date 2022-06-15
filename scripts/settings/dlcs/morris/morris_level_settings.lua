@@ -340,6 +340,22 @@ settings.missions = {
 		text = "cursed_chest_challenge_beastmen_minotaur",
 		disable_rewards = true,
 		mission_template_name = "simple"
+	},
+	arena_belakor_go_tower = {
+		mission_template_name = "goal",
+		text = "morris_arena_belakor_go_tower"
+	},
+	arena_belakor_destroy_loci = {
+		mission_template_name = "goal",
+		text = "morris_arena_belakor_destroy_loci"
+	},
+	arena_belakor_overload_statue = {
+		mission_template_name = "goal",
+		text = "morris_arena_belakor_overload_statue"
+	},
+	arena_belakor_escape = {
+		mission_template_name = "goal",
+		text = "morris_arena_belakor_escape"
 	}
 }
 

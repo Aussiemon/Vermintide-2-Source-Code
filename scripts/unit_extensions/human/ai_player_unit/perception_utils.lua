@@ -203,34 +203,39 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 	local target_unit = blackboard.target_unit
 
 	if ALIVE[target_unit] then
-		local status_extension = ScriptUnit.extension(target_unit, "status_system")
-		blackboard.target_is_not_downed = not status_extension.is_ledge_hanging and not status_extension.knocked_down
-		local self_pos = POSITION_LOOKUP[unit]
-		local offset = POSITION_LOOKUP[target_unit] - self_pos
-		local x = offset.x
-		local y = offset.y
-		local z = offset.z
-		blackboard.target_flat_distance = math.sqrt(x * x + y * y)
-		blackboard.target_height_distance = z
-		local is_on_ladder, ladder_unit = status_extension:get_is_on_ladder()
+		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
 
-		if is_on_ladder then
-			local foot, top = ScriptUnit.extension(ladder_unit, "ladder_system"):ladder_extents()
-			blackboard.target_on_ladder = ladder_unit
-			local foot_offset = self_pos - foot
-			local ladder_vector = top - foot
-			local ladder_up_dir = Vector3.normalize(ladder_vector)
-			local height_on_ladder = Vector3.dot(foot_offset, ladder_up_dir)
+		if status_extension then
+			blackboard.target_is_not_downed = not status_extension.is_ledge_hanging and not status_extension.knocked_down
+			local self_pos = POSITION_LOOKUP[unit]
+			local offset = POSITION_LOOKUP[target_unit] - self_pos
+			local x = offset.x
+			local y = offset.y
+			local z = offset.z
+			blackboard.target_flat_distance = math.sqrt(x * x + y * y)
+			blackboard.target_height_distance = z
+			local is_on_ladder, ladder_unit = status_extension:get_is_on_ladder()
 
-			if height_on_ladder < 0 then
-				blackboard.ladder_distance = Vector3.length(foot_offset)
-			elseif Vector3.length(ladder_vector) < height_on_ladder then
-				blackboard.ladder_distance = Vector3.length(self_pos - top)
+			if is_on_ladder then
+				local foot, top = ScriptUnit.extension(ladder_unit, "ladder_system"):ladder_extents()
+				blackboard.target_on_ladder = ladder_unit
+				local foot_offset = self_pos - foot
+				local ladder_vector = top - foot
+				local ladder_up_dir = Vector3.normalize(ladder_vector)
+				local height_on_ladder = Vector3.dot(foot_offset, ladder_up_dir)
+
+				if height_on_ladder < 0 then
+					blackboard.ladder_distance = Vector3.length(foot_offset)
+				elseif Vector3.length(ladder_vector) < height_on_ladder then
+					blackboard.ladder_distance = Vector3.length(self_pos - top)
+				else
+					blackboard.ladder_distance = Vector3.length(foot_offset - ladder_up_dir * height_on_ladder)
+				end
 			else
-				blackboard.ladder_distance = Vector3.length(foot_offset - ladder_up_dir * height_on_ladder)
+				blackboard.ladder_distance = math.huge
 			end
 		else
-			blackboard.ladder_distance = math.huge
+			blackboard.target_is_not_downed = true
 		end
 	end
 
@@ -311,7 +316,6 @@ PerceptionUtils.perception_regular = function (unit, blackboard, breed, pick_tar
 	end
 
 	local best_enemy = pick_target_func(unit, blackboard, breed, t)
-	local new_target_unit = false
 
 	if target_unit and target_alive and best_enemy == target_unit then
 		local status_extension = ScriptUnit.has_extension(target_unit, "status_system")
@@ -393,15 +397,6 @@ PerceptionUtils.alert_enemies_within_range = function (___world, player_unit, is
 		local ai_unit = ai_units[i]
 
 		ScriptUnit_extension(ai_unit, "ai_system"):enemy_alert(ai_unit, player_unit)
-	end
-
-	if script_data.ai_debug_sound_detection then
-		local drawer = Managers.state.debug:drawer({
-			mode = "retained",
-			name = "sound_alert"
-		})
-
-		drawer:sphere(alert_position, alert_radius, Colors.get("red"))
 	end
 end
 

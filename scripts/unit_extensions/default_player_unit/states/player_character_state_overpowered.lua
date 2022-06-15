@@ -31,9 +31,6 @@ PlayerCharacterStateOverpowered.on_enter = function (self, unit, input, dt, cont
 
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
 	self.first_person_extension:set_first_person_mode(false)
-
-	self.attacking_unit = status_extension.overpowered_attacking_unit
-
 	CharacterStateHelper.show_inventory_3p(unit, false, true, Managers.player.is_server, self.inventory_extension)
 end
 
@@ -77,7 +74,7 @@ PlayerCharacterStateOverpowered.update = function (self, unit, input, dt, contex
 	local locomotion_extension = self.locomotion_extension
 	local world = self.world
 	local is_free = false
-	local attacking_unit = self.attacking_unit
+	local attacking_unit = status_extension.overpowered_attacking_unit
 
 	if Unit.alive(attacking_unit) then
 		local health_ext = ScriptUnit.has_extension(attacking_unit, "health_system")

@@ -64,11 +64,45 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 	local state = blackboard.in_vortex_state
 
 	if state == "in_vortex_init" then
-		local network_manager = Managers.state.network
+		if blackboard.umbral_leap then
+			local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, "vortex_loop")
+			network_manager:anim_event(unit, "umbral_leap")
 
-		blackboard.in_vortex_state = "in_vortex"
+			blackboard.in_vortex_state = "in_umbral_leap"
+			local locomotion_extension = blackboard.locomotion_extension
+
+			locomotion_extension:set_wanted_velocity(Vector3.zero())
+			locomotion_extension:set_movement_type("script_driven")
+			locomotion_extension:set_affected_by_gravity(false)
+
+			blackboard.umbral_leap = false
+			blackboard.umbral_leap_jump_start = t
+		else
+			local network_manager = Managers.state.network
+
+			network_manager:anim_event(unit, "vortex_loop")
+
+			blackboard.in_vortex_state = "in_vortex"
+		end
+	elseif state == "in_umbral_leap" then
+		if blackboard.umbral_leap_destination then
+			ConflictUtils.teleport_ai_unit(unit, blackboard.umbral_leap_destination:unbox())
+
+			blackboard.umbral_leap_destination = nil
+			blackboard.in_vortex_state = "umbral_leap_landing"
+		else
+			local jump_time = t - blackboard.umbral_leap_jump_start
+			local z_speed = 0
+
+			if jump_time > 0.4 then
+				z_speed = 9.8
+			end
+
+			local locomotion_extension = blackboard.locomotion_extension
+
+			locomotion_extension:set_wanted_velocity(Vector3(0, 0, z_speed))
+		end
 	elseif state == "ejected_from_vortex" then
 		local velocity = blackboard.ejected_from_vortex:unbox()
 		velocity = velocity - Vector3(0, 0, 9.82) * dt
@@ -126,6 +160,21 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 				LocomotionUtils.set_animation_driven_movement(unit, true, true, false)
 			end
 		end
+	elseif state == "umbral_leap_landing" then
+		Managers.state.network:anim_event(unit, "idle")
+
+		local locomotion_extension = blackboard.locomotion_extension
+
+		locomotion_extension:set_wanted_velocity(Vector3.zero())
+		locomotion_extension:set_affected_by_gravity(true)
+		locomotion_extension:set_movement_type("constrained_by_mover")
+
+		blackboard.umbral_leap_velocity = nil
+		blackboard.landing_finished = nil
+		blackboard.in_vortex_state = "landed"
+		blackboard.stagger = false
+
+		return "done"
 	elseif state == "waiting_to_land" then
 		if not blackboard.breed.die_on_vortex_land and blackboard.landing_finished then
 			local locomotion_extension = blackboard.locomotion_extension

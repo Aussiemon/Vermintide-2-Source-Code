@@ -263,6 +263,8 @@ settings.game_object_initializers = {
 		local wall_extension = ScriptUnit.extension(unit, "props_system")
 		local wall_index = wall_extension.wall_index
 		local group_spawn_index = wall_extension.group_spawn_index
+		local source_unit = wall_extension:owner()
+		local source_unit_id = (source_unit and Managers.state.unit_storage:go_id(source_unit)) or NetworkConstants.invalid_game_object_id
 		local data_table = {
 			go_type = NetworkLookup.go_types.thornsister_thorn_wall_unit,
 			husk_unit = NetworkLookup.husks[unit_name],
@@ -282,7 +284,8 @@ settings.game_object_initializers = {
 			owner_player_id = owner_player_id,
 			health = ScriptUnit.extension(unit, "health_system"):get_max_health(),
 			wall_index = wall_index,
-			group_spawn_index = group_spawn_index
+			group_spawn_index = group_spawn_index,
+			owner_unit_id = source_unit_id
 		}
 
 		return data_table
@@ -345,6 +348,7 @@ settings.game_object_extractors = {
 		local owner_player_id = GameSession.game_object_field(game_session, go_id, "owner_player_id")
 		local health = GameSession.game_object_field(game_session, go_id, "health")
 		local wall_index = GameSession.game_object_field(game_session, go_id, "wall_index")
+		local source_unit_id = GameSession.game_object_field(game_session, go_id, "owner_unit_id")
 		extra_dot_effect_name = NetworkLookup.effects[extra_dot_effect_name]
 
 		if extra_dot_effect_name == "n/a" then
@@ -386,6 +390,12 @@ settings.game_object_extractors = {
 			owner_player = Managers.player:player_from_game_object_id(owner_player_id)
 		end
 
+		local source_unit = nil
+
+		if source_unit_id ~= NetworkConstants.invalid_game_object_id then
+			source_unit = Managers.state.unit_storage:unit(source_unit_id)
+		end
+
 		local extension_init_data = {
 			area_damage_system = {
 				aoe_dot_damage = aoe_dot_damage,
@@ -400,11 +410,11 @@ settings.game_object_extractors = {
 				extra_dot_effect_name = extra_dot_effect_name,
 				area_damage_template = NetworkLookup.area_damage_templates[area_damage_template],
 				explosion_template_name = explosion_template_name,
-				owner_player = owner_player
+				source_attacker_unit = source_unit
 			},
 			props_system = {
 				life_time = life_time,
-				owner_unit = owner_player,
+				owner_unit = source_unit,
 				wall_index = wall_index
 			},
 			health_system = {

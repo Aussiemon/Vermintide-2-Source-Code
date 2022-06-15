@@ -360,6 +360,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
+		params.allow_rotation_update = config.allow_rotation_update
 
 		csm:change_state("interacting", params)
 
@@ -391,6 +392,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		params.swap_to_3p = config.swap_to_3p
 		params.show_weapons = config.show_weapons
 		params.activate_block = config.activate_block
+		params.allow_rotation_update = config.allow_rotation_update
 
 		csm:change_state("interacting", params)
 
@@ -399,12 +401,16 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 
 	local move_anim_3p, move_anim_1p = CharacterStateHelper.get_move_animation(locomotion_extension, input_extension, status_extension)
 
-	if move_anim_3p ~= self.move_anim_3p or move_anim_1p ~= self.move_anim_1p then
-		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
+	if move_anim_1p ~= self.move_anim_1p then
 		CharacterStateHelper.play_animation_event_first_person(first_person_extension, move_anim_1p)
 
-		self.move_anim_3p = move_anim_3p
 		self.move_anim_1p = move_anim_1p
+	end
+
+	if move_anim_3p ~= self.move_anim_3p then
+		CharacterStateHelper.play_animation_event(unit, move_anim_3p)
+
+		self.move_anim_3p = move_anim_3p
 	end
 
 	self.current_movement_speed_scale = current_movement_speed_scale

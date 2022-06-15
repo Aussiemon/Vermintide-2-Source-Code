@@ -738,4 +738,22 @@ table.recursive_readonlytable = function (t)
 	end
 end
 
+table.flat = function (t, max_depth, current_depth)
+	max_depth = max_depth or 1
+	current_depth = (current_depth or 0) + 1
+	local out = {}
+
+	for i = 1, #t, 1 do
+		local value = t[i]
+
+		if type(value) == "table" and current_depth <= max_depth then
+			table.append(out, table.flat(value, max_depth, current_depth))
+		else
+			out[#out + 1] = value
+		end
+	end
+
+	return out
+end
+
 return
