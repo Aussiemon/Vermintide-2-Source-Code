@@ -4,6 +4,7 @@ require("scripts/settings/dlcs/morris/deus_journey_settings")
 local theme_packages_lookup = {
 	wastes = "resource_packages/levels/dlcs/morris/wastes_common",
 	tzeentch = "resource_packages/levels/dlcs/morris/tzeentch_common",
+	belakor = "resource_packages/levels/dlcs/morris/belakor_common",
 	nurgle = "resource_packages/levels/dlcs/morris/nurgle_common",
 	slaanesh = "resource_packages/levels/dlcs/morris/slaanesh_common",
 	khorne = "resource_packages/levels/dlcs/morris/khorne_common"
@@ -118,6 +119,7 @@ for level_key, settings in pairs(DEUS_LEVEL_SETTINGS) do
 			settings_clone.act_unlock_order = 0
 			settings_clone.unlockable = true
 			settings_clone.dlc_name = "morris"
+			settings_clone.level_id = permutation_key
 			settings_clone.ommit_from_lobby_browser = true
 			settings_clone.allowed_locked_director_functions = {
 				beastmen = true
@@ -167,4 +169,4 @@ for journey_name, settings in pairs(DeusJourneySettings) do
 	LevelSettings[journey_name] = default_settings
 end
 
-return
+return LevelSettings

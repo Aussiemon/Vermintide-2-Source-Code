@@ -4958,381 +4958,6 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pwe_st_lullaby_full = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			sound_distance = 30,
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_lullaby_full"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 25.750770568848
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_lullaby_full"
-			}
-		},
-		pdr_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentynine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8583960533142
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentynine_01"
-			}
-		},
-		pwe_st_woods_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twelve_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.8540205955505
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twelve_02"
-			}
-		},
-		pes_woods_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.1936249732971
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_eight_02"
-			}
-		},
-		pes_woods_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.0076667070389
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_five_02"
-			}
-		},
-		pdr_de_woods_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.1095209121704
-			},
-			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_three_01"
-			}
-		},
-		pwe_st_woods_conversation_seven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8607292175293
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seven_02"
-			}
-		},
-		pes_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_twentysix_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.0025000572205
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentysix_01"
-			}
-		},
-		pwe_st_woods_conversation_twenty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twenty_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.3498754501343
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twenty_02"
-			}
-		},
-		pwe_st_woods_conversation_twentythree_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0222916603088
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_02"
-			}
-		},
-		pdr_woods_conversation_eleven_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_eleven_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1672291755676
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_eleven_03"
-			}
-		},
-		pbw_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentysix_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.7419581413269
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentysix_01"
-			}
-		},
-		pwe_st_woods_conversation_one_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_one_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.4667291641235
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_one_02"
-			}
-		},
-		pes_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_twentynine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2927916049957
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentynine_01"
-			}
-		},
-		pwh_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentynine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2253956794739
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentynine_01"
-			}
-		},
-		pwe_st_woods_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.0117082595825
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_ten_01"
-			}
-		},
-		pwh_woods_conversation_eighteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_eighteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6248333454132
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_eighteen_02"
-			}
-		},
 		pwh_woods_conversation_twentynine_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
@@ -5348,33 +4973,11 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 2.3761458396912
-			},
 			localization_strings = {
 				[1.0] = "pwh_woods_conversation_twentynine_02"
-			}
-		},
-		pdr_woods_conversation_fifteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_fifteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
 			},
 			sound_events_duration = {
-				[1.0] = 3.1250207424164
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fifteen_02"
+				[1.0] = 2.3761458396912
 			}
 		},
 		pwe_st_woods_conversation_one_01 = {
@@ -5392,2079 +4995,34 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 4.5351877212524
-			},
 			localization_strings = {
 				[1.0] = "pwe_st_woods_conversation_one_01"
-			}
-		},
-		pdr_woods_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.040479183197
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_nine_01"
-			}
-		},
-		pdr_woods_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5894165039063
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_nine_02"
-			}
-		},
-		pes_woods_conversation_twentyeight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_twentyeight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.724187374115
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentyeight_02"
-			}
-		},
-		pdr_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentyeight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.1675000190735
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentyeight_01"
-			}
-		},
-		pes_woods_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.1072916984558
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_six_01"
-			}
-		},
-		pdr_de_woods_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.3904583454132
-			},
-			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_four_01"
-			}
-		},
-		pwe_st_woods_conversation_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 13.850250244141
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_01"
-			}
-		},
-		pbw_woods_conversation_twentynine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentynine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.6598124504089
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentynine_01"
-			}
-		},
-		pwh_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentysix_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 10.837187767029
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentysix_01"
-			}
-		},
-		pdr_woods_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twelve_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9446666240692
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twelve_01"
-			}
-		},
-		pwh_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentyeight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3414793014526
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentyeight_01"
-			}
-		},
-		pwh_woods_conversation_sixteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_sixteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.974687576294
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_sixteen_02"
-			}
-		},
-		pbw_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyseven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.2422294616699
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyseven_01"
-			}
-		},
-		pdr_woods_conversation_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_fourteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1583542823792
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fourteen_01"
-			}
-		},
-		pbw_woods_conversation_twentythree_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentythree_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7586667537689
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentythree_02"
-			}
-		},
-		pwh_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentyseven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8516249656677
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentyseven_01"
-			}
-		},
-		pes_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_twentyseven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.890625
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentyseven_01"
-			}
-		},
-		pdr_woods_conversation_twentyseven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentyseven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6492290496826
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentyseven_01"
-			}
-		},
-		pbw_woods_conversation_twentyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyone_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.447083234787
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyone_02"
-			}
-		},
-		pes_woods_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.7310209274292
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_five_01"
-			}
-		},
-		pdr_de_woods_conversation_four_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_four_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.0264377593994
-			},
-			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_four_03"
-			}
-		},
-		pwe_st_woods_conversation_fifteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 11.014833450317
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_01"
-			}
-		},
-		pwe_st_woods_conversation_eighteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eighteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.7369999885559
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eighteen_02"
-			}
-		},
-		pdr_woods_conversation_twentysix_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twentysix_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.302812576294
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twentysix_01"
-			}
-		},
-		pdr_de_woods_conversation_three_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_three_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.5318331718445
-			},
-			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_three_02"
-			}
-		},
-		pwe_st_woods_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eleven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0048959255219
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eleven_02"
-			}
-		},
-		pdr_woods_conversation_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_thirteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.553750038147
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_thirteen_01"
-			}
-		},
-		pwe_st_woods_conversation_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.0924167633057
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_02"
-			}
-		},
-		pwh_woods_conversation_nineteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_nineteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3171043395996
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_nineteen_02"
-			}
-		},
-		pdr_woods_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4997081756592
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_ten_02"
-			}
-		},
-		pwh_woods_conversation_twenty_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twenty_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.113041639328
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twenty_02"
-			}
-		},
-		pwe_st_woods_conversation_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7014999389648
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfour_02"
-			}
-		},
-		pbw_woods_conversation_twentyfive_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfive_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3591251373291
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfive_02"
-			}
-		},
-		pdr_woods_conversation_fourteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_fourteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0370833873749
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fourteen_02"
-			}
-		},
-		pwe_st_woods_conversation_twentytwo_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentytwo_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.3124582767487
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentytwo_01"
-			}
-		},
-		pwh_woods_conversation_seventeen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_seventeen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4798541069031
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_seventeen_02"
-			}
-		},
-		pwe_st_woods_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_four_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.8962497711182
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_four_02"
-			}
-		},
-		pwe_st_woods_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 10.363145828247
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_two_01"
-			}
-		},
-		pbw_woods_conversation_twentyfour_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfour_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.8613749742508
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfour_02"
-			}
-		},
-		pwe_st_woods_conversation_thirteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 9.2917289733887
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_01"
-			}
-		},
-		pdr_woods_conversation_ten_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_ten_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2143542766571
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_ten_01"
-			}
-		},
-		pwe_st_woods_conversation_eight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.8123126029968
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eight_01"
-			}
-		},
-		pbw_woods_conversation_twentyfour_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfour_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 4.7118334770203
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfour_01"
-			}
-		},
-		pwe_st_woods_conversation_twentythree_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.542854309082
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_03"
-			}
-		},
-		pbw_woods_conversation_twentythree_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentythree_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.9450206756592
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentythree_03"
-			}
-		},
-		pwe_st_woods_conversation_nineteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.8227081298828
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_01"
-			}
-		},
-		pwe_st_woods_conversation_twelve_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twelve_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.5805625915527
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twelve_01"
-			}
-		},
-		pwe_st_woods_conversation_eight_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eight_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.3463954925537
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eight_02"
-			}
-		},
-		pdr_woods_conversation_twelve_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twelve_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5810208320618
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twelve_03"
-			}
-		},
-		pbw_woods_conversation_twentythree_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentythree_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.7880208492279
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentythree_01"
-			}
-		},
-		pwe_st_woods_conversation_ten_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_ten_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.4189583063126
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_ten_02"
-			}
-		},
-		pwe_st_woods_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.6217918395996
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_two_02"
-			}
-		},
-		pwe_st_woods_conversation_eight_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eight_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.1943957805634
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eight_03"
-			}
-		},
-		pdr_woods_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_eleven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.5982291698456
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_eleven_01"
-			}
-		},
-		pes_gk_woods_conversation_two_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_two_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8981251716614
-			},
-			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_two_02"
-			}
-		},
-		pbw_woods_conversation_twentytwo_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentytwo_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.5583958625794
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentytwo_01"
-			}
-		},
-		pwe_st_woods_conversation_five_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_five_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.4894791841507
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_five_02"
-			}
-		},
-		pwe_st_woods_conversation_twentyone_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.7280206680298
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_02"
-			}
-		},
-		pes_woods_conversation_six_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_six_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.778520822525
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_six_03"
-			}
-		},
-		pwe_st_woods_conversation_fourteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2710208892822
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_01"
-			}
-		},
-		pes_gk_woods_conversation_one_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_one_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 6.6810832023621
-			},
-			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_one_01"
-			}
-		},
-		pwe_st_woods_conversation_six_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_six_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4885625839233
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_six_01"
-			}
-		},
-		pwe_st_woods_conversation_twenty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twenty_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.7306876182556
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twenty_01"
-			}
-		},
-		pdr_woods_conversation_eleven_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_eleven_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.735687494278
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_eleven_02"
-			}
-		},
-		pwh_woods_conversation_twenty_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twenty_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 5.4894165992737
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twenty_01"
-			}
-		},
-		pwh_woods_conversation_nineteen_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_nineteen_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.899854183197
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_nineteen_03"
-			}
-		},
-		pwe_st_woods_conversation_nineteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.5408749580383
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nineteen_02"
-			}
-		},
-		pwe_st_woods_conversation_fifteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6185417175293
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fifteen_02"
-			}
-		},
-		pdr_de_woods_conversation_four_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_de_woods_conversation_four_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.2716875076294
-			},
-			localization_strings = {
-				[1.0] = "pdr_de_woods_conversation_four_02"
-			}
-		},
-		pwe_st_woods_conversation_twentythree_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.8555626869202
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentythree_01"
-			}
-		},
-		pwe_st_woods_conversation_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.0193123817444
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyfive_01"
-			}
-		},
-		pwh_woods_conversation_twentysix_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_twentysix_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3541874885559
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_twentysix_02"
-			}
-		},
-		pes_gk_woods_conversation_two_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_gk_woods_conversation_two_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.5194373130798
-			},
-			localization_strings = {
-				[1.0] = "pes_gk_woods_conversation_two_01"
-			}
-		},
-		pwh_woods_conversation_eighteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_eighteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 8.5363960266113
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_eighteen_01"
-			}
-		},
-		pwe_st_woods_conversation_five_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_five_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 8.9026250839233
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_five_01"
-			}
-		},
-		pbw_woods_conversation_twentyfive_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyfive_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 7.0784792900085
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyfive_01"
-			}
-		},
-		pwe_st_woods_conversation_six_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3573126792908
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_six_02"
-			}
-		},
-		pwe_st_woods_conversation_seventeen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.950749874115
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_01"
-			}
-		},
-		pwe_st_woods_conversation_three_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_three_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.1135206222534
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_three_01"
-			}
-		},
-		pdr_woods_conversation_fifteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_fifteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 9.0372495651245
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_fifteen_01"
-			}
-		},
-		pes_woods_conversation_eight_03 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_eight_03"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.1400418281555
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_eight_03"
-			}
-		},
-		pwe_st_woods_conversation_nine_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nine_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 1.4189583063126
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nine_02"
-			}
-		},
-		pwe_st_woods_conversation_nine_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_nine_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.6746873855591
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_nine_01"
-			}
-		},
-		pwe_st_woods_conversation_sixteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 6.3600625991821
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_02"
-			}
-		},
-		pwe_st_woods_conversation_eleven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eleven_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.3527083396912
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eleven_01"
-			}
-		},
-		pes_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_twentyeight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			sound_events_duration = {
-				[1.0] = 2.3159999847412
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_twentyeight_01"
-			}
-		},
-		pwe_st_woods_conversation_sixteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 5.1895833015442
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_sixteen_01"
-			}
-		},
-		pwe_st_woods_conversation_thirteen_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 4.7106456756592
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_thirteen_02"
-			}
-		},
-		pdr_woods_conversation_twelve_02 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pdr_woods_conversation_twelve_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 9.6448335647583
-			},
-			localization_strings = {
-				[1.0] = "pdr_woods_conversation_twelve_02"
-			}
-		},
-		pbw_woods_conversation_twentyeight_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyeight_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2229375839233
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyeight_01"
-			}
-		},
-		pwh_woods_conversation_seventeen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_seventeen_01"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
 			sound_events_duration = {
-				[1.0] = 6.3101043701172
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_seventeen_01"
+				[1.0] = 4.5351877212524
 			}
 		},
-		pbw_woods_conversation_twentytwo_02 = {
+		pwe_st_lullaby_full = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
+			sound_distance = 30,
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentytwo_02"
+				[1.0] = "pwe_st_lullaby_full"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 7.6355414390564
-			},
-			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentytwo_02"
-			}
-		},
-		pbw_woods_conversation_twentyone_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pbw_woods_conversation_twentyone_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 5.9022083282471
-			},
 			localization_strings = {
-				[1.0] = "pbw_woods_conversation_twentyone_01"
-			}
-		},
-		pwh_woods_conversation_nineteen_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwh_woods_conversation_nineteen_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "pwe_st_lullaby_full"
 			},
 			sound_events_duration = {
-				[1.0] = 10.194458007813
-			},
-			localization_strings = {
-				[1.0] = "pwh_woods_conversation_nineteen_01"
+				[1.0] = 25.750770568848
 			}
 		},
 		pes_gk_woods_conversation_one_02 = {
@@ -7482,21 +5040,21 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 4.1367502212524
-			},
 			localization_strings = {
 				[1.0] = "pes_gk_woods_conversation_one_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1367502212524
 			}
 		},
-		pwe_st_woods_conversation_fourteen_02 = {
+		pwh_woods_conversation_twentysix_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_02"
+				[1.0] = "pwh_woods_conversation_twentysix_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7504,21 +5062,21 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 8.0805835723877
-			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_fourteen_02"
+				[1.0] = "pwh_woods_conversation_twentysix_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3541874885559
 			}
 		},
-		pwe_st_woods_conversation_twentyone_01 = {
+		pdr_woods_conversation_eleven_03 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_01"
+				[1.0] = "pdr_woods_conversation_eleven_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7526,21 +5084,21 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 1.3881249427795
-			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_twentyone_01"
+				[1.0] = "pdr_woods_conversation_eleven_03"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1672291755676
 			}
 		},
-		pwe_st_woods_conversation_seventeen_02 = {
+		pdr_woods_conversation_twentynine_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_02"
+				[1.0] = "pdr_woods_conversation_twentynine_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7548,21 +5106,153 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 6.4578123092651
-			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seventeen_02"
+				[1.0] = "pdr_woods_conversation_twentynine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8583960533142
 			}
 		},
-		pwh_woods_conversation_sixteen_01 = {
+		pwe_st_woods_conversation_five_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwh_woods_conversation_sixteen_01"
+				[1.0] = "pwe_st_woods_conversation_five_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_five_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.9026250839233
+			}
+		},
+		pwe_st_woods_conversation_eighteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eighteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eighteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7369999885559
+			}
+		},
+		pdr_de_woods_conversation_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_de_woods_conversation_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_de_woods_conversation_three_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5318331718445
+			}
+		},
+		pbw_woods_conversation_twentyfive_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyfive_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyfive_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3591251373291
+			}
+		},
+		pwe_st_woods_conversation_twentytwo_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentytwo_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentytwo_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.3124582767487
+			}
+		},
+		pbw_woods_conversation_twentynine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentynine_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentynine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.6598124504089
+			}
+		},
+		pes_gk_woods_conversation_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gk_woods_conversation_two_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7570,21 +5260,21 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 9.3411045074463
-			},
 			localization_strings = {
-				[1.0] = "pwh_woods_conversation_sixteen_01"
+				[1.0] = "pes_gk_woods_conversation_two_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.5194373130798
 			}
 		},
-		pwe_st_woods_conversation_eleven_03 = {
+		pes_gk_woods_conversation_two_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_eleven_03"
+				[1.0] = "pes_gk_woods_conversation_two_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7592,21 +5282,43 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 5.0545001029968
-			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_eleven_03"
+				[1.0] = "pes_gk_woods_conversation_two_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8981251716614
 			}
 		},
-		pes_woods_conversation_eight_01 = {
+		pwe_st_woods_conversation_five_02 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_woods_conversation_eight_01"
+				[1.0] = "pwe_st_woods_conversation_five_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_five_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4894791841507
+			}
+		},
+		pwh_woods_conversation_twentynine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_twentynine_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7614,21 +5326,21 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			sound_events_duration = {
-				[1.0] = 6.3762497901917
-			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_eight_01"
+				[1.0] = "pwh_woods_conversation_twentynine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2253956794739
 			}
 		},
-		pwe_st_woods_conversation_seven_01 = {
+		pes_woods_conversation_twentynine_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_seven_01"
+				[1.0] = "pes_woods_conversation_twentynine_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7636,11 +5348,209 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_twentynine_01"
+			},
 			sound_events_duration = {
-				[1.0] = 2.5082082748413
+				[1.0] = 2.2927916049957
+			}
+		},
+		pdr_woods_conversation_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_ten_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_seven_01"
+				[1.0] = "pdr_woods_conversation_ten_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4997081756592
+			}
+		},
+		pdr_woods_conversation_twentyeight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_twentyeight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_twentyeight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1675000190735
+			}
+		},
+		pwe_st_woods_conversation_nineteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_nineteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_nineteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8227081298828
+			}
+		},
+		pwe_st_woods_conversation_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_three_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.1135206222534
+			}
+		},
+		pbw_woods_conversation_twentyeight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyeight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyeight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2229375839233
+			}
+		},
+		pdr_de_woods_conversation_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_de_woods_conversation_four_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_de_woods_conversation_four_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.3904583454132
+			}
+		},
+		pwe_st_woods_conversation_thirteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_thirteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_thirteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7106456756592
+			}
+		},
+		pdr_woods_conversation_twelve_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_twelve_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_twelve_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9446666240692
+			}
+		},
+		pes_woods_conversation_twentyeight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_twentyeight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_twentyeight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3159999847412
 			}
 		},
 		pwe_st_woods_conversation_eighteen_01 = {
@@ -7658,11 +5568,187 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 10.481645584106
-			},
 			localization_strings = {
 				[1.0] = "pwe_st_woods_conversation_eighteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 10.481645584106
+			}
+		},
+		pwe_st_woods_conversation_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_ten_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0117082595825
+			}
+		},
+		pes_gk_woods_conversation_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_gk_woods_conversation_one_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_gk_woods_conversation_one_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.6810832023621
+			}
+		},
+		pwe_st_woods_conversation_one_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_one_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_one_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4667291641235
+			}
+		},
+		pdr_de_woods_conversation_four_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_de_woods_conversation_four_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_de_woods_conversation_four_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.2716875076294
+			}
+		},
+		pbw_woods_conversation_twentyone_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyone_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyone_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.9022083282471
+			}
+		},
+		pdr_woods_conversation_nine_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_nine_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_nine_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5894165039063
+			}
+		},
+		pwe_st_woods_conversation_seven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_seven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_seven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5082082748413
+			}
+		},
+		pdr_woods_conversation_thirteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_thirteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_thirteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.553750038147
 			}
 		},
 		pes_woods_conversation_seven_02 = {
@@ -7680,65 +5766,21 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 2.0822291374206
-			},
 			localization_strings = {
 				[1.0] = "pes_woods_conversation_seven_02"
-			}
-		},
-		pwe_st_woods_conversation_four_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pwe_st_woods_conversation_four_01"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
 			},
 			sound_events_duration = {
-				[1.0] = 10.720333099365
-			},
-			localization_strings = {
-				[1.0] = "pwe_st_woods_conversation_four_01"
+				[1.0] = 2.0822291374206
 			}
 		},
-		pes_woods_conversation_six_02 = {
+		pdr_woods_conversation_twentyseven_01 = {
 			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "dlc_woods",
 			category = "story_talk_keep",
 			dialogue_animations_n = 1,
 			sound_events = {
-				[1.0] = "pes_woods_conversation_six_02"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4635624885559
-			},
-			localization_strings = {
-				[1.0] = "pes_woods_conversation_six_02"
-			}
-		},
-		pes_woods_conversation_seven_01 = {
-			sound_events_n = 1,
-			face_animations_n = 1,
-			database = "dlc_woods",
-			category = "story_talk_keep",
-			dialogue_animations_n = 1,
-			sound_events = {
-				[1.0] = "pes_woods_conversation_seven_01"
+				[1.0] = "pdr_woods_conversation_twentyseven_01"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
@@ -7746,11 +5788,539 @@ return function ()
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_twentyseven_01"
+			},
 			sound_events_duration = {
-				[1.0] = 3.9776458740234
+				[1.0] = 2.6492290496826
+			}
+		},
+		pwe_st_woods_conversation_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_ten_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			localization_strings = {
-				[1.0] = "pes_woods_conversation_seven_01"
+				[1.0] = "pwe_st_woods_conversation_ten_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4189583063126
+			}
+		},
+		pes_woods_conversation_eight_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_eight_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_eight_03"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1400418281555
+			}
+		},
+		pdr_woods_conversation_twentysix_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_twentysix_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_twentysix_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.302812576294
+			}
+		},
+		pbw_woods_conversation_twentythree_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentythree_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentythree_03"
+			},
+			sound_events_duration = {
+				[1.0] = 6.9450206756592
+			}
+		},
+		pwh_woods_conversation_twenty_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_twenty_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_twenty_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.4894165992737
+			}
+		},
+		pwe_st_woods_conversation_eight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eight_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 8.3463954925537
+			}
+		},
+		pes_woods_conversation_twentysix_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_twentysix_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_twentysix_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.0025000572205
+			}
+		},
+		pbw_woods_conversation_twentythree_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentythree_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentythree_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7586667537689
+			}
+		},
+		pbw_woods_conversation_twentytwo_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentytwo_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentytwo_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.5583958625794
+			}
+		},
+		pwe_st_woods_conversation_fifteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_fifteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_fifteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 11.014833450317
+			}
+		},
+		pwh_woods_conversation_twentysix_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_twentysix_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_twentysix_01"
+			},
+			sound_events_duration = {
+				[1.0] = 10.837187767029
+			}
+		},
+		pwe_st_woods_conversation_twentyone_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentyone_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentyone_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.7280206680298
+			}
+		},
+		pdr_de_woods_conversation_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_de_woods_conversation_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_de_woods_conversation_three_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.1095209121704
+			}
+		},
+		pwe_st_woods_conversation_seventeen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_seventeen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_seventeen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.950749874115
+			}
+		},
+		pwh_woods_conversation_nineteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_nineteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_nineteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3171043395996
+			}
+		},
+		pwe_st_woods_conversation_eight_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eight_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eight_03"
+			},
+			sound_events_duration = {
+				[1.0] = 2.1943957805634
+			}
+		},
+		pwe_st_woods_conversation_twentyfive_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentyfive_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentyfive_02"
+			},
+			sound_events_duration = {
+				[1.0] = 9.0924167633057
+			}
+		},
+		pbw_woods_conversation_twentytwo_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentytwo_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentytwo_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.6355414390564
+			}
+		},
+		pwe_st_woods_conversation_eleven_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eleven_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eleven_03"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0545001029968
+			}
+		},
+		pwe_st_woods_conversation_twentythree_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentythree_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentythree_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0222916603088
+			}
+		},
+		pwe_st_woods_conversation_seventeen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_seventeen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_seventeen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4578123092651
+			}
+		},
+		pwe_st_woods_conversation_thirteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_thirteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_thirteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 9.2917289733887
+			}
+		},
+		pwe_st_woods_conversation_twentyfour_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentyfour_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentyfour_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7014999389648
+			}
+		},
+		pbw_woods_conversation_twentyfour_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyfour_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyfour_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.8613749742508
 			}
 		},
 		pwe_st_woods_conversation_three_02 = {
@@ -7768,11 +6338,1441 @@ return function ()
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			sound_events_duration = {
-				[1.0] = 4.2234582901001
-			},
 			localization_strings = {
 				[1.0] = "pwe_st_woods_conversation_three_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.2234582901001
+			}
+		},
+		pes_woods_conversation_six_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_six_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_six_03"
+			},
+			sound_events_duration = {
+				[1.0] = 1.778520822525
+			}
+		},
+		pwe_st_woods_conversation_twentyfour_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentyfour_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentyfour_01"
+			},
+			sound_events_duration = {
+				[1.0] = 13.850250244141
+			}
+		},
+		pwe_st_woods_conversation_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eleven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3527083396912
+			}
+		},
+		pwh_woods_conversation_sixteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_sixteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_sixteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.974687576294
+			}
+		},
+		pbw_woods_conversation_twentyfour_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyfour_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyfour_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7118334770203
+			}
+		},
+		pwe_st_woods_conversation_twentythree_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentythree_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentythree_03"
+			},
+			sound_events_duration = {
+				[1.0] = 9.542854309082
+			}
+		},
+		pwe_st_woods_conversation_twentyfive_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentyfive_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentyfive_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0193123817444
+			}
+		},
+		pdr_woods_conversation_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_eleven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_eleven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.735687494278
+			}
+		},
+		pes_woods_conversation_five_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_five_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_five_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.0076667070389
+			}
+		},
+		pdr_woods_conversation_fifteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_fifteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_fifteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1250207424164
+			}
+		},
+		pwe_st_woods_conversation_seven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_seven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_seven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8607292175293
+			}
+		},
+		pwe_st_woods_conversation_twelve_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twelve_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twelve_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5805625915527
+			}
+		},
+		pwe_st_woods_conversation_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eleven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eleven_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.0048959255219
+			}
+		},
+		pwe_st_woods_conversation_nine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_nine_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_nine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6746873855591
+			}
+		},
+		pbw_woods_conversation_twentysix_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentysix_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentysix_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7419581413269
+			}
+		},
+		pbw_woods_conversation_twentythree_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentythree_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentythree_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.7880208492279
+			}
+		},
+		pes_woods_conversation_twentyeight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_twentyeight_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_twentyeight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.724187374115
+			}
+		},
+		pwe_st_woods_conversation_twentythree_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentythree_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentythree_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.8555626869202
+			}
+		},
+		pbw_woods_conversation_twentyone_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyone_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyone_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.447083234787
+			}
+		},
+		pwe_st_woods_conversation_twentyone_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twentyone_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twentyone_01"
+			},
+			sound_events_duration = {
+				[1.0] = 1.3881249427795
+			}
+		},
+		pwh_woods_conversation_twentyseven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_twentyseven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_twentyseven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8516249656677
+			}
+		},
+		pdr_de_woods_conversation_four_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_de_woods_conversation_four_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_de_woods_conversation_four_03"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0264377593994
+			}
+		},
+		pwe_st_woods_conversation_twelve_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twelve_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twelve_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8540205955505
+			}
+		},
+		pwh_woods_conversation_twenty_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_twenty_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_twenty_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.113041639328
+			}
+		},
+		pes_woods_conversation_six_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_six_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_six_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.1072916984558
+			}
+		},
+		pwe_st_woods_conversation_two_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_two_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_two_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.6217918395996
+			}
+		},
+		pwe_st_woods_conversation_fourteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_fourteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_fourteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2710208892822
+			}
+		},
+		pdr_woods_conversation_fourteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_fourteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_fourteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1583542823792
+			}
+		},
+		pwh_woods_conversation_nineteen_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_nineteen_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_nineteen_03"
+			},
+			sound_events_duration = {
+				[1.0] = 2.899854183197
+			}
+		},
+		pwe_st_woods_conversation_nineteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_nineteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_nineteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.5408749580383
+			}
+		},
+		pwh_woods_conversation_seventeen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_seventeen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_seventeen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3101043701172
+			}
+		},
+		pwh_woods_conversation_nineteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_nineteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_nineteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 10.194458007813
+			}
+		},
+		pwh_woods_conversation_eighteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_eighteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_eighteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6248333454132
+			}
+		},
+		pbw_woods_conversation_twentyseven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyseven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyseven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2422294616699
+			}
+		},
+		pwh_woods_conversation_eighteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_eighteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_eighteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 8.5363960266113
+			}
+		},
+		pwe_st_woods_conversation_twenty_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twenty_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twenty_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.7306876182556
+			}
+		},
+		pwe_st_woods_conversation_sixteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_sixteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_sixteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3600625991821
+			}
+		},
+		pdr_woods_conversation_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_eleven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_eleven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.5982291698456
+			}
+		},
+		pes_woods_conversation_seven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_seven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_seven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.9776458740234
+			}
+		},
+		pwe_st_woods_conversation_sixteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_sixteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_sixteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.1895833015442
+			}
+		},
+		pwe_st_woods_conversation_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_two_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_two_01"
+			},
+			sound_events_duration = {
+				[1.0] = 10.363145828247
+			}
+		},
+		pdr_woods_conversation_twelve_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_twelve_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_twelve_03"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5810208320618
+			}
+		},
+		pwh_woods_conversation_sixteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_sixteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_sixteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 9.3411045074463
+			}
+		},
+		pwe_st_woods_conversation_nine_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_nine_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_nine_02"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4189583063126
+			}
+		},
+		pwe_st_woods_conversation_fifteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_fifteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_fifteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6185417175293
+			}
+		},
+		pes_woods_conversation_twentyseven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_twentyseven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_twentyseven_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.890625
+			}
+		},
+		pdr_woods_conversation_fifteen_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_fifteen_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_fifteen_01"
+			},
+			sound_events_duration = {
+				[1.0] = 9.0372495651245
+			}
+		},
+		pwe_st_woods_conversation_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_eight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_eight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8123126029968
+			}
+		},
+		pwe_st_woods_conversation_six_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_six_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_six_02"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3573126792908
+			}
+		},
+		pwe_st_woods_conversation_fourteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_fourteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_fourteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 8.0805835723877
+			}
+		},
+		pes_woods_conversation_six_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_six_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_six_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4635624885559
+			}
+		},
+		pwh_woods_conversation_seventeen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_seventeen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_seventeen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4798541069031
+			}
+		},
+		pdr_woods_conversation_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_ten_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_ten_01"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2143542766571
+			}
+		},
+		pdr_woods_conversation_nine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_nine_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_nine_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.040479183197
+			}
+		},
+		pwe_st_woods_conversation_four_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_four_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_four_02"
+			},
+			sound_events_duration = {
+				[1.0] = 7.8962497711182
+			}
+		},
+		pdr_woods_conversation_fourteen_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_fourteen_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_fourteen_02"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0370833873749
+			}
+		},
+		pwh_woods_conversation_twentyeight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_woods_conversation_twentyeight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwh_woods_conversation_twentyeight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3414793014526
+			}
+		},
+		pdr_woods_conversation_twelve_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_woods_conversation_twelve_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pdr_woods_conversation_twelve_02"
+			},
+			sound_events_duration = {
+				[1.0] = 9.6448335647583
+			}
+		},
+		pes_woods_conversation_eight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_eight_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_eight_02"
+			},
+			sound_events_duration = {
+				[1.0] = 4.1936249732971
+			}
+		},
+		pes_woods_conversation_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_five_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_five_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.7310209274292
+			}
+		},
+		pwe_st_woods_conversation_six_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_six_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_six_01"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4885625839233
+			}
+		},
+		pbw_woods_conversation_twentyfive_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_woods_conversation_twentyfive_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pbw_woods_conversation_twentyfive_01"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0784792900085
+			}
+		},
+		pwe_st_woods_conversation_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_four_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_four_01"
+			},
+			sound_events_duration = {
+				[1.0] = 10.720333099365
+			}
+		},
+		pwe_st_woods_conversation_twenty_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_st_woods_conversation_twenty_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			localization_strings = {
+				[1.0] = "pwe_st_woods_conversation_twenty_02"
+			},
+			sound_events_duration = {
+				[1.0] = 8.3498754501343
+			}
+		},
+		pes_woods_conversation_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "dlc_woods",
+			category = "story_talk_keep",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_woods_conversation_eight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			localization_strings = {
+				[1.0] = "pes_woods_conversation_eight_01"
+			},
+			sound_events_duration = {
+				[1.0] = 6.3762497901917
 			}
 		}
 	})

@@ -5,10 +5,11 @@ DEUS_LEVEL_PICKUP_SETTINGS.default_signature_pickup_settings = {
 	default = {
 		primary = {
 			deus_weapon_chest = 6,
-			grenades = 6,
+			deus_02 = 1,
 			deus_soft_currency = 20,
 			potions = 0,
 			ammo = 7,
+			grenades = 6,
 			deus_potions = 8,
 			deus_cursed_chest = 1,
 			healing = {
@@ -31,10 +32,11 @@ DEUS_LEVEL_PICKUP_SETTINGS.default_signature_pickup_settings = {
 	normal = {
 		primary = {
 			deus_weapon_chest = 6,
-			grenades = 9,
+			deus_02 = 1,
 			deus_soft_currency = 20,
 			potions = 0,
 			ammo = 10,
+			grenades = 9,
 			deus_potions = 10,
 			deus_cursed_chest = 1,
 			healing = {
@@ -59,10 +61,11 @@ DEUS_LEVEL_PICKUP_SETTINGS.default_travel_pickup_settings = {
 	default = {
 		primary = {
 			deus_weapon_chest = 5,
-			grenades = 5,
+			deus_02 = 1,
 			deus_soft_currency = 15,
 			potions = 0,
 			ammo = 5,
+			grenades = 5,
 			deus_potions = 6,
 			deus_cursed_chest = 1,
 			healing = {
@@ -85,10 +88,11 @@ DEUS_LEVEL_PICKUP_SETTINGS.default_travel_pickup_settings = {
 	normal = {
 		primary = {
 			deus_weapon_chest = 5,
-			grenades = 8,
+			deus_02 = 1,
 			deus_soft_currency = 15,
 			potions = 0,
 			ammo = 8,
+			grenades = 8,
 			deus_potions = 8,
 			deus_cursed_chest = 1,
 			healing = {
@@ -230,6 +234,14 @@ DEUS_LEVEL_SETTINGS.pat_mountain = {
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
 		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.WASTES
 	}
 }
 DEUS_LEVEL_SETTINGS.sig_volcano = {
@@ -287,6 +299,14 @@ DEUS_LEVEL_SETTINGS.sig_volcano = {
 		DEUS_THEME_TYPES.NURGLE,
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH
+	},
+	themes = {
+		DEUS_THEME_TYPES.WASTES,
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.TZEENTCH
 	}
 }
 DEUS_LEVEL_SETTINGS.pat_tower = {
@@ -337,6 +357,14 @@ DEUS_LEVEL_SETTINGS.pat_tower = {
 		DEUS_THEME_TYPES.NURGLE,
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
 		DEUS_THEME_TYPES.WASTES
 	}
 }
@@ -435,6 +463,14 @@ DEUS_LEVEL_SETTINGS.pat_bay = {
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
 		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.WASTES
 	}
 }
 DEUS_LEVEL_SETTINGS.sig_crag = {
@@ -484,6 +520,14 @@ DEUS_LEVEL_SETTINGS.sig_crag = {
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
 		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.WASTES
 	}
 }
 DEUS_LEVEL_SETTINGS.sig_snare_a = {
@@ -528,6 +572,14 @@ DEUS_LEVEL_SETTINGS.sig_snare_a = {
 		DEUS_THEME_TYPES.NURGLE,
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
 		DEUS_THEME_TYPES.WASTES
 	}
 }
@@ -646,6 +698,14 @@ DEUS_LEVEL_SETTINGS.sig_mordrek = {
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
 		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.WASTES
 	}
 }
 DEUS_LEVEL_SETTINGS.sig_gorge = {
@@ -697,6 +757,14 @@ DEUS_LEVEL_SETTINGS.sig_gorge = {
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
 		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.WASTES
 	}
 }
 DEUS_LEVEL_SETTINGS.pat_mines = {
@@ -743,6 +811,14 @@ DEUS_LEVEL_SETTINGS.pat_mines = {
 		DEUS_THEME_TYPES.NURGLE,
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
 		DEUS_THEME_TYPES.WASTES
 	}
 }
@@ -791,6 +867,14 @@ DEUS_LEVEL_SETTINGS.pat_forest = {
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
 		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
+		DEUS_THEME_TYPES.WASTES
 	}
 }
 DEUS_LEVEL_SETTINGS.pat_town = {
@@ -837,6 +921,14 @@ DEUS_LEVEL_SETTINGS.pat_town = {
 		DEUS_THEME_TYPES.NURGLE,
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.WASTES
+	},
+	themes = {
+		DEUS_THEME_TYPES.KHORNE,
+		DEUS_THEME_TYPES.NURGLE,
+		DEUS_THEME_TYPES.SLAANESH,
+		DEUS_THEME_TYPES.TZEENTCH,
+		DEUS_THEME_TYPES.BELAKOR,
 		DEUS_THEME_TYPES.WASTES
 	}
 }
@@ -974,6 +1066,95 @@ DEUS_LEVEL_SETTINGS.arena_citadel = {
 		DEUS_THEME_TYPES.NURGLE,
 		DEUS_THEME_TYPES.SLAANESH,
 		DEUS_THEME_TYPES.TZEENTCH
+	}
+}
+DEUS_LEVEL_SETTINGS.arena_belakor = {
+	ambient_sound_event = "silent_default_world_sound",
+	player_aux_bus_name = "environment_reverb_outside",
+	environment_state = "exterior",
+	knocked_down_setting = "knocked_down",
+	override_file_ending = "dlc_morris_arena_belakor",
+	base_level_name = "arena_belakor",
+	overridden_level_key = "arena_belakor",
+	ignore_zone_conflict_settings = false,
+	overridden_level_name = "levels/honduras_dlcs/morris/arena_belakor/world",
+	display_name = "arena_belakor_title",
+	do_not_add_default_packages = true,
+	boss_spawning_method = "hand_placed",
+	loading_ui_package_name = "morris/deus_loading_screen_arena_belakor",
+	ignore_sections_in_pickup_spawning = true,
+	source_aux_bus_name = "environment_reverb_outside_source",
+	packages = {
+		"resource_packages/dlcs/morris_ingame",
+		"units/props/inn/deus/deus_chest_01",
+		"resource_packages/levels/dlcs/morris/arena_belakor"
+	},
+	level_particle_effects = {},
+	level_screen_effects = {},
+	locations = {
+		"location_arena_belakor"
+	},
+	pickup_settings = {
+		default = {
+			primary = {
+				potions = 0,
+				grenades = 2,
+				deus_potions = 1,
+				deus_02 = 2,
+				deus_soft_currency = 20,
+				ammo = 2,
+				healing = {
+					first_aid_kit = 1,
+					healing_draught = 1
+				},
+				level_events = {
+					explosive_barrel = 2,
+					lamp_oil = 2
+				}
+			},
+			secondary = {
+				ammo = 2,
+				deus_potions = 1,
+				potions = 0,
+				grenades = 2,
+				healing = 1
+			}
+		},
+		normal = {
+			primary = {
+				deus_02 = 2,
+				grenades = 4,
+				deus_potions = 2,
+				potions = 0,
+				deus_soft_currency = 20,
+				ammo = 4,
+				healing = {
+					first_aid_kit = 2,
+					healing_draught = 2
+				},
+				level_events = {
+					explosive_barrel = 4,
+					lamp_oil = 4
+				}
+			},
+			secondary = {
+				ammo = 4,
+				deus_potions = 2,
+				potions = 0,
+				grenades = 4,
+				healing = 4
+			}
+		}
+	},
+	deus_weapon_chest_distribution = DEUS_WEAPON_CHEST_DISTRIBUTION.default_arena,
+	mutators = {
+		"arena_belakor_script"
+	},
+	paths = {
+		1
+	},
+	themes = {
+		DEUS_THEME_TYPES.BELAKOR
 	}
 }
 DEUS_SHRINE_LEVEL_SETTINGS = DEUS_SHRINE_LEVEL_SETTINGS or {}

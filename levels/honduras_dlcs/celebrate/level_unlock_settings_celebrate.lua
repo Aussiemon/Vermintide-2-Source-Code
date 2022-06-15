@@ -1,6 +1,7 @@
 AreaSettings.celebrate = {
 	menu_sound_event = "Play_hud_menu_area_bogenhafen",
 	name = "celebrate",
+	exclude_from_area_selection = true,
 	display_name = "area_selection_bogenhafen_name",
 	description_text = "area_selection_bogenhafen_description",
 	level_image = "area_icon_bogenhafen",

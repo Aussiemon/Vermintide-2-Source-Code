@@ -45,25 +45,12 @@ return function ()
 	})
 	add_dialogues({
 		pdr_activate_ability_dwarf_engineer = {
+			randomize_indexes_n = 0,
+			sound_events_n = 10,
 			face_animations_n = 10,
 			database = "dwarf_ranger_cog",
-			sound_events_n = 10,
-			randomize_indexes_n = 0,
 			category = "activate_ability",
 			dialogue_animations_n = 10,
-			randomize_indexes = {},
-			localization_strings = {
-				"pdr_activate_ability_dwarf_engineer_01",
-				"pdr_activate_ability_dwarf_engineer_02",
-				"pdr_activate_ability_dwarf_engineer_03",
-				"pdr_activate_ability_dwarf_engineer_04",
-				"pdr_activate_ability_dwarf_engineer_05",
-				"pdr_activate_ability_dwarf_engineer_06",
-				"pdr_activate_ability_dwarf_engineer_07",
-				"pdr_activate_ability_dwarf_engineer_08",
-				"pdr_activate_ability_dwarf_engineer_09",
-				"pdr_activate_ability_dwarf_engineer_10"
-			},
 			sound_events = {
 				"pdr_activate_ability_dwarf_engineer_01",
 				"pdr_activate_ability_dwarf_engineer_02",
@@ -75,18 +62,6 @@ return function ()
 				"pdr_activate_ability_dwarf_engineer_08",
 				"pdr_activate_ability_dwarf_engineer_09",
 				"pdr_activate_ability_dwarf_engineer_10"
-			},
-			face_animations = {
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy",
-				"face_happy"
 			},
 			dialogue_animations = {
 				"dialogue_shout",
@@ -100,6 +75,30 @@ return function ()
 				"dialogue_shout",
 				"dialogue_shout"
 			},
+			face_animations = {
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy",
+				"face_happy"
+			},
+			localization_strings = {
+				"pdr_activate_ability_dwarf_engineer_01",
+				"pdr_activate_ability_dwarf_engineer_02",
+				"pdr_activate_ability_dwarf_engineer_03",
+				"pdr_activate_ability_dwarf_engineer_04",
+				"pdr_activate_ability_dwarf_engineer_05",
+				"pdr_activate_ability_dwarf_engineer_06",
+				"pdr_activate_ability_dwarf_engineer_07",
+				"pdr_activate_ability_dwarf_engineer_08",
+				"pdr_activate_ability_dwarf_engineer_09",
+				"pdr_activate_ability_dwarf_engineer_10"
+			},
 			sound_events_duration = {
 				1.4520416259766,
 				1.3176041841507,
@@ -111,7 +110,8 @@ return function ()
 				1.3340417146683,
 				2.2459790706634,
 				2.3116042613983
-			}
+			},
+			randomize_indexes = {}
 		}
 	})
 end
