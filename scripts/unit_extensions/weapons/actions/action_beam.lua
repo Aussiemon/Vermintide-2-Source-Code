@@ -254,7 +254,7 @@ ActionBeam.client_owner_post_update = function (self, dt, t, world, can_damage)
 								self.consecutive_hits = self.consecutive_hits + 1
 							end
 
-							if not self.charge_damage_profiles then
+							if not self.charge_damage_profiles and self.consecutive_hits < 3 then
 								damage_profile = current_action.initial_damage_profile or current_action.damage_profile or "default"
 							end
 

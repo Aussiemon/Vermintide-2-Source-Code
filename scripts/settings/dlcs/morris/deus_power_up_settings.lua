@@ -3259,16 +3259,16 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		},
 		description_values = {
 			{
+				value_type = "amount",
+				value = MorrisBuffTweakData.protection_orbs.trigger_cooldown
+			},
+			{
 				value_type = "percent",
 				value = -MorrisBuffTweakData.protection_orb.multiplier
 			},
 			{
 				value_type = "amount",
 				value = MorrisBuffTweakData.protection_orb.duration
-			},
-			{
-				value_type = "amount",
-				value = MorrisBuffTweakData.protection_orbs.trigger_cooldown
 			}
 		}
 	},

@@ -782,8 +782,9 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 		local backend_mirror = self._backend_mirror
 
 		for i = 1, #new_cosmetics, 1 do
+			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
-				ItemId = item
+				ItemId = cosmetic_name
 			})
 
 			if backend_id then

@@ -94,7 +94,7 @@ PlayFabMirrorBase.init = function (self, signin_result)
 	self._commit_limit_timer = REDUCTION_INTERVAL
 	self._commit_limit_total = 1
 
-	self:_migrate_cosmetics()
+	self:_verify_account_data()
 end
 
 PlayFabMirrorBase._parse_claimed_achievements = function (self, read_only_data_values)
@@ -192,6 +192,29 @@ PlayFabMirrorBase._parse_claimed_console_dlc_rewards = function (self, read_only
 	end
 
 	return claimed_rewards
+end
+
+PlayFabMirrorBase._verify_account_data = function (self)
+	if DEDICATED_SERVER then
+		self:_migrate_cosmetics()
+
+		return
+	end
+
+	local request = {
+		FunctionName = "verifyAccountData"
+	}
+	local success_callback = callback(self, "verify_account_data_cb")
+
+	self._request_queue:enqueue(request, success_callback)
+
+	self._num_items_to_load = self._num_items_to_load + 1
+end
+
+PlayFabMirrorBase.verify_account_data_cb = function (self, result)
+	self._num_items_to_load = self._num_items_to_load - 1
+
+	self:_migrate_cosmetics()
 end
 
 PlayFabMirrorBase._migrate_cosmetics = function (self)
@@ -1103,8 +1126,12 @@ PlayFabMirrorBase.migrate_characters_cb = function (self, result)
 	local function_result = result.FunctionResult
 	local success = function_result.success
 	local characters_data = function_result.characters_data
-	self._read_only_data.characters_data = characters_data
-	self._read_only_data_mirror.characters_data = characters_data
+
+	if characters_data then
+		self._read_only_data.characters_data = characters_data
+		self._read_only_data_mirror.characters_data = characters_data
+	end
+
 	self._num_items_to_load = self._num_items_to_load - 1
 
 	self:request_characters()

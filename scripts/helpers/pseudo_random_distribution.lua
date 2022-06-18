@@ -2,9 +2,9 @@ PseudoRandomDistribution = PseudoRandomDistribution or {}
 local p2c = nil
 
 PseudoRandomDistribution.flip_coin = function (state, proc_chance)
-	if proc_chance >= 1 then
+	if proc_chance > 0.99 then
 		return true, state
-	elseif proc_chance <= 0 then
+	elseif proc_chance < 0.01 then
 		return false, state
 	end
 

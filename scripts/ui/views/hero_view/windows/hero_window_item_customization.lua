@@ -2116,7 +2116,7 @@ HeroWindowItemCustomization._state_setup_trait_reroll = function (self)
 		local approved = false
 
 		for _, trait_combo in ipairs(trait_combinations) do
-			if table.contains(trait_combo, trait_key) then
+			if table.contains(trait_combo, trait_key) and not trait_data.crafting_disabled then
 				approved = true
 
 				break

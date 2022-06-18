@@ -2990,10 +2990,10 @@ GenericTerrorEvents.cursed_chest_challenge_beastmen_bestigor_bearer = {
 		breed_name = "beastmen_bestigor",
 		spawn_counter_category = "cursed_chest_enemies",
 		difficulty_amount = {
-			hardest = 5,
+			hardest = 4,
 			hard = 3,
-			harder = 4,
-			cataclysm = 6,
+			harder = 3,
+			cataclysm = 5,
 			normal = 2
 		},
 		optional_data = {
@@ -3011,10 +3011,10 @@ GenericTerrorEvents.cursed_chest_challenge_beastmen_bestigor_bearer = {
 		breed_name = "beastmen_standard_bearer",
 		spawn_counter_category = "cursed_chest_enemies",
 		difficulty_amount = {
-			hardest = 5,
+			hardest = 4,
 			hard = 3,
-			harder = 4,
-			cataclysm = 6,
+			harder = 3,
+			cataclysm = 5,
 			normal = 2
 		},
 		optional_data = {
@@ -3047,67 +3047,10 @@ GenericTerrorEvents.cursed_chest_challenge_beastmen_bestigor_bearer = {
 		breed_name = "beastmen_bestigor",
 		spawn_counter_category = "cursed_chest_enemies",
 		difficulty_amount = {
-			hardest = 5,
+			hardest = 4,
 			hard = 3,
-			harder = 4,
-			cataclysm = 6,
-			normal = 2
-		},
-		optional_data = {
-			prevent_killed_enemy_dialogue = true,
-			spawned_func = cursed_chest_enemy_spawned_func
-		},
-		min_distance = CURSED_CHEST_SPAWN_DISTANCE_SHORT - CURSED_CHEST_SPREAD_MED * 0.5,
-		max_distance = CURSED_CHEST_SPAWN_DISTANCE_SHORT + CURSED_CHEST_SPREAD_MED * 0.5,
-		pre_spawn_unit_func = cursed_chest_enemy_spawn_decal_func,
-		post_spawn_unit_func = cursed_chest_enemy_despawn_decal_func,
-		spawn_delay = CURSED_CHEST_DELAY_SPAWN
-	},
-	{
-		"spawn_around_origin_unit",
-		breed_name = "beastmen_standard_bearer",
-		spawn_counter_category = "cursed_chest_enemies",
-		difficulty_amount = {
-			hardest = 3,
-			hard = 2,
-			harder = 2,
-			cataclysm = 3,
-			normal = 1
-		},
-		optional_data = {
-			prevent_killed_enemy_dialogue = true,
-			spawned_func = cursed_chest_enemy_spawned_func
-		},
-		min_distance = CURSED_CHEST_SPAWN_DISTANCE_SHORT - CURSED_CHEST_SPREAD_MED * 0.5,
-		max_distance = CURSED_CHEST_SPAWN_DISTANCE_SHORT + CURSED_CHEST_SPREAD_MED * 0.5,
-		pre_spawn_unit_func = cursed_chest_enemy_spawn_decal_func,
-		post_spawn_unit_func = cursed_chest_enemy_despawn_decal_func,
-		spawn_delay = CURSED_CHEST_DELAY_SPAWN
-	},
-	{
-		"delay",
-		duration = CURSED_CHEST_DELAY_WAVE_2
-	},
-	{
-		"continue_when_spawned_count",
-		duration = 120,
-		condition = function (counter)
-			return counter.cursed_chest_enemies <= 2
-		end
-	},
-	{
-		"play_stinger",
-		stinger_name = "Play_wave_start_spawn_stinger"
-	},
-	{
-		"spawn_around_origin_unit",
-		breed_name = "beastmen_bestigor",
-		spawn_counter_category = "cursed_chest_enemies",
-		difficulty_amount = {
-			hardest = 5,
-			hard = 3,
-			harder = 4,
-			cataclysm = 6,
+			harder = 3,
+			cataclysm = 5,
 			normal = 2
 		},
 		optional_data = {

@@ -1191,36 +1191,34 @@ end
 
 local function setup_game_mode_data(statistics_db, player_stats_id)
 	local game_mode_data = {}
-	local game_modes = {}
+	local game_mode_index = {}
 	local only_release = GameSettingsDevelopment.release_levels_only
 
 	for name, level_data in pairs(LevelSettings) do
 		if type(level_data) == "table" and (not only_release or not DebugLevels[name]) then
-			local game_mode = level_data.game_mode
+			local game_mode = level_data.game_mode or level_data.mechanism
 
 			if game_mode and game_mode ~= "tutorial" and game_mode ~= "demo" then
 				local unlockable = level_data.unlockable and not level_data.default
 
 				if unlockable and LevelUnlockUtils.level_unlocked(statistics_db, player_stats_id, name) then
-					if not game_modes[game_mode] then
-						local index = #game_mode_data + 1
+					if not game_mode_index[game_mode] then
 						local game_mode_settings = GameModeSettings[game_mode]
 						local game_mode_difficulties = game_mode_settings.difficulties
 						local game_mode_display_name = game_mode_settings.display_name
 						local difficulties = table.clone(game_mode_difficulties)
 						difficulties[#difficulties + 1] = "any"
-						game_modes[game_mode] = index
-						game_modes[index] = game_mode
-						game_mode_data[index] = {
+						game_mode_data[#game_mode_data + 1] = {
 							levels = {},
 							difficulties = difficulties,
 							game_mode_key = game_mode,
 							game_mode_display_name = game_mode_display_name
 						}
+						game_mode_index[game_mode] = #game_mode_data
 					end
 
-					if not level_data.supported_game_modes or level_data.supported_game_modes[game_mode] then
-						local data = game_mode_data[game_modes[game_mode]]
+					if (not level_data.supported_game_modes or level_data.supported_game_modes[game_mode]) and not level_data.ommit_from_lobby_browser then
+						local data = game_mode_data[game_mode_index[game_mode]]
 						local levels = data.levels
 						levels[#levels + 1] = name
 					end
@@ -1236,6 +1234,24 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 		table.sort(levels, sort_level_list)
 
 		levels[#levels + 1] = "any"
+	end
+
+	local function game_mode_sort_func(game_mode_data_a, game_mode_data_b)
+		local game_mode_a_name = Localize(game_mode_data_a.game_mode_display_name)
+		local game_mode_b_name = Localize(game_mode_data_b.game_mode_display_name)
+
+		return game_mode_a_name < game_mode_b_name
+	end
+
+	table.sort(game_mode_data, game_mode_sort_func)
+
+	local game_modes = {}
+
+	for i = 1, #game_mode_data, 1 do
+		local game_mode_key = game_mode_data[i].game_mode_key
+		local game_mode_index = #game_modes + 1
+		game_modes[game_mode_index] = game_mode_key
+		game_modes[game_mode_key] = game_mode_index
 	end
 
 	local game_mode = "weave"

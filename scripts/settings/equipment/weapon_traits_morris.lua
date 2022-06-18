@@ -218,6 +218,7 @@ morris_weapon_traits.traits = {
 		buffer = "both",
 		advanced_description = "description_home_run",
 		icon = "deus_icon_trait_homerun",
+		crafting_disabled = true,
 		buff_name = "home_run",
 		description_values = {},
 		compatible_weapon_list = {
@@ -232,6 +233,7 @@ morris_weapon_traits.traits = {
 		buffer = "server",
 		advanced_description = "description_shield_splinters",
 		icon = "deus_icon_trait_shield_of_splinters",
+		crafting_disabled = true,
 		buff_name = "shield_splinters",
 		description_values = {},
 		compatible_weapon_list = {
@@ -262,6 +264,7 @@ morris_weapon_traits.traits = {
 		buffer = "client",
 		advanced_description = "description_refilling_shot",
 		icon = "deus_icon_trait_refilling_shot",
+		crafting_disabled = true,
 		buff_name = "refilling_shot",
 		description_values = {},
 		compatible_weapon_list = {
@@ -279,7 +282,8 @@ morris_weapon_traits.traits = {
 		}
 	},
 	piercing_projectiles = {
-		display_name = "display_name_piercing_projectiles",
+		display_name = "traits_piercing_projectile",
+		crafting_disabled = true,
 		advanced_description = "description_piercing_projectiles",
 		icon = "deus_icon_trait_piercing_projectile",
 		buff_name = "piercing_projectiles",
@@ -313,10 +317,11 @@ morris_weapon_traits.traits = {
 	serrated_blade = {
 		rectangular_icon = true,
 		display_name = "traits_serrated_blade",
+		crafting_disabled = true,
+		buff_name = "serrated_blade",
 		buffer = "server",
 		advanced_description = "description_serrated_blade",
 		icon = "deus_icon_trait_serrated_blade",
-		buff_name = "serrated_blade",
 		description_values = {},
 		compatible_weapon_list = {
 			we_dual_wield_sword_dagger = true,
@@ -339,6 +344,7 @@ morris_weapon_traits.traits = {
 		display_name = "traits_crescendo_strike",
 		advanced_description = "description_crescendo_strike",
 		icon = "deus_icon_trait_crescendo_strike",
+		crafting_disabled = true,
 		buff_name = "crescendo_strike",
 		description_values = {
 			{
@@ -381,6 +387,7 @@ morris_weapon_traits.traits = {
 		display_name = "traits_follow_up",
 		advanced_description = "description_follow_up",
 		icon = "deus_icon_trait_follow_up",
+		crafting_disabled = true,
 		buff_name = "follow_up",
 		description_values = {
 			{
@@ -425,6 +432,7 @@ morris_weapon_traits.traits = {
 		display_name = "traits_extra_shot",
 		advanced_description = "description_deus_extra_shot",
 		icon = "deus_icon_trait_extra_shot",
+		crafting_disabled = true,
 		buff_name = "deus_extra_shot",
 		description_values = {
 			{
@@ -459,6 +467,7 @@ morris_weapon_traits.traits = {
 		display_name = "traits_always_blocking",
 		advanced_description = "description_always_blocking",
 		icon = "deus_icon_trait_always_blocking",
+		crafting_disabled = true,
 		buff_name = "always_blocking",
 		description_values = {
 			{
@@ -483,6 +492,7 @@ morris_weapon_traits.traits = {
 		display_name = "traits_big_swing_stagger",
 		advanced_description = "description_deus_big_swing_stagger",
 		icon = "deus_icon_trait_big_swing_stagger",
+		crafting_disabled = true,
 		buff_name = "deus_big_swing_stagger",
 		description_values = {
 			{
@@ -516,6 +526,7 @@ morris_weapon_traits.traits = {
 		display_name = "traits_ammo_pickup_reload_speed",
 		advanced_description = "description_deus_ammo_pickup_reload_speed",
 		icon = "deus_icon_trait_ammo_pickup_reload_speed",
+		crafting_disabled = true,
 		buff_name = "deus_ammo_pickup_reload_speed",
 		description_values = {
 			{
@@ -547,10 +558,11 @@ morris_weapon_traits.traits = {
 	deus_crit_chain_lightning = {
 		rectangular_icon = true,
 		display_name = "traits_crit_chain_lightning",
+		crafting_disabled = true,
+		buff_name = "deus_crit_chain_lightning",
 		buffer = "server",
 		advanced_description = "description_deus_crit_chain_lightning",
 		icon = "deus_icon_trait_crit_chain_lightning",
-		buff_name = "deus_crit_chain_lightning",
 		description_values = {
 			{
 				value_type = "targets",
@@ -575,10 +587,11 @@ morris_weapon_traits.traits = {
 	deus_ranged_crit_explosion = {
 		rectangular_icon = true,
 		display_name = "traits_ranged_crit_explosion",
+		crafting_disabled = true,
+		buff_name = "deus_ranged_crit_explosion",
 		buffer = "server",
 		advanced_description = "description_deus_ranged_crit_explosion_trait",
 		icon = "deus_icon_trait_ranged_crit_explosion",
-		buff_name = "deus_ranged_crit_explosion",
 		description_values = {
 			{
 				value_type = "percent",
@@ -873,6 +886,12 @@ morris_weapon_traits.combinations = {
 			"ranged_reduce_cooldown_on_crit"
 		},
 		{
+			"ranged_increase_power_level_vs_armour_crit"
+		},
+		{
+			"ranged_consecutive_hits_increase_power"
+		},
+		{
 			"shield_splinters"
 		},
 		{
@@ -894,6 +913,12 @@ morris_weapon_traits.combinations = {
 		},
 		{
 			"ranged_reduce_cooldown_on_crit"
+		},
+		{
+			"ranged_increase_power_level_vs_armour_crit"
+		},
+		{
+			"ranged_consecutive_hits_increase_power"
 		},
 		{
 			"shield_splinters"
