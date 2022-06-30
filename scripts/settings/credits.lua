@@ -117,6 +117,10 @@ local Credits = {
 			type = "title"
 		},
 		{
+			text = "Christina Begerska",
+			type = "person"
+		},
+		{
 			text = "Sacha Karsenty",
 			type = "person"
 		},

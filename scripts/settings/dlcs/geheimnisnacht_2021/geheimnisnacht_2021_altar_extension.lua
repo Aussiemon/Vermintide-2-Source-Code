@@ -87,7 +87,7 @@ Geheimnisnacht2021AltarExtension.update = function (self, unit, input, dt, conte
 		local proximity_extension = Managers.state.entity:system("proximity_system")
 		local broadphase = proximity_extension.player_units_broadphase
 
-		Broadphase.query(broadphase, POSITION_LOOKUP[unit], 20, nearby_player_units)
+		Broadphase.query(broadphase, POSITION_LOOKUP[unit], 35, nearby_player_units)
 
 		for _, player_unit in pairs(nearby_player_units) do
 			local player = Managers.player:owner(player_unit)

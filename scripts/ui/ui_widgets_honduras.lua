@@ -1280,7 +1280,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					local backend_id = item and item.backend_id
 
 					if backend_id then
-						return ItemHelper.is_favorite_backend_id(backend_id)
+						return ItemHelper.is_favorite_backend_id(backend_id, item)
 					end
 				end
 			}
@@ -1336,28 +1336,38 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				style_id = equipped_on_other_career_icon_name,
 				content_check_function = function (content)
 					local item = content[item_name]
-					local backend_id = item and item.backend_id
 
-					if backend_id then
-						local local_player = Managers.player:local_player()
+					if item then
+						local item_data = item.data
+						local item_id = nil
 
-						if not local_player then
-							return false
+						if CosmeticUtils.is_cosmetic_item(item_data.slot_type) then
+							item_id = item.ItemId
+						else
+							item_id = item.backend_id
 						end
 
-						local career_index = local_player:career_index()
-						local profile_index = local_player:profile_index()
-						local current_profile = SPProfiles[profile_index]
-						local current_career_settings = current_profile.careers[career_index]
-						local current_career_name = current_career_settings.name
-						local backend_interface = Managers.backend:get_interface("items")
-						local career_names = backend_interface:equipped_by(backend_id)
+						if item_id then
+							local local_player = Managers.player:local_player()
 
-						if #career_names == 1 and table.contains(career_names, current_career_name) then
-							return false
+							if not local_player then
+								return false
+							end
+
+							local career_index = local_player:career_index()
+							local profile_index = local_player:profile_index()
+							local current_profile = SPProfiles[profile_index]
+							local current_career_settings = current_profile.careers[career_index]
+							local current_career_name = current_career_settings.name
+							local backend_interface = Managers.backend:get_interface("items")
+							local career_names = backend_interface:equipped_by(item_id)
+
+							if #career_names == 1 and table.contains(career_names, current_career_name) then
+								return false
+							end
+
+							return #career_names ~= 0
 						end
-
-						return #career_names ~= 0
 					end
 				end
 			}

@@ -116,11 +116,14 @@ UnitSpawner.breed_in_death_watch = function (self, breed_name)
 		local death_data = unit_death_watch_list[i]
 		local unit = death_data.unit
 		local blackboard_data = BLACKBOARDS[unit]
-		local breed = blackboard_data.breed
-		local name = breed.name
 
-		if breed_name == name then
-			return true
+		if blackboard_data then
+			local breed = blackboard_data.breed
+			local name = breed.name
+
+			if breed_name == name then
+				return true
+			end
 		end
 	end
 end

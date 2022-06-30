@@ -324,7 +324,7 @@ local filter_macros = {
 				local career_names = backend_items:equipped_by(backend_id)
 
 				if #career_names == 0 then
-					local is_favorited = ItemHelper.is_favorite_backend_id(backend_id)
+					local is_favorited = ItemHelper.is_favorite_backend_id(backend_id, item)
 
 					return not is_favorited
 				end

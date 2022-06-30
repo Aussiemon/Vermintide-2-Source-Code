@@ -17,8 +17,8 @@ local function item_sort_func(item_1, item_2)
 	local item_2_power_level = item_2.power_level or 0
 	local item_1_backend_id = item_1.backend_id
 	local item_2_backend_id = item_2.backend_id
-	local item_1_favorited = ItemHelper.is_favorite_backend_id(item_1_backend_id)
-	local item_2_favorited = ItemHelper.is_favorite_backend_id(item_2_backend_id)
+	local item_1_favorited = ItemHelper.is_favorite_backend_id(item_1_backend_id, item_1)
+	local item_2_favorited = ItemHelper.is_favorite_backend_id(item_2_backend_id, item_2)
 
 	if item_1_favorited == item_2_favorited then
 		if item_1_power_level == item_2_power_level then

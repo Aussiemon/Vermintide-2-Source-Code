@@ -30,6 +30,8 @@ BackendInterfaceItemPlayfab._refresh = function (self)
 	self:_refresh_loadouts()
 
 	self._dirty = false
+
+	self:_unmark_favorites()
 end
 
 BackendInterfaceItemPlayfab._refresh_items = function (self)
@@ -65,12 +67,16 @@ BackendInterfaceItemPlayfab._refresh_items = function (self)
 			end
 		end
 	end
+end
 
+BackendInterfaceItemPlayfab._unmark_favorites = function (self)
 	local favorite_backend_ids = ItemHelper.get_favorite_backend_ids()
 
 	if favorite_backend_ids then
+		local items = self._items
+
 		for backend_id, _ in pairs(favorite_backend_ids) do
-			if not items[backend_id] then
+			if not items[backend_id] and not self:get_backend_id_from_cosmetic_item(backend_id) then
 				ItemHelper.unmark_backend_id_as_favorite(backend_id)
 			end
 		end

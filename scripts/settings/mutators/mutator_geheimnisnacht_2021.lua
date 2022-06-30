@@ -34,6 +34,12 @@ local event_settings = {
 				224.85,
 				-45.733,
 				0
+			},
+			{
+				177.888611,
+				108.190796,
+				32,
+				0
 			}
 		}
 	},
@@ -43,6 +49,12 @@ local event_settings = {
 				-62.059746,
 				-178.81282,
 				-34.657001,
+				0
+			},
+			{
+				-70.686172,
+				117.111183,
+				19.792961,
 				0
 			}
 		}
@@ -54,6 +66,12 @@ local event_settings = {
 				147,
 				-19.5,
 				90
+			},
+			{
+				-170.050217,
+				101.958328,
+				42.094002,
+				0
 			}
 		}
 	},
@@ -64,6 +82,12 @@ local event_settings = {
 				65.619408,
 				0,
 				-40
+			},
+			{
+				37.891605,
+				-107.17514,
+				19.562,
+				0
 			}
 		}
 	},
@@ -73,6 +97,12 @@ local event_settings = {
 				-4.573383,
 				-160.917343,
 				1.135474,
+				0
+			},
+			{
+				223.965363,
+				-253.689133,
+				7.712,
 				0
 			}
 		}
@@ -155,7 +185,7 @@ return {
 			}
 		}
 		local altar_unit = Managers.state.unit_spawner:spawn_network_unit(unit_name, "geheimnisnacht_2021_altar", extension_init_data, position, rotation)
-		local spread = 3
+		local spread = 2.5
 		local idle_variations = {
 			"idle_pray_01",
 			"idle_pray_02",

@@ -1084,6 +1084,8 @@ EnemyPackageLoader.unload_enemy_packages = function (self, force_unload_startup_
 
 	table.clear(self._dynamic_loaded_packages)
 	table.clear(self._currently_loading_breeds)
+	table.clear(self._unload_package_queue)
+	table.clear(self._load_package_queue)
 
 	local category_lookup = self.breed_category_loaded_packages
 

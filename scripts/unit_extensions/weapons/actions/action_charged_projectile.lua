@@ -290,6 +290,7 @@ end
 
 ActionChargedProjectile.finish = function (self, reason)
 	if self.state == "waiting_to_shoot" then
+		self.state = "shot"
 		local t = Managers.time:time("game")
 		local max_iteration_count = 5
 

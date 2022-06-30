@@ -338,14 +338,14 @@ ItemGridUI.handle_favorite_marking = function (self, input_service)
 			print("item", item, backend_id)
 
 			if backend_id then
-				local is_favorited = ItemHelper.is_favorite_backend_id(backend_id)
+				local is_favorited = ItemHelper.is_favorite_backend_id(backend_id, item)
 
 				if is_favorited then
-					ItemHelper.unmark_backend_id_as_favorite(backend_id)
+					ItemHelper.unmark_backend_id_as_favorite(backend_id, item)
 
 					return true
 				else
-					ItemHelper.mark_backend_id_as_favorite(backend_id)
+					ItemHelper.mark_backend_id_as_favorite(backend_id, item)
 
 					return true
 				end
