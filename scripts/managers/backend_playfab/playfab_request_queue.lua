@@ -37,7 +37,7 @@ PlayFabRequestQueue.enqueue = function (self, request, success_callback, send_ea
 		request = table.clone(request),
 		success_callback = success_callback,
 		error_callback = error_callback,
-		send_eac_challenge = send_eac_challenge,
+		send_eac_challenge = IS_WINDOWS and send_eac_challenge,
 		timeout = TIMEOUT_TIME,
 		id = id
 	}

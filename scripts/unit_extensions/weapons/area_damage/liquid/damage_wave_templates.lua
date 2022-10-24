@@ -265,17 +265,17 @@ DamageWaveTemplates.templates.sienna_adept_ability_trail = {
 	overflow_dist = 0,
 	buff_template_name = "sienna_adept_ability_trail",
 	start_speed = 15,
+	fx_name_running = "fx/brw_adept_skill_02",
 	player_query_distance = 1,
 	apply_buff_to_player = true,
 	blob_separation_dist = 1,
-	fx_name_running = "fx/brw_adept_skill_02",
+	fx_name_impact = "fx/brw_adept_skill_02",
 	apply_impact_buff_to_ai = false,
 	max_height = 2.5,
-	fx_name_impact = "fx/brw_adept_skill_02",
+	fx_name_arrived = "fx/brw_adept_skill_02",
 	fx_name_filled = "fx/brw_adept_skill_02",
 	apply_buff_to_ai = true,
 	time_of_life = 6,
-	fx_name_arrived = "fx/brw_adept_skill_02",
 	particle_arrived_stop_mode = "stop",
 	launch_wave_sound = "Play_sienna_adept_blink_ability",
 	ai_query_distance = 2,
@@ -283,21 +283,11 @@ DamageWaveTemplates.templates.sienna_adept_ability_trail = {
 	apply_impact_buff_to_player = false,
 	fx_name_init = "fx/brw_adept_skill_02",
 	immune_breeds = {},
-	init_func = function (damage_wave_ext)
-		local career_ext = ScriptUnit.has_extension(damage_wave_ext.source_unit, "career_system")
-
-		if career_ext then
-			damage_wave_ext.source_power_level = career_ext:get_career_power_level()
-		else
-			damage_wave_ext.source_power_level = DefaultPowerLevel
-		end
-	end,
 	add_buff_func = function (damage_wave_ext, target_unit, buff_template_name, attacker_unit, source_unit)
 		if Unit.alive(target_unit) then
-			local power_level = damage_wave_ext.source_power_level or DefaultPowerLevel
 			local buff_system = Managers.state.entity:system("buff_system")
 
-			buff_system:add_buff(target_unit, buff_template_name, attacker_unit, false, power_level, source_unit)
+			buff_system:add_buff(target_unit, buff_template_name, attacker_unit, false, nil, source_unit)
 		end
 	end,
 	leave_area_func = function (unit)

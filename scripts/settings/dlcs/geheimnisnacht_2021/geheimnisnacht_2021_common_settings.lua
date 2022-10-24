@@ -187,6 +187,27 @@ settings.ai_group_templates = {
 				optional_spawn_data.idle_animation = nil
 			end
 		end
+	},
+	critter_nurglings = {
+		setup_group = function (world, nav_world, group)
+			return
+		end,
+		init = function (world, nav_world, group, t)
+			return
+		end,
+		update = function (world, nav_world, group, t)
+			return
+		end,
+		destroy = function (world, nav_world, group)
+			return
+		end,
+		wake_up_group = function (group)
+			Managers.state.entity:system("ai_group_system"):run_func_on_all_members(group, AIGroupTemplates.critter_nurglings.wake_up_unit)
+		end,
+		wake_up_unit = function (unit, group)
+			local blackboard = BLACKBOARDS[unit]
+			blackboard.is_fleeing = true
+		end
 	}
 }
 

@@ -75,6 +75,8 @@ HordeSurgeHandler.server_update = function (self, t, dt)
 		return
 	end
 
+	Profiler.start("HordeSurgeHandler")
+
 	local frozen = self._freeze_time ~= 0
 
 	if not frozen and self._events then
@@ -98,6 +100,8 @@ HordeSurgeHandler.server_update = function (self, t, dt)
 	end
 
 	self._frozen = frozen
+
+	Profiler.stop("HordeSurgeHandler")
 end
 
 HordeSurgeHandler.client_update = function (self, t, dt)
@@ -110,6 +114,8 @@ HordeSurgeHandler.client_update = function (self, t, dt)
 	if not game_session then
 		return
 	end
+
+	Profiler.start("HordeSurgeHandler")
 
 	local host_progress = GameSession.game_object_field(game_session, self._game_object_id, "progress")
 
@@ -140,6 +146,8 @@ HordeSurgeHandler.client_update = function (self, t, dt)
 			self._frozen = false
 		end
 	end
+
+	Profiler.stop("HordeSurgeHandler")
 end
 
 HordeSurgeHandler._trigger_event = function (self)

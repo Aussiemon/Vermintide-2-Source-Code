@@ -93,6 +93,8 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 
 	if locomotion_extension.movement_type ~= "constrained_by_mover" and not blackboard.stagger_hit_wall then
+		Profiler.start("checking navmesh")
+
 		local position = POSITION_LOOKUP[unit]
 		local velocity = locomotion_extension:current_velocity()
 		local nav_world = blackboard.nav_world
@@ -116,6 +118,8 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.stagger_hit_wall = true
 			end
 		end
+
+		Profiler.stop("checking navmesh")
 	end
 
 	if blackboard.anim_cb_blocked_cooldown and blackboard.leave_blocked_at_t and blackboard.leave_blocked_at_t < t then

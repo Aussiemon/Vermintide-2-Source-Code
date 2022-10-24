@@ -170,6 +170,8 @@ BTChaosSorcererChargeAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
+	Profiler.start("bt_charge_attack_action")
+
 	if blackboard.ray_can_go_update_time < t and Unit.alive(target_unit) then
 		local nav_world = blackboard.nav_world
 		local target_position = POSITION_LOOKUP[target_unit]
@@ -185,13 +187,19 @@ BTChaosSorcererChargeAction.run = function (self, unit, blackboard, t, dt)
 		local done = self:_run_charging(unit, blackboard, t, dt)
 
 		if done then
+			Profiler.stop("bt_charge_attack_action")
+
 			return "done"
 		end
 	elseif charge_state == "finished" then
+		Profiler.stop("bt_charge_attack_action")
+
 		return "done"
 	elseif charge_state == "cancel" then
 		self:_run_cancel(unit, blackboard, t, dt)
 	end
+
+	Profiler.stop("bt_charge_attack_action")
 
 	return "running", should_evaluate
 end

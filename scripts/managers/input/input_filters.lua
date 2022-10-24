@@ -169,6 +169,8 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 		local multiplier_y = filter_data.multiplier_y
 
 		if val.y ~= 0 and filter_data.multiplier_return_y and filter_data.angle_to_slow_down_inside then
+			Profiler.start("InputFilters.scale_vector3_xy_accelerated_x_get_y_component")
+
 			local player = Managers.player:local_player()
 			local viewport_name = player.viewport_name
 			local world = Managers.world:world("level_world")
@@ -189,6 +191,8 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 				local lerp_value = math.clamp(acos / slow_down_angle, 0, 1)
 				multiplier_y = math.lerp(filter_data.multiplier_y, filter_data.multiplier_return_y, lerp_value)
 			end
+
+			Profiler.stop("InputFilters.scale_vector3_xy_accelerated_x_get_y_component")
 		end
 
 		local y = val.y * multiplier_y * Managers.time._mean_dt

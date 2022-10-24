@@ -287,7 +287,7 @@ PlayFabMirrorBase.dlc_ownership_request_cb = function (self, result)
 	self._platform_dlcs = platform_dlcs
 	local unlock_manager = Managers.unlock
 
-	unlock_manager:handle_exclude_dlcs(excluded_dlcs, owned_dlcs)
+	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
 	self:update_owned_dlcs(false)
 
 	if HAS_STEAM then
@@ -1576,6 +1576,13 @@ end
 
 PlayFabMirrorBase.add_claimed_event_quest = function (self, quest_name)
 	self._claimed_event_quests[quest_name] = true
+end
+
+PlayFabMirrorBase.add_claimed_multiple_event_quests = function (self, quest_names)
+	for i = 1, #quest_names, 1 do
+		local quest_name = quest_names[i]
+		self._claimed_event_quests[quest_name] = true
+	end
 end
 
 PlayFabMirrorBase.get_achievement_rewards = function (self)

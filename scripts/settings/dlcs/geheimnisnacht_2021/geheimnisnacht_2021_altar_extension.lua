@@ -98,6 +98,10 @@ Geheimnisnacht2021AltarExtension.update = function (self, unit, input, dt, conte
 				self:set_ritual_sound(true)
 
 				self._hero_close = true
+
+				if not self.nurglings_spawned and self._is_server then
+					self:spawn_nurglings()
+				end
 			end
 		end
 
@@ -136,6 +140,10 @@ Geheimnisnacht2021AltarExtension.register_events = function (self)
 
 		event_manager:register(self, "geheimnisnacht_2021_altar_cultists_killed", "on_cultists_killed")
 		event_manager:register(self, "geheimnisnacht_2021_altar_cultists_aggroed", "on_cultists_aggroed")
+
+		if self._is_server then
+			event_manager:register(self, "nurgling_killed", "nurglings_flee")
+		end
 	end
 end
 
@@ -147,6 +155,10 @@ Geheimnisnacht2021AltarExtension.unregister_events = function (self)
 
 		event_manager:unregister("geheimnisnacht_2021_altar_cultists_killed", self)
 		event_manager:unregister("geheimnisnacht_2021_altar_cultists_aggroed", self)
+
+		if self._is_server then
+			event_manager:unregister("nurgling_killed", self)
+		end
 	end
 end
 
@@ -161,6 +173,7 @@ Geheimnisnacht2021AltarExtension.on_cultists_aggroed = function (self, group_id)
 	if group_id == self._cultist_group_id then
 		self:stop_relevant_faction_sound()
 		self:change_state(STATE_AGGROED)
+		self:nurglings_flee()
 	end
 end
 
@@ -286,6 +299,67 @@ Geheimnisnacht2021AltarExtension._mark_destructible = function (self)
 	end
 
 	self:die()
+end
+
+Geheimnisnacht2021AltarExtension.nurglings_flee = function (self)
+	local ai_group_system = Managers.state.entity:system("ai_group_system")
+	local group = ai_group_system:get_ai_group(self.nurgling_group_id)
+
+	if group then
+		AIGroupTemplates.critter_nurglings.wake_up_group(group)
+	end
+end
+
+Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
+	if self.nurglings_spawned then
+		return
+	end
+
+	local unit = self._unit
+	local altar_pos = Unit.local_position(unit, 0)
+	local altar_pos_box = Vector3Box(altar_pos)
+	self.nurgling_group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
+	local optional_data = {
+		spawned_func = function (unit, breed, optional_data)
+			local blackboard = BLACKBOARDS[unit]
+			local ai_extension = ScriptUnit.extension(unit, "ai_system")
+
+			ai_extension:set_perception("perception_regular", "pick_no_targets")
+
+			if blackboard then
+				blackboard.altar_pos = altar_pos_box
+				blackboard.is_fleeing = false
+				blackboard.nurgling_spawned_by_altar = true
+			end
+		end
+	}
+	local lowest_amount = 15
+	local highest_amount = 20
+	local num_nurglings = math.random(lowest_amount, highest_amount)
+	local spawn_radius = 1
+	local spread = 1
+	local tries = 15
+	local group_data = {
+		template = "critter_nurglings",
+		id = self.nurgling_group_id,
+		size = num_nurglings
+	}
+	local spawn_rot = Quaternion.identity()
+	local breed_name = "critter_nurgling"
+	local spawn_category = "event"
+	local spawn_type = "event"
+	local spawn_animation = nil
+	local breed_data = Breeds[breed_name]
+	local conflict_director = Managers.state.conflict
+	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
+
+	for i = 1, num_nurglings, 1 do
+		local spawn_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, altar_pos, spawn_radius, spread, tries)
+
+		conflict_director:spawn_queued_unit(breed_data, Vector3Box(spawn_pos), QuaternionBox(spawn_rot), spawn_category, spawn_animation, spawn_type, optional_data, group_data)
+	end
+
+	self.nurglings_spawned = true
 end
 
 return

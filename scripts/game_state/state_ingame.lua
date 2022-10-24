@@ -97,6 +97,7 @@ StateIngame.on_enter = function (self)
 	Managers.time:register_timer("game", "main")
 	CLEAR_POSITION_LOOKUP()
 	Managers.mechanism:check_venture_start()
+	Profiler.start("input")
 
 	local input_manager = InputManager:new()
 	self.input_manager = input_manager
@@ -117,6 +118,7 @@ StateIngame.on_enter = function (self)
 		input_manager:map_device_to_service("DebugMenu", "gamepad")
 	end
 
+	Profiler.stop("input")
 	Managers.popup:set_input_manager(input_manager)
 
 	local level_key = Managers.level_transition_handler:get_current_level_keys()
@@ -170,6 +172,9 @@ StateIngame.on_enter = function (self)
 
 	local world = self.world
 	self.peer_id = Network.peer_id()
+
+	Profiler.start("network_stuff")
+
 	local network_event_delegate = NetworkEventDelegate:new()
 	self.network_event_delegate = network_event_delegate
 	self.network_server = loading_context.network_server
@@ -201,6 +206,10 @@ StateIngame.on_enter = function (self)
 	self.statistics_db:register_network_event_delegate(network_event_delegate)
 
 	loading_context.network_transmit = self.network_transmit
+
+	Profiler.stop("network_stuff")
+	Profiler.start("debug_stuff")
+
 	local top_gui_world_name = "top_ingame_view"
 	local top_gui_world = Managers.world:world(top_gui_world_name)
 
@@ -216,6 +225,8 @@ StateIngame.on_enter = function (self)
 	if not script_data.debug_enabled then
 		DebugKeyHandler.set_enabled(false)
 	end
+
+	Profiler.stop("debug_stuff")
 
 	Managers.state.crafting = CraftingManager:new()
 	local level_transition_handler = Managers.level_transition_handler
@@ -295,12 +306,15 @@ StateIngame.on_enter = function (self)
 	local event_manager = Managers.state.event
 
 	event_manager:register(self, "event_play_particle_effect", "event_play_particle_effect", "event_start_network_timer", "event_start_network_timer", "xbox_one_hack_start_game", "event_xbox_one_hack_start_game", "gm_event_end_conditions_met", "gm_event_end_conditions_met")
+	Profiler.start("add_players")
 
 	for i = 1, num_players, 1 do
 		local viewport_name = "player_" .. i
 		self.viewport_name = viewport_name
 		slot29 = Managers.player:add_player(nil, viewport_name, self.world_name, i)
 	end
+
+	Profiler.stop("add_players")
 
 	local level = self.level
 	local level_key = self:_create_level()
@@ -334,10 +348,14 @@ StateIngame.on_enter = function (self)
 		Managers.state.room:setup_level_anchor_points(self.level)
 	end
 
+	Profiler.start("Optimizing Level Units")
+
 	local level_name = LevelSettings[level_key].level_name
 
 	ScriptWorld.optimize_level_units(world, level_name)
+	Profiler.stop("Optimizing Level Units")
 	InputDebugger:setup(world, self.input_manager)
+	Profiler.start("sub_states")
 
 	self.machines = {}
 	local level_end_view_wrappers = loading_context.level_end_view_wrappers
@@ -384,6 +402,8 @@ StateIngame.on_enter = function (self)
 		self.machines[i] = GameStateMachine:new(self, StateInGameRunning, params, true)
 	end
 
+	Profiler.stop("sub_states")
+
 	if checkpoint_data then
 		Managers.state.entity:system("mission_system"):load_checkpoint_data(checkpoint_data.mission)
 	end
@@ -402,6 +422,7 @@ StateIngame.on_enter = function (self)
 		Managers.matchmaking:setup_post_init_data(post_init_data)
 	end
 
+	Profiler.start("level_stuff")
 	ScriptWorld.trigger_level_loaded(world, level_name)
 	World.set_data(self.world, "level_seed", nil)
 
@@ -416,6 +437,8 @@ StateIngame.on_enter = function (self)
 
 		Managers.save:auto_save(SaveFileName, SaveData, callback(self, "cb_save_data"))
 	end
+
+	Profiler.stop("level_stuff")
 
 	local platform = PLATFORM
 
@@ -439,6 +462,8 @@ StateIngame.on_enter = function (self)
 		Managers.state.conflict:client_ready()
 	end
 
+	Profiler.start("populate pickups")
+
 	if self.is_server and checkpoint_data then
 		if Managers.state.game_mode:setting("specified_pickups") then
 			Managers.state.entity:system("pickup_system"):populate_specified_pickups(checkpoint_data.pickup)
@@ -453,7 +478,10 @@ StateIngame.on_enter = function (self)
 		end
 	end
 
+	Profiler.stop("populate pickups")
+	Profiler.start("init payloads")
 	Managers.state.entity:system("payload_system"):init_payloads()
+	Profiler.stop("init payloads")
 
 	local dynamic_range_sound = Application.user_setting("dynamic_range_sound")
 
@@ -516,10 +544,8 @@ StateIngame.on_enter = function (self)
 
 	Managers.state.game_mode:setup_done()
 
-	local environment_variation_name = level_transition_handler:get_current_environment_variation_name()
-
-	if environment_variation_name and not Managers.state.game_mode:has_activated_mutator("darkness") and not Managers.state.game_mode:has_activated_mutator("night_mode") then
-		LevelHelper:flow_event(world, environment_variation_name)
+	if is_server then
+		Managers.state.game_mode:apply_environment_variation()
 	end
 
 	local player_id = Managers.backend:player_id()
@@ -647,12 +673,16 @@ end
 
 StateIngame._setup_world = function (self)
 	local function update_ui()
+		Profiler.start("Anim update Callback")
 		Managers.ui:update()
+		Profiler.stop("Anim update Callback")
 	end
 
 	Managers.world:set_anim_update_callback(self.world, update_ui)
 	Managers.world:set_scene_update_callback(self.world, function ()
+		Profiler.start("Scene update Callback")
 		self:physics_async_update(self.dt)
+		Profiler.stop("Scene update Callback")
 	end)
 
 	if Managers.splitscreen then
@@ -677,7 +707,9 @@ end
 StateIngame.physics_async_update = function (self, dt)
 	local t = Managers.time:time("game")
 
+	Profiler.start("Music manager")
 	Managers.music:update(self.dt, t)
+	Profiler.stop("Music manager")
 
 	if self:_safe_to_do_entity_update() then
 		self.entity_system:physics_async_update()
@@ -728,6 +760,8 @@ StateIngame.unspawn_unit = function (self, unit)
 end
 
 StateIngame._create_level = function (self)
+	Profiler.start("create_level")
+
 	local level = self.level
 
 	Level.finish_spawn_time_sliced(level)
@@ -752,6 +786,7 @@ StateIngame._create_level = function (self)
 	Managers.state.entity:add_and_register_units(self.world, World.units(self.world))
 	game_mode_manager:register_object_sets(object_sets)
 	Level.spawn_background(level)
+	Profiler.stop("create_level")
 
 	return level_key
 end
@@ -794,6 +829,7 @@ StateIngame.pre_update = function (self, dt)
 	UPDATE_POSITION_LOOKUP()
 	Managers.state.side:update_frame_tables()
 	network_manager:update_receive(dt)
+	Profiler.start("Network Client/Server update")
 
 	if self.network_server then
 		self.network_server:update(dt)
@@ -803,8 +839,13 @@ StateIngame.pre_update = function (self, dt)
 		self.network_client:update(dt)
 	end
 
+	Profiler.stop("Network Client/Server update")
+	Profiler.start("spawn")
 	Managers.state.spawn:pre_update(dt, t)
+	Profiler.stop("spawn")
+	Profiler.start("GameModeManager:pre_update()")
 	Managers.state.game_mode:pre_update(t, dt)
+	Profiler.stop("GameModeManager:pre_update()")
 	Managers.state.conflict:pre_update()
 	self.entity_system:commit_and_remove_pending_units()
 
@@ -825,12 +866,22 @@ StateIngame.update = function (self, dt, main_t)
 	local Managers = Managers
 
 	Managers.state.network:update(dt)
+	Profiler.start("BackendManager update")
 	Managers.backend:update(dt, main_t)
+	Profiler.stop("BackendManager update")
+	Profiler.start("input_manager")
 	self.input_manager:update(dt, main_t)
+	Profiler.stop("input_manager")
+	Profiler.start("badge_manager")
 	Managers.state.badge:update(dt, main_t)
+	Profiler.stop("badge_manager")
+	Profiler.start("level_transition_handler")
 	Managers.level_transition_handler:update()
+	Profiler.stop("level_transition_handler")
 
 	local t = Managers.time:time("game")
+
+	Profiler.start("Lobby Update")
 
 	if self._lobby_host then
 		self._lobby_host:update(dt)
@@ -840,14 +891,21 @@ StateIngame.update = function (self, dt, main_t)
 		self._lobby_client:update(dt)
 	end
 
+	Profiler.stop("Lobby Update")
+	Profiler.start("voting")
 	Managers.state.voting:update(dt, t)
+	Profiler.stop("voting")
 
 	if Managers.matchmaking then
+		Profiler.start("matchmaking")
 		Managers.matchmaking:update(dt, main_t)
+		Profiler.stop("matchmaking")
 	end
 
 	if Managers.game_server then
+		Profiler.start("game_server")
 		Managers.game_server:update(dt, t)
+		Profiler.stop("game_server")
 	end
 
 	self:_update_deed_manager(dt)
@@ -856,13 +914,19 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.party:update(t, dt)
 
 	if Managers.state.quest then
+		Profiler.start("quest")
 		Managers.state.quest:update(dt, t)
+		Profiler.stop("quest")
 	end
 
+	Profiler.start("achievement")
 	Managers.state.achievement:update(dt, t)
+	Profiler.stop("achievement")
 
 	if Managers.state.decal ~= nil then
+		Profiler.start("decal_manager")
 		Managers.state.decal:update(dt, t)
+		Profiler.stop("decal_manager")
 	end
 
 	if Managers.eac ~= nil then
@@ -879,11 +943,23 @@ StateIngame.update = function (self, dt, main_t)
 	if is_server then
 		Managers.state.conflict:reset_data()
 
-		if self._lobby_host:is_joined() and Managers.state.network:game() then
-			Managers.state.conflict:update(dt, t)
+		if self._lobby_host:is_joined() then
+			Profiler.start("Conflict Update")
+
+			if Managers.state.network:game() then
+				Managers.state.conflict:update(dt, t)
+			end
+
+			Profiler.stop("Conflict Update")
 		end
-	elseif Managers.state.network:game() then
-		Managers.state.conflict:update_client(dt, t)
+	else
+		Profiler.start("Conflict Update")
+
+		if Managers.state.network:game() then
+			Managers.state.conflict:update_client(dt, t)
+		end
+
+		Profiler.stop("Conflict Update")
 	end
 
 	for _, machine in pairs(self.machines) do
@@ -907,7 +983,9 @@ StateIngame.update = function (self, dt, main_t)
 	Managers.state.game_mode:update(dt, t)
 
 	if is_server then
+		Profiler.start("Game Mode Server")
 		Managers.state.game_mode:server_update(dt, t)
+		Profiler.stop("Game Mode Server")
 	end
 
 	if not self._new_state then
@@ -1768,6 +1846,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 	level_transition_handler:unregister_rpcs()
 	Managers.mechanism:unregister_rpcs()
 	Managers.party:unregister_rpcs()
+	Profiler.start("destroy units")
 	Managers.state.game_mode:cleanup_game_mode_units()
 	Managers.state.game_mode:deactivate_mutators(true)
 
@@ -1787,6 +1866,7 @@ StateIngame.on_exit = function (self, application_shutdown)
 
 	self.entity_system:destroy()
 	self.entity_system_bag:destroy()
+	Profiler.stop("destroy units")
 	Level.trigger_level_shutdown(self.level)
 	Managers.player:exit_ingame()
 	self:_teardown_level()

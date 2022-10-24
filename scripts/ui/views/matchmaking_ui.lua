@@ -735,6 +735,8 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 	local members = lobby_members and lobby_members:members_map()
 
 	if members then
+		Profiler.start("update_portraits")
+
 		local portrait_index_table = self.portrait_index_table
 
 		for i = 1, self._max_number_of_players, 1 do
@@ -776,6 +778,8 @@ MatchmakingUI._update_portraits = function (self, has_mission_vote)
 				self:large_window_set_player_connecting(portrait_index, true)
 			end
 		end
+
+		Profiler.stop("update_portraits")
 	end
 end
 

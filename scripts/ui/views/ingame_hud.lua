@@ -355,6 +355,7 @@ IngameHud._abort_hud_scale = function (self)
 end
 
 IngameHud.update = function (self, dt, t)
+	Profiler.start("IngameHud:update")
 	self:_reset_hud_frame_variables()
 	self:_update_components_visibility()
 
@@ -382,17 +383,22 @@ IngameHud.update = function (self, dt, t)
 		end
 
 		if component.update and currently_visible_components[component_name] then
+			Profiler.start("ingame_hud." .. component_name .. ":update")
 			component:update(dt, t, player)
+			Profiler.stop("ingame_hud." .. component_name .. ":update")
 		end
 	end
 
+	Profiler.start("Tobii")
 	self:_update_clean_ui(dt, t)
+	Profiler.stop("Tobii")
 
 	if hud_scale_applied then
 		self:_abort_hud_scale()
 	end
 
 	HudCustomizer.reset_button(self._ingame_ui_context.ui_renderer)
+	Profiler.stop("IngameHud:update")
 end
 
 IngameHud.post_update = function (self, dt, t)

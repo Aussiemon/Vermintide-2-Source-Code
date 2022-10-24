@@ -317,6 +317,8 @@ end
 
 BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit, blackboard, t, vortex_data)
 	if vortex_data.spawn_timer < t then
+		Profiler.start("_update_vortex_search")
+
 		local vortex_units = vortex_data.vortex_units
 		local num_vortex_units = #vortex_units
 		local i = 1
@@ -349,6 +351,8 @@ BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit,
 			if not target_line_of_sight then
 				vortex_data.spawn_timer = t + action.vortex_check_timer
 
+				Profiler.stop("_update_vortex_search")
+
 				return false
 			end
 
@@ -356,6 +360,8 @@ BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit,
 
 			if not vortex_cast_position then
 				vortex_data.spawn_timer = t + action.vortex_check_timer
+
+				Profiler.stop("_update_vortex_search")
 
 				return false
 			end
@@ -368,9 +374,13 @@ BTChaosSorcererSkulkApproachAction._update_vortex_search = function (self, unit,
 			vortex_data.vortex_spawn_radius = min_radius
 			vortex_data.spawn_timer = t + action.vortex_spawn_timer
 
+			Profiler.stop("_update_vortex_search")
+
 			return true
 		else
 			vortex_data.spawn_timer = t + action.vortex_check_timer
+
+			Profiler.stop("_update_vortex_search")
 		end
 	end
 end

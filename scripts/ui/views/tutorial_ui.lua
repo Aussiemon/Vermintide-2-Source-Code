@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/ui/views/tutorial_tooltip_ui")
 
 local definitions = local_require("scripts/ui/views/tutorial_ui_definitions")
@@ -168,6 +166,8 @@ end
 TutorialUI.update = function (self, dt, t)
 	self._first_person_extension = nil
 
+	Profiler.start("TutorialUI")
+
 	if RELOAD_TUTORIAL_UI then
 		self:create_ui_elements()
 	end
@@ -201,6 +201,8 @@ TutorialUI.update = function (self, dt, t)
 	local player_unit = my_player and my_player.player_unit
 
 	if not player_unit then
+		Profiler.stop("TutorialUI")
+
 		return
 	end
 
@@ -215,9 +217,15 @@ TutorialUI.update = function (self, dt, t)
 
 		if tooltip_tutorial.active then
 			if active_template.is_mission_tutorial then
+				Profiler.start("mission_tooltip")
+
 				self.mission_tutorial_tooltip_to_update = tooltip_tutorial
 
 				self.tutorial_tooltip_ui:hide()
+				Profiler.stop("mission_tooltip")
+			else
+				Profiler.start("default_tooltip")
+				Profiler.stop("default_tooltip")
 			end
 		elseif self.active_tooltip_name or self.active_tooltip_widget then
 			if active_template and active_template.is_mission_tutorial then
@@ -241,15 +249,21 @@ TutorialUI.update = function (self, dt, t)
 		self.active_tooltip_widget = nil
 	end
 
+	Profiler.start("info slates")
 	self.ui_animator:update(dt)
 	self:update_info_slate_entries(dt, t)
+	Profiler.stop("info slates")
 
 	if not script_data.disable_tutorial_ui and render_tooltip_ui then
 		self.tutorial_tooltip_ui:draw(dt, t)
 	end
+
+	Profiler.stop("TutorialUI")
 end
 
 TutorialUI.post_update = function (self, dt, t)
+	Profiler.start("TutorialUI:pre_render_update")
+
 	local ui_scenegraph = self.floating_icons_ui_scene_graph
 	local ui_renderer = self.ui_renderer
 	local peer_id = self.peer_id
@@ -257,6 +271,8 @@ TutorialUI.post_update = function (self, dt, t)
 	local player_unit = my_player and my_player.player_unit
 
 	if not player_unit then
+		Profiler.stop("TutorialUI:pre_render_update")
+
 		return
 	end
 
@@ -264,6 +280,9 @@ TutorialUI.post_update = function (self, dt, t)
 	local input_service = input_manager:get_service("Player")
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local tutorial_extension = ScriptUnit.extension(player_unit, "tutorial_system")
+
+	Profiler.start("update positions")
+
 	local widgets_for_update = self.widgets_for_update
 
 	for i = 1, self.num_widgets_for_update, 1 do
@@ -281,13 +300,19 @@ TutorialUI.post_update = function (self, dt, t)
 		self:update_mission_tooltip(tooltip_tutorial, player_unit, dt)
 	end
 
+	Profiler.stop("update positions")
+
 	if self._visible and not script_data.disable_tutorial_ui then
+		Profiler.start("draw")
+
 		local first_person_extension = self:get_player_first_person_extension()
 		local render_settings = self.render_settings
 
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 		if first_person_extension.first_person_mode then
+			Profiler.start("objective_tooltip_widgets")
+
 			local alpha_multiplier = render_settings.alpha_multiplier
 			local status_extension = ScriptUnit.has_extension(player_unit, "status_system")
 			local is_not_aiming = not status_extension:get_is_aiming()
@@ -304,6 +329,8 @@ TutorialUI.post_update = function (self, dt, t)
 
 			self.tooltip_alpha_multiplier = render_settings.alpha_multiplier
 			render_settings.alpha_multiplier = alpha_multiplier
+
+			Profiler.stop("objective_tooltip_widgets")
 		end
 
 		if self.active_tooltip_widget and tooltip_tutorial then
@@ -323,7 +350,10 @@ TutorialUI.post_update = function (self, dt, t)
 		end
 
 		UIRenderer.end_pass(ui_renderer)
+		Profiler.stop("draw")
 	end
+
+	Profiler.stop("TutorialUI:pre_render_update")
 end
 
 local center_position = {
@@ -1458,6 +1488,8 @@ TutorialUI.show_health_bar = function (self, unit, visible)
 end
 
 TutorialUI.update_health_bars = function (self, dt, player_unit)
+	Profiler.start("healthbars")
+
 	local first_person_extension = self:get_player_first_person_extension()
 	local camera_position = first_person_extension:current_position()
 	local camera_rotation = first_person_extension:current_rotation()
@@ -1533,6 +1565,8 @@ TutorialUI.update_health_bars = function (self, dt, player_unit)
 			health_bar.widget.content.visible = false
 		end
 	end
+
+	Profiler.stop("healthbars")
 end
 
 TutorialUI.set_visible = function (self, visible)

@@ -184,6 +184,139 @@ local rat_data = {
 	}
 }
 Breeds.critter_rat = table.create_copy(Breeds.critter_rat, rat_data)
+local nurgling_data = {
+	detection_radius = 10,
+	target_selection = "pick_closest_target",
+	has_inventory = true,
+	run_speed = 4,
+	flingable = false,
+	not_bot_target = true,
+	perception = "perception_regular",
+	walk_speed = 1.6,
+	exchange_order = 1,
+	animation_sync_rpc = "rpc_sync_anim_state_1",
+	aoe_radius = 0.1,
+	debug_spawn_category = "Misc",
+	aoe_height = 0.1,
+	cannot_far_path = true,
+	death_reaction = "critter_nurgling",
+	hit_reaction = "ai_default",
+	bone_lod_level = 1,
+	default_inventory_template = "critter_nurgling",
+	hit_effect_template = "HitEffectsCritterRat",
+	radius = 1,
+	unit_template = "ai_unit_critter_nurgling",
+	perception_previous_attacker_stickyness_value = 0,
+	race = "critter",
+	no_autoaim = true,
+	poison_resistance = 70,
+	armor_category = 1,
+	weapon_reach = 2,
+	vortexable = false,
+	disable_local_hit_reactions = true,
+	behavior = "critter_nurgling",
+	base_unit = "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling",
+	threat_value = 0,
+	ignore_activate_unit = true,
+	size_variation_range = {
+		0.9,
+		1.1
+	},
+	animation_merge_options = {
+		idle_animation_merge_options = {},
+		move_animation_merge_options = {}
+	},
+	hitzone_multiplier_types = {},
+	hit_zones = {
+		full = {
+			prio = 1,
+			actors = {}
+		},
+		neck = {
+			prio = 1,
+			actors = {
+				"c_head"
+			}
+		},
+		torso = {
+			prio = 1,
+			actors = {
+				"c_hips",
+				"c_spine1",
+				"c_leftarm",
+				"c_leftforearm",
+				"c_lefthand",
+				"c_rightarm",
+				"c_rightforearm",
+				"c_righthand",
+				"c_leftupleg",
+				"c_leftleg",
+				"c_leftfoot",
+				"c_rightupleg",
+				"c_rightleg",
+				"c_rightfoot"
+			},
+			push_actors = {
+				"c_spine1"
+			}
+		}
+	},
+	max_health = {
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1,
+		1
+	},
+	num_push_anims = {
+		push_backward = 4
+	},
+	debug_color = {
+		255,
+		40,
+		90,
+		170
+	},
+	allowed_layers = {
+		planks = 1.5,
+		bot_ratling_gun_fire = 5,
+		doors = 1.5,
+		destructible_wall = 0,
+		bot_poison_wind = 5,
+		temporary_wall = 0,
+		fire_grenade = 5
+	}
+}
+Breeds.critter_nurgling = table.create_copy(Breeds.critter_nurgling, nurgling_data)
+BreedActions.critter_nurgling = {
+	roam = {
+		check_overlap_radius = 0.3,
+		find_move_pos = {
+			spread = 3,
+			radius = 5,
+			tries = 15
+		}
+	},
+	wait = {
+		wait_time_min = 2,
+		wait_time_max = 12
+	},
+	flee = {
+		random_point_check = {
+			below = 2,
+			max_tries = 30,
+			min_random_point_check_dist = 5,
+			above = 1,
+			max_random_point_check_dist = 10
+		},
+		has_escaped_players = {
+			despawn_distance_sq = 1600
+		}
+	}
+}
 BreedActions.critter_pig = {
 	alerted = {
 		cooldown = -1,

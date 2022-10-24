@@ -216,6 +216,8 @@ AISlotSystem2.set_release_slot_lock = function (self, unit, release_slot_lock)
 end
 
 AISlotSystem2.update_target_slots = function (self, t)
+	Profiler.start("update_target_slots")
+
 	local target_units = self.target_units
 
 	for i = 1, #target_units, 1 do
@@ -226,6 +228,8 @@ AISlotSystem2.update_target_slots = function (self, t)
 			break
 		end
 	end
+
+	Profiler.stop("update_target_slots")
 end
 
 AISlotSystem2.update_disabled_slots_count = function (self, t)
@@ -250,11 +254,15 @@ end
 
 AISlotSystem2.update = function (self, context, t, dt)
 	if not script_data.navigation_thread_disabled then
+		Profiler.start("wait for navigation thread")
+
 		local nav_world = self.nav_world
 
 		GwNavWorld.join_async_update(nav_world)
 
 		NAVIGATION_RUNNING_IN_THREAD = false
+
+		Profiler.stop("wait for navigation thread")
 	end
 end
 
@@ -273,21 +281,30 @@ AISlotSystem2.update_slot_providers = function (self, t)
 	self:update_target_slots(t)
 
 	if self.next_total_slot_count_update < t then
+		Profiler.start("update_total_slots_count")
 		self:update_total_slots_count(t)
 
 		self.next_total_slot_count_update = t + TOTAL_SLOTS_COUNT_UPDATE_INTERVAL
+
+		Profiler.stop("update_total_slots_count")
 	end
 
 	if self.next_disabled_slot_count_update < t then
+		Profiler.start("update_disabled_slots_count")
 		self:update_disabled_slots_count(t)
 
 		self.next_disabled_slot_count_update = t + DISABLED_SLOTS_COUNT_UPDATE_INTERVAL
+
+		Profiler.stop("update_disabled_slots_count")
 	end
 
 	if self.next_slot_sound_update < t then
+		Profiler.start("update_slot_sound")
 		self:update_slot_sound(t)
 
 		self.next_slot_sound_update = t + SLOT_SOUND_UPDATE_INTERVAL
+
+		Profiler.stop("update_slot_sound")
 	end
 end
 
@@ -337,8 +354,10 @@ AISlotSystem2.physics_async_update = function (self, context, t)
 	local nav_world = self.nav_world
 	local unit_extension_data = self.unit_extension_data
 
+	Profiler.start("ai")
 	self:update_slot_providers(t)
 	self:update_slot_consumers(t)
+	Profiler.stop("ai")
 end
 
 AISlotSystem2.update_total_slots_count = function (self, t)

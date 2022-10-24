@@ -61,14 +61,20 @@ end
 local PROFILER_NAME = "career_ability_bw_adept"
 
 CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
+	Profiler.start(PROFILER_NAME)
+
 	local input_extension = self._input_extension
 
 	if not input_extension then
+		Profiler.stop(PROFILER_NAME)
+
 		return
 	end
 
 	if not self._is_priming then
 		if not self:_ability_available() then
+			Profiler.stop(PROFILER_NAME)
+
 			return
 		end
 
@@ -80,12 +86,14 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 
 		if input_extension:get("action_two") or input_extension:get("jump") or input_extension:get("jump_only") then
 			self:_stop_priming()
+			Profiler.stop(PROFILER_NAME)
 
 			return
 		end
 
 		if input_extension:get("weapon_reload") then
 			self:_stop_priming()
+			Profiler.stop(PROFILER_NAME)
 
 			return
 		end
@@ -100,6 +108,7 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 
 		if not self._last_valid_landing_position then
 			self:_stop_priming()
+			Profiler.stop(PROFILER_NAME)
 
 			return
 		end
@@ -108,6 +117,8 @@ CareerAbilityBWAdept.update = function (self, unit, input, dt, context, t)
 			self:_run_ability()
 		end
 	end
+
+	Profiler.stop(PROFILER_NAME)
 end
 
 CareerAbilityBWAdept.stop = function (self, reason)

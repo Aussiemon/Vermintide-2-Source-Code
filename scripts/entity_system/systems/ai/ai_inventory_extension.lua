@@ -223,10 +223,14 @@ AIInventoryExtension.destroy_dropped_items = function (self, inventory_item_inde
 end
 
 AIInventoryExtension.freeze = function (self)
+	Profiler.start("Inventory Freeze")
+
 	local unit_spawner = Managers.state.unit_spawner
 	local world = self.world
 	local inventory_items_n = self.inventory_items_n
 	local unit = self.unit
+
+	Profiler.start("Remove Inventory")
 
 	for i = 1, inventory_items_n, 1 do
 		if Unit.alive(self.inventory_item_units[i]) then
@@ -239,6 +243,10 @@ AIInventoryExtension.freeze = function (self)
 	self.inventory_item_units = {}
 	self.inventory_item_outfit_units = {}
 	self.inventory_item_helmet_units = {}
+
+	Profiler.stop("Remove Inventory")
+	Profiler.start("Restore Gibbing")
+
 	local one_scale = Vector3(1, 1, 1)
 
 	for i = 1, #self.gibbed_nodes, 1 do
@@ -268,9 +276,14 @@ AIInventoryExtension.freeze = function (self)
 	end
 
 	self.stump_items = {}
+
+	Profiler.stop("Restore Gibbing")
+	Profiler.stop("Inventory Freeze")
 end
 
 AIInventoryExtension.unfreeze = function (self)
+	Profiler.start("Inventory Unfreeze")
+
 	local unit = self.unit
 	self.dropped = false
 	self.wielded = false
@@ -309,6 +322,8 @@ AIInventoryExtension.unfreeze = function (self)
 	if anim_state_event then
 		Unit.animation_event(unit, anim_state_event)
 	end
+
+	Profiler.stop("Inventory Unfreeze")
 end
 
 AIInventoryExtension.show_single_item = function (self, item_inventory_index, show)

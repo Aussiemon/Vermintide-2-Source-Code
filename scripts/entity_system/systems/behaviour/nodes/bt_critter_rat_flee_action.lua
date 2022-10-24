@@ -29,9 +29,13 @@ BTCritterRatFleeAction.leave = function (self, unit, blackboard, t, reason, dest
 end
 
 BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
+	Profiler.start("rat_flee")
+
 	local ai_navigation = blackboard.navigation_extension
 
 	if blackboard.dig_timer and blackboard.dig_timer < t then
+		Profiler.stop("rat_flee")
+
 		return "done"
 	end
 
@@ -42,6 +46,8 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 
 		blackboard.move_pos = Vector3Box(move_pos)
 		blackboard.is_fleeing = true
+
+		Profiler.stop("rat_flee")
 
 		return "running"
 	end
@@ -55,6 +61,8 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 			self:start_idle_animation(unit, blackboard)
 		end
 
+		Profiler.stop("rat_flee")
+
 		return "running"
 	end
 
@@ -63,15 +71,19 @@ BTCritterRatFleeAction.run = function (self, unit, blackboard, t)
 
 	if path_found and not has_reached_destination and blackboard.move_state ~= "moving" then
 		self:start_move_animation(unit, blackboard)
+		Profiler.stop("rat_flee")
 
 		return "running"
 	end
 
 	if has_reached_destination then
 		self:at_destination(unit, blackboard, t)
+		Profiler.stop("rat_flee")
 
 		return "running"
 	end
+
+	Profiler.stop("rat_flee")
 
 	return "running"
 end

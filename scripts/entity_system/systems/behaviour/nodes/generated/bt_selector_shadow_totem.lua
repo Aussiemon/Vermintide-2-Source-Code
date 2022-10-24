@@ -21,13 +21,18 @@ BTSelector_shadow_totem.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_shadow_totem.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_idle = children[1]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+
+	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

@@ -131,11 +131,15 @@ UIManager.end_screen_completed = function (self)
 end
 
 UIManager.post_update = function (self, dt, t, disable_ingame_ui)
+	Profiler.start("UIManager:post_update")
+
 	local ingame_ui = self._ingame_ui
 
 	if ingame_ui then
 		ingame_ui:post_update(dt, t, disable_ingame_ui)
 	end
+
+	Profiler.stop("UIManager:post_update")
 end
 
 UIManager.post_render = function (self)

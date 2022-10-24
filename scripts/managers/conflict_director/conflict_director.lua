@@ -445,6 +445,8 @@ ConflictDirector.update_main_path_player_info = function (self, side, t)
 		return
 	end
 
+	Profiler.start("update_main_path_player_info")
+
 	local main_path_player_info = self.main_path_player_info
 	local index = main_path_info.main_path_player_info_index
 	index = index + 1
@@ -563,6 +565,8 @@ ConflictDirector.update_main_path_player_info = function (self, side, t)
 	if recalc then
 		self:sort_player_info_by_travel_distance(main_path_info, main_path_player_info)
 	end
+
+	Profiler.stop("update_main_path_player_info")
 end
 
 ConflictDirector.get_main_path_player_data = function (self, unit)
@@ -589,6 +593,8 @@ ConflictDirector.get_cluster_and_loneliness = function (self, min_dist, position
 end
 
 ConflictDirector.update_player_areas = function (self, sides)
+	Profiler.start("update_player_areas")
+
 	local player_areas = self._player_areas
 
 	table.clear_array(player_areas, #player_areas)
@@ -611,6 +617,8 @@ ConflictDirector.update_player_areas = function (self, sides)
 			end
 		end
 	end
+
+	Profiler.stop("update_player_areas")
 end
 
 ConflictDirector.add_horde = function (self, amount, event_breed_name)
@@ -1359,6 +1367,8 @@ ConflictDirector.update = function (self, dt, t)
 
 	if not script_data.ai_pacing_disabled and not conflict_settings.pacing.disabled then
 		if self._next_pacing_update < t then
+			Profiler.start("pacing")
+
 			local side = self._hero_side
 
 			if side then
@@ -1386,13 +1396,20 @@ ConflictDirector.update = function (self, dt, t)
 					end
 				end
 			end
+
+			Profiler.stop("pacing")
 		end
+
+		Profiler.start("player rush")
 
 		if not script_data.ai_rush_intervention_disabled and self._next_rushing_intervention_time < t then
 			self._next_rushing_intervention_time = t + 1
 
 			self:handle_alone_player(t, self._enemy_side)
 		end
+
+		Profiler.stop("player rush")
+		Profiler.start("speed_running_intervention")
 
 		local settings = CurrentSpecialsSettings.speed_running_intervention or SpecialsSettings.default.speed_running_intervention
 
@@ -1401,6 +1418,8 @@ ConflictDirector.update = function (self, dt, t)
 
 			self:handle_speed_runners(t)
 		end
+
+		Profiler.stop("speed_running_intervention")
 	end
 
 	if self.in_safe_zone then
@@ -1425,13 +1444,18 @@ ConflictDirector.update = function (self, dt, t)
 		end
 	else
 		if not conflict_settings.specials.disabled and self.specials_pacing and not script_data.ai_specials_spawning_disabled and not Managers.state.game_mode:setting("ai_specials_spawning_disabled") then
+			Profiler.start("specials pacing")
+
 			local specials_population = pacing:specials_population()
 
 			self.specials_pacing:update(t, self._alive_specials, specials_population, all_player_positions)
+			Profiler.stop("specials pacing")
 		end
 
 		if not script_data.ai_horde_spawning_disabled and not conflict_settings.horde.disabled and not Managers.state.game_mode:setting("horde_spawning_disabled") then
+			Profiler.start("horde pacing")
 			self:update_horde_pacing(t, dt)
+			Profiler.stop("horde pacing")
 		else
 			local pacing_setting = CurrentPacing
 			self._next_horde_time = t + ConflictUtils.random_interval(pacing_setting.horde_frequency)
@@ -1441,20 +1465,31 @@ ConflictDirector.update = function (self, dt, t)
 			local pacing_state = pacing.pacing_state
 
 			if pacing_state == "pacing_build_up" then
+				Profiler.start("mini_patrol")
 				self:update_mini_patrol(t, dt)
+				Profiler.stop("mini_patrol")
 			end
 		end
+
+		Profiler.start("hordes")
 
 		if self.horde_spawner then
 			self.horde_spawner:update(t, dt)
 		end
+
+		Profiler.stop("hordes")
 	end
 
 	if self.director_is_ai_ready then
+		Profiler.start("TerrorEventMixer")
+
 		local ai_system = Managers.state.entity:system("ai_system")
 
 		TerrorEventMixer.update(t, dt, ai_system.ai_debugger and ai_system.ai_debugger.screen_gui)
+		Profiler.stop("TerrorEventMixer")
 	elseif not FORM_GROUPS_IN_ONE_FRAME and self.navigation_group_manager.form_groups_running then
+		Profiler.start("form_groups_update")
+
 		local done = self.navigation_group_manager:form_groups_update()
 
 		if done then
@@ -1462,6 +1497,8 @@ ConflictDirector.update = function (self, dt, t)
 
 			self:ai_nav_groups_ready(level_seed)
 		end
+
+		Profiler.stop("form_groups_update")
 	end
 
 	local recycler_positions = all_player_positions
@@ -1515,7 +1552,9 @@ ConflictDirector.update = function (self, dt, t)
 	end
 
 	self.enemy_recycler:update_main_path_events(t)
+	Profiler.start("Spawn queue")
 	self:update_spawn_queue(t)
+	Profiler.stop("Spawn queue")
 
 	if self.enemy_recycler and not script_data.ai_far_off_despawn_disabled then
 		self.enemy_recycler:far_off_despawn(t, dt, recycler_positions, self._spawned)
@@ -1686,6 +1725,8 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		return
 	end
 
+	Profiler.start("spawn queue setup")
+
 	local first_spawn_index = self.first_spawn_index
 	local spawn_queue = self.spawn_queue
 	local d = spawn_queue[first_spawn_index]
@@ -1696,6 +1737,8 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		first_spawn_index = first_spawn_index + 1
 
 		if first_spawn_index == self.first_spawn_index + self.spawn_queue_size then
+			Profiler.stop("spawn queue setup")
+
 			return
 		end
 
@@ -1703,6 +1746,8 @@ ConflictDirector.update_spawn_queue = function (self, t)
 		breed = d[1]
 		breed_name = breed.name
 	end
+
+	Profiler.stop("spawn queue setup")
 
 	local unit = not script_data.disable_breed_freeze_opt and self.breed_freezer:try_unfreeze_breed(breed, d)
 
@@ -1741,6 +1786,8 @@ local dialogue_system_init_data = {
 }
 
 ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spawn_category, spawn_animation, spawn_type, optional_data, group_data, spawn_index)
+	Profiler.start("conflict spawn unit")
+
 	local breed_unit_field = (script_data.use_optimized_breed_units and breed.opt_base_unit) or breed.base_unit
 	local base_unit_name = (type(breed_unit_field) == "string" and breed_unit_field) or breed_unit_field[Math.random(#breed_unit_field)]
 	local unit_template = breed.unit_template
@@ -1779,6 +1826,9 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 
 	dialogue_system_init_data.breed_name = breed.name
 	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+
+	Profiler.start("create ai extensions")
+
 	local health = breed.max_health and breed.max_health[difficulty_rank]
 
 	if health then
@@ -1836,6 +1886,9 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 		optional_data.prepare_func(breed, extension_init_data, optional_data)
 	end
 
+	Profiler.stop("create ai extensions")
+	Profiler.start("spawn ai_unit")
+
 	local spawn_pose = Matrix4x4.from_quaternion_position(spawn_rot, spawn_pos)
 	local size_variation_range = optional_data.size_variation_range or breed.size_variation_range
 
@@ -1850,12 +1903,16 @@ ConflictDirector._spawn_unit = function (self, breed, spawn_pos, spawn_rot, spaw
 
 	local ai_unit, go_id = Managers.state.unit_spawner:spawn_network_unit(base_unit_name, unit_template, extension_init_data, spawn_pose)
 
+	Profiler.stop("spawn ai_unit")
 	self:_post_spawn_unit(ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
+	Profiler.stop("conflict spawn unit")
 
 	return ai_unit
 end
 
 ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn_pos, spawn_category, spawn_animation, optional_data, spawn_type)
+	Profiler.start("post spawn unit")
+
 	optional_data = optional_data or {}
 	local blackboard = BLACKBOARDS[ai_unit]
 	blackboard.enemy_id = optional_data.spawn_queue_index
@@ -1912,6 +1969,8 @@ ConflictDirector._post_spawn_unit = function (self, ai_unit, go_id, breed, spawn
 	if optional_data.spawned_func then
 		optional_data.spawned_func(ai_unit, breed, optional_data)
 	end
+
+	Profiler.stop("post spawn unit")
 end
 
 ConflictDirector.set_disabled = function (self, state)
@@ -2108,7 +2167,9 @@ ConflictDirector.register_unit_destroyed = function (self, unit, reason)
 	Managers.telemetry.events:ai_despawned(breed_name, despawn_pos, reason)
 
 	if breed.run_on_despawn then
+		Profiler.start("run_on_despawn")
 		breed.run_on_despawn(unit, blackboard)
+		Profiler.stop("run_on_despawn")
 	end
 
 	if script_data.disable_breed_freeze_opt or not self.breed_freezer:try_mark_unit_for_freeze(breed, unit) then
@@ -2174,7 +2235,9 @@ ConflictDirector.destroy_all_units = function (self, except_immune)
 				end
 
 				if breed.run_on_despawn then
+					Profiler.start("run_on_despawn")
 					breed.run_on_despawn(unit, blackboard)
+					Profiler.stop("run_on_despawn")
 				end
 			end
 		end
@@ -2247,7 +2310,9 @@ ConflictDirector.destroy_close_units = function (self, position, except_unit, di
 			if breed.run_on_despawn then
 
 				-- Decompilation error in this vicinity:
+				Profiler.start("run_on_despawn")
 				breed.run_on_despawn(unit, blackboard)
+				Profiler.stop("run_on_despawn")
 			end
 		end
 	end
@@ -2280,7 +2345,9 @@ ConflictDirector.destroy_specials = function (self)
 			end
 
 			if breed.run_on_despawn then
+				Profiler.start("run_on_despawn")
 				breed.run_on_despawn(unit, blackboard)
+				Profiler.stop("run_on_despawn")
 			end
 		end
 	end
@@ -3522,6 +3589,7 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 	end
 
 	if script_data.show_alive_ai then
+		Profiler.start("show_alive_ai")
 		ConflictUtils.display_number_of_breeds("TOTAL: ", #self._spawned, self._num_spawned_by_breed)
 
 		if self.running_master_event then
@@ -3533,6 +3601,8 @@ ConflictDirector.update_server_debug = function (self, t, dt)
 
 			ConflictUtils.display_number_of_breeds("EVENT: ", num_spawned, self._num_spawned_by_breed_during_event)
 		end
+
+		Profiler.stop("show_alive_ai")
 	end
 
 	if script_data.show_where_ai_is then

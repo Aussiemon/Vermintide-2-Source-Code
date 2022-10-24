@@ -250,12 +250,15 @@ PerceptionUtils.perception_rat_ogre = function (unit, blackboard, breed, pick_ta
 		end
 
 		if breed.trigger_dialogue_on_target_switch and new_aggro_unit then
+			Profiler.start("dialogue trigger")
+
 			local dialogue_input = ScriptUnit.extension_input(unit, "dialogue_system")
 			local event_data = FrameTable.alloc_table()
 			event_data.attack_tag = breed.dialogue_target_switch_attack_tag or "rat_ogre_change_target"
 			event_data.target_name = ScriptUnit.extension(new_aggro_unit, "dialogue_system").context.player_profile
 
 			dialogue_input:trigger_networked_dialogue_event(breed.dialogue_target_switch_event or "enemy_attack", event_data)
+			Profiler.stop("dialogue trigger")
 		end
 
 		local sound_effect_system = Managers.state.entity:system("sound_effect_system")

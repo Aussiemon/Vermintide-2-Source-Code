@@ -411,9 +411,12 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 
 	table.clear(remove_list)
 	table.clear(add_list)
+	Profiler.start("LiquidAreaDamageExtension:update()")
 
 	if not self._started then
 		if t < self._time_to_start then
+			Profiler.stop("LiquidAreaDamageExtension:update()")
+
 			return
 		end
 
@@ -433,6 +436,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 
 	if self._time_to_remove < t then
 		Managers.state.unit_spawner:mark_for_deletion(self._unit)
+		Profiler.stop("LiquidAreaDamageExtension:update()")
 
 		return
 	end
@@ -536,13 +540,18 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
+	Profiler.start("collision_detection")
 	self:_update_collision_detection(dt, t)
+	Profiler.stop("collision_detection")
+	Profiler.start("deal damage")
 
 	while self._next_pulse < t do
 		self._next_pulse = self._next_pulse + 0.75
 
 		self:_pulse_damage()
 	end
+
+	Profiler.stop("deal damage")
 
 	local liquid_update_function = self._liquid_update_function
 
@@ -553,6 +562,8 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 			self._liquid_update_function = nil
 		end
 	end
+
+	Profiler.stop("LiquidAreaDamageExtension:update()")
 end
 
 LiquidAreaDamageExtension._add_buff_helper_function = function (self, unit, liquid_unit, buff_name, buff_condition, buff_system)

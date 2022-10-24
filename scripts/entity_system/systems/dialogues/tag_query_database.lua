@@ -170,6 +170,8 @@ TagQueryDatabase.iterate_query = function (self, t)
 		return query
 	end
 
+	Profiler.start("Table concat")
+
 	local nice_array = {
 		self.global_context or dummy_table,
 		query_context or dummy_table,
@@ -177,7 +179,13 @@ TagQueryDatabase.iterate_query = function (self, t)
 		user_context_list.user_memory or dummy_table,
 		user_context_list.faction_memory or dummy_table
 	}
+
+	Profiler.stop("Table concat")
+	Profiler.start("Engine call")
+
 	local rule_index_found = RuleDatabase.iterate_query(self.database, nice_array, t)
+
+	Profiler.stop("Engine call")
 
 	if rule_index_found then
 		local rule = self.rule_id_mapping[rule_index_found]

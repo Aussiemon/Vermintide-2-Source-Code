@@ -21,6 +21,8 @@ BTSelector_stormfiend_demo.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_stormfiend_demo.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -28,8 +30,11 @@ BTSelector_stormfiend_demo.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
+		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+
+		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -55,8 +60,11 @@ BTSelector_stormfiend_demo.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_smartobject, "aborted")
+		Profiler_start("smartobject")
 
 		local result, evaluate = node_smartobject:run(unit, blackboard, t, dt)
+
+		Profiler_stop("smartobject")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -78,8 +86,11 @@ BTSelector_stormfiend_demo.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
+		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
+
+		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -97,8 +108,11 @@ BTSelector_stormfiend_demo.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_has_target, "aborted")
+		Profiler_start("has_target")
 
 		local result, evaluate = node_has_target:run(unit, blackboard, t, dt)
+
+		Profiler_stop("has_target")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -114,8 +128,11 @@ BTSelector_stormfiend_demo.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[5]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+
+	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

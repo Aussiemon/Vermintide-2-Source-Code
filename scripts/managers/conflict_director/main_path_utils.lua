@@ -28,6 +28,8 @@ MainPathUtils.closest_pos_at_main_path = function (not_used, p, search_main_path
 end
 
 MainPathUtils.closest_pos_at_main_path_lua = function (main_paths, p, search_main_path_index)
+	Profiler.start("closest_pos_at_main_path")
+
 	local best_dist = math.huge
 	local best_main_path, best_sub_index = nil
 	local best_point = Vector3(0, 0, 0)
@@ -78,6 +80,8 @@ MainPathUtils.closest_pos_at_main_path_lua = function (main_paths, p, search_mai
 	else
 		best_point = nil
 	end
+
+	Profiler.stop("closest_pos_at_main_path")
 
 	return best_point, best_travel_dist, total_path_dist, move_percent, best_main_path, best_sub_index
 end

@@ -168,6 +168,8 @@ DataServerQueue.clear = function (self)
 end
 
 DataServerQueue.update = function (self)
+	Profiler.start("DataServerQueue update")
+
 	local current = self._queue[1]
 
 	if current then
@@ -189,6 +191,8 @@ DataServerQueue.update = function (self)
 			end
 		end
 	end
+
+	Profiler.stop("DataServerQueue update")
 end
 
 DataServerQueue.check_for_errors = function (self)

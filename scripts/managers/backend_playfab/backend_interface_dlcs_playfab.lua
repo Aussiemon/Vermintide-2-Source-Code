@@ -53,7 +53,7 @@ BackendInterfaceDLCsPlayfab._update_owned_dlcs_cb = function (self, result)
 	self._platform_dlcs = platform_dlcs
 	local unlock_manager = Managers.unlock
 
-	unlock_manager:handle_exclude_dlcs(excluded_dlcs, owned_dlcs)
+	unlock_manager:set_excluded_dlcs(excluded_dlcs, owned_dlcs)
 	self._backend_mirror:set_owned_dlcs(owned_dlcs)
 	self._backend_mirror:set_platform_dlcs(platform_dlcs)
 	print("Finished Updating Owned DLCS")

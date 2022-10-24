@@ -46,7 +46,11 @@ BTFindRangedPositionAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if find_ranged_position_t < t then
+		Profiler.start("find_ranged_position")
+
 		local ranged_position = self:_find_ranged_position(unit, blackboard, t)
+
+		Profiler.stop("find_ranged_position")
 
 		if ranged_position then
 			blackboard.navigation_extension:set_enabled(true)

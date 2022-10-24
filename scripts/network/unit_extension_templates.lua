@@ -485,6 +485,54 @@ local unit_templates = {
 			}
 		}
 	},
+	ai_unit_critter_nurgling = {
+		go_type = "ai_unit_with_inventory",
+		self_owned_extensions = {
+			ai_locomotion_name,
+			"AINavigationExtension",
+			"GenericHitReactionExtension",
+			"GenericHealthExtension",
+			"GenericDeathExtension",
+			"AIProximityExtension",
+			"BuffExtension",
+			"ProjectileLinkerExtension",
+			"AIGroupMember",
+			"DialogueActorExtension",
+			"AIVolumeExtension",
+			"AISimpleExtension",
+			"AIInventoryExtension"
+		},
+		husk_extensions = {
+			"AiHuskLocomotionExtension",
+			"GenericHitReactionExtension",
+			"GenericHealthExtension",
+			"GenericDeathExtension",
+			"AIProximityExtension",
+			"BuffExtension",
+			"ProjectileLinkerExtension",
+			"DialogueActorExtension",
+			"AiHuskBaseExtension",
+			"AIInventoryExtension"
+		},
+		remove_when_killed = {
+			self_owned_extensions = {
+				"AINavigationExtension",
+				"AIProximityExtension",
+				"BuffExtension",
+				"AIGroupMember",
+				"DialogueActorExtension",
+				"AIVolumeExtension",
+				"AISimpleExtension"
+			},
+			husk_extensions = {
+				"AiHuskLocomotionExtension",
+				"AIProximityExtension",
+				"BuffExtension",
+				"DialogueActorExtension",
+				"AiHuskBaseExtension"
+			}
+		}
+	},
 	ai_unit_beastmen_bestigor = {
 		base_template = "ai_unit_base",
 		go_type = "ai_unit_beastmen_bestigor",

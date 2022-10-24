@@ -687,6 +687,8 @@ local area_checks_per_frame = 20
 local remove_zones = {}
 
 EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, threat_population, player_zones, use_player_zones)
+	Profiler.start("recycler - pack spawning")
+
 	local INDEX_SEEN = 3
 	local INDEX_SEEN_LAST_FRAME = 4
 	local INDEX_ZONE = 6
@@ -791,6 +793,8 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 	self.remembered_area_index = math.clamp(index - num_to_remove, 1, #areas)
 	self.visible = self.visible + add_visible
+
+	Profiler.stop("recycler - pack spawning")
 end
 
 EnemyRecycler.add_terror_event_in_area = function (self, boxed_pos, terror_event_name, event_data)
@@ -873,6 +877,8 @@ EnemyRecycler.draw_main_path_events = function (self, drawer)
 end
 
 EnemyRecycler.draw_debug = function (self, player_positions)
+	Profiler.start("recycler - debug")
+
 	local shutdown = self.shutdown_areas
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
@@ -891,6 +897,8 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 	local pos = player_positions[1]
 
 	if not pos then
+		Profiler.stop("recycler - debug")
+
 		return
 	end
 
@@ -957,11 +965,15 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 			Debug.text("travel-dist: %.1fm, move_percent: %.1f%%, path-index: %d, sub-index: %d", info.travel_dist, info.move_percent * 100, info.path_index, info.sub_index)
 		end
 	end
+
+	Profiler.stop("recycler - debug")
 end
 
 local NUM_FAR_OFF_CHECKS = 6
 
 EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned)
+	Profiler.start("recycler  far off despawn")
+
 	local index = self.far_off_index or 1
 	local size = #spawned
 	local num = NUM_FAR_OFF_CHECKS
@@ -976,6 +988,8 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 	local num_players = #player_positions
 
 	if num_players == 0 then
+		Profiler.stop("recycler  far off despawn")
+
 		return
 	end
 
@@ -1045,6 +1059,8 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 	end
 
 	self.far_off_index = index
+
+	Profiler.stop("recycler  far off despawn")
 end
 
 return

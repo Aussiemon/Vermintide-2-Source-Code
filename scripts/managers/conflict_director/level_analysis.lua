@@ -437,6 +437,8 @@ LevelAnalysis.boxify_table_pos_array = function (source_array)
 end
 
 LevelAnalysis.update_main_path_generation = function (self)
+	Profiler.start("update_main_path_generation")
+
 	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
 	local GwNavAStar_path_found = GwNavAStar.path_found
 	local GwNavAStar_node_count = GwNavAStar.node_count
@@ -540,6 +542,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 					self:generate_boss_paths()
 				end
 
+				Profiler.stop("update_main_path_generation")
+
 				return "done"
 
 				if "done" then
@@ -555,6 +559,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 					self.stitching_path = false
 
+					Profiler.stop("update_main_path_generation")
+
 					return "fail", s
 
 					if "fail" then
@@ -564,6 +570,8 @@ LevelAnalysis.update_main_path_generation = function (self)
 			end
 		end
 	end
+
+	Profiler.stop("update_main_path_generation")
 end
 
 LevelAnalysis.calc_dists_to_start = function (self)
@@ -1944,6 +1952,8 @@ LevelAnalysis.reset_debug = function (self)
 end
 
 LevelAnalysis.debug = function (self, t)
+	Profiler.start("LevelAnalysis:debug")
+
 	local debug_text = Managers.state.debug_text
 
 	debug_text:clear_world_text("boss")
@@ -2036,12 +2046,18 @@ LevelAnalysis.debug = function (self, t)
 			QuickDrawer:sphere(point + Vector3(0, 0, 1.5), 1.366, Color(255, 244, 183, 7))
 		end
 	end
+
+	Profiler.stop("LevelAnalysis:debug")
 end
 
 LevelAnalysis.update = function (self, t)
+	Profiler.start("level_analysis")
+
 	if self.stitching_path then
 		self:update_main_path_generation()
 	end
+
+	Profiler.stop("level_analysis")
 end
 
 LevelAnalysis.get_main_and_sub_zone_index_from_pos = function (nav_world, zones, lookup, pos, zone_index_lookup)

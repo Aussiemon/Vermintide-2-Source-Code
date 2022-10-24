@@ -91,6 +91,8 @@ end
 DebugScreen.font_size = slot9
 
 DebugScreen.setup = function (world, settings, callbacks)
+	Profiler.start("DebugScreen.setup")
+
 	local DebugScreen = DebugScreen
 	DebugScreen.world = world
 	DebugScreen.gui = World.create_screen_gui(world, "material", "materials/fonts/gw_fonts", "material", "materials/menu/debug_screen", "immediate")
@@ -252,6 +254,8 @@ DebugScreen.setup = function (world, settings, callbacks)
 	DebugScreen.search_string = ""
 	DebugScreen.filtered_console_settings = DebugScreen.console_settings
 	DebugScreen.allow_to_open = true
+
+	Profiler.stop("DebugScreen.setup")
 end
 
 DebugScreen.destroy = function ()

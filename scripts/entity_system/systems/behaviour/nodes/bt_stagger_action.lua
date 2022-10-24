@@ -244,6 +244,8 @@ BTStaggerAction.run = function (self, unit, blackboard, t, dt)
 	local stagger_anim_done = blackboard.stagger_anim_done
 
 	if locomotion_extension.movement_type ~= "constrained_by_mover" and not blackboard.stagger_hit_wall then
+		Profiler.start("checking navmesh")
+
 		local position = POSITION_LOOKUP[unit]
 		local velocity = locomotion_extension:current_velocity()
 		local nav_world = blackboard.nav_world
@@ -267,6 +269,8 @@ BTStaggerAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.stagger_hit_wall = true
 			end
 		end
+
+		Profiler.stop("checking navmesh")
 	end
 
 	local stagger_time_finished = blackboard.stagger_time < t

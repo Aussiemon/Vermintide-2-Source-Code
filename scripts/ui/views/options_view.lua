@@ -543,9 +543,25 @@ OptionsView._setup_input_functions = function (self)
 			end
 
 			local content = widget.content
+			local active = content.active
 
-			if not content.active then
-				if content.hotspot.on_release then
+			if not active then
+				if content.hotspot_1.on_release then
+					active = true
+					content.active_1 = true
+				elseif content.hotspot_2.on_release then
+					active = true
+					content.active_2 = true
+				elseif content.hotspot_1.on_right_click then
+					local keybind = content.actions_info[1].keybind
+
+					content.callback(keybind[5] or UNASSIGNED_KEY, keybind[4] or "keyboard", content, 1)
+					content.callback(UNASSIGNED_KEY, "keyboard", content, 2)
+				elseif content.hotspot_2.on_right_click then
+					content.callback(UNASSIGNED_KEY, "keyboard", content, 2)
+				end
+
+				if active then
 					content.active = true
 					content.active_t = 0
 					self.disable_all_input = true
@@ -557,6 +573,7 @@ OptionsView._setup_input_functions = function (self)
 				end
 			else
 				local stop = false
+				local index = (content.active_1 and 1) or 2
 
 				if content.controller_input_pressed then
 					stop = true
@@ -572,7 +589,7 @@ OptionsView._setup_input_functions = function (self)
 					local new_key = Keyboard.button_name(button)
 
 					if new_key and new_key ~= "" then
-						content.callback(new_key, "keyboard", content)
+						content.callback(new_key, "keyboard", content, index)
 
 						stop = true
 					end
@@ -585,7 +602,7 @@ OptionsView._setup_input_functions = function (self)
 					local input_allowed = mouse_input_allowed(content.actions, new_key)
 
 					if input_allowed then
-						content.callback(new_key, "mouse", content)
+						content.callback(new_key, "mouse", content, index)
 
 						stop = true
 					end
@@ -594,6 +611,8 @@ OptionsView._setup_input_functions = function (self)
 				if stop then
 					content.controller_input_pressed = nil
 					content.active = false
+					content.active_1 = false
+					content.active_2 = false
 					self.disable_all_input = false
 
 					self.input_manager:device_unblock_all_services("keyboard", 1)
@@ -786,6 +805,7 @@ OptionsView.create_ui_elements = function (self)
 
 	self.background_widgets_n = background_widgets_n
 	self.gamepad_tooltip_text_widget = UIWidget.init(gamepad_frame_widget_definitions.gamepad_tooltip_text)
+	self.keybind_info_widget = UIWidget.init(widget_definitions.keybind_info)
 	self.title_buttons = {}
 	local title_buttons_n = 0
 
@@ -1400,8 +1420,8 @@ end
 OptionsView.build_keybind_widget = function (self, element, scenegraph_id, base_offset)
 	local callback_func = callback(self, "cb_keybind_changed")
 	local saved_value_cb = callback(self, "cb_keybind_saved_value")
-	local selected_key, actions_info, default_value = self:cb_keybind_setup(element.keymappings_key, element.keymappings_table_key, element.actions)
-	local widget = definitions.create_keybind_widget(selected_key, element.keybind_description, element.actions, actions_info, scenegraph_id, base_offset)
+	local selected_key_1, selected_key_2, actions_info, default_value = self:cb_keybind_setup(element.keymappings_key, element.keymappings_table_key, element.actions)
+	local widget = definitions.create_keybind_widget(selected_key_1, selected_key_2, element.keybind_description, element.actions, actions_info, scenegraph_id, base_offset)
 	local content = widget.content
 	content.callback = callback_func
 	content.saved_value_cb = saved_value_cb
@@ -2325,13 +2345,17 @@ OptionsView.apply_keymap_changes = function (self, keymaps_data, save_keymaps)
 	end
 end
 
-OptionsView._apply_keybinding_changes = function (self, keybinding_table_name, keybinding_table_key, action, keybind)
-	local input_manager = Managers.input
+local _keybind_buffer = {}
 
-	if #keybind >= 3 then
-		local device = keybind[1]
-		local button_name = keybind[2]
-		local input_type = keybind[3]
+OptionsView._apply_keybinding_changes = function (self, keybinding_table_name, keybinding_table_key, action, keybind)
+	table.clear(_keybind_buffer)
+
+	local n = 0
+
+	for i = 1, #keybind, 3 do
+		local device = keybind[i]
+		local button_name = keybind[i + 1]
+		local input_type = keybind[i + 2]
 		local button_index = nil
 
 		if device == "gamepad" then
@@ -2353,10 +2377,16 @@ OptionsView._apply_keybinding_changes = function (self, keybinding_table_name, k
 		end
 
 		if button_index then
-			input_manager:change_keybinding(keybinding_table_name, keybinding_table_key, action, button_index, device)
-		else
-			input_manager:clear_keybinding(keybinding_table_name, keybinding_table_key, action)
+			_keybind_buffer[n + 1] = button_index
+			_keybind_buffer[n + 2] = device
+			n = n + 2
 		end
+	end
+
+	local input_manager = Managers.input
+
+	if n > 0 then
+		input_manager:change_keybinding(keybinding_table_name, keybinding_table_key, action, unpack(_keybind_buffer))
 	else
 		input_manager:clear_keybinding(keybinding_table_name, keybinding_table_key, action)
 	end
@@ -2833,7 +2863,8 @@ OptionsView.reset_to_default_keybind = function (self, widget)
 	local content = widget.content
 	local default_value = content.default_value
 
-	content.callback(default_value.key, default_value.controller, content)
+	content.callback(default_value.key, default_value.controller, content, 1)
+	content.callback(UNASSIGNED_KEY, default_value.controller, content, 2)
 end
 
 OptionsView.reset_to_default_sorted_list = function (self, widget)
@@ -2886,6 +2917,10 @@ OptionsView.reset_current_settings_list_to_default = function (self)
 				error("Not supported widget type..")
 			end
 		end
+	end
+
+	if SettingsMenuNavigation[self.selected_title] == "keybind_settings" then
+		self.keybind_info_text = Localize("options_menu_gamepad_reset_text")
 	end
 end
 
@@ -2940,6 +2975,15 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 	self.exit_button.content.button_hotspot.disable_button = disable_all_input
 
 	if not gamepad_active then
+		local keybind_info_text = self.keybind_info_text
+
+		if keybind_info_text then
+			local widget = self.keybind_info_widget
+			widget.content.text = keybind_info_text
+
+			UIRenderer.draw_widget(ui_top_renderer, widget)
+		end
+
 		if not self.reset_to_default.content.hidden then
 			UIRenderer.draw_widget(ui_top_renderer, self.reset_to_default)
 		end
@@ -3277,6 +3321,7 @@ OptionsView.select_settings_title = function (self, i)
 	self:set_widget_values(settings_list)
 
 	self.selected_settings_list = settings_list
+	self.keybind_info_text = (settings_list_name == "keybind_settings" and Localize("keybind_deselect_info")) or nil
 end
 
 OptionsView.deselect_title = function (self, i)
@@ -10161,9 +10206,11 @@ AddTobiiSliderSetting("tobii_extended_view_sensitivity", 1, 100, 0, tobii_custom
 
 local function get_button_locale_name(controller_type, button_name)
 	local button_locale_name = nil
+	local is_unassigned = false
 
-	if button_name == UNASSIGNED_KEY then
-		button_locale_name = Localize(button_name)
+	if button_name == nil or button_name == UNASSIGNED_KEY then
+		button_locale_name = Localize(UNASSIGNED_KEY)
+		is_unassigned = true
 	elseif controller_type == "keyboard" then
 		local button_index = Keyboard.button_index(button_name)
 		button_locale_name = Keyboard.button_locale_name(button_index)
@@ -10184,10 +10231,10 @@ local function get_button_locale_name(controller_type, button_name)
 	end
 
 	if button_locale_name == "" or not button_locale_name then
-		slot3 = TextToUpper(button_name)
+		slot4 = TextToUpper(button_name)
 	end
 
-	return slot3
+	return slot4, is_unassigned
 end
 
 OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_table_key, actions)
@@ -10203,9 +10250,9 @@ OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_tabl
 		}
 	end
 
-	local controller_type = actions_info[1].keybind[1]
-	local mapped_key = actions_info[1].keybind[2]
-	local button_locale_name = get_button_locale_name(controller_type, mapped_key)
+	local first_action = actions_info[1]
+	local button_locale_name_1 = get_button_locale_name(first_action.keybind[1], first_action.keybind[2])
+	local button_locale_name_2 = get_button_locale_name(first_action.keybind[4], first_action.keybind[5])
 	local default_keymappings_data = rawget(_G, keymappings_key)
 	local default_keymappings = default_keymappings_data[keymappings_table_key]
 	local default_keybind = default_keymappings[actions[1]]
@@ -10214,7 +10261,7 @@ OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_tabl
 		key = default_keybind[2]
 	}
 
-	return button_locale_name, actions_info, default_value
+	return button_locale_name_1, button_locale_name_2, actions_info, default_value
 end
 
 OptionsView.cb_keybind_saved_value = function (self, widget)
@@ -10238,9 +10285,9 @@ OptionsView.cb_keybind_saved_value = function (self, widget)
 		}
 	end
 
-	local controller_type = actions_info[1].keybind[1]
-	local mapped_key = actions_info[1].keybind[2]
-	widget.content.selected_key = get_button_locale_name(controller_type, mapped_key)
+	local first_action = actions_info[1]
+	widget.content.selected_key_1, widget.content.is_unassigned_1 = get_button_locale_name(first_action.keybind[1], first_action.keybind[2])
+	widget.content.selected_key_2, widget.content.is_unassigned_2 = get_button_locale_name(first_action.keybind[4], first_action.keybind[5])
 	widget.content.actions_info = actions_info
 end
 
@@ -10266,37 +10313,78 @@ OptionsView.cleanup_duplicates = function (self, new_key, device)
 	end
 end
 
-OptionsView.cb_keybind_changed = function (self, new_key, device, content)
+OptionsView.cb_keybind_changed = function (self, new_key, device, content, index)
 	local actions_info = content.actions_info
 
 	if not actions_info then
 		return
 	end
 
+	if index == 2 and actions_info[1].keybind[2] == UNASSIGNED_KEY then
+		index = 1
+	end
+
+	local first_keybind = actions_info[1].keybind
+
+	if (first_keybind[1] == device and first_keybind[2] == new_key) or (first_keybind[4] == device and first_keybind[5] == new_key) then
+		return
+	end
+
 	local session_keymaps = self.session_keymaps
 	local keymappings_key = content.keymappings_key
 	local keymappings_table_key = content.keymappings_table_key
-
-	if new_key ~= UNASSIGNED_KEY then
-		self:cleanup_duplicates(new_key, device)
-	end
-
 	local input_manager = Managers.input
 
 	for i, info in ipairs(actions_info) do
 		local keybind = info.keybind
 		local action = info.action
-		keybind[1] = device
-		keybind[2] = new_key
+
+		if index == 2 then
+			keybind[4] = device
+			keybind[5] = new_key
+			keybind[6] = keybind[3]
+		else
+			keybind[1] = device
+			keybind[2] = new_key
+		end
+
 		keybind.changed = true
 		local session_keybind = session_keymaps[keymappings_key][keymappings_table_key][action]
-		session_keybind[1] = device
-		session_keybind[2] = new_key
+
+		if index == 2 then
+			session_keybind[4] = device
+			session_keybind[5] = new_key
+			session_keybind[6] = session_keybind[3]
+		else
+			session_keybind[1] = device
+			session_keybind[2] = new_key
+		end
+
 		session_keybind.changed = true
 	end
 
 	self.changed_keymaps = true
-	content.selected_key = get_button_locale_name(device, new_key)
+	local button_name, is_unassigned = get_button_locale_name(device, new_key)
+
+	if is_unassigned then
+		slot13 = "keybind_bind_cancel"
+	else
+		local loc_key = "keybind_bind_success"
+	end
+
+	local pretty_action_name = "{#color(193,91,36)}" .. Utf8.upper(Localize(content.text)) .. "{#reset()}"
+	local pretty_button_name = Utf8.upper(button_name)
+	self.keybind_info_text = string.format(Localize(loc_key), pretty_action_name, pretty_button_name)
+	local anim = UIAnimation.init(UIAnimation.function_by_time, self.keybind_info_widget.style.text.text_color, 1, 0, 255, 0.4, math.easeOutCubic)
+	self.ui_animations.keybind_info_attract = anim
+
+	if index == 1 then
+		content.is_unassigned_1 = is_unassigned
+		content.selected_key_1 = button_name
+	else
+		content.is_unassigned_2 = is_unassigned
+		content.selected_key_2 = button_name
+	end
 end
 
 OptionsView.cb_toggle_profanity_check = function (self, content)

@@ -19,10 +19,14 @@ end
 local world_position = Unit.world_position
 
 function UPDATE_POSITION_LOOKUP()
+	Profiler.start("UPDATE_POSITION_LOOKUP")
 	EngineOptimized.update_position_lookup(position_lookup)
+	Profiler.stop("UPDATE_POSITION_LOOKUP")
 end
 
 function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
+	Profiler.start("UPDATE_RESOLUTION_LOOKUP")
+
 	local is_minimized = Window.is_minimized()
 	resolution_lookup.minimized = is_minimized
 	local w, h = Application.resolution()
@@ -59,6 +63,8 @@ function UPDATE_RESOLUTION_LOOKUP(force_update, optional_scale_multiplier)
 	end
 
 	resolution_lookup.modified = resolution_modified or force_update
+
+	Profiler.stop("UPDATE_RESOLUTION_LOOKUP")
 end
 
 local function is_valid(unit)

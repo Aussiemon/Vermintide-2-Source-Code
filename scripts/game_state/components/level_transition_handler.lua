@@ -112,6 +112,8 @@ LevelTransitionHandler.get_current_environment_variation_name = function (self)
 end
 
 LevelTransitionHandler.update = function (self)
+	Profiler.start("LevelTransitionHandler:update()")
+
 	local has_loading_packages = false
 
 	for level_name, _ in pairs(self.loading_packages) do
@@ -132,6 +134,7 @@ LevelTransitionHandler.update = function (self)
 	end
 
 	self.enemy_package_loader:update()
+	Profiler.stop("LevelTransitionHandler:update()")
 end
 
 LevelTransitionHandler.promote_next_level_data = function (self)

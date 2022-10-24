@@ -1749,6 +1749,68 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_0110 = {
+		{
+			texture = "portrait_frame_0110",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		}
+	},
+	frame_0111 = {
+		{
+			texture = "portrait_frame_0110",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_0110_glow",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		},
+		{
+			texture = "portrait_frame_0110_effect",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		}
+	},
 	frame_mondstille_01 = {
 		{
 			texture = "portrait_frame_mondstille_01_base",

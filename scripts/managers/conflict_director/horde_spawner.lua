@@ -55,6 +55,7 @@ local function copy_array(a, b)
 end
 
 HordeSpawner.horde = function (self, horde_type, extra_data, side_id, no_fallback)
+	Profiler.start("horde_spawner")
 	print("horde requested: ", horde_type)
 
 	if horde_type == "vector" then
@@ -64,6 +65,8 @@ HordeSpawner.horde = function (self, horde_type, extra_data, side_id, no_fallbac
 	else
 		self:execute_ambush_horde(extra_data, side_id, no_fallback)
 	end
+
+	Profiler.stop("horde_spawner")
 end
 
 HordeSpawner.execute_fallback = function (self, horde_type, side_id, fallback, reason, extra_data)

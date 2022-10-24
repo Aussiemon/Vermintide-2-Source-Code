@@ -72,16 +72,26 @@ settings.buff_templates = {
 }
 settings.buff_function_templates = {
 	geheimnisnacht_2021_apply_eye_glow = function (unit, buff, params)
-		if ALIVE[unit] then
-			buff.material_res_id = Unit.get_material_resource_id(unit, "mtr_eyes")
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
 
-			Unit.set_material(unit, "mtr_eyes", "units/beings/enemies/mtr_eyes_geheimnisnacht")
+		if not ALIVE[unit] then
+			return
 		end
+
+		if not buff_ext.reset_material_cache then
+			buff_ext.reset_material_cache = Unit.get_material_resource_id(unit, "mtr_eyes")
+		end
+
+		Unit.set_material(unit, "mtr_eyes", "units/beings/enemies/mtr_eyes_geheimnisnacht")
 	end,
 	geheimnisnacht_2021_remove_eye_glow = function (unit, buff, params)
-		if ALIVE[unit] and buff.material_res_id then
-			Unit.set_material_from_id(unit, "mtr_eyes", buff.material_res_id)
+		local buff_ext = ScriptUnit.has_extension(unit, "buff_system")
+
+		if not ALIVE[unit] or not buff_ext.reset_material_cache then
+			return
 		end
+
+		Unit.set_material_from_id(unit, "mtr_eyes", buff_ext.reset_material_cache)
 	end
 }
 settings.proc_functions = {}

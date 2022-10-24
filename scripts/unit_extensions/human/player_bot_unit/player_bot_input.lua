@@ -77,6 +77,8 @@ PlayerBotInput.update = function (self, unit, input, dt, context, t)
 end
 
 PlayerBotInput._update_actions = function (self)
+	Profiler.start("update_actions")
+
 	local input = self._input
 
 	if self._fire_hold then
@@ -215,6 +217,8 @@ PlayerBotInput._update_actions = function (self)
 		input.dodge_hold = true
 		self._dodge = false
 	end
+
+	Profiler.stop("update_actions")
 end
 
 PlayerBotInput._update_debug_text = function (self, unit, input)
@@ -414,6 +418,8 @@ PlayerBotInput._obstacle_check = function (self, position, current_speed_sq, goa
 end
 
 PlayerBotInput._update_movement = function (self, dt, t)
+	Profiler.start("update_movement")
+
 	local unit = self.unit
 	local player_bot_navigation = self._navigation_extension
 	local current_goal = player_bot_navigation:current_goal()
@@ -561,6 +567,8 @@ PlayerBotInput._update_movement = function (self, dt, t)
 		self._avoiding_aoe_threat = false
 		threat_data.expires = 0
 	end
+
+	Profiler.stop("update_movement")
 end
 
 PlayerBotInput.is_input_blocked = function (self)

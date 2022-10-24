@@ -45,6 +45,7 @@ BuffExtension.init = function (self, extension_init_context, unit, extension_ini
 	self._perks = {}
 	self._buff_id_refs = {}
 	self._stacking_buffs = {}
+	self.reset_material_cache = nil
 end
 
 BuffExtension.extensions_ready = function (self, world, unit)

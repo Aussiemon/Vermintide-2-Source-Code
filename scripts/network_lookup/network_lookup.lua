@@ -379,6 +379,7 @@ NetworkLookup.husks = {
 	"units/weapons/enemy/wpn_chaos_plague_vortex/wpn_chaos_plague_vortex",
 	"units/beings/critters/chr_critter_pig/chr_critter_pig",
 	"units/beings/critters/chr_critter_common_rat/chr_critter_common_rat",
+	"units/beings/critters/chr_critter_nurgling/chr_critter_nurgling",
 	"units/weapons/player/wpn_bullet_temp/wpn_bullet_temp_3ps",
 	"units/weapons/player/wpn_crossbow_quiver/wpn_crossbow_bolt_3ps",
 	"units/weapons/player/wpn_we_quiver_t1/wpn_we_arrow_t1_3ps",
@@ -1702,7 +1703,8 @@ NetworkLookup.ai_inventory = {
 	"beastmen_ungor_just_add_spear",
 	"beastmen_ungor_archer_bow_and_spear",
 	"opt_beastmen_ungor_archer_bow_and_spear",
-	"beastmen_minotaur_dual_axes"
+	"beastmen_minotaur_dual_axes",
+	"critter_nurgling"
 }
 
 DLCUtils.append("ai_inventory", NetworkLookup.ai_inventory)

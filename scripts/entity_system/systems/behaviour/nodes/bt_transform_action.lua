@@ -35,11 +35,16 @@ BTTransformAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 
 BTTransformAction.run = function (self, unit, blackboard, t, dt)
+	Profiler.start("BTTransformAction")
+
 	if blackboard.transform_anim_finished and not blackboard.has_transformed then
 		self:transform(unit, blackboard)
+		Profiler.stop("BTTransformAction")
 
 		return "done"
 	end
+
+	Profiler.stop("BTTransformAction")
 
 	return "running"
 end

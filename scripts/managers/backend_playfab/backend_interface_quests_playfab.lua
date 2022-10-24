@@ -444,9 +444,9 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		backend_mirror:add_claimed_event_quest(claimed_quest_name)
 	end
 
-	local current_daily_quests = function_result.current_daily_quests
-	local current_weekly_quests = function_result.current_weekly_quests
-	local current_event_quests = function_result.current_event_quests
+	local current_daily_quests = function_result.current_daily_quests or {}
+	local current_weekly_quests = function_result.current_weekly_quests or {}
+	local current_event_quests = function_result.current_event_quests or {}
 
 	backend_mirror:set_quest_data("current_daily_quests", current_daily_quests)
 	backend_mirror:set_quest_data("current_weekly_quests", current_weekly_quests)
@@ -669,6 +669,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	end
 
 	if claimed_quest_type == "event" then
+		backend_mirror:add_claimed_multiple_event_quests(claimed_quest_names)
 	end
 
 	local current_daily_quests = function_result.current_daily_quests

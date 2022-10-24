@@ -169,6 +169,8 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 
 	local standard_template = self.standard_template
 
+	Profiler.start("beastmen_standard_apply_buffs")
+
 	if self.is_server and standard_template.apply_buff_to_ai and self.next_apply_buff_t <= t then
 		local ai_units_inside = self.ai_units_inside
 		local ai_units_broadphase_result = self.ai_units_broadphase_result
@@ -218,6 +220,8 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 		self.next_apply_buff_t = t + self.apply_buff_frequency
 	end
 
+	Profiler.stop("beastmen_standard_apply_buffs")
+
 	if standard_template.custom_update_func then
 		standard_template:custom_update_func(self.standard_data, t, dt, unit, self.ai_units_inside)
 	end
@@ -229,7 +233,9 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self.is_server then
+		Profiler.start("beastmen_standard_self_destruction")
 		self:_update_self_destruction(unit, dt, t)
+		Profiler.stop("beastmen_standard_self_destruction")
 	end
 end
 

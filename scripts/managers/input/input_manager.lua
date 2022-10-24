@@ -644,12 +644,17 @@ InputManager.map_device_to_service = function (self, input_service_name, input_d
 end
 
 InputManager.update = function (self, dt, t)
+	Profiler.start("InputManager")
+
 	InputAux.default_values_for_types.Vector3 = Vector3.zero()
 	self._hovering = self._frame_hovering
 	self._frame_hovering = false
 	self._showing_tooltip = false
 
+	Profiler.start("device_updates")
 	self:update_devices(dt, t)
+	Profiler.stop("device_updates")
+	Profiler.stop("InputManager")
 end
 
 InputManager.update_devices = function (self, dt, t)
@@ -1082,9 +1087,7 @@ InputManager.clear_keybinding = function (self, keybinding_table_name, keybindin
 	keymap[2] = UNASSIGNED_KEY
 end
 
-InputManager.change_keybinding = function (self, keybinding_table_name, keybinding_table_key, keymap_name, new_button_index, new_device_type)
-	assert(type(new_button_index) == "number", "New button index must be a number.")
-
+InputManager.change_keybinding = function (self, keybinding_table_name, keybinding_table_key, keymap_name, ...)
 	local keymaps_data = self:keymaps_data(keybinding_table_name)
 
 	assert(keymaps_data, "No keymaps data found under table_name: %s", keybinding_table_name)
@@ -1100,10 +1103,30 @@ InputManager.change_keybinding = function (self, keybinding_table_name, keybindi
 	local keymapping = keymaps[keymap_name]
 
 	assert(keymapping, "No such keymap name %s", keymap_name)
-	assert(InputAux.input_device_mapping[new_device_type], "No such input device type %s", new_device_type)
 
-	keymapping[1] = new_device_type
-	keymapping[2] = new_button_index
+	local n_varargs = select("#", ...)
+
+	assert(n_varargs / 2 == math.floor(n_varargs / 2), "Bad amount of arguments (%d) to :change_keybinding(). Must supply input device type and keymap button index type for every key.", n_varargs)
+
+	local n = 0
+
+	for i = 1, n_varargs, 2 do
+		local new_button_index, new_device_type = select(i, ...)
+
+		assert(type(new_button_index) == "number", "New button index must be a number.")
+		fassert(InputAux.input_device_mapping[new_device_type], "No such input device type %s", new_device_type)
+
+		keymapping[n + 1] = new_device_type
+		keymapping[n + 2] = new_button_index
+		keymapping[n + 3] = keymapping[3]
+		n = n + 3
+	end
+
+	for i = n + 1, #keymapping, 1 do
+		keymapping[i] = nil
+	end
+
+	keymapping.n = n
 end
 
 InputManager.add_keybinding = function (self, keybinding_table_name, keybinding_table_key, keymap_name, ...)

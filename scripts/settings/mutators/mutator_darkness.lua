@@ -1,6 +1,7 @@
 return {
 	description = "description_mutator_darkness",
 	display_name = "display_name_mutator_darkness",
+	disable_environment_variations = true,
 	icon = "mutator_icon_darkness",
 	server_update_function = function (context, data)
 		local side = Managers.state.side:get_side_from_name("heroes")

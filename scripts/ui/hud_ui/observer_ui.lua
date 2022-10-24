@@ -171,6 +171,8 @@ ObserverUI.is_visible = function (self)
 end
 
 ObserverUI.update_follow_player_health_bar = function (self, peer_id)
+	Profiler.start("update_follow_player_health_bar")
+
 	local profile_synchronizer = self.profile_synchronizer
 	local player_manager = Managers.player
 	local players = player_manager:players()
@@ -298,6 +300,8 @@ ObserverUI.update_follow_player_health_bar = function (self, peer_id)
 		hp_bar_widget.element.dirty = true
 		self._dirty = true
 	end
+
+	Profiler.stop("update_follow_player_health_bar")
 end
 
 ObserverUI.on_player_health_changed = function (self, name, widget, health_percent)
@@ -376,6 +380,8 @@ ObserverUI.on_num_grimoires_changed = function (self, name, widget, health_debuf
 end
 
 ObserverUI.update_health_animations = function (self, dt)
+	Profiler.start("update_health_animations")
+
 	local bar_animations = self.bar_animations_data
 
 	if bar_animations then
@@ -406,6 +412,8 @@ ObserverUI.update_health_animations = function (self, dt)
 			end
 		end
 	end
+
+	Profiler.stop("update_health_animations")
 end
 
 ObserverUI.update_player_bar_animation = function (self, widget, bar, time, total_time, anim_start_health, anim_end_health, dt)

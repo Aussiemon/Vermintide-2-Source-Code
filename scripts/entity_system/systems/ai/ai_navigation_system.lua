@@ -119,7 +119,10 @@ end
 AINavigationSystem.update = function (self, context, t)
 	local dt = context.dt
 
+	Profiler.start("PlayerBotNavigation")
 	self:update_extension("PlayerBotNavigation", dt, context, t)
+	Profiler.stop("PlayerBotNavigation")
+	Profiler.start("AINavigationExtension")
 	self:update_navbots_to_release()
 	self:update_enabled()
 	self:update_destination(t)
@@ -129,6 +132,8 @@ AINavigationSystem.update = function (self, context, t)
 	if not script_data.disable_crowd_dispersion then
 		self:update_dispersion()
 	end
+
+	Profiler.stop("AINavigationExtension")
 
 	local nav_safe_callbacks = self._nav_safe_callbacks
 	local num_callbacks = #nav_safe_callbacks
@@ -151,7 +156,9 @@ end
 AINavigationSystem.post_update = function (self, context, t)
 	local dt = context.dt
 
+	Profiler.start("AINavigationSystem")
 	self:update_position()
+	Profiler.stop("AINavigationSystem")
 end
 
 AINavigationSystem.add_navbot_to_release = function (self, unit)
@@ -160,6 +167,8 @@ AINavigationSystem.add_navbot_to_release = function (self, unit)
 end
 
 AINavigationSystem.update_navbots_to_release = function (self)
+	Profiler.start("update_navbots_to_release")
+
 	for unit, extension in pairs(self.navbots_to_release) do
 		extension:release_bot()
 
@@ -172,9 +181,13 @@ AINavigationSystem.update_navbots_to_release = function (self)
 
 		self.delayed_units[unit] = nil
 	end
+
+	Profiler.stop("update_navbots_to_release")
 end
 
 AINavigationSystem.update_enabled = function (self)
+	Profiler.start("update_enabled")
+
 	for unit, extension in pairs(self.unit_extension_data) do
 		local enabled = extension._nav_bot ~= nil and extension._enabled
 		self.enabled_units[unit] = (enabled and extension) or nil
@@ -184,9 +197,13 @@ AINavigationSystem.update_enabled = function (self)
 		local enabled = extension._nav_bot ~= nil and extension._enabled
 		self.enabled_units[unit] = (enabled and extension) or nil
 	end
+
+	Profiler.stop("update_enabled")
 end
 
 AINavigationSystem.update_destination = function (self, t)
+	Profiler.start("update_destination")
+
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local Vec3_dist_sq = Vector3.distance_squared
 	local navigation_group_manager = Managers.state.conflict.navigation_group_manager
@@ -328,6 +345,7 @@ AINavigationSystem.update_destination = function (self, t)
 	end
 
 	self:update_delayed_units(t)
+	Profiler.stop("update_destination")
 end
 
 AINavigationSystem.update_delayed_units = function (self, t)
@@ -432,6 +450,8 @@ end
 local SPEED_EPSILON_SQ = 0.0001
 
 AINavigationSystem.update_desired_velocity = function (self, t, dt)
+	Profiler.start("update_desired_velocity")
+
 	local raycasts_done = 0
 	local nav_world = self.nav_world
 
@@ -505,9 +525,13 @@ AINavigationSystem.update_desired_velocity = function (self, t, dt)
 
 		locomotion_extension:set_wanted_velocity_flat(desired_velocity)
 	end
+
+	Profiler.stop("update_desired_velocity")
 end
 
 AINavigationSystem.update_next_smart_object = function (self, t, dt)
+	Profiler.start("update_next_smart_object")
+
 	for unit, extension in pairs(self.enabled_units) do
 		local data = extension._blackboard.next_smart_object_data
 		local GNSMOI = GwNavSmartObjectInterval
@@ -545,9 +569,13 @@ AINavigationSystem.update_next_smart_object = function (self, t, dt)
 			extension._blackboard.is_in_smartobject_range = dist_sq < 4
 		end
 	end
+
+	Profiler.stop("update_next_smart_object")
 end
 
 AINavigationSystem.update_dispersion = function (self, t, dt)
+	Profiler.start("update_dispersion")
+
 	for unit, extension in pairs(self.enabled_units) do
 		local action = GwNavBot.update_logic_for_crowd_dispersion(extension._nav_bot)
 
@@ -555,9 +583,13 @@ AINavigationSystem.update_dispersion = function (self, t, dt)
 		elseif action == 2 then
 		end
 	end
+
+	Profiler.stop("update_dispersion")
 end
 
 AINavigationSystem.update_position = function (self, t, dt)
+	Profiler.start("update_position")
+
 	for unit, extension in pairs(self.enabled_units) do
 		if extension._nav_bot then
 			local position = Unit.local_position(extension._unit, 0)
@@ -565,9 +597,13 @@ AINavigationSystem.update_position = function (self, t, dt)
 			GwNavBot.update_position(extension._nav_bot, position)
 		end
 	end
+
+	Profiler.stop("update_position")
 end
 
 AINavigationSystem.update_debug_draw = function (self, t)
+	Profiler.start("update_debug_draw")
+
 	local drawer = Managers.state.debug:drawer({
 		mode = "immediate",
 		name = "AINavigationExtension"
@@ -625,6 +661,8 @@ AINavigationSystem.update_debug_draw = function (self, t)
 		self:_debug_draw_nav_path(drawer, navigation_extension)
 		self:_debug_draw_far_path(drawer, debug_unit, blackboard, navigation_extension)
 	end
+
+	Profiler.stop("update_debug_draw")
 end
 
 AINavigationSystem._debug_draw_text = function (self, debug_unit, blackboard, navigation_extension, t)

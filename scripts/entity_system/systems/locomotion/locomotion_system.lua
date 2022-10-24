@@ -179,8 +179,13 @@ end
 LocomotionSystem.update_extensions = function (self, context, t)
 	local dt = context.dt
 
+	Profiler.start("PlayerHuskLocomotionExtension")
 	self:update_extension("PlayerHuskLocomotionExtension", dt, context, t)
+	Profiler.stop("PlayerHuskLocomotionExtension")
+	Profiler.start("PlayerUnitLocomotionExtension")
 	self:update_extension("PlayerUnitLocomotionExtension", dt, context, t)
+	Profiler.stop("PlayerUnitLocomotionExtension")
+	Profiler.start("extension templates")
 
 	if GameSettingsDevelopment.use_engine_optimized_ai_locomotion then
 		if self.is_server then
@@ -196,11 +201,16 @@ LocomotionSystem.update_extensions = function (self, context, t)
 		LocomotionTemplates.PlayerUnitLocomotionExtension.update(data, t, dt)
 	else
 		for template_name, data in pairs(self.template_data) do
+			Profiler.start(template_name)
+
 			local template = LocomotionTemplates[template_name]
 
 			template.update(data, t, dt)
+			Profiler.stop(template_name)
 		end
 	end
+
+	Profiler.stop("extension templates")
 end
 
 LocomotionSystem.set_override_player = function (self, player)
@@ -221,6 +231,8 @@ LocomotionSystem.update_animation_lods = function (self)
 end
 
 LocomotionSystem.update_actor_proximity_shapes = function (self)
+	Profiler.start("update_actor_proximity_shapes")
+
 	local POSITION_LOOKUP = POSITION_LOOKUP
 	local player_manager = Managers.player
 	local physics_world = World.get_data(self.world, "physics_world")
@@ -250,9 +262,13 @@ LocomotionSystem.update_actor_proximity_shapes = function (self)
 				end
 			end
 
+			Profiler.start("commit_actor_proximity_shape")
 			PhysicsWorld.commit_actor_proximity_shape(physics_world, position, direction, 36, angle, true)
+			Profiler.stop("commit_actor_proximity_shape")
 		end
 	end
+
+	Profiler.stop("update_actor_proximity_shapes")
 end
 
 LocomotionSystem.rpc_set_affected_by_gravity = function (self, channel_id, game_object_id, affected)

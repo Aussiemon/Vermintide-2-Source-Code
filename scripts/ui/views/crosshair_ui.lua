@@ -149,6 +149,8 @@ CrosshairUI.update_crosshair_style = function (self, equipment)
 		return
 	end
 
+	Profiler.start("update_crosshair_style")
+
 	local wielded_item_data = equipment.wielded
 	local item_template = BackendUtils.get_item_template(wielded_item_data)
 	local crosshair_style = item_template.crosshair_style
@@ -187,6 +189,8 @@ CrosshairUI.update_crosshair_style = function (self, equipment)
 	end
 
 	self.crosshair_style = crosshair_style
+
+	Profiler.stop("update_crosshair_style")
 end
 
 CrosshairUI._apply_crosshair_position = function (self, x, y)
@@ -196,6 +200,8 @@ CrosshairUI._apply_crosshair_position = function (self, x, y)
 end
 
 CrosshairUI.update_hit_markers = function (self, dt)
+	Profiler.start("update_hit_markers")
+
 	local hit_markers = self.hit_markers
 	local hit_markers_n = self.hit_markers_n
 	local hit_marker_animations = self.hit_marker_animations
@@ -220,6 +226,8 @@ CrosshairUI.update_hit_markers = function (self, dt)
 	if hit_marker_animations[1] then
 		self:update_hit_marker_animation(hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data, dt)
 	end
+
+	Profiler.stop("update_hit_markers")
 end
 
 CrosshairUI.set_hit_marker_animation = function (self, hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data)
@@ -318,6 +326,8 @@ CrosshairUI.update_hit_marker_animation = function (self, hit_markers, hit_marke
 end
 
 CrosshairUI.update_spread = function (self, dt, t, equipment)
+	Profiler.start("update_spread")
+
 	local wielded_item_data = equipment.wielded
 	local item_template = BackendUtils.get_item_template(wielded_item_data)
 	local pitch = 0
@@ -339,6 +349,7 @@ CrosshairUI.update_spread = function (self, dt, t, equipment)
 	local pitch_offset = math.lerp(0, definitions.max_spread_pitch, pitch_percentage)
 	local yaw_offset = math.lerp(0, definitions.max_spread_yaw, yaw_percentage)
 
+	Profiler.stop("update_spread")
 	self:draw(dt, t, pitch_percentage, yaw_percentage)
 end
 
@@ -360,6 +371,8 @@ CrosshairUI.draw = function (self, dt, t, pitch_percentage, yaw_percentage)
 		end
 	end
 
+	Profiler.start("draw widgets")
+
 	local hit_markers = self.hit_markers
 	local hit_markers_n = self.hit_markers_n
 
@@ -374,6 +387,7 @@ CrosshairUI.draw = function (self, dt, t, pitch_percentage, yaw_percentage)
 	end
 
 	self:_draw_kill_confirm(dt, t, ui_renderer)
+	Profiler.stop("draw widgets")
 	UIRenderer.end_pass(ui_renderer)
 end
 

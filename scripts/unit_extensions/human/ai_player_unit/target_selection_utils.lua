@@ -447,6 +447,8 @@ local raycast_points = {
 }
 
 local function _line_of_sight_from_random_point(raycast_pos, target_unit)
+	Profiler.start("line of sight checks")
+
 	local random_point = raycast_points[Math.random(1, #raycast_points)]
 	local has_node = Unit.has_node(target_unit, random_point)
 
@@ -461,10 +463,14 @@ local function _line_of_sight_from_random_point(raycast_pos, target_unit)
 			local result, pos = PhysicsWorld.immediate_raycast(physics_world, raycast_pos, direction, distance, "closest", "types", "statics", "collision_filter", "filter_ai_line_of_sight_check")
 
 			if result then
+				Profiler.stop("line of sight checks")
+
 				return false
 			end
 		end
 	end
+
+	Profiler.stop("line of sight checks")
 
 	return true
 end

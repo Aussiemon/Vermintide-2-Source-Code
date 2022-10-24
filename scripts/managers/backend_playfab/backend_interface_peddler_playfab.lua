@@ -14,6 +14,7 @@ BackendInterfacePeddlerPlayFab.init = function (self, backend_mirror)
 	self._peddler_stock = {}
 	self._chips = {}
 	self._app_prices = {}
+	self._psn_requests = {}
 	self._stock_ready = false
 	self._chips_ready = false
 	self._steam_stock_ready = not HAS_STEAM
@@ -485,6 +486,8 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_steam_cb = function (self, ex
 end
 
 BackendInterfacePeddlerPlayFab._refresh_app_prices_psn = function (self, external_cb)
+	table.clear(self._psn_requests)
+
 	local product_label_lookup = {}
 	local product_labels_string = ""
 	local title_id = PS4.title_id()
@@ -503,15 +506,45 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn = function (self, externa
 				if product_label then
 					product_labels_string = product_labels_string .. unlock_settings.product_label .. ":"
 					product_label_lookup[product_label] = name
+
+					if table.size(product_label_lookup) > 20 then
+						self._psn_requests[#self._psn_requests + 1] = {
+							product_labels_string = product_labels_string,
+							product_label_lookup = table.clone(product_label_lookup)
+						}
+
+						table.clear(product_label_lookup)
+
+						product_labels_string = ""
+					end
 				end
 			end
 		end
 	end
 
-	Managers.account:get_product_details(product_labels_string, 0, callback(self, "_refresh_app_prices_psn_cb", external_cb, product_label_lookup))
+	if table.size(product_label_lookup) > 0 then
+		self._psn_requests[#self._psn_requests + 1] = {
+			product_labels_string = product_labels_string,
+			product_label_lookup = table.clone(product_label_lookup)
+		}
+
+		table.clear(product_label_lookup)
+
+		product_labels_string = ""
+	end
+
+	local request = self._psn_requests[1]
+
+	Managers.account:get_product_details(request.product_labels_string, 0, callback(self, "_refresh_app_prices_psn_cb", external_cb, request.product_label_lookup))
 end
 
 BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, external_cb, product_label_lookup, result_json)
+	print("")
+	print("############ WEBAPI JSON COMMERCE RESULT ############")
+	print(result_json)
+	print("#####################################################")
+	print("")
+
 	if result_json then
 		local empty_table = {}
 		local result = cjson.decode(result_json)
@@ -534,19 +567,27 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, exte
 				product_label = product_label
 			}
 		end
-
-		if external_cb then
-			local success = true
-
-			external_cb(success)
-		end
 	elseif external_cb then
 		local success = false
 
 		external_cb(success)
 	end
 
-	self._app_prices_ready = true
+	table.remove(self._psn_requests, 1)
+
+	if table.size(self._psn_requests) > 0 then
+		local request = self._psn_requests[1]
+
+		Managers.account:get_product_details(request.product_labels_string, 0, callback(self, "_refresh_app_prices_psn_cb", external_cb, request.product_label_lookup))
+	else
+		self._app_prices_ready = true
+
+		if external_cb then
+			local success = false
+
+			external_cb(success)
+		end
+	end
 end
 
 BackendInterfacePeddlerPlayFab._refresh_app_prices_xboxlive = function (self, external_cb)

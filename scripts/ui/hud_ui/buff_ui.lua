@@ -114,7 +114,12 @@ BuffUI._sync_buffs = function (self)
 			self._dirty = true
 		else
 			if not widget_content.is_infinite then
-				widget_content.progress = 1 - math.clamp((widget_content.end_time - t) / widget_content.duration, 0, 1)
+				if widget_content.duration == 0 then
+					widget_content.progress = 0
+				else
+					widget_content.progress = 1 - math.clamp((widget_content.end_time - t) / widget_content.duration, 0, 1)
+				end
+
 				widget.element.dirty = true
 				self._dirty = true
 			elseif widget_content.stack_count ~= widget_content.last_stack_count then

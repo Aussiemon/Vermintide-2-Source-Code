@@ -174,6 +174,8 @@ local filter_macros = {
 		return is_weapon
 	end,
 	equipped_by_current_career = function (item, backend_id, params)
+		Profiler.start("equipped_by_current_career")
+
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = nil
@@ -205,6 +207,8 @@ local filter_macros = {
 		local career_name = career_data.name
 		local backend_items = Managers.backend:get_interface("items")
 		local career_names = backend_items:equipped_by(backend_id)
+
+		Profiler.stop("equipped_by_current_career")
 
 		return table.contains(career_names, career_name)
 	end,

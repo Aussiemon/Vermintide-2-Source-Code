@@ -22,7 +22,6 @@ UnlockManager.init = function (self)
 	self._popup_ids = {}
 	self._xbox_dlc_package_names = {}
 	self._excluded_dlcs = {}
-	self._failed_to_own_dlcs = {}
 	self._handled_reminders_popups = false
 
 	if IS_XB1 then
@@ -252,6 +251,8 @@ UnlockManager.dlc_status_changed = function (self)
 end
 
 UnlockManager._update_console_backend_unlocks = function (self)
+	Profiler.start("UnlockManager:_update_console_backend_unlocks()")
+
 	if self._state == "query_unlocked" then
 		local backend_manager = Managers.backend
 
@@ -259,10 +260,14 @@ UnlockManager._update_console_backend_unlocks = function (self)
 			if not backend_manager:available() then
 				self._state = "backend_not_available"
 
+				Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
+
 				return
 			end
 
 			if backend_manager:is_tutorial_backend() then
+				Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
+
 				return
 			end
 
@@ -282,6 +287,8 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 					print("[UnlockManager] All unlocks ready")
 				else
+					Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
+
 					return
 				end
 			end
@@ -293,6 +300,7 @@ UnlockManager._update_console_backend_unlocks = function (self)
 				local peddler_interface = Managers.backend:get_interface("peddler")
 
 				peddler_interface:refresh_chips()
+				Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
 
 				return
 			end
@@ -376,6 +384,8 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 		self._state = "done"
 	end
+
+	Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
 end
 
 UnlockManager.cb_reward_claimed = function (self, unlock, success, rewarded_items, presentation_text)
@@ -637,6 +647,8 @@ UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
 end
 
 UnlockManager._update_backend_unlocks = function (self, t)
+	Profiler.start("UnlockManager:_update_backend_unlocks()")
+
 	if self._state == "handle_reminder_popup" then
 		if SaveData.new_dlcs_unlocks and not self._handled_reminders_popups then
 			for dlc_name, first_time in pairs(SaveData.new_dlcs_unlocks) do
@@ -664,32 +676,27 @@ UnlockManager._update_backend_unlocks = function (self, t)
 			if not backend_manager:available() then
 				self._state = "backend_not_available"
 
+				Profiler.stop("UnlockManager:_update_backend_unlocks()")
+
 				return
 			end
 
 			if backend_manager:is_tutorial_backend() then
+				Profiler.stop("UnlockManager:_update_backend_unlocks()")
+
 				return
 			end
 
 			if backend_manager:is_benchmark_backend() then
+				Profiler.stop("UnlockManager:_update_backend_unlocks()")
+
 				return
 			end
 
 			if script_data["eac-untrusted"] then
+				Profiler.stop("UnlockManager:_update_backend_unlocks()")
+
 				return
-			end
-
-			local was_in_keep = self._is_in_keep
-			self._is_in_keep = Managers.level_transition_handler:in_hub_level()
-
-			if not self._is_in_keep then
-				return
-			elseif not was_in_keep then
-				for dlc, _ in pairs(self._failed_to_own_dlcs) do
-					self._excluded_dlcs[dlc] = nil
-				end
-
-				table.clear(self._failed_to_own_dlcs)
 			end
 
 			if not self._unlocks_ready then
@@ -708,6 +715,8 @@ UnlockManager._update_backend_unlocks = function (self, t)
 
 					print("[UnlockManager] All unlocks ready")
 				else
+					Profiler.stop("UnlockManager:_update_backend_unlocks()")
+
 					return
 				end
 			end
@@ -738,6 +747,8 @@ UnlockManager._update_backend_unlocks = function (self, t)
 
 				if new_dlc_installed then
 					self._state = "update_backend_dlcs"
+
+					Profiler.stop("UnlockManager:_update_backend_unlocks()")
 
 					return
 				end
@@ -781,34 +792,27 @@ UnlockManager._update_backend_unlocks = function (self, t)
 				self._state = "evaluate_restart"
 			end
 		end
-	elseif self._state == "evaluate_restart" then
-		if table.is_empty(self._popup_ids) then
-			local requires_restart = false
+	elseif self._state == "evaluate_restart" and table.is_empty(self._popup_ids) then
+		local requires_restart = false
 
-			for name, unlock in pairs(self._unlocks) do
-				if unlock:requires_restart() then
-					requires_restart = true
+		for name, unlock in pairs(self._unlocks) do
+			if unlock:requires_restart() then
+				requires_restart = true
 
-					if unlock.set_status_changed then
-						unlock:set_status_changed(false)
-					end
+				if unlock.set_status_changed then
+					unlock:set_status_changed(false)
 				end
 			end
-
-			if requires_restart then
-				self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(Localize("popup_console_dlc_needs_restart"), Localize("popup_notice_topic"), "restart_game", Localize("menu_return_to_title_screen"))
-			end
-
-			self._state = "throttle_updates"
 		end
-	elseif self._state == "throttle_updates" then
-		if not self._throttle_timer then
-			self._throttle_timer = t + 10
-		elseif self._throttle_timer <= t then
-			self._state = "query_unlocked"
-			self._throttle_timer = nil
+
+		if requires_restart then
+			self._popup_ids[#self._popup_ids + 1] = Managers.popup:queue_popup(Localize("popup_console_dlc_needs_restart"), Localize("popup_notice_topic"), "restart_game", Localize("menu_return_to_title_screen"))
 		end
+
+		self._state = "query_unlocked"
 	end
+
+	Profiler.stop("UnlockManager:_update_backend_unlocks()")
 end
 
 UnlockManager._handle_unseen_rewards = function (self)
@@ -910,29 +914,6 @@ UnlockManager.set_excluded_dlcs = function (self, dlcs_to_exclude)
 	for i = 1, #dlcs_to_exclude, 1 do
 		local dlc = dlcs_to_exclude[i]
 		excluded_dlcs[dlc] = true
-	end
-end
-
-UnlockManager.handle_exclude_dlcs = function (self, dlcs_to_exclude, owned_dlcs)
-	self:set_excluded_dlcs(dlcs_to_exclude)
-
-	local installed_dlcs = self:get_installed_dlcs()
-
-	for i = 1, #installed_dlcs, 1 do
-		local dlc = installed_dlcs[i]
-		local unlock = self._unlocks[dlc]
-
-		if unlock.update_is_installed and not table.contains(owned_dlcs, dlc) then
-			local times_failed = (self._failed_to_own_dlcs[dlc] or 0) + 1
-
-			if times_failed >= 5 then
-				self._excluded_dlcs[dlc] = true
-			else
-				self._failed_to_own_dlcs[dlc] = times_failed
-			end
-		elseif self._failed_to_own_dlcs[dlc] then
-			self._failed_to_own_dlcs[dlc] = nil
-		end
 	end
 end
 

@@ -285,6 +285,8 @@ PlayerBotBase.blackboard = function (self)
 end
 
 PlayerBotBase.update = function (self, unit, input, dt, context, t)
+	Profiler.start("PlayerBotBase")
+
 	self._t = t
 	local health_extension = self._health_extension
 	local status_extension = self._status_extension
@@ -296,16 +298,36 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 	if is_alive and not is_ready_for_assisted_respawn and not is_linked_movement then
 		SELF_UNIT = unit
 
+		Profiler.start("update blackboard")
 		self:_update_blackboard(dt, t)
+		Profiler.stop("update blackboard")
+		Profiler.start("update target enemy")
 		self:_update_target_enemy(dt, t)
+		Profiler.stop("update target enemy")
+		Profiler.start("update target ally")
 		self:_update_target_ally(dt, t)
+		Profiler.stop("update target ally")
+		Profiler.start("_update_liquid_escape")
 		self:_update_liquid_escape()
+		Profiler.stop("_update_liquid_escape")
+		Profiler.start("_update_vortex_escape")
 		self:_update_vortex_escape()
+		Profiler.stop("_update_vortex_escape")
+		Profiler.start("update pickups")
 		self:_update_pickups(dt, t)
+		Profiler.stop("update pickups")
+		Profiler.start("update interactables")
 		self:_update_interactables(dt, t)
+		Profiler.stop("update interactables")
+		Profiler.start("update loadout data")
 		self:_update_weapon_loadout_data()
+		Profiler.stop("update loadout data")
+		Profiler.start("update best weapon")
 		self:_update_best_weapon()
+		Profiler.stop("update best weapon")
+		Profiler.start("update brain")
 		self._brain:update(unit, t, dt)
+		Profiler.stop("update brain")
 
 		local moving_platform = locomotion_extension:get_moving_platform()
 		local is_disabled = status_extension:is_disabled()
@@ -313,11 +335,17 @@ PlayerBotBase.update = function (self, unit, input, dt, context, t)
 		if is_disabled or moving_platform then
 			self._navigation_extension:teleport(POSITION_LOOKUP[unit])
 		elseif locomotion_extension:is_on_ground() then
+			Profiler.start("update movement target")
 			self:_update_movement_target(dt, t)
+			Profiler.stop("update movement target")
 		end
 
+		Profiler.start("update_attack_request")
 		self:_update_attack_request(t)
+		Profiler.stop("update_attack_request")
 	end
+
+	Profiler.stop("PlayerBotBase")
 end
 
 PlayerBotBase._update_blackboard = function (self, dt, t)
@@ -347,10 +375,16 @@ PlayerBotBase._update_blackboard = function (self, dt, t)
 end
 
 PlayerBotBase._update_target_enemy = function (self, dt, t)
+	Profiler.start("update target enemy")
+
 	local pos = POSITION_LOOKUP[self._unit]
 
+	Profiler.start("update_slot_target")
 	self:_update_slot_target(dt, t, pos)
+	Profiler.stop("update_slot_target")
+	Profiler.start("update_proximity_target")
 	self:_update_proximity_target(dt, t, pos)
+	Profiler.stop("update_proximity_target")
 
 	local bb = self._blackboard
 	local old_target = bb.target_unit
@@ -391,6 +425,8 @@ PlayerBotBase._update_target_enemy = function (self, dt, t)
 	elseif bb.target_unit then
 		bb.target_unit = nil
 	end
+
+	Profiler.stop("update target enemy")
 end
 
 local BROADPHASE_QUERY_TEMP = {}
@@ -667,6 +703,8 @@ PlayerBotBase._find_target_position_on_nav_mesh = function (self, nav_world, wan
 end
 
 PlayerBotBase._update_target_ally = function (self, dt, t)
+	Profiler.start("update target ally")
+
 	local unit = self._unit
 	local blackboard = self._blackboard
 	local breed = self._bot_profile
@@ -713,6 +751,8 @@ PlayerBotBase._update_target_ally = function (self, dt, t)
 
 		ai_bot_group_system:register_ally_needs_aid_priority(unit, blackboard.target_ally_unit)
 	end
+
+	Profiler.stop("update target ally")
 end
 
 local MIN_HEADING_TOWARDS_US_DOT = math.degrees_to_radians(30)

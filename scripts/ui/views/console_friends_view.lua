@@ -589,6 +589,8 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		UIRenderer.draw_widget(ui_top_renderer, widget)
 	end
 
+	Profiler.start("- draw friends list")
+
 	if self._friend_list_widgets then
 		local scenegraph_position = table.clone(ui_scenegraph.friends_mask.world_position)
 		local friends_mask_scenegraph_start_pos = scenegraph_position[2]
@@ -604,6 +606,7 @@ ConsoleFriendsView._draw = function (self, dt, t)
 		end
 	end
 
+	Profiler.stop("- draw friends list")
 	UIRenderer.end_pass(ui_top_renderer)
 
 	if gamepad_active then

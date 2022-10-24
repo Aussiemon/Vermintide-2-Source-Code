@@ -89,6 +89,8 @@ BTInGravityWellAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 
 	if locomotion_extension.movement_type ~= "constrained_by_mover" and not blackboard.stagger_hit_wall then
+		Profiler.start("checking navmesh")
+
 		local nav_world = blackboard.nav_world
 		local world = blackboard.world
 		local physics_world = World.physics_world(world)
@@ -110,6 +112,8 @@ BTInGravityWellAction.run = function (self, unit, blackboard, t, dt)
 				blackboard.stagger_hit_wall = true
 			end
 		end
+
+		Profiler.stop("checking navmesh")
 	end
 
 	return ((broke_free or blackboard.gravity_well_time < t) and "done") or "running"

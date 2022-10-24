@@ -1231,6 +1231,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "move_forward",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"move_forward",
@@ -1239,6 +1240,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "move_left",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"move_left",
@@ -1247,6 +1249,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "move_back",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"move_back",
@@ -1255,6 +1258,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "move_right",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"move_right",
@@ -1263,6 +1267,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "jump_1",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"jump_1",
@@ -1271,6 +1276,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "jump_only",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"jump_only"
@@ -1278,6 +1284,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "dodge",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"dodge"
@@ -1285,6 +1292,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "crouch",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"crouch",
@@ -1293,6 +1301,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "walk",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"walk"
@@ -1308,6 +1317,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "action_one",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"action_one",
@@ -1318,6 +1328,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "action_two",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"action_two",
@@ -1327,6 +1338,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "weapon_reload",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"weapon_reload",
@@ -1335,6 +1347,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "action_three",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"action_three",
@@ -1344,6 +1357,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "input_active_ability",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"action_career",
@@ -1353,6 +1367,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "ping",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"ping",
@@ -1362,6 +1377,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "ping_only",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"ping_only"
@@ -1370,6 +1386,7 @@ local keybind_settings_definition = {
 	{
 		keybind_description = "ping_only_enemy",
 		required_dlc = "carousel",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"ping_only_enemy"
@@ -1378,6 +1395,7 @@ local keybind_settings_definition = {
 	{
 		keybind_description = "ping_only_movement",
 		required_dlc = "carousel",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"ping_only_movement"
@@ -1386,6 +1404,7 @@ local keybind_settings_definition = {
 	{
 		keybind_description = "ping_only_item",
 		required_dlc = "carousel",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"ping_only_item"
@@ -1393,6 +1412,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "social_wheel_only",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"social_wheel_only",
@@ -1402,6 +1422,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "photomode_only",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"photomode_only",
@@ -1411,6 +1432,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "interact",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"interact",
@@ -1419,6 +1441,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_1",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_1"
@@ -1426,6 +1449,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_2",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_2"
@@ -1433,6 +1457,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_3",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_3"
@@ -1440,6 +1465,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_4",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_4"
@@ -1447,6 +1473,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_5",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_5"
@@ -1454,6 +1481,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_switch_1",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_switch",
@@ -1462,6 +1490,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_next",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_next"
@@ -1469,6 +1498,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "wield_prev",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"wield_prev"
@@ -1476,6 +1506,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "character_inspecting",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"character_inspecting"
@@ -1483,6 +1514,7 @@ local keybind_settings_definition = {
 	},
 	{
 		keybind_description = "action_inspect",
+		keymappings_key = "PlayerControllerKeymaps",
 		widget_type = "keybind",
 		actions = {
 			"action_inspect",
@@ -1643,10 +1675,6 @@ local keybind_settings_definition = {
 }
 
 for i, keybind_setting in ipairs(keybind_settings_definition) do
-	if not keybind_setting.keymappings_key then
-		keybind_setting.keymappings_key = "PlayerControllerKeymaps"
-	end
-
 	if not keybind_setting.keymappings_table_key then
 		keybind_setting.keymappings_table_key = "win32"
 	end

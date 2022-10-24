@@ -1080,13 +1080,21 @@ UnitFramesHandler.update = function (self, dt, t)
 		self:on_gamepad_deactivated()
 	end
 
+	Profiler.start("handle_unit_frame_assigning")
 	self:_handle_unit_frame_assigning()
+	Profiler.stop("handle_unit_frame_assigning")
+	Profiler.start("sync")
 	self:_sync_player_stats(self._unit_frames[self._current_frame_index])
 
 	self._current_frame_index = 1 + self._current_frame_index % #self._unit_frames
+
+	Profiler.stop("sync")
+
 	local unit_frames = self._unit_frames
 
 	for i = 1, #unit_frames, 1 do
+		Profiler.start("unit_frame_update")
+
 		local unit_frame = unit_frames[i]
 
 		if i ~= 1 or not ignore_own_player then
@@ -1096,14 +1104,23 @@ UnitFramesHandler.update = function (self, dt, t)
 		if unit_frame.widget:show_respawn_ui() then
 			unit_frame.widget:update_respawn_countdown(dt, t)
 		end
+
+		Profiler.stop("unit_frame_update")
 	end
+
+	Profiler.start("handle_resolution_modified")
 
 	if self._update_resolution_modified then
 		self:resolution_modified()
 	end
 
+	Profiler.stop("handle_resolution_modified")
+	Profiler.start("draw")
 	self:_draw(dt)
+	Profiler.stop("draw")
+	Profiler.start("numeric_ui")
 	self:_update_numeric_ui()
+	Profiler.stop("numeric_ui")
 end
 
 UnitFramesHandler.resolution_modified = function (self)

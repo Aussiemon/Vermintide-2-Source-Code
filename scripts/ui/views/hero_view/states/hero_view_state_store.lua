@@ -746,7 +746,9 @@ HeroViewStateStore._windows_update = function (self, dt, t)
 	local active_windows = self._active_windows
 
 	for _, window in pairs(active_windows) do
+		Profiler.start(window.NAME .. " update")
 		window:update(dt, t)
+		Profiler.stop(window.NAME .. " update")
 	end
 end
 
@@ -755,7 +757,9 @@ HeroViewStateStore._windows_post_update = function (self, dt, t)
 
 	for _, window in pairs(active_windows) do
 		if window.post_update then
+			Profiler.start(window.NAME .. " postupdate")
 			window:post_update(dt, t)
+			Profiler.stop(window.NAME .. " postupdate")
 		end
 	end
 end
@@ -1471,6 +1475,8 @@ HeroViewStateStore.create_item_widget = function (self, product, scenegraph_id, 
 end
 
 HeroViewStateStore.populate_product_widget = function (self, widget, product)
+	Profiler.start("HeroViewStateStore:populate_product_widget")
+
 	local product_id = product.product_id
 	local product_type = product.type
 
@@ -1502,6 +1508,8 @@ HeroViewStateStore.populate_product_widget = function (self, widget, product)
 
 		self:_populate_dlc_logo_widget(widget, settings, product_id)
 	end
+
+	Profiler.stop("HeroViewStateStore:populate_product_widget")
 end
 
 HeroViewStateStore.destroy_product_widget = function (self, widget, product, force_unload)

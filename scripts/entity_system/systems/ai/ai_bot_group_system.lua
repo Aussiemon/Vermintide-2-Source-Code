@@ -275,14 +275,30 @@ AIBotGroupSystem.update = function (self, context, t)
 		bot_threat_queue[i] = nil
 	end
 
+	Profiler.start("_update_proximity_bot_breakables")
 	self:_update_proximity_bot_breakables(t)
+	Profiler.stop("_update_proximity_bot_breakables")
+	Profiler.start("_update_urgent_targets")
 	self:_update_urgent_targets(dt, t)
+	Profiler.stop("_update_urgent_targets")
+	Profiler.start("_update_opportunity_targets")
 	self:_update_opportunity_targets(dt, t)
+	Profiler.stop("_update_opportunity_targets")
+	Profiler.start("_update_existence_checks")
 	self:_update_existence_checks(dt, t)
+	Profiler.stop("_update_existence_checks")
+	Profiler.start("_update_move_targets")
 	self:_update_move_targets(dt, t)
+	Profiler.stop("_update_move_targets")
+	Profiler.start("_update_priority_targets")
 	self:_update_priority_targets(dt, t)
+	Profiler.stop("_update_priority_targets")
+	Profiler.start("_update_pickups")
 	self:_update_pickups(dt, t)
+	Profiler.stop("_update_pickups")
+	Profiler.start("_update_ally_needs_aid_priority")
 	self:_update_ally_needs_aid_priority()
+	Profiler.stop("_update_ally_needs_aid_priority")
 end
 
 AIBotGroupSystem.bot_orders = {
@@ -1410,6 +1426,8 @@ end
 AIBotGroupSystem._update_pickups = function (self, dt, t)
 	local players = Managers.player:players()
 
+	Profiler.start("do overlaps")
+
 	if self._update_pickups_at < t then
 		self._update_pickups_at = t + 0.15 + Math.random() * 0.1
 		local last_key = self._last_key_in_available_pickups
@@ -1432,9 +1450,14 @@ AIBotGroupSystem._update_pickups = function (self, dt, t)
 		end
 	end
 
+	Profiler.stop("do overlaps")
 	self:_update_orders(dt, t)
+	Profiler.start("update who takes what health")
 	self:_update_health_pickups(dt, t)
+	Profiler.stop("update who takes what health")
+	Profiler.start("update who takes what mule pickup")
 	self:_update_mule_pickups(dt, t)
+	Profiler.stop("update who takes what mule pickup")
 end
 
 local PICKUP_CHECK_RANGE = 15

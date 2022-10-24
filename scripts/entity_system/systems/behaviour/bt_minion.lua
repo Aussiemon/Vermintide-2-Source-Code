@@ -44,6 +44,7 @@ dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_tentacle_sorce
 dofile("scripts/entity_system/systems/behaviour/trees/chaos/chaos_zombie_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_pig_behavior")
 dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_rat_behavior")
+dofile("scripts/entity_system/systems/behaviour/trees/critters/critter_nurgling_behavior")
 DLCUtils.dofile_list("behaviour_trees")
 
 if USE_PRECOMPILED_ROOT_TABLES then

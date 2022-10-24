@@ -477,10 +477,15 @@ GamePadEquipmentUI._sync_player_equipment = function (self)
 		return
 	end
 
+	Profiler.start("-check equipment for changes")
+
 	if not self:_check_equipment_changed(equipment, inventory_extension) then
+		Profiler.stop("-check equipment for changes")
+
 		return
 	end
 
+	Profiler.stop("-check equipment for changes")
 	table.clear(verified_widgets)
 
 	local inventory_modified = false
@@ -1197,6 +1202,7 @@ GamePadEquipmentUI.update = function (self, dt, t)
 	local dirty = false
 
 	self:_update_game_options()
+	Profiler.start("-update crosshair position")
 
 	local parent = self._parent
 	local crosshair_position_x, crosshair_position_y = parent:get_crosshair_position()
@@ -1205,23 +1211,39 @@ GamePadEquipmentUI.update = function (self, dt, t)
 		dirty = true
 	end
 
+	Profiler.stop("-update crosshair position")
+	Profiler.start("-update animations")
+
 	if self:_update_animations(dt, t) then
 		dirty = true
 	end
+
+	Profiler.stop("-update animations")
+	Profiler.start("-update ammo counter")
 
 	if self:_animate_ammo_counter(dt) then
 		dirty = true
 	end
 
+	Profiler.stop("-update ammo counter")
+	Profiler.start("-set dirty")
+
 	if dirty then
 		self:set_dirty()
 	end
 
+	Profiler.stop("-set dirty")
+	Profiler.start("-handle resolution changed")
 	self:_handle_resolution_modified()
+	Profiler.stop("-handle resolution changed")
+	Profiler.start("-sync player equipment")
 	self:_sync_player_equipment()
+	Profiler.stop("-sync player equipment")
 	self:_show_hold_to_reload(t)
 	self:_handle_gamepad_activity()
+	Profiler.start("-draw")
 	self:draw(dt)
+	Profiler.stop("-draw")
 	self._ui_animator:update(dt)
 end
 

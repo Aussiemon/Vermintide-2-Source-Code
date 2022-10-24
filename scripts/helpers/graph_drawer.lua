@@ -47,19 +47,28 @@ GraphDrawer.update = function (self, input_service, t)
 		Debug.text("GraphDrawer active, other mouse input disabled")
 	end
 
+	Profiler.start("GraphDrawer")
+
 	local res_x = RESOLUTION_LOOKUP.res_w
 	local res_y = RESOLUTION_LOOKUP.res_h
 	local gui = self.gui
 
 	for graph_name, graph in pairs(self.graphs) do
 		if graph.active then
+			Profiler.start("update")
+
 			if self.active then
 				graph:update(input_service, t)
 			end
 
+			Profiler.stop("update")
+			Profiler.start("draw")
 			graph:draw(gui, input_service, t)
+			Profiler.stop("draw")
 		end
 	end
+
+	Profiler.stop("GraphDrawer")
 end
 
 Graph = class(Graph)

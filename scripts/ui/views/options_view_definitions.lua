@@ -339,6 +339,20 @@ local scenegraph_definition = {
 			30
 		}
 	},
+	keybind_info = {
+		vertical_alignment = "top",
+		parent = "background_bottom_panel",
+		horizontal_alignment = "left",
+		position = {
+			30,
+			-7,
+			1
+		},
+		size = {
+			1000,
+			30
+		}
+	},
 	settings_button_1 = {
 		vertical_alignment = "bottom",
 		parent = "button_pivot",
@@ -1083,7 +1097,15 @@ local background_widget_definitions = {
 		}
 	}
 }
-local widget_definitions = {}
+local widget_definitions = {
+	keybind_info = UIWidgets.create_simple_text("Hello world", "keybind_info", nil, nil, {
+		vertical_alignment = "center",
+		font_type = "hell_shark",
+		font_size = 24,
+		horizontal_alignment = "left",
+		text_color = Colors.get_color_table_with_alpha("font_default", 255)
+	})
+}
 local button_element_template = {
 	passes = {
 		{
@@ -3975,14 +3997,23 @@ local KEYBIND_WIDGET_SIZE = {
 	30
 }
 
-local function create_keybind_widget(selected_key, keybind_description, actions, actions_info, scenegraph_id, base_offset)
+local function create_keybind_widget(selected_key_1, selected_key_2, keybind_description, actions, actions_info, scenegraph_id, base_offset)
 	base_offset[2] = base_offset[2] - KEYBIND_WIDGET_SIZE[2]
 	local definition = {
 		element = {
 			passes = {
 				{
+					style_id = "hotspot_1",
 					pass_type = "hotspot",
-					content_id = "hotspot",
+					content_id = "hotspot_1",
+					content_check_function = function (content)
+						return not Managers.input:is_device_active("gamepad")
+					end
+				},
+				{
+					style_id = "hotspot_2",
+					pass_type = "hotspot",
+					content_id = "hotspot_2",
 					content_check_function = function (content)
 						return not Managers.input:is_device_active("gamepad")
 					end
@@ -4013,93 +4044,134 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 					end
 				},
 				{
-					pass_type = "local_offset",
-					offset_function = function (ui_scenegraph, ui_style, ui_content, ui_renderer)
-						local selected_key_style = ui_style.selected_key
-
-						if ui_content.active or ui_content.highlight_hotspot.is_hover then
+					style_id = "selected_key_1",
+					pass_type = "text",
+					text_id = "selected_key_1",
+					content_check_function = function (content)
+						return not content.active_1
+					end,
+					content_change_function = function (ui_content, selected_key_style)
+						if ui_content.active_1 or ui_content.hotspot_1.is_hover then
 							selected_key_style.text_color = selected_key_style.hover_color
+						elseif ui_content.is_unassigned_1 then
+							selected_key_style.text_color = selected_key_style.unassigned_color
 						else
 							selected_key_style.text_color = selected_key_style.default_color
 						end
 
-						if ui_content.active then
+						if ui_content.active_1 then
 							ui_content.active_t = ui_content.active_t + ui_renderer.dt * 2.5
 							local i = math.sirp(0, 1, ui_content.active_t)
-							ui_style.selected_rect.color[1] = i * 255
+							selected_key_style.parent.selected_rect_1.color[1] = i * 255
 						else
-							ui_style.selected_rect.color[1] = 255
+							selected_key_style.parent.selected_rect_1.color[1] = 255
 						end
 					end
 				},
 				{
-					style_id = "selected_key",
+					style_id = "selected_key_2",
 					pass_type = "text",
-					text_id = "selected_key",
+					text_id = "selected_key_2",
 					content_check_function = function (content)
-						return not content.active
-					end
-				},
-				{
-					style_id = "selected_rect",
-					pass_type = "rect",
-					content_check_function = function (content)
-						return content.active
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "input_field_background",
-					texture_id = "rect_masked"
-				},
-				{
-					pass_type = "texture",
-					style_id = "input_field_background_2",
-					texture_id = "rect_masked"
-				},
-				{
-					pass_type = "rect",
-					content_check_function = function (content)
-						return DEBUG_WIDGETS
-					end
-				},
-				{
-					pass_type = "border",
-					content_check_function = function (content, style)
-						if DEBUG_WIDGETS then
-							style.thickness = 1
+						return not content.active_2
+					end,
+					content_change_function = function (ui_content, selected_key_style)
+						if ui_content.active_2 or ui_content.hotspot_2.is_hover then
+							selected_key_style.text_color = selected_key_style.hover_color
+						elseif ui_content.is_unassigned_2 then
+							selected_key_style.text_color = selected_key_style.unassigned_color
+						else
+							selected_key_style.text_color = selected_key_style.default_color
 						end
 
-						return DEBUG_WIDGETS
+						if ui_content.active_2 then
+							ui_content.active_t = ui_content.active_t + ui_renderer.dt * 2.5
+							local i = math.sirp(0, 1, ui_content.active_t)
+							selected_key_style.parent.selected_rect_2.color[1] = i * 255
+						else
+							selected_key_style.parent.selected_rect_2.color[1] = 255
+						end
 					end
 				},
 				{
-					style_id = "debug_middle_line",
+					style_id = "selected_rect_1",
 					pass_type = "rect",
 					content_check_function = function (content)
-						return DEBUG_WIDGETS
+						return content.active_1
 					end
+				},
+				{
+					style_id = "selected_rect_2",
+					pass_type = "rect",
+					content_check_function = function (content)
+						return content.active_2
+					end
+				},
+				{
+					pass_type = "texture",
+					style_id = "input_field_1_background_bevel",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "input_field_1_background",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "input_field_2_background_bevel",
+					texture_id = "rect_masked"
+				},
+				{
+					pass_type = "texture",
+					style_id = "input_field_2_background",
+					texture_id = "rect_masked"
 				}
 			}
 		},
 		content = {
+			active_t = 0,
 			rect_masked = "rect_masked",
 			highlight_texture = "playerlist_hover",
-			active_t = 0,
-			hotspot = {},
+			hotspot_1 = {},
+			hotspot_2 = {},
 			highlight_hotspot = {
 				allow_multi_hover = true
 			},
 			text = keybind_description or actions[1],
 			actions = actions,
 			actions_info = actions_info,
-			selected_key = selected_key,
+			selected_key_1 = selected_key_1,
+			selected_key_2 = selected_key_2,
 			hotspot_content_ids = {
-				"hotspot"
+				"hotspot_1",
+				"hotspot_2"
 			}
 		},
 		style = {
 			offset = table.clone(base_offset),
+			hotspot_1 = {
+				offset = {
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - 2 * ((20 + INPUT_FIELD_WIDTH) - 2),
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
+					base_offset[3] + 2
+				},
+				area_size = {
+					INPUT_FIELD_WIDTH - 2,
+					KEYBIND_WIDGET_SIZE[2] - 10
+				}
+			},
+			hotspot_2 = {
+				offset = {
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 2),
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
+					base_offset[3] + 2
+				},
+				area_size = {
+					INPUT_FIELD_WIDTH - 2,
+					KEYBIND_WIDGET_SIZE[2] - 10
+				}
+			},
 			highlight_texture = {
 				masked = true,
 				offset = {
@@ -4126,10 +4198,30 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 				},
 				text_color = Colors.get_color_table_with_alpha("font_default", 255)
 			},
-			selected_key = {
-				font_size = 16,
+			selected_key_1 = {
 				upper_case = true,
 				horizontal_alignment = "center",
+				font_size = 16,
+				dynamic_font = true,
+				font_type = "hell_shark_masked",
+				offset = {
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - 2 * (20 + INPUT_FIELD_WIDTH),
+					base_offset[2] + 2,
+					base_offset[3] + 5
+				},
+				text_color = Colors.get_color_table_with_alpha("font_default", 255),
+				hover_color = Colors.get_color_table_with_alpha("font_title", 255),
+				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				unassigned_color = Colors.get_color_table_with_alpha("dim_gray", 255),
+				size = {
+					INPUT_FIELD_WIDTH,
+					KEYBIND_WIDGET_SIZE[2] - 10
+				}
+			},
+			selected_key_2 = {
+				upper_case = true,
+				horizontal_alignment = "center",
+				font_size = 16,
 				dynamic_font = true,
 				font_type = "hell_shark_masked",
 				offset = {
@@ -4140,12 +4232,25 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				hover_color = Colors.get_color_table_with_alpha("font_title", 255),
 				default_color = Colors.get_color_table_with_alpha("font_default", 255),
+				unassigned_color = Colors.get_color_table_with_alpha("dim_gray", 255),
 				size = {
 					INPUT_FIELD_WIDTH,
 					KEYBIND_WIDGET_SIZE[2] - 10
 				}
 			},
-			selected_rect = {
+			selected_rect_1 = {
+				offset = {
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - 2 * ((20 + INPUT_FIELD_WIDTH) - 2),
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
+					base_offset[3] + 2
+				},
+				size = {
+					INPUT_FIELD_WIDTH - 2,
+					KEYBIND_WIDGET_SIZE[2] - 10
+				},
+				color = Colors.get_color_table_with_alpha("font_default", 100)
+			},
+			selected_rect_2 = {
 				offset = {
 					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 2),
 					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
@@ -4186,7 +4291,36 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 					BOTTOM_EDGE_THICKNESS
 				}
 			},
-			input_field_background = {
+			input_field_1_background_bevel = {
+				offset = {
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - 2 * (20 + INPUT_FIELD_WIDTH),
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
+					base_offset[3] + 1
+				},
+				color = INPUT_FIELD_COLOR,
+				size = {
+					INPUT_FIELD_WIDTH,
+					KEYBIND_WIDGET_SIZE[2] - 10 + 2
+				}
+			},
+			input_field_1_background = {
+				offset = {
+					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - 2 * ((20 + INPUT_FIELD_WIDTH) - 2),
+					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
+					base_offset[3] + 2
+				},
+				color = {
+					255,
+					10,
+					10,
+					10
+				},
+				size = {
+					INPUT_FIELD_WIDTH - 2,
+					KEYBIND_WIDGET_SIZE[2] - 10
+				}
+			},
+			input_field_2_background_bevel = {
 				offset = {
 					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - INPUT_FIELD_WIDTH,
 					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,
@@ -4198,7 +4332,7 @@ local function create_keybind_widget(selected_key, keybind_description, actions,
 					KEYBIND_WIDGET_SIZE[2] - 10 + 2
 				}
 			},
-			input_field_background_2 = {
+			input_field_2_background = {
 				offset = {
 					(base_offset[1] + KEYBIND_WIDGET_SIZE[1]) - (INPUT_FIELD_WIDTH - 2),
 					(base_offset[2] + KEYBIND_WIDGET_SIZE[2] / 2) - (KEYBIND_WIDGET_SIZE[2] - 10) / 2,

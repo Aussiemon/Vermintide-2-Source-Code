@@ -277,7 +277,11 @@ end
 local GameSession_set_game_object_field = GameSession.set_game_object_field
 
 BreedFreezer.commit_freezes = function (self)
+	Profiler.start("commit_freezes")
+
 	if self.num_to_freeze == 0 then
+		Profiler.stop("commit_freezes")
+
 		return
 	end
 
@@ -299,6 +303,8 @@ BreedFreezer.commit_freezes = function (self)
 			units[i] = nil
 
 			queue:push_back(unit)
+			Profiler.start("freeze_breed " .. breed_name)
+			Profiler.start("systems")
 
 			local systems = self.systems_by_breed[breed_name]
 			local breed_extension_names = self.extension_names_by_breed[breed_name]
@@ -306,23 +312,38 @@ BreedFreezer.commit_freezes = function (self)
 			for j = #systems, 1, -1 do
 				local system = systems[j]
 
+				Profiler.start(system.name or "unknown")
 				system:freeze(unit, breed_extension_names[j], "reason_unspawn")
+				Profiler.stop(system.name or "unknown")
 			end
+
+			Profiler.stop("systems")
+			Profiler.start("teardown")
 
 			if Unit.has_animation_state_machine(unit) then
+				Profiler.start("disable_animation_state_machine")
 				Unit.disable_animation_state_machine(unit)
+				Profiler.stop("disable_animation_state_machine")
 			end
 
+			Profiler.start("flow_freeze_call")
 			Unit.flow_event(unit, "lua_freeze_unit")
+			Profiler.stop("flow_freeze_call")
+			Profiler.start("disable physics")
 			Unit.disable_physics(unit)
+			Profiler.stop("disable physics")
+			Profiler.start("copy_scene_graph")
 
 			local unit_name = Unit.get_data(unit, "unit_name")
 			local source_unit = self.breed_template_units[unit_name]
 
 			Unit.copy_scene_graph_local_from(unit, source_unit)
+			Profiler.stop("copy_scene_graph")
 
 			if not script_data.debug_breed_freeze then
+				Profiler.start("set_unit_visibility")
 				Unit.set_unit_visibility(unit, false)
+				Profiler.stop("set_unit_visibility")
 			end
 
 			local offset = Vector3(freezer_size[1] * 0.5, queue.last * freezer_offset[2], self.breed_offsets[breed_name] + freezer_offset[3] * 0.5)
@@ -332,7 +353,10 @@ BreedFreezer.commit_freezes = function (self)
 			FROZEN[unit] = true
 			POSITION_LOOKUP[unit] = nil
 
+			Profiler.start("reload_flow")
 			Unit.reload_flow(unit)
+			Profiler.stop("reload_flow")
+			Profiler.stop("teardown")
 
 			self.count = self.count + 1
 
@@ -352,6 +376,7 @@ BreedFreezer.commit_freezes = function (self)
 			end
 
 			Managers.state.unit_storage:freeze(unit)
+			Profiler.stop("freeze_breed " .. breed_name)
 		end
 	end
 
@@ -360,6 +385,8 @@ BreedFreezer.commit_freezes = function (self)
 	end
 
 	self.num_to_freeze = 0
+
+	Profiler.stop("commit_freezes")
 end
 
 BreedFreezer.try_unfreeze_breed = function (self, breed, data)
@@ -375,16 +402,23 @@ BreedFreezer.try_unfreeze_breed = function (self, breed, data)
 		return nil
 	end
 
+	Profiler.start("pop queue")
+
 	local unit = queue:pop_first()
 
+	Profiler.stop("pop queue")
 	Managers.state.unit_storage:unfreeze(unit)
 
 	local optional_data = data[7]
 	local side_id = optional_data.side_id
+
+	Profiler.start("rpc")
+
 	local network_manager = Managers.state.network
 	local unit_id = network_manager:unit_game_object_id(unit)
 
 	network_manager.network_transmit:send_rpc_clients("rpc_breed_unfreeze_breed", NetworkLookup.breeds[breed_name], data[2]:unbox(), data[3]:unbox(), side_id, unit_id)
+	Profiler.stop("rpc")
 	self:unfreeze_unit(unit, breed_name, data)
 
 	return unit
@@ -421,6 +455,8 @@ BreedFreezer.rpc_breed_unfreeze_breed = function (self, channel_id, breed_id, po
 end
 
 BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
+	Profiler.start("unfreeze_breed " .. breed_name)
+	Profiler.start("setup")
 	Unit.set_frozen(unit, false)
 
 	local pos = data[2]:unbox()
@@ -432,14 +468,30 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 	POSITION_LOOKUP[unit] = pos
 	FROZEN[unit] = nil
 
+	Profiler.start("enable_animation_state_machine")
 	Unit.enable_animation_state_machine(unit)
+	Profiler.stop("enable_animation_state_machine")
+	Profiler.start("enable_physics")
 	Unit.enable_physics(unit)
+	Profiler.stop("enable_physics")
+	Profiler.start("flow_unfreeze_call")
 	Unit.flow_event(unit, "lua_unfreeze_unit")
+	Profiler.stop("flow_unfreeze_call")
+	Profiler.start("set_unit_visibility")
 	Unit.set_unit_visibility(unit, true)
+	Profiler.stop("set_unit_visibility")
+	Profiler.start("clear_unit_decals")
 	Managers.state.blood:clear_unit_decals(unit)
+	Profiler.stop("clear_unit_decals")
+	Profiler.start("trigger_flow_unit_spawned")
 	Unit.trigger_flow_unit_spawned(unit)
+	Profiler.stop("trigger_flow_unit_spawned")
 
 	self.count = self.count - 1
+
+	Profiler.stop("setup")
+	Profiler.start("systems")
+
 	local systems = self.systems_by_breed[breed_name]
 	local breed_extension_names = self.extension_names_by_breed[breed_name]
 
@@ -447,11 +499,17 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 		local system = systems[i]
 
 		if system.unfreeze then
+			Profiler.start(system.NAME)
 			system:unfreeze(unit, breed_extension_names[i], data)
+			Profiler.stop(system.NAME)
 		end
 	end
 
+	Profiler.stop("systems")
+	Profiler.start("variation")
 	Unit.flow_event(unit, "lua_trigger_variation")
+	Profiler.stop("variation")
+	Profiler.stop("unfreeze_breed " .. breed_name)
 
 	return unit
 end

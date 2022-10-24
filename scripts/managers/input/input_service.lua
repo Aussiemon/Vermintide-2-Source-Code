@@ -41,6 +41,8 @@ InputService.unmap_device = function (self, input_device_type, input_device)
 	input_device_type_list.n = #input_device_type_list
 end
 
+local math_max = math.max
+
 InputService.get = function (self, input_data_name, consume)
 	local keymaps, default_data_types = self:get_active_keymaps(nil, input_data_name)
 	local keymap_binding = keymaps[input_data_name]
@@ -72,7 +74,11 @@ InputService.get = function (self, input_data_name, consume)
 							local input_device_data = input_devices_data[input_device]
 
 							if input_device:active() and not input_device_data.blocked_access[name] then
-								action_value = action_value or input_device_data[key_action_type][key_index]
+								if key_action_type == "soft_button" then
+									action_value = math_max(action_value or 0, input_device_data[key_action_type][key_index])
+								else
+									action_value = action_value or input_device_data[key_action_type][key_index]
+								end
 
 								if action_value == true then
 									if input_device_data.consumed_input[key_index] then
@@ -89,10 +95,6 @@ InputService.get = function (self, input_data_name, consume)
 						end
 
 						action_value = (device_list.n > 0 and action_value) or nil
-
-						if not action_value then
-							break
-						end
 					end
 				end
 			end

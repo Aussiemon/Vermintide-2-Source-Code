@@ -139,6 +139,8 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 	local target_unit = self.target_unit
 	local projectile_unit = self.projectile_unit
 
+	Profiler.start("corruptor_beam_update")
+
 	if Unit.alive(target_unit) then
 		local world = self.world
 		local self_pos = Unit.world_position(unit, Unit.node(unit, "a_voice"))
@@ -189,6 +191,8 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 			World.move_particles(world, self.beam_effect_end, real_target_position, rotation_inverse)
 		end
 	end
+
+	Profiler.stop("corruptor_beam_update")
 end
 
 return

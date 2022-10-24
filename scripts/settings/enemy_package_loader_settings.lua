@@ -42,7 +42,8 @@ EnemyPackageLoaderSettings.categories = {
 			"skaven_storm_vermin_champion",
 			"chaos_plague_wave_spawner",
 			"skaven_stormfiend_boss",
-			"skaven_grey_seer"
+			"skaven_grey_seer",
+			"critter_nurgling"
 		}
 	},
 	{

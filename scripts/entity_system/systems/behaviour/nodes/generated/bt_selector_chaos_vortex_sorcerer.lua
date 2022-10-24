@@ -21,6 +21,8 @@ BTSelector_chaos_vortex_sorcerer.leave = function (self, unit, blackboard, t, re
 end
 
 BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -28,8 +30,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
+		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+
+		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -47,8 +52,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
+		Profiler_start("in_vortex")
 
 		local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
+
+		Profiler_stop("in_vortex")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -66,8 +74,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_falling, "aborted")
+		Profiler_start("falling")
 
 		local result, evaluate = node_falling:run(unit, blackboard, t, dt)
+
+		Profiler_stop("falling")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -89,8 +100,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
+		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
+
+		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -130,8 +144,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_smartobject, "aborted")
+		Profiler_start("smartobject")
 
 		local result, evaluate = node_smartobject:run(unit, blackboard, t, dt)
+
+		Profiler_stop("smartobject")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -149,8 +166,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_quick_teleport, "aborted")
+		Profiler_start("quick_teleport")
 
 		local result, evaluate = node_quick_teleport:run(unit, blackboard, t, dt)
+
+		Profiler_stop("quick_teleport")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -168,8 +188,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn_vortex, "aborted")
+		Profiler_start("spawn_vortex")
 
 		local result, evaluate = node_spawn_vortex:run(unit, blackboard, t, dt)
+
+		Profiler_stop("spawn_vortex")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -187,8 +210,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_skulk_approach, "aborted")
+		Profiler_start("skulk_approach")
 
 		local result, evaluate = node_skulk_approach:run(unit, blackboard, t, dt)
+
+		Profiler_stop("skulk_approach")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -204,8 +230,11 @@ BTSelector_chaos_vortex_sorcerer.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[9]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+
+	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

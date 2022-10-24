@@ -175,6 +175,8 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local locomotion = ScriptUnit.has_extension(unit, "locomotion_system")
 
 	if locomotion then
+		Profiler.start("remove_locomotion")
+
 		locomotion.death_velocity_boxed = (locomotion.movement_type == "script_driven" and Vector3Box(locomotion:current_velocity())) or nil
 
 		locomotion:set_affected_by_gravity(false)
@@ -183,12 +185,16 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		Managers.state.entity:system("ai_navigation_system"):add_navbot_to_release(unit)
 		locomotion:set_collision_disabled("death_reaction", true)
 		locomotion:set_movement_type("disabled")
+		Profiler.stop("remove_locomotion")
 	end
 
 	if not breed.keep_weapon_on_death and ScriptUnit.has_extension(unit, "ai_inventory_system") then
+		Profiler.start("drop_items")
+
 		local inventory_extension = Managers.state.entity:system("ai_inventory_system")
 
 		inventory_extension:drop_item(unit)
+		Profiler.stop("drop_items")
 	end
 
 	local owner_unit = AiUtils.get_actual_attacker_unit(killer_unit)
@@ -196,6 +202,8 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	play_screen_space_blood(context.world, unit, owner_unit, killing_blow, damage_type)
 
 	if breed.death_sound_event then
+		Profiler.start("sound")
+
 		local wwise_source, wwise_world = WwiseUtils.make_unit_auto_source(context.world, unit, Unit.node(unit, "c_head"))
 		local dialogue_extension = ScriptUnit.extension(unit, "dialogue_system")
 		local switch_group = dialogue_extension.wwise_voice_switch_group
@@ -212,6 +220,8 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 		if hit_reaction_extension then
 			hit_reaction_extension:set_death_sound_event_id(playing_id)
 		end
+
+		Profiler.stop("sound")
 	end
 
 	local death_extension = ScriptUnit.extension(unit, "death_system")
@@ -323,6 +333,8 @@ local function ai_chaos_tentacle_update(unit, dt, context, t, data, is_server)
 end
 
 local function update_wall_nail(unit, dt, t, data)
+	Profiler.start("update_wall_nail")
+
 	for hit_ragdoll_actor, nail_data in pairs(data.wall_nail_data) do
 		local actor = Unit.actor(unit, hit_ragdoll_actor)
 
@@ -371,6 +383,8 @@ local function update_wall_nail(unit, dt, t, data)
 			Unit.set_local_position(unit, node, Vector3.lerp(nail_data.position:unbox(), nail_data.target_position:unbox(), lerp_t))
 		end
 	end
+
+	Profiler.stop("update_wall_nail")
 end
 
 local function ai_default_unit_update(unit, dt, context, t, data, is_server)
@@ -1382,6 +1396,32 @@ DeathReactions.templates = {
 			end
 		}
 	},
+	critter_nurgling = {
+		unit = {
+			pre_start = function (unit, context, t, killing_blow)
+				ai_default_unit_pre_start(unit, context, t, killing_blow)
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				Managers.state.event:trigger("nurgling_killed")
+
+				return DeathReactions.templates.ai_default.unit.start(unit, context, t, killing_blow, is_server)
+			end,
+			update = function (unit, dt, context, t, data)
+				return ai_default_unit_update(unit, dt, context, t, data)
+			end
+		},
+		husk = {
+			pre_start = function (unit, context, t, killing_blow)
+				ai_default_husk_pre_start(unit, context, t, killing_blow)
+			end,
+			start = function (unit, context, t, killing_blow, is_server)
+				return DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+			end,
+			update = function (unit, dt, context, t, data)
+				return ai_default_husk_update(unit, dt, context, t, data)
+			end
+		}
+	},
 	player = {
 		unit = {
 			pre_start = function (unit, context, t, killing_blow)
@@ -2145,6 +2185,23 @@ DeathReactions.templates.shadow_skull.unit.start = function (unit, context, t, k
 	local projectile_locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
 
 	projectile_locomotion_extension:destroy()
+
+	return data, result
+end
+
+DeathReactions.templates.shadow_skull.husk.start = function (unit, context, t, killing_blow, is_server)
+	local data, result = DeathReactions.templates.ai_default.husk.start(unit, context, t, killing_blow, is_server)
+	local projectile_extension = ScriptUnit.extension(unit, "projectile_system")
+
+	projectile_extension:destroy()
+
+	local projectile_locomotion_extension = ScriptUnit.extension(unit, "projectile_locomotion_system")
+
+	projectile_locomotion_extension:destroy()
+
+	if is_hot_join_sync(killing_blow) then
+		Unit.flow_event(unit, "lua_on_death")
+	end
 
 	return data, result
 end

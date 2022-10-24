@@ -63,7 +63,9 @@ PlayerWhereaboutsExtension.update = function (self, unit, input, dt, context, t)
 	local pos = position_lookup[unit]
 	local input = self._input
 
+	Profiler.start("get closest positions")
 	self:_get_closest_positions(pos, input.is_onground, self.closest_positions)
+	Profiler.stop("get closest positions")
 
 	local nav_world = self._nav_world
 	local last_pos_on_nav_mesh = self:last_position_on_navmesh()
@@ -89,7 +91,9 @@ PlayerWhereaboutsExtension.update = function (self, unit, input, dt, context, t)
 	local player = self._player
 
 	if not player.remote then
+		Profiler.start("check bot nav transitions")
 		self:_check_bot_nav_transition(nav_world, input, pos)
+		Profiler.stop("check bot nav transitions")
 	end
 
 	if self.hang_ledge_position then
@@ -175,7 +179,9 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 			local jump_pos = self._jump_position:unbox()
 
 			if Vector3.is_valid(jump_pos) then
+				Profiler.start("BotNavTransitionManager:create_transition")
 				Managers.state.bot_nav_transition:create_transition(jump_pos, self._free_fall_position:unbox(), current_position, true)
+				Profiler.stop("BotNavTransitionManager:create_transition")
 			end
 
 			local invalid_vector = Vector3.invalid_vector()
@@ -188,7 +194,9 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 			local fall_pos = self._fall_position:unbox()
 
 			if Vector3.is_valid(fall_pos) then
+				Profiler.start("BotNavTransitionManager:create_transition")
 				Managers.state.bot_nav_transition:create_transition(fall_pos, self._free_fall_position:unbox(), current_position, false)
+				Profiler.stop("BotNavTransitionManager:create_transition")
 			end
 
 			local invalid_vector = Vector3.invalid_vector()
@@ -245,7 +253,9 @@ PlayerWhereaboutsExtension._get_closest_positions = function (self, pos, is_ongr
 		point_list[i] = nil
 	end
 
+	Profiler.start("LocomotionUtils.closest_mesh_positions_outward")
 	LocomotionUtils.closest_mesh_positions_outward(nav_world, pos, 10, point_list)
+	Profiler.stop("LocomotionUtils.closest_mesh_positions_outward")
 end
 
 PlayerWhereaboutsExtension.closest_positions_when_outside_navmesh = function (self)

@@ -102,25 +102,35 @@ local function map_function(event, func, ...)
 end
 
 local function play_effect(hit_effect_name, world, hit_direction, position)
+	Profiler.start("hit_react_vfx_" .. hit_effect_name)
+
 	local hit_rotation = Quaternion.look(hit_direction)
 
 	World.create_particles(world, hit_effect_name, position, hit_rotation)
+	Profiler.stop("hit_react_vfx_" .. hit_effect_name)
 end
 
 local function play_sound(event_id, wwise_world, wwise_source_id, damage_type, enemy_type, weapon_type, hit_zone, is_husk)
+	Profiler.start("hit_react_sfx")
 	fassert(SoundEvents[event_id], "Could not find sound event %q in any template", event_id)
 
 	local event_name = SoundEvents[event_id][tostring(is_husk)]
 
 	WwiseWorld.trigger_event(wwise_world, event_name, wwise_source_id)
+	Profiler.stop("hit_react_sfx")
 end
 
 local function send_flow_event(event, unit)
+	Profiler.start("hit_react_flow_event_" .. event)
+
 	if event == "dismember_torso" and not Unit.has_animation_state_machine(unit) then
+		Profiler.stop("hit_react_flow_event_" .. event)
+
 		return
 	end
 
 	Unit.flow_event(unit, event)
+	Profiler.stop("hit_react_flow_event_" .. event)
 end
 
 local is_player = DamageUtils.is_player_unit
@@ -181,29 +191,40 @@ local temp_effect_results = {}
 
 GenericHitReactionExtension.update = function (self, unit, input, dt, context, t)
 	if self._delayed_flow then
+		Profiler.start("delayed_flow")
 		map_function(self._delayed_flow, send_flow_event, unit)
 
 		self._delayed_flow = nil
+
+		Profiler.stop("delayed_flow")
 
 		return
 	end
 
 	if self._delayed_animation then
+		Profiler.start("delayed_animation")
+
 		if Unit.has_animation_state_machine(unit) then
 			Unit.animation_event(unit, self._delayed_animation)
 		end
 
 		self._delayed_animation = nil
 
+		Profiler.stop("delayed_animation")
+
 		return
 	end
 
 	if self._delayed_push then
+		Profiler.start("delayed_push")
+
 		local has_pushed = self:_do_push(unit, dt)
 
 		if has_pushed then
 			self._delayed_push = nil
 		end
+
+		Profiler.stop("delayed_push")
 
 		return
 	end
@@ -249,9 +270,12 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local is_dead = not is_alive
 
 	if is_alive then
+		Profiler.start(self.hit_reaction_template)
+
 		local hit_reaction = HitReactions.get_reaction(self.hit_reaction_template, self.is_husk)
 
 		hit_reaction(unit, dt, context, t, biggest_hit)
+		Profiler.stop(self.hit_reaction_template)
 	end
 
 	if not self.hit_effect_template then
@@ -293,9 +317,13 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 	parameters.force_dismember = buff_extension and buff_extension:has_buff_perk("bloody_mess")
 
+	Profiler.start("executing effects")
+
 	for i = 1, num_effects, 1 do
 		self:_execute_effect(unit, hit_effects[i], biggest_hit, parameters, t, dt)
 	end
+
+	Profiler.stop("executing effects")
 end
 
 GenericHitReactionExtension._resolve_effects = function (self, effect_conditions, results)
@@ -369,13 +397,19 @@ local allowed_diagonal_hit_zones = {
 }
 
 GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, unit, actor_name, hit_direction, hit_zone)
+	Profiler.start("diagonal_dismemberment")
+
 	if not Unit.actor(unit, actor_name) then
+		Profiler.stop("diagonal_dismemberment")
+
 		return nil, false
 	end
 
 	local impact_position = Actor.center_of_mass(Unit.actor(unit, actor_name))
 
 	if not Vector3.is_valid(impact_position) then
+		Profiler.stop("diagonal_dismemberment")
+
 		return nil, false
 	end
 
@@ -408,6 +442,8 @@ GenericHitReactionExtension._check_for_diagonal_dismemberment = function (self, 
 		end
 	end
 
+	Profiler.stop("diagonal_dismemberment")
+
 	return new_dismember_event, should_replace_old
 end
 
@@ -423,6 +459,8 @@ local FLOW_EVENTS = {}
 local WWISE_PARAMETERS = {}
 
 GenericHitReactionExtension._execute_effect = function (self, unit, effect_template, effect_biggest_hit, parameters, t, dt)
+	Profiler.start("execute_effect_" .. effect_template.template_name)
+
 	local world = self.world
 	local breed_data = Unit.get_data(unit, "breed")
 	local attacker_unit = effect_biggest_hit[DamageDataIndex.ATTACKER]
@@ -432,6 +470,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 	if not breed_data.hit_zones[hit_zone] then
 		print("Error no hitzone in breed that matches hitzone:", hit_zone)
+		Profiler.stop("execute_effect_" .. effect_template.template_name)
 
 		return
 	end
@@ -456,6 +495,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local hit_reaction_flow_event = effect_template.flow_event
 
 	if hit_reaction_flow_event then
+		Profiler.start("check for effect template flow event")
+
 		if type(hit_reaction_flow_event) == "table" then
 			for i = 1, #hit_reaction_flow_event, 1 do
 				flow_events[#flow_events + 1] = hit_reaction_flow_event[i]
@@ -465,12 +506,16 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		end
 
 		has_flow_event = true
+
+		Profiler.stop("check for effect template flow event")
 	end
 
 	local is_dismember_allowed = self:_is_dismembering_allowed(parameters)
 	local dismember = is_dismember_allowed and (effect_template.do_dismember or (parameters.force_dismember and parameters.death))
 
 	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
+		Profiler.start("check for dismembering")
+
 		local event_table = Dismemberments[breed_data.name]
 		local dismember_flow_event = event_table[hit_zone]
 		local new_dismember_flow_event, should_replace_old = nil
@@ -491,9 +536,13 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 			has_flow_event = true
 		end
+
+		Profiler.stop("check for dismembering")
 	end
 
 	if has_flow_event then
+		Profiler.start("run flow event")
+
 		if parameters.death and death_ext then
 			if death_has_started and table.contains(flow_events, "dismember_torso") then
 				has_flow_event = false
@@ -511,6 +560,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		else
 			map_function(flow_events, send_flow_event, unit)
 		end
+
+		Profiler.stop("run flow event")
 	end
 
 	local is_falling = self.locomotion_extension and self.locomotion_extension._is_falling
@@ -625,6 +676,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	local should_push = (BloodSettings.ragdoll_push.enabled or not death_has_started) and effect_template.push
 
 	if should_push then
+		Profiler.start("push")
+
 		local push_actors = breed_data.hit_zones[hit_zone] and breed_data.hit_zones[hit_zone].push_actors
 
 		if push_actors then
@@ -642,9 +695,13 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 				death_velocity = self.locomotion_extension and self.locomotion_extension.death_velocity_boxed
 			}
 		end
+
+		Profiler.stop("push")
 	end
 
 	if sound_event then
+		Profiler.start("sound_event")
+
 		local wwise_world = Managers.world:wwise_world(world)
 		local wwise_source_id = WwiseWorld.make_auto_source(wwise_world, impact_position)
 
@@ -668,6 +725,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		end
 
 		map_function(sound_event, play_sound, wwise_world, wwise_source_id, WWISE_PARAMETERS.damage_type, WWISE_PARAMETERS.enemy_type, WWISE_PARAMETERS.weapon_type, WWISE_PARAMETERS.hit_zone, WWISE_PARAMETERS.husk)
+		Profiler.stop("sound_event")
 	end
 
 	if parameters.death and death_ext and not death_has_started then
@@ -675,6 +733,8 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 		death_ext.death_has_started = true
 	end
+
+	Profiler.stop("execute_effect_" .. effect_template.template_name)
 end
 
 GenericHitReactionExtension._do_push = function (self, unit, dt)

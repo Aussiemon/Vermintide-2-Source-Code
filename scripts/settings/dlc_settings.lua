@@ -262,6 +262,7 @@ DLCSettings = DLCSettings or {
 		additional_settings = {
 			common = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_common_settings",
 			quest = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_quest_settings",
+			ai = "scripts/settings/dlcs/geheimnisnacht_2021/geheimnisnacht_2021_ai_settings",
 			buff = "scripts/settings/dlcs/geheimnisnacht_2021/buff_settings_geheimnisnacht_2021"
 		}
 	},

@@ -25,6 +25,10 @@ UnitVariationSettings.critter_pig = table.create_copy(UnitVariationSettings.crit
 UnitVariationSettings.critter_pig.material_variations.skin_tint.materials = {
 	"mtr_skin"
 }
+UnitVariationSettings.critter_nurgling = table.create_copy(UnitVariationSettings.critter_nurgling, UnitVariationSettings.critter_pig)
+UnitVariationSettings.critter_nurgling.material_variations.skin_tint.materials = {
+	"chr_critter_nurgling"
+}
 UnitVariationSettings.skaven_skin = {
 	materials_enabled_from_start = {
 		"skin_tint"

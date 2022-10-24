@@ -185,7 +185,9 @@ end
 PlayerUnitCosmeticExtension.update = function (self, unit, dummy_input, dt, context, t)
 	self._queue_3p_event_name = nil
 
-	self:_update_player_standing_still_events(t)
+	if POSITION_LOOKUP[unit] then
+		self:_update_player_standing_still_events(t)
+	end
 end
 
 PlayerUnitCosmeticExtension.get_third_person_mesh_unit = function (self)

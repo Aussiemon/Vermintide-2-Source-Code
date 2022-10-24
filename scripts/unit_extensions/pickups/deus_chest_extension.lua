@@ -98,6 +98,8 @@ DeusChestExtension.unregister_rpcs = function (self)
 end
 
 DeusChestExtension.update = function (self, unit, input, dt, context, t)
+	Profiler.start("sync_inventory_extension")
+
 	local player = Managers.player:local_player()
 	local player_unit = player.player_unit
 
@@ -107,9 +109,13 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 		self._player_unit = player_unit
 	end
 
+	Profiler.stop("sync_inventory_extension")
+
 	if not player_unit or not ALIVE[player_unit] then
 		return
 	end
+
+	Profiler.start("sync_chest_type")
 
 	local go_id = self._go_id or Managers.state.unit_storage:go_id(self.unit)
 	local deus_run_controller = self._deus_run_controller
@@ -173,11 +179,18 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 
+	Profiler.stop("sync_chest_type")
+	Profiler.start("update_upgrade_chest_color")
 	self:update_upgrade_chest_color()
+	Profiler.stop("update_upgrade_chest_color")
+	Profiler.start("_update_chest_interaction_time")
 	self:_update_chest_interaction_time()
+	Profiler.stop("_update_chest_interaction_time")
 
 	if self._animation_state ~= "looted" then
+		Profiler.start("_update_chest_animation_and_sound_state")
 		self:_update_chest_animation_and_sound_state(unit)
+		Profiler.stop("_update_chest_animation_and_sound_state")
 	end
 end
 

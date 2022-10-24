@@ -183,6 +183,9 @@ TutorialSystem.physics_async_update = function (self, context, t)
 	for unit, extension in pairs(self.player_units) do
 		local raycast_unit = raycast_units[unit]
 		raycast_units[unit] = nil
+
+		Profiler.start("is_looking_at_interactable")
+
 		local interactor_extension = ScriptUnit.extension(unit, "interactor_system")
 		local is_looking_at_interactable = interactor_extension:is_looking_at_interactable()
 
@@ -190,16 +193,24 @@ TutorialSystem.physics_async_update = function (self, context, t)
 			extension.tooltip_tutorial.active = false
 		end
 
+		Profiler.stop("is_looking_at_interactable")
+
 		local status_extension = ScriptUnit.extension(unit, "status_system")
 
 		if not is_looking_at_interactable and not status_extension:is_disabled() then
+			Profiler.start("iterate_tooltips")
 			self:iterate_tooltips(t, unit, extension, raycast_unit, world)
+			Profiler.stop("iterate_tooltips")
 		end
 
+		Profiler.start("iterate_objective_tooltips")
 		self:iterate_objective_tooltips(t, unit, extension, raycast_unit, world)
+		Profiler.stop("iterate_objective_tooltips")
 
 		if (self.pacing == "pacing_peak_fade" or self.pacing == "pacing_relax") and not script_data.info_slates_disabled then
+			Profiler.start("iterate_info_slates")
 			self:iterate_info_slates(t, unit, extension, raycast_unit, world)
+			Profiler.stop("iterate_info_slates")
 		end
 
 		if extension.tooltip_tutorial.active then
@@ -371,8 +382,11 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 			local name = template.name
 
 			template.update_data(t, unit, extension.data)
+			Profiler.start(template.name)
 
 			local ok, objective_units, objective_units_n = template.can_show(t, unit, extension.data, raycast_unit, world)
+
+			Profiler.stop(template.name)
 
 			if not ok then
 				break
@@ -551,6 +565,8 @@ TutorialSystem.update = function (self, context, t)
 	local physics_world = World.get_data(self.world, "physics_world")
 	local raycast_units = self.raycast_units
 
+	Profiler.start("raycast")
+
 	for unit, extension in pairs(self.player_units) do
 		if DO_TUT_RELOAD or DebugKeyHandler.key_pressed("f3", "reset tutorials", "tutorials") then
 			extension.completed_tutorials = {}
@@ -590,6 +606,8 @@ TutorialSystem.update = function (self, context, t)
 
 		raycast_units[unit] = raycast_unit
 	end
+
+	Profiler.stop("raycast")
 end
 
 return

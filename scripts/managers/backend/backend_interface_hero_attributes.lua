@@ -8,6 +8,8 @@ BackendInterfaceHeroAttributes.init = function (self)
 end
 
 BackendInterfaceHeroAttributes._refresh_attributes = function (self)
+	Profiler.start("BackendInterfaceHeroAttributes:_refresh_attributes()")
+
 	local entities = Backend.get_entities_with_attributes(DB_ENTITY_TYPE)
 	local attributes_by_entity_name = {}
 
@@ -19,6 +21,8 @@ BackendInterfaceHeroAttributes._refresh_attributes = function (self)
 	end
 
 	self._attributes = attributes_by_entity_name
+
+	Profiler.stop("BackendInterfaceHeroAttributes:_refresh_attributes()")
 end
 
 BackendInterfaceHeroAttributes.on_authenticated = function (self)

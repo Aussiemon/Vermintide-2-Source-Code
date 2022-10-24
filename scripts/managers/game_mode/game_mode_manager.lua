@@ -13,6 +13,7 @@ DLCUtils.require_list("game_mode_files")
 local RPCS = {
 	"rpc_to_client_spawn_player",
 	"rpc_is_ready_for_transition",
+	"rpc_apply_environment_variation",
 	"rpc_change_game_mode_state",
 	"rpc_trigger_round_over",
 	"rpc_trigger_level_event"
@@ -526,6 +527,8 @@ GameModeManager.flow_cb_set_flow_object_set_enabled = function (self, set_name, 
 end
 
 GameModeManager.register_object_sets = function (self, object_sets)
+	Profiler.start("register_object_sets")
+
 	self._object_sets = {}
 	self._object_set_names = {}
 
@@ -537,6 +540,8 @@ GameModeManager.register_object_sets = function (self, object_sets)
 			self:_set_flow_object_set_enabled(set, false, set_name)
 		end
 	end
+
+	Profiler.stop("register_object_sets")
 end
 
 GameModeManager.event_reload_application_settings = function (self)
@@ -877,6 +882,12 @@ GameModeManager.hot_join_sync = function (self, peer_id)
 	end
 
 	self._game_mode:hot_join_sync(peer_id)
+
+	local environment_variation_name = self:get_environment_variation_name()
+
+	if environment_variation_name then
+		self._network_transmit:send_rpc("rpc_apply_environment_variation", peer_id)
+	end
 end
 
 GameModeManager.activate_end_level_area = function (self, unit, object, from, to)
@@ -1080,6 +1091,41 @@ GameModeManager.get_boss_loot_pickup = function (self)
 	end
 
 	return "loot_die"
+end
+
+GameModeManager.get_environment_variation_name = function (self)
+	local level_transition_handler = Managers.level_transition_handler
+	local environment_variation_name = level_transition_handler:get_current_environment_variation_name()
+
+	if environment_variation_name then
+		local active_mutators = self:mutators()
+
+		local function has_disabled_environment_variations(name, data)
+			return data.template.disable_environment_variations
+		end
+
+		if not active_mutators or not table.find_func(active_mutators, has_disabled_environment_variations) then
+			return environment_variation_name
+		end
+	end
+
+	return nil
+end
+
+GameModeManager.apply_environment_variation = function (self)
+	local environment_variation_name = self:get_environment_variation_name()
+
+	if environment_variation_name then
+		LevelHelper:flow_event(self._world, environment_variation_name)
+
+		if self.is_server then
+			self._network_transmit:send_rpc_clients("rpc_apply_environment_variation")
+		end
+	end
+end
+
+GameModeManager.rpc_apply_environment_variation = function (self)
+	self:apply_environment_variation()
 end
 
 GameModeManager.rpc_change_game_mode_state = function (self, channel_id, state_name_id)

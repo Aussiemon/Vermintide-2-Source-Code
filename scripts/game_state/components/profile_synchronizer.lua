@@ -140,10 +140,14 @@ local function update_inventory_data(state, peer_id, local_player_id, profile_in
 end
 
 local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_loading_peers)
+	Profiler.start("are_all_synced_for_peer")
+
 	local inventory_data = state:get_inventory_data(peer_id, local_player_id)
 	local inventory_id = inventory_data.inventory_id
 
 	if inventory_id == 0 then
+		Profiler.stop("are_all_synced_for_peer")
+
 		return false
 	end
 
@@ -156,10 +160,14 @@ local function are_all_synced_for_peer(state, peer_id, local_player_id, ignore_l
 			local loaded_inventory_id = state:get_loaded_inventory_id(other_peer_id, peer_id, local_player_id)
 
 			if inventory_id ~= loaded_inventory_id then
+				Profiler.stop("are_all_synced_for_peer")
+
 				return false
 			end
 		end
 	end
+
+	Profiler.stop("are_all_synced_for_peer")
 
 	return true
 end

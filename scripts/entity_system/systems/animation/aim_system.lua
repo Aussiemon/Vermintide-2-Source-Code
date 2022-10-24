@@ -75,9 +75,13 @@ end
 AimSystem.update = function (self, context, t)
 	local dt = context.dt
 
+	Profiler.start("GenericUnitAimExtension")
+
 	for unit, extension in pairs(self._extensions) do
 		extension:update(unit, nil, dt, context, t)
 	end
+
+	Profiler.stop("GenericUnitAimExtension")
 end
 
 return

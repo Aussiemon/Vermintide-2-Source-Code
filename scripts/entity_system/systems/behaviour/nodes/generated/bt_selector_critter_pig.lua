@@ -21,6 +21,8 @@ BTSelector_critter_pig.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_critter_pig.run = function (self, unit, blackboard, t, dt)
+	local Profiler_start = Profiler.start
+	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -28,8 +30,11 @@ BTSelector_critter_pig.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
+		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
+
+		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -47,8 +52,11 @@ BTSelector_critter_pig.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
+		Profiler_start("in_vortex")
 
 		local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
+
+		Profiler_stop("in_vortex")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -64,8 +72,11 @@ BTSelector_critter_pig.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[3]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
+	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
+
+	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

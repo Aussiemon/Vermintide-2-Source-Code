@@ -289,6 +289,8 @@ DamageBlobExtension.place_blobs = function (self, unit, t)
 end
 
 DamageBlobExtension.update = function (self, unit, input, dt, context, t)
+	Profiler.start("damage_blob_extension")
+
 	local state = self.state
 
 	if state == "waiting" then
@@ -304,8 +306,12 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self._create_blobs then
+		Profiler.start("update_blob_fx")
 		self:update_blobs_fx_and_sfx(t, dt)
+		Profiler.stop("update_blob_fx")
+		Profiler.start("update_blob_overlaps")
 		self:update_blob_overlaps(t)
+		Profiler.stop("update_blob_overlaps")
 	end
 
 	local blob_update_function = self._blob_update_function
@@ -324,6 +330,8 @@ DamageBlobExtension.update = function (self, unit, input, dt, context, t)
 			end
 		end
 	end
+
+	Profiler.stop("damage_blob_extension")
 end
 
 DamageBlobExtension.insert_blob = function (self, position, radius, rotation, t, nav_world)
@@ -423,6 +431,8 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 	local fx_max_height = self.fx_max_height
 	local fx_list = self.fx_list
 
+	Profiler.start("[update_blobs_fx_and_sfx] FX")
+
 	if #fx_list >= 1 then
 		local index = next(self.fx_list, self.current_fx_index) or 1
 		local fx_entry = fx_list[index]
@@ -433,6 +443,8 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 			local fx_size = fx_entry.size
 
 			if fx_size then
+				Profiler.start("[update_blobs_fx_and_sfx] Effect Size")
+
 				local particle_size = fx_size:unbox()
 				particle_size[1] = math.min(particle_size[1] + dt * 1.5, fx_max_radius)
 				particle_size[2] = math.min(particle_size[2] + dt * 2, fx_max_height)
@@ -440,15 +452,23 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 
 				World.set_particles_variable(world, fx_id, effect_variable_id, particle_size)
 				fx_size:store(particle_size)
+				Profiler.stop("[update_blobs_fx_and_sfx] Effect Size")
 			end
+
+			Profiler.start("[update_blobs_fx_and_sfx] Stop spawning particles")
 
 			local fx_time = fx_entry.time
 
 			if fx_time < t then
 				World.stop_spawning_particles(world, fx_id)
 			end
+
+			Profiler.stop("[update_blobs_fx_and_sfx] Stop spawning particles")
 		end
 	end
+
+	Profiler.stop("[update_blobs_fx_and_sfx] FX")
+	Profiler.start("[update_blobs_fx_and_sfx] Sound FX")
 
 	local sfx_list = self.sfx_list
 	local sfx_name_stop_remains = self._sfx_name_stop_remains
@@ -471,6 +491,8 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 			end
 		end
 	end
+
+	Profiler.stop("[update_blobs_fx_and_sfx] Sound FX")
 end
 
 DamageBlobExtension.update_blob_overlaps = function (self, t)

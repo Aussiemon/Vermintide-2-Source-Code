@@ -80,12 +80,24 @@ AIGroupTemplates.spline_patrol = {
 				return
 			end
 
+			Profiler.start("update spline anchor points")
 			update_spline_anchor_points(nav_world, group, dt)
+			Profiler.stop("update spline anchor points")
+			Profiler.start("update anchor direction")
 			update_anchor_direction(nav_world, group, dt)
+			Profiler.stop("update anchor direction")
+			Profiler.start("update anchor positions")
 			update_anchor_positions(nav_world, group)
+			Profiler.stop("update anchor positions")
+			Profiler.start("update units")
 			update_units(nav_world, group, t, dt)
+			Profiler.stop("update units")
+			Profiler.start("update animation triggers")
 			update_animation_triggered_sounds(group, t)
+			Profiler.stop("update animation triggers")
+			Profiler.start("update prepare for combat")
 			check_prepare_for_combat(group, t)
+			Profiler.stop("update prepare for combat")
 		elseif state == "opening_door" then
 			update_state_opening_door(group)
 		elseif state == "controlled_advance" then

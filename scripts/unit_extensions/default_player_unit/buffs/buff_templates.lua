@@ -5471,7 +5471,7 @@ BuffTemplates = {
 	sienna_adept_ability_trail = {
 		buffs = {
 			{
-				leave_linger_time = 1.5,
+				leave_linger_time = 0.25,
 				name = "sienna_adept_ability_trail",
 				end_flow_event = "smoke",
 				start_flow_event = "burn",

@@ -1459,6 +1459,7 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 	local num_unlocked_skins = 0
 	local skin_combination_table = item_data.skin_combination_table
 	local weapon_skin_combinations_tables = WeaponSkins.skin_combinations[skin_combination_table] or EMPTY_TABLE
+	local quest_interface = Managers.backend:get_interface("quests")
 	local backend_crafting = Managers.backend:get_interface("crafting")
 	local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
 	local default_skin = WeaponSkins.default_skins[item_key]
@@ -1484,27 +1485,37 @@ HeroWindowItemCustomization._setup_illusions = function (self, item)
 					end
 
 					local unlocked = unlocked_weapon_skins[skin] or skin == default_skin
-					local icon_texture = "button_illusion_" .. weapon_skins_rarity
+					local event_skin_available = true
+					local skin_item = ItemMasterList[skin] or EMPTY_TABLE
+					local event_quest_requirement = skin_item.event_quest_requirement
 
-					if not UIAtlasHelper.has_texture_by_name(icon_texture) then
-						icon_texture = "button_illusion_default"
+					if not unlocked and event_quest_requirement then
+						event_skin_available = quest_interface:get_quest_key(event_quest_requirement)
 					end
 
-					if unlocked then
-						num_unlocked_skins = num_unlocked_skins + 1
-					else
-						icon_texture = "button_illusion_locked"
-					end
+					if event_skin_available then
+						local icon_texture = "button_illusion_" .. weapon_skins_rarity
 
-					local widget = UIWidget.init(widget_definition)
-					widgets[#widgets + 1] = widget
-					local content = widget.content
-					content.skin_key = skin
-					content.icon_texture = icon_texture
-					content.locked = not unlocked
-					content.rarity = weapon_skins_rarity
-					total_width = total_width + spacing + width
-					used_skins[skin] = true
+						if not UIAtlasHelper.has_texture_by_name(icon_texture) then
+							icon_texture = "button_illusion_default"
+						end
+
+						if unlocked then
+							num_unlocked_skins = num_unlocked_skins + 1
+						else
+							icon_texture = "button_illusion_locked"
+						end
+
+						local widget = UIWidget.init(widget_definition)
+						widgets[#widgets + 1] = widget
+						local content = widget.content
+						content.skin_key = skin
+						content.icon_texture = icon_texture
+						content.locked = not unlocked
+						content.rarity = weapon_skins_rarity
+						total_width = total_width + spacing + width
+						used_skins[skin] = true
+					end
 				end
 			end
 		end

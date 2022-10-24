@@ -246,6 +246,7 @@ SideManager.remove_aggro_unit = function (self, side_id, aggro_unit)
 end
 
 SideManager.update_frame_tables = function (self)
+	Profiler.start("UPDATE_FRAME_TABLES")
 	table.clear(ALL_PLAYER_AND_BOT_UNITS)
 
 	local sides = self._sides
@@ -262,6 +263,8 @@ SideManager.update_frame_tables = function (self)
 
 		self:_update_enemy_frame_tables(side)
 	end
+
+	Profiler.stop("UPDATE_FRAME_TABLES")
 end
 
 local unit_alive = Unit.alive
@@ -300,6 +303,8 @@ end
 local position_lookup = POSITION_LOOKUP
 
 SideManager._update_frame_tables = function (self, side, all_human_and_bot_units)
+	Profiler.start("SideManager:_update_frame_tables()")
+
 	local human_units = side.PLAYER_UNITS
 	local human_unit_positions = side.PLAYER_POSITIONS
 	local all_index = #all_human_and_bot_units
@@ -349,9 +354,13 @@ SideManager._update_frame_tables = function (self, side, all_human_and_bot_units
 		human_and_bot_unit_positions[k] = nil
 		k = k + 1
 	end
+
+	Profiler.stop("SideManager:_update_frame_tables()")
 end
 
 SideManager._update_enemy_frame_tables = function (self, side)
+	Profiler.start("SideManager:_update_enemy_frame_tables()")
+
 	local human_units = side.ENEMY_PLAYER_UNITS
 	local human_unit_positions = side.ENEMY_PLAYER_POSITIONS
 	local human_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
@@ -429,6 +438,8 @@ SideManager._update_enemy_frame_tables = function (self, side)
 		ai_target_units[j] = nil
 		j = j + 1
 	end
+
+	Profiler.stop("SideManager:_update_enemy_frame_tables()")
 end
 
 SideManager._remove_player_unit_from_lists = function (self, player_unit)

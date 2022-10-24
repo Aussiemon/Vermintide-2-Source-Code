@@ -104,6 +104,10 @@ BTConditions.victim_grabbed = function (blackboard)
 	return blackboard.has_grabbed_victim
 end
 
+BTConditions.nurgling_spawned_by_altar = function (blackboard)
+	return blackboard.nurgling_spawned_by_altar
+end
+
 BTConditions.target_changed_and_distant = function (blackboard)
 	if blackboard.target_changed then
 		if blackboard.previous_target_unit == nil then

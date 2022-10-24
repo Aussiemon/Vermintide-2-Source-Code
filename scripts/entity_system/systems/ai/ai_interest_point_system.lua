@@ -543,6 +543,8 @@ AIInterestPointSystem.resolve_requests = function (self)
 		return
 	end
 
+	Profiler.start("resolve_requests")
+
 	local request, request_index = _get_next_request(self.requests, self.current_request_index, self.last_request_index)
 
 	if request ~= nil then
@@ -591,6 +593,8 @@ AIInterestPointSystem.resolve_requests = function (self)
 			end
 		end
 	end
+
+	Profiler.stop("resolve_requests")
 end
 
 AIInterestPointSystem.debug_draw = function (self, t, dt)

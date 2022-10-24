@@ -220,6 +220,7 @@ DeusChestPreloadSystem.update = function (self, context, t)
 		return
 	end
 
+	Profiler.start("DeusChestPreloadSystem")
 	DeusChestPreloadSystem.super.update(self, context, t)
 	table.clear(all_needed_packages)
 
@@ -293,6 +294,8 @@ DeusChestPreloadSystem.update = function (self, context, t)
 	end
 
 	self._timer = t + self._deus_chest_update_frequency
+
+	Profiler.stop("DeusChestPreloadSystem")
 end
 
 DeusChestPreloadSystem.on_add_extension = function (self, world, unit, extension_name, extension_init_data, ...)

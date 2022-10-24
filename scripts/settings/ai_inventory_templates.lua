@@ -1124,6 +1124,31 @@ local items = {
 		unit_extension_template = "ai_helmet_unit",
 		unit_name = "units/beings/enemies/addons/blk_shadow_lieutenant/blk_helmet_04",
 		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	critter_nurgling_horn_01 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling_horn_01",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	critter_nurgling_horn_02 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling_horn_02",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	critter_nurgling_horn_03 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling_horn_03",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	critter_nurgling_horn_04 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling_horn_04",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
+	},
+	critter_nurgling_horn_05 = {
+		unit_extension_template = "ai_helmet_unit",
+		unit_name = "units/beings/critters/chr_critter_nurgling/chr_critter_nurgling_horn_05",
+		attachment_node_linking = AttachmentNodeLinking.ai_helmet
 	}
 }
 local item_categories = {
@@ -1546,6 +1571,13 @@ local item_categories = {
 	blk_shadow_lieutenant_axe = {
 		items.wpn_chaos_2h_axe_blk_shadow_lieutenant_1,
 		items.wpn_chaos_2h_axe_blk_shadow_lieutenant_2
+	},
+	critter_nurgling_horns = {
+		items.critter_nurgling_horn_01,
+		items.critter_nurgling_horn_02,
+		items.critter_nurgling_horn_03,
+		items.critter_nurgling_horn_04,
+		items.critter_nurgling_horn_05
 	}
 }
 local drop_reasons_shield = {
@@ -2044,6 +2076,11 @@ InventoryConfigurations = {
 		items = {
 			item_categories.blk_shadow_lieutenant_axe,
 			item_categories.blk_shadow_lieutenant_warrior_helmet
+		}
+	},
+	critter_nurgling = {
+		items = {
+			item_categories.critter_nurgling_horns
 		}
 	}
 }

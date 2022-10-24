@@ -522,6 +522,8 @@ DialogueSystem.function_by_op = DialogueSystem.function_by_op or {
 }
 
 DialogueSystem._update_currently_playing_dialogues = function (self, dt)
+	Profiler.start("update_currently_playing_dialogues")
+
 	local function_command_queue = self.function_command_queue
 	local player_manager = Managers.player
 	local unit_extension_data = self.unit_extension_data
@@ -645,6 +647,8 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 			end
 		until true
 	end
+
+	Profiler.stop("update_currently_playing_dialogues")
 end
 
 DialogueSystem.update = function (self, context, t)
@@ -738,12 +742,17 @@ DialogueSystem.physics_async_update = function (self, context, t)
 	LOCAL_GAMETIME = t + 900
 
 	self:_update_incapacitation(t)
+	Profiler.start("Iterate Query")
 
 	local tagquery_database = self.tagquery_database
 	local query = tagquery_database:iterate_queries(LOCAL_GAMETIME)
 
+	Profiler.stop("Iterate Query")
+
 	if enabled and (DialogueSettings.dialogue_level_start_delay < self.global_context.level_time or DialogueSystem:has_local_player_moved_from_start_position()) then
 		if query then
+			Profiler.start("Handle Query")
+
 			local dialogue_actor_unit = query.query_context.source
 			local unit_extension_data = self.unit_extension_data
 			local extension = unit_extension_data[dialogue_actor_unit]
@@ -861,6 +870,8 @@ DialogueSystem.physics_async_update = function (self, context, t)
 					network_manager.network_transmit:send_rpc_all("rpc_play_dialogue_event", go_id, is_level_unit, dialogue_id, dialogue_index)
 				end
 			end
+
+			Profiler.stop("Handle Query")
 		end
 
 		if self._use_story_lines then
@@ -894,6 +905,8 @@ DialogueSystem._update_incapacitation = function (self, t)
 end
 
 DialogueSystem._update_new_events = function (self, t)
+	Profiler.start("update_new_events")
+
 	local unit_extension_data = self.unit_extension_data
 	local tagquery_database = self.tagquery_database
 	local unit_alive = Unit.alive
@@ -955,6 +968,8 @@ DialogueSystem._update_new_events = function (self, t)
 	end
 
 	self.input_event_queue_n = 0
+
+	Profiler.stop("update_new_events")
 end
 
 DialogueSystem.hot_join_sync = function (self, peer_id)

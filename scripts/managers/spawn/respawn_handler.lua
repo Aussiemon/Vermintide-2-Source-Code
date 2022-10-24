@@ -8,7 +8,7 @@ local RPCS = {
 	"rpc_respawn_confirmed"
 }
 
-RespawnHandler.init = function (self, profile_synchronizer)
+RespawnHandler.init = function (self, profile_synchronizer, is_server)
 	self._profile_synchronizer = profile_synchronizer
 	self._respawn_units = {}
 	self._respawn_gate_units = {}
@@ -23,6 +23,7 @@ RespawnHandler.init = function (self, profile_synchronizer)
 	self._path_break_points = {}
 	self._boss_door_dist_lookup = {}
 	self._next_move_players_t = 0
+	self._is_server = is_server
 end
 
 RespawnHandler.register_rpcs = function (self, network_event_delegate, network_transmit)
@@ -236,14 +237,15 @@ end
 RespawnHandler.update = function (self, dt, t)
 	local respawn_queue = self._delayed_respawn_queue
 	local queue_size = #respawn_queue
+	local is_server = self._is_server
 
 	for i = queue_size, 1, -1 do
 		local respawn_data = respawn_queue[i]
 		local player = respawn_data[1]
 		local status = respawn_data[9]
-		local current_slot_player = Managers.player:player(status.peer_id, status.local_player_id)
+		local current_slot_player = is_server and Managers.player:player(status.peer_id, status.local_player_id)
 
-		if current_slot_player ~= player then
+		if is_server and current_slot_player ~= player then
 			local data = status.game_mode_data
 			data.health_state = "dead"
 
