@@ -4851,7 +4851,7 @@ return function ()
 				"last_seen_leech",
 				OP.TIMEDIFF,
 				OP.GT,
-				60
+				120
 			}
 		},
 		on_done = {
@@ -5756,7 +5756,7 @@ return function ()
 				"time_since_found_way",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -5806,7 +5806,7 @@ return function ()
 				"time_since_found_way_up",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -5856,7 +5856,7 @@ return function ()
 				"time_since_found_way_down",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -5906,13 +5906,13 @@ return function ()
 				"time_since_found_way_bridge",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
 			{
 				"faction_memory",
-				"time_since_found way_bridge",
+				"time_since_found_way_bridge",
 				OP.TIMESET
 			}
 		}
@@ -5956,7 +5956,7 @@ return function ()
 				"time_since_found_way_street",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6006,7 +6006,7 @@ return function ()
 				"time_since_found_way_door",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6052,11 +6052,17 @@ return function ()
 				"wood_elf"
 			},
 			{
+				"user_context",
+				"friends_distant",
+				OP.GTEQ,
+				1
+			},
+			{
 				"faction_memory",
 				"time_since_found_way_stairs_up",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6106,7 +6112,7 @@ return function ()
 				"time_since_found_way_stairs_down",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6324,7 +6330,7 @@ return function ()
 				"time_since_correct_path_across",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6374,7 +6380,7 @@ return function ()
 				"time_since_correct_path_alley",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6424,7 +6430,7 @@ return function ()
 				"time_since_correct_path_ladder_down",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {
@@ -6474,7 +6480,7 @@ return function ()
 				"time_since_correct_path_ladder_up",
 				OP.TIMEDIFF,
 				OP.GT,
-				20
+				60
 			}
 		},
 		on_done = {

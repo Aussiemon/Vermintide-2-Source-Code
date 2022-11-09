@@ -907,6 +907,12 @@ assert(DialogueLookup[DialogueLookup_n + 906] == nil)
 assert(DialogueLookup[DialogueLookup_n + 907] == nil)
 assert(DialogueLookup[DialogueLookup_n + 908] == nil)
 assert(DialogueLookup[DialogueLookup_n + 909] == nil)
+assert(DialogueLookup[DialogueLookup_n + 910] == nil)
+assert(DialogueLookup[DialogueLookup_n + 911] == nil)
+assert(DialogueLookup[DialogueLookup_n + 912] == nil)
+assert(DialogueLookup[DialogueLookup_n + 913] == nil)
+assert(DialogueLookup[DialogueLookup_n + 914] == nil)
+assert(DialogueLookup[DialogueLookup_n + 915] == nil)
 
 DialogueLookup[DialogueLookup_n + 1] = "pdr_gameplay_i_will_tank"
 DialogueLookup[DialogueLookup_n + 2] = "pes_gameplay_i_will_tank"
@@ -1817,6 +1823,12 @@ DialogueLookup[DialogueLookup_n + 906] = "pwe_gameplay_ranger_misses_bomb_01"
 DialogueLookup[DialogueLookup_n + 907] = "pdr_gameplay_response_20"
 DialogueLookup[DialogueLookup_n + 908] = "pbw_gameplay_ranger_misses_bomb_01"
 DialogueLookup[DialogueLookup_n + 909] = "pdr_gameplay_response_21"
-DialogueLookup_n = DialogueLookup_n + 909
+DialogueLookup[DialogueLookup_n + 910] = "pdr_all_stairs_conversation_a"
+DialogueLookup[DialogueLookup_n + 911] = "pbw_all_stairs_conversation_b"
+DialogueLookup[DialogueLookup_n + 912] = "pes_all_stairs_conversation_b"
+DialogueLookup[DialogueLookup_n + 913] = "pwe_all_stairs_conversation_b"
+DialogueLookup[DialogueLookup_n + 914] = "pwh_all_stairs_conversation_b"
+DialogueLookup[DialogueLookup_n + 915] = "pdr_all_stairs_conversation_c"
+DialogueLookup_n = DialogueLookup_n + 915
 
 return
