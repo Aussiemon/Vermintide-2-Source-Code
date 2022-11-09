@@ -4619,9 +4619,22 @@ BuffFunctionTemplates.functions = {
 			end
 		end
 	end,
-	ranger_activated_ability_buff = function (owner_unit, buff, params)
-		local owner_unit = owner_unit
+	play_sound_synced = function (owner_unit, buff, params)
+		if not ALIVE[owner_unit] then
+			return false
+		end
 
+		if is_local(owner_unit) then
+			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
+
+			first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_enter")
+
+			if not is_bot(owner_unit) then
+				first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_enter", owner_unit, 0)
+			end
+		end
+	end,
+	ranger_activated_ability_buff = function (owner_unit, buff, params)
 		if not ALIVE[owner_unit] then
 			return false
 		end
@@ -4633,13 +4646,11 @@ BuffFunctionTemplates.functions = {
 			local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 			if not is_bot(owner_unit) then
-				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_enter")
 				first_person_extension:play_hud_sound_event("Play_career_ability_bardin_ranger_loop")
 
 				MOOD_BLACKBOARD.skill_ranger = true
 			end
 
-			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_enter", owner_unit, 0)
 			career_extension:set_state("bardin_activate_ranger")
 		end
 
@@ -4652,9 +4663,6 @@ BuffFunctionTemplates.functions = {
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 			local removing_stealth = status_extension:remove_stealth_stacking()
-
-			first_person_extension:play_remote_unit_sound_event("Play_career_ability_bardin_ranger_exit", unit, 0)
-
 			local career_extension = ScriptUnit.extension(unit, "career_system")
 
 			career_extension:set_state("default")

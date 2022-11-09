@@ -251,8 +251,6 @@ UnlockManager.dlc_status_changed = function (self)
 end
 
 UnlockManager._update_console_backend_unlocks = function (self)
-	Profiler.start("UnlockManager:_update_console_backend_unlocks()")
-
 	if self._state == "query_unlocked" then
 		local backend_manager = Managers.backend
 
@@ -260,14 +258,10 @@ UnlockManager._update_console_backend_unlocks = function (self)
 			if not backend_manager:available() then
 				self._state = "backend_not_available"
 
-				Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
-
 				return
 			end
 
 			if backend_manager:is_tutorial_backend() then
-				Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
-
 				return
 			end
 
@@ -287,8 +281,6 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 					print("[UnlockManager] All unlocks ready")
 				else
-					Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
-
 					return
 				end
 			end
@@ -300,7 +292,6 @@ UnlockManager._update_console_backend_unlocks = function (self)
 				local peddler_interface = Managers.backend:get_interface("peddler")
 
 				peddler_interface:refresh_chips()
-				Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
 
 				return
 			end
@@ -354,7 +345,9 @@ UnlockManager._update_console_backend_unlocks = function (self)
 			self._state = "check_unseen_rewards"
 		end
 	elseif self._state == "check_unseen_rewards" then
-		if not Managers.ui:is_in_view_state("HeroViewStateStore") then
+		local in_view_state = Managers.ui:is_in_view_state("HeroViewStateStore")
+
+		if in_view_state == false then
 			self:_handle_unseen_rewards()
 
 			self._state = "wait_for_rewards"
@@ -384,8 +377,6 @@ UnlockManager._update_console_backend_unlocks = function (self)
 
 		self._state = "done"
 	end
-
-	Profiler.stop("UnlockManager:_update_console_backend_unlocks()")
 end
 
 UnlockManager.cb_reward_claimed = function (self, unlock, success, rewarded_items, presentation_text)
@@ -647,8 +638,6 @@ UnlockManager.debug_remove_console_dlc_reward = function (self, reward_id)
 end
 
 UnlockManager._update_backend_unlocks = function (self, t)
-	Profiler.start("UnlockManager:_update_backend_unlocks()")
-
 	if self._state == "handle_reminder_popup" then
 		if SaveData.new_dlcs_unlocks and not self._handled_reminders_popups then
 			for dlc_name, first_time in pairs(SaveData.new_dlcs_unlocks) do
@@ -676,26 +665,18 @@ UnlockManager._update_backend_unlocks = function (self, t)
 			if not backend_manager:available() then
 				self._state = "backend_not_available"
 
-				Profiler.stop("UnlockManager:_update_backend_unlocks()")
-
 				return
 			end
 
 			if backend_manager:is_tutorial_backend() then
-				Profiler.stop("UnlockManager:_update_backend_unlocks()")
-
 				return
 			end
 
 			if backend_manager:is_benchmark_backend() then
-				Profiler.stop("UnlockManager:_update_backend_unlocks()")
-
 				return
 			end
 
 			if script_data["eac-untrusted"] then
-				Profiler.stop("UnlockManager:_update_backend_unlocks()")
-
 				return
 			end
 
@@ -715,8 +696,6 @@ UnlockManager._update_backend_unlocks = function (self, t)
 
 					print("[UnlockManager] All unlocks ready")
 				else
-					Profiler.stop("UnlockManager:_update_backend_unlocks()")
-
 					return
 				end
 			end
@@ -747,8 +726,6 @@ UnlockManager._update_backend_unlocks = function (self, t)
 
 				if new_dlc_installed then
 					self._state = "update_backend_dlcs"
-
-					Profiler.stop("UnlockManager:_update_backend_unlocks()")
 
 					return
 				end
@@ -811,8 +788,6 @@ UnlockManager._update_backend_unlocks = function (self, t)
 
 		self._state = "query_unlocked"
 	end
-
-	Profiler.stop("UnlockManager:_update_backend_unlocks()")
 end
 
 UnlockManager._handle_unseen_rewards = function (self)

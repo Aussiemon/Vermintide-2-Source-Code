@@ -1990,6 +1990,18 @@ ItemMasterList.frame_drachenfels_05 = {
 	item_type = "frame",
 	can_wield = CanWieldAllItemTemplates
 }
+ItemMasterList.frame_wizards_trail_01 = {
+	description = "frame_wizards_trail_01_description",
+	temporary_template = "frame_wizards_trail_01",
+	display_name = "frame_wizards_trail_01_name",
+	hud_icon = "unit_frame_02",
+	inventory_icon = "icon_portrait_frame_wizards_trail_01",
+	slot_type = "frame",
+	information_text = "information_text_frame",
+	rarity = "promo",
+	item_type = "frame",
+	can_wield = CanWieldAllItemTemplates
+}
 ItemMasterList.frame_0000 = {
 	description = "frame_0000_description",
 	temporary_template = "frame_0000",

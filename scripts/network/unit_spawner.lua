@@ -254,7 +254,6 @@ UnitSpawner.remove_units_marked_for_deletion = function (self)
 	if Unit_alive(unit) then
 		local number_of_deleted_units = 0
 
-		Profiler.start("pre_delete_cleanup")
 		call_destroy_listener(unit_destroy_listeners, unit)
 		Unit.flow_event(unit, "cleanup_before_destroy")
 
@@ -266,15 +265,12 @@ UnitSpawner.remove_units_marked_for_deletion = function (self)
 			pending_extension_adds_list_n = pending_extension_adds_list_n - 1
 		end
 
-		Profiler.stop("pre_delete_cleanup")
 		entity_manager:unregister_units(temp_deleted_units_list, number_of_deleted_units)
-		Profiler.start("destroy listeners")
 
 		for i = 1, number_of_deleted_units, 1 do
 			call_destroy_listener(unit_destroy_listeners_post_cleanup, temp_deleted_units_list[i])
 		end
 
-		Profiler.stop("destroy listeners")
 		world_delete_units_function(self, world, temp_deleted_units_list, number_of_deleted_units)
 
 		total_number_of_deleted_units = total_number_of_deleted_units + number_of_deleted_units
@@ -286,12 +282,7 @@ UnitSpawner.remove_units_marked_for_deletion = function (self)
 end
 
 UnitSpawner.spawn_local_unit = function (self, unit_name, position, rotation, material)
-	Profiler.start("spawn_local_unit")
-
 	local unit = World.spawn_unit(self.world, unit_name, position, rotation, material)
-
-	Profiler.stop("spawn_local_unit")
-
 	local unit_unique_id = self.unit_unique_id
 	self.unit_unique_id = unit_unique_id + 1
 
@@ -326,9 +317,7 @@ UnitSpawner.spawn_local_unit_with_extensions = function (self, unit_name, unit_t
 	local unit = self:spawn_local_unit(unit_name, position, rotation, material)
 	unit_template_name = unit_template_name or Unit.get_data(unit, "unit_template")
 
-	Profiler.start("create_unit_extensions")
 	self:create_unit_extensions(self.world, unit, unit_template_name, extension_init_data)
-	Profiler.stop("create_unit_extensions")
 
 	return unit, unit_template_name
 end
@@ -337,7 +326,6 @@ UnitSpawner.spawn_network_unit = function (self, unit_name, unit_template_name, 
 	local unit, final_unit_template_name = self:spawn_local_unit_with_extensions(unit_name, unit_template_name, extension_init_data, position, rotation, material)
 	local unit_template = self.unit_template_lut[final_unit_template_name]
 
-	Profiler.start("make unit networked")
 	NetworkUnit.add_unit(unit)
 	NetworkUnit.set_is_husk_unit(unit, false)
 
@@ -346,7 +334,6 @@ UnitSpawner.spawn_network_unit = function (self, unit_name, unit_template_name, 
 	local go_init_data = go_initializer_function(unit, unit_name, unit_template, self.gameobject_functor_context)
 	local go_id = GameSession.create_game_object(self.game_session, go_type, go_init_data)
 
-	Profiler.stop("make unit networked")
 	self.unit_storage:add_unit_info(unit, go_id, go_type, self.own_peer_id)
 	self.entity_manager:sync_unit_extensions(unit, go_id)
 
@@ -372,12 +359,8 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 	local game_session = self.game_session
 	local unit_storage = self.unit_storage
 
-	Profiler.start("delete_units")
-
 	if game_session then
 		for i = 1, units_list_n, 1 do
-			Profiler.start("unit")
-
 			local unit = units_list[i]
 			local unit_is_alive, unit_alive_name = Unit_alive(unit)
 			local go_id_to_remove = unit_storage:go_id(unit)
@@ -387,27 +370,18 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 			end
 
 			if go_id_to_remove then
-				Profiler.start("go")
 				GameSession.destroy_game_object(game_session, go_id_to_remove)
 				unit_storage:remove(unit, go_id_to_remove)
 				NetworkUnit.remove_unit(unit)
-				Profiler.stop("go")
 			end
 
 			POSITION_LOOKUP[unit] = nil
 
-			Profiler.start("flow")
 			Unit.flow_event(unit, "unit_despawned")
-			Profiler.stop("flow")
-			Profiler.start("destroy_unit")
 			World.destroy_unit(world, unit)
-			Profiler.stop("destroy_unit")
-			Profiler.stop("unit")
 		end
 	else
 		for i = 1, units_list_n, 1 do
-			Profiler.start("unit_no_game_session")
-
 			local unit = units_list[i]
 			local unit_is_alive, unit_alive_name = Unit_alive(unit)
 
@@ -418,25 +392,16 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 			local go_id_to_remove = unit_storage:go_id(unit)
 
 			if go_id_to_remove then
-				Profiler.start("go")
 				unit_storage:remove(unit, go_id_to_remove)
 				NetworkUnit.remove_unit(unit)
-				Profiler.stop("go")
 			end
 
 			POSITION_LOOKUP[unit] = nil
 
-			Profiler.start("flow")
 			Unit.flow_event(unit, "unit_despawned")
-			Profiler.stop("flow")
-			Profiler.start("destroy_unit")
 			World.destroy_unit(world, unit)
-			Profiler.stop("destroy_unit")
-			Profiler.stop("unit_no_game_session")
 		end
 	end
-
-	Profiler.stop("delete_units")
 end
 
 UnitSpawner.spawn_unit_from_game_object = function (self, go_id, owner_id, go_template)

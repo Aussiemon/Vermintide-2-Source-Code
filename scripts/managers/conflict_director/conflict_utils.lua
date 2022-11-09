@@ -761,8 +761,6 @@ ConflictUtils.show_where_ai_is = function (spawned)
 end
 
 ConflictUtils.make_roaming_spawns = function (nav_world, level_analysis)
-	Profiler.start("make_spawns")
-
 	local list = {}
 
 	if LEVEL_EDITOR_TEST then
@@ -829,8 +827,6 @@ ConflictUtils.make_roaming_spawns = function (nav_world, level_analysis)
 			end
 		end
 	end
-
-	Profiler.stop("make_spawns")
 
 	return list
 end

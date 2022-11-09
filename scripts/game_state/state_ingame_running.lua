@@ -745,8 +745,6 @@ if not IS_WINDOWS and (BUILD == "dev" or BUILD == "debug") then
 end
 
 StateInGameRunning.update = function (self, dt, t)
-	Profiler.start("StateInGameRunning:update()")
-
 	if not self._transitioned_from_black_screen then
 		local allowed_to_transition = self:_check_black_screen_transition_requirements(dt, t)
 
@@ -804,12 +802,9 @@ StateInGameRunning.update = function (self, dt, t)
 		end
 	end
 
-	Profiler.start("AFK Kick")
-
 	local main_t = Managers.time:time("main")
 
 	self:update_player_afk_check(dt, main_t)
-	Profiler.stop("AFK Kick")
 
 	if self._benchmark_handler then
 		self._benchmark_handler:update(dt, t)
@@ -818,8 +813,6 @@ StateInGameRunning.update = function (self, dt, t)
 	if self._fps_reporter_testify then
 		self._fps_reporter_testify:update(dt, t)
 	end
-
-	Profiler.stop("StateInGameRunning:update()")
 
 	if script_data.testify then
 		Testify:poll_requests_through_handler(state_ingame_running_testify, self)

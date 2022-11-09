@@ -228,8 +228,6 @@ WorldMarkerUI.post_update = function (self, dt, t)
 		return
 	end
 
-	Profiler.start("WorldMarkerUI")
-
 	local raycasts_allowed = self._raycast_frame_counter == 0
 	self._raycast_frame_counter = (self._raycast_frame_counter + 1) % RAYCASTS_FRAME_DELAY
 	local camera = self._camera
@@ -463,11 +461,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 				local update_function = settings.update_function
 
 				if content.do_update and update_function then
-					Profiler.start("WorldMarkerUI_ANIM")
-
 					animating = update_function(ui_renderer, widget, marker, settings, dt, t)
-
-					Profiler.stop("WorldMarkerUI_ANIM")
 				end
 
 				if not animating and scale_settings then
@@ -477,8 +471,6 @@ WorldMarkerUI.post_update = function (self, dt, t)
 				end
 
 				if draw then
-					Profiler.start("WorldMarkerUI_DRAW")
-
 					local widget_alpha_multiplier = widget.alpha_multiplier or 1
 
 					if not settings.ignore_aiming then
@@ -488,7 +480,6 @@ WorldMarkerUI.post_update = function (self, dt, t)
 					render_settings.alpha_multiplier = widget_alpha_multiplier
 
 					UIRenderer.draw_widget(ui_renderer, widget)
-					Profiler.stop("WorldMarkerUI_DRAW")
 				end
 			end
 		end
@@ -515,8 +506,6 @@ WorldMarkerUI.post_update = function (self, dt, t)
 
 		table.clear(temp_array_markers_to_remove)
 	end
-
-	Profiler.stop("WorldMarkerUI")
 end
 
 WorldMarkerUI._raycast_marker = function (self, marker)

@@ -287,6 +287,28 @@ DLCSettings = DLCSettings or {
 			common = "scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_2022_q2_common_settings",
 			equipment = "scripts/settings/dlcs/cosmetics_2022_q2/cosmetics_2022_q2_equipment_settings"
 		}
+	},
+	cosmetics_2022_q3 = {
+		localization = "localization/cosmetics_2022_q3",
+		package_name = "resource_packages/dlcs/cosmetics_2022_q3",
+		additional_settings = {
+			common = "scripts/settings/dlcs/cosmetics_2022_q3/cosmetics_2022_q3_common_settings",
+			equipment = "scripts/settings/dlcs/cosmetics_2022_q3/cosmetics_2022_q3_equipment_settings"
+		}
+	},
+	wizards_part_1 = {
+		localization = "localization/wizards_trail",
+		package_name = "resource_packages/dlcs/wizards_part_1",
+		additional_settings = {
+			common = "scripts/settings/dlcs/wizards/wizards_common_settings_part_1",
+			ui = "scripts/settings/dlcs/wizards/wizards_trail_ui_settings",
+			sound = "scripts/settings/dlcs/wizards/wizards_sound_settings_part_1",
+			achievements = "scripts/settings/dlcs/wizards/wizards_achievements_settings_part_1",
+			level = "scripts/settings/dlcs/wizards/wizards_level_settings_part_1"
+		},
+		portrait_materials = {
+			"materials/ui/ui_1080p_wizards_trail_atlas"
+		}
 	}
 }
 

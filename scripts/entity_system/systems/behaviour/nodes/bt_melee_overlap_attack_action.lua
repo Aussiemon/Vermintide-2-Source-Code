@@ -773,8 +773,6 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 		return 0
 	end
 
-	Profiler.start("BTMeleeOverlapAttackAction:overlap_checks")
-
 	local filter_name = (attack.hit_only_players and "filter_player_hit_box_check") or "filter_player_and_enemy_hit_box_check"
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, oobb_pos, overlap_update_radius)
@@ -822,8 +820,6 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 			end
 		end
 	end
-
-	Profiler.stop("BTMeleeOverlapAttackAction:overlap_checks")
 
 	return num_hit_units
 end

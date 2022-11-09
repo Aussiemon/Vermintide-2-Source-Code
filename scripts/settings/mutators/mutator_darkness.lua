@@ -3,41 +3,92 @@ return {
 	display_name = "display_name_mutator_darkness",
 	disable_environment_variations = true,
 	icon = "mutator_icon_darkness",
-	server_update_function = function (context, data)
-		local side = Managers.state.side:get_side_from_name("heroes")
-		local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
-
-		if #PLAYER_AND_BOT_UNITS > 0 and not data.has_spawned_torches then
-			local player_unit = PLAYER_AND_BOT_UNITS[1]
-			local position = Unit.world_position(player_unit, 0) + Vector3.up()
-			local rotation = Quaternion.identity()
-			local network_position = AiAnimUtils.position_network_scale(position, true)
-			local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
-			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
-			local network_angular_velocity = network_velocity
-			local extension_init_data = {
-				pickup_system = {
-					has_physics = true,
-					pickup_name = "torch",
-					spawn_type = "guaranteed"
-				},
-				projectile_locomotion_system = {
-					network_position = network_position,
-					network_rotation = network_rotation,
-					network_velocity = network_velocity,
-					network_angular_velocity = network_angular_velocity
-				}
-			}
-
-			print("Spawning torch at ", player_unit, " at position ", position)
-
-			local unit_name = "units/weapons/player/pup_torch/pup_torch"
-			local unit_template_name = "pickup_torch_unit"
-
-			Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
-
-			data.has_spawned_torches = true
+	server_start_function = function (context, data)
+		data.tick_interval = 0.1
+		data.next_tick = 0
+	end,
+	server_update_function = function (context, data, dt, t)
+		if t < data.next_tick then
+			return
+		else
+			data.next_tick = t + data.tick_interval
 		end
+
+		local side = Managers.state.side:get_side_from_name("heroes")
+		local player_units = side.PLAYER_UNITS
+		local num_player_units = #player_units
+
+		if num_player_units == 0 then
+			return
+		elseif not data.players_spawned then
+			data.tick_interval = 5
+			data.players_spawned = true
+		end
+
+		local pickup_system = Managers.state.entity:system("pickup_system")
+		local torch_pups_in_level = pickup_system:get_pickups_by_type("mutator_torch")
+
+		if not table.is_empty(torch_pups_in_level) then
+			data.should_spawn_torch = false
+
+			return
+		end
+
+		for i = 1, num_player_units, 1 do
+			local inventory_extension = ScriptUnit.has_extension(player_units[i], "inventory_system")
+			local has_torch = inventory_extension and inventory_extension:has_inventory_item("slot_level_event", "mutator_torch")
+
+			if has_torch then
+				data.should_spawn_torch = false
+
+				return
+			end
+		end
+
+		if not data.should_spawn_torch then
+			data.should_spawn_torch = true
+
+			return
+		end
+
+		local init_idx = math.random(num_player_units)
+		local player_idx, player_unit, status_extension = nil
+
+		for i = 1, num_player_units, 1 do
+			local player_idx = math.index_wrapper(init_idx + 47 * i, num_player_units)
+			player_unit = player_units[player_idx]
+			status_extension = ScriptUnit.extension(player_unit, "status_system")
+
+			if not status_extension:is_disabled() then
+				break
+			end
+		end
+
+		local position = Unit.world_position(player_unit, 0) + Vector3.up()
+		local rotation = Quaternion.identity()
+		local network_position = AiAnimUtils.position_network_scale(position, true)
+		local network_rotation = AiAnimUtils.rotation_network_scale(rotation, true)
+		local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
+		local network_angular_velocity = network_velocity
+		local extension_init_data = {
+			pickup_system = {
+				has_physics = true,
+				pickup_name = "mutator_torch",
+				spawn_type = "guaranteed"
+			},
+			projectile_locomotion_system = {
+				network_position = network_position,
+				network_rotation = network_rotation,
+				network_velocity = network_velocity,
+				network_angular_velocity = network_angular_velocity
+			}
+		}
+		local unit_name = "units/weapons/player/pup_torch/pup_torch"
+		local unit_template_name = "pickup_torch_unit"
+
+		Managers.state.unit_spawner:spawn_network_unit(unit_name, unit_template_name, extension_init_data, position, rotation)
+
+		data.should_spawn_torch = false
 	end,
 	client_start_function = function (context, data)
 		local world = Managers.world:world("level_world")

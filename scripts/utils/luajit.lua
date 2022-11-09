@@ -176,7 +176,7 @@ local function sizeof(lut, o, to)
 		error("NYI: trace")
 	end
 
-	ewrror("Unknown type: " .. to)
+	error("Unknown type: " .. to)
 end
 
 LuaJIT.bytes = function (object, exclusive)

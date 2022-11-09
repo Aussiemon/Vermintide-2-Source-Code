@@ -133,9 +133,6 @@ end
 HealthSystem.update = function (self, context, t)
 	self.active_damage_buffer_index = 3 - self.active_damage_buffer_index
 	local active_damage_buffer_index = self.active_damage_buffer_index
-
-	Profiler.start("clear")
-
 	local pdArray_set_empty = pdArray.set_empty
 	local player_unit_extensions = self.player_unit_extensions
 
@@ -148,16 +145,11 @@ HealthSystem.update = function (self, context, t)
 		extension._recent_hit_react_type = nil
 	end
 
-	Profiler.stop("clear")
-	Profiler.start("extensions")
-
 	local dt = context.dt
 
 	for unit, extension in pairs(self.updateable_unit_extensions) do
 		extension:update(dt, context, t)
 	end
-
-	Profiler.stop("extensions")
 end
 
 HealthSystem._assist_shield = function (self, target_unit, shield_amount)

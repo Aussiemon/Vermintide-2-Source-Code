@@ -1137,8 +1137,6 @@ AIPlayerSlotExtension._set_slot_absolute_position = function (self, slot, positi
 end
 
 AIPlayerSlotExtension._update_target_slots_status = function (self, all_slot_provier_units, nav_world, traverse_logic, outside_navmesh, t)
-	Profiler.start("update_target_slots_status")
-
 	local all_slots = self.all_slots
 
 	for i = 1, num_slot_types, 1 do
@@ -1169,16 +1167,11 @@ AIPlayerSlotExtension._update_target_slots_status = function (self, all_slot_pro
 			self.full_slots_at_t[slot_type] = nil
 		end
 	end
-
-	Profiler.stop("update_target_slots_status")
 end
 
 AIPlayerSlotExtension._update_target_slots_positions = function (self, all_slot_proviers, should_offset_slot, nav_world, traverse_logic, is_on_ladder, ladder_unit, bottom, top, target_outside_navmesh)
-	Profiler.start("update_target_slots_positions")
-
 	if is_on_ladder then
 		self:_update_target_slots_positions_on_ladder(all_slot_proviers, should_offset_slot, nav_world, traverse_logic, ladder_unit, bottom, top)
-		Profiler.stop("update_target_slots_positions")
 
 		return
 	end
@@ -1228,7 +1221,6 @@ AIPlayerSlotExtension._update_target_slots_positions = function (self, all_slot_
 	end
 
 	update_anchor_weights(all_slots)
-	Profiler.stop("update_target_slots_positions")
 end
 
 AIPlayerSlotExtension._update_slot_position = function (self, slot, slot_position, should_offset_slot, nav_world, traverse_logic, above, below, target_outside_navmesh)
@@ -1829,7 +1821,6 @@ end
 
 AIPlayerSlotExtension._update_slot = function (self, slot, attacker_unit, nav_world, traverse_logic)
 	check_to_release_slot(slot)
-	Profiler.start("set_ghost_position")
 
 	local ai_unit_position = POSITION_LOOKUP[attacker_unit]
 	local target_unit_position = self.position:unbox()
@@ -1840,8 +1831,6 @@ AIPlayerSlotExtension._update_slot = function (self, slot, attacker_unit, nav_wo
 	else
 		clear_ghost_position(slot)
 	end
-
-	Profiler.stop("set_ghost_position")
 end
 
 AIPlayerSlotExtension._assign_slot = function (self, slot, slot_consumer_ext)

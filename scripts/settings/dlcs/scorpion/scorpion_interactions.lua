@@ -1,11 +1,11 @@
-InteractionDefinitions._get_unlocks = function (achievement_name, statistics_db, stats_id)
+local function _get_unlocks(achievement_name, statistics_db, stats_id)
 	local achievement_data = AchievementTemplates.achievements[achievement_name]
 	local completed = achievement_data.completed(statistics_db, stats_id)
 
 	return completed
 end
 
-InteractionDefinitions._fulfill_requirements_for_weave = function ()
+local function _fulfill_requirements_for_weave()
 	if script_data.unlock_all_levels then
 		return true
 	end
@@ -15,10 +15,10 @@ InteractionDefinitions._fulfill_requirements_for_weave = function ()
 	local player = player_manager:local_player()
 	local stats_id = player:stats_id()
 
-	for _, level_key in pairs(MainGameLevels) do
+	for _, level_key in pairs(HelmgartLevels) do
 		local level_settings = LevelSettings[level_key]
 
-		if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+		if level_settings.mechanism == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
 			return false
 		end
 	end
@@ -28,7 +28,7 @@ InteractionDefinitions._fulfill_requirements_for_weave = function ()
 	for _, level_key in pairs(scorpion_dlc_levels) do
 		local level_settings = LevelSettings[level_key]
 
-		if level_settings.game_mode == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
+		if level_settings.mechanism == "adventure" and statistics_db:get_persistent_stat(stats_id, "completed_levels", level_key) < 1 then
 			return false
 		end
 	end
@@ -36,8 +36,8 @@ InteractionDefinitions._fulfill_requirements_for_weave = function ()
 	return true
 end
 
-InteractionDefinitions._fullfill_requirements_for_weave_leaderboards = function ()
-	local weave_access = InteractionDefinitions._fulfill_requirements_for_weave()
+local function _fullfill_requirements_for_weave_leaderboards()
+	local weave_access = _fulfill_requirements_for_weave()
 
 	if not weave_access then
 		return false
@@ -78,7 +78,7 @@ InteractionDefinitions.weave_level_select_access.client.stop = function (world, 
 			end
 		end
 
-		local fulfill_requirements_for_weave_levels = InteractionDefinitions._fulfill_requirements_for_weave()
+		local fulfill_requirements_for_weave_levels = _fulfill_requirements_for_weave()
 
 		if fulfill_requirements_for_weave_levels then
 			Managers.ui:handle_transition("start_game_view_force", {
@@ -117,7 +117,7 @@ InteractionDefinitions.weave_magic_forge_access.client.stop = function (world, i
 			return
 		end
 
-		local fulfill_requirements_for_weave_forge = InteractionDefinitions._fulfill_requirements_for_weave()
+		local fulfill_requirements_for_weave_forge = _fulfill_requirements_for_weave()
 
 		if fulfill_requirements_for_weave_forge then
 			Managers.ui:handle_transition("hero_view_force", {
@@ -155,7 +155,7 @@ InteractionDefinitions.weave_leaderboard_access.client.stop = function (world, i
 			return
 		end
 
-		local fulfill_requirements_for_leaderboard = InteractionDefinitions._fullfill_requirements_for_weave_leaderboards()
+		local fulfill_requirements_for_leaderboard = _fullfill_requirements_for_weave_leaderboards()
 
 		if fulfill_requirements_for_leaderboard then
 			Managers.ui:handle_transition("start_game_view_force", {

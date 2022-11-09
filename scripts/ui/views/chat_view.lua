@@ -470,57 +470,30 @@ end
 local DO_RELOAD = false
 
 ChatView.update = function (self, dt, t, is_sub_menu)
-	Profiler.start("chat_view")
-
 	if DO_RELOAD then
 		DO_RELOAD = false
 
 		self:_create_ui_elements()
 	end
 
-	Profiler.start("update_members")
-
 	if Keyboard.pressed(Keyboard.button_index("b")) then
 		print("UPDATE MEMBERS")
 		self:_update_members()
 	end
 
-	Profiler.stop("update_members")
-
 	if self._suspended or not self._active then
-		Profiler.stop("chat_view")
-
 		return
 	end
 
-	Profiler.start("update_animations")
 	self:_update_animations(dt, t)
-	Profiler.stop("update_animations")
-	Profiler.start("draw")
 	self:_draw(dt, t)
-	Profiler.stop("draw")
-	Profiler.start("update_channel_tabs")
 	self:_update_channel_tabs(dt, t)
-	Profiler.stop("update_channel_tabs")
-	Profiler.start("update_input")
 	self:_update_input(dt, t)
-	Profiler.stop("update_input")
-	Profiler.start("update_channels_list_input")
 	self:_update_channels_list_input(dt, t)
-	Profiler.stop("update_channels_list_input")
-	Profiler.start("update_create_channel_input")
 	self:_update_create_channel_input(dt, t)
-	Profiler.stop("update_create_channel_input")
-	Profiler.start("update_create_channel_input")
 	self:_update_recent_channels_input(dt, t)
-	Profiler.stop("update_create_channel_input")
-	Profiler.start("update_send_invite_input")
 	self:_update_send_invite_input(dt, t)
-	Profiler.stop("update_send_invite_input")
-	Profiler.start("update_input")
 	self:_handle_command_list(dt, t)
-	Profiler.stop("update_input")
-	Profiler.stop("chat_view")
 end
 
 ChatView._update_filter = function (self, filter)
@@ -2109,7 +2082,6 @@ ChatView._draw = function (self, dt, t)
 	local is_connected = Managers.twitch:is_connected()
 	local is_connecting = Managers.twitch:is_connecting()
 
-	Profiler.start("draw chat")
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
 	for name, widget in pairs(self._widgets) do
@@ -2153,7 +2125,6 @@ ChatView._draw = function (self, dt, t)
 	end
 
 	UIRenderer.end_pass(ui_renderer)
-	Profiler.stop("draw chat")
 
 	if not table.is_empty(self._channels_list_widgets) then
 		UIRenderer.begin_pass(ui_renderer, ui_scenegraph, channel_list_input_service, dt, nil, render_settings)

@@ -41,8 +41,6 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 	local meshes = variation.meshes
 
 	if not meshes then
-		Profiler.start("enemy_variation_tint_part_no_meshlist")
-
 		for j = 1, #variation.variables, 1 do
 			Unit.set_scalar_for_material_table(unit, variation.materials, variation.variables[j], variable_value)
 
@@ -54,11 +52,7 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 				end
 			end
 		end
-
-		Profiler.stop("enemy_variation_tint_part_no_meshlist")
 	else
-		Profiler.start("enemy_variation_tint_part_meshlist")
-
 		for i = 1, #variation.materials, 1 do
 			for j = 1, #variation.variables, 1 do
 				enemy_variation_tint_meshes(unit, meshes, variation.materials[i], variation.variables[j], variable_value)
@@ -72,8 +66,6 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 				end
 			end
 		end
-
-		Profiler.stop("enemy_variation_tint_part_meshlist")
 	end
 
 	for i = 1, #variation.materials, 1 do
@@ -192,8 +184,6 @@ function flow_callback_enemy_variation(params)
 		return {}
 	end
 
-	Profiler.start("enemy_variation")
-
 	local variationsettings = UnitVariationSettings[breed_type]
 	local variation_result = {}
 	local material_result = {}
@@ -233,33 +223,25 @@ function flow_callback_enemy_variation(params)
 	end
 
 	if variationsettings.materials_enabled_from_start ~= nil then
-		Profiler.start("enemy_variation_materials")
 		enemy_variation_tint_materials(unit, outfit_units, variationsettings, variationsettings.materials_enabled_from_start, material_result)
-		Profiler.stop("enemy_variation_materials")
 	end
 
 	if variationsettings.enabled_from_start ~= nil then
-		Profiler.start("enemy_variation_parts")
-
 		if Unit.has_visibility_group(unit, "all") then
 			Unit.set_visibility(unit, "all", false)
 		end
 
 		enemy_variation_enable_parts(unit, outfit_units, variationsettings, variationsettings.enabled_from_start, group_result, material_result)
-		Profiler.stop("enemy_variation_parts")
 	end
 
 	if variationsettings.scale_variation ~= nil then
-		Profiler.start("enemy_variation_scale")
 		enemy_variation_scale_nodes(unit, outfit_units, variationsettings, scaling_result)
-		Profiler.stop("enemy_variation_scale")
 	end
 
 	variation_result.groups = group_result
 	variation_result.materials = material_result
 	variation_result.scaling = scaling_result
 
-	Profiler.stop("enemy_variation")
 	Unit.set_data(unit, "variation_data", variation_result)
 	Unit.set_data(unit, "dismember_filter", {})
 
@@ -393,8 +375,6 @@ local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsetting
 		stump_unit = World.spawn_unit(world, stump_unit_name, Unit.world_position(unit, node_id), Unit.world_rotation(unit, node_id))
 	end
 
-	Profiler.start("link_nodes")
-
 	local stump_link_nodes = gibsettings.stump_link_nodes
 	local parent_link_nodes = gibsettings.parent_link_nodes
 
@@ -414,8 +394,6 @@ local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsetting
 		LODObject.set_bounding_volume(stump_unit_lod_object, LODObject.bounding_volume(unit_lod_object))
 		World.link_unit(world, stump_unit, LODObject.node(stump_unit_lod_object), unit, LODObject.node(unit_lod_object))
 	end
-
-	Profiler.stop("link_nodes")
 
 	return stump_unit
 end
@@ -446,6 +424,23 @@ local function enemy_dismember_set_variations_on_unit(new_unit, variation_data)
 			local node_id = Unit.node(new_unit, node_name)
 
 			Unit.set_local_scale(new_unit, node_id, Vector3(scale_value, scale_value, scale_value))
+		end
+	end
+end
+
+local function enemy_dismember_enable_snow_state_on_unit(unit)
+	local num_meshes = Unit.num_meshes(unit)
+	local index_offset = Script.index_offset()
+	local end_offset = 1 - index_offset
+
+	for i = index_offset, num_meshes - end_offset, 1 do
+		local mesh = Unit.mesh(unit, i)
+		local num_materials = Mesh.num_materials(mesh)
+
+		for j = index_offset, num_materials - end_offset, 1 do
+			local material = Mesh.material(mesh, j)
+
+			Material.set_scalar(material, "snow", 1)
 		end
 	end
 end
@@ -546,18 +541,11 @@ local function enemy_dismember(params, spawn_gib)
 	end
 
 	local gibsettings = UnitGibSettings[breed_type].parts[bodypart]
-
-	Profiler.start("enemy_gib_can_gib")
-
 	local can_spawn_gib = enemy_dismember_can_spawn_gib(unit, bodypart)
-
-	Profiler.stop("enemy_gib_can_gib")
 
 	if not can_spawn_gib then
 		return
 	end
-
-	Profiler.start("enemy_gib_" .. bodypart)
 
 	local world = Unit.world(unit)
 	local node_id, unit_inventory_extension, unit_ai_system_extension, unit_spawner = nil
@@ -577,25 +565,16 @@ local function enemy_dismember(params, spawn_gib)
 	local gib_unit = nil
 
 	if spawn_gib then
-		Profiler.start("spawn_gib")
-
 		gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, 1, unit_inventory_extension, unit_ai_system_extension)
-
-		Profiler.stop("spawn_gib")
 	else
 		enemy_dismember_disable_helmets(unit, unit_inventory_extension, gibsettings)
 	end
 
-	Profiler.start("remove_physics")
 	enemy_dismember_kill_actors(unit, gibsettings.parent_destroy_actors, unit_inventory_extension)
 	enemy_dismember_kill_actors(unit, gibsettings.ragdoll_destroy_actors, nil)
-	Profiler.stop("remove_physics")
-	Profiler.start("spawn_stump")
 
 	local stump_unit = enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsettings, not spawn_gib)
 
-	Profiler.stop("spawn_stump")
-	Profiler.start("set_variations")
 	enemy_dismember_set_variations(unit, gib_unit, stump_unit)
 
 	if Unit.get_data(unit, "was_burned") then
@@ -606,7 +585,13 @@ local function enemy_dismember(params, spawn_gib)
 		end
 	end
 
-	Profiler.stop("set_variations")
+	if Unit.get_data(unit, "snow_state") then
+		enemy_dismember_enable_snow_state_on_unit(stump_unit)
+
+		if gib_unit ~= nil then
+			enemy_dismember_enable_snow_state_on_unit(gib_unit)
+		end
+	end
 
 	local gibbed_nodes = nil
 
@@ -646,8 +631,6 @@ local function enemy_dismember(params, spawn_gib)
 		end
 	end
 
-	Profiler.start("vfx")
-
 	if BloodSettings == nil or BloodSettings.enemy_blood.enabled then
 		node_id = Unit.node(stump_unit, "a_vfx")
 
@@ -663,9 +646,6 @@ local function enemy_dismember(params, spawn_gib)
 			World.link_particles(world, vfx_id, stump_unit, node_id, Matrix4x4.identity(), "destroy")
 		end
 	end
-
-	Profiler.stop("vfx")
-	Profiler.start("sfx")
 
 	if not spawn_gib and bodypart == "head" then
 		local wwise_world = Wwise.wwise_world(world)
@@ -686,8 +666,6 @@ local function enemy_dismember(params, spawn_gib)
 			end
 		end
 	end
-
-	Profiler.stop("sfx")
 
 	if unit_inventory_extension ~= nil then
 		if gib_unit ~= nil then
@@ -718,7 +696,6 @@ local function enemy_dismember(params, spawn_gib)
 	end
 
 	enemy_dismember_set_dismember_filter(unit, bodypart, gibsettings)
-	Profiler.stop("enemy_gib_" .. bodypart)
 end
 
 function enemy_explode(params)
@@ -771,8 +748,6 @@ function enemy_explode(params)
 	if Unit.get_data(unit, "exploded") then
 		return
 	end
-
-	Profiler.start("enemy_explode_" .. breed_type)
 
 	local already_burned = nil
 
@@ -830,9 +805,15 @@ function enemy_explode(params)
 		Unit.set_unit_visibility(outfit_items[i], false)
 	end
 
-	if gibsettings.send_outfit_event ~= nil then
-		for i = 1, #outfit_items, 1 do
-			Unit.flow_event(outfit_items[i], gibsettings.send_outfit_event)
+	local gibsettings_combo_parts = UnitGibSettings[breed_type].parts
+
+	for i = 1, #part_combo, 1 do
+		local gibsetting_part = gibsettings_combo_parts[part_combo[i]]
+
+		if gibsetting_part and gibsetting_part.send_outfit_event ~= nil then
+			for i = 1, #outfit_items, 1 do
+				Unit.flow_event(outfit_items[i], gibsetting_part.send_outfit_event)
+			end
 		end
 	end
 
@@ -853,7 +834,6 @@ function enemy_explode(params)
 	Unit.set_unit_visibility(unit, false)
 	Unit.disable_physics(unit)
 	Unit.set_data(unit, "exploded", true)
-	Profiler.stop("enemy_explode_" .. breed_type)
 end
 
 function flow_callback_enemy_gib(params)

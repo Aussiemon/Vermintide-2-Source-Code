@@ -402,9 +402,7 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 	end
 
 	if self._check_for_jumps then
-		Profiler.start("check_for_jumps")
 		self:check_for_jumps(unit, t)
-		Profiler.stop("check_for_jumps")
 	end
 
 	if script_data.testify then

@@ -304,15 +304,11 @@ BTFireProjectileAction._fire_projectile = function (self, unit, blackboard, dt)
 		projectile_linker = light_weight_projectile_template.projectile_linker,
 		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 	}
-
-	Profiler.start("create projectile")
-
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local gravity = projectile_gravity
 	local owner_peer_id = Network.peer_id()
 
 	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, gravity, flat_speed, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
-	Profiler.stop("create projectile")
 
 	blackboard.fired_first_shot = true
 end

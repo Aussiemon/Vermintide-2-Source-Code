@@ -72,8 +72,6 @@ AnimationMovementTemplates.beastmen_bestigor = {
 			local blackboard = data.blackboard
 
 			if blackboard.lean_target_position_boxed then
-				Profiler.start("beastmen_bestigor_animation_variable_lean")
-
 				local lean_target_position = blackboard.lean_target_position_boxed:unbox()
 				local lerp_speed = data.lean_lerp_speed
 				local lean_amount = data.lean_amount
@@ -90,8 +88,6 @@ AnimationMovementTemplates.beastmen_bestigor = {
 
 					GameSession.set_game_object_field(game, go_id, "lean_target", Vector3.clamp(lean_target_position, min, max))
 				end
-
-				Profiler.stop("beastmen_bestigor_animation_variable_lean")
 			end
 		end,
 		leave = function (unit, data)
@@ -110,8 +106,6 @@ AnimationMovementTemplates.beastmen_bestigor = {
 			data.lean_amount = 25
 		end,
 		update = function (unit, t, dt, data)
-			Profiler.start("beastmen_bestigor_animation_variable_lean_husk")
-
 			local game = Managers.state.network:game()
 			local go_id = Managers.state.unit_storage:go_id(unit)
 
@@ -127,8 +121,6 @@ AnimationMovementTemplates.beastmen_bestigor = {
 					data.old_lean_target_position_boxed:store(lean_target_position)
 				end
 			end
-
-			Profiler.stop("beastmen_bestigor_animation_variable_lean_husk")
 		end,
 		leave = function (unit, data)
 			local animation_variable_lean = data.animation_variable_lean
@@ -168,8 +160,6 @@ AnimationMovementTemplates.beastmen_minotaur = {
 					data.sent_downwards_lean = true
 				end
 			elseif blackboard.lean_target_position_boxed then
-				Profiler.start("beastmen_minotaur_animation_variable_lean")
-
 				local lean_target_position = blackboard.lean_target_position_boxed:unbox()
 				local lerp_speed = data.lean_lerp_speed
 				local lean_amount = data.lean_amount
@@ -191,8 +181,6 @@ AnimationMovementTemplates.beastmen_minotaur = {
 
 				blackboard.current_lean_direction = data.current_lean_direction
 				blackboard.current_lean_value = data.current_lean_value
-
-				Profiler.stop("beastmen_minotaur_animation_variable_lean")
 			end
 
 			if not blackboard.lean_downwards and data.sent_downwards_lean then
@@ -236,8 +224,6 @@ AnimationMovementTemplates.beastmen_minotaur = {
 			data.lean_downwards_max = 3
 		end,
 		update = function (unit, t, dt, data)
-			Profiler.start("beastmen_minotaur_animation_variable_lean_husk")
-
 			local game = Managers.state.network:game()
 			local go_id = Managers.state.unit_storage:go_id(unit)
 
@@ -255,8 +241,6 @@ AnimationMovementTemplates.beastmen_minotaur = {
 					data.old_lean_target_position_boxed:store(lean_target_position)
 				end
 			end
-
-			Profiler.stop("beastmen_minotaur_animation_variable_lean_husk")
 		end,
 		leave = function (unit, data)
 			local animation_variable_lean = data.animation_variable_lean

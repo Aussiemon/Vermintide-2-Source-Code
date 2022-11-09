@@ -195,8 +195,6 @@ local function scenegraph_update_children(world_position, children, num_children
 end
 
 UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, scenegraph_id)
-	Profiler.start("UISceneGraph.update_scenegraph")
-
 	local w = RESOLUTION_LOOKUP.res_w
 	local h = RESOLUTION_LOOKUP.res_h
 	local scale = RESOLUTION_LOOKUP.scale
@@ -283,13 +281,9 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 		local children = node.children
 
 		if children then
-			Profiler.start("UISceneGraph.update_scenegraph_children_dynamic")
 			scenegraph_update_children(node.world_position, children, node.num_children, size_x, size_y)
-			Profiler.stop("UISceneGraph.update_scenegraph_children_dynamic")
 		end
 	end
-
-	Profiler.stop("UISceneGraph.update_scenegraph")
 end
 
 UISceneGraph.get_size = function (scenegraph, node_name)

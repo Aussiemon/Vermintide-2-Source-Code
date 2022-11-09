@@ -174,8 +174,6 @@ local filter_macros = {
 		return is_weapon
 	end,
 	equipped_by_current_career = function (item, backend_id, params)
-		Profiler.start("equipped_by_current_career")
-
 		local item_data = item.data
 		local profile_synchronizer = Managers.state.network.profile_synchronizer
 		local player = nil
@@ -207,8 +205,6 @@ local filter_macros = {
 		local career_name = career_data.name
 		local backend_items = Managers.backend:get_interface("items")
 		local career_names = backend_items:equipped_by(backend_id)
-
-		Profiler.stop("equipped_by_current_career")
 
 		return table.contains(career_names, career_name)
 	end,
@@ -381,13 +377,13 @@ local filter_macros = {
 				local unlocked_weapon_skins = backend_crafting:get_unlocked_weapon_skins()
 				local default_skin = WeaponSkins.default_skins[item.ItemId]
 
-				if unlocked_weapon_skins[default_skin] == true then
+				if unlocked_weapon_skins[default_skin] then
 					return true
 				end
 
 				for _, weapon_skins in pairs(weapon_skin_combinations_tables) do
 					for _, skin in ipairs(weapon_skins) do
-						if unlocked_weapon_skins[skin] == true then
+						if unlocked_weapon_skins[skin] then
 							return true
 						end
 					end

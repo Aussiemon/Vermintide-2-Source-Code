@@ -111,35 +111,23 @@ DeusSpawning.update = function (self, t, dt)
 end
 
 DeusSpawning.server_update = function (self, t, dt)
-	Profiler.start("DeusSpawning")
-
 	if Managers.state.network:game() then
 		local party = self._side.party
 		local occupied_slots = party.occupied_slots
 
 		if self._status_updates_active then
-			Profiler.start("playerstatus")
 			self:_update_player_status(t, dt, occupied_slots)
-			Profiler.stop("playerstatus")
 		end
 
 		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
 
 		if self._respawns_enabled and allow_respawns then
-			Profiler.start("respawn_handler")
 			self._respawn_handler:server_update(dt, t, occupied_slots)
-			Profiler.stop("respawn_handler")
 		end
 
-		Profiler.start("update spawning")
 		self:_update_spawning(dt, t, occupied_slots)
-		Profiler.stop("update spawning")
-		Profiler.start("update_joining_clients")
 		self:_update_joining_clients(dt, t)
-		Profiler.stop("update_joining_clients")
 	end
-
-	Profiler.stop("DeusSpawning")
 end
 
 DeusSpawning.profile_changed = function (self, peer_id, local_player_id, profile_index, career_index)

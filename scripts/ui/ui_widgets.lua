@@ -7485,6 +7485,62 @@ UIWidgets.create_video = function (scenegraph_id, material_name, video_player_re
 	}
 end
 
+UIWidgets.create_fixed_aspect_video = function (scenegraph_id, material_name, video_player_reference)
+	return {
+		element = {
+			passes = {
+				{
+					style_id = "background",
+					scenegraph_id = "background",
+					pass_type = "rect",
+					content_check_function = function (content)
+						local w, h = Gui.resolution()
+						local current_aspect_ratio = w / h
+						local default_aspect_ration = 1.7777777777777777
+						local height = h
+						local width = w
+
+						if math.abs(current_aspect_ratio - default_aspect_ration) > 0.005 then
+							return true
+						end
+					end
+				},
+				{
+					style_id = "video_style",
+					pass_type = "splash_video",
+					content_id = "video_content"
+				}
+			}
+		},
+		content = {
+			video_content = {
+				video_completed = false,
+				video_player_reference = video_player_reference,
+				material_name = material_name
+			}
+		},
+		style = {
+			background = {
+				color = Colors.color_definitions.black
+			},
+			video_style = {
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					1
+				}
+			}
+		},
+		scenegraph_id = scenegraph_id
+	}
+end
+
 UIWidgets.create_splash_texture = function (input)
 	return {
 		element = {

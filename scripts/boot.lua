@@ -475,54 +475,37 @@ Boot.booting_render = function (self)
 end
 
 Boot._require_foundation_scripts = function (self)
-	Profiler.start("Boot:_require_scripts()")
 	base_require("util", "verify_plugins", "error", "patches", "class", "callback", "rectangle", "state_machine", "visual_state_machine", "misc_util", "stack", "circular_queue", "grow_queue", "table", "math", "vector3", "quaternion", "script_world", "script_viewport", "script_camera", "script_unit", "frame_table", "path", "string", "reportify")
 	base_require("debug", "table_trap")
 	base_require("managers", "world/world_manager", "player/player", "free_flight/free_flight_manager", "state/state_machine_manager", "time/time_manager", "token/token_manager")
 	base_require("managers", "localization/localization_manager", "event/event_manager")
-	Profiler.stop("Boot:_require_scripts()")
 end
 
 Boot._init_managers = function (self)
-	Profiler.start("Boot:_init_managers()")
-
 	Managers.time = TimeManager:new()
 	Managers.world = WorldManager:new()
 	Managers.token = TokenManager:new()
 	Managers.state_machine = StateMachineManager:new()
 	Managers.url_loader = UrlLoaderManager:new()
-
-	Profiler.stop("Boot:_init_managers()")
 end
 
 Boot.game_render = function (self)
-	Profiler.start("pre_render")
-
 	if self._machine.pre_render then
 		self._machine:pre_render()
 	end
 
-	Profiler.stop("pre_render")
-	Profiler.start("render")
 	Managers.world:render()
 	self._machine:render()
-	Profiler.stop("render")
-	Profiler.start("post_render")
 
 	if self._machine.post_render then
 		self._machine:post_render()
 	end
 
 	Managers.url_loader:post_render()
-	Profiler.stop("post_render")
 end
 
 Boot._setup_statemachine = function (self, start_state, params)
-	Profiler.start("Boot:_setup_statemachine()")
-
 	self._machine = GameStateMachine:new(self, start_state, params, true)
-
-	Profiler.stop("Boot:_setup_statemachine()")
 end
 
 Boot.on_close = function (self)
@@ -717,8 +700,6 @@ end
 local EMPTY_TABLE = {}
 
 Boot.game_update = function (self, real_world_dt)
-	Profiler.start("LUA update")
-
 	local Managers = Managers
 	local dt = Managers.time:scaled_delta_time(real_world_dt)
 
@@ -740,8 +721,6 @@ Boot.game_update = function (self, real_world_dt)
 
 	local t = Managers.time:time("main")
 
-	Profiler.start("DLC Managers Pre-Update")
-
 	for _, dlc in pairs(DLCSettings) do
 		local manager_settings = dlc.manager_settings or EMPTY_TABLE
 
@@ -752,15 +731,9 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	end
 
-	Profiler.stop("DLC Managers Pre-Update")
-	Profiler.start("Lua machine pre-update")
 	self._machine:pre_update(dt, t)
-	Profiler.stop("Lua machine pre-update")
 	Managers.package:update(dt, t)
-	Profiler.start("Lua token update")
 	Managers.token:update(dt, t)
-	Profiler.stop("Lua token update")
-	Profiler.start("DLC Managers Update")
 
 	for _, dlc in pairs(DLCSettings) do
 		local manager_settings = dlc.manager_settings or EMPTY_TABLE
@@ -772,16 +745,9 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	end
 
-	Profiler.stop("DLC Managers Update")
-	Profiler.start("Lua machine update")
 	self._machine:update(dt, t)
-	Profiler.stop("Lua machine update")
-	Profiler.start("Visual state machine update")
 	Managers.state_machine:update(dt)
-	Profiler.stop("Visual state machine update")
-	Profiler.start("Lua world update")
 	Managers.world:update(dt, t)
-	Profiler.stop("Lua world update")
 	Managers.url_loader:update(dt)
 
 	if LEVEL_EDITOR_TEST and Keyboard.pressed(Keyboard.button_index("f5")) then
@@ -838,9 +804,7 @@ Boot.game_update = function (self, real_world_dt)
 	end
 
 	if Managers.razer_chroma then
-		Profiler.start("RazerChroma")
 		Managers.razer_chroma:update(dt)
-		Profiler.stop("RazerChroma")
 	end
 
 	if Managers.unlock then
@@ -869,9 +833,6 @@ Boot.game_update = function (self, real_world_dt)
 	Testify:update(dt, t)
 	end_function_call_collection()
 	table.clear(Boot.flow_return_table)
-	Profiler.stop("LUA update")
-	Profiler.start("LUA post_update")
-	Profiler.start("DLC Managers Post-Update")
 
 	for _, dlc in pairs(DLCSettings) do
 		local manager_settings = dlc.manager_settings or EMPTY_TABLE
@@ -883,10 +844,8 @@ Boot.game_update = function (self, real_world_dt)
 		end
 	end
 
-	Profiler.stop("DLC Managers Post-Update")
 	self._machine:post_update(dt)
 	FrameTable.swap_and_clear()
-	Profiler.stop("LUA post_update")
 
 	if self.quit_game then
 		Boot.is_controlled_exit = true

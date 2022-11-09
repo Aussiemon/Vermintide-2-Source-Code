@@ -304,9 +304,7 @@ IRCManager._parse_names_list = function (self, channel, username, members, names
 end
 
 IRCManager.update = function (self, dt)
-	Profiler.start("irc_manager")
 	IRCStates[self._state](self, dt)
-	Profiler.stop("irc_manager")
 end
 
 IRCManager.cb_connect_token_received = function (self, data)

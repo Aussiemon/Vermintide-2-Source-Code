@@ -214,13 +214,9 @@ return {
 		data.offset = 1
 	end,
 	server_update_function = function (context, data, dt, t)
-		Profiler.start("Mutator Death")
-
 		local game_session = Network.game_session()
 
 		if game_session == nil then
-			Profiler.stop("Mutator Death")
-
 			return
 		end
 
@@ -230,6 +226,5 @@ return {
 
 		data.template.update_spirits(context, data, dt, t)
 		data.template.update_player_buff(context, data)
-		Profiler.stop("Mutator Death")
 	end
 }

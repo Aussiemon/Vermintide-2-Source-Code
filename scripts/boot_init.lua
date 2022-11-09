@@ -8,7 +8,7 @@ end
 
 local function import(lib)
 	for k, v in pairs(lib) do
-		_G[k] = v
+		rawset(_G, k, v)
 	end
 end
 
@@ -28,8 +28,8 @@ if GLOBAL_MUSIC_WORLD then
 	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD) or (Application.platform() == "ps4" and dummy_wwise_world) or "dedicated_server_no_wwise_dummy"
 end
 
-BUILD = Application.build()
-PLATFORM = Application.platform()
+BUILD = BUILD or Application.build()
+PLATFORM = PLATFORM or Application.platform()
 IS_CONSOLE = PLATFORM == "ps4" or PLATFORM == "xb1"
 IS_WINDOWS = PLATFORM == "win32"
 IS_LINUX = PLATFORM == "linux"

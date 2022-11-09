@@ -96,8 +96,6 @@ local is_win32 = PLATFORM == Application.WIN32
 local MAX_RAYCASTS = (is_win32 and 10) or 2
 
 AILineOfSightSystem.update = function (self, context, t)
-	Profiler.start("AILineOfSightSystem")
-
 	local dt = context.dt
 	local unit_extensions = self._extensions
 
@@ -123,8 +121,6 @@ AILineOfSightSystem.update = function (self, context, t)
 	end
 
 	self._num_raycasts = 0
-
-	Profiler.stop("AILineOfSightSystem")
 end
 
 return

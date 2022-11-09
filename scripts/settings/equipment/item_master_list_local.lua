@@ -23,6 +23,18 @@ ItemMasterList.wpn_cannon_ball_01 = {
 	item_type = "inventory_item",
 	can_wield = CanWieldAllItemTemplates
 }
+ItemMasterList.wpn_trail_cog = {
+	temporary_template = "trail_cog",
+	slot_type = "healthkit",
+	is_local = true,
+	inventory_icon = "icons_placeholder",
+	left_hand_unit = "units/weapons/player/wpn_trail_cog_02/wpn_trail_cog_02",
+	rarity = "plentiful",
+	gamepad_hud_icon = "consumables_icon_defence",
+	hud_icon = "consumables_icon_defence",
+	item_type = "inventory_item",
+	can_wield = CanWieldAllItemTemplates
+}
 ItemMasterList.healthkit_first_aid_kit_01 = {
 	description = "description_healthkit_first_aid_kit_01",
 	temporary_template = "first_aid_kit_02",

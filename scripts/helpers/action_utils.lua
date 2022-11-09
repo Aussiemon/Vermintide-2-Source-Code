@@ -30,8 +30,6 @@ ActionUtils.get_max_targets = function (damage_profile, cleave_power_level)
 end
 
 ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
-	Profiler.start("ActionUtils.get_target_armor")
-
 	local target_unit_armor_attack, target_unit_armor_impact, target_unit_armor, target_unit_primary_armor_attack, target_unit_primary_armor_impact = nil
 
 	if breed and hit_zone_name then
@@ -70,8 +68,6 @@ ActionUtils.get_target_armor = function (hit_zone_name, breed, dummy_unit_armor)
 		target_unit_armor_impact = player_armor
 	end
 
-	Profiler.stop("ActionUtils.get_target_armor")
-
 	return target_unit_armor_attack, target_unit_armor_impact, target_unit_primary_armor_attack, target_unit_primary_armor_impact
 end
 
@@ -81,8 +77,6 @@ ActionUtils.get_dropoff_scalar = function (damage_profile, target_settings, atta
 	if not range_dropoff_settings then
 		return 0
 	end
-
-	Profiler.start("ActionUtils.get_dropoff_scalar")
 
 	local attacker_position = POSITION_LOOKUP[attacker_unit] or Unit.world_position(attacker_unit, 0)
 	local target_position = POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0)
@@ -100,14 +94,10 @@ ActionUtils.get_dropoff_scalar = function (damage_profile, target_settings, atta
 	local dropoff_distance = math.clamp(distance - dropoff_start, 0, dropoff_scale)
 	local dropoff_scalar = dropoff_distance / dropoff_scale
 
-	Profiler.stop("ActionUtils.get_dropoff_scalar")
-
 	return dropoff_scalar
 end
 
 ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, target_settings, target_unit_armor, target_unit_primary_armor, critical_strike_settings, dropoff_scalar)
-	Profiler.start("ActionUtils.get_armor_power_modifier")
-
 	local armor_modifier = target_settings.armor_modifier or damage_profile.armor_modifier or DefaultArmorPowerModifier
 	local armor_modifier_near = target_settings.armor_modifier_near or damage_profile.armor_modifier_near
 	local armor_modifier_far = target_settings.armor_modifier_far or damage_profile.armor_modifier_far
@@ -127,14 +117,10 @@ ActionUtils.get_armor_power_modifier = function (power_type, damage_profile, tar
 		armor_power_modifier = (target_unit_primary_armor and armor_modifier[power_type][target_unit_primary_armor]) or armor_modifier[power_type][target_unit_armor] or 1
 	end
 
-	Profiler.stop("ActionUtils.get_armor_power_modifier")
-
 	return armor_power_modifier
 end
 
 ActionUtils.scale_power_levels = function (power_level, power_type, attacker_unit, difficulty_level)
-	Profiler.start("ActionUtils.scale_power_levels")
-
 	local actual_power_level = math.clamp(power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)
 
 	if Managers and Managers.state.game_mode:setting("cap_power_level") then
@@ -174,8 +160,6 @@ ActionUtils.scale_power_levels = function (power_level, power_type, attacker_uni
 		scaled_power_level = ActionUtils.apply_buffs_to_power_level(attacker_unit, scaled_power_level)
 	end
 
-	Profiler.stop("ActionUtils.scale_power_levels")
-
 	return scaled_power_level
 end
 
@@ -197,19 +181,13 @@ ActionUtils.get_power_multiplier = function (power_type, damage_profile, target_
 end
 
 ActionUtils.get_power_level = function (power_type, power_level, damage_profile, target_settings, critical_strike_settings, dropoff_scalar, attacker_unit, difficulty_level)
-	Profiler.start("ActionUtils.get_power_level")
-
 	local power_multiplier = ActionUtils.get_power_multiplier(power_type, damage_profile, target_settings, dropoff_scalar)
 	local scaled_power_level = ActionUtils.scale_power_levels(power_level, power_type, attacker_unit, difficulty_level)
-
-	Profiler.stop("ActionUtils.get_power_level")
 
 	return scaled_power_level * power_multiplier
 end
 
 ActionUtils.get_power_level_for_target = function (target_unit, original_power_level, damage_profile, target_index, is_critical_strike, attacker_unit, hit_zone_name, armor_type_override, damage_source, breed, dummy_unit_armor, dropoff_scalar, difficulty_level, target_unit_armor, target_unit_primary_armor)
-	Profiler.start("ActionUtils.get_power_level_for_target")
-
 	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
 	local critical_strike_settings = is_critical_strike and damage_profile.critical_strike
 	local attack_armor_power_modifer, impact_armor_power_modifer = nil
@@ -250,8 +228,6 @@ ActionUtils.get_power_level_for_target = function (target_unit, original_power_l
 	attack_power = attack_power * attack_armor_power_modifer
 	impact_power = impact_power * impact_armor_power_modifer
 
-	Profiler.stop("ActionUtils.get_power_level_for_target")
-
 	return attack_power, impact_power
 end
 
@@ -279,8 +255,6 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 	end
 
 	local power_level_weapon_multiplier = 1
-
-	Profiler.start("ActionUtils.apply_buffs_to_value")
 
 	if damage_source then
 		local item_data = rawget(ItemMasterList, damage_source)
@@ -330,8 +304,6 @@ ActionUtils.apply_buffs_to_power_level_on_hit = function (unit, power_level, bre
 	local power_level_target_multiplier = (armor_power_level_target_multiplier + race_power_level_target_multiplier) - 2
 	power_level = power_level * (power_level_weapon_multiplier + power_level_target_multiplier)
 
-	Profiler.stop("ActionUtils.apply_buffs_to_value")
-
 	return power_level
 end
 
@@ -354,13 +326,9 @@ ActionUtils.apply_buffs_to_armor_power_on_hit = function (attacker_unit, target_
 		return attack_armor_power_modifer
 	end
 
-	Profiler.start("ActionUtils.apply_buffs_to_value")
-
 	if armor_category == 2 or armor_category == 6 then
 		attack_armor_power_modifer = target_buff_extension:apply_buffs_to_value(attack_armor_power_modifer, "debuff_armoured")
 	end
-
-	Profiler.stop("ActionUtils.apply_buffs_to_value")
 
 	return attack_armor_power_modifer
 end

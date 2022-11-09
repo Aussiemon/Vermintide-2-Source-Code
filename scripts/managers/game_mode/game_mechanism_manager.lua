@@ -194,13 +194,7 @@ GameMechanismManager.handle_level_load = function (self, done_again_during_loadi
 end
 
 GameMechanismManager.create_level_seed = function (self)
-	local time_since_start = (os.clock() * 10000) % 961748927
-	local date_time = os.time()
-	local low_time = tonumber(tostring(string.format("%d", date_time)):reverse():sub(1, 6))
-	local seed = (time_since_start + low_time) % 15485867
-	seed = math.floor(seed)
-
-	return seed
+	return LevelTransitionHandler.create_level_seed()
 end
 
 GameMechanismManager.generate_level_seed = function (self)

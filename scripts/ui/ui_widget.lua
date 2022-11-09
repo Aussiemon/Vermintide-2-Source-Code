@@ -9,8 +9,6 @@ end
 UIWidget = UIWidget or {}
 
 UIWidget.init = function (widget_definition)
-	Profiler.start("UIWidget.init")
-
 	local content = error_prone_clone(widget_definition.content)
 	local style = error_prone_clone(widget_definition.style)
 	local style_global = error_prone_clone(widget_definition.style_global)
@@ -23,12 +21,7 @@ UIWidget.init = function (widget_definition)
 		local pass = passes[i]
 		local pass_type = pass.pass_type
 		local ui_pass = UIPasses[pass_type]
-
-		Profiler.start("UIPasses init " .. pass_type)
-
 		pass_data[i] = ui_pass.init(pass, content, style, style_global)
-
-		Profiler.stop("UIPasses init " .. pass_type)
 	end
 
 	local widget = {
@@ -43,8 +36,6 @@ UIWidget.init = function (widget_definition)
 		animations = {},
 		style_global = style_global
 	}
-
-	Profiler.stop("UIWidget.init")
 
 	return widget
 end

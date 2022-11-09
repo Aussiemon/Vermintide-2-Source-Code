@@ -141,8 +141,6 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 		return
 	end
 
-	Profiler.start("alert_nearby_friends_of_enemy")
-
 	local num_results = Broadphase.query(broadphase, Unit.local_position(unit, 0), range, broadphase_query_result)
 
 	for i = 1, num_results, 1 do
@@ -158,8 +156,6 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 
 		broadphase_query_result[i] = nil
 	end
-
-	Profiler.stop("alert_nearby_friends_of_enemy")
 end
 
 AiUtils.print = function (debug_parameter, ...)
@@ -507,12 +503,7 @@ AiUtils.broadphase_query = function (position, radius, result_table)
 
 	local ai_system = Managers.state.entity:system("ai_system")
 	local broadphase = ai_system.group_blackboard.broadphase
-
-	Profiler.start("Ai broadphase query")
-
 	local num_hits = Broadphase.query(broadphase, position, radius, result_table)
-
-	Profiler.stop("Ai broadphase query")
 
 	return num_hits
 end
@@ -881,7 +872,6 @@ AiUtils.show_polearm = function (packmaster_unit, show)
 end
 
 AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, stagger_value, always_stagger, is_push, should_play_push_sound)
-	Profiler.start("AiUtils.stagger")
 	fassert(stagger_type > 0, "Tried to use invalid stagger type %q", stagger_type)
 
 	local is_staggered = blackboard.stagger
@@ -889,8 +879,6 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	local new_stagger_is_explosion = stagger_type == stagger_types.explosion
 
 	if not always_stagger and not is_push and current_stagger_is_explosion and not new_stagger_is_explosion then
-		Profiler.stop("AiUtils.stagger")
-
 		return
 	end
 
@@ -933,8 +921,6 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 
 		Managers.state.entity:system("audio_system"):play_audio_unit_event(push_sound_event, unit)
 	end
-
-	Profiler.stop("AiUtils.stagger")
 end
 
 AiUtils.override_stagger = function (unit, blackboard, attacker_unit, stagger_direction, stagger_length, stagger_type, stagger_duration, stagger_animation_scale, t, is_push)

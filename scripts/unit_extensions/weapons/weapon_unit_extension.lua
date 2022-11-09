@@ -655,14 +655,10 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 			local buff_data = current_action_settings.buff_data
 
 			if buff_data then
-				Profiler.start("buff")
 				ActionUtils.update_action_buff_data(self.action_buff_data, buff_data, owner_unit, t)
-				Profiler.stop("buff")
 			end
 
-			Profiler.start(action_kind)
 			action:client_owner_post_update(dt, t, self.world, can_damage, current_time_in_action)
-			Profiler.stop(action_kind)
 
 			if current_action_settings.cooldown and not current_action_settings.cooldown_from_start then
 				local lookup_data = current_action_settings.lookup_data

@@ -194,13 +194,9 @@ return {
 		end
 	end,
 	server_update_function = function (context, data, dt, t)
-		Profiler.start("Mutator Chasing Spirits")
-
 		local game_session = Network.game_session()
 
 		if game_session == nil then
-			Profiler.stop("Mutator Chasing Spirits")
-
 			return
 		end
 
@@ -213,6 +209,5 @@ return {
 		end
 
 		data.template.update_spirits(context, data, dt, t)
-		Profiler.stop("Mutator Chasing Spirits")
 	end
 }

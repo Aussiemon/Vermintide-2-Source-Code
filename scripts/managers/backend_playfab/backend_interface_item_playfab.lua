@@ -343,7 +343,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 	local user_data = self._backend_mirror:get_user_data()
 	local unseen_rewards_json = user_data.unseen_rewards
 
-	if not unseen_rewards_json or script_data.dont_show_unseen_rewards then
+	if not unseen_rewards_json then
 		return nil
 	end
 
@@ -365,12 +365,8 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		end
 	end
 
-	if unseen_items then
-		if not script_data.dont_clear_unseen_rewards then
-			self._backend_mirror:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
-		end
-
-		script_data.dont_show_unseen_rewards = true
+	if unseen_items and not script_data.dont_clear_unseen_rewards then
+		self._backend_mirror:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
 	end
 
 	return unseen_items

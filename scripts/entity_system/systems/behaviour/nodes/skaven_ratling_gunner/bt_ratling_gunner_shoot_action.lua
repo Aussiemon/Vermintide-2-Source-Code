@@ -225,15 +225,11 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
 	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 
-	Profiler.start("shoot")
-
 	for i = 1, shots_to_fire, 1 do
 		data.shots_fired = data.shots_fired + 1
 
 		self:_shoot(unit, blackboard, t, dt)
 	end
-
-	Profiler.stop("shoot")
 
 	if data.update_bot_threat_t < t then
 		self:_create_bot_threat_box(unit, data, BOT_THREAT_UPDATE_TIME)
@@ -591,15 +587,11 @@ BTRatlingGunnerShootAction._shoot = function (self, unit, blackboard)
 		projectile_linker = light_weight_projectile_template.projectile_linker,
 		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 	}
-
-	Profiler.start("create_light_weight_projectile")
-
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local peer_id = data.peer_id
 	local skip_rpc = CLIENT_CONTROLLED_RATLING_GUN
 
 	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, peer_id, nil, skip_rpc)
-	Profiler.stop("create_light_weight_projectile")
 end
 
 BTRatlingGunnerShootAction._create_bot_threat_box = function (self, unit, attack_data, duration)

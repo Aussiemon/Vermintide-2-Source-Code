@@ -3323,7 +3323,7 @@ DeusPowerUpTemplates = DeusPowerUpTemplates or {
 		}
 	}
 }
-DeusPowerUpIncompatibilityPairs = DeusPowerUpIncompatibilityPairs or {
+DeusPowerUpIncompatibilityPairs = {
 	wh_zealot = {},
 	wh_bountyhunter = {
 		{
@@ -4611,8 +4611,8 @@ for difficulty, config in pairs(DeusPowerUpRarityWeights) do
 	DeusPowerUpRarityChance[difficulty] = normalized_config
 end
 
-for career_name, pairs in pairs(DeusPowerUpIncompatibilityPairs) do
-	for _, pair in ipairs(pairs) do
+for career_name, incompatibility_list in pairs(DeusPowerUpIncompatibilityPairs) do
+	for _, pair in ipairs(incompatibility_list) do
 		local power_up_1 = pair[1]
 		local power_up_2 = pair[2]
 		local power_up_1_template = DeusPowerUpTemplates[power_up_1]

@@ -867,6 +867,50 @@ function do_material_dissolve(material, timer_var, timer_data, start_state_var, 
 	Material.set_vector2(material, timer_var, timer_data)
 end
 
+function flow_callback_set_material_property_scalar_all(params)
+	local unit = params.unit
+	local variable = params.variable
+	local value = params.value
+	local index_offset = Script.index_offset()
+	local end_offset = 1 - index_offset
+	local num_meshes = Unit.num_meshes(unit)
+
+	for i = index_offset, num_meshes - end_offset, 1 do
+		local mesh = Unit.mesh(unit, i)
+		local num_materials = Mesh.num_materials(mesh)
+
+		for j = index_offset, num_materials - end_offset, 1 do
+			local material = Mesh.material(mesh, j)
+
+			Material.set_scalar(material, variable, value)
+		end
+	end
+end
+
+function flow_callback_material_scalar_set_chr_inventory(params)
+	assert(params.unit, "[flow_callback_material_scalar_set_chr_inventory] You need to specify the Unit")
+	assert(params.variable, "[flow_callback_material_scalar_set_chr_inventory] You need to specify variable value")
+	assert(params.value, "[flow_callback_material_scalar_set_chr_inventory] You need to specify variable name")
+
+	local unit = params.unit
+	local items = {}
+
+	for _, v in ipairs({
+		"outfit",
+		"stump",
+		"helmet",
+		"other"
+	}) do
+		items = Unit.get_data(unit, v .. "_items") or {}
+
+		for i = 1, #items, 1 do
+			params.unit = items[i]
+
+			flow_callback_set_material_property_scalar_all(params)
+		end
+	end
+end
+
 function flow_callback_material_dissolve(params)
 	assert(params.unit, "[flow_callback_material_dissolve] You need to specify the Unit")
 	assert(params.duration, "[flow_callback_material_dissolve] You need to specify duration")

@@ -637,7 +637,13 @@ CharacterSelectionStateCharacter._set_bot_selection = function (self, index)
 	self._base_icon_y_offset = nil
 	local input_service = self:input_service()
 	local cursor = input_service:get("cursor")
-	self._base_cursor_y_offset = cursor and cursor[2] * RESOLUTION_LOOKUP.inv_scale
+
+	if IS_XB1 then
+		self._base_cursor_y_offset = cursor and 1080 - cursor[2]
+	else
+		self._base_cursor_y_offset = cursor and cursor[2] * RESOLUTION_LOOKUP.inv_scale
+	end
+
 	local hero_widget_index = 1
 
 	for row = 1, #PlayerData.bot_spawn_priority, 1 do
@@ -732,7 +738,14 @@ CharacterSelectionStateCharacter._handle_mouse_bot_selection = function (self, i
 			end
 
 			local cursor = input_service:get("cursor")
-			local y_offset = cursor[2] * RESOLUTION_LOOKUP.inv_scale
+			local y_offset = nil
+
+			if IS_XB1 then
+				y_offset = 1080 - cursor[2]
+			else
+				y_offset = cursor[2] * RESOLUTION_LOOKUP.inv_scale
+			end
+
 			local diff = y_offset - self._base_cursor_y_offset
 			local max_offset = -((#PlayerData.bot_spawn_priority - 1) * 144)
 			local offset_y = math.clamp(self._base_y_offset + diff, max_offset, 0)
@@ -1151,6 +1164,8 @@ CharacterSelectionStateCharacter.cb_hero_unit_spawned = function (self, hero_nam
 			local slot = InventorySettings.slots_by_name.slot_hat
 
 			world_previewer:equip_item(item_name, slot, backend_id)
+		else
+			Crashify.print_exception("[Cosmetic] Failed to equip item in slot \"slot_hat\" for career %q in character selection state character", career_name)
 		end
 
 		local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")

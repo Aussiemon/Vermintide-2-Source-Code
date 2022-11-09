@@ -802,7 +802,7 @@ PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 	local owner_unit = self._owner_unit
 	local item_name = self.item_name
 	local is_server = self._is_server
-	local source_attacker_unit = self.owner_unit
+	local source_attacker_unit = self._owner_unit
 
 	if aoe_data.explosion then
 		local rotation = Unit.local_rotation(unit, 0)

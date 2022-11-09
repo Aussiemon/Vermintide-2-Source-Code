@@ -644,17 +644,12 @@ InputManager.map_device_to_service = function (self, input_service_name, input_d
 end
 
 InputManager.update = function (self, dt, t)
-	Profiler.start("InputManager")
-
 	InputAux.default_values_for_types.Vector3 = Vector3.zero()
 	self._hovering = self._frame_hovering
 	self._frame_hovering = false
 	self._showing_tooltip = false
 
-	Profiler.start("device_updates")
 	self:update_devices(dt, t)
-	Profiler.stop("device_updates")
-	Profiler.stop("InputManager")
 end
 
 InputManager.update_devices = function (self, dt, t)

@@ -11,6 +11,12 @@ TentacleSplineExtension.init = function (self, extension_init_context, unit, ext
 	self._unit = unit
 	self.is_server = is_server
 	self.world = extension_init_context.world
+	local tentacle_template_name = extension_init_data.tentacle_template_name
+	local tentacle_template = TentacleTemplates[tentacle_template_name]
+	self.tentacle_template_name = tentacle_template_name
+	self.tentacle_template = tentacle_template
+	self.portal_unit = extension_init_data.portal_unit
+	self.side_id = extension_init_data.side_id
 end
 
 TentacleSplineExtension.extensions_ready = function (self, world, unit)
@@ -18,17 +24,18 @@ TentacleSplineExtension.extensions_ready = function (self, world, unit)
 	self.blackboard = blackboard
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 	self.nav_world = nav_world
-	local tentacle_template_name = extension_init_data.tentacle_template_name
-	local tentacle_template = TentacleTemplates[tentacle_template_name]
-	self.tentacle_template_name = tentacle_template_name
-	self.tentacle_template = tentacle_template
+	local tentacle_template = self.tentacle_template
+	local is_server = self.is_server
 	local time_manager = Managers.time
 	local t = time_manager:time("game")
-	local tentacle_data, breed = self:spawn_chaos_tentacle(unit, blackboard, nav_world, is_server, t, extension_init_data, tentacle_template)
+	local tentacle_data, breed = self:spawn_chaos_tentacle(unit, blackboard, nav_world, is_server, t, self.portal_unit, tentacle_template, self.side_id)
 	self.tentacle_data = tentacle_data
 	blackboard.tentacle_data = tentacle_data
 	self.portal_unit = tentacle_data.portal_unit
 	self.breed = breed
+
+	print("TENTACLE BREED", breed)
+
 	self._last_good_ground_pos = Vector3Box(0, 0, 0)
 
 	if tentacle_template.use_ik_chain then
@@ -216,14 +223,13 @@ TentacleSplineExtension.get_ground_pos_at_floor = function (self, unit, nav_worl
 	end
 end
 
-TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard, nav_world, is_server, t, extension_init_data, tentacle_template)
+TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard, nav_world, is_server, t, portal_unit, tentacle_template, side_id)
 	local breed = blackboard.breed or Breeds.chaos_tentacle
 	local inside_wall_distance = breed.inside_wall_spawn_distance or 0
 	local position = POSITION_LOOKUP[unit]
 	local rot = Unit.local_rotation(unit, 0)
 	local fwd = Vector3.normalize(Quaternion.forward(rot))
 	local wall_pos = position + fwd * inside_wall_distance
-	local portal_unit = nil
 
 	if is_server then
 		local portal_unit_name = tentacle_template.portal_unit_name
@@ -236,9 +242,10 @@ TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard,
 				is_husk = false
 			}
 		}
+		local optional_data = {
+			side_id = side_id
+		}
 		portal_unit = Managers.state.unit_spawner:spawn_network_unit(portal_unit_name, "ai_unit_tentacle_portal", extension_init_data, wall_pos, rot)
-	else
-		portal_unit = extension_init_data.portal_unit
 	end
 
 	if Unit.has_node(portal_unit, "a_surface_center") then
@@ -275,10 +282,6 @@ TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard,
 	}
 
 	return data, breed
-end
-
-TentacleSplineExtension.extensions_ready = function (self)
-	return
 end
 
 TentacleSplineExtension.destroy = function (self)

@@ -21,8 +21,6 @@ BTSelector_pack_master.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_spawn = children[1]
@@ -30,11 +28,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_spawn, "aborted")
-		Profiler_start("spawn")
 
 		local result, evaluate = node_spawn:run(unit, blackboard, t, dt)
-
-		Profiler_stop("spawn")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -52,11 +47,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_in_vortex, "aborted")
-		Profiler_start("in_vortex")
 
 		local result, evaluate = node_in_vortex:run(unit, blackboard, t, dt)
-
-		Profiler_stop("in_vortex")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -74,11 +66,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_falling, "aborted")
-		Profiler_start("falling")
 
 		local result, evaluate = node_falling:run(unit, blackboard, t, dt)
-
-		Profiler_stop("falling")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -100,11 +89,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_stagger, "aborted")
-		Profiler_start("stagger")
 
 		local result, evaluate = node_stagger:run(unit, blackboard, t, dt)
-
-		Profiler_stop("stagger")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -144,11 +130,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_smartobject, "aborted")
-		Profiler_start("smartobject")
 
 		local result, evaluate = node_smartobject:run(unit, blackboard, t, dt)
-
-		Profiler_stop("smartobject")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -166,11 +149,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_get_new_hook, "aborted")
-		Profiler_start("get_new_hook")
 
 		local result, evaluate = node_get_new_hook:run(unit, blackboard, t, dt)
-
-		Profiler_stop("get_new_hook")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -188,11 +168,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_enemy_spotted, "aborted")
-		Profiler_start("enemy_spotted")
 
 		local result, evaluate = node_enemy_spotted:run(unit, blackboard, t, dt)
-
-		Profiler_stop("enemy_spotted")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -210,11 +187,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_escorting_ogre, "aborted")
-		Profiler_start("escorting_ogre")
 
 		local result, evaluate = node_escorting_ogre:run(unit, blackboard, t, dt)
-
-		Profiler_stop("escorting_ogre")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -234,11 +208,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_trigger_move_to, "aborted")
-		Profiler_start("trigger_move_to")
 
 		local result, evaluate = node_trigger_move_to:run(unit, blackboard, t, dt)
-
-		Profiler_stop("trigger_move_to")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)
@@ -254,11 +225,8 @@ BTSelector_pack_master.run = function (self, unit, blackboard, t, dt)
 	local node_idle = children[10]
 
 	self:set_running_child(unit, blackboard, t, node_idle, "aborted")
-	Profiler_start("idle")
 
 	local result, evaluate = node_idle:run(unit, blackboard, t, dt)
-
-	Profiler_stop("idle")
 
 	if result ~= "running" then
 		self:set_running_child(unit, blackboard, t, nil, result)

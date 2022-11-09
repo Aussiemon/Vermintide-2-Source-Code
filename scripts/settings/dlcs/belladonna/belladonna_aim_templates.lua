@@ -67,8 +67,6 @@ AimTemplates.ungor_archer = {
 			data.look_at_on_animation = "aim_bow_on"
 		end,
 		update = function (unit, t, dt, data)
-			Profiler.start("ungor_archer_look_at")
-
 			local blackboard = data.blackboard
 			local ai_extension = data.ai_extension
 			local current_action = ai_extension:current_action_name()
@@ -82,7 +80,6 @@ AimTemplates.ungor_archer = {
 
 			if not target_unit or not Unit.alive(target_unit) then
 				AiUtils.set_default_anim_constraint(unit, head_constraint_target)
-				Profiler.stop("ungor_archer_look_at")
 
 				return
 			end
@@ -122,8 +119,6 @@ AimTemplates.ungor_archer = {
 
 				Unit.animation_event(unit, "aim_bow_off")
 			end
-
-			Profiler.stop("ungor_archer_look_at")
 		end,
 		leave = function (unit, data)
 			if data.is_using_head_constraint then

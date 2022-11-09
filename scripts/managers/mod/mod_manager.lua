@@ -350,11 +350,9 @@ ModManager._load_mod = function (self, index)
 	local handle = mod.handle
 
 	self:print("info", "loading mod %s", id)
-	Profiler.start("load info")
 
 	local info = Mod.info(handle)
 
-	Profiler.stop("load info")
 	self:print("spew", "<mod info>\n%s\n</mod info>", info)
 	Crashify.print_property("modded", true)
 
@@ -401,7 +399,6 @@ ModManager._load_package = function (self, mod, index)
 		return
 	end
 
-	Profiler.start("_load_package")
 	self:print("info", "loading package %q", package_name)
 
 	local resource_handle = Mod.resource_package(mod.handle, package_name)
@@ -410,8 +407,6 @@ ModManager._load_package = function (self, mod, index)
 	ResourcePackage.load(resource_handle)
 
 	mod.loaded_packages[#mod.loaded_packages + 1] = resource_handle
-
-	Profiler.stop("_load_package")
 end
 
 ModManager.unload_all_mods = function (self)

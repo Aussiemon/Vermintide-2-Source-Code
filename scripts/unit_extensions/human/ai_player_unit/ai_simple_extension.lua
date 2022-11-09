@@ -27,6 +27,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	self._side_id = extension_init_data.side_id
 	local is_passive = (breed.initial_is_passive == nil and true) or breed.initial_is_passive
 	local blackboard = Script.new_map(breed.blackboard_allocation_size or 75)
+	local optional_spawn_data = extension_init_data.optional_spawn_data
 	blackboard.world = extension_init_context.world
 	blackboard.unit = unit
 	blackboard.level = LevelHelper:current_level(extension_init_context.world)
@@ -45,7 +46,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	blackboard.stagger_count = 0
 	blackboard.stagger_count_reset_at = 0
 	blackboard.override_targets = {}
-	blackboard.optional_spawn_data = extension_init_data.optional_spawn_data
+	blackboard.optional_spawn_data = optional_spawn_data
 	blackboard.spawn_category = extension_init_data.spawn_category
 	blackboard.is_ai = true
 	local health_extension = ScriptUnit.has_extension(unit, "health_system")
@@ -72,7 +73,9 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 		WwiseUtils.trigger_unit_event(self._world, breed.special_on_spawn_stinger, unit, 0)
 	end
 
-	self:_init_brain(breed, is_horde)
+	local behavior = (optional_spawn_data and optional_spawn_data.behavior) or (is_horde and breed.horde_behavior) or breed.behavior
+
+	self:_init_brain(behavior, is_horde)
 	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
 
 	self.attributes = nil
@@ -165,7 +168,7 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.side = side
 	local breed = blackboard.breed
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
-	local behavior = (is_horde and breed.horde_behavior) or breed.behavior
+	local behavior = (optional_spawn_data and optional_spawn_data.behavior) or (is_horde and breed.horde_behavior) or breed.behavior
 
 	self._brain:unfreeze(blackboard, behavior)
 	self:init_perception(breed, is_horde)
@@ -297,8 +300,7 @@ AISimpleExtension.set_perception = function (self, perception_func_name, target_
 	end
 end
 
-AISimpleExtension._init_brain = function (self, breed, is_horde)
-	local behavior = (is_horde and breed.horde_behavior) or breed.behavior
+AISimpleExtension._init_brain = function (self, behavior, is_horde)
 	self._brain = AIBrain:new(self._world, self._unit, self._blackboard, self._breed, behavior)
 end
 

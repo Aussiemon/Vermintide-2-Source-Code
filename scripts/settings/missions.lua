@@ -155,11 +155,6 @@ Missions = {
 		mission_template_name = "collect",
 		collect_amount = 3
 	},
-	dwarf_interior_destroy_tunnels = {
-		text = "dlc1_5_dwarf_interior_destroy_tunnels_mission_text",
-		mission_template_name = "collect",
-		collect_amount = 3
-	},
 	whitebox_tutorial_sidemission_1 = {
 		is_side_mission = true,
 		collect_amount = 3,
@@ -516,82 +511,6 @@ Missions.mission_dlc_castle_dungeon_survive_until_way_out = {
 Missions.mission_dlc_castle_dungeon_escape_up = {
 	mission_template_name = "goal",
 	text = "dlc1_4_mission_dungeon_escape_up"
-}
-Missions.dwarf_interior_enter_hold = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_interior_enter_hold_mission_text"
-}
-Missions.dwarf_interior_stabilize_pressure = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_interior_stabilize_pressure_mission_text"
-}
-Missions.dwarf_interior_find_skaven_source = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_interior_find_skaven_source_mission_text"
-}
-Missions.dwarf_interior_escape = {
-	mission_template_name = "goal",
-	text = "generic_escape_wagon"
-}
-Missions.dwarf_interior_wait_explosive = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_interior_wait_explosive_mission_text"
-}
-Missions.dwarf_exterior_follow_secret_path = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_follow_secret_path_mission_text"
-}
-Missions.dwarf_exterior_find_vault_location = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_find_vault_location_mission_text"
-}
-Missions.dwarf_exterior_locate_chamber_area = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_locate_chamber_area_mission_text"
-}
-Missions.dwarf_exterior_enter_chamber = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_enter_chamber_mission_text"
-}
-Missions.dwarf_exterior_pickup_artifact = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_pickup_artifact_mission_text"
-}
-Missions.dwarf_exterior_survive = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_survive_mission_text"
-}
-Missions.dwarf_exterior_escape_quarry = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_exterior_escape_quarry_mission_text"
-}
-Missions.dwarf_beacons_find_trading_post = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_find_trading_post_mission_text"
-}
-Missions.dwarf_beacons_lower_bridge = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_lower_bridge_mission_text"
-}
-Missions.dwarf_beacons_switch_pull_again = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_switch_pull_again_mission_text"
-}
-Missions.dwarf_beacons_bridge_done = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_bridge_done_mission_text"
-}
-Missions.dwarf_beacons_approach_beacon = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_approach_beacon_mission_text"
-}
-Missions.dwarf_beacons_activate_beacon = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_activate_beacon_mission_text"
-}
-Missions.dwarf_beacons_leave = {
-	mission_template_name = "goal",
-	text = "dlc1_5_dwarf_beacons_leave_mission_text"
 }
 Missions.tutorial_movement = {
 	text = "mission_objective_tutorial_movement",

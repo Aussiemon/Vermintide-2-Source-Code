@@ -1083,6 +1083,7 @@ go_type_table = {
 			local network_angular_velocity = locomotion_extension.network_angular_velocity
 			local pickup_extension = ScriptUnit.extension(unit, "pickup_system")
 			local pickup_name = pickup_extension.pickup_name
+			local owner_peer_id = pickup_extension.owner_peer_id
 			local has_physics = pickup_extension.has_physics
 			local spawn_type = pickup_extension.spawn_type
 			local limited_item_extension = ScriptUnit.extension(unit, "limited_item_track_system")
@@ -1104,6 +1105,7 @@ go_type_table = {
 				spawner_unit = spawner_unit_index,
 				limited_item_id = id,
 				pickup_name = NetworkLookup.pickup_names[pickup_name],
+				owner_peer_id = owner_peer_id,
 				has_physics = has_physics,
 				spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
 			}
@@ -3505,6 +3507,7 @@ go_type_table = {
 			local network_velocity = GameSession.game_object_field(game_session, go_id, "network_velocity")
 			local network_angular_velocity = GameSession.game_object_field(game_session, go_id, "network_angular_velocity")
 			local pickup_name = GameSession.game_object_field(game_session, go_id, "pickup_name")
+			local owner_peer_id = GameSession.game_object_field(game_session, go_id, "owner_peer_id")
 			local has_physics = GameSession.game_object_field(game_session, go_id, "has_physics")
 			local spawn_type = GameSession.game_object_field(game_session, go_id, "spawn_type")
 			local spawner_unit_index = GameSession.game_object_field(game_session, go_id, "spawner_unit")
@@ -3521,6 +3524,7 @@ go_type_table = {
 				},
 				pickup_system = {
 					pickup_name = NetworkLookup.pickup_names[pickup_name],
+					owner_peer_id = owner_peer_id,
 					has_physics = has_physics,
 					spawn_type = NetworkLookup.pickup_spawn_types[spawn_type]
 				},

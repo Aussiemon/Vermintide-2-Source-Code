@@ -63,7 +63,7 @@ TwitchSettings = TwitchSettings or {
 	},
 	positive_vote_options = table.enum("enable_positive_votes", "disable_giving_items", "disable_positive_votes")
 }
-TwitchVoteTemplates = {}
+TwitchVoteTemplates = TwitchVoteTemplates or {}
 
 require("scripts/settings/twitch_vote_templates_buffs")
 require("scripts/settings/twitch_vote_templates_items")

@@ -80,11 +80,7 @@ BTDodgeBackAction.leave = function (self, unit, blackboard, t, reason, destroy)
 end
 
 BTDodgeBackAction.run = function (self, unit, blackboard, t, dt)
-	Profiler.start("BTDodgeBackAction")
-
 	if blackboard.start_finished or t - blackboard.start_started_since > 10 then
-		Profiler.stop("BTDodgeBackAction")
-
 		return "done"
 	end
 
@@ -92,7 +88,6 @@ BTDodgeBackAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 
 	locomotion_extension:set_wanted_rotation(rotation)
-	Profiler.stop("BTDodgeBackAction")
 
 	return "running"
 end

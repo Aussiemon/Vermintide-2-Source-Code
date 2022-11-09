@@ -298,7 +298,6 @@ StoreWindowCategoryItemList._get_all_items = function (self)
 end
 
 StoreWindowCategoryItemList._update_item_list = function (self)
-	Profiler.start("StoreWindowCategoryItemList:_update_item_list")
 	self:_destroy_product_widgets()
 
 	local parent = self._parent
@@ -322,8 +321,6 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 		end
 	end
 
-	Profiler.start("StoreWindowCategoryItemList item filtering")
-
 	local items = nil
 
 	if added_filters > 0 then
@@ -331,9 +328,6 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	else
 		items = self:_get_all_items()
 	end
-
-	Profiler.stop("StoreWindowCategoryItemList item filtering")
-	Profiler.start("StoreWindowCategoryItemList layout creation")
 
 	local insert_index = 0
 
@@ -349,7 +343,6 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	end
 
 	table.sort(layout, StoreLayoutConfig.compare_sort_key)
-	Profiler.stop("StoreWindowCategoryItemList layout creation")
 
 	self._layout = layout
 
@@ -372,8 +365,6 @@ StoreWindowCategoryItemList._update_item_list = function (self)
 	end
 
 	self._list_initialized = true
-
-	Profiler.stop("StoreWindowCategoryItemList:_update_item_list")
 end
 
 StoreWindowCategoryItemList._set_title_texts = function (self, title_text)
@@ -454,8 +445,6 @@ StoreWindowCategoryItemList._on_list_index_pressed = function (self, index)
 end
 
 StoreWindowCategoryItemList._create_product_widgets = function (self, layout)
-	Profiler.start("StoreWindowCategoryItemList:_create_product_widgets")
-
 	local widgets = {}
 	local parent = self._parent
 	local scenegraph_id = "item_root"
@@ -473,7 +462,6 @@ StoreWindowCategoryItemList._create_product_widgets = function (self, layout)
 
 	self:_align_item_widgets()
 	self:_initialize_scrollbar()
-	Profiler.stop("StoreWindowCategoryItemList:_create_product_widgets")
 end
 
 StoreWindowCategoryItemList._destroy_product_widgets = function (self, force_unload)

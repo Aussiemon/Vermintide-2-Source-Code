@@ -145,15 +145,9 @@ SurroundingAwareSystem.on_remove_extension = function (self, unit, extension_nam
 end
 
 SurroundingAwareSystem.update = function (self, context, t)
-	Profiler.start("SeenRecently")
 	self:update_seen_recently(context, t)
-	Profiler.stop("SeenRecently")
-	Profiler.start("Lookat")
 	self:update_lookat(context, t)
-	Profiler.stop("Lookat")
-	Profiler.start("Events")
 	self:update_events(context, t)
-	Profiler.stop("Events")
 end
 
 local function check_raycast_center(physics_world, unit, target, ray_position, ray_direction, ray_length, collision_filter)

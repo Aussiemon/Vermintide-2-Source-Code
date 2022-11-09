@@ -847,15 +847,11 @@ PickupSystem.update = function (self, dt, t)
 	for i = 1, #extension_update, 1 do
 		local extension = extension_update[i]
 
-		Profiler.start(extension)
 		self:update_extension(extension, dt, nil, t)
-		Profiler.stop(extension)
 	end
 
 	for extension_name, _ in pairs(self.extensions) do
 		local profiler_name = self.profiler_names[extension_name]
-
-		Profiler.start(profiler_name)
 
 		for _, extension in pairs(update_list[extension_name].update) do
 			local hide_func = extension.hide_func
@@ -864,8 +860,6 @@ PickupSystem.update = function (self, dt, t)
 				extension:hide()
 			end
 		end
-
-		Profiler.stop(profiler_name)
 	end
 end
 

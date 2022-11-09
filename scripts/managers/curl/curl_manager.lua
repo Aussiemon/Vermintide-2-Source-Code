@@ -59,37 +59,24 @@ local Request = {
 
 CurlManager.update = function (self, handle_callbacks)
 	DeadlockStack.pause()
-	Profiler.start("check perform")
 
 	if self._multi:perform() > 0 then
-		Profiler.start("wait")
 		self._multi:wait(0)
-		Profiler.stop("wait")
 	end
 
-	Profiler.stop("check perform")
 	DeadlockStack.unpause()
-	Profiler.start("info read")
 
 	local handle, ok, err = self._multi:info_read()
-
-	Profiler.stop("info read")
 
 	if handle ~= 0 then
 		local request = self._requests[handle]
 
 		if request ~= nil then
 			if handle_callbacks and request.cb then
-				Profiler.start("get info")
-
 				local code = handle:getinfo(self._curl.INFO_RESPONSE_CODE)
 
-				Profiler.stop("get info")
-
 				if ok then
-					Profiler.start("call cb")
 					request.cb(true, code, request.headers, request.data, request.userdata)
-					Profiler.stop("call cb")
 				else
 					Application.warning("Curl Manager Error, Code: %s, Url: %s, Name: %s", tostring(code), request.url, tostring(err:name()))
 					request.cb(false, code, {}, err:name(), request.userdata)
@@ -99,9 +86,7 @@ CurlManager.update = function (self, handle_callbacks)
 			self._requests[handle] = nil
 		end
 
-		Profiler.start("handle close")
 		handle:close()
-		Profiler.stop("handle close")
 	end
 end
 

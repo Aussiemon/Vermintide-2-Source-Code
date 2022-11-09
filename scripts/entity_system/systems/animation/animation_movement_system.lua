@@ -84,13 +84,9 @@ end
 AnimationMovementSystem.update = function (self, context, t)
 	local dt = context.dt
 
-	Profiler.start("AnimationMovementSystem")
-
 	for unit, extension in pairs(self._extensions) do
 		extension:update(unit, nil, dt, context, t)
 	end
-
-	Profiler.stop("AnimationMovementSystem")
 end
 
 AnimationMovementSystem.rpc_enable_animation_movement_system = function (self, channel_id, unit_id, enable)

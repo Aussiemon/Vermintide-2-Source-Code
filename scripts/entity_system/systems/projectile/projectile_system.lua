@@ -416,6 +416,7 @@ ProjectileSystem.rpc_spawn_pickup_projectile_limited = function (self, channel_i
 		return
 	end
 
+	local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id] or Network.peer_id()
 	local projectile_unit_name = NetworkLookup.husks[projectile_unit_name_id]
 	local projectile_unit_template_name = NetworkLookup.go_types[projectile_unit_template_name_id]
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
@@ -432,6 +433,7 @@ ProjectileSystem.rpc_spawn_pickup_projectile_limited = function (self, channel_i
 		pickup_system = {
 			has_physics = true,
 			pickup_name = pickup_name,
+			owner_peer_id = owner_peer_id,
 			spawn_type = pickup_spawn_type
 		},
 		limited_item_track_system = {
@@ -843,13 +845,7 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 	if owning_projectile then
 		local cb = callback(self, "physics_cb_light_weight_projectile_hit", projectile)
 		local physics_world = World.get_data(world, "physics_world")
-
-		Profiler.start("make_raycast")
-
 		projectile.raycast = PhysicsWorld.make_raycast(physics_world, cb, "all", "types", "both", "collision_filter", collision_filter)
-
-		Profiler.stop("make_raycast")
-
 		projectile.distance_moved = 0
 		projectile.range = range
 		projectile.action_data = action_data
@@ -958,15 +954,11 @@ ProjectileSystem._update_shooting = function (self, dt, t, husk_shooting_data)
 		local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
 		local light_weight_projectile_template = data.light_weight_projectile_template
 
-		Profiler.start("local_shoot")
-
 		for i = 1, shots_to_fire, 1 do
 			data.shots_fired = data.shots_fired + 1
 
 			self:_shoot(owner_peer_id, data, t, dt)
 		end
-
-		Profiler.stop("local_shoot")
 	end
 end
 
@@ -1009,15 +1001,11 @@ ProjectileSystem._shoot = function (self, owner_peer_id, data, t, dt)
 		projectile_linker = light_weight_projectile_template.projectile_linker,
 		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 	}
-
-	Profiler.start("create_light_weight_projectile")
-
 	local peer_id = data.peer_id
 	local skip_rpc = true
 	local husk_projectile = true
 
 	self:create_light_weight_projectile(data.breed.name, data.owner_unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id, nil, skip_rpc, husk_projectile, data.projectile_list)
-	Profiler.stop("create_light_weight_projectile")
 end
 
 ProjectileSystem.rpc_clients_continuous_shoot_stop = function (self, channel_id, owner_unit_id)
@@ -1268,7 +1256,6 @@ ProjectileSystem._link_projectile = function (self, hit_data, projectile_linker_
 end
 
 ProjectileSystem._update_light_weight_projectiles = function (self, dt, t, data)
-	Profiler.start("update_light_weight_projectiles")
 	self:_server_update_light_weight_projectiles(dt, t, self._light_weight.own_data)
 
 	for _, peer_data in pairs(self._light_weight.husk_list) do
@@ -1278,8 +1265,6 @@ ProjectileSystem._update_light_weight_projectiles = function (self, dt, t, data)
 	for _, peer_data in pairs(self._light_weight.husk_shoot_list) do
 		self:_server_update_light_weight_projectiles(dt, t, peer_data.projectile_list)
 	end
-
-	Profiler.stop("update_light_weight_projectiles")
 end
 
 ProjectileSystem._print_debug = function (self)

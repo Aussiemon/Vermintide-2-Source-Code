@@ -430,8 +430,6 @@ local ORDER_RARITY = {
 }
 
 StoreLayoutConfig.make_sort_key = function (item)
-	Profiler.start("StoreLayoutConfig.make_sort_key")
-
 	local backend_items = Managers.backend:get_interface("items")
 	local data = item.data
 	local key = item.key
@@ -476,8 +474,6 @@ StoreLayoutConfig.make_sort_key = function (item)
 	end
 
 	local sort_key = string.format("%01x%-16.16s%03x%04x%01x", owned, item_type, prio, price, ORDER_RARITY[rarity] or 0)
-
-	Profiler.stop("StoreLayoutConfig.make_sort_key")
 
 	return sort_key
 end

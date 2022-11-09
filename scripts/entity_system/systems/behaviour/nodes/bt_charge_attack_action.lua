@@ -183,8 +183,6 @@ BTChargeAttackAction.run = function (self, unit, blackboard, t, dt)
 
 	local charge_state = blackboard.charge_state
 
-	Profiler.start("bt_charge_attack_action")
-
 	if blackboard.ray_can_go_update_time < t and Unit.alive(target_unit) then
 		local nav_world = blackboard.nav_world
 		local target_position = POSITION_LOOKUP[target_unit]
@@ -209,14 +207,10 @@ BTChargeAttackAction.run = function (self, unit, blackboard, t, dt)
 	elseif charge_state == "align_to_target" then
 		self:_run_align_to_target(unit, blackboard, t, dt)
 	elseif charge_state == "finished" then
-		Profiler.stop("bt_charge_attack_action")
-
 		return "done"
 	elseif charge_state == "cancel" then
 		self:_run_cancel(unit, blackboard, t, dt)
 	end
-
-	Profiler.stop("bt_charge_attack_action")
 
 	return "running", should_evaluate
 end

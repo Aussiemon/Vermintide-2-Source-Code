@@ -82,11 +82,7 @@ AIBrain.exit_last_action = function (self)
 end
 
 AIBrain.update = function (self, unit, t, dt)
-	Profiler.start("unknown_node")
-
 	local result = self._bt:root():evaluate(unit, self._blackboard, t, dt)
-
-	Profiler.stop("unknown_node")
 end
 
 return

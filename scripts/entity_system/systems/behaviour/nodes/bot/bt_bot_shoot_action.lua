@@ -238,12 +238,7 @@ BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, 
 	if prediction_function then
 		local gravity_setting = ProjectileGravitySettings[projectile_info.gravity_settings]
 		local angle = nil
-
-		Profiler.start("trajectory prediction")
-
 		angle, target_position = prediction_function(projectile_speed / 100, -gravity_setting, current_position, target_pos, target_current_velocity)
-
-		Profiler.stop("trajectory prediction")
 
 		if not angle then
 			if self_unit == script_data.debug_unit then

@@ -437,8 +437,6 @@ LevelAnalysis.boxify_table_pos_array = function (source_array)
 end
 
 LevelAnalysis.update_main_path_generation = function (self)
-	Profiler.start("update_main_path_generation")
-
 	local GwNavAStar_processing_finished = GwNavAStar.processing_finished
 	local GwNavAStar_path_found = GwNavAStar.path_found
 	local GwNavAStar_node_count = GwNavAStar.node_count
@@ -542,8 +540,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 					self:generate_boss_paths()
 				end
 
-				Profiler.stop("update_main_path_generation")
-
 				return "done"
 
 				if "done" then
@@ -559,8 +555,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 
 					self.stitching_path = false
 
-					Profiler.stop("update_main_path_generation")
-
 					return "fail", s
 
 					if "fail" then
@@ -570,8 +564,6 @@ LevelAnalysis.update_main_path_generation = function (self)
 			end
 		end
 	end
-
-	Profiler.stop("update_main_path_generation")
 end
 
 LevelAnalysis.calc_dists_to_start = function (self)
@@ -1691,10 +1683,18 @@ LevelAnalysis.get_closest_waypoint_spline = function (self, pos)
 		return
 	end
 
+	local waypoint_lookup_table = self.waypoint_lookup_table
+
+	if not waypoint_lookup_table then
+		printf("Missing patrol waypoints")
+
+		return
+	end
+
 	local min_dist = math.huge
 	local best_id = nil
 
-	for id, route_data in pairs(self.waypoint_lookup_table) do
+	for id, route_data in pairs(waypoint_lookup_table) do
 		local waypoints = route_data.waypoints
 		local wp = waypoints[1]
 		local start_pos = Vector3(wp[1], wp[2], wp[3])
@@ -1707,7 +1707,7 @@ LevelAnalysis.get_closest_waypoint_spline = function (self, pos)
 	end
 
 	if best_id then
-		local route_data = self.waypoint_lookup_table[best_id]
+		local route_data = waypoint_lookup_table[best_id]
 		local waypoints = LevelAnalysis.boxify_table_pos_array(route_data.waypoints)
 
 		return best_id, waypoints, waypoints[1]:unbox()
@@ -1952,8 +1952,6 @@ LevelAnalysis.reset_debug = function (self)
 end
 
 LevelAnalysis.debug = function (self, t)
-	Profiler.start("LevelAnalysis:debug")
-
 	local debug_text = Managers.state.debug_text
 
 	debug_text:clear_world_text("boss")
@@ -2046,18 +2044,12 @@ LevelAnalysis.debug = function (self, t)
 			QuickDrawer:sphere(point + Vector3(0, 0, 1.5), 1.366, Color(255, 244, 183, 7))
 		end
 	end
-
-	Profiler.stop("LevelAnalysis:debug")
 end
 
 LevelAnalysis.update = function (self, t)
-	Profiler.start("level_analysis")
-
 	if self.stitching_path then
 		self:update_main_path_generation()
 	end
-
-	Profiler.stop("level_analysis")
 end
 
 LevelAnalysis.get_main_and_sub_zone_index_from_pos = function (nav_world, zones, lookup, pos, zone_index_lookup)

@@ -9,27 +9,18 @@ local function compare_utility()
 	local consideration = UtilityConsiderations.storm_vermin_push_attack.distance_to_target
 	local blackboard_value = 0.7
 	local f1 = EngineOptimized.utility_from_spline
-
-	Profiler.start("UTIL ENG")
-
 	local utility = nil
 
 	for ii = 1, 1000, 1 do
 		utility = f1(consideration.engine_spline_index, blackboard_value)
 	end
 
-	Profiler.stop("UTIL ENG")
-
 	local norm_value = math.clamp(blackboard_value / consideration.max_value, 0, 1)
 	local f2 = Utility.GetUtilityValueFromSpline
-
-	Profiler.start("UTIL LUA")
 
 	for ii = 1, 1000, 1 do
 		utility = f2(consideration.spline, norm_value)
 	end
-
-	Profiler.stop("UTIL LUA")
 end
 
 local function test_pointx(nodes, p)
@@ -101,24 +92,17 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 
 	QuickDrawer:sphere(pos, 10 + math.sin(t * 5) * 5)
 	Debug.text("DISTANCE point: %d, distance %.1f", ti, main_path_data.collapsed_travel_dists[ti])
-	Profiler.start("main_path_a")
 
 	for i = 1, num_points, 1 do
 		closest_pos_at_main_path(main_path_data.collapsed_path, main_path_data.collapsed_travel_dists, main_path_data.breaks_lookup, pos, ti)
 	end
 
-	Profiler.stop("main_path_a")
-
 	local closest_pos_at_main_path_opt = EngineOptimized.closest_pos_at_main_path
 	local pr2 = EngineOptimized.point_on_mainpath
-
-	Profiler.start("main_path_b")
 
 	for i = 1, num_points, 1 do
 		closest_pos_at_main_path_opt(pos)
 	end
-
-	Profiler.stop("main_path_b")
 
 	local p = self.hero_player_positions[1]
 	local p1 = Vector3(100, 20, 130)
@@ -126,23 +110,15 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	local res = nil
 	local EngineOptimized_closest_point_on_line = EngineOptimized.closest_point_on_line
 
-	Profiler.start("closest_point Opt")
-
 	for i = 1, 250, 1 do
 		res = EngineOptimized_closest_point_on_line(p, p1, p2)
 	end
 
-	Profiler.stop("closest_point Opt")
-
 	local Geometry_closest_point_on_line = Geometry.closest_point_on_line
-
-	Profiler.start("closest_point Script")
 
 	for i = 1, 250, 1 do
 		res = Geometry_closest_point_on_line(p, p1, p2)
 	end
-
-	Profiler.stop("closest_point Script")
 
 	local mpd = self.level_analysis.main_path_data
 	local nodes = mpd.collapsed_path
@@ -303,6 +279,92 @@ function process_reachable_navgraph_test(self)
 			print("astar connect complete")
 		end
 	end
+end
+
+function print_point(p)
+	print("(" .. p.x .. ", " .. p.y .. ")")
+
+	return nil
+end
+
+function print_points(points, num)
+	print("[")
+
+	for i = 1, num, 1 do
+		local p = points[i]
+
+		if i > 1 then
+			print(", ")
+		end
+
+		print_point(p)
+	end
+
+	print("]")
+
+	return nil
+end
+
+function ccw(a, b, c)
+	return (b.x - a.x) * (c.y - a.y) > (b.y - a.y) * (c.x - a.x)
+end
+
+local function left_right(left, right)
+	return left.x < right.x
+end
+
+function convex_hull(points, h)
+	local num_points = #points
+
+	if num_points == 0 then
+		return h, 0
+	end
+
+	table.sort(points, left_right)
+
+	local num = 0
+
+	for i = 1, num_points, 1 do
+		local pt = points[i]
+
+		while num >= 2 and not ccw(h[num - 1], h[num], pt) do
+			num = num - 1
+		end
+
+		num = num + 1
+		h[num] = pt
+	end
+
+	local t = num + 1
+
+	for i = num_points, 1, -1 do
+		local pt = points[i]
+
+		while t <= num and not ccw(h[num - 1], h[num], pt) do
+			num = num - 1
+		end
+
+		num = num + 1
+		h[num] = pt
+	end
+
+	num = num - 1
+
+	return h, num
+end
+
+function make_points_for_hull_test()
+	local side = Managers.state.side:get_side(Managers.state.conflict.default_enemy_side_id)
+	local units = side.units_lookup
+	local points = table.clone(units)
+
+	for unit, _ in pairs(units) do
+		if AiUtils.unit_alive(unit) then
+			points[#points + 1] = POSITION_LOOKUP[unit]
+		end
+	end
+
+	return points
 end
 
 ConflictDirectorTests.update_jslots = function (self, unit)
@@ -857,10 +919,10 @@ function setup_slot_testing()
 	slot_testing(units_1, units_2)
 end
 
-local test = "nav_group_astar"
-
-ConflictDirectorTests.start_test = function (conflict_director, t, dt)
+ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
+	test = test or "spawn_encampment"
+	conflict_director.conflict_director_tests_name = test
 
 	print("starting test:", test)
 
@@ -895,10 +957,74 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt)
 		script_data.kill_test = not script_data.kill_test
 	elseif test == "nav_group_astar" then
 		ConflictDirectorTests.nav_group_astar_test(conflict_director, side)
+	elseif test == "spawn_encampment" then
+		if not GenericTerrorEvents.encampment then
+			print("Missing terror event: encampment")
+
+			return
+		end
+
+		local position, distance, normal, actor = conflict_director:player_aim_raycast(conflict_director._world, false, "filter_ray_horde_spawn")
+
+		if not position then
+			print("No spawn pos found")
+
+			return
+		end
+
+		local event_data = {
+			side_id = conflict_director.debug_spawn_side_id,
+			debug_pos = position,
+			debug_dir = {
+				0,
+				1
+			}
+		}
+
+		TerrorEventMixer.start_event("encampment", event_data)
+
+		local event_data = {
+			side_id = 1,
+			debug_pos = position + Vector3(0, 8, 0),
+			debug_dir = {
+				0,
+				-1
+			}
+		}
+
+		TerrorEventMixer.start_event("encampment", event_data)
+
+		return
+	elseif test == "hull_test" then
+		local points = make_points_for_hull_test()
+		local hull, num = convex_hull(points, {})
+		local z = 0.5
+
+		for i = 1, num, 1 do
+			local a = hull[i]
+			local b = nil
+
+			if i == num then
+				b = hull[1]
+			else
+				b = hull[i + 1]
+			end
+
+			local p1 = Vector3(a.x, a.y, z)
+			local p2 = Vector3(b.x, b.y, z)
+
+			QuickDrawerStay:line(p1, p2, Color(200, 100, 100))
+		end
+
+		print("Convex Hull: ")
+		print_points(hull, num)
+		print()
+		print("Correct Output: Convex Hull: [(-9, -3), (-3, -9), (19, -8), (17, 5), (12, 17), (5, 19), (-3, 15)]")
 	end
 end
 
 ConflictDirectorTests.update = function (conflict_director, t, dt)
+	local test = conflict_director.conflict_director_tests_name
 	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
 	conflict_director.hero_player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
 	conflict_director.hero_player_positions = side.PLAYER_POSITIONS

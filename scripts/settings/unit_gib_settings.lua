@@ -1450,7 +1450,7 @@ UnitGibSettings.chaos_marauder = {
 			{
 				"upperbody",
 				"right_lowerleg",
-				"left_leg"
+				"left_lowerleg"
 			},
 			{
 				"upperbody",

@@ -225,68 +225,6 @@ SocialWheelPriority = {
 		end
 	}
 }
-local general_emotes = {
-	{
-		text = "social_wheel_pose_test_01",
-		name = "social_wheel_general_pose_01",
-		icon = "radial_chat_icon_thank_you",
-		execute_func = play_emote,
-		data = {
-			anim_event = "anim_pose_01"
-		},
-		ping_type = PingTypes.LOCAL_ONLY
-	},
-	{
-		text = "social_wheel_pose_test_02",
-		name = "social_wheel_general_pose_02",
-		icon = "radial_chat_icon_thank_you",
-		execute_func = play_emote,
-		data = {
-			anim_event = "anim_pose_02"
-		},
-		ping_type = PingTypes.LOCAL_ONLY
-	},
-	{
-		text = "social_wheel_pose_test_03",
-		name = "social_wheel_general_pose_03",
-		icon = "radial_chat_icon_thank_you",
-		execute_func = play_emote,
-		data = {
-			anim_event = "anim_pose_03"
-		},
-		ping_type = PingTypes.LOCAL_ONLY
-	},
-	{
-		text = "social_wheel_pose_test_04",
-		name = "social_wheel_general_pose_04",
-		icon = "radial_chat_icon_thank_you",
-		execute_func = play_emote,
-		data = {
-			anim_event = "anim_pose_04"
-		},
-		ping_type = PingTypes.LOCAL_ONLY
-	},
-	{
-		text = "social_wheel_pose_test_05",
-		name = "social_wheel_general_pose_05",
-		icon = "radial_chat_icon_thank_you",
-		execute_func = play_emote,
-		data = {
-			anim_event = "anim_pose_05"
-		},
-		ping_type = PingTypes.LOCAL_ONLY
-	},
-	{
-		text = "social_wheel_pose_test_06",
-		name = "social_wheel_general_pose_06",
-		icon = "radial_chat_icon_thank_you",
-		execute_func = play_emote,
-		data = {
-			anim_event = "anim_pose_06"
-		},
-		ping_type = PingTypes.LOCAL_ONLY
-	}
-}
 local unarmed_emotes = {
 	{
 		text = "social_wheel_pose_unarmed_01",
@@ -366,7 +304,6 @@ local function clone_wheel_settings(settings, unique_name_postfix)
 	return new_settings
 end
 
-local general_emotes_gamepad = clone_wheel_settings(general_emotes, "_gp")
 local unarmed_emotes_gamepad = clone_wheel_settings(unarmed_emotes, "_gp")
 SocialWheelSettings = {
 	general = {

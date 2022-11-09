@@ -170,11 +170,9 @@ EndZoneExtension.end_long_time_left = function (self)
 end
 
 EndZoneExtension.update = function (self, unit, input, dt, context, t)
-	Profiler.start("EndZoneExtension")
 	self:_reset_distances()
 	self:_check_proximity()
 	self:_update_state(dt, t)
-	Profiler.stop("EndZoneExtension")
 
 	if script_data.testify then
 		Testify:poll_requests_through_handler(end_zone_extension_testify, self)

@@ -190,9 +190,7 @@ BackendInterfaceSession.update = function (self)
 	local backend_session = self._backend_session
 
 	if backend_session:enabled() then
-		Profiler.start("BackendInterfaceSession update")
 		backend_session:update()
-		Profiler.stop("BackendInterfaceSession update")
 	end
 end
 

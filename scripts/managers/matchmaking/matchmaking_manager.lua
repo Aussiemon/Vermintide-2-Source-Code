@@ -353,12 +353,7 @@ end
 MatchmakingManager.update = function (self, dt, t)
 	if self._state then
 		local state_name = self._state.NAME
-
-		Profiler.start(state_name)
-
 		local new_state, state_context, reason = self._state:update(dt, t)
-
-		Profiler.stop(state_name)
 
 		if new_state then
 			self:_change_state(new_state, self.params, state_context, reason)
@@ -395,8 +390,6 @@ MatchmakingManager.update = function (self, dt, t)
 end
 
 MatchmakingManager._update_afk_logic = function (self, dt, t)
-	Profiler.start("afk logic")
-
 	local lobby = self.lobby
 
 	if self.is_server and lobby:is_joined() then
@@ -441,8 +434,6 @@ MatchmakingManager._update_afk_logic = function (self, dt, t)
 			end
 		end
 	end
-
-	Profiler.stop("afk logic")
 end
 
 local remove_peer_power_level_table = {}
@@ -453,9 +444,6 @@ MatchmakingManager._update_power_level = function (self, t)
 	end
 
 	self._power_level_timer = t + 5
-
-	Profiler.start("power level")
-
 	local own_peer_id = Network.peer_id()
 	local is_server = self.is_server
 	local local_player = Managers.player:local_player()
@@ -486,8 +474,6 @@ MatchmakingManager._update_power_level = function (self, t)
 	if is_server then
 		self:_set_power_level()
 	end
-
-	Profiler.stop("power level")
 end
 
 MatchmakingManager.get_average_power_level = function (self)

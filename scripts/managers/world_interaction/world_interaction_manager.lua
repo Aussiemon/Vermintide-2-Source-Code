@@ -88,19 +88,13 @@ WorldInteractionManager._add_simple_water_effect = function (self, unit, positio
 end
 
 WorldInteractionManager.update = function (self, dt, t)
-	Profiler.start("World Interaction")
-
 	if Managers.state.network:game() then
 		self:_update_water(dt, t)
 		self:_update_foliage(dt, t)
 	end
-
-	Profiler.stop("World Interaction")
 end
 
 WorldInteractionManager._update_water = function (self, dt, t)
-	Profiler.start("Update water")
-
 	local available_units = self._units.water
 	local local_player = Managers.player:local_player()
 	local player_unit = local_player and local_player.player_unit
@@ -110,15 +104,11 @@ WorldInteractionManager._update_water = function (self, dt, t)
 		self:_update_water_data(dt, t)
 		self:_update_water_ripples(dt, t)
 	end
-
-	Profiler.stop("Update water")
 end
 
 local UNITS_TO_REMOVE = {}
 
 WorldInteractionManager._cleanup_removed_units = function (self)
-	Profiler.start(" -Cleanup Removed Units")
-
 	local spawn_manager = Managers.state.spawn
 	local unit_spawner = spawn_manager.unit_spawner
 	local death_watch_lookup = unit_spawner.unit_death_watch_lookup
@@ -138,15 +128,11 @@ WorldInteractionManager._cleanup_removed_units = function (self)
 			units[unit] = nil
 		end
 	end
-
-	Profiler.stop(" -Cleanup Removed Units")
 end
 
 local COLLECTED_UNITS = {}
 
 WorldInteractionManager._update_water_data = function (self, dt, t)
-	Profiler.start(" -Update Water Data")
-
 	local water_settings = WorldInteractionSettings.water
 	local window_size = math.clamp(water_settings.window_size, 1, 100)
 	local speed_limit = water_settings.water_speed_limit
@@ -235,14 +221,11 @@ WorldInteractionManager._update_water_data = function (self, dt, t)
 	end
 
 	self._water_timer = self._water_timer + dt
-
-	Profiler.stop(" -Update Water Data")
 end
 
 local DATA_TO_REMOVE = {}
 
 WorldInteractionManager._update_water_ripples = function (self, dt, t)
-	Profiler.start(" -Update Water Ripples")
 	table.clear(DATA_TO_REMOVE)
 
 	local water_settings = WorldInteractionSettings.water
@@ -330,13 +313,9 @@ WorldInteractionManager._update_water_ripples = function (self, dt, t)
 
 		table.remove(self._water_ripples, idx)
 	end
-
-	Profiler.stop(" -Update Water Ripples")
 end
 
 WorldInteractionManager._update_foliage = function (self, dt, t)
-	Profiler.start("Update Foliage")
-
 	local local_player = Managers.player:local_player()
 	local local_player_unit = local_player and local_player.player_unit
 
@@ -344,15 +323,11 @@ WorldInteractionManager._update_foliage = function (self, dt, t)
 		self:_update_foliage_players(dt, t)
 		self:_update_foliage_ai(local_player_unit, dt, t)
 	end
-
-	Profiler.stop("Update Foliage")
 end
 
 local TEXTURE_SIZE = {}
 
 WorldInteractionManager._update_foliage_players = function (self, dt, t)
-	Profiler.start("- Update Players Foliage")
-
 	local foliage_settings = WorldInteractionSettings.foliage
 	local material_name = foliage_settings.default_foliage_material
 	local window_size = math.clamp(foliage_settings.window_size, 1, 100)
@@ -412,13 +387,9 @@ WorldInteractionManager._update_foliage_players = function (self, dt, t)
 			end
 		end
 	end
-
-	Profiler.stop("- Update Players Foliage")
 end
 
 WorldInteractionManager._update_foliage_ai = function (self, local_player_unit, dt, t)
-	Profiler.start("- Update AI Foliage")
-
 	local foliage_settings = WorldInteractionSettings.foliage
 	local material_name = foliage_settings.default_foliage_material
 	local window_size = math.clamp(foliage_settings.window_size, 1, 100)
@@ -466,8 +437,6 @@ WorldInteractionManager._update_foliage_ai = function (self, local_player_unit, 
 			end
 		end
 	end
-
-	Profiler.stop("- Update AI Foliage")
 end
 
 WorldInteractionManager.destory = function (self)

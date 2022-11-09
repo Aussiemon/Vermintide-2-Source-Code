@@ -278,14 +278,10 @@ BTStormfiendDualShootAction._shoot_ratling_gun = function (self, unit, blackboar
 		projectile_linker = light_weight_projectile_template.projectile_linker,
 		first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 	}
-
-	Profiler.start("create_light_weight_projectile")
-
 	local projectile_system = Managers.state.entity:system("projectile_system")
 	local owner_peer_id = Network.peer_id()
 
 	projectile_system:create_light_weight_projectile(blackboard.breed.name, unit, from_position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
-	Profiler.stop("create_light_weight_projectile")
 end
 
 BTStormfiendDualShootAction.initiate_firing = function (self, blackboard, t)

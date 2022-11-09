@@ -363,6 +363,37 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_wizards_trail_01 = {
+		{
+			texture = "portrait_frame_wizards_trail_01",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_wizards_trail_01_effect",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		}
+	},
 	default = {
 		{
 			texture = "portrait_frame_0000",
@@ -2576,6 +2607,18 @@ UIPlayerPortraitFrameSettings = {
 		}
 	}
 }
+
+local function get_current_stat()
+	return
+end
+
+local function get_texture()
+	return
+end
+
+local function get_color()
+	return
+end
 
 DLCUtils.merge("ui_portrait_frame_settings", UIPlayerPortraitFrameSettings)
 

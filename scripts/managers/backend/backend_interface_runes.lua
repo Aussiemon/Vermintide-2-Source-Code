@@ -8,8 +8,6 @@ BackendInterfaceRunes.init = function (self)
 end
 
 BackendInterfaceRunes._refresh_attributes = function (self)
-	Profiler.start("BackendInterfaceRunes:_refresh_attributes()")
-
 	local entities = Backend.get_entities_with_attributes(DB_ENTITY_TYPE)
 	local runes_by_entity_name = {}
 
@@ -21,8 +19,6 @@ BackendInterfaceRunes._refresh_attributes = function (self)
 	end
 
 	self._runes = runes_by_entity_name
-
-	Profiler.stop("BackendInterfaceRunes:_refresh_attributes()")
 end
 
 BackendInterfaceRunes.on_authenticated = function (self)

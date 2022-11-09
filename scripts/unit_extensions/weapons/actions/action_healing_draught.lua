@@ -19,7 +19,7 @@ ActionHealingDraught.client_owner_post_update = function (self, dt, t, world, ca
 end
 
 ActionHealingDraught.finish = function (self, reason)
-	if reason == "dead" or reason == "knocked_down" then
+	if reason == "dead" or reason == "knocked_down" or reason == "weapon_wielded" then
 		return
 	end
 

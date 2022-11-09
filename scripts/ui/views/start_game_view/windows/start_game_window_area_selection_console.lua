@@ -483,7 +483,7 @@ StartGameWindowAreaSelectionConsole._assign_video_player = function (self, mater
 	self:_destroy_video_widget()
 
 	local scenegraph_id = "video"
-	local video_widget_definition = UIWidgets.create_video(scenegraph_id, material_name)
+	local video_widget_definition = UIWidgets.create_fixed_aspect_video(scenegraph_id, material_name)
 	local video_widget = UIWidget.init(video_widget_definition)
 	video_widget.content.video_content.video_player = video_player
 	local ui_top_renderer = self.ui_top_renderer
@@ -509,7 +509,6 @@ StartGameWindowAreaSelectionConsole._destroy_video_widget = function (self)
 		local world = ui_top_renderer.world
 
 		World.remove_video_player(world, video_player)
-		UIWidget.destroy(ui_top_renderer, widget)
 
 		self._video_widget = nil
 	end

@@ -1546,7 +1546,11 @@ PlayFabMirrorBase.set_read_only_data = function (self, key, value, set_mirror)
 	self._read_only_data[key] = value
 
 	if set_mirror then
-		self._read_only_data_mirror[key] = value
+		if type(value) == "table" then
+			self._read_only_data_mirror[key] = table.clone(value)
+		else
+			self._read_only_data_mirror[key] = value
+		end
 	end
 end
 
@@ -1706,7 +1710,8 @@ PlayFabMirrorBase._create_fake_inventory_items = function (self, fake_inventory_
 	for i = 1, #new_fake_inventory_items, 1 do
 		local fake_item = new_fake_inventory_items[i]
 		local backend_id = fake_item.ItemInstanceId
-		lookup_table[fake_item.override_id or fake_item.ItemId] = backend_id
+		local id = fake_item.override_id or (fake_item.CustomData and fake_item.CustomData.skin) or fake_item.ItemId
+		lookup_table[id] = backend_id
 
 		self:_update_data(fake_item, backend_id)
 
@@ -1799,7 +1804,10 @@ PlayFabMirrorBase._add_new_weapon_skin = function (self, item, generate_new_id, 
 end
 
 PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
-	local inventory_items = self._inventory_items
+	if not self._inventory_items then
+		self._inventory_items = {}
+	end
+
 	local skin_data = WeaponSkins.skins[item.ItemId]
 
 	if skin_data then
@@ -1808,10 +1816,14 @@ PlayFabMirrorBase.add_item = function (self, backend_id, item, skip_autosave)
 		local master_list_item = ItemMasterList[item.ItemId]
 
 		if CosmeticUtils.is_cosmetic_item(master_list_item.slot_type) then
-			return self:add_unlocked_cosmetic(item.ItemId, backend_id)
+			backend_id = self:add_unlocked_cosmetic(item.ItemId, backend_id)
+
+			ItemHelper.mark_backend_id_as_new(backend_id, self._inventory_items[backend_id], skip_autosave)
+
+			return backend_id
 		end
 
-		inventory_items[backend_id] = item
+		self._inventory_items[backend_id] = item
 
 		self:_update_data(item, backend_id)
 		ItemHelper.mark_backend_id_as_new(backend_id, item, skip_autosave)
@@ -2252,7 +2264,7 @@ PlayFabMirrorBase.verify_dlc_careers_cb = function (self, result)
 		local data = function_result.data
 
 		table.merge(self._read_only_data, data)
-		table.merge(self._read_only_data_mirror, data)
+		table.merge(self._read_only_data_mirror, table.clone(data))
 	end
 
 	self._num_items_to_load = self._num_items_to_load - 1

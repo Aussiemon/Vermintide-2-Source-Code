@@ -144,15 +144,11 @@ MutatorHandler.hot_join_sync = function (self, peer_id)
 end
 
 MutatorHandler.pre_update = function (self, dt, t)
-	Profiler.start("MutatorHandler")
-
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
 	local is_server = self._is_server
 
 	for name, mutator_data in pairs(active_mutators) do
-		Profiler.start(name)
-
 		local template = mutator_data.template
 
 		if is_server and template.server.pre_update then
@@ -162,18 +158,12 @@ MutatorHandler.pre_update = function (self, dt, t)
 		if self._has_local_client and template.client.pre_update then
 			template.client.pre_update(mutator_context, mutator_data, dt, t)
 		end
-
-		Profiler.stop(name)
 	end
-
-	Profiler.stop("MutatorHandler")
 end
 
 local first_update = true
 
 MutatorHandler.update = function (self, dt, t)
-	Profiler.start("MutatorHandler")
-
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
 	local is_server = self._is_server
@@ -184,8 +174,6 @@ MutatorHandler.update = function (self, dt, t)
 
 			first_update = false
 		end
-
-		Profiler.start(name)
 
 		local template = mutator_data.template
 
@@ -200,11 +188,7 @@ MutatorHandler.update = function (self, dt, t)
 		if mutator_data.deactivate_at_t and mutator_data.deactivate_at_t < t then
 			self:_deactivate_mutator(name, active_mutators, mutator_context)
 		end
-
-		Profiler.stop(name)
 	end
-
-	Profiler.stop("MutatorHandler")
 end
 
 MutatorHandler.has_activated_mutator = function (self, name)

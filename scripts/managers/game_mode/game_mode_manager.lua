@@ -337,22 +337,25 @@ GameModeManager._set_flow_object_set_enabled = function (self, set, enable, set_
 
 	for i, unit_index in ipairs(set_units) do
 		local unit = Level.unit_by_index(level, unit_index)
-		local refs = Unit.get_data(unit, "flow_object_set_references") or 1
 
-		if enable then
-			refs = refs + 1
-		else
-			refs = math.max(refs - 1, 0)
-		end
+		if unit then
+			local refs = Unit.get_data(unit, "flow_object_set_references") or 1
 
-		Unit.set_data(unit, "flow_object_set_references", refs)
+			if enable then
+				refs = refs + 1
+			else
+				refs = math.max(refs - 1, 0)
+			end
 
-		if i <= object_set_size_overflow then
-			self:_set_flow_object_set_unit_enabled(level, unit_index)
-		else
-			buffer[write_index] = unit_index
-			write_index = write_index % max_size + 1
-			size = size + 1
+			Unit.set_data(unit, "flow_object_set_references", refs)
+
+			if i <= object_set_size_overflow then
+				self:_set_flow_object_set_unit_enabled(level, unit_index)
+			else
+				buffer[write_index] = unit_index
+				write_index = write_index % max_size + 1
+				size = size + 1
+			end
 		end
 	end
 
@@ -527,8 +530,6 @@ GameModeManager.flow_cb_set_flow_object_set_enabled = function (self, set_name, 
 end
 
 GameModeManager.register_object_sets = function (self, object_sets)
-	Profiler.start("register_object_sets")
-
 	self._object_sets = {}
 	self._object_set_names = {}
 
@@ -540,8 +541,6 @@ GameModeManager.register_object_sets = function (self, object_sets)
 			self:_set_flow_object_set_enabled(set, false, set_name)
 		end
 	end
-
-	Profiler.stop("register_object_sets")
 end
 
 GameModeManager.event_reload_application_settings = function (self)

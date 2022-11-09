@@ -430,13 +430,13 @@ if IS_XB1 then
 	scenegraph_definition.connect_button = {
 		vertical_alignment = "center",
 		parent = "login_text_area",
-		horizontal_alignment = "center",
+		horizontal_alignment = "right",
 		size = {
 			160,
 			45
 		},
 		position = {
-			0,
+			-10,
 			-2,
 			1
 		}

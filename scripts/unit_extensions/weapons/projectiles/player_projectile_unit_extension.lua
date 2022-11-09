@@ -545,6 +545,14 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 		end
 	end
 
+	if self._num_additional_penetrations == 1 and aoe_data and aoe_data.explosion then
+		local talent_extension = ScriptUnit.has_extension(self._owner_unit, "talent_system")
+
+		if talent_extension and talent_extension:has_talent("bardin_engineer_ranged_pierce") then
+			self._num_additional_penetrations = self._num_additional_penetrations - 1
+		end
+	end
+
 	local grenade = impact_data.grenade
 
 	if self._num_additional_penetrations == 0 and (grenade or (aoe_data and self._max_mass <= self._amount_of_mass_hit)) then

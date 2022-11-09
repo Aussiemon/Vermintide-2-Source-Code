@@ -40,9 +40,7 @@ StateMachine._change_state = function (self, new_state, params)
 		if self._state.on_exit and self._profiling_debugging_enabled then
 			local scope_name = profiler_scope(self._state.NAME, "exit")
 
-			Profiler.start(scope_name)
 			self._state:on_exit()
-			Profiler.stop(scope_name)
 		elseif self._state.on_exit then
 			self._state:on_exit()
 		end
@@ -50,12 +48,7 @@ StateMachine._change_state = function (self, new_state, params)
 
 	if self._profiling_debugging_enabled then
 		local scope_name = profiler_scope(new_state.NAME, "create")
-
-		Profiler.start(scope_name)
-
 		self._state = new_state:new()
-
-		Profiler.stop(scope_name)
 	else
 		self._state = new_state:new()
 	end
@@ -65,9 +58,7 @@ StateMachine._change_state = function (self, new_state, params)
 	if self._state.on_enter and self._profiling_debugging_enabled then
 		local scope_name = profiler_scope(self._state.NAME, "enter")
 
-		Profiler.start(scope_name)
 		self._state:on_enter(params)
-		Profiler.stop(scope_name)
 	elseif self._state.on_enter then
 		self._state:on_enter(params)
 	end

@@ -170,9 +170,7 @@ DebugManager.update = function (self, dt, t)
 	self:_update_actor_draw(dt)
 
 	for drawer_name, drawer in pairs(self._drawers) do
-		Profiler.start(drawer_name)
 		drawer:update(self._world)
-		Profiler.stop(drawer_name)
 	end
 
 	self.graph_drawer:update(self.input_service, t)
@@ -653,6 +651,8 @@ DebugManager.hot_join_sync = function (self, peer_id)
 end
 
 DebugManager.cycle_patched_items = function (self, t)
+	return
+
 	local backend_manager = Managers.backend
 	local is_local_backend = backend_manager:is_local()
 

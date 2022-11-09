@@ -182,6 +182,46 @@ cannon_ball.actions.action_dropped.default.projectile_info = {
 	drop_on_player_destroyed = true,
 	projectile_unit_name = "units/weapons/player/pup_cannon_ball_01/pup_cannon_ball_01"
 }
+local trail_cog = table.clone(weapon_template)
+trail_cog.wield_anim_3p = "to_cog"
+trail_cog.wield_anim = "to_cog"
+trail_cog.left_hand_unit = "units/weapons/player/wpn_trail_cog_02/wpn_trail_cog_02"
+trail_cog.actions.action_inspect = ActionTemplates.action_inspect
+trail_cog.actions.action_one.default.speed = 8
+trail_cog.actions.action_one.default.throw_time = 0.35000000000000003
+trail_cog.actions.action_one.default.throw_offset = {
+	0.4,
+	0.9,
+	0
+}
+trail_cog.actions.action_one.default.angular_velocity = {
+	0,
+	0,
+	0
+}
+trail_cog.actions.action_inspect = ActionTemplates.action_inspect
+trail_cog.wield_anim = "to_cog"
+trail_cog.wield_anim_3p = "to_cog"
+trail_cog.actions.action_one.default.buff_data = {
+	{
+		start_time = 0,
+		external_multiplier = 0.5,
+		end_time = 0.28,
+		buff_name = "planted_fast_decrease_movement"
+	}
+}
+trail_cog.actions.action_one.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit_limited",
+	pickup_name = "trail_cog",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/wpn_trail_cog_02/pup_trail_cog_02"
+}
+trail_cog.actions.action_dropped.default.projectile_info = {
+	projectile_unit_template_name = "pickup_projectile_unit_limited",
+	pickup_name = "trail_cog",
+	drop_on_player_destroyed = true,
+	projectile_unit_name = "units/weapons/player/wpn_trail_cog_02/pup_trail_cog_02"
+}
 local gargoyle_head = table.clone(weapon_template)
 gargoyle_head.left_hand_unit = "units/weapons/player/wpn_gargoyle_head/wpn_gargoyle_head"
 gargoyle_head.actions.action_one.default.speed = 8
@@ -310,6 +350,7 @@ training_dummy_skaven.actions.action_dropped.default.projectile_info.pickup_name
 
 return {
 	cannon_ball = cannon_ball,
+	trail_cog = trail_cog,
 	gargoyle_head = gargoyle_head,
 	shadow_gargoyle_head = shadow_gargoyle_head,
 	magic_crystal = magic_crystal,

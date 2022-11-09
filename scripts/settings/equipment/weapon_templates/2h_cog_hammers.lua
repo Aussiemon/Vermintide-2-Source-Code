@@ -7,20 +7,6 @@ local weapon_template = {
 	actions = {
 		action_one = {
 			default = {
-				kind = "action_selector",
-				conditional_actions = {
-					{
-						sub_action = "default_charged",
-						condition = function (talent_extension, buff_extension, weapon_extension)
-							return weapon_extension and weapon_extension:get_mode() == weapon_mode_charged
-						end
-					}
-				},
-				default_action = {
-					sub_action = "default_normal"
-				}
-			},
-			default_normal = {
 				aim_assist_ramp_decay_delay = 0.1,
 				anim_end_event = "attack_finished",
 				kind = "melee_start",
@@ -321,7 +307,7 @@ local weapon_template = {
 						input = "action_one"
 					},
 					{
-						sub_action = "default_normal",
+						sub_action = "default",
 						start_time = 2.2,
 						action = "action_one",
 						input = "action_one_hold"
@@ -458,7 +444,7 @@ local weapon_template = {
 						input = "action_one"
 					},
 					{
-						sub_action = "default_normal",
+						sub_action = "default",
 						start_time = 2,
 						action = "action_one",
 						input = "action_one_hold"

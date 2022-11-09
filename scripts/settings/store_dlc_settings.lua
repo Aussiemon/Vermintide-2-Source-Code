@@ -1,5 +1,401 @@
 StoreDlcSettings = {
 	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_five_career_bundle_0005",
+		name = "display_name_five_career_bundle_0005",
+		slideshow_texture = "store_slideshow_bundle_five_career_bundle_0005",
+		show_in_slideshow = true,
+		information_text = "description_five_career_bundle_0005",
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0005",
+		optional_dlc_display_name = "display_name_five_career_bundle_0005",
+		dlc_name = "five_career_bundle_0005",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0005",
+		optional_dlc_subtitle = "five_career_bundle_0001_subtitle",
+		slideshow_text = "description_five_career_bundle_0005",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_dr_ranger_1002",
+			"ranger_hat_1006",
+			"skin_ww_shade_1002",
+			"shade_hat_1003",
+			"skin_es_knight_1002",
+			"knight_hat_1002",
+			"skin_bw_unchained_1002",
+			"unchained_hat_1004",
+			"bountyhunter_hat_1005",
+			"skin_wh_bountyhunter_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		},
+		layout_console = {
+			{
+				id = "dlc_logo",
+				type = "big_image",
+				settings = {
+					text = "",
+					texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0005",
+					localize = false,
+					show_frame = true,
+					texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0005",
+					image_size = {
+						800.4,
+						591.6
+					},
+					size = {
+						800.4,
+						591.6
+					}
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "header_text",
+				settings = {
+					text = "menu_store_dlc_title_including",
+					localize = true
+				}
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_dr_ranger_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "ranger_hat_1006",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_ranger_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_ranger_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_ww_shade_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "shade_hat_1003",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_shade_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_shade_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_es_knight_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "knight_hat_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_knight_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_knight_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_bw_unchained_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "unchained_hat_1004",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_unchained_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_unchained_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing",
+				settings = {
+					size = {
+						130,
+						0
+					}
+				}
+			},
+			{
+				id = "skin_wh_bountyhunter_1002",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				id = "bountyhunter_hat_1005",
+				type = "bundle_item",
+				settings = {
+					hide_price = true,
+					hide_new = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "display_name_bountyhunter_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "body_text",
+				settings = {
+					text = "description_bountyhunter_bundle_0002",
+					localize = true
+				}
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "spacing"
+			},
+			{
+				type = "divider_horizontal"
+			},
+			{
+				type = "spacing"
+			}
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_ranger_bundle_0002",
+		name = "display_name_ranger_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_ranger_bundle_0002",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_ranger_bundle_0002",
+		optional_dlc_display_name = "display_name_ranger_bundle_0002",
+		information_text = "description_ranger_bundle_0002",
+		dlc_name = "ranger_bundle_0002",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_ranger_bundle_0002",
+		optional_dlc_subtitle = "dr_ranger",
+		slideshow_text = "description_ranger_bundle_0002",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_dr_ranger_1002",
+			"ranger_hat_1006"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_shade_bundle_0002",
+		name = "display_name_shade_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_shade_bundle_0002",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_shade_bundle_0002",
+		optional_dlc_display_name = "display_name_shade_bundle_0002",
+		information_text = "description_shade_bundle_0002",
+		dlc_name = "shade_bundle_0002",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_shade_bundle_0002",
+		optional_dlc_subtitle = "we_shade",
+		slideshow_text = "description_shade_bundle_0002",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_ww_shade_1002",
+			"shade_hat_1003"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_knight_bundle_0002",
+		name = "display_name_knight_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_knight_bundle_0002",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_knight_bundle_0002",
+		optional_dlc_display_name = "display_name_knight_bundle_0002",
+		information_text = "description_knight_bundle_0002",
+		dlc_name = "knight_bundle_0002",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_knight_bundle_0002",
+		optional_dlc_subtitle = "es_knight",
+		slideshow_text = "description_knight_bundle_0002",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_es_knight_1002",
+			"knight_hat_1002"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_unchained_bundle_0002",
+		name = "display_name_unchained_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_unchained_bundle_0002",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_unchained_bundle_0002",
+		optional_dlc_display_name = "display_name_unchained_bundle_0002",
+		information_text = "description_unchained_bundle_0002",
+		dlc_name = "unchained_bundle_0002",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_unchained_bundle_0002",
+		optional_dlc_subtitle = "bw_unchained",
+		slideshow_text = "description_unchained_bundle_0002",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_bw_unchained_1002",
+			"unchained_hat_1004"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
+		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_bountyhunter_bundle_0002",
+		name = "display_name_bountyhunter_bundle_0002",
+		slideshow_texture = "store_slideshow_bundle_bountyhunter_bundle_0002",
+		show_in_slideshow = true,
+		store_texture_package = "resource_packages/store/bundle_icons/store_item_icon_bountyhunter_bundle_0002",
+		optional_dlc_display_name = "display_name_bountyhunter_bundle_0002",
+		information_text = "description_bountyhunter_bundle_0002",
+		dlc_name = "bountyhunter_bundle_0002",
+		store_bundle_big_image = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_bountyhunter_bundle_0002",
+		optional_dlc_subtitle = "wh_bountyhunter",
+		slideshow_text = "description_bountyhunter_bundle_0002",
+		is_bundle = true,
+		bundle_contains = {
+			"skin_wh_bountyhunter_1002",
+			"bountyhunter_hat_1005"
+		},
+		available_platforms = {
+			"xb1",
+			"ps4"
+		}
+	},
+	{
 		store_texture = "gui/1080p/single_textures/store_bundle/store_item_icon_five_career_bundle_0004",
 		name = "display_name_five_career_bundle_0004",
 		slideshow_texture = "store_slideshow_bundle_five_career_bundle_0004",

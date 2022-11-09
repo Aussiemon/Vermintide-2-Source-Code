@@ -144,6 +144,15 @@ GenericVolumeTemplates.functions = {
 				end
 			end
 		},
+		local_player_inside = {
+			on_enter = function (unit, dt, t, data)
+				if unit == Managers.player:local_player().player_unit then
+					local event = data.params.event_on_triggered
+
+					Level.trigger_event(data.level, event)
+				end
+			end
+		},
 		all_alive_players_outside = {
 			on_exit = function (unit, data)
 				local volume_system = Managers.state.entity:system("volume_system")

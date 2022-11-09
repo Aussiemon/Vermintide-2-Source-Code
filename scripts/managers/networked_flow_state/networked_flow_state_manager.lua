@@ -473,4 +473,8 @@ NetworkedFlowStateManager.rpc_flow_state_number_changed = function (self, channe
 	self:client_flow_state_changed(unit_id, state_network_id, new_state, only_set, is_game_object)
 end
 
+NetworkedFlowStateManager.clear_object_state = function (self, unit)
+	self._object_states[unit] = nil
+end
+
 return

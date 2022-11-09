@@ -43,8 +43,6 @@ ScriptPresence.update = function (self, dt)
 end
 
 ScriptPresence.update_none = function (self, user_id)
-	Profiler.start("[Presence] update_none")
-
 	local presence_name = ""
 
 	if self._current_presence_set ~= presence_name then
@@ -52,13 +50,9 @@ ScriptPresence.update_none = function (self, user_id)
 
 		self._current_presence_set = presence_name
 	end
-
-	Profiler.stop("[Presence] update_none")
 end
 
 ScriptPresence.update_menu = function (self, user_id)
-	Profiler.start("[Presence] update_menu")
-
 	local presence_name = "in_menus"
 
 	if self._current_presence_set ~= presence_name then
@@ -66,15 +60,11 @@ ScriptPresence.update_menu = function (self, user_id)
 
 		self._current_presence_set = presence_name
 	end
-
-	Profiler.stop("[Presence] update_menu")
 end
 
 local ACTIVE_PRESENCE_DATA = {}
 
 ScriptPresence.update_playing = function (self, user_id)
-	Profiler.start("[Presence] update_playing")
-
 	local mechanism_key = Managers.mechanism and Managers.mechanism:current_mechanism_name()
 	local game_mode_key = Managers.state.game_mode and Managers.state.game_mode:game_mode_key()
 	local current_level = Managers.state.game_mode and Managers.state.game_mode:level_key()
@@ -94,7 +84,6 @@ ScriptPresence.update_playing = function (self, user_id)
 				prefix = "needs_assistance"
 			end
 
-			Profiler.start("[Presence] setup data and set presence")
 			self:_setup_stat_data(current_level, current_difficulty, current_num_players)
 
 			local presence_string = nil
@@ -124,12 +113,8 @@ ScriptPresence.update_playing = function (self, user_id)
 			self:_set_presence(user_id, presence_string)
 
 			self._current_presence_set = presence_string
-
-			Profiler.stop("[Presence] setup data and set presence")
 		end
 	end
-
-	Profiler.stop("[Presence] update_playing")
 end
 
 CURRENT_DIFFICULTY = "easy"

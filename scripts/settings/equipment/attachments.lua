@@ -646,6 +646,17 @@ local dr_helmets_hide_beard = {
 	buffs = {}
 }
 Attachments.dr_helmets_hide_beard = table.clone(dr_helmets_hide_beard)
+local dr_helmets_hide_head_beard = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_head_beard",
+	attachment_node_linking = AttachmentNodeLinking.player_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.dr_helmets_hide_head_beard = table.clone(dr_helmets_hide_head_beard)
 local dr_helmets_beard_ears = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -939,6 +950,17 @@ local bw_hat_no_hair = {
 	buffs = {}
 }
 Attachments.bw_hat_no_hair = table.clone(bw_hat_no_hair)
+local bw_hat_no_hair_lock_neck = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_hair_lock_neck",
+	attachment_node_linking = AttachmentNodeLinking.hat,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.bw_hat_no_hair_lock_neck = table.clone(bw_hat_no_hair_lock_neck)
 local bw_hat_jaw_no_hair = {
 	unit = "",
 	display_unit = "units/weapons/weapon_display/display_helmet",
@@ -1016,6 +1038,17 @@ local bw_hat_skinned_wide = {
 	buffs = {}
 }
 Attachments.bw_hat_skinned_wide = table.clone(bw_hat_skinned_wide)
+local bw_face = {
+	unit = "",
+	display_unit = "units/weapons/weapon_display/display_helmet",
+	show_attachments_event = "lua_hide_face",
+	attachment_node_linking = AttachmentNodeLinking.player_face,
+	slots = {
+		"slot_hat"
+	},
+	buffs = {}
+}
+Attachments.bw_face = table.clone(bw_face)
 local necklace_template = {
 	display_unit = "",
 	attachment_node_linking = AttachmentNodeLinking.non_visual_attachment,

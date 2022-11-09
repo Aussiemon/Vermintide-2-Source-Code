@@ -43,8 +43,6 @@ AnimationMovementTemplates.chaos_troll = {
 			local blackboard = data.blackboard
 
 			if blackboard.lean_target_position_boxed then
-				Profiler.start("chaos_troll_animation_variable_lean")
-
 				local lean_target_position = blackboard.lean_target_position_boxed:unbox()
 				local lerp_speed = data.lean_lerp_speed
 				local lean_amount = data.lean_amount
@@ -57,8 +55,6 @@ AnimationMovementTemplates.chaos_troll = {
 				if game and go_id then
 					GameSession.set_game_object_field(game, go_id, "lean_target", lean_target_position)
 				end
-
-				Profiler.stop("chaos_troll_animation_variable_lean")
 			end
 		end,
 		leave = function (unit, data)
@@ -77,8 +73,6 @@ AnimationMovementTemplates.chaos_troll = {
 			data.lean_amount = 25
 		end,
 		update = function (unit, t, dt, data)
-			Profiler.start("chaos_troll_animation_variable_lean_husk")
-
 			local game = Managers.state.network:game()
 			local go_id = Managers.state.unit_storage:go_id(unit)
 
@@ -94,8 +88,6 @@ AnimationMovementTemplates.chaos_troll = {
 					data.old_lean_target_position_boxed:store(lean_target_position)
 				end
 			end
-
-			Profiler.stop("chaos_troll_animation_variable_lean_husk")
 		end,
 		leave = function (unit, data)
 			local animation_variable_lean = data.animation_variable_lean

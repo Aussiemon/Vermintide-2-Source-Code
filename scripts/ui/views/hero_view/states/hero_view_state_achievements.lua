@@ -45,7 +45,7 @@ HeroViewStateAchievements.on_enter = function (self, params)
 	self.profile_synchronizer = ingame_ui_context.profile_synchronizer
 	self.statistics_db = ingame_ui_context.statistics_db
 	self.render_settings = {
-		snap_pixel_positions = true
+		snap_pixel_positions = false
 	}
 	self.wwise_world = params.wwise_world
 	self.ingame_ui = ingame_ui_context.ingame_ui

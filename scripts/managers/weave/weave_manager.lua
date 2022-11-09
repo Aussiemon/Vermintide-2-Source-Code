@@ -257,13 +257,9 @@ WeaveManager.update = function (self, dt, t)
 			self._objective_ui_mission_name = "weave_time_out"
 		end
 
-		Profiler.start("weave_spawning")
-
 		if self._weave_spawner then
 			self._weave_spawner:update(t, dt, objective_template)
 		end
-
-		Profiler.stop("weave_spawning")
 	end
 end
 

@@ -103,8 +103,6 @@ end
 local next_proj_test = 0
 
 ProjectileTest.run_projectile_test = function (world, t, dt)
-	Profiler.start("hit moving")
-
 	local gravity = 9.82
 	local physics_world = World.get_data(world, "physics_world")
 	local side = Managers.state.side:get_side_from_name("heroes")

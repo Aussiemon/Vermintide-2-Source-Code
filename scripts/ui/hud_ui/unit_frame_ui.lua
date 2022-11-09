@@ -202,67 +202,37 @@ UnitFrameUI.update = function (self, dt, t)
 	local needs_help = data.needs_help
 	self.overlay_time = (self.overlay_time or 0) + dt * 1.4
 
-	Profiler.start("portrait_opacity")
-
 	if self:_update_portrait_opacity(is_dead, is_knocked_down, needs_help, assisted_respawn) then
 		dirty = true
 	end
-
-	Profiler.stop("portrait_opacity")
 
 	if self:_update_voice_animation(dt, t, is_talking) then
 		dirty = true
 	end
 
-	Profiler.start("bar")
-
 	if self:_update_bar_animations(dt, t) then
 		dirty = true
 	end
-
-	Profiler.stop("bar")
-	Profiler.start("health")
 
 	if self:_update_health_bar_animation(dt, t) then
 		dirty = true
 	end
 
-	Profiler.stop("health")
-	Profiler.start("total_health")
-
 	if self:_update_total_health_bar_animation(dt, t) then
 		dirty = true
 	end
 
-	Profiler.stop("total_health")
-
-	if update_weapons then
-		Profiler.start("overcharge")
-
-		if self:_update_overcharge_animation(dt, t) then
-			dirty = true
-		end
-
-		Profiler.stop("overcharge")
+	if update_weapons and self:_update_overcharge_animation(dt, t) then
+		dirty = true
 	end
 
-	if update_equipment then
-		Profiler.start("loadout")
-
-		if self:_update_slot_equip_animations(dt, t) then
-			dirty = true
-		end
-
-		Profiler.stop("loadout")
+	if update_equipment and self:_update_slot_equip_animations(dt, t) then
+		dirty = true
 	end
-
-	Profiler.start("connection")
 
 	if self:_update_connection_animation(dt, t) then
 		dirty = true
 	end
-
-	Profiler.stop("connection")
 
 	if dirty then
 		self:set_dirty()
@@ -1136,9 +1106,6 @@ end
 
 UnitFrameUI._update_bar_animations = function (self, dt)
 	local dirty = false
-
-	Profiler.start("update_unit_frames_animations")
-
 	local bar_animations = self.bar_animations
 
 	if bar_animations then
@@ -1189,8 +1156,6 @@ UnitFrameUI._update_bar_animations = function (self, dt)
 			end
 		end
 	end
-
-	Profiler.stop("update_unit_frames_animations")
 
 	return dirty
 end

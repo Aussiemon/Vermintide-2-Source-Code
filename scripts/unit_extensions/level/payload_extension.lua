@@ -36,6 +36,20 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 	if Unit.has_data(unit, "wheel_anim_group") then
 		self._anim_group = Unit.get_data(unit, "wheel_anim_group")
 	end
+
+	local unit_hazard_type = Unit.get_data(unit, "hazard_type")
+	local player = Managers.player:local_player()
+	local statistics_db = Managers.player:statistics_db()
+	local stats_id = player:stats_id()
+
+	if unit_hazard_type == "sled" then
+		if statistics_db:get_persistent_stat(stats_id, "trail_sleigher") > 50 then
+			if true then
+			end
+		else
+			Managers.state.event:register(self, "on_killed", "increment_kill_stat")
+		end
+	end
 end
 
 PayloadExtension.activate = function (self)
@@ -48,7 +62,7 @@ PayloadExtension.deactivate = function (self, stop)
 end
 
 PayloadExtension.destroy = function (self)
-	return
+	Managers.state.event:unregister("on_killed", self)
 end
 
 PayloadExtension.extensions_ready = function (self)
@@ -132,19 +146,21 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local radius = largest_extent * 2
 	local small_box_extents = half_extents * 1.2
 	local large_box_extents = half_extents * 2
-	local hazard_type = "payload"
+	local unit_hazard_type = Unit.get_data(payload_unit, "hazard_type")
+	local hazard_type = unit_hazard_type or "payload"
 	local hazard_settings = EnvironmentalHazards[hazard_type]
 	local hit_zone_name = "torso"
 	local hit_ragdoll_actor = nil
 	local damage_source = hazard_type
-	local power_level = hazard_settings.enemy.power_level or DefaultPowerLevel
+	local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+	local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
 	local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 	local damage_profile = DamageProfileTemplates[damage_profile_name]
 	local target_index = nil
 	local boost_curve_multiplier = 0
 	local is_critical_strike = false
-	local can_damage = false
-	local can_stagger = true
+	local can_damage = hazard_settings.enemy.can_damage or false
+	local can_stagger = hazard_settings.enemy.can_stagger or true
 	local blocking = false
 	local shield_breaking_hit = false
 	local num_hits = AiUtils.broadphase_query(payload_position, radius, RESULT_TABLE)
@@ -493,6 +509,16 @@ end
 
 PayloadExtension.finished = function (self)
 	return self._previous_status == "end"
+end
+
+PayloadExtension.increment_kill_stat = function (self, killing_blow, breed_killed, breed_attacker, attacker_unit, ai_unit)
+	if attacker_unit == self._unit then
+		local player = Managers.player:local_player()
+		local statistics_db = Managers.player:statistics_db()
+		local stats_id = player:stats_id()
+
+		statistics_db:increment_stat(stats_id, "trail_sleigher")
+	end
 end
 
 return

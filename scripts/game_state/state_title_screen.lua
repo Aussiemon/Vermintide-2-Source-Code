@@ -77,19 +77,11 @@ StateTitleScreen.on_enter = function (self, params)
 
 	self._params = params
 
-	Profiler.start("setup world")
 	self:_setup_world()
-	Profiler.stop("setup world")
 	self:_setup_leak_prevention()
-	Profiler.start("init input")
 	self:_init_input()
-	Profiler.stop("init input")
-	Profiler.start("init ui")
 	self:_init_ui()
-	Profiler.stop("init ui")
-	Profiler.start("init ui")
 	self:_setup_state_machine()
-	Profiler.stop("init ui")
 	self:_init_popup_manager()
 	self:_init_chat_manager()
 
@@ -184,15 +176,11 @@ end
 
 StateTitleScreen._setup_world = function (self)
 	if not Managers.package:has_loaded("resource_packages/start_menu_splash", "StateSplashScreen") and not GameSettingsDevelopment.skip_start_screen then
-		Profiler.start("stall loading splash")
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen")
-		Profiler.stop("stall loading splash")
 	end
 
 	if IS_CONSOLE and not Managers.package:has_loaded("resource_packages/news_splash/news_splash", "state_splash_screen") and not GameSettingsDevelopment.skip_start_screen then
-		Profiler.start("stall loading news splash")
 		Managers.package:load("resource_packages/news_splash/news_splash", "state_splash_screen")
-		Profiler.stop("stall loading news splash")
 	end
 
 	self._world_name = "title_screen_world"

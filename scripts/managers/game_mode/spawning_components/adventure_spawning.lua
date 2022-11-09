@@ -185,33 +185,21 @@ AdventureSpawning.update = function (self, t, dt)
 end
 
 AdventureSpawning.server_update = function (self, t, dt)
-	Profiler.start("AdventureSpawning")
-
 	if Managers.state.network:game() then
 		local party = self._side.party
 		local occupied_slots = party.occupied_slots
 
-		Profiler.start("playerstatus")
 		self:_update_player_status(t, dt, occupied_slots)
-		Profiler.stop("playerstatus")
 
 		local allow_respawns = Managers.state.difficulty:get_difficulty_settings().allow_respawns
 
 		if self._respawns_enabled and allow_respawns then
-			Profiler.start("respawn_handler")
 			self._respawn_handler:server_update(dt, t, occupied_slots)
-			Profiler.stop("respawn_handler")
 		end
 
-		Profiler.start("update spawning")
 		self:_update_spawning(dt, t, occupied_slots, party.party_id)
-		Profiler.stop("update spawning")
-		Profiler.start("update_joining_clients")
 		self:_update_joining_clients(dt, t)
-		Profiler.stop("update_joining_clients")
 	end
-
-	Profiler.stop("AdventureSpawning")
 end
 
 AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)

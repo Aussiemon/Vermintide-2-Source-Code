@@ -45,10 +45,31 @@ IkChain.init = function (self, joints, start_pos, target_pos, tolerance, use_max
 	end
 end
 
+IkChain.set_origin_pos = function (self, pos)
+	self.origin_pos:store(pos)
+end
+
 IkChain.set_target_pos = function (self, target_pos, acceleration)
 	self.target_pos:store(target_pos)
 
 	self.acc = acceleration or 1
+end
+
+IkChain.set_whip = function (self, angle_velocity)
+	self.whip_angle_velocity = angle_velocity
+end
+
+IkChain.update_whip = function (self, joints, angular_velocity, t, dt)
+	local n1 = 1
+	local n2 = 2
+	local q = Quaternion.axis_angle(Vector3.up(), t % 6.28)
+	local j1 = joints[n1]
+	local j2 = joints[n2]
+	local k = j2 - j1
+	local k2 = Quaternion.rotate(q, k)
+	joints[n2] = j1 + k2
+
+	QuickDrawer:line(joints[n1], joints[n2], Color(20, 255, 175))
 end
 
 IkChain.debug_draw = function (self, joints, num_joints)
@@ -57,7 +78,7 @@ IkChain.debug_draw = function (self, joints, num_joints)
 
 	for i = 1, num_joints - 1, 1 do
 		QuickDrawer:line(joints[i], joints[i + 1], line_color)
-		QuickDrawer:sphere(joints[i], 0.05, ball_color)
+		QuickDrawer:sphere(joints[i], 0.05 + i * 0.01, ball_color)
 	end
 
 	QuickDrawer:sphere(joints[num_joints], 0.05, ball_color)
@@ -130,6 +151,11 @@ IkChain.solve = function (self, t, dt)
 	local start_pos = self.origin_pos:unbox()
 	local num_joints = self.n
 	local joints = unbox_pos_array(self.joints, temp_joints, num_joints)
+
+	if self.whip_angle_velocity then
+		self:update_whip(joints, self.whip_angle_velocity, t, dt)
+	end
+
 	local lengths = self.lengths
 	local count = 0
 	local distance = Vector3.length(joints[1] - target_pos)
@@ -163,7 +189,7 @@ IkChain.solve = function (self, t, dt)
 
 	save_joints_in_boxed_array(joints, self.joints, num_joints)
 	self:debug_draw(joints, num_joints)
-	Debug.text("Solving tentacle: %d iterations", count)
+	Debug.text("Solving tentacle: %d iterations, %d joints", count, self.n)
 end
 
 IkChain.solve_dragging = function (self, t, dt)
@@ -193,7 +219,7 @@ IkChain.solve_dragging = function (self, t, dt)
 
 	save_joints_in_boxed_array(joints, self.joints, num_joints)
 	self:debug_draw(joints, num_joints)
-	Debug.text("Solving tentacle: %d iterations", count)
+	Debug.text("Solving tentacle dragging: %d iterations, %d joints", count, self.n)
 end
 
 return

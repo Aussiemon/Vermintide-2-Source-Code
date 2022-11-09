@@ -194,8 +194,6 @@ PlayerUnitHealthExtension._revive = function (self, unit, t)
 end
 
 PlayerUnitHealthExtension.update = function (self, dt, context, t)
-	Profiler.start("PlayerUnitHealthExtension")
-
 	local status_extension = self.status_extension
 	local unit = self.unit
 
@@ -326,8 +324,6 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 			end
 		end
 	end
-
-	Profiler.stop("PlayerUnitHealthExtension")
 
 	if Managers.mechanism:current_mechanism_name() == "versus" then
 		self:_update_outline_color(t, dt)

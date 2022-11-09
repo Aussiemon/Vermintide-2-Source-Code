@@ -30,7 +30,11 @@ DeusBelakorCrystalExtension.extensions_ready = function (self, world, unit)
 
 	kill_volume_handler_extension:add_handler(function ()
 		if not self._nearest_locus then
-			return false
+			self._nearest_locus = self:_find_nearest_locus()
+
+			if not self._nearest_locus then
+				return false
+			end
 		end
 
 		self._next_check = 0
@@ -70,19 +74,7 @@ DeusBelakorCrystalExtension.update = function (self, unit, input, dt, context, t
 	local crystal_position = POSITION_LOOKUP[unit]
 
 	if not self._nearest_locus then
-		local entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
-		local nearest_locus, nearest_locus_distance = nil
-
-		for locus_unit, _ in pairs(entities) do
-			local distance = Vector3.length(crystal_position - POSITION_LOOKUP[locus_unit])
-
-			if not nearest_locus_distance or distance < nearest_locus_distance then
-				nearest_locus = locus_unit
-				nearest_locus_distance = distance
-			end
-		end
-
-		self._nearest_locus = nearest_locus
+		self._nearest_locus = self:_find_nearest_locus()
 	end
 
 	if not self._nearest_locus or not ALIVE[self._nearest_locus] then
@@ -123,6 +115,23 @@ DeusBelakorCrystalExtension.update = function (self, unit, input, dt, context, t
 
 		return
 	end
+end
+
+DeusBelakorCrystalExtension._find_nearest_locus = function (self)
+	local crystal_position = POSITION_LOOKUP[self._unit]
+	local entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
+	local nearest_locus, nearest_locus_distance = nil
+
+	for locus_unit, _ in pairs(entities) do
+		local distance = Vector3.length(crystal_position - POSITION_LOOKUP[locus_unit])
+
+		if not nearest_locus_distance or distance < nearest_locus_distance then
+			nearest_locus = locus_unit
+			nearest_locus_distance = distance
+		end
+	end
+
+	return nearest_locus
 end
 
 return

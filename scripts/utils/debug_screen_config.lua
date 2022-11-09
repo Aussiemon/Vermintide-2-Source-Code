@@ -2213,6 +2213,12 @@ Features that make player mechanics nicer to work with.
 		category = "Gamemode/level"
 	},
 	{
+		description = "Normally the level_seed will be 0 when starting a map from toolcenter, but with this you will get a random level-seed.",
+		is_boolean = true,
+		setting_name = "random_level_seed_from_toolcenter",
+		category = "Gamemode/level"
+	},
+	{
 		description = "Enables room debuging using f1-f4",
 		is_boolean = true,
 		setting_name = "debug_rooms",

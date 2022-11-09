@@ -453,7 +453,6 @@ end
 IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	self._disable_ingame_ui = disable_ingame_ui
 
-	Profiler.start("IngameUI")
 	self:_update_fade_transition()
 
 	local views = self.views
@@ -478,8 +477,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 	end
 
-	Profiler.start("popup_handler")
-
 	if self.popup_id then
 		local popup_result = Managers.popup:query_result(self.popup_id)
 
@@ -488,14 +485,9 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 	end
 
-	Profiler.stop("popup_handler")
-	Profiler.start("survey_active")
-
 	if self.survey_active then
 		self:_survey_update(dt)
 	end
-
-	Profiler.stop("survey_active")
 
 	if self.quit_game_retry and self.delay_quit_game_retry <= t then
 		self.quit_game_retry = nil
@@ -504,8 +496,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	end
 
 	if is_in_inn then
-		Profiler.start("HOLLY DLC TEXT POPUP UI")
-
 		local is_not_in_menu = self.has_left_menu and self.hud_visible
 		local has_holly_dlc = Managers.unlock:is_dlc_unlocked("holly")
 
@@ -517,21 +507,13 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			self.text_popup_ui:show("area_selection_holly_name", "holly_lohner_spiel_short", on_close_callback)
 		end
 
-		Profiler.stop("HOLLY DLC TEXT POPUP UI")
-		Profiler.start("weave_onboarding_ui")
-
 		if self.weave_onboarding then
 			self.weave_onboarding:update(dt, t)
 		end
 
-		Profiler.stop("weave_onboarding_ui")
-		Profiler.start("popup_handler")
-
 		if self.popup_handler then
 			self.popup_handler:update(dt, t)
 		end
-
-		Profiler.stop("popup_handler")
 	end
 
 	if not disable_ingame_ui then
@@ -540,14 +522,11 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		if self.current_view then
 			local current_view = self.current_view
 
-			Profiler.start(current_view)
 			views[current_view]:update(dt, t)
 
 			if views[current_view].disable_toggle_menu then
 				disable_toggle_menu = views[current_view]:disable_toggle_menu()
 			end
-
-			Profiler.stop(current_view)
 		end
 
 		local gamepad_active = Managers.input:is_device_active("gamepad")
@@ -586,8 +565,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 		end
 
 		if not self:pending_transition() then
-			Profiler.start("hotkeys")
-
 			local local_player = Managers.player:local_player()
 			local player_unit = local_player and local_player.player_unit
 
@@ -597,11 +574,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 
 				self:handle_menu_hotkeys(dt, input_service, enable_hotkeys, self.menu_active)
 			end
-
-			Profiler.stop("hotkeys")
 		end
-
-		Profiler.start("popup_handler")
 
 		for _, popup_data in pairs(self.popups_by_name) do
 			local popup = popup_data.popup
@@ -609,15 +582,10 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 			popup:update(dt, t)
 		end
 
-		Profiler.stop("popup_handler")
-		Profiler.start("endscreen")
 		end_screen:update(dt, t)
-		Profiler.stop("endscreen")
 
 		if self.help_screen then
-			Profiler.start("help_screen")
 			self.help_screen:update(dt)
-			Profiler.stop("help_screen")
 		end
 	end
 
@@ -630,8 +598,6 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 	if script_data.testify then
 		Testify:poll_requests_through_handler(ingame_ui_testify, self)
 	end
-
-	Profiler.stop("IngameUI")
 end
 
 IngameUI.disable_ingame_ui = function (self)
@@ -756,8 +722,6 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 end
 
 IngameUI._render_debug_ui = function (self, dt, t)
-	Profiler.start("debug_stuff")
-
 	if self.menu_active and GameSettingsDevelopment.show_version_info and not Development.parameter("hide_version_info") then
 		self:_render_version_info()
 	end
@@ -765,8 +729,6 @@ IngameUI._render_debug_ui = function (self, dt, t)
 	if GameSettingsDevelopment.show_fps and not Development.parameter("hide_fps") then
 		self:_render_fps(dt)
 	end
-
-	Profiler.stop("debug_stuff")
 end
 
 IngameUI.show_info = function (self)

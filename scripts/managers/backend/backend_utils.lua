@@ -28,7 +28,9 @@ BackendUtils.get_loadout_item = function (career_name, slot)
 	local backend_items = Managers.backend:get_interface("items")
 	local backend_id = BackendUtils.get_loadout_item_id(career_name, slot)
 
-	if not backend_id then
+	if not backend_id and CosmeticUtils.is_cosmetic_slot(slot) then
+		Crashify.print_exception("[BackendUtils] Failed to find loadout item in slot %q for career %q", slot, career_name)
+
 		return
 	end
 
@@ -45,6 +47,8 @@ BackendUtils.try_set_loadout_item = function (career_name, slot_name, item_key)
 		local backend_id = item.backend_id
 
 		BackendUtils.set_loadout_item(backend_id, career_name, slot_name)
+	elseif CosmeticUtils.is_cosmetic_slot(slot_name) then
+		Crashify.print_exception("[BackendUtils] Failed to set loadout item %q in slot %q for career %q", item_key, slot_name, career_name)
 	end
 
 	return item

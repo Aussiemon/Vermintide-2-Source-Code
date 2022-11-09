@@ -54,8 +54,6 @@ TargetHealthExtension.update = function (self, dt, t)
 end
 
 TargetHealthExtension.add_damage = function (self, ...)
-	Profiler.start("TargetHealthExtension:add_damage")
-
 	if not self:is_dead() then
 		self._health = math.max(self._health - self._damage_per_hit, 0)
 		self._out_of_combat_timer = 0
@@ -64,8 +62,6 @@ TargetHealthExtension.add_damage = function (self, ...)
 			self:set_dead()
 		end
 	end
-
-	Profiler.stop("TargetHealthExtension:add_damage")
 end
 
 TargetHealthExtension.add_heal = function (self, amount)

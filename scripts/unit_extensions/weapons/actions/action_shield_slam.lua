@@ -166,8 +166,6 @@ ActionShieldSlam.client_owner_post_update = function (self, dt, t, world, can_da
 end
 
 ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_action)
-	Profiler.start("shield_slam_hit")
-
 	local network_manager = Managers.state.network
 	local physics_world = World.get_data(world, "physics_world")
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
@@ -397,8 +395,6 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 			end
 		end
 	end
-
-	Profiler.stop("shield_slam_hit")
 
 	self.state = "hit"
 end

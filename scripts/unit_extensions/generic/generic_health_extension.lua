@@ -191,8 +191,6 @@ GenericHealthExtension.set_max_health = function (self, health)
 end
 
 GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type, backstab_multiplier)
-	Profiler.start("GenericHealthExtension:_add_to_damage_history_buffer")
-
 	local hit_position_table = (hit_position and {
 		hit_position.x,
 		hit_position.y,
@@ -207,14 +205,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	local system_data = self.system_data
 	local active_damage_buffer_index = system_data.active_damage_buffer_index
 	local damage_queue = damage_buffers[active_damage_buffer_index]
-
-	Profiler.start("create_FrameTable")
-
 	local temp_table = FrameTable.alloc_table()
-
-	Profiler.stop("create_FrameTable")
-	Profiler.start("fill_FrameTable")
-
 	temp_table[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
 	temp_table[DamageDataIndex.DAMAGE_TYPE] = damage_type
 	temp_table[DamageDataIndex.ATTACKER] = attacker_unit
@@ -231,11 +222,7 @@ GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, att
 	temp_table[DamageDataIndex.ATTACK_TYPE] = attack_type or "n/a"
 	temp_table[DamageDataIndex.BACKSTAB_MULTIPLIER] = backstab_multiplier or false
 
-	Profiler.stop("fill_FrameTable")
-	Profiler.start("add_to_array")
 	pdArray.push_back15(damage_queue, unpack(temp_table))
-	Profiler.stop("add_to_array")
-	Profiler.stop("GenericHealthExtension:_add_to_damage_history_buffer")
 
 	return temp_table
 end
@@ -257,8 +244,6 @@ GenericHealthExtension.apply_client_predicted_damage = function (self, predicted
 end
 
 GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
-	Profiler.start("GenericHealthExtension:add_damage")
-
 	local unit = self.unit
 	local network_manager = Managers.state.network
 	local unit_id, is_level_unit = network_manager:game_object_or_level_id(unit)
@@ -320,15 +305,10 @@ GenericHealthExtension.add_damage = function (self, attacker_unit, damage_amount
 	end
 
 	self:_sync_out_damage(attacker_unit, unit_id, is_level_unit, source_attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
-	Profiler.stop("GenericHealthExtension:add_damage")
 end
 
 GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id, is_level_unit, source_attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
-	Profiler.start("GenericHealthExtension:_sync_out_damage")
-
 	if self.is_server and unit_id then
-		Profiler.start("send_to_clients")
-
 		local network_manager = Managers.state.network
 		local attacker_unit_id, attacker_is_level_unit = network_manager:game_object_or_level_id(attacker_unit)
 		local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or NetworkConstants.invalid_game_object_id
@@ -347,10 +327,7 @@ GenericHealthExtension._sync_out_damage = function (self, attacker_unit, unit_id
 		backstab_multiplier = backstab_multiplier or 1
 
 		network_transmit:send_rpc_clients("rpc_add_damage", unit_id, is_level_unit, attacker_unit_id, attacker_is_level_unit, source_attacker_unit_id, damage_amount, hit_zone_id, damage_type_id, hit_position, damage_direction, damage_source_id, hit_ragdoll_actor_id, hit_react_type_id, is_dead, is_critical_strike, added_dot, first_hit, total_hits, attack_type_id, backstab_multiplier)
-		Profiler.stop("send_to_clients")
 	end
-
-	Profiler.stop("GenericHealthExtension:_sync_out_damage")
 end
 
 GenericHealthExtension.add_heal = function (self, healer_unit, heal_amount, heal_source_name, heal_type)

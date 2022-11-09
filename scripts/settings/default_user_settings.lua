@@ -264,8 +264,6 @@ DefaultUserSettings = {
 		return setting
 	end,
 	setup_resolution = function ()
-		Profiler.start("setup_resolution()")
-
 		local get_user_setting = Application.user_setting
 		local set_user_setting = Application.set_user_setting
 		local save_user_settings = Application.save_user_settings
@@ -361,8 +359,6 @@ DefaultUserSettings = {
 
 			return true
 		end
-
-		Profiler.stop("setup_resolution()")
 	end
 }
 

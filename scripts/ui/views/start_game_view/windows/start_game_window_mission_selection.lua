@@ -206,7 +206,7 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 				if i < num_levels_in_act then
 					local next_level_key = levels[i + 1].level_id
 					local next_level_unlocked = LevelUnlockUtils.level_unlocked(statistics_db, stats_id, next_level_key)
-					content.draw_path = not is_dlc
+					content.draw_path = act_settings.draw_path or not is_dlc
 					content.draw_path_fill = next_level_unlocked
 					style.path.texture_size[1] = level_width + level_width_spacing
 					style.path_glow.texture_size[1] = level_width + level_width_spacing

@@ -774,7 +774,10 @@ AttackTemplates = {
 		dot_template_name = "burning_1W_dot",
 		dot_type = "burning_dot"
 	},
-	payload_wagon = {}
+	payload_wagon = {},
+	sled = {},
+	trail_cog = {},
+	sawblade = {}
 }
 
 DLCUtils.require_list("attack_template_files_names")

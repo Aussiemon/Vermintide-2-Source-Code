@@ -2348,14 +2348,10 @@ function flow_callback_fire_light_weight_projectile(params)
 			projectile_linker = light_weight_projectile_template.projectile_linker,
 			first_person_hit_flow_events = light_weight_projectile_template.first_person_hit_flow_events
 		}
-
-		Profiler.start("create_light_weight_projectile")
-
 		local projectile_system = Managers.state.entity:system("projectile_system")
 		local owner_peer_id = Network.peer_id()
 
 		projectile_system:create_light_weight_projectile(item_name, unit, position, spread_direction, light_weight_projectile_template.projectile_speed, nil, nil, light_weight_projectile_template.projectile_max_range, collision_filter, action_data, light_weight_projectile_template.light_weight_projectile_effect, owner_peer_id)
-		Profiler.stop("create_light_weight_projectile")
 	end
 end
 
@@ -2931,6 +2927,43 @@ function flow_callback_damage_unit(params)
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 
 		health_extension:add_damage(unit, damage, hit_zone_name, "destructible_level_object_hit", hit_position, attack_direction, "wounded_degen")
+	end
+end
+
+function flow_callback_set_material_property_scalar_all(params)
+	local unit = params.unit
+	local variable = params.variable
+	local value = params.value
+	local index_offset = Script.index_offset()
+	local end_offset = 1 - index_offset
+	local num_meshes = Unit.num_meshes(unit)
+
+	for i = index_offset, num_meshes - end_offset, 1 do
+		local mesh = Unit.mesh(unit, i)
+		local num_materials = Mesh.num_materials(mesh)
+
+		for j = index_offset, num_materials - end_offset, 1 do
+			local material = Mesh.material(mesh, j)
+
+			Material.set_scalar(material, variable, value)
+		end
+	end
+end
+
+function flow_callback_material_scalar_set_chr_inventory(params)
+	fassert(params.unit, "[flow_callback_material_scalar_set_chr_inventory] You need to specify the Unit")
+	fassert(params.variable, "[flow_callback_material_scalar_set_chr_inventory] You need to specify variable value")
+	fassert(params.value, "[flow_callback_material_scalar_set_chr_inventory] You need to specify variable name")
+
+	local unit = params.unit
+	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
+
+	if unit_inventory_extension ~= nil then
+		for i = 1, #unit_inventory_extension.inventory_item_units, 1 do
+			params.unit = unit_inventory_extension.inventory_item_units[i]
+
+			flow_callback_set_material_property_scalar_all(params)
+		end
 	end
 end
 
@@ -3692,7 +3725,8 @@ function flow_callback_broadphase_deal_damage(params)
 	if params.hits_enemies then
 		local t = Managers.time:time("game")
 		local damage_source = hazard_type
-		local power_level = hazard_settings.enemy.power_level or DefaultPowerLevel
+		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
 		local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index = nil
@@ -4697,6 +4731,140 @@ function flow_callback_predict_hitscan(params)
 	end
 
 	return returns
+end
+
+function flow_callback_spawn_defenders_ward(params)
+	Managers.state.event:trigger("spawn_defenders", params.num_defenders)
+end
+
+function flow_callback_cog_collision(params)
+	local trigger_actor = params.touching_actor
+	local actor_velocity = Actor.velocity(trigger_actor)
+
+	if not trigger_actor then
+		return
+	end
+
+	if Vector3.length(actor_velocity) <= 0.1 then
+		return
+	end
+
+	local touching_unit = params.touching_unit
+	local cog_unit = params.unit
+	local pickup_unit_ext = ScriptUnit.extension(cog_unit, "pickup_system")
+	local owner_peer_id = pickup_unit_ext.owner_peer_id
+	local network_peer_id = Network.peer_id()
+
+	if owner_peer_id == Network.peer_id() then
+		Managers.state.achievement:trigger_event("on_trail_cog_strike", touching_unit)
+	end
+
+	if Managers.state.network.is_server then
+		local hit_unit = touching_unit
+		local cog_position = POSITION_LOOKUP[cog_unit]
+		local cog_flat_position = Vector3.flat(cog_position)
+		local hit_unit_position = POSITION_LOOKUP[hit_unit]
+		local hit_unit_position_flat = Vector3.flat(hit_unit_position)
+		local hit_zone_name = "torso"
+		local hazard_type = "trail_cog"
+		local hazard_settings = EnvironmentalHazards[hazard_type]
+		local damage_source = hazard_type
+		local hit_ragdoll_actor = nil
+		local push_direction = Vector3.normalize(hit_unit_position_flat - cog_flat_position)
+		local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
+		local damage_profile = DamageProfileTemplates[damage_profile_name]
+		local target_index = nil
+		local boost_curve_multiplier = 0
+		local is_critical_strike = false
+		local can_damage = true
+		local can_stagger = true
+		local blocking = false
+		local shield_breaking_hit = false
+		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
+		local t = Managers.time:time("game")
+
+		DamageUtils.server_apply_hit(t, cog_unit, hit_unit, hit_zone_name, nil, push_direction, hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
+	end
+end
+
+function flow_callback_reset_cog_collision_stat()
+	local is_server = Managers.state.network.is_server
+
+	Managers.state.achievement:trigger_event("on_trail_cog_reset_stat")
+end
+
+function flow_callback_environment_hazard_damage_collision(params)
+	if Managers.state.network.is_server then
+		local hit_unit = params.touching_unit
+		local hazard_unit = params.unit
+		local hazard_type = params.hazard_type
+		local hazard_position = POSITION_LOOKUP[hazard_unit] or Unit.world_position(hazard_unit, 0)
+		local hazard_flat_position = Vector3.flat(hazard_position)
+		local hit_unit_position = POSITION_LOOKUP[hit_unit]
+		local hit_unit_position_flat = Vector3.flat(hit_unit_position)
+		local hit_zone_name = "full"
+		local hazard_settings = EnvironmentalHazards[hazard_type]
+		local damage_source = hazard_type
+		local hit_ragdoll_actor = true
+		local push_direction = Vector3.normalize(hit_unit_position_flat - hazard_flat_position)
+		local damage_profile_name = hazard_settings.enemy.damage_profile or "default"
+		local damage_profile = DamageProfileTemplates[damage_profile_name]
+		local target_index = nil
+		local boost_curve_multiplier = 0
+		local is_critical_strike = false
+		local can_damage = true
+		local can_stagger = true
+		local blocking = false
+		local shield_breaking_hit = params.shield_breaking_hit or true
+		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
+		local power_level = hazard_settings.enemy.difficulty_power_level[difficulty_rank] or DefaultPowerLevel
+		local t = Managers.time:time("game")
+		local health_extension = ScriptUnit.extension(hit_unit, "health_system")
+		local damage = hazard_settings.enemy.difficulty_damage[difficulty_rank]
+
+		health_extension:add_damage(hit_unit, damage, hit_zone_name, "cutting", hit_unit_position, push_direction, "wounded_degen")
+
+		if health_extension:is_dead() then
+			local gibbs = {
+				"dismember_torso",
+				"dismember_head",
+				"explode_body"
+			}
+			local gibb = gibbs[math.random(1, 3)]
+
+			Unit.flow_event(hit_unit, gibb)
+		else
+			DamageUtils.stagger_ai(t, damage_profile, target_index, power_level, hit_unit, hazard_unit, hit_zone_name, push_direction, boost_curve_multiplier, is_critical_strike, blocking, damage_source)
+		end
+	end
+end
+
+function flow_callback_hazard_push_damage_player_and_husks(params)
+	if Managers.player.is_server and DamageUtils.is_player_unit(params.touching_unit) then
+		local hazard_unit = params.unit
+		local hit_unit = params.touching_unit
+		local push_multiplier = params.push_multiplier
+		local damage = params.damage
+		local hazard_position = POSITION_LOOKUP[hazard_unit] or Unit.world_position(hazard_unit, 0)
+		local hazard_flat_position = Vector3.flat(hazard_position)
+		local hit_unit_position = POSITION_LOOKUP[hit_unit]
+		local hit_unit_flat_position = Vector3.flat(hit_unit_position)
+
+		if unit_alive(hit_unit) and damage then
+			local hit_zone_name = "full"
+			local damage_type = "forced"
+			local damage_direction = Vector3.up()
+			local health_extension = ScriptUnit.extension(hit_unit, "health_system")
+
+			health_extension:add_damage(hit_unit, damage, hit_zone_name, damage_type, hit_unit_position, damage_direction)
+		end
+
+		local pushed_velocity = Vector3.normalize(hit_unit_flat_position - hazard_flat_position) * push_multiplier
+		local locomotion_extension = ScriptUnit.extension(hit_unit, "locomotion_system")
+
+		locomotion_extension:add_external_velocity(pushed_velocity)
+	end
 end
 
 return

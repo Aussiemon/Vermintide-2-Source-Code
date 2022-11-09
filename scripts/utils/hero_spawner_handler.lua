@@ -53,8 +53,6 @@ HeroSpawnerHandler.start = function (self)
 end
 
 HeroSpawnerHandler.update = function (self, dt)
-	Profiler.start("HeroSpawnHandler")
-
 	if self.pending_profile_request then
 		local profile_synchronizer = self.profile_synchronizer
 
@@ -96,8 +94,6 @@ HeroSpawnerHandler.update = function (self, dt)
 			end
 		end
 	end
-
-	Profiler.stop("HeroSpawnHandler")
 end
 
 HeroSpawnerHandler.save_selected_profile = function (self, index)

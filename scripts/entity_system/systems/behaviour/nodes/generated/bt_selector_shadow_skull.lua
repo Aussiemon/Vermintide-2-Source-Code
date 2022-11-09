@@ -21,8 +21,6 @@ BTSelector_shadow_skull.leave = function (self, unit, blackboard, t, reason)
 end
 
 BTSelector_shadow_skull.run = function (self, unit, blackboard, t, dt)
-	local Profiler_start = Profiler.start
-	local Profiler_stop = Profiler.stop
 	local child_running = self:current_running_child(blackboard)
 	local children = self._children
 	local node_homing = children[1]
@@ -30,11 +28,8 @@ BTSelector_shadow_skull.run = function (self, unit, blackboard, t, dt)
 
 	if condition_result then
 		self:set_running_child(unit, blackboard, t, node_homing, "aborted")
-		Profiler_start("homing")
 
 		local result, evaluate = node_homing:run(unit, blackboard, t, dt)
-
-		Profiler_stop("homing")
 
 		if result ~= "running" then
 			self:set_running_child(unit, blackboard, t, nil, result)

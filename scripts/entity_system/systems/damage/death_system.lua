@@ -120,9 +120,7 @@ local function start_death_reaction(unit, death_extension, killing_blow, active_
 		local breed = blackboard.breed
 
 		if breed.run_on_death then
-			Profiler.start("run_on_death")
 			breed.run_on_death(unit, blackboard)
-			Profiler.stop("run_on_death")
 		end
 	end
 end
@@ -134,8 +132,6 @@ DeathSystem.update = function (self, context, t)
 	local active_reactions = self.active_reactions
 	local death_reactions_to_start = self.death_reactions_to_start
 
-	Profiler.start("start_death_reactions")
-
 	for unit, killing_blow in pairs(death_reactions_to_start) do
 		local death_extension = self.unit_extensions[unit]
 
@@ -143,9 +139,6 @@ DeathSystem.update = function (self, context, t)
 
 		death_reactions_to_start[unit] = nil
 	end
-
-	Profiler.stop("start_death_reactions")
-	Profiler.start("active_reactions")
 
 	for network_type, templates in pairs(active_reactions) do
 		for template, units in pairs(templates) do
@@ -163,8 +156,6 @@ DeathSystem.update = function (self, context, t)
 			end
 		end
 	end
-
-	Profiler.stop("active_reactions")
 end
 
 local function is_hot_join_sync(killing_blow)

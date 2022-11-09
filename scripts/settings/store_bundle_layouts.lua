@@ -1022,6 +1022,262 @@ StoreBundleLayouts = {
 		{
 			type = "spacing"
 		}
+	},
+	five_career_bundle_0005 = {
+		{
+			id = "dlc_logo",
+			type = "big_image",
+			settings = {
+				text = "",
+				texture_path = "gui/1080p/single_textures/store/slideshow/store_slideshow_bundle_five_career_bundle_0005",
+				localize = false,
+				show_frame = true,
+				texture_package = "resource_packages/store/bundle_icons/store_item_icon_five_career_bundle_0005",
+				image_size = {
+					800.4,
+					591.6
+				},
+				size = {
+					800.4,
+					591.6
+				}
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "divider_horizontal"
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "header_text",
+			settings = {
+				text = "menu_store_dlc_title_including",
+				localize = true
+			}
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_dr_ranger_1002",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "ranger_hat_1006",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_ranger_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_ranger_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_ww_shade_1002",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "shade_hat_1003",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_shade_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_shade_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_es_knight_1002",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "knight_hat_1002",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_knight_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_knight_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_bw_unchained_1002",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "unchained_hat_1004",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_unchained_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_unchained_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing",
+			settings = {
+				size = {
+					130,
+					0
+				}
+			}
+		},
+		{
+			id = "skin_wh_bountyhunter_1002",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			id = "bountyhunter_hat_1005",
+			type = "item",
+			settings = {
+				hide_price = true,
+				hide_new = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "display_name_bountyhunter_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "body_text",
+			settings = {
+				text = "description_bountyhunter_bundle_0002",
+				localize = true
+			}
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "spacing"
+		},
+		{
+			type = "divider_horizontal"
+		},
+		{
+			type = "spacing"
+		}
 	}
 }
 

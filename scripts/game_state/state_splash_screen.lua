@@ -21,24 +21,14 @@ if not IS_WINDOWS then
 end
 
 StateSplashScreen.on_enter = function (self)
-	Profiler.start("init")
 	Framerate.set_low_power()
 
 	if IS_WINDOWS then
-		Profiler.start("garbage leak detection")
-
 		local assert_on_leak = true
 
-		Profiler.start("run")
 		GarbageLeakDetector.run_leak_detection(assert_on_leak)
-		Profiler.stop("run")
-		Profiler.start("register_object")
 		GarbageLeakDetector.register_object(self, "StateSplashScreen")
-		Profiler.stop("register_object")
-		Profiler.start("setup")
 		VisualAssertLog.setup(nil)
-		Profiler.stop("setup")
-		Profiler.stop("garbage leak detection")
 	end
 
 	if script_data.honduras_demo then
@@ -55,20 +45,13 @@ StateSplashScreen.on_enter = function (self)
 		table.insert(StateSplashScreen.packages_to_load, 1, "resource_packages/ingame_sounds_honduras")
 	end
 
-	Profiler.stop("init")
 	Managers.transition:force_fade_in()
 	Managers.transition:show_loading_icon(false)
-	Profiler.start("setup world")
 	self:setup_world()
-	Profiler.stop("setup world")
 
 	if IS_WINDOWS or IS_XB1 then
-		Profiler.start("setup input")
 		self:setup_input()
-		Profiler.stop("setup input")
 	end
-
-	Profiler.start("start load menu splash")
 
 	if IS_WINDOWS then
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
@@ -85,8 +68,6 @@ StateSplashScreen.on_enter = function (self)
 			Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen", callback(self, "cb_splashes_loaded"), true, true)
 		end
 	end
-
-	Profiler.stop("start load menu splash")
 
 	if Managers.popup then
 		Managers.popup:destroy()
@@ -228,9 +209,7 @@ StateSplashScreen.setup_splash_screen_view = function (self)
 		local old_time = os.clock()
 
 		print("Stall loading splash screen", old_time)
-		Profiler.start("stall loading splash screen")
 		Managers.package:load("resource_packages/start_menu_splash", "StateSplashScreen")
-		Profiler.stop("stall loading splash screen")
 		print("done stall loading splash screen", os.clock() - old_time)
 	end
 
@@ -288,8 +267,6 @@ StateSplashScreen.next_state = function (self)
 end
 
 StateSplashScreen.unload_packages = function (self)
-	Profiler.start("unload packages")
-
 	local package_manager = Managers.package
 
 	for i, name in ipairs(StateSplashScreen.packages_to_load) do
@@ -297,13 +274,9 @@ StateSplashScreen.unload_packages = function (self)
 			package_manager:unload(name, "state_splash_screen")
 		end
 	end
-
-	Profiler.stop("unload packages")
 end
 
 StateSplashScreen.load_packages = function (self)
-	Profiler.start("load packages")
-
 	local package_manager = Managers.package
 
 	for i, name in ipairs(StateSplashScreen.packages_to_load) do
@@ -313,19 +286,13 @@ StateSplashScreen.load_packages = function (self)
 	end
 
 	self._base_packages_loading = true
-
-	Profiler.stop("load packages")
 end
 
 StateSplashScreen.packages_loaded = function (self)
-	Profiler.start("check packages loaded")
-
 	local package_manager = Managers.package
 
 	for i, name in ipairs(StateSplashScreen.packages_to_load) do
 		if not package_manager:has_loaded(name) then
-			Profiler.stop("check packages loaded")
-
 			return false
 		end
 	end
@@ -349,8 +316,6 @@ StateSplashScreen.packages_loaded = function (self)
 
 		GlobalResources.loaded = true
 	end
-
-	Profiler.stop("check packages loaded")
 
 	return true
 end

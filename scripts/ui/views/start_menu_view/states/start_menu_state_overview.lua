@@ -165,9 +165,7 @@ StartMenuStateOverview.update = function (self, dt, t)
 	local active_view = self._active_view
 
 	if active_view then
-		Profiler.start(active_view)
 		self._views[active_view]:update(dt, t)
-		Profiler.stop(active_view)
 	elseif not self._prepare_exit then
 		self:_handle_input(dt, t)
 		self:_handle_keyboard_input(dt, t)

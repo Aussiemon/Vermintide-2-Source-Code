@@ -434,16 +434,11 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	end
 
 	local dragged_velocity_magnitude = Vector3.length(dragged_velocity)
-
-	Profiler.start("mover move")
-
 	local current_position = Unit.local_position(unit, 0)
 	local velocity_flat_normalized = Vector3.flat(dragged_velocity)
 	local velocity_flat_length = Vector3.length(velocity_flat_normalized)
 
 	if velocity_flat_length > 0.001 then
-		Profiler.start("manual mover")
-
 		velocity_flat_normalized = velocity_flat_normalized / velocity_flat_length
 		local flat_player_pos = Vector3.flat(current_position)
 		local constrained_target = nil
@@ -494,11 +489,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 
 			dragged_velocity.z = fall_speed
 		end
-
-		Profiler.stop("manual mover")
 	else
-		Profiler.start("manual mover")
-
 		local flat_player_pos = Vector3.flat(current_position)
 		local query_radius = 1
 		local query_position = current_position + velocity_flat_normalized * 0.5
@@ -528,14 +519,11 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 				end
 			end
 		end
-
-		Profiler.stop("manual mover")
 	end
 
 	local delta = dragged_velocity * dt
 
 	Mover.move(mover, delta, dt)
-	Profiler.stop("mover move")
 
 	local final_position = Mover.position(mover)
 	local final_velocity = (final_position - current_position) / dt

@@ -528,6 +528,8 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 			self.world_previewer:play_character_animation(preview_animation)
 		end
 	else
+		local post_crashify_exception = false
+
 		for _, slot in pairs(slots) do
 			local slot_name = slot.name
 			local item = BackendUtils.get_loadout_item(career_name, slot_name)
@@ -546,7 +548,15 @@ HeroWindowBackgroundConsole._populate_loadout = function (self)
 						world_previewer:equip_item(item_name, slot, backend_id)
 					end
 				end
+			else
+				printf("[Cosmetic] Failed to equip slot %q for career %q in hero previewer", slot_name, career_name)
+
+				post_crashify_exception = true
 			end
+		end
+
+		if post_crashify_exception then
+			Crashify.print_exception("[Cosmetic] Failed to equip slot for career in hero previewer")
 		end
 	end
 end

@@ -205,20 +205,14 @@ AIEnemySlotExtension.update = function (self, self_unit, all_extensions, nav_wor
 			return
 		end
 
-		Profiler.start("get_best_slot")
-
 		local skip_slots_behind_target = blackboard.using_override_target
 		local avoid_slots_behind_overwhelmed_target = self.slot_template.avoid_slots_behind_overwhelmed_target
 
 		target_unit_extension:request_best_slot(self, skip_slots_behind_target, avoid_slots_behind_overwhelmed_target, nav_world, traverse_logic, t)
-		Profiler.stop("get_best_slot")
-		Profiler.start("improve_slot_position")
 
 		if not blackboard.disable_improve_slot_position then
 			self:_improve_slot_position(self_unit, t, nav_world)
 		end
-
-		Profiler.stop("improve_slot_position")
 
 		local delayed_priotized_time = self.delayed_prioritized_ai_unit_update_time
 

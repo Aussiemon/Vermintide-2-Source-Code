@@ -230,19 +230,12 @@ AIPanicSystem.update_panic_units = function (self)
 end
 
 AIPanicSystem.update = function (self, context, t, dt)
-	Profiler.start("update_fear_units")
 	self:update_fear_units()
-	Profiler.stop("update_fear_units")
-	Profiler.start("update_panic_units")
 	self:update_panic_units()
-	Profiler.stop("update_panic_units")
-	Profiler.start("debug_draw_panic")
 
 	if script_data.ai_debug_panic_zones then
 		self:debug_draw_panic_zones()
 	end
-
-	Profiler.stop("debug_draw_panic")
 end
 
 AIPanicSystem.debug_draw_panic_zones = function (self)

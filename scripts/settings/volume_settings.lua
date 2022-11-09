@@ -311,6 +311,10 @@ VolumeExtensionSettings = VolumeExtensionSettings or {
 		},
 		players_inside = {
 			[PLAYER] = {}
+		},
+		local_player_inside = {
+			[PLAYER] = {},
+			[LOCAL_PLAYER] = {}
 		}
 	},
 	despawn_volume = {
