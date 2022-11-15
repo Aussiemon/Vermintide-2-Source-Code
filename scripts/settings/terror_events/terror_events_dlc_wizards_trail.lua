@@ -1,39 +1,9 @@
-local function num_spawned_enemies()
-	local spawned_enemies = Managers.state.conflict:spawned_units()
-
-	return #spawned_enemies
-end
-
 local function count_event_breed(breed_name)
 	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
 end
 
-local function count_event_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed_during_event(breed_name)
-end
-
-local function count_breed(breed_name)
-	return Managers.state.conflict:count_units_by_breed(breed_name)
-end
-
-local function current_intensity()
-	return Managers.state.conflict.pacing:get_intensity()
-end
-
-local function current_difficulty()
-	return Managers.state.difficulty.difficulty
-end
-
-local function num_spawned_enemies_during_event()
-	local spawned_enemies = Managers.state.conflict:spawned_during_event()
-
-	return spawned_enemies
-end
-
-local function num_alive_standards()
-	local alive_standards = Managers.state.conflict:alive_standards()
-
-	return #alive_standards
+local function spawned_during_event()
+	return Managers.state.conflict:spawned_during_event()
 end
 
 local NORMAL = 2
@@ -51,6 +21,10 @@ local terror_event_blueprints = {
 		{
 			"control_pacing",
 			enable = false
+		},
+		{
+			"control_hordes",
+			enable = false
 		}
 	},
 	trail_enable_pacing_mid = {
@@ -60,6 +34,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"control_pacing",
+			enable = true
+		},
+		{
+			"control_hordes",
 			enable = true
 		}
 	},
@@ -71,6 +49,10 @@ local terror_event_blueprints = {
 		{
 			"control_pacing",
 			enable = false
+		},
+		{
+			"control_hordes",
+			enable = false
 		}
 	},
 	trail_enable_pacing_light = {
@@ -80,6 +62,10 @@ local terror_event_blueprints = {
 		},
 		{
 			"control_pacing",
+			enable = true
+		},
+		{
+			"control_hordes",
 			enable = true
 		}
 	},
@@ -224,18 +210,17 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 30,
+			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
 			"event_horde",
-			limit_spawners = 6,
 			spawner_id = "trail_mid_event_spawn_02",
 			composition_type = "event_small"
 		},
@@ -259,29 +244,19 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 30,
+			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
 			"event_horde",
 			spawner_id = "trail_mid_event_spawn_02",
 			composition_type = "plague_monks_small"
-		},
-		{
-			"spawn_special",
-			amount = 1,
-			breed_name = {
-				"skaven_pack_master",
-				"skaven_gutter_runner",
-				"skaven_warpfire_thrower",
-				"skaven_ratling_gunner"
-			}
 		},
 		{
 			"event_horde",
@@ -291,7 +266,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"spawn_at_raw",
@@ -322,25 +297,20 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"continue_when",
-			duration = 30,
+			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
-		},
-		{
-			"spawn_at_raw",
-			spawner_id = "trail_mid_event_02",
-			breed_name = "skaven_warpfire_thrower"
 		},
 		{
 			"event_horde",
 			limit_spawners = 4,
 			spawner_id = "trail_mid_event_spawn_03",
-			composition_type = "event_extra_spice_large"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"event_horde",
@@ -350,7 +320,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 15
 		},
 		{
 			"spawn_special",
@@ -363,36 +333,30 @@ local terror_event_blueprints = {
 			}
 		},
 		{
-			"spawn_special",
-			amount = 1,
-			breed_name = {
-				"skaven_pack_master",
-				"skaven_poison_wind_globadier"
-			}
+			"delay",
+			duration = 60
 		},
 		{
-			"spawn_special",
-			amount = 1,
-			breed_name = {
-				"chaos_corruptor_sorcerer",
-				"chaos_vortex_sorcerer",
-				"skaven_pack_master",
-				"skaven_gutter_runner"
-			},
-			difficulty_requirement = HARDEST
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "trail_mid_event_spawn_01",
+			composition_type = "event_extra_spice_medium"
+		},
+		{
+			"event_horde",
+			limit_spawners = 4,
+			spawner_id = "trail_mid_event_spawn_03",
+			composition_type = "event_small"
 		},
 		{
 			"delay",
 			duration = 10
 		},
 		{
-			"disable_bots_in_carry_event"
-		},
-		{
 			"continue_when",
-			duration = 20,
+			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -411,6 +375,9 @@ local terror_event_blueprints = {
 		{
 			"set_freeze_condition",
 			max_active_enemies = 100
+		},
+		{
+			"disable_bots_in_carry_event"
 		},
 		{
 			"spawn_special",
@@ -435,7 +402,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"spawn_at_raw",
@@ -467,18 +434,18 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			limit_spawners = 8,
-			spawner_id = "trail_mid_event_spawn_02",
+			spawner_id = "trail_mid_event_spawn_04",
 			composition_type = "event_small"
 		},
 		{
 			"delay",
-			duration = 5
+			duration = 10
 		},
 		{
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -508,7 +475,7 @@ local terror_event_blueprints = {
 			"event_horde",
 			limit_spawners = 6,
 			spawner_id = "trail_mid_event_spawn_04",
-			composition_type = "event_extra_spice_large"
+			composition_type = "event_extra_spice_medium"
 		},
 		{
 			"disable_bots_in_carry_event"
@@ -521,7 +488,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 20,
 			condition = function (t)
-				return num_spawned_enemies() < 6
+				return spawned_during_event() < 6
 			end
 		},
 		{
@@ -565,12 +532,12 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			limit_spawners = 8,
-			spawner_id = "trail_end_event_first_wave",
+			spawner_id = "trail_end_event_spawner_under_water",
 			composition_type = "event_medium_chaos"
 		},
 		{
 			"event_horde",
-			spawner_id = "trail_end_event_first_wave",
+			spawner_id = "trail_end_event_spawner_under_water",
 			composition_type = "chaos_warriors"
 		},
 		{
@@ -598,7 +565,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 4
+				return spawned_during_event() < 4
 			end
 		},
 		{
@@ -615,7 +582,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 4
+				return spawned_during_event() < 4
 			end
 		},
 		{
@@ -632,7 +599,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 4
+				return spawned_during_event() < 4
 			end
 		},
 		{
@@ -671,7 +638,11 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			spawner_id = "trail_end_event_spawner_4",
-			composition_type = "chaos_berzerkers_medium"
+			composition_type = "chaos_berzerkers_small"
+		},
+		{
+			"delay",
+			duration = 5
 		},
 		{
 			"spawn_special",
@@ -683,7 +654,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 15
 		},
 		{
 			"event_horde",
@@ -698,7 +669,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -720,12 +691,12 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 15
 		},
 		{
 			"event_horde",
 			spawner_id = "trail_end_event_spawner_under_water",
-			composition_type = "event_chaos_extra_spice_medium"
+			composition_type = "event_chaos_extra_spice_small"
 		},
 		{
 			"delay",
@@ -745,9 +716,9 @@ local terror_event_blueprints = {
 		},
 		{
 			"continue_when",
-			duration = 30,
+			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -758,7 +729,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 10
+			duration = 20
 		},
 		{
 			"event_horde",
@@ -773,7 +744,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -809,7 +780,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 20,
 			condition = function (t)
-				return num_spawned_enemies() < 6
+				return spawned_during_event() < 6
 			end
 		},
 		{
@@ -838,8 +809,7 @@ local terror_event_blueprints = {
 			amount = 1,
 			breed_name = {
 				"chaos_vortex_sorcerer",
-				"chaos_corruptor_sorcerer",
-				"skaven_gutter_runner"
+				"chaos_corruptor_sorcerer"
 			}
 		},
 		{
@@ -850,7 +820,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 20,
 			condition = function (t)
-				return num_spawned_enemies() < 6
+				return spawned_during_event() < 6
 			end
 		},
 		{
@@ -886,7 +856,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 20,
 			condition = function (t)
-				return num_spawned_enemies() < 6
+				return spawned_during_event() < 6
 			end
 		},
 		{
@@ -920,7 +890,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 2
+			duration = 5
 		},
 		{
 			"event_horde",
@@ -929,7 +899,7 @@ local terror_event_blueprints = {
 		},
 		{
 			"delay",
-			duration = 3
+			duration = 5
 		},
 		{
 			"spawn_special",
@@ -947,7 +917,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 30,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -972,7 +942,7 @@ local terror_event_blueprints = {
 		{
 			"event_horde",
 			limit_spawners = 6,
-			spawner_id = "trail_end_event_last_wave_olesya",
+			spawner_id = "trail_end_event_spawner_under_water",
 			composition_type = "event_medium_chaos"
 		},
 		{
@@ -983,7 +953,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -1015,7 +985,7 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
@@ -1047,50 +1017,12 @@ local terror_event_blueprints = {
 			"continue_when",
 			duration = 60,
 			condition = function (t)
-				return num_spawned_enemies() < 8
+				return spawned_during_event() < 8
 			end
 		},
 		{
 			"flow_event",
 			flow_event_name = "trail_end_event_03_done"
-		}
-	},
-	trail_end_event_constant = {
-		{
-			"enable_bots_in_carry_event"
-		},
-		{
-			"set_freeze_condition",
-			max_active_enemies = 30
-		},
-		{
-			"set_master_event_running",
-			name = "trail_end_event_constant"
-		},
-		{
-			"control_pacing",
-			enable = false
-		},
-		{
-			"event_horde",
-			limit_spawners = 8,
-			spawner_id = "trail_end_event_spawner_under_water",
-			composition_type = "event_small_fanatics"
-		},
-		{
-			"delay",
-			duration = 5
-		},
-		{
-			"continue_when",
-			duration = 30,
-			condition = function (t)
-				return count_event_breed("chaos_fanatic") < 8
-			end
-		},
-		{
-			"flow_event",
-			flow_event_name = "trail_end_event_constant_done"
 		}
 	},
 	trail_end_event_torch_hunter = {

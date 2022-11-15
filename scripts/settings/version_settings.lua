@@ -1,5 +1,5 @@
 VersionSettings = {
-	version = "4.7.3"
+	version = "4.8.1"
 }
 
 return
