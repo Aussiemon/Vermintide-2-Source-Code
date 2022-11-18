@@ -1406,7 +1406,7 @@ HeroViewStateStore._show_storepage = function (self, url, dlc_name)
 		local user_id = Managers.account:user_id()
 
 		if dlc_name then
-			local product_label = Managers.unlock:ps4_dlc_product_label(dlc_name)
+			local product_label = Managers.unlock:dlc_exists(dlc_name) and Managers.unlock:ps4_dlc_product_label(dlc_name)
 
 			if product_label then
 				Managers.system_dialog:open_commerce_dialog(NpCommerceDialog.MODE_PRODUCT, user_id, {
