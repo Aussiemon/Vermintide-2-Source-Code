@@ -2550,9 +2550,9 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "tutorial") or NetworkLookup.matchmaking_types.tutorial
 		end
 
-		if not stored_lobby_host_data.mechanism then
-			stored_lobby_host_data.mechanism = Managers.level_transition_handler:get_current_mechanism()
-		end
+		local current_mechanism = Managers.level_transition_handler:get_current_mechanism()
+		local current_game_mode = Managers.level_transition_handler:get_current_game_mode()
+		stored_lobby_host_data.mechanism = (current_game_mode == "weave" and current_game_mode) or current_mechanism
 
 		if IS_PS4 then
 			local region = Managers.account:region()
