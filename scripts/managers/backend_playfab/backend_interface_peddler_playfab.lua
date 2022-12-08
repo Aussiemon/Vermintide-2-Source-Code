@@ -834,6 +834,30 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 		end
 	end
 
+	local new_steam_items = result.FunctionResult.new_steam_items
+
+	if new_steam_items then
+		local backend_mirror = self._backend_mirror
+
+		for i = 1, #new_steam_items, 1 do
+			local item = new_steam_items[i]
+			local steam_itemdefid = tonumber(item[1])
+			local steam_backend_unique_id = item[2]
+			local flags = item[3]
+			local amount = item[4]
+			local item_key = SteamitemdefidToMasterList[steam_itemdefid]
+
+			if item_key then
+				local steam_item = {
+					ItemId = item_key,
+					ItemInstanceId = steam_backend_unique_id
+				}
+
+				backend_mirror:add_item(steam_backend_unique_id, steam_item, true)
+			end
+		end
+	end
+
 	if rewards_claimed then
 		Managers.telemetry.events:store_calendar_rewards_claimed(result.FunctionResult)
 	end

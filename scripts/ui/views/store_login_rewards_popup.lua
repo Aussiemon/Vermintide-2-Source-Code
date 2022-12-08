@@ -53,6 +53,16 @@ StoreLoginRewardsPopup._create_ui_elements = function (self)
 	self._animations = {}
 end
 
+StoreLoginRewardsPopup._has_claimed_reward = function (self, claimed_rewards, day_index)
+	for _, claimed_reward_idx in ipairs(claimed_rewards) do
+		if day_index == claimed_reward_idx then
+			return true
+		end
+	end
+
+	return false
+end
+
 StoreLoginRewardsPopup._setup_rewards_data = function (self, login_rewards)
 	local rewards = login_rewards.rewards
 	local reward_index = login_rewards.reward_index
@@ -68,16 +78,29 @@ StoreLoginRewardsPopup._setup_rewards_data = function (self, login_rewards)
 	local cursor_y = self._cursor_y or 1
 	self._cursor_x = cursor_x
 	self._cursor_y = cursor_y
+	local calendar_type = (login_rewards.type and login_rewards.type) or "personal_time_strike"
+	local claimed_rewards = (login_rewards.claimed_rewards and login_rewards.claimed_rewards) or {}
 	local cooldown = login_rewards.next_claim_timestamp - os.time()
 	local is_loop = reward_index == #day_widgets and cooldown <= 0
 
 	for day_index = 1, #day_widgets, 1 do
 		local day_widget_content = day_widgets[day_index].content
 		day_widget_content.is_today = not is_loop and day_index == reward_index
-		day_widget_content.is_claimed = not is_loop and day_index <= reward_index
+		local is_claimed = nil
+
+		if calendar_type == "calendar" then
+			is_claimed = self:_has_claimed_reward(claimed_rewards, day_index) and not is_loop
+		else
+			is_claimed = not is_loop and day_index <= reward_index
+		end
+
+		day_widget_content.is_claimed = is_claimed
 		local reward_item_list = rewards[day_index]
 		day_widget_content.reward_count = #reward_item_list
 		day_widget_content.selection_index = self._cursor_x
+		day_widget_content.calendar_type = calendar_type
+		day_widget_content.current_day = reward_index
+		day_widget_content.is_loop = is_loop
 
 		for item_index = 1, #reward_item_list, 1 do
 			local widget_def = definitions.create_reward_item_widget(day_index, item_index)
@@ -177,7 +200,7 @@ StoreLoginRewardsPopup.update = function (self, input_service, dt, t)
 			self._refresh_cooldown = t + 3
 		end
 	elseif state == STATE.default then
-		if expiry < -1 then
+		if expiry <= -1 or (login_rewards.reward_index >= 8 and cooldown <= -1) then
 			local cb = callback(self, "_refresh_login_rewards_cb")
 
 			backend_store:refresh_login_rewards(cb)

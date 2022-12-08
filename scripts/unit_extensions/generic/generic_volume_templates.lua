@@ -151,6 +151,13 @@ GenericVolumeTemplates.functions = {
 
 					Level.trigger_event(data.level, event)
 				end
+			end,
+			on_exit = function (unit, data)
+				if unit == Managers.player:local_player().player_unit then
+					local event = data.params.event_on_exit
+
+					Level.trigger_event(data.level, event)
+				end
 			end
 		},
 		all_alive_players_outside = {

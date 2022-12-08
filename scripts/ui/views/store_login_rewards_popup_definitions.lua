@@ -634,12 +634,18 @@ local function create_day_widget(day_index)
 				{
 					style_id = "day_text",
 					pass_type = "text",
-					text_id = "day_text"
+					text_id = "day_text",
+					content_check_function = function (content)
+						return content.calendar_type == "personal_time_strike"
+					end
 				},
 				{
 					style_id = "day_text_shadow",
 					pass_type = "text",
-					text_id = "day_text"
+					text_id = "day_text",
+					content_check_function = function (content)
+						return content.calendar_type == "personal_time_strike"
+					end
 				},
 				{
 					style_id = "day_number",
@@ -672,15 +678,29 @@ local function create_day_widget(day_index)
 					content_check_function = function (content)
 						return content.is_claimed
 					end
+				},
+				{
+					style_id = "unclaimed_tint",
+					pass_type = "rect",
+					content_check_function = function (content)
+						return content.calendar_type == "calendar" and not content.is_claimed and content.day_index <= content.current_day and not content.is_loop
+					end,
+					content_change_function = function (content, style)
+						if content.calendar_type == "calendar" and not content.is_claimed and content.day_index <= content.current_day and not content.is_loop then
+							style.color[1] = 120
+						end
+					end
 				}
 			}
 		},
 		content = {
-			inset = "options_window_fade_01",
-			bg = "menu_frame_bg_09",
 			is_claimed = false,
 			is_today = false,
+			current_day = 0,
 			claimed = "store_owned_sigil",
+			inset = "options_window_fade_01",
+			calendar_type = "personal_time_strike",
+			bg = "menu_frame_bg_09",
 			hotspot = {},
 			frame = frame_settings.texture,
 			corner = corner_settings.texture,
@@ -931,6 +951,19 @@ local function create_day_widget(day_index)
 				offset = {
 					0,
 					-37.5,
+					20
+				}
+			},
+			unclaimed_tint = {
+				color = {
+					0,
+					0,
+					0,
+					0
+				},
+				offset = {
+					0,
+					0,
 					20
 				}
 			}
