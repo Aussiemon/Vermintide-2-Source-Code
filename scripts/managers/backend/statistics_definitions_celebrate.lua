@@ -4,5 +4,3 @@ player.crawl_total_ales_drunk = {
 	database_name = "crawl_total_ales_drunk",
 	source = "player_data"
 }
-
-return

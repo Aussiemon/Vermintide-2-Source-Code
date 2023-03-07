@@ -27,5 +27,3 @@ Breeds.shadow_lieutenant.trigger_dialogue_on_target_switch = false
 Breeds.shadow_lieutenant.backstab_player_sound_event = "Play_enemy_vce_shadow_champion_attack_player_back"
 Breeds.shadow_lieutenant.interrupt_spawning_on_stagger = true
 Breeds.shadow_lieutenant.interrupt_spawning_on_health_percentage = 0.8
-
-return

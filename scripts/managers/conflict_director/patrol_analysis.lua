@@ -156,7 +156,7 @@ PatrolAnalysis.destroy = function (self)
 	local running_splines = self.running_splines
 	local num_running_splines = #running_splines
 
-	for i = 1, num_running_splines, 1 do
+	for i = 1, num_running_splines do
 		local spline = running_splines[i]
 		local navbot = spline.navbot
 
@@ -166,7 +166,7 @@ PatrolAnalysis.destroy = function (self)
 	local free_navbots_lists = self.free_navbots_lists
 
 	for _, free_navbots in pairs(free_navbots_lists) do
-		for i = 1, #free_navbots, 1 do
+		for i = 1, #free_navbots do
 			local navbot = free_navbots[i]
 
 			GwNavBot.destroy(navbot)
@@ -233,7 +233,7 @@ PatrolAnalysis._finilize_splines = function (self, main_paths, drawer)
 		while not done do
 			done = true
 
-			for i = 1, #spline - 1, 1 do
+			for i = 1, #spline - 1 do
 				if spline[i + 1].order < spline[i].order then
 					local temp = spline[i]
 					spline[i] = spline[i + 1]
@@ -263,12 +263,12 @@ PatrolAnalysis._finilize_splines = function (self, main_paths, drawer)
 		local h = Vector3(0, 0, 1)
 		local p2 = nil
 
-		for i = 1, #spline, 1 do
+		for i = 1, #spline do
 			local waypoint = spline[i]
 			local p2 = waypoint.pos:unbox()
 			local path_pos, travel_dist, total_path_dist, _ = MainPathUtils.closest_pos_at_main_path_lua(main_paths, p1)
 			waypoint.travel_dist = travel_dist
-			local color = (spline.patrol_type == "boss_waypoint" and Color(255, 125, 0)) or Color(255, 255, 0)
+			local color = spline.patrol_type == "boss_waypoint" and Color(255, 125, 0) or Color(255, 255, 0)
 
 			drawer:line(p1 + h, p2 + h, color)
 
@@ -325,7 +325,7 @@ PatrolAnalysis._generate_patrol_spline = function (self, level_name, main_paths,
 				result = string.format("Patrol id '%s', waypoint with order '%s' is outside of navigation mesh. (%s)", tostring(patrol_id), tostring(order), object.name)
 			end
 
-			for i = 1, #spline, 1 do
+			for i = 1, #spline do
 				if order < spline[i].order then
 					index = i
 
@@ -400,7 +400,7 @@ PatrolAnalysis.inject_spline_path = function (self, spline, line_drawer)
 		local current_node_index = GwNavBot.get_path_current_node_index(navbot)
 		local offset = Vector3.up() * 0.05
 
-		for i = 0, node_count - 1, 1 do
+		for i = 0, node_count - 1 do
 			local position = GwNavBot.get_path_node_pos(navbot, i)
 			spline_points[spline_points_index] = Vector3Box(position)
 			spline_points_index = spline_points_index + 1
@@ -464,7 +464,7 @@ PatrolAnalysis.draw_raw_spline = function (self, spline_name)
 
 	QuickDrawerStay:sphere(p1, 0.33, Color(0, 200, 175))
 
-	for j = 2, #spline, 1 do
+	for j = 2, #spline do
 		local p2 = spline[j].pos:unbox()
 
 		QuickDrawerStay:sphere(p1, 0.33, Color(200, 40, 0))
@@ -479,7 +479,7 @@ PatrolAnalysis.draw_astar_spline = function (self, points)
 
 	QuickDrawerStay:sphere(p1, 0.33, Color(0, 200, 175))
 
-	for j = 2, #points, 1 do
+	for j = 2, #points do
 		local p2 = points[j]:unbox()
 
 		QuickDrawerStay:sphere(p1, 0.23, Color(0, 200, 175))
@@ -497,7 +497,7 @@ PatrolAnalysis.get_path_point = function (self, points, path_length, move_percen
 	local travel_dist = 0
 	local goal_dist = move_percent * path_length
 
-	for i = 1, #points - 1, 1 do
+	for i = 1, #points - 1 do
 		local p1 = points[i]:unbox()
 		local p2 = points[i + 1]:unbox()
 		local vec = p2 - p1
@@ -522,7 +522,7 @@ PatrolAnalysis.get_path_length = function (self, points)
 	local total_len = 0
 	local p1 = points[1]:unbox()
 
-	for j = 2, #points, 1 do
+	for j = 2, #points do
 		local p2 = points[j]:unbox()
 		total_len = total_len + Vector3_distance(p1, p2)
 		p1 = p2
@@ -647,7 +647,7 @@ PatrolAnalysis.run = function (self)
 
 	if size <= 0 then
 		for kind, free_navbots in pairs(free_navbots_lists) do
-			for i = 1, #free_navbots, 1 do
+			for i = 1, #free_navbots do
 				local navbot = free_navbots[i]
 
 				GwNavBot.destroy(navbot)
@@ -657,5 +657,3 @@ PatrolAnalysis.run = function (self)
 		return "success", ready_waypoints
 	end
 end
-
-return

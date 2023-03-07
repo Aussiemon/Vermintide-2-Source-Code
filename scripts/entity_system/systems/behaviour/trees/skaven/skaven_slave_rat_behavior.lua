@@ -132,5 +132,3 @@ BreedBehaviors.slave_rat = {
 	},
 	name = "slave"
 }
-
-return

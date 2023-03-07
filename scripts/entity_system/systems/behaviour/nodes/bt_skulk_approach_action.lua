@@ -10,7 +10,7 @@ end
 BTSkulkApproachAction.enter = function (self, unit, blackboard, t)
 	local action = self._tree_node.action_data
 	local target_dist = blackboard.target_dist
-	local skulk_start_radius = (target_dist and math.min(action.skulk_init_distance, target_dist)) or action.skulk_init_distance
+	local skulk_start_radius = target_dist and math.min(action.skulk_init_distance, target_dist) or action.skulk_init_distance
 	local skulk_data = blackboard.skulk_data or {}
 	local direction = skulk_data.direction or 1 - math.random(0, 1) * 2
 	skulk_data.direction = direction
@@ -213,7 +213,7 @@ BTSkulkApproachAction.get_random_goal_on_circle = function (self, unit, blackboa
 	local rotation_forward = Vector3.forward()
 	local a, angle = AiUtils.get_angle_between_vectors(target_to_unit_forward, rotation_forward)
 
-	for i = 1, TRIES, 1 do
+	for i = 1, TRIES do
 		local random_angle = (i * 3 + Math.random(0, 3)) * direction
 
 		if i == TRIES then
@@ -260,5 +260,3 @@ BTSkulkApproachAction.debug_show_skulk_circle = function (self, unit, blackboard
 	QuickDrawer:circle(target_position + offset, radius, Vector3.up(), Colors.get("light_green"))
 	QuickDrawer:circle(target_position + offset, skulk_start_radius, Vector3.up(), Colors.get("light_green"))
 end
-
-return

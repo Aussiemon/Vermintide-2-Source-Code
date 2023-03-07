@@ -303,7 +303,7 @@ PlayerUnitHealthExtension.update = function (self, dt, context, t)
 
 				if temporary_health > 0 and state == "alive" then
 					local new_temporary_health = temporary_health - degen_amount
-					local min_temporary_health_left = (health <= 0 and 1) or 0
+					local min_temporary_health_left = health <= 0 and 1 or 0
 					local damage = temporary_health - math.max(new_temporary_health, min_temporary_health_left)
 
 					if damage > 0 then
@@ -481,7 +481,7 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 		buff_extension:trigger_procs("on_damage_taken", attacker_unit, damage_amount, damage_type)
 	end
 
-	local min_health = (buff_extension:has_buff_perk("ignore_death") and 1) or 0
+	local min_health = buff_extension:has_buff_perk("ignore_death") and 1 or 0
 
 	if damage_source_name ~= "dot_debuff" and damage_type ~= "temporary_health_degen" and damage_type ~= "overcharge" then
 		local ai_inventory_extension = ScriptUnit.has_extension(attacker_unit, "ai_inventory_system")
@@ -515,21 +515,21 @@ PlayerUnitHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			local current_temporary_health = GameSession.game_object_field(game, game_object_id, "current_temporary_health")
 			local permanent_damage_amount, temporary_damage_amount = nil
 			local total_health = current_health + current_temporary_health
-			local modified_damage_amount = (damage_amount >= total_health and total_health - min_health) or damage_amount
+			local modified_damage_amount = damage_amount >= total_health and total_health - min_health or damage_amount
 
 			if force_permanent_damage then
-				permanent_damage_amount = (current_health < modified_damage_amount and current_health) or modified_damage_amount
-				temporary_damage_amount = (current_health < modified_damage_amount and modified_damage_amount - current_health) or 0
+				permanent_damage_amount = current_health < modified_damage_amount and current_health or modified_damage_amount
+				temporary_damage_amount = current_health < modified_damage_amount and modified_damage_amount - current_health or 0
 			else
-				permanent_damage_amount = (current_temporary_health < modified_damage_amount and modified_damage_amount - current_temporary_health) or 0
-				temporary_damage_amount = (current_temporary_health < modified_damage_amount and current_temporary_health) or modified_damage_amount
+				permanent_damage_amount = current_temporary_health < modified_damage_amount and modified_damage_amount - current_temporary_health or 0
+				temporary_damage_amount = current_temporary_health < modified_damage_amount and current_temporary_health or modified_damage_amount
 			end
 
-			local new_health = (current_health < permanent_damage_amount and 0) or current_health - permanent_damage_amount
+			local new_health = current_health < permanent_damage_amount and 0 or current_health - permanent_damage_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
 
-			local new_temporary_health = (current_temporary_health < temporary_damage_amount and 0) or current_temporary_health - temporary_damage_amount
+			local new_temporary_health = current_temporary_health < temporary_damage_amount and 0 or current_temporary_health - temporary_damage_amount
 
 			GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 
@@ -585,15 +585,15 @@ PlayerUnitHealthExtension.add_heal = function (self, healer_unit, heal_amount, h
 			local max_health = GameSession.game_object_field(game, game_object_id, "max_health")
 
 			if status_extension:is_permanent_heal(heal_type) and not status_extension:is_knocked_down() then
-				local new_temporary_health = (current_temporary_health < heal_amount and 0) or current_temporary_health - heal_amount
+				local new_temporary_health = current_temporary_health < heal_amount and 0 or current_temporary_health - heal_amount
 
 				GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 
-				local new_health = (max_health < current_health + new_temporary_health + heal_amount and max_health) or current_health + heal_amount
+				local new_health = max_health < current_health + new_temporary_health + heal_amount and max_health or current_health + heal_amount
 
 				GameSession.set_game_object_field(game, game_object_id, "current_health", new_health)
 			else
-				local new_temporary_health = (max_health < current_health + current_temporary_health + heal_amount and max_health - current_health) or current_temporary_health + heal_amount
+				local new_temporary_health = max_health < current_health + current_temporary_health + heal_amount and max_health - current_health or current_temporary_health + heal_amount
 
 				GameSession.set_game_object_field(game, game_object_id, "current_temporary_health", new_temporary_health)
 			end
@@ -633,7 +633,7 @@ PlayerUnitHealthExtension.die = function (self, damage_type)
 		local PLAYER_POSITIONS = side.PLAYER_POSITIONS
 		local num_player_positions = #PLAYER_POSITIONS
 
-		for i = 1, num_player_positions, 1 do
+		for i = 1, num_player_positions do
 			local player_position = PLAYER_POSITIONS[i]
 			local position = LocomotionUtils.new_random_goal_uniformly_distributed(nav_world, nil, player_position, 2, 5, 5)
 
@@ -1021,5 +1021,3 @@ PlayerUnitHealthExtension.health_degen_settings = function (self)
 
 	return degen_amount, degen_delay, degen_start
 end
-
-return

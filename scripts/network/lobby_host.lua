@@ -105,7 +105,7 @@ LobbyHost._update_debug = function (self)
 	if num_members > 0 then
 		Debug.text("Reliable Send Buffer Left (peer : bytes):")
 
-		for i = 1, num_members, 1 do
+		for i = 1, num_members do
 			local peer_id = members[i]
 
 			if peer_id ~= my_peer_id then
@@ -113,12 +113,12 @@ LobbyHost._update_debug = function (self)
 				local remaining_buffer_size = Network.reliable_send_buffer_left(peer_id)
 				local min_buffer = self._min_remaining_buffer[peer_id]
 
-				if (min_buffer and remaining_buffer_size < min_buffer) or (min_buffer == nil and remaining_buffer_size > 0) then
+				if min_buffer and remaining_buffer_size < min_buffer or min_buffer == nil and remaining_buffer_size > 0 then
 					min_buffer = remaining_buffer_size
 					self._min_remaining_buffer[peer_id] = min_buffer
 				end
 
-				Debug.text("    %s : %d %s", peer_id, remaining_buffer_size, (min_buffer and string.format("(min: %d)", min_buffer)) or "")
+				Debug.text("    %s : %d %s", peer_id, remaining_buffer_size, min_buffer and string.format("(min: %d)", min_buffer) or "")
 			end
 		end
 	end
@@ -187,7 +187,7 @@ LobbyHost.user_name = function (self, peer_id)
 end
 
 LobbyHost.id = function (self)
-	return (LobbyInternal.lobby_id and LobbyInternal.lobby_id(self.lobby)) or "no_id"
+	return LobbyInternal.lobby_id and LobbyInternal.lobby_id(self.lobby) or "no_id"
 end
 
 LobbyHost.is_joined = function (self)
@@ -246,5 +246,3 @@ end
 LobbyHost.close_channel = function (self, channel_id)
 	LobbyInternal.close_channel(self.lobby, channel_id)
 end
-
-return

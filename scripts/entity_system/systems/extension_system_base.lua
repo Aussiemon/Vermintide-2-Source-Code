@@ -28,7 +28,7 @@ ExtensionSystemBase.init = function (self, entity_system_creation_context, syste
 	self.extensions = {}
 	self.profiler_names = {}
 
-	for i = 1, #extension_list, 1 do
+	for i = 1, #extension_list do
 		local extension_name = extension_list[i]
 		self.update_list[extension_name] = {
 			pre_update = {},
@@ -172,5 +172,3 @@ end
 ExtensionSystemBase.destroy = function (self)
 	return
 end
-
-return

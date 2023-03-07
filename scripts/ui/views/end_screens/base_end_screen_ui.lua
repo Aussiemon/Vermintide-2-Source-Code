@@ -117,5 +117,3 @@ BaseEndScreenUI.draw = function (self, dt)
 	self:_draw_widgets(ui_renderer, render_settings)
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

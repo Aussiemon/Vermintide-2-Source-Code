@@ -230,13 +230,13 @@ BTChaosExaltedSorcererSkulkAction.get_skulk_target = function (unit, blackboard,
 
 	local cross_dir = Vector3(0, 0, direction)
 	local mod = 0.1
-	local alpha = math.pi * math.clamp((mod * 20) / dist, 0.01, 0.15)
+	local alpha = math.pi * math.clamp(mod * 20 / dist, 0.01, 0.15)
 
 	if teleporting then
 		alpha = alpha * 1.5
 	end
 
-	for i = 1, TRIES, 1 do
+	for i = 1, TRIES do
 		local rot_vec = to_target - to_target_dir * 0.5
 
 		if blackboard.num_summons and blackboard.num_summons >= (action.teleport_closer_summon_limit or 3) then
@@ -282,7 +282,7 @@ BTChaosExaltedSorcererSkulkAction.update_plague_wave = function (self, unit, bla
 		blackboard.quick_teleport = true
 		blackboard.move_pos = nil
 		blackboard.ready_to_summon = true
-		blackboard.num_plague_waves = (blackboard.num_plague_waves and blackboard.num_plague_waves + 1) or 1
+		blackboard.num_plague_waves = blackboard.num_plague_waves and blackboard.num_plague_waves + 1 or 1
 
 		if blackboard.num_plague_waves >= 4 then
 			blackboard.num_plague_waves = 0
@@ -315,5 +315,3 @@ BTChaosExaltedSorcererSkulkAction.update_cast_missile = function (self, unit, bl
 
 	return true
 end
-
-return

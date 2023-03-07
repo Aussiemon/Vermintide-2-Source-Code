@@ -13,7 +13,7 @@ XboxEventManager.write = function (self, event, event_data, debug_string, debug_
 
 	return
 
-	Application.error(string.format("Adding%sEvent: %s", (prioritize and " prioritized ") or " ", event))
+	Application.error(string.format("Adding%sEvent: %s", prioritize and " prioritized " or " ", event))
 
 	if skip_wait_time then
 		self._immediate_queue[#self._immediate_queue + 1] = {
@@ -150,5 +150,3 @@ end
 XboxEventManager.destroy = function (self)
 	return
 end
-
-return

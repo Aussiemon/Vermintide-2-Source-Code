@@ -80,5 +80,3 @@ DialogueLookup[DialogueLookup_n + 38] = "pbw_bastion_conversation_twelve_01"
 DialogueLookup[DialogueLookup_n + 39] = "pes_bastion_conversation_twelve_02"
 DialogueLookup[DialogueLookup_n + 40] = "pbw_bastion_conversation_twelve_02"
 DialogueLookup_n = DialogueLookup_n + 40
-
-return

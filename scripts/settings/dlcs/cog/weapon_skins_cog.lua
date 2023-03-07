@@ -276,5 +276,3 @@ end
 for name, data in pairs(default_skins) do
 	WeaponSkins.default_skins[name] = data
 end
-
-return

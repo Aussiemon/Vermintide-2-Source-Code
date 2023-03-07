@@ -2,7 +2,7 @@ for name, setting in pairs(BossSettings) do
 	local boss_events = setting.boss_events
 
 	if name ~= "disabled" then
-		for i = 1, #boss_events, 1 do
+		for i = 1, #boss_events do
 			local event_name = boss_events[i]
 			local exists = TerrorEventBlueprints[event_name] or event_name == "nothing"
 
@@ -13,7 +13,7 @@ for name, setting in pairs(BossSettings) do
 	local rare_events = setting.rare_events
 
 	if name ~= "disabled" then
-		for i = 1, #rare_events, 1 do
+		for i = 1, #rare_events do
 			local event_name = rare_events[i]
 			local exists = TerrorEventBlueprints[event_name] or event_name == "nothing"
 
@@ -22,7 +22,7 @@ for name, setting in pairs(BossSettings) do
 	end
 end
 
-for i = 1, #BreedPacks, 1 do
+for i = 1, #BreedPacks do
 	local pack_data = BreedPacks[i]
 
 	fassert(pack_data.pack_type, "BreedPack %d has a missing 'pack_type' field", i)
@@ -32,5 +32,3 @@ for i = 1, #BreedPacks, 1 do
 
 	fassert(okay, "BreedPack %d is missing table filed 'member'.", i)
 end
-
-return

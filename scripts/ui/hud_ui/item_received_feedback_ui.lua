@@ -12,7 +12,7 @@ local event_settings = {
 			end
 		end,
 		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
+			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or script_data.enable_reinforcement_ui_remote_sound and "hud_info"
 		end,
 		icon_function = function (hero_portrait_texture, item_icon)
 			return hero_portrait_texture, item_icon
@@ -173,11 +173,11 @@ ItemReceivedFeedbackUI._assign_portrait_texture = function (self, widget, pass_n
 end
 
 ItemReceivedFeedbackUI.event_give_item_feedback = function (self, hash, giver_player, item_name)
-	local player_1_name = (giver_player and giver_player:name()) or nil
+	local player_1_name = giver_player and giver_player:name() or nil
 	local player_unit = giver_player and giver_player.player_unit
 	local career_extension = Unit.alive(player_unit) and ScriptUnit.extension(player_unit, "career_system")
-	local player_1_career_index = (career_extension and career_extension:career_index()) or (giver_player and giver_player:profile_index())
-	local player_1_profile_index = (giver_player and giver_player:profile_index()) or nil
+	local player_1_career_index = career_extension and career_extension:career_index() or giver_player and giver_player:profile_index()
+	local player_1_profile_index = giver_player and giver_player:profile_index() or nil
 	local player_1_profile_image = player_1_profile_index and player_1_career_index and self:_get_hero_portrait(player_1_profile_index, player_1_career_index)
 	local item_data = ItemMasterList[item_name]
 	local hud_icon = item_data and item_data.item_received_icon
@@ -285,5 +285,3 @@ ItemReceivedFeedbackUI.update = function (self, dt, t)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

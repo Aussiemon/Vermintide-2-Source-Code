@@ -92,7 +92,7 @@ SoundEnvironmentSystem.register_sound_environment = function (self, volume_name,
 	local sorted_environment = {}
 	count = count - 1
 
-	for i = 1, count, 1 do
+	for i = 1, count do
 		sorted_environment[i] = array_to_sort[i].n
 	end
 
@@ -151,7 +151,7 @@ SoundEnvironmentSystem.register_source_environment_update = function (self, sour
 	self._updated_sources[#self._updated_sources + 1] = {
 		unit = unit,
 		source = source,
-		node = (object and Unit.node(unit, object)) or 0
+		node = object and Unit.node(unit, object) or 0
 	}
 	self._num_sources = self._num_sources + 1
 end
@@ -159,7 +159,7 @@ end
 SoundEnvironmentSystem.unregister_source_environment_update = function (self, source)
 	local num_sources = self._num_sources
 
-	for i = 1, num_sources, 1 do
+	for i = 1, num_sources do
 		local data = self._updated_sources[i]
 
 		if data.source == source then
@@ -189,14 +189,14 @@ SoundEnvironmentSystem._update_source_environments = function (self)
 	local wwise_world_has_source = WwiseWorld.has_source
 	local num_sources_to_unregister = 0
 
-	for i = 1, amount_to_update, 1 do
+	for i = 1, amount_to_update do
 		current_index = current_index % num_sources + 1
 		local data = updated_sources[current_index]
 		local source = data.source
 
 		if wwise_world_has_source(self.wwise_world, source) then
 			local pos = Unit.world_position(data.unit, data.node)
-			slot14 = self:set_source_environment(source, pos)
+			local bus_name = self:set_source_environment(source, pos)
 		else
 			sources_to_unregister[#sources_to_unregister + 1] = source
 			num_sources_to_unregister = num_sources_to_unregister + 1
@@ -205,7 +205,7 @@ SoundEnvironmentSystem._update_source_environments = function (self)
 
 	self._current_source_index = current_index
 
-	for i = 1, num_sources_to_unregister, 1 do
+	for i = 1, num_sources_to_unregister do
 		local source = sources_to_unregister[i]
 
 		self:unregister_source_environment_update(source)
@@ -371,5 +371,3 @@ SoundEnvironmentSystem._set_environment = function (self, volume_name)
 	WwiseWorld.reset_aux_environment(wwise_world)
 	WwiseWorld.set_environment(wwise_world, environment.player_aux_bus_name, FULL_WEIGHT)
 end
-
-return

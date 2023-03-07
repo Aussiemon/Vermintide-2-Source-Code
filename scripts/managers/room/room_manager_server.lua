@@ -31,13 +31,13 @@ RoomManagerServer.get_spawn_point_by_peer = function (self, peer_id)
 end
 
 RoomManagerServer.has_room = function (self, peer_id)
-	return (self._peer_rooms[peer_id] and true) or false
+	return self._peer_rooms[peer_id] and true or false
 end
 
 RoomManagerServer.destroy_room = function (self, peer_id, move_other_players_from_room)
 	local room_id = self._peer_rooms[peer_id].room_id
 
-	if (move_other_players_from_room and move_other_players_from_room == true) or move_other_players_from_room == nil then
+	if move_other_players_from_room and move_other_players_from_room == true or move_other_players_from_room == nil then
 		self:move_players_from_room(room_id)
 	end
 
@@ -111,5 +111,3 @@ RoomManagerServer.destroy = function (self)
 
 	self._room_handler = nil
 end
-
-return

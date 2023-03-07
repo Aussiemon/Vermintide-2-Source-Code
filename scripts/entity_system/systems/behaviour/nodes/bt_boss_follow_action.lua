@@ -187,7 +187,7 @@ BTBossFollowAction.check_fling_skaven = function (self, unit, blackboard, t)
 	if num_units > 0 then
 		local BLACKBOARDS = BLACKBOARDS
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local hit_unit = broad_phase_fling_units[i]
 			local hit_unit_bb = BLACKBOARDS[hit_unit]
 			local hit_unit_breed = hit_unit_bb and hit_unit_bb.breed
@@ -239,7 +239,7 @@ BTBossFollowAction._follow_target_stormfiend = function (self, unit, blackboard,
 		target_has_moved = false
 	end
 
-	if (at_goal and (check_distance < target_distance or blackboard.find_new_shoot_position)) or (not at_goal and target_has_moved) then
+	if at_goal and (check_distance < target_distance or blackboard.find_new_shoot_position) or not at_goal and target_has_moved then
 		local min_angle = follow_data.min_angle or 0
 		local min_angle_step = data.min_angle_step
 		local max_angle_step = data.max_angle_step
@@ -296,10 +296,8 @@ end
 
 BTBossFollowAction._debug_big_boy_turning = function (self, blackboard)
 	if script_data.debug_ai_movement then
-		local turning = (blackboard.is_turning and "true") or "false"
+		local turning = blackboard.is_turning and "true" or "false"
 
 		Debug.text("move_state:%s turning:%s", blackboard.move_state, turning)
 	end
 end
-
-return

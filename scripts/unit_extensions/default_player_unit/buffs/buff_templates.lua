@@ -252,7 +252,7 @@ local function make_proc_param_lookup(...)
 	local num_args = select("#", ...)
 	local t = Script.new_map(num_args)
 
-	for i = 1, num_args, 1 do
+	for i = 1, num_args do
 		local arg = select(i, ...)
 		t[arg] = i
 	end
@@ -357,7 +357,7 @@ ProcFunctions = {
 			local side = Managers.state.side.side_by_unit[player_unit]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				DamageUtils.heal_network(player_and_bot_units[i], player_unit, heal_amount, "heal_from_proc")
 			end
 		end
@@ -373,7 +373,7 @@ ProcFunctions = {
 			local side = Managers.state.side.side_by_unit[player_unit]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				local healed_unit = player_and_bot_units[i]
 
 				if healed_unit ~= player_unit and Unit.alive(healed_unit) then
@@ -415,7 +415,7 @@ ProcFunctions = {
 
 		if type(buff_to_add) == "table" then
 			if Unit.alive(player_unit) and Unit.alive(revived_unit) and Managers.player.is_server then
-				for i = 1, #buff_to_add, 1 do
+				for i = 1, #buff_to_add do
 					local current_buff = buff_to_add[i]
 
 					buff_system:add_buff(revived_unit, current_buff, player_unit, false)
@@ -528,7 +528,7 @@ ProcFunctions = {
 
 		local attack_type = params[param_order.buff_attack_type]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -550,6 +550,7 @@ ProcFunctions = {
 				local heal_amount = 1
 
 				if target_number == 1 then
+					-- Nothing
 				end
 
 				DamageUtils.heal_network(player_unit, player_unit, heal_amount, "heal_from_proc")
@@ -809,7 +810,7 @@ ProcFunctions = {
 			local player_position = POSITION_LOOKUP[player_unit]
 			local rotation = Quaternion.identity()
 			local owner_is_bot = player and player.bot_player
-			local is_husk = (owner_is_bot and true) or false
+			local is_husk = owner_is_bot and true or false
 			local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
 			local career_power_level = career_extension:get_career_power_level()
 
@@ -824,7 +825,7 @@ ProcFunctions = {
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local buff_amount = #buff.buff_ids
 
-			for i = 1, buff_amount, 1 do
+			for i = 1, buff_amount do
 				buff_extension:remove_buff(buff.buff_ids[i])
 			end
 
@@ -832,9 +833,9 @@ ProcFunctions = {
 
 			local template = buff.template
 
-			for i = 1, buff_amount, 1 do
+			for i = 1, buff_amount do
 				local buff_on_pop = template.buff_on_pop
-				slot12 = buff_extension:add_buff(buff_on_pop)
+				local id = buff_extension:add_buff(buff_on_pop)
 			end
 
 			local t = Managers.time:time("game")
@@ -917,7 +918,7 @@ ProcFunctions = {
 
 		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -969,7 +970,7 @@ ProcFunctions = {
 
 			local amount_to_add = template.amount_to_add
 
-			for i = 1, amount_to_add, 1 do
+			for i = 1, amount_to_add do
 				local num_buff_list = #buff.buff_list
 				local max_sub_buff_stacks = template.max_sub_buff_stacks
 
@@ -995,7 +996,7 @@ ProcFunctions = {
 			local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_name)
 
 			if reference_buff and reference_buff.buff_list and target_index and target_index == 1 then
-				for i = 1, #reference_buff.buff_list, 1 do
+				for i = 1, #reference_buff.buff_list do
 					local buff_to_remove = table.remove(reference_buff.buff_list)
 
 					if buff_to_remove then
@@ -1011,7 +1012,7 @@ ProcFunctions = {
 		if Unit.alive(player_unit) then
 			local kind = params[1].kind
 
-			if not kind or (kind ~= "flamethrower" and kind ~= "charged_projectile" and kind ~= "bullet_spray" and kind ~= "charge") then
+			if not kind or kind ~= "flamethrower" and kind ~= "charged_projectile" and kind ~= "bullet_spray" and kind ~= "charge" then
 				return
 			end
 
@@ -1395,11 +1396,11 @@ ProcFunctions = {
 				"kerillian_shade_activated_ability_short_blocker"
 			}
 
-			if local_player or (is_server and bot_player) then
+			if local_player or is_server and bot_player then
 				local network_manager = Managers.state.network
 				local network_transmit = network_manager.network_transmit
 
-				for i = 1, #buffs_to_add, 1 do
+				for i = 1, #buffs_to_add do
 					local buff_name = buffs_to_add[i]
 					local unit_object_id = network_manager:unit_game_object_id(player_unit)
 					local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
@@ -1429,7 +1430,7 @@ ProcFunctions = {
 			local buff_template = buff.template
 			local buff_to_add = buff_template.buff_to_add
 
-			if local_player or (is_server and bot_player) then
+			if local_player or is_server and bot_player then
 				local network_manager = Managers.state.network
 				local network_transmit = network_manager.network_transmit
 
@@ -1460,7 +1461,7 @@ ProcFunctions = {
 			else
 				local buffs_to_remove = buff_extension:num_buff_stacks(buff_to_add)
 
-				for i = 1, buffs_to_remove, 1 do
+				for i = 1, buffs_to_remove do
 					local buff = buff_extension:get_buff_type(buff_to_add)
 
 					if not buff then
@@ -1752,7 +1753,7 @@ ProcFunctions = {
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) then
@@ -1977,7 +1978,7 @@ ProcFunctions = {
 				return
 			end
 
-			if (attack_type ~= "instant_projectile" and attack_type ~= "projectile") or not unmodifed then
+			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" or not unmodifed then
 				return
 			end
 
@@ -2013,7 +2014,7 @@ ProcFunctions = {
 				is_dummy = Unit.get_data(hit_unit, "is_dummy")
 			end
 
-			if (attack_type ~= "instant_projectile" and attack_type ~= "projectile") or (not unmodifed and not is_dummy) then
+			if attack_type ~= "instant_projectile" and attack_type ~= "projectile" or not unmodifed and not is_dummy then
 				return
 			end
 
@@ -2264,7 +2265,7 @@ ProcFunctions = {
 				local buff_template = buff.template
 				local buff_list = buff_template.buffs_to_add
 
-				for i = 1, #buff_list, 1 do
+				for i = 1, #buff_list do
 					local buff_name = buff_list[i]
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 					local network_manager = Managers.state.network
@@ -2352,7 +2353,7 @@ ProcFunctions = {
 			local attack_type = params[2]
 
 			if attack_type and attack_type == "light_attack" then
-				slot5 = buff.template
+				local template = buff.template
 			end
 		end
 	end,
@@ -2641,7 +2642,7 @@ ProcFunctions = {
 			if has_buff then
 				local extend_time = buff.template.extend_time
 				local t = Managers.time:time("game")
-				local new_duration = (extend_time + has_buff.start_time) - t + has_buff.duration
+				local new_duration = extend_time + has_buff.start_time - t + has_buff.duration
 				has_buff.start_time = t
 				has_buff.duration = new_duration
 				buff.killed_target = true
@@ -2844,7 +2845,7 @@ ProcFunctions = {
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 			local num_units = #player_and_bot_units
 
-			for i = 1, num_units, 1 do
+			for i = 1, num_units do
 				local unit = player_and_bot_units[i]
 
 				if Unit.alive(unit) then
@@ -2861,7 +2862,7 @@ ProcFunctions = {
 			local buff_template = buff.template
 			local buffs = buff_template.buffs_to_add
 
-			for i = 1, #buffs, 1 do
+			for i = 1, #buffs do
 				local buff_name = buffs[i]
 				local network_manager = Managers.state.network
 				local network_transmit = network_manager.network_transmit
@@ -2911,7 +2912,7 @@ ProcFunctions = {
 			local unit_object_id = network_manager:unit_game_object_id(player_unit)
 			local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
-			for i = 1, 5, 1 do
+			for i = 1, 5 do
 				if is_server() then
 					buff_extension:add_buff(buff_name, {
 						attacker_unit = player_unit
@@ -3167,7 +3168,7 @@ ProcFunctions = {
 				local owner_position = POSITION_LOOKUP[player_unit]
 				local range_squared = range * range
 
-				for i = 1, num_targets, 1 do
+				for i = 1, num_targets do
 					local target_unit = player_and_bot_units[i]
 					local ally_position = POSITION_LOOKUP[target_unit]
 					local distance_squared = Vector3.distance_squared(owner_position, ally_position)
@@ -3411,7 +3412,7 @@ ProcFunctions = {
 
 		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -3458,7 +3459,7 @@ ProcFunctions = {
 				local template = buff.template
 				local remove_buff_stack_data_array = template.remove_buff_stack_data
 
-				for i = 1, #remove_buff_stack_data_array, 1 do
+				for i = 1, #remove_buff_stack_data_array do
 					local remove_buff_stack_data = remove_buff_stack_data_array[i]
 					local buff_to_remove = remove_buff_stack_data.buff_to_remove
 					local num_stacks = remove_buff_stack_data.num_stacks or 1
@@ -3468,15 +3469,15 @@ ProcFunctions = {
 
 						local buff_system = Managers.state.entity:system("buff_system")
 						local server_buff_ids = buff.server_buff_ids
-						num_stacks = (server_buff_ids and math.min(#server_buff_ids, num_stacks)) or 0
+						num_stacks = server_buff_ids and math.min(#server_buff_ids, num_stacks) or 0
 
-						for i = 1, num_stacks, 1 do
+						for i = 1, num_stacks do
 							local buff_to_remove = table.remove(server_buff_ids)
 
 							buff_system:remove_server_controlled_buff(player_unit, buff_to_remove)
 						end
 					else
-						for i = 1, num_stacks, 1 do
+						for i = 1, num_stacks do
 							local buff = buff_extension:get_buff_type(buff_to_remove)
 
 							if not buff then
@@ -3572,7 +3573,7 @@ ProcFunctions = {
 			local buff_system = Managers.state.entity:system("buff_system")
 			local reference_buff_names = template.reference_buffs
 
-			for i = 1, #reference_buff_names, 1 do
+			for i = 1, #reference_buff_names do
 				local reference_buff = buff_extension:get_non_stacking_buff(reference_buff_names[i])
 
 				if reference_buff and reference_buff.buff_list and target_index and target_index == 1 then
@@ -3596,7 +3597,7 @@ ProcFunctions = {
 			if status_extension.blocking then
 				local buffs_to_add = buff_template.dodge_buffs_to_add
 
-				for i = 1, #buffs_to_add, 1 do
+				for i = 1, #buffs_to_add do
 					local buff_to_add = buffs_to_add[i]
 
 					buff_extension:add_buff(buff_to_add)
@@ -3672,7 +3673,7 @@ ProcFunctions = {
 		local add_buff = false
 
 		if breed and enemy_type_list then
-			for i = 1, #enemy_type_list, 1 do
+			for i = 1, #enemy_type_list do
 				local enemy_type = enemy_type_list[i]
 
 				if breed[enemy_type] then
@@ -3735,7 +3736,7 @@ ProcFunctions = {
 				local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 				local num_units = #player_and_bot_units
 
-				for i = 1, num_units, 1 do
+				for i = 1, num_units do
 					local unit = player_and_bot_units[i]
 
 					if Unit.alive(unit) then
@@ -3866,7 +3867,7 @@ ProcFunctions = {
 
 		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -4105,7 +4106,7 @@ ProcFunctions = {
 		local add_buff = false
 
 		if breed and enemy_type_list then
-			for i = 1, #enemy_type_list, 1 do
+			for i = 1, #enemy_type_list do
 				local enemy_type = enemy_type_list[i]
 
 				if breed[enemy_type] then
@@ -4130,7 +4131,7 @@ ProcFunctions = {
 			local owner_position = POSITION_LOOKUP[player_unit]
 			local range_squared = range * range
 
-			for i = 1, num_targets, 1 do
+			for i = 1, num_targets do
 				local target_unit = player_and_bot_units[i]
 				local ally_position = POSITION_LOOKUP[target_unit]
 				local distance_squared = Vector3.distance_squared(owner_position, ally_position)
@@ -4175,7 +4176,7 @@ ProcFunctions = {
 
 		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -4217,10 +4218,10 @@ ProcFunctions = {
 			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
 			if required_weapon_type == "melee" then
-				if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+				if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 					return
 				end
-			elseif required_weapon_type == "ranged" and (not attack_type or (attack_type ~= "instant_projectile" and attack_type ~= "projectile")) then
+			elseif required_weapon_type == "ranged" and (not attack_type or attack_type ~= "instant_projectile" and attack_type ~= "projectile") then
 				return
 			end
 
@@ -4238,7 +4239,7 @@ ProcFunctions = {
 				local buffs_exist = requirements.buffs_exist
 
 				if buffs_exist then
-					for i = 1, #buffs_exist, 1 do
+					for i = 1, #buffs_exist do
 						if not buff_extension:has_buff_type(buffs_exist[i]) then
 							return
 						end
@@ -4248,7 +4249,7 @@ ProcFunctions = {
 				local buffs_not_exist = requirements.buffs_not_exist
 
 				if buffs_not_exist then
-					for i = 1, #buffs_not_exist, 1 do
+					for i = 1, #buffs_not_exist do
 						if buff_extension:has_buff_type(buffs_not_exist[i]) then
 							return
 						end
@@ -4259,7 +4260,7 @@ ProcFunctions = {
 			local buffs_to_add = buff_data.buffs_to_add
 
 			if buffs_to_add then
-				for i = 1, #buffs_to_add, 1 do
+				for i = 1, #buffs_to_add do
 					buff_extension:add_buff(buffs_to_add[i])
 				end
 			end
@@ -4267,7 +4268,7 @@ ProcFunctions = {
 			local buffs_to_remove = buff_data.buffs_to_remove
 
 			if buffs_to_remove then
-				for i = 1, #buffs_to_remove, 1 do
+				for i = 1, #buffs_to_remove do
 					local buff = buff_extension:get_non_stacking_buff(buffs_to_remove[i])
 
 					if buff then
@@ -4327,7 +4328,7 @@ MaxStackFunctions = {
 				local buffs_to_add = max_stack_data.buffs_to_add
 
 				if buffs_to_add then
-					for i = 1, #buffs_to_add, 1 do
+					for i = 1, #buffs_to_add do
 						buff_extension:add_buff(buffs_to_add[i])
 					end
 				end
@@ -4357,7 +4358,7 @@ MaxStackFunctions = {
 				local buffs_to_remove = max_stack_data.buffs_to_remove
 
 				if buffs_to_remove then
-					for i = 1, #buffs_to_remove, 1 do
+					for i = 1, #buffs_to_remove do
 						local buff = buff_extension:get_non_stacking_buff(buffs_to_remove[i])
 
 						if buff then
@@ -4394,23 +4395,23 @@ MaxStackFunctions = {
 					buff_extension:remove_buff(oldest_buff.id)
 
 					return true
+				end
 
-					local old_power_level = oldest_buff.power_level or DefaultPowerLevel
-					local new_power_level = new_buff_params.power_level or DefaultPowerLevel
-					local is_same_buff = oldest_buff.template == sub_buff_template and new_power_level <= old_power_level
+				local old_power_level = oldest_buff.power_level or DefaultPowerLevel
+				local new_power_level = new_buff_params.power_level or DefaultPowerLevel
+				local is_same_buff = oldest_buff.template == sub_buff_template and new_power_level <= old_power_level
 
-					if not is_same_buff then
-						local hit_zone = "full"
-						local old_damage = DamageUtils.calculate_dot_buff_damage(unit, oldest_buff.source_attacker_unit or oldest_buff.attacker_unit, hit_zone, oldest_buff.damage_source, oldest_buff.power_level, oldest_buff.template.damage_profile)
-						local new_damage = DamageUtils.calculate_dot_buff_damage(unit, new_buff_params.source_attacker_unit or new_buff_params.attacker_unit, hit_zone, new_buff_params.damage_source, new_buff_params.power_level, sub_buff_template.damage_profile)
-						local old_prio = old_damage / oldest_buff.template.time_between_dot_damages
-						local new_prio = new_damage / sub_buff_template.time_between_dot_damages
+				if not is_same_buff then
+					local hit_zone = "full"
+					local old_damage = DamageUtils.calculate_dot_buff_damage(unit, oldest_buff.source_attacker_unit or oldest_buff.attacker_unit, hit_zone, oldest_buff.damage_source, oldest_buff.power_level, oldest_buff.template.damage_profile)
+					local new_damage = DamageUtils.calculate_dot_buff_damage(unit, new_buff_params.source_attacker_unit or new_buff_params.attacker_unit, hit_zone, new_buff_params.damage_source, new_buff_params.power_level, sub_buff_template.damage_profile)
+					local old_prio = old_damage / oldest_buff.template.time_between_dot_damages
+					local new_prio = new_damage / sub_buff_template.time_between_dot_damages
 
-						if old_prio < new_prio then
-							buff_extension:remove_buff(oldest_buff.id)
+					if old_prio < new_prio then
+						buff_extension:remove_buff(oldest_buff.id)
 
-							return true
-						end
+						return true
 					end
 				end
 
@@ -9340,7 +9341,7 @@ for buff_name, buff_template in pairs(BuffTemplates) do
 		local description_values = buff_template.description_values
 
 		if description_values then
-			for i = 1, #description_values, 1 do
+			for i = 1, #description_values do
 				local buff = buff_template.buffs[1]
 				local key = description_values[i]
 				local value = buff[key]
@@ -9376,5 +9377,3 @@ for buff_name, buff_template in pairs(BuffTemplates) do
 		end
 	end
 end
-
-return

@@ -386,5 +386,3 @@ BreedBehaviors.chaos_exalted_sorcerer_drachenfels = {
 	},
 	name = "chaos_exalted_sorcerer_drachenfels"
 }
-
-return

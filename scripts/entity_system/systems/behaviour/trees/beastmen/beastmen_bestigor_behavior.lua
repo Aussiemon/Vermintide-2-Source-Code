@@ -139,5 +139,3 @@ BreedBehaviors.bestigor = {
 	},
 	name = "bestigor"
 }
-
-return

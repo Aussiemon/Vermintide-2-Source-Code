@@ -90,5 +90,3 @@ Currencies.shillings_large = {
 	slot_type = "chips",
 	can_wield = CanWieldAllItemTemplates
 }
-
-return

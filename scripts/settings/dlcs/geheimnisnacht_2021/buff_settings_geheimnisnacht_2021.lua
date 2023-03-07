@@ -96,5 +96,3 @@ settings.buff_function_templates = {
 }
 settings.proc_functions = {}
 settings.max_stacks_functions = {}
-
-return

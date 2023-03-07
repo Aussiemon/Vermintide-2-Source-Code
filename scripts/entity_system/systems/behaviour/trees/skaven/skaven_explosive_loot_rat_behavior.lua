@@ -77,5 +77,3 @@ BreedBehaviors.explosive_loot_rat = {
 	},
 	name = "horde"
 }
-
-return

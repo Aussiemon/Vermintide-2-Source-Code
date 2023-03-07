@@ -40,5 +40,3 @@ end
 DeusPowerUpTests = {
 	default = deus_power_up_terror_event_test
 }
-
-return

@@ -56,7 +56,7 @@ local function legacy_merge_no_override(node, node_def)
 		if node[k] == nil then
 			Application.warning(string.format("[UIScenegraph] Node polluted: scenegraph[%q][%q]\n%s", node.name, k, Script.callstack()))
 
-			node[k] = (type(v) == "table" and table.clone(v)) or v
+			node[k] = type(v) == "table" and table.clone(v) or v
 		end
 	end
 end
@@ -158,7 +158,7 @@ UISceneGraph.init_scenegraph = function (scenegraph_def)
 end
 
 local function scenegraph_update_children(world_position, children, num_children, size_x, size_y)
-	for i = 1, num_children, 1 do
+	for i = 1, num_children do
 		local child = children[i]
 		local x, y, z = nil
 		local box = child.local_position
@@ -202,7 +202,7 @@ UISceneGraph.update_scenegraph = function (scenegraph, parent_scenegraph, sceneg
 	local root_scale_x = w / (1920 * scale)
 	local root_scale_y = UISettings.root_scale[2]
 
-	for i = 1, #scenegraph, 1 do
+	for i = 1, #scenegraph do
 		local node = scenegraph[i]
 		local name = node.name
 		local x, y, z = nil
@@ -317,7 +317,7 @@ UISceneGraph.get_size_scaled = function (scenegraph, node_name, optional_scale)
 			inverse_scale = inverse_scale / optional_scale
 		end
 
-		return Vector2((w * inverse_scale) / 1920 * size[1], h * inverse_scale * UISettings.root_scale[2])
+		return Vector2(w * inverse_scale / 1920 * size[1], h * inverse_scale * UISettings.root_scale[2])
 	end
 
 	local scale_mode = node.scale
@@ -377,9 +377,9 @@ local function draw_border(gui, pos, size, color, border)
 	local h = size[2] - 2 * border
 
 	Gui.rect(gui, Vector3(pos[1], pos[2], pos[3]), Vector2(w, border), color)
-	Gui.rect(gui, Vector3(pos[1], (pos[2] + size[2]) - border, pos[3]), Vector2(w, border), color)
+	Gui.rect(gui, Vector3(pos[1], pos[2] + size[2] - border, pos[3]), Vector2(w, border), color)
 	Gui.rect(gui, Vector3(pos[1], pos[2] + border, pos[3]), Vector2(border, h), color)
-	Gui.rect(gui, Vector3((pos[1] + size[1]) - border, pos[2] + border, pos[3]), Vector2(border, h), color)
+	Gui.rect(gui, Vector3(pos[1] + size[1] - border, pos[2] + border, pos[3]), Vector2(border, h), color)
 end
 
 local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph, force_draw_depth)
@@ -389,7 +389,7 @@ local function debug_render_scenegraph(ui_renderer, scenegraph, n_scenegraph, fo
 	force_draw_depth = force_draw_depth - 1
 	local border = 4
 
-	for i = 1, n_scenegraph, 1 do
+	for i = 1, n_scenegraph do
 		local node = scenegraph[i]
 		local pos = node.world_position
 		local size = node.size
@@ -419,5 +419,3 @@ end
 UISceneGraph.debug_render_scenegraph = function (ui_renderer, scenegraph, force_draw_depth)
 	return debug_render_scenegraph(ui_renderer, scenegraph, #scenegraph, force_draw_depth or 1)
 end
-
-return

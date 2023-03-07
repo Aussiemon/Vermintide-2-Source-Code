@@ -30,7 +30,7 @@ GameTimerUI.update = function (self)
 	if start_time then
 		local gui = self._gui
 		local time = Managers.state.network:network_time() - start_time
-		local text = string.format("%.2d:%.2d:%06.3f", time / 3600, (time / 60) % 60, time % 60)
+		local text = string.format("%.2d:%.2d:%06.3f", time / 3600, time / 60 % 60, time % 60)
 		local screen_width, screen_height = Gui.resolution()
 		local scale = math.min(screen_width / 1920, screen_height / 1080, 1)
 		local font = "materials/fonts/arial"
@@ -40,5 +40,3 @@ GameTimerUI.update = function (self)
 		Gui.slug_text(gui, text, font, font_size, Vector3(screen_width - scale * 14 * 13, screen_height - scale * 14, 1000), Color(255, 255, 255), "shadow", Color(0, 0, 0))
 	end
 end
-
-return

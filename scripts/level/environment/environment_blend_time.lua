@@ -51,5 +51,3 @@ EnvironmentBlendTime.destroy = function (self)
 		event_manager:unregister("force_blend_environment_volume", self)
 	end
 end
-
-return

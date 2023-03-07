@@ -17,7 +17,7 @@ LimitedItemTrackSpawnerTemplates = {
 			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 			local network_angular_velocity = network_velocity
 			local pickup_name = Unit.get_data(spawner_unit, "pickup_name")
-			pickup_name = (pickup_name ~= "" and pickup_name) or "explosive_barrel_objective"
+			pickup_name = pickup_name ~= "" and pickup_name or "explosive_barrel_objective"
 			local pickup_data = Pickups.level_events[pickup_name]
 			local unit_name = pickup_data.unit_name
 			local unit_template_name = pickup_data.unit_template_name
@@ -68,7 +68,7 @@ LimitedItemTrackSpawnerTemplates = {
 			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 			local network_angular_velocity = network_velocity
 			local pickup_name = Unit.get_data(spawner_unit, "pickup_name")
-			pickup_name = (pickup_name ~= "" and pickup_name) or "grain_sack"
+			pickup_name = pickup_name ~= "" and pickup_name or "grain_sack"
 			local pickup_data = Pickups.level_events[pickup_name]
 			local unit_name = pickup_data.unit_name
 			local unit_template_name = pickup_data.unit_template_name
@@ -111,7 +111,7 @@ LimitedItemTrackSpawnerTemplates = {
 			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 			local network_angular_velocity = network_velocity
 			local pickup_name = Unit.get_data(spawner_unit, "pickup_name")
-			pickup_name = (pickup_name ~= "" and pickup_name) or "cannon_ball"
+			pickup_name = pickup_name ~= "" and pickup_name or "cannon_ball"
 			local pickup_data = Pickups.level_events[pickup_name]
 			local unit_name = pickup_data.unit_name
 			local unit_template_name = pickup_data.unit_template_name
@@ -162,7 +162,7 @@ LimitedItemTrackSpawnerTemplates = {
 			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 			local network_angular_velocity = network_velocity
 			local pickup_name = Unit.get_data(spawner_unit, "pickup_name")
-			pickup_name = (pickup_name ~= "" and pickup_name) or "trail_cog"
+			pickup_name = pickup_name ~= "" and pickup_name or "trail_cog"
 			local pickup_data = Pickups.level_events[pickup_name]
 			local unit_name = pickup_data.unit_name
 			local unit_template_name = pickup_data.unit_template_name
@@ -213,7 +213,7 @@ LimitedItemTrackSpawnerTemplates = {
 			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 			local network_angular_velocity = network_velocity
 			local pickup_name = Unit.get_data(spawner_unit, "pickup_name")
-			pickup_name = (pickup_name ~= "" and pickup_name) or "gargoyle_head"
+			pickup_name = pickup_name ~= "" and pickup_name or "gargoyle_head"
 			local pickup_data = Pickups.level_events[pickup_name]
 			local unit_name = pickup_data.unit_name
 			local unit_template_name = pickup_data.unit_template_name
@@ -266,7 +266,7 @@ LimitedItemTrackSpawnerTemplates = {
 			local network_velocity = AiAnimUtils.velocity_network_scale(Vector3(0, 0, 0), true)
 			local network_angular_velocity = network_velocity
 			local pickup_name = Unit.get_data(spawner_unit, "pickup_name")
-			pickup_name = (pickup_name ~= "" and pickup_name) or "magic_barrel"
+			pickup_name = pickup_name ~= "" and pickup_name or "magic_barrel"
 			local pickup_data = Pickups.level_events[pickup_name]
 			local unit_name = pickup_data.unit_name
 			local unit_template_name = pickup_data.unit_template_name
@@ -346,5 +346,3 @@ LimitedItemTrackSpawnerTemplates = {
 		end
 	}
 }
-
-return

@@ -36,5 +36,3 @@ BTCritterNurglingWaitAction.start_idle_animation = function (self, unit, blackbo
 
 	blackboard.move_state = "idle"
 end
-
-return

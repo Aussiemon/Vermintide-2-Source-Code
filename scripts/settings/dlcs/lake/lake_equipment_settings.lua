@@ -78,5 +78,3 @@ settings.inventory_package_list = {
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_02",
 	"units/beings/player/empire_soldier_breton/headpiece/es_gk_hat_03"
 }
-
-return

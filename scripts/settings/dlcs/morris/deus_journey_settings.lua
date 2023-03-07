@@ -59,5 +59,3 @@ DeusJourneySettings = DeusJourneySettings or {
 }
 DeusJourneySettings.default = table.clone(DeusJourneySettings.journey_ruin)
 DeusJourneySettings.default.default = true
-
-return

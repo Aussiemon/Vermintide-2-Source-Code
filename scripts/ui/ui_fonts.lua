@@ -120,27 +120,26 @@ function UIGetFontHeight(gui, font_name, font_size)
 	FontHeights[font_name] = FontHeights[font_name] or {}
 	local height_data = FontHeights[font_name][font_size]
 
-	while height_data do
+	if height_data then
 		local scale = RESOLUTION_LOOKUP.scale
 		local extra_base = scale * math_min(font_size * 0.05, 1)
 		local extra_max = 5 * extra_base
 		local extra_min = 4 * extra_base
 
 		return height_data[1] + extra_min + extra_max, height_data[2] - extra_min, height_data[3] + extra_max
+	end
 
-		local material = Fonts[font_name][1]
-		local min, max = Gui.text_extents(gui, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", material, font_size)
-		local base_min, base_max = Gui.text_extents(gui, "A", material, font_size)
-		height_data = {
-			base_max[2] - base_min[2],
-			min[2],
-			max[2]
-		}
-		FontHeights[font_name][font_size] = height_data
+	local material = Fonts[font_name][1]
+	local min, max = Gui.text_extents(gui, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", material, font_size)
+	local base_min, base_max = Gui.text_extents(gui, "A", material, font_size)
+	height_data = {
+		base_max[2] - base_min[2],
+		min[2],
+		max[2]
+	}
+	FontHeights[font_name][font_size] = height_data
 
-		if true then
-		end
+	while true do
+		-- Nothing
 	end
 end
-
-return

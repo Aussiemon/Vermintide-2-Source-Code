@@ -35,7 +35,7 @@ ItemTooltipHelper.format_return_string = function (format_type, values)
 	local return_string = ""
 
 	if type(values) == "table" then
-		for i = 1, #values, 1 do
+		for i = 1, #values do
 			local current_value = values[i]
 
 			if current_value.type == "charge" then
@@ -63,7 +63,7 @@ ItemTooltipHelper.get_damage = function (unit, item, armor_type, primary_armor_t
 	local damage_source = item.name
 	local hit_zone_name = "torso"
 	local target_index = 1
-	local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
+	local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 	local boost_curve = BoostCurves[target_settings.boost_curve_type]
 	local boost_damage_multiplier = nil
 	local is_critical_strike = false
@@ -106,7 +106,7 @@ ItemTooltipHelper.get_next_action_names = function (action, charge_type)
 	local wanted_index = 1
 
 	for index, chain_action in ipairs(chain_actions) do
-		if (charge_type == "light" and index == wanted_index) or (charge_type == "heavy" and chain_action.auto_chain) or (no_auto_chain and charge_type == "heavy" and index == wanted_index) then
+		if charge_type == "light" and index == wanted_index or charge_type == "heavy" and chain_action.auto_chain or no_auto_chain and charge_type == "heavy" and index == wanted_index then
 			if chain_action.input ~= "action_wield" then
 				next_action_name = chain_action.action
 				next_sub_action_name = chain_action.sub_action
@@ -145,9 +145,9 @@ ItemTooltipHelper.get_chain_damages = function (values, action, unit, item, stat
 	local armor_types = stat_descriptor.armor_types or {}
 	local armor_type = armor_types[1] or 1
 	local primary_armor_type = armor_types[2]
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
 	if damage_profile_name then
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -174,9 +174,9 @@ ItemTooltipHelper.get_chain_damages = function (values, action, unit, item, stat
 			}
 		else
 			local damage = ItemTooltipHelper.get_damage(unit, item, armor_type, primary_armor_type, damage_profile, power_level, difficulty_level)
-			local shot_count = (impact_data and (impact_data.shot_count or impact_data.num_projectiles)) or action.shot_count or action.num_projectiles or 1
+			local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
 			values[#values + 1] = {
-				type = (shot_count > 1 and "multi") or "single",
+				type = shot_count > 1 and "multi" or "single",
 				shot_count = shot_count,
 				value = damage
 			}
@@ -200,9 +200,9 @@ ItemTooltipHelper.get_chain_max_targets = function (values, action, unit, item, 
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 	local power_level = career_extension:get_career_power_level()
 	local difficulty_level = Managers.state.difficulty:get_difficulty()
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
 	if damage_profile_name then
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -214,8 +214,8 @@ ItemTooltipHelper.get_chain_max_targets = function (values, action, unit, item, 
 			local cleave_power_level_max = ActionUtils.scale_power_levels(power_level_max, "cleave", unit, difficulty_level)
 			local max_targets_attack_min, max_targets_impact_min = ActionUtils.get_max_targets(damage_profile, cleave_power_level_min)
 			local max_targets_attack_max, max_targets_impact_max = ActionUtils.get_max_targets(damage_profile, cleave_power_level_max)
-			local max_targets_min = (max_targets_impact_min < max_targets_attack_min and max_targets_attack_min) or max_targets_impact_min
-			local max_targets_max = (max_targets_impact_max < max_targets_attack_max and max_targets_attack_max) or max_targets_impact_max
+			local max_targets_min = max_targets_impact_min < max_targets_attack_min and max_targets_attack_min or max_targets_impact_min
+			local max_targets_max = max_targets_impact_max < max_targets_attack_max and max_targets_attack_max or max_targets_impact_max
 			values[#values + 1] = {
 				type = "charge",
 				value_min = max_targets_min,
@@ -229,10 +229,10 @@ ItemTooltipHelper.get_chain_max_targets = function (values, action, unit, item, 
 		else
 			local cleave_power_level = ActionUtils.scale_power_levels(power_level, "cleave", unit, difficulty_level)
 			local max_targets_attack, max_targets_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
-			local max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
-			local shot_count = (impact_data and (impact_data.shot_count or impact_data.num_projectiles)) or action.shot_count or action.num_projectiles or 1
+			local max_targets = max_targets_impact < max_targets_attack and max_targets_attack or max_targets_impact
+			local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
 			values[#values + 1] = {
-				type = (shot_count > 1 and "multi") or "single",
+				type = shot_count > 1 and "multi" or "single",
 				shot_count = shot_count,
 				value = max_targets
 			}
@@ -243,8 +243,8 @@ ItemTooltipHelper.get_chain_max_targets = function (values, action, unit, item, 
 		local cleave_power_level = ActionUtils.scale_power_levels(power_level, "cleave", unit, difficulty_level)
 		local max_targets_attack_left, max_targets_impact_left = ActionUtils.get_max_targets(damage_profile_left, cleave_power_level)
 		local max_targets_attack_right, max_targets_impact_right = ActionUtils.get_max_targets(damage_profile_right, cleave_power_level)
-		local max_targets_left = (max_targets_impact_left < max_targets_attack_left and max_targets_attack_left) or max_targets_impact_left
-		local max_targets_right = (max_targets_impact_right < max_targets_attack_right and max_targets_attack_right) or max_targets_impact_right
+		local max_targets_left = max_targets_impact_left < max_targets_attack_left and max_targets_attack_left or max_targets_impact_left
+		local max_targets_right = max_targets_impact_right < max_targets_attack_right and max_targets_attack_right or max_targets_impact_right
 		values[#values + 1] = {
 			type = "dual",
 			value_left = max_targets_left,
@@ -259,9 +259,9 @@ ItemTooltipHelper.get_chain_stagger_strengths = function (values, action, unit, 
 	local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 	local power_level = career_extension:get_career_power_level()
 	local difficulty_level = Managers.state.difficulty:get_difficulty()
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
 	if damage_profile_name then
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
@@ -288,9 +288,9 @@ ItemTooltipHelper.get_chain_stagger_strengths = function (values, action, unit, 
 			}
 		else
 			local type, duration, distance, value, strength = ItemTooltipHelper.get_stagger_strength(unit, item, damage_profile, power_level, difficulty_level)
-			local shot_count = (impact_data and (impact_data.shot_count or impact_data.num_projectiles)) or action.shot_count or action.num_projectiles or 1
+			local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
 			values[#values + 1] = {
-				type = (shot_count > 1 and "multi") or "single",
+				type = shot_count > 1 and "multi" or "single",
 				shot_count = shot_count,
 				value = strength
 			}
@@ -310,11 +310,11 @@ end
 
 ItemTooltipHelper.get_chain_critical_hit_chances = function (values, action, unit, item, stat_descriptor)
 	local impact_data = action.impact_data
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
-	if damage_profile_name or (damage_profile_name_left and damage_profile_name_right) then
+	if damage_profile_name or damage_profile_name_left and damage_profile_name_right then
 		local crit_chance = ActionUtils.get_critical_strike_chance(unit, action)
 		values[#values + 1] = {
 			type = "single",
@@ -336,11 +336,11 @@ local ranged_actions = {
 
 ItemTooltipHelper.get_time_between_damage = function (values, action, unit, item, stat_descriptor)
 	local impact_data = action.impact_data
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
-	if damage_profile_name or (damage_profile_name_left and damage_profile_name_right) then
+	if damage_profile_name or damage_profile_name_left and damage_profile_name_right then
 		if ranged_actions[action.kind] then
 			local chain_start_time = stat_descriptor.chain_start_time or 0
 			local start_time = action.damage_interval or action.fire_time or 0
@@ -366,18 +366,18 @@ end
 
 ItemTooltipHelper.get_chain_boost_coefficients = function (values, action, unit, item, stat_descriptor)
 	local impact_data = action.impact_data
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
 	if damage_profile_name then
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index = 1
-		local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
+		local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 		local boost_coefficient = target_settings.boost_curve_coefficient or DefaultBoostCurveCoefficient
-		local shot_count = (impact_data and (impact_data.shot_count or impact_data.num_projectiles)) or action.shot_count or action.num_projectiles or 1
+		local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
 		values[#values + 1] = {
-			type = (shot_count > 1 and "multi") or "single",
+			type = shot_count > 1 and "multi" or "single",
 			shot_count = shot_count,
 			value = boost_coefficient
 		}
@@ -385,9 +385,9 @@ ItemTooltipHelper.get_chain_boost_coefficients = function (values, action, unit,
 		local damage_profile_left = DamageProfileTemplates[damage_profile_name_left]
 		local damage_profile_right = DamageProfileTemplates[damage_profile_name_right]
 		local target_index = 1
-		local target_settings_left = (damage_profile_left.targets and damage_profile_left.targets[target_index]) or damage_profile_left.default_target
+		local target_settings_left = damage_profile_left.targets and damage_profile_left.targets[target_index] or damage_profile_left.default_target
 		local boost_coefficient_left = target_settings_left.boost_curve_coefficient or DefaultBoostCurveCoefficient
-		local target_settings_right = (damage_profile_right.targets and damage_profile_right.targets[target_index]) or damage_profile_right.default_target
+		local target_settings_right = damage_profile_right.targets and damage_profile_right.targets[target_index] or damage_profile_right.default_target
 		local boost_coefficient_right = target_settings_right.boost_curve_coefficient or DefaultBoostCurveCoefficient
 		values[#values + 1] = {
 			type = "dual",
@@ -399,18 +399,18 @@ end
 
 ItemTooltipHelper.get_chain_headshot_boost_coefficients = function (values, action, unit, item, stat_descriptor)
 	local impact_data = action.impact_data
-	local damage_profile_name = (impact_data and impact_data.damage_profile) or action.damage_profile
-	local damage_profile_name_left = (impact_data and impact_data.damage_profile_left) or action.damage_profile_left
-	local damage_profile_name_right = (impact_data and impact_data.damage_profile_right) or action.damage_profile_right
+	local damage_profile_name = impact_data and impact_data.damage_profile or action.damage_profile
+	local damage_profile_name_left = impact_data and impact_data.damage_profile_left or action.damage_profile_left
+	local damage_profile_name_right = impact_data and impact_data.damage_profile_right or action.damage_profile_right
 
 	if damage_profile_name then
 		local damage_profile = DamageProfileTemplates[damage_profile_name]
 		local target_index = 1
-		local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
+		local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 		local boost_coefficient_headshot = target_settings.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
-		local shot_count = (impact_data and (impact_data.shot_count or impact_data.num_projectiles)) or action.shot_count or action.num_projectiles or 1
+		local shot_count = impact_data and (impact_data.shot_count or impact_data.num_projectiles) or action.shot_count or action.num_projectiles or 1
 		values[#values + 1] = {
-			type = (shot_count > 1 and "multi") or "single",
+			type = shot_count > 1 and "multi" or "single",
 			shot_count = shot_count,
 			value = boost_coefficient_headshot
 		}
@@ -418,9 +418,9 @@ ItemTooltipHelper.get_chain_headshot_boost_coefficients = function (values, acti
 		local damage_profile_left = DamageProfileTemplates[damage_profile_name_left]
 		local damage_profile_right = DamageProfileTemplates[damage_profile_name_right]
 		local target_index = 1
-		local target_settings_left = (damage_profile_left.targets and damage_profile_left.targets[target_index]) or damage_profile_left.default_target
+		local target_settings_left = damage_profile_left.targets and damage_profile_left.targets[target_index] or damage_profile_left.default_target
 		local boost_coefficient_headshot_left = target_settings_left.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
-		local target_settings_right = (damage_profile_right.targets and damage_profile_right.targets[target_index]) or damage_profile_right.default_target
+		local target_settings_right = damage_profile_right.targets and damage_profile_right.targets[target_index] or damage_profile_right.default_target
 		local boost_coefficient_headshot_right = target_settings_right.boost_curve_coefficient_headshot or DefaultBoostCurveCoefficient
 		values[#values + 1] = {
 			type = "dual",
@@ -599,5 +599,3 @@ ItemTooltipHelper.parse_weapon_chain = function (values, unit, item, stat_descri
 		end
 	end
 end
-
-return

@@ -93,7 +93,5 @@ end
 PresenceHelper.lobby_num_players = function ()
 	local ok, num = pcall(dangerous_num_players)
 
-	return (ok and num) or 1
+	return ok and num or 1
 end
-
-return

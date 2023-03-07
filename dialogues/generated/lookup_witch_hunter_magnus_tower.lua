@@ -44,5 +44,3 @@ DialogueLookup[DialogueLookup_n + 20] = "pwh_magnus_tower_intro"
 DialogueLookup[DialogueLookup_n + 21] = "pwh_magnus_tower_intro_b"
 DialogueLookup[DialogueLookup_n + 22] = "pwh_magnus_tower_intro_c"
 DialogueLookup_n = DialogueLookup_n + 22
-
-return

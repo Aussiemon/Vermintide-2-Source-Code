@@ -81,7 +81,5 @@ GenericStateMachine.exit_current_state = function (self)
 end
 
 GenericStateMachine.current_state = function (self)
-	return (self.state_current and self.state_current.name) or "none"
+	return self.state_current and self.state_current.name or "none"
 end
-
-return

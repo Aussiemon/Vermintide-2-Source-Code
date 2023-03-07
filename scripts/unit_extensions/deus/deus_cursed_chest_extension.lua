@@ -304,5 +304,3 @@ DeusCursedChestExtension.rpc_deus_chest_looted = function (self, channel_id, go_
 	table.insert(collected_by_peers, peer_id)
 	GameSession.set_game_object_field(game, own_go_id, "collected_by_peers", collected_by_peers)
 end
-
-return

@@ -28,5 +28,3 @@ loading_bg_magnus_atlas = {
 		}
 	}
 }
-
-return

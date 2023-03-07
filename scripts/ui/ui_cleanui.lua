@@ -95,7 +95,7 @@ UICleanUI.update = function (self, dt)
 	local unit_frames_handler = hud:component("UnitFramesHandler")
 	local unit_frame_amount = unit_frames_handler:unit_frame_amount()
 
-	for i = 1, unit_frame_amount, 1 do
+	for i = 1, unit_frame_amount do
 		local widget = unit_frames_handler:get_unit_widget(i)
 		local centre_pos = widget.ui_scenegraph.portrait_pivot.world_position
 		portrait_bounding_boxes[i] = {
@@ -517,5 +517,3 @@ UICleanUI.update = function (self, dt)
 		clocks[name] = clock
 	end
 end
-
-return

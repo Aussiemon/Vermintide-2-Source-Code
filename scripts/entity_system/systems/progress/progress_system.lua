@@ -57,5 +57,3 @@ ProgressSystem.rpc_player_in_zone_set_active = function (self, channel_id, unit_
 		self._existing_units[level_unit]:set_active_rpc()
 	end
 end
-
-return

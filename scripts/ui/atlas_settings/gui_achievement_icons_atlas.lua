@@ -9464,5 +9464,3 @@ achievement_icons_atlas = {
 		}
 	}
 }
-
-return

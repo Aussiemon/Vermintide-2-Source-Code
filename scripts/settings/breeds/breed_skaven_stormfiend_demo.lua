@@ -334,5 +334,3 @@ for key, value in pairs(BreedActions.skaven_stormfiend) do
 end
 
 BreedActions.skaven_stormfiend_demo = table.create_copy(BreedActions.skaven_stormfiend_demo, action_data)
-
-return

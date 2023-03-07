@@ -293,5 +293,3 @@ TwitchVoteTemplates.twitch_vote_activate_flames = {
 		end
 	end
 }
-
-return

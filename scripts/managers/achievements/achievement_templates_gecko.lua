@@ -4,7 +4,7 @@ for level_name, _ in pairs(LevelSettings) do
 	if table.contains(UnlockableLevels, level_name) then
 		local scrap_count_level_num = #QuestSettings.scrap_count_level
 
-		for j = 1, scrap_count_level_num, 1 do
+		for j = 1, scrap_count_level_num do
 			local id = "gecko_scraps_" .. level_name .. "_" .. j
 			local statistics_id = "collected_painting_scraps"
 			AchievementTemplates.achievements[id] = {
@@ -32,7 +32,7 @@ end
 
 local scrap_count_generic_num = #QuestSettings.scrap_count_generic
 
-for i = 1, scrap_count_generic_num, 1 do
+for i = 1, scrap_count_generic_num do
 	local id = "gecko_scraps_generic_" .. i
 	AchievementTemplates.achievements[id] = {
 		icon = "achievement_trophy_gecko_scraps_generic",
@@ -60,5 +60,3 @@ for i = 1, scrap_count_generic_num, 1 do
 		end
 	}
 end
-
-return

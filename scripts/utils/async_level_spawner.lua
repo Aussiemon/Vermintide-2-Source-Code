@@ -62,5 +62,3 @@ AsyncLevelSpawner._setup_world = function (self, world_name)
 
 	return world
 end
-
-return

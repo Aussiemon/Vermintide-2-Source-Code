@@ -23,7 +23,7 @@ local function on_error(request_data, result, id, error_override)
 		local logs = result.data.Logs
 
 		if logs then
-			for i = 1, #logs, 1 do
+			for i = 1, #logs do
 				local log = logs[i]
 				local data = log.Data
 
@@ -47,10 +47,10 @@ local function on_error(request_data, result, id, error_override)
 		local logs = data and data.Logs
 
 		if logs then
-			for i = 1, #logs, 1 do
+			for i = 1, #logs do
 				local log = logs[i]
 
-				if log.Message == "RetriableError" or (log.Data and log.Data.error == "Timeout") then
+				if log.Message == "RetriableError" or log.Data and log.Data.error == "Timeout" then
 					retry = true
 
 					break
@@ -79,7 +79,7 @@ local function on_error(request_data, result, id, error_override)
 		Managers.curl:post(url, body, headers, request_cb, id, options)
 
 		request_data.retries = request_data.retries + 1
-		local override = (error_override and string.format(" | Error Override: %s", error_override)) or ""
+		local override = error_override and string.format(" | Error Override: %s", error_override) or ""
 
 		printf("[PLAYFAB HTTPS CURL] RESENDING REQUEST. Id: %s | Error Code: %s%s", id, error_code, override)
 		Crashify.print_exception("Backend_Error", "RESENDING REQUEST: %s", request_data)

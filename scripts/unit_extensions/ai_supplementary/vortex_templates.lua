@@ -194,7 +194,7 @@ VortexTemplates = {
 				"halescourge_tornado_enemies_cata"
 			}
 
-			for i = 1, #stat_names, 1 do
+			for i = 1, #stat_names do
 				local current_difficulty = Managers.state.difficulty:get_difficulty()
 				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 				local allowed_difficulty = allowed_difficulties[current_difficulty]
@@ -202,16 +202,17 @@ VortexTemplates = {
 				if allowed_difficulty and not blackboard.completed_vortex_suck_in_challenge then
 					if not blackboard.num_ai_units_sucked_in then
 						blackboard.num_ai_units_sucked_in = 0
-						local num_ai_units_sucked_in = blackboard.num_ai_units_sucked_in or 0
-						blackboard.num_ai_units_sucked_in = num_ai_units_sucked_in + 1
+					end
 
-						if QuestSettings.halescourge_tornado_enemies <= blackboard.num_ai_units_sucked_in then
-							local statistics_db = Managers.player:statistics_db()
+					local num_ai_units_sucked_in = blackboard.num_ai_units_sucked_in or 0
+					blackboard.num_ai_units_sucked_in = num_ai_units_sucked_in + 1
 
-							statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+					if QuestSettings.halescourge_tornado_enemies <= blackboard.num_ai_units_sucked_in then
+						local statistics_db = Managers.player:statistics_db()
 
-							blackboard.completed_vortex_suck_in_challenge = true
-						end
+						statistics_db:increment_stat_and_sync_to_clients(stat_names[i])
+
+						blackboard.completed_vortex_suck_in_challenge = true
 					end
 				end
 			end
@@ -411,5 +412,3 @@ VortexTemplates = {
 }
 
 DLCUtils.merge("vortex_templates", VortexTemplates)
-
-return

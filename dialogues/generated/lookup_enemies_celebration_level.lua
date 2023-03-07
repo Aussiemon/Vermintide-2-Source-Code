@@ -130,5 +130,3 @@ DialogueLookup[DialogueLookup_n + 63] = "ecw_gameplay_no_damage_celebration_leve
 DialogueLookup[DialogueLookup_n + 64] = "ecw_gameplay_alert_celebration_level"
 DialogueLookup[DialogueLookup_n + 65] = "ecw_gameplay_downing_a_player_celebration_level"
 DialogueLookup_n = DialogueLookup_n + 65
-
-return

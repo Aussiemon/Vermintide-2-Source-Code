@@ -113,10 +113,10 @@ WeaveSpawner.get_hidden_spawn_pos_from_position_seeded = function (self, epicent
 	local ignore_umbra = not World.umbra_available(world)
 	local hidden_spawn_pos = nil
 
-	for i = 1, max_tries, 1 do
+	for i = 1, max_tries do
 		local check_pos = nil
 
-		for j = 1, max_tries, 1 do
+		for j = 1, max_tries do
 			local add_vec = Vector3(radius + (self:_random() - 0.5) * radius_spread, 0, 1)
 			local pos = epicenter + Quaternion.rotate(Quaternion(Vector3.up(), math.degrees_to_radians(self:_random(1, 360))), add_vec)
 			local circle_pos = ConflictUtils.find_center_tri(conflict_director.nav_world, pos)
@@ -129,7 +129,7 @@ WeaveSpawner.get_hidden_spawn_pos_from_position_seeded = function (self, epicent
 		if check_pos then
 			local hidden = true
 
-			for j = 1, #avoid_positions, 1 do
+			for j = 1, #avoid_positions do
 				local avoid_pos = avoid_positions[j]
 				local los = ignore_umbra or World.umbra_has_line_of_sight(world, check_pos + h, avoid_pos + h)
 
@@ -152,5 +152,3 @@ WeaveSpawner.get_hidden_spawn_pos_from_position_seeded = function (self, epicent
 
 	return hidden_spawn_pos
 end
-
-return

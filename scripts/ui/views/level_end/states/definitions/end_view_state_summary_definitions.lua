@@ -351,7 +351,7 @@ local scenegraph_definition = {
 local summary_entry_widgets = {}
 local num_experience_entries = 10
 
-for i = 1, num_experience_entries, 1 do
+for i = 1, num_experience_entries do
 	summary_entry_widgets["summary_entry_" .. i] = UIWidgets.create_summary_entry("summary_entry_root", scenegraph_definition.summary_entry_root.size, i)
 end
 
@@ -585,7 +585,7 @@ local widgets = {
 }
 local num_experience_entries = 10
 
-for i = 1, num_experience_entries, 1 do
+for i = 1, num_experience_entries do
 	widgets["experience_entry_" .. i] = UIWidgets.create_experience_entry("experience_entry_root", scenegraph_definition.experience_entry_root.size)
 end
 

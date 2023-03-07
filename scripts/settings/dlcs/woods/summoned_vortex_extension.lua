@@ -3,7 +3,7 @@ local unit_alive = Unit.alive
 local position_lookup = POSITION_LOOKUP
 local BLACKBOARDS = BLACKBOARDS
 local NUMBER_OF_RAYCASTS = 36
-local RAYCAST_INVERAL_RAD = (2 * math.pi) / NUMBER_OF_RAYCASTS
+local RAYCAST_INVERAL_RAD = 2 * math.pi / NUMBER_OF_RAYCASTS
 local NAV_COST_MAP_UPDATE_INTERVAL = 0.5
 local sot_landing_breeds = {
 	chaos_marauder_with_shield = true,
@@ -156,7 +156,7 @@ SummonedVortexExtension.refresh_duration = function (self)
 		if ALIVE[ai_unit] then
 			local breed_name = BLACKBOARDS[ai_unit].breed.name
 			local reduce_duration_per_breed = vortex_template.reduce_duration_per_breed
-			local multiplier = (reduce_duration_per_breed and reduce_duration_per_breed[breed_name]) or 1
+			local multiplier = reduce_duration_per_breed and reduce_duration_per_breed[breed_name] or 1
 			local time_to_add = math.clamp(life_time * multiplier, 0, math.huge)
 			self.vortex_data.time_of_death = t + time_to_add
 			found_multiplier = true
@@ -332,14 +332,14 @@ SummonedVortexExtension._update_height = function (self, unit, t, dt, vortex_tem
 	local current_height = vortex_data.height
 	local max_height = vortex_template.max_height - check_z_offset
 	local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(physics_world, ray_source, Vector3.up(), max_height, "closest", "collision_filter", "filter_ai_mover")
-	local new_height = (hit and hit_distance) or max_height
+	local new_height = hit and hit_distance or max_height
 	new_height = math.max(new_height, 4)
 	local height_ring_buffer = vortex_data.height_ring_buffer
 	local buffer = height_ring_buffer.buffer
 	local max_size = height_ring_buffer.max_size
 	local minimum_height = new_height + check_z_offset
 
-	for i = 1, max_size, 1 do
+	for i = 1, max_size do
 		local height = buffer[i]
 
 		if height and height < minimum_height then
@@ -380,7 +380,7 @@ SummonedVortexExtension._update_attract_outside_ai = function (self, vortex_data
 		return
 	end
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		if vortex_template.max_units and vortex_data.enemies_inside and vortex_template.max_units <= vortex_data.enemies_inside then
 			break
 		end
@@ -426,7 +426,7 @@ SummonedVortexExtension._update_attract_outside_ai = function (self, vortex_data
 							local t = Managers.time:time("game")
 							local life_time = ConflictUtils.random_interval(vortex_template.time_of_life)
 							local reduce_duration_per_breed = vortex_template.reduce_duration_per_breed
-							local multiplier = (reduce_duration_per_breed and reduce_duration_per_breed[breed_name]) or 1
+							local multiplier = reduce_duration_per_breed and reduce_duration_per_breed[breed_name] or 1
 							local time_to_add = math.clamp(life_time * multiplier, 0, math.huge)
 							self.vortex_data.time_of_death = t + time_to_add
 
@@ -534,15 +534,15 @@ local spiral_lines = 10
 
 SummonedVortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inner_radius, outer_radius, spin_speed, height)
 	fx_radius = fx_radius + math.sin(t * 1.7) * 0.4
-	local step = (2 * math.pi) / 6
+	local step = 2 * math.pi / 6
 	local col_delta = math.floor(155 / spiral_segments)
 	local height_step = height / spiral_segments
 
-	for j = 1, spiral_lines, 1 do
-		local alpha = (j * 2 * math.pi) / spiral_lines
+	for j = 1, spiral_lines do
+		local alpha = j * 2 * math.pi / spiral_lines
 
-		for i = 1, spiral_segments, 1 do
-			local r = fx_radius + (0.5 * i * i) / spiral_segments
+		for i = 1, spiral_segments do
+			local r = fx_radius + 0.5 * i * i / spiral_segments
 			local v = t * spin_speed + i * step + alpha
 			spiral[i] = Vector3(math.sin(v) * r, math.cos(v) * r, (i - 1) * height_step)
 		end
@@ -553,7 +553,7 @@ SummonedVortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_rad
 
 		QuickDrawer:sphere(pos + pos1, (math.sin(v * 3) + 1) / 3, Color(155, 255, 155))
 
-		for i = 1, spiral_segments, 1 do
+		for i = 1, spiral_segments do
 			local pos2 = spiral[i]
 			local color = Color(155 - col_delta * i, 255 - col_delta * i, 155 - col_delta * i)
 
@@ -566,5 +566,3 @@ SummonedVortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_rad
 	QuickDrawer:circle(pos, inner_radius, Vector3.up(), Colors.get("pink"))
 	QuickDrawer:circle(pos, outer_radius, Vector3.up(), Colors.get("lime_green"))
 end
-
-return

@@ -555,7 +555,7 @@ local generic_input_actions = {
 			{
 				input_action = "confirm",
 				priority = 2,
-				description_text = (IS_XB1 and "dlc1_4_input_description_storepage") or "buy_now"
+				description_text = IS_XB1 and "dlc1_4_input_description_storepage" or "buy_now"
 			},
 			{
 				input_action = "back",
@@ -944,7 +944,7 @@ DLCUtils.map("start_game_window_layout_console", function (start_game_window_lay
 	local new_window_layouts = start_game_window_layout_console.window_layouts
 
 	if new_window_layouts then
-		for i = 1, #new_window_layouts, 1 do
+		for i = 1, #new_window_layouts do
 			window_layouts[#window_layouts + 1] = new_window_layouts[i]
 		end
 	end

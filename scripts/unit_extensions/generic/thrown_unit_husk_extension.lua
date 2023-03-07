@@ -33,5 +33,3 @@ ThrownUnitHuskExtension.update = function (self, unit, input, dt, context, t)
 
 	Unit.set_local_rotation(unit, 0, rot)
 end
-
-return

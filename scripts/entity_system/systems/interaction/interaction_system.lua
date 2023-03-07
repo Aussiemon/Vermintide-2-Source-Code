@@ -120,5 +120,3 @@ InteractionSystem.rpc_sync_interactable_used_state = function (self, channel_id,
 
 	Unit.set_data(interactable_unit, "interaction_data", "used", is_used)
 end
-
-return

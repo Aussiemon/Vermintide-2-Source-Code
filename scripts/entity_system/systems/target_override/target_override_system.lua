@@ -21,5 +21,3 @@ TargetOverrideSystem.rpc_taunt = function (self, channel_id, game_object_id, rad
 
 	ScriptUnit.extension(unit, "target_override_system"):taunt(radius, duration, do_stagger, taunt_bosses)
 end
-
-return

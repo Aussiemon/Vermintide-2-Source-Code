@@ -8,7 +8,7 @@ PlayerCharacterStateDead.on_enter = function (self, unit, input, dt, context, t,
 	self.despawn_time_start = t
 	self.despawned = false
 	self.switched_to_observer_camera = false
-	local animation = (params and params.animation) or "death"
+	local animation = params and params.animation or "death"
 
 	CharacterStateHelper.play_animation_event(self.unit, animation)
 	self.locomotion_extension:set_wanted_velocity(Vector3.zero())
@@ -24,16 +24,16 @@ PlayerCharacterStateDead.on_enter = function (self, unit, input, dt, context, t,
 	CharacterStateHelper.change_camera_state(self.player, "follow_third_person")
 
 	local fast_respawns = Development.parameter("fast_respawns")
-	self.dead_player_destroy_time = (fast_respawns and 1) or PlayerUnitDamageSettings.dead_player_destroy_time
-	local drop_items_delay = (not fast_respawns and params and params.drop_items_delay) or 0
+	self.dead_player_destroy_time = fast_respawns and 1 or PlayerUnitDamageSettings.dead_player_destroy_time
+	local drop_items_delay = not fast_respawns and params and params.drop_items_delay or 0
 
 	fassert(drop_items_delay < self.dead_player_destroy_time, "Drop items delay too large - this will cause a drop attempt when the player is already despawned!")
 
 	self.drop_items_time = t + drop_items_delay
-	local override_item_drop_position = (params and params.override_item_drop_position) or nil
-	local override_item_drop_direction = (params and params.override_item_drop_direction) or nil
-	self.override_item_drop_position = (override_item_drop_position and Vector3Box(override_item_drop_position)) or nil
-	self.override_item_drop_direction = (override_item_drop_direction and Vector3Box(override_item_drop_direction)) or nil
+	local override_item_drop_position = params and params.override_item_drop_position or nil
+	local override_item_drop_direction = params and params.override_item_drop_direction or nil
+	self.override_item_drop_position = override_item_drop_position and Vector3Box(override_item_drop_position) or nil
+	self.override_item_drop_direction = override_item_drop_direction and Vector3Box(override_item_drop_direction) or nil
 end
 
 PlayerCharacterStateDead.on_exit = function (self, unit, input, dt, context, t, next_state)
@@ -81,5 +81,3 @@ PlayerCharacterStateDead.update = function (self, unit, input, dt, context, t)
 		end
 	end
 end
-
-return

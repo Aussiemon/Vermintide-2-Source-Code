@@ -24,8 +24,8 @@ LevelEndViewWeave.start = function (self)
 	LevelEndViewWeave.super.start(self)
 
 	self._playing_music = nil
-	self._start_music_event = (self.game_won and "Play_won_music") or "Play_lost_music"
-	self._stop_music_event = (self.game_won and "Stop_won_music") or "Stop_lost_music"
+	self._start_music_event = self.game_won and "Play_won_music" or "Play_lost_music"
+	self._stop_music_event = self.game_won and "Stop_won_music" or "Stop_lost_music"
 end
 
 LevelEndViewWeave.destroy = function (self)
@@ -107,7 +107,7 @@ LevelEndViewWeave.destroy = function (self)
 end
 
 LevelEndViewWeave.active_input_service = function (self)
-	return (self.input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	return self.input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 end
 
 LevelEndViewWeave._retry_level = function (self)
@@ -288,7 +288,7 @@ LevelEndViewWeave._setup_team_heroes = function (self, players_session_scores, n
 	table.clear(team_heroes)
 	table.clear(players_with_score)
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		local player_stat_id = sorted_stat_ids[i]
 
 		if player_stat_id then
@@ -312,7 +312,7 @@ LevelEndViewWeave.get_hero_from_score = function (self, player_data)
 		career_index = career_index,
 		hero_name = career_settings.profile_name,
 		skin_name = player_data.hero_skin,
-		weapon_slot = (player_data.weapon and career_settings.preview_wield_slot) or nil,
+		weapon_slot = player_data.weapon and career_settings.preview_wield_slot or nil,
 		preview_items = {
 			player_data.hat,
 			player_data.weapon
@@ -412,7 +412,7 @@ LevelEndViewWeave.update_force_shutdown = function (self, dt)
 		if lobby_members then
 			local members = lobby_members:get_members()
 
-			for i = 1, #members, 1 do
+			for i = 1, #members do
 				local peer_id = members[i]
 				local is_done = self._done_peers[peer_id]
 				local has_result = self._peers_with_score[peer_id]
@@ -436,5 +436,3 @@ end
 LevelEndViewWeave.get_all_signaled_done = function (self)
 	return self._all_signaled_done
 end
-
-return

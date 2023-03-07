@@ -15,7 +15,7 @@ BTAdvanceTowardsPlayersAction.enter = function (self, unit, blackboard, t)
 
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 
-	local throw_at_distance = (blackboard.has_thrown and action.throw_at_distance) or action.throw_at_distance_first_time
+	local throw_at_distance = blackboard.has_thrown and action.throw_at_distance or action.throw_at_distance_first_time
 	local advance_towards_players = blackboard.advance_towards_players or {}
 	advance_towards_players.timer = advance_towards_players.timer or 0
 	advance_towards_players.time_before_throw_timer = 0
@@ -74,7 +74,7 @@ BTAdvanceTowardsPlayersAction.run = function (self, unit, blackboard, t, dt)
 	local breed = blackboard.breed
 	local action = blackboard.action
 	local advance_towards_players = blackboard.advance_towards_players
-	advance_towards_players.evaluate_timer = (blackboard.times_thrown ~= 0 and 0) or advance_towards_players.evaluate_timer - dt
+	advance_towards_players.evaluate_timer = blackboard.times_thrown ~= 0 and 0 or advance_towards_players.evaluate_timer - dt
 	advance_towards_players.timer = advance_towards_players.timer + dt
 	advance_towards_players.time_before_throw_timer = advance_towards_players.time_before_throw_timer + dt
 	local failed_attempts = ai_navigation:number_failed_move_attempts()
@@ -284,5 +284,3 @@ BTAdvanceTowardsPlayersAction.start_move_animation = function (self, unit, black
 
 	blackboard.move_state = "moving"
 end
-
-return

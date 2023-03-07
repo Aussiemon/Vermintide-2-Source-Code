@@ -114,5 +114,3 @@ DialogueLookup[DialogueLookup_n + 55] = "sc1_shadow_curse_arrival_a_arena"
 DialogueLookup[DialogueLookup_n + 56] = "sc2_shadow_curse_arrival_a_arena"
 DialogueLookup[DialogueLookup_n + 57] = "sc3_shadow_curse_arrival_a_arena"
 DialogueLookup_n = DialogueLookup_n + 57
-
-return

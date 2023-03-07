@@ -78,5 +78,3 @@ DeusVictoryEndScreenUI._update = function (self, dt)
 		self:_on_completed()
 	end
 end
-
-return

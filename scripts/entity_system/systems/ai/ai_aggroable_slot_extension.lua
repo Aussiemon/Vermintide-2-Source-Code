@@ -9,5 +9,3 @@ AIAggroableSlotExtension.init = function (self, extension_init_context, unit, ex
 		POSITION_LOOKUP[unit] = Unit.world_position(unit, 0)
 	end
 end
-
-return

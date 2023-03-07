@@ -17,7 +17,7 @@ UIWidget.init = function (widget_definition)
 	local num_passes = #passes
 	local pass_data = Script.new_array(num_passes)
 
-	for i = 1, num_passes, 1 do
+	for i = 1, num_passes do
 		local pass = passes[i]
 		local pass_type = pass.pass_type
 		local ui_pass = UIPasses[pass_type]
@@ -45,7 +45,7 @@ UIWidget.destroy = function (ui_renderer, widget)
 	local pass_data = element.pass_data
 	local passes = element.passes
 
-	for i = 1, #passes, 1 do
+	for i = 1, #passes do
 		local pass = passes[i]
 		local pass_type = pass.pass_type
 		local ui_pass = UIPasses[pass_type]
@@ -67,7 +67,5 @@ UIWidget.stop_animations = function (widget)
 end
 
 UIWidget.has_animation = function (widget)
-	return (next(widget.animations) and true) or false
+	return next(widget.animations) and true or false
 end
-
-return

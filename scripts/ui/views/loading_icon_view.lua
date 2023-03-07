@@ -13,7 +13,7 @@ local FRAME_COUNT = 86
 loading_icon_data.image_db = {}
 local image_db = loading_icon_data.image_db
 
-for i = 0, FRAME_COUNT - 1, 1 do
+for i = 0, FRAME_COUNT - 1 do
 	image_db[#image_db + 1] = LOADING_ICON_BASE_NAME .. string.format("%02d", i)
 end
 
@@ -118,5 +118,3 @@ end
 LoadingIconView.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
 end
-
-return

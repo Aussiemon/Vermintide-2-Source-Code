@@ -218,7 +218,7 @@ HeroViewStateOverview._initial_windows_setups = function (self, params)
 end
 
 HeroViewStateOverview.window_input_service = function (self)
-	return (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	return self._input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 end
 
 HeroViewStateOverview.change_profile = function (self, profile_index, career_index)
@@ -330,7 +330,7 @@ HeroViewStateOverview.set_layout = function (self, index)
 	self._widgets_by_name.back_button.content.visible = not close_on_exit
 	self._close_on_exit = close_on_exit
 
-	for i = 1, self._max_active_windows, 1 do
+	for i = 1, self._max_active_windows do
 		local window_changed = false
 
 		for window_name, window_position_index in pairs(windows) do
@@ -759,7 +759,7 @@ end
 
 HeroViewStateOverview.set_pressed_item_backend_id = function (self, backend_id, is_drag_item)
 	self._pressed_item_backend_id = backend_id
-	self._pressed_item_by_drag = (backend_id and is_drag_item) or nil
+	self._pressed_item_by_drag = backend_id and is_drag_item or nil
 end
 
 HeroViewStateOverview.get_disabled_backend_ids = function (self)
@@ -806,8 +806,8 @@ HeroViewStateOverview.set_fullscreen_effect_enable_state = function (self, enabl
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and 0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and 0.75 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -994,5 +994,3 @@ HeroViewStateOverview._get_slot_by_type = function (self, slot_type)
 		end
 	end
 end
-
-return

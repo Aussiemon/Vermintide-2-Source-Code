@@ -97,5 +97,3 @@ settings.missions = {
 		text = "mission_wizards_trail_cut_tree"
 	}
 }
-
-return

@@ -435,676 +435,674 @@ local action_data = {
 			false
 		},
 		considerations = UtilityConsiderations.storm_vermin_champion_spin
-	},
-	defensive_mode_spin = {
-		height = 4,
-		offset_forward = -6,
-		radius = 6,
-		cooldown = 0.25,
-		rotation_time = 0,
-		fatigue_type = "blocked_slam",
-		collision_type = "cylinder",
-		player_push_speed = 20,
-		shove_speed = 9,
-		damage_type = "cutting",
-		shove_z_speed = 6,
-		offset_up = 0,
-		attack_anim = "attack_spin_charge",
-		offset_right = 0,
-		bot_threat_duration = 2,
-		damage = 20,
-		action_weight = 4,
-		blocked_damage = 0,
-		player_push_speed_blocked = 15,
-		move_anim = "move_fwd",
-		exit_flow_event = "lua_disable_weapon_fx",
-		attack_sequence = {
-			{
-				attack_anim = "attack_spin_charge"
-			},
-			{
-				attack_anim = "attack_spin",
-				ready_function = function (unit, blackboard, t)
-					local charge_t = t - blackboard.attack_sequence_start_time
+	}
+}
+action_data.defensive_mode_spin = {
+	height = 4,
+	offset_forward = -6,
+	radius = 6,
+	cooldown = 0.25,
+	rotation_time = 0,
+	fatigue_type = "blocked_slam",
+	collision_type = "cylinder",
+	player_push_speed = 20,
+	shove_speed = 9,
+	damage_type = "cutting",
+	shove_z_speed = 6,
+	offset_up = 0,
+	attack_anim = "attack_spin_charge",
+	offset_right = 0,
+	bot_threat_duration = 2,
+	damage = 20,
+	action_weight = 4,
+	blocked_damage = 0,
+	player_push_speed_blocked = 15,
+	move_anim = "move_fwd",
+	exit_flow_event = "lua_disable_weapon_fx",
+	attack_sequence = {
+		{
+			attack_anim = "attack_spin_charge"
+		},
+		{
+			attack_anim = "attack_spin",
+			ready_function = function (unit, blackboard, t)
+				local charge_t = t - blackboard.attack_sequence_start_time
 
-					return (charge_t > 1.5 and blackboard.surrounding_players > 0) or charge_t > 2.5
-				end
-			}
-		},
-		blocked_difficulty_damage = {
-			harder = 5,
-			hard = 2,
-			normal = 0,
-			hardest = 10,
-			cataclysm = 10,
-			cataclysm_3 = 10,
-			cataclysm_2 = 10,
-			easy = 0
-		},
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 50,
-			cataclysm_3 = 100,
-			cataclysm_2 = 75,
-			easy = 15
-		},
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		},
-		considerations = UtilityConsiderations.storm_vermin_champion_defensive_spin
-	},
-	special_attack_sweep_left = {
-		radius = 2.25,
-		overlap_end_time = 0.7575757575757576,
-		cooldown = 0.25,
-		rotation_time = 0,
-		fatigue_type = "blocked_sv_sweep",
-		collision_filter = "filter_player_and_husk_trigger",
-		offset_right = 0,
-		mode = "radial_cylinder",
-		direction = "counter_clockwise",
-		damage_type = "cutting",
-		offset_forward = -1.5,
-		offset_up = 0,
-		attack_anim = "attack_sweep_left",
-		collision_type = "cylinder",
-		height = 2,
-		damage = 20,
-		player_push_speed = 8,
-		overlap_start_time = 0.5151515151515151,
-		bot_threat_duration = 1,
-		player_push_speed_blocked = 6,
-		move_anim = "move_fwd",
-		throw_dialogue_system_event_on_dodged_attack = true,
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 60,
-			cataclysm_3 = 100,
-			cataclysm_2 = 75,
-			easy = 15
-		},
-		overlap_start_angle_offset = -math.pi,
-		overlap_end_angle_offset = 0.5 * math.pi,
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		}
-	},
-	special_attack_sweep_right = {
-		radius = 2.25,
-		overlap_end_time = 0.7333333333333333,
-		cooldown = 0.25,
-		rotation_time = 0,
-		fatigue_type = "blocked_sv_sweep",
-		collision_filter = "filter_player_and_husk_trigger",
-		offset_right = 0,
-		mode = "radial_cylinder",
-		direction = "clockwise",
-		damage_type = "cutting",
-		offset_forward = -1.1,
-		offset_up = 0,
-		attack_anim = "attack_sweep_right",
-		collision_type = "cylinder",
-		height = 2,
-		damage = 20,
-		player_push_speed = 8,
-		overlap_start_time = 0.36666666666666664,
-		bot_threat_duration = 1,
-		player_push_speed_blocked = 6,
-		move_anim = "move_fwd",
-		throw_dialogue_system_event_on_dodged_attack = true,
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 50,
-			cataclysm_3 = 50,
-			cataclysm_2 = 50,
-			easy = 15
-		},
-		overlap_start_angle_offset = -0.5 * math.pi,
-		overlap_end_angle_offset = math.pi,
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		}
-	},
-	special_lunge_attack = {
-		animation_driven = true,
-		offset_forward = 0.25,
-		wall_collision_stun_time = 1.1666666666666667,
-		overlap_start_time = 1.1,
-		cooldown = 0.25,
-		rotation_time = 1,
-		fatigue_type = "blocked_slam",
-		overlap_end_time = 2.3666666666666667,
-		mode = "continuous_overlap",
-		player_push_speed = 12,
-		damage_type = "cutting",
-		overlap_check_walls_range = 2,
-		offset_up = 0,
-		overlap_check_walls_time = 1.75,
-		range = 2,
-		damage = 20,
-		height = 2,
-		wall_collision_anim = "charge_attack_lunge_miss",
-		action_weight = 5,
-		blocked_damage = 5,
-		player_push_speed_blocked = 8,
-		move_anim = "move_fwd",
-		width = 1,
-		throw_dialogue_system_event_on_missed_attack = true,
-		considerations = UtilityConsiderations.storm_vermin_champion_lunge_attack,
-		attack_sequence = {
-			{
-				attack_anim = "charge_attack_step"
-			},
-			{
-				at = 1.0666666666666667,
-				animation_drive_scale = 0.4,
-				attack_anim = "charge_attack_lunge"
-			}
-		},
-		blocked_difficulty_damage = {
-			harder = 9,
-			hard = 7,
-			normal = 5,
-			hardest = 15,
-			cataclysm = 17,
-			cataclysm_3 = 21.25,
-			cataclysm_2 = 19,
-			easy = 4
-		},
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 69,
-			cataclysm_3 = 100,
-			cataclysm_2 = 75,
-			easy = 15
-		},
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		}
-	},
-	special_running_attack = {
-		animation_driven = true,
-		offset_forward = 0.15,
-		overlap_start_time = 0.2,
-		cooldown = 0.5,
-		rotation_time = 1.1,
-		fatigue_type = "blocked_attack",
-		overlap_end_time = 1.1,
-		overlap_start_damage = 0,
-		mode = "continuous_overlap",
-		height = 2,
-		damage_type = "cutting",
-		player_push_speed = 12,
-		offset_up = 0,
-		damage = 20,
-		movement_controlled_rotation = false,
-		action_weight = 5,
-		blocked_damage = 0,
-		player_push_speed_blocked = 12,
-		width = 0.3,
-		considerations = UtilityConsiderations.storm_vermin_champion_running_attack,
-		attack_sequence = {
-			{
-				attack_anim = "charge_attack_step"
-			},
-			{
-				attack_anim = "attack_run_2",
-				at = 0.16666666666666666
-			}
-		},
-		blocked_difficulty_damage = {
-			harder = 5,
-			hard = 2,
-			normal = 0,
-			hardest = 10,
-			cataclysm = 20,
-			cataclysm_3 = 35,
-			cataclysm_2 = 25,
-			easy = 0
-		},
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 25,
-			cataclysm_3 = 75,
-			cataclysm_2 = 30,
-			easy = 15
-		},
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		},
-		range = function (t_value)
-			if t_value < 0.65 then
-				return 0.4
-			else
-				local scaled_t = math.min((t_value - 0.65) * 4, 1)
-
-				return math.lerp(0.4, 2.95, scaled_t)
+				return charge_t > 1.5 and blackboard.surrounding_players > 0 or charge_t > 2.5
 			end
+		}
+	},
+	blocked_difficulty_damage = {
+		harder = 5,
+		hard = 2,
+		normal = 0,
+		hardest = 10,
+		cataclysm = 10,
+		cataclysm_3 = 10,
+		cataclysm_2 = 10,
+		easy = 0
+	},
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 50,
+		cataclysm_3 = 100,
+		cataclysm_2 = 75,
+		easy = 15
+	},
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	},
+	considerations = UtilityConsiderations.storm_vermin_champion_defensive_spin
+}
+action_data.special_attack_sweep_left = {
+	radius = 2.25,
+	overlap_end_time = 0.7575757575757576,
+	cooldown = 0.25,
+	rotation_time = 0,
+	fatigue_type = "blocked_sv_sweep",
+	collision_filter = "filter_player_and_husk_trigger",
+	offset_right = 0,
+	mode = "radial_cylinder",
+	direction = "counter_clockwise",
+	damage_type = "cutting",
+	offset_forward = -1.5,
+	offset_up = 0,
+	attack_anim = "attack_sweep_left",
+	collision_type = "cylinder",
+	height = 2,
+	damage = 20,
+	player_push_speed = 8,
+	overlap_start_time = 0.5151515151515151,
+	bot_threat_duration = 1,
+	player_push_speed_blocked = 6,
+	move_anim = "move_fwd",
+	throw_dialogue_system_event_on_dodged_attack = true,
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 60,
+		cataclysm_3 = 100,
+		cataclysm_2 = 75,
+		easy = 15
+	},
+	overlap_start_angle_offset = -math.pi,
+	overlap_end_angle_offset = 0.5 * math.pi,
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	}
+}
+action_data.special_attack_sweep_right = {
+	radius = 2.25,
+	overlap_end_time = 0.7333333333333333,
+	cooldown = 0.25,
+	rotation_time = 0,
+	fatigue_type = "blocked_sv_sweep",
+	collision_filter = "filter_player_and_husk_trigger",
+	offset_right = 0,
+	mode = "radial_cylinder",
+	direction = "clockwise",
+	damage_type = "cutting",
+	offset_forward = -1.1,
+	offset_up = 0,
+	attack_anim = "attack_sweep_right",
+	collision_type = "cylinder",
+	height = 2,
+	damage = 20,
+	player_push_speed = 8,
+	overlap_start_time = 0.36666666666666664,
+	bot_threat_duration = 1,
+	player_push_speed_blocked = 6,
+	move_anim = "move_fwd",
+	throw_dialogue_system_event_on_dodged_attack = true,
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 50,
+		cataclysm_3 = 50,
+		cataclysm_2 = 50,
+		easy = 15
+	},
+	overlap_start_angle_offset = -0.5 * math.pi,
+	overlap_end_angle_offset = math.pi,
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	}
+}
+action_data.special_lunge_attack = {
+	animation_driven = true,
+	offset_forward = 0.25,
+	wall_collision_stun_time = 1.1666666666666667,
+	overlap_start_time = 1.1,
+	cooldown = 0.25,
+	rotation_time = 1,
+	fatigue_type = "blocked_slam",
+	overlap_end_time = 2.3666666666666667,
+	mode = "continuous_overlap",
+	player_push_speed = 12,
+	damage_type = "cutting",
+	overlap_check_walls_range = 2,
+	offset_up = 0,
+	overlap_check_walls_time = 1.75,
+	range = 2,
+	damage = 20,
+	height = 2,
+	wall_collision_anim = "charge_attack_lunge_miss",
+	action_weight = 5,
+	blocked_damage = 5,
+	player_push_speed_blocked = 8,
+	move_anim = "move_fwd",
+	width = 1,
+	throw_dialogue_system_event_on_missed_attack = true,
+	considerations = UtilityConsiderations.storm_vermin_champion_lunge_attack,
+	attack_sequence = {
+		{
+			attack_anim = "charge_attack_step"
+		},
+		{
+			at = 1.0666666666666667,
+			animation_drive_scale = 0.4,
+			attack_anim = "charge_attack_lunge"
+		}
+	},
+	blocked_difficulty_damage = {
+		harder = 9,
+		hard = 7,
+		normal = 5,
+		hardest = 15,
+		cataclysm = 17,
+		cataclysm_3 = 21.25,
+		cataclysm_2 = 19,
+		easy = 4
+	},
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 69,
+		cataclysm_3 = 100,
+		cataclysm_2 = 75,
+		easy = 15
+	},
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	}
+}
+action_data.special_running_attack = {
+	animation_driven = true,
+	offset_forward = 0.15,
+	overlap_start_time = 0.2,
+	cooldown = 0.5,
+	rotation_time = 1.1,
+	fatigue_type = "blocked_attack",
+	overlap_end_time = 1.1,
+	overlap_start_damage = 0,
+	mode = "continuous_overlap",
+	height = 2,
+	damage_type = "cutting",
+	player_push_speed = 12,
+	offset_up = 0,
+	damage = 20,
+	movement_controlled_rotation = false,
+	action_weight = 5,
+	blocked_damage = 0,
+	player_push_speed_blocked = 12,
+	width = 0.3,
+	considerations = UtilityConsiderations.storm_vermin_champion_running_attack,
+	attack_sequence = {
+		{
+			attack_anim = "charge_attack_step"
+		},
+		{
+			attack_anim = "attack_run_2",
+			at = 0.16666666666666666
+		}
+	},
+	blocked_difficulty_damage = {
+		harder = 5,
+		hard = 2,
+		normal = 0,
+		hardest = 10,
+		cataclysm = 20,
+		cataclysm_3 = 35,
+		cataclysm_2 = 25,
+		easy = 0
+	},
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 25,
+		cataclysm_3 = 75,
+		cataclysm_2 = 30,
+		easy = 15
+	},
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	},
+	range = function (t_value)
+		if t_value < 0.65 then
+			return 0.4
+		else
+			local scaled_t = math.min((t_value - 0.65) * 4, 1)
+
+			return math.lerp(0.4, 2.95, scaled_t)
 		end
+	end
+}
+action_data.special_attack_shatter = {
+	wave_fx = "fx/chr_stormvermin_champion_beam_impact_dot",
+	anticipation_fx = "fx/chr_stormvermin_champion_beam_anticipation_dot",
+	damage = 20,
+	cooldown = 1,
+	rotation_time = 0,
+	fatigue_type = "blocked_slam",
+	wave_point_distance = 1,
+	height = 2,
+	mode = "nav_mesh_wave",
+	offset_forward = 0.5,
+	damage_type = "cutting",
+	num_wave_points = 15,
+	shove_speed = 4,
+	shove_z_speed = 10,
+	wave_sfx = "Play_enemy_stormvermin_champion_electric_floor",
+	wave_speed = 20,
+	overlap_start_time = 2.1666666666666665,
+	action_weight = 5,
+	blocked_damage = 5,
+	move_anim = "move_fwd",
+	width = 2,
+	considerations = UtilityConsiderations.storm_vermin_champion_shatter_attack,
+	attack_sequence = {
+		{
+			attack_anim = "attack_charge_special"
+		},
+		{
+			attack_anim = "attack_charge_shatter",
+			at = 1.5
+		}
 	},
-	special_attack_shatter = {
-		wave_fx = "fx/chr_stormvermin_champion_beam_impact_dot",
-		anticipation_fx = "fx/chr_stormvermin_champion_beam_anticipation_dot",
-		damage = 20,
-		cooldown = 1,
-		rotation_time = 0,
-		fatigue_type = "blocked_slam",
-		wave_point_distance = 1,
-		height = 2,
-		mode = "nav_mesh_wave",
-		offset_forward = 0.5,
-		damage_type = "cutting",
-		num_wave_points = 15,
-		shove_speed = 4,
-		shove_z_speed = 10,
-		wave_sfx = "Play_enemy_stormvermin_champion_electric_floor",
-		wave_speed = 20,
-		overlap_start_time = 2.1666666666666665,
-		action_weight = 5,
-		blocked_damage = 5,
-		move_anim = "move_fwd",
-		width = 2,
-		considerations = UtilityConsiderations.storm_vermin_champion_shatter_attack,
-		attack_sequence = {
-			{
-				attack_anim = "attack_charge_special"
+	blocked_difficulty_damage = {
+		harder = 9,
+		hard = 7,
+		normal = 5,
+		hardest = 12,
+		cataclysm = 17,
+		cataclysm_3 = 35,
+		cataclysm_2 = 25,
+		easy = 4
+	},
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 60,
+		cataclysm_3 = 100,
+		cataclysm_2 = 75,
+		easy = 15
+	},
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	}
+}
+action_data.defensive_attack_shatter = {
+	wave_fx = "fx/chr_stormvermin_champion_beam_impact_dot",
+	anticipation_fx = "fx/chr_stormvermin_champion_beam_anticipation_dot",
+	damage = 20,
+	cooldown = 1,
+	rotation_time = 0,
+	fatigue_type = "blocked_slam",
+	wave_point_distance = 1,
+	height = 2,
+	mode = "nav_mesh_wave",
+	offset_forward = 0.5,
+	damage_type = "cutting",
+	num_wave_points = 9,
+	shove_speed = 4,
+	shove_z_speed = 10,
+	wave_sfx = "Play_enemy_stormvermin_champion_electric_floor",
+	wave_speed = 20,
+	overlap_start_time = 2.1666666666666665,
+	action_weight = 5,
+	blocked_damage = 5,
+	move_anim = "move_fwd",
+	width = 2,
+	considerations = UtilityConsiderations.storm_vermin_champion_defensive_shatter_attack,
+	attack_sequence = {
+		{
+			attack_anim = "attack_charge_special"
+		},
+		{
+			attack_anim = "attack_charge_shatter",
+			at = 1.5
+		}
+	},
+	blocked_difficulty_damage = {
+		harder = 9,
+		hard = 7,
+		normal = 5,
+		hardest = 12,
+		cataclysm = 15,
+		cataclysm_3 = 30,
+		cataclysm_2 = 20,
+		easy = 4
+	},
+	difficulty_damage = {
+		harder = 30,
+		hard = 25,
+		normal = 20,
+		hardest = 50,
+		cataclysm = 60,
+		cataclysm_3 = 100,
+		cataclysm_2 = 75,
+		easy = 15
+	},
+	ignore_staggers = {
+		true,
+		true,
+		true,
+		true,
+		true,
+		false
+	}
+}
+action_data.smash_door = {
+	unblockable = true,
+	name = "smash_door",
+	damage = 3,
+	damage_type = "cutting",
+	move_anim = "move_fwd",
+	attack_anim = "attack_pounce"
+}
+action_data.blocked = {
+	blocked_anims = {
+		"blocked",
+		"blocked_2"
+	}
+}
+action_data.stagger = {
+	stagger_anims = {
+		{
+			fwd = {
+				"stun_fwd_sword"
 			},
-			{
-				attack_anim = "attack_charge_shatter",
-				at = 1.5
+			bwd = {
+				"stun_bwd_sword"
+			},
+			left = {
+				"stun_left_sword"
+			},
+			right = {
+				"stun_right_sword"
+			},
+			dwn = {
+				"stun_bwd_sword"
 			}
 		},
-		blocked_difficulty_damage = {
-			harder = 9,
-			hard = 7,
-			normal = 5,
-			hardest = 12,
-			cataclysm = 17,
-			cataclysm_3 = 35,
-			cataclysm_2 = 25,
-			easy = 4
-		},
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 60,
-			cataclysm_3 = 100,
-			cataclysm_2 = 75,
-			easy = 15
-		},
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		}
-	},
-	defensive_attack_shatter = {
-		wave_fx = "fx/chr_stormvermin_champion_beam_impact_dot",
-		anticipation_fx = "fx/chr_stormvermin_champion_beam_anticipation_dot",
-		damage = 20,
-		cooldown = 1,
-		rotation_time = 0,
-		fatigue_type = "blocked_slam",
-		wave_point_distance = 1,
-		height = 2,
-		mode = "nav_mesh_wave",
-		offset_forward = 0.5,
-		damage_type = "cutting",
-		num_wave_points = 9,
-		shove_speed = 4,
-		shove_z_speed = 10,
-		wave_sfx = "Play_enemy_stormvermin_champion_electric_floor",
-		wave_speed = 20,
-		overlap_start_time = 2.1666666666666665,
-		action_weight = 5,
-		blocked_damage = 5,
-		move_anim = "move_fwd",
-		width = 2,
-		considerations = UtilityConsiderations.storm_vermin_champion_defensive_shatter_attack,
-		attack_sequence = {
-			{
-				attack_anim = "attack_charge_special"
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				attack_anim = "attack_charge_shatter",
-				at = 1.5
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			},
+			dwn = {
+				"stagger_bwd"
 			}
 		},
-		blocked_difficulty_damage = {
-			harder = 9,
-			hard = 7,
-			normal = 5,
-			hardest = 12,
-			cataclysm = 15,
-			cataclysm_3 = 30,
-			cataclysm_2 = 20,
-			easy = 4
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left_heavy"
+			},
+			right = {
+				"stagger_right_heavy"
+			}
 		},
-		difficulty_damage = {
-			harder = 30,
-			hard = 25,
-			normal = 20,
-			hardest = 50,
-			cataclysm = 60,
-			cataclysm_3 = 100,
-			cataclysm_2 = 75,
-			easy = 15
+		{
+			fwd = {
+				"stun_fwd_sword"
+			},
+			bwd = {
+				"stun_bwd_sword"
+			},
+			left = {
+				"stun_left_sword"
+			},
+			right = {
+				"stun_right_sword"
+			}
 		},
-		ignore_staggers = {
-			true,
-			true,
-			true,
-			true,
-			true,
-			false
-		}
-	},
-	smash_door = {
-		unblockable = true,
-		name = "smash_door",
-		damage = 3,
-		damage_type = "cutting",
-		move_anim = "move_fwd",
-		attack_anim = "attack_pounce"
-	},
-	blocked = {
-		blocked_anims = {
-			"blocked",
-			"blocked_2"
-		}
-	},
-	stagger = {
-		stagger_anims = {
-			{
-				fwd = {
-					"stun_fwd_sword"
-				},
-				bwd = {
-					"stun_bwd_sword"
-				},
-				left = {
-					"stun_left_sword"
-				},
-				right = {
-					"stun_right_sword"
-				},
-				dwn = {
-					"stun_bwd_sword"
-				}
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				},
-				dwn = {
-					"stagger_bwd"
-				}
+			bwd = {
+				"stagger_bwd_stab"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left_heavy"
-				},
-				right = {
-					"stagger_right_heavy"
-				}
+			left = {
+				"stagger_left"
 			},
-			{
-				fwd = {
-					"stun_fwd_sword"
-				},
-				bwd = {
-					"stun_bwd_sword"
-				},
-				left = {
-					"stun_left_sword"
-				},
-				right = {
-					"stun_right_sword"
-				}
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_stab"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			bwd = {
+				"stagger_bwd_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_exp"
-				},
-				left = {
-					"stagger_left_exp"
-				},
-				right = {
-					"stagger_right_exp"
-				}
+			left = {
+				"stagger_left_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			right = {
+				"stagger_right_exp"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
+			bwd = {
+				"stagger_bwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left_heavy"
-				},
-				right = {
-					"stagger_right_heavy"
-				}
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left_heavy"
+			},
+			right = {
+				"stagger_right_heavy"
 			}
 		}
+	}
+}
+action_data.spawn_sequence = {
+	action_weight = 20,
+	considerations = UtilityConsiderations.storm_vermin_champion_spawn
+}
+action_data.turn_to_face_target = {
+	action_weight = 20,
+	rage_time = 0.6,
+	considerations = UtilityConsiderations.storm_vermin_champion_turn_to_face_target,
+	start_anims_name = {
+		bwd = "turn_bwd",
+		left = "turn_left",
+		right = "turn_right"
 	},
-	spawn_sequence = {
-		action_weight = 20,
-		considerations = UtilityConsiderations.storm_vermin_champion_spawn
-	},
-	turn_to_face_target = {
-		action_weight = 20,
-		rage_time = 0.6,
-		considerations = UtilityConsiderations.storm_vermin_champion_turn_to_face_target,
-		start_anims_name = {
-			bwd = "turn_bwd",
-			left = "turn_left",
-			right = "turn_right"
+	start_anims_data = {
+		turn_bwd = {
+			dir = -1,
+			rad = math.pi
 		},
-		start_anims_data = {
-			turn_bwd = {
-				dir = -1,
-				rad = math.pi
-			},
-			turn_left = {
-				dir = 1,
-				rad = math.pi / 2
-			},
-			turn_right = {
-				dir = -1,
-				rad = math.pi / 2
-			}
+		turn_left = {
+			dir = 1,
+			rad = math.pi / 2
+		},
+		turn_right = {
+			dir = -1,
+			rad = math.pi / 2
 		}
+	}
+}
+action_data.spawn_allies = {
+	run_to_spawn_speed = 7,
+	spawn_group = "default",
+	animation = "call_allies",
+	move_anim = "move_fwd",
+	duration = 5,
+	spawn = "stormdorf_boss_event_defensive_hard",
+	spawn_list = {
+		"skaven_storm_vermin",
+		"skaven_storm_vermin"
 	},
-	spawn_allies = {
-		run_to_spawn_speed = 7,
-		spawn_group = "default",
-		animation = "call_allies",
-		move_anim = "move_fwd",
-		duration = 5,
-		spawn = "stormdorf_boss_event_defensive_hard",
-		spawn_list = {
+	difficulty_spawn_list = {
+		easy = {
+			"skaven_storm_vermin"
+		},
+		normal = {
 			"skaven_storm_vermin",
 			"skaven_storm_vermin"
 		},
-		difficulty_spawn_list = {
-			easy = {
-				"skaven_storm_vermin"
-			},
-			normal = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			hard = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			harder = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			hardest = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			cataclysm = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			cataclysm_2 = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			},
-			cataclysm_3 = {
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin",
-				"skaven_storm_vermin"
-			}
+		hard = {
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
-		difficulty_spawn = {
-			harder = "stormdorf_boss_event_defensive_harder",
-			hard = "stormdorf_boss_event_defensive_hard",
-			normal = "stormdorf_boss_event_defensive_normal",
-			hardest = "stormdorf_boss_event_defensive_hardest",
-			cataclysm = "stormdorf_boss_event_defensive_hard",
-			cataclysm_3 = "stormdorf_boss_event_defensive_hard",
-			cataclysm_2 = "stormdorf_boss_event_defensive_hard",
-			easy = "stormdorf_boss_event_defensive_easy"
+		harder = {
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
-		start_anims = {
-			bwd = "move_start_bwd",
-			fwd = "move_start_fwd",
-			left = "move_start_left",
-			right = "move_start_right"
+		hardest = {
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		},
-		start_anims_data = {
-			move_start_fwd = {},
-			move_start_bwd = {
-				dir = -1,
-				rad = math.pi
-			},
-			move_start_left = {
-				dir = 1,
-				rad = math.pi / 2
-			},
-			move_start_right = {
-				dir = -1,
-				rad = math.pi / 2
-			}
+		cataclysm = {
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		cataclysm_2 = {
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
+		},
+		cataclysm_3 = {
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin",
+			"skaven_storm_vermin"
 		}
 	},
-	defensive_idle = {
-		force_idle_animation = true,
-		idle_animation = "defensive_idle"
+	difficulty_spawn = {
+		harder = "stormdorf_boss_event_defensive_harder",
+		hard = "stormdorf_boss_event_defensive_hard",
+		normal = "stormdorf_boss_event_defensive_normal",
+		hardest = "stormdorf_boss_event_defensive_hardest",
+		cataclysm = "stormdorf_boss_event_defensive_hard",
+		cataclysm_3 = "stormdorf_boss_event_defensive_hard",
+		cataclysm_2 = "stormdorf_boss_event_defensive_hard",
+		easy = "stormdorf_boss_event_defensive_easy"
+	},
+	start_anims = {
+		bwd = "move_start_bwd",
+		fwd = "move_start_fwd",
+		left = "move_start_left",
+		right = "move_start_right"
+	},
+	start_anims_data = {
+		move_start_fwd = {},
+		move_start_bwd = {
+			dir = -1,
+			rad = math.pi
+		},
+		move_start_left = {
+			dir = 1,
+			rad = math.pi / 2
+		},
+		move_start_right = {
+			dir = -1,
+			rad = math.pi / 2
+		}
 	}
 }
+action_data.defensive_idle = {
+	force_idle_animation = true,
+	idle_animation = "defensive_idle"
+}
 BreedActions.skaven_storm_vermin_champion = table.create_copy(BreedActions.skaven_storm_vermin_champion, action_data)
-
-return

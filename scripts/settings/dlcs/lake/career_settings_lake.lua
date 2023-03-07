@@ -130,5 +130,3 @@ CareerSettings.es_questingknight = {
 	}
 }
 CareerNameAchievementMapping.es_questingknight = "questingknight"
-
-return

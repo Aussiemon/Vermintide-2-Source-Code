@@ -56,5 +56,3 @@ TelemetryHeartbeat.cb_send = function (self, success, _, _, error)
 		printf("[TelemetryHeartbeat] Error sending heartbeat")
 	end
 end
-
-return

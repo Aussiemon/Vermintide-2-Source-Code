@@ -108,5 +108,3 @@ BTNode.current_running_child = function (self, blackboard)
 
 	return node
 end
-
-return

@@ -355,13 +355,13 @@ for _, dlc in pairs(DLCSettings) do
 			local categories = data.categories
 
 			if categories then
-				for i = 1, #categories, 1 do
+				for i = 1, #categories do
 					local sub_category = categories[i]
 					local sub_category_name = sub_category.name
 					local current_categories = category.categories
 					local sub_category_found = false
 
-					for j = 1, #current_categories, 1 do
+					for j = 1, #current_categories do
 						local current_sub_category = current_categories[j]
 						local current_sub_category_name = current_sub_category.name
 

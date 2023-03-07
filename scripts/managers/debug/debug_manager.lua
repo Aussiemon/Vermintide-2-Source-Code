@@ -92,7 +92,7 @@ DebugManager.drawer = function (self, options)
 	options = options or {}
 	local drawer_name = options.name
 	local drawer = nil
-	local drawer_api = (BUILD == "release" and DebugDrawerRelease) or DebugDrawer
+	local drawer_api = BUILD == "release" and DebugDrawerRelease or DebugDrawer
 
 	if drawer_name == nil then
 		local line_object = World.create_line_object(self._world)
@@ -884,5 +884,3 @@ DebugManager._update_unit_spawning = function (self, dt, t)
 		self:send_conflict_director_command("destroy_specials")
 	end
 end
-
-return

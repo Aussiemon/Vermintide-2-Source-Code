@@ -1404,5 +1404,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_stormfiend_boss = table.create_copy(BreedActions.skaven_stormfiend_boss, action_data)
-
-return

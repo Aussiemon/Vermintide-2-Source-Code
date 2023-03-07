@@ -20,5 +20,3 @@ end
 InteractionDefinitions.store_access.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action")
 end
-
-return

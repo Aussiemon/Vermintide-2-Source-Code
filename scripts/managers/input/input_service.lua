@@ -69,16 +69,12 @@ InputService.get = function (self, input_data_name, consume)
 					local device_list = mapped_devices[device_type]
 
 					if device_list and device_list.n then
-						for k = 1, device_list.n, 1 do
+						for k = 1, device_list.n do
 							local input_device = device_list[k]
 							local input_device_data = input_devices_data[input_device]
 
 							if input_device:active() and not input_device_data.blocked_access[name] then
-								if key_action_type == "soft_button" then
-									action_value = math_max(action_value or 0, input_device_data[key_action_type][key_index])
-								else
-									action_value = action_value or input_device_data[key_action_type][key_index]
-								end
+								action_value = key_action_type == "soft_button" and math_max(action_value or 0, input_device_data[key_action_type][key_index]) or action_value or input_device_data[key_action_type][key_index]
 
 								if action_value == true then
 									if input_device_data.consumed_input[key_index] then
@@ -94,7 +90,7 @@ InputService.get = function (self, input_data_name, consume)
 							end
 						end
 
-						action_value = (device_list.n > 0 and action_value) or nil
+						action_value = device_list.n > 0 and action_value or nil
 					end
 				end
 			end
@@ -111,7 +107,7 @@ InputService.get = function (self, input_data_name, consume)
 		local function_data = filter_binding.function_data
 		local value = InputFilters[function_data.filter_type].update(function_data, self)
 
-		if self.blocked_input[input_data_name] or (input_device_data and input_device_data.consumed_input[input_data_name]) then
+		if self.blocked_input[input_data_name] or input_device_data and input_device_data.consumed_input[input_data_name] then
 			if type(value) == "boolean" then
 				value = false
 			elseif type(value) == "userdata" then
@@ -230,7 +226,7 @@ InputService.generate_keybinding_setting = function (self)
 			combination_type = keymap_data.combination_type
 		}
 
-		for i = 1, keymap_data.input_mappings.n, 1 do
+		for i = 1, keymap_data.input_mappings.n do
 			local new_binding = {}
 			new_keymap_data[i] = new_binding
 			local current_binding = keymap_data.input_mappings[i]
@@ -277,7 +273,7 @@ InputService.has = function (self, keymap_name)
 	local keymaps = self:get_active_keymaps(nil, keymap_name)
 	local input_filters = self:get_active_filters(nil, keymap_name)
 
-	return keymaps[keymap_name] or (input_filters and input_filters[keymap_name] and true) or false
+	return keymaps[keymap_name] or input_filters and input_filters[keymap_name] and true or false
 end
 
 InputService.is_blocked = function (self)
@@ -303,5 +299,3 @@ end
 InputService.is_hovering = function (self)
 	return self.hovering
 end
-
-return

@@ -290,7 +290,7 @@ LocomotionSystem.rpc_set_animation_driven_movement = function (self, channel_id,
 
 		if MAX_ALLOWABLE_RESYNC_TELEPORT_DISTANCE_SQ < distance_sq then
 			local breed = AiUtils.unit_breed(unit)
-			local breed_name = (breed and breed.name) or "n/a"
+			local breed_name = breed and breed.name or "n/a"
 
 			Managers.telemetry.events:breed_position_desync(source_position, position, distance_sq, breed_name)
 		end
@@ -506,5 +506,3 @@ LocomotionSystem.rpc_hot_join_nail_to_wall_fix = function (self, channel_id, gam
 		Unit.animation_event(unit, "ragdoll")
 	end
 end
-
-return

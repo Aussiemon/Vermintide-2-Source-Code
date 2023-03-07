@@ -240,5 +240,3 @@ DialogueLookup[DialogueLookup_n + 118] = "pwh_morris_bardin_song_victor_16"
 DialogueLookup[DialogueLookup_n + 119] = "pbw_morris_bardin_song_sienna_16"
 DialogueLookup[DialogueLookup_n + 120] = "pwe_morris_bardin_song_kerillian_16"
 DialogueLookup_n = DialogueLookup_n + 120
-
-return

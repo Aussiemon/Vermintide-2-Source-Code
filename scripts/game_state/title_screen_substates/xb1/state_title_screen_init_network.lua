@@ -283,11 +283,11 @@ StateTitleScreenInitNetwork._next_state = function (self)
 		return
 	end
 
-	if self._lobby_finder or (self._lobby_client and self._lobby_client.state ~= LobbyState.JOINED) then
+	if self._lobby_finder or self._lobby_client and self._lobby_client.state ~= LobbyState.JOINED then
 		return
 	end
 
-	if (not self._sent_joined and not self._lobby_host) or (self._lobby_host and self._lobby_host.state == LobbyState.FAILED) then
+	if not self._sent_joined and not self._lobby_host or self._lobby_host and self._lobby_host.state == LobbyState.FAILED then
 		return
 	end
 
@@ -430,5 +430,3 @@ StateTitleScreenInitNetwork._packages_loaded = function (self)
 
 	return true
 end
-
-return

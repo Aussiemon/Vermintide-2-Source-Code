@@ -72,5 +72,3 @@ BloodManagerDummy.update_ragdoll_enabled = function (self, ragdoll_enabled)
 end
 
 ApiVerification.ensure_public_api(BloodManager, BloodManagerDummy)
-
-return

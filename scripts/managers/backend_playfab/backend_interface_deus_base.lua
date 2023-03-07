@@ -57,7 +57,7 @@ BackendInterfaceDeusBase.has_loadout_item_id = function (self, career_name, item
 	end
 end
 
-local guid = (IS_PS4 and math.uuid) or Application.guid
+local guid = IS_PS4 and math.uuid or Application.guid
 
 BackendInterfaceDeusBase.refresh_deus_weapons_in_items_backend = function (self)
 	Managers.backend:get_interface("items"):refresh_game_mode_specific_items()
@@ -74,7 +74,7 @@ end
 BackendInterfaceDeusBase.get_talent_ids = function (self, career_name)
 	local talent_ids = self._talent_ids[career_name]
 
-	return (talent_ids and table.clone(talent_ids)) or {}
+	return talent_ids and table.clone(talent_ids) or {}
 end
 
 BackendInterfaceDeusBase.set_deus_talent_ids = function (self, career_name, talent_ids)
@@ -128,7 +128,7 @@ BackendInterfaceDeusBase.get_total_power_level = function (self, profile_name, c
 		count = count + 1
 	end
 
-	local item_average_power_level = (count > 0 and sum / count) or 0
+	local item_average_power_level = count > 0 and sum / count or 0
 
 	return item_average_power_level + PowerLevelFromLevelSettings.starting_power_level
 end
@@ -187,5 +187,3 @@ end
 BackendInterfaceDeusBase.write_player_event = function (self, event_name, data)
 	ferror("must be implemented by subclass")
 end
-
-return

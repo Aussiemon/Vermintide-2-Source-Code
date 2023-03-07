@@ -7,7 +7,7 @@ WeaveSpawning._get_spawn_position_close_to_server = function (self)
 	local occupied_slots = party.occupied_slots
 	local player_manager = Managers.player
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local peer_id = status.peer_id
 		local local_player_id = status.local_player_id
@@ -30,5 +30,3 @@ WeaveSpawning._find_spawn_point = function (self, status)
 
 	return position, rotation
 end
-
-return

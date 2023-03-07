@@ -148,7 +148,7 @@ ChatGui.set_font_size = function (self, font_size)
 	local font, scaled_font_size = UIFontByResolution(self.chat_input_widget.style.text)
 	local font_type = self.chat_input_widget.style.text.font_type
 	local font_height, font_min, font_max = UIGetFontHeight(self.ui_renderer.gui, font_type, scaled_font_size)
-	local input_text_height_offset = (background_height / 2 + math.abs(font_min / 2)) - font_height / 2
+	local input_text_height_offset = background_height / 2 + math.abs(font_min / 2) - font_height / 2
 	self.chat_input_widget.style.text.offset[2] = input_text_height_offset
 	self.chat_input_widget.style.text.caret_size[2] = font_height
 	ui_scenegraph[self.chat_output_widget.style.text.scenegraph_id].size[2] = definitions.CHAT_HEIGHT - font_size - output_field_margin
@@ -262,7 +262,7 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 				ui_animations.notification_pulse = self:animate_element_pulse(self.tab_widget.style.button_notification.color, 1, alpha_1, alpha_2, 5)
 			end
 		end
-	elseif show_new_messages or (not self.chat_focused and chat_focused) or (self.chat_closed and not closed) then
+	elseif show_new_messages or not self.chat_focused and chat_focused or self.chat_closed and not closed then
 		self:clear_current_transition()
 		self:set_menu_transition_fraction(1)
 		self:_set_chat_window_alpha(1)
@@ -271,14 +271,11 @@ ChatGui.update = function (self, dt, menu_active, menu_input_service, no_unblock
 	self.chat_focused = chat_focused
 	self.chat_closed = closed
 	self.chat_close_time = close_time
-	local input_service = (menu_input_service and menu_input_service) or input_manager:get_service("chat_input")
+	local input_service = menu_input_service and menu_input_service or input_manager:get_service("chat_input")
 
 	if menu_active then
 		if self.chat_focused then
 			input_service = input_manager:get_service("chat_input")
-
-			if input_manager.get_service("chat_input") then
-			end
 		end
 	elseif self.chat_focused then
 		input_service = input_manager:get_service("chat_input")
@@ -306,16 +303,16 @@ ChatGui._update_chat_messages = function (self)
 		local num_current = #message_tables
 
 		if history_max_size < num_new + num_current then
-			local num_to_remove = (num_new + num_current) - history_max_size
+			local num_to_remove = num_new + num_current - history_max_size
 
-			for i = 1, num_to_remove, 1 do
+			for i = 1, num_to_remove do
 				table.remove(message_tables, 1)
 			end
 		end
 
 		num_current = #message_tables
 
-		for i = 1, num_new, 1 do
+		for i = 1, num_new do
 			local new_message = added_chat_messages[i]
 			local new_message_table = {}
 
@@ -357,10 +354,10 @@ ChatGui._update_chat_messages = function (self)
 
 				if player then
 					local profile_index = self.profile_synchronizer:profile_by_peer(player.peer_id, player:local_player_id())
-					ingame_display_name = (SPProfiles[profile_index] and SPProfiles[profile_index].ingame_short_display_name) or nil
+					ingame_display_name = SPProfiles[profile_index] and SPProfiles[profile_index].ingame_short_display_name or nil
 					name = player:name()
 				else
-					name = (rawget(_G, "Steam") and Steam.user_name(sender)) or tostring(sender)
+					name = rawget(_G, "Steam") and Steam.user_name(sender) or tostring(sender)
 				end
 
 				local message = new_message.message
@@ -368,7 +365,7 @@ ChatGui._update_chat_messages = function (self)
 				new_message_table.is_enemy = new_message.is_enemy
 				new_message_table.is_bot = new_message.is_bot
 				new_message_table.is_system = false
-				new_message_table.sender = (ingame_display_name and string.format("%s (%s): ", name, Localize(ingame_display_name))) or string.format("%s: ", name)
+				new_message_table.sender = ingame_display_name and string.format("%s (%s): ", name, Localize(ingame_display_name)) or string.format("%s: ", name)
 				new_message_table.message = message
 				new_message_table.type = new_message.type
 				local message_targets = self.chat_manager.message_targets
@@ -538,7 +535,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 	if chat_closed then
 		local alt_chat_input = input_service:get("execute_alt_chat_input")
 
-		if tab_hotspot.on_release or ((input_service:get("activate_chat_input") or input_service:get("execute_chat_input") or alt_chat_input) and not block_chat_activation and GameSettingsDevelopment.allow_chat_input) then
+		if tab_hotspot.on_release or (input_service:get("activate_chat_input") or input_service:get("execute_chat_input") or alt_chat_input) and not block_chat_activation and GameSettingsDevelopment.allow_chat_input then
 			if chat_enabled then
 				chat_closed = false
 				chat_close_time = nil
@@ -609,8 +606,8 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 
 		local auto_close = chat_close_time and chat_close_time == 0
 
-		if tab_hotspot.on_release or (input_service:get("deactivate_chat_input") and not block_chat_activation) or menu_close_press_outside_area or auto_close then
-			if chat_focused and (tab_hotspot.on_release or (input_service:get("deactivate_chat_input") and not block_chat_activation) or menu_close_press_outside_area) then
+		if tab_hotspot.on_release or input_service:get("deactivate_chat_input") and not block_chat_activation or menu_close_press_outside_area or auto_close then
+			if chat_focused and (tab_hotspot.on_release or input_service:get("deactivate_chat_input") and not block_chat_activation or menu_close_press_outside_area) then
 				self:unblock_input()
 				table.clear(tab_hotspot)
 			end
@@ -783,7 +780,7 @@ ChatGui._update_input = function (self, input_service, menu_input_service, dt, n
 		else
 			local alt_chat_input = input_service:get("execute_alt_chat_input")
 
-			if input_service:get("activate_chat_input") or ((input_service:get("execute_chat_input") or alt_chat_input) and GameSettingsDevelopment.allow_chat_input) then
+			if input_service:get("activate_chat_input") or (input_service:get("execute_chat_input") or alt_chat_input) and GameSettingsDevelopment.allow_chat_input then
 				if chat_enabled then
 					chat_closed = false
 					chat_close_time = nil
@@ -992,24 +989,24 @@ ChatGui._draw_widgets = function (self, dt, input_service, chat_enabled)
 	if not self.chat_closed and not self.opening and not self.closing then
 		if self.chat_focused and chat_enabled then
 			UIRenderer.draw_widget(ui_renderer, input_widget)
+		end
 
-			render_settings.alpha_multiplier = self._output_text_alpha_multiplier or alpha_multiplier
+		render_settings.alpha_multiplier = self._output_text_alpha_multiplier or alpha_multiplier
 
-			UIRenderer.draw_widget(ui_renderer, output_widget)
+		UIRenderer.draw_widget(ui_renderer, output_widget)
 
-			render_settings.alpha_multiplier = alpha_multiplier
+		render_settings.alpha_multiplier = alpha_multiplier
 
-			UIRenderer.draw_widget(ui_renderer, scrollbar_widget)
+		UIRenderer.draw_widget(ui_renderer, scrollbar_widget)
 
-			if output_widget.content.link_pressed then
-				local link_data = output_widget.content.link_pressed
+		if output_widget.content.link_pressed then
+			local link_data = output_widget.content.link_pressed
 
-				Managers.invite:set_invited_lobby_data(link_data.lobby_id)
+			Managers.invite:set_invited_lobby_data(link_data.lobby_id)
 
-				output_widget.content.link_pressed = nil
+			output_widget.content.link_pressed = nil
 
-				print("Link Pressed! -> joining game!")
-			end
+			print("Link Pressed! -> joining game!")
 		end
 
 		if chat_enabled then
@@ -1089,5 +1086,3 @@ ChatGui._apply_color_values = function (self, color, to_color)
 	color[3] = to_color[3]
 	color[4] = to_color[4]
 end
-
-return

@@ -19,5 +19,3 @@ end
 ScriptInviteToken.close = function (self)
 	return
 end
-
-return

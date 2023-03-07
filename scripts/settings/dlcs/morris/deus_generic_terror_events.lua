@@ -3941,7 +3941,7 @@ local function belakor_shadow_lieutenant_spawn(locus_type_id, add_base_enhanceme
 				local possible_grudge_mark_names = POSSIBLE_SHADOW_LIEUTENANT_GRUDGE_MARK_NAMES[locus_type_id]
 				local number_of_grudgemarks = 2
 
-				for i = 1, number_of_grudgemarks, 1 do
+				for i = 1, number_of_grudgemarks do
 					if possible_grudge_mark_names and not table.is_empty(possible_grudge_mark_names) then
 						local available_enhancements = {}
 
@@ -12724,5 +12724,3 @@ GenericTerrorEvents.deus_TEST_monster = {
 		end
 	}
 }
-
-return

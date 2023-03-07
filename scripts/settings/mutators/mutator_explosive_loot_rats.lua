@@ -69,7 +69,7 @@ return {
 			local spawn_frequency = math.random(spawn_frequency_range[1], spawn_frequency_range[2])
 			local spawn_list = {}
 
-			for i = 1, amount_of_rats, 1 do
+			for i = 1, amount_of_rats do
 				spawn_list[#spawn_list + 1] = "skaven_explosive_loot_rat"
 			end
 

@@ -15,5 +15,3 @@ BackendInterfaceProfileHash.on_authenticated = function (self)
 		end
 	end
 end
-
-return

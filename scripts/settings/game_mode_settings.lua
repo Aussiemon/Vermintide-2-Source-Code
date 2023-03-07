@@ -156,5 +156,3 @@ for table_key, settings in pairs(GameModeSettings) do
 		fassert(settings.display_name, "[GameModeSettings] game mode %q is missing parameter \"display_name\".", table_key)
 	end
 end
-
-return

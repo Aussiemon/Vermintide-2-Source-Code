@@ -9,7 +9,7 @@ BackendInterfaceLiveEventsPlayfab.init = function (self, backend_mirror)
 	self._completed_live_event_requests = {}
 	local backend_manager = Managers.backend
 	local live_events_string = backend_manager:get_title_data("live_events_v2") or backend_manager:get_title_data("live_events")
-	local live_events = (live_events_string and cjson.decode(live_events_string)) or {}
+	local live_events = live_events_string and cjson.decode(live_events_string) or {}
 
 	if is_array(live_events) then
 		self._live_events = {
@@ -87,7 +87,7 @@ end
 BackendInterfaceLiveEventsPlayfab.get_weekly_events_game_mode_data = function (self)
 	local weekly_event_data = self._live_events.weekly_events
 
-	for i = 1, #weekly_event_data, 1 do
+	for i = 1, #weekly_event_data do
 		local event = weekly_event_data[i]
 
 		if event.game_mode_data then
@@ -95,5 +95,3 @@ BackendInterfaceLiveEventsPlayfab.get_weekly_events_game_mode_data = function (s
 		end
 	end
 end
-
-return

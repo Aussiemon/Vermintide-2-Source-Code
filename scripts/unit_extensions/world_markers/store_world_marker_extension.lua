@@ -68,5 +68,3 @@ StoreWorldMarkerExtension.update = function (self, unit, dummy_input, dt, contex
 		end
 	end
 end
-
-return

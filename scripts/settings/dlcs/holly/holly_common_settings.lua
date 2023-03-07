@@ -36,5 +36,3 @@ settings.unlock_settings_ps4 = {
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_holly"
 }
-
-return

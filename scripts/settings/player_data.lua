@@ -148,5 +148,3 @@ function populate_player_data_from_save(save_data, id, version_match)
 		input_manager:apply_saved_keymaps()
 	end
 end
-
-return

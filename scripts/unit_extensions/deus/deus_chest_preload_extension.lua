@@ -18,7 +18,7 @@ local function get_weapon_packages(stored_purchase)
 	local packages = WeaponUtils.get_weapon_packages(item_template, item_units, false)
 	local filtered_packages = {}
 
-	for i = 1, #packages, 1 do
+	for i = 1, #packages do
 		local package = packages[i]
 
 		if not package_exclusion_list[package] then
@@ -137,7 +137,5 @@ DeusChestPreloadExtension._get_server_chest_type = function (self, unit)
 
 	local chest_lookup = GameSession.game_object_field(game_session, go_id, "server_chest_type")
 
-	return (chest_lookup ~= 0 and NetworkLookup.deus_chest_types[chest_lookup]) or nil
+	return chest_lookup ~= 0 and NetworkLookup.deus_chest_types[chest_lookup] or nil
 end
-
-return

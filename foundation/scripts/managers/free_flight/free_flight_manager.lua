@@ -342,7 +342,7 @@ FreeFlightManager._update_global_free_flight = function (self, dt, data, input_s
 	end
 
 	if input_service:get("decrease_frame_step") then
-		self._frames_to_step = (self._frames_to_step > 1 and self._frames_to_step - 1) or 1
+		self._frames_to_step = self._frames_to_step > 1 and self._frames_to_step - 1 or 1
 
 		print("Frame step:", self._frames_to_step)
 	elseif input_service:get("increase_frame_step") then
@@ -649,6 +649,7 @@ FreeFlightManager._update_free_flight = function (self, dt, player, data)
 	local new_speed = current_speed + speed_difference_direction * math.min(speed_distance, acceleration * dt)
 
 	if not Vector3.equal(new_speed, current_speed) then
+		-- Nothing
 	end
 
 	data.current_translation_speed:store(new_speed)
@@ -830,5 +831,3 @@ FreeFlightManager.drop_player_at_camera_pos = function (self, cam, player)
 		end
 	end
 end
-
-return

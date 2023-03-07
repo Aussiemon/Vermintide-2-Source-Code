@@ -45,7 +45,7 @@ BossDoorExtension.set_door_state = function (self, new_state, breed_name)
 	end
 
 	local unit = self.unit
-	local state_flow_event = (new_state == "closed" and "lua_close") or "lua_open"
+	local state_flow_event = new_state == "closed" and "lua_close" or "lua_open"
 
 	Unit.flow_event(unit, state_flow_event)
 
@@ -112,5 +112,3 @@ end
 BossDoorExtension.is_open = function (self)
 	return self.current_state == "open"
 end
-
-return

@@ -263,5 +263,3 @@ HitEffectsChaosExaltedChampion = {
 	}
 }
 HitEffectsChaosExaltedChampion = table.create_copy(HitEffectsChaosExaltedChampion, HitEffectsChaosExaltedChampion)
-
-return

@@ -19,7 +19,7 @@ GenericCameraStateMachineExtension.extensions_ready = function (self)
 	local states = {}
 	local camera_state_class_list = self.camera_state_class_list
 
-	for i = 1, #camera_state_class_list, 1 do
+	for i = 1, #camera_state_class_list do
 		local state_instance = camera_state_class_list[i]:new(character_state_init_context)
 		local name = state_instance.name
 
@@ -57,5 +57,3 @@ GenericCameraStateMachineExtension.reinitialize_camera_states = function (self, 
 
 	self:extensions_ready()
 end
-
-return

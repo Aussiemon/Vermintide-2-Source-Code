@@ -335,5 +335,3 @@ WeaveMasterySettings = {
 	item_mastery_per_magic_level = 15,
 	mastery_cap_amulet = 1400
 }
-
-return

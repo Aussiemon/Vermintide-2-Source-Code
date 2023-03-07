@@ -111,5 +111,3 @@ BTPickupStandardAction.anim_cb_pick_up_standard = function (self, unit, blackboa
 		blackboard.triggered_standard_chanting_sound = true
 	end
 end
-
-return

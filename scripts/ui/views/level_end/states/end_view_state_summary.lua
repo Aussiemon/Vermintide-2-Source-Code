@@ -321,7 +321,7 @@ EndViewStateSummary._get_summary_entries = function (self, game_won, game_mode_k
 		local bonus = mission_reward.bonus
 		local icon = mission_reward.icon
 		local widget = entry_widgets[widget_index]
-		local value_text = (experience and tostring(experience)) or (value and tostring(value)) or ""
+		local value_text = experience and tostring(experience) or value and tostring(value) or ""
 		local entry = {
 			spacing = 8,
 			start_counter_sound = true,
@@ -390,6 +390,7 @@ EndViewStateSummary._animate_summary_entries = function (self, dt)
 	summary_entries.complete = animations_completed
 
 	if animations_completed then
+		-- Nothing
 	end
 end
 
@@ -443,8 +444,8 @@ EndViewStateSummary._setup_essence_presentation = function (self)
 	widgets_by_name.essence_background_effect_left.content.visible = draw_essence_presentation
 	widgets_by_name.essence_background_effect_right.content.visible = draw_essence_presentation
 	widgets_by_name.total_essence_title.content.visible = draw_essence_presentation
-	widgets_by_name.icon_essence.content.visible = (draw_essence_icon and draw_essence_presentation) or false
-	widgets_by_name.essence_total_text.content.visible = (essence_gained ~= nil and draw_essence_presentation) or false
+	widgets_by_name.icon_essence.content.visible = draw_essence_icon and draw_essence_presentation or false
+	widgets_by_name.essence_total_text.content.visible = essence_gained ~= nil and draw_essence_presentation or false
 	widgets_by_name.essence_total_text_max.content.visible = draw_essence_presentation and not draw_essence_icon
 end
 
@@ -556,7 +557,7 @@ EndViewStateSummary._set_current_experience = function (self, current_experience
 
 	local next_level = math.clamp(level + 1, 0, ExperienceSettings.max_level)
 
-	if (self._current_level and self._current_level < level) or (self._extra_levels and self._extra_levels < extra_levels) then
+	if self._current_level and self._current_level < level or self._extra_levels and self._extra_levels < extra_levels then
 		progress = 1
 	end
 
@@ -604,5 +605,3 @@ EndViewStateSummary._set_player_count_presence = function (self, context)
 
 	Presence.set_presence("steam_player_group_size", num_human_players)
 end
-
-return

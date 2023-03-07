@@ -297,7 +297,7 @@ local unarmed_emotes = {
 local function clone_wheel_settings(settings, unique_name_postfix)
 	local new_settings = table.clone(settings)
 
-	for i = 1, #new_settings, 1 do
+	for i = 1, #new_settings do
 		new_settings[i].name = new_settings[i].name .. unique_name_postfix
 	end
 
@@ -582,7 +582,7 @@ SocialWheelSettingsLookup = {}
 
 for _, category_settings in pairs(SocialWheelSettings) do
 	if category_settings.has_pages then
-		for i = 1, #category_settings, 1 do
+		for i = 1, #category_settings do
 			for _, setting in ipairs(category_settings[i]) do
 				local name = setting.name
 
@@ -601,5 +601,3 @@ for _, category_settings in pairs(SocialWheelSettings) do
 		end
 	end
 end
-
-return

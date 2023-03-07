@@ -91,7 +91,7 @@ ProjectileLocomotionSystem._client_validate_position_rotation = function (self, 
 			local client_pos = POSITION_LOOKUP[unit] or Unit_local_position(unit, 0)
 			local extension = ScriptUnit_extension(unit, "projectile_locomotion_system")
 			local is_at_rest = extension:is_at_rest()
-			local allowed_dist = (is_at_rest and REST_CORRECTION_DISTANCE) or ACTIVE_CORRECTION_DISTANCE
+			local allowed_dist = is_at_rest and REST_CORRECTION_DISTANCE or ACTIVE_CORRECTION_DISTANCE
 
 			if Vector3_distance_squared(server_pos, client_pos) > allowed_dist * allowed_dist then
 				local server_rot = GameSession_game_object_field(game, game_object_id, "rotation")
@@ -101,5 +101,3 @@ ProjectileLocomotionSystem._client_validate_position_rotation = function (self, 
 		end
 	end
 end
-
-return

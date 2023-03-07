@@ -167,5 +167,3 @@ HitEffectsStormVerminChampion = {
 	}
 }
 HitEffectsStormVerminChampion = table.create_copy(HitEffectsStormVerminChampion, HitEffectsStormVerminChampion)
-
-return

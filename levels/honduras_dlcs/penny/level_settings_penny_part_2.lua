@@ -112,5 +112,3 @@ LevelSettings.dlc_bastion = {
 		0
 	}
 }
-
-return

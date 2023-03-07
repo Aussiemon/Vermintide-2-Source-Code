@@ -35,5 +35,3 @@ ActionCareerDummy.finish = function (self, reason)
 
 	return chain_action_data
 end
-
-return

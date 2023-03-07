@@ -54,7 +54,7 @@ BackendInterfaceDeusPlayFab.deus_journey_with_belakor = function (self, journey_
 
 	local deus_belakor_cycle_data = self._belakor_data
 
-	return (deus_belakor_cycle_data.journey_name == journey_name and true) or false
+	return deus_belakor_cycle_data.journey_name == journey_name and true or false
 end
 
 BackendInterfaceDeusPlayFab.belakor_active = function (self)
@@ -140,5 +140,3 @@ BackendInterfaceDeusPlayFab.write_player_event = function (self, event_name, dat
 
 	request_queue:enqueue_api_request("WritePlayerEvent", request, empty_success_callback)
 end
-
-return

@@ -241,7 +241,7 @@ HeroWindowItemCustomization._set_camera_fov = function (self, fov)
 	local viewport = previewer_pass_data.viewport
 	local camera = ScriptViewport.camera(viewport)
 
-	Camera.set_vertical_fov(camera, (math.pi * fov) / 180)
+	Camera.set_vertical_fov(camera, math.pi * fov / 180)
 end
 
 HeroWindowItemCustomization._camera_fov = function (self)
@@ -251,7 +251,7 @@ HeroWindowItemCustomization._camera_fov = function (self)
 	local camera = ScriptViewport.camera(viewport)
 	local vertical_fov = Camera.vertical_fov(camera)
 
-	return math.floor((vertical_fov * 180) / math.pi)
+	return math.floor(vertical_fov * 180 / math.pi)
 end
 
 HeroWindowItemCustomization._change_state = function (self, new_state)
@@ -564,7 +564,7 @@ HeroWindowItemCustomization._update_environment = function (self, item_preview_e
 	local object_set_data = viewport_widget_content.object_set_data
 	local world = object_set_data.world
 	local shading_settings = World.get_data(world, "shading_settings")
-	shading_settings[1] = (force_default and "default") or item_preview_environment
+	shading_settings[1] = force_default and "default" or item_preview_environment
 end
 
 HeroWindowItemCustomization._is_button_hover = function (self, widget)
@@ -676,7 +676,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 	local widgets_by_name = self._widgets_by_name
 	local hover_index = nil
 
-	for i = 1, #self._available_states, 1 do
+	for i = 1, #self._available_states do
 		local widget_name = self._available_states[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = widget.content.button_hotspot.is_selected
@@ -705,7 +705,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 	local illusions_name_content = weapon_illusion_base_widgets_by_name.illusions_name.content
 	local selected_skin, hover_skin = nil
 
-	for i = 1, #illusion_widgets, 1 do
+	for i = 1, #illusion_widgets do
 		local widget = illusion_widgets[i]
 
 		if UIUtils.is_button_hover(widget) then
@@ -717,7 +717,7 @@ HeroWindowItemCustomization._handle_input = function (self, input_service, dt, t
 
 	local current_skin = hover_skin or selected_skin or item_skin or default_skin
 	local item_data = current_skin and ItemMasterList[current_skin]
-	illusions_name_content.text = (item_data and Localize(item_data.display_name)) or ""
+	illusions_name_content.text = item_data and Localize(item_data.display_name) or ""
 
 	if self._material_items and self._current_recipe_name then
 		local craft_button = widgets_by_name.craft_button
@@ -789,10 +789,10 @@ HeroWindowItemCustomization._option_selected = function (self, input_index, igno
 	self._active_selection_index = select_option and input_index
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, #self._available_states, 1 do
+	for i = 1, #self._available_states do
 		local widget_state_name = self._available_states[i]
 		local widget = widgets_by_name[widget_state_name]
-		widget.style.hover_frame.saturated = (select_option and input_index == i) or (not mouse_active and i == old_selection_index)
+		widget.style.hover_frame.saturated = select_option and input_index == i or not mouse_active and i == old_selection_index
 	end
 
 	if select_option then
@@ -810,7 +810,7 @@ HeroWindowItemCustomization._setting_option_pressed = function (self, widget)
 	local content = widget.content
 	local num_options = content.num_options
 
-	for i = 1, num_options, 1 do
+	for i = 1, num_options do
 		local hotspot_name = "button_hotspot_" .. i
 		local hotspot = content[hotspot_name]
 
@@ -827,7 +827,7 @@ HeroWindowItemCustomization._set_setting_option_selected = function (self, widge
 	local num_options = content.num_options
 
 	if num_options then
-		for i = 1, num_options, 1 do
+		for i = 1, num_options do
 			local hotspot_name = "button_hotspot_" .. i
 			local hotspot = content[hotspot_name]
 			local is_selected = select_all or i == index
@@ -842,7 +842,7 @@ HeroWindowItemCustomization._handle_new_selection = function (self, input_index)
 	local mouse_active = Managers.input:is_device_active("mouse")
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, #self._available_states, 1 do
+	for i = 1, #self._available_states do
 		local widget_name = self._available_states[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
@@ -932,9 +932,9 @@ HeroWindowItemCustomization._animate_state_transition = function (self, dt)
 
 	if state_start_camera_position then
 		local camera_position = state_data.camera_position
-		local target_x = (camera_position and camera_position[1]) or 0
-		local target_y = (camera_position and camera_position[2]) or 0
-		local target_z = (camera_position and camera_position[3]) or 0
+		local target_x = camera_position and camera_position[1] or 0
+		local target_y = camera_position and camera_position[2] or 0
+		local target_z = camera_position and camera_position[3] or 0
 		local start_x = state_start_camera_position[1]
 		local start_y = state_start_camera_position[2]
 		local start_z = state_start_camera_position[3]
@@ -974,7 +974,7 @@ HeroWindowItemCustomization._draw = function (self, input_service, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -1117,7 +1117,7 @@ HeroWindowItemCustomization._update_item_rarity = function (self)
 	local item_rarities = UISettings.item_rarities
 	local rarity_index = table.index_of(item_rarities, rarity)
 
-	for i = 1, #item_rarities, 1 do
+	for i = 1, #item_rarities do
 		local rarity_name = item_rarities[i]
 		local rarity_texture = nil
 
@@ -1275,6 +1275,7 @@ HeroWindowItemCustomization._update_trait_option = function (self)
 			new_height = new_height + text_height
 
 			if new_height ~= content.size[2] then
+				-- Nothing
 			end
 
 			style.title_text.size[2] = new_height
@@ -1670,7 +1671,7 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 
 	local num_feature_widgets = #feature_widgets
 
-	for i = 1, num_feature_widgets, 1 do
+	for i = 1, num_feature_widgets do
 		local widget = feature_widgets[i]
 		widget.offset[1] = widget.content.size[1] * (i - 1)
 		info_widgets[#info_widgets + 1] = widget
@@ -1685,7 +1686,7 @@ HeroWindowItemCustomization._state_setup_overview = function (self)
 	local widget_description, description_size = self:_create_description_widget("info_description_text", Localize(description))
 	info_widgets[#info_widgets + 1] = widget_description
 	self._ui_scenegraph.info_description_text.local_position[2] = -(description_size[2] + 10)
-	self._ui_scenegraph.keyword_divider_bottom.local_position[2] = (is_weapon and -10) or 350
+	self._ui_scenegraph.keyword_divider_bottom.local_position[2] = is_weapon and -10 or 350
 
 	self:_destroy_scrollbar()
 	self:_setup_illusions(item)
@@ -1784,9 +1785,9 @@ HeroWindowItemCustomization._enable_craft_button = function (self, enable, disab
 	end
 
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.button_top_edge_left.content.visible = (not disable_edges and enable) or false
-	widgets_by_name.button_top_edge_right.content.visible = (not disable_edges and enable) or false
-	widgets_by_name.button_top_edge_glow.content.visible = (not disable_edges and enable) or false
+	widgets_by_name.button_top_edge_left.content.visible = not disable_edges and enable or false
+	widgets_by_name.button_top_edge_right.content.visible = not disable_edges and enable or false
+	widgets_by_name.button_top_edge_glow.content.visible = not disable_edges and enable or false
 	local widget_craft_button = widgets_by_name.craft_button
 	widget_craft_button.content.visible = enable
 	widget_craft_button.content.button_hotspot.disable_button = not enable
@@ -1905,25 +1906,21 @@ end
 
 HeroWindowItemCustomization._create_description_widget = function (self, scenegraph_id, text, text_style)
 	local masked = false
-
-	if not text_style then
-		text_style = {
-			word_wrap = true,
-			font_size = 20,
-			localize = false,
-			use_shadow = true,
-			horizontal_alignment = "left",
-			vertical_alignment = "top",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
-			text_color = Colors.get_color_table_with_alpha("font_default", 255),
-			offset = {
-				0,
-				0,
-				2
-			}
+	text_style = text_style or {
+		word_wrap = true,
+		font_size = 20,
+		localize = false,
+		use_shadow = true,
+		horizontal_alignment = "left",
+		vertical_alignment = "top",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
+		text_color = Colors.get_color_table_with_alpha("font_default", 255),
+		offset = {
+			0,
+			0,
+			2
 		}
-	end
-
+	}
 	local widget_definition = UIWidgets.create_simple_text(text, scenegraph_id, nil, nil, text_style)
 	local widget = UIWidget.init(widget_definition)
 	local ui_renderer = self._ui_top_renderer
@@ -1943,7 +1940,7 @@ HeroWindowItemCustomization._create_property_option_entry = function (self, text
 	local style = widget.style
 	local text_style = style.text
 	local color_override_table = text_style.color_override_table
-	local value_text_length = (value_range_text and UTF8Utils.string_length(value_range_text)) or 0
+	local value_text_length = value_range_text and UTF8Utils.string_length(value_range_text) or 0
 	local default_text_length = UTF8Utils.string_length(text) or 0
 	color_override_table.start_index = default_text_length + 1
 	color_override_table.end_index = default_text_length + value_text_length
@@ -2053,7 +2050,7 @@ HeroWindowItemCustomization._create_material_requirement_widgets = function (sel
 			end
 
 			local has_required_amount = required_amount <= amount_owned
-			local presentation_amount = ((amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned)) or "*") .. "/" .. tostring(required_amount)
+			local presentation_amount = (amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned) or "*") .. "/" .. tostring(required_amount)
 			local content = widget.content
 			content.text = presentation_amount
 			content.icon = texture
@@ -2075,7 +2072,7 @@ HeroWindowItemCustomization._create_material_requirement_widgets = function (sel
 	local total_widgets_width = num_materials * spacing
 	local offset_x = -(total_widgets_width / 2) + spacing / 2
 
-	for i = 1, num_materials, 1 do
+	for i = 1, num_materials do
 		local widget = widgets[i]
 		local offset = widget.offset
 		offset[1] = offset_x
@@ -2461,5 +2458,3 @@ HeroWindowItemCustomization._upgrade_item_craft_complete = function (self, resul
 	self:_state_setup_upgrade()
 	self:_setup_availble_states(item)
 end
-
-return

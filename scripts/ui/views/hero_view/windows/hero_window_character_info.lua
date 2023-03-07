@@ -169,7 +169,7 @@ HeroWindowCharacterInfo._update_hero_portrait_frame = function (self)
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.hero_name.content.text = hero_display_name
 	widgets_by_name.career_name.content.text = career_display_name
-	local level_text = (self._hero_level and tostring(self._hero_level)) or "-"
+	local level_text = self._hero_level and tostring(self._hero_level) or "-"
 	local portrait_frame_name = self:_get_portrait_frame()
 	local portrait_widget = self:_create_portrait_frame_widget(portrait_frame_name, portrait_image, level_text)
 	self._portrait_widget = portrait_widget
@@ -230,5 +230,3 @@ HeroWindowCharacterInfo._get_portrait_frame = function (self)
 
 	return player_portrait_frame
 end
-
-return

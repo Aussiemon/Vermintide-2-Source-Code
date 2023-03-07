@@ -130,7 +130,7 @@ LootItemUnitPreviewer.update = function (self, dt, t, input_service)
 		local character_xy_angle_new = math.lerp(self._camera_xy_angle_current, self._camera_xy_angle_target, 0.1)
 		self._camera_xy_angle_current = character_xy_angle_new
 		local auto_tilt_angle, auto_turn_angle = self:_auto_spin_values(dt, t)
-		local start_angle = (self._invert_start_rotation and 0) or math.pi
+		local start_angle = self._invert_start_rotation and 0 or math.pi
 		local rotation = Quaternion.axis_angle(Vector3(0, auto_tilt_angle, 1), -(character_xy_angle_new + auto_turn_angle + start_angle))
 		local link_unit = self._link_unit
 
@@ -171,7 +171,7 @@ LootItemUnitPreviewer._auto_spin_values = function (self, dt, t)
 	local progress_range = 0.3
 	local progress = math.sin((start_seed + t) * progress_speed) * progress_range
 	local auto_tilt_angle = -(progress * 0.5)
-	local auto_turn_angle = -((progress * math.pi) / 2)
+	local auto_turn_angle = -(progress * math.pi / 2)
 
 	return auto_tilt_angle, auto_turn_angle
 end
@@ -310,7 +310,7 @@ LootItemUnitPreviewer._load_item_units = function (self, item)
 
 			units_to_spawn_data[#units_to_spawn_data + 1] = {
 				unit_name = unit,
-				unit_attachment_node_linking = (slot_type == "trinket" and item_template.attachment_node_linking.slot_trinket_1) or item_template.attachment_node_linking.slot_hat
+				unit_attachment_node_linking = slot_type == "trinket" and item_template.attachment_node_linking.slot_trinket_1 or item_template.attachment_node_linking.slot_hat
 			}
 		end
 	end
@@ -416,6 +416,7 @@ LootItemUnitPreviewer._spawn_link_unit = function (self, item)
 	local item_type = item_data.item_type
 
 	if item_type ~= "rune" and item_type ~= "material" and item_type ~= "ring" and item_type == "necklace" then
+		-- Nothing
 	end
 
 	local display_unit_key = self._display_unit_key
@@ -473,7 +474,7 @@ LootItemUnitPreviewer._spawn_items = function (self)
 		local units = self:spawn_units(units_to_spawn)
 
 		if self._use_highest_mip_levels then
-			for i = 1, #units, 1 do
+			for i = 1, #units do
 				local spawned_unit = units[i]
 
 				self:_request_all_mips_for_unit(spawned_unit)
@@ -494,7 +495,7 @@ LootItemUnitPreviewer.spawn_units = function (self, spawn_data)
 		local scene_graph_links = {}
 		local world = self._background_world
 
-		for i = 1, #spawn_data, 1 do
+		for i = 1, #spawn_data do
 			local spawn_unit_data = spawn_data[i]
 			local unit_name = spawn_unit_data.unit_name
 			local unit_attachment_node_linking = spawn_unit_data.unit_attachment_node_linking
@@ -582,5 +583,3 @@ LootItemUnitPreviewer._update_manual_mip_streaming = function (self)
 
 	return mip_streaming_completed
 end
-
-return

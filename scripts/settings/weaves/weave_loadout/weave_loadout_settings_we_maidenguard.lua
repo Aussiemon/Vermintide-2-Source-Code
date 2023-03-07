@@ -6,5 +6,3 @@ WeaveLoadoutSettings.we_maidenguard = {
 	properties = {},
 	traits = {}
 }
-
-return

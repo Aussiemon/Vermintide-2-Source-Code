@@ -301,5 +301,3 @@ TextPopupUI.destroy = function (self)
 	self._buttons = nil
 	self._on_close_callback = nil
 end
-
-return

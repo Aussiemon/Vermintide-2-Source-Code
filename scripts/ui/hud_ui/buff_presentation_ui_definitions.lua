@@ -128,55 +128,54 @@ local widget_definitions = {
 		}
 	}
 }
-local animation_definitions = {
-	presentation = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				widget.style.texture_icon.color[1] = 0
-				widget.style.texture_frame.color[1] = 0
-				local current_size = ui_scenegraph.presentation_widget.size
-				local default_size = scenegraph_definition.presentation_widget.size
-				current_size[1] = default_size[1]
-				current_size[2] = default_size[2]
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local size_progress = math.catmullrom(anim_progress, -2, 0, 1, -5)
-				widget.style.texture_icon.color[1] = anim_progress * 255
-				widget.style.texture_frame.color[1] = anim_progress * 255
-				local current_size = ui_scenegraph.presentation_widget.size
-				local default_size = scenegraph_definition.presentation_widget.size
-				current_size[1] = math.floor(default_size[1] * size_progress)
-				current_size[2] = math.floor(default_size[2] * size_progress)
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return
-			end
-		},
-		{
-			name = "fade_out",
-			start_progress = 0.5,
-			end_progress = 0.8,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local size_progress = math.catmullrom(anim_progress, 5, 0, 1, 1)
-				widget.style.texture_icon.color[1] = (1 - anim_progress) * 255
-				widget.style.texture_frame.color[1] = (1 - anim_progress) * 255
-				local current_size = ui_scenegraph.presentation_widget.size
-				local default_size = scenegraph_definition.presentation_widget.size
-				current_size[1] = default_size[1] - math.floor(20 * size_progress)
-				current_size[2] = default_size[2] - math.floor(20 * size_progress)
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
-				return
-			end
-		}
+local animation_definitions = {}
+animation_definitions.presentation = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			widget.style.texture_icon.color[1] = 0
+			widget.style.texture_frame.color[1] = 0
+			local current_size = ui_scenegraph.presentation_widget.size
+			local default_size = scenegraph_definition.presentation_widget.size
+			current_size[1] = default_size[1]
+			current_size[2] = default_size[2]
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local size_progress = math.catmullrom(anim_progress, -2, 0, 1, -5)
+			widget.style.texture_icon.color[1] = anim_progress * 255
+			widget.style.texture_frame.color[1] = anim_progress * 255
+			local current_size = ui_scenegraph.presentation_widget.size
+			local default_size = scenegraph_definition.presentation_widget.size
+			current_size[1] = math.floor(default_size[1] * size_progress)
+			current_size[2] = math.floor(default_size[2] * size_progress)
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
+			return
+		end
+	},
+	{
+		name = "fade_out",
+		start_progress = 0.5,
+		end_progress = 0.8,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local size_progress = math.catmullrom(anim_progress, 5, 0, 1, 1)
+			widget.style.texture_icon.color[1] = (1 - anim_progress) * 255
+			widget.style.texture_frame.color[1] = (1 - anim_progress) * 255
+			local current_size = ui_scenegraph.presentation_widget.size
+			local default_size = scenegraph_definition.presentation_widget.size
+			current_size[1] = default_size[1] - math.floor(20 * size_progress)
+			current_size[2] = default_size[2] - math.floor(20 * size_progress)
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widget, params)
+			return
+		end
 	}
 }
 

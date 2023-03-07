@@ -3,8 +3,8 @@ LevelEndViewDeus = class(LevelEndViewDeus, LevelEndView)
 LevelEndViewDeus.start = function (self)
 	LevelEndViewDeus.super.start(self)
 
-	self._start_music_event = (self.game_won and "Play_won_music_morris") or "Play_lost_music_morris"
-	self._stop_music_event = (self.game_won and "Stop_won_music_morris") or "Stop_lost_music_morris"
+	self._start_music_event = self.game_won and "Play_won_music_morris" or "Play_lost_music_morris"
+	self._stop_music_event = self.game_won and "Stop_won_music_morris" or "Stop_lost_music_morris"
 end
 
 LevelEndViewDeus._setup_pages_victory = function (self, rewards)
@@ -48,5 +48,3 @@ LevelEndViewDeus._setup_pages_defeat = function (self, rewards)
 
 	return index_by_state_name
 end
-
-return

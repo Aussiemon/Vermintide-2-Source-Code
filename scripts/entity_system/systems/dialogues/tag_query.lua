@@ -93,5 +93,3 @@ TagQuery.OP = TagQuery.OP or {
 		end
 	})
 }
-
-return

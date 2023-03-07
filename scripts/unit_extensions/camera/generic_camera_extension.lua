@@ -55,7 +55,7 @@ end
 
 GenericCameraExtension.set_follow_unit = function (self, follow_unit, follow_node)
 	self.override_follow_unit = follow_unit
-	self.override_follow_node = (follow_node and Unit.node(follow_unit, follow_node)) or nil
+	self.override_follow_node = follow_node and Unit.node(follow_unit, follow_node) or nil
 end
 
 GenericCameraExtension.get_follow_data = function (self)
@@ -81,5 +81,3 @@ end
 GenericCameraExtension.destroy = function (self)
 	return
 end
-
-return

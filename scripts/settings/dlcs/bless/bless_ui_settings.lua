@@ -28,5 +28,3 @@ settings.hud_inventory_panel_data = {
 		}
 	}
 }
-
-return

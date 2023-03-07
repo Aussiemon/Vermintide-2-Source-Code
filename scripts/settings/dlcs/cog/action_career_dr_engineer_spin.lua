@@ -79,5 +79,3 @@ ActionCareerDREngineerSpin._update_animation_speed = function (self, windup)
 
 	unit_animation_set_variable(self.first_person_unit, self._barrel_spin_anim_var_1p, anim_time_scale)
 end
-
-return

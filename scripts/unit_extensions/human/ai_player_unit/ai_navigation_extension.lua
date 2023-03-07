@@ -155,19 +155,19 @@ AINavigationExtension.init_position = function (self)
 
 	if breed.use_navigation_path_splines then
 		local config = breed.navigation_path_spline_config
-		local CHANNEL_RADIUS = (config and config.navigation_channel_radius) or 4
-		local TURN_SAMPLING_ANGLE = (config and config.turn_sampling_angle) or 30
-		local CHANNEL_SMOOTHING_ANGLE = (config and config.channel_smoothing_anle) or 30
-		local MIN_DISTANCE_BETWEEN_GATES = (config and config.min_distance_between_gates) or 0.5
-		local MAX_DISTANCE_BETWEEN_GATES = (config and config.max_distance_between_gates) or 10
+		local CHANNEL_RADIUS = config and config.navigation_channel_radius or 4
+		local TURN_SAMPLING_ANGLE = config and config.turn_sampling_angle or 30
+		local CHANNEL_SMOOTHING_ANGLE = config and config.channel_smoothing_anle or 30
+		local MIN_DISTANCE_BETWEEN_GATES = config and config.min_distance_between_gates or 0.5
+		local MAX_DISTANCE_BETWEEN_GATES = config and config.max_distance_between_gates or 10
 
 		GwNavBot.set_channel_computer_configuration(nav_bot, CHANNEL_RADIUS, TURN_SAMPLING_ANGLE, CHANNEL_SMOOTHING_ANGLE, MIN_DISTANCE_BETWEEN_GATES, MAX_DISTANCE_BETWEEN_GATES)
 
 		local SCRIPT_DRIVEN = false
-		local MAX_DISTANCE_TO_SPLINE_POSITION = (config and config.max_distance_to_spline_position) or 5
-		local SPLINE_LENGTH = (config and config.spline_length) or 100
-		local SPLINE_DISTANCE_TO_BORDERS = (config and config.spline_distance_to_borders) or 1
-		local SPLINE_RECOMPUTION_RATIO = (config and config.spline_recomputation_ratio) or 1
+		local MAX_DISTANCE_TO_SPLINE_POSITION = config and config.max_distance_to_spline_position or 5
+		local SPLINE_LENGTH = config and config.spline_length or 100
+		local SPLINE_DISTANCE_TO_BORDERS = config and config.spline_distance_to_borders or 1
+		local SPLINE_RECOMPUTION_RATIO = config and config.spline_recomputation_ratio or 1
 		local TARGET_ON_SPLINE_DISTANCE = 0
 
 		GwNavBot.set_spline_trajectory_configuration(nav_bot, SCRIPT_DRIVEN, MAX_DISTANCE_TO_SPLINE_POSITION, SPLINE_LENGTH, SPLINE_DISTANCE_TO_BORDERS, SPLINE_RECOMPUTION_RATIO, TARGET_ON_SPLINE_DISTANCE)
@@ -272,7 +272,7 @@ AINavigationExtension._recalculate_max_speed = function (self)
 	local aggregate_mod = 1
 	local modifiers = self._movement_modifiers
 
-	for i = 1, self._movement_modifier_table_size, 1 do
+	for i = 1, self._movement_modifier_table_size do
 		local mod = modifiers[i]
 
 		if mod then
@@ -425,6 +425,7 @@ AINavigationExtension.use_smart_object = function (self, do_use)
 		success = GwNavBot.enter_manual_control(self._nav_bot, self._next_smartobject_interval)
 
 		if not success then
+			-- Nothing
 		end
 	else
 		success = GwNavBot.exit_manual_control(self._nav_bot)
@@ -580,5 +581,3 @@ AINavigationExtension.get_remaining_distance_from_progress_to_end_of_path = func
 
 	return distance
 end
-
-return

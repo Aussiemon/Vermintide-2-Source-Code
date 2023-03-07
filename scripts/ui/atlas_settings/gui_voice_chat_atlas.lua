@@ -42,5 +42,3 @@ voice_chat_atlas = {
 		}
 	}
 }
-
-return

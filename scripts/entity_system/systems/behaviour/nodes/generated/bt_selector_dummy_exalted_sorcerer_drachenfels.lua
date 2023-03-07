@@ -79,5 +79,3 @@ end
 BTSelector_dummy_exalted_sorcerer_drachenfels.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

@@ -1044,5 +1044,3 @@ HitEffectsPoisonWind = {
 	}
 }
 HitEffectsPoisonWind = table.create_copy(HitEffectsPoisonWind, HitEffectsPoisonWind)
-
-return

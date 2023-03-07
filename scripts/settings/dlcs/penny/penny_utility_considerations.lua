@@ -233,5 +233,3 @@ UtilityConsiderations.defensive_magic_missile_drachenfels = {
 		blackboard_input = "target_unit"
 	}
 }
-
-return

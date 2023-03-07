@@ -800,5 +800,3 @@ ControllerFeaturesSettings = {
 		end
 	}
 }
-
-return

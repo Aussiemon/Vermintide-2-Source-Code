@@ -23,7 +23,7 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	self._abilities_always_usable_reasons = {}
 	self._last_ability_ready_t = 0
 
-	for ability_id = 1, num_abilities, 1 do
+	for ability_id = 1, num_abilities do
 		local ability_data = career_data.activated_ability[ability_id]
 		local ability_class = ability_data.ability_class
 		local cooldown = (ability_data.spawn_cooldown_percent or 0) * ability_data.cooldown
@@ -53,12 +53,12 @@ CareerExtension.init = function (self, extension_init_context, unit, extension_i
 	end
 
 	local passive_ability_classes = career_data.passive_ability.passive_ability_classes
-	local num_passive_abilities = (passive_ability_classes and #passive_ability_classes) or 0
+	local num_passive_abilities = passive_ability_classes and #passive_ability_classes or 0
 	self._passive_abilities = {}
 	self._passive_abilities_update = {}
 	self._num_passive_abilities = num_passive_abilities
 
-	for i = 1, num_passive_abilities, 1 do
+	for i = 1, num_passive_abilities do
 		local ability_data = passive_ability_classes[i]
 		local ability_class = ability_data.ability_class
 		local passive_ability = ability_class:new(extension_init_context, unit, extension_init_data, ability_data.init_data)
@@ -113,7 +113,7 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	local player = self.player
 
 	if buffs and (self.is_server or player.local_player) then
-		for i = 1, #buffs, 1 do
+		for i = 1, #buffs do
 			local buff = buffs[i]
 
 			buff_extension:add_buff(buff)
@@ -123,7 +123,7 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	local husk_buffs = passive_ability_data.husk_buffs
 
 	if husk_buffs and not self.is_server and not player.local_player then
-		for i = 1, #husk_buffs, 1 do
+		for i = 1, #husk_buffs do
 			local buff = husk_buffs[i]
 
 			buff_extension:add_buff(buff)
@@ -134,7 +134,7 @@ CareerExtension.extensions_ready = function (self, world, unit)
 	self._buff_extension = ScriptUnit.extension(unit, "buff_system")
 	local abilities = self._abilities
 
-	for i = 1, self._num_abilities, 1 do
+	for i = 1, self._num_abilities do
 		local ability = abilities[i]
 		local activated_ability = ability.activated_ability
 
@@ -145,7 +145,7 @@ CareerExtension.extensions_ready = function (self, world, unit)
 
 	local passive_abilities = self._passive_abilities
 
-	for i = 1, self._num_passive_abilities, 1 do
+	for i = 1, self._num_passive_abilities do
 		local ability = passive_abilities[i]
 
 		ability:extensions_ready(world, unit)
@@ -159,10 +159,10 @@ CareerExtension.force_trigger_active_ability = function (self)
 	local player = self.player
 	local abilities = self._abilities
 
-	for i = 1, self._num_abilities, 1 do
+	for i = 1, self._num_abilities do
 		local ability = abilities[i]
 
-		if ability.activated_ability and ability.activated_ability.force_trigger_ability and ((self.is_server and player.bot_player) or player.local_player) then
+		if ability.activated_ability and ability.activated_ability.force_trigger_ability and (self.is_server and player.bot_player or player.local_player) then
 			ability.activated_ability:force_trigger_ability()
 
 			break
@@ -174,7 +174,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 	local abilities = self._abilities
 	local was_ready = abilities[1].is_ready
 
-	for i = 1, self._num_abilities, 1 do
+	for i = 1, self._num_abilities do
 		local ability = abilities[i]
 
 		if not ability.cooldown_paused then
@@ -189,7 +189,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 			if ability.is_ready or self._abilities_always_usable or uses_conditionals then
 				local player = self.player
 
-				if ability.activated_ability and ((self.is_server and player.bot_player) or player.local_player) then
+				if ability.activated_ability and (self.is_server and player.bot_player or player.local_player) then
 					ability.activated_ability:update(unit, input, dt, context, t)
 				end
 			elseif ability.cooldown == 0 then
@@ -206,7 +206,7 @@ CareerExtension.update = function (self, unit, input, dt, context, t)
 
 	local passive_abilities_update = self._passive_abilities_update
 
-	for i = 1, self._num_passive_abilities_update, 1 do
+	for i = 1, self._num_passive_abilities_update do
 		local ability = passive_abilities_update[i]
 
 		ability:update(dt, t)
@@ -227,7 +227,7 @@ CareerExtension.stop_ability = function (self, reason, ability_id)
 	local is_server = self.is_server
 	local player = self.player
 
-	if (is_server and player.bot_player) or player.local_player then
+	if is_server and player.bot_player or player.local_player then
 		ability_id = ability_id or 1
 		local ability = self._abilities[ability_id]
 		local activated_ability = ability.activated_ability
@@ -264,7 +264,7 @@ end
 CareerExtension.destroy = function (self)
 	local passive_abilities = self._passive_abilities
 
-	for i = 1, self._num_passive_abilities, 1 do
+	for i = 1, self._num_passive_abilities do
 		local ability = passive_abilities[i]
 
 		ability:destroy()
@@ -337,7 +337,7 @@ CareerExtension.start_activated_ability_cooldown = function (self, ability_id, r
 	local min_cooldown = ability.max_cooldown * (1 - ability.cost)
 
 	if ability.cooldown <= min_cooldown or cost <= 0 then
-		local cooldown = math.clamp((ability.cooldown + cost) - refund, 0, ability.max_cooldown)
+		local cooldown = math.clamp(ability.cooldown + cost - refund, 0, ability.max_cooldown)
 		ability.cooldown = buff_extension:apply_buffs_to_value(cooldown, "activated_cooldown")
 		ability.cooldown_anim_started = false
 	elseif self._extra_ability_uses > 0 then
@@ -509,7 +509,7 @@ CareerExtension.current_ability_cooldown = function (self, ability_id)
 	ability_id = ability_id or 1
 	local ability = self._abilities[ability_id]
 
-	return ability.cooldown, (ability.max_cooldown > 0 and ability.max_cooldown) or 1
+	return ability.cooldown, ability.max_cooldown > 0 and ability.max_cooldown or 1
 end
 
 CareerExtension.current_ability_cooldown_percentage = function (self, ability_id)
@@ -578,7 +578,7 @@ CareerExtension.has_melee_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_shade_buff = buff_extension:has_buff_perk("shade_melee_boost")
 	local has_murder_hobo_buff = false
-	local multiplier = (has_shade_buff and 4) or (has_murder_hobo_buff and 1) or 0
+	local multiplier = has_shade_buff and 4 or has_murder_hobo_buff and 1 or 0
 
 	return has_shade_buff or has_murder_hobo_buff, multiplier
 end
@@ -587,7 +587,7 @@ CareerExtension.has_ranged_boost = function (self)
 	local buff_extension = self._buff_extension
 	local has_murder_hobo_buff = buff_extension:has_buff_type("markus_huntsman_activated_ability") or buff_extension:has_buff_type("markus_huntsman_activated_ability_duration")
 	local has_ranger_buff = buff_extension:has_buff_type("bardin_ranger_activated_ability_buff")
-	local multiplier = (has_murder_hobo_buff and 1.5) or (has_ranger_buff and 1) or 0
+	local multiplier = has_murder_hobo_buff and 1.5 or has_ranger_buff and 1 or 0
 
 	return has_murder_hobo_buff or has_ranger_buff, multiplier
 end
@@ -674,7 +674,7 @@ end
 CareerExtension.set_career_game_object_id = function (self, go_id)
 	local passive_abilities = self._passive_abilities
 
-	for i = 1, self._num_passive_abilities, 1 do
+	for i = 1, self._num_passive_abilities do
 		local ability = passive_abilities[i]
 
 		if ability and ability.set_career_game_object_id then
@@ -686,12 +686,5 @@ end
 CareerExtension.get_passive_ability = function (self, ability_id)
 	local passive_abilities = self._passive_abilities
 
-	if passive_abilities then
-		slot3 = ability_id or 1
-		slot3 = passive_abilities[slot3]
-	end
-
-	return slot3
+	return passive_abilities and passive_abilities[ability_id or 1]
 end
-
-return

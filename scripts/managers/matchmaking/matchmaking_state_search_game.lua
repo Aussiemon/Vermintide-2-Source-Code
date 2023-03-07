@@ -80,7 +80,7 @@ MatchmakingStateSearchGame._start_searching_for_games = function (self)
 
 	current_filters.eac_authorized = {
 		comparison = "equal",
-		value = (eac_authorized and "true") or "false"
+		value = eac_authorized and "true" or "false"
 	}
 	current_filters.mechanism = {
 		comparison = "equal",
@@ -345,7 +345,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 	local selected_mission_id = search_config.mission_id
 	local difficulty = search_config.difficulty
 	local matchmaking_type = search_config.matchmaking_type
-	local weave_name = (search_config.mechanism == "weave" and selected_mission_id) or "false"
+	local weave_name = search_config.mechanism == "weave" and selected_mission_id or "false"
 	local act_key = search_config.act_key
 	local mechanism = search_config.mechanism
 	local using_strict_matchmaking = search_config.strict_matchmaking
@@ -385,7 +385,7 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 				if not discard and not matchmaking_manager:hero_available_in_lobby_data(wanted_profile_id, lobby_data) then
 					local any_allowed_hero_available = false
 
-					for i = 1, 5, 1 do
+					for i = 1, 5 do
 						if MatchmakingSettings.hero_search_filter[i] == true then
 							local hero_available = matchmaking_manager:hero_available_in_lobby_data(i, lobby_data)
 
@@ -447,5 +447,3 @@ MatchmakingStateSearchGame._find_suitable_lobby = function (self, lobbies, searc
 
 	return current_first_prio_lobby or current_secondary_prio_lobby
 end
-
-return

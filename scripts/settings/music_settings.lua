@@ -69,5 +69,3 @@ BossFightMusicIntensity = {
 		"chaos_warrior"
 	}
 }
-
-return

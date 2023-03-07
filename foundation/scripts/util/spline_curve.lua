@@ -103,7 +103,7 @@ SplineCurve.get_travel_dist_to_spline_point = function (self, point_index)
 	local spline_class = self._spline_class
 	local travel_dist = 0
 
-	for i = 1, point_index, 1 do
+	for i = 1, point_index do
 		local data = spline_points[i]
 		local segment_length = data.length
 		travel_dist = travel_dist + segment_length
@@ -117,7 +117,7 @@ SplineCurve.get_point_at_distance = function (self, dist)
 	local spline_class = self._spline_class
 	local travel_dist = 0
 
-	for i = 1, #spline_points, 1 do
+	for i = 1, #spline_points do
 		if self._num_points < i then
 			break
 		end
@@ -260,7 +260,7 @@ SplineMovementHermiteInterpolatedMetered._build_subdivisions = function (self, s
 	}
 
 	for index, spline in ipairs(splines) do
-		for sub_index = 1, subdivisions, 1 do
+		for sub_index = 1, subdivisions do
 			local point = spline_class.calc_point(sub_index / subdivisions, unpack_unbox(spline.points))
 			points[#points + 1] = point
 		end
@@ -274,7 +274,7 @@ SplineMovementHermiteInterpolatedMetered._build_subdivisions = function (self, s
 		local point_index = (index - 1) * subdivisions
 		spline.length = 0
 
-		for sub_index = 1, subdivisions, 1 do
+		for sub_index = 1, subdivisions do
 			local sub = {}
 			local p0 = points[point_index - 1]
 			local p1 = points[point_index]
@@ -356,18 +356,18 @@ SplineMovementHermiteInterpolatedMetered.distance = function (self, from_index, 
 		distance = distance - from_spline_t * from_spline.subdivisions[from_subdiv].length
 		local from_subdivs = from_spline.subdivisions
 
-		for i = 1, from_subdiv - 1, 1 do
+		for i = 1, from_subdiv - 1 do
 			distance = distance - from_subdivs[i].length
 		end
 
-		for i = to_index + 1, from_index - 1, 1 do
+		for i = to_index + 1, from_index - 1 do
 			distance = distance - splines[i].length
 		end
 
 		local to_spline = splines[to_index]
 		local to_subdivs = to_spline.subdivisions
 
-		for i = to_subdiv + 1, #to_subdivs, 1 do
+		for i = to_subdiv + 1, #to_subdivs do
 			distance = distance - to_subdivs[i].length
 		end
 
@@ -377,18 +377,18 @@ SplineMovementHermiteInterpolatedMetered.distance = function (self, from_index, 
 		local from_subdivs = from_spline.subdivisions
 		distance = distance + (1 - from_spline_t) * from_subdivs[from_subdiv].length
 
-		for i = from_subdiv + 1, #from_subdivs, 1 do
+		for i = from_subdiv + 1, #from_subdivs do
 			distance = distance + from_subdivs[i].length
 		end
 
-		for i = from_index + 1, to_index - 1, 1 do
+		for i = from_index + 1, to_index - 1 do
 			distance = distance + splines[i].length
 		end
 
 		local to_spline = splines[to_index]
 		local to_subdivs = to_spline.subdivisions
 
-		for i = 1, to_subdiv - 1, 1 do
+		for i = 1, to_subdiv - 1 do
 			distance = distance + to_subdivs[i].length
 		end
 
@@ -397,7 +397,7 @@ SplineMovementHermiteInterpolatedMetered.distance = function (self, from_index, 
 		local subdivs = splines[from_index].subdivisions
 		distance = distance + (1 - from_spline_t) * subdivs[from_subdiv].length
 
-		for i = from_subdiv + 1, to_subdiv - 1, 1 do
+		for i = from_subdiv + 1, to_subdiv - 1 do
 			distance = distance + subdivs[i].length
 		end
 
@@ -406,7 +406,7 @@ SplineMovementHermiteInterpolatedMetered.distance = function (self, from_index, 
 		local subdivs = splines[from_index].subdivisions
 		distance = distance - from_spline_t * subdivs[from_subdiv].length
 
-		for i = to_subdiv + 1, from_subdiv - 1, 1 do
+		for i = to_subdiv + 1, from_subdiv - 1 do
 			distance = distance - subdivs[i].length
 		end
 
@@ -530,5 +530,3 @@ end
 SplineMovementHermiteInterpolatedMetered.current_spline_curve_distance = function (self)
 	return self._current_spline_curve_distance
 end
-
-return

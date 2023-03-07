@@ -134,7 +134,7 @@ ContractPresentationScreenUI._draw = function (self, dt)
 
 	if self.waiting_for_input and not self.exit_anim_id then
 		local input_widgets = self._input_widgets
-		self.input_description_text.content.text = (gamepad_active and "press_any_button_to_continue") or "press_any_key_to_continue"
+		self.input_description_text.content.text = gamepad_active and "press_any_button_to_continue" or "press_any_key_to_continue"
 
 		UIRenderer.draw_widget(ui_renderer, self.input_description_text)
 	end
@@ -241,9 +241,9 @@ ContractPresentationScreenUI._set_contract_start_info_by_contract_id = function 
 		tasks_total_end_values = tasks_total_end_values + task_required
 	end
 
-	local tasks_total_progress = (tasks_total_end_values > 0 and tasks_total_start_values / tasks_total_end_values) or 0
+	local tasks_total_progress = tasks_total_end_values > 0 and tasks_total_start_values / tasks_total_end_values or 0
 	tasks_total_progress = math.max(math.min(tasks_total_progress, 1), 0)
-	local tasks_total_session_progress = (tasks_total_end_values > 0 and tasks_total_session_values / tasks_total_end_values) or 0
+	local tasks_total_session_progress = tasks_total_end_values > 0 and tasks_total_session_values / tasks_total_end_values or 0
 	tasks_total_session_progress = math.max(math.min(tasks_total_session_progress, 1), 0)
 
 	self:_set_widget_task_amount(widget, index_count)
@@ -260,7 +260,7 @@ ContractPresentationScreenUI._set_widget_task_amount = function (self, widget, a
 	local task_start_offset = widget.style.task_start_offset
 	local width_per_task = task_bg_size[1] / amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local task_text_style = widget_style["task_text_" .. i]
 		local task_value_style = widget_style["task_value_" .. i]
 		local texture_task_marker_style = widget_style["texture_task_marker_" .. i]
@@ -352,7 +352,7 @@ ContractPresentationScreenUI._get_text_size = function (self, text_style, text)
 	local full_font_height = (font_max + math.abs(font_min)) * inv_scale
 	local longest_width = 0
 
-	for i = 1, num_texts, 1 do
+	for i = 1, num_texts do
 		local text_line = texts[i]
 		local width, height, min = UIRenderer.text_size(ui_renderer, text_line, font_material, font_size, full_font_height)
 
@@ -399,7 +399,7 @@ ContractPresentationScreenUI._handle_animations = function (self)
 							local task_data = entry.task_data
 
 							if #task_data > 0 then
-								for i = 1, #task_data, 1 do
+								for i = 1, #task_data do
 									local data = task_data[i]
 
 									if data.has_changed then
@@ -424,7 +424,7 @@ ContractPresentationScreenUI._handle_animations = function (self)
 							local animating_task_index = entry.animating_task_index
 
 							if animating_task_index < #task_data then
-								for i = animating_task_index + 1, #task_data, 1 do
+								for i = animating_task_index + 1, #task_data do
 									local data = task_data[i]
 
 									if data.has_changed then
@@ -446,7 +446,7 @@ ContractPresentationScreenUI._handle_animations = function (self)
 						end
 					elseif not entry.summary_anim_done then
 						if not entry.summary_started then
-							local animation_name = (entry.contract_session_progress > 0 and "contract_summary") or "no_progress"
+							local animation_name = entry.contract_session_progress > 0 and "contract_summary" or "no_progress"
 							local anim_id = self:_start_contract_animation(contract_id, animation_name)
 							entry.summary_anim_id = anim_id
 							entry.summary_started = true
@@ -508,5 +508,3 @@ ContractPresentationScreenUI._start_contract_animation = function (self, contrac
 
 	return self.ui_animator:start_animation(animation_name, self._widgets, scenegraph_definition, params)
 end
-
-return

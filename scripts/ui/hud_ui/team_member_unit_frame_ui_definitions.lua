@@ -76,7 +76,7 @@ if platform ~= "win32" then
 	scenegraph_definition.root.is_root = nil
 end
 
-local inventory_consumable_icons = (IS_WINDOWS and {
+local inventory_consumable_icons = IS_WINDOWS and {
 	wpn_grimoire_01 = "teammate_consumable_icon_grimoire",
 	potion_cooldown_reduction_01 = "teammate_consumable_icon_speed",
 	potion_healing_draught_01 = "teammate_consumable_icon_potion_01",
@@ -93,7 +93,7 @@ local inventory_consumable_icons = (IS_WINDOWS and {
 	potion_damage_boost_01 = "teammate_consumable_icon_strength",
 	healthkit_first_aid_kit_01 = "teammate_consumable_icon_medpack",
 	potion_speed_boost_01 = "teammate_consumable_icon_speed"
-}) or {
+} or {
 	wpn_grimoire_01 = "consumables_grimoire",
 	potion_cooldown_reduction_01 = "consumables_speed",
 	potion_healing_draught_01 = "consumables_potion_01",
@@ -111,11 +111,11 @@ local inventory_consumable_icons = (IS_WINDOWS and {
 	healthkit_first_aid_kit_01 = "consumables_medpack",
 	potion_speed_boost_01 = "consumables_speed"
 }
-local inventory_index_by_slot = (IS_WINDOWS and {
+local inventory_index_by_slot = IS_WINDOWS and {
 	slot_healthkit = 1,
 	slot_grenade = 3,
 	slot_potion = 2
-}) or {
+} or {
 	slot_potion = 3,
 	slot_grenade = 2,
 	slot_healthkit = 1
@@ -257,9 +257,9 @@ local function create_static_widget()
 				font_type = "arial",
 				font_size = 18,
 				text_color = Colors.get_table("white"),
-				horizontal_alignment = (IS_PS4 and "left") or "center",
+				horizontal_alignment = IS_PS4 and "left" or "center",
 				offset = {
-					(IS_PS4 and -43 * portrait_scale) or 0,
+					IS_PS4 and -43 * portrait_scale or 0,
 					110 * portrait_scale,
 					health_bar_offset[3] + 15
 				}
@@ -269,9 +269,9 @@ local function create_static_widget()
 				font_type = "arial",
 				font_size = 18,
 				text_color = Colors.get_table("black"),
-				horizontal_alignment = (IS_PS4 and "left") or "center",
+				horizontal_alignment = IS_PS4 and "left" or "center",
 				offset = {
-					((IS_PS4 and -43 * portrait_scale) or 0) + 2,
+					(IS_PS4 and -43 * portrait_scale or 0) + 2,
 					110 * portrait_scale - 2,
 					health_bar_offset[3] + 14
 				}
@@ -282,8 +282,8 @@ local function create_static_widget()
 					17
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
-					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 50,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 8.5,
 					health_bar_offset[3] + 15
 				},
 				color = {
@@ -299,8 +299,8 @@ local function create_static_widget()
 					24
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
-					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5 - 7,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 50,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 8.5 - 7,
 					health_bar_offset[3] + 20
 				},
 				color = {
@@ -316,7 +316,7 @@ local function create_static_widget()
 					5
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 46,
 					health_bar_offset[2] - 9,
 					health_bar_offset[3] + 15
 				},
@@ -421,7 +421,7 @@ local function create_dynamic_portait_widget()
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function (content)
 						local ammo_progress = content.ammo_percent
-						local should_hide = ammo_progress and ((ammo_progress > 0 and ammo_progress <= 0.33) or ammo_progress <= 0)
+						local should_hide = ammo_progress and (ammo_progress > 0 and ammo_progress <= 0.33 or ammo_progress <= 0)
 
 						return Application.user_setting("numeric_ui") and content.has_ranged_weapon and not should_hide
 					end
@@ -674,7 +674,7 @@ local function create_dynamic_portait_widget()
 				},
 				offset = {
 					60,
-					((health_bar_offset[2] + health_bar_size[2] / 2) - 6 - 1 + 1) - 45,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 6 - 1 + 1 - 45,
 					5
 				},
 				color = {
@@ -697,7 +697,7 @@ local function create_dynamic_portait_widget()
 				},
 				offset = {
 					health_bar_offset[1] + health_bar_size[1] + 50,
-					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5 - 1 + 1,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 8.5 - 1 + 1,
 					health_bar_offset[3] + 22
 				},
 				size = health_bar_size
@@ -715,7 +715,7 @@ local function create_dynamic_portait_widget()
 				},
 				offset = {
 					health_bar_offset[1] + health_bar_size[1] + 50 + 1,
-					(health_bar_offset[2] + health_bar_size[2] / 2) - 8.5 - 1 + 1,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 8.5 - 1 + 1,
 					health_bar_offset[3] + 21
 				},
 				size = health_bar_size
@@ -734,7 +734,7 @@ local function create_dynamic_portait_widget()
 				},
 				offset = {
 					health_bar_offset[1] + health_bar_size[1] + 50,
-					((health_bar_offset[2] + health_bar_size[2] / 2) - 6 - 1 + 1) - 32,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 6 - 1 + 1 - 32,
 					health_bar_offset[3] + 22
 				},
 				size = health_bar_size
@@ -753,7 +753,7 @@ local function create_dynamic_portait_widget()
 				},
 				offset = {
 					health_bar_offset[1] + health_bar_size[1] + 50 + 1,
-					((health_bar_offset[2] + health_bar_size[2] / 2) - 6 - 1 + 1) - 32,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 6 - 1 + 1 - 32,
 					health_bar_offset[3] + 21
 				},
 				size = health_bar_size
@@ -1496,7 +1496,7 @@ local function create_dynamic_health_widget()
 					17
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 50,
 					health_bar_offset[2] - 7,
 					health_bar_offset[3] + 20
 				},
@@ -1611,7 +1611,7 @@ local function create_dynamic_ability_widget()
 					255
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 46,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 46,
 					health_bar_offset[2] - 9,
 					health_bar_offset[3] + 18
 				}

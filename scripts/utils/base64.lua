@@ -32,7 +32,7 @@ function to_base64(to_encode)
 	local encoded = ""
 	local trailing = ""
 
-	for i = 1, string.len(to_encode), 1 do
+	for i = 1, string.len(to_encode) do
 		bit_pattern = bit_pattern .. to_binary(string.byte(string.sub(to_encode, i, i)))
 	end
 
@@ -59,7 +59,7 @@ function from_base64(to_decode)
 	local bit_pattern = ""
 	local decoded = ""
 
-	for i = 1, string.len(unpadded), 1 do
+	for i = 1, string.len(unpadded) do
 		local char = string.sub(to_decode, i, i)
 		local offset, _ = string.find(index_table, char)
 
@@ -83,5 +83,3 @@ function from_base64(to_decode)
 
 	return decoded
 end
-
-return

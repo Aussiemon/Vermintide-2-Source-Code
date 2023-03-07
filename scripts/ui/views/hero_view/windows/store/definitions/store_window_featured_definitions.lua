@@ -643,7 +643,7 @@ local function create_slideshow_definition(scenegraph_id, size)
 	}
 	local list_content = content.list_content
 
-	for i = 1, MAX_SLIDESHOW_ITEMS, 1 do
+	for i = 1, MAX_SLIDESHOW_ITEMS do
 		list_content[i] = {
 			background = "store_slideshow_off",
 			icon = "store_slideshow_on",
@@ -954,7 +954,7 @@ local function create_slideshow_definition(scenegraph_id, size)
 	}
 	local item_styles = style.list_style.item_styles
 
-	for i = 1, MAX_SLIDESHOW_ITEMS, 1 do
+	for i = 1, MAX_SLIDESHOW_ITEMS do
 		item_styles[i] = {
 			list_member_offset = {
 				33,

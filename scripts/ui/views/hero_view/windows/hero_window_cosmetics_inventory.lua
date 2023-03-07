@@ -115,7 +115,7 @@ HeroWindowCosmeticsInventory._assign_tab_icons = function (self)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_suffix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_suffix
 		local icon_name = "icon" .. name_suffix
@@ -202,7 +202,7 @@ HeroWindowCosmeticsInventory._is_inventory_tab_hovered = function (self)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -218,7 +218,7 @@ HeroWindowCosmeticsInventory._is_inventory_tab_pressed = function (self)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -234,7 +234,7 @@ HeroWindowCosmeticsInventory._select_tab_by_category_index = function (self, ind
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -417,5 +417,3 @@ HeroWindowCosmeticsInventory._change_category_by_index = function (self, index, 
 
 	return true
 end
-
-return

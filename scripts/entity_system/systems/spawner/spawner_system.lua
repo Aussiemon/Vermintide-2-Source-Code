@@ -159,7 +159,7 @@ SpawnerSystem.hibernate_spawner = function (self, spawner, hibernate)
 end
 
 SpawnerSystem._hibernate_spawner = function (self, num_enabled_spawners, enabled_spawners, disabled_spawners, spawner)
-	for i = 1, num_enabled_spawners, 1 do
+	for i = 1, num_enabled_spawners do
 		local spawn = enabled_spawners[i]
 
 		if spawn == spawner then
@@ -235,7 +235,7 @@ end
 local function copy_array(source, index_a, index_b, dest)
 	local j = 1
 
-	for i = index_a, index_b, 1 do
+	for i = index_a, index_b do
 		dest[j] = source[i]
 		j = j + 1
 	end
@@ -266,7 +266,7 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 		local limit = breed_limits[breed_name]
 
 		if limit then
-			local overflow = math.min((active_enemies + amount) - limit.max_active_enemies, amount)
+			local overflow = math.min(active_enemies + amount - limit.max_active_enemies, amount)
 			local ratio = limit.exchange_ratio
 
 			if ratio < overflow then
@@ -277,13 +277,13 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 				if type(exchange_breed) == "table" then
 					local num_breeds = #exchange_breed
 
-					for i = 1, exchanged_amount, 1 do
+					for i = 1, exchanged_amount do
 						local breed_index = Math.random(1, num_breeds)
 						local exchange_breed_name = exchange_breed[breed_index]
 						spawn_list_per_breed[exchange_breed_name] = (spawn_list_per_breed[exchange_breed_name] or 0) + 1
 					end
 
-					for i = 1, num_breeds, 1 do
+					for i = 1, num_breeds do
 						active_enemies = active_enemies + self:_try_spawn_breed(exchange_breed[i], spawn_list_per_breed, spawn_list, breed_limits, active_enemies, side_id, group_template)
 					end
 				else
@@ -300,9 +300,9 @@ SpawnerSystem._try_spawn_breed = function (self, breed_name, spawn_list_per_bree
 			group_template.size = group_template.size + amount
 		end
 
-		local ends = (start + amount) - 1
+		local ends = start + amount - 1
 
-		for j = start, ends, 1 do
+		for j = start, ends do
 			spawn_list[j] = breed_name
 		end
 	end
@@ -329,7 +329,7 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 				local furthest_index = 1
 				local furthest_length = 0
 
-				for i = 1, #spawners, 1 do
+				for i = 1, #spawners do
 					local distance = Vector3.distance_squared(source_pos, Unit.local_position(spawners[i], 0))
 
 					if furthest_length < distance then
@@ -341,7 +341,7 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 				table.swap_delete(spawners, furthest_index)
 			end
 		else
-			for i = limit_spawners + 1, num_spawners_to_use, 1 do
+			for i = limit_spawners + 1, num_spawners_to_use do
 				spawners[i] = nil
 			end
 		end
@@ -351,7 +351,7 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 
 	local start_index = 1
 
-	for i = 1, num_spawners_to_use, 1 do
+	for i = 1, num_spawners_to_use do
 		local to_spawn = math.floor(total_amount / (num_spawners_to_use - i + 1))
 		total_amount = total_amount - to_spawn
 		local spawner = spawners[i]
@@ -359,7 +359,7 @@ SpawnerSystem._fill_spawners = function (self, spawn_list, spawners, limit_spawn
 		self._active_spawners[spawner] = extension
 
 		table.clear_array(copy_list, #copy_list)
-		copy_array(spawn_list, start_index, (start_index + to_spawn) - 1, copy_list)
+		copy_array(spawn_list, start_index, start_index + to_spawn - 1, copy_list)
 		extension:on_activate(copy_list, side_id, group_template, optional_data)
 
 		start_index = start_index + to_spawn
@@ -387,7 +387,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 			local source_spawners = self._id_lookup[event_id]
 
 			if source_spawners then
-				for i = 1, #source_spawners, 1 do
+				for i = 1, #source_spawners do
 					local source_spawner = source_spawners[i]
 
 					if not self._disabled_spawners[source_spawner] then
@@ -455,7 +455,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 
 	local difficulty = Managers.state.difficulty.difficulty
 	local difficulty_breeds = variant.difficulty_breeds
-	local breed_list = (difficulty_breeds and difficulty_breeds[difficulty]) or variant.breeds
+	local breed_list = difficulty_breeds and difficulty_breeds[difficulty] or variant.breeds
 	local spawn_list = spawn_list
 
 	table.clear_array(spawn_list, #spawn_list)
@@ -483,7 +483,7 @@ SpawnerSystem.spawn_horde_from_terror_event_ids = function (self, event_ids, var
 	local num_breeds = #exchange_order
 	local active_enemies = Managers.state.performance:num_active_enemies()
 
-	for i = 1, num_breeds, 1 do
+	for i = 1, num_breeds do
 		local breed_name = exchange_order[i]
 
 		if event_spawn or ok_spawner_breeds[breed_name] then
@@ -526,7 +526,7 @@ SpawnerSystem.change_spawner_id = function (self, unit, spawner_id, new_spawner_
 		if old_spawners then
 			local num_spawners = #old_spawners
 
-			for i = 1, num_spawners, 1 do
+			for i = 1, num_spawners do
 				if old_spawners[i] == unit then
 					old_spawners[i] = old_spawners[num_spawners]
 					old_spawners[num_spawners] = nil
@@ -562,7 +562,7 @@ SpawnerSystem.change_spawner_id = function (self, unit, spawner_id, new_spawner_
 		local old_start_index = #spawners
 		local new_start_index = #new_spawners
 
-		for i = 1, old_start_index, 1 do
+		for i = 1, old_start_index do
 			new_spawners[new_start_index + i] = spawners[i]
 
 			Unit.set_data(spawners[i], "terror_event_id", new_spawner_id)
@@ -599,7 +599,7 @@ SpawnerSystem.debug_show_spawners = function (self, t, spawners)
 
 		QuickDrawer:line(pos, pos + add_height, color)
 
-		local d = 7 * t % 10
+		local d = 7 * (t % 10)
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, d), 0.5, color)
 		QuickDrawer:sphere(pos + Vector3(0, 0, (d + 10) % h), 0.5, color)
@@ -660,7 +660,7 @@ SpawnerSystem.show_hidden_spawners = function (self, t)
 		local spinn_vec = Vector3(spinn, spinn, 0)
 		local h_pos = Vector3(spinn, spinn, 30)
 
-		for i = 1, amount, 1 do
+		for i = 1, amount do
 			local spawner_unit = found_hidden_spawners[i]
 			local pos = unit_local_position(spawner_unit, 0)
 			local is_position_on_navmesh = GwNavQueries.triangle_from_position(nav_world, pos, 0.5, 0.5)
@@ -691,5 +691,3 @@ SpawnerSystem.show_hidden_spawners = function (self, t)
 		end
 	end
 end
-
-return

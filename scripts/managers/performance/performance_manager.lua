@@ -53,7 +53,7 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 
 		for _, setting in pairs(self._settings) do
 			local min, max = Gui.text_extents(gui, self._num_ai_string, setting.font, setting.size, setting.material)
-			local x = math.floor(((w + min.x) - max.x) * 0.5)
+			local x = math.floor((w + min.x - max.x) * 0.5)
 			local y = h - setting.distance_from_top
 			local z = 999
 
@@ -76,8 +76,8 @@ PerformanceManager.init = function (self, gui, is_server, level_key)
 
 	local level_settings = LevelSettings[level_key]
 	local perf = level_settings and level_settings.performance
-	self._allowed_active = (perf and perf.allowed_active) or 40
-	self._allowed_spawned = (perf and perf.allowed_spawned) or 75
+	self._allowed_active = perf and perf.allowed_active or 40
+	self._allowed_spawned = perf and perf.allowed_spawned or 75
 	self._activated_per_breed = {}
 
 	for breed_name, breed in pairs(Breeds) do
@@ -196,5 +196,3 @@ PerformanceManager.destroy = function (self)
 		event_manager:unregister(event_name, self)
 	end
 end
-
-return

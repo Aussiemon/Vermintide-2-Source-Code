@@ -71,7 +71,7 @@ CareerAbilityWEShade._run_ability = function (self)
 			"kerillian_shade_activated_ability_phasing"
 		}
 
-		for i = 1, #buffs_to_add, 1 do
+		for i = 1, #buffs_to_add do
 			local buff_to_add = buffs_to_add[i]
 
 			self._buff_system:add_buff(owner_unit, buff_to_add, owner_unit, false)
@@ -106,7 +106,7 @@ CareerAbilityWEShade._run_ability = function (self)
 		MOOD_BLACKBOARD.skill_shade = true
 	end
 
-	if local_player or (is_server and bot_player) then
+	if local_player or is_server and bot_player then
 		local events = {
 			"Play_career_ability_kerillian_shade_enter",
 			"Play_career_ability_kerillian_shade_loop_husk"
@@ -144,5 +144,3 @@ CareerAbilityWEShade._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

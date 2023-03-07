@@ -27,8 +27,8 @@ local windows_x = 3
 local windows_y = 2
 local k = 1
 
-for j = 0, windows_y - 1, 1 do
-	for i = 0, windows_x - 1, 1 do
+for j = 0, windows_y - 1 do
+	for i = 0, windows_x - 1 do
 		local xpos = tool_pos.x + spline_window_size.x * i + i * pixels_between_windows
 		local ypos = tool_pos.y - (spline_window_size.y * j + pixels_between_windows * j)
 		window_list[k] = {
@@ -38,7 +38,7 @@ for j = 0, windows_y - 1, 1 do
 		drag_point_list[k] = {
 			value = 0,
 			index = k,
-			x = (xpos + spline_window_size.x) - half_row_height / 2,
+			x = xpos + spline_window_size.x - half_row_height / 2,
 			y = ypos - row_height / 2
 		}
 		k = k + 1
@@ -183,7 +183,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 				end
 
 				value = math.floor(value * 10) / 10
-				status.selected_drag_point.max_value = (value >= 0 and value) or 0
+				status.selected_drag_point.max_value = value >= 0 and value or 0
 			else
 				status.selected_drag_point.max_value = nil
 			end
@@ -207,7 +207,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 	for name, data in pairs(considerations) do
 		if type(data) == "table" and not data.is_condition then
 			local pos = Vector2(window_list[k].x, window_list[k].y)
-			local bk_color = (name == status.hover_win_name and Color(192, 28, 128, 44)) or Color(92, 28, 128, 44)
+			local bk_color = name == status.hover_win_name and Color(192, 28, 128, 44) or Color(92, 28, 128, 44)
 			local fade_factor = 1
 
 			if status.selected_drag_point then
@@ -265,7 +265,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 	end
 
 	if blackboard then
-		slot12 = Vector2(window_list[1].x, window_list[1].y)
+		local pos = Vector2(window_list[1].x, window_list[1].y)
 	end
 
 	if DebugKeyHandler.key_pressed("s", "save to disk", "ai editor", "left ctrl") then
@@ -280,7 +280,7 @@ EditAiUtility.update = function (self, unit, t, dt, input_service, blackboard)
 		pick_action(action_list[status.selected_action], status.selected_action)
 	end
 
-	local bk_color = (status.hover_action_window and Color(164, 28, 44, 100)) or Color(92, 28, 44, 100)
+	local bk_color = status.hover_action_window and Color(164, 28, 44, 100) or Color(92, 28, 44, 100)
 
 	self:draw_action_list(unit, t, "Actions", action_list_layout, action_list, bk_color, status.selected_action, blackboard)
 end
@@ -316,7 +316,7 @@ EditAiUtility.remove_spline_point = function (self, spline, point_index)
 		return
 	end
 
-	for i = point_index, #spline - 2, 1 do
+	for i = point_index, #spline - 2 do
 		spline[i] = spline[i + 2]
 	end
 
@@ -330,7 +330,7 @@ EditAiUtility.hover_win = function (self, t, mouse_pos, window_list, win_size)
 	local k = 1
 	local border = 10
 
-	for k = 1, #cons_lookup, 1 do
+	for k = 1, #cons_lookup do
 		if x >= window_list[k].x - border and x <= window_list[k].x + win_size.x + border and y >= window_list[k].y - border and y <= window_list[k].y + win_size.y + border then
 			return cons_lookup[k], window_list[k]
 		end
@@ -377,20 +377,9 @@ EditAiUtility.drag_point_distance = function (self, t, point, mouse_pos)
 	local y = mouse_pos.y
 	local safe_zone = 10
 	local x_dist = x - point.x
-
-	if math.abs(x_dist) < safe_zone then
-		x_dist = 0
-	else
-		x_dist = x_dist - ((x_dist > 0 and safe_zone) or -safe_zone)
-	end
-
+	x_dist = math.abs(x_dist) < safe_zone and 0 or x_dist - (x_dist > 0 and safe_zone or -safe_zone)
 	local y_dist = y - point.y
-
-	if math.abs(y_dist) < safe_zone then
-		y_dist = 0
-	else
-		y_dist = y_dist - ((y_dist > 0 and safe_zone) or -safe_zone)
-	end
+	y_dist = math.abs(y_dist) < safe_zone and 0 or y_dist - (y_dist > 0 and safe_zone or -safe_zone)
 
 	return x_dist, y_dist
 end
@@ -401,7 +390,7 @@ EditAiUtility.hover_drag_points = function (self, t, point_list, mouse_pos)
 	local y = mouse_pos.y
 	local size = 15
 
-	for i = 1, #point_list, 1 do
+	for i = 1, #point_list do
 		local point = point_list[i]
 
 		if x > point.x - size and x < point.x + size and y > point.y - size and y < point.y + size then
@@ -421,8 +410,8 @@ EditAiUtility.draw_mouse_selection = function (self, t, spline, win_pos, win_siz
 	local i = point_index
 	local x1 = win_pos.x + w * spline[i]
 	local y1 = win_pos.y + h * spline[i + 1]
-	local width = (selected == "selected" and 20) or 30
-	local thickness = (selected == "last_selected" and 2) or 5
+	local width = selected == "selected" and 20 or 30
+	local thickness = selected == "last_selected" and 2 or 5
 	local point_pos = Vector2(x1, y1)
 
 	EditAiUtility.draw_square(gui, t, point_pos, width, color, thickness)
@@ -454,7 +443,7 @@ EditAiUtility.hover_action = function (self, t, layout, action_list, mouse_pos)
 	local y = mouse_pos.y
 	local inside_window = layout.x <= x and x <= layout.x + layout.size_x and layout.y <= y and y <= layout.y + height
 
-	for i = 1, #action_list, 1 do
+	for i = 1, #action_list do
 		local pos = Vector3(layout.x + 10, layout.y + (i - 0.7) * row_height, 0)
 
 		if math.abs(pos.y - mouse_pos.y) < half_row_height then
@@ -471,7 +460,7 @@ EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_l
 	local color = nil
 	local utility = 0
 
-	for i = 1, #action_list, 1 do
+	for i = 1, #action_list do
 		local text = action_list[i]
 		local pos = Vector3(layout.x + 30, layout.y + (i - 0.7) * row_height, 100)
 		local active_ai = blackboard and blackboard.utility_actions[text]
@@ -479,9 +468,9 @@ EditAiUtility.draw_action_list = function (self, unit, t, name, layout, action_l
 		if selected_action == i then
 			EditAiUtility.draw_square(gui, t, pos + Vector3(-15, 6, 0), half_row_height, color, 3)
 
-			color = (active_ai and Color(255, 240, 200, 10)) or Color(255, 255, 255, 255)
+			color = active_ai and Color(255, 240, 200, 10) or Color(255, 255, 255, 255)
 		else
-			color = (active_ai and Color(128, 240, 200, 10)) or Color(128, 255, 255, 255)
+			color = active_ai and Color(128, 240, 200, 10) or Color(128, 255, 255, 255)
 		end
 
 		ScriptGUI.text(gui, text, font_mtrl, font_size, font, pos, color)
@@ -557,7 +546,7 @@ EditAiUtility.draw_utility_ruler = function (self, gui, consideration_data, pos,
 	local text_x_align = -extents.x / 2
 	local text_y_align = extents.y / 2 + 10
 
-	for i = 0, num_divides, 1 do
+	for i = 0, num_divides do
 		ScriptGUI.hud_line(gui, Vector2(x, y), Vector2(x, y + 10), nil, 1)
 
 		local text = consideration_data.max_value * i / num_divides
@@ -585,7 +574,7 @@ EditAiUtility.draw_utility_info = function (gui, consideration_data, temp_max_va
 	local axis_y = -font_size
 	local min, max, caret = Gui.text_extents(gui, name, font_mtrl, font_size)
 	local offset_x = math.min(0, size.x - (max.x + scale_extents.x))
-	local scale_text_pos = pos + ((tiny and Vector3(size.x - scale_max.x, axis_y, 10)) or Vector3(size.x - scale_max.x - half_row_height * 1.5, axis_y, 10))
+	local scale_text_pos = pos + (tiny and Vector3(size.x - scale_max.x, axis_y, 10) or Vector3(size.x - scale_max.x - half_row_height * 1.5, axis_y, 10))
 
 	if temp_max_value then
 		local scale_text_pos2 = scale_text_pos + Vector3(2, -1, -1)
@@ -593,7 +582,7 @@ EditAiUtility.draw_utility_info = function (gui, consideration_data, temp_max_va
 		ScriptGUI.text(gui, scale_text, font_mtrl, font_size, font, scale_text_pos2, temp_max_value and Color(255, 0, 0, 0))
 	end
 
-	ScriptGUI.text(gui, scale_text, font_mtrl, font_size, font, scale_text_pos, (temp_max_value and Color(255 * fade_factor, 240, 200, 10)) or Color(255 * fade_factor, 255, 255, 255))
+	ScriptGUI.text(gui, scale_text, font_mtrl, font_size, font, scale_text_pos, temp_max_value and Color(255 * fade_factor, 240, 200, 10) or Color(255 * fade_factor, 255, 255, 255))
 	ScriptGUI.text(gui, name, font_mtrl, font_size, font, pos + Vector3(offset_x, axis_y, 10), Color(255 * fade_factor, 255, 255, 255))
 end
 
@@ -628,10 +617,10 @@ EditAiUtility.draw_utility_condition = function (gui, action_name, consideration
 			blackboard_value = not blackboard_value
 		end
 
-		local result = (blackboard_value and "true") or "false"
-		local x = (pos.x + win_size.x / 2) - 24
-		local y = (pos.y + win_size.y / 2) - 6
-		local color = (blackboard_value and Color(255, 240, 200, 10)) or Colors.get("white")
+		local result = blackboard_value and "true" or "false"
+		local x = pos.x + win_size.x / 2 - 24
+		local y = pos.y + win_size.y / 2 - 6
+		local color = blackboard_value and Color(255, 240, 200, 10) or Colors.get("white")
 		local text = result
 
 		ScriptGUI.text(gui, text, font_mtrl, font_size, font, Vector3(x, y, pos.z + 1), color)
@@ -670,5 +659,3 @@ EditAiUtility.save_considerations = function (self)
 	filehandle:write(write_string)
 	io.close(filehandle)
 end
-
-return

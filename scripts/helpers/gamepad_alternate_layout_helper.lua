@@ -1,6 +1,6 @@
 local platform = PLATFORM
 local default_keymaps_data = rawget(_G, GamepadLayoutKeymapsTableName)
-local gamepad_platform_key = (platform ~= "ps4" and "xb1") or platform
+local gamepad_platform_key = platform ~= "ps4" and "xb1" or platform
 DefaultPlayerControllerKeymaps = PlayerControllerKeymaps[gamepad_platform_key]
 DefaultGamepadLayoutKeymaps = {
 	PlayerControllerKeymaps = {
@@ -3259,5 +3259,3 @@ elseif IS_PS4 then
 		}
 	}
 end
-
-return

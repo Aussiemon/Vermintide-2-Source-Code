@@ -1589,7 +1589,7 @@ local drop_reasons_other = {
 }
 
 for category_name, category in pairs(item_categories) do
-	local drop_reasons = ((category_name == "stormvermin_shield" or category_name == "shield" or category_name == "marauder_shield") and drop_reasons_shield) or drop_reasons_other
+	local drop_reasons = (category_name == "stormvermin_shield" or category_name == "shield" or category_name == "marauder_shield") and drop_reasons_shield or drop_reasons_other
 
 	for i, item in ipairs(category) do
 		item.drop_reasons = drop_reasons
@@ -2120,11 +2120,9 @@ for config_name, config in pairs(InventoryConfigurations) do
 	if multiple_configurations then
 		config.config_lookup = {}
 
-		for i = 1, #multiple_configurations, 1 do
+		for i = 1, #multiple_configurations do
 			local config_name = multiple_configurations[i]
 			config.config_lookup[config_name] = i
 		end
 	end
 end
-
-return

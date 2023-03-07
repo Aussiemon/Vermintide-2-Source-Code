@@ -251,7 +251,7 @@ local viewport_widget = {
 local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_id, list_size)
 	local background_texture = "menu_frame_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local background_size = (background_texture_settings and background_texture_settings.size) or size
+	local background_size = background_texture_settings and background_texture_settings.size or size
 	local masked = true
 	local num_entries = 50
 	local entry_size = {
@@ -493,7 +493,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 	}
 	local list_content = content.list_content
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		list_content[i] = {
 			name = "",
 			hover_texture = "playerlist_hover",
@@ -701,7 +701,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 	}
 	local item_styles = style.list_style.item_styles
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		item_styles[i] = {
 			list_member_offset = {
 				0,
@@ -719,7 +719,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				font_size = 26,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+				font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				normal_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
@@ -735,7 +735,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				font_size = 26,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+				font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				normal_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -750,7 +750,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				localize = false,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				normal_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = {
@@ -765,7 +765,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				localize = false,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				normal_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -780,7 +780,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				localize = false,
 				horizontal_alignment = "right",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				normal_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
@@ -795,7 +795,7 @@ local function create_detailed_stat_widget(scenegraph_id, size, list_scenegraph_
 				localize = false,
 				horizontal_alignment = "right",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				normal_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {

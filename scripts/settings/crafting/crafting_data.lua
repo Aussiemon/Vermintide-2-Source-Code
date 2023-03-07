@@ -181,5 +181,3 @@ CraftingData = {
 		items = {}
 	}
 }
-
-return

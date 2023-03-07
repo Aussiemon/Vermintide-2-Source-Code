@@ -13,5 +13,3 @@ DeusGenUtils.create_random_generator = function (seed)
 		return val, seed
 	end
 end
-
-return

@@ -76,7 +76,7 @@ AIShieldUserExtension.break_shield = function (self)
 	local reason_id = NetworkLookup.item_drop_reasons[reason]
 	local item_dropped = false
 
-	for i = 1, #inventory_item_definitions, 1 do
+	for i = 1, #inventory_item_definitions do
 		local item = inventory_item_definitions[i]
 		local success, item_unit = ai_inventory_extension:drop_single_item(i, reason)
 
@@ -118,5 +118,3 @@ AIShieldUserExtension.can_block_attack = function (self, attacker_unit, trueflig
 
 	return can_block_attack
 end
-
-return

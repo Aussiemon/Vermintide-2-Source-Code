@@ -33,5 +33,3 @@ end
 ScriptXboxUserPrivilegeToken.close = function (self)
 	UserPrivilege.release(self._token)
 end
-
-return

@@ -176,5 +176,3 @@ ActSettings.act_penny = {
 	display_name = "area_selection_penny_name",
 	console_offset = 320
 }
-
-return

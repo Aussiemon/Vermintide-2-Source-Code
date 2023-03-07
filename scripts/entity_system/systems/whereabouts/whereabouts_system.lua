@@ -31,5 +31,3 @@ end
 WhereaboutsSystem.update = function (self, context, t)
 	WhereaboutsSystem.super.update(self, context, t)
 end
-
-return

@@ -65,7 +65,7 @@ MusicManager.init = function (self)
 	local sound_panning_rule = Application.user_setting("sound_panning_rule")
 
 	if sound_panning_rule ~= nil then
-		local rule = (sound_panning_rule == "headphones" and "PANNING_RULE_HEADPHONES") or "PANNING_RULE_SPEAKERS"
+		local rule = sound_panning_rule == "headphones" and "PANNING_RULE_HEADPHONES" or "PANNING_RULE_SPEAKERS"
 
 		self:set_panning_rule(rule)
 	end
@@ -256,7 +256,7 @@ MusicManager.on_enter_level = function (self, network_event_delegate, is_server)
 		local game_state_id = NetworkLookup.music_group_states.explore
 		local boss_state_id = NetworkLookup.music_group_states.no_boss
 		local is_weave = Managers.mechanism:game_mechanism():get_state() == "weave"
-		local override_state_id = (is_weave and NetworkLookup.music_group_states.winds) or NetworkLookup.music_group_states.false
+		local override_state_id = is_weave and NetworkLookup.music_group_states.winds or NetworkLookup.music_group_states["false"]
 		local init_data = {
 			go_type = go_type,
 			combat_intensity = intensity_state_id,
@@ -463,7 +463,7 @@ MusicManager._update_boss_state = function (self, conflict_director)
 	end
 
 	local angry_boss = conflict_director:angry_boss() or conflict_director:boss_event_running()
-	local state = (angry_boss and self:_get_combat_music_state(conflict_director)) or "no_boss"
+	local state = angry_boss and self:_get_combat_music_state(conflict_director) or "no_boss"
 
 	self:set_music_group_state("combat_music", "boss_state", state)
 end
@@ -655,7 +655,7 @@ MusicManager._get_game_state_for_player = function (self, dt, t, conflict_direct
 
 			local level_settings = LevelHelper:current_level_settings()
 
-			return (level_settings and level_settings.music_won_state) or "won"
+			return level_settings and level_settings.music_won_state or "won"
 		elseif game_mode_manager:game_lost(player) then
 			return "lost"
 		elseif game_mode_key == "versus" and Managers.mechanism:get_state() == "round_1" then
@@ -674,13 +674,13 @@ MusicManager._get_game_state_for_player = function (self, dt, t, conflict_direct
 
 		local level_settings = LevelHelper:current_level_settings()
 
-		return (level_settings and level_settings.music_won_state) or "won"
+		return level_settings and level_settings.music_won_state or "won"
 	end
 
 	local is_pre_horde = old_state == "pre_horde" or old_state == "pre_ambush" or old_state == "pre_ambush_beastmen" or old_state == "pre_ambush_chaos"
 	local horde_type, sound_settings = conflict_director:has_horde()
 	local horde_size, horde_ends_at = conflict_director:horde_size()
-	local is_horde_alive = horde_size >= 1 or (horde_size >= 7 and t < horde_ends_at) or horde_type
+	local is_horde_alive = horde_size >= 1 or horde_size >= 7 and t < horde_ends_at or horde_type
 
 	if is_pre_horde and self._scream_delays[party_id] and self._scream_delays[party_id] < t then
 		self._scream_delays[party_id] = nil
@@ -722,7 +722,7 @@ end
 local ai_units = {}
 
 MusicManager._horde_done_spawning = function (self, horde)
-	local engage_distance = (horde == "ambush" and 25) or 25
+	local engage_distance = horde == "ambush" and 25 or 25
 	local pos = nil
 	local players = Managers.player:players()
 
@@ -733,7 +733,7 @@ MusicManager._horde_done_spawning = function (self, horde)
 			pos = POSITION_LOOKUP[player_unit]
 			local num_units = AiUtils.broadphase_query(pos, engage_distance, ai_units)
 
-			for i = 1, num_units, 1 do
+			for i = 1, num_units do
 				local unit = ai_units[i]
 				local ai_extension = ScriptUnit.extension(unit, "ai_system")
 				local blackboard = ai_extension:blackboard()
@@ -783,12 +783,7 @@ MusicManager._update_player_state = function (self, dt, t)
 			music_player:set_group_state("player_state", state)
 		else
 			local side = self:_get_side()
-
-			if side:name() == "dark_pact" then
-				state = "dead"
-			else
-				state = "normal"
-			end
+			state = side:name() == "dark_pact" and "dead" or "normal"
 
 			music_player:set_group_state("player_state", state)
 		end
@@ -846,6 +841,7 @@ MusicManager._update_game_mode = function (self, dt, t)
 		music_player:set_group_state("game_mode", mechanism_name)
 
 		if mechanism_name == "adventure" then
+			-- Nothing
 		elseif mechanism_name == "versus" then
 			self:_update_versus_game_state(music_player, dt, t)
 		else
@@ -928,12 +924,7 @@ MusicManager._update_versus_game_state = function (self, music_player, dt, t)
 	if side_close_to_winning then
 		local state = nil
 		local side_name = side and side:name()
-
-		if side_name == side_close_to_winning then
-			state = "close_to_win"
-		else
-			state = "time_is_running_out"
-		end
+		state = side_name == side_close_to_winning and "close_to_win" or "time_is_running_out"
 
 		music_player:set_group_state("versus_state", state)
 	elseif is_dark_pact then
@@ -963,7 +954,7 @@ MusicManager.set_music_group_state = function (self, music_player, group, state)
 	local game_object_id = self._game_object_id
 
 	if self._is_server and game_object_id then
-		local state_id = (type(state) == "table" and state) or NetworkLookup.music_group_states[state]
+		local state_id = type(state) == "table" and state or NetworkLookup.music_group_states[state]
 		local session = Managers.state.network:game()
 
 		GameSession.set_game_object_field(session, game_object_id, group, state_id)
@@ -1028,7 +1019,7 @@ MusicManager._get_player = function (self)
 
 	self._player = Managers.player:local_player(self._active_local_player_id)
 
-	if not self._player or (self._player and self._player.bot_player) then
+	if not self._player or self._player and self._player.bot_player then
 		return
 	end
 
@@ -1065,5 +1056,3 @@ MusicManager.on_player_party_changed = function (self, player, is_local_player, 
 	self._party = self._party_manager:get_party(new_party_id)
 	self._side = self._side_manager.side_by_party[self._party]
 end
-
-return

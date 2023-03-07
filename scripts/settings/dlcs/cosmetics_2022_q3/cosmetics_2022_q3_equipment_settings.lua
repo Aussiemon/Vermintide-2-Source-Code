@@ -22,5 +22,3 @@ settings.inventory_package_list = {
 	"units/beings/player/witch_hunter_bounty_hunter_skin_02/first_person_base/chr_first_person_mesh",
 	"units/beings/player/witch_hunter_bounty_hunter_skin_02/third_person_base/chr_third_person_mesh"
 }
-
-return

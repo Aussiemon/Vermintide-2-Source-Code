@@ -10,7 +10,7 @@ PlayerManager = class(PlayerManager)
 PlayerManager.MAX_PLAYERS = 4
 local BOT_LOCAL_ID_TABLE = {}
 
-for i = 1, #SPProfiles, 1 do
+for i = 1, #SPProfiles do
 	local profile = SPProfiles[i]
 	BOT_LOCAL_ID_TABLE[profile.index] = i + 1
 end
@@ -289,7 +289,7 @@ end
 PlayerManager.player_exists = function (self, peer_id, local_player_id)
 	local peer_table = self._players_by_peer[peer_id]
 
-	return (peer_table and peer_table[local_player_id or 1]) or false
+	return peer_table and peer_table[local_player_id or 1] or false
 end
 
 PlayerManager.owner = function (self, unit)
@@ -578,5 +578,3 @@ PlayerManager.rpc_set_observed_player_id = function (self, sender, observer_play
 		observer_player:set_observed_player_id(player_to_observe_id)
 	end
 end
-
-return

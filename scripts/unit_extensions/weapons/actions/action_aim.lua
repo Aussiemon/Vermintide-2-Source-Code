@@ -200,7 +200,7 @@ ActionAim.finish = function (self, reason)
 	first_person_extension:stop_force_look_rotation()
 
 	local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-	local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+	local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 	if ammo_extension and ammo_extension:can_reload() and ammo_extension:ammo_count() == 0 and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload then
 		local play_reload_animation = true
@@ -241,5 +241,3 @@ ActionAim.finish = function (self, reason)
 		self:_stop_charge_sound()
 	end
 end
-
-return

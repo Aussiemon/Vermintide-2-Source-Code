@@ -3639,5 +3639,3 @@ PatrolFormationSettings.random_roaming_formation = function (breed_pack)
 
 	return formation
 end
-
-return

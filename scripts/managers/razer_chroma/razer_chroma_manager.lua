@@ -80,7 +80,7 @@ end
 RazerChromaManager._get_button_name = function (keybind, keymap)
 	local key_id = keymap[keybind][2]
 
-	return (key_id ~= "unassigned_keymap" and Keyboard.button_name(key_id)) or nil
+	return key_id ~= "unassigned_keymap" and Keyboard.button_name(key_id) or nil
 end
 
 RazerChromaManager.lit_keybindings = function (self, should_update)
@@ -271,5 +271,3 @@ RazerChromaManager.set_keys_color = function (self, keys, red, green, blue)
 		RazerChroma.set_key_color(key, red, green, blue)
 	end
 end
-
-return

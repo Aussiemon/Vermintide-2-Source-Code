@@ -81,5 +81,3 @@ IrcUtils = {
 		return str
 	end
 }
-
-return

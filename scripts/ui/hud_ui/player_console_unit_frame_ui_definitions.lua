@@ -462,7 +462,7 @@ local function create_dynamic_health_widget()
 					text_id = "numeric_health",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function ()
-						return Application.user_setting("numeric_ui") and (UISettings.use_gamepad_hud_layout == "always" or (Managers.input:is_device_active("gamepad") and UISettings.use_gamepad_hud_layout ~= "never"))
+						return Application.user_setting("numeric_ui") and (UISettings.use_gamepad_hud_layout == "always" or Managers.input:is_device_active("gamepad") and UISettings.use_gamepad_hud_layout ~= "never")
 					end
 				},
 				{
@@ -471,7 +471,7 @@ local function create_dynamic_health_widget()
 					text_id = "numeric_health",
 					retained_mode = RETAINED_MODE_ENABLED,
 					content_check_function = function ()
-						return Application.user_setting("numeric_ui") and (UISettings.use_gamepad_hud_layout == "always" or (Managers.input:is_device_active("gamepad") and UISettings.use_gamepad_hud_layout ~= "never"))
+						return Application.user_setting("numeric_ui") and (UISettings.use_gamepad_hud_layout == "always" or Managers.input:is_device_active("gamepad") and UISettings.use_gamepad_hud_layout ~= "never")
 					end
 				}
 			}

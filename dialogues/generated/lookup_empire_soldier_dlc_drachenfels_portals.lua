@@ -80,5 +80,3 @@ DialogueLookup[DialogueLookup_n + 38] = "pes_portals_crypt_exit"
 DialogueLookup[DialogueLookup_n + 39] = "pes_portals_waystone"
 DialogueLookup[DialogueLookup_n + 40] = "pes_portals_event_missing_gargoyle_heads"
 DialogueLookup_n = DialogueLookup_n + 40
-
-return

@@ -125,5 +125,3 @@ CosmeticSystem.hot_join_sync = function (self, peer_id)
 		network_transmit:send_rpc("rpc_show_inventory", peer_id, unit_id, not emote_state.hide_weapons)
 	end
 end
-
-return

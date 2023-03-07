@@ -141,7 +141,7 @@ DeusSpawning._update_player_status = function (self, t, dt, occupied_slots)
 	local player_manager = Managers.player
 	local ScriptUnit_extension = ScriptUnit.extension
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local data = status.game_mode_data
 		local peer_id = status.peer_id
@@ -282,7 +282,7 @@ DeusSpawning._update_spawning = function (self, dt, t, occupied_slots)
 		local own_peer_id = self._deus_run_controller:get_own_peer_id()
 		local local_player_is_ready = false
 
-		for i = 1, #occupied_slots, 1 do
+		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
 			local other_peer_id = status.peer_id
 			local other_local_player_id = status.local_player_id
@@ -302,7 +302,7 @@ DeusSpawning._update_spawning = function (self, dt, t, occupied_slots)
 
 		local network_server = self._network_server
 
-		for i = 1, #occupied_slots, 1 do
+		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
 			local data = status.game_mode_data
 			local spawn_state = data.spawn_state
@@ -400,7 +400,7 @@ DeusSpawning._spawn_player = function (self, status)
 		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
 	end
 
-	data.spawn_state = (is_initial_spawn and "initial_spawning") or "spawning"
+	data.spawn_state = is_initial_spawn and "initial_spawning" or "spawning"
 end
 
 DeusSpawning._spawn_bot = function (self, status)
@@ -446,7 +446,7 @@ DeusSpawning.force_update_spawn_positions = function (self, safe_position, safe_
 	local party = self._side.party
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local data = status.game_mode_data
 
@@ -475,7 +475,7 @@ DeusSpawning.add_spawn_point = function (self, unit)
 		rot = QuaternionBox(rot)
 	}
 	local prior_state = Unit.get_data(unit, "from_game_mode")
-	prior_state = (prior_state ~= "" and prior_state) or "default"
+	prior_state = prior_state ~= "" and prior_state or "default"
 	self._spawn_points[prior_state] = self._spawn_points[prior_state] or {}
 	self._spawn_points[prior_state][#self._spawn_points[prior_state] + 1] = spawn_point
 end
@@ -520,7 +520,7 @@ DeusSpawning.teleport_despawned_players = function (self, position)
 	local occupied_slots = party.occupied_slots
 	local player_manager = Managers.player
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local peer_id = status.peer_id
 		local local_player_id = status.local_player_id
@@ -563,5 +563,3 @@ end
 DeusSpawning.get_respawn_handler = function (self)
 	return self._respawn_handler
 end
-
-return

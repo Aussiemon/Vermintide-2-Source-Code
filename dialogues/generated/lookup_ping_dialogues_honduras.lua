@@ -230,5 +230,3 @@ DialogueLookup[DialogueLookup_n + 113] = "pwe_gameplay_seeing_a_skaven_rat_ogre_
 DialogueLookup[DialogueLookup_n + 114] = "pwe_gameplay_seeing_a_skaven_slaver_ping"
 DialogueLookup[DialogueLookup_n + 115] = "pwe_gameplay_seeing_a_skaven_ratling_gun_ping"
 DialogueLookup_n = DialogueLookup_n + 115
-
-return

@@ -20,7 +20,7 @@ local function count_table(t, seen_data, count)
 			value_count = value_count + recursed_value_count
 			local str = ""
 
-			for i = 1, count, 1 do
+			for i = 1, count do
 				str = str .. "\t"
 			end
 
@@ -33,7 +33,7 @@ local function count_table(t, seen_data, count)
 			value_count = value_count + recursed_value_count
 			local str = ""
 
-			for i = 1, count, 1 do
+			for i = 1, count do
 				str = str .. "\t"
 			end
 
@@ -49,7 +49,7 @@ end
 DataCounter.analyze_table = function (t, name, ...)
 	local seen_data = {}
 
-	for i = 1, select("#", ...), 1 do
+	for i = 1, select("#", ...) do
 		local value = select(i, ...)
 
 		if value then
@@ -63,5 +63,3 @@ DataCounter.analyze_table = function (t, name, ...)
 
 	printf("Analyzed table %q with %d table counts and value counts of %d", name or "unknown", num_tables, num_values)
 end
-
-return

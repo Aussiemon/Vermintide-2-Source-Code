@@ -40,5 +40,3 @@ DialogueLookup[DialogueLookup_n + 18] = "pes_morris_bay_ice_cave"
 DialogueLookup[DialogueLookup_n + 19] = "pes_morris_bay_lookout"
 DialogueLookup[DialogueLookup_n + 20] = "pes_morris_bay_cursed_shore"
 DialogueLookup_n = DialogueLookup_n + 20
-
-return

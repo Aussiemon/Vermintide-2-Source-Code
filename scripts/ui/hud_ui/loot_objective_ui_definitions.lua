@@ -88,7 +88,7 @@ local function create_loot_widget(texture, amount)
 	local icon_texture_sizes = {}
 	local icon_texture_colors = {}
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		icon_textures[i] = texture
 		glow_icon_textures[i] = texture .. "_glow"
 		background_icon_textures[i] = texture .. "_bg"

@@ -731,5 +731,3 @@ GraphicsQuality = {
 		render_settings = {}
 	}
 }
-
-return

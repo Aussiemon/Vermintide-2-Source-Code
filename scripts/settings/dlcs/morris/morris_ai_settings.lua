@@ -112,5 +112,3 @@ settings.bt_enter_hooks = {
 		dialogue_input:trigger_dialogue_event("curse_damage_taken", event_data)
 	end
 }
-
-return

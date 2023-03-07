@@ -2730,5 +2730,3 @@ frames_atlas = {
 		}
 	}
 }
-
-return

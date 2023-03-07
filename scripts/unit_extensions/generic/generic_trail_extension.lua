@@ -5,5 +5,3 @@ GenericTrailExtension.init = function (self, extension_init_context, unit)
 
 	Unit.flow_event(unit, "lua_trail")
 end
-
-return

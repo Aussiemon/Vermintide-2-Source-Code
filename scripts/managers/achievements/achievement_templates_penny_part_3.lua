@@ -37,7 +37,7 @@ local difficulties = {
 	"cataclysm"
 }
 
-for i = 1, #difficulties, 1 do
+for i = 1, #difficulties do
 	local difficulty_key = difficulties[i]
 	local difficulty_name = DifficultyMapping[difficulty_key]
 	local name = "penny_complete_" .. difficulty_name
@@ -56,5 +56,3 @@ add_meta_challenge(achievements, "penny_complete_castle", {
 	"penny_castle_eruptions",
 	"penny_castle_no_kill"
 })
-
-return

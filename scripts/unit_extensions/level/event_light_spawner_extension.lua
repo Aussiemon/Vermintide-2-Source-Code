@@ -23,7 +23,7 @@ EventLightSpawnerExtension.init = function (self, extension_init_context, unit, 
 	Unit.set_unit_visibility(self.unit, false)
 
 	if self.is_server then
-		for i = 1, 4, 1 do
+		for i = 1, 4 do
 			local spawn_unit = {
 				speed = self._speed,
 				id = i,
@@ -88,7 +88,7 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 			local player_pos = player_unit and POSITION_LOOKUP[player_unit] + Vector3.up()
 			local physics_world = World.physics_world(context.world)
 			local direction = player_pos - unit_position
-			direction = (Vector3.length(direction) == 0 and Vector3.down()) or Vector3.normalize(direction)
+			direction = Vector3.length(direction) == 0 and Vector3.down() or Vector3.normalize(direction)
 			local length = 1
 
 			PhysicsWorld.prepare_actors_for_raycast(physics_world, unit_position, direction, 0.1)
@@ -98,7 +98,7 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 			if result then
 				local num_hits = #result
 
-				for i = 1, num_hits, 1 do
+				for i = 1, num_hits do
 					local hit = result[i]
 					local hit_actor = hit[4]
 					local hit_unit = Actor.unit(hit_actor)
@@ -153,7 +153,7 @@ EventLightSpawnerExtension._update_units = function (self, context, dt)
 					local chase_target_position = player_pos + Vector3(0, 0, 1)
 					local direction_vector = chase_target_position - unit_position
 					local magnitude = Vector3.length(direction_vector)
-					local move_vector_modifier = (magnitude < 3 and math.max(0, magnitude - 2)) or 1
+					local move_vector_modifier = magnitude < 3 and math.max(0, magnitude - 2) or 1
 					direction_vector = Vector3.normalize(direction_vector)
 					local move_vector = direction_vector * dt * light_unit.speed * move_vector_modifier
 					local new_position = unit_position + move_vector
@@ -213,7 +213,7 @@ EventLightSpawnerExtension._deactivate = function (self)
 	self._active = false
 	local units = self._units
 
-	for i = 1, #units, 1 do
+	for i = 1, #units do
 		local unit = units[i].unit
 
 		if unit then
@@ -277,5 +277,3 @@ EventLightSpawnerExtension._sync_light_units = function (self)
 		end
 	end
 end
-
-return

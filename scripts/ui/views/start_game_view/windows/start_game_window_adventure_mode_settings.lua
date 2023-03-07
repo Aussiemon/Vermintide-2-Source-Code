@@ -217,9 +217,9 @@ StartGameWindowAdventureModeSettings._set_difficulty_option = function (self, di
 	local difficulty_settings = DifficultySettings[difficulty_key]
 	local display_name = difficulty_settings and difficulty_settings.display_name
 	local display_image = difficulty_settings and difficulty_settings.display_image
-	local completed_frame_texture = (difficulty_settings and difficulty_settings.completed_frame_texture) or "map_frame_00"
+	local completed_frame_texture = difficulty_settings and difficulty_settings.completed_frame_texture or "map_frame_00"
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.game_option_difficulty.content.option_text = (display_name and Localize(display_name)) or ""
+	widgets_by_name.game_option_difficulty.content.option_text = display_name and Localize(display_name) or ""
 	widgets_by_name.game_option_difficulty.content.icon = display_image or nil
 	widgets_by_name.game_option_difficulty.content.icon_frame = completed_frame_texture
 end
@@ -233,7 +233,7 @@ StartGameWindowAdventureModeSettings.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -324,5 +324,3 @@ StartGameWindowAdventureModeSettings._animate_element_by_time = function (self, 
 
 	return new_animation
 end
-
-return

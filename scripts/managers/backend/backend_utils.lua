@@ -201,7 +201,7 @@ BackendUtils.format_profile_hash = function (hash, num_chars, block_length, bloc
 	local str = ""
 
 	for ii = 1, num_chars, block_length do
-		local block = string.sub(hash, ii, (ii + block_length) - 1)
+		local block = string.sub(hash, ii, ii + block_length - 1)
 
 		if str == "" then
 			str = block
@@ -246,7 +246,7 @@ local CAREER_ID_LOOKUP = {
 
 BackendUtils.calculate_weave_score = function (tier, score, career_name)
 	local career_index = table.find(CAREER_ID_LOOKUP, career_name)
-	local weave_score = math.floor(((tier * 100000 + score) * 100 + career_index) - 2147483648.0)
+	local weave_score = math.floor((tier * 100000 + score) * 100 + career_index - 2147483648.0)
 
 	return weave_score
 end
@@ -268,5 +268,3 @@ BackendUtils.commit_load_time_data = function (load_time_data)
 
 	common:commit_load_time_data(load_time_data)
 end
-
-return

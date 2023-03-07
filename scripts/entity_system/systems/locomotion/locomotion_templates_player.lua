@@ -4,8 +4,7 @@ local LEVEL_EDITOR_TEST = LEVEL_EDITOR_TEST
 local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
-if DETAILED_PROFILING then
-else
+if not DETAILED_PROFILING then
 	function detailed_profiler_start()
 		return
 	end
@@ -88,7 +87,7 @@ T.update_average_velocity = function (data, t, dt)
 			local small_total_velocity = Vector3(0, 0, 0)
 			local i = index
 
-			for k = 1, small_sample_size, 1 do
+			for k = 1, small_sample_size do
 				local velocity = velocities[i]
 				small_total_velocity = small_total_velocity + velocity:unbox()
 				i = i - 1
@@ -129,7 +128,7 @@ T.update_movement = function (data, t, dt)
 
 		if on_ground then
 			local hits, num_hits = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", POSITION_LOOKUP[unit], "rotation", rotation, "size", size, "collision_filter", extension._default_mover_filter)
-			extension.on_ground = num_hits > 0 or (Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0)
+			extension.on_ground = num_hits > 0 or Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0
 		else
 			extension.on_ground = Mover.flying_frames(Unit.mover(unit)) == 0 and extension.velocity_wanted:unbox().z <= 0
 		end
@@ -337,5 +336,3 @@ T.update_debug_anims = function (data)
 		end
 	end
 end
-
-return

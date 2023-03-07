@@ -157,5 +157,3 @@ HitReactions.get_reaction = function (hit_reaction_template, is_husk)
 
 	return reaction_table.unit
 end
-
-return

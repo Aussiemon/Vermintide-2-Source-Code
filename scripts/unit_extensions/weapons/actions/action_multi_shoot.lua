@@ -89,7 +89,7 @@ ActionMultiShoot._shoot = function (self, num_shots_total, num_shots_this_frame)
 	local owner_unit = self.owner_unit
 	local is_server = self.is_server
 
-	for i = 1, num_shots_this_frame, 1 do
+	for i = 1, num_shots_this_frame do
 		self._shots_fired = self._shots_fired + 1
 		local rotation = self:_get_spread_rotation(num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
 		local direction = Quaternion.forward(rotation)
@@ -132,12 +132,10 @@ ActionMultiShoot.finish = function (self, reason)
 		status_extension:set_zooming(false)
 
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			ammo_extension:start_reload(true)
 		end
 	end
 end
-
-return

@@ -58,5 +58,3 @@ ScriptGUI.hud_iline = function (gui, resx, resy, p1, p2, layer, line_width, colo
 
 	ScriptGUI.hud_line(gui, c1, c2, layer, line_width, color)
 end
-
-return

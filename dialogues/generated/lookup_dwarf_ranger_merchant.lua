@@ -36,5 +36,3 @@ DialogueLookup[DialogueLookup_n + 16] = "pdr_merchant_district_intro"
 DialogueLookup[DialogueLookup_n + 17] = "pdr_merchant_district_intro_b"
 DialogueLookup[DialogueLookup_n + 18] = "pdr_merchant_district_intro_c"
 DialogueLookup_n = DialogueLookup_n + 18
-
-return

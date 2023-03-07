@@ -328,66 +328,66 @@ local weapon_template = {
 				destroy_policy = "stop_spawning"
 			}
 		}
+	}
+}
+weapon_template.particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx))
+weapon_template.wwise_dep_right_hand = {
+	"wwise/bw_deus_01"
+}
+weapon_template.dodge_distance = 1
+weapon_template.dodge_speed = 1
+weapon_template.aim_assist_settings = {
+	max_range = 50,
+	no_aim_input_multiplier = 0,
+	always_auto_aim = true,
+	base_multiplier = 0,
+	target_node = "j_spine1",
+	effective_max_range = 30,
+	breed_scalars = {
+		skaven_storm_vermin = 1,
+		skaven_clan_rat = 1,
+		skaven_slave = 1
+	}
+}
+weapon_template.weapon_diagram = {
+	light_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 4,
+		[DamageTypes.CLEAVE] = 6,
+		[DamageTypes.SPEED] = 2,
+		[DamageTypes.STAGGER] = 2,
+		[DamageTypes.DAMAGE] = 5
 	},
-	particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx)),
-	wwise_dep_right_hand = {
-		"wwise/bw_deus_01"
+	heavy_attack = {
+		[DamageTypes.ARMOR_PIERCING] = 1,
+		[DamageTypes.CLEAVE] = 7,
+		[DamageTypes.SPEED] = 3,
+		[DamageTypes.STAGGER] = 0,
+		[DamageTypes.DAMAGE] = 3
+	}
+}
+weapon_template.tooltip_keywords = {
+	"weapon_keyword_damage_over_time",
+	"weapon_keyword_crowd_control",
+	"weapon_keyword_charged_attack"
+}
+weapon_template.tooltip_compare = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	dodge_distance = 1,
-	dodge_speed = 1,
-	aim_assist_settings = {
-		max_range = 50,
-		no_aim_input_multiplier = 0,
-		always_auto_aim = true,
-		base_multiplier = 0,
-		target_node = "j_spine1",
-		effective_max_range = 30,
-		breed_scalars = {
-			skaven_storm_vermin = 1,
-			skaven_clan_rat = 1,
-			skaven_slave = 1
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "geiser_launch"
+	}
+}
+weapon_template.tooltip_detail = {
+	light = {
+		action_name = "action_one",
+		sub_action_name = "default"
 	},
-	weapon_diagram = {
-		light_attack = {
-			[DamageTypes.ARMOR_PIERCING] = 4,
-			[DamageTypes.CLEAVE] = 6,
-			[DamageTypes.SPEED] = 2,
-			[DamageTypes.STAGGER] = 2,
-			[DamageTypes.DAMAGE] = 5
-		},
-		heavy_attack = {
-			[DamageTypes.ARMOR_PIERCING] = 1,
-			[DamageTypes.CLEAVE] = 7,
-			[DamageTypes.SPEED] = 3,
-			[DamageTypes.STAGGER] = 0,
-			[DamageTypes.DAMAGE] = 3
-		}
-	},
-	tooltip_keywords = {
-		"weapon_keyword_damage_over_time",
-		"weapon_keyword_crowd_control",
-		"weapon_keyword_charged_attack"
-	},
-	tooltip_compare = {
-		light = {
-			action_name = "action_one",
-			sub_action_name = "default"
-		},
-		heavy = {
-			action_name = "action_one",
-			sub_action_name = "geiser_launch"
-		}
-	},
-	tooltip_detail = {
-		light = {
-			action_name = "action_one",
-			sub_action_name = "default"
-		},
-		heavy = {
-			action_name = "action_one",
-			sub_action_name = "geiser_launch"
-		}
+	heavy = {
+		action_name = "action_one",
+		sub_action_name = "geiser_launch"
 	}
 }
 

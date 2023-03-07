@@ -5,7 +5,7 @@ local grid_size = {
 	520,
 	600
 }
-local num_loot_options = (IS_CONSOLE and 5) or 5
+local num_loot_options = IS_CONSOLE and 5 or 5
 local USE_DELAYED_SPAWN = true
 local scenegraph_definition = {
 	screen = console_menu_scenegraphs.screen,
@@ -721,7 +721,7 @@ local scenegraph_definition = {
 	}
 }
 
-for i = 1, num_loot_options, 1 do
+for i = 1, num_loot_options do
 	local idx = (i - 1) * 3 + 1
 	local id = "loot_option_" .. idx
 	scenegraph_definition[id] = {
@@ -2104,7 +2104,7 @@ local function create_loot_widget(index, size)
 			},
 			offset = {
 				2,
-				(size[2] + 182 + 70) - 2,
+				size[2] + 182 + 70 - 2,
 				29
 			}
 		},
@@ -2138,7 +2138,7 @@ local function create_loot_widget(index, size)
 			},
 			offset = {
 				2,
-				(size[2] + 182) - 2,
+				size[2] + 182 - 2,
 				29
 			}
 		},
@@ -2640,7 +2640,7 @@ local console_tooltip_pass_definition = {
 }
 local gamepad_tooltip_widgets = {}
 
-for i = 1, num_loot_options, 1 do
+for i = 1, num_loot_options do
 	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 1] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 1, console_tooltip_pass_definition)
 	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 2] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 2, console_tooltip_pass_definition)
 	gamepad_tooltip_widgets["item_tooltip_" .. (i - 1) * 3 + 3] = UIWidgets.create_simple_item_presentation("gamepad_tooltip_option_" .. (i - 1) * 3 + 3, console_tooltip_pass_definition)
@@ -2648,7 +2648,7 @@ end
 
 local option_background_widgets = {}
 
-for i = 1, num_loot_options, 1 do
+for i = 1, num_loot_options do
 	option_background_widgets["loot_background_" .. (i - 1) * 3 + 1] = UIWidgets.create_background("loot_option_" .. (i - 1) * 3 + 1, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 1].size, "item_tooltip_background_old")
 	option_background_widgets["loot_background_" .. (i - 1) * 3 + 2] = UIWidgets.create_background("loot_option_" .. (i - 1) * 3 + 2, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 2].size, "item_tooltip_background_old")
 	option_background_widgets["loot_background_" .. (i - 1) * 3 + 3] = UIWidgets.create_background("loot_option_" .. (i - 1) * 3 + 3, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 3].size, "item_tooltip_background_old")
@@ -2656,7 +2656,7 @@ end
 
 local option_widgets = {}
 
-for i = 1, num_loot_options, 1 do
+for i = 1, num_loot_options do
 	option_widgets["loot_option_" .. (i - 1) * 3 + 1] = create_loot_widget((i - 1) * 3 + 1, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 1].size)
 	option_widgets["loot_option_" .. (i - 1) * 3 + 2] = create_loot_widget((i - 1) * 3 + 2, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 2].size)
 	option_widgets["loot_option_" .. (i - 1) * 3 + 3] = create_loot_widget((i - 1) * 3 + 3, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 3].size)
@@ -2669,7 +2669,7 @@ if USE_DELAYED_SPAWN then
 	preview_widgets.loot_option_2 = create_loot_preview_widget("loot_option_2", scenegraph_definition.loot_option_2.size)
 	preview_widgets.loot_option_3 = create_loot_preview_widget("loot_option_3", scenegraph_definition.loot_option_3.size)
 else
-	for i = 1, num_loot_options, 1 do
+	for i = 1, num_loot_options do
 		preview_widgets["loot_option_" .. (i - 1) * 3 + 1] = create_loot_preview_widget("loot_option_" .. (i - 1) * 3 + 1, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 1].size)
 		preview_widgets["loot_option_" .. (i - 1) * 3 + 2] = create_loot_preview_widget("loot_option_" .. (i - 1) * 3 + 2, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 2].size)
 		preview_widgets["loot_option_" .. (i - 1) * 3 + 3] = create_loot_preview_widget("loot_option_" .. (i - 1) * 3 + 3, scenegraph_definition["loot_option_" .. (i - 1) * 3 + 3].size)
@@ -2947,7 +2947,7 @@ local animation_definitions = {
 				background_uvs[2][2] = math.min(new_height / background_texture_settings.size[2], 1)
 				style.item_name.offset[2] = new_height + 182 + 35
 				style.item_name_shadow.offset[2] = style.item_name.offset[2] - 2
-				style.item_type.offset[2] = (new_height + 182) - 5
+				style.item_type.offset[2] = new_height + 182 - 5
 				style.item_type_shadow.offset[2] = style.item_type.offset[2] - 2
 				style.item_icon.offset[2] = new_height - 40
 				style.item_tooltip.offset[2] = new_height - 40

@@ -18,7 +18,7 @@ local difficulties = {
 	"cataclysm"
 }
 
-for i = 1, #difficulties, 1 do
+for i = 1, #difficulties do
 	local difficulty_key = difficulties[i]
 	local difficulty_name = DifficultyMapping[difficulty_key]
 	local name = "onions_complete_trail_" .. difficulty_name
@@ -142,5 +142,3 @@ all_trail_challenges[#all_trail_challenges + 1] = "trail_sleigher"
 all_trail_challenges[#all_trail_challenges + 1] = "trail_beacons_are_lit"
 
 add_meta_challenge(achievements, "onions_complete_all", all_trail_challenges, "achievement_wizards_trail_complete_all_challenges", nil, XB1_ACHIEVEMENT_ID[name], PS4_ACHIEVEMENT_ID[name])
-
-return

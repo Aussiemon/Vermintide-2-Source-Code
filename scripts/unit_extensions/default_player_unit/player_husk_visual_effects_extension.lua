@@ -165,5 +165,3 @@ PlayerHuskVisualEffectsExtension._set_weapons_overcharge_threshold = function (s
 		end
 	end
 end
-
-return

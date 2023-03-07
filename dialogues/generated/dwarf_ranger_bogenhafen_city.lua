@@ -790,8 +790,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pdr_level_bogenhafen_city_bögenauer",
-		response = "pdr_level_bogenhafen_city_bögenauer",
+		name = "pdr_level_bogenhafen_city_bÃ¶genauer",
+		response = "pdr_level_bogenhafen_city_bÃ¶genauer",
 		criterias = {
 			{
 				"query_context",
@@ -803,7 +803,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_city_bögenauer"
+				"level_bogenhafen_city_bÃ¶genauer"
 			},
 			{
 				"query_context",
@@ -819,7 +819,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.EQ,
 				0
 			}
@@ -827,7 +827,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.ADD,
 				1
 			}
@@ -847,7 +847,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_city_bögenauer"
+				"level_bogenhafen_city_bÃ¶genauer"
 			},
 			{
 				"query_context",
@@ -869,7 +869,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.EQ,
 				0
 			}
@@ -877,7 +877,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.ADD,
 				1
 			}
@@ -2465,7 +2465,7 @@ return function ()
 				[1.0] = 7.0856251716614
 			}
 		},
-		pdr_level_bogenhafen_city_bögenauer = {
+		pdr_level_bogenhafen_city_bÃ¶genauer = {
 			face_animations_n = 4,
 			database = "dwarf_ranger_bogenhafen_city",
 			sound_events_n = 4,
@@ -2474,16 +2474,16 @@ return function ()
 			dialogue_animations_n = 4,
 			randomize_indexes = {},
 			localization_strings = {
-				"pdr_level_bogenhafen_city_bögenauer_01",
-				"pdr_level_bogenhafen_city_bögenauer_02",
-				"pdr_level_bogenhafen_city_bögenauer_03",
-				"pdr_level_bogenhafen_city_bögenauer_04"
+				"pdr_level_bogenhafen_city_bÃ¶genauer_01",
+				"pdr_level_bogenhafen_city_bÃ¶genauer_02",
+				"pdr_level_bogenhafen_city_bÃ¶genauer_03",
+				"pdr_level_bogenhafen_city_bÃ¶genauer_04"
 			},
 			sound_events = {
-				"pdr_level_bogenhafen_city_bögenauer_01",
-				"pdr_level_bogenhafen_city_bögenauer_02",
-				"pdr_level_bogenhafen_city_bögenauer_03",
-				"pdr_level_bogenhafen_city_bögenauer_04"
+				"pdr_level_bogenhafen_city_bÃ¶genauer_01",
+				"pdr_level_bogenhafen_city_bÃ¶genauer_02",
+				"pdr_level_bogenhafen_city_bÃ¶genauer_03",
+				"pdr_level_bogenhafen_city_bÃ¶genauer_04"
 			},
 			face_animations = {
 				"face_calm",

@@ -483,12 +483,12 @@ HeroViewStateLoot._setup_reward_option_widgets = function (self)
 	local num_options = num_loot_options * 3
 	local reward_options = {}
 
-	for i = 1, num_options, 1 do
+	for i = 1, num_options do
 		local widget_name = "loot_option_" .. i
 		local background_widget_name = "loot_background_" .. i
 		local data = {
 			widget = self._option_widgets_by_name[widget_name],
-			preview_widget = (not USE_DELAYED_SPAWN and self._preview_loot_widgets_by_name[widget_name]) or nil,
+			preview_widget = not USE_DELAYED_SPAWN and self._preview_loot_widgets_by_name[widget_name] or nil,
 			background_widget = self._option_background_widgets_by_name[background_widget_name]
 		}
 		reward_options[i] = data
@@ -563,7 +563,7 @@ HeroViewStateLoot._position_camera = function (self, optional_pose)
 	if camera_pose then
 		local fov = 65
 
-		Camera.set_vertical_fov(camera, (math.pi * fov) / 180)
+		Camera.set_vertical_fov(camera, math.pi * fov / 180)
 		ScriptCamera.set_local_pose(camera, camera_pose)
 		ScriptCamera.force_update(world, camera)
 	end
@@ -795,11 +795,11 @@ HeroViewStateLoot._update_animations = function (self, dt)
 				local speed = dt * 3
 
 				if button_hotspot.on_hover_enter then
-					local sound_event = (rarity and "play_gui_chest_reward_hover_start_" .. tostring(rarity)) or "play_gui_chest_reward_start"
+					local sound_event = rarity and "play_gui_chest_reward_hover_start_" .. tostring(rarity) or "play_gui_chest_reward_start"
 
 					self:play_sound(sound_event)
 				elseif button_hotspot.on_hover_exit then
-					local sound_event = (rarity and "play_gui_chest_reward_hover_stop_" .. tostring(rarity)) or "play_gui_chest_reward_stop"
+					local sound_event = rarity and "play_gui_chest_reward_hover_stop_" .. tostring(rarity) or "play_gui_chest_reward_stop"
 
 					self:play_sound(sound_event)
 				end
@@ -832,7 +832,7 @@ HeroViewStateLoot._update_animations = function (self, dt)
 	UIWidgetUtils.animate_arrow_button(page_button_next, dt)
 	UIWidgetUtils.animate_arrow_button(page_button_previous, dt)
 
-	for i = 1, #self._chest_indicators, 1 do
+	for i = 1, #self._chest_indicators do
 		local widget = self._chest_indicators[i]
 
 		UIWidgetUtils.animate_arrow_button(widget, dt)
@@ -937,7 +937,7 @@ HeroViewStateLoot.draw = function (self, dt)
 			if gamepad_active and input_service:get("special_1_hold") then
 				local num_rewards = self._num_chests * 3
 
-				for i = 1, num_rewards, 1 do
+				for i = 1, num_rewards do
 					local tooltip_widget = self._gamepad_tooltip_widgets_by_name["item_tooltip_" .. i]
 					local widget_scenegraph_id = tooltip_widget.scenegraph_id
 					local current_position_x = 0
@@ -1034,7 +1034,7 @@ HeroViewStateLoot._is_option_tab_selected = function (self)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -1050,7 +1050,7 @@ HeroViewStateLoot._select_option_tab_by_index = function (self, index)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -1144,7 +1144,7 @@ HeroViewStateLoot._select_grid_item = function (self, item, t, reset_num_chests)
 	self._open_multiple_chests_enabled = can_open_multiple
 	widgets_by_name.item_cap_warning_text.content.visible = not can_open_one and item ~= nil
 	widgets_by_name.open_button.content.button_hotspot.disable_button = not can_open_one or item == nil
-	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not can_open_multiple or item == nil or (item and item.RemainingUses < 2)
+	widgets_by_name.open_multiple_button.content.button_hotspot.disable_button = not can_open_multiple or item == nil or item and item.RemainingUses < 2
 
 	if not can_open_one or item == nil then
 		self.menu_input_description:set_input_description(generic_input_actions.chest_not_selected)
@@ -1233,7 +1233,7 @@ HeroViewStateLoot._find_console_selection_index = function (self, next_index)
 		local new_index = self._console_selection_index
 		local potential_index = new_index
 
-		for i = 1, num_rewards - 1, 1 do
+		for i = 1, num_rewards - 1 do
 			potential_index = 1 + potential_index % num_rewards
 
 			if not active_reward_options[potential_index].widget.content.button_hotspot.disable_button then
@@ -1248,7 +1248,7 @@ HeroViewStateLoot._find_console_selection_index = function (self, next_index)
 		local new_index = self._console_selection_index
 		local potential_index = new_index
 
-		for i = 1, num_rewards - 1, 1 do
+		for i = 1, num_rewards - 1 do
 			potential_index = potential_index - 1
 
 			if potential_index < 1 then
@@ -1269,13 +1269,13 @@ end
 HeroViewStateLoot._handle_page_selection = function (self, dt)
 	local next_button = self._arrow_widgets_by_name.arrow_right
 	local prev_button = self._arrow_widgets_by_name.arrow_left
-	local next_multiplier = (UIUtils.is_button_hover(next_button) and 1) or -1
+	local next_multiplier = UIUtils.is_button_hover(next_button) and 1 or -1
 	local next_button_lit_style = next_button.style.arrow_lit
 	local progress = next_button_lit_style.progress or 0
 	progress = math.clamp(progress + dt * 6 * next_multiplier, 0, 1)
 	next_button_lit_style.color[1] = progress * 255
 	next_button_lit_style.progress = progress
-	local prev_multiplier = (UIUtils.is_button_hover(prev_button) and 1) or -1
+	local prev_multiplier = UIUtils.is_button_hover(prev_button) and 1 or -1
 	local prev_button_lit_style = prev_button.style.arrow_lit
 	local progress = prev_button_lit_style.progress or 0
 	progress = math.clamp(progress + dt * 6 * prev_multiplier, 0, 1)
@@ -1293,7 +1293,7 @@ HeroViewStateLoot._handle_page_selection = function (self, dt)
 	else
 		local pressed_indicator_index = nil
 
-		for i = 1, #self._chest_indicators, 1 do
+		for i = 1, #self._chest_indicators do
 			local indicator_widget = self._chest_indicators[i]
 
 			if self:_is_button_pressed(indicator_widget) then
@@ -1394,7 +1394,7 @@ HeroViewStateLoot._handle_input = function (self, dt, t)
 				local reward_options = self._active_reward_options
 				local num_rewards = #reward_options
 
-				for i = 1, num_rewards, 1 do
+				for i = 1, num_rewards do
 					local widget = reward_options[i].widget
 					local button_hotspot = widget.content.button_hotspot
 
@@ -1665,7 +1665,7 @@ HeroViewStateLoot._setup_rewards = function (self, rewards)
 		local arrow_right_widget = self._arrow_widgets_by_name.arrow_right
 		arrow_right_widget.offset[1] = (num_pages + 1) * 60 * 0.5
 
-		for i = 1, num_pages, 1 do
+		for i = 1, num_pages do
 			local reward_index = (i - 1) * 3 + 1
 			local reward_a = rewards[reward_index]
 			local reward_rarity_a = backend_items:get_item_rarity(reward_a)
@@ -1869,7 +1869,7 @@ HeroViewStateLoot._update_active_viewports = function (self, force_update)
 		return
 	end
 
-	for i = 1, num_loot_options * 3, 1 do
+	for i = 1, num_loot_options * 3 do
 		local data = self._active_reward_options[i]
 		local item_previewer = data and data.item_previewer
 		local world_previewer = data and data.world_previewer
@@ -1887,7 +1887,7 @@ HeroViewStateLoot._update_active_viewports = function (self, force_update)
 
 	local preview_loot_widgets = self._preview_loot_widgets
 
-	for i = 1, #preview_loot_widgets, 1 do
+	for i = 1, #preview_loot_widgets do
 		local preview_loot_widget = preview_loot_widgets[i]
 
 		self:_activate_widget_viewport(preview_loot_widget, false)
@@ -1896,7 +1896,7 @@ HeroViewStateLoot._update_active_viewports = function (self, force_update)
 	local page_index = self._current_page_index
 	local widget_index = 1 + (page_index - 1) * 3
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local widget_index = i + (page_index - 1) * 3
 		local data = self._active_reward_options[widget_index]
 		local item_previewer = data and data.item_previewer
@@ -2136,7 +2136,7 @@ end
 HeroViewStateLoot._start_reward_presentation = function (self, loot)
 	local ui_scenegraph = self.ui_scenegraph
 
-	for i = 1, num_loot_options, 1 do
+	for i = 1, num_loot_options do
 		ui_scenegraph["loot_option_" .. (i - 1) * 3 + 1].size[2] = 0
 		ui_scenegraph["loot_option_" .. (i - 1) * 3 + 2].size[2] = 0
 		ui_scenegraph["loot_option_" .. (i - 1) * 3 + 3].size[2] = 0
@@ -2197,7 +2197,7 @@ HeroViewStateLoot.set_reward_options_height_progress = function (self, progress)
 	local progress_3 = progress
 	local ui_scenegraph = self.ui_scenegraph
 
-	for i = 1, num_loot_options, 1 do
+	for i = 1, num_loot_options do
 		ui_scenegraph["loot_option_" .. (i - 1) * 3 + 1].local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_1), 0, 0, 1, -1.8))
 		ui_scenegraph["loot_option_" .. (i - 1) * 3 + 2].local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_2), 0, 0, 1, -1.8))
 		ui_scenegraph["loot_option_" .. (i - 1) * 3 + 3].local_position[2] = -h * (1 - math.catmullrom(math.easeOutCubic(progress_3), 0, 0, 1, -1.8))
@@ -2596,7 +2596,7 @@ HeroViewStateLoot._calculate_perlin_value = function (self, x, settings)
 	local persistance = shake_settings.persistance
 	local number_of_octaves = shake_settings.octaves
 
-	for i = 0, number_of_octaves, 1 do
+	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
 		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
@@ -2662,7 +2662,7 @@ HeroViewStateLoot._setup_info_window = function (self)
 	local player = self.player
 	local player_unit = player.player_unit
 	local player_level = ExperienceSettings.get_player_level(player)
-	local player_level_text = (player_level and tostring(player_level)) or "-"
+	local player_level_text = player_level and tostring(player_level) or "-"
 	local portrait_frame = "default"
 	local portrait_widget = self:_create_portrait_frame_widget(portrait_frame, portrait_image, player_level_text)
 	self._portrait_widget = portrait_widget
@@ -2685,5 +2685,3 @@ HeroViewStateLoot._handle_gamepad_activity = function (self)
 		self:_set_gamepad_input_buttons_visibility(false)
 	end
 end
-
-return

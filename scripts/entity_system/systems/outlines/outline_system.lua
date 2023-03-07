@@ -230,7 +230,7 @@ OutlineSystem.add_ext_functions = {
 
 		extension:add_outline({
 			method = "always_same_side",
-			outline_color = (is_ally and OutlineSettingsVS.colors.ally) or OutlineSettings.colors.knocked_down,
+			outline_color = is_ally and OutlineSettingsVS.colors.ally or OutlineSettings.colors.knocked_down,
 			distance = OutlineSettings.ranges.player_husk,
 			flag = OutlineSettings.flags.non_wall_occluded
 		})
@@ -351,7 +351,7 @@ OutlineSystem.set_disabled = function (self, disabled)
 		local units = self.units
 		local unit_extension_data = self.unit_extension_data
 
-		for i = 1, #units, 1 do
+		for i = 1, #units do
 			local unit = units[i]
 			local extension = unit_extension_data[unit]
 
@@ -393,7 +393,7 @@ OutlineSystem.update = function (self, context, t)
 	local extensions = self.unit_extension_data
 	local active_cutscene = self:_is_cutscene_active() or self:_is_photomode_active()
 
-	for i = 1, num_to_check_per_frame, 1 do
+	for i = 1, num_to_check_per_frame do
 		current_index = current_index % num_units + 1
 		local unit = units[current_index]
 		local extension = extensions[unit]
@@ -443,10 +443,10 @@ end
 
 local PULSE_METHODS = {
 	flash = function (t)
-		return math.round((t * 3) % 1)
+		return math.round(t * 3 % 1)
 	end,
 	pulse = function (t)
-		return math.round((t * 3) % 1.5)
+		return math.round(t * 3 % 1.5)
 	end
 }
 
@@ -498,7 +498,7 @@ OutlineSystem.outline_unit = function (self, unit, flag, channel, do_outline, ap
 			if do_outline then
 				local num_materials = Mesh.num_materials(mesh)
 
-				for j = 0, num_materials - 1, 1 do
+				for j = 0, num_materials - 1 do
 					local material = Mesh.material(mesh, j)
 
 					Material.set_color(material, "outline_color", channel)
@@ -676,5 +676,3 @@ OutlineSystem.show_versus_dark_pact_outline = function (self, unit, extension)
 
 	return not self:has_gutter_runner_invisible_buff(unit, extension)
 end
-
-return

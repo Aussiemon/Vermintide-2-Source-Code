@@ -757,9 +757,11 @@ local function create_masked_portrait_frame(scenegraph_id, frame_settings_name, 
 		0
 	}
 	local portrait_size = {
-		portrait_size[1] * scale,
-		portrait_size[2] * scale
+		86,
+		108
 	}
+	portrait_size[1] = portrait_size[1] * scale
+	portrait_size[2] = portrait_size[2] * scale
 	local portrait_offset = table.clone(default_offset)
 	portrait_offset[1] = -(portrait_size[1] / 2) + portrait_offset[1] * scale
 	portrait_offset[2] = -(portrait_size[2] / 2) + portrait_offset[2] * scale

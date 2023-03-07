@@ -31,7 +31,7 @@ SoundSectorSystem.init = function (self, context, system_name)
 	self._sector_sound_source_refs = {}
 	self._sector_process_index = 0
 
-	for i = 1, NUM_OF_SECTORS, 1 do
+	for i = 1, NUM_OF_SECTORS do
 		self._sectors[i] = {}
 		local sound_source_unit = World.spawn_unit(self.world, "units/testunits/camera")
 		self._sector_sound_source_units[i] = sound_source_unit
@@ -173,7 +173,7 @@ SoundSectorSystem.update = function (self, context, t, dt)
 	end
 
 	local camera_position = Unit.local_position(self.camera_unit, 0)
-	camera_position = (Vector3.is_valid(camera_position) and camera_position) or Vector3(0, 0, 0)
+	camera_position = Vector3.is_valid(camera_position) and camera_position or Vector3(0, 0, 0)
 	local sector_sound_source_ids = self._sector_sound_source_ids
 
 	self:_update_sectors(camera_position)
@@ -333,5 +333,3 @@ SoundSectorSystem.rpc_enemy_has_target = function (self, channel_id, unit_id, ha
 		sound_sector_extension.has_target = has_target
 	end
 end
-
-return

@@ -133,7 +133,7 @@ ActionGrenadeThrower.finish = function (self, reason)
 		status_extension:set_zooming(false)
 
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
@@ -148,5 +148,3 @@ ActionGrenadeThrower.finish = function (self, reason)
 		hud_extension.show_critical_indication = false
 	end
 end
-
-return

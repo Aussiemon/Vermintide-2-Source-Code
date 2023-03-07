@@ -32,5 +32,3 @@ settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_grudge_marks"
 }
 settings.explosion_templates = {}
-
-return

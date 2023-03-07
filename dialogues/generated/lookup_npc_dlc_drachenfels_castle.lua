@@ -14,5 +14,3 @@ DialogueLookup[DialogueLookup_n + 5] = "pwe_castle_vo_meet_sorcerer"
 DialogueLookup[DialogueLookup_n + 6] = "pes_castle_vo_meet_sorcerer"
 DialogueLookup[DialogueLookup_n + 7] = "nngl_castle_vo_sorcerer_taunt"
 DialogueLookup_n = DialogueLookup_n + 7
-
-return

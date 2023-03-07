@@ -96,5 +96,3 @@ Reportify._get_local_player = function (self)
 
 	return Managers.player:local_player(1)
 end
-
-return

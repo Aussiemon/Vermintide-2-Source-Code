@@ -48,5 +48,3 @@ PassiveAbilitySettings.dr_4 = {
 		}
 	}
 }
-
-return

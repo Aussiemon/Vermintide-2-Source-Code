@@ -251,7 +251,7 @@ PassiveAbilityWarriorPriest._play_vo = function (self)
 end
 
 PassiveAbilityWarriorPriest._set_fury_glow_enabled = function (self, enabled)
-	local flow_event = (enabled and "lua_enable_eye_glow") or "lua_disable_eye_glow"
+	local flow_event = enabled and "lua_enable_eye_glow" or "lua_disable_eye_glow"
 	local inventory_extension = self._inventory_extension
 
 	if self._is_local_human then
@@ -344,5 +344,3 @@ end
 PassiveAbilityWarriorPriest.cb_game_session_disconnect = function (self)
 	self._game_object_id = nil
 end
-
-return

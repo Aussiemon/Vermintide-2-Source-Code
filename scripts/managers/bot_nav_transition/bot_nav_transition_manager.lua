@@ -280,7 +280,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 	local down = -Quaternion.up(unit_rot)
 	local align_pos = Unit.world_position(unit, align_node)
 	local bottom_node_name = Unit.get_data(unit, "bottom_node")
-	local bottom_node = (bottom_node_name and Unit.node(unit, bottom_node_name)) or index_offset
+	local bottom_node = bottom_node_name and Unit.node(unit, bottom_node_name) or index_offset
 	local bottom_pos = Unit.world_position(unit, bottom_node)
 	local length = Vector3.dot(bottom_pos - align_pos, down)
 	local ph_world = self._physics_world
@@ -306,7 +306,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		local step_size = 0.2
 		local max_steps = 5
 
-		for step_index = 1, max_steps, 1 do
+		for step_index = 1, max_steps do
 			local check_pos = transition_to - flat_back * step_size * step_index
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
 
@@ -332,7 +332,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		local step_size = 0.2
 		local max_steps = 5
 
-		for step_index = 1, max_steps, 1 do
+		for step_index = 1, max_steps do
 			local check_pos = hit_position + flat_back * step_size * step_index
 			found_nav_mesh, z = GwNavQueries.triangle_from_position(nav_world, check_pos, 0.3, 0.5, self._layerless_traverse_logic)
 
@@ -350,8 +350,7 @@ BotNavTransitionManager.register_ladder = function (self, unit, index_offset, dr
 		end
 	end
 
-	if data.failed then
-	else
+	if not data.failed then
 		local index = self._ladder_smart_object_index + 1
 		local climbable_height = 1.5
 		local ladder_is_bidirectional = hit_position.z > bottom_pos.z - climbable_height
@@ -443,5 +442,3 @@ BotNavTransitionManager.set_layer_cost = function (self, layer_name, layer_cost)
 
 	GwNavTagLayerCostTable.set_layer_cost_multiplier(self._navtag_layer_cost_table, layer_id, layer_cost)
 end
-
-return

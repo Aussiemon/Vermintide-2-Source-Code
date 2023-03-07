@@ -30,10 +30,11 @@ AIGroupTemplates.horde = {
 		local group_data = group and group.group_data
 
 		if group_data then
+			-- Nothing
 		end
 	end,
 	destroy = function (world, nav_world, group)
-		Managers.state.conflict:horde_killed((group.group_data and group.group_data.horde_wave) or "?")
+		Managers.state.conflict:horde_killed(group.group_data and group.group_data.horde_wave or "?")
 		Managers.state.conflict.horde_spawner:set_horde_is_done(group.id)
 	end
 }
@@ -91,5 +92,3 @@ AIGroupTemplates.spawn_test = {
 }
 
 DLCUtils.merge("ai_group_templates", AIGroupTemplates)
-
-return

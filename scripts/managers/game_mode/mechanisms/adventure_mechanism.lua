@@ -23,7 +23,7 @@ local function print_vote_request(params)
 
 	print("............................................................................................................")
 	print("............................................................................................................")
-	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Matchmaking Type: %s | Twitch: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", matchmaking_type or "Not specified", (twitch_enabled and "Yes") or "No")
+	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Matchmaking Type: %s | Twitch: %s", level_key and level_key or "Not specified", difficulty_key, private_game and "yes" or "no", always_host and "yes" or "no", strict_matchmaking and "yes" or "no", quick_game and "yes" or "no", matchmaking_type or "Not specified", twitch_enabled and "Yes" or "No")
 	print("............................................................................................................")
 	print("............................................................................................................")
 end
@@ -274,7 +274,7 @@ AdventureMechanism.get_level_seed = function (self, level_seed, optional_system)
 
 	if weave_manager and weave_manager:get_active_weave() then
 		local active_objective = weave_manager:get_active_objective_template()
-		level_seed = (optional_system and active_objective.system_seeds and active_objective.system_seeds[optional_system]) or active_objective.level_seed or level_seed
+		level_seed = optional_system and active_objective.system_seeds and active_objective.system_seeds[optional_system] or active_objective.level_seed or level_seed
 	end
 
 	return level_seed
@@ -302,10 +302,10 @@ AdventureMechanism.get_end_of_level_rewards_arguments = function (self, game_won
 	local loot_dice = mission_system:get_level_end_mission_data("bonus_dice_hidden_mission")
 	local painting_scraps = mission_system:get_level_end_mission_data("painting_scrap_hidden_mission")
 	local chest_upgrade_data = {
-		tome = (tome and tome.current_amount) or 0,
-		grimoire = (grimoire and grimoire.current_amount) or 0,
-		loot_dice = (loot_dice and loot_dice.current_amount) or 0,
-		painting_scraps = (painting_scraps and painting_scraps.current_amount) or 0,
+		tome = tome and tome.current_amount or 0,
+		grimoire = grimoire and grimoire.current_amount or 0,
+		loot_dice = loot_dice and loot_dice.current_amount or 0,
+		painting_scraps = painting_scraps and painting_scraps.current_amount or 0,
 		quickplay = quickplay,
 		game_won = game_won
 	}
@@ -519,7 +519,7 @@ AdventureMechanism.profile_available = function (self, profile_synchronizer, pro
 	local party = Managers.party:get_party(1)
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local peer_id = status.peer_id
 		local local_player_id = status.local_player_id
@@ -646,7 +646,7 @@ AdventureMechanism.is_packages_loaded = function (self)
 	local package_manager = Managers.package
 
 	for name, packages in pairs(additional_packages) do
-		for i = 1, #packages, 1 do
+		for i = 1, #packages do
 			if not package_manager:has_loaded(packages[i], name) then
 				return false
 			end
@@ -674,7 +674,7 @@ AdventureMechanism._load_live_event_packages = function (self)
 		self._additional_packages = {}
 		local additional_packages = self._additional_packages
 
-		for i = 1, #special_events, 1 do
+		for i = 1, #special_events do
 			local event_data = special_events[i]
 			local event_name = event_data.name
 			local event_packages = live_event_packages[event_name]
@@ -691,7 +691,7 @@ AdventureMechanism._load_live_event_packages = function (self)
 		local package_manager = Managers.package
 
 		for name, packages in pairs(additional_packages) do
-			for i = 1, #packages, 1 do
+			for i = 1, #packages do
 				package_manager:load(packages[i], name, nil, true)
 			end
 		end
@@ -705,7 +705,7 @@ AdventureMechanism._unload_packages = function (self)
 		local package_manager = Managers.package
 
 		for name, packages in pairs(additional_packages) do
-			for i = 1, #packages, 1 do
+			for i = 1, #packages do
 				package_manager:unload(packages[i], name)
 			end
 		end
@@ -715,5 +715,3 @@ AdventureMechanism._unload_packages = function (self)
 
 	self._additional_packages_initialized = false
 end
-
-return

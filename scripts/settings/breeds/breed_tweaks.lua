@@ -121,7 +121,7 @@ end
 local function health_steps(value, step_multipliers)
 	local value_steps = {}
 
-	for i = 1, 8, 1 do
+	for i = 1, 8 do
 		local step_value = value * step_multipliers[i]
 		local networkifyed_health = networkify_health(step_value)
 		value_steps[i] = networkifyed_health
@@ -133,7 +133,7 @@ end
 local function steps(value, step_multipliers)
 	local value_steps = {}
 
-	for i = 1, 8, 1 do
+	for i = 1, 8 do
 		local raw_value = value * step_multipliers[i]
 		local decimal = raw_value % 1
 		local rounded_decimal = math.round(decimal * 4) * 0.25
@@ -2717,5 +2717,3 @@ BreedTweaks.standard_bearer_spawn_list_replacements = {
 	"beastmen_ungor_archer",
 	"beastmen_ungor"
 }
-
-return

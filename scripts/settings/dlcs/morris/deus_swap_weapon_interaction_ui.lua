@@ -77,7 +77,7 @@ DeusSwapWeaponInteractionUI._evaluate_interactable = function (self, player_unit
 		self:_start_animation("on_enter")
 	else
 		local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
-		local weapon_slot_name = (wielded_slot_name == "slot_melee" and "slot_melee") or "slot_ranged"
+		local weapon_slot_name = wielded_slot_name == "slot_melee" and "slot_melee" or "slot_ranged"
 		local new_weapon = not self._weapon_slot_name or weapon_slot_name ~= self._weapon_slot_name
 		self._weapon_slot_name = weapon_slot_name
 		local peer_id = deus_run_controller:get_own_peer_id()
@@ -113,7 +113,7 @@ DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit
 	local cost = pickup_ext:get_purchase_cost()
 	local stored_purchase = pickup_ext:get_stored_purchase()
 	local melee, ranged = deus_run_controller:get_own_loadout()
-	local equipped_item = (self._type == "melee" and melee) or ranged
+	local equipped_item = self._type == "melee" and melee or ranged
 	local tooltip_widget = self._widgets_by_name.weapon_tooltip
 	tooltip_widget.content.item = equipped_item
 	tooltip_widget.style.item.draw_end_passes = true
@@ -123,12 +123,12 @@ DeusSwapWeaponInteractionUI._populate_widget = function (self, interactable_unit
 	chest_info_widget.content.rarity_text = RaritySettings[rarity].display_name
 	chest_info_widget.style.rarity.text_color = rarity_color
 	chest_info_widget.content.cost_text = soft_currency_amount .. "/" .. cost
-	chest_info_widget.style.cost_text.text_color = (cost <= soft_currency_amount and {
+	chest_info_widget.style.cost_text.text_color = cost <= soft_currency_amount and {
 		255,
 		255,
 		255,
 		255
-	}) or {
+	} or {
 		255,
 		255,
 		0,
@@ -211,11 +211,9 @@ DeusSwapWeaponInteractionUI._draw = function (self, dt, t)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
-	for i = 1, #self._widgets, 1 do
+	for i = 1, #self._widgets do
 		UIRenderer.draw_widget(ui_renderer, self._widgets[i])
 	end
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

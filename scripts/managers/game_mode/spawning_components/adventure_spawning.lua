@@ -24,7 +24,7 @@ AdventureSpawning._setup_game_mode_data = function (self, side, saved_game_mode_
 	local party = side.party
 	local num_slots = party.num_slots
 
-	for i = 1, num_slots, 1 do
+	for i = 1, num_slots do
 		saved_game_mode_data[i] = saved_game_mode_data[i] or {}
 	end
 end
@@ -99,7 +99,7 @@ AdventureSpawning._assign_data_to_slot = function (self, slot, data)
 	if spawn_state == nil or instant_spawn then
 		local ingame_time = Managers.time:time("client_ingame")
 		local is_initial_spawn = ingame_time == nil or ingame_time < 10
-		data.spawn_state = (is_initial_spawn and "is_initial_spawn") or "spawn"
+		data.spawn_state = is_initial_spawn and "is_initial_spawn" or "spawn"
 	end
 
 	local peer_id = slot.peer_id
@@ -206,7 +206,7 @@ AdventureSpawning._update_player_status = function (self, t, dt, occupied_slots)
 	local player_manager = Managers.player
 	local ScriptUnit_extension = ScriptUnit.extension
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local data = status.game_mode_data
 		local peer_id = status.peer_id
@@ -298,7 +298,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, part
 			ignore_local_player_for_party = party_id ~= local_party
 		end
 
-		for i = 1, #occupied_slots, 1 do
+		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
 			local other_peer_id = status.peer_id
 			local other_local_player_id = status.local_player_id
@@ -307,7 +307,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, part
 				return
 			end
 
-			if DEDICATED_SERVER or ignore_local_player_for_party or (other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID) then
+			if DEDICATED_SERVER or ignore_local_player_for_party or other_peer_id == own_peer_id and other_local_player_id == REAL_PLAYER_LOCAL_ID then
 				local_player_is_ready = true
 			end
 		end
@@ -318,7 +318,7 @@ AdventureSpawning._update_spawning = function (self, dt, t, occupied_slots, part
 
 		local network_server = self._network_server
 
-		for i = 1, #occupied_slots, 1 do
+		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
 			local data = status.game_mode_data
 			local spawn_state = data.spawn_state
@@ -426,7 +426,7 @@ AdventureSpawning._spawn_player = function (self, status)
 		Managers.state.network.network_transmit:send_rpc("rpc_to_client_spawn_player", peer_id, local_player_id, profile_index, career_index, position, rotation, is_initial_spawn, ammo_melee_percent_int, ammo_ranged_percent_int, ability_cooldown_percent_int, healthkit_id, potion_id, grenade_id, network_additional_items, network_buff_ids)
 	end
 
-	data.spawn_state = (is_initial_spawn and "initial_spawning") or "spawning"
+	data.spawn_state = is_initial_spawn and "initial_spawning" or "spawning"
 end
 
 AdventureSpawning._spawn_bot = function (self, status)
@@ -471,7 +471,7 @@ end
 AdventureSpawning.force_update_spawn_positions = function (self, safe_position, safe_rotation)
 	local saved_game_mode_data = self._saved_game_mode_data
 
-	for i = 1, #saved_game_mode_data, 1 do
+	for i = 1, #saved_game_mode_data do
 		local data = saved_game_mode_data[i]
 
 		if data.position and data.rotation then
@@ -499,7 +499,7 @@ AdventureSpawning.add_spawn_point = function (self, unit)
 		rot = QuaternionBox(rot)
 	}
 	local prior_state = Unit.get_data(unit, "from_game_mode")
-	local prior_state = (prior_state ~= "" and prior_state) or "default"
+	local prior_state = prior_state ~= "" and prior_state or "default"
 	self._spawn_points[prior_state] = self._spawn_points[prior_state] or {}
 	self._spawn_points[prior_state][#self._spawn_points[prior_state] + 1] = spawn_point
 end
@@ -541,7 +541,7 @@ AdventureSpawning.teleport_despawned_players = function (self, position)
 	local occupied_slots = party.occupied_slots
 	local player_manager = Managers.player
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local peer_id = status.peer_id
 		local local_player_id = status.local_player_id
@@ -588,5 +588,3 @@ end
 AdventureSpawning.get_respawn_handler = function (self)
 	return self._respawn_handler
 end
-
-return

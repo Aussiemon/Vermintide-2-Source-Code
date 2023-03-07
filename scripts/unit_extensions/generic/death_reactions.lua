@@ -25,7 +25,7 @@ local function play_screen_space_blood(world, unit, attacker_unit, killing_blow,
 	local camera_manager = Managers.state.camera
 
 	for _, player in pairs(player_manager:human_players()) do
-		if not player.remote and (not script_data.disable_remote_blood_splatter or (Unit.alive(attacker_unit) and player == player_manager:owner(attacker_unit))) then
+		if not player.remote and (not script_data.disable_remote_blood_splatter or Unit.alive(attacker_unit) and player == player_manager:owner(attacker_unit)) then
 			local vp_name = player.viewport_name
 			local cam_pos = camera_manager:camera_position(vp_name)
 
@@ -42,7 +42,7 @@ local function handle_boss_difficulty_kill_achievement_tracking(breed, statistic
 	local difficulty_kill_achievements = breed.difficulty_kill_achievements
 
 	if difficulty_kill_achievements then
-		for i = 1, #difficulty_kill_achievements, 1 do
+		for i = 1, #difficulty_kill_achievements do
 			local kill_achivement = difficulty_kill_achievements[i]
 			local current_rank = Managers.state.difficulty:get_difficulty_rank()
 			local player_manager = Managers.player
@@ -78,7 +78,7 @@ local function handle_military_event_achievement(damage_type, breed_name, statis
 			"military_statue_kill_chaos_warriors_cata"
 		}
 
-		for i = 1, #stat_names, 1 do
+		for i = 1, #stat_names do
 			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 			local difficulty = Managers.state.difficulty:get_difficulty()
 
@@ -175,7 +175,7 @@ local function ai_default_unit_start(unit, context, t, killing_blow, is_server)
 	local locomotion = ScriptUnit.has_extension(unit, "locomotion_system")
 
 	if locomotion then
-		locomotion.death_velocity_boxed = (locomotion.movement_type == "script_driven" and Vector3Box(locomotion:current_velocity())) or nil
+		locomotion.death_velocity_boxed = locomotion.movement_type == "script_driven" and Vector3Box(locomotion:current_velocity()) or nil
 
 		locomotion:set_affected_by_gravity(false)
 		locomotion:set_movement_type("script_driven")
@@ -340,7 +340,7 @@ local function update_wall_nail(unit, dt, t, data)
 			fassert(ray_dist > 0, "Ray distance is not greater than 0")
 
 			local collision_filter = "filter_weapon_nailing"
-			local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(World.get_data(world, "physics_world"), position, dir, (data.nailed and math.min(ray_dist, 0.4)) or ray_dist, "closest", "collision_filter", collision_filter)
+			local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(World.get_data(world, "physics_world"), position, dir, data.nailed and math.min(ray_dist, 0.4) or ray_dist, "closest", "collision_filter", collision_filter)
 
 			if hit then
 				Unit.disable_animation_state_machine(unit)
@@ -610,7 +610,7 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	if breed_killed.elite then
 		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-		for i = 1, #player_and_bot_units, 1 do
+		for i = 1, #player_and_bot_units do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
@@ -623,7 +623,7 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	if breed_killed.boss then
 		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-		for i = 1, #player_and_bot_units, 1 do
+		for i = 1, #player_and_bot_units do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
@@ -636,7 +636,7 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	if breed_killed.special then
 		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-		for i = 1, #player_and_bot_units, 1 do
+		for i = 1, #player_and_bot_units do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
@@ -651,7 +651,7 @@ local function trigger_player_killing_blow_ai_buffs(ai_unit, killing_blow)
 	if ping_extension then
 		local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-		for i = 1, #player_and_bot_units, 1 do
+		for i = 1, #player_and_bot_units do
 			local unit = player_and_bot_units[i]
 			local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
@@ -1221,7 +1221,7 @@ DeathReactions.templates = {
 
 				local amount_of_loot_drops = math.random(2, 4)
 
-				for i = 1, amount_of_loot_drops, 1 do
+				for i = 1, amount_of_loot_drops do
 					local spawn_value = math.random()
 					local game_mode_manager = Managers.state.game_mode
 					local game_mode = game_mode_manager:game_mode_key()
@@ -1788,7 +1788,7 @@ DeathReactions.templates = {
 					if not data.destroyed then
 						local num_actors = Unit.num_actors(unit)
 
-						for i = 0, num_actors - 1, 1 do
+						for i = 0, num_actors - 1 do
 							Unit.destroy_actor(unit, i)
 						end
 
@@ -1806,12 +1806,12 @@ DeathReactions.templates = {
 							local hit_player_func = template.hit_player_function
 							local sides = Managers.state.side:sides()
 
-							for k = 1, #sides, 1 do
+							for k = 1, #sides do
 								local side = sides[k]
 								local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 								local num_player_units = #player_and_bot_units
 
-								for i = 1, num_player_units, 1 do
+								for i = 1, num_player_units do
 									local player_unit = player_and_bot_units[i]
 
 									hit_player_func(player_unit, player_and_bot_units)
@@ -1896,7 +1896,7 @@ DeathReactions.templates = {
 				if not data.destroyed then
 					local num_actors = Unit.num_actors(unit)
 
-					for i = 0, num_actors - 1, 1 do
+					for i = 0, num_actors - 1 do
 						Unit.destroy_actor(unit, i)
 					end
 
@@ -2198,7 +2198,7 @@ end)
 
 DeathReactions.get_reaction = function (death_reaction_template, is_husk)
 	local templates = DeathReactions.templates
-	local husk_key = (is_husk and "husk") or "unit"
+	local husk_key = is_husk and "husk" or "unit"
 	local reaction = templates[death_reaction_template][husk_key]
 
 	fassert(reaction, "Death reaction for template %q and husk key %q does not exist", death_reaction_template, husk_key)
@@ -2214,5 +2214,3 @@ DeathReactions._add_ai_killed_by_player_telemetry = function (victim_unit, breed
 
 	Managers.telemetry.events:player_killed_ai(player, player_position, victim_position, breed_name, weapon_name, damage_type, death_hit_zone)
 end
-
-return

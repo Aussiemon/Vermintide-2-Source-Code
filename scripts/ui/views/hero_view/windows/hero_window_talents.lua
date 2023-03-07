@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local definitions = local_require("scripts/ui/views/hero_view/windows/definitions/hero_window_talents_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -259,7 +255,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 	local talents = self._selected_talents
 	local all_talents = Talents[hero_name]
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local widget = widgets_by_name["talent_row_" .. i]
 
 		if widget then
@@ -270,7 +266,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 			local unlock_name = "talent_point_" .. i
 			local talent_unlock_level = TalentUnlockLevels[unlock_name]
 			local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, self.hero_level)
-			local level_text_color = (row_unlocked and Colors.get_color_table_with_alpha("green", 255)) or Colors.get_color_table_with_alpha("red", 255)
+			local level_text_color = row_unlocked and Colors.get_color_table_with_alpha("green", 255) or Colors.get_color_table_with_alpha("red", 255)
 			content.level_text = tostring(talent_unlock_level)
 			style.level_text.text_color = level_text_color
 
@@ -289,9 +285,7 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 				UIWidget.animate(widget, anim)
 			end
 
-			for j = 1, NumTalentColumns, 1 do
-
-				-- Decompilation error in this vicinity:
+			for j = 1, NumTalentColumns do
 				local is_selected = selected_column == j
 				local talent_name = tree[i][j]
 				local id = TalentIDLookup[talent_name].talent_id
@@ -303,14 +297,14 @@ HeroWindowTalents._populate_talents_by_hero = function (self, initialize)
 				local background_glow_name = "background_glow" .. name_suffix
 				local hotspot = content[hotspot_name]
 
-				if is_selected or (no_talent_selected and row_unlocked) then
+				if is_selected or no_talent_selected and row_unlocked then
 					style[icon_name].saturated = false
 				else
 					style[icon_name].saturated = true
 				end
 
-				content[icon_name] = (talent_data and talent_data.icon) or "icons_placeholder"
-				content[title_text_name] = (talent_data and Localize(talent_data.name)) or "Undefined"
+				content[icon_name] = talent_data and talent_data.icon or "icons_placeholder"
+				content[title_text_name] = talent_data and Localize(talent_data.name) or "Undefined"
 				hotspot.is_selected = is_selected
 				hotspot.talent = talent_data
 				hotspot.talent_id = id
@@ -329,14 +323,14 @@ end
 HeroWindowTalents._clear_talents = function (self)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local widget = widgets_by_name["talent_row_" .. i]
 
 		if widget then
 			local content = widget.content
 			local style = widget.style
 
-			for j = 1, NumTalentColumns, 1 do
+			for j = 1, NumTalentColumns do
 				local name_suffix = "_" .. tostring(j)
 				local icon_name = "icon" .. name_suffix
 				local hotspot_name = "hotspot" .. name_suffix
@@ -353,13 +347,13 @@ end
 HeroWindowTalents._is_talent_pressed = function (self)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local widget = widgets_by_name["talent_row_" .. i]
 
 		if widget then
 			local content = widget.content
 
-			for j = 1, NumTalentColumns, 1 do
+			for j = 1, NumTalentColumns do
 				local name_suffix = "_" .. tostring(j)
 				local hotspot_name = "hotspot" .. name_suffix
 				local hotspot = content[hotspot_name]
@@ -379,13 +373,13 @@ end
 HeroWindowTalents._is_talent_hovered = function (self)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local widget = widgets_by_name["talent_row_" .. i]
 
 		if widget then
 			local content = widget.content
 
-			for j = 1, NumTalentColumns, 1 do
+			for j = 1, NumTalentColumns do
 				local name_suffix = "_" .. tostring(j)
 				local hotspot_name = "hotspot" .. name_suffix
 				local hotspot = content[hotspot_name]
@@ -401,13 +395,13 @@ end
 HeroWindowTalents._is_disabled_talent_hovered = function (self)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local widget = widgets_by_name["talent_row_" .. i]
 
 		if widget then
 			local content = widget.content
 
-			for j = 1, NumTalentColumns, 1 do
+			for j = 1, NumTalentColumns do
 				local name_suffix = "_" .. tostring(j)
 				local hotspot_name = "hotspot" .. name_suffix
 				local hotspot = content[hotspot_name]
@@ -430,7 +424,7 @@ HeroWindowTalents._populate_career_info = function (self, initialize)
 	local character_selection_image = career_settings.character_selection_image
 	local display_name = career_settings.display_name
 	local widgets_by_name = self._widgets_by_name
-	local career_color = (Colors.color_definitions[career_name] and Colors.get_color_table_with_alpha(career_name, 255)) or {
+	local career_color = Colors.color_definitions[career_name] and Colors.get_color_table_with_alpha(career_name, 255) or {
 		255,
 		255,
 		255,
@@ -467,5 +461,3 @@ HeroWindowTalents._animate_pulse = function (self, target, target_index, from, t
 
 	return new_animation
 end
-
-return

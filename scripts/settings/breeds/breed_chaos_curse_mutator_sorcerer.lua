@@ -9,5 +9,3 @@ action_data.grab_attack.grab_delay = 2
 action_data.follow.fast_move_speed = 0.5
 action_data.follow.slow_move_speed = 3
 BreedActions.curse_mutator_sorcerer = table.create_copy(BreedActions.curse_mutator_sorcerer, action_data)
-
-return

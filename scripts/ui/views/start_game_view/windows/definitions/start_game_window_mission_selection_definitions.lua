@@ -842,7 +842,7 @@ local widgets = {
 	select_button = UIWidgets.create_default_button("select_button", scenegraph_definition.select_button.size, nil, nil, Localize("menu_select"), 32, nil, nil, nil, disable_with_gamepad)
 }
 
-for i = 1, 20, 1 do
+for i = 1, 20 do
 	local scenegraph_id = "level_root_" .. i
 	scenegraph_definition[scenegraph_id] = {
 		vertical_alignment = "center",

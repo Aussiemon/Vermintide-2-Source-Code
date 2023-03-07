@@ -293,5 +293,3 @@ BotConstants.default = {
 		}
 	}
 }
-
-return

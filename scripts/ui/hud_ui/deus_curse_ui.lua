@@ -104,7 +104,7 @@ DeusCurseUI.show_special_message = function (self, theme, name, description, dur
 		255,
 		255
 	}
-	local title_text = (theme_settings.curse_title and Localize(theme_settings.curse_title)) or ""
+	local title_text = theme_settings.curse_title and Localize(theme_settings.curse_title) or ""
 	name = Localize(name)
 	description = Localize(description)
 
@@ -127,7 +127,7 @@ DeusCurseUI.show_curse_info = function (self, theme, curse)
 	local game_mode_manager = Managers.state.game_mode
 	local round_started = game_mode_manager:is_round_started()
 	local display_time = self:_get_display_time()
-	self._timer = (round_started and display_time) or math.huge
+	self._timer = round_started and display_time or math.huge
 	local mutator_data = MutatorTemplates[curse]
 	local curse_name = Localize(mutator_data.display_name)
 	local curse_description = Localize(mutator_data.description)
@@ -139,7 +139,7 @@ DeusCurseUI.show_curse_info = function (self, theme, curse)
 		255,
 		255
 	}
-	local title_text = (theme_settings.curse_title and Localize(theme_settings.curse_title)) or ""
+	local title_text = theme_settings.curse_title and Localize(theme_settings.curse_title) or ""
 
 	self:_update_description_widget(title_text, curse_name, curse_description, icon, theme_color)
 	self:_start_animation("curse_description_animation", "description_start")
@@ -227,5 +227,3 @@ DeusCurseUI._clear_animations = function (self)
 
 	table.clear(self._animations)
 end
-
-return

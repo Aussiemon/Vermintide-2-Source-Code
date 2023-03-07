@@ -104,12 +104,12 @@ VoteTemplates.deus_settings_vote = {
 			NetworkLookup.mission_ids[mission_id],
 			NetworkLookup.act_keys[act_key],
 			NetworkLookup.difficulties[difficulty],
-			(quick_game and 1) or 2,
-			(private_game and 1) or 2,
-			(always_host and 1) or 2,
-			(strict_matchmaking and 1) or 2,
+			quick_game and 1 or 2,
+			private_game and 1 or 2,
+			always_host and 1 or 2,
+			strict_matchmaking and 1 or 2,
 			NetworkLookup.matchmaking_types[matchmaking_type],
-			(twitch_enabled and 1) or 2,
+			twitch_enabled and 1 or 2,
 			NetworkLookup.mechanisms[mechanism],
 			dominant_god and NetworkLookup.deus_themes[dominant_god]
 		}
@@ -168,5 +168,3 @@ VoteTemplates.deus_settings_vote = {
 		return votes
 	end
 }
-
-return

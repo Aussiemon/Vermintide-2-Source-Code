@@ -145,7 +145,7 @@ StartGameWindowMutatorSummary.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -157,5 +157,3 @@ end
 StartGameWindowMutatorSummary._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

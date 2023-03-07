@@ -168,9 +168,9 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 	local arrow_style = style.arrow
 	local is_clamped = content.is_clamped
 	local clamped_alpha = 100
-	icon_style.color[1] = (is_clamped and 100) or 255
-	star_style.color[1] = (is_clamped and 100) or 200
-	arrow_style.color[1] = (is_clamped and 100) or 0
+	icon_style.color[1] = is_clamped and 100 or 255
+	star_style.color[1] = is_clamped and 100 or 200
+	arrow_style.color[1] = is_clamped and 100 or 0
 	arrow_style.angle = content.angle
 	local angle, ox, oy, oz = get_arrow_angle_and_offset(content.forward_dot_flat, content.right_dot_flat, arrow_style.texture_size, icon_style.texture_size, widget.offset[2] - 540)
 	arrow_style.angle = angle
@@ -185,5 +185,3 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 
 	return false
 end
-
-return

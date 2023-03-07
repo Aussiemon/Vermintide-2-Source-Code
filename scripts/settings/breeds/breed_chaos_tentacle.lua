@@ -179,5 +179,3 @@ local action_data = {
 	idle = {}
 }
 BreedActions.chaos_tentacle = table.create_copy(BreedActions.chaos_tentacle, action_data)
-
-return

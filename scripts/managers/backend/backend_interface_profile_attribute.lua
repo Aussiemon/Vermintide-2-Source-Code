@@ -19,5 +19,3 @@ end
 BackendInterfaceProfileAttribute.get_string = function (self, name)
 	return Backend.read_profile_attribute_as_string(name)
 end
-
-return

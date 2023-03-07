@@ -27,7 +27,7 @@ local function cached_key_mod(key, key_modifier, missing)
 		}
 	end
 
-	return (missing and cache[key].missing) or cache[key].exist
+	return missing and cache[key].missing or cache[key].exist
 end
 
 DebugKeyHandler = DebugKeyHandler or {
@@ -75,10 +75,10 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 			DebugKeyHandler.keys[category] = category_keys
 		end
 
-		local key_string = (input_service:has(key) and key) or cached_fail(key)
+		local key_string = input_service:has(key) and key or cached_fail(key)
 
 		if key_modifier then
-			key_string = (input_service:has(key) and cached_key_mod(key, key_modifier)) or cached_key_mod(key, key_modifier, true)
+			key_string = input_service:has(key) and cached_key_mod(key, key_modifier) or cached_key_mod(key, key_modifier, true)
 		end
 
 		category_keys[key_string] = description
@@ -89,7 +89,7 @@ DebugKeyHandler.key_pressed = function (key, description, category, key_modifier
 	if key_modifier then
 		modifier_pressed = input_service:get(key_modifier)
 	else
-		for i = 1, #blocking_modifiers, 1 do
+		for i = 1, #blocking_modifiers do
 			local blocking_key = blocking_modifiers[i]
 
 			if blocking_key ~= key and input_service:get(blocking_key) then
@@ -139,7 +139,7 @@ DebugKeyHandler.render = function ()
 	local res_x, res_y = Application.resolution()
 	local gui = DebugKeyHandler.gui
 	local start_y = DebugKeyHandler.current_y
-	DebugKeyHandler.current_y = math.lerp(start_y, res_y / 2 + (DebugKeyHandler.num_keys * font_size) / 2 + (table.size(DebugKeyHandler.keys) * font_size) / 2, 0.1)
+	DebugKeyHandler.current_y = math.lerp(start_y, res_y / 2 + DebugKeyHandler.num_keys * font_size / 2 + table.size(DebugKeyHandler.keys) * font_size / 2, 0.1)
 	local pos = Vector3(res_x - 230, start_y, 200)
 
 	Gui.text(gui, "Debug keys", font_mtrl, font_size, font, pos, header_color)
@@ -170,5 +170,3 @@ DebugKeyHandler.render = function ()
 		Gui.rect(gui, Vector3(res_x - 250, pos.y + font_size, 300), Vector2(250, start_y - pos.y), Color(offset_lerp * 200, 20, 20, 20))
 	end
 end
-
-return

@@ -9,7 +9,7 @@ CosmeticUtils.color_tint_unit = function (unit, hero_name, gradient_variation, g
 
 	local num_meshes = Unit.num_meshes(unit)
 
-	for i = 0, num_meshes - 1, 1 do
+	for i = 0, num_meshes - 1 do
 		local mesh = Unit.mesh(unit, i)
 		local has_material = Mesh.has_material(mesh, material_name)
 
@@ -62,7 +62,7 @@ CosmeticUtils.update_cosmetic_slot = function (player, slot, item_name, skin_nam
 		return
 	end
 
-	if player and (player.local_player or (player.bot_player and player.is_server)) and player:sync_data_active() then
+	if player and (player.local_player or player.bot_player and player.is_server) and player:sync_data_active() then
 		local name_id = 1
 
 		if slot == "slot_frame" or slot == "slot_skin" then
@@ -152,7 +152,7 @@ CosmeticUtils.get_default_cosmetic_slot = function (career_settings, slot_name)
 		local preview_items = career_settings.preview_items
 
 		if preview_items then
-			for i = 1, #preview_items, 1 do
+			for i = 1, #preview_items do
 				local item = preview_items[i]
 				local item_name = item.item_name
 				local item_template = ItemMasterList[item_name]
@@ -190,7 +190,7 @@ CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, car
 	local preview_items = career.preview_items
 
 	if preview_items then
-		for i = 1, #preview_items, 1 do
+		for i = 1, #preview_items do
 			local item = preview_items[i]
 			local item_name = item.item_name
 			local item_template = ItemMasterList[item_name]
@@ -204,7 +204,7 @@ CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, car
 
 	CosmeticUtils.update_cosmetic_slot(player, "slot_skin", career.base_skin)
 
-	for i = 1, slots_n, 1 do
+	for i = 1, slots_n do
 		local slot_name = cosmetic_and_weapon_slots[i]
 		local item = BackendUtils.get_loadout_item(career_name, slot_name)
 
@@ -219,5 +219,3 @@ CosmeticUtils.sync_local_player_cosmetics = function (player, profile_index, car
 		end
 	end
 end
-
-return

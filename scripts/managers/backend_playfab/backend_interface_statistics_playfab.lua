@@ -164,5 +164,3 @@ BackendInterfaceStatisticsPlayFab.reset = function (self)
 
 	self._request_queue:enqueue(request, success_callback)
 end
-
-return

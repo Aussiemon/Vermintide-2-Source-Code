@@ -98,6 +98,7 @@ SplitscreenTester._setup_input = function (self)
 	self.input_manager:initialize_device("gamepad")
 
 	if not IS_CONSOLE then
+		-- Nothing
 	end
 
 	self.input_manager:create_input_service("splitscreen_tester", "SplitScreenTesterKeymaps")
@@ -189,10 +190,10 @@ SplitscreenTester._update_input = function (self, dt, t)
 end
 
 SplitscreenTester._resize_viewports = function (self)
-	local multiplier_x = (self._splitscreen_active and SPLITSCREEN_WIDTH) or 1 / SPLITSCREEN_WIDTH
-	local multiplier_y = (self._splitscreen_active and SPLITSCREEN_HEIGHT) or 1 / SPLITSCREEN_HEIGHT
-	local extra_offset_x = (self._splitscreen_active and SPLITSCREEN_OFFSET_X) or 0
-	local extra_offset_y = (self._splitscreen_active and SPLITSCREEN_OFFSET_Y) or 0
+	local multiplier_x = self._splitscreen_active and SPLITSCREEN_WIDTH or 1 / SPLITSCREEN_WIDTH
+	local multiplier_y = self._splitscreen_active and SPLITSCREEN_HEIGHT or 1 / SPLITSCREEN_HEIGHT
+	local extra_offset_x = self._splitscreen_active and SPLITSCREEN_OFFSET_X or 0
+	local extra_offset_y = self._splitscreen_active and SPLITSCREEN_OFFSET_Y or 0
 	local worlds = Managers.world._worlds
 
 	for _, world in pairs(worlds) do
@@ -237,9 +238,9 @@ end
 application_resolution = application_resolution or Application.resolution
 
 Application.resolution = function ()
-	local splitscreen = (Managers.splitscreen and Managers.splitscreen:active()) or false
-	local multiplier_x = (splitscreen and SPLITSCREEN_WIDTH) or 1
-	local multiplier_y = (splitscreen and SPLITSCREEN_HEIGHT) or 1
+	local splitscreen = Managers.splitscreen and Managers.splitscreen:active() or false
+	local multiplier_x = splitscreen and SPLITSCREEN_WIDTH or 1
+	local multiplier_y = splitscreen and SPLITSCREEN_HEIGHT or 1
 	local w, h = application_resolution()
 
 	return w * multiplier_x, h * multiplier_y
@@ -248,9 +249,9 @@ end
 gui_resolution = gui_resolution or Gui.resolution
 
 Gui.resolution = function ()
-	local splitscreen = (Managers.splitscreen and Managers.splitscreen:active()) or false
-	local multiplier_x = (splitscreen and SPLITSCREEN_WIDTH) or 1
-	local multiplier_y = (splitscreen and SPLITSCREEN_HEIGHT) or 1
+	local splitscreen = Managers.splitscreen and Managers.splitscreen:active() or false
+	local multiplier_x = splitscreen and SPLITSCREEN_WIDTH or 1
+	local multiplier_y = splitscreen and SPLITSCREEN_HEIGHT or 1
 	local w, h = gui_resolution()
 
 	return w * multiplier_x, h * multiplier_y
@@ -271,5 +272,3 @@ Camera.world_to_screen = function (...)
 
 	return pos
 end
-
-return

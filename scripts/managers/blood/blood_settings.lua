@@ -73,10 +73,8 @@ BloodSettings.get_hit_effect_for_race = function (self, race)
 		local race_blood = self.hit_effects.first_person_per_race[race]
 		local default_race_blood = self.hit_effects.first_person_per_race.default
 
-		return race_blood or (race_blood == nil and default_race_blood)
+		return race_blood or race_blood == nil and default_race_blood
 	end
 
 	return nil
 end
-
-return

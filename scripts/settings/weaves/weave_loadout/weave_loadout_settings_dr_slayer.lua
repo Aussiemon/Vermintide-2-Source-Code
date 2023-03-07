@@ -6,5 +6,3 @@ WeaveLoadoutSettings.dr_slayer = {
 	properties = {},
 	traits = {}
 }
-
-return

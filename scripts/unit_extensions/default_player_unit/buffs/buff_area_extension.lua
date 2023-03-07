@@ -96,5 +96,3 @@ BuffAreaExtension._spawn_los_blocker = function (self)
 
 	self._los_blocker_unit = los_blocker_unit
 end
-
-return

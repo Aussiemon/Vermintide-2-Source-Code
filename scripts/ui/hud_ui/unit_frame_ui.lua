@@ -492,7 +492,7 @@ UnitFrameUI.set_player_name = function (self, name_text)
 			local player_name_shadow_font_size = UIRenderer.scaled_font_size_by_width(self.ui_renderer, display_name, max_width, player_name_shadow_style)
 			player_name_shadow_style.font_size = player_name_shadow_font_size
 		else
-			display_name = (widget.style.player_name and PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name_text) and UIRenderer.crop_text_width(self.ui_renderer, name_text, max_width, widget.style.player_name)) or name_text
+			display_name = widget.style.player_name and PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name_text) and UIRenderer.crop_text_width(self.ui_renderer, name_text, max_width, widget.style.player_name) or name_text
 		end
 
 		widget_content.player_name = display_name
@@ -522,11 +522,11 @@ UnitFrameUI.set_inventory_slot_data = function (self, slot_name, slot_visible, i
 		local widget_slot_name = "item_slot_" .. slot_index
 		local widget_slot_bg_name = "item_slot_bg_" .. slot_index
 		local widget_slot_frame_name = "item_slot_frame_" .. slot_index
-		local icon_texture = (slot_visible and hud_icon) or "icons_placeholder"
+		local icon_texture = slot_visible and hud_icon or "icons_placeholder"
 		widget_content[widget_slot_name] = icon_texture
-		widget_style[widget_slot_name].color[1] = (slot_visible and 255) or 0
-		widget_style[widget_slot_bg_name].color[1] = (slot_visible and 255) or 100
-		widget_style[widget_slot_frame_name].color[1] = (slot_visible and 255) or 100
+		widget_style[widget_slot_name].color[1] = slot_visible and 255 or 0
+		widget_style[widget_slot_bg_name].color[1] = slot_visible and 255 or 100
+		widget_style[widget_slot_frame_name].color[1] = slot_visible and 255 or 100
 		local item_count_slot_name = item_count_slot_names[slot_index]
 
 		if item_count_slot_name then
@@ -539,7 +539,7 @@ UnitFrameUI.set_inventory_slot_data = function (self, slot_name, slot_visible, i
 
 		if inventory_consumable_slot_colors then
 			local default_slot_background_color = inventory_consumable_slot_colors.default
-			local slot_background_color = (slot_visible and (inventory_consumable_slot_colors[item_name] or default_slot_background_color)) or default_slot_background_color
+			local slot_background_color = slot_visible and (inventory_consumable_slot_colors[item_name] or default_slot_background_color) or default_slot_background_color
 			local slot_bg_style = widget_style[widget_slot_bg_name]
 			local slot_bg_color = slot_bg_style.color
 			slot_bg_color[2] = slot_background_color[2]
@@ -569,7 +569,7 @@ UnitFrameUI.set_equipped_weapon_info = function (self, slot_name, wielded, item_
 
 	for name, field_name in pairs(self.weapon_slot_widget_settings.ammo_fields) do
 		if slot_name == name then
-			local alpha = (wielded and 255) or 100
+			local alpha = wielded and 255 or 100
 			widget_style[field_name].text_color[1] = alpha
 			widget_style[field_name .. "_2"].text_color[1] = alpha
 			widget_style[field_name .. "_3"].text_color[1] = alpha
@@ -592,8 +592,8 @@ UnitFrameUI.set_ammo_for_slot = function (self, slot_name, ammo_count, remaining
 		widget_content[text_field_name .. "_3"] = " "
 	else
 		widget_content[text_field_name] = ammo_prefix .. tostring(ammo_count)
-		widget_content[text_field_name .. "_2"] = (using_single_clip and ammo_prefix) or "|"
-		widget_content[text_field_name .. "_3"] = (using_single_clip and ammo_prefix) or tostring(remaining_ammo)
+		widget_content[text_field_name .. "_2"] = using_single_clip and ammo_prefix or "|"
+		widget_content[text_field_name .. "_3"] = using_single_clip and ammo_prefix or tostring(remaining_ammo)
 	end
 
 	self:_set_widget_dirty(widget)
@@ -742,9 +742,9 @@ UnitFrameUI._update_voice_animation = function (self, dt, t, is_talking)
 	local highlight_style = widget.style.talk_indicator_highlight
 	local color = highlight_style.color
 	local old_talk_indicator_alpha = talk_indicator_color[1]
-	local new_talk_indicator_alpha = old_talk_indicator_alpha + ((is_talking and 1) or -1) * 255 * dt
+	local new_talk_indicator_alpha = old_talk_indicator_alpha + (is_talking and 1 or -1) * 255 * dt
 	local old_alpha = color[1]
-	old_alpha = old_alpha + ((is_talking and 1) or -1) * 255 * dt
+	old_alpha = old_alpha + (is_talking and 1 or -1) * 255 * dt
 
 	if is_talking then
 		old_alpha = old_alpha + math.sin(t * 3) * 20
@@ -798,7 +798,7 @@ end
 
 UnitFrameUI.show_respawn_countdown = function (self, player, is_local_player, spawn_timer)
 	self._show_respawn_ui = true
-	local widget = (self._frame_type == "player" and self:_widget_by_name("respawn_dynamic")) or self:_widget_by_name("default_dynamic")
+	local widget = self._frame_type == "player" and self:_widget_by_name("respawn_dynamic") or self:_widget_by_name("default_dynamic")
 	local widget_content = widget.content
 	widget_content.respawn_timer = spawn_timer
 	widget_content.total_countdown_time = spawn_timer
@@ -812,7 +812,7 @@ UnitFrameUI.update_respawn_countdown = function (self, dt, t)
 	local ui_scenegraph = self.ui_scenegraph
 	local input_service = self.input_manager:get_service("Player")
 	local player_frame = self._frame_type == "player"
-	local widget = (player_frame and self:_widget_by_name("respawn_dynamic")) or self:_widget_by_name("default_dynamic")
+	local widget = player_frame and self:_widget_by_name("respawn_dynamic") or self:_widget_by_name("default_dynamic")
 	local widget_content = widget.content
 	local state = widget_content.state
 
@@ -894,12 +894,12 @@ UnitFrameUI._update_overcharge_animation = function (self, dt, t)
 		if bar_start_side == "left" then
 			uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
 			local start_offset = style.start_offset
-			local position_x = math.max(start_offset + overcharge_offset, (start_offset + uv_scale_pixels) - bar_size)
+			local position_x = math.max(start_offset + overcharge_offset, start_offset + uv_scale_pixels - bar_size)
 			offset[uv_scale_axis] = position_x
 		else
 			uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
 			local start_offset = style.start_offset
-			local position_x = (start_offset + overcharge_offset) - bar_size
+			local position_x = start_offset + overcharge_offset - bar_size
 			offset[uv_scale_axis] = position_x
 		end
 
@@ -1056,8 +1056,8 @@ UnitFrameUI._on_player_health_changed = function (self, name, widget, health_per
 			anim_time = (current_bar_health - health_percent) * lerp_time
 		end
 
-		local animate_damage_highlight = (not is_knocked_down and health_percent < (health_percent_current or 1)) or false
-		bar_animation.animate_damage_highlight = (animate_damage_highlight and 0) or bar_animation.animate_damage_highlight
+		local animate_damage_highlight = not is_knocked_down and health_percent < (health_percent_current or 1) or false
+		bar_animation.animate_damage_highlight = animate_damage_highlight and 0 or bar_animation.animate_damage_highlight
 		bar_animation.animate = true
 		bar_animation.new_value = health_percent
 		bar_animation.previous_value = current_bar_health
@@ -1089,8 +1089,8 @@ UnitFrameUI._on_player_total_health_changed = function (self, name, widget, tota
 			anim_time = (current_bar_total_health - total_health_percent) * lerp_time
 		end
 
-		local animate_bar_flash = (not is_knocked_down and total_health_percent < (total_health_percent_current or 1)) or false
-		bar_animation.animate_bar_flash = (animate_bar_flash and 0) or bar_animation.animate_bar_flash
+		local animate_bar_flash = not is_knocked_down and total_health_percent < (total_health_percent_current or 1) or false
+		bar_animation.animate_bar_flash = animate_bar_flash and 0 or bar_animation.animate_bar_flash
 		bar_animation.animate = true
 		bar_animation.new_value = total_health_percent
 		bar_animation.previous_value = current_bar_total_health
@@ -1172,7 +1172,7 @@ UnitFrameUI._update_bar_flash = function (self, widget, style, time, dt)
 
 		self:_set_widget_dirty(widget)
 
-		return (progress < 1 and time) or nil
+		return progress < 1 and time or nil
 	end
 
 	return nil
@@ -1191,7 +1191,7 @@ UnitFrameUI._update_damage_highlight = function (self, widget, time, dt)
 
 		self:_set_widget_dirty(widget)
 
-		return (progress < 1 and time) or nil
+		return progress < 1 and time or nil
 	end
 
 	return nil
@@ -1218,7 +1218,7 @@ UnitFrameUI._update_player_bar_animation = function (self, content, style, time,
 			style.gradient_threshold = bar_fraction
 		end
 
-		return (progress < 1 and time) or nil
+		return progress < 1 and time or nil
 	end
 
 	content.bar_value = anim_end_value
@@ -1255,7 +1255,7 @@ UnitFrameUI._animate_slot_equip = function (self, animation_data, dt)
 	style.color[1] = 255 * catmullrom_value
 	animation_data.time = time
 
-	return (progress < 1 and animation_data) or nil
+	return progress < 1 and animation_data or nil
 end
 
 UnitFrameUI._update_slot_equip_animations = function (self, dt)
@@ -1285,7 +1285,7 @@ UnitFrameUI._update_connection_animation = function (self, dt)
 	if widget_content.connecting then
 		local connecting_icon_style = widget.style.connecting_icon
 		local connecting_rotation_speed = 400
-		local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
+		local connecting_rotation_angle = dt * connecting_rotation_speed % 360
 		local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 		connecting_icon_style.angle = connecting_icon_style.angle + connecting_radians
 
@@ -1427,7 +1427,7 @@ UnitFrameUI.update_numeric_ui_career_ability = function (self, game, go_id, play
 
 	local career_name = career_extension:career_name()
 	local ability_percentage = GameSession.game_object_field(game, go_id, "ability_percentage")
-	local on_cooldown = (ability_percentage > 0.01 and true) or false
+	local on_cooldown = ability_percentage > 0.01 and true or false
 	widget.content.on_cooldown = on_cooldown
 
 	if not on_cooldown then
@@ -1449,5 +1449,3 @@ UnitFrameUI.update_numeric_ui_career_ability = function (self, game, go_id, play
 
 	self:_set_widget_dirty(widget)
 end
-
-return

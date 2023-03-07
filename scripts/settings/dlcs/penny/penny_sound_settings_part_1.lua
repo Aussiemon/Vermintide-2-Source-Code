@@ -19,5 +19,3 @@ settings.dialogue_settings = {
 		"dialogues/generated/npc_dlc_drachenfels_portals"
 	}
 }
-
-return

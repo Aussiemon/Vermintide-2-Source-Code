@@ -38,8 +38,8 @@ LevelEndView.start = function (self)
 	self:play_sound("play_gui_chestroom_start")
 
 	self._playing_music = nil
-	self._start_music_event = (self.game_won and "Play_won_music") or "Play_lost_music"
-	self._stop_music_event = (self.game_won and "Stop_won_music") or "Stop_lost_music"
+	self._start_music_event = self.game_won and "Play_won_music" or "Play_lost_music"
+	self._stop_music_event = self.game_won and "Stop_won_music" or "Stop_lost_music"
 end
 
 LevelEndView.setup_pages = function (self, game_won, rewards)
@@ -120,7 +120,7 @@ LevelEndView.create_ui_elements = function (self)
 		self._page_selector_widget = UIWidget.init(UIWidgets.create_page_dot_selector("page_selector", #self._state_name_by_index))
 	end
 
-	local retry_button_def = UIWidgets.create_default_button("retry_button", scenegraph_definition.retry_button.size, nil, nil, Localize((self.game_won and "button_replay") or "button_retry"), 32, nil, nil, nil, true)
+	local retry_button_def = UIWidgets.create_default_button("retry_button", scenegraph_definition.retry_button.size, nil, nil, Localize(self.game_won and "button_replay" or "button_retry"), 32, nil, nil, nil, true)
 	self._retry_button_widget = UIWidget.init(retry_button_def)
 	self._ready_button_widget = UIWidget.init(widget_definitions.ready_button)
 	self._retry_checkboxes_widget = UIWidget.init(widget_definitions.retry_checkboxes)
@@ -306,7 +306,7 @@ LevelEndView.destroy = function (self)
 end
 
 LevelEndView.active_input_service = function (self)
-	return (self.input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	return self.input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 end
 
 LevelEndView._start_animation = function (self, animation_name)
@@ -380,7 +380,7 @@ LevelEndView.update_force_shutdown = function (self, dt)
 			local members = self._lobby:members():get_members()
 			local peers_with_score = self._peers_with_score
 
-			for i = 1, #members, 1 do
+			for i = 1, #members do
 				local peer_id = members[i]
 				local unique_id = peer_id .. ":1"
 
@@ -392,7 +392,7 @@ LevelEndView.update_force_shutdown = function (self, dt)
 			end
 		end
 
-		if all_done or (self._signal_done_fallback_timer and self._signal_done_fallback_timer <= 0) then
+		if all_done or self._signal_done_fallback_timer and self._signal_done_fallback_timer <= 0 then
 			self:exit_to_game()
 		end
 	end
@@ -429,7 +429,7 @@ end
 
 LevelEndView.spawn_level = function (self, context, world)
 	local game_won = context.game_won
-	local object_set = (game_won and "flow_victory") or "flow_defeat"
+	local object_set = game_won and "flow_victory" or "flow_defeat"
 	local object_sets = {
 		object_set
 	}
@@ -455,5 +455,3 @@ end
 LevelEndView.input_enabled = function (self)
 	return not self._ready_button_widget.content.button_hotspot.disable_button
 end
-
-return

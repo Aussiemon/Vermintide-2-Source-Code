@@ -73,5 +73,3 @@ settings.pickups = {
 		}
 	}
 }
-
-return

@@ -143,7 +143,7 @@ AiUtils.alert_nearby_friends_of_enemy = function (unit, broadphase, enemy_unit, 
 
 	local num_results = Broadphase.query(broadphase, Unit.local_position(unit, 0), range, broadphase_query_result)
 
-	for i = 1, num_results, 1 do
+	for i = 1, num_results do
 		local other_unit = broadphase_query_result[i]
 
 		if other_unit ~= unit then
@@ -292,7 +292,7 @@ AiUtils.add_attack_intensity = function (target_unit, action, blackboard)
 	local add_random_intensity = action.add_random_intensity
 
 	for intensity_type, intensity in pairs(difficulty_attack_intensity_settings) do
-		local random_intensity = (add_random_intensity and 0.75 + 0.5 * math.random()) or 1
+		local random_intensity = add_random_intensity and 0.75 + 0.5 * math.random() or 1
 		local final_attack_intensity = intensity * random_intensity
 
 		target_unit_attack_intensity_extension:add_attack_intensity(intensity_type, final_attack_intensity)
@@ -888,7 +888,7 @@ AiUtils.stagger = function (unit, blackboard, attacker_unit, stagger_direction, 
 	blackboard.stagger_length = stagger_length
 	blackboard.stagger_time = stagger_duration * difficulty_modifier + t
 	local stagger_value_to_add = stagger_value or 1
-	blackboard.stagger = (blackboard.stagger and blackboard.stagger + stagger_value_to_add) or stagger_value_to_add
+	blackboard.stagger = blackboard.stagger and blackboard.stagger + stagger_value_to_add or stagger_value_to_add
 	blackboard.stagger_type = stagger_type
 	blackboard.stagger_animation_scale = stagger_animation_scale
 	blackboard.always_stagger_suffered = always_stagger
@@ -971,8 +971,8 @@ AiUtils.advance_towards_target = function (unit, blackboard, min_distance, max_d
 	local from_position = POSITION_LOOKUP[unit]
 	local target_position = POSITION_LOOKUP[target_unit]
 
-	for j = 1, 2, 1 do
-		for i = 1, max_tries, 1 do
+	for j = 1, 2 do
+		for i = 1, max_tries do
 			local angle = min_angle + math.random(min_angle_step * i, max_angle_step * i) * direction
 			local position, wanted_distance = LocomotionUtils.outside_goal(blackboard.nav_world, from_position, target_position, min_distance, max_distance, angle, 3, above, below)
 
@@ -1070,7 +1070,7 @@ end
 
 AiUtils.initialize_nav_cost_map_cost_table = function (cost_table, allowed_layers, default_cost)
 	for layer_id, layer_name in ipairs(NAV_COST_MAP_LAYER_ID_MAPPING) do
-		local layer_cost = (allowed_layers and allowed_layers[layer_name]) or default_cost or 0
+		local layer_cost = allowed_layers and allowed_layers[layer_name] or default_cost or 0
 
 		GwNavCostMap.cost_table_set_cost(cost_table, layer_id, layer_cost)
 	end
@@ -1087,7 +1087,7 @@ AiUtils.kill_unit = function (victim_unit, attacker_unit, hit_zone_name, damage_
 		damage_direction = damage_direction or Vector3(0, 0, 1)
 		local health = ScriptUnit.extension(victim_unit, "health_system"):current_health()
 
-		for i = 1, math.ceil(health / damage_amount), 1 do
+		for i = 1, math.ceil(health / damage_amount) do
 			DamageUtils.add_damage_network(victim_unit, attacker_unit, damage_amount, hit_zone_name, damage_type, nil, damage_direction, damage_source)
 		end
 	end
@@ -1115,7 +1115,7 @@ AiUtils.update_aggro = function (unit, blackboard, breed, t, dt)
 		local stride = DamageDataIndex.STRIDE
 		local index = 0
 
-		for i = 1, array_length / stride, 1 do
+		for i = 1, array_length / stride do
 			local attacker_unit = strided_array[index + DamageDataIndex.ATTACKER]
 			local damage_amount = strided_array[index + DamageDataIndex.DAMAGE_AMOUNT]
 			local damage_source = strided_array[index + DamageDataIndex.DAMAGE_SOURCE_NAME]
@@ -1204,12 +1204,12 @@ AiUtils.push_intersecting_players = function (unit, source_unit, displaced_units
 	local radius = data.push_width * 1.5
 	local dodge_radius = data.dodged_width and data.dodged_width * 1.5
 	local forward_pos = self_pos + self_forward * 3
-	local side_unit = (AiUtils.unit_alive(source_unit) and source_unit) or (AiUtils.unit_alive(unit) and unit)
+	local side_unit = AiUtils.unit_alive(source_unit) and source_unit or AiUtils.unit_alive(unit) and unit
 	local side = Managers.state.side.side_by_unit[side_unit]
 	local enemy_player_and_bot_units = side and side.ENEMY_PLAYER_AND_BOT_UNITS
 
 	if enemy_player_and_bot_units then
-		for i = 1, #enemy_player_and_bot_units, 1 do
+		for i = 1, #enemy_player_and_bot_units do
 			local push_radius = radius
 			local hit_unit = enemy_player_and_bot_units[i]
 
@@ -1268,7 +1268,7 @@ AiUtils.set_material_property = function (unit, variable_name, material_name, va
 	if all_meshes then
 		local mesh = nil
 
-		for i = 0, Unit.num_meshes(unit) - 1, 1 do
+		for i = 0, Unit.num_meshes(unit) - 1 do
 			mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(mesh, material_name) then
@@ -1352,7 +1352,7 @@ AiUtils.remove_bad_boxed_spline_points = function (source_points, spline_name)
 	local pB = nil
 	points[1] = pA
 
-	for i = 2, #source_points, 1 do
+	for i = 2, #source_points do
 		pB = source_points[i]:unbox()
 		local dist = Vector3.distance_squared(pA, pB)
 
@@ -1373,7 +1373,7 @@ AiUtils.remove_bad_spline_points = function (source_points, spline_name)
 	local pB = nil
 	points[1] = pA
 
-	for i = 2, #source_points, 1 do
+	for i = 2, #source_points do
 		pB = source_points[i]
 		local dist = Vector3.distance_squared(pA, pB)
 
@@ -1396,8 +1396,8 @@ AiUtils.get_combat_conditions = function (blackboard)
 		local target_breed = Unit.get_data(target_unit, "breed")
 
 		return {
-			enemy_arc = (num_enemies > 3 and 2) or (num_enemies > 1 and 1) or 0,
-			target_armor = (target_breed and target_breed.armor_category) or 1
+			enemy_arc = num_enemies > 3 and 2 or num_enemies > 1 and 1 or 0,
+			target_armor = target_breed and target_breed.armor_category or 1
 		}
 	end
 
@@ -1460,7 +1460,7 @@ local ARMOR_ARC_MOD = {
 local math_abs = math.abs
 
 AiUtils.get_melee_weapon_score = function (conditions, weapon_item_template)
-	local weapon_meta_data = (weapon_item_template and weapon_item_template.attack_meta_data) or DEFAULT_ATTACK_META_DATA
+	local weapon_meta_data = weapon_item_template and weapon_item_template.attack_meta_data or DEFAULT_ATTACK_META_DATA
 	local best_utility = -1
 	local best_attack_input = "tap_attack"
 	local best_attack_meta_data = weapon_meta_data[best_attack_input]
@@ -1556,5 +1556,3 @@ AiUtils.taunt_unit = function (ai_unit, taunt_unit, duration, taunt_bosses)
 		end
 	end
 end
-
-return

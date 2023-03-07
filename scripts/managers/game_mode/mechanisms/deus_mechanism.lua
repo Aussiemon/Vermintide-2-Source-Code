@@ -66,7 +66,7 @@ local function print_vote_request(params)
 
 	print("............................................................................................................")
 	print("............................................................................................................")
-	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Matchmaking Type: %s | Twitch: %s", (level_key and level_key) or "Not specified", difficulty_key, (private_game and "yes") or "no", (always_host and "yes") or "no", (strict_matchmaking and "yes") or "no", (quick_game and "yes") or "no", matchmaking_type or "Not specified", (twitch_enabled and "Yes") or "No")
+	printf("GAME START SETTINGS -> Level: %s | Difficulty: %s | Private: %s | Always Host: %s | Strict Matchmaking: %s | Quick Game: %s | Matchmaking Type: %s | Twitch: %s", level_key and level_key or "Not specified", difficulty_key, private_game and "yes" or "no", always_host and "yes" or "no", strict_matchmaking and "yes" or "no", quick_game and "yes" or "no", matchmaking_type or "Not specified", twitch_enabled and "Yes" or "No")
 	print("............................................................................................................")
 	print("............................................................................................................")
 end
@@ -272,7 +272,7 @@ DeusMechanism.create_host_migration_info = function (self, gm_event_end_conditio
 	}
 	local is_private = network_handler.lobby_client:lobby_data("is_private")
 	local matchmaking_type = nil
-	matchmaking_type = (IS_PS4 and "n/a") or ((not deus_run_controller or NetworkLookup.matchmaking_types["n/a"]) and (network_handler.lobby_client:lobby_data("matchmaking_type") or NetworkLookup.matchmaking_types["n/a"]))
+	matchmaking_type = IS_PS4 and "n/a" or deus_run_controller and NetworkLookup.matchmaking_types["n/a"] or network_handler.lobby_client:lobby_data("matchmaking_type") or NetworkLookup.matchmaking_types["n/a"]
 	host_migration_info.lobby_data = {
 		is_private = is_private,
 		difficulty = run_difficulty,
@@ -671,7 +671,7 @@ DeusMechanism.start_next_round = function (self)
 	local state = self._state
 	local side_compositions = self:_build_side_compositions(state)
 	local game_mode_key = self:_get_next_game_mode_key()
-	local blessings = script_data.debug_activated_blessings or (deus_run_controller and deus_run_controller:get_blessings()) or {}
+	local blessings = script_data.debug_activated_blessings or deus_run_controller and deus_run_controller:get_blessings() or {}
 	local mutators = {}
 
 	for _, blessing in ipairs(blessings) do
@@ -782,7 +782,7 @@ DeusMechanism.profile_available = function (self, profile_synchronizer, profile_
 	local party = Managers.party:get_party(1)
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local peer_id = status.peer_id
 		local local_player_id = status.local_player_id
@@ -804,21 +804,21 @@ DeusMechanism.generate_level_seed = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local current_node = deus_run_controller and deus_run_controller:get_current_node()
 
-	return (current_node and current_node.level_seed) or 0
+	return current_node and current_node.level_seed or 0
 end
 
 DeusMechanism.get_current_node_curse = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local current_node = deus_run_controller and deus_run_controller:get_current_node()
 
-	return (current_node and current_node.curse) or nil
+	return current_node and current_node.curse or nil
 end
 
 DeusMechanism.get_current_node_theme = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local current_node = deus_run_controller and deus_run_controller:get_current_node()
 
-	return (current_node and current_node.theme) or nil
+	return current_node and current_node.theme or nil
 end
 
 DeusMechanism.get_level_seed = function (self, level_seed, optional_system)
@@ -826,10 +826,10 @@ DeusMechanism.get_level_seed = function (self, level_seed, optional_system)
 	local current_node = deus_run_controller and deus_run_controller:get_current_node()
 
 	if optional_system then
-		return (current_node and current_node.system_seeds[optional_system]) or 0
+		return current_node and current_node.system_seeds[optional_system] or 0
 	end
 
-	return (current_node and current_node.level_seed) or 0
+	return current_node and current_node.level_seed or 0
 end
 
 DeusMechanism.can_spawn_pickup = function (self, spawner_unit, pickup_name)
@@ -1105,7 +1105,7 @@ DeusMechanism._update_own_avatar_info = function (self)
 	local experience = ExperienceSettings.get_experience(display_name)
 	local level = ExperienceSettings.get_level(experience)
 	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-	local frame_name = (frame_item and frame_item.data.name) or "default"
+	local frame_name = frame_item and frame_item.data.name or "default"
 	local name = local_player:name() or ""
 
 	self._deus_run_controller:set_own_player_avatar_info(level, name, frame_name)
@@ -1234,5 +1234,3 @@ end
 DeusMechanism.get_starting_level = function ()
 	return HUB_LEVEL_NAME
 end
-
-return

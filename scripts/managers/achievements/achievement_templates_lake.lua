@@ -61,7 +61,7 @@ achievements.lake_kill_register = {
 	completed = function (statistics_db, stats_id, template_data)
 		local max_count = 0
 
-		for i = 1, #boss_breeds, 1 do
+		for i = 1, #boss_breeds do
 			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "markus_questingknight_career_skill_weapon", boss_breeds[i])
 			max_count = max_count + count
 		end
@@ -120,7 +120,7 @@ add_levels_complete_per_hero_challenge(achievements, "lake_mission_streak_act1_l
 add_levels_complete_per_hero_challenge(achievements, "lake_mission_streak_act2_legend", act_2_levels, diff, "es_questingknight", true, nil, "lake_upgrade", XB1_ACHIEVEMENT_ID.lake_mission_streak_act2, PS4_ACHIEVEMENT_ID.lake_mission_streak_act2)
 add_levels_complete_per_hero_challenge(achievements, "lake_mission_streak_act3_legend", act_3_levels, diff, "es_questingknight", true, nil, "lake_upgrade", XB1_ACHIEVEMENT_ID.lake_mission_streak_act3, PS4_ACHIEVEMENT_ID.lake_mission_streak_act3)
 
-for i = 1, #difficulties, 1 do
+for i = 1, #difficulties do
 	local difficulty_key = difficulties[i]
 	local name = "lake_complete_all_helmgart_levels_" .. DifficultyMapping[difficulty_key]
 
@@ -148,5 +148,3 @@ add_meta_challenge(achievements, "complete_all_grailknight_challenges", all_chal
 
 QuestSettings.track_bastard_block_breeds.hero_es_questingknight = true
 QuestSettings.track_charge_stagger_breeds.es_questingknight = true
-
-return

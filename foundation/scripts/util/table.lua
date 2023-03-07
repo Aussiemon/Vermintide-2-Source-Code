@@ -46,7 +46,7 @@ table.crop = function (t, index)
 	local new_table = {}
 	local new_table_size = 0
 
-	for idx = index, #t, 1 do
+	for idx = index, #t do
 		new_table_size = new_table_size + 1
 		new_table[new_table_size] = t[idx]
 	end
@@ -143,7 +143,7 @@ end
 table.append = function (dest, source)
 	local dest_size = #dest
 
-	for i = 1, #source, 1 do
+	for i = 1, #source do
 		dest_size = dest_size + 1
 		dest[dest_size] = source[i]
 	end
@@ -189,7 +189,7 @@ table.find_by_key = function (t, search_key, search_value)
 end
 
 table.index_of = function (t, element)
-	for i = 1, #t, 1 do
+	for i = 1, #t do
 		if t[i] == element then
 			return i
 		end
@@ -199,10 +199,10 @@ table.index_of = function (t, element)
 end
 
 table.slice = function (t, start_index, length)
-	local end_index = math.min((start_index + length) - 1, #t)
+	local end_index = math.min(start_index + length - 1, #t)
 	local slice = {}
 
-	for i = start_index, end_index, 1 do
+	for i = start_index, end_index do
 		slice[#slice + 1] = t[i]
 	end
 
@@ -210,7 +210,7 @@ table.slice = function (t, start_index, length)
 end
 
 table.sorted = function (t, order_func, use_frame_table)
-	local keys = (use_frame_table and FrameTable.alloc_table()) or {}
+	local keys = use_frame_table and FrameTable.alloc_table() or {}
 
 	for k, _ in pairs(t) do
 		keys[#keys + 1] = k
@@ -238,7 +238,7 @@ end
 table.reverse = function (t)
 	local size = #t
 
-	for i = 1, math.floor(size / 2), 1 do
+	for i = 1, math.floor(size / 2) do
 		t[size - i + 1] = t[i]
 		t[i] = t[size - i + 1]
 	end
@@ -255,10 +255,7 @@ else
 end
 
 table.clear_array = function (t, n)
-	slot2 = 1
-	slot3 = n or #t
-
-	for i = slot2, slot3, 1 do
+	for i = 1, n or #t do
 		t[i] = nil
 	end
 end
@@ -268,10 +265,10 @@ local function table_dump(key, value, depth, max_depth, print_func)
 		return
 	end
 
-	local prefix = string.rep("  ", depth + 1) .. ((key == nil and "") or "[" .. tostring(key) .. "]")
+	local prefix = string.rep("  ", depth + 1) .. (key == nil and "" or "[" .. tostring(key) .. "]")
 
 	if type(value) == "table" then
-		prefix = prefix .. ((key == nil and "") or " = ")
+		prefix = prefix .. (key == nil and "" or " = ")
 
 		print(prefix .. "table")
 
@@ -420,7 +417,7 @@ table.for_each = function (t, f)
 end
 
 function _add_tabs(str, tabs)
-	for i = 1, tabs, 1 do
+	for i = 1, tabs do
 		str = str .. "\t"
 	end
 
@@ -538,7 +535,7 @@ table.append_varargs = function (t, ...)
 	local num_varargs = select("#", ...)
 	local t_size = #t
 
-	for i = 1, num_varargs, 1 do
+	for i = 1, num_varargs do
 		t[t_size + i] = select(i, ...)
 	end
 
@@ -617,7 +614,7 @@ table.array_remove_if = function (t, predicate)
 	local i = 1
 	local v = nil
 
-	for j = 1, #t, 1 do
+	for j = 1, #t do
 		t[j] = nil
 		v = t[j]
 
@@ -639,7 +636,7 @@ end
 table.enum = function (...)
 	local t = {}
 
-	for i = 1, select("#", ...), 1 do
+	for i = 1, select("#", ...) do
 		local v = select(i, ...)
 		t[v] = v
 	end
@@ -743,7 +740,7 @@ table.flat = function (t, max_depth, current_depth)
 	current_depth = (current_depth or 0) + 1
 	local out = {}
 
-	for i = 1, #t, 1 do
+	for i = 1, #t do
 		local value = t[i]
 
 		if type(value) == "table" and current_depth <= max_depth then
@@ -755,5 +752,3 @@ table.flat = function (t, max_depth, current_depth)
 
 	return out
 end
-
-return

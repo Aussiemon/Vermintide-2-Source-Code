@@ -60,10 +60,8 @@ BelakorBalancing = {
 	homing_skulls_min_pitch = math.pi * 0.1,
 	homing_skulls_max_pitch = math.pi * 0.25,
 	homing_skulls_pitch_delta = math.pi * 0.05,
-	homing_skulls_yaw_delta = (2 * math.pi) / 10,
+	homing_skulls_yaw_delta = 2 * math.pi / 10,
 	homing_skulls_speed_multiplier_curve_func = function (lifetime)
 		return -(1 / (math.min(lifetime + 2, 4) / 4)) + 2
 	end
 }
-
-return

@@ -129,5 +129,3 @@ settings.projectile_units = {
 		projectile_unit_name = "units/weapons/player/wpn_dw_thrown_axe_01_t2/prj_dw_thrown_axe_01_t2_magic_01_3ps"
 	}
 }
-
-return

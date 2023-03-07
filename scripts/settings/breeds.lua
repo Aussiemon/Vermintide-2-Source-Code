@@ -122,7 +122,7 @@ local function inject_breed_category_mask(breed_data)
 
 	local armor_bit = armor_category_mapping[breed_data.armor_category]
 
-	if armor_bit and ((not breed_data.special and not breed_data.boss) or breed_data.armor_category == 2) then
+	if armor_bit and (not breed_data.special and not breed_data.boss or breed_data.armor_category == 2) then
 		category_mask = bit.bor(category_mask, armor_bit)
 	end
 
@@ -184,7 +184,7 @@ local function find_and_set_bot_threat_tweak_data(current_table)
 			if bot_threats[1] then
 				local num_threats = #bot_threats
 
-				for i = 1, num_threats, 1 do
+				for i = 1, num_threats do
 					local bot_threat = bot_threats[i]
 
 					set_bot_threat_tweak_data(bot_threat, max_start_delay)
@@ -193,7 +193,7 @@ local function find_and_set_bot_threat_tweak_data(current_table)
 				for _, animation_bot_threats in pairs(bot_threats) do
 					local num_threats = #animation_bot_threats
 
-					for i = 1, num_threats, 1 do
+					for i = 1, num_threats do
 						local bot_threat = animation_bot_threats[i]
 
 						set_bot_threat_tweak_data(bot_threat, max_start_delay)
@@ -260,7 +260,7 @@ end
 
 fassert(#LAYER_ID_MAPPING < NavTagVolumeStartLayer, "Nav tag volume layers are conflicting with layers used by other systems.")
 
-for i = #LAYER_ID_MAPPING + 1, NavTagVolumeStartLayer - 1, 1 do
+for i = #LAYER_ID_MAPPING + 1, NavTagVolumeStartLayer - 1 do
 	LAYER_ID_MAPPING[i] = "dummy_layer" .. i
 end
 
@@ -357,5 +357,3 @@ for name, breed in pairs(Breeds) do
 		ELITES[breed.name] = true
 	end
 end
-
-return

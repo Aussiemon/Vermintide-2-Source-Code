@@ -92,5 +92,3 @@ DialogueLookup[DialogueLookup_n + 44] = "pwh_level_chaos_war_camp_story_three_02
 DialogueLookup[DialogueLookup_n + 45] = "pes_level_chaos_war_camp_story_three_02"
 DialogueLookup[DialogueLookup_n + 46] = "pwh_level_chaos_war_camp_story_three_03"
 DialogueLookup_n = DialogueLookup_n + 46
-
-return

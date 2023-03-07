@@ -19751,7 +19751,7 @@ for horde_composition_name, horde_composition in pairs(HordeCompositions) do
 	local max_composition = nil
 	local already_printed = false
 
-	for i = 1, #Difficulties, 1 do
+	for i = 1, #Difficulties do
 		local composition_for_difficulty = horde_composition[i]
 
 		if composition_for_difficulty then
@@ -19764,5 +19764,3 @@ for horde_composition_name, horde_composition in pairs(HordeCompositions) do
 		end
 	end
 end
-
-return

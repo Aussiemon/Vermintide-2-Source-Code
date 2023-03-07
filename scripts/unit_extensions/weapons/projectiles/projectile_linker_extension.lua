@@ -52,5 +52,3 @@ end
 ProjectileLinkerExtension.destroy = function (self)
 	return
 end
-
-return

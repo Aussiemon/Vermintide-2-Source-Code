@@ -207,5 +207,3 @@ DamageNumbersUI.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

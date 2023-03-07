@@ -60,5 +60,3 @@ dlc_settings.ingame_challenge_validation_functions = {
 		return true
 	end
 }
-
-return

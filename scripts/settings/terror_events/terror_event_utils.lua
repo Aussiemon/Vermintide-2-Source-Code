@@ -71,7 +71,7 @@ TerrorEventUtils.apply_breed_enhancements = function (unit, breed, optional_data
 	local enhancements = optional_data.enhancements
 	local is_illusion = table.find_by_key(enhancements, "name", "intangible_mirror") ~= nil
 
-	for i = 1, #enhancements, 1 do
+	for i = 1, #enhancements do
 		local enhancement_data = enhancements[i]
 
 		if not enhancement_data.no_attribute then
@@ -79,7 +79,7 @@ TerrorEventUtils.apply_breed_enhancements = function (unit, breed, optional_data
 		end
 
 		if not is_illusion or enhancement_data.name == "mirror_base" or enhancement_data.name == "intangible_mirror" then
-			for i = 1, #enhancement_data, 1 do
+			for i = 1, #enhancement_data do
 				local buff_name = enhancement_data[i]
 
 				buff_system:add_buff(unit, buff_name, unit, true)
@@ -113,7 +113,7 @@ TerrorEventUtils.generate_enhanced_breed = function (num_enhancements, breed_nam
 		end
 	end
 
-	for i = 1, num_enhancements, 1 do
+	for i = 1, num_enhancements do
 		local index = TerrorEventUtils.random(#t)
 
 		if index <= 0 then
@@ -182,5 +182,3 @@ TerrorEventUtils.add_enhancements_for_difficulty = function (optional_data, diff
 
 	return optional_data
 end
-
-return

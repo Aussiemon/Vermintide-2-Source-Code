@@ -271,11 +271,11 @@ local stat_mappings = {}
 for quest_type, data in pairs(QuestSettings.rules) do
 	local quest_prefix = string.format("%s_quest", quest_type)
 
-	for i = 1, data.max_quests, 1 do
+	for i = 1, data.max_quests do
 		local quest_name = string.format("%s_%d", quest_prefix, i)
 		local stat_map = {}
 
-		for j = 1, data.num_criterias, 1 do
+		for j = 1, data.num_criterias do
 			stat_map[#stat_map + 1] = string.format("%s_stat_%d", quest_name, j)
 		end
 
@@ -769,5 +769,3 @@ QuestSettings.handle_charge_stagger = function (unit, blackboard, attacker_unit)
 		end
 	end
 end
-
-return

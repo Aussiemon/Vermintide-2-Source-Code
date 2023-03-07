@@ -466,7 +466,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			100,
@@ -504,7 +504,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			330,
@@ -535,7 +535,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			255,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			100,
@@ -573,7 +573,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			-60,
@@ -622,7 +622,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = {
 			255,
 			150,
@@ -658,7 +658,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("white", 255),
 		offset = {
 			-60,
@@ -1186,7 +1186,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				-130,

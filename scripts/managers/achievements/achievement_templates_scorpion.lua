@@ -9,7 +9,7 @@ local function _has_completed_weave_seasonal(statistics_db, stats_id, season_id,
 	local complete = false
 	local season_name = ScorpionSeasonalSettings.get_season_name(season_id)
 
-	for player = 1, 4, 1 do
+	for player = 1, 4 do
 		local stat_name = ScorpionSeasonalSettings.get_weave_score_stat_for_season(season_id, weave_id, player)
 		complete = statistics_db:get_persistent_stat(stats_id, season_name, stat_name) > 0
 
@@ -25,7 +25,7 @@ local function _has_completed_tier_seasonal(statistics_db, stats_id, season_id, 
 	local complete = false
 	local counter = 0
 
-	for tier = from, to, 1 do
+	for tier = from, to do
 		complete = _has_completed_weave_seasonal(statistics_db, stats_id, season_id, tier)
 
 		if not complete then
@@ -63,7 +63,7 @@ local seasonal_list_of_weaves_from_to = {
 local season_num = ScorpionSeasonalSettings.current_season_id
 local season_offset = 2
 
-for season_id = season_offset, season_num, 1 do
+for season_id = season_offset, season_num do
 	local season_name = ScorpionSeasonalSettings.get_season_name(season_id)
 
 	for tier, tbl in pairs(seasonal_list_of_weaves_from_to) do
@@ -661,12 +661,12 @@ local function _has_completed_tier(statistics_db, stats_id, from, to)
 	local counter = 0
 	local current_season = ScorpionSeasonalSettings.current_season_id
 
-	for tier = from, to, 1 do
-		for player = 1, 4, 1 do
+	for tier = from, to do
+		for player = 1, 4 do
 			local stat_name = "weave_score_weave_" .. tier .. "_" .. player .. "_players"
 
 			if not IS_WINDOWS then
-				for season_index = 1, current_season, 1 do
+				for season_index = 1, current_season do
 					if season_index == 1 then
 						stat_name = "weave_score_weave_" .. tier .. "_" .. player .. "_players"
 					else
@@ -705,7 +705,7 @@ local function _has_completed_wind_in_order(statistics_db, stats_id, wind, amoun
 
 	for _, template in pairs(WeaveSettings.templates_ordered) do
 		if wind == template.wind then
-			for player = 1, 4, 1 do
+			for player = 1, 4 do
 				local stat_name = "weave_score_weave_" .. template.tier .. "_" .. player .. "_players"
 				complete = statistics_db:get_persistent_stat(stats_id, "season_1", stat_name) > 0
 
@@ -796,7 +796,7 @@ local wind_order = {
 }
 local num_weaves_per_wind = 5
 
-for i = 1, #wind_order, 1 do
+for i = 1, #wind_order do
 	local id = "scorpion_weaves_" .. i .. "_season_1"
 	local wind = wind_order[i]
 	local weave_ids = WeaveSettings.weave_wind_ranges[wind]
@@ -808,7 +808,7 @@ for i = 1, #wind_order, 1 do
 		completed = function (statistics_db, stats_id)
 			local completed = true
 
-			for k = 1, num_weaves_per_wind, 1 do
+			for k = 1, num_weaves_per_wind do
 				local weave_id = weave_ids[k]
 				completed = completed and _has_completed_weave_seasonal(statistics_db, stats_id, ScorpionSeasonalSettings.current_season_id, weave_id)
 			end
@@ -818,7 +818,7 @@ for i = 1, #wind_order, 1 do
 		progress = function (statistics_db, stats_id)
 			local count = 0
 
-			for k = 1, num_weaves_per_wind, 1 do
+			for k = 1, num_weaves_per_wind do
 				local weave_id = weave_ids[k]
 
 				if _has_completed_weave_seasonal(statistics_db, stats_id, ScorpionSeasonalSettings.current_season_id, weave_id) then
@@ -983,7 +983,7 @@ end
 
 local profiles = PROFILES_BY_AFFILIATION.heroes
 
-for i = 1, #profiles, 1 do
+for i = 1, #profiles do
 	local profile_index = FindProfileIndex(profiles[i])
 
 	for career_index, career in pairs(SPProfiles[profile_index].careers) do
@@ -1414,5 +1414,3 @@ add_weapon_levels_challenge(achievements, "scorpion_kerillian_weapon_skin_2", "w
 add_weapon_levels_challenge(achievements, "scorpion_markus_weapon_skin_2", "es_2h_heavy_spear", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
 add_weapon_levels_challenge(achievements, "scorpion_sienna_weapon_skin_2", "bw_1h_flail_flaming", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
 add_weapon_levels_challenge(achievements, "scorpion_victor_weapon_skin_2", "wh_2h_billhook", s2_lord_levels, s2_lord_difficulty, auto_icon, "scorpion")
-
-return

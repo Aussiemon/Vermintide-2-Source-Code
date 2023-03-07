@@ -66,5 +66,3 @@ MatchmakingStateWaitForCountdown._capture_telemetry = function (self)
 		end
 	end
 end
-
-return

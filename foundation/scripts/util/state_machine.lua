@@ -89,5 +89,3 @@ StateMachine.on_close = function (self)
 
 	return true
 end
-
-return

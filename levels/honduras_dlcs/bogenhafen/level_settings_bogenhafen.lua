@@ -232,5 +232,3 @@ LevelSettings.dlc_bogenhafen_city = {
 		}
 	}
 }
-
-return

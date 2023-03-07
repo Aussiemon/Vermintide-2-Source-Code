@@ -414,7 +414,7 @@ local function create_disclaimer_widget(input)
 						local time, dt = Managers.time:time_and_delta("main")
 						content.timer = content.timer + dt * 2
 						style.text_color[1] = 128 - math.cos(content.timer) * 127
-						content.continue = (gamepad_active and "press_any_button_to_continue") or "press_any_key_to_continue"
+						content.continue = gamepad_active and "press_any_button_to_continue" or "press_any_key_to_continue"
 					end
 				}
 			}
@@ -643,17 +643,17 @@ if Development.parameter("use_beta_mode") or script_data.settings.use_beta_mode 
 			forced = true,
 			music_name = "Play_menu_screen_music",
 			material_name = "beta_end_overlay",
-			input_texture_size = (is_xbox_one_x and {
+			input_texture_size = is_xbox_one_x and {
 				1776,
 				346
-			}) or {
+			} or {
 				888,
 				173
 			},
-			input_texture_offset = (is_xbox_one_x and {
+			input_texture_offset = is_xbox_one_x and {
 				550,
 				-260
-			}) or {
+			} or {
 				275,
 				-130
 			},
@@ -686,10 +686,10 @@ if Development.parameter("use_beta_mode") or script_data.settings.use_beta_mode 
 				"a pre-release game, Fatshark does not commit",
 				"to providing customer support for the game."
 			},
-			font_size = (is_pro and 52) or 36,
+			font_size = is_pro and 52 or 36,
 			size = {
 				1920,
-				(is_pro and 70) or 50
+				is_pro and 70 or 50
 			},
 			offset = {
 				0,
@@ -790,7 +790,7 @@ SplashView._next_splash = function (self, override_skip)
 
 	if self._current_splash_data then
 		local update_func = "_update_" .. self._current_splash_data.type
-		self._update_func = (self[update_func] and update_func) or "_update_texture"
+		self._update_func = self[update_func] and update_func or "_update_texture"
 		self._current_index = self._current_index + 1
 		self._current_splash_data.timer = self._current_splash_data.time
 	elseif not Managers.transition:loading_icon_active() then
@@ -923,7 +923,7 @@ SplashView._update_beta_end = function (self, gui, dt)
 	self._current_splash_data.timer = self._current_splash_data.timer - dt
 	local pad = "Pad"
 
-	for i = 1, 8, 1 do
+	for i = 1, 8 do
 		local pad_name = pad .. tostring(i)
 		local pad_controller = rawget(_G, pad_name)
 
@@ -986,7 +986,7 @@ SplashView.update = function (self, dt)
 
 	local w, h = Gui.resolution()
 	local ui_renderer = self.ui_renderer
-	local input_service = (IS_WINDOWS and self.input_manager:get_service("splash_view")) or FAKE_INPUT_SERVICE
+	local input_service = IS_WINDOWS and self.input_manager:get_service("splash_view") or FAKE_INPUT_SERVICE
 
 	UIRenderer.begin_pass(ui_renderer, self.ui_scenegraph, input_service, dt, nil, self.render_settings)
 	UIRenderer.draw_widget(ui_renderer, self.dead_space_filler)
@@ -1032,7 +1032,7 @@ if IS_CONSOLE then
 
 		local pad = "Pad"
 
-		for i = 1, 8, 1 do
+		for i = 1, 8 do
 			local pad_name = pad .. tostring(i)
 			local pad_controller = rawget(_G, pad_name)
 
@@ -1063,5 +1063,3 @@ end
 SplashView.is_completed = function (self)
 	return self._current_splash_data == nil
 end
-
-return

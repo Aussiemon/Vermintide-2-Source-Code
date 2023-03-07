@@ -183,5 +183,3 @@ BreedBehaviors.standard_bearer = {
 	},
 	name = "standard_bearer"
 }
-
-return

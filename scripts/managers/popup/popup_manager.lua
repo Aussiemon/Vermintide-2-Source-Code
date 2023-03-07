@@ -127,5 +127,3 @@ end
 PopupManager.set_popup_verifying_password = function (self, popup_id, is_verifying, status_message, error_message)
 	return self._handler:set_popup_verifying_password(popup_id, is_verifying, status_message, error_message)
 end
-
-return

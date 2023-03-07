@@ -77,7 +77,7 @@ IngameHud._setup_component_definitions = function (self, hud_component_list_path
 				local class_name = settings.class_name
 				local add = true
 
-				for i = 1, #components, 1 do
+				for i = 1, #components do
 					if components[i].class_name == class_name then
 						add = false
 					end
@@ -151,7 +151,7 @@ IngameHud._compile_component_list = function (self, ingame_ui_context, component
 	local components_array = {}
 	local components_array_id_lookup = {}
 
-	for i = 1, #component_definitions, 1 do
+	for i = 1, #component_definitions do
 		local definition = component_definitions[i]
 		local class_name = definition.class_name
 
@@ -232,7 +232,7 @@ IngameHud.remove_components = function (self, components_to_remove)
 	local components_array_id_lookup = self._components_array_id_lookup
 	local num_components = #components_to_remove
 
-	for i = 1, num_components, 1 do
+	for i = 1, num_components do
 		local class_name = components_to_remove[i]
 
 		self:_remove_component(component_list, components, components_array, components_array_id_lookup, class_name)
@@ -255,10 +255,10 @@ IngameHud._update_components_post_visibility = function (self)
 		local components_array = self._components_array
 		local visible_components = group_settings.visible_components
 
-		for j = 1, #components_array, 1 do
+		for j = 1, #components_array do
 			local component = components_array[j]
 			local component_name = component.name
-			local status = (visible_components and visible_components[component_name]) or false
+			local status = visible_components and visible_components[component_name] or false
 
 			if component.post_visibility_changed then
 				component:post_visibility_changed(status)
@@ -276,7 +276,7 @@ IngameHud._update_components_visibility = function (self)
 	local debug_visibility_group = script_data.debug_hud_visibility_group
 	local handle_debug = debug_visibility_group and debug_visibility_group ~= "none"
 
-	for i = 1, num_visibility_groups, 1 do
+	for i = 1, num_visibility_groups do
 		local visibility_group = visibility_groups[i]
 		local group_name = visibility_group.name
 		local validation_function = visibility_group.validation_function
@@ -294,10 +294,10 @@ IngameHud._update_components_visibility = function (self)
 				local currently_visible_components = self._currently_visible_components
 				local visible_components = visibility_group.visible_components
 
-				for j = 1, #components_array, 1 do
+				for j = 1, #components_array do
 					local component = components_array[j]
 					local component_name = component.name
-					local status = (visible_components and visible_components[component_name]) or false
+					local status = visible_components and visible_components[component_name] or false
 
 					if component.set_visible then
 						component:set_visible(status)
@@ -367,7 +367,7 @@ IngameHud.update = function (self, dt, t)
 	local hud_scale_applied = false
 	local resolution_modified = RESOLUTION_LOOKUP.modified
 
-	for i = 1, #components_array, 1 do
+	for i = 1, #components_array do
 		local component = components_array[i]
 		local component_name = component.name
 
@@ -407,7 +407,7 @@ IngameHud.post_update = function (self, dt, t)
 	local use_custom_hud_scale = UISettings.use_custom_hud_scale
 	local hud_scale_applied = false
 
-	for i = 1, #components_array, 1 do
+	for i = 1, #components_array do
 		local component = components_array[i]
 		local component_name = component.name
 
@@ -553,5 +553,3 @@ IngameHud._update_clean_ui = function (self, dt, t)
 
 	UICleanUI.update(self._clean_ui, dt)
 end
-
-return

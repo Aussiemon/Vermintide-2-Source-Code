@@ -5,7 +5,7 @@ NavigationPath.init = function (self, path, callback)
 	self._current_index = 1
 	self._callback = callback
 
-	for i = 1, #path, 1 do
+	for i = 1, #path do
 		self._path[i] = Vector3Box(path[i])
 	end
 end
@@ -54,5 +54,3 @@ NavigationPath.draw = function (self, color, offset)
 		drawer:sphere(node:unbox() + Vector3.up() * 0.05 + offset, 0.05, color)
 	end
 end
-
-return

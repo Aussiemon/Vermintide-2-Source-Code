@@ -12,5 +12,3 @@ for i, settings in pairs(PopupSettings) do
 	local name = settings.name
 	PopupSettingsByName[name] = settings
 end
-
-return

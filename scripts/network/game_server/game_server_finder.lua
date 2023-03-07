@@ -69,5 +69,3 @@ GameServerFinder.update = function (self, dt)
 		self._pending_refresh_request = false
 	end
 end
-
-return

@@ -218,5 +218,3 @@ MaterialEffectMappings.invulnerable = MaterialEffectMappings.invulnerable or {
 		water = {}
 	}
 }
-
-return

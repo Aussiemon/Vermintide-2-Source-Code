@@ -80,7 +80,7 @@ local keyboard_keymaps = {
 		"home",
 		"pressed"
 	},
-	end = {
+	["end"] = {
 		keyboard_device,
 		"end",
 		"pressed"
@@ -768,5 +768,3 @@ DebugInputFilters.ps4 = InputUtils.keymaps_key_approved("ps4") and {
 		input_mapping = "look_raw"
 	}
 }
-
-return

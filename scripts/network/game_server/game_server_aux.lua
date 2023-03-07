@@ -6,5 +6,3 @@ GameServerAux = {
 		return true
 	end
 }
-
-return

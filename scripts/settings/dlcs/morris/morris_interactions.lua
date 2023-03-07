@@ -137,7 +137,7 @@ InteractionDefinitions.deus_cursed_chest.client.get_progress = function (data, c
 		return 0
 	end
 
-	return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / duration)
+	return data.start_time == nil and 0 or math.min(1, (t - data.start_time) / duration)
 end
 
 InteractionDefinitions.deus_cursed_chest.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
@@ -192,7 +192,7 @@ end
 InteractionDefinitions.deus_arena_interactable.client.hud_description = function (interactable_unit, data, config, fail_reason, interactor_unit)
 	local deus_arena_interactable_extension = ScriptUnit.has_extension(interactable_unit, "deus_arena_interactable_system")
 
-	return (deus_arena_interactable_extension and deus_arena_interactable_extension:get_interact_hud_description()) or "deus_altar_hud_desc", "interaction_action_open"
+	return deus_arena_interactable_extension and deus_arena_interactable_extension:get_interact_hud_description() or "deus_altar_hud_desc", "interaction_action_open"
 end
 
 InteractionDefinitions.deus_arena_interactable.client.can_interact = function (interactor_unit, interactable_unit, data, config)
@@ -313,7 +313,7 @@ InteractionDefinitions.deus_setup_rally_flag = {
 				return 0
 			end
 
-			return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / config.duration)
+			return data.start_time == nil and 0 or math.min(1, (t - data.start_time) / config.duration)
 		end,
 		can_interact = function (interactor_unit, interactable_unit, data, config)
 			return true
@@ -339,5 +339,3 @@ end
 InteractionDefinitions.deus_debug_changelog.client.can_interact = function (interactor_unit, interactable_unit, data, config)
 	return Unit.get_data(interactable_unit, "interaction_data", "active")
 end
-
-return

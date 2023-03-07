@@ -100,5 +100,3 @@ DialogueLookup[DialogueLookup_n + 48] = "pbw_wv_midnight_clear"
 DialogueLookup[DialogueLookup_n + 49] = "pdr_wv_midnight_clear"
 DialogueLookup[DialogueLookup_n + 50] = "pes_wv_midnight_clear"
 DialogueLookup_n = DialogueLookup_n + 50
-
-return

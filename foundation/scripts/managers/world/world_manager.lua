@@ -18,7 +18,7 @@ WorldManager.create_world = function (self, name, shading_environment, shading_c
 	local has_physics_world = true
 	local n_varargs = select("#", ...)
 
-	for i = 1, n_varargs, 1 do
+	for i = 1, n_varargs do
 		if select(i, ...) == Application.DISABLE_PHYSICS then
 			has_physics_world = false
 		end
@@ -179,5 +179,3 @@ end
 WorldManager.set_scene_update_callback = function (self, world, callback)
 	self._scene_update_callbacks[world] = callback
 end
-
-return

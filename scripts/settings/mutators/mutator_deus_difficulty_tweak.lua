@@ -47,14 +47,14 @@ local function get_lerped_value_for_difficulty(steps, current_difficulty_tweak)
 
 	local selected_pre_step, selected_post_step = nil
 
-	for i = 1, #density_multiplier_steps_per_difficulty_tweak, 1 do
+	for i = 1, #density_multiplier_steps_per_difficulty_tweak do
 		local step = density_multiplier_steps_per_difficulty_tweak[i]
 
 		if current_difficulty_tweak <= step[1] then
 			local step_before = density_multiplier_steps_per_difficulty_tweak[i - 1]
 			local step_after = density_multiplier_steps_per_difficulty_tweak[i + 1]
 			selected_pre_step = step_before or step
-			selected_post_step = (step_before and step) or step_after
+			selected_post_step = step_before and step or step_after
 
 			break
 		end

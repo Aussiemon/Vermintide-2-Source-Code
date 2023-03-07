@@ -145,5 +145,3 @@ PlayerHuskEnergyExtension._broadcast_equipment_flow_event = function (self, even
 		end
 	end
 end
-
-return

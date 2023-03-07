@@ -305,7 +305,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 			Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects["fx/drachenfels_boss_indicator_donut_medium_part_1"], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
 			Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects["fx/drachenfels_boss_indicator_donut_large_part_1"], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
 
-			blackboard.ring_damage_effect_time = (t + premonition_time) - 0.75
+			blackboard.ring_damage_effect_time = t + premonition_time - 0.75
 		elseif blackboard.ring_damage_effect_time and blackboard.ring_damage_effect_time <= t then
 			local audio_system = Managers.state.entity:system("audio_system")
 			local origin_pos = Vector3Box.unbox(blackboard.ring_center_position)
@@ -352,7 +352,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 				local position = POSITION_LOOKUP[player_unit]
 				local distance_squared = Vector3.distance_squared(position, origin_pos)
 				local catapult_direction = "in"
-				local direction = (catapult_direction == "in" and origin_pos - position) or position - origin_pos
+				local direction = catapult_direction == "in" and origin_pos - position or position - origin_pos
 				direction = Vector3.normalize(direction)
 
 				if distance_squared < outer_squared and inner_squared < distance_squared then
@@ -361,7 +361,7 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_update = function (unit, b
 					local difficulty_rank = Managers.state.difficulty:get_difficulty()
 					local player = Managers.player:owner(player_unit)
 					local is_bot = player and not player:is_player_controlled()
-					local actual_power_level = (is_bot and 0) or power_level[difficulty_rank]
+					local actual_power_level = is_bot and 0 or power_level[difficulty_rank]
 
 					DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, player_unit, unit, "torso", POSITION_LOOKUP[player_unit], Vector3.up(), "undefined")
 
@@ -431,5 +431,3 @@ AiBreedSnippets.on_chaos_exalted_sorcerer_drachenfels_despawn = function (unit, 
 		conflict_director:add_angry_boss(-1)
 	end
 end
-
-return

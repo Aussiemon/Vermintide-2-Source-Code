@@ -4,7 +4,7 @@ local function concatenate_dlcs()
 	local concatenate_dlcs_str = nil
 
 	for name, _ in pairs(DLCSettings) do
-		concatenate_dlcs_str = (concatenate_dlcs_str and concatenate_dlcs_str .. "__") or ""
+		concatenate_dlcs_str = concatenate_dlcs_str and concatenate_dlcs_str .. "__" or ""
 		concatenate_dlcs_str = concatenate_dlcs_str .. name
 	end
 
@@ -16,11 +16,11 @@ LobbyAux.create_network_hash = function (config_file_name, project_hash, disable
 	local settings = Application.settings()
 	local trunk_revision = settings and settings.content_revision
 	local ignore_engine_revision = Development.parameter("ignore_engine_revision_in_network_hash") or Managers.mechanism:setting("ignore_engine_revision_in_network_hash")
-	local engine_revision = (ignore_engine_revision and 0) or Application.build_identifier()
+	local engine_revision = ignore_engine_revision and 0 or Application.build_identifier()
 	local combined_hash = nil
-	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or (trunk_revision ~= nil and trunk_revision ~= "")
-	local concatenated_dlc_string = (GameSettingsDevelopment.network_concatenated_dlc_check_enabled and concatenate_dlcs()) or ""
-	local lobby_data_version = (DEDICATED_SERVER and GameServerInternal.lobby_data_version) or LobbyInternal.lobby_data_version
+	local use_trunk_revision = GameSettingsDevelopment.network_revision_check_enabled or trunk_revision ~= nil and trunk_revision ~= ""
+	local concatenated_dlc_string = GameSettingsDevelopment.network_concatenated_dlc_check_enabled and concatenate_dlcs() or ""
+	local lobby_data_version = DEDICATED_SERVER and GameServerInternal.lobby_data_version or LobbyInternal.lobby_data_version
 	local num_levels = #NetworkLookup.level_keys
 
 	if use_trunk_revision then
@@ -93,18 +93,18 @@ for idx, game_mode in pairs(LobbyGameModes) do
 end
 
 LobbyGameModes = lookup
-LobbyAux.map_lobby_distance_filter = (IS_PS4 and {
+LobbyAux.map_lobby_distance_filter = IS_PS4 and {
 	"close",
 	"medium",
 	"world"
-}) or {
+} or {
 	"close",
 	"far",
 	"world"
 }
 local next_distance = {}
 
-for i = 1, #LobbyAux.map_lobby_distance_filter, 1 do
+for i = 1, #LobbyAux.map_lobby_distance_filter do
 	local filter_name = LobbyAux.map_lobby_distance_filter[i]
 	next_distance[filter_name] = LobbyAux.map_lobby_distance_filter[i + 1]
 end
@@ -140,7 +140,7 @@ end
 local function level_exists_locally(lobby)
 	local mission_id = lobby.selected_mission_id or lobby.mission_id
 	local level_exists_locally = mission_id and rawget(NetworkLookup.mission_ids, mission_id)
-	level_exists_locally = level_exists_locally or (WeaveSettings.templates[mission_id] and true)
+	level_exists_locally = level_exists_locally or WeaveSettings.templates[mission_id] and true
 
 	return level_exists_locally
 end
@@ -194,5 +194,3 @@ LobbyAux.verify_lobby_data = function (lobby)
 
 	return true
 end
-
-return

@@ -94,5 +94,3 @@ InteractionDefinitions.geheimnisnacht_2021_altar.server.start = function (world,
 		altar_extension:on_interact_start(SERVER_INTERACT)
 	end
 end
-
-return

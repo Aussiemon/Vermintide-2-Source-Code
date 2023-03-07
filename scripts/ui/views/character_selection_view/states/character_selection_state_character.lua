@@ -57,7 +57,7 @@ CharacterSelectionStateCharacter.on_enter = function (self, params)
 	local input_service = self:input_service()
 	local gui_layer = UILayer.default + 130
 	local input_description_input_service = parent:input_service(true)
-	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_description_input_service, 6, gui_layer, (params.allow_back_button and generic_input_actions.default_back) or generic_input_actions.default, true)
+	self.menu_input_description = MenuInputDescriptionUI:new(ingame_ui_context, self.ui_top_renderer, input_description_input_service, 6, gui_layer, params.allow_back_button and generic_input_actions.default_back or generic_input_actions.default, true)
 
 	self.menu_input_description:set_input_description(nil)
 	self:create_ui_elements(params)
@@ -215,7 +215,7 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 		icon_widget.content.icon_selected = hero_icon_texture .. "_glow"
 		local valid_career_count = 0
 
-		for j = 1, 4, 1 do
+		for j = 1, 4 do
 			local career = careers[j]
 
 			if career and not backend_dlcs:is_unreleased_career(career.name) then
@@ -229,7 +229,7 @@ CharacterSelectionStateCharacter._setup_hero_selection_widgets = function (self)
 				content.portrait = "medium_" .. portrait_image
 				local is_career_unlocked, reason, dlc_name, localized = career:is_unlocked_function(hero_name, hero_level)
 				content.locked = not is_career_unlocked
-				content.locked_reason = not is_career_unlocked and ((localized and reason) or Localize(reason))
+				content.locked_reason = not is_career_unlocked and (localized and reason or Localize(reason))
 				content.dlc_name = dlc_name
 
 				if reason == "dlc_not_owned" then
@@ -326,10 +326,10 @@ CharacterSelectionStateCharacter._handle_mouse_selection = function (self)
 	profiles = PlayerData.bot_spawn_priority
 	local widget_index = 1
 
-	for i = 1, num_max_rows, 1 do
+	for i = 1, num_max_rows do
 		local num_max_columns = self._num_hero_columns[i]
 
-		for j = 1, num_max_columns, 1 do
+		for j = 1, num_max_columns do
 			local widget = hero_widgets[widget_index]
 			local content = widget.content
 			local button_hotspot = content.button_hotspot
@@ -405,7 +405,7 @@ CharacterSelectionStateCharacter._exit_bot_selection = function (self)
 	local background_widget_style = background_widget.style
 	self._ui_animations.background = UIAnimation.init(UIAnimation.function_by_time, background_widget_style.rect.color, 1, background_widget_style.rect.color[1], 0, 0.4, math.easeOutCubic)
 
-	self.menu_input_description:change_generic_actions((self.allow_back_button and generic_input_actions.default_back) or generic_input_actions.default)
+	self.menu_input_description:change_generic_actions(self.allow_back_button and generic_input_actions.default_back or generic_input_actions.default)
 
 	self.render_settings.info_alpha_multiplier = 0
 	self.render_settings.bot_selection_alpha_multiplier = 0
@@ -425,12 +425,12 @@ CharacterSelectionStateCharacter._enter_bot_selection = function (self, selected
 	local hero_widgets = self._hero_widgets
 	local hero_widget_index = 1
 
-	for row = 1, #PlayerData.bot_spawn_priority, 1 do
+	for row = 1, #PlayerData.bot_spawn_priority do
 		local index = PlayerData.bot_spawn_priority[row]
 		local profile = SPProfiles[index]
 		local num_careers = #profile.careers
 
-		for column = 1, num_careers, 1 do
+		for column = 1, num_careers do
 			local widget = hero_widgets[hero_widget_index]
 			widget.content.bot_selection_active = true
 			hero_widget_index = hero_widget_index + 1
@@ -521,10 +521,10 @@ CharacterSelectionStateCharacter._is_selected_hero_unlocked = function (self)
 	local num_max_rows = self._num_max_hero_rows
 	local widget_index = 1
 
-	for i = 1, num_max_rows, 1 do
+	for i = 1, num_max_rows do
 		local num_max_columns = self._num_hero_columns[i]
 
-		for j = 1, num_max_columns, 1 do
+		for j = 1, num_max_columns do
 			if selected_row == i and selected_column == j then
 				local widget = self._hero_widgets[widget_index]
 				local content = widget.content
@@ -595,7 +595,7 @@ CharacterSelectionStateCharacter._update_bot_order = function (self, new_row, re
 	local hero_icon_widgets = self._hero_icon_widgets
 	local hero_widget_index = 1
 
-	for row = 1, #PlayerData.bot_spawn_priority, 1 do
+	for row = 1, #PlayerData.bot_spawn_priority do
 		local index = PlayerData.bot_spawn_priority[row]
 		local profile = SPProfiles[index]
 		local num_careers = #profile.careers
@@ -603,7 +603,7 @@ CharacterSelectionStateCharacter._update_bot_order = function (self, new_row, re
 		local offset = -((new_hero_row - 1) * 144)
 		local is_old_row = row == old_row
 
-		for column = 1, num_careers, 1 do
+		for column = 1, num_careers do
 			local hero_widget = hero_widgets[hero_widget_index]
 			local hero_widget_content = hero_widget.content
 			self._ui_animations[index .. ":" .. column] = UIAnimation.init(UIAnimation.function_by_time, hero_widget.offset, 2, hero_widget.offset[2], offset, 0.25, math.easeOutCubic)
@@ -646,12 +646,12 @@ CharacterSelectionStateCharacter._set_bot_selection = function (self, index)
 
 	local hero_widget_index = 1
 
-	for row = 1, #PlayerData.bot_spawn_priority, 1 do
+	for row = 1, #PlayerData.bot_spawn_priority do
 		local index = PlayerData.bot_spawn_priority[row]
 		local profile = SPProfiles[index]
 		local num_careers = #profile.careers
 
-		for column = 1, num_careers, 1 do
+		for column = 1, num_careers do
 			if row == self._current_selected_row then
 				self._hero_widgets[hero_widget_index].offset[1] = self._hero_widgets[hero_widget_index].offset[1] + self._x_offset
 				self._hero_widgets[hero_widget_index].offset[3] = 100
@@ -700,12 +700,12 @@ CharacterSelectionStateCharacter._reset_bot_selection = function (self, select_h
 	local hero_widgets = self._hero_widgets
 	local hero_widget_index = 1
 
-	for row = 1, #PlayerData.bot_spawn_priority, 1 do
+	for row = 1, #PlayerData.bot_spawn_priority do
 		local index = PlayerData.bot_spawn_priority[row]
 		local profile = SPProfiles[index]
 		local num_careers = #profile.careers
 
-		for column = 1, num_careers, 1 do
+		for column = 1, num_careers do
 			local widget = hero_widgets[hero_widget_index]
 			widget.content.bot_selection = true
 			widget.content.bot_order_selection = false
@@ -749,16 +749,16 @@ CharacterSelectionStateCharacter._handle_mouse_bot_selection = function (self, i
 			local diff = y_offset - self._base_cursor_y_offset
 			local max_offset = -((#PlayerData.bot_spawn_priority - 1) * 144)
 			local offset_y = math.clamp(self._base_y_offset + diff, max_offset, 0)
-			local icon_clamp = (self._base_y_offset + diff) - offset_y
+			local icon_clamp = self._base_y_offset + diff - offset_y
 			local hero_widgets = self._hero_widgets
 			local hero_widget_index = 1
 
-			for row = 1, #self._bot_priority_copy, 1 do
+			for row = 1, #self._bot_priority_copy do
 				local index = self._bot_priority_copy[row]
 				local profile = SPProfiles[index]
 				local num_careers = #profile.careers
 
-				for column = 1, num_careers, 1 do
+				for column = 1, num_careers do
 					local hero_widget = hero_widgets[hero_widget_index]
 					local hero_widget_content = hero_widget.content
 
@@ -806,10 +806,10 @@ CharacterSelectionStateCharacter._handle_mouse_bot_selection = function (self, i
 		local hero_widgets = self._hero_widgets
 		local widget_index = 1
 
-		for i = 1, self._num_max_hero_rows, 1 do
+		for i = 1, self._num_max_hero_rows do
 			local num_max_columns = self._num_hero_columns[i]
 
-			for j = 1, num_max_columns, 1 do
+			for j = 1, num_max_columns do
 				local widget = hero_widgets[widget_index]
 				local content = widget.content
 				local button_hotspot = content.button_hotspot
@@ -871,10 +871,10 @@ CharacterSelectionStateCharacter._select_hero = function (self, profile_index, c
 
 	local widget_index = 1
 
-	for i = 1, num_max_rows, 1 do
+	for i = 1, num_max_rows do
 		local num_max_columns = self._num_hero_columns[i]
 
-		for j = 1, num_max_columns, 1 do
+		for j = 1, num_max_columns do
 			local is_selected = i == self._selected_hero_row and j == self._selected_hero_column
 			local widget = hero_widgets[widget_index]
 			local content = widget.content
@@ -1232,7 +1232,7 @@ CharacterSelectionStateCharacter._populate_career_info = function (self, profile
 	local total_perks_height = 0
 	local perks_height_spacing = 0
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local widget = widgets_by_name["career_perk_" .. i]
 		local content = widget.content
 		local style = widget.style
@@ -1282,7 +1282,7 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 		self:_handle_mouse_bot_selection(input_service)
 
 		local back_button = self._widgets_by_name.back_button
-		local back_pressed = (gamepad_active and input_service:get("back_menu_alt", true)) or input_service:get("toggle_menu", true) or input_service:get("back", true)
+		local back_pressed = gamepad_active and input_service:get("back_menu_alt", true) or input_service:get("toggle_menu", true) or input_service:get("back", true)
 
 		if back_pressed or UIUtils.is_button_pressed(back_button) then
 			self:_exit_bot_selection()
@@ -1296,7 +1296,7 @@ CharacterSelectionStateCharacter._handle_input = function (self, dt, t)
 		local confirm_available = not select_button.content.button_hotspot.disable_button
 		local bot_priority_button = self._widgets_by_name.bot_priority_button
 		local confirm_pressed = confirm_available and input_service:get("confirm_press", true)
-		local back_pressed = (self.allow_back_button and input_service:get("back_menu_alt", true)) or input_service:get("back", true)
+		local back_pressed = self.allow_back_button and input_service:get("back_menu_alt", true) or input_service:get("back", true)
 
 		if self:_is_button_pressed(select_button) or confirm_pressed then
 			self:_play_sound("play_gui_start_menu_button_click")
@@ -1495,7 +1495,7 @@ CharacterSelectionStateCharacter._on_option_button_hover = function (self, widge
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
-	for i = 2, 4, 1 do
+	for i = 2, 4 do
 		if animation_duration > 0 then
 			ui_animations[animation_name .. "_hover_" .. i] = self:_animate_element_by_time(pass_style.color, i, current_color_value, target_color_value, animation_duration)
 		else
@@ -1514,7 +1514,7 @@ CharacterSelectionStateCharacter._on_option_button_dehover = function (self, wid
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = current_color_value / 255 * total_time
 
-	for i = 2, 4, 1 do
+	for i = 2, 4 do
 		if animation_duration > 0 then
 			ui_animations[animation_name .. "_hover_" .. i] = self:_animate_element_by_time(pass_style.color, i, current_color_value, target_color_value, animation_duration)
 		else
@@ -1540,7 +1540,5 @@ CharacterSelectionStateCharacter._animate_element_by_catmullrom = function (self
 end
 
 CharacterSelectionStateCharacter.input_service = function (self)
-	return ((self._pending_profile_request or self._resyncing_loadout or self.parent:input_blocked()) and FAKE_INPUT_SERVICE) or self.parent:input_service(true)
+	return (self._pending_profile_request or self._resyncing_loadout or self.parent:input_blocked()) and FAKE_INPUT_SERVICE or self.parent:input_service(true)
 end
-
-return

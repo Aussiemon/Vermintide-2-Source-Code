@@ -428,5 +428,3 @@ settings.vortex_templates = {
 		}
 	}
 }
-
-return

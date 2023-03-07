@@ -85,5 +85,3 @@ DeusDebugUI._draw_left_side = function (self, dt, t)
 	Gui.rect(self._gui, Vector2(bg_x, bg_y), Vector2(bg_width, bg_height), Color(128, 0, 0, 0))
 	Gui.text(self._gui, left_side_text, font, font_size, font_material, Vector3(text_x, text_y, 0), Color(255, 255, 255, 0))
 end
-
-return

@@ -27,8 +27,8 @@ local padding = {
 	0
 }
 local modifier_info_panel_size = {
-	(modifier_info_size[1] + modifier_info_panel_offset[1]) - padding[1],
-	(modifier_info_size[2] + modifier_info_panel_offset[2]) - padding[2]
+	modifier_info_size[1] + modifier_info_panel_offset[1] - padding[1],
+	modifier_info_size[2] + modifier_info_panel_offset[2] - padding[2]
 }
 local modifier_info_panel_pos = {
 	0 + modifier_info_panel_offset[1],
@@ -1007,7 +1007,7 @@ local widgets = {
 }
 local node_widgets = {}
 
-for i = 1, 20, 1 do
+for i = 1, 20 do
 	node_widgets[i] = create_level_widget(i)
 end
 

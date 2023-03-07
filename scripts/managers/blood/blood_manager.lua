@@ -175,7 +175,7 @@ BloodManager._update_blood_ball_buffer = function (self)
 	local max_size = blood_ball_ring_buffer.max_size
 	local num_updates = math.min(NUM_BLOOD_BALLS_TO_SPAWN_PER_FRAME, size)
 
-	for i = 1, num_updates, 1 do
+	for i = 1, num_updates do
 		local blood_ball_data = buffer[read_index]
 
 		self:_spawn_blood_ball(blood_ball_data)
@@ -198,7 +198,7 @@ BloodManager._create_blood_ball_buffer = function (self)
 		max_size = buffer_size
 	}
 
-	for index = 1, buffer_size, 1 do
+	for index = 1, buffer_size do
 		self._blood_ball_ring_buffer.buffer[index] = {
 			velocity = 0,
 			position = Vector3Box(),
@@ -314,7 +314,7 @@ BloodManager._update_blood_intensity = function (self, hit_unit, breed, health_e
 	local num_meshes = Unit.num_meshes(hit_unit)
 	local inverse_health_percentage = 1 - health_ext:current_health_percent()
 
-	for i = 0, num_meshes - 1, 1 do
+	for i = 0, num_meshes - 1 do
 		local mesh = Unit.mesh(hit_unit, i)
 
 		for material_name, intensity_variable in pairs(blood_intensity_data) do
@@ -419,5 +419,3 @@ BloodManager._is_player = function (self, attacker)
 
 	return false
 end
-
-return

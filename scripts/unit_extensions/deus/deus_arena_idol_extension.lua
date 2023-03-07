@@ -30,5 +30,3 @@ DeusArenaIdolExtension.on_local_player_game_starts = function (self)
 
 	World.link_unit(self._world, idol_unit, 0, self._unit, 0)
 end
-
-return

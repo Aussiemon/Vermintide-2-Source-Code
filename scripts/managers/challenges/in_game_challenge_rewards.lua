@@ -283,13 +283,13 @@ InGameChallengeRewardTypes = {
 		local server_controlled = reward_data.server_controlled
 		local return_data = {}
 
-		for i = 1, #target_units, 1 do
+		for i = 1, #target_units do
 			local unit = target_units[i]
 
 			if unit and Unit.alive(unit) then
 				local server_buff_ids = {}
 
-				for buff_id = 1, #buffs, 1 do
+				for buff_id = 1, #buffs do
 					server_buff_ids[buff_id] = buff_system:add_buff(unit, buffs[buff_id], unit, server_controlled)
 				end
 
@@ -304,7 +304,7 @@ InGameChallengeRewardTypes = {
 		local network_transmit = Managers.state.network.network_transmit
 		local pickup_system = Managers.state.entity:system("pickup_system")
 
-		for i = 1, #target_units, 1 do
+		for i = 1, #target_units do
 			local unit = target_units[i]
 
 			if unit and Unit.alive(unit) then
@@ -356,12 +356,12 @@ InGameChallengeRewardRevokeTypes = {
 
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, #target_units, 1 do
+		for i = 1, #target_units do
 			local unit = target_units[i]
 			local server_buff_ids = additional_data[unit]
 
 			if unit and Unit.alive(unit) and server_buff_ids then
-				for buff_idx = 1, #server_buff_ids, 1 do
+				for buff_idx = 1, #server_buff_ids do
 					buff_system:remove_server_controlled_buff(unit, server_buff_ids[buff_idx])
 				end
 			end
@@ -393,7 +393,7 @@ InGameChallengeRewardTargets = {
 			local targets = {}
 			local target_idx = 0
 
-			for i = 1, #party_members, 1 do
+			for i = 1, #party_members do
 				local player = party_members[i].player
 				local unit = player and player.player_unit
 
@@ -411,5 +411,3 @@ InGameChallengeRewardTargets = {
 }
 
 DLCUtils.merge("ingame_challenge_revoke_targets", InGameChallengeRewardTargets)
-
-return

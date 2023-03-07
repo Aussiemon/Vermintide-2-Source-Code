@@ -606,7 +606,7 @@ local action_data = {
 				"storm_vermin_warlord_kills_enemies_cata"
 			}
 
-			for i = 1, #stat_names, 1 do
+			for i = 1, #stat_names do
 				local current_difficulty = Managers.state.difficulty:get_difficulty()
 				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 				local allowed_difficulty = allowed_difficulties[current_difficulty]
@@ -662,7 +662,7 @@ local action_data = {
 				ready_function = function (unit, blackboard, t)
 					local charge_t = t - blackboard.attack_sequence_start_time
 
-					return (charge_t > 1.5 and blackboard.surrounding_players > 0) or charge_t > 2.5
+					return charge_t > 1.5 and blackboard.surrounding_players > 0 or charge_t > 2.5
 				end
 			}
 		},
@@ -700,7 +700,7 @@ local action_data = {
 				"storm_vermin_warlord_kills_enemies_cata"
 			}
 
-			for i = 1, #stat_names, 1 do
+			for i = 1, #stat_names do
 				local current_difficulty = Managers.state.difficulty:get_difficulty()
 				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 				local allowed_difficulty = allowed_difficulties[current_difficulty]
@@ -1861,5 +1861,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_storm_vermin_warlord = table.create_copy(BreedActions.skaven_storm_vermin_warlord, action_data)
-
-return

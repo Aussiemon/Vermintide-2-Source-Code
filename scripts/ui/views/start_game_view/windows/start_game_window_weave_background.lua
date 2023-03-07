@@ -132,7 +132,7 @@ StartGameWindowWeaveBackground._set_background_wheel_visibility = function (self
 	background_wheel_1.content.visible = visible
 	hdr_background_wheel_1.content.visible = visible
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local wheel_ring_1 = widgets_by_name["wheel_ring_" .. i .. "_1"]
 		local wheel_ring_2 = widgets_by_name["wheel_ring_" .. i .. "_2"]
 		local wheel_ring_3 = widgets_by_name["wheel_ring_" .. i .. "_3"]
@@ -153,7 +153,7 @@ end
 StartGameWindowWeaveBackground._update_background_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local wheel_ring_1 = widgets_by_name["wheel_ring_" .. i .. "_1"]
 		local wheel_ring_2 = widgets_by_name["wheel_ring_" .. i .. "_2"]
 		local wheel_ring_3 = widgets_by_name["wheel_ring_" .. i .. "_3"]
@@ -175,7 +175,7 @@ StartGameWindowWeaveBackground._update_background_animations = function (self, d
 
 	local matchmaking_manager = Managers.matchmaking
 	local is_game_matchmaking = matchmaking_manager:is_game_matchmaking()
-	local speed = (is_game_matchmaking and 4) or 2.5
+	local speed = is_game_matchmaking and 4 or 2.5
 	local progress = 0.5 + math.sin(Managers.time:time("ui") * speed) * 0.5
 
 	self:_set_background_bloom_intensity(progress, is_game_matchmaking)
@@ -183,7 +183,7 @@ end
 
 StartGameWindowWeaveBackground._set_background_bloom_intensity = function (self, fraction, is_game_matchmaking)
 	local min = 1.39
-	local max = (is_game_matchmaking and 10) or 2
+	local max = is_game_matchmaking and 10 or 2
 	local value = min + math.clamp(fraction, 0, 1) * max
 	local ui_hdr_renderer = self._ui_hdr_renderer
 	local gui = ui_hdr_renderer.gui
@@ -194,7 +194,7 @@ StartGameWindowWeaveBackground._set_background_bloom_intensity = function (self,
 
 	Material.set_scalar(gui_material_background_wheel_1, "noise_intensity", value)
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
 		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
 		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
@@ -301,5 +301,3 @@ StartGameWindowWeaveBackground._animate_wheel_position = function (self, dt)
 	position[2] = default_position[2] + height
 	self._wheel_position_progress = wheel_position_progress
 end
-
-return

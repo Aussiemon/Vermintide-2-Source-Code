@@ -7,5 +7,3 @@ settings.husk_lookup = {
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_steak"
 }
-
-return

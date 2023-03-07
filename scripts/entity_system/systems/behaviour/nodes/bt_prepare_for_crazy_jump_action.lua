@@ -281,5 +281,3 @@ BTPrepareForCrazyJumpAction.test_simple_jump = function (to_target, jump_speed)
 		return velocity
 	end
 end
-
-return

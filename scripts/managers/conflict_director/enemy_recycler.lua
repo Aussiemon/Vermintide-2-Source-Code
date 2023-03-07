@@ -75,7 +75,7 @@ EnemyRecycler.setup_forbidden_zones = function (self, pos)
 	self.forbidden_zones = {}
 	local forbidden_zones = self.forbidden_zones
 
-	for i = 1, 9, 1 do
+	for i = 1, 9 do
 		local zone_name = "forbidden_zone" .. i
 
 		if Level.has_volume(self.level, zone_name) then
@@ -89,7 +89,7 @@ EnemyRecycler.setup_forbidden_zones = function (self, pos)
 		forbidden_zones[#forbidden_zones + 1] = checkpoint_data.no_spawn_volume
 	end
 
-	for layer_id = 20, 29, 1 do
+	for layer_id = 20, 29 do
 		local layer_name = LAYER_ID_MAPPING[layer_id]
 
 		if layer_name then
@@ -107,7 +107,7 @@ EnemyRecycler.setup_forbidden_zones = function (self, pos)
 end
 
 local function is_allowed_spawn(level, volume_list, volume_list_size, pos)
-	for i = 1, volume_list_size, 1 do
+	for i = 1, volume_list_size do
 		if Level.is_point_inside_volume(level, volume_list[i], pos) then
 			return false
 		end
@@ -144,7 +144,7 @@ end
 EnemyRecycler.boxify_waypoint_table = function (self, waypoint_table)
 	local waypoints = {}
 
-	for i = 1, #waypoint_table, 1 do
+	for i = 1, #waypoint_table do
 		local w = waypoint_table[i]
 		waypoints[i] = Vector3Box(w[1], w[2], w[3])
 	end
@@ -167,7 +167,7 @@ EnemyRecycler.draw_roaming_splines = function (self)
 				print("FOUND ROAMING!")
 			end
 
-			local color = (is_roaming and used_color) or not_used_color
+			local color = is_roaming and used_color or not_used_color
 
 			self.ai_group_system:draw_spline(spline.spline_points, drawer, color)
 		end
@@ -213,7 +213,7 @@ EnemyRecycler.inject_roaming_patrol = function (self, area_position, area_rot, p
 			spline.has_party = spline_start_position
 		end
 
-		local spline_waypoints = (not spline and self:boxify_waypoint_table(waypoints)) or nil
+		local spline_waypoints = not spline and self:boxify_waypoint_table(waypoints) or nil
 		local event_data = {
 			spline_type = "roaming",
 			optional_pos = spline_start_position,
@@ -257,7 +257,7 @@ EnemyRecycler.setup = function (self, pos_list, pack_sizes, pack_rotations, pack
 	local roaming_patrols_allowed = not script_data.ai_roaming_patrols_disabled and self.conflict_director.level_analysis.patrol_waypoints
 
 	if not CurrentConflictSettings.roaming.disabled then
-		for i = 1, #pos_list, 1 do
+		for i = 1, #pos_list do
 			local area_position = pos_list[i]
 			local pack_size = pack_sizes[i]
 			local area_rot = pack_rotations[i]
@@ -311,7 +311,7 @@ end
 EnemyRecycler.reset_areas = function (self)
 	local areas = self.areas
 
-	for i = 1, #areas, 1 do
+	for i = 1, #areas do
 		local area = areas[i]
 		local area_type = area[AREA_TYPE]
 		local units_in_area = area[AREA_UNITS]
@@ -326,13 +326,13 @@ EnemyRecycler.reset_areas = function (self)
 
 	local shutdown_areas = self.shutdown_areas
 
-	for i = 1, #shutdown_areas, 1 do
+	for i = 1, #shutdown_areas do
 		shutdown_areas[i] = nil
 	end
 
 	local inside_areas = self.inside_areas
 
-	for i = 1, #inside_areas, 1 do
+	for i = 1, #inside_areas do
 		inside_areas[i] = nil
 	end
 
@@ -487,7 +487,7 @@ EnemyRecycler.activate_area = function (self, area, threat_population)
 		interest_point_unit = self:spawn_interest_point(interest_point_unit_name, interest_point_position, do_spawn_no, area[AREA_ROTATION_OR_EVENT_DATA])
 		units_in_area[1][1] = interest_point_unit
 
-		for i = 2, #units_in_area, 1 do
+		for i = 2, #units_in_area do
 			local unit_data = units_in_area[i]
 			local breed_name = unit_data[U_BREED_NAME]
 			local spawn_pos = unit_data[U_POSITION]
@@ -537,7 +537,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 			local units_in_area_n = 1
 			local sleepy = nil
 
-			for i = 2, #units_in_area, 1 do
+			for i = 2, #units_in_area do
 				local unit_data = units_in_area[i]
 				local queue_id = unit_data[1]
 
@@ -581,7 +581,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 			end
 
 			if not sleepy then
-				for i = 1, points_n, 1 do
+				for i = 1, points_n do
 					local point = points[i]
 
 					if type(point[1]) == "number" then
@@ -596,7 +596,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 						}
 					end
 
-					local claim_unit = point.claim_unit or (type(point[1]) ~= "number" and point[1])
+					local claim_unit = point.claim_unit or type(point[1]) ~= "number" and point[1]
 
 					if claim_unit and AiUtils.unit_alive(claim_unit) then
 						local blackboard = BLACKBOARDS[claim_unit]
@@ -624,7 +624,7 @@ EnemyRecycler.deactivate_area = function (self, area)
 				end
 			end
 
-			for i = units_in_area_n + 1, #units_in_area, 1 do
+			for i = units_in_area_n + 1, #units_in_area do
 				assert(i ~= 1)
 
 				units_in_area[i] = nil
@@ -723,7 +723,7 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 		area[INDEX_SEEN] = 0
 		local pos = area[1]:unbox()
 
-		for j = 1, players, 1 do
+		for j = 1, players do
 			local to_dir = pos - player_positions[j]
 			local h = to_dir.z
 
@@ -783,7 +783,7 @@ EnemyRecycler._update_roaming_spawning = function (self, t, player_positions, th
 
 		table.sort(remove_zones, sort_func)
 
-		for i = 1, num_to_remove, 1 do
+		for i = 1, num_to_remove do
 			shutdown_areas[#shutdown_areas + 1] = fast_array_remove(areas, remove_zones[i])
 			remove_zones[i] = nil
 		end
@@ -813,11 +813,7 @@ EnemyRecycler.add_main_path_terror_event = function (self, boxed_pos, terror_eve
 
 	local main_path_events = self.main_path_events
 	local path_pos, travel_dist, move_percent, path_index, sub_index = MainPathUtils.closest_pos_at_main_path(nil, boxed_pos:unbox())
-
-	if not optional_spawn_distance then
-		travel_dist = math.max(0, travel_dist - (activation_dist or 45))
-	end
-
+	travel_dist = optional_spawn_distance or math.max(0, travel_dist - (activation_dist or 45))
 	local num_events = #main_path_events
 	num_events = num_events + 1
 	main_path_events[num_events] = {
@@ -861,7 +857,7 @@ end
 EnemyRecycler.draw_main_path_events = function (self, drawer)
 	local events = self.main_path_events
 
-	for i = 1, #events, 1 do
+	for i = 1, #events do
 		local main_event_data = events[i]
 		local event_data = main_event_data[4]
 		local event_kind = event_data.event_kind
@@ -913,7 +909,7 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 	local s = ""
 	local t = ""
 
-	for i = 1, #areas, 1 do
+	for i = 1, #areas do
 		local area = areas[i]
 		local pos = area[1]:unbox()
 		local seen = area[3]
@@ -939,7 +935,7 @@ EnemyRecycler.draw_debug = function (self, player_positions)
 		end
 	end
 
-	for i = 1, #shutdown, 1 do
+	for i = 1, #shutdown do
 		local area = shutdown[i]
 		local pos = area[1]:unbox()
 
@@ -1015,7 +1011,7 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 
 		local num_players_far_away = 0
 
-		for j = 1, num_players, 1 do
+		for j = 1, num_players do
 			local player_pos = player_positions[j]
 			local dist_squared = Vector3_distance_squared(pos, player_pos)
 
@@ -1046,5 +1042,3 @@ EnemyRecycler.far_off_despawn = function (self, t, dt, player_positions, spawned
 
 	self.far_off_index = index
 end
-
-return

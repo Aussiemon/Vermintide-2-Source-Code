@@ -159,7 +159,7 @@ PlayerBotNavigation.is_path_safe_from_vortex = function (self, path_check_distan
 	local should_end = false
 	local check_node = true
 
-	for i = heading_node_index, num_nodes, 1 do
+	for i = heading_node_index, num_nodes do
 		local current_node = path[i]:unbox()
 		local to_current_node = current_node - previous_position
 		local next_distance = distance_checked + Vector3.length(to_current_node)
@@ -418,7 +418,7 @@ PlayerBotNavigation._update_astar = function (self, t)
 
 				self:_path_successful(t)
 
-				for i = 1, num_nodes - 1, 1 do
+				for i = 1, num_nodes - 1 do
 					local pos = GwNavAStar.node_at_index(astar, i)
 					self._path[i] = Vector3Box(pos)
 				end
@@ -503,7 +503,7 @@ PlayerBotNavigation._debug_draw_path = function (self, position, previous_goal, 
 		local path = self._path
 		local num_nodes = #path
 
-		for i = 1, num_nodes - 1, 1 do
+		for i = 1, num_nodes - 1 do
 			local current_node = path[i]:unbox()
 			local next_node = path[i + 1]:unbox()
 
@@ -593,5 +593,3 @@ PlayerBotNavigation.remove_transition = function (self, transition_unit)
 	local transitions = self._available_nav_transitions
 	transitions[transition_unit] = nil
 end
-
-return

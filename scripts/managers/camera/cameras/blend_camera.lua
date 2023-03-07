@@ -73,5 +73,3 @@ BlendCamera.update = function (self, dt, position, rotation, data)
 
 	BlendCamera.super.update(self, dt, new_position, rotation, data)
 end
-
-return

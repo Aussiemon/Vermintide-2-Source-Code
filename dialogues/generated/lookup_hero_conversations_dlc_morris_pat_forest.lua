@@ -50,5 +50,3 @@ DialogueLookup[DialogueLookup_n + 23] = "pes_morris_forest_skulls"
 DialogueLookup[DialogueLookup_n + 24] = "pes_morris_forest_beacons"
 DialogueLookup[DialogueLookup_n + 25] = "pes_morris_forest_chaos_star"
 DialogueLookup_n = DialogueLookup_n + 25
-
-return

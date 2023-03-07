@@ -92,5 +92,3 @@ settings.ui_texture_settings = {
 		"dlc_store_banner_wom"
 	}
 }
-
-return

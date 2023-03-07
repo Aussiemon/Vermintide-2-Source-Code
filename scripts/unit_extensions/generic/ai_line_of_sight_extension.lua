@@ -80,7 +80,7 @@ AILineOfSightExtension.has_line_of_sight = function (self, unit, blackboard, ove
 				else
 					local right_vector = Vector3.normalize(Vector3.cross(target_offset, up))
 
-					for i = 1, num_offsets, 1 do
+					for i = 1, num_offsets do
 						num_raycasts = num_raycasts + 1
 						local offset = offsets[i]
 						local from = self_pos + ray_from_offset
@@ -102,5 +102,3 @@ AILineOfSightExtension.has_line_of_sight = function (self, unit, blackboard, ove
 
 	return success, num_raycasts
 end
-
-return

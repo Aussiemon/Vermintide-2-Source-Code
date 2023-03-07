@@ -151,5 +151,3 @@ DeusRelicExtension._update_objective_marker = function (self, unit, t)
 		self._objective_unit = objective_unit
 	end
 end
-
-return

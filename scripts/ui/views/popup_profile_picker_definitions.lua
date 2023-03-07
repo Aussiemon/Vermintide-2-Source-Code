@@ -474,7 +474,7 @@ local function create_hero_icon_widget(scenegraph_id, size)
 					pass_type = "texture",
 					content_change_function = function (content, style)
 						local is_hover = content.button_hotspot.is_hover
-						style.color[1] = (is_hover and 255) or 230
+						style.color[1] = is_hover and 255 or 230
 					end
 				}
 			}
@@ -635,7 +635,7 @@ local function create_hero_widget(scenegraph_id, size)
 						return not content.exists
 					end,
 					content_change_function = function (content, style)
-						local target = (content.is_hover and 255) or 184
+						local target = content.is_hover and 255 or 184
 						style.color[1] = math.ceil(style.color[1] + 0.1 * (target - style.color[1]))
 					end
 				}

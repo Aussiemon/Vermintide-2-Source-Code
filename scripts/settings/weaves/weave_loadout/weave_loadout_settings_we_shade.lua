@@ -6,5 +6,3 @@ WeaveLoadoutSettings.we_shade = {
 	properties = {},
 	traits = {}
 }
-
-return

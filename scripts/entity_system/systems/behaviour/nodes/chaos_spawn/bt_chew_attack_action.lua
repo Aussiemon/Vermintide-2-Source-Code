@@ -97,5 +97,3 @@ BTChewAttackAction.anim_cb_chew_attack = function (self, unit, blackboard)
 		blackboard.wants_to_throw = true
 	end
 end
-
-return

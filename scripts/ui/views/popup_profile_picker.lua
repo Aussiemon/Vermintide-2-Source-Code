@@ -56,7 +56,7 @@ PopupProfilePicker._create_ui_elements = function (self)
 		icon_widget.content.icon = hero_icon_texture
 	end
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local widget = UIWidget.init(hero_widget_definition)
 		hero_widgets[i] = widget
 		local offset = widget.offset
@@ -97,7 +97,7 @@ PopupProfilePicker.show = function (self, current_profile_index, current_career_
 	self._join_lobby_result = nil
 	self._lobby_data = lobby_data
 
-	self._ingame_ui:handle_transition((join_by_lobby_browser and "exit_menu") or "close_active")
+	self._ingame_ui:handle_transition(join_by_lobby_browser and "exit_menu" or "close_active")
 	ShowCursorStack.push()
 
 	local profile_index = current_profile_index or 1
@@ -201,7 +201,7 @@ end
 PopupProfilePicker._handle_mouse_selection = function (self)
 	local hero_icon_widgets = self._hero_icon_widgets
 
-	for i = 1, #hero_icon_widgets, 1 do
+	for i = 1, #hero_icon_widgets do
 		local widget = hero_icon_widgets[i]
 		local content = widget.content
 
@@ -225,7 +225,7 @@ PopupProfilePicker._handle_mouse_selection = function (self)
 
 	local hero_widgets = self._hero_widgets
 
-	for i = 1, #hero_widgets, 1 do
+	for i = 1, #hero_widgets do
 		local widget = hero_widgets[i]
 		local content = widget.content
 
@@ -380,7 +380,7 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 	local hero_icon_widgets = self._hero_icon_widgets
 	local is_button_enabled = false
 
-	for i = 1, #hero_icon_widgets, 1 do
+	for i = 1, #hero_icon_widgets do
 		local profile_index = ProfilePriority[i]
 		local occupied = self._lobby_data and not ProfileSynchronizer.is_free_in_lobby(profile_index, lobby_data)
 		local widget = hero_icon_widgets[i]
@@ -392,7 +392,7 @@ PopupProfilePicker._update_occupied_profiles = function (self)
 	if self._lobby_data then
 		local taken = not ProfileSynchronizer.is_free_in_lobby(self._selected_profile_index, lobby_data)
 
-		for i = 1, #hero_widgets, 1 do
+		for i = 1, #hero_widgets do
 			local widget = hero_widgets[i]
 			local content = widget.content
 			content.taken = taken
@@ -417,7 +417,7 @@ end
 
 PopupProfilePicker.set_select_button_enable_state = function (self, enabled)
 	local button_content = self._widgets_by_name.select_button.content
-	button_content.title_text = (enabled and Localize("input_description_confirm")) or Localize("dlc1_2_difficulty_unavailable")
+	button_content.title_text = enabled and Localize("input_description_confirm") or Localize("dlc1_2_difficulty_unavailable")
 	button_content.button_hotspot.disable_button = not enabled
 	self._selection_approved = enabled
 
@@ -431,5 +431,3 @@ end
 PopupProfilePicker._play_sound = function (self, event)
 	WwiseWorld.trigger_event(self._wwise_world, event)
 end
-
-return

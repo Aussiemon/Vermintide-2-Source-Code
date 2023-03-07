@@ -37,7 +37,7 @@ DeusJourneyPresentationUI.start = function (self, journey_name, previous_complet
 		render_settings = self.render_settings
 	}
 	self.animation_params = animation_params
-	local animation_name = (first_time_completed and "enter_first_time") or "enter"
+	local animation_name = first_time_completed and "enter_first_time" or "enter"
 
 	self:start_presentation_animation(animation_name, animation_params)
 
@@ -57,5 +57,3 @@ DeusJourneyPresentationUI._set_presentation_info = function (self, journey_data,
 	widgets_by_name.level_title.content.text = Localize(level_display_name)
 	widgets_by_name.level.style.purple_glow.color[1] = 0
 end
-
-return

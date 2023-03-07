@@ -78,7 +78,7 @@ EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_
 	if unit_template_name and self.system_to_extension_per_unit_type_map[extensions_list] == nil then
 		local reverse_lookup = {}
 
-		for i = 1, num_extensions, 1 do
+		for i = 1, num_extensions do
 			repeat
 				local extension_name = extensions_list[i]
 
@@ -111,7 +111,7 @@ EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_
 		return false
 	end
 
-	for i = 1, num_extensions, 1 do
+	for i = 1, num_extensions do
 		repeat
 			local extension_name = extensions_list[i]
 
@@ -145,7 +145,7 @@ EntityManager2.add_unit_extensions = function (self, world, unit, unit_template_
 
 	local extensions = self_units[unit]
 
-	for i = 1, num_extensions, 1 do
+	for i = 1, num_extensions do
 		repeat
 			local extension_name = extensions_list[i]
 
@@ -225,7 +225,7 @@ EntityManager2.add_and_register_units = function (self, world, unit_list, num_un
 	local added_list = self.temp_table
 	local num_added = 0
 
-	for i = 1, num_units, 1 do
+	for i = 1, num_units do
 		local unit = unit_list[i]
 		local unit_template = Unit.get_data(unit, "unit_template")
 
@@ -244,7 +244,7 @@ EntityManager2.register_units_extensions = function (self, unit_list, num_units)
 	local self_units = self._units
 	local self_extensions = self._extensions
 
-	for i = 1, num_units, 1 do
+	for i = 1, num_units do
 		repeat
 			local unit = unit_list[i]
 			local unit_extensions = self_units[unit]
@@ -315,7 +315,7 @@ EntityManager2.unregister_units = function (self, units, num_units)
 	local ScriptUnit_has_extension = ScriptUnit.has_extension
 	local ignore_extensions_list = self._ignore_extensions_list
 
-	for i = 1, num_units, 1 do
+	for i = 1, num_units do
 		repeat
 			local unit = units[i]
 			POSITION_LOOKUP[unit] = nil
@@ -405,7 +405,7 @@ EntityManager2.add_ignore_extensions = function (self, ignore_extensions)
 	local ignore_extensions_list = self._ignore_extensions_list
 	local num_extensions = #ignore_extensions
 
-	for i = 1, num_extensions, 1 do
+	for i = 1, num_extensions do
 		local extension_name = ignore_extensions[i]
 		ignore_extensions_list[extension_name] = true
 	end
@@ -418,5 +418,3 @@ EntityManager2.unregister_unit = function (self, unit)
 
 	self:unregister_units(TEMP_UNIT_TABLE, 1)
 end
-
-return

@@ -31,7 +31,7 @@ ActionThrownProjectile.client_owner_start_action = function (self, new_action, t
 	local buffed_anim_time_scale = ActionUtils.get_action_time_scale(owner_unit, new_action)
 	local fire_time = (new_action.fire_time or 0) * 1 / buffed_anim_time_scale
 	self._time_to_shoot = t + fire_time
-	self._time_to_unzoom = (new_action.unzoom_time and t + new_action.unzoom_time) or nil
+	self._time_to_unzoom = new_action.unzoom_time and t + new_action.unzoom_time or nil
 	self._extra_buff_shot = false
 
 	self:_handle_critical_strike(is_critical_strike, buff_extension, hud_extension, nil, "on_critical_shot", nil)
@@ -172,5 +172,3 @@ ActionThrownProjectile._fire = function (self, add_spread)
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 	end
 end
-
-return

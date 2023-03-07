@@ -71,7 +71,7 @@ StartGameWindowMission.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -79,5 +79,3 @@ StartGameWindowMission.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

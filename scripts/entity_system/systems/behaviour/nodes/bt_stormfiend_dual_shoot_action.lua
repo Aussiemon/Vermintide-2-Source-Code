@@ -82,6 +82,7 @@ BTStormfiendDualShootAction.run = function (self, unit, blackboard, t, dt)
 		local weapon_setup = blackboard.weapon_setup
 
 		if t < data.start_firing_t then
+			-- Nothing
 		elseif not data.firing_initiated then
 			self:initiate_firing(blackboard, t)
 		elseif t < data.stop_firing_t then
@@ -156,7 +157,7 @@ BTStormfiendDualShootAction.shoot_hit_check = function (self, unit, blackboard)
 		local immune_breeds = action.immune_breeds
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local actor = hit.actor
 			local hit_unit = Actor.unit(actor)
@@ -235,9 +236,9 @@ BTStormfiendDualShootAction._update_ratling_gun = function (self, unit, blackboa
 	local time_in_shoot_action = t - data.start_firing_t
 	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.firing_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
-	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
+	local shots_to_fire = math.floor(time_in_shoot_action / current_time_between_shots) + 1 - data.shots_fired
 
-	for i = 1, shots_to_fire, 1 do
+	for i = 1, shots_to_fire do
 		data.shots_fired = data.shots_fired + 1
 
 		self:_shoot_ratling_gun(unit, blackboard, t, dt, "fx_left_muzzle")
@@ -298,5 +299,3 @@ BTStormfiendDualShootAction.initiate_firing = function (self, blackboard, t)
 	data.firing_initiated = true
 	data.is_firing = true
 end
-
-return

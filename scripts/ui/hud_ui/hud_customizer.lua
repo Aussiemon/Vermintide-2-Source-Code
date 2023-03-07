@@ -130,5 +130,3 @@ if not IS_WINDOWS then
 	HudCustomizer.reset_button = NOP
 	HudCustomizer.run = NOP
 end
-
-return

@@ -28,5 +28,3 @@ OverpoweredBlobHealthExtension.destroy = function (self)
 		StatusUtils.set_overpowered_network(self.target_unit, false)
 	end
 end
-
-return

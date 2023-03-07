@@ -323,7 +323,7 @@ LevelEndViewBase._is_page_selector_pressed = function (self)
 	local content = widget.content
 	local amount = content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot = content[hotspot_name]
@@ -339,7 +339,7 @@ LevelEndViewBase._set_page_selector_selection = function (self, index)
 	local content = widget.content
 	local amount = content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot = content[hotspot_name]
@@ -463,7 +463,7 @@ LevelEndViewBase._present_reward = function (self, data)
 end
 
 LevelEndViewBase._handle_queued_presentations = function (self)
-	if self:_is_reward_presentation_complete() or (#self._reward_presentation_queue == 0 and not self:displaying_reward_presentation()) then
+	if self:_is_reward_presentation_complete() or #self._reward_presentation_queue == 0 and not self:displaying_reward_presentation() then
 		local reward_presentation_queue = self._reward_presentation_queue
 		local num_queued_rewards = #reward_presentation_queue
 
@@ -815,12 +815,7 @@ LevelEndViewBase._request_state_change = function (self, state_name)
 	local direction = nil
 	local new_state_index = self._index_by_state_name[state_name]
 	local current_state_index = self._index_by_state_name[current_state_name]
-
-	if current_state_index < new_state_index then
-		direction = "left"
-	else
-		direction = "right"
-	end
+	direction = current_state_index < new_state_index and "left" or "right"
 
 	current_state:exit(direction)
 
@@ -863,12 +858,7 @@ LevelEndViewBase._setup_state_machine = function (self, optional_start_state_nam
 	if not initial then
 		local previous_state_name = self._current_state_name
 		local previous_state_index = self._index_by_state_name[previous_state_name]
-
-		if previous_state_index < state_index then
-			direction = "left"
-		else
-			direction = "right"
-		end
+		direction = previous_state_index < state_index and "left" or "right"
 	end
 
 	state_machine_params.direction = direction
@@ -1155,7 +1145,7 @@ LevelEndViewBase._calculate_perlin_value = function (self, x, settings)
 	local persistance = shake_settings.persistance
 	local number_of_octaves = shake_settings.octaves
 
-	for i = 0, number_of_octaves, 1 do
+	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
 		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
@@ -1284,11 +1274,11 @@ LevelEndViewBase.set_input_manager = function (self, input_manager)
 end
 
 LevelEndViewBase.input_service = function (self)
-	return (self:displaying_reward_presentation() and FAKE_INPUT_SERVICE) or self.input_manager:get_service("end_of_level")
+	return self:displaying_reward_presentation() and FAKE_INPUT_SERVICE or self.input_manager:get_service("end_of_level")
 end
 
 LevelEndViewBase.menu_input_service = function (self)
-	return (self.input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	return self.input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 end
 
 LevelEndViewBase.set_input_blocked = function (self, blocked)
@@ -1419,5 +1409,3 @@ LevelEndViewBase.create_ui_renderer = function (self, context, world, top_world)
 
 	return ui_renderer, ui_top_renderer
 end
-
-return

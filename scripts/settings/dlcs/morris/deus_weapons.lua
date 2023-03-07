@@ -2557,5 +2557,3 @@ readonlytable(DeusStartingWeaponTypeMapping)
 readonlytable(DeusWeaponArchetypes)
 readonlytable(DeusWeaponGroups)
 readonlytable(DeusWeapons)
-
-return

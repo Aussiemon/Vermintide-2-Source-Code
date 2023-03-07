@@ -221,7 +221,7 @@ NetworkState.get_profile_index_reservation = function (self, profile_index)
 	local key = self._shared_state:get_key("profile_index_reservation", nil, nil, profile_index)
 	local value = self._shared_state:get_server(key)
 
-	return (value ~= "" and value) or nil
+	return value ~= "" and value or nil
 end
 
 NetworkState.set_profile_index_reservation = function (self, profile_index, peer_id)
@@ -331,5 +331,3 @@ NetworkState.set_own_actually_ingame = function (self, actually_ingame)
 
 	self._shared_state:set_peer(self._own_peer_id, key, actually_ingame)
 end
-
-return

@@ -86,13 +86,11 @@ InputStackSettings = {
 }
 InputServiceToGroupMap = {}
 
-for group_id = 1, #InputStackSettings, 1 do
+for group_id = 1, #InputStackSettings do
 	local group_services = InputStackSettings[group_id].services
 
-	for service_id = 1, #group_services, 1 do
+	for service_id = 1, #group_services do
 		local service_name = group_services[service_id]
 		InputServiceToGroupMap[service_name] = group_id
 	end
 end
-
-return

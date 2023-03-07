@@ -112,5 +112,3 @@ BreedBehaviors.berzerker = {
 	},
 	name = "berzerker"
 }
-
-return

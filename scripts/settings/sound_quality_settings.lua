@@ -111,5 +111,3 @@ SoundQualitySettings.set_sound_quality = function (wwise_world, sound_quality)
 
 	local occlusion = quality_template.occlusion
 end
-
-return

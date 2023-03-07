@@ -5,7 +5,7 @@ player.scorpion_crater_pendant = {
 	source = "player_data"
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local dark_tongue_definition = "scorpion_crater_dark_tongue_" .. i
 	player[dark_tongue_definition] = {
 		value = 0,
@@ -24,5 +24,3 @@ player.scorpion_crater_ambush = {
 	database_name = "scorpion_crater_ambush",
 	source = "player_data"
 }
-
-return

@@ -199,7 +199,7 @@ StateTitleScreen._setup_world = function (self)
 
 	local camera = ScriptViewport.camera(self._viewport)
 
-	Camera.set_vertical_fov(camera, (math.pi * 65) / 180)
+	Camera.set_vertical_fov(camera, math.pi * 65 / 180)
 	Camera.set_far_range(camera, 5000)
 end
 
@@ -414,5 +414,3 @@ StateTitleScreen.on_exit = function (self, application_shutdown)
 
 	ShowCursorStack.pop()
 end
-
-return

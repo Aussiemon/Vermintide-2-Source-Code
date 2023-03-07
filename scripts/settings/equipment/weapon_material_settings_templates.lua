@@ -15,5 +15,3 @@ WeaponMaterialSettingsTemplates.golden_glow = {
 		type = "vector3"
 	}
 }
-
-return

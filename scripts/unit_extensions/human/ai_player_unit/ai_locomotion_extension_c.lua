@@ -336,5 +336,3 @@ AILocomotionExtensionC.set_collision_disabled = function (self, reason, state)
 		MoverHelper.set_collision_disable_reason(self._unit, self._collision_state, reason, state)
 	end
 end
-
-return

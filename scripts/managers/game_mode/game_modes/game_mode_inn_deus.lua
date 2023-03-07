@@ -284,7 +284,7 @@ GameModeInnDeus.local_player_game_starts = function (self, player, loading_conte
 			local show_hero_selection = not backend_waiting_for_input and not first_hero_selection_made
 
 			Managers.ui:handle_transition("initial_start_menu_view_force", {
-				menu_state_name = (show_hero_selection and "character") or "overview"
+				menu_state_name = show_hero_selection and "character" or "overview"
 			})
 		end
 	end
@@ -299,5 +299,3 @@ GameModeInnDeus.local_player_game_starts = function (self, player, loading_conte
 		end
 	end
 end
-
-return

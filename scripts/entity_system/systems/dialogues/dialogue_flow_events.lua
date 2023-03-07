@@ -52,5 +52,3 @@ DialogueSystemFlow.update_sound_event_subtitles = function (self)
 		end
 	end
 end
-
-return

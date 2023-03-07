@@ -124,7 +124,7 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 			local nearby_beastmen_blackboards = FrameTable.alloc_table()
 			local num_results = Broadphase.query(broadphase, self_pos, radius, broadphase_results)
 
-			for i = 1, num_results, 1 do
+			for i = 1, num_results do
 				local nearby_unit = broadphase_results[i]
 
 				if AiUtils.unit_alive(nearby_unit) then
@@ -139,8 +139,8 @@ BTPlaceStandardAction.anim_cb_place_standard = function (self, unit, blackboard)
 
 			DamageUtils.create_explosion(world, blackboard.target_unit, explosion_position, Quaternion.identity(), explosion_template, 1, damage_source, true, false, unit, false, nil, unit)
 
-			for i = 1, #nearby_beastmen_blackboards, 1 do
-				slot30 = nearby_beastmen_blackboards[i]
+			for i = 1, #nearby_beastmen_blackboards do
+				local nearby_beastmen_blackboard = nearby_beastmen_blackboards[i]
 			end
 
 			local attacker_unit_id = Managers.state.unit_storage:go_id(unit)
@@ -167,5 +167,3 @@ end
 BTPlaceStandardAction.anim_cb_placed_standard = function (self, unit, blackboard)
 	blackboard.anim_cb_placed_standard = true
 end
-
-return

@@ -123,5 +123,3 @@ BreedBehaviors.ogre = {
 	},
 	name = "rat_ogre"
 }
-
-return

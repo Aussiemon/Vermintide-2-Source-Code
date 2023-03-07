@@ -235,7 +235,7 @@ local function get_score_by_name(statistics_db, stats_id, stat_name, saved_score
 		local stat_types_n = #stat_types
 		local score = 0
 
-		for i = 1, stat_types_n, 1 do
+		for i = 1, stat_types_n do
 			local stat_type = stat_types[i]
 			score = score + get_score(statistics_db, stats_id, stat_type)
 		end
@@ -251,7 +251,7 @@ local function get_score_by_name(statistics_db, stats_id, stat_name, saved_score
 		table.clear(TEMP_TABLE)
 
 		local player_data = saved_scoreboard_data[stats_id]
-		local player_data_scores = (player_data and player_data.scores) or TEMP_TABLE
+		local player_data_scores = player_data and player_data.scores or TEMP_TABLE
 		local saved_score_amount = player_data_scores[stat_name] or 0
 
 		if saved_score_amount > 0 then
@@ -304,7 +304,7 @@ ScoreboardHelper.get_weave_stats = function (statistics_db, profile_synchronizer
 				local stat_types_n = #stat_types
 				local score = 0
 
-				for i = 1, stat_types_n, 1 do
+				for i = 1, stat_types_n do
 					local stat_type = stat_types[i]
 					score = score + get_score(statistics_db, player_data.stats_id, stat_type)
 				end
@@ -338,7 +338,7 @@ ScoreboardHelper.get_grouped_topic_statistics = function (statistics_db, profile
 		local player_unit = player.player_unit
 		local unit_alive = Unit.alive(player_unit)
 		local career_extension = unit_alive and ScriptUnit.extension(player_unit, "career_system")
-		local career_index = (career_extension and career_extension:career_index()) or player:career_index()
+		local career_index = career_extension and career_extension:career_index() or player:career_index()
 		local is_player_controlled = player:is_player_controlled()
 		local player_level = ExperienceSettings.get_player_level(player)
 		local profile = SPProfiles[profile_index]
@@ -452,7 +452,7 @@ end
 ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 	local player_list = {}
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		player_list[i] = {
 			career_index = 1,
 			portrait_frame = "default",
@@ -462,7 +462,7 @@ ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 			local_player_id = i,
 			stats_id = i,
 			profile_index = i,
-			is_player_controlled = (i == 1 and true) or false
+			is_player_controlled = i == 1 and true or false
 		}
 	end
 
@@ -490,5 +490,3 @@ ScoreboardHelper.debug_get_grouped_topic_statistics = function ()
 
 	return player_list
 end
-
-return

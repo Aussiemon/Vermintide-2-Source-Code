@@ -48,5 +48,3 @@ FadeSystemDummy.update = function (self, context, t)
 end
 
 ApiVerification.ensure_public_api(FadeSystem, FadeSystemDummy)
-
-return

@@ -41,5 +41,3 @@ SoundEnvironmentSystemDummy.enter_environment = function (self, t, volume_name, 
 end
 
 ApiVerification.ensure_public_api(SoundEnvironmentSystem, SoundEnvironmentSystemDummy)
-
-return

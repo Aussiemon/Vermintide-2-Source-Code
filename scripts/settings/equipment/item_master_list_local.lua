@@ -452,5 +452,3 @@ ItemMasterList.training_dummy_skaven = {
 	item_type = "inventory_item",
 	can_wield = CanWieldAllItemTemplates
 }
-
-return

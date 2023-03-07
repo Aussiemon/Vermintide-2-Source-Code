@@ -8,5 +8,3 @@ CameraState.init = function (self, character_state_init_context, name)
 	self.temp_params = {}
 	self.camera_extension = ScriptUnit.extension(self.unit, "camera_system")
 end
-
-return

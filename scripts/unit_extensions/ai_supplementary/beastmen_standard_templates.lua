@@ -78,5 +78,3 @@ BeastmenStandardTemplates = {
 		}
 	}
 }
-
-return

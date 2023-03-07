@@ -29,5 +29,3 @@ end
 ScorpionSeasonalSettings.get_weave_score_stat = function (weave_id, player_num)
 	return ScorpionSeasonalSettings.get_weave_score_stat_for_season(ScorpionSeasonalSettings.current_season_id, weave_id, player_num)
 end
-
-return

@@ -68,5 +68,3 @@ DialogueLookup[DialogueLookup_n + 32] = "ndw_morris_daemon_whispers_hub_bardin_b
 DialogueLookup[DialogueLookup_n + 33] = "ndw_morris_daemon_whispers_hub_kerillian_blk"
 DialogueLookup[DialogueLookup_n + 34] = "ndw_morris_daemon_whispers_hub_kruber_blk"
 DialogueLookup_n = DialogueLookup_n + 34
-
-return

@@ -123,5 +123,3 @@ BanListManager._remove_old_bans = function (self)
 
 	self._bans = new_bans
 end
-
-return

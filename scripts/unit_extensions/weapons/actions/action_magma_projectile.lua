@@ -55,5 +55,3 @@ ActionMagmaProjectile._start_shooting = function (self)
 
 	self.state = "shooting"
 end
-
-return

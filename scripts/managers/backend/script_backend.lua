@@ -410,5 +410,3 @@ ScriptBackend.wait_for_shutdown = function (self, timeout)
 		print("backend disconnect has timed out")
 	end
 end
-
-return

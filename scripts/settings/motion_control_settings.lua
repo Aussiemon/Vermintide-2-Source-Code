@@ -16,5 +16,3 @@ MotionControlSettings = MotionControlSettings or {
 	sensitivity_yaw_min = -5,
 	sensitivity_pitch_min = -5
 }
-
-return

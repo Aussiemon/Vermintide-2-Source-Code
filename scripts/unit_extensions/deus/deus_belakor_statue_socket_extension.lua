@@ -69,5 +69,3 @@ DeusBelakorStatueSocketExtension.update = function (self, unit, input, dt, conte
 		objective_extension:set_active(new_value)
 	end
 end
-
-return

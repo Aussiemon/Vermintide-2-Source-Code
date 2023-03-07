@@ -690,8 +690,8 @@ return function ()
 		}
 	})
 	define_rule({
-		name = "pwe_level_bogenhafen_city_bögenauer",
-		response = "pwe_level_bogenhafen_city_bögenauer",
+		name = "pwe_level_bogenhafen_city_bÃ¶genauer",
+		response = "pwe_level_bogenhafen_city_bÃ¶genauer",
 		criterias = {
 			{
 				"query_context",
@@ -703,7 +703,7 @@ return function ()
 				"query_context",
 				"item_tag",
 				OP.EQ,
-				"level_bogenhafen_city_bögenauer"
+				"level_bogenhafen_city_bÃ¶genauer"
 			},
 			{
 				"query_context",
@@ -719,7 +719,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.EQ,
 				0
 			}
@@ -727,7 +727,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.ADD,
 				1
 			}
@@ -2129,7 +2129,7 @@ return function ()
 				3.0710208415985
 			}
 		},
-		pwe_level_bogenhafen_city_bögenauer = {
+		pwe_level_bogenhafen_city_bÃ¶genauer = {
 			face_animations_n = 4,
 			database = "wood_elf_bogenhafen_city",
 			sound_events_n = 4,
@@ -2138,16 +2138,16 @@ return function ()
 			dialogue_animations_n = 4,
 			randomize_indexes = {},
 			localization_strings = {
-				"pwe_level_bogenhafen_city_bögenauer_01",
-				"pwe_level_bogenhafen_city_bögenauer_02",
-				"pwe_level_bogenhafen_city_bögenauer_03",
-				"pwe_level_bogenhafen_city_bögenauer_04"
+				"pwe_level_bogenhafen_city_bÃ¶genauer_01",
+				"pwe_level_bogenhafen_city_bÃ¶genauer_02",
+				"pwe_level_bogenhafen_city_bÃ¶genauer_03",
+				"pwe_level_bogenhafen_city_bÃ¶genauer_04"
 			},
 			sound_events = {
-				"pwe_level_bogenhafen_city_bögenauer_01",
-				"pwe_level_bogenhafen_city_bögenauer_02",
-				"pwe_level_bogenhafen_city_bögenauer_03",
-				"pwe_level_bogenhafen_city_bögenauer_04"
+				"pwe_level_bogenhafen_city_bÃ¶genauer_01",
+				"pwe_level_bogenhafen_city_bÃ¶genauer_02",
+				"pwe_level_bogenhafen_city_bÃ¶genauer_03",
+				"pwe_level_bogenhafen_city_bÃ¶genauer_04"
 			},
 			face_animations = {
 				"face_calm",

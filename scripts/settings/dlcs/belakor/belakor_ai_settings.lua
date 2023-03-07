@@ -18,5 +18,3 @@ settings.behaviour_trees = {
 	"scripts/entity_system/systems/behaviour/trees/shadow/shadow_skull_behavior",
 	"scripts/entity_system/systems/behaviour/trees/shadow/shadow_totem_behavior"
 }
-
-return

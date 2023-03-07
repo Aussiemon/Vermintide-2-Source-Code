@@ -138,5 +138,3 @@ PlayerCharacterStateLeaveLedgeHangingPullUp.calculate_end_position = function (s
 
 	self.end_position:store(new_position)
 end
-
-return

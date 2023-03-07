@@ -100,5 +100,3 @@ AnimationMovementTemplates.chaos_troll = {
 }
 
 DLCUtils.require_list("animation_movement_templates_file_names")
-
-return

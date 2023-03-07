@@ -44,5 +44,3 @@ for key, value in pairs(BreedActions.chaos_troll) do
 end
 
 BreedActions.chaos_dummy_troll = table.create_copy(BreedActions.chaos_dummy_troll, action_data)
-
-return

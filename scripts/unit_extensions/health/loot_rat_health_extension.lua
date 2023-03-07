@@ -46,5 +46,3 @@ LootRatHealthExtension.regen_dodge_damage_points = function (self)
 	local blackboard = BLACKBOARDS[self.unit]
 	blackboard.dodge_damage_points = blackboard.breed.dodge_damage_points
 end
-
-return

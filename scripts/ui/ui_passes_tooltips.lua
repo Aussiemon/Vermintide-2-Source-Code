@@ -118,7 +118,7 @@ UITooltipPasses = {
 				local rarity = item.rarity or item_data.rarity
 				local rarity_color = Colors.get_table(rarity)
 				position[2] = position[2] - size[2] - edge_height * 2
-				size[2] = (size[2] + edge_height * 2) - 2
+				size[2] = size[2] + edge_height * 2 - 2
 				position[3] = start_layer
 				local background_texture = data.background_texture
 				local background_texture_size = data.background_texture_size
@@ -397,12 +397,12 @@ UITooltipPasses = {
 			local texture_size = data.texture_size
 
 			if draw then
-				position[2] = (position[2] + size[2]) - (80 + texture_size[2])
+				position[2] = position[2] + size[2] - (80 + texture_size[2])
 				position[3] = start_layer + 3
 				local old_x_position = position[1]
 				local old_y_position = position[2]
 				texture_color[1] = alpha
-				position[1] = (position_x + size[1] / 2) - texture_size[1] / 2
+				position[1] = position_x + size[1] / 2 - texture_size[1] / 2
 				local texture = content.texture
 
 				UIRenderer.draw_texture(ui_renderer, texture, position, texture_size, texture_color)
@@ -572,7 +572,7 @@ UITooltipPasses = {
 			position[3] = start_layer + 2
 
 			if draw then
-				for i = 1, 2, 1 do
+				for i = 1, 2 do
 					local text_id = "title_" .. i
 					local text_style = style[text_id]
 					local text_size = data.text_size
@@ -639,14 +639,14 @@ UITooltipPasses = {
 					if attack_index == 1 then
 						position[1] = position_x + frame_margin
 					else
-						position[1] = (position_x + size[1]) - star_total_length - star_width - frame_margin / 4
+						position[1] = position_x + size[1] - star_total_length - star_width - frame_margin / 4
 					end
 
 					local steps = math.round(value * 10)
 					local left_half_draw_count = 0
 					local right_half_draw_count = 0
 
-					for i = 1, steps, 1 do
+					for i = 1, steps do
 						if i % 2 == 1 then
 							left_half_draw_count = left_half_draw_count + 1
 						else
@@ -657,7 +657,7 @@ UITooltipPasses = {
 					local texture_style = style.attack_stars
 
 					if draw then
-						for i = 1, 2, 1 do
+						for i = 1, 2 do
 							local content_id = nil
 							local draw_count = 0
 
@@ -678,7 +678,7 @@ UITooltipPasses = {
 							color[1] = alpha
 
 							if texture_colors then
-								for i = 1, #texture_colors, 1 do
+								for i = 1, #texture_colors do
 									texture_colors[i][1] = alpha
 								end
 							end
@@ -813,7 +813,7 @@ UITooltipPasses = {
 						local entry_texture_pass_data = data.entry_texture_pass_data
 						local entry_texture_pass_definition = data.entry_texture_pass_definition
 						position[1] = position[1] - entry_texture_size[1]
-						position[2] = (position[2] + text_height / 2) - entry_texture_size[2] / 2
+						position[2] = position[2] + text_height / 2 - entry_texture_size[2] / 2
 						local color = entry_texture_style.color
 						color[1] = alpha
 
@@ -987,8 +987,8 @@ UITooltipPasses = {
 							text = HIDDEN_DESCRIPTION_TEXT
 						else
 							local description, advanced_description = UIUtils.get_property_description(property_key, property_value)
-							local additional_text_length = (advanced_description and UTF8Utils.string_length(advanced_description)) or 0
-							local default_text_length = (text and UTF8Utils.string_length(text)) or 0
+							local additional_text_length = advanced_description and UTF8Utils.string_length(advanced_description) or 0
+							local default_text_length = text and UTF8Utils.string_length(text) or 0
 							text = description .. advanced_description
 							local color_override_table = text_style.color_override_table
 							color_override_table.start_index = default_text_length + 1
@@ -1011,7 +1011,7 @@ UITooltipPasses = {
 							local icon_size = data.icon_size
 							local icon_color = icon_style.color
 							icon_color[1] = alpha
-							position[2] = (position[2] + text_height) - text_height / num_texts * 0.5 - (icon_size[2] * 0.5 + 2)
+							position[2] = position[2] + text_height - text_height / num_texts * 0.5 - (icon_size[2] * 0.5 + 2)
 
 							UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
@@ -1178,7 +1178,7 @@ UITooltipPasses = {
 				position[2] = position[2]
 				position[3] = start_layer + 2
 				local trait_spacing = 10
-				local loop_func = (draw_downwards and ipairs) or ripairs
+				local loop_func = draw_downwards and ipairs or ripairs
 
 				for index, trait_key in loop_func(traits) do
 					local trait_data = WeaponTraits.traits[trait_key]
@@ -1860,7 +1860,7 @@ UITooltipPasses = {
 			local block_arc_color = style.block_arc.color
 			local background_color = block_arc_style.background_color
 			block_arc_color[1] = 255 * step_fraction * alpha_multiplier
-			position[1] = math.ceil((position_x + size[1] - block_arc_size[1]) - frame_margin * 2 - text_width)
+			position[1] = math.ceil(position_x + size[1] - block_arc_size[1] - frame_margin * 2 - text_width)
 			position[2] = math.ceil(position[2] - block_arc_size[2])
 
 			if draw then
@@ -1881,8 +1881,8 @@ UITooltipPasses = {
 			local icon_pass_definition = data.icon_pass_definition
 			local icon_color = icon_style.color
 			icon_color[1] = alpha
-			position[1] = (position[1] + block_arc_size[1] / 2) - icon_size[1] / 2
-			position[2] = (position[2] + block_arc_size[2] / 2) - icon_size[2] / 2
+			position[1] = position[1] + block_arc_size[1] / 2 - icon_size[1] / 2
+			position[2] = position[2] + block_arc_size[2] / 2 - icon_size[2] / 2
 
 			if draw then
 				UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
@@ -2060,7 +2060,7 @@ UITooltipPasses = {
 				local icon_size = data.icon_size
 				local icon_pass_data = data.icon_pass_data
 				local icon_pass_definition = data.icon_pass_definition
-				position[1] = (position_x + size[1] - icon_size[1]) - frame_margin
+				position[1] = position_x + size[1] - icon_size[1] - frame_margin
 				position[2] = position[2] - icon_size[2]
 				icon_style.color[1] = alpha
 
@@ -2390,8 +2390,8 @@ UITooltipPasses = {
 			local total_height = 0
 			local item_type = item_data.item_type
 			local _, display_name, _ = UIUtils.get_ui_information_from_item(item)
-			local title_text = (item.hidden_description and HIDDEN_DESCRIPTION_TEXT) or Localize(display_name)
-			local type_text = (item.hidden_description and HIDDEN_DESCRIPTION_TEXT) or Localize(item_type)
+			local title_text = item.hidden_description and HIDDEN_DESCRIPTION_TEXT or Localize(display_name)
+			local type_text = item.hidden_description and HIDDEN_DESCRIPTION_TEXT or Localize(item_type)
 			local text_style = style.text
 			local text_shadow_style = style.text_shadow
 			local player = pass_data.player
@@ -2437,7 +2437,7 @@ UITooltipPasses = {
 
 			if draw then
 				position[2] = position[2] - background_size[2] + frame_margin / 2
-				position[1] = (position[1] + size[1] / 2) - background_size[1] / 2
+				position[1] = position[1] + size[1] / 2 - background_size[1] / 2
 				local old_x_position = position[1]
 				local edge_size = data.edge_size
 				edge_size[1] = size[1]
@@ -2462,7 +2462,7 @@ UITooltipPasses = {
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_left_texture, position, edge_holder_size, edge_holder_color)
 
-				position[1] = (position[1] + edge_size[1]) - (edge_holder_size[1] + 6)
+				position[1] = position[1] + edge_size[1] - (edge_holder_size[1] + 6)
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
@@ -2483,7 +2483,7 @@ UITooltipPasses = {
 
 				text_size[2] = title_text_height
 				position[1] = old_x_position + frame_margin + title_text_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - title_text_height + title_text_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
 				content.text = title_text
 				title_text_style.text_color[1] = alpha
@@ -2492,14 +2492,14 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + frame_margin + title_text_shadow_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - title_text_height + title_text_shadow_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - title_text_height + title_text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + title_text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				text_size[2] = type_text_height
 				position[1] = old_x_position + frame_margin + text_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - (title_text_height + type_text_height) + text_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - (title_text_height + type_text_height) + text_style.offset[2]
 				position[3] = start_layer + 6 + text_style.offset[3]
 				content.text = type_text
 				text_style.text_color[1] = alpha
@@ -2508,7 +2508,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + frame_margin + text_shadow_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - (title_text_height + type_text_height) + text_shadow_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -2678,7 +2678,7 @@ UITooltipPasses = {
 
 			if draw then
 				position[2] = position[2] - background_size[2] + frame_margin / 2
-				position[1] = (position[1] + size[1] / 2) - background_size[1] / 2
+				position[1] = position[1] + size[1] / 2 - background_size[1] / 2
 				local old_x_position = position[1]
 				local old_y_position = position[2]
 				position[1] = position_x
@@ -2694,7 +2694,7 @@ UITooltipPasses = {
 
 				text_size[2] = title_text_height
 				position[1] = old_x_position + frame_margin + title_text_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - title_text_height + title_text_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - title_text_height + title_text_style.offset[2]
 				position[3] = start_layer + 6 + title_text_style.offset[3]
 				content.text = title_text
 				title_text_style.text_color[1] = alpha
@@ -2703,14 +2703,14 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + frame_margin + title_text_shadow_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - title_text_height + title_text_shadow_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - title_text_height + title_text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + title_text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, title_text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				text_size[2] = type_text_height
 				position[1] = old_x_position + frame_margin + text_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - (title_text_height + type_text_height) + text_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - (title_text_height + type_text_height) + text_style.offset[2]
 				position[3] = start_layer + 6 + text_style.offset[3]
 				content.text = type_text
 				text_style.text_color[1] = alpha
@@ -2719,7 +2719,7 @@ UITooltipPasses = {
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_style, content, position, text_size, input_service, dt, ui_style_global)
 
 				position[1] = old_x_position + frame_margin + text_shadow_style.offset[1]
-				position[2] = (position_y + frame_margin * 0.5) - (title_text_height + type_text_height) + text_shadow_style.offset[2]
+				position[2] = position_y + frame_margin * 0.5 - (title_text_height + type_text_height) + text_shadow_style.offset[2]
 				position[3] = start_layer + 6 + text_shadow_style.offset[3]
 
 				UIPasses.text.draw(ui_renderer, text_pass_data, ui_scenegraph, pass_definition, text_shadow_style, content, position, text_size, input_service, dt, ui_style_global)
@@ -2780,7 +2780,7 @@ UITooltipPasses = {
 				}
 			}
 
-			for i = 1, 4, 1 do
+			for i = 1, 4 do
 				text_styles[#text_styles + 1] = {
 					vertical_alignment = "bottom",
 					localize = false,
@@ -2872,12 +2872,12 @@ UITooltipPasses = {
 				end
 			end
 
-			local loop_func = (draw_downwards and ipairs) or ripairs
+			local loop_func = draw_downwards and ipairs or ripairs
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			position[1] = position[1] + frame_margin
-			position[2] = (draw_downwards and position[2] - size[2] - frame_margin) or position[2] + frame_margin
+			position[2] = draw_downwards and position[2] - size[2] - frame_margin or position[2] + frame_margin
 			position[3] = start_layer + 5
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
@@ -2887,7 +2887,7 @@ UITooltipPasses = {
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
-				text_style.vertical_alignment = (draw_downwards and "top") or "bottom"
+				text_style.vertical_alignment = draw_downwards and "top" or "bottom"
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -3081,7 +3081,7 @@ UITooltipPasses = {
 			local item_type = item_data.item_type
 
 			if item_skin and item_type ~= "weapon_skin" and WeaponSkins.default_skins[item.ItemId] ~= item_skin then
-				content.text = (item.hidden_description and HIDDEN_DESCRIPTION_TEXT) or content.prefix_text
+				content.text = item.hidden_description and HIDDEN_DESCRIPTION_TEXT or content.prefix_text
 				local position_x = position[1]
 				local position_y = position[2]
 				local position_z = position[3]
@@ -3377,7 +3377,7 @@ UITooltipPasses = {
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_left_texture, position, edge_holder_size, edge_holder_color)
 
-				position[1] = (position[1] + edge_size[1]) - (edge_holder_size[1] + 6)
+				position[1] = position[1] + edge_size[1] - (edge_holder_size[1] + 6)
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
@@ -3497,18 +3497,18 @@ UITooltipPasses = {
 			if disabled then
 				requirement_text = Localize("talent_locked_desc")
 			elseif not is_selected then
-				information_text = (ui_content.gamepad_active and Localize("menu_select")) or Localize("talent_can_select_desc")
+				information_text = ui_content.gamepad_active and Localize("menu_select") or Localize("talent_can_select_desc")
 			end
 
 			text_content.requirement = requirement_text
 			text_content.information = information_text
 			text_content.description = UIUtils.get_talent_description(talent)
-			local loop_func = (draw_downwards and ipairs) or ripairs
+			local loop_func = draw_downwards and ipairs or ripairs
 			local position_x = position[1]
 			local position_y = position[2]
 			local position_z = position[3]
 			position[1] = position[1] + frame_margin
-			position[2] = (draw_downwards and position[2] - size[2] - frame_margin) or position[2] + frame_margin
+			position[2] = draw_downwards and position[2] - size[2] - frame_margin or position[2] + frame_margin
 			position[3] = start_layer + 5
 			local text_pass_data = data.text_pass_data
 			local text_size = data.text_pass_size
@@ -3518,7 +3518,7 @@ UITooltipPasses = {
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
-				text_style.vertical_alignment = (draw_downwards and "top") or "bottom"
+				text_style.vertical_alignment = draw_downwards and "top" or "bottom"
 				local style_name = text_style.name
 				local text = text_content[style_name]
 				local texture_style = data.texture_styles[style_name]
@@ -3755,18 +3755,18 @@ UITooltipPasses = {
 			local frame_edge_height = frame_settings.texture_sizes.horizontal[2]
 			text_content.title = Localize(display_name)
 			position[1] = position[1] + frame_margin
-			position[2] = (draw_downwards and position[2] - total_height) or position[2] + frame_edge_height
+			position[2] = draw_downwards and position[2] - total_height or position[2] + frame_edge_height
 			position[3] = start_layer + 5
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_total_height = -frame_edge_height
 			local text_pass_data = data.text_pass_data
-			local loop_func = (draw_downwards and ipairs) or ripairs
+			local loop_func = draw_downwards and ipairs or ripairs
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
-				text_style.vertical_alignment = (draw_downwards and "top") or "top"
+				text_style.vertical_alignment = draw_downwards and "top" or "top"
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -3887,18 +3887,18 @@ UITooltipPasses = {
 			text_content.title = title
 			text_content.description = description
 			position[1] = position[1] + frame_margin
-			position[2] = (draw_downwards and position[2] - total_height) or position[2] + frame_edge_height
+			position[2] = draw_downwards and position[2] - total_height or position[2] + frame_edge_height
 			position[3] = start_layer + 5
 			local text_size = data.text_size
 			text_size[1] = size[1] - frame_margin * 2
 			text_size[2] = 0
 			local text_total_height = -frame_edge_height
 			local text_pass_data = data.text_pass_data
-			local loop_func = (draw_downwards and ipairs) or ripairs
+			local loop_func = draw_downwards and ipairs or ripairs
 
 			for index, text_style in loop_func(text_styles) do
 				local ignore_line_change = text_style.ignore_line_change
-				text_style.vertical_alignment = (draw_downwards and "top") or "top"
+				text_style.vertical_alignment = draw_downwards and "top" or "top"
 				local style_name = text_style.name
 				local text = text_content[style_name]
 
@@ -4249,7 +4249,7 @@ UITooltipPasses = {
 					icon = "icons_placeholder"
 				},
 				style = {
-					text = (pass_style and pass_style.text) or {
+					text = pass_style and pass_style.text or {
 						vertical_alignment = "center",
 						horizontal_alignment = "left",
 						word_wrap = true,
@@ -4261,7 +4261,7 @@ UITooltipPasses = {
 							Colors.get_color_table_with_alpha("font_default", 255)
 						}
 					},
-					text_shadow = (pass_style and pass_style.text_shadow) or {
+					text_shadow = pass_style and pass_style.text_shadow or {
 						vertical_alignment = "center",
 						horizontal_alignment = "left",
 						word_wrap = true,
@@ -4274,7 +4274,7 @@ UITooltipPasses = {
 							-1
 						}
 					},
-					icon = (pass_style and pass_style.icon) or {
+					icon = pass_style and pass_style.icon or {
 						color = {
 							255,
 							255,
@@ -4294,7 +4294,7 @@ UITooltipPasses = {
 		end,
 		draw = function (data, draw, draw_downwards, ui_renderer, pass_data, ui_scenegraph, pass_definition, ui_style, ui_content, position, size, input_service, dt, ui_style_global, item)
 			local item_data = item.data
-			local mutators = item.mutators or (item_data and item_data.mutators)
+			local mutators = item.mutators or item_data and item_data.mutators
 
 			if mutators == nil then
 				return 0
@@ -4316,7 +4316,7 @@ UITooltipPasses = {
 			position[2] = position[2] - total_height
 			position[3] = start_layer + 2
 			local trait_spacing = 10
-			local loop_func = (draw_downwards and ipairs) or ripairs
+			local loop_func = draw_downwards and ipairs or ripairs
 
 			for index, name in loop_func(mutators) do
 				local mutator_template = MutatorTemplates[name]
@@ -4552,7 +4552,7 @@ UITooltipPasses = {
 				local spacing = 20
 				local start_offset = -(num_rewards - 1) * (40 + spacing * 0.5)
 
-				for index = 1, num_rewards, 1 do
+				for index = 1, num_rewards do
 					local item_key = rewards[index]
 					local reward_item_data = ItemMasterList[item_key]
 					local inventory_icon = reward_item_data.inventory_icon
@@ -5130,7 +5130,7 @@ UITooltipPasses = {
 				local position_z = position[3]
 				local total_height = frame_margin
 				local information_text = item_data.information_text
-				local title_text = (information_text and Localize(information_text)) or "n/a"
+				local title_text = information_text and Localize(information_text) or "n/a"
 				local title_text_style = style.title_text
 				local title_text_shadow_style = style.title_text_shadow
 				local text_pass_data = data.text_pass_data
@@ -5227,7 +5227,7 @@ UITooltipPasses = {
 				local skin_item_name = WeaponSkins.matching_weapon_skin_item_key(item_skin)
 				local base_item_name = skin_item_name and string.match(skin_item_name, "^([%w_]+)_skin$")
 				local base_item = rawget(ItemMasterList, base_item_name)
-				local base_item_type = (base_item and base_item.item_type) or "lb_unknown"
+				local base_item_type = base_item and base_item.item_type or "lb_unknown"
 				content.text = Localize(base_item_type) .. content.sufix_text
 				local position_x = position[1]
 				local position_y = position[2]
@@ -5556,7 +5556,7 @@ UITooltipPasses = {
 
 					UIRenderer.draw_texture(ui_renderer, edge_holder_left_texture, position, edge_holder_size, edge_holder_color)
 
-					position[1] = (position[1] + edge_size[1]) - (edge_holder_size[1] + 6)
+					position[1] = position[1] + edge_size[1] - (edge_holder_size[1] + 6)
 
 					UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
@@ -5756,7 +5756,7 @@ UITooltipPasses = {
 					local icon_size = data.icon_size
 					local icon_color = icon_style.color
 					icon_color[1] = alpha
-					position[2] = (position[2] + text_height / 2) - icon_size[2] / 2 - 2
+					position[2] = position[2] + text_height / 2 - icon_size[2] / 2 - 2
 
 					UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
@@ -5925,7 +5925,7 @@ UITooltipPasses = {
 					local icon_size = data.icon_size
 					local icon_color = icon_style.color
 					icon_color[1] = alpha
-					position[2] = (position[2] + text_height / 2) - icon_size[2] / 2 - 2
+					position[2] = position[2] + text_height / 2 - icon_size[2] / 2 - 2
 
 					UIPasses.texture.draw(ui_renderer, icon_pass_data, ui_scenegraph, icon_pass_definition, icon_style, content, position, icon_size, input_service, dt)
 
@@ -6066,7 +6066,7 @@ UITooltipPasses = {
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_left_texture, position, edge_holder_size, edge_holder_color)
 
-				position[1] = (position[1] + edge_size[1]) - (edge_holder_size[1] + 6)
+				position[1] = position[1] + edge_size[1] - (edge_holder_size[1] + 6)
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
@@ -6327,10 +6327,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -6623,10 +6623,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -6922,10 +6922,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -7189,10 +7189,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -7402,10 +7402,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -7669,10 +7669,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -7936,10 +7936,10 @@ UITooltipPasses = {
 				local value_style = style.stat_value
 
 				for _, stat_descriptor in pairs(stats) do
-					local text = (not stat_descriptor.empty and stat_descriptor.description) or ""
+					local text = not stat_descriptor.empty and stat_descriptor.description or ""
 					local player = Managers.player:local_player()
 					local player_unit = player.player_unit
-					local value = (not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor)) or ""
+					local value = not stat_descriptor.empty and UIUtils.get_item_tooltip_value(player_unit, item, stat_descriptor) or ""
 					local text_size = data.text_size
 					local text_height = nil
 
@@ -8991,7 +8991,7 @@ UITooltipPasses = {
 				position[2] = position_y
 				position[3] = position_z
 				position[1] = position[1] + frame_margin + style_text.offset[1]
-				position[2] = (position[2] + frame_margin + style_text.offset[2]) - total_height
+				position[2] = position[2] + frame_margin + style_text.offset[2] - total_height
 				position[3] = start_layer + 2 + style_text.offset[3]
 				style_text.text_color[1] = alpha
 
@@ -9064,7 +9064,7 @@ UITooltipPasses = {
 
 			if draw then
 				position[1] = position[1] + frame_margin + style_text.offset[1]
-				position[2] = (position[2] + frame_margin + style_text.offset[2]) - total_height
+				position[2] = position[2] + frame_margin + style_text.offset[2] - total_height
 				position[3] = start_layer + 2 + style_text.offset[3]
 				style_text.text_color[1] = alpha
 
@@ -9180,7 +9180,7 @@ UITooltipPasses = {
 				return 0
 			end
 
-			for i = 1, #career_names, 1 do
+			for i = 1, #career_names do
 				career_names[i] = Localize(career_names[i])
 			end
 
@@ -9246,12 +9246,12 @@ UITooltipPasses = {
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_left_texture, position, edge_holder_size, edge_holder_color)
 
-				position[1] = (position[1] + edge_size[1]) - (edge_holder_size[1] + 6)
+				position[1] = position[1] + edge_size[1] - (edge_holder_size[1] + 6)
 
 				UIRenderer.draw_texture(ui_renderer, edge_holder_right_texture, position, edge_holder_size, edge_holder_color)
 
 				position[1] = position_x + frame_margin + style_text.offset[1]
-				position[2] = (start_position_y + frame_margin + style_text.offset[2]) - total_height
+				position[2] = start_position_y + frame_margin + style_text.offset[2] - total_height
 				position[3] = start_layer + 2 + style_text.offset[3]
 				style_text.text_color[1] = alpha
 
@@ -9308,7 +9308,7 @@ UITooltipPasses = {
 				return 0
 			end
 
-			for i = 1, #career_names, 1 do
+			for i = 1, #career_names do
 				career_names[i] = Localize(career_names[i])
 			end
 
@@ -9349,5 +9349,3 @@ UITooltipPasses = {
 		end
 	}
 }
-
-return

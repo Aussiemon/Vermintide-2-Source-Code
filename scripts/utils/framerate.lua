@@ -32,5 +32,3 @@ Framerate = {
 		Application.set_time_step_policy("throttle", 60, "no_smoothing", "debt_payback", 0)
 	end
 }
-
-return

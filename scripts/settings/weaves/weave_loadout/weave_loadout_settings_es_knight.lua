@@ -6,5 +6,3 @@ WeaveLoadoutSettings.es_knight = {
 	properties = {},
 	traits = {}
 }
-
-return

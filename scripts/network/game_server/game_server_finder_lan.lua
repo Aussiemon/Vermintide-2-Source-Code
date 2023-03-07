@@ -39,5 +39,3 @@ end
 GameServerFinderLan.update = function (self, dt)
 	return
 end
-
-return

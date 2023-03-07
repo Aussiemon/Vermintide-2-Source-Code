@@ -21,26 +21,28 @@ function class(class_table, ...)
 		class_table = {
 			___is_class_metatable___ = true,
 			super = super,
-			__index = class_table,
-			new = function (self, ...)
-				local object = {}
-
-				setmetatable(object, class_table)
-
-				if object.init then
-					object:init(...)
-				end
-
-				return object
-			end,
-			delete = function (self, ...)
-				if self.destroy then
-					self:destroy(...)
-				end
-
-				setmetatable(self, destroyed_mt)
-			end
+			__index = class_table
 		}
+
+		class_table.new = function (self, ...)
+			local object = {}
+
+			setmetatable(object, class_table)
+
+			if object.init then
+				object:init(...)
+			end
+
+			return object
+		end
+
+		class_table.delete = function (self, ...)
+			if self.destroy then
+				self:destroy(...)
+			end
+
+			setmetatable(self, destroyed_mt)
+		end
 	end
 
 	if super then
@@ -67,5 +69,3 @@ function is_class_instance(object)
 
 	return rawget(metatable, "___is_class_metatable___") == true
 end
-
-return

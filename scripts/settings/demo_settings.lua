@@ -39,10 +39,10 @@ if DemoSettings.key_combinations_allowed == nil then
 		key_combinations_allowed = {}
 	else
 		DemoSettings.key_combinations_allowed = {
-			[Window.KEYSTROKE_ALT_ENTER] = ((BUILD == "dev" or BUILD == "debug") and true) or false,
-			[Window.KEYSTROKE_ALT_F4] = ((BUILD == "dev" or BUILD == "debug") and true) or false,
-			[Window.KEYSTROKE_ALT_TAB] = ((BUILD == "dev" or BUILD == "debug") and true) or false,
-			[Window.KEYSTROKE_WINDOWS] = ((BUILD == "dev" or BUILD == "debug") and true) or false
+			[Window.KEYSTROKE_ALT_ENTER] = (BUILD == "dev" or BUILD == "debug") and true or false,
+			[Window.KEYSTROKE_ALT_F4] = (BUILD == "dev" or BUILD == "debug") and true or false,
+			[Window.KEYSTROKE_ALT_TAB] = (BUILD == "dev" or BUILD == "debug") and true or false,
+			[Window.KEYSTROKE_WINDOWS] = (BUILD == "dev" or BUILD == "debug") and true or false
 		}
 	end
 end
@@ -956,5 +956,3 @@ DEFAULT_DEMO_ATTRIBUTES = {
 	empire_soldier_experience = 0,
 	empire_soldier_tutorial_experience = 0
 }
-
-return

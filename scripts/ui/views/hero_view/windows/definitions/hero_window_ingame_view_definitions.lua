@@ -265,7 +265,7 @@ end
 local title_button_definitions = {}
 local num_buttons = 11
 
-for i = 1, num_buttons, 1 do
+for i = 1, num_buttons do
 	title_button_definitions[i] = create_title_button("title_entry", "n/a", 52, {
 		0,
 		-6,

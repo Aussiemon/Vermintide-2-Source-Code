@@ -14,7 +14,7 @@ local function spawn_orb(nav_world, orb_name, owner_peer_id, orb_starting_positi
 	local end_radius = ORB_END_RADIUS
 	local orb_flight_target_position = nil
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		local x, y = math.get_uniformly_random_point_inside_sector(start_radius, end_radius, angle1, angle2)
 		local position_found = Vector3(orb_starting_position.x + x, orb_starting_position.y + y, orb_starting_position.z)
 		local success, z = GwNavQueries.triangle_from_position(nav_world, position_found, 5, 5)
@@ -83,5 +83,3 @@ end
 OrbSystem.destroy = function (self)
 	self.network_event_delegate:unregister(self)
 end
-
-return

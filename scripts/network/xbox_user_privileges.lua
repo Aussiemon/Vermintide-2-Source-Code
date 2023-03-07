@@ -212,5 +212,3 @@ XboxUserPrivileges._setup_lookup_tables = function (self)
 	PRIVILEGES_ERROR_CODES[UserPrivilege.Restricted] = "RESTRICTED"
 	ATTEMPT_RESOLUTION_PRIVILEGES[UserPrivilege.MULTIPLAYER_SESSIONS] = true
 end
-
-return

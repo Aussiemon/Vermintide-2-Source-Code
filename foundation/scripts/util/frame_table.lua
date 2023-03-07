@@ -9,7 +9,7 @@ local frame_table_back_buffer = Script.new_array(frame_table_max_size)
 local frame_table_count = 0
 local frame_table_back_count = 0
 
-for i = 1, frame_table_max_size, 1 do
+for i = 1, frame_table_max_size do
 	frame_table_buffer[i] = {}
 	frame_table_back_buffer[i] = {}
 end
@@ -23,7 +23,7 @@ FrameTable.alloc_table = function ()
 
 		Application.warning("[FrameTable] WARNING: Expanding frame table size from %d to %d", n, frame_table_max_size)
 
-		for i = n + 1, frame_table_max_size, 1 do
+		for i = n + 1, frame_table_max_size do
 			frame_table_buffer[i] = {}
 			frame_table_back_buffer[i] = {}
 		end
@@ -35,7 +35,7 @@ end
 FrameTable.swap_and_clear = function ()
 	local table_clear = table.clear
 
-	for i = 1, frame_table_back_count, 1 do
+	for i = 1, frame_table_back_count do
 		table_clear(frame_table_back_buffer[i])
 	end
 
@@ -55,5 +55,3 @@ FrameTable.init = function (use_ordinary_tables)
 
 	printf("[FrameTable] Initialized (use_ordinary_tables=%s)", use_ordinary_tables)
 end
-
-return

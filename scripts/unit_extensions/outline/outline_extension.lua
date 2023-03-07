@@ -31,7 +31,7 @@ OutlineExtension.add_outline = function (self, settings)
 	local insert_index = num_settings_buckets + 1
 	local priority = settings.priority
 
-	for i = 1, num_settings_buckets, 1 do
+	for i = 1, num_settings_buckets do
 		local current_bucket = settings_bucket[i][1]
 
 		if current_bucket.priority <= priority then
@@ -65,10 +65,10 @@ OutlineExtension.remove_outline = function (self, unique_id)
 
 	local settings_bucket = self.outline_settings
 
-	for bucket_id = 1, #settings_bucket, 1 do
+	for bucket_id = 1, #settings_bucket do
 		local current_bucket = settings_bucket[bucket_id]
 
-		for setting_id = 1, #current_bucket, 1 do
+		for setting_id = 1, #current_bucket do
 			if current_bucket[setting_id]._unique_id == unique_id then
 				table.remove(current_bucket, setting_id)
 
@@ -93,10 +93,10 @@ OutlineExtension.update_outline = function (self, settings, unique_id)
 
 	local settings_bucket = self.outline_settings
 
-	for bucket_id = 1, #settings_bucket, 1 do
+	for bucket_id = 1, #settings_bucket do
 		local current_bucket = settings_bucket[bucket_id]
 
-		for setting_id = 1, #current_bucket, 1 do
+		for setting_id = 1, #current_bucket do
 			local bucket_settings = current_bucket[setting_id]
 
 			if bucket_settings._unique_id == unique_id then
@@ -120,12 +120,12 @@ OutlineExtension._refresh_current_outline = function (self, reapply)
 	local default = self._default_settings
 	local current_settings = self.outline_settings[1][1]
 	local new_color = not current_settings.outline_color or self.outline_color ~= current_settings.outline_color
-	self.outline_color = (current_settings.outline_color and current_settings.outline_color) or default.outline_color
-	self.distance = (current_settings.distance and current_settings.distance) or default.distance
-	self.method = (current_settings.method and current_settings.method) or default.method
+	self.outline_color = current_settings.outline_color and current_settings.outline_color or default.outline_color
+	self.distance = current_settings.distance and current_settings.distance or default.distance
+	self.method = current_settings.method and current_settings.method or default.method
 	self.prev_flag = self.flag
-	self.flag = (current_settings.flag and current_settings.flag) or default.flag
-	self.reapply = reapply or (self.outlined and new_color)
+	self.flag = current_settings.flag and current_settings.flag or default.flag
+	self.reapply = reapply or self.outlined and new_color
 end
 
 OutlineExtension.on_freeze = function (self)
@@ -141,5 +141,3 @@ end
 OutlineExtension.on_unfreeze = function (self)
 	self:_refresh_current_outline()
 end
-
-return

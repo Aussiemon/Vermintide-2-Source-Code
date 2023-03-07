@@ -51,5 +51,3 @@ for level_key, weighted_terror_events in pairs(WeightedRandomTerrorEvents) do
 		chunk.loaded_probability_table = LoadedDice.create_from_mixed(chunk)
 	end
 end
-
-return

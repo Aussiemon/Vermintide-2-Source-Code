@@ -6,5 +6,3 @@ DeusRollOverSettings = DeusRollOverSettings or {
 	roll_over = 0.25,
 	max = 200
 }
-
-return

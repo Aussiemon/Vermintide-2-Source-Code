@@ -38,5 +38,3 @@ ActionTemplates.action_career_we_thornsister = {
 		allowed_chain_actions = {}
 	}
 }
-
-return

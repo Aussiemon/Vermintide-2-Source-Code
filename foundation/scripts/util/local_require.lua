@@ -12,5 +12,3 @@ function local_require(filename)
 
 	return package.loaded[filename]
 end
-
-return

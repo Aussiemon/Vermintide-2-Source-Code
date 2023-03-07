@@ -9,7 +9,7 @@ return {
 		local num_to_spawn = base_amount + current_difficulty_rank * difficulty_amount_modifier
 		local spawn_list = {}
 
-		for i = 1, num_to_spawn, 1 do
+		for i = 1, num_to_spawn do
 			spawn_list[i] = "chaos_berzerker"
 		end
 

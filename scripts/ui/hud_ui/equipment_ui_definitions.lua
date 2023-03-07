@@ -875,7 +875,7 @@ local career_skill_weapon_widget_definition = {
 	}
 }
 
-for i = 1, #slots, 1 do
+for i = 1, #slots do
 	local slot = slots[i]
 	local hud_index = slot.hud_index
 
@@ -895,7 +895,7 @@ end
 local extra_storage_icons = 2
 local extra_storage_icon_definitions = {}
 
-for i = 1, extra_storage_icons, 1 do
+for i = 1, extra_storage_icons do
 	extra_storage_icon_definitions[i] = {
 		scenegraph_id = "slot",
 		offset = {

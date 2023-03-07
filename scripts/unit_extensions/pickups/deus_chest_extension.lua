@@ -182,7 +182,7 @@ DeusChestExtension.update = function (self, unit, input, dt, context, t)
 end
 
 DeusChestExtension._update_chest_interaction_time = function (self)
-	local interaction_length = (self:can_be_unlocked() and 0.5) or 0
+	local interaction_length = self:can_be_unlocked() and 0.5 or 0
 
 	if interaction_length ~= self._interaction_length then
 		Unit.set_data(self.unit, "interaction_data", "interaction_length", interaction_length)
@@ -313,8 +313,8 @@ DeusChestExtension._get_wielded_weapon = function (self)
 	local deus_run_controller = self._deus_run_controller
 	local melee_weapon, ranged_weapon = deus_run_controller:get_own_loadout()
 	local wielded_slot_name = inventory_extension:get_wielded_slot_name()
-	local weapon_slot_name = (wielded_slot_name == "slot_melee" and "slot_melee") or "slot_ranged"
-	local wielded_weapon = (weapon_slot_name == "slot_melee" and melee_weapon) or ranged_weapon
+	local weapon_slot_name = wielded_slot_name == "slot_melee" and "slot_melee" or "slot_ranged"
+	local wielded_weapon = weapon_slot_name == "slot_melee" and melee_weapon or ranged_weapon
 
 	return wielded_weapon, weapon_slot_name
 end
@@ -391,8 +391,8 @@ DeusChestExtension._generate_stored_weapon = function (self, slots, rarity, go_i
 	local difficulty = deus_run_controller:get_run_difficulty()
 	local weapon_pool = deus_run_controller:get_weapon_pool()
 	local weapon_seed = HashUtils.fnv32_hash(string.format("%s_%s_%s_%s_%s", profile_index, career_index, current_node.weapon_pickup_seed, go_id, 1))
-	local slot_chance_melee = (table.contains(slots, "melee") and 1) or 0
-	local slot_chance_ranged = (table.contains(slots, "ranged") and 1) or 0
+	local slot_chance_melee = table.contains(slots, "melee") and 1 or 0
+	local slot_chance_ranged = table.contains(slots, "ranged") and 1 or 0
 	local new_weapon = DeusWeaponGeneration.generate_weapon(difficulty, progress, rarity, weapon_seed, weapon_pool, slot_chance_melee, slot_chance_ranged)
 
 	deus_run_controller:remove_weapon_from_pool(rarity, new_weapon.deus_item_key)
@@ -434,7 +434,7 @@ DeusChestExtension._get_server_chest_type = function (self)
 
 	local chest_lookup = GameSession.game_object_field(game_session, go_id, "server_chest_type")
 
-	return (chest_lookup ~= 0 and NetworkLookup.deus_chest_types[chest_lookup]) or nil
+	return chest_lookup ~= 0 and NetworkLookup.deus_chest_types[chest_lookup] or nil
 end
 
 DeusChestExtension._set_server_chest_type = function (self, server_chest_type)
@@ -608,7 +608,7 @@ DeusChestExtension._get_best_slot_name = function (self, stored_weapon, chest_ty
 	else
 		local wielded_slot_types = career_data.item_slot_types_by_slot_name[wielded_slot_name]
 		local slot_available = wielded_slot_types and table.contains(wielded_slot_types, stored_weapon_slot_type)
-		local best_slot_name = (slot_available and wielded_slot_name) or slot_name
+		local best_slot_name = slot_available and wielded_slot_name or slot_name
 
 		return best_slot_name, stored_weapon_slot_type
 	end
@@ -708,5 +708,3 @@ DeusChestExtension.rpc_deus_chest_looted = function (self, channel_id, go_id)
 	table.insert(collected_by_peers, peer_id)
 	GameSession.set_game_object_field(game, own_go_id, "collected_by_peers", collected_by_peers)
 end
-
-return

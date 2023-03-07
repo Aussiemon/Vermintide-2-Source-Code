@@ -29,7 +29,7 @@ DifficultyUnlockUI.create_ui_elements = function (self)
 	local widget_definitions = definitions.widget_definitions
 	local icon_widgets = {}
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		local definition_name = "difficulty_icon_" .. i
 		icon_widgets[i] = UIWidget.init(widget_definitions[definition_name])
 	end
@@ -66,7 +66,7 @@ DifficultyUnlockUI.difficulty_set = function (self)
 		local persentation_wave_list = {}
 		local persentation_wave_difficulty_list = {}
 
-		for i = start_index, #level_difficulties, 1 do
+		for i = start_index, #level_difficulties do
 			local difficulty = level_difficulties[i]
 
 			if difficulty ~= current_difficulty and highest_completed_difficulty_index < i then
@@ -92,7 +92,7 @@ DifficultyUnlockUI.align_icon_widgets = function (self)
 		local ui_scenegraph = self.ui_scenegraph
 		local spacing = 0
 
-		for i = 1, icon_draw_count, 1 do
+		for i = 1, icon_draw_count do
 			local widget = icon_widgets[i]
 			local scenegraph_id = widget.scenegraph_id
 			local widget_scenegraph = ui_scenegraph[scenegraph_id]
@@ -264,7 +264,7 @@ DifficultyUnlockUI.draw = function (self, dt)
 		local icon_widgets = self.icon_widgets
 
 		if icon_widgets then
-			for i = 1, icon_draw_count, 1 do
+			for i = 1, icon_draw_count do
 				local widget = icon_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -312,7 +312,7 @@ DifficultyUnlockUI.start_presentation_animation = function (self)
 	local icon_widgets = self.icon_widgets
 	local icons = {}
 
-	for i = 1, icon_draw_count, 1 do
+	for i = 1, icon_draw_count do
 		icons[i] = icon_widgets[i]
 	end
 
@@ -335,7 +335,7 @@ DifficultyUnlockUI.start_explode_animation = function (self)
 	local icon_widgets = self.icon_widgets
 	local icons = {}
 
-	for i = 1, icon_draw_count, 1 do
+	for i = 1, icon_draw_count do
 		icons[i] = icon_widgets[i]
 	end
 
@@ -346,8 +346,6 @@ DifficultyUnlockUI.start_explode_animation = function (self)
 	widgets.background_glow = self.background_glow_widget
 	widgets.difficulty_text = self.difficulty_text_widget
 	widgets.difficulty_title_text = self.difficulty_title_text_widget
-	local animation_name = (icon_draw_count == 4 and "explode_parts_4") or "explode_parts_5"
+	local animation_name = icon_draw_count == 4 and "explode_parts_4" or "explode_parts_5"
 	self.explode_anim_id = self.ui_animator:start_animation(animation_name, widgets, scenegraph_definition, params)
 end
-
-return

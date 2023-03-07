@@ -97,7 +97,7 @@ StateLoadingRunning.update = function (self, dt)
 
 	local level_transition_handler = Managers.level_transition_handler
 
-	if not LEVEL_EDITOR_TEST and ((self.parent._network_server and level_transition_handler:needs_level_load()) or (self.parent._network_client and self.parent._network_client:is_fully_synced() and level_transition_handler:needs_level_load())) then
+	if not LEVEL_EDITOR_TEST and (self.parent._network_server and level_transition_handler:needs_level_load() or self.parent._network_client and self.parent._network_client:is_fully_synced() and level_transition_handler:needs_level_load()) then
 		if not self.parent:loading_view_setup_done() then
 			local level_key = level_transition_handler:get_current_level_key()
 
@@ -125,5 +125,3 @@ end
 StateLoadingRunning.on_exit = function (self, application_shutdown)
 	return
 end
-
-return

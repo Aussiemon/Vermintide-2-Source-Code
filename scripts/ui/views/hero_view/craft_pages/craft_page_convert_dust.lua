@@ -176,7 +176,7 @@ CraftPageConvertDust.reset_requirements = function (self, num_required_ingredien
 	local spacing = 94
 	local start_position_x = -((widget_width + spacing) * (num_required_ingredients - 1)) / 2
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local widget = widgets_by_name["material_text_" .. i]
 		local visible = i <= num_required_ingredients
 		widget.content.visible = visible
@@ -500,7 +500,7 @@ CraftPageConvertDust._add_craft_item = function (self, backend_id, slot_index, i
 	local craft_items = self._craft_items
 
 	if not slot_index then
-		for i = 1, 1, 1 do
+		for i = 1, 1 do
 			if not craft_items[i] then
 				slot_index = i
 
@@ -562,7 +562,5 @@ end
 CraftPageConvertDust._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
-	widget.content.button_text = (localize and Localize(text)) or text
+	widget.content.button_text = localize and Localize(text) or text
 end
-
-return

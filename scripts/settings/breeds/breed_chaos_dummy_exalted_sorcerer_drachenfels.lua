@@ -288,5 +288,3 @@ local action_data = {
 	}
 }
 BreedActions.chaos_dummy_exalted_sorcerer_drachenfels = table.create_copy(BreedActions.chaos_dummy_exalted_sorcerer_drachenfels, action_data)
-
-return

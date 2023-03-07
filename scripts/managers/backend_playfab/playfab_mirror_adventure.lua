@@ -28,10 +28,10 @@ end
 PlayFabMirrorAdventure._set_inital_career_data_weaves = function (self, career_name, loadout, slots_to_verify)
 	local broken_slots = {}
 
-	for i = 1, #slots_to_verify, 1 do
+	for i = 1, #slots_to_verify do
 		local slot_name = slots_to_verify[i]
 		local slot_data = loadout[slot_name]
-		local slot_item_value = (type(slot_data) == "table" and slot_data.Value) or slot_data
+		local slot_item_value = type(slot_data) == "table" and slot_data.Value or slot_data
 
 		if not slot_item_value then
 			broken_slots[slot_name] = true
@@ -94,5 +94,3 @@ PlayFabMirrorAdventure.fix_weaves_career_data_request_cb = function (self, resul
 	table.merge(self._read_only_data, data)
 	table.merge(self._read_only_data_mirror, data)
 end
-
-return

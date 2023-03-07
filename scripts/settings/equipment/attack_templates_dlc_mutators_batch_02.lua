@@ -23,5 +23,3 @@ AttackTemplates.mutator_statue_explosion_01 = {
 		3
 	}
 }
-
-return

@@ -25,5 +25,3 @@ ActionTemplates.action_career_es_4 = {
 		allowed_chain_actions = {}
 	}
 }
-
-return

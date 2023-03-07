@@ -6,5 +6,3 @@ WeaveLoadoutSettings.wh_captain = {
 	properties = {},
 	traits = {}
 }
-
-return

@@ -76,5 +76,3 @@ DialogueLookup[DialogueLookup_n + 36] = "pes_level_bogenhafen_slum_intro_a"
 DialogueLookup[DialogueLookup_n + 37] = "pes_level_bogenhafen_slum_intro_b"
 DialogueLookup[DialogueLookup_n + 38] = "pes_level_bogenhafen_slum_intro_c"
 DialogueLookup_n = DialogueLookup_n + 38
-
-return

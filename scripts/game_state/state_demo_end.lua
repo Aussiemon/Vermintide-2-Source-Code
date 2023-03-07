@@ -85,5 +85,3 @@ StateDemoEnd._try_exit = function (self)
 
 	return self._new_state
 end
-
-return

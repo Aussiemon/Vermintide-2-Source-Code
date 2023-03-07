@@ -79,7 +79,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 					return
 				end
 
-				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
+				style.color = content.button_hotspot.is_hover and style.selected_color or style.base_color
 			end
 		},
 		{
@@ -117,7 +117,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 					return
 				end
 
-				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
+				style.color = content.button_hotspot.is_hover and style.selected_color or style.base_color
 			end
 		},
 		{
@@ -163,7 +163,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 					return
 				end
 
-				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
+				style.color = content.button_hotspot.is_hover and style.selected_color or style.base_color
 			end
 		},
 		{
@@ -201,7 +201,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 					return
 				end
 
-				style.color = (content.button_hotspot.is_hover and style.selected_color) or style.base_color
+				style.color = content.button_hotspot.is_hover and style.selected_color or style.base_color
 			end
 		},
 		{
@@ -230,7 +230,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 		button_hotspot = {
 			allow_multi_hover = false
 		},
-		background = (masked and "rect_masked") or "simple_rect_texture",
+		background = masked and "rect_masked" or "simple_rect_texture",
 		frame = frame_settings.texture,
 		size = size
 	}
@@ -242,7 +242,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = ranking_size,
 			offset = {
@@ -258,7 +258,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = ranking_size,
 			offset = {
@@ -330,7 +330,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "arial_masked") or "arial",
+			font_type = masked and "arial_masked" or "arial",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				name_size[1] - (career_icon_size[1] + 30),
@@ -349,7 +349,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "arial_masked") or "arial",
+			font_type = masked and "arial_masked" or "arial",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				name_size[1] - (career_icon_size[2] + 30),
@@ -439,7 +439,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = weave_size,
 			offset = {
@@ -455,7 +455,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = weave_size,
 			offset = {
@@ -527,7 +527,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = score_size,
 			offset = {
@@ -543,7 +543,7 @@ UIWidgets.create_leaderboard_entry_definition = function (scenegraph_id, size, m
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = score_size,
 			offset = {
@@ -675,7 +675,7 @@ UIWidgets.create_leaderboard_loading_icon = function (scenegraph_id, overlay_sce
 	}
 
 	if overlay_scenegraph_ids then
-		for i = 1, #overlay_scenegraph_ids, 1 do
+		for i = 1, #overlay_scenegraph_ids do
 			local style_id = "overlay_" .. i
 			local overlay_scenegraph_id = overlay_scenegraph_ids[i]
 			local pass = {
@@ -746,7 +746,7 @@ UIWidgets.create_leaderboard_error_icon = function (scenegraph_id, overlay_scene
 		}
 	}
 
-	for i = 1, #overlay_scenegraph_ids, 1 do
+	for i = 1, #overlay_scenegraph_ids do
 		local style_id = "overlay_" .. i
 		local overlay_scenegraph_id = overlay_scenegraph_ids[i]
 		local pass = {
@@ -788,5 +788,3 @@ UIWidgets.create_leaderboard_error_icon = function (scenegraph_id, overlay_scene
 
 	return widget
 end
-
-return

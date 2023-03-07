@@ -147,5 +147,3 @@ LobbyInternal.lobby_id_match = function (id1, id2)
 
 	return id1 == id2
 end
-
-return

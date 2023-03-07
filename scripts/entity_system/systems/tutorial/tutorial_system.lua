@@ -229,7 +229,7 @@ TutorialSystem.physics_async_update = function (self, context, t)
 				local last_shown_time = extension.shown_times[name]
 
 				if t < last_shown_time + TIME_TO_WAIT_BETWEEN_SHOWS then
-					Debug.text(" * %s, %.1fs", name, (last_shown_time + TIME_TO_WAIT_BETWEEN_SHOWS) - t)
+					Debug.text(" * %s, %.1fs", name, last_shown_time + TIME_TO_WAIT_BETWEEN_SHOWS - t)
 				end
 			end
 
@@ -269,7 +269,7 @@ TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_un
 	local level_settings = LevelSettings[level_key]
 	local is_in_inn = level_settings.hub_level
 
-	for i = 1, tooltip_templates_n, 1 do
+	for i = 1, tooltip_templates_n do
 		repeat
 			local template = tooltip_templates[i]
 			local name = template.name
@@ -277,6 +277,7 @@ TutorialSystem.iterate_tooltips = function (self, t, unit, extension, raycast_un
 			if in_play_go and not template.allowed_in_tutorial then
 				break
 			elseif not in_play_go and template.incompatible_in_game then
+				-- Nothing
 			elseif not is_in_inn and template.inn_only then
 				break
 			end
@@ -350,7 +351,7 @@ TutorialSystem.prioritize_objective_tooltip = function (self, objective_tooltip_
 		[#self._objective_tooltip_prioritized_list + 1] = TutorialTemplates[objective_tooltip_name]
 	}
 
-	for i = 1, objective_tooltip_templates_n, 1 do
+	for i = 1, objective_tooltip_templates_n do
 		if TutorialObjectiveTooltipTemplates[i].name ~= objective_tooltip_name then
 			self._objective_tooltip_prioritized_list[#self._objective_tooltip_prioritized_list + 1] = TutorialObjectiveTooltipTemplates[i]
 		end
@@ -365,7 +366,7 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 	local objective_tooltips = extension.objective_tooltips
 	objective_tooltips.units_n = 0
 
-	for i = 1, objective_tooltip_templates_n, 1 do
+	for i = 1, objective_tooltip_templates_n do
 		repeat
 			local template = objective_tooltip_templates[i]
 			local name = template.name
@@ -403,7 +404,7 @@ TutorialSystem.iterate_objective_tooltips = function (self, t, unit, extension, 
 			objective_tooltips.units_n = objective_units_n
 			local saved_units = objective_tooltips.units
 
-			for i = 1, objective_units_n, 1 do
+			for i = 1, objective_units_n do
 				saved_units[i] = objective_units[i]
 			end
 
@@ -446,11 +447,11 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 		local info_slate_templates = TutorialInfoSlateTemplates
 		local info_slate_templates_n = TutorialInfoSlateTemplates_n
 
-		for i = 1, info_slate_templates_n, 1 do
+		for i = 1, info_slate_templates_n do
 			repeat
 				local template = info_slate_templates[i]
 				local name = template.name
-				local cooldown = (template.cooldown and template.cooldown) or INFOSLATE_COOLDOWN
+				local cooldown = template.cooldown and template.cooldown or INFOSLATE_COOLDOWN
 
 				if t < extension.shown_times[name] + cooldown then
 					break
@@ -458,7 +459,7 @@ TutorialSystem.iterate_info_slates = function (self, t, unit, extension, raycast
 
 				if template.can_show(t, unit, extension.data, raycast_unit, world) then
 					extension.shown_times[name] = t
-					local text = (template.get_text and template.get_text(extension.data, template)) or template.text
+					local text = template.get_text and template.get_text(extension.data, template) or template.text
 					text = Localize(text)
 
 					Managers.state.event:trigger("tutorial_event_queue_info_slate_entry", text, nil, nil, template, unit, raycast_unit)
@@ -591,5 +592,3 @@ TutorialSystem.update = function (self, context, t)
 		raycast_units[unit] = raycast_unit
 	end
 end
-
-return

@@ -34,7 +34,7 @@ Pacing.disable_roamers = function (self)
 end
 
 Pacing.enable_hordes = function (self, enable)
-	self._horde_population = (enable and 1) or 0
+	self._horde_population = enable and 1 or 0
 end
 
 Pacing.pacing_frozen = function (self, t)
@@ -96,7 +96,7 @@ Pacing.specials_population = function (self)
 end
 
 Pacing.enemy_killed = function (self, killed_unit, player_units)
-	for i = 1, #player_units, 1 do
+	for i = 1, #player_units do
 		local player_unit = player_units[i]
 		local killed_pos = Unit.local_position(killed_unit, 0)
 		local player_pos = Unit.local_position(player_unit, 0)
@@ -117,10 +117,10 @@ end
 
 Pacing.advance_pacing = function (self, t, reason)
 	local pacing = self.pacing_state
-	next_pacing, self._end_pacing_time = nil
+	self._end_pacing_time = nil
 
 	if pacing == "pacing_build_up" then
-		next_pacing = "pacing_sustain_peak"
+		local next_pacing = "pacing_sustain_peak"
 		self._end_pacing_time = t + ConflictUtils.random_interval(CurrentPacing.sustain_peak_duration)
 		self._threat_population = 1
 		self._specials_population = 1
@@ -180,7 +180,7 @@ Pacing.update = function (self, t, dt, alive_player_units)
 
 	local sum_intensity = 0
 
-	for k = 1, num_alive_player_units, 1 do
+	for k = 1, num_alive_player_units do
 		local unit = alive_player_units[k]
 		local status_ext = ScriptUnit.extension(unit, "status_system")
 		local intensity = status_ext:get_pacing_intensity()
@@ -212,7 +212,7 @@ Pacing.show_debug = function (self, show)
 end
 
 Pacing.debug_add_intensity = function (self, player_units, value)
-	for k = 1, #player_units, 1 do
+	for k = 1, #player_units do
 		local unit = player_units[k]
 		local status_ext = ScriptUnit.extension(unit, "status_system")
 
@@ -252,7 +252,7 @@ Pacing.intensity_graphs = function (self, t, dt, alive_player_units)
 
 		self.graph.visual_frame.x_min = t - time_width
 
-		for k = 1, #alive_player_units, 1 do
+		for k = 1, #alive_player_units do
 			local intensity = self.player_intensity[k]
 
 			g:add_point(t, intensity, player_names[k])
@@ -299,5 +299,3 @@ end
 Pacing.get_roaming_density = function (self)
 	return 0.5
 end
-
-return

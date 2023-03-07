@@ -23,5 +23,3 @@ end
 ActionBowEnergy.destroy = function (self)
 	return
 end
-
-return

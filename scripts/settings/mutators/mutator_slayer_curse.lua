@@ -34,7 +34,7 @@ return {
 				local buffs = unit_data.buffs
 				local num_buffs = #buffs
 
-				for i = 1, num_buffs, 1 do
+				for i = 1, num_buffs do
 					template.remove_buff(buffs, data.buff_system, unit)
 				end
 
@@ -81,7 +81,7 @@ return {
 				local buffs = unit_data.buffs
 				local num_buffs = #buffs
 
-				for i = 1, num_buffs, 1 do
+				for i = 1, num_buffs do
 					template.remove_buff(buffs, data.buff_system, unit)
 				end
 

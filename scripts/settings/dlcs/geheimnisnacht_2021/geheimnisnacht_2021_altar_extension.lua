@@ -237,7 +237,7 @@ Geheimnisnacht2021AltarExtension.change_state = function (self, new_state)
 	local current_state = self._state
 
 	if current_state < new_state then
-		for i = current_state + 1, new_state, 1 do
+		for i = current_state + 1, new_state do
 			self:_increment_state(i)
 		end
 
@@ -319,20 +319,21 @@ Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
 	local altar_pos = Unit.local_position(unit, 0)
 	local altar_pos_box = Vector3Box(altar_pos)
 	self.nurgling_group_id = Managers.state.entity:system("ai_group_system"):generate_group_id()
-	local optional_data = {
-		spawned_func = function (unit, breed, optional_data)
-			local blackboard = BLACKBOARDS[unit]
-			local ai_extension = ScriptUnit.extension(unit, "ai_system")
+	local optional_data = {}
 
-			ai_extension:set_perception("perception_regular", "pick_no_targets")
+	optional_data.spawned_func = function (unit, breed, optional_data)
+		local blackboard = BLACKBOARDS[unit]
+		local ai_extension = ScriptUnit.extension(unit, "ai_system")
 
-			if blackboard then
-				blackboard.altar_pos = altar_pos_box
-				blackboard.is_fleeing = false
-				blackboard.nurgling_spawned_by_altar = true
-			end
+		ai_extension:set_perception("perception_regular", "pick_no_targets")
+
+		if blackboard then
+			blackboard.altar_pos = altar_pos_box
+			blackboard.is_fleeing = false
+			blackboard.nurgling_spawned_by_altar = true
 		end
-	}
+	end
+
 	local lowest_amount = 15
 	local highest_amount = 20
 	local num_nurglings = math.random(lowest_amount, highest_amount)
@@ -353,7 +354,7 @@ Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
 	local conflict_director = Managers.state.conflict
 	local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 
-	for i = 1, num_nurglings, 1 do
+	for i = 1, num_nurglings do
 		local spawn_pos = ConflictUtils.get_spawn_pos_on_circle(nav_world, altar_pos, spawn_radius, spread, tries)
 
 		conflict_director:spawn_queued_unit(breed_data, Vector3Box(spawn_pos), QuaternionBox(spawn_rot), spawn_category, spawn_animation, spawn_type, optional_data, group_data)
@@ -361,5 +362,3 @@ Geheimnisnacht2021AltarExtension.spawn_nurglings = function (self)
 
 	self.nurglings_spawned = true
 end
-
-return

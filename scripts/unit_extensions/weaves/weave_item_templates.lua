@@ -28,5 +28,3 @@ WeaveItemTemplates = {
 		end
 	}
 }
-
-return

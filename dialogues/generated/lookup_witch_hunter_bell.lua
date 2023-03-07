@@ -36,5 +36,3 @@ DialogueLookup[DialogueLookup_n + 16] = "pwh_level_bell_effect_01"
 DialogueLookup[DialogueLookup_n + 17] = "pwh_level_bell_falling_01"
 DialogueLookup[DialogueLookup_n + 18] = "pwh_level_bell_horde"
 DialogueLookup_n = DialogueLookup_n + 18
-
-return

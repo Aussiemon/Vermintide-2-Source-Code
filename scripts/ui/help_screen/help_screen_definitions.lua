@@ -88,7 +88,7 @@ local function help_screen_widget_func(num_pages, current_page)
 	num_pages = num_pages or 3
 	local textures = {}
 
-	for i = 1, num_pages, 1 do
+	for i = 1, num_pages do
 		if i == current_page then
 			textures[#textures + 1] = "trait_slot_cover"
 		else

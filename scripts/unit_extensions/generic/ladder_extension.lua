@@ -54,7 +54,7 @@ local function calculate_perlin_value(x, persistance, number_of_octaves, seed)
 	local total = 0
 	local max_value = 0
 
-	for i = 0, number_of_octaves, 1 do
+	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
 		total = total + calc_interpolated_noise(x * frequency, seed) * amplitude
@@ -90,7 +90,7 @@ LadderExtension.update_enabled = function (self, unit, input, dt, context, t)
 end
 
 LadderExtension.is_shaking = function (self)
-	return (self._shaking and true) or false
+	return self._shaking and true or false
 end
 
 LadderExtension.shake = function (self)
@@ -115,5 +115,3 @@ LadderExtension.destroy = function (self)
 		Managers.state.bot_nav_transition:unregister_ladder(self._unit)
 	end
 end
-
-return

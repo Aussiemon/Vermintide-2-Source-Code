@@ -161,7 +161,7 @@ StartGameWindowMutatorGridConsole.on_exit = function (self, params)
 
 	self.parent:set_input_description(nil)
 
-	if (self._previously_selected_backend_id and not self._selected_backend_id) or not self._confirm_selection then
+	if self._previously_selected_backend_id and not self._selected_backend_id or not self._confirm_selection then
 		self.parent:set_selected_heroic_deed_backend_id(self._previously_selected_backend_id)
 	end
 
@@ -245,13 +245,13 @@ StartGameWindowMutatorGridConsole._handle_input = function (self, dt, t)
 		item_content = item_grid:get_item_content(r, c)
 	end
 
-	if item and not item.marked_for_deletion and ((input_service and input_service:get("right_stick_press")) or input_service:get("mouse_middle_press")) then
+	if item and not item.marked_for_deletion and (input_service and input_service:get("right_stick_press") or input_service:get("mouse_middle_press")) then
 		item.marked_for_deletion = true
 		item_content.reserved = true
 
 		table.insert(self._deeds_marked_for_deletion, item)
 		self:_play_sound("hud_deed_delete_select")
-	elseif item and item.marked_for_deletion and ((input_service and input_service:get("right_stick_press")) or input_service:get("mouse_middle_press")) then
+	elseif item and item.marked_for_deletion and (input_service and input_service:get("right_stick_press") or input_service:get("mouse_middle_press")) then
 		item.marked_for_deletion = false
 		item_content.reserved = false
 		local idx = table.index_of(self._deeds_marked_for_deletion, item)
@@ -397,7 +397,7 @@ StartGameWindowMutatorGridConsole.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -584,5 +584,3 @@ StartGameWindowMutatorGridConsole._mark_all_for_deletion = function (self)
 		self._deeds_marked_for_deletion[#self._deeds_marked_for_deletion + 1] = item
 	end
 end
-
-return

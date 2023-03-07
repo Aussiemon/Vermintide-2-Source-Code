@@ -29,5 +29,3 @@ ShadowDaggerExtension.update = function (self, unit, input, dt, context, t)
 		self._done = true
 	end
 end
-
-return

@@ -67,7 +67,7 @@ MutatorHandler.initialize_mutators = function (self, mutators)
 	local active_mutators = self._active_mutators
 	local mutator_context = self._mutator_context
 
-	for i = 1, #mutators, 1 do
+	for i = 1, #mutators do
 		local name = mutators[i]
 
 		self:_server_initialize_mutator(name, active_mutators, mutator_context)
@@ -705,5 +705,3 @@ MutatorHandler.rpc_deactivate_mutator_client = function (self, channel_id, mutat
 
 	self:_deactivate_mutator(mutator_name, active_mutators, mutator_context)
 end
-
-return

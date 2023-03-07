@@ -87,10 +87,10 @@ HeroWindowCharacterSelectionConsole._select_hero = function (self, profile_index
 	local info_text_content = self._widgets_by_name.info_text.content
 	local spawn_character = true
 
-	for i = 1, num_max_rows, 1 do
+	for i = 1, num_max_rows do
 		local num_max_columns = self._num_hero_columns[i]
 
-		for j = 1, num_max_columns, 1 do
+		for j = 1, num_max_columns do
 			local is_selected = i == self._selected_hero_row and j == self._selected_hero_column
 			local widget = hero_widgets[widget_index]
 			local content = widget.content
@@ -229,7 +229,7 @@ HeroWindowCharacterSelectionConsole._setup_hero_selection_widgets = function (se
 			content.portrait = "medium_" .. portrait_image
 			local is_career_unlocked, reason, dlc_name, localized = career:is_unlocked_function(hero_name, hero_level)
 			content.locked = not is_career_unlocked
-			content.locked_reason = not is_career_unlocked and ((localized and reason) or Localize(reason))
+			content.locked_reason = not is_career_unlocked and (localized and reason or Localize(reason))
 			content.dlc_name = dlc_name
 
 			if reason == "dlc_not_owned" then
@@ -254,7 +254,7 @@ HeroWindowCharacterSelectionConsole._setup_hero_selection_widgets = function (se
 
 		local widgets = self._widgets
 
-		for j = #careers + 1, 4, 1 do
+		for j = #careers + 1, 4 do
 			local widget = UIWidget.init(empty_hero_widget_definition)
 			local offset = widget.offset
 			offset[1] = offset[1] + 124 * (j - 1)
@@ -369,10 +369,10 @@ HeroWindowCharacterSelectionConsole._handle_mouse_selection = function (self)
 	local selected_column = self._selected_hero_column
 	local widget_index = 1
 
-	for i = 1, num_max_rows, 1 do
+	for i = 1, num_max_rows do
 		local num_max_columns = self._num_hero_columns[i]
 
-		for j = 1, num_max_columns, 1 do
+		for j = 1, num_max_columns do
 			local widget = hero_widgets[widget_index]
 			local content = widget.content
 			local button_hotspot = content.button_hotspot
@@ -474,5 +474,3 @@ end
 HeroWindowCharacterSelectionConsole._play_sound = function (self, event)
 	self._parent:play_sound(event)
 end
-
-return

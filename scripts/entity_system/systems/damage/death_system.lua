@@ -285,5 +285,3 @@ DeathSystem.get_dead = function (self, fill_table)
 
 	return sum
 end
-
-return

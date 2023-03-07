@@ -128,7 +128,7 @@ return {
 				if t > last_spawn_time + data.follow_time then
 					data.lock_played = true
 
-					for i = 1, #data.units, 1 do
+					for i = 1, #data.units do
 						local unit = data.units[i]
 
 						if Unit.alive(unit) then
@@ -144,11 +144,11 @@ return {
 					end
 				end
 			elseif t < last_spawn_time + data.follow_time + data.time_to_explode then
-				if t > (last_spawn_time + data.follow_time + data.time_to_explode) - 3 and not data.bots_alerted then
+				if t > last_spawn_time + data.follow_time + data.time_to_explode - 3 and not data.bots_alerted then
 					local aoe_thread_size = Vector3(data._nav_cost_radius, data._nav_cost_radius, data._nav_cost_radius * 0.5)
 					local bot_group_system = Managers.state.entity:system("ai_bot_group_system")
 
-					for i = 1, #data.units, 1 do
+					for i = 1, #data.units do
 						local unit = data.units[i]
 
 						if Unit.alive(unit) then
@@ -161,11 +161,11 @@ return {
 					data.bots_alerted = true
 				end
 
-				if t > (last_spawn_time + data.follow_time + data.time_to_explode) - 1.5 then
+				if t > last_spawn_time + data.follow_time + data.time_to_explode - 1.5 then
 					if not data.charge_played then
 						data.charge_played = true
 
-						for i = 1, #data.units, 1 do
+						for i = 1, #data.units do
 							local unit = data.units[i]
 
 							if Unit.alive(unit) then
@@ -174,7 +174,7 @@ return {
 						end
 					end
 
-					local parameter = 100 - math.abs((last_spawn_time + data.follow_time + data.time_to_explode) - t) / 1.5 * 100
+					local parameter = 100 - math.abs(last_spawn_time + data.follow_time + data.time_to_explode - t) / 1.5 * 100
 					local players = Managers.player:players()
 
 					for _, player in pairs(players) do
@@ -184,7 +184,7 @@ return {
 			elseif not data.hit_played and t > last_spawn_time + data.follow_time + data.time_to_explode then
 				data.hit_played = true
 
-				for i = 1, #data.units, 1 do
+				for i = 1, #data.units do
 					local unit = data.units[i]
 
 					if Unit.alive(unit) then
@@ -192,7 +192,7 @@ return {
 					end
 				end
 
-				for i = 1, #data._nav_cost_volume_ids, 1 do
+				for i = 1, #data._nav_cost_volume_ids do
 					local volume_id = data._nav_cost_volume_ids[i]
 
 					data.ai_system:remove_nav_cost_map_volume(volume_id, data._nav_cost_map_id)
@@ -207,7 +207,7 @@ return {
 
 			data.last_spawn_time = t
 		elseif last_spawn_time == nil then
-			data.last_spawn_time = (t + data.initial_spawn_delay) - spawn_rate
+			data.last_spawn_time = t + data.initial_spawn_delay - spawn_rate
 		end
 	end
 }

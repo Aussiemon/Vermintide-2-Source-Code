@@ -162,7 +162,7 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_targets = #player_and_bot_units
 
-		for i = 1, num_targets, 1 do
+		for i = 1, num_targets do
 			local target_unit = player_and_bot_units[i]
 			local ally_position = POSITION_LOOKUP[target_unit]
 			local owner_position = POSITION_LOOKUP[owner_unit]
@@ -198,7 +198,7 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 
 	local num_targets = #targets
 
-	for i = 1, num_targets, 1 do
+	for i = 1, num_targets do
 		local target_unit = targets[i]
 		local target_unit_object_id = network_manager:unit_game_object_id(target_unit)
 		local target_buff_extension = ScriptUnit.extension(target_unit, "buff_system")
@@ -217,7 +217,7 @@ CareerAbilityDRIronbreaker._run_ability = function (self)
 		end
 	end
 
-	if (is_server and bot_player) or local_player then
+	if is_server and bot_player or local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("ability_shout")
@@ -259,5 +259,3 @@ CareerAbilityDRIronbreaker._play_vfx = function (self)
 		network_transmit:send_rpc_server("rpc_play_particle_effect", effect_id, game_object_id, node_id, offset, rotation_offset, linked)
 	end
 end
-
-return

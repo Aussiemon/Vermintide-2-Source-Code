@@ -119,5 +119,3 @@ BreedBehaviors.gutter_runner = {
 	},
 	name = "gutter_runner"
 }
-
-return

@@ -199,7 +199,7 @@ StartGameWindowLobbyBrowserConsole._valid_lobby = function (self, lobby_data)
 		local mission_id = lobby_data.selected_mission_id or lobby_data.mission_id
 		local difficulty = lobby_data.difficulty
 		local matchmaking_types_index = tonumber(lobby_data.matchmaking_type)
-		local matchmaking_type = (IS_PS4 and lobby_data.matchmaking_type) or NetworkLookup.matchmaking_types[matchmaking_types_index]
+		local matchmaking_type = IS_PS4 and lobby_data.matchmaking_type or NetworkLookup.matchmaking_types[matchmaking_types_index]
 		local num_players = tonumber(lobby_data.num_players)
 		local quick_play = lobby_data.quick_play
 		local mechanism = lobby_data.mechanism
@@ -323,7 +323,7 @@ end
 StartGameWindowLobbyBrowserConsole.reset_filters = function (self, selected_game_mode, selected_level, selected_difficulty, selected_filter, selected_distance)
 	self:set_level(selected_level or "any")
 	self:set_difficulty(selected_difficulty or "any")
-	self:set_lobby_filter(selected_filter or ((BUILD == "dev" or BUILD == "debug") and "lb_show_all") or "lb_show_joinable")
+	self:set_lobby_filter(selected_filter or (BUILD == "dev" or BUILD == "debug") and "lb_show_all" or "lb_show_joinable")
 	self:set_distance_filter(selected_distance or "map_zone_options_5")
 	self:set_game_mode(selected_game_mode or "any")
 	self:_search()
@@ -372,7 +372,7 @@ StartGameWindowLobbyBrowserConsole._create_filter_requirements = function (self)
 	local eac_authorized = eac_state == "trusted"
 	requirements.filters.eac_authorized = {
 		comparison = "equal",
-		value = (eac_authorized and "true") or "false"
+		value = eac_authorized and "true" or "false"
 	}
 
 	if difficulty_key ~= "any" and difficulty_key then
@@ -693,5 +693,3 @@ StartGameWindowLobbyBrowserConsole.is_lobby_joinable = function (self, lobby_dat
 
 	return true, "tutorial_no_text"
 end
-
-return

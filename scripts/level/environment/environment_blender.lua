@@ -138,10 +138,8 @@ EnvironmentBlender.debug_draw = function (self, shading_settings)
 		local text = string.format("%.2f", weight) .. " " .. env_name
 
 		Managers.state.debug:draw_screen_text(x, y + offset_y, 999, text, size, Color(255, 255, 255, 255))
-		Managers.state.debug:draw_screen_text(x + 2, (y + offset_y) - 2, 998, text, size, Color(255, 0, 0, 0))
+		Managers.state.debug:draw_screen_text(x + 2, y + offset_y - 2, 998, text, size, Color(255, 0, 0, 0))
 
 		offset_y = offset_y - size - spacing
 	end
 end
-
-return

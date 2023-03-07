@@ -150,7 +150,7 @@ ChaosTrollHealthExtension.add_damage = function (self, attacker_unit, damage_amo
 			self.damage = 0
 			self.state = "down"
 			blackboard.downed_state = "downed"
-			self.start_reset_time = t + (self.action.downed_duration + self.action.standup_anim_duration) - self.action.reset_duration
+			self.start_reset_time = t + self.action.downed_duration + self.action.standup_anim_duration - self.action.reset_duration
 			self.down_reset_timer = 0
 		else
 			percent_damage = self.damage / (self.health - self.go_down_health)
@@ -247,5 +247,3 @@ ChaosTrollHealthExtension.force_set_wounded = function (self)
 	self.wounded = true
 	self.state = "wounded"
 end
-
-return

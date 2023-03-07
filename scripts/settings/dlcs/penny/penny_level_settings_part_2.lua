@@ -43,5 +43,3 @@ settings.missions = {
 		text = "mission_bastion_exit"
 	}
 }
-
-return

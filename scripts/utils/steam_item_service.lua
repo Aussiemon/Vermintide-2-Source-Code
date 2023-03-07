@@ -50,5 +50,3 @@ SteamItemService.get_item_data = function (id)
 
 	return SteamItemService.parse(price_data_string)
 end
-
-return

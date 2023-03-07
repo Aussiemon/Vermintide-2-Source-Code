@@ -64,5 +64,3 @@ QuestChallengePropExtension._highlight_off = function (self)
 
 	self._highlighted = false
 end
-
-return

@@ -109,7 +109,7 @@ DamageIndicatorGui.create_ui_elements = function (self)
 	self.indicator_widgets = {}
 	self.indicator_positions = {}
 
-	for i = 1, MAX_INDICATOR_WIDGETS, 1 do
+	for i = 1, MAX_INDICATOR_WIDGETS do
 		self.indicator_widgets[i] = UIWidget.init(damage_indicator_widget_definition)
 		self.indicator_positions[i] = {}
 	end
@@ -146,7 +146,7 @@ DamageIndicatorGui.update = function (self, dt)
 	local indicator_positions = self.indicator_positions
 
 	if array_length > 0 then
-		for i = 1, array_length / DamageDataIndex.STRIDE, 1 do
+		for i = 1, array_length / DamageDataIndex.STRIDE do
 			local index = (i - 1) * DamageDataIndex.STRIDE
 			local attacker = strided_array[index + DamageDataIndex.ATTACKER]
 			local damage_type = strided_array[index + DamageDataIndex.DAMAGE_TYPE]
@@ -172,24 +172,6 @@ DamageIndicatorGui.update = function (self, dt)
 				local rotating_texture_color = widget.style.rotating_texture.color
 				local is_friendly_fire = Managers.state.side:is_player_friendly_fire(attacker, player_unit)
 				local target_color = nil
-
-				if is_friendly_fire and not Application.user_setting("friendly_fire_hit_marker") then
-					if false then
-						if false then
-							if is_friendly_fire then
-								target_color = colors_by_type.friendly_fire
-							else
-								target_color = colors_by_type.enemy
-							end
-						end
-
-						rotating_texture_color[2] = target_color[2]
-						rotating_texture_color[3] = target_color[3]
-						rotating_texture_color[4] = target_color[4]
-
-						UIWidget.animate(widget, UIAnimation.init(UIAnimation.function_by_time, rotating_texture_color, 1, 255, 0, 1, math.easeInCubic))
-					end
-				end
 			end
 		end
 	end
@@ -229,5 +211,3 @@ DamageIndicatorGui.update = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

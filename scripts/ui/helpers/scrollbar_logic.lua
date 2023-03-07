@@ -71,7 +71,7 @@ ScrollBarLogic.scroll_to_fit = function (self, start, size)
 	if start < scrolled_length then
 		self:set_scroll_distance(start)
 	elseif start + size > scrolled_length + draw_length then
-		self:set_scroll_distance((start + draw_length) - size)
+		self:set_scroll_distance(start + draw_length - size)
 	end
 end
 
@@ -137,5 +137,3 @@ ScrollBarLogic._set_scrollbar_value = function (self, value)
 		self._scroll_value = value
 	end
 end
-
-return

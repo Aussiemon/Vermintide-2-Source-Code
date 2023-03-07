@@ -3,7 +3,7 @@ local unit_alive = Unit.alive
 local position_lookup = POSITION_LOOKUP
 local BLACKBOARDS = BLACKBOARDS
 local NUMBER_OF_RAYCASTS = 36
-local RAYCAST_INVERAL_RAD = (2 * math.pi) / NUMBER_OF_RAYCASTS
+local RAYCAST_INVERAL_RAD = 2 * math.pi / NUMBER_OF_RAYCASTS
 local NAV_COST_MAP_UPDATE_INTERVAL = 0.5
 
 VortexExtension.init = function (self, extension_init_context, unit, extension_init_data)
@@ -111,7 +111,7 @@ VortexExtension.extensions_ready = function (self, world, unit)
 		players_inside = {},
 		players_ejected = {},
 		physics_world = World.get_data(world, "physics_world"),
-		wander_state = (vortex_template.forced_standing_still and "forced_standing_still") or "recalc_path",
+		wander_state = vortex_template.forced_standing_still and "forced_standing_still" or "recalc_path",
 		wanted_height = vortex_template.max_height,
 		height_ring_buffer = {
 			write_index = 1,
@@ -157,12 +157,12 @@ VortexExtension.destroy = function (self)
 	local unit = self.unit
 	local sides = Managers.state.side:sides()
 
-	for k = 1, #sides, 1 do
+	for k = 1, #sides do
 		local side = sides[k]
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local number_player_and_bots = #player_and_bot_units
 
-		for i = 1, number_player_and_bots, 1 do
+		for i = 1, number_player_and_bots do
 			local player_unit = player_and_bot_units[i]
 
 			if unit_alive(player_unit) then
@@ -345,14 +345,14 @@ VortexExtension._update_height = function (self, unit, t, dt, vortex_template, v
 	local current_height = vortex_data.height
 	local max_height = vortex_template.max_height - check_z_offset
 	local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(physics_world, ray_source, Vector3.up(), max_height, "closest", "collision_filter", "filter_ai_mover")
-	local new_height = (hit and hit_distance) or max_height
+	local new_height = hit and hit_distance or max_height
 	new_height = math.max(new_height, 4)
 	local height_ring_buffer = vortex_data.height_ring_buffer
 	local buffer = height_ring_buffer.buffer
 	local max_size = height_ring_buffer.max_size
 	local minimum_height = new_height + check_z_offset
 
-	for i = 1, max_size, 1 do
+	for i = 1, max_size do
 		local height = buffer[i]
 
 		if height and height < minimum_height then
@@ -403,7 +403,7 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 	local max_size = inner_radius_ring_buffer.max_size
 	local minimum_inner_radius = math.min(hit_distance, vortex_template.full_inner_radius)
 
-	for i = 1, max_size, 1 do
+	for i = 1, max_size do
 		local radius = buffer[i]
 
 		if radius and radius < minimum_inner_radius then
@@ -441,7 +441,7 @@ VortexExtension._update_radius = function (self, unit, t, dt, nav_world, travers
 	if wanted_fx_radius ~= current_fx_radius then
 		local start_lerp_fx_radius = vortex_data.start_lerp_fx_radius
 		local current_lerp_value = math.abs(current_fx_radius - start_lerp_fx_radius) / math.abs(wanted_fx_radius - start_lerp_fx_radius)
-		local lerp_constant = (current_fx_radius < wanted_fx_radius and INCREASE_RADIUS_LERP_PROGRESS_PER_SECOND) or DECREASE_RADIUS_LERP_PROGRESS_PER_SECOND
+		local lerp_constant = current_fx_radius < wanted_fx_radius and INCREASE_RADIUS_LERP_PROGRESS_PER_SECOND or DECREASE_RADIUS_LERP_PROGRESS_PER_SECOND
 		local new_lerp_value = math.clamp(current_lerp_value + dt * lerp_constant, 0, 1)
 		vortex_data.fx_radius = math.lerp(start_lerp_fx_radius, wanted_fx_radius, new_lerp_value)
 	end
@@ -492,12 +492,12 @@ VortexExtension._update_attract_players = function (self, unit, blackboard, vort
 	local near_vortex_distance = outer_radius + 2
 	local sides = Managers.state.side:sides()
 
-	for k = 1, #sides, 1 do
+	for k = 1, #sides do
 		local side = sides[k]
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_player_and_bots = #player_and_bot_units
 
-		for i = 1, num_player_and_bots, 1 do
+		for i = 1, num_player_and_bots do
 			local player_unit = player_and_bot_units[i]
 			local player_blackboard = BLACKBOARDS[player_unit]
 			local player_breed = player_blackboard.breed
@@ -608,7 +608,7 @@ VortexExtension._update_attract_outside_ai = function (self, vortex_data, blackb
 	local ai_units_inside = vortex_data.ai_units_inside
 	local num_ai_units = AiUtils.broadphase_query(center_pos, outer_radius, ai_units)
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local ai_unit = ai_units[i]
 
 		if not ai_units_inside[ai_unit] then
@@ -730,15 +730,15 @@ local spiral_lines = 10
 
 VortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inner_radius, outer_radius, spin_speed, height)
 	fx_radius = fx_radius + math.sin(t * 1.7) * 0.4
-	local step = (2 * math.pi) / 6
+	local step = 2 * math.pi / 6
 	local col_delta = math.floor(155 / spiral_segments)
 	local height_step = height / spiral_segments
 
-	for j = 1, spiral_lines, 1 do
-		local alpha = (j * 2 * math.pi) / spiral_lines
+	for j = 1, spiral_lines do
+		local alpha = j * 2 * math.pi / spiral_lines
 
-		for i = 1, spiral_segments, 1 do
-			local r = fx_radius + (0.5 * i * i) / spiral_segments
+		for i = 1, spiral_segments do
+			local r = fx_radius + 0.5 * i * i / spiral_segments
 			local v = t * spin_speed + i * step + alpha
 			spiral[i] = Vector3(math.sin(v) * r, math.cos(v) * r, (i - 1) * height_step)
 		end
@@ -749,7 +749,7 @@ VortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inn
 
 		QuickDrawer:sphere(pos + pos1, (math.sin(v * 3) + 1) / 3, Color(155, 255, 155))
 
-		for i = 1, spiral_segments, 1 do
+		for i = 1, spiral_segments do
 			local pos2 = spiral[i]
 			local color = Color(155 - col_delta * i, 255 - col_delta * i, 155 - col_delta * i)
 
@@ -762,5 +762,3 @@ VortexExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inn
 	QuickDrawer:circle(pos, inner_radius, Vector3.up(), Colors.get("pink"))
 	QuickDrawer:circle(pos, outer_radius, Vector3.up(), Colors.get("lime_green"))
 end
-
-return

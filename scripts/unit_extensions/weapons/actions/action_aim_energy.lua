@@ -49,5 +49,3 @@ ActionAimEnergy._fire_shot = function (self, t)
 
 	weapon_extension:start_action(action_name, sub_action_name, actions, t, power_level, action_init_data)
 end
-
-return

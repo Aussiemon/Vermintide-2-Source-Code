@@ -656,7 +656,7 @@ local animation_definitions = {
 				local addition_width = 250
 				local animated_width = addition_width * anim_progress
 				local default_window_position = scenegraph_definition.window.position
-				ui_scenegraph.window.local_position[1] = math.floor((default_window_position[1] + addition_width) - animated_width)
+				ui_scenegraph.window.local_position[1] = math.floor(default_window_position[1] + addition_width - animated_width)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				return

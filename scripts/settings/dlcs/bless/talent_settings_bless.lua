@@ -680,5 +680,3 @@ WeaveLoadoutSettings.wh_priest = {
 
 BuffUtils.copy_talent_buff_names(talent_buff_templates)
 BuffUtils.apply_buff_tweak_data(talent_buff_templates, buff_tweak_data)
-
-return

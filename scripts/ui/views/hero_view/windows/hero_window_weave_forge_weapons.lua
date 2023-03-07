@@ -532,9 +532,9 @@ HeroWindowWeaveForgeWeapons._sync_backend_loadout = function (self)
 		end
 
 		local backend_id = item and item.backend_id
-		local item_power = (backend_id and backend_interface_weaves:get_item_power_level(backend_id)) or 0
+		local item_power = backend_id and backend_interface_weaves:get_item_power_level(backend_id) or 0
 		item_power = UIUtils.presentable_hero_power_level_weaves(item_power)
-		local magic_level = (backend_id and backend_interface_weaves:get_item_magic_level(backend_id)) or 0
+		local magic_level = backend_id and backend_interface_weaves:get_item_magic_level(backend_id) or 0
 		content.locked = not backend_id
 		content.backend_id = backend_id
 		content.equipped = backend_id and backend_interface_weaves:has_loadout_item_id(career_name, backend_id)
@@ -658,7 +658,7 @@ HeroWindowWeaveForgeWeapons._update_equip_button_status = function (self, equipa
 	if viewport_data then
 		local equip_button = viewport_data.equip_button
 		local can_equip = equipable_item and not is_item_equipped
-		local equip_button_text = (can_equip and Localize("menu_weave_forge_equip_weapon_button")) or Localize("menu_weave_forge_equipped_weapon_button")
+		local equip_button_text = can_equip and Localize("menu_weave_forge_equip_weapon_button") or Localize("menu_weave_forge_equipped_weapon_button")
 		equip_button.content.button_hotspot.disable_button = not can_equip
 		equip_button.content.title_text = equip_button_text
 	end
@@ -1033,14 +1033,14 @@ HeroWindowWeaveForgeWeapons._populate_list = function (self, layout)
 	local backend_interface_weaves = backend_manger:get_interface("weaves")
 	local num_entries = #layout
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local entry = layout[i]
 		local key = entry.key
 		local item_data = entry.item_data
 		local icon = item_data.inventory_icon
 		local item_type = Localize(item_data.item_type)
 		local backend_id = entry.backend_id
-		local magic_level = (backend_id and backend_interface_weaves:get_item_magic_level(backend_id)) or 0
+		local magic_level = backend_id and backend_interface_weaves:get_item_magic_level(backend_id) or 0
 		local widget = UIWidget.init(widget_definition)
 		widgets[i] = widget
 		local content = widget.content
@@ -1080,7 +1080,7 @@ HeroWindowWeaveForgeWeapons._align_list_widgets = function (self, widgets, spaci
 	local total_height = 0
 	local num_widgets = #widgets
 
-	for index = 1, num_widgets, 1 do
+	for index = 1, num_widgets do
 		local widget = widgets[index]
 		local offset = widget.offset
 		local content = widget.content
@@ -1278,7 +1278,7 @@ HeroWindowWeaveForgeWeapons._animate_list_widget = function (self, widget, dt, o
 	local pulse_progress = hotspot.pulse_progress or 1
 	local offset_progress = hotspot.offset_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = ((is_hover or is_selected) and 14) or 8
+	local speed = (is_hover or is_selected) and 14 or 8
 	local pulse_speed = 3
 	local input_speed = 20
 	local offset_speed = 5
@@ -1665,5 +1665,3 @@ HeroWindowWeaveForgeWeapons._create_property_option_entry = function (self, size
 
 	return widget
 end
-
-return

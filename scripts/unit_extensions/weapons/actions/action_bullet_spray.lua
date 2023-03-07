@@ -109,7 +109,7 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 				local chance = 1 / NUM_NODES
 				local cumalative_value = 0
 
-				for i = 1, NUM_NODES, 1 do
+				for i = 1, NUM_NODES do
 					cumalative_value = cumalative_value + chance
 
 					if rand <= cumalative_value then
@@ -141,7 +141,7 @@ ActionBulletSpray.client_owner_post_update = function (self, dt, t, world, can_d
 			end
 
 			local weapon_unit = self.weapon_unit
-			local hit_position = (result and result[#result][1]) or player_position + direction * 100
+			local hit_position = result and result[#result][1] or player_position + direction * 100
 
 			Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
 			Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - player_position) * 0.1)
@@ -166,7 +166,7 @@ ActionBulletSpray.finish = function (self, reason)
 	local current_action = self.current_action
 	local owner_unit = self.owner_unit
 	local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-	local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+	local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 	if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 		local play_reload_animation = true
@@ -237,7 +237,7 @@ ActionBulletSpray._select_targets = function (self, world, show_outline)
 		local hit_units = {}
 		local num_hit = 0
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local hit_actor = hit.actor
 			local hit_unit = Actor.unit(hit_actor)
@@ -306,5 +306,3 @@ ActionBulletSpray.raycast_to_target = function (self, world, from_position, dire
 
 	return result
 end
-
-return

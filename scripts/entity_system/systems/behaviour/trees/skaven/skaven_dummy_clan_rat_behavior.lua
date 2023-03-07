@@ -60,5 +60,3 @@ BreedBehaviors.dummy_clan_rat = {
 	},
 	name = "skaven_dummy_clan_rat"
 }
-
-return

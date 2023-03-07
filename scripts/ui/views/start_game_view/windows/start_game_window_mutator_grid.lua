@@ -217,7 +217,7 @@ StartGameWindowMutatorGrid.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -241,5 +241,3 @@ StartGameWindowMutatorGrid._update_page_info = function (self)
 		widgets_by_name.page_button_previous.content.button_hotspot.disable_button = current_page == 1
 	end
 end
-
-return

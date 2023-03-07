@@ -869,8 +869,8 @@ local function create_button(scenegraph_id, size, button_text, font_size, use_bo
 			use_bottom_edge = use_bottom_edge,
 			button_hotspot = {},
 			button_text = button_text or "n/a",
-			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
-			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
+			hover_glow = optional_color_name and "button_state_hover_" .. optional_color_name or "button_state_hover",
+			glow = optional_color_name and "button_state_normal_" .. optional_color_name or "button_state_normal",
 			button_background = {
 				uvs = {
 					{

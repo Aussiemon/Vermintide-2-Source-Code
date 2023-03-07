@@ -230,5 +230,3 @@ CutsceneSystem.fade_game_logo = function (self, is_fade_in, time)
 		self.fade_in_game_logo_time = nil
 	end
 end
-
-return

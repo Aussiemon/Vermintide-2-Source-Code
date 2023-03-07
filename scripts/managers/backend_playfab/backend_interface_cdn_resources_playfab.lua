@@ -97,7 +97,7 @@ BackendInterfaceCdnResourcesPlayFab.get_resource_urls = function (self, resource
 	local result_table = {}
 	local resource_ids_to_request = {}
 
-	for i = 1, #resource_ids, 1 do
+	for i = 1, #resource_ids do
 		local resource_id = resource_ids[i]
 		local cached_url = self:_get_url_from_cache(resource_id)
 
@@ -180,5 +180,3 @@ BackendInterfaceCdnResourcesPlayFab._get_url_from_cache = function (self, resour
 
 	return cache_entry.url
 end
-
-return

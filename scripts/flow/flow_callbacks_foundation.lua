@@ -355,7 +355,7 @@ function flow_callback_link_objects_in_units_and_store(params)
 	local world = Unit.world(parentunit)
 	local index_offset = Script.index_offset()
 
-	for i = 1, #parentnodes - 1, 1 do
+	for i = 1, #parentnodes - 1 do
 		local parentnodeindex = Unit.node(parentunit, parentnodes[i])
 		local childnode = childnodes[i]
 		local childnodeindex = nil
@@ -436,8 +436,8 @@ function flow_callback_attach_unit(params)
 	for _, link_data in ipairs(node_link_table) do
 		local parent_node = link_data.source
 		local child_node = link_data.target
-		local parent_node_index = (type(parent_node) == "string" and Unit.node(parentunit, parent_node)) or parent_node + index_offset
-		local child_node_index = (type(child_node) == "string" and Unit.node(childunit, child_node)) or child_node + index_offset
+		local parent_node_index = type(parent_node) == "string" and Unit.node(parentunit, parent_node) or parent_node + index_offset
+		local child_node_index = type(child_node) == "string" and Unit.node(childunit, child_node) or child_node + index_offset
 
 		World.link_unit(world, childunit, child_node_index, parentunit, parent_node_index)
 	end
@@ -607,7 +607,7 @@ function attach_player_item(parent_unit, child_unit_name, node_link_template, un
 
 	for target_node, source_node in pairs(node_link_template) do
 		if target_node == 0 then
-			local source_node_index = (type(source_node) == "string" and Unit.node(parent_unit, source_node)) or source_node + index_offset
+			local source_node_index = type(source_node) == "string" and Unit.node(parent_unit, source_node) or source_node + index_offset
 			item_position = Unit.world_position(parent_unit, source_node_index)
 			item_rotation = Unit.world_rotation(parent_unit, source_node_index)
 
@@ -621,8 +621,8 @@ function attach_player_item(parent_unit, child_unit_name, node_link_template, un
 	for _, link_data in ipairs(node_link_template) do
 		local parent_node = link_data.source
 		local child_node = link_data.target
-		local parent_node_index = (type(parent_node) == "string" and Unit.node(parent_unit, parent_node)) or parent_node + index_offset
-		local child_node_index = (type(child_node) == "string" and Unit.node(child_unit, child_node)) or child_node + index_offset
+		local parent_node_index = type(parent_node) == "string" and Unit.node(parent_unit, parent_node) or parent_node + index_offset
+		local child_node_index = type(child_node) == "string" and Unit.node(child_unit, child_node) or child_node + index_offset
 
 		World.link_unit(world, child_unit, child_node_index, parent_unit, parent_node_index)
 	end
@@ -648,7 +648,7 @@ function flow_callback_remove_player_items(params)
 	local world = Unit.world(parent_unit)
 	local item_attachments = Unit.get_data(parent_unit, "flow_item_attachments") or {}
 
-	for i = 1, #item_attachments, 1 do
+	for i = 1, #item_attachments do
 		World.destroy_unit(world, item_attachments[i])
 	end
 
@@ -681,7 +681,7 @@ end
 function flow_callback_trigger_event_on_attachments(params)
 	local unit_attachments = Unit.get_data(params.unit, "flow_unit_attachments") or {}
 
-	for i = 1, #unit_attachments, 1 do
+	for i = 1, #unit_attachments do
 		Unit.flow_event(unit_attachments[i], params.event)
 	end
 
@@ -767,7 +767,7 @@ function flow_callback_set_material_property_scalar(params)
 	local value = params.value
 
 	if all_meshes then
-		for i = 0, Unit.num_meshes(unit) - 1, 1 do
+		for i = 0, Unit.num_meshes(unit) - 1 do
 			mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(mesh, material_name) then
@@ -793,7 +793,7 @@ function flow_callback_set_material_property_vector2(params)
 	local value = Vector2(params.value.x, params.value.y)
 
 	if all_meshes then
-		for i = 0, Unit.num_meshes(unit) - 1, 1 do
+		for i = 0, Unit.num_meshes(unit) - 1 do
 			mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(mesh, material_name) then
@@ -819,7 +819,7 @@ function flow_callback_set_material_property_vector3(params)
 	local value = params.value
 
 	if all_meshes then
-		for i = 0, Unit.num_meshes(unit) - 1, 1 do
+		for i = 0, Unit.num_meshes(unit) - 1 do
 			mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(mesh, material_name) then
@@ -845,7 +845,7 @@ function flow_callback_set_material_property_color(params)
 	local color = params.color
 
 	if all_meshes then
-		for i = 0, Unit.num_meshes(unit) - 1, 1 do
+		for i = 0, Unit.num_meshes(unit) - 1 do
 			mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(mesh, material_name) then
@@ -875,11 +875,11 @@ function flow_callback_set_material_property_scalar_all(params)
 	local end_offset = 1 - index_offset
 	local num_meshes = Unit.num_meshes(unit)
 
-	for i = index_offset, num_meshes - end_offset, 1 do
+	for i = index_offset, num_meshes - end_offset do
 		local mesh = Unit.mesh(unit, i)
 		local num_materials = Mesh.num_materials(mesh)
 
-		for j = index_offset, num_materials - end_offset, 1 do
+		for j = index_offset, num_materials - end_offset do
 			local material = Mesh.material(mesh, j)
 
 			Material.set_scalar(material, variable, value)
@@ -903,7 +903,7 @@ function flow_callback_material_scalar_set_chr_inventory(params)
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
 
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			params.unit = items[i]
 
 			flow_callback_set_material_property_scalar_all(params)
@@ -945,13 +945,13 @@ function flow_callback_material_dissolve(params)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
-		for i = 0, num_materials - 1, 1 do
+		for i = 0, num_materials - 1 do
 			do_material_dissolve(Mesh.material(mesh, i + index_offset), timer_var, timer_data, start_state_var, start_state)
 		end
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i + index_offset)
 
 			if Mesh.has_material(unit_mesh, material_name) then
@@ -961,11 +961,11 @@ function flow_callback_material_dissolve(params)
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i + index_offset)
 			local num_materials = Mesh.num_materials(unit_mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				do_material_dissolve(Mesh.material(unit_mesh, j + index_offset), timer_var, timer_data, start_state_var, start_state)
 			end
 		end
@@ -987,7 +987,7 @@ function flow_callback_material_dissolve_chr(params)
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
 
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			params.unit = items[i]
 
 			flow_callback_material_dissolve(params)
@@ -1003,7 +1003,7 @@ function flow_callback_material_dissolve_chr_inventory(params)
 	local unit = params.unit
 	local outfit_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
 
-	for i = 1, #outfit_items, 1 do
+	for i = 1, #outfit_items do
 		params.unit = outfit_items[i]
 
 		flow_callback_material_dissolve(params)
@@ -1049,13 +1049,13 @@ function flow_callback_material_fade(params)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
-		for i = 0, num_materials - 1, 1 do
+		for i = 0, num_materials - 1 do
 			do_material_fade(Mesh.material(mesh, i + index_offset), timer_var, timer_data, fade_range_var, fade_interval)
 		end
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i + index_offset)
 
 			if Mesh.has_material(unit_mesh, material_name) then
@@ -1065,11 +1065,11 @@ function flow_callback_material_fade(params)
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i + index_offset)
 			local num_materials = Mesh.num_materials(unit_mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				do_material_fade(Mesh.material(unit_mesh, j + index_offset), timer_var, timer_data, fade_range_var, fade_interval)
 			end
 		end
@@ -1091,7 +1091,7 @@ function flow_callback_material_fade_chr(params)
 	}) do
 		items = Unit.get_data(unit, v .. "_items") or {}
 
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			params.unit = items[i]
 
 			flow_callback_material_fade(params)
@@ -1107,7 +1107,7 @@ function flow_callback_material_fade_chr_inventory(params)
 	local unit = params.unit
 	local outfit_items = Unit.get_data(unit, params.inventory_type .. "_items") or {}
 
-	for i = 1, #outfit_items, 1 do
+	for i = 1, #outfit_items do
 		params.unit = outfit_items[i]
 
 		flow_callback_material_fade(params)
@@ -1166,7 +1166,7 @@ function flow_callback_start_fade(params)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
-		for i = 0, num_materials - 1, 1 do
+		for i = 0, num_materials - 1 do
 			local material = Mesh.material(mesh, i + index_offset)
 
 			start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
@@ -1174,7 +1174,7 @@ function flow_callback_start_fade(params)
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local mesh = Unit.mesh(unit, i + index_offset)
 
 			if Mesh.has_material(mesh, material_name) then
@@ -1186,11 +1186,11 @@ function flow_callback_start_fade(params)
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local mesh = Unit.mesh(unit, i + index_offset)
 			local num_materials = Mesh.num_materials(mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				local material = Mesh.material(mesh, j + index_offset)
 
 				start_material_fade(material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
@@ -1211,7 +1211,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 		local shield_items = Unit.get_data(unit, "shield_items") or {}
 		local other_items = Unit.get_data(unit, "other_items") or {}
 
-		for i = 1, #inventory_configuration.items, 1 do
+		for i = 1, #inventory_configuration.items do
 			local item = inventory_configuration.items[i][math.random(1, inventory_configuration.items[i].count)]
 			local item_node_linking = item.attachment_node_linking
 			local node_linking_data = item_node_linking.wielded or item_node_linking
@@ -1225,7 +1225,7 @@ function flow_callback_chr_editor_inventory_spawn(params)
 			for _, data in ipairs(node_linking_data) do
 				if data.target == 0 then
 					local source_node = data.source
-					local source_node_index = (type(source_node) == "string" and Unit.node(unit, source_node)) or source_node + 1
+					local source_node_index = type(source_node) == "string" and Unit.node(unit, source_node) or source_node + 1
 					item_position = Unit.world_position(unit, source_node_index)
 					item_rotation = Unit.world_rotation(unit, source_node_index)
 
@@ -1282,19 +1282,19 @@ function flow_callback_chr_editor_inventory_unspawn(params)
 	local shield_items = Unit.get_data(unit, "shield_items") or {}
 	local other_items = Unit.get_data(unit, "other_items") or {}
 
-	for i = 1, #outfit_items, 1 do
+	for i = 1, #outfit_items do
 		World.destroy_unit(world, outfit_items[i])
 	end
 
-	for i = 1, #helmet_items, 1 do
+	for i = 1, #helmet_items do
 		World.destroy_unit(world, helmet_items[i])
 	end
 
-	for i = 1, #shield_items, 1 do
+	for i = 1, #shield_items do
 		World.destroy_unit(world, shield_items[i])
 	end
 
-	for i = 1, #other_items, 1 do
+	for i = 1, #other_items do
 		World.destroy_unit(world, other_items[i])
 	end
 
@@ -1314,7 +1314,7 @@ function flow_callback_chr_editor_inventory_drop(params)
 	local shield_items = Unit.get_data(unit, "shield_items") or {}
 	local other_items = Unit.get_data(unit, "other_items") or {}
 
-	for i = 1, #other_items, 1 do
+	for i = 1, #other_items do
 		local item_unit = other_items[i]
 		local node_linking_data = Unit.get_data(item_unit, "node_linking_data") or {}
 
@@ -1329,7 +1329,7 @@ function flow_callback_chr_editor_inventory_drop(params)
 		end
 	end
 
-	for i = 1, #shield_items, 1 do
+	for i = 1, #shield_items do
 		local item_unit = shield_items[i]
 		local node_linking_data = Unit.get_data(item_unit, "node_linking_data") or {}
 
@@ -1357,31 +1357,31 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 	local event = params.event
 	local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 
-	for i = 1, #outfit_items, 1 do
+	for i = 1, #outfit_items do
 		Unit.flow_event(outfit_items[i], event)
 	end
 
 	local helmet_items = Unit.get_data(unit, "helmet_items") or {}
 
-	for i = 1, #helmet_items, 1 do
+	for i = 1, #helmet_items do
 		Unit.flow_event(helmet_items[i], event)
 	end
 
 	local shield_items = Unit.get_data(unit, "shield_items") or {}
 
-	for i = 1, #shield_items, 1 do
+	for i = 1, #shield_items do
 		Unit.flow_event(shield_items[i], event)
 	end
 
 	local shield_items = Unit.get_data(unit, "stump_items") or {}
 
-	for i = 1, #shield_items, 1 do
+	for i = 1, #shield_items do
 		Unit.flow_event(shield_items[i], event)
 	end
 
 	local other_items = Unit.get_data(unit, "other_items") or {}
 
-	for i = 1, #other_items, 1 do
+	for i = 1, #other_items do
 		Unit.flow_event(other_items[i], event)
 	end
 end
@@ -1401,7 +1401,7 @@ function flow_callback_set_unit_light_state(params)
 		local num_lights = Unit.num_lights(unit)
 
 		if num_lights then
-			for i = 1, num_lights, 1 do
+			for i = 1, num_lights do
 				local light = Unit.light(unit, i - 1)
 
 				Light.set_enabled(light, state)
@@ -1431,7 +1431,7 @@ function flow_callback_set_unit_light_color(params)
 		local num_lights = Unit.num_lights(unit)
 
 		if num_lights then
-			for i = 1, num_lights, 1 do
+			for i = 1, num_lights do
 				local light = Unit.light(unit, i - 1)
 
 				Light.set_color(light, color)
@@ -1503,7 +1503,7 @@ function flow_callback_link_objects_in_units(params)
 	local childnodes = split(params.child_nodes, ";")
 	local world = Unit.world(parentunit)
 
-	for i = 1, #parentnodes - 1, 1 do
+	for i = 1, #parentnodes - 1 do
 		local parentnodeindex = Unit.node(parentunit, parentnodes[i])
 		local childnode = childnodes[i]
 		local childnodeindex = nil
@@ -1672,8 +1672,8 @@ function link_attachment(attachment_node_link, world, target, source)
 	for i, attachment_nodes in ipairs(attachment_node_link) do
 		local source_node = attachment_nodes.source
 		local target_node = attachment_nodes.target
-		local source_node_index = (type(source_node) == "string" and Unit.node(source, source_node)) or source_node + 1
-		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node + 1
+		local source_node_index = type(source_node) == "string" and Unit.node(source, source_node) or source_node + 1
+		local target_node_index = type(target_node) == "string" and Unit.node(target, target_node) or target_node + 1
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
 
@@ -1694,7 +1694,7 @@ function unlink_attachment(attachment_node_link, world, target)
 
 	for _, attachment_nodes in ipairs(node_linking_data) do
 		local target_node = attachment_nodes.target
-		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node + 1
+		local target_node_index = type(target_node) == "string" and Unit.node(target, target_node) or target_node + 1
 
 		if target_node_index > 1 then
 			Unit.scene_graph_link(target, target_node_index, 1)
@@ -1705,5 +1705,3 @@ end
 function flow_callback_wwise_trigger_event_with_environment()
 	return
 end
-
-return

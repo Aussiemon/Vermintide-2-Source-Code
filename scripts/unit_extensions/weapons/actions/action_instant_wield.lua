@@ -37,5 +37,3 @@ ActionInstantWield.finish = function (self)
 		status_extension:set_zooming(false)
 	end
 end
-
-return

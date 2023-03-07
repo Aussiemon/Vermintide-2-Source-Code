@@ -104,5 +104,3 @@ BTPackMasterFollowAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running", should_evaluate
 end
-
-return

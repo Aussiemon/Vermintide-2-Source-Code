@@ -44,5 +44,3 @@ for profile_name, third_person_units in pairs(third_person_base_units) do
 		BaseUnits[profile_name][unit_name] = unit_path
 	end
 end
-
-return

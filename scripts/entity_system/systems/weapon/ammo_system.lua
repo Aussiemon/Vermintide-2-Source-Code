@@ -68,7 +68,7 @@ AmmoSystem.give_ammo_fraction_to_owner = function (self, owner_unit, fraction, t
 				return
 			end
 
-			for extension_id = 1, #extensions, 1 do
+			for extension_id = 1, #extensions do
 				local extension = extensions[extension_id]
 
 				if extension.slot_name == "slot_ranged" then
@@ -100,5 +100,3 @@ AmmoSystem.rpc_give_ammo_fraction_to_owner = function (self, channel_id, unit_id
 
 	self:give_ammo_fraction_to_owner(unit, fraction, to_reserve)
 end
-
-return

@@ -79,5 +79,3 @@ end
 BackendInterfaceQuestsBenchmark.get_quest_rewards = function (self, id)
 	return {}
 end
-
-return

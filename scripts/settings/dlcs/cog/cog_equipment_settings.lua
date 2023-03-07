@@ -82,5 +82,3 @@ settings.inventory_package_list = {
 	"units/beings/player/dwarf_ranger_engineer/headpiece/dr_e_hat_02",
 	"units/beings/player/dwarf_ranger_engineer/headpiece/dr_e_hat_03"
 }
-
-return

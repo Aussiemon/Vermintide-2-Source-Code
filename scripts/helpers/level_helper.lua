@@ -71,7 +71,7 @@ LevelHelper.get_random_variation_id = function (self, level_key)
 	local settings = rawget(LevelSettings, level_key)
 	local variations = settings and settings.environment_variations
 
-	return (variations and math.random(0, #variations)) or 0
+	return variations and math.random(0, #variations) or 0
 end
 
 LevelHelper.flow_event = function (self, world, event)
@@ -123,7 +123,5 @@ end
 LevelHelper.get_base_level = function (self, level_key)
 	local level_settings = LevelSettings[level_key]
 
-	return (level_settings and level_settings.base_level_name) or level_key
+	return level_settings and level_settings.base_level_name or level_key
 end
-
-return

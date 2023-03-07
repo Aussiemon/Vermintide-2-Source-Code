@@ -64,8 +64,8 @@ WeaponSpreadExtension.update = function (self, unit, input, dt, context, t)
 	local crouching = CharacterStateHelper.is_crouching(status_extension)
 	local zooming = CharacterStateHelper.is_zooming(status_extension)
 	local new_state = nil
-	local lerp_speed_pitch = (zooming and self.spread_lerp_speed_pitch_zoom) or self.spread_lerp_speed_pitch
-	local lerp_speed_yaw = (zooming and self.spread_lerp_speed_yaw_zoom) or self.spread_lerp_speed_yaw
+	local lerp_speed_pitch = zooming and self.spread_lerp_speed_pitch_zoom or self.spread_lerp_speed_pitch
+	local lerp_speed_yaw = zooming and self.spread_lerp_speed_yaw_zoom or self.spread_lerp_speed_yaw
 
 	if self.hit_aftermath then
 		self.hit_timer = self.hit_timer - dt
@@ -166,7 +166,7 @@ WeaponSpreadExtension.get_max_pitch_rotation = function (self, roll_rotation)
 		return 0
 	end
 
-	local max_pitch_rotation = (current_pitch * current_yaw) / length
+	local max_pitch_rotation = current_pitch * current_yaw / length
 
 	return math.degrees_to_radians(max_pitch_rotation)
 end
@@ -201,12 +201,12 @@ WeaponSpreadExtension.get_target_style_spread = function (self, original_current
 		return current_rotation
 	end
 
-	local current_shot = (bullseye and original_current_shot - 1) or original_current_shot
-	local max_shots = (bullseye and original_max_shots - 1) or original_max_shots
+	local current_shot = bullseye and original_current_shot - 1 or original_current_shot
+	local max_shots = bullseye and original_max_shots - 1 or original_max_shots
 	local layers_of_shots = num_layers_spread or 1
 	local shot_roll_current_angle = layers_of_shots * current_shot / max_shots
 	local shot_roll_spread_modifier = layers_of_shots / max_shots
-	local roll_modifier = ((0.85 + 0.3 * math.random()) * shot_roll_spread_modifier * 2 + shot_roll_current_angle) - shot_roll_spread_modifier
+	local roll_modifier = (0.85 + 0.3 * math.random()) * shot_roll_spread_modifier * 2 + shot_roll_current_angle - shot_roll_spread_modifier
 	local rand_roll_rotation = roll_modifier * math.pi * 2
 	local max_pitch_rotation = self:get_max_pitch_rotation(rand_roll_rotation)
 	local random_pitch_scale = math.sqrt(0.25 + 0.5 * math.random())
@@ -222,5 +222,3 @@ WeaponSpreadExtension.get_target_style_spread = function (self, original_current
 
 	return final_rotation
 end
-
-return

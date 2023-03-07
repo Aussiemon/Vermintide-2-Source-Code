@@ -107,9 +107,9 @@ BackendInterfaceDLCsPlayfab._execute_dlc_logic_cb = function (self, result)
 	local new_rewards = function_result.item_grant_results
 	local user_data = self._backend_mirror:get_user_data()
 	local unseen_rewards = user_data.unseen_rewards
-	unseen_rewards = (unseen_rewards and cjson.decode(unseen_rewards)) or {}
+	unseen_rewards = unseen_rewards and cjson.decode(unseen_rewards) or {}
 
-	for i = 1, #new_rewards, 1 do
+	for i = 1, #new_rewards do
 		local item = new_rewards[i]
 		local item_id = item.ItemId
 		local item_type = item.ItemType
@@ -214,5 +214,3 @@ BackendInterfaceDLCsPlayfab.is_unreleased_career = function (self, career_name)
 
 	return false
 end
-
-return

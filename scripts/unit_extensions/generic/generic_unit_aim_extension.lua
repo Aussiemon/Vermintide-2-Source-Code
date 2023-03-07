@@ -5,7 +5,7 @@ GenericUnitAimExtension = class(GenericUnitAimExtension)
 GenericUnitAimExtension.init = function (self, extension_init_context, unit, extension_init_data)
 	self.unit = unit
 	self.template = AimTemplates[extension_init_data.template or Unit.get_data(unit, "aim_template")]
-	self.network_type = (extension_init_data.is_husk and "husk") or "owner"
+	self.network_type = extension_init_data.is_husk and "husk" or "owner"
 	self.data = {}
 	self.enabled = false
 end
@@ -16,7 +16,7 @@ GenericUnitAimExtension.extensions_ready = function (self)
 	template[self.network_type].init(self.unit, self.data)
 
 	local breed = Unit.get_data(self.unit, "breed")
-	self.always_aim = DEDICATED_SERVER or (breed and breed.always_look_at_target) or self.template == "innkeeper"
+	self.always_aim = DEDICATED_SERVER or breed and breed.always_look_at_target or self.template == "innkeeper"
 end
 
 GenericUnitAimExtension.destroy = function (self)
@@ -48,5 +48,3 @@ GenericUnitAimExtension.update = function (self, unit, input, dt, context, t)
 		template[self.network_type].leave(unit, data)
 	end
 end
-
-return

@@ -690,362 +690,360 @@ local action_data = {
 			"blocked_2"
 		},
 		difficulty_duration = BreedTweaks.blocked_duration.beastmen_roamer
-	},
-	stagger = {
-		scale_animation_speeds = true,
-		custom_enter_function = function (unit, blackboard, t, action)
-			if blackboard.standard_bearer_stagger then
-				local stagger_anims = action.standard_stagger_anims[blackboard.stagger_type]
-				blackboard.standard_bearer_stagger = nil
-
-				return stagger_anims, "idle"
-			end
-
-			if blackboard.stagger_type == stagger_types.heavy then
-				blackboard.stagger_immune_time = t + 2.25
-				blackboard.heavy_stagger_immune_time = t + 2
-			elseif blackboard.stagger_type == stagger_types.explosion then
-				blackboard.stagger_immune_time = t + 3.5
-				blackboard.heavy_stagger_immune_time = t + 3
-			end
-
-			local stagger_anims = action.stagger_anims[blackboard.stagger_type]
+	}
+}
+action_data.stagger = {
+	scale_animation_speeds = true,
+	custom_enter_function = function (unit, blackboard, t, action)
+		if blackboard.standard_bearer_stagger then
+			local stagger_anims = action.standard_stagger_anims[blackboard.stagger_type]
+			blackboard.standard_bearer_stagger = nil
 
 			return stagger_anims, "idle"
-		end,
-		stagger_anims = {
-			{
-				fwd = {
-					"stun_fwd_sword",
-					"stun_fwd_sword_2"
-				},
-				bwd = {
-					"stun_bwd_sword",
-					"stun_bwd_sword_2",
-					"stun_bwd_sword_3"
-				},
-				left = {
-					"stun_left_sword",
-					"stun_left_sword_2"
-				},
-				right = {
-					"stun_right_sword",
-					"stun_right_sword_2",
-					"stun_right_sword_3"
-				},
-				dwn = {
-					"stun_bwd_sword"
-				}
+		end
+
+		if blackboard.stagger_type == stagger_types.heavy then
+			blackboard.stagger_immune_time = t + 2.25
+			blackboard.heavy_stagger_immune_time = t + 2
+		elseif blackboard.stagger_type == stagger_types.explosion then
+			blackboard.stagger_immune_time = t + 3.5
+			blackboard.heavy_stagger_immune_time = t + 3
+		end
+
+		local stagger_anims = action.stagger_anims[blackboard.stagger_type]
+
+		return stagger_anims, "idle"
+	end,
+	stagger_anims = {
+		{
+			fwd = {
+				"stun_fwd_sword",
+				"stun_fwd_sword_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_heavy_2"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_heavy_2"
-				},
-				dwn = {
-					"stagger_bwd"
-				}
+			bwd = {
+				"stun_bwd_sword",
+				"stun_bwd_sword_2",
+				"stun_bwd_sword_3"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_heavy"
-				},
-				left = {
-					"stagger_left_heavy_3"
-				},
-				right = {
-					"stagger_right_heavy_3"
-				}
+			left = {
+				"stun_left_sword",
+				"stun_left_sword_2"
 			},
-			{
-				fwd = {
-					"stun_ranged_fwd"
-				},
-				bwd = {
-					"stun_ranged_bwd"
-				},
-				left = {
-					"stun_ranged_left"
-				},
-				right = {
-					"stun_ranged_right"
-				}
+			right = {
+				"stun_right_sword",
+				"stun_right_sword_2",
+				"stun_right_sword_3"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_stab"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_exp"
-				},
-				left = {
-					"stagger_left_exp"
-				},
-				right = {
-					"stagger_right_exp"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_heavy_2"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_heavy_2"
-				}
+			dwn = {
+				"stun_bwd_sword"
 			}
 		},
-		standard_stagger_anims = {
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				}
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				}
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
 			},
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				}
+			left = {
+				"stagger_left",
+				"stagger_left_heavy_2"
 			},
-			{
-				fwd = {
-					"stun_ranged_fwd"
-				},
-				bwd = {
-					"stun_ranged_bwd"
-				},
-				left = {
-					"stun_ranged_left"
-				},
-				right = {
-					"stun_ranged_right"
-				}
+			right = {
+				"stagger_right",
+				"stagger_right_heavy_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_stab"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			dwn = {
+				"stagger_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3",
-					"stagger_fwd_cheer_4",
-					"stagger_fwd_cheer_5"
-				}
+			bwd = {
+				"stagger_bwd_heavy"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			left = {
+				"stagger_left_heavy_3"
 			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
+			right = {
+				"stagger_right_heavy_3"
+			}
+		},
+		{
+			fwd = {
+				"stun_ranged_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_heavy_2"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_heavy_2"
-				}
+			bwd = {
+				"stun_ranged_bwd"
+			},
+			left = {
+				"stun_ranged_left"
+			},
+			right = {
+				"stun_ranged_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_stab"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_exp"
+			},
+			left = {
+				"stagger_left_exp"
+			},
+			right = {
+				"stagger_right_exp"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
+			},
+			left = {
+				"stagger_left",
+				"stagger_left_heavy_2"
+			},
+			right = {
+				"stagger_right",
+				"stagger_right_heavy_2"
+			}
+		}
+	},
+	standard_stagger_anims = {
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			}
+		},
+		{
+			fwd = {
+				"stun_ranged_fwd"
+			},
+			bwd = {
+				"stun_ranged_bwd"
+			},
+			left = {
+				"stun_ranged_left"
+			},
+			right = {
+				"stun_ranged_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_stab"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3",
+				"stagger_fwd_cheer_4",
+				"stagger_fwd_cheer_5"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
+			},
+			left = {
+				"stagger_left",
+				"stagger_left_heavy_2"
+			},
+			right = {
+				"stagger_right",
+				"stagger_right_heavy_2"
 			}
 		}
 	}
 }
 BreedActions.beastmen_gor = table.create_copy(BreedActions.beastmen_gor, action_data)
-
-return

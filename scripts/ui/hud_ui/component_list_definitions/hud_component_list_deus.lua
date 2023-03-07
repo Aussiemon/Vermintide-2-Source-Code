@@ -32,7 +32,7 @@ local visibility_groups = {}
 table.append(visibility_groups, common_settings.visibility_groups)
 table.append(visibility_groups, adventure_settings.visibility_groups)
 
-for i = 1, #deus_components, 1 do
+for i = 1, #deus_components do
 	require(deus_components[i].filename)
 end
 

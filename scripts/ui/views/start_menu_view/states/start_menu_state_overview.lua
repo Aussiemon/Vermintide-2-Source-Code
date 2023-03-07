@@ -344,7 +344,7 @@ StartMenuStateOverview._set_hero_info = function (self, name, level)
 end
 
 StartMenuStateOverview._create_player_portrait = function (self, portrait_image, level)
-	local level_text = (level and tostring(level)) or "-"
+	local level_text = level and tostring(level) or "-"
 	local frame_settings_name = "default"
 	local definition = UIWidgets.create_portrait_frame("portrait_root", frame_settings_name, level_text, 1, nil, portrait_image)
 	local widget = UIWidget.init(definition)
@@ -589,7 +589,7 @@ StartMenuStateOverview._on_option_button_hover = function (self, widget, style_i
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = (1 - current_color_value / target_color_value) * total_time
 
-	for i = 2, 4, 1 do
+	for i = 2, 4 do
 		if animation_duration > 0 then
 			ui_animations[animation_name .. "_hover_" .. i] = self:_animate_element_by_time(pass_style.color, i, current_color_value, target_color_value, animation_duration)
 		else
@@ -608,7 +608,7 @@ StartMenuStateOverview._on_option_button_dehover = function (self, widget, style
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = current_color_value / 255 * total_time
 
-	for i = 2, 4, 1 do
+	for i = 2, 4 do
 		if animation_duration > 0 then
 			ui_animations[animation_name .. "_hover_" .. i] = self:_animate_element_by_time(pass_style.color, i, current_color_value, target_color_value, animation_duration)
 		else
@@ -693,5 +693,3 @@ StartMenuStateOverview.input_service = function (self, ignore_view_input)
 
 	return self.parent:input_service(true)
 end
-
-return

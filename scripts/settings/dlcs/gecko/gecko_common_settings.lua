@@ -26,5 +26,3 @@ settings.extra_level_packages = {
 		extra_sound_package
 	}
 }
-
-return

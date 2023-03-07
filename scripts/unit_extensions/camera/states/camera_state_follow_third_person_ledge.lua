@@ -50,5 +50,3 @@ CameraStateFollowThirdPersonLedge.update = function (self, unit, input, dt, cont
 
 	CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
 end
-
-return

@@ -53,7 +53,7 @@ GenericHuskInteractorExtension.update = function (self, unit, input, dt, context
 	interaction_data.is_server = self.is_server
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
-	local interaction_config = (interaction_template and interaction_template.config) or nil
+	local interaction_config = interaction_template and interaction_template.config or nil
 
 	if self.state == "starting_interaction" then
 		interaction_template.client.start(world, unit, interactable_unit, interaction_data, interaction_config, t)
@@ -89,7 +89,7 @@ GenericHuskInteractorExtension._stop_interaction = function (self, interactable_
 	interaction_data.is_server = self.is_server
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
-	local interaction_config = (interaction_template and interaction_template.config) or nil
+	local interaction_config = interaction_template and interaction_template.config or nil
 	local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(interactable_unit)
 
 	if not is_level_unit and go_id == nil then
@@ -210,5 +210,3 @@ GenericHuskInteractorExtension.interaction_completed = function (self, interacti
 
 	self:stop_interaction(t)
 end
-
-return

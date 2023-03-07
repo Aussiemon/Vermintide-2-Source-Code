@@ -191,7 +191,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	if self.is_server then
 		local stride = DamageDataIndex.STRIDE
 
-		for i = 1, num_damages / stride, 1 do
+		for i = 1, num_damages / stride do
 			local index = (i - 1) * stride
 			local damage_type = damages[index + DamageDataIndex.DAMAGE_TYPE]
 
@@ -223,7 +223,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 	if num_damages > 0 then
 		local slow_movement = false
 
-		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
+		for i = 1, num_damages / DamageDataIndex.STRIDE do
 			local damage_type = damages[(i - 1) * DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_TYPE]
 
 			if PlayerUnitMovementSettings.slowing_damage_types[damage_type] then
@@ -258,7 +258,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		degen_delay = degen_delay / self.buff_extension:apply_buffs_to_value(1, "fatigue_regen")
 
 		if previous_max_fatigue_points ~= max_fatigue_points then
-			self.fatigue = (max_fatigue_points == 0 and 0) or previous_max_fatigue_points / max_fatigue_points * self.fatigue
+			self.fatigue = max_fatigue_points == 0 and 0 or previous_max_fatigue_points / max_fatigue_points * self.fatigue
 		end
 
 		if not disable_regen_boost_on_low_fatigue and num_damages > 0 and self.fatigue >= 50 then
@@ -272,7 +272,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		if t >= self.last_fatigue_gain_time + degen_delay then
 			self.action_stun_push = false
 			self.show_fatigue_gui = false
-			local degen_amount = (max_fatigue_points == 0 and 0) or PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
+			local degen_amount = max_fatigue_points == 0 and 0 or PlayerUnitStatusSettings.FATIGUE_POINTS_DEGEN_AMOUNT / max_fatigue_points * PlayerUnitStatusSettings.MAX_FATIGUE
 			local new_degen_amount = self.buff_extension:apply_buffs_to_value(degen_amount, "fatigue_regen")
 
 			if degen_amount < new_degen_amount then
@@ -391,7 +391,7 @@ GenericStatusExtension.update = function (self, unit, input, dt, context, t)
 		local in_end_zone = self:is_in_end_zone()
 
 		if self._current_end_zone_state ~= in_end_zone then
-			Wwise.set_state("inside_waystone", (in_end_zone and "true") or "false")
+			Wwise.set_state("inside_waystone", in_end_zone and "true" or "false")
 
 			self._current_end_zone_state = in_end_zone
 		end
@@ -536,17 +536,12 @@ GenericStatusExtension.can_block = function (self, attacking_unit, attack_direct
 			end
 		end
 
-		local fatigue_point_costs_multiplier = (outer_block and (weapon_template.outer_block_fatigue_point_multiplier or 2)) or weapon_template.block_fatigue_point_multiplier or 1
+		local fatigue_point_costs_multiplier = outer_block and (weapon_template.outer_block_fatigue_point_multiplier or 2) or weapon_template.block_fatigue_point_multiplier or 1
 		local improved_block = block and not outer_block
 
 		if not attack_direction then
 			local cross = Vector3.cross(block_direction_flat, player_direction_flat)
-
-			if cross.z < 0 then
-				attack_direction = "left"
-			else
-				attack_direction = "right"
-			end
+			attack_direction = cross.z < 0 and "left" or "right"
 		end
 
 		return true, fatigue_point_costs_multiplier, improved_block, attack_direction
@@ -607,7 +602,7 @@ GenericStatusExtension.blocked_attack = function (self, fatigue_type, attacking_
 					parry_reaction = "parry_deflect_" .. attack_direction
 				end
 
-				local block_arc_event = (weapon_template and weapon_template.sound_event_block_within_arc) or "Play_player_block_ark_success"
+				local block_arc_event = weapon_template and weapon_template.sound_event_block_within_arc or "Play_player_block_ark_success"
 
 				first_person_extension:play_hud_sound_event(block_arc_event, nil, false)
 			else
@@ -716,7 +711,7 @@ GenericStatusExtension.fatigued = function (self)
 		return false
 	end
 
-	return (max_fatigue_points == 0 and true) or self.fatigue > max_fatigue - max_fatigue / max_fatigue_points
+	return max_fatigue_points == 0 and true or self.fatigue > max_fatigue - max_fatigue / max_fatigue_points
 end
 
 GenericStatusExtension.add_fatigue_points = function (self, fatigue_type, attacking_unit, blocking_weapon_unit, fatigue_point_costs_multiplier, is_timed_block)
@@ -863,7 +858,7 @@ GenericStatusExtension.current_fatigue_points = function (self)
 	local max_fatigue = PlayerUnitStatusSettings.MAX_FATIGUE
 	local max_fatigue_points = self.max_fatigue_points
 
-	return (max_fatigue_points == 0 and 0) or math.ceil(self.fatigue / (max_fatigue / max_fatigue_points)), max_fatigue_points
+	return max_fatigue_points == 0 and 0 or math.ceil(self.fatigue / (max_fatigue / max_fatigue_points)), max_fatigue_points
 end
 
 GenericStatusExtension.set_stagger_immune = function (self, stagger_immune)
@@ -1065,7 +1060,7 @@ GenericStatusExtension.set_knocked_down = function (self, knocked_down)
 		local nearby_units = {}
 		local num_nearby_units = AiUtils.broadphase_query(position, DialogueSettings.knocked_down_broadcast_range, nearby_units)
 
-		for i = 1, num_nearby_units, 1 do
+		for i = 1, num_nearby_units do
 			local nearby_unit = nearby_units[i]
 			local nearby_unit_dialogue_extension = ScriptUnit.has_extension(nearby_unit, "dialogue_system")
 
@@ -1371,7 +1366,7 @@ end
 GenericStatusExtension.set_grabbed_by_tentacle = function (self, grabbed, tentacle_unit)
 	self.grabbed_by_tentacle = grabbed
 	self.grabbed_by_tentacle_unit = tentacle_unit
-	self.grabbed_by_tentacle_status = (grabbed and "grabbed") or nil
+	self.grabbed_by_tentacle_status = grabbed and "grabbed" or nil
 end
 
 GenericStatusExtension.set_grabbed_by_tentacle_status = function (self, status)
@@ -1400,19 +1395,19 @@ end
 
 GenericStatusExtension.set_in_vortex = function (self, in_vortex, vortex_unit)
 	self.in_vortex = in_vortex
-	self.in_vortex_unit = (in_vortex and vortex_unit) or nil
+	self.in_vortex_unit = in_vortex and vortex_unit or nil
 
 	self:set_outline_incapacitated(not self:is_dead() and self:is_disabled())
 end
 
 GenericStatusExtension.set_near_vortex = function (self, near_vortex, vortex_unit)
 	self.near_vortex = near_vortex
-	self.near_vortex_unit = (near_vortex and vortex_unit) or nil
+	self.near_vortex_unit = near_vortex and vortex_unit or nil
 end
 
 GenericStatusExtension.set_in_liquid = function (self, in_liquid, liquid_unit)
 	self.in_liquid = in_liquid
-	self.in_liquid_unit = (in_liquid and liquid_unit) or nil
+	self.in_liquid_unit = in_liquid and liquid_unit or nil
 end
 
 GenericStatusExtension.set_catapulted = function (self, catapulted, velocity)
@@ -1583,6 +1578,7 @@ GenericStatusExtension._set_packmaster_unhooked = function (self, locomotion, gr
 	local t = Managers.time:time("game")
 
 	if self.release_unhook_time then
+		-- Nothing
 	elseif self.dead then
 		if grabbed_status == "pack_master_dragging" or grabbed_status == "pack_master_pulling" then
 			self.release_unhook_time = t + PlayerUnitStatusSettings.hanging_by_pack_master.release_dragging_time_dead
@@ -1605,7 +1601,7 @@ end
 
 GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grabbed, grabber_unit)
 	local unit = self.unit
-	self.pack_master_grabber = (is_grabbed and grabber_unit) or nil
+	self.pack_master_grabber = is_grabbed and grabber_unit or nil
 	local previous_status = self.pack_master_status
 	self.pack_master_status = grabbed_status
 
@@ -1726,6 +1722,7 @@ GenericStatusExtension.set_pack_master = function (self, grabbed_status, is_grab
 		locomotion:set_disabled(false, nil, nil, true)
 
 		if self.release_falling_time then
+			-- Nothing
 		elseif self.dead then
 			self.release_falling_time = t + PlayerUnitStatusSettings.hanging_by_pack_master.release_falling_time_dead
 		elseif self.knocked_down then
@@ -1761,7 +1758,7 @@ end
 
 GenericStatusExtension.set_grabbed_by_corruptor = function (self, grabbed_status, is_grabbed, grabber_unit)
 	local unit = self.unit
-	self.corruptor_grabbed = (is_grabbed and grabber_unit) or nil
+	self.corruptor_grabbed = is_grabbed and grabber_unit or nil
 	self.grabbed_by_corruptor = is_grabbed
 	self.corruptor_unit = grabber_unit
 	self.corruptor_status = grabbed_status
@@ -1924,7 +1921,7 @@ GenericStatusExtension.is_crouching = function (self)
 end
 
 GenericStatusExtension.is_blocking = function (self)
-	return (self.override_blocking == nil and self.blocking) or self.override_blocking, self.shield_block
+	return self.override_blocking == nil and self.blocking or self.override_blocking, self.shield_block
 end
 
 GenericStatusExtension.is_wounded = function (self)
@@ -2106,7 +2103,7 @@ GenericStatusExtension.set_invisible = function (self, invisible, force_third_pe
 	local local_player_party = local_player and Managers.party:get_party_from_player_id(local_player:network_id(), local_player:local_player_id())
 	local local_player_side = local_player_party and side_manager.side_by_party[local_player_party]
 	local is_enemies = side_manager:is_enemy_by_side(local_player_side, unit_side)
-	local fade_value = (is_enemies and 1) or 0.65
+	local fade_value = is_enemies and 1 or 0.65
 	local side = Managers.state.side.side_by_unit[unit]
 	local unit_is_hero = side and side:name() == "heroes"
 
@@ -2274,7 +2271,7 @@ end
 GenericStatusExtension.set_falling_height = function (self, override, override_height)
 	fassert(not self.is_husk, "Trying to set falling height on non-owned unit")
 
-	self.fall_height = override_height or (self.fall_height and not override and POSITION_LOOKUP[self.unit].z < self.fall_height and self.fall_height) or POSITION_LOOKUP[self.unit].z
+	self.fall_height = override_height or self.fall_height and not override and POSITION_LOOKUP[self.unit].z < self.fall_height and self.fall_height or POSITION_LOOKUP[self.unit].z
 	self.update_funcs.falling = GenericStatusExtension.update_falling
 end
 
@@ -2293,7 +2290,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 	local network_manager = Managers.state.network
 	local self_game_object_id = network_manager:unit_game_object_id(self.unit)
 	local channel_id = PEER_ID_TO_CHANNEL[sender]
-	local flavour_unit_game_object_id = (self.ready_for_assisted_respawn and network_manager:unit_game_object_id(self.assisted_respawn_flavour_unit)) or 0
+	local flavour_unit_game_object_id = self.ready_for_assisted_respawn and network_manager:unit_game_object_id(self.assisted_respawn_flavour_unit) or 0
 
 	RPC.rpc_hot_join_sync_health_status(channel_id, self_game_object_id, self:max_wounds_network_safe(), self.ready_for_assisted_respawn, flavour_unit_game_object_id)
 
@@ -2316,9 +2313,9 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_bool(channel_id, pack_master_status_id, is_grabbed, self_game_object_id, grabber_go_id)
 	end
 
-	local ledge_hanging_unit_game_object_id = (self.is_ledge_hanging and network_manager:unit_game_object_id(self.current_ledge_hanging_unit)) or 0
-	local pouncer_unit_game_object_id = (self.pounced_down and network_manager:unit_game_object_id(self.pouncer_unit)) or 0
-	local current_ladder_unit_game_object_id = (self.on_ladder and network_manager:unit_game_object_id(self.current_ladder_unit)) or 0
+	local ledge_hanging_unit_game_object_id = self.is_ledge_hanging and network_manager:unit_game_object_id(self.current_ledge_hanging_unit) or 0
+	local pouncer_unit_game_object_id = self.pounced_down and network_manager:unit_game_object_id(self.pouncer_unit) or 0
+	local current_ladder_unit_game_object_id = self.on_ladder and network_manager:unit_game_object_id(self.current_ladder_unit) or 0
 
 	RPC.rpc_status_change_bool(channel_id, lookup.pounced_down, self.pounced_down, self_game_object_id, pouncer_unit_game_object_id)
 	RPC.rpc_status_change_bool(channel_id, lookup.pushed, self.pushed, self_game_object_id, 0)
@@ -2345,8 +2342,8 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_int(channel_id, lookup.grabbed_by_chaos_spawn, grabbed_substatus_id, self_game_object_id)
 	end
 
-	local attacking_unit_id = (self.overpowered and network_manager:unit_game_object_id(self.overpowered_attacking_unit)) or NetworkConstants.invalid_game_object_id
-	local status_int = (self.overpowered and NetworkLookup.overpowered_templates[self.overpowered_template]) or 0
+	local attacking_unit_id = self.overpowered and network_manager:unit_game_object_id(self.overpowered_attacking_unit) or NetworkConstants.invalid_game_object_id
+	local status_int = self.overpowered and NetworkLookup.overpowered_templates[self.overpowered_template] or 0
 
 	RPC.rpc_status_change_int_and_unit(channel_id, lookup.overpowered, status_int, self_game_object_id, attacking_unit_id)
 
@@ -2356,7 +2353,7 @@ GenericStatusExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_status_change_bool(channel_id, knocked_down_status_id, true, self_game_object_id, 0)
 	end
 
-	local vortex_unit_id = (self.in_vortex and network_manager:unit_game_object_id(self.in_vortex_unit)) or NetworkConstants.invalid_game_object_id
+	local vortex_unit_id = self.in_vortex and network_manager:unit_game_object_id(self.in_vortex_unit) or NetworkConstants.invalid_game_object_id
 
 	RPC.rpc_status_change_bool(channel_id, lookup.in_vortex, self.in_vortex, self_game_object_id, vortex_unit_id)
 	RPC.rpc_status_change_bool(channel_id, lookup.crouching, self.crouching, self_game_object_id, 0)
@@ -2406,5 +2403,3 @@ GenericStatusExtension.get_max_wounds = function (self)
 
 	return buff_extension:apply_buffs_to_value(base_max_wounds, "extra_wounds")
 end
-
-return

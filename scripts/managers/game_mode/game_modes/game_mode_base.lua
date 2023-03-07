@@ -104,11 +104,11 @@ GameModeBase._verify_career = function (self, profile_index, career_index)
 	if not career_unlocked then
 		Application.warning("############################################################################################")
 		Application.warning("[GameModeBase] Selected career for bot is not unlocked -> Defaulting to default career")
-		Application.warning(string.format("Profile: %q - Career: %q - Reason: %q - DLC: %q", (profile and profile.display_name) or profile_index, (career and Localize(career.display_name)) or career_index, (reason and Localize(reason)) or "-", tostring(dlc_name)))
+		Application.warning(string.format("Profile: %q - Career: %q - Reason: %q - DLC: %q", profile and profile.display_name or profile_index, career and Localize(career.display_name) or career_index, reason and Localize(reason) or "-", tostring(dlc_name)))
 		Application.warning("############################################################################################")
 	end
 
-	return (career_unlocked and career_index) or 1
+	return career_unlocked and career_index or 1
 end
 
 GameModeBase._remove_bot_instant = function (self, bot_player)
@@ -249,7 +249,7 @@ GameModeBase.mutators = function (self)
 		local special_events = live_event_interface:get_special_events()
 
 		if special_events then
-			for i = 1, #special_events, 1 do
+			for i = 1, #special_events do
 				local special_event_data = special_events[i]
 				local valid_levels = special_event_data.level_keys
 
@@ -283,7 +283,7 @@ end
 GameModeBase.player_entered_game_session = function (self, peer_id, local_player_id, wanted_party_index)
 	local player_spawners = self._player_spawners
 
-	for i = 1, #player_spawners, 1 do
+	for i = 1, #player_spawners do
 		player_spawners[i]:player_entered_game_session(peer_id, local_player_id, wanted_party_index)
 	end
 end
@@ -299,7 +299,7 @@ end
 GameModeBase.player_joined_party = function (self, peer_id, local_player_id, new_party_id, slot_id)
 	local player_spawners = self._player_spawners
 
-	for i = 1, #player_spawners, 1 do
+	for i = 1, #player_spawners do
 		player_spawners[i]:player_joined_party(peer_id, local_player_id, new_party_id, slot_id)
 	end
 end
@@ -307,7 +307,7 @@ end
 GameModeBase.player_left_party = function (self, peer_id, local_player_id, party_id, slot_id)
 	local player_spawners = self._player_spawners
 
-	for i = 1, #player_spawners, 1 do
+	for i = 1, #player_spawners do
 		player_spawners[i]:player_left_party(peer_id, local_player_id, party_id, slot_id)
 	end
 end
@@ -447,7 +447,7 @@ GameModeBase.update_end_level_areas = function (self)
 
 		local enabled = self._end_level_areas[unit]
 
-		QuickDrawer:box(pose, extents, (enabled and Color(0, 255, 0)) or Color(255, 0, 0))
+		QuickDrawer:box(pose, extents, enabled and Color(0, 255, 0) or Color(255, 0, 0))
 	end
 
 	if table.is_empty(self._end_level_areas) then
@@ -526,5 +526,3 @@ end
 GameModeBase.set_photomode_enabled = function (self, enabled)
 	self._photomode_enabled = enabled
 end
-
-return

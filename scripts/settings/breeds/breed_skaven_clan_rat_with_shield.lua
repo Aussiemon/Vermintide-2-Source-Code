@@ -543,699 +543,697 @@ local action_data = {
 			"blocked_3"
 		},
 		difficulty_duration = BreedTweaks.blocked_duration.skaven_roamer
-	},
-	stagger = {
-		scale_animation_speeds = true,
-		custom_enter_function = function (unit, blackboard, t, action)
-			assert(ScriptUnit.has_extension(unit, "ai_shield_system"), "skaven_clan_rat_with_shield dont have ai_shield_user_extension")
+	}
+}
+action_data.stagger = {
+	scale_animation_speeds = true,
+	custom_enter_function = function (unit, blackboard, t, action)
+		assert(ScriptUnit.has_extension(unit, "ai_shield_system"), "skaven_clan_rat_with_shield dont have ai_shield_user_extension")
 
-			if blackboard.shield_breaking_hit then
-				blackboard.shield_breaking_hit = false
+		if blackboard.shield_breaking_hit then
+			blackboard.shield_breaking_hit = false
 
-				return action.shield_break_anims[blackboard.stagger_type], "idle", "to_sword"
+			return action.shield_break_anims[blackboard.stagger_type], "idle", "to_sword"
+		end
+
+		local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
+		local stagger_anims, idle_event = nil
+		local using_shield = not ai_shield_extension.shield_broken
+
+		if using_shield then
+			local is_blocking = blackboard.stagger <= 1 and blackboard.stagger_type ~= stagger_types.explosion
+
+			ai_shield_extension:set_is_blocking(is_blocking)
+
+			if not is_blocking then
+				blackboard.stagger_time = blackboard.stagger_time + math.clamp(0.2 * blackboard.stagger, 0, 0.6)
 			end
 
-			local ai_shield_extension = ScriptUnit.extension(unit, "ai_shield_system")
-			local stagger_anims, idle_event = nil
-			local using_shield = not ai_shield_extension.shield_broken
-
-			if using_shield then
-				local is_blocking = blackboard.stagger <= 1 and blackboard.stagger_type ~= stagger_types.explosion
-
-				ai_shield_extension:set_is_blocking(is_blocking)
-
-				if not is_blocking then
-					blackboard.stagger_time = blackboard.stagger_time + math.clamp(0.2 * blackboard.stagger, 0, 0.6)
-				end
-
-				if not blackboard.blocked and blackboard.stagger < 2 and action.shield_block_anims then
-					stagger_anims = action.shield_block_anims[blackboard.stagger_type]
-					idle_event = "idle"
-				elseif not blackboard.blocked and blackboard.stagger < 3 and action.shield_stagger_anims then
-					stagger_anims = action.shield_stagger_anims[blackboard.stagger_type]
-					idle_event = blackboard.breed.shield_opening_event or "idle"
-				else
-					stagger_anims = action.stagger_anims[blackboard.stagger_type]
-					idle_event = blackboard.breed.shield_opening_event or "idle"
-				end
+			if not blackboard.blocked and blackboard.stagger < 2 and action.shield_block_anims then
+				stagger_anims = action.shield_block_anims[blackboard.stagger_type]
+				idle_event = "idle"
+			elseif not blackboard.blocked and blackboard.stagger < 3 and action.shield_stagger_anims then
+				stagger_anims = action.shield_stagger_anims[blackboard.stagger_type]
+				idle_event = blackboard.breed.shield_opening_event or "idle"
 			else
 				stagger_anims = action.stagger_anims[blackboard.stagger_type]
-				idle_event = "idle"
+				idle_event = blackboard.breed.shield_opening_event or "idle"
 			end
+		else
+			stagger_anims = action.stagger_anims[blackboard.stagger_type]
+			idle_event = "idle"
+		end
 
-			return stagger_anims, idle_event
-		end,
-		custom_exit_function = function (unit, blackboard, t)
-			local ai_shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system") and ScriptUnit.extension(unit, "ai_shield_system")
+		return stagger_anims, idle_event
+	end,
+	custom_exit_function = function (unit, blackboard, t)
+		local ai_shield_extension = ScriptUnit.has_extension(unit, "ai_shield_system") and ScriptUnit.extension(unit, "ai_shield_system")
 
-			ai_shield_extension:set_is_blocking(true)
-		end,
-		stagger_anims = {
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stun_fwd_sword"
-				},
-				left = {
-					"stun_left_sword",
-					"stun_left_sword_2",
-					"stun_left_sword_3"
-				},
-				right = {
-					"stun_right_sword",
-					"stun_right_sword_2",
-					"stun_right_sword_3"
-				},
-				dwn = {
-					"stun_down"
-				}
+		ai_shield_extension:set_is_blocking(true)
+	end,
+	stagger_anims = {
+		{
+			fwd = {
+				"stun_bwd_sword"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_2",
-					"stagger_left_3",
-					"stagger_left_4"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_2",
-					"stagger_right_3",
-					"stagger_right_4"
-				},
-				dwn = {
-					"stun_down"
-				}
+			bwd = {
+				"stun_fwd_sword"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_fall",
-					"stagger_bwd_fall_2"
-				},
-				left = {
-					"stagger_left_heavy",
-					"stagger_left_heavy_2",
-					"stagger_left_heavy_3"
-				},
-				right = {
-					"stagger_right_heavy",
-					"stagger_right_heavy_2",
-					"stagger_right_heavy_3"
-				},
-				dwn = {
-					"stun_down"
-				}
+			left = {
+				"stun_left_sword",
+				"stun_left_sword_2",
+				"stun_left_sword_3"
 			},
-			{
-				fwd = {
-					"stun_fwd_ranged_light",
-					"stun_fwd_ranged_light_2"
-				},
-				bwd = {
-					"stun_bwd_ranged_light",
-					"stun_bwd_ranged_light_2"
-				},
-				left = {
-					"stun_left_ranged_light",
-					"stun_left_ranged_light_2"
-				},
-				right = {
-					"stun_right_ranged_light",
-					"stun_right_ranged_light_2"
-				}
+			right = {
+				"stun_right_sword",
+				"stun_right_sword_2",
+				"stun_right_sword_3"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_stab",
-					"stagger_bwd_stab_2"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp",
-					"stagger_fwd_exp_2"
-				},
-				bwd = {
-					"stagger_bwd_exp",
-					"stagger_bwd_exp_2"
-				},
-				left = {
-					"stagger_left_exp",
-					"stagger_left_exp_2"
-				},
-				right = {
-					"stagger_right_exp",
-					"stagger_right_exp_2"
-				}
-			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_short_bwd",
-					"stagger_short_bwd_2",
-					"stagger_short_bwd_3",
-					"stagger_short_bwd_4",
-					"stagger_short_bwd_5"
-				},
-				left = {
-					"stun_left_sword",
-					"stun_left_sword_2",
-					"stun_left_sword_3",
-					"stagger_short_bwd_4",
-					"stagger_short_bwd_5"
-				},
-				right = {
-					"stun_right_sword",
-					"stun_right_sword_2",
-					"stun_right_sword_3",
-					"stagger_short_bwd_4",
-					"stagger_short_bwd_5"
-				},
-				dwn = {
-					"stun_down"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_2",
-					"stagger_left_3",
-					"stagger_left_4"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_2",
-					"stagger_right_3",
-					"stagger_right_4"
-				},
-				dwn = {
-					"stun_down"
-				}
+			dwn = {
+				"stun_down"
 			}
 		},
-		shield_block_anims = {
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_bwd_shield_up_light"
-				},
-				left = {
-					"stagger_left_shield_up_light"
-				},
-				right = {
-					"stagger_right_shield_up_light"
-				},
-				dwn = {
-					"stagger_bwd_shield_up_light_head"
-				}
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield_up",
-					"stagger_bwd_shield_up_2",
-					"stagger_bwd_shield_up_3",
-					"stagger_bwd_shield_up_4"
-				},
-				left = {
-					"stagger_left_shield_up"
-				},
-				right = {
-					"stagger_right_shield_up"
-				},
-				dwn = {
-					"stagger_bwd_shield_up_head",
-					"stagger_bwd_shield_up_head_2"
-				}
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield_up",
-					"stagger_bwd_shield_up_2",
-					"stagger_bwd_shield_up_3"
-				},
-				left = {
-					"stagger_left_shield_up"
-				},
-				right = {
-					"stagger_right_shield_up"
-				},
-				dwn = {
-					"stagger_bwd_shield_up_head",
-					"stagger_bwd_shield_up_head_2"
-				}
+			left = {
+				"stagger_left",
+				"stagger_left_2",
+				"stagger_left_3",
+				"stagger_left_4"
 			},
-			{
-				fwd = {
-					"stun_fwd_ranged_light",
-					"stun_fwd_ranged_light_2"
-				},
-				bwd = {
-					"stagger_bwd_shield_up",
-					"stagger_bwd_shield_up_2",
-					"stagger_bwd_shield_up_3"
-				},
-				left = {
-					"stagger_left_shield_up"
-				},
-				right = {
-					"stagger_right_shield_up"
-				},
-				dwn = {
-					"stagger_bwd_shield_up"
-				}
+			right = {
+				"stagger_right",
+				"stagger_right_2",
+				"stagger_right_3",
+				"stagger_right_4"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield_up",
-					"stagger_bwd_shield_up_2",
-					"stagger_bwd_shield_up_3"
-				},
-				left = {
-					"stagger_left_shield_up"
-				},
-				right = {
-					"stagger_right_shield_up"
-				},
-				dwn = {
-					"stagger_bwd_shield_up_light_head"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp",
-					"stagger_fwd_exp_2"
-				},
-				bwd = {
-					"stagger_bwd_shield_up",
-					"stagger_bwd_shield_up_2",
-					"stagger_bwd_shield_up_3"
-				},
-				left = {
-					"stagger_left_shield_up"
-				},
-				right = {
-					"stagger_right_shield_up"
-				},
-				dwn = {
-					"stagger_bwd_shield_up"
-				}
-			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_bwd_shield_up_light"
-				},
-				left = {
-					"stagger_left_shield_up_light"
-				},
-				right = {
-					"stagger_right_shield_up_light"
-				},
-				dwn = {
-					"stagger_bwd_shield_up_light"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield_up",
-					"stagger_bwd_shield_up_2",
-					"stagger_bwd_shield_up_3"
-				},
-				left = {
-					"stagger_left_shield_up"
-				},
-				right = {
-					"stagger_right_shield_up"
-				},
-				dwn = {
-					"stagger_bwd_shield_up_head",
-					"stagger_bwd_shield_up_head_2"
-				}
+			dwn = {
+				"stun_down"
 			}
 		},
-		shield_break_anims = {
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
+			bwd = {
+				"stagger_bwd_fall",
+				"stagger_bwd_fall_2"
 			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
+			left = {
+				"stagger_left_heavy",
+				"stagger_left_heavy_2",
+				"stagger_left_heavy_3"
 			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
+			right = {
+				"stagger_right_heavy",
+				"stagger_right_heavy_2",
+				"stagger_right_heavy_3"
 			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
-			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
-			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_shield_break_bwd"
-				},
-				left = {
-					"stagger_shield_break_left"
-				},
-				right = {
-					"stagger_shield_break_right"
-				},
-				dwn = {
-					"stagger_shield_break_bwd"
-				}
+			dwn = {
+				"stun_down"
 			}
 		},
-		shield_stagger_anims = {
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_bwd_shield_light"
-				},
-				left = {
-					"stagger_left_shield_light"
-				},
-				right = {
-					"stagger_right_shield_light"
-				},
-				dwn = {
-					"stagger_bwd_shield_light"
-				}
+		{
+			fwd = {
+				"stun_fwd_ranged_light",
+				"stun_fwd_ranged_light_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield",
-					"stagger_bwd_shield_2",
-					"stagger_bwd_shield_3"
-				},
-				left = {
-					"stagger_left_shield"
-				},
-				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
-				}
+			bwd = {
+				"stun_bwd_ranged_light",
+				"stun_bwd_ranged_light_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield",
-					"stagger_bwd_shield_2",
-					"stagger_bwd_shield_3"
-				},
-				left = {
-					"stagger_left_shield"
-				},
-				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
-				}
+			left = {
+				"stun_left_ranged_light",
+				"stun_left_ranged_light_2"
 			},
-			{
-				fwd = {
-					"stun_fwd_ranged_light",
-					"stun_fwd_ranged_light_2"
-				},
-				bwd = {
-					"stagger_bwd_shield",
-					"stagger_bwd_shield_2",
-					"stagger_bwd_shield_3"
-				},
-				left = {
-					"stagger_left_shield"
-				},
-				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
-				}
+			right = {
+				"stun_right_ranged_light",
+				"stun_right_ranged_light_2"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_shield",
-					"stagger_bwd_shield_2",
-					"stagger_bwd_shield_3"
-				},
-				left = {
-					"stagger_left_shield"
-				},
-				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
-				}
+			bwd = {
+				"stagger_bwd_stab",
+				"stagger_bwd_stab_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp",
-					"stagger_fwd_exp_2"
-				},
-				bwd = {
-					"stagger_bwd_shield",
-					"stagger_bwd_shield_2",
-					"stagger_bwd_shield_3"
-				},
-				left = {
-					"stagger_left_shield"
-				},
-				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
-				}
+			left = {
+				"stagger_left"
 			},
-			{
-				fwd = {
-					"stun_bwd_sword"
-				},
-				bwd = {
-					"stagger_bwd_shield_light"
-				},
-				left = {
-					"stagger_left_shield_light"
-				},
-				right = {
-					"stagger_right_shield_light"
-				},
-				dwn = {
-					"stagger_bwd_shield_light"
-				}
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp",
+				"stagger_fwd_exp_2"
 			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
+			bwd = {
+				"stagger_bwd_exp",
+				"stagger_bwd_exp_2"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp",
-					"stagger_fwd_exp_2"
-				},
-				bwd = {
-					"stagger_bwd_shield",
-					"stagger_bwd_shield_2",
-					"stagger_bwd_shield_3"
-				},
-				left = {
-					"stagger_left_shield"
-				},
-				right = {
-					"stagger_right_shield"
-				},
-				dwn = {
-					"stagger_bwd_shield"
-				}
+			left = {
+				"stagger_left_exp",
+				"stagger_left_exp_2"
+			},
+			right = {
+				"stagger_right_exp",
+				"stagger_right_exp_2"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_short_bwd",
+				"stagger_short_bwd_2",
+				"stagger_short_bwd_3",
+				"stagger_short_bwd_4",
+				"stagger_short_bwd_5"
+			},
+			left = {
+				"stun_left_sword",
+				"stun_left_sword_2",
+				"stun_left_sword_3",
+				"stagger_short_bwd_4",
+				"stagger_short_bwd_5"
+			},
+			right = {
+				"stun_right_sword",
+				"stun_right_sword_2",
+				"stun_right_sword_3",
+				"stagger_short_bwd_4",
+				"stagger_short_bwd_5"
+			},
+			dwn = {
+				"stun_down"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2"
+			},
+			left = {
+				"stagger_left",
+				"stagger_left_2",
+				"stagger_left_3",
+				"stagger_left_4"
+			},
+			right = {
+				"stagger_right",
+				"stagger_right_2",
+				"stagger_right_3",
+				"stagger_right_4"
+			},
+			dwn = {
+				"stun_down"
+			}
+		}
+	},
+	shield_block_anims = {
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_bwd_shield_up_light"
+			},
+			left = {
+				"stagger_left_shield_up_light"
+			},
+			right = {
+				"stagger_right_shield_up_light"
+			},
+			dwn = {
+				"stagger_bwd_shield_up_light_head"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield_up",
+				"stagger_bwd_shield_up_2",
+				"stagger_bwd_shield_up_3",
+				"stagger_bwd_shield_up_4"
+			},
+			left = {
+				"stagger_left_shield_up"
+			},
+			right = {
+				"stagger_right_shield_up"
+			},
+			dwn = {
+				"stagger_bwd_shield_up_head",
+				"stagger_bwd_shield_up_head_2"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield_up",
+				"stagger_bwd_shield_up_2",
+				"stagger_bwd_shield_up_3"
+			},
+			left = {
+				"stagger_left_shield_up"
+			},
+			right = {
+				"stagger_right_shield_up"
+			},
+			dwn = {
+				"stagger_bwd_shield_up_head",
+				"stagger_bwd_shield_up_head_2"
+			}
+		},
+		{
+			fwd = {
+				"stun_fwd_ranged_light",
+				"stun_fwd_ranged_light_2"
+			},
+			bwd = {
+				"stagger_bwd_shield_up",
+				"stagger_bwd_shield_up_2",
+				"stagger_bwd_shield_up_3"
+			},
+			left = {
+				"stagger_left_shield_up"
+			},
+			right = {
+				"stagger_right_shield_up"
+			},
+			dwn = {
+				"stagger_bwd_shield_up"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield_up",
+				"stagger_bwd_shield_up_2",
+				"stagger_bwd_shield_up_3"
+			},
+			left = {
+				"stagger_left_shield_up"
+			},
+			right = {
+				"stagger_right_shield_up"
+			},
+			dwn = {
+				"stagger_bwd_shield_up_light_head"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp",
+				"stagger_fwd_exp_2"
+			},
+			bwd = {
+				"stagger_bwd_shield_up",
+				"stagger_bwd_shield_up_2",
+				"stagger_bwd_shield_up_3"
+			},
+			left = {
+				"stagger_left_shield_up"
+			},
+			right = {
+				"stagger_right_shield_up"
+			},
+			dwn = {
+				"stagger_bwd_shield_up"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_bwd_shield_up_light"
+			},
+			left = {
+				"stagger_left_shield_up_light"
+			},
+			right = {
+				"stagger_right_shield_up_light"
+			},
+			dwn = {
+				"stagger_bwd_shield_up_light"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield_up",
+				"stagger_bwd_shield_up_2",
+				"stagger_bwd_shield_up_3"
+			},
+			left = {
+				"stagger_left_shield_up"
+			},
+			right = {
+				"stagger_right_shield_up"
+			},
+			dwn = {
+				"stagger_bwd_shield_up_head",
+				"stagger_bwd_shield_up_head_2"
+			}
+		}
+	},
+	shield_break_anims = {
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_shield_break_bwd"
+			},
+			left = {
+				"stagger_shield_break_left"
+			},
+			right = {
+				"stagger_shield_break_right"
+			},
+			dwn = {
+				"stagger_shield_break_bwd"
+			}
+		}
+	},
+	shield_stagger_anims = {
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_bwd_shield_light"
+			},
+			left = {
+				"stagger_left_shield_light"
+			},
+			right = {
+				"stagger_right_shield_light"
+			},
+			dwn = {
+				"stagger_bwd_shield_light"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield",
+				"stagger_bwd_shield_2",
+				"stagger_bwd_shield_3"
+			},
+			left = {
+				"stagger_left_shield"
+			},
+			right = {
+				"stagger_right_shield"
+			},
+			dwn = {
+				"stagger_bwd_shield"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield",
+				"stagger_bwd_shield_2",
+				"stagger_bwd_shield_3"
+			},
+			left = {
+				"stagger_left_shield"
+			},
+			right = {
+				"stagger_right_shield"
+			},
+			dwn = {
+				"stagger_bwd_shield"
+			}
+		},
+		{
+			fwd = {
+				"stun_fwd_ranged_light",
+				"stun_fwd_ranged_light_2"
+			},
+			bwd = {
+				"stagger_bwd_shield",
+				"stagger_bwd_shield_2",
+				"stagger_bwd_shield_3"
+			},
+			left = {
+				"stagger_left_shield"
+			},
+			right = {
+				"stagger_right_shield"
+			},
+			dwn = {
+				"stagger_bwd_shield"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_shield",
+				"stagger_bwd_shield_2",
+				"stagger_bwd_shield_3"
+			},
+			left = {
+				"stagger_left_shield"
+			},
+			right = {
+				"stagger_right_shield"
+			},
+			dwn = {
+				"stagger_bwd_shield"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp",
+				"stagger_fwd_exp_2"
+			},
+			bwd = {
+				"stagger_bwd_shield",
+				"stagger_bwd_shield_2",
+				"stagger_bwd_shield_3"
+			},
+			left = {
+				"stagger_left_shield"
+			},
+			right = {
+				"stagger_right_shield"
+			},
+			dwn = {
+				"stagger_bwd_shield"
+			}
+		},
+		{
+			fwd = {
+				"stun_bwd_sword"
+			},
+			bwd = {
+				"stagger_bwd_shield_light"
+			},
+			left = {
+				"stagger_left_shield_light"
+			},
+			right = {
+				"stagger_right_shield_light"
+			},
+			dwn = {
+				"stagger_bwd_shield_light"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp",
+				"stagger_fwd_exp_2"
+			},
+			bwd = {
+				"stagger_bwd_shield",
+				"stagger_bwd_shield_2",
+				"stagger_bwd_shield_3"
+			},
+			left = {
+				"stagger_left_shield"
+			},
+			right = {
+				"stagger_right_shield"
+			},
+			dwn = {
+				"stagger_bwd_shield"
 			}
 		}
 	}
 }
 BreedActions.skaven_clan_rat_with_shield = table.create_copy(BreedActions.skaven_clan_rat_with_shield, action_data)
-
-return

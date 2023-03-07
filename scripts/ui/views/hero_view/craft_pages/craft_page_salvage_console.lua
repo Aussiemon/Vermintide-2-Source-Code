@@ -377,7 +377,7 @@ end
 
 CraftPageSalvageConsole._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
-	local input_settings = (not disabled and self.settings.name) or "disabled"
+	local input_settings = not disabled and self.settings.name or "disabled"
 
 	if (self._num_craft_items or 0) < CraftingSettings.NUM_SALVAGE_SLOTS then
 		input_settings = input_settings .. "_auto"
@@ -413,7 +413,7 @@ end
 CraftPageSalvageConsole._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
-	widget.content.button_text = (localize and Localize(text)) or text
+	widget.content.button_text = localize and Localize(text) or text
 end
 
 CraftPageSalvageConsole._has_added_item_by_id = function (self, backend_id)
@@ -455,7 +455,7 @@ CraftPageSalvageConsole._set_reward_material_alpha_fraction = function (self, fr
 	local alpha = 255 * fraction
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 6, 1 do
+	for i = 1, 6 do
 		local widget = widgets_by_name["material_text_" .. i]
 		local style = widget.style
 		local text_style = style.text
@@ -471,7 +471,7 @@ CraftPageSalvageConsole._set_reward_material_alpha_fraction = function (self, fr
 	local alpha = 255 * fraction
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 6, 1 do
+	for i = 1, 6 do
 		local widget = widgets_by_name["material_text_" .. i]
 		local style = widget.style
 		local text_style = style.text
@@ -512,7 +512,7 @@ CraftPageSalvageConsole._set_material_enabled_state = function (self, index, ena
 	local style = widget.style
 	local text_style = style.text
 	local icon_style = style.icon
-	local color_value = (enabled and 255) or 100
+	local color_value = enabled and 255 or 100
 	local text_color = text_style.text_color
 	text_color[2] = color_value
 	text_color[3] = color_value
@@ -540,5 +540,3 @@ CraftPageSalvageConsole._set_reward_material_by_index = function (self, backend_
 
 	self:_set_material_enabled_state(index, true)
 end
-
-return

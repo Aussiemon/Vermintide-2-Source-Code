@@ -289,5 +289,3 @@ MaterialEffectMappings.throwing_axe = MaterialEffectMappings.throwing_axe or {
 		water = {}
 	}
 }
-
-return

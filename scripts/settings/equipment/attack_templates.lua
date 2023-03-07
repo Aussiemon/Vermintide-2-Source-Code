@@ -781,5 +781,3 @@ AttackTemplates = {
 }
 
 DLCUtils.require_list("attack_template_files_names")
-
-return

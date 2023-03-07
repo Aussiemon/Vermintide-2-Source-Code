@@ -157,7 +157,7 @@ PerlinNoise.normalize = function (self, gradient_x, gradient_y)
 end
 
 PerlinNoise.setup = function (self)
-	for i = 1, self._n, 1 do
+	for i = 1, self._n do
 		self._permutations[i] = i
 		self._gradients[i] = {
 			false,
@@ -166,7 +166,7 @@ PerlinNoise.setup = function (self)
 		local check = true
 
 		repeat
-			for j = 1, 2, 1 do
+			for j = 1, 2 do
 				self._gradients[i][j] = Math.random(-10, 10) * 0.1
 				check = check and self._gradients[i][j] == 0
 			end
@@ -184,14 +184,14 @@ PerlinNoise.setup = function (self)
 		self._permutations[j] = k
 	end
 
-	for i = 1, self._n + 2, 1 do
+	for i = 1, self._n + 2 do
 		self._permutations[self._n + i] = self._permutations[i]
 		self._gradients[self._n + i] = {
 			false,
 			false
 		}
 
-		for j = 1, 2, 1 do
+		for j = 1, 2 do
 			self._gradients[self._n + i][j] = self._gradients[i][j]
 		end
 	end
@@ -276,11 +276,11 @@ PerlinNoise.simulate_points = function (self)
 	local lowest = 0
 	local highest = 0
 
-	for i = self._lowest_point.x, self._highest_point.x, 1 do
+	for i = self._lowest_point.x, self._highest_point.x do
 		local lal = i
 		i = i + Math.random(-1, 1) / 10
 
-		for j = self._lowest_point.y, self._highest_point.y, 1 do
+		for j = self._lowest_point.y, self._highest_point.y do
 			local lalal = j
 			j = j + Math.random(-1, 1) / 10
 			local height = self:get_height(i, j)
@@ -313,5 +313,3 @@ PerlinNoise.simulate_points = function (self)
 
 	print("lowest and highest", lowest, highest)
 end
-
-return

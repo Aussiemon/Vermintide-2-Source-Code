@@ -50,5 +50,3 @@ DialogueLookup[DialogueLookup_n + 23] = "pes_morris_mountain_stacked_stones"
 DialogueLookup[DialogueLookup_n + 24] = "pes_morris_mountain_ritual_location"
 DialogueLookup[DialogueLookup_n + 25] = "pes_morris_mountain_throne"
 DialogueLookup_n = DialogueLookup_n + 25
-
-return

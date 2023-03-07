@@ -21,5 +21,3 @@ ActSettings.act_celebrate = {
 	sorting = 2,
 	banner_texture = "menu_frame_bg_01"
 }
-
-return

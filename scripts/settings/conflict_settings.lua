@@ -41,7 +41,7 @@ local num_comps = 0
 for name, composition in pairs(HordeCompositions) do
 	num_comps = num_comps + 1
 
-	for i = 1, #composition, 1 do
+	for i = 1, #composition do
 		table.clear_array(weights, #weights)
 
 		local compositions = composition[i]
@@ -5037,7 +5037,7 @@ for conflict_director_name, data in pairs(ConflictDirectors) do
 	data.name = conflict_director_name
 	data.contained_breeds = {}
 
-	for i = 1, #difficulties, 1 do
+	for i = 1, #difficulties do
 		local difficulty = difficulties[i]
 		local difficulty_breeds = {}
 
@@ -5074,7 +5074,7 @@ for name, horde_setting in pairs(HordeSettings) do
 	horde_setting.name = name
 
 	for event_name, elements in pairs(TerrorEventBlueprints) do
-		for i = 1, #elements, 1 do
+		for i = 1, #elements do
 			local element = elements[i]
 			local element_type = element[1]
 
@@ -5101,7 +5101,7 @@ for id, setting in pairs(PackSpawningSettings) do
 		local breed_packs_override = roaming_set.breed_packs_override
 
 		if breed_packs_override then
-			for i = 1, #breed_packs_override, 1 do
+			for i = 1, #breed_packs_override do
 				weights[i] = breed_packs_override[i][2]
 			end
 
@@ -5129,5 +5129,3 @@ for name, pacing_setting in pairs(PacingSettings) do
 end
 
 DebugBreedSpawns = {}
-
-return

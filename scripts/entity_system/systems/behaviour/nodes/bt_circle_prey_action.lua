@@ -115,5 +115,3 @@ BTCirclePreyAction.stop = function (self, unit, blackboard)
 		navigation_extension:stop()
 	end
 end
-
-return

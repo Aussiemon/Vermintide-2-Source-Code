@@ -127,5 +127,3 @@ PickupUnitExtension.set_physics_enabled = function (self, has_physics)
 		end
 	end
 end
-
-return

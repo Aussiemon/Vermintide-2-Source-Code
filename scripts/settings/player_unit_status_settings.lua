@@ -119,5 +119,3 @@ PlayerUnitStatusSettings.hanging_by_pack_master = {
 }
 
 DLCUtils.require_list("player_unit_status_settings_file_names")
-
-return

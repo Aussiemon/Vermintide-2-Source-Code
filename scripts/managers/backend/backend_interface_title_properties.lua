@@ -34,5 +34,3 @@ BackendInterfaceTitleProperties.get_value = function (self, key)
 
 	return decoded
 end
-
-return

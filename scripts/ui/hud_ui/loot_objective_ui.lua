@@ -190,7 +190,7 @@ LootObjectiveUI._animate_in = function (self, widget, previous_draw_count)
 	local largest_amount = math.max(previous_draw_count, draw_count)
 	local amount_increased = previous_draw_count < draw_count
 
-	for i = 1, math.min(amount, largest_amount), 1 do
+	for i = 1, math.min(amount, largest_amount) do
 		local color = texture_colors[i]
 
 		if not amount_increased or i < largest_amount then
@@ -233,9 +233,9 @@ LootObjectiveUI._animate_out = function (self, widget)
 	local draw_count = widget.content.draw_count
 	local texture_colors = widget.style.icon_textures.texture_colors
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		if i <= draw_count then
-			local icon_duration = (i == draw_count and duration + 1) or duration
+			local icon_duration = i == draw_count and duration + 1 or duration
 			local color = texture_colors[i]
 			animations["icon_textures_" .. i] = UIAnimation.init(func, color, target, 255, to, duration, easing)
 		end
@@ -278,5 +278,3 @@ LootObjectiveUI.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

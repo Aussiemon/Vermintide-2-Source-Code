@@ -148,19 +148,19 @@ local default_render_settings = {
 	local_probes_enabled = true,
 	lod_scatter_density = 1,
 	motion_blur_enabled = true,
-	max_shadow_casting_lights = (IS_WINDOWS and 1) or 2,
+	max_shadow_casting_lights = IS_WINDOWS and 1 or 2,
 	fov = script_data.settings.default_fov or CameraSettings.first_person._node.vertical_fov
 }
 local default_texture_settings = {}
 local char_texture_settings = TextureQuality.characters[default_user_settings.char_texture_quality]
 local env_texture_settings = TextureQuality.environment[default_user_settings.env_texture_quality]
 
-for i = 1, #char_texture_settings, 1 do
+for i = 1, #char_texture_settings do
 	local setting = char_texture_settings[i]
 	default_texture_settings[setting.texture_setting] = setting.mip_level
 end
 
-for i = 1, #env_texture_settings, 1 do
+for i = 1, #env_texture_settings do
 	local setting = env_texture_settings[i]
 	default_texture_settings[setting.texture_setting] = setting.mip_level
 end
@@ -289,7 +289,7 @@ DefaultUserSettings = {
 
 		print("SAFE MODE:", safe_mode)
 
-		if (application_settings.auto_detect_video and not user_settings) or safe_mode then
+		if application_settings.auto_detect_video and not user_settings or safe_mode then
 			print("################### AUTO DETECT VIDEO ###################")
 
 			local resolution = get_user_setting("screen_resolution")
@@ -321,7 +321,7 @@ DefaultUserSettings = {
 			print("highest available", highest_available)
 
 			if safe_mode then
-				print("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ SETTING LOWEST RESOLUTION ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤")
+				print("Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤ SETTING LOWEST RESOLUTION Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤")
 
 				local lowest_resolution = display_modes[1]
 				resolution[1] = lowest_resolution[1]
@@ -331,7 +331,7 @@ DefaultUserSettings = {
 				table.dump(resolution, "res", 1)
 				set_user_setting("borderless_fullscreen", false)
 			else
-				print("¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ SETTING MAX RESOLUTION ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤")
+				print("Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤ SETTING MAX RESOLUTION Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤Â¤")
 
 				resolution[1] = highest_available[1]
 				resolution[2] = highest_available[2]
@@ -361,5 +361,3 @@ DefaultUserSettings = {
 		end
 	end
 }
-
-return

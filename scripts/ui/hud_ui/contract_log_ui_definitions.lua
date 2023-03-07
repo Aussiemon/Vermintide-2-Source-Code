@@ -250,7 +250,7 @@ local widget_definitions = {
 }
 local entry_widget_definitions = {}
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	entry_widget_definitions[i] = create_log_entry(i)
 end
 

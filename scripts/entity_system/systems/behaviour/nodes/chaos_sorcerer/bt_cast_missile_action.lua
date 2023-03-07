@@ -62,7 +62,7 @@ BTCastMissileAction.run = function (self, unit, blackboard, t, dt)
 	local target_position = blackboard.target_position:unbox()
 	local action = blackboard.action
 
-	if (not action.only_cb and blackboard.cast_time_done < t) or blackboard.anim_cb_throw then
+	if not action.only_cb and blackboard.cast_time_done < t or blackboard.anim_cb_throw then
 		blackboard.anim_cb_throw = false
 		local missile_data = blackboard.current_spell or action.spell_data
 		local throw_pos, target_dir = nil
@@ -253,5 +253,3 @@ BTCastMissileAction.launch_magic_missile = function (self, blackboard, action, p
 
 	Unit.set_unit_visibility(projectile_unit, true)
 end
-
-return

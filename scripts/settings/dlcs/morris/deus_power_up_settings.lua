@@ -4595,7 +4595,7 @@ for difficulty, config in pairs(DeusPowerUpRarityWeights) do
 	local normalized_config = {}
 	local count = #config.rare
 
-	for i = 1, count, 1 do
+	for i = 1, count do
 		local weight_sum = 0
 
 		for _, weights in pairs(config) do
@@ -4689,5 +4689,3 @@ for rarity, power_up_configs in pairs(DeusPowerUpRarityPool) do
 		DeusPowerUps[rarity][power_up_name].id = #DeusPowerUpsArray[rarity]
 	end
 end
-
-return

@@ -51,7 +51,7 @@ AiBreedSnippets.on_beastmen_minotaur_spawn = function (unit, blackboard)
 	local best_score = 0
 	local best_enemy = nil
 
-	for i = 1, #enemy_player_and_bot_units, 1 do
+	for i = 1, #enemy_player_and_bot_units do
 		local enemy_unit = enemy_player_and_bot_units[i]
 		local enemy_pos = POSITION_LOOKUP[enemy_unit]
 		local pos = POSITION_LOOKUP[unit]
@@ -217,5 +217,3 @@ AiBreedSnippets.on_beastmen_minotaur_despawn = function (unit, blackboard, t)
 	conflict_director:freeze_intensity_decay(1)
 	conflict_director:remove_unit_from_bosses(unit)
 end
-
-return

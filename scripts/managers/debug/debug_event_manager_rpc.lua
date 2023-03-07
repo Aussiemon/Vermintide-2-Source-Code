@@ -17,5 +17,3 @@ end
 DebugEventManagerRPC.destroy = function (self)
 	self._event_delegate:unregister(self)
 end
-
-return

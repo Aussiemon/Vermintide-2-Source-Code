@@ -115,5 +115,3 @@ LevelSettings.crater = {
 		beastmen = true
 	}
 }
-
-return

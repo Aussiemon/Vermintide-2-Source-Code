@@ -78,5 +78,3 @@ for _, dlc in pairs(DLCSettings) do
 		table.merge(InGameChallengeTemplates, ingame_challenge_templates)
 	end
 end
-
-return

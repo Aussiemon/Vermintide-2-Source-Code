@@ -37,5 +37,3 @@ settings.network_sound_events = {
 	"boon_blazing_revenge_start",
 	"boon_blazing_revenge_end"
 }
-
-return

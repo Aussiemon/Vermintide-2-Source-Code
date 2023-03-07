@@ -41,5 +41,3 @@ local action_data = {
 	}
 }
 BreedActions.chaos_plague_wave_spawner = table.create_copy(BreedActions.chaos_plague_wave_spawner, action_data)
-
-return

@@ -40,7 +40,7 @@ StatisticsSystem.on_add_extension = function (self, world, unit, extension_name,
 	}
 	local templates = StatisticsTemplateCategories[template_category_name]
 
-	for i = 1, #templates, 1 do
+	for i = 1, #templates do
 		local template_name = templates[i]
 		local template = StatisticsTemplates[template_name]
 		extension[template_name] = template.init()
@@ -69,7 +69,7 @@ StatisticsSystem.update = function (self, context, t)
 			local template_category_name = extension.template_category_name
 			local templates = StatisticsTemplateCategories[template_category_name]
 
-			for i = 1, #templates, 1 do
+			for i = 1, #templates do
 				local template_name = templates[i]
 				local template = StatisticsTemplates[template_name]
 
@@ -126,5 +126,3 @@ StatisticsSystem.rpc_register_kill = function (self, channel_id, victim_unit_go_
 
 	StatisticsUtil.register_kill(victim_unit, TEMP_ARGS, statistics_db, false)
 end
-
-return

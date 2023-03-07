@@ -106,7 +106,7 @@ LoadTimeManager.end_timer = function (self)
 	end
 
 	local local_player = Managers.player:local_player()
-	local is_server = (local_player and local_player.is_server) or "unknown"
+	local is_server = local_player and local_player.is_server or "unknown"
 	local previous_level_key = self._previous_level_key
 	local time = Managers.time:time("loading_timer") or 0
 	local seconds = math.floor(time % 60 + 0.5)
@@ -148,5 +148,3 @@ LoadTimeManager.destroy = function (self)
 	table.clear(self._members_left)
 	table.clear(self._members)
 end
-
-return

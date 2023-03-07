@@ -282,8 +282,8 @@ HeroWindowLoadout._is_equipment_slot_right_clicked = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -301,8 +301,8 @@ HeroWindowLoadout._is_equipment_slot_pressed = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -320,8 +320,8 @@ HeroWindowLoadout._is_equipment_slot_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -339,8 +339,8 @@ HeroWindowLoadout._set_equipment_slot_selected = function (self, column_index)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -356,8 +356,8 @@ HeroWindowLoadout._is_equipment_slot_hovered_by_type = function (self, item_type
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_ui_slot_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 
 			if slot_settings.type == item_type then
@@ -381,8 +381,8 @@ HeroWindowLoadout._highlight_equipment_slot_by_type = function (self, item_type)
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_ui_slot_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
@@ -390,10 +390,8 @@ HeroWindowLoadout._highlight_equipment_slot_by_type = function (self, item_type)
 			local slot_hotspot = content[hotspot_name]
 			local enabled = slot_settings.type == item_type
 			slot_hotspot.highlight = enabled
-			local alpha = (slot_hotspot.internal_is_hover and 255) or 100
-			style[slot_hover_name].color[1] = (enabled and alpha) or 255
+			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end
 end
-
-return

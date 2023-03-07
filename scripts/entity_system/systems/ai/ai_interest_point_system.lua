@@ -184,7 +184,7 @@ AIInterestPointSystem.on_add_extension = function (self, world, unit, extension_
 				if is_position_on_navmesh then
 					z = altitude
 
-					for i = 1, anim_lookup_n, 1 do
+					for i = 1, anim_lookup_n do
 						local anim_name = anim_lookup[i]
 						local anim_enabled = Unit.get_data(unit, "interest_point", "points", point_i, "animation_map", anim_name)
 
@@ -330,7 +330,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 		local members = point_extension.pack_members
 		local points_n = point_extension.points_n
 
-		for i = 1, points_n, 1 do
+		for i = 1, points_n do
 			local point = point_extension.points[i]
 
 			if point.is_position_on_navmesh then
@@ -359,7 +359,7 @@ AIInterestPointSystem.spawn_interest_points = function (self)
 		interest_point_unit = next(interest_points_to_spawn, interest_point_unit)
 	end
 
-	for i = 1, spawned_interest_points_n, 1 do
+	for i = 1, spawned_interest_points_n do
 		local unit = spawned_interest_points[i]
 		interest_points_to_spawn[unit] = nil
 	end
@@ -384,12 +384,7 @@ AIInterestPointSystem.release_obsolete_requests = function (self, t)
 	local request = self.requests[request_id]
 	local claim_unit = request.claim_unit
 	local blackboard = BLACKBOARDS[claim_unit]
-
-	if not AiUtils.unit_alive(claim_unit) then
-		release_claim = true
-	else
-		release_claim = blackboard.confirmed_player_sighting
-	end
+	release_claim = not AiUtils.unit_alive(claim_unit) and true or blackboard.confirmed_player_sighting
 
 	if release_claim then
 		self.current_obsolete_request = nil
@@ -407,7 +402,7 @@ end
 local function _get_next_request(requests, start_i, end_i)
 	local request, request_index = nil
 
-	for r_i = start_i, end_i, 1 do
+	for r_i = start_i, end_i do
 		request = requests[r_i]
 
 		if request ~= nil then
@@ -453,7 +448,7 @@ local function _get_best_interest_point(broadphase, request, claim_unit_position
 	local min_dist_sq = math.huge
 	local interest_points_result_n = Broadphase.query(broadphase, request_position, request.max_range, interest_points_result)
 
-	for bp_i = 1, interest_points_result_n, 1 do
+	for bp_i = 1, interest_points_result_n do
 		local point_unit = interest_points_result[bp_i]
 		local point_extension = ScriptUnit_Extension(point_unit, "ai_interest_point_system")
 		local current_request_extension = request.current_request and request.current_request.point_extension
@@ -473,7 +468,7 @@ local function _get_best_interest_point(broadphase, request, claim_unit_position
 		end
 
 		if current_request_extension ~= point_extension and (point_unit_is_reachable or point_unit_is_reachable == nil) then
-			for p_i = 1, point_extension.points_n, 1 do
+			for p_i = 1, point_extension.points_n do
 				local point = point_extension.points[p_i]
 
 				if not point.claimed and point.is_position_on_navmesh and point_extension then
@@ -606,7 +601,7 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 	end
 
 	for unit, extension in pairs(self.interest_points) do
-		for p_i = 1, extension.points_n, 1 do
+		for p_i = 1, extension.points_n do
 			local a, b, c = Script.temp_count()
 			local point = extension.points[p_i]
 			local position = Vector3Aux.unbox(point.position)
@@ -614,16 +609,16 @@ AIInterestPointSystem.debug_draw = function (self, t, dt)
 
 			if not point.is_position_on_navmesh then
 				QuickDrawer:cylinder(position, position + Vector3.up(), 0.25, Colors.get("dark_red"), 5)
-				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("dark_red"), 8, 8)
+				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, position + Vector3.up() * 1.3 - forward * 0.25, 0.1, Colors.get("dark_red"), 8, 8)
 			elseif point.claimed then
 				local offset = Vector3.up() * self.debug_anim_t * 0.2
 
 				QuickDrawer:circle(position + Vector3.up() * 0.8, 0.25, Vector3.up(), Colors.get("lime_green"))
-				QuickDrawer:cylinder(position - offset, (position + Vector3.up() * 1) - offset, 0.25, Colors.get("lime_green"), 5)
-				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("lime_green"), 8, 8)
+				QuickDrawer:cylinder(position - offset, position + Vector3.up() * 1 - offset, 0.25, Colors.get("lime_green"), 5)
+				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, position + Vector3.up() * 1.3 - forward * 0.25, 0.1, Colors.get("lime_green"), 8, 8)
 			else
 				QuickDrawer:cylinder(position, position + Vector3.up(), 0.25, Colors.get("dark_green"), 5)
-				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, (position + Vector3.up() * 1.3) - forward * 0.25, 0.1, Colors.get("dark_green"), 8, 8)
+				QuickDrawer:cone(position + Vector3.up() * 1.3 + forward * 0.25, position + Vector3.up() * 1.3 - forward * 0.25, 0.1, Colors.get("dark_green"), 8, 8)
 			end
 
 			Script.set_temp_count(a, b, c)
@@ -789,5 +784,3 @@ end
 AIInterestPointSystem.set_breed_override_lookup = function (self, breed_override_lookup)
 	self._breed_override_lookup = breed_override_lookup
 end
-
-return

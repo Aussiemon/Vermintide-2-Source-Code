@@ -197,5 +197,3 @@ GenericTerrorEvents = {
 }
 
 DLCUtils.require_list("generic_terror_event_files")
-
-return

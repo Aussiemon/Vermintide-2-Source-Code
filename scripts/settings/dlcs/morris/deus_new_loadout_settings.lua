@@ -3,5 +3,3 @@ DeusNewLoadoutSettings = DeusNewLoadoutSettings or {
 		return math.round(progress * 600)
 	end
 }
-
-return

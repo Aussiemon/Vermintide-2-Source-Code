@@ -207,7 +207,7 @@ local scenegraph_definition = {
 local function create_settings_option(scenegraph_id, size, title_text, button_text, icon_texture, background_texture)
 	icon_texture = icon_texture or "level_icon_01"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
 		200,
 		200
 	}

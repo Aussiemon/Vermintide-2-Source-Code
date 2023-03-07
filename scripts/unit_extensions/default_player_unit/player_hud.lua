@@ -93,5 +93,3 @@ end
 PlayerHud.get_picked_up_ammo = function (self)
 	return self.picked_up_ammo
 end
-
-return

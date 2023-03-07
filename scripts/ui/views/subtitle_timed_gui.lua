@@ -116,11 +116,11 @@ local function extract_lines(text)
 	local latest_space_index = nil
 	local max_chars_per_line = 50
 
-	for i = 1, text_length, 1 do
+	for i = 1, text_length do
 		local char = UTF8Utils.sub_string(text, i, i)
 
 		if is_chinese then
-			local is_space_char = char == " " or char == "\u3002" or char == "\uff0c"
+			local is_space_char = char == " " or char == "。" or char == "，"
 
 			if is_space_char and i >= max_chars_per_line / 2 then
 				latest_space_index = i
@@ -170,7 +170,7 @@ SubtitleTimedGui.init = function (self, subtitle_timing_name, num_rows)
 			localized_subtitle_timing_name = localized_subtitle_timing_name .. Localize(subtitle_name) .. " "
 		end
 	else
-		localized_subtitle_timing_name = (subtitle_timing_name ~= "" and Localize(subtitle_timing_name)) or subtitle_timing_name
+		localized_subtitle_timing_name = subtitle_timing_name ~= "" and Localize(subtitle_timing_name) or subtitle_timing_name
 	end
 
 	self.texts = extract_lines(localized_subtitle_timing_name)
@@ -184,7 +184,7 @@ SubtitleTimedGui._create_ui_elements = function (self, ui_renderer)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 
-	for i = 1, self._num_rows, 1 do
+	for i = 1, self._num_rows do
 		local widget = UIWidget.init(subtitle_row_widget)
 		widgets[i] = widget
 		local start_offset_y = -(i - 1) * 50
@@ -211,13 +211,13 @@ SubtitleTimedGui.update = function (self, ui_renderer, dt)
 		self.texts = extract_lines(self.subtitle_timing_name)
 		self.next_text_index = 0
 
-		for i = 1, #widgets, 1 do
+		for i = 1, #widgets do
 			local widget = widgets[i]
 			widget.offset[2] = widget.start_offset_y
 		end
 	end
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 		local offset_y = widget.offset[2]
 		local offset_y_old = offset_y
@@ -272,7 +272,7 @@ SubtitleTimedGui.draw = function (self, ui_renderer, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, render_settings)
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -280,5 +280,3 @@ SubtitleTimedGui.draw = function (self, ui_renderer, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

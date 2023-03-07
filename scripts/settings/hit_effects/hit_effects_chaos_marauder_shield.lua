@@ -2390,5 +2390,3 @@ HitEffectsChaosMarauderShield = {
 	}
 }
 HitEffectsChaosMarauderShield = table.create_copy(HitEffectsChaosMarauderShield, HitEffectsChaosMarauderShield)
-
-return

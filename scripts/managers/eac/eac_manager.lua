@@ -158,10 +158,10 @@ EacManager._draw_indicator = function (self, gui, dt, state_text, violation_text
 
 	Gui.rect(gui, Vector3(panel_x, panel_y, depth), Vector2(panel_w + margin * 2, panel_h), background_color)
 	Gui.rect(gui, Vector3(panel_x, panel_y, depth + 1), Vector2(panel_w + margin * 2, border_thickness), border_color)
-	Gui.rect(gui, Vector3(panel_x, (panel_y + panel_h) - border_thickness, depth + 1), Vector2(panel_w + margin * 2, border_thickness), border_color)
+	Gui.rect(gui, Vector3(panel_x, panel_y + panel_h - border_thickness, depth + 1), Vector2(panel_w + margin * 2, border_thickness), border_color)
 	Gui.rect(gui, Vector3(panel_x, panel_y, depth + 1), Vector2(border_thickness, panel_h), border_color)
 
-	local y = (panel_y + panel_h) - margin + text_adjustment
+	local y = panel_y + panel_h - margin + text_adjustment
 
 	for _, text in ipairs(lines) do
 		Gui.text(gui, text, font, font_size, font_material, Vector3(panel_x + margin, y, depth + 1), text_color)
@@ -169,5 +169,3 @@ EacManager._draw_indicator = function (self, gui, dt, state_text, violation_text
 		y = y - row_height
 	end
 end
-
-return

@@ -167,5 +167,3 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 fassert(min_diff <= TwitchSettings.max_diff, "[TwitchSettings] The minimum difference between vote templates exceeeds %s", TwitchSettings.max_diff)
-
-return

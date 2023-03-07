@@ -28,5 +28,3 @@ end
 TelemetryManagerDummy.send = function (self)
 	return
 end
-
-return

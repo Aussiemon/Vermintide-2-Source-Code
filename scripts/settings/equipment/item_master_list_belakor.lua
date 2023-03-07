@@ -28,5 +28,3 @@ local item_master_list = {
 }
 
 table.merge(ItemMasterList, item_master_list)
-
-return

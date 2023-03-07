@@ -229,11 +229,11 @@ function flow_callback_randomize_sequential_numbers(params)
 	local max = params.max
 	local numbers = {}
 
-	for j = 1, max, 1 do
+	for j = 1, max do
 		numbers[j] = j
 	end
 
-	for i = 1, 10, 1 do
+	for i = 1, 10 do
 		local random1 = server_seeded_random(1, max, params.debug_name)
 		local random2 = server_seeded_random(1, max, params.debug_name)
 		numbers[random2] = numbers[random1]
@@ -242,7 +242,7 @@ function flow_callback_randomize_sequential_numbers(params)
 
 	local ret = {}
 
-	for k = 1, max, 1 do
+	for k = 1, max do
 		ret[tostring(k)] = numbers[k]
 	end
 
@@ -282,7 +282,7 @@ function flow_query_number_of_active_players(params)
 		local player_units = side.PLAYER_UNITS
 		local num_player_units = #player_units
 
-		for i = 1, num_player_units, 1 do
+		for i = 1, num_player_units do
 			local unit = player_units[i]
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 
@@ -375,7 +375,7 @@ function flow_callback_get_current_current_deus_theme_index(params)
 	local level_settings = LevelSettings[level_key]
 	local level_theme = level_settings.theme
 
-	for i = 1, #DEUS_THEME_INDEX, 1 do
+	for i = 1, #DEUS_THEME_INDEX do
 		local theme = DEUS_THEME_INDEX[i]
 
 		if theme == level_theme then
@@ -744,7 +744,7 @@ function flow_callback_play_network_synched_particle_effect(params)
 	fassert(not unit or not linked or game_object_id, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect linked to unit not network_synched.")
 	fassert(unit or not object_name, "[flow_callback_play_network_synched_particle_effect] Trying to spawn effect at object in unit without defining unit.")
 
-	local object = (unit and object_name and Unit.node(unit, object_name)) or 0
+	local object = unit and object_name and Unit.node(unit, object_name) or 0
 
 	Managers.state.event:trigger("event_play_particle_effect", effect_name, unit, object, offset, rotation_offset, linked)
 
@@ -776,7 +776,7 @@ function flow_callback_debug_crash_game(params)
 end
 
 function flow_callback_debug_draw_line(params)
-	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local drawer = params.stay and QuickDrawerStay or QuickDrawer
 	local from = params.from
 	local to = params.to
 	local color = params.color
@@ -785,7 +785,7 @@ function flow_callback_debug_draw_line(params)
 end
 
 function flow_callback_debug_draw_vector(params)
-	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local drawer = params.stay and QuickDrawerStay or QuickDrawer
 	local vector = params.vector
 	local color = params.color
 
@@ -793,7 +793,7 @@ function flow_callback_debug_draw_vector(params)
 end
 
 function flow_callback_debug_draw_sphere(params)
-	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local drawer = params.stay and QuickDrawerStay or QuickDrawer
 	local center = params.center
 	local radius = params.radius
 	local color = params.color
@@ -804,7 +804,7 @@ function flow_callback_debug_draw_sphere(params)
 end
 
 function flow_callback_debug_draw_capsule(params)
-	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local drawer = params.stay and QuickDrawerStay or QuickDrawer
 	local from = params.from
 	local to = params.to
 	local radius = params.radius
@@ -814,7 +814,7 @@ function flow_callback_debug_draw_capsule(params)
 end
 
 function flow_callback_debug_draw_box(params)
-	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local drawer = params.stay and QuickDrawerStay or QuickDrawer
 	local position = params.position
 	local rotation = params.rotation
 	local extents = params.extents
@@ -825,7 +825,7 @@ function flow_callback_debug_draw_box(params)
 end
 
 function flow_callback_debug_draw_circle(params)
-	local drawer = (params.stay and QuickDrawerStay) or QuickDrawer
+	local drawer = params.stay and QuickDrawerStay or QuickDrawer
 	local center = params.center
 	local radius = params.radius
 	local normal = params.normal
@@ -1508,7 +1508,7 @@ function flow_callback_ussingen_barrel_challenge_completed(params)
 			"ussingen_used_no_barrels_cata"
 		}
 
-		for i = 1, #stat_names, 1 do
+		for i = 1, #stat_names do
 			local current_difficulty = Managers.state.difficulty:get_difficulty()
 			local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 			local allowed_difficulty = allowed_difficulties[current_difficulty]
@@ -2158,12 +2158,7 @@ function flow_callback_get_health_player_bot_ai(params)
 
 		local health_extension = ScriptUnit.extension(unit, "health_system")
 		local status_extension = ScriptUnit.extension(unit, "status_system")
-
-		if status_extension:is_knocked_down() or status_extension:is_ready_for_assisted_respawn() then
-			current_health = 0
-		else
-			current_health = health_extension:current_health()
-		end
+		current_health = (status_extension:is_knocked_down() or status_extension:is_ready_for_assisted_respawn()) and 0 or health_extension:current_health()
 	end
 
 	flow_return_table.currenthealth = current_health
@@ -2329,7 +2324,7 @@ function flow_callback_fire_light_weight_projectile(params)
 	local item_name = "skaven_ratling_gunner"
 	local position = Unit.world_position(unit, 0)
 
-	for i = 1, shots_to_fire, 1 do
+	for i = 1, shots_to_fire do
 		local spread_angle = Math.random() * light_weight_projectile_template.spread
 		local direction = Quaternion.forward(Unit.world_rotation(unit, 0))
 		local pitch = Quaternion(Vector3.right(), spread_angle)
@@ -2762,7 +2757,7 @@ function flow_callback_external_broadphase_unit_event(params)
 	local num_hits = AiUtils.broadphase_query(Unit.world_position(source_unit, 0), radius or 5, UNIT_EVENT_RESULT_TABLE)
 	local BLACKBOARDS = BLACKBOARDS
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit_unit = UNIT_EVENT_RESULT_TABLE[i]
 		local blackboard = BLACKBOARDS[hit_unit]
 
@@ -2783,7 +2778,7 @@ function flow_callback_force_unit_animation(params)
 	local num_hits = AiUtils.broadphase_query(Unit.world_position(source_unit, 0), radius or 5, UNIT_EVENT_RESULT_TABLE)
 	local BLACKBOARDS = BLACKBOARDS
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit_unit = UNIT_EVENT_RESULT_TABLE[i]
 		local blackboard = BLACKBOARDS[hit_unit]
 
@@ -2938,11 +2933,11 @@ function flow_callback_set_material_property_scalar_all(params)
 	local end_offset = 1 - index_offset
 	local num_meshes = Unit.num_meshes(unit)
 
-	for i = index_offset, num_meshes - end_offset, 1 do
+	for i = index_offset, num_meshes - end_offset do
 		local mesh = Unit.mesh(unit, i)
 		local num_materials = Mesh.num_materials(mesh)
 
-		for j = index_offset, num_materials - end_offset, 1 do
+		for j = index_offset, num_materials - end_offset do
 			local material = Mesh.material(mesh, j)
 
 			Material.set_scalar(material, variable, value)
@@ -2959,7 +2954,7 @@ function flow_callback_material_scalar_set_chr_inventory(params)
 	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 
 	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.inventory_item_units, 1 do
+		for i = 1, #unit_inventory_extension.inventory_item_units do
 			params.unit = unit_inventory_extension.inventory_item_units[i]
 
 			flow_callback_set_material_property_scalar_all(params)
@@ -3005,13 +3000,13 @@ function flow_callback_material_dissolve(params)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
-		for i = 0, num_materials - 1, 1 do
+		for i = 0, num_materials - 1 do
 			do_material_dissolve(Mesh.material(mesh, i), timer_var, timer_data, start_state_var, start_state)
 		end
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(unit_mesh, material_name) then
@@ -3021,11 +3016,11 @@ function flow_callback_material_dissolve(params)
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i)
 			local num_materials = Mesh.num_materials(unit_mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				do_material_dissolve(Mesh.material(unit_mesh, j), timer_var, timer_data, start_state_var, start_state)
 			end
 		end
@@ -3041,13 +3036,13 @@ function flow_callback_material_dissolve_chr(params)
 	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 
 	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.stump_items, 1 do
+		for i = 1, #unit_inventory_extension.stump_items do
 			params.unit = unit_inventory_extension.stump_items[i]
 
 			flow_callback_material_dissolve(params)
 		end
 
-		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units do
 			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
 
 			flow_callback_material_dissolve(params)
@@ -3073,13 +3068,13 @@ function flow_callback_material_dissolve_chr_inventory(params)
 
 	if unit_inventory_extension ~= nil then
 		if params.inventory_type == "outfit" then
-			for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			for i = 1, #unit_inventory_extension.inventory_item_outfit_units do
 				params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
 
 				flow_callback_material_dissolve(params)
 			end
 		elseif params.inventory_type == "stump" then
-			for i = 1, #unit_inventory_extension.stump_items, 1 do
+			for i = 1, #unit_inventory_extension.stump_items do
 				params.unit = unit_inventory_extension.stump_items[i]
 
 				flow_callback_material_dissolve(params)
@@ -3134,13 +3129,13 @@ function flow_callback_material_fade(params)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
-		for i = 0, num_materials - 1, 1 do
+		for i = 0, num_materials - 1 do
 			do_material_fade(Mesh.material(mesh, i), timer_var, timer_data, fade_range_var, fade_interval)
 		end
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(unit_mesh, material_name) then
@@ -3150,11 +3145,11 @@ function flow_callback_material_fade(params)
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i)
 			local num_materials = Mesh.num_materials(unit_mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				do_material_fade(Mesh.material(unit_mesh, j), timer_var, timer_data, fade_range_var, fade_interval)
 			end
 		end
@@ -3171,13 +3166,13 @@ function flow_callback_material_fade_chr(params)
 	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 
 	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.stump_items, 1 do
+		for i = 1, #unit_inventory_extension.stump_items do
 			params.unit = unit_inventory_extension.stump_items[i]
 
 			flow_callback_material_fade(params)
 		end
 
-		for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+		for i = 1, #unit_inventory_extension.inventory_item_outfit_units do
 			params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
 
 			flow_callback_material_fade(params)
@@ -3204,13 +3199,13 @@ function flow_callback_material_fade_chr_inventory(params)
 
 	if unit_inventory_extension ~= nil then
 		if params.inventory_type == "outfit" then
-			for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			for i = 1, #unit_inventory_extension.inventory_item_outfit_units do
 				params.unit = unit_inventory_extension.inventory_item_outfit_units[i]
 
 				flow_callback_material_fade(params)
 			end
 		elseif params.inventory_type == "stump" then
-			for i = 1, #unit_inventory_extension.stump_items, 1 do
+			for i = 1, #unit_inventory_extension.stump_items do
 				params.unit = unit_inventory_extension.stump_items[i]
 
 				flow_callback_material_fade(params)
@@ -3278,7 +3273,7 @@ function flow_callback_start_fade(params)
 	elseif mesh then
 		local num_materials = Mesh.num_materials(mesh)
 
-		for i = 0, num_materials - 1, 1 do
+		for i = 0, num_materials - 1 do
 			local mesh_material = Mesh.material(mesh, i)
 
 			start_material_fade(mesh_material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
@@ -3286,7 +3281,7 @@ function flow_callback_start_fade(params)
 	elseif material_name then
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i)
 
 			if Mesh.has_material(unit_mesh, material_name) then
@@ -3298,11 +3293,11 @@ function flow_callback_start_fade(params)
 	else
 		local num_meshes = Unit.num_meshes(unit)
 
-		for i = 0, num_meshes - 1, 1 do
+		for i = 0, num_meshes - 1 do
 			local unit_mesh = Unit.mesh(unit, i)
 			local num_materials = Mesh.num_materials(unit_mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				local mesh_material = Mesh.material(unit_mesh, j)
 
 				start_material_fade(mesh_material, fade_switch_name, fade_switch, start_end_time_name, fade_duration, start_fade_name, start_fade_value, end_fade_name, end_fade_value)
@@ -3344,11 +3339,11 @@ function flow_callback_chr_enemy_inventory_send_event(params)
 	local unit_inventory_extension = ScriptUnit.has_extension(unit, "ai_inventory_system")
 
 	if unit_inventory_extension ~= nil then
-		for i = 1, #unit_inventory_extension.stump_items, 1 do
+		for i = 1, #unit_inventory_extension.stump_items do
 			Unit.flow_event(unit_inventory_extension.stump_items[i], event)
 		end
 
-		for i = 1, #unit_inventory_extension.inventory_item_units, 1 do
+		for i = 1, #unit_inventory_extension.inventory_item_units do
 			Unit.flow_event(unit_inventory_extension.inventory_item_units[i], event)
 		end
 	end
@@ -3538,7 +3533,7 @@ function flow_callback_survival_handler(params)
 			else
 				event_found = false
 
-				for i = 1, #templates[name], 1 do
+				for i = 1, #templates[name] do
 					if i ~= n then
 						event_found = true
 						memory_table[templates[name][i]] = true
@@ -3552,7 +3547,7 @@ function flow_callback_survival_handler(params)
 
 		if wave.reset ~= nil then
 			for _, name in ipairs(wave.reset) do
-				for i = 1, #templates[name], 1 do
+				for i = 1, #templates[name] do
 					memory_table[templates[name][i]] = nil
 				end
 			end
@@ -3738,7 +3733,7 @@ function flow_callback_broadphase_deal_damage(params)
 		local shield_breaking_hit = false
 		local num_hits = AiUtils.broadphase_query(pos, radius, RESULT_TABLE)
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit_unit = RESULT_TABLE[i]
 
 			DamageUtils.server_apply_hit(t, attacker_unit, hit_unit, hit_zone_name, nil, Vector3.normalize(attack_direction), hit_ragdoll_actor, damage_source, power_level, damage_profile, target_index, boost_curve_multiplier, is_critical_strike, can_damage, can_stagger, blocking, shield_breaking_hit)
@@ -3748,7 +3743,7 @@ function flow_callback_broadphase_deal_damage(params)
 	local hits_human_players = params.hits_human_players
 	local hits_bot_players = params.hits_bot_players
 
-	if hits_human_players or (hits_bot_players and hazard_settings.player) then
+	if hits_human_players or hits_bot_players and hazard_settings.player then
 		local settings = hazard_settings.player
 		local action_data = settings.action_data
 		local difficulty_manager = Managers.state.difficulty
@@ -3759,7 +3754,7 @@ function flow_callback_broadphase_deal_damage(params)
 			local player_controlled = player:is_player_controlled()
 			local unit = player.player_unit
 
-			if (hits_bot_players and not player_controlled) or (hits_human_players and player_controlled and unit_alive(unit) and Vector3.distance(pos, POSITION_LOOKUP[unit]) < radius) then
+			if hits_bot_players and not player_controlled or hits_human_players and player_controlled and unit_alive(unit) and Vector3.distance(pos, POSITION_LOOKUP[unit]) < radius then
 				AiUtils.damage_target(unit, attacker_unit, action_data, damage, hazard_type)
 			end
 		end
@@ -3960,7 +3955,7 @@ function flow_callback_link_objects_in_units_and_store(params)
 	local world = Unit.world(parentunit)
 	local index_offset = Script.index_offset()
 
-	for i = 1, #parentnodes - 1, 1 do
+	for i = 1, #parentnodes - 1 do
 		local parentnodeindex = Unit.node(parentunit, parentnodes[i])
 		local childnode = childnodes[i]
 		local childnodeindex = nil
@@ -4041,8 +4036,8 @@ function flow_callback_attach_unit(params)
 	for _, link_data in ipairs(node_link_table) do
 		local parent_node = link_data.source
 		local child_node = link_data.target
-		local parent_node_index = (type(parent_node) == "string" and Unit.node(parentunit, parent_node)) or parent_node + index_offset
-		local child_node_index = (type(child_node) == "string" and Unit.node(childunit, child_node)) or child_node + index_offset
+		local parent_node_index = type(parent_node) == "string" and Unit.node(parentunit, parent_node) or parent_node + index_offset
+		local child_node_index = type(child_node) == "string" and Unit.node(childunit, child_node) or child_node + index_offset
 
 		World.link_unit(world, childunit, child_node_index, parentunit, parent_node_index)
 	end
@@ -4099,7 +4094,7 @@ end
 function flow_callback_trigger_event_on_attachments(params)
 	local unit_attachments = Unit.get_data(params.unit, "flow_unit_attachments") or {}
 
-	for i = 1, #unit_attachments, 1 do
+	for i = 1, #unit_attachments do
 		Unit.flow_event(unit_attachments[i], params.event)
 	end
 
@@ -4299,7 +4294,7 @@ end
 function flow_callbacks_add_tutorial_equipment(params)
 	local slot_name = params.slot_name
 	local item_name = params.item_name
-	local starting_ammo = (params.starting_ammo and math.floor(params.starting_ammo)) or 0
+	local starting_ammo = params.starting_ammo and math.floor(params.starting_ammo) or 0
 
 	fassert(item_name and ItemMasterList[item_name], "[flow_callbacks_add_tutorial_equipment] There is no item called %s in ItemMasterList", tostring(item_name))
 
@@ -4724,10 +4719,10 @@ function flow_callback_predict_hitscan(params)
 		local result = PhysicsWorld.immediate_raycast_actors(physics_world, aim_position, aim_direction, range, "static_collision_filter", "filter_player_ray_projectile_static_only", "dynamic_collision_filter", "filter_player_ray_projectile_hitbox_only")
 		local INDEX_POSITION = 1
 		local INDEX_DISTANCE = 2
-		local end_position = (result and result[1][INDEX_POSITION]) or aim_position + aim_direction * range
+		local end_position = result and result[1][INDEX_POSITION] or aim_position + aim_direction * range
 		returns.end_position = end_position
 		returns.success = true
-		returns.distance = (result and result[1][INDEX_DISTANCE]) or range
+		returns.distance = result and result[1][INDEX_DISTANCE] or range
 	end
 
 	return returns
@@ -4866,5 +4861,3 @@ function flow_callback_hazard_push_damage_player_and_husks(params)
 		locomotion_extension:add_external_velocity(pushed_velocity)
 	end
 end
-
-return

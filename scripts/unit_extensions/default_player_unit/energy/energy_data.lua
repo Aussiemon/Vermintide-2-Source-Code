@@ -23,5 +23,3 @@ EnergyData.we_thornsister = {
 	depletion_cooldown = 5,
 	recharge_rate = 1.5
 }
-
-return

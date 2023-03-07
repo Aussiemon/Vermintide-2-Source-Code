@@ -1567,7 +1567,7 @@ local offset = {
 local total_height = 0
 local column = 0
 
-for i = 1, max_power_up_amount, 1 do
+for i = 1, max_power_up_amount do
 	if max_height < total_height then
 		total_height = 0
 		column = column + 1
@@ -1579,7 +1579,7 @@ for i = 1, max_power_up_amount, 1 do
 	local sine_position_x = math.sin(radians) * sine_strength
 	local position = {
 		offset[1] + sine_position_x + column * (power_up_widget_size[1] + power_up_widget_spacing[1]),
-		(offset[2] + max_height / 2) - total_height,
+		offset[2] + max_height / 2 - total_height,
 		10
 	}
 	total_height = total_height + power_up_widget_size[2] + power_up_widget_spacing[2]

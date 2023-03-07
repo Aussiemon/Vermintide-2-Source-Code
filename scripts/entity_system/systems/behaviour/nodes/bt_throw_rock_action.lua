@@ -32,5 +32,3 @@ BTThrowRockAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.running_attack_action = nil
 	end
 end
-
-return

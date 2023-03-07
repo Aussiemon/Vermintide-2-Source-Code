@@ -28,7 +28,7 @@ BTEnterHooks.drop_items = function (unit, blackboard, t)
 	local game_object_id = Managers.state.unit_storage:go_id(unit)
 	local reason_id = NetworkLookup.item_drop_reasons[reason]
 
-	for i = 1, #inventory_item_definitions, 1 do
+	for i = 1, #inventory_item_definitions do
 		local success, item = ai_inventory_extension:drop_single_item(i, reason)
 
 		if success then
@@ -126,7 +126,7 @@ BTEnterHooks.grey_seer_call_stormfiend_enter = function (unit, blackboard, t)
 	local closest_distance = math.huge
 	local wanted_pos = nil
 
-	for i = 1, #call_stormfiend_positions, 1 do
+	for i = 1, #call_stormfiend_positions do
 		local position = call_stormfiend_positions[i]:unbox()
 		local distance = Vector3.distance(self_position, position)
 
@@ -460,7 +460,7 @@ BTEnterHooks.warlord_defensive_on_enter = function (unit, blackboard, t)
 	local wanted_pos = nil
 
 	if spawn_allies_positions then
-		for i = 1, #spawn_allies_positions, 1 do
+		for i = 1, #spawn_allies_positions do
 			local position = spawn_allies_positions[i]:unbox()
 			local distance = Vector3.distance(self_position, position)
 
@@ -496,5 +496,3 @@ BTEnterHooks.activate_slot_system = function (unit, blackboard, t)
 end
 
 DLCUtils.merge("bt_enter_hooks", BTEnterHooks)
-
-return

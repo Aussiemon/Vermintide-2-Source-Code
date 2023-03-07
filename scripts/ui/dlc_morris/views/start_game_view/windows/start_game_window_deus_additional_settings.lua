@@ -5,5 +5,3 @@ local definitions = local_require("scripts/ui/dlc_morris/views/start_game_view/w
 StartGameWindowDeusAdditionalSettings.create_ui_elements = function (self, _, params, offset)
 	StartGameWindowDeusAdditionalSettings.super.create_ui_elements(self, definitions, params, offset)
 end
-
-return

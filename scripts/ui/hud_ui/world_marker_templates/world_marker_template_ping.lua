@@ -417,27 +417,25 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 
 	if content.spawn_progress_timer then
 		local progress, in_progress = update_spawn_pulse_animation(content.spawn_progress_timer, dt, style.icon_spawn_pulse)
-		content.spawn_progress_timer = (in_progress and progress) or nil
+		content.spawn_progress_timer = in_progress and progress or nil
 		animating = in_progress
 	end
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local id = WORLD_MARKER_CONTENT_LOOKUP[i]
 		local response = content[id]
 
 		if response.timer then
 			local icon_id = WORLD_MARKER_ICON_LOOKUP[i]
 			local progress, in_progress = update_response_animation(response.timer, dt, style[icon_id])
-			content[id].timer = (in_progress and progress) or nil
+			content[id].timer = in_progress and progress or nil
 			animating = animating or in_progress
 		end
 	end
 
 	local arrow_style = style.arrow
 	arrow_style.angle = angle + math.pi * 0.5
-	content.distance_text = (distance > 1 and tostring(UIUtils.comma_value(math.floor(distance))) .. "m") or ""
+	content.distance_text = distance > 1 and tostring(UIUtils.comma_value(math.floor(distance))) .. "m" or ""
 
 	return animating
 end
-
-return

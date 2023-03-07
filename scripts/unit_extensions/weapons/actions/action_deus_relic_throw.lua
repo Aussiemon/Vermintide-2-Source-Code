@@ -66,5 +66,3 @@ ActionDeusRelicThrow._throw = function (self)
 		self.owner_inventory_extension:wield_previous_weapon()
 	end
 end
-
-return

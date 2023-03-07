@@ -37,7 +37,7 @@ BTConditions.can_activate.dr_engineer = function (blackboard)
 	local career_extension = blackboard.career_extension
 	local inventory_extension = blackboard.inventory_extension
 	local career_weapon_active = inventory_extension and inventory_extension:get_wielded_slot_name() == "career_skill_weapon"
-	local min_charge = (career_weapon_active and 0.6) or 0.95
+	local min_charge = career_weapon_active and 0.6 or 0.95
 
 	if not career_extension or min_charge < career_extension:current_ability_cooldown_percentage() then
 		return false
@@ -54,7 +54,7 @@ BTConditions.can_activate.dr_engineer = function (blackboard)
 	local num_proximite_enemies = #proximite_enemies
 	local max_distance_sq = 9
 
-	for i = 1, num_proximite_enemies, 1 do
+	for i = 1, num_proximite_enemies do
 		local enemy_unit = proximite_enemies[i]
 
 		if ALIVE[enemy_unit] then
@@ -82,5 +82,3 @@ BTConditions.reload_ability_weapon.dr_engineer = function (blackboard, args)
 
 	return false
 end
-
-return

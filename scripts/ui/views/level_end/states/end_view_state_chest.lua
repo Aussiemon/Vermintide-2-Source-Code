@@ -404,7 +404,7 @@ EndViewStateChest.draw = function (self, input_service, dt)
 	local score_widgets = self._score_widgets
 
 	if num_score_topics and score_widgets then
-		for i = 1, num_score_topics, 1 do
+		for i = 1, num_score_topics do
 			local widget = score_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -681,7 +681,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 	local actual_entry_score = math.clamp(entry_data.score, 0, max_score - total_score)
 	local min_time = UISettings.chest_upgrade_score_topics_min_duration or 0.5
 	local max_time = UISettings.chest_upgrade_score_topics_max_duration or 7
-	local duration_fraction = (score_left > 0 and math.min(actual_entry_score / score_left, 1)) or 0
+	local duration_fraction = score_left > 0 and math.min(actual_entry_score / score_left, 1) or 0
 	local duration = math.clamp(duration_fraction * max_time, min_time, max_time)
 	entry_duration = math.min(entry_duration + dt, duration)
 	local entry_progress = entry_duration / duration
@@ -700,11 +700,11 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 
 	local current_chest_settings, current_chest_settings_index = self:_get_chest_settings_by_total_score(entry_presentation_total_score)
 	local animation_progress = 0
-	local spawn_next_chest = (max_upgraded and self._spawned_chest_index < num_chest_upgrades) or (current_chest_settings_index and current_chest_settings_index - 1 ~= self._spawned_chest_index)
+	local spawn_next_chest = max_upgraded and self._spawned_chest_index < num_chest_upgrades or current_chest_settings_index and current_chest_settings_index - 1 ~= self._spawned_chest_index
 
 	if spawn_next_chest then
 		animation_progress = 1
-		local spawn_index = (max_upgraded and num_chest_upgrades) or current_chest_settings_index - 1
+		local spawn_index = max_upgraded and num_chest_upgrades or current_chest_settings_index - 1
 		self._spawned_chest_index = spawn_index
 
 		self:_display_chest_by_settings_index(spawn_index, t)
@@ -738,7 +738,7 @@ EndViewStateChest._animate_score_progress = function (self, dt, t)
 
 		if current_entry_display_index == num_score_entries then
 			local wait_with_zoom = animation_progress == 1
-			self._chest_zoom_wait_duration = (wait_with_zoom and 0) or CHEST_PRESENTATION_ZOOM_WAIT_TIME
+			self._chest_zoom_wait_duration = wait_with_zoom and 0 or CHEST_PRESENTATION_ZOOM_WAIT_TIME
 		else
 			self:_display_next_score_entry()
 		end
@@ -874,5 +874,3 @@ end
 EndViewStateChest._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

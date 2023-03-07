@@ -73,5 +73,3 @@ GameSettings.crosshairs = {
 		string_id = "crosshair_5"
 	}
 }
-
-return

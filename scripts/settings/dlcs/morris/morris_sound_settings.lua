@@ -93,5 +93,3 @@ for level_key, level_settings in pairs(DEUS_LEVEL_SETTINGS) do
 		end
 	end
 end
-
-return

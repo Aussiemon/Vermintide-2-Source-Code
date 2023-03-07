@@ -78,5 +78,3 @@ AreaIndicatorUI.draw = function (self, dt)
 	UIRenderer.draw_widget(ui_renderer, self.area_text_box)
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

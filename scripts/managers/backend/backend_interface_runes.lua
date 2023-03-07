@@ -59,5 +59,3 @@ BackendInterfaceRunes.set = function (self, backend_id, rune)
 	fassert(not error_code or error_code == Backend.RES_NO_CHANGE, "[BackendInterfaceRunes:set] BackendItem.set_entity_attribute() returned an unexpected result: %d", error_code)
 	self:_refresh_attributes()
 end
-
-return

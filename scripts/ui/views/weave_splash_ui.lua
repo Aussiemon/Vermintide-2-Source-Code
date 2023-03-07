@@ -115,5 +115,3 @@ end
 WeaveSplashUI.clear_user_name = function (self)
 	return
 end
-
-return

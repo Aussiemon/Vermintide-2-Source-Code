@@ -267,7 +267,7 @@ EndViewStateScore._update_entry_hover = function (self)
 	local content = topics_widget.content
 	local num_rows = content.num_rows
 
-	for i = 1, num_rows, 1 do
+	for i = 1, num_rows do
 		local line_suffix = "_" .. i
 		local row_hotspot_name = "hotspot" .. line_suffix
 		local line_hotspot = content[row_hotspot_name]
@@ -418,7 +418,7 @@ EndViewStateScore._transform_player_session_score = function (self, players_sess
 				local highscore = transformed_player_session_score.group_scores[group_name][index].highscore or 0
 				transformed_player_session_score.group_scores[group_name][index].stat_name = score_data.stat_name
 				transformed_player_session_score.group_scores[group_name][index].display_name = score_data.display_name
-				transformed_player_session_score.group_scores[group_name][index].highscore = (highscore < score_data.score and score_data.score) or highscore
+				transformed_player_session_score.group_scores[group_name][index].highscore = highscore < score_data.score and score_data.score or highscore
 				transformed_player_session_score.group_scores[group_name][index].player_scores[stats_id] = score_data.score
 			end
 		end
@@ -449,10 +449,10 @@ EndViewStateScore._group_scores_by_player_and_topic = function (self, score_pane
 			score_panel_scores[group_name][index].player_scores[player_index] = score_data.score
 
 			if stat_name == "damage_taken" then
-				local new_highscore = (score_data.score < highscore and score_data.score) or highscore
+				local new_highscore = score_data.score < highscore and score_data.score or highscore
 				score_panel_scores[group_name][index].highscore = new_highscore
 			else
-				local new_highscore = (highscore < score_data.score and score_data.score) or highscore
+				local new_highscore = highscore < score_data.score and score_data.score or highscore
 				score_panel_scores[group_name][index].highscore = new_highscore
 			end
 		end
@@ -490,7 +490,7 @@ EndViewStateScore._setup_player_scores = function (self, players_session_scores)
 			num_human_players = num_human_players + 1
 		end
 
-		local level_text = (is_player_controlled and ((player_level and tostring(player_level)) or "-")) or "BOT"
+		local level_text = is_player_controlled and (player_level and tostring(player_level) or "-") or "BOT"
 		local widget_definition = UIWidgets.create_portrait_frame("player_frame_" .. widget_index, portrait_frame, level_text, 1, nil, portrait_image)
 		hero_widgets[widget_index] = UIWidget.init(widget_definition)
 		widget_index = widget_index + 1
@@ -556,7 +556,7 @@ EndViewStateScore._setup_score_panel = function (self, score_panel_scores, playe
 				local score_text_name = "score_text" .. line_suffix
 				local row_name = "row_bg" .. line_suffix
 				local row_content = content[row_name]
-				local name = (PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(player_name) and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name])) or player_name
+				local name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(player_name) and UIRenderer.crop_text_width(self.ui_renderer, player_name, player_score_size[1] - 40, style[score_text_name]) or player_name
 				row_content[score_text_name] = name
 			end
 
@@ -703,5 +703,3 @@ end
 EndViewStateScore._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

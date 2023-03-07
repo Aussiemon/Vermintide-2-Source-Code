@@ -132,5 +132,3 @@ end
 TimedSpawnerExtension.get_max_spawn_amount = function (self)
 	return self._max_spawn_amount
 end
-
-return

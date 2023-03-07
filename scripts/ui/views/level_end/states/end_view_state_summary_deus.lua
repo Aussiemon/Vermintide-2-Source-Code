@@ -22,5 +22,3 @@ end
 EndViewStateSummaryDeus._get_definitions = function (self)
 	return local_require("scripts/ui/views/level_end/states/definitions/end_view_state_summary_deus_definitions")
 end
-
-return

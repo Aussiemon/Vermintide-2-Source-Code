@@ -63,5 +63,3 @@ StoreBundleFeaturedSettings = {
 		item_key = "adept_bundle_0001"
 	}
 }
-
-return

@@ -417,7 +417,7 @@ local function create_bot_cusomization_button(ui_renderer)
 	local playing_text = string.upper(Localize("lb_playing")) .. ": "
 	local min, max = Gui.text_extents(gui, playing_text, font_name, font_size)
 	local playing_text_width = max.x - min.x
-	local career_name_offset = base_offset + ((managing_text_width > playing_text_width and managing_text_width) or playing_text_width)
+	local career_name_offset = base_offset + (managing_text_width > playing_text_width and managing_text_width or playing_text_width)
 	local managing_header_offset = base_offset + math.max(playing_text_width - managing_text_width, 0)
 	local playing_header_offset = base_offset + math.max(managing_text_width - playing_text_width, 0)
 	local widget = {
@@ -961,7 +961,7 @@ local function create_bot_cusomization_button(ui_renderer)
 				font_type = font_style.font_type,
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					(managing_header_offset + 2) - OFFSET_SIZE,
+					managing_header_offset + 2 - OFFSET_SIZE,
 					-19,
 					3
 				}
@@ -985,7 +985,7 @@ local function create_bot_cusomization_button(ui_renderer)
 				font_type = font_style.font_type,
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					(playing_header_offset + 2) - OFFSET_SIZE,
+					playing_header_offset + 2 - OFFSET_SIZE,
 					-49,
 					3
 				}
@@ -997,7 +997,7 @@ local function create_bot_cusomization_button(ui_renderer)
 				font_type = font_style.font_type,
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = {
-					(career_name_offset + 5) - OFFSET_SIZE,
+					career_name_offset + 5 - OFFSET_SIZE,
 					-17,
 					4
 				}
@@ -1009,7 +1009,7 @@ local function create_bot_cusomization_button(ui_renderer)
 				font_type = font_style.font_type,
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					(career_name_offset + 5 + 2) - OFFSET_SIZE,
+					career_name_offset + 5 + 2 - OFFSET_SIZE,
 					-19,
 					3
 				}
@@ -1021,7 +1021,7 @@ local function create_bot_cusomization_button(ui_renderer)
 				font_type = font_style.font_type,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
-					(career_name_offset + 5) - OFFSET_SIZE,
+					career_name_offset + 5 - OFFSET_SIZE,
 					-47,
 					4
 				}
@@ -1033,7 +1033,7 @@ local function create_bot_cusomization_button(ui_renderer)
 				font_type = font_style.font_type,
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
-					(career_name_offset + 5 + 2) - OFFSET_SIZE,
+					career_name_offset + 5 + 2 - OFFSET_SIZE,
 					-49,
 					3
 				}

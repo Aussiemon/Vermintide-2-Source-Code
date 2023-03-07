@@ -55,5 +55,3 @@ PlayerUnitDamageSettings.dot_types = {
 	bleeding = {},
 	burning = {}
 }
-
-return

@@ -73,6 +73,7 @@ PickupSystem.init = function (self, context, system_name)
 	self._limited_owned_pickups = {}
 
 	if not DEDICATED_SERVER then
+		-- Nothing
 	end
 
 	Managers.state.event:register(self, "delete_limited_owned_pickups", "event_delete_limited_owned_pickups")
@@ -171,7 +172,7 @@ PickupSystem.on_remove_extension = function (self, unit, extension_name, ...)
 			local units = self._pickup_units_by_type[pickup_name]
 			local index = nil
 
-			for i = 1, #units, 1 do
+			for i = 1, #units do
 				local pickup_unit = units[i]
 
 				if pickup_unit == unit then
@@ -257,7 +258,7 @@ PickupSystem.activate_triggered_pickup_spawners = function (self, triggered_spaw
 	local spawn_type = "triggered"
 	local spawned_unit = nil
 
-	for i = 1, num_spawners, 1 do
+	for i = 1, num_spawners do
 		spawned_unit = self:_spawn_guaranteed_pickup(spawners[i], spawn_type)
 	end
 
@@ -281,15 +282,15 @@ PickupSystem.remove_pickups_due_to_crossroads = function (self, removed_path_dis
 		self.triggered_pickup_spawners
 	}
 
-	for k = 1, #remove_tables, 1 do
+	for k = 1, #remove_tables do
 		local spawners = remove_tables[k]
 
-		for i = 1, #spawners, 1 do
+		for i = 1, #spawners do
 			local spawner_unit = spawners[i]
 			local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
 			local travel_dist = percentage_through_level * total_main_path_length
 
-			for j = 1, num_removed_dist_pairs, 1 do
+			for j = 1, num_removed_dist_pairs do
 				local dist_pair = removed_path_distances[j]
 
 				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
@@ -434,12 +435,12 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 
 		if type(value) == "table" then
 			for pickup_name, amount in pairs(value) do
-				for i = 1, amount, 1 do
+				for i = 1, amount do
 					pickups_to_spawn[#pickups_to_spawn + 1] = pickup_name
 				end
 			end
 		else
-			for i = 1, value, 1 do
+			for i = 1, value do
 				local spawn_value = self:_random()
 				local pickups = Pickups[pickup_type]
 				local spawn_weighting_total = 0
@@ -479,18 +480,18 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 			num_sections = 1
 		end
 
-		for i = 1, num_sections, 1 do
+		for i = 1, num_sections do
 			table.clear(section_spawners)
 			table.clear(used_spawners)
 
 			section_end_point = section_start_point + section_size
 			local num_pickup_spawners = #spawners
 
-			for j = 1, num_pickup_spawners, 1 do
+			for j = 1, num_pickup_spawners do
 				local spawner_unit = spawners[j]
 				local percentage_through_level = Unit.get_data(spawner_unit, "percentage_through_level")
 
-				if ignore_sections or (section_start_point <= percentage_through_level and percentage_through_level < section_end_point) or (num_sections == i and percentage_through_level == 1) then
+				if ignore_sections or section_start_point <= percentage_through_level and percentage_through_level < section_end_point or num_sections == i and percentage_through_level == 1 then
 					section_spawners[#section_spawners + 1] = spawner_unit
 				end
 			end
@@ -503,17 +504,14 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 				local pickups_in_section = math.min(1 + math.ceil(spawn_debt / remaining_sections), num_section_spawners)
 				local rnd = self:_random()
 				local bonus_spawn = remaining_sections ~= 1 and pickups_in_section == 1 and rnd < NearPickupSpawnChance[pickup_type]
-
-				if not ignore_sections or not #pickups_to_spawn then
-					pickups_in_section = pickups_in_section + ((bonus_spawn and 1) or 0)
-				end
+				pickups_in_section = ignore_sections and #pickups_to_spawn or pickups_in_section + (bonus_spawn and 1 or 0)
 
 				self:_shuffle(section_spawners)
 
 				local num_spawned_pickups_in_section = 0
 				local previously_selected_spawner = nil
 
-				for j = 1, pickups_in_section, 1 do
+				for j = 1, pickups_in_section do
 					local num_available_section_spawners = #section_spawners
 					local selected_spawner, pickup_index = nil
 
@@ -530,11 +528,11 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 						table.sort(section_spawners, comparator_two)
 					end
 
-					for k = 1, num_available_section_spawners, 1 do
+					for k = 1, num_available_section_spawners do
 						local num_pickups_to_spawn = #pickups_to_spawn
 						local spawner_unit = section_spawners[k]
 
-						for l = 1, num_pickups_to_spawn, 1 do
+						for l = 1, num_pickups_to_spawn do
 							local pickup_name = pickups_to_spawn[l]
 							local can_spawn = self:_can_spawn(spawner_unit, pickup_name)
 
@@ -578,7 +576,7 @@ PickupSystem._spawn_spread_pickups = function (self, spawners, pickup_settings, 
 
 			local num_used_spawners = #used_spawners
 
-			for j = 1, num_used_spawners, 1 do
+			for j = 1, num_used_spawners do
 				local spawner_unit = used_spawners[j]
 				local index = table.find(spawners, spawner_unit)
 
@@ -771,7 +769,7 @@ PickupSystem.spawn_guarenteed_pickups = function (self)
 	local num_spawners = #spawners
 	local spawn_type = "guaranteed"
 
-	for i = 1, num_spawners, 1 do
+	for i = 1, num_spawners do
 		self:_spawn_guaranteed_pickup(spawners[i], spawn_type)
 	end
 end
@@ -808,7 +806,7 @@ PickupSystem._spawn_specified_pickups = function (self)
 	local num_spawners = #spawners
 	local spawn_type = "guaranteed"
 
-	for i = 1, num_spawners, 1 do
+	for i = 1, num_spawners do
 		local unit = spawners[i]
 
 		table.clear(potential_pickups)
@@ -844,7 +842,7 @@ PickupSystem.update = function (self, dt, t)
 	local statistics_db = self._statistics_db
 	local update_list = self.update_list
 
-	for i = 1, #extension_update, 1 do
+	for i = 1, #extension_update do
 		local extension = extension_update[i]
 
 		self:update_extension(extension, dt, nil, t)
@@ -875,7 +873,7 @@ PickupSystem.get_and_delete_limited_owned_pickup_with_index = function (self, ow
 	local unit_spawner = Managers.state.unit_spawner
 	local is_alive = removed_unit and Unit.alive(removed_unit)
 
-	if not is_alive or (is_alive and unit_spawner:is_marked_for_deletion(removed_unit)) then
+	if not is_alive or is_alive and unit_spawner:is_marked_for_deletion(removed_unit) then
 		return nil
 	end
 
@@ -907,7 +905,7 @@ PickupSystem.delete_limited_owned_pickup_unit = function (self, owner_peer_id, p
 	local unit_spawner = Managers.state.unit_spawner
 	local is_alive = pickup_unit and Unit.alive(pickup_unit)
 
-	if not is_alive or (is_alive and unit_spawner:is_marked_for_deletion(pickup_unit)) then
+	if not is_alive or is_alive and unit_spawner:is_marked_for_deletion(pickup_unit) then
 		return
 	end
 
@@ -954,7 +952,7 @@ PickupSystem.delete_limited_owned_pickup_type = function (self, peer_id, type)
 		local units_by_type = self._pickup_units_by_type[type]
 
 		if pickup_units and units_by_type then
-			for i = 1, #pickup_units, 1 do
+			for i = 1, #pickup_units do
 				local unit = pickup_units[i]
 
 				if table.index_of(units_by_type, unit) > 0 then
@@ -1036,6 +1034,7 @@ PickupSystem._check_teleporting_pickup_line_of_sight = function (self, unit)
 			local length = Vector3.length(diff)
 
 			if MAX_RAY_DIST < length then
+				-- Nothing
 			elseif MIN_RAY_DIST < length then
 				local direction = diff / length
 				local hit = PhysicsWorld.immediate_raycast(physics_world, head_height_pos, direction, length, "closest", "collision_filter", "filter_player_mover")
@@ -1397,5 +1396,3 @@ PickupSystem.set_taken = function (self, spawn_index)
 		self._taken[spawn_index] = true
 	end
 end
-
-return

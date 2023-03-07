@@ -243,7 +243,7 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 		local progress = math.min(spawn_progress_timer / duration, 1)
 		local anim_progress = math.easeOutCubic(progress)
 		local inv_anim_progress = math.easeInCubic(1 - progress)
-		content.spawn_progress_timer = (progress ~= 1 and spawn_progress_timer) or nil
+		content.spawn_progress_timer = progress ~= 1 and spawn_progress_timer or nil
 		local icon_pulse_style = style.icon_pulse
 		local icon_pulse_color = icon_pulse_style.color
 		local icon_pulse_size = icon_pulse_style.texture_size
@@ -252,7 +252,7 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 		icon_pulse_size[2] = icon_pulse_default_size[1] + icon_pulse_default_size[2] * inv_anim_progress
 		icon_pulse_color[1] = 255 - 255 * anim_progress
 
-		for i = 1, 2, 1 do
+		for i = 1, 2 do
 			local background_pulse_style = style["background_pulse_" .. i]
 			local background_pulse_color = background_pulse_style.color
 			local background_pulse_size = background_pulse_style.texture_size
@@ -267,9 +267,7 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 
 	local arrow_style = style.arrow
 	arrow_style.angle = angle + math.pi * 0.5
-	content.text = (distance > 1 and tostring(UIUtils.comma_value(math.floor(distance))) .. "m") or ""
+	content.text = distance > 1 and tostring(UIUtils.comma_value(math.floor(distance))) .. "m" or ""
 
 	return animating
 end
-
-return

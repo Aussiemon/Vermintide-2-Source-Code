@@ -149,7 +149,7 @@ GameServer.is_joined = function (self)
 end
 
 GameServer.id = function (self)
-	return (GameServerInternal.server_id and GameServerInternal.server_id(self._game_server)) or "no_id"
+	return GameServerInternal.server_id and GameServerInternal.server_id(self._game_server) or "no_id"
 end
 
 GameServer.server_name = function (self)
@@ -196,5 +196,3 @@ end
 GameServer.lost_connection_to_lobby = function (self)
 	return false
 end
-
-return

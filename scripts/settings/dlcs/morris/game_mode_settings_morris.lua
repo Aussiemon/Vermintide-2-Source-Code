@@ -51,5 +51,3 @@ GameModeSettings.map_deus.hud_component_list_path = "scripts/ui/hud_ui/component
 GameModeSettings.map_deus.social_wheel_by_side = {
 	heroes = "general"
 }
-
-return

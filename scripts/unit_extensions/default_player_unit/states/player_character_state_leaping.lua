@@ -433,7 +433,7 @@ PlayerCharacterStateLeaping._update_movement = function (self, unit, dt, t)
 
 	local colliding_down = CharacterStateHelper.is_colliding_down(unit)
 	self._leap_done = leap_done or colliding_down
-	self._final_position = Vector3Box((leap_done and final_position) or POSITION_LOOKUP[unit])
+	self._final_position = Vector3Box(leap_done and final_position or POSITION_LOOKUP[unit])
 
 	return self._leap_done, final_position
 end
@@ -532,5 +532,3 @@ PlayerCharacterStateLeaping._start_leap = function (self, unit, t)
 
 	self._leap_done = false
 end
-
-return

@@ -184,5 +184,3 @@ InteractionDefinitions.weave_leaderboard_access.client.hud_description = functio
 		return Unit.get_data(interactable_unit, "interaction_data", "hud_description"), Unit.get_data(interactable_unit, "interaction_data", "hud_interaction_action"), nil, "test"
 	end
 end
-
-return

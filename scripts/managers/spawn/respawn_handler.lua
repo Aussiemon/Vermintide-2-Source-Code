@@ -52,7 +52,7 @@ RespawnHandler.find_respawn_data_from_unit = function (self, unit)
 	local respawn_units = self._respawn_units
 	local num_respawn_units = #respawn_units
 
-	for i = 1, num_respawn_units, 1 do
+	for i = 1, num_respawn_units do
 		local respawn_data = respawn_units[i]
 
 		if unit == respawn_data.unit then
@@ -119,7 +119,7 @@ RespawnHandler.set_respawn_gate_enabled = function (self, respawn_gate_unit, ena
 
 	local respawn_gate_units = self._respawn_gate_units
 
-	for i = 1, self._respawn_gate_units_n, 1 do
+	for i = 1, self._respawn_gate_units_n do
 		local gate = respawn_gate_units[i]
 
 		if gate.unit == respawn_gate_unit then
@@ -183,11 +183,11 @@ RespawnHandler.remove_respawn_units_due_to_crossroads = function (self, removed_
 	local num_removed_dist_pairs = #removed_path_distances
 	local respawners = self._respawn_units
 
-	for i = 1, #respawners, 1 do
+	for i = 1, #respawners do
 		local respawner = respawners[i]
 		local travel_dist = respawner.distance_through_level
 
-		for j = 1, num_removed_dist_pairs, 1 do
+		for j = 1, num_removed_dist_pairs do
 			local dist_pair = removed_path_distances[j]
 
 			if travel_dist >= dist_pair[1] - 1 and travel_dist <= dist_pair[2] + 1 then
@@ -227,7 +227,7 @@ RespawnHandler.recalc_respawner_dist_due_to_crossroads = function (self)
 	local respawners = self._respawn_units
 	local unit_local_position = Unit.local_position
 
-	for i = 1, #respawners, 1 do
+	for i = 1, #respawners do
 		local respawner = respawners[i]
 		local best_point, best_travel_dist, move_percent, best_sub_index, best_main_path = MainPathUtils.closest_pos_at_main_path(nil, unit_local_position(respawner.unit, 0))
 		respawner.distance_through_level = best_travel_dist
@@ -278,7 +278,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 	self._all_synced = false
 	local any_player_respawned = false
 
-	for i = 1, #slots, 1 do
+	for i = 1, #slots do
 		local status = slots[i]
 		local data = status.game_mode_data
 		local is_dead = data.health_state == "dead"
@@ -287,7 +287,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			if not data.ready_for_respawn and not data.respawn_timer then
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
-				local respawn_time = (Development.parameter("fast_respawns") and 2) or RESPAWN_TIME
+				local respawn_time = Development.parameter("fast_respawns") and 2 or RESPAWN_TIME
 
 				if peer_id and local_player_id then
 					local player = Managers.player:player(peer_id, local_player_id)
@@ -353,7 +353,7 @@ RespawnHandler.server_update = function (self, dt, t, slots)
 			local current_respawn_unit = data.respawn_unit
 			local current_respawn_data = self:find_respawn_data_from_unit(current_respawn_unit)
 
-			if (current_respawn_data and not self:_is_respawn_reachable(current_respawn_data)) or self._force_move then
+			if current_respawn_data and not self:_is_respawn_reachable(current_respawn_data) or self._force_move then
 				local peer_id = status.peer_id
 				local local_player_id = status.local_player_id
 
@@ -413,7 +413,7 @@ RespawnHandler.get_active_respawn_units = function (self)
 	local respawn_units = self._respawn_units
 	local active_respawn_units = {}
 
-	for i = 1, #respawn_units, 1 do
+	for i = 1, #respawn_units do
 		local respawn_data = respawn_units[i]
 
 		if not respawn_data.available then
@@ -475,7 +475,7 @@ end
 RespawnHandler.force_respawn_dead_players = function (self, party)
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local data = status.game_mode_data
 		data.respawn_timer = 0
@@ -541,7 +541,7 @@ RespawnHandler.get_next_boss_door_dist = function (self, main_path_info, ahead_u
 	local closest_terror_door_dist = math.huge
 	local closest_terror_door_travel_dist = math.huge
 
-	for i = 1, #boss_door_units, 1 do
+	for i = 1, #boss_door_units do
 		local door_unit = boss_door_units[i]
 		local door_travel_dist = self:get_boss_door_dist(main_paths, door_unit)
 		local dist_to_door = door_travel_dist - ahead_unit_travel_dist
@@ -572,7 +572,7 @@ end
 RespawnHandler.get_next_respawn_gate_dist = function (self, ahead_unit_travel_dist)
 	local respawn_gate_units = self._respawn_gate_units
 
-	for i = 1, self._respawn_gate_units_n, 1 do
+	for i = 1, self._respawn_gate_units_n do
 		local gate = respawn_gate_units[i]
 
 		if gate.enabled and ahead_unit_travel_dist < gate.distance_through_level then
@@ -641,7 +641,7 @@ RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_
 	local best_respawn = nil
 	local best_score = 0
 
-	for i = 1, #respawn_units, 1 do
+	for i = 1, #respawn_units do
 		local respawn_data = respawn_units[i]
 		local respawn_dist = respawn_data.distance_through_level
 		local score = 0
@@ -660,7 +660,7 @@ RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_
 			end
 		end
 
-		if not best_respawn or best_score < score or (best_score == score and ((score < 3 and best_respawn.distance_through_level < respawn_dist and respawn_dist < preferred_spawn_travel_dist) or (score >= 3 and respawn_dist < best_respawn.distance_through_level))) then
+		if not best_respawn or best_score < score or best_score == score and (score < 3 and best_respawn.distance_through_level < respawn_dist and respawn_dist < preferred_spawn_travel_dist or score >= 3 and respawn_dist < best_respawn.distance_through_level) then
 			best_score = score
 			best_respawn = respawn_data
 
@@ -700,5 +700,3 @@ RespawnHandler.find_best_respawn_point = function (self, reserve_best, evaluate_
 
 	return nil
 end
-
-return

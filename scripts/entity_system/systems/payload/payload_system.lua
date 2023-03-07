@@ -54,7 +54,7 @@ PayloadSystem.init_payloads = function (self)
 	local num_payloads = #payloads
 	local payload_gizmos = self._payload_gizmos
 
-	for i = 1, num_payloads, 1 do
+	for i = 1, num_payloads do
 		local payload = payloads[i]
 		local spline_name = Unit.get_data(payload, "spline_name")
 		local extension = ScriptUnit.extension(payload, "payload_system")
@@ -75,5 +75,3 @@ end
 PayloadSystem.hot_join_sync = function (self)
 	return
 end
-
-return

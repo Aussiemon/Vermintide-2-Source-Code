@@ -188,5 +188,3 @@ RconUI._unblock_input = function (self)
 	}, 1, "rcon_input", "RconUI")
 	Window.set_show_cursor(false)
 end
-
-return

@@ -555,5 +555,3 @@ UIAtlasHelper.has_texture_by_name = function (texture_name)
 		return false
 	end
 end
-
-return

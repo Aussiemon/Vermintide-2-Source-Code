@@ -249,5 +249,3 @@ template.update_function = function (ui_renderer, widget, marker, settings, dt, 
 
 	return animating
 end
-
-return

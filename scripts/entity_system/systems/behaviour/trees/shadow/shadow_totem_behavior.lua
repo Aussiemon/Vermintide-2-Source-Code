@@ -6,5 +6,3 @@ BreedBehaviors.shadow_totem = {
 	},
 	name = "shadow_totem"
 }
-
-return

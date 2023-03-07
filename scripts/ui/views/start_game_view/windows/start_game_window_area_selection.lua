@@ -100,7 +100,7 @@ StartGameWindowAreaSelection._setup_area_widgets = function (self)
 	local statistics_db = self.statistics_db
 	local stats_id = self._stats_id
 
-	for i = 1, num_areas, 1 do
+	for i = 1, num_areas do
 		local settings = sorted_area_settings[i]
 		local widget = self._area_widgets[i]
 		assigned_widgets[i] = widget
@@ -121,7 +121,7 @@ StartGameWindowAreaSelection._setup_area_widgets = function (self)
 		local acts = settings.acts
 		local num_acts = #acts
 
-		for j = 1, num_acts, 1 do
+		for j = 1, num_acts do
 			local act_name = acts[j]
 			local difficulty_index = LevelUnlockUtils.highest_completed_difficulty_index_by_act(statistics_db, stats_id, act_name)
 
@@ -156,7 +156,7 @@ StartGameWindowAreaSelection._select_area_by_name = function (self, area_name)
 	local active_area_widgets = self._active_area_widgets
 
 	if active_area_widgets then
-		for i = 1, #active_area_widgets, 1 do
+		for i = 1, #active_area_widgets do
 			local widget = active_area_widgets[i]
 			local content = widget.content
 			local is_selected = content.area_name == area_name
@@ -276,7 +276,7 @@ StartGameWindowAreaSelection._update_animations = function (self, dt)
 	local active_area_widgets = self._active_area_widgets
 
 	if active_area_widgets then
-		for i = 1, #active_area_widgets, 1 do
+		for i = 1, #active_area_widgets do
 			local widget = active_area_widgets[i]
 
 			self:_animate_area_widget(widget, dt)
@@ -316,7 +316,7 @@ StartGameWindowAreaSelection._handle_input = function (self, dt, t)
 	local active_area_widgets = self._active_area_widgets
 
 	if active_area_widgets then
-		for i = 1, #active_area_widgets, 1 do
+		for i = 1, #active_area_widgets do
 			local widget = active_area_widgets[i]
 
 			if self:_is_button_hovered(widget) then
@@ -394,7 +394,7 @@ StartGameWindowAreaSelection.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -403,7 +403,7 @@ StartGameWindowAreaSelection.draw = function (self, dt)
 	local active_area_widgets = self._active_area_widgets
 
 	if active_area_widgets then
-		for i = 1, #active_area_widgets, 1 do
+		for i = 1, #active_area_widgets do
 			local widget = active_area_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -525,5 +525,3 @@ StartGameWindowAreaSelection._show_storepage = function (self, url)
 		Steam.open_url(url)
 	end
 end
-
-return

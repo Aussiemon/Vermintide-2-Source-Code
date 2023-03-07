@@ -14,5 +14,3 @@ end
 WorldMarkerSystem.destroy = function (self)
 	return
 end
-
-return

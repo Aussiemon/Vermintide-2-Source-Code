@@ -40,5 +40,3 @@ DialogueLookup[DialogueLookup_n + 18] = "pbw_farmlands_intro_a"
 DialogueLookup[DialogueLookup_n + 19] = "pbw_farmlands_intro_b"
 DialogueLookup[DialogueLookup_n + 20] = "pbw_farmlands_intro_c"
 DialogueLookup_n = DialogueLookup_n + 20
-
-return

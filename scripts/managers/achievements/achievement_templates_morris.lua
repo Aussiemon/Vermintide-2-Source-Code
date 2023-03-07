@@ -99,7 +99,7 @@ local function add_opened_shrine_challenge(achievements, id, shrine_types, num_s
 		progress = function (statistics_db, stats_id)
 			local count = 0
 
-			for i = 1, #shrine_types, 1 do
+			for i = 1, #shrine_types do
 				local shrine_type = shrine_types[i]
 				count = count + statistics_db:get_persistent_stat(stats_id, "opened_shrines", shrine_type)
 			end
@@ -112,7 +112,7 @@ local function add_opened_shrine_challenge(achievements, id, shrine_types, num_s
 		completed = function (statistics_db, stats_id)
 			local count = 0
 
-			for i = 1, #shrine_types, 1 do
+			for i = 1, #shrine_types do
 				local shrine_type = shrine_types[i]
 				count = count + statistics_db:get_persistent_stat(stats_id, "opened_shrines", shrine_type)
 			end
@@ -203,5 +203,3 @@ for _, hero in ipairs(SPProfilesAbbreviation) do
 		end
 	end
 end
-
-return

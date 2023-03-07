@@ -17,5 +17,3 @@ AreaSettings.helmgart = {
 		"act_4"
 	}
 }
-
-return

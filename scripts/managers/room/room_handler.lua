@@ -80,7 +80,7 @@ end
 RoomHandler._available_room_id = function (self)
 	local num_rooms = #self._rooms
 
-	for i = 1, num_rooms, 1 do
+	for i = 1, num_rooms do
 		local room = self._rooms[i]
 
 		if room.available then
@@ -96,7 +96,7 @@ RoomHandler._debug_print = function (self)
 	local available = ""
 	local num_rooms = #self._rooms
 
-	for i = 1, num_rooms, 1 do
+	for i = 1, num_rooms do
 		local room = self._rooms[i]
 
 		if not room.available then
@@ -116,11 +116,9 @@ end
 RoomHandler.destroy = function (self)
 	local num_rooms = self._num_active_rooms
 
-	for i = 1, num_rooms, 1 do
+	for i = 1, num_rooms do
 		local room = self._rooms[i]
 
 		ScriptWorld.destroy_level_from_reference(self._world, room.level)
 	end
 end
-
-return

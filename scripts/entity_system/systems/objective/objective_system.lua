@@ -529,5 +529,3 @@ end
 ObjectiveSystem.complete_objective = function (self, objective_name)
 	self._objectives_by_name[objective_name]._completed = true
 end
-
-return

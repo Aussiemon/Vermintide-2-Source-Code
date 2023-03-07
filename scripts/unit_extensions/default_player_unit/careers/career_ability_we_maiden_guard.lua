@@ -147,7 +147,7 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 
 	local unit_object_id = network_manager:unit_game_object_id(owner_unit)
 
-	for i = 1, #buff_names, 1 do
+	for i = 1, #buff_names do
 		local buff_name = buff_names[i]
 		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
@@ -161,7 +161,7 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 		end
 	end
 
-	if (is_server and bot_player) or local_player then
+	if is_server and bot_player or local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("shade_stealth_ability")
@@ -217,7 +217,7 @@ CareerAbilityWEMaidenGuard._run_ability = function (self)
 			width = 1.5,
 			allow_backstab = true,
 			damage_profile = damage_profile,
-			power_level_multiplier = (bleed and 1) or 0,
+			power_level_multiplier = bleed and 1 or 0,
 			stagger_angles = {
 				max = 90,
 				min = 90
@@ -236,5 +236,3 @@ CareerAbilityWEMaidenGuard._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

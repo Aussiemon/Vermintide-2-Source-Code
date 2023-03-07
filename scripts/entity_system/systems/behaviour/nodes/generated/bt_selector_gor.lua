@@ -103,7 +103,11 @@ BTSelector_gor.run = function (self, unit, blackboard, t, dt)
 	local condition_result = nil
 
 	if blackboard.stagger then
-		condition_result = not blackboard.stagger_prohibited
+		if blackboard.stagger_prohibited then
+			blackboard.stagger = false
+		else
+			condition_result = true
+		end
 	end
 
 	if condition_result then
@@ -163,7 +167,7 @@ BTSelector_gor.run = function (self, unit, blackboard, t, dt)
 	local moving_state = blackboard.move_state == "moving"
 
 	if condition_result == nil then
-		condition_result = (is_in_smartobject_range and moving_state) or is_smart_objecting
+		condition_result = is_in_smartobject_range and moving_state or is_smart_objecting
 	end
 
 	if condition_result then
@@ -298,5 +302,3 @@ end
 BTSelector_gor.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

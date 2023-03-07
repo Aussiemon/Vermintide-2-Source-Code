@@ -84,5 +84,3 @@ ActSettings.act_holly_final = {
 	display_name = "area_selection_holly_name",
 	console_offset = 175
 }
-
-return

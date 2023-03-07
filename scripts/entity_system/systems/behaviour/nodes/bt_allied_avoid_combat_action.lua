@@ -91,5 +91,3 @@ BTAlliedAvoidCombatAction._move_to_flee_location = function (self, unit, blackbo
 
 	navigation_extension:move_to(wanted_position)
 end
-
-return

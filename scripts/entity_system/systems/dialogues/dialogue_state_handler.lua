@@ -66,5 +66,3 @@ DialogueStateHandler.update = function (self, t)
 		end
 	end
 end
-
-return

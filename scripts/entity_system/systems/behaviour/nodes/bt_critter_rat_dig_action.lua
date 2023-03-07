@@ -36,5 +36,3 @@ BTCritterRatDigAction.run = function (self, unit, blackboard, t)
 		return "running"
 	end
 end
-
-return

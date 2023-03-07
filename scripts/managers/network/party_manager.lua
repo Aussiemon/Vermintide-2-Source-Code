@@ -138,7 +138,7 @@ PartyManager._register_party = function (self, def)
 	local slots = {}
 	local slots_data = {}
 
-	for j = 1, num_slots, 1 do
+	for j = 1, num_slots do
 		slots[j] = {
 			game_mode_data = {}
 		}
@@ -340,7 +340,7 @@ end
 PartyManager.get_party_from_name = function (self, party_name)
 	local parties = self._parties
 
-	for i = 0, #parties, 1 do
+	for i = 0, #parties do
 		local party = parties[i]
 
 		if party.name == party_name then
@@ -402,7 +402,7 @@ PartyManager.assign_peer_to_party = function (self, peer_id, local_player_id, wa
 
 	update_status_profile_index(player_status)
 
-	local party = (wanted_party_id and self._parties[wanted_party_id]) or self._undecided_party
+	local party = wanted_party_id and self._parties[wanted_party_id] or self._undecided_party
 	local party_id = wanted_party_id or 0
 
 	debug_printf("Player (%s:%d) was put into party %s (%d)", peer_id, local_player_id, party.name, party_id)
@@ -503,7 +503,7 @@ PartyManager._find_slot_index = function (party, slot_id)
 	local slot_index = nil
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 
 		if status.slot_id == slot_id then
@@ -542,7 +542,7 @@ PartyManager._find_first_empty_slot_id = function (self, party)
 	local slots = party.slots
 	local num_slots = party.num_slots
 
-	for i = 1, num_slots, 1 do
+	for i = 1, num_slots do
 		if slots[i] == nil or slots[i].peer_id == nil then
 			return i
 		end
@@ -559,7 +559,7 @@ PartyManager.get_least_filled_party = function (self, ignore_bots, ignore_specta
 	local best_party_id = 0
 	local count = math.huge
 
-	for i = 1, #parties, 1 do
+	for i = 1, #parties do
 		local party = parties[i]
 
 		if not ignore_spectator_party or party.name ~= "spectators" then
@@ -605,11 +605,11 @@ PartyManager.hot_join_sync = function (self, peer_id)
 	local parties = self._parties
 	local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-	for party_id = 0, #parties, 1 do
+	for party_id = 0, #parties do
 		local party = parties[party_id]
 		local occupied_slots = party.occupied_slots
 
-		for i = 1, #occupied_slots, 1 do
+		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
 			local slot_peer_id = status.peer_id
 			local slot_local_player_id = status.local_player_id
@@ -668,12 +668,12 @@ PartyManager.server_peer_left_session = function (self, peer_id)
 	self._hot_join_synced_peers[peer_id] = false
 	local parties = self._parties
 
-	for party_id = 0, #parties, 1 do
+	for party_id = 0, #parties do
 		local party = parties[party_id]
 		local slots = party.slots
 		local num_slots = party.num_slots
 
-		for i = 1, num_slots, 1 do
+		for i = 1, num_slots do
 			local status = slots[i]
 
 			if status.peer_id == peer_id then
@@ -725,7 +725,7 @@ PartyManager._draw_debug = function (self, t)
 	local party_header_color = Color(255, 155, 155, 255)
 	local game_mode_color = Color(255, 155, 255, 155)
 	local mechanism_color = Color(255, 55, 155, 156)
-	local server_color = (is_server and Color(255, 255, 255, 0)) or Color(255, 55, 126, 255)
+	local server_color = is_server and Color(255, 255, 255, 0) or Color(255, 55, 126, 255)
 	local width, height = Gui.resolution()
 	local y = height - margin - text_height
 	local win_start_x = width - win_width
@@ -737,9 +737,9 @@ PartyManager._draw_debug = function (self, t)
 
 	Gui.rect(self._gui, Vector2(win_start_x, 0), Vector2(win_width, height), background_color)
 
-	local server_text = (is_server and "(Server)") or "(Client)"
+	local server_text = is_server and "(Server)" or "(Client)"
 
-	Gui.text(self._gui, server_text, font, text_height, font_material, Vector3((win_start_x + win_width) - 80, y, 0), server_color)
+	Gui.text(self._gui, server_text, font, text_height, font_material, Vector3(win_start_x + win_width - 80, y, 0), server_color)
 
 	local mechanism_key = Managers.mechanism:current_mechanism_name()
 	local mechanism_state = Managers.mechanism:game_mechanism():get_state()
@@ -749,7 +749,7 @@ PartyManager._draw_debug = function (self, t)
 
 	y = y - row_height
 	local game_mode = Managers.state.game_mode:game_mode()
-	local game_mode_name = (game_mode and game_mode:settings().key) or "none"
+	local game_mode_name = game_mode and game_mode:settings().key or "none"
 	local level_seed = Managers.mechanism:get_level_seed()
 	local info2 = string.format("Game mode: '%s', seed: %s", game_mode_name, tostring(level_seed))
 
@@ -763,7 +763,7 @@ PartyManager._draw_debug = function (self, t)
 	y = y - row_height * 2
 	local parties = self._parties
 
-	for i = 0, #parties, 1 do
+	for i = 0, #parties do
 		local party = parties[i]
 		local x = win_start_x + margin
 
@@ -771,8 +771,8 @@ PartyManager._draw_debug = function (self, t)
 
 		x = x + peer_width
 		local side = Managers.state.side.side_by_party[party]
-		local num_units = (side and side._num_units) or 0
-		local num_enemy_units = (side and side._num_enemy_units) or 0
+		local num_units = side and side._num_units or 0
+		local num_enemy_units = side and side._num_enemy_units or 0
 
 		Gui.text(self._gui, string.format("(%d/%d) units(%d) enemies(%d)", party.num_used_slots, party.num_slots, num_units, num_enemy_units), font, text_height, font_material, Vector3(x, y, 0), party_header_color)
 
@@ -796,10 +796,10 @@ PartyManager._draw_debug = function (self, t)
 		y = y - row_height
 		local occupied_slots = party.occupied_slots
 
-		for i = 1, #occupied_slots, 1 do
+		for i = 1, #occupied_slots do
 			local status = occupied_slots[i]
 			local data = status.game_mode_data
-			local timer = (data.spawn_state == "w8_to_spawn" and status.game_mode_data.spawn_timer and string.format("%.1f", status.game_mode_data.spawn_timer - t)) or ""
+			local timer = data.spawn_state == "w8_to_spawn" and status.game_mode_data.spawn_timer and string.format("%.1f", status.game_mode_data.spawn_timer - t) or ""
 			local state = string.format("%s %s", status.game_mode_data.spawn_state or "?", timer)
 			local peer = status.peer_id
 			local profile_id = status.profile_id
@@ -823,12 +823,7 @@ PartyManager._draw_debug = function (self, t)
 
 				if player_unit then
 					breed = Unit.get_data(player_unit, "breed")
-
-					if breed and breed.hit_zones_lookup ~= nil then
-						info = "L"
-					else
-						info = "2"
-					end
+					info = breed and breed.hit_zones_lookup ~= nil and "L" or "2"
 				elseif next(player.owned_units) then
 					info = "P"
 				else
@@ -865,7 +860,7 @@ PartyManager.any_party_has_free_slots = function (self, num_slots)
 	num_slots = num_slots or 1
 	local parties = self._parties
 
-	for i = 1, #parties, 1 do
+	for i = 1, #parties do
 		local party = parties[i]
 		local num_open_slots = party.num_open_slots + party.num_bots
 
@@ -876,5 +871,3 @@ PartyManager.any_party_has_free_slots = function (self, num_slots)
 
 	return false
 end
-
-return

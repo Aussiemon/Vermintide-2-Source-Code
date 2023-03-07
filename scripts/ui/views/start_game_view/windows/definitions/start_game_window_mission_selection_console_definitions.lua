@@ -1591,7 +1591,7 @@ function create_hero_widgets(scenegraph_id)
 	}
 	local slot_icons = {}
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local profile = SPProfiles[profile_index]
 		local careers = profile.careers
@@ -1628,7 +1628,7 @@ function create_hero_widgets(scenegraph_id)
 	local start_width_offset = 0
 	local frame_settings = UIPlayerPortraitFrameSettings.default
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + icon_size[1] + slot_width_spacing
@@ -1706,8 +1706,8 @@ function create_hero_widgets(scenegraph_id)
 			},
 			color = default_color,
 			offset = {
-				(offset[1] + icon_size[1] / 2) - frame_size[1] / 2,
-				(offset[2] + icon_size[2] / 2) - frame_size[2] / 2,
+				offset[1] + icon_size[1] / 2 - frame_size[1] / 2,
+				offset[2] + icon_size[2] / 2 - frame_size[2] / 2,
 				offset[3] + 3
 			}
 		}
@@ -1726,8 +1726,8 @@ function create_hero_widgets(scenegraph_id)
 			},
 			color = default_color,
 			offset = {
-				(offset[1] + icon_size[1] / 2) - frame_size[1] / 2,
-				(offset[2] + icon_size[2] / 2) - frame_size[2] / 2,
+				offset[1] + icon_size[1] / 2 - frame_size[1] / 2,
+				offset[2] + icon_size[2] / 2 - frame_size[2] / 2,
 				offset[3] + 3
 			}
 		}
@@ -1761,7 +1761,7 @@ local widgets = {
 }
 local hero_icons = {}
 
-for i = 1, #ProfilePriority, 1 do
+for i = 1, #ProfilePriority do
 	local profile_index = ProfilePriority[i]
 	local profile = SPProfiles[profile_index]
 	hero_icons[#hero_icons + 1] = profile.ui_portrait
@@ -1787,13 +1787,13 @@ end
 
 local node_widgets = {}
 
-for i = 1, 20, 1 do
+for i = 1, 20 do
 	node_widgets[i] = create_level_widget(i)
 end
 
 local act_widgets = {}
 
-for i = 1, 5, 1 do
+for i = 1, 5 do
 	act_widgets[i] = create_act_widget(i)
 end
 

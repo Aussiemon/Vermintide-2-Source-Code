@@ -871,5 +871,3 @@ NetworkLookup.interest_point_anims = {
 }
 
 DLCUtils.append("anim_lookup", NetworkLookup.anims)
-
-return

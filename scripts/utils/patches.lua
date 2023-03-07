@@ -61,7 +61,7 @@ if not rawget(_G, "G_IS_PROFILING") and IS_WINDOWS and BUILD ~= "release" then
 					local args = ""
 					local num_args = select("#", ...)
 
-					for i = 1, num_args, 1 do
+					for i = 1, num_args do
 						local arg_value = select(i, ...)
 						local arg_value_str = tostring(arg_value)
 						args = string.format("%s %s", args, arg_value_str)
@@ -77,13 +77,13 @@ if not rawget(_G, "G_IS_PROFILING") and IS_WINDOWS and BUILD ~= "release" then
 				end
 
 				local err_unit = unit_alive_info(unit)
-				local is_valid = (Unit.is_valid == nil and "unknown") or Unit.is_valid(unit)
+				local is_valid = Unit.is_valid == nil and "unknown" or Unit.is_valid(unit)
 				local is_frozen = is_valid and is_valid ~= "unknown" and Unit.is_frozen(unit)
-				local go_id = (Managers.state and Managers.state.storage and Managers.state.storage.map_goid_to_unit[unit]) or "unknown"
+				local go_id = Managers.state and Managers.state.storage and Managers.state.storage.map_goid_to_unit[unit] or "unknown"
 				local args = ""
 				local num_args = select("#", ...)
 
-				for i = 1, num_args, 1 do
+				for i = 1, num_args do
 					local arg_value = select(i, ...)
 					local arg_value_str = tostring(arg_value)
 					args = string.format("%s %s", args, arg_value_str)
@@ -116,5 +116,3 @@ if not ANIMATION_HAS_VARIABLE_OVERRIDDEN then
 
 	ANIMATION_HAS_VARIABLE_OVERRIDDEN = true
 end
-
-return

@@ -203,7 +203,7 @@ end
 
 HeroWindowLoadoutInventoryConsole.set_focus = function (self, focused)
 	self._focused = focused
-	self.render_settings.alpha_multiplier = (focused and 1) or 0.5
+	self.render_settings.alpha_multiplier = focused and 1 or 0.5
 	self._widgets_by_name.item_tooltip.content.visible = focused
 end
 
@@ -603,5 +603,3 @@ HeroWindowLoadoutInventoryConsole._handle_gamepad_activity = function (self)
 		self:_set_gamepad_input_buttons_visibility(false)
 	end
 end
-
-return

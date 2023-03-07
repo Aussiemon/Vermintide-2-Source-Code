@@ -80,7 +80,7 @@ PlayerCharacterStateInVortex.on_exit = function (self, unit, input, dt, context,
 		first_person_extension:play_hud_sound_event("sfx_player_in_vortex_false")
 
 		self.screenspace_effect_particle_id = nil
-		local attacker_unit = (Unit.alive(self.vortex_owner_unit) and self.vortex_owner_unit) or unit
+		local attacker_unit = Unit.alive(self.vortex_owner_unit) and self.vortex_owner_unit or unit
 		local buff_system = Managers.state.entity:system("buff_system")
 
 		buff_system:add_buff(unit, "vortex_base", attacker_unit)
@@ -166,7 +166,7 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 		interactor_extension:start_interaction("interacting")
 	end
 
-	slot14 = Unit.alive(self.vortex_unit) and self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)
+	local spin_direction = Unit.alive(self.vortex_unit) and self:update_spin_velocity(unit, self.vortex_unit, self.vortex_unit_go_id, dt)
 	local player = self.player
 	local viewport_name = player.viewport_name
 	local inventory_extension = self.inventory_extension
@@ -185,5 +185,3 @@ PlayerCharacterStateInVortex.update = function (self, unit, input, dt, context, 
 		first_person_extension:force_look_rotation(rot)
 	end
 end
-
-return

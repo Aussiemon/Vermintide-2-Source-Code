@@ -52,5 +52,3 @@ PassiveAbilitySettings.wh_priest = {
 		}
 	}
 }
-
-return

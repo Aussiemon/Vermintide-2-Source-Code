@@ -844,7 +844,7 @@ local function create_checkbox_button(scenegraph_id, size, text, font_size, tool
 	}
 	local marker_offset = {
 		checkbox_offset[1] + 4,
-		(checkbox_offset[2] + marker_size[2] / 2) - 1,
+		checkbox_offset[2] + marker_size[2] / 2 - 1,
 		checkbox_offset[3] + 2
 	}
 	style[checkbox_marker_name] = {
@@ -1012,7 +1012,7 @@ end
 function create_tooltip_button(scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad, find_party_tooltip_info, find_party_disabled_tooltip_info)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local side_detail_texture = optional_detail_texture or "button_detail_01"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
@@ -1365,7 +1365,7 @@ function create_tooltip_button(scenegraph_id, size, frame_name, background_textu
 					255
 				},
 				offset = {
-					(optional_detail_offset and -optional_detail_offset) or -9,
+					optional_detail_offset and -optional_detail_offset or -9,
 					size[2] / 2 - side_detail_texture_size[2] / 2,
 					9
 				},

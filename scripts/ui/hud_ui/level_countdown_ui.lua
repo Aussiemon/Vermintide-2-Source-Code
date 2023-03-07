@@ -157,5 +157,3 @@ LevelCountdownUI._get_active_waystone_extension = function (self)
 		end
 	end
 end
-
-return

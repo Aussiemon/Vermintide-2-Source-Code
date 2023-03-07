@@ -223,5 +223,3 @@ settings.ingame_hud_components = {
 		end
 	}
 }
-
-return

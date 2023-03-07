@@ -9648,5 +9648,3 @@ for context_name, context_materials in pairs(MaterialEffectSettings.material_con
 		MaterialIDToName[context_name][Unit.material_id(material_name)] = material_name
 	end
 end
-
-return

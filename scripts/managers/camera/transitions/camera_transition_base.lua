@@ -14,5 +14,3 @@ CameraTransitionBase.update = function (self, dt, update_time)
 		self._time = Managers.time:time("game") - self._start_time
 	end
 end
-
-return

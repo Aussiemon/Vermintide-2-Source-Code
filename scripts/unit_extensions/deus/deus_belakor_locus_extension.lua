@@ -50,7 +50,7 @@ local function check_if_should_play_vo(world, locus_unit, locus_position, player
 	local closest_position, closest_player = nil
 	local closest_distance = math.huge
 
-	for i = 1, #players_and_bots, 1 do
+	for i = 1, #players_and_bots do
 		local new_player = players_and_bots[i]
 		local new_player_position = POSITION_LOOKUP[new_player]
 		local new_distance = Vector3.distance(locus_position, new_player_position)
@@ -232,6 +232,7 @@ DeusBelakorLocusExtension.update = function (self, unit, input, dt, context, t)
 
 	if current_state ~= prev_state then
 		if current_state == STATE.WAITING_TO_SPAWN_CULTISTS then
+			-- Nothing
 		elseif current_state == STATE.WAITING_FOR_ACTIVATION then
 			self._interactable_extension:set_interactable_type(INTERACTABLE_TYPE_PRE_CRYSTAL)
 		elseif current_state == STATE.ACTIVATED then
@@ -449,7 +450,7 @@ DeusBelakorLocusExtension.on_server_start_interact = function (self, world, inte
 	local ai_units = FrameTable.alloc_table()
 	local num_ai_units = AiUtils.broadphase_query(position, radius, ai_units)
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local ai_unit = ai_units[i]
 
 		if ALIVE[ai_unit] then
@@ -461,5 +462,3 @@ DeusBelakorLocusExtension.on_server_start_interact = function (self, world, inte
 		end
 	end
 end
-
-return

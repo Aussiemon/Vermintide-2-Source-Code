@@ -8,9 +8,9 @@ local function player_stuck_cb()
 end
 
 local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
-local leave_party_button_text = (IS_XB1 and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
-local disband_party_button_text = (IS_XB1 and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
-local quit_menu_button_text = (IS_XB1 and "quit_menu_button_name_xb1") or "quit_menu_button_name_ps4"
+local leave_party_button_text = IS_XB1 and "leave_party_menu_button_name_xb1" or "leave_party_menu_button_name"
+local disband_party_button_text = IS_XB1 and "disband_party_menu_button_name_xb1" or "disband_party_menu_button_name"
+local quit_menu_button_text = IS_XB1 and "quit_menu_button_name_xb1" or "quit_menu_button_name_ps4"
 local menu_layouts = {}
 
 function demo_inverted_func()
@@ -22,14 +22,14 @@ function demo_inverted_func()
 		local look_filter = input_filters.look
 		local function_data = look_filter.function_data
 
-		return (function_data.filter_type == "scale_vector3" and "menu_invert_controls") or "menu_non_invert_controls"
+		return function_data.filter_type == "scale_vector3" and "menu_invert_controls" or "menu_non_invert_controls"
 	else
 		local platform_key = PLATFORM
 		local input_filters = input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
 
-		return (function_data.filter_type == "scale_vector3_xy_accelerated_x" and "menu_invert_controls") or "menu_non_invert_controls"
+		return function_data.filter_type == "scale_vector3_xy_accelerated_x" and "menu_invert_controls" or "menu_non_invert_controls"
 	end
 end
 

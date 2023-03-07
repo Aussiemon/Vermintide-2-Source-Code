@@ -75,5 +75,3 @@ ActionHealingDraught.finish = function (self, reason)
 
 	Managers.telemetry.events:player_used_item(player, self.item_name, position)
 end
-
-return

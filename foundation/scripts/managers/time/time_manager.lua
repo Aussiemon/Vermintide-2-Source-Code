@@ -48,7 +48,7 @@ TimeManager.unregister_timer = function (self, name)
 end
 
 TimeManager.has_timer = function (self, name)
-	return (self._timers[name] and true) or false
+	return self._timers[name] and true or false
 end
 
 TimeManager.update = function (self, dt)
@@ -80,7 +80,7 @@ TimeManager._update_demo_timer = function (self, dt)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local any_device_input_axis_moved = false
 
-	for key = 0, device.num_axes() - 1, 1 do
+	for key = 0, device.num_axes() - 1 do
 		if gamepad_active then
 			if (not IS_PS4 or key < 3) and Vector3.length(device.axis(key)) ~= 0 then
 				any_device_input_axis_moved = true
@@ -199,5 +199,3 @@ TimeManager.destroy = function (self)
 
 	self._timers = nil
 end
-
-return

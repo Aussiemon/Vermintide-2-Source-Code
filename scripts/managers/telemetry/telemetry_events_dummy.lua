@@ -9,5 +9,3 @@ setmetatable(TelemetryEventsDummy, {
 		return nop
 	end
 })
-
-return

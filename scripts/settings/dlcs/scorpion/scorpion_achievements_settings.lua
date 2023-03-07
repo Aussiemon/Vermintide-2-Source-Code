@@ -176,5 +176,3 @@ settings.achievement_template_file_names = {
 	"scripts/settings/dlcs/scorpion/scorpion_seasonal_settings",
 	"scripts/managers/achievements/achievement_templates_scorpion"
 }
-
-return

@@ -111,7 +111,7 @@ ChaosTrollHuskHealthExtension.sync_damage_taken = function (self, damage, set_ma
 			set_material_property(self.unit, "damage_value", "mtr_skin", 1, true)
 
 			local t = Managers.time:time("game")
-			self.start_reset_time = t + (self.action.downed_duration + self.action.standup_anim_duration) - self.action.reset_duration
+			self.start_reset_time = t + self.action.downed_duration + self.action.standup_anim_duration - self.action.reset_duration
 			self.down_reset_timer = 0
 		elseif state == "wounded" or state == "unhurt" then
 			set_material_property(self.unit, "damage_value", "mtr_skin", 0, true)
@@ -145,5 +145,3 @@ ChaosTrollHuskHealthExtension.destroy = function (self)
 	ChaosTrollHuskHealthExtension.super:destroy()
 	self.network_event_delegate:unregister(self)
 end
-
-return

@@ -15,5 +15,3 @@ PickupSpawnerExtension.get_spawn_location_data = function (self)
 
 	return position, rotation, true
 end
-
-return

@@ -79,41 +79,40 @@ local tooltip_passes = {
 	"traits",
 	"keywords"
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	chest_unlock_failed = {
-		{
-			name = "bounce",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.bounce_value = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local time = Managers.time:time("main")
-				ui_scenegraph.pivot.local_position[1] = math.sin(time * 50) * 10 * (params.bounce_value - progress)
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+local animation_definitions = {}
+animation_definitions.on_enter = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.render_settings.alpha_multiplier = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			params.render_settings.alpha_multiplier = anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.chest_unlock_failed = {
+	{
+		name = "bounce",
+		start_progress = 0,
+		end_progress = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.bounce_value = 1
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local time = Managers.time:time("main")
+			ui_scenegraph.pivot.local_position[1] = math.sin(time * 50) * 10 * (params.bounce_value - progress)
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 

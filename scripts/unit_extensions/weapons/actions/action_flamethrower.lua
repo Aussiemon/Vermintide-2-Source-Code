@@ -37,14 +37,9 @@ ActionFlamethrower.client_owner_start_action = function (self, new_action, t, ch
 	self.muzzle_node_name = new_action.fx_node or "fx_muzzle"
 	self._fx_stopped = false
 	self.dot_check = new_action.dot_check or 0.95
-	self.spray_range = (new_action.spray_range and math.abs(POSITION_TWEAK) + new_action.spray_range) or SPRAY_RANGE
-	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 1
-
-	if not new_action.fire_stop_time or not (t + new_action.fire_stop_time) then
-		slot5 = t + self.charge_level * (new_action.charge_fuel_time_multiplier or 3)
-	end
-
-	self.max_flame_time = slot5
+	self.spray_range = new_action.spray_range and math.abs(POSITION_TWEAK) + new_action.spray_range or SPRAY_RANGE
+	self.charge_level = chain_action_data and chain_action_data.charge_level or 1
+	self.max_flame_time = new_action.fire_stop_time and t + new_action.fire_stop_time or t + self.charge_level * (new_action.charge_fuel_time_multiplier or 3)
 	local full_charge_boost = self.buff_extension:has_buff_perk("full_charge_boost")
 
 	if full_charge_boost and self.charge_level >= 1 then
@@ -102,7 +97,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 			local owner = self.owner_player
 			local is_husk = not owner.local_player
 
-			WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self._source_id)
+			WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
 			WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, self._source_id)
 		else
 			self._source_id = WwiseWorld.make_auto_source(self.wwise_world, self.weapon_unit)
@@ -111,7 +106,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 		local owner = self.owner_player
 		local is_husk = not owner.local_player
 
-		WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", self._source_id)
+		WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", self._source_id)
 		WwiseWorld.trigger_event(self.wwise_world, current_action.fire_sound_event, self._source_id)
 	end
 
@@ -159,7 +154,7 @@ ActionFlamethrower.client_owner_post_update = function (self, dt, t, world, can_
 				local targets = self.targets
 				local check_buffs = true
 
-				for i = 1, #targets, 1 do
+				for i = 1, #targets do
 					local processed_hit = false
 					local current_target = targets[i]
 
@@ -289,7 +284,7 @@ ActionFlamethrower._stop_fx = function (self)
 		local owner = self.owner_player
 		local is_husk = not owner.local_player
 
-		WwiseWorld.set_switch(self.wwise_world, "husk", (is_husk and "true") or "false", source_id)
+		WwiseWorld.set_switch(self.wwise_world, "husk", is_husk and "true" or "false", source_id)
 		WwiseWorld.trigger_event(self.wwise_world, self.stop_sound_event, source_id)
 
 		self._source_id = nil
@@ -331,8 +326,8 @@ ActionFlamethrower._clear_targets = function (self)
 	local old_targets = self.old_targets
 	local current_targets = {}
 
-	for i = 1, #targets, 1 do
-		local current_target_count = (old_targets and old_targets[targets[i]]) or 0
+	for i = 1, #targets do
+		local current_target_count = old_targets and old_targets[targets[i]] or 0
 		current_targets[targets[i]] = current_target_count + 1
 	end
 
@@ -366,7 +361,7 @@ ActionFlamethrower._select_targets = function (self, world, show_outline)
 		local v, q, m = Script.temp_count()
 		local num_hit = 0
 
-		for i = 1, ai_units_n, 1 do
+		for i = 1, ai_units_n do
 			local hit_unit = ai_units[i]
 			local hit_position = POSITION_LOOKUP[hit_unit] + Vector3.up()
 
@@ -396,7 +391,7 @@ ActionFlamethrower._check_within_cone = function (self, player_position, player_
 	local target_position = Unit.world_position(target, Unit.node(target, "j_neck"))
 	local target_direction = Vector3.normalize(target_position - player_position)
 	local target_cos_alpha = Vector3.dot(player_direction, target_direction)
-	local dot_threshold = (is_enemy and self.dot_check) or 0.99
+	local dot_threshold = is_enemy and self.dot_check or 0.99
 
 	if target_cos_alpha >= dot_threshold then
 		return true
@@ -432,5 +427,3 @@ ActionFlamethrower._check_critical_strike = function (self, t)
 
 	self._is_critical_strike = is_critical_strike
 end
-
-return

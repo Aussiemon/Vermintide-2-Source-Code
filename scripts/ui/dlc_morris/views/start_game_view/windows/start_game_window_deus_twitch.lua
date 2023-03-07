@@ -128,7 +128,7 @@ StartGameWindowDeusTwitch._set_disconnect_button_text = function (self)
 	local disconnect_button_widget = self._widgets_by_name.button_2
 
 	if disconnect_button_widget then
-		local user_name = (Managers.twitch and Managers.twitch:user_name()) or "N/A"
+		local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
 		disconnect_button_widget.content.button_hotspot.text = string.format(Localize("start_game_window_twitch_disconnect"), user_name)
 	end
 end
@@ -287,7 +287,7 @@ StartGameWindowDeusTwitch.cb_connection_success_callback = function (self, user_
 end
 
 StartGameWindowDeusTwitch._setup_connected_status = function (self)
-	local user_name = (Managers.twitch and Managers.twitch:user_name()) or "N/A"
+	local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
 	self._widgets_by_name.frame_widget.content.connected = Localize("start_game_window_twitch_connected_to") .. user_name
 end
 
@@ -327,7 +327,7 @@ StartGameWindowDeusTwitch._setup_journey_widgets = function (self)
 	local settings = definitions.journey_widget_settings
 	local available_journey_order = AvailableJourneyOrder
 
-	for i = 1, #available_journey_order, 1 do
+	for i = 1, #available_journey_order do
 		local journey_name = AvailableJourneyOrder[i]
 		local with_belakor = self._backend_deus:deus_journey_with_belakor(journey_name)
 		local journey_data = DeusJourneySettings[journey_name]
@@ -349,7 +349,7 @@ StartGameWindowDeusTwitch._setup_journey_widgets = function (self)
 		content.locked = not is_unlocked
 		content.frame = selection_frame_texture
 		content.journey_name = journey_name
-		content.level_icon_frame = (with_belakor and "morris_expedition_select_border_belakor") or "morris_expedition_select_border"
+		content.level_icon_frame = with_belakor and "morris_expedition_select_border_belakor" or "morris_expedition_select_border"
 		content.draw_path = next_journey ~= nil
 		content.draw_path_fill = unlocked_journeys[next_journey]
 		widget.style.path.texture_size[1] = settings.spacing_x
@@ -489,7 +489,7 @@ StartGameWindowDeusTwitch._handle_input = function (self, dt, t)
 		local index = self._expeditions_selection_index
 		local selected_widget = self._expedition_widgets[self._expeditions_selection_index]
 
-		for i = 1, #self._expedition_widgets, 1 do
+		for i = 1, #self._expedition_widgets do
 			local widget = self._expedition_widgets[i]
 
 			if UIUtils.is_button_pressed(widget) then
@@ -568,7 +568,7 @@ StartGameWindowDeusTwitch._update_expedition_option = function (self)
 	local icon_texture = level_settings.level_image
 	local completed_difficulty_index = self._parent:get_completed_level_difficulty_index(self._statistics_db, self._stats_id, selected_level_id)
 
-	for i = 1, #self._expedition_widgets, 1 do
+	for i = 1, #self._expedition_widgets do
 		local widget = self._expedition_widgets[i]
 		local content = widget.content
 		local journey_name = content.journey_name
@@ -608,7 +608,7 @@ StartGameWindowDeusTwitch._update_animations = function (self, dt, t)
 
 	local widgets = self._expedition_widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		self:_animate_expedition_widget(widget, dt)
@@ -857,11 +857,11 @@ end
 StartGameWindowDeusTwitch._set_input_description = function (self, connected)
 	if self._is_server then
 		if connected then
-			local input_actions = (self._dlc_locked and "deus_twitch_buy_connected") or "deus_default_twitch_connected"
+			local input_actions = self._dlc_locked and "deus_twitch_buy_connected" or "deus_default_twitch_connected"
 
 			self._parent:change_generic_actions(input_actions)
 		else
-			local input_actions = (self._dlc_locked and "deus_twitch_buy") or "deus_default_twitch"
+			local input_actions = self._dlc_locked and "deus_twitch_buy" or "deus_default_twitch"
 
 			self._parent:change_generic_actions(input_actions)
 		end
@@ -941,7 +941,7 @@ StartGameWindowDeusTwitch._update_difficulty_lock = function (self)
 		if not approved then
 			if extra_requirement_failed then
 				difficulty_info_widget.content.should_show_diff_lock_text = true
-				difficulty_info_widget.content.difficulty_lock_text = (extra_requirement_failed and Localize(extra_requirement_failed)) or ""
+				difficulty_info_widget.content.difficulty_lock_text = extra_requirement_failed and Localize(extra_requirement_failed) or ""
 			else
 				difficulty_info_widget.content.should_show_diff_lock_text = false
 			end
@@ -1075,8 +1075,6 @@ StartGameWindowDeusTwitch._update_additional_curse_frame = function (self, journ
 	for _, widget in ipairs(self._expedition_widgets) do
 		local content = widget.content
 		local with_belakor = content.journey_name == journey_name
-		content.level_icon_frame = (with_belakor and "morris_expedition_select_border_belakor") or "morris_expedition_select_border"
+		content.level_icon_frame = with_belakor and "morris_expedition_select_border_belakor" or "morris_expedition_select_border"
 	end
 end
-
-return

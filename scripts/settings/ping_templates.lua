@@ -254,5 +254,3 @@ PingTemplates = {
 		end
 	}
 }
-
-return

@@ -71,5 +71,3 @@ settings.default_items = {
 		display_name = "display_name_default_es_dual_wield_hammer_sword"
 	}
 }
-
-return

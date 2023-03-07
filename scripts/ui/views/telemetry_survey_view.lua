@@ -64,7 +64,7 @@ TelemetrySurveyView.create_ui_elements = function (self)
 	self.headers = UIWidget.init(definitions.widget_definitions.headers)
 	local survey_ratings = {}
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		survey_ratings[i] = UIWidget.init(definitions.survey_rating_definitions(i))
 	end
 
@@ -164,7 +164,7 @@ TelemetrySurveyView.update_button_disabled = function (self)
 	self.continue_button.content.disabled = not self.survey_answered
 	local is_disabled = self.continue_button.content.disabled
 	local text_style = self.continue_button.style.text
-	local text_color = (is_disabled and text_style.disabled_color) or text_style.base_color
+	local text_color = is_disabled and text_style.disabled_color or text_style.base_color
 	text_style.text_color = text_color
 end
 
@@ -223,11 +223,9 @@ TelemetrySurveyView.draw = function (self, dt)
 	UIRenderer.draw_widget(ui_top_renderer, self.headers)
 	UIRenderer.draw_widget(ui_top_renderer, self.continue_button)
 
-	for i = 1, #survey_ratings, 1 do
+	for i = 1, #survey_ratings do
 		UIRenderer.draw_widget(ui_top_renderer, survey_ratings[i])
 	end
 
 	UIRenderer.end_pass(ui_top_renderer)
 end
-
-return

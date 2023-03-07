@@ -19,23 +19,26 @@ local base_pickup_definition = {
 		end
 
 		return inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
-	end,
-	outline_available_func = function (local_player_unit)
-		local inventory_extension = ScriptUnit.has_extension(local_player_unit, "inventory_system")
-
-		if not inventory_extension then
-			return false
-		end
-
-		return inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
-	end,
-	on_pick_up_func = function (world, interactor_unit, is_server, interactable_unit)
-		local peer_id = Network.peer_id()
-		local pickup_system = Managers.state.entity:system("pickup_system")
-
-		pickup_system:delete_limited_owned_pickup_unit(peer_id, interactable_unit)
 	end
 }
+
+base_pickup_definition.outline_available_func = function (local_player_unit)
+	local inventory_extension = ScriptUnit.has_extension(local_player_unit, "inventory_system")
+
+	if not inventory_extension then
+		return false
+	end
+
+	return inventory_extension:has_ammo_consuming_weapon_equipped("throwing_axe")
+end
+
+base_pickup_definition.on_pick_up_func = function (world, interactor_unit, is_server, interactable_unit)
+	local peer_id = Network.peer_id()
+	local pickup_system = Managers.state.entity:system("pickup_system")
+
+	pickup_system:delete_limited_owned_pickup_unit(peer_id, interactable_unit)
+end
+
 local mapping = {
 	ammo_throwing_axe_01_t1 = {
 		unit_template_name = "limited_owned_pickup_projectile_unit",
@@ -80,5 +83,3 @@ for pickup_name, data in pairs(mapping) do
 	settings.pickups[category][pickup_name].unit_name = data.unit_name
 	settings.pickups[category][pickup_name].unit_template_name = data.unit_template_name
 end
-
-return

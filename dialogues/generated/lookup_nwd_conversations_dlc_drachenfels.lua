@@ -30,5 +30,3 @@ DialogueLookup[DialogueLookup_n + 13] = "pwh_archdaemon_response_overheard"
 DialogueLookup[DialogueLookup_n + 14] = "pdr_archdaemon_response_overheard"
 DialogueLookup[DialogueLookup_n + 15] = "pes_archdaemon_response_overheard"
 DialogueLookup_n = DialogueLookup_n + 15
-
-return

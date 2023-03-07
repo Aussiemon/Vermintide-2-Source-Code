@@ -313,5 +313,3 @@ StateTitleScreenLoadSave.on_exit = function (self)
 
 	self._popup_id = nil
 end
-
-return

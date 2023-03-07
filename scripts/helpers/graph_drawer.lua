@@ -179,7 +179,7 @@ Graph.add_point = function (self, x, y, plot_name)
 		self.visual_frame.y_max = self.range_y[2]
 	end
 
-	self.valid = self.valid or (num_points > 1 and math.abs(self.range_x[2] - self.range_x[1]) > 1e-05 and math.abs(self.range_y[2] - self.range_y[1]) > 1e-05)
+	self.valid = self.valid or num_points > 1 and math.abs(self.range_x[2] - self.range_x[1]) > 1e-05 and math.abs(self.range_y[2] - self.range_y[1]) > 1e-05
 end
 
 Graph.add_annotation = function (self, annotation)
@@ -240,9 +240,9 @@ Graph.update = function (self, input_service, t)
 			local zoom_factor_x_max = (self.range_x[2] - self.visual_frame.x_min) / (self.visual_frame.x_max - self.visual_frame.x_min)
 			local zoom_factor_y_min = (self.visual_frame.y_max - self.range_y[1]) / (self.visual_frame.y_max - self.visual_frame.y_min)
 			local zoom_factor_y_max = (self.range_y[2] - self.visual_frame.y_min) / (self.visual_frame.y_max - self.visual_frame.y_min)
-			self.zoom_window.x_min = (origin.x + graph_size_x) - graph_size_x * zoom_factor_x_min
+			self.zoom_window.x_min = origin.x + graph_size_x - graph_size_x * zoom_factor_x_min
 			self.zoom_window.x_max = origin.x + graph_size_x * zoom_factor_x_max
-			self.zoom_window.y_min = (origin.y + graph_size_y) - graph_size_y * zoom_factor_y_min
+			self.zoom_window.y_min = origin.y + graph_size_y - graph_size_y * zoom_factor_y_min
 			self.zoom_window.y_max = origin.y + graph_size_y * zoom_factor_y_max
 			self.zoom_window.min_size = 100
 			self.scroll_lock.right = true
@@ -274,7 +274,7 @@ Graph.update = function (self, input_service, t)
 				elseif mouse.x < origin.x then
 					local zoom_factor = (self.visual_frame.x_max - self.range_x[1]) / (self.visual_frame.x_max - self.visual_frame.x_min)
 					self.zoom_window = {
-						x_min = (origin.x + graph_size_x) - graph_size_x * zoom_factor,
+						x_min = origin.x + graph_size_x - graph_size_x * zoom_factor,
 						x_max = origin.x + graph_size_x,
 						y_min = origin.y,
 						y_max = origin.y + graph_size_y,
@@ -290,9 +290,9 @@ Graph.update = function (self, input_service, t)
 					local zoom_factor_min = (self.visual_frame.y_max - self.range_y[1]) / (self.visual_frame.y_max - self.visual_frame.y_min)
 					local zoom_factor_max = (self.range_y[2] - self.visual_frame.y_min) / (self.visual_frame.y_max - self.visual_frame.y_min)
 					self.zoom_window = {
-						x_min = (origin.x + graph_size_x) - graph_size_x,
+						x_min = origin.x + graph_size_x - graph_size_x,
 						x_max = origin.x + graph_size_x,
-						y_min = (origin.y + graph_size_y) - graph_size_y * zoom_factor_min,
+						y_min = origin.y + graph_size_y - graph_size_y * zoom_factor_min,
 						y_max = origin.y + graph_size_y * zoom_factor_max,
 						min_size = 100
 					}
@@ -426,7 +426,7 @@ Graph.draw = function (self, gui, input_service, t)
 	local font_size = 26
 	local font = "arial"
 	local font_mtrl = "materials/fonts/" .. font
-	local color_bg = Colors.get_color_with_alpha("navy", (Window.show_cursor() and 100) or 50)
+	local color_bg = Colors.get_color_with_alpha("navy", Window.show_cursor() and 100 or 50)
 	local color_point_line = Colors.get("aqua_marine")
 	local color_point_bg = Colors.get("white")
 	local color_point_fg = Colors.get("black")
@@ -436,7 +436,7 @@ Graph.draw = function (self, gui, input_service, t)
 	local color_annotation_text_bg = Colors.get_color_with_alpha("black", 100)
 	local color_annotation_bg = Colors.get_color_with_alpha("black", 150)
 	local color_axis = Colors.get("white")
-	local color_zoom_window = Colors.get_color_with_alpha("white", (self.anim_done_t == nil and 100) or math.lerp(100, 0, 1 - (self.anim_done_t - t)))
+	local color_zoom_window = Colors.get_color_with_alpha("white", self.anim_done_t == nil and 100 or math.lerp(100, 0, 1 - (self.anim_done_t - t)))
 	local color_zoom_window_too_small = Colors.get_color_with_alpha("red", 100)
 	local origin = Vector3(100, 100, 0)
 	local graph_size_x = 800
@@ -480,21 +480,21 @@ Graph.draw = function (self, gui, input_service, t)
 	local scale_y = graph_size_y / (visual_y_max - visual_y_min)
 
 	for plot_name, plot in pairs(self.plots) do
-		local line_color = (plot.line_color and Colors.get(plot.line_color)) or color_point_line
-		local point_color = (plot.line_color and Colors.get(plot.line_color)) or color_point_bg
+		local line_color = plot.line_color and Colors.get(plot.line_color) or color_point_line
+		local point_color = plot.line_color and Colors.get(plot.line_color) or color_point_bg
 		local xs = array.items(plot.points_x)
 		local ys = array.items(plot.points_y)
 		local p1 = Vector3((xs[1] - visual_x_min) * scale_x, (ys[1] - visual_y_min) * scale_y, 0)
 		local num_points = array.num_items(plot.points_x)
 
-		for i = 2, num_points, 1 do
+		for i = 2, num_points do
 			local p2 = Vector3((xs[i] - visual_x_min) * scale_x, (ys[i] - visual_y_min) * scale_y, 0)
 			local p1_x_inside = p1.x >= 0 and p1.x <= graph_size_x
 			local p1_y_inside = p1.y >= 0 and p1.y <= graph_size_y
 			local p2_x_inside = p2.x >= 0 and p2.x <= graph_size_x
 			local p2_y_inside = p2.y >= 0 and p2.y <= graph_size_y
 
-			if (p1_x_inside and p1_y_inside) or (p2_x_inside and p2_y_inside) then
+			if p1_x_inside and p1_y_inside or p2_x_inside and p2_y_inside then
 				ScriptGUI.hud_line(gui, p1 + origin, p2 + origin, layer, line_width, line_color)
 				Gui.rect(gui, p2 + origin + Vector3(-3, -3, 100), Vector3(6, 6, 0), point_color)
 			end
@@ -509,7 +509,7 @@ Graph.draw = function (self, gui, input_service, t)
 	local annotation_y_offset = -10
 	local annotation_text_y_offset = 0
 
-	for i = 1, num_annotations, 1 do
+	for i = 1, num_annotations do
 		local annotation = annotations[i]
 		local pos = Vector3((annotation.x - visual_x_min) * scale_x, 0, 0)
 		local x_inside = pos.x >= 0 and pos.x <= graph_size_x
@@ -593,5 +593,3 @@ Graph.draw = function (self, gui, input_service, t)
 		end
 	end
 end
-
-return

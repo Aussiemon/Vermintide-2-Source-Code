@@ -63,7 +63,7 @@ BuffSystem.hot_join_sync = function (self, peer_id)
 		local network_manager = self.network_manager
 		local network_transmit = network_manager.network_transmit
 
-		for i = 1, num_group_buffs, 1 do
+		for i = 1, num_group_buffs do
 			local group_buff_data = self.player_group_buffs[i]
 			local group_buff_template_name = group_buff_data.group_buff_template_name
 			local group_buff_template_id = NetworkLookup.group_buff_templates[group_buff_template_name]
@@ -230,7 +230,7 @@ BuffSystem._add_buff_helper_function = function (self, unit, template_name, atta
 		local buff_template = BuffTemplates[template_name]
 		local buffs = buff_template.buffs
 
-		for i = 1, #buffs, 1 do
+		for i = 1, #buffs do
 			local sub_buff = buffs[i]
 
 			fassert(sub_buff.duration == nil, "[BuffSystem] Error! Cannot use duration for server controlled buffs! (template = %s) Use a normal buff if it should have a duration!", template_name)
@@ -261,7 +261,7 @@ BuffSystem.add_buff = function (self, unit, template_name, attacker_unit, is_ser
 		return nil
 	end
 
-	local server_buff_id = (is_server_controlled and self:_next_free_server_buff_id()) or 0
+	local server_buff_id = is_server_controlled and self:_next_free_server_buff_id() or 0
 
 	if ScriptUnit.has_extension(unit, "buff_system") then
 		self:_add_buff_helper_function(unit, template_name, attacker_unit, server_buff_id, power_level, source_attacker_unit)
@@ -447,7 +447,7 @@ BuffSystem.rpc_add_group_buff = function (self, channel_id, group_buff_template_
 	local side = Managers.state.side:get_side_from_name(buff_side_name)
 	local player_units = side:player_units()
 
-	for i = 1, num_instances, 1 do
+	for i = 1, num_instances do
 		local group_buff_data = {
 			group_buff_template_name = group_buff_template_name,
 			recipients = {}
@@ -470,11 +470,11 @@ BuffSystem.rpc_remove_group_buff = function (self, channel_id, group_buff_templa
 	local group_buff_template_name = NetworkLookup.group_buff_templates[group_buff_template_id]
 	local group_buffs = self.player_group_buffs
 
-	for i = 1, num_instances, 1 do
+	for i = 1, num_instances do
 		local num_group_buffs = #group_buffs
 		local group_buff_data, index_to_remove = nil
 
-		for j = 1, num_group_buffs, 1 do
+		for j = 1, num_group_buffs do
 			group_buff_data = group_buffs[j]
 
 			if group_buff_data.group_buff_template_name == group_buff_template_name then
@@ -671,7 +671,7 @@ end
 BuffSystem._unpack_buff_params = function (self, dest_table, param_ids, param_vals)
 	table.clear(dest_table)
 
-	for i = 1, #param_ids, 1 do
+	for i = 1, #param_ids do
 		local param_id = param_ids[i]
 		local param_name = buff_params_list[param_id]
 		dest_table[param_name] = buff_param_packing_methods[param_name].unpack(param_vals[i], self)
@@ -691,7 +691,7 @@ BuffSystem.add_buff_synced = function (self, target_unit, template_name, sync_ty
 	if buff_extension then
 		buff_id, num_sub_buffs = buff_extension:add_buff(template_name, params)
 
-		if (sync_type == BuffSyncType.LocalAndServer and not self.is_server) or sync_type == BuffSyncType.All then
+		if sync_type == BuffSyncType.LocalAndServer and not self.is_server or sync_type == BuffSyncType.All then
 			local local_sync_id = invalid_buff_sync_id
 
 			if num_sub_buffs > 0 then
@@ -747,7 +747,7 @@ BuffSystem.rpc_add_buff_synced = function (self, channel_id, target_unit_id, tem
 	if buff_extension then
 		local template_name = NetworkLookup.buff_templates[template_name_id]
 		local id, num_sub_buffs = buff_extension:add_buff(template_name)
-		local server_sync_id = (remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id()) or invalid_buff_sync_id
+		local server_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
 		local sync_type = buff_sync_type_lookup[sync_type_id]
 		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
@@ -795,7 +795,7 @@ BuffSystem.rpc_add_buff_synced_params = function (self, channel_id, target_unit_
 		local template_name = NetworkLookup.buff_templates[template_name_id]
 		local params = self:_unpack_buff_params(unpacked_buff_params, param_ids, param_vals)
 		local id = buff_extension:add_buff(template_name, params)
-		local server_sync_id = (remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id()) or invalid_buff_sync_id
+		local server_sync_id = remote_sync_id ~= invalid_buff_sync_id and buff_extension:generate_sync_id() or invalid_buff_sync_id
 		local sync_type = buff_sync_type_lookup[sync_type_id]
 		local owner_peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
@@ -913,5 +913,3 @@ BuffSystem._hot_join_sync_synced_buffs = function (self, peer_id)
 		end
 	end
 end
-
-return

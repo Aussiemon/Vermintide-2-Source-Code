@@ -51,5 +51,3 @@ CameraStateIdle.update = function (self, unit, input, dt, context, t)
 	Unit.set_local_position(unit, 0, position)
 	Unit.set_local_rotation(unit, 0, rotation)
 end
-
-return

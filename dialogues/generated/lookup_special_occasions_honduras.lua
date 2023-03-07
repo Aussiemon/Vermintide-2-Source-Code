@@ -1830,5 +1830,3 @@ DialogueLookup[DialogueLookup_n + 913] = "pwe_all_stairs_conversation_b"
 DialogueLookup[DialogueLookup_n + 914] = "pwh_all_stairs_conversation_b"
 DialogueLookup[DialogueLookup_n + 915] = "pdr_all_stairs_conversation_c"
 DialogueLookup_n = DialogueLookup_n + 915
-
-return

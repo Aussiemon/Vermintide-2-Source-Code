@@ -145,5 +145,3 @@ CameraCarrier._best_suited_camera_carrier = function (self)
 
 	return players[1]
 end
-
-return

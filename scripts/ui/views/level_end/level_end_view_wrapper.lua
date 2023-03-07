@@ -98,5 +98,3 @@ end
 LevelEndViewWrapper.post_update = function (self, dt, t)
 	self._level_end_view:post_update(dt, t)
 end
-
-return

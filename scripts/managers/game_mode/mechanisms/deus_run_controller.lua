@@ -449,7 +449,7 @@ end
 DeusRunController._add_initial_talents_as_power_ups = function (self, peer_id, local_player_id, profile_index, career_index, initial_talents_for_career)
 	local talent_power_ups = {}
 
-	for tier = 1, #initial_talents_for_career, 1 do
+	for tier = 1, #initial_talents_for_career do
 		local column = initial_talents_for_career[tier]
 
 		if column ~= 0 then
@@ -1301,7 +1301,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 				local slot_count = additional_item_slots[slot_name]
 
 				if slot_count then
-					local current_item_count = (additional_items[slot_name] and #additional_items[slot_name].items) or 0
+					local current_item_count = additional_items[slot_name] and #additional_items[slot_name].items or 0
 
 					return slot_count > current_item_count
 				else
@@ -1364,7 +1364,7 @@ DeusRunController._try_buy_blessing = function (self, buyer, blessing_name)
 		local power_level = power_level_table[difficulty_rank] or power_level_table[DifficultySettings.normal.rank]
 		local peers = self._network_handler:get_peers()
 
-		for i = 1, #peers, 1 do
+		for i = 1, #peers do
 			local peer_id = peers[i]
 			local profile_index, career_index = self._run_state:get_player_profile(peer_id, REAL_PLAYER_LOCAL_ID)
 			local melee_item_string = self._run_state:get_player_loadout(peer_id, REAL_PLAYER_LOCAL_ID, profile_index, career_index, "slot_melee")
@@ -1434,7 +1434,7 @@ DeusRunController._try_buy_power_up = function (self, buyer, power_up, discount)
 
 	self._run_state:set_player_soft_currency(buyer, REAL_PLAYER_LOCAL_ID, new_coins)
 
-	local tracking_event = (discount == 0 and rarity .. "_power_up") or rarity .. "_discounted_power_up"
+	local tracking_event = discount == 0 and rarity .. "_power_up" or rarity .. "_discounted_power_up"
 
 	self:_add_coin_tracking_entry(buyer, REAL_PLAYER_LOCAL_ID, -power_up_cost, tracking_event)
 
@@ -1650,7 +1650,7 @@ DeusRunController.save_game_mode_data = function (self, peer_id, local_player_id
 			break
 		end
 
-		for i = 1, #new_items, 1 do
+		for i = 1, #new_items do
 			if new_items[i].key ~= existing_items[i].key then
 				additional_items_changed = true
 
@@ -1887,7 +1887,7 @@ DeusRunController.purchase_chest = function (self, rarity, chest_type, cost)
 
 	self._run_state:set_player_soft_currency(own_peer_id, REAL_PLAYER_LOCAL_ID, new_coins)
 
-	local event_type_rarity_prefix = (rarity and rarity .. "_") or ""
+	local event_type_rarity_prefix = rarity and rarity .. "_" or ""
 	local event_type = event_type_rarity_prefix .. chest_type .. "_chest"
 
 	self:_add_coin_tracking_entry(own_peer_id, REAL_PLAYER_LOCAL_ID, -cost, event_type)
@@ -1966,7 +1966,7 @@ DeusRunController._record_chest_purchased_for_tracking = function (self, rarity,
 
 		local skip_metatable = true
 		chest_table = table.clone(chest_table, skip_metatable)
-		chest_table[rarity] = (chest_table[rarity] and chest_table[rarity] + 1) or 1
+		chest_table[rarity] = chest_table[rarity] and chest_table[rarity] + 1 or 1
 
 		if chest_type == DEUS_CHEST_TYPES.swap_melee then
 			self._run_state:set_melee_swap_chests_used(chest_table)
@@ -2055,7 +2055,7 @@ DeusRunController.get_deus_weapon_chest_type = function (self)
 		chest_distribution = {}
 
 		for chest_type, amount in pairs(distribution) do
-			for i = 1, amount, 1 do
+			for i = 1, amount do
 				chest_distribution[#chest_distribution + 1] = chest_type
 			end
 		end
@@ -2183,5 +2183,3 @@ DeusRunController.get_run_tracking_data = function (self, game_won)
 		host_migration_count = run_state:get_host_migration_count()
 	}
 end
-
-return

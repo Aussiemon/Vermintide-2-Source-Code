@@ -122,5 +122,3 @@ BTRatOgreWalkAction.find_patrol_goal = function (self, unit, blackboard, distanc
 
 	return goal_pos
 end
-
-return

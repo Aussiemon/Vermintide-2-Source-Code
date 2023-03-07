@@ -240,5 +240,3 @@ PSRestrictions.cb_parental_control = function (self, user_id, restriction, info)
 	self:_set_restriction_fetched(user_id, restriction)
 	self:_try_fetch_next_restriction_access(user_id)
 end
-
-return

@@ -18,7 +18,7 @@ local function table_as_sorted_string_arrays(source, key_dest, value_dest)
 
 	table.sort(key_dest)
 
-	for i = 1, count, 1 do
+	for i = 1, count do
 		local key = key_dest[i]
 		value_dest[i] = source[key]
 	end
@@ -101,7 +101,7 @@ AIDebugger.update = function (self, t, dt)
 
 			Matrix4x4.set_translation(cm, new_pos)
 
-			local direction = Vector3.normalize((pos + Vector3.up()) - new_pos)
+			local direction = Vector3.normalize(pos + Vector3.up() - new_pos)
 			local rotation = Quaternion.look(direction)
 
 			Matrix4x4.set_rotation(cm, rotation)
@@ -253,6 +253,7 @@ AIDebugger.update = function (self, t, dt)
 	end
 
 	if DebugKeyHandler.key_pressed("c", "spawn bot player", "ai debugger", nil, "FreeFlight") then
+		-- Nothing
 	end
 
 	if self._fake_players then
@@ -286,12 +287,12 @@ AIDebugger.perlin_path = function (self, t, x, y, xsize, ysize)
 
 	ScriptGUI.icrect(gui, resx, resy, x1, y1, x2, y2, layer - 1, Color(200, 20, 20, 20))
 
-	for i = 1, #oktaves, 1 do
+	for i = 1, #oktaves do
 		local octave = oktaves[i]
 		local p1 = Vector3(x + octave[0][1] * xsize, y + (1 - octave[0][2] * mul_with) * ysize, 0)
 		local p2 = nil
 
-		for j = 1, #octave, 1 do
+		for j = 1, #octave do
 			local p = octave[j]
 			p2 = Vector3(x + p[1] * xsize, y + (1 - p[2] * mul_with) * ysize, 0)
 
@@ -465,7 +466,7 @@ end
 
 local color_table = {}
 
-for i = 1, 25, 1 do
+for i = 1, 25 do
 	color_table[i] = math.random(1, 15)
 end
 
@@ -511,11 +512,11 @@ AIDebugger.draw_nearby_navmesh = function (self, ai_unit)
 			GwNavTraversal.get_neighboring_triangles(triangle)
 		}
 
-		for j = 1, #neighbors, 1 do
+		for j = 1, #neighbors do
 			local neighbor = neighbors[j]
 			local is_in_list_already = false
 
-			for k = 1, num_triangles, 1 do
+			for k = 1, num_triangles do
 				local triangle2 = triangles[k]
 
 				if GwNavTraversal.are_triangles_equal(neighbor, triangle2) then
@@ -563,7 +564,7 @@ AIDebugger.draw_blackboard = function (self, ai_unit)
 
 	pos.y = pos.y - font_size
 
-	for i = 1, count_root, 1 do
+	for i = 1, count_root do
 		local key = key_dest_root[i]
 		local value = value_dest_root[i]
 		pos.y = pos.y - font_size_blackboard
@@ -597,7 +598,7 @@ AIDebugger.draw_blackboard = function (self, ai_unit)
 				Gui.text(gui, "[hidden fields]", font_mtrl, font_size_blackboard, font, pos + indent_offset, Color(255, 100, 100, 100))
 				Gui.text(gui, tostring(count_subtree - 1), font_mtrl, font_size_blackboard, font, pos + value_offset, Color(255, 100, 100, 0))
 			else
-				for j = 1, count_subtree, 1 do
+				for j = 1, count_subtree do
 					local key_subtree = key_dest_subtree[j]
 					local value_subtree = value_dest_subtree[j]
 
@@ -692,7 +693,7 @@ AIDebugger.draw_reticule = function (self)
 
 	if rawget(_G, atlas_name)[crosshair] then
 		local resolution_width, resolution_height = Gui.resolution()
-		local color = (self.hot_unit and Color(255, 255, 0, 0)) or Color(255, 255, 255, 255)
+		local color = self.hot_unit and Color(255, 255, 0, 0) or Color(255, 255, 255, 255)
 		local material, uv00, uv11, size = HUDHelper.atlas_material(atlas_name, crosshair)
 		local scale = 1
 
@@ -720,7 +721,7 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 	local pacing = conflict_director.pacing
 	local sum_pacing_intensity, player_intensity = pacing:get_pacing_intensity()
 
-	for k = 1, #player_intensity, 1 do
+	for k = 1, #player_intensity do
 		local int = player_intensity[k] * 0.01
 		local x1 = win_x
 		local y1 = row + bar_height
@@ -756,6 +757,7 @@ AIDebugger.debug_player_intensity = function (self, t, dt)
 		local status_extension = ScriptUnit.has_extension(player.player_unit, "status_system")
 
 		if status_extension then
+			-- Nothing
 		end
 	end
 
@@ -784,9 +786,9 @@ AIDebugger.debug_pacing = function (self, t, dt)
 	row = row + 0.03
 	local text, spawning_text = nil
 	local state_name, state_start_time, threat_population, specials_population, horde_population, end_time = cm.pacing:get_pacing_data()
-	local roamers = (threat_population > 0 and "[Roamers]") or "[NO Roamers]"
-	local specials = (horde_population > 0 and "[Specials]") or "[NO Specials]"
-	local horde = (horde_population > 0 and "[Hordes]") or "[NO Hordes]"
+	local roamers = threat_population > 0 and "[Roamers]" or "[NO Roamers]"
+	local specials = horde_population > 0 and "[Specials]" or "[NO Specials]"
+	local horde = horde_population > 0 and "[Hordes]" or "[NO Hordes]"
 
 	if end_time then
 		local count_down = math.clamp(end_time - t, 0, 999999)
@@ -896,7 +898,7 @@ AIDebugger.create_fake_players = function (self)
 		Vector3Box(center_position)
 	}
 
-	for i = 2, 4, 1 do
+	for i = 2, 4 do
 		self._fake_players[i] = Vector3Box(LocomotionUtils.new_random_goal(nav_world, nil, center_position, 5, 20, 10))
 	end
 
@@ -945,5 +947,3 @@ AIDebugger.draw_extensions = function (self, ai_unit)
 		Gui.rect(gui, Vector3(150, 0, 100), Vector2(pos.x + 400, start_y + 50), Color(240, 25, 50, 25))
 	end
 end
-
-return

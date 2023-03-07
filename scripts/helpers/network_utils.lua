@@ -81,5 +81,3 @@ NetworkUtils.announce_chat_peer_left = function (peer_id, lobby)
 
 	Managers.chat:add_local_system_message(1, message, pop_chat)
 end
-
-return

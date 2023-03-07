@@ -87,5 +87,3 @@ DeusGenEngine = {
 		end
 	end
 }
-
-return

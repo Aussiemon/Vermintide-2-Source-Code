@@ -236,5 +236,3 @@ HoverUI.update_widget_pivot_position = function (self, ui_scenegraph, input_serv
 		widget_scenegraph_definition.size[2] = text_height * TEXT_SIZE_MULTIPLIER
 	end
 end
-
-return

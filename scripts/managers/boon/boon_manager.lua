@@ -40,10 +40,10 @@ BoonManager.update = function (self, dt, t)
 	local spawned_players_queue_n = #spawned_players_queue
 	local boons = self._boons
 
-	for target_unit_id = 1, spawned_players_queue_n, 1 do
+	for target_unit_id = 1, spawned_players_queue_n do
 		queued_target_filter_table[1] = spawned_players_queue[target_unit_id]
 
-		for boon_id = 1, #boons, 1 do
+		for boon_id = 1, #boons do
 			self:_activate_boon(boons[boon_id], queued_target_filter_table)
 		end
 	end
@@ -136,7 +136,7 @@ BoonManager._activate_player_boons = function (self, peer_id, local_player_id)
 	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 	local boons = self._boons
 
-	for boon_id = 1, #boons, 1 do
+	for boon_id = 1, #boons do
 		local current_boon = boons[boon_id]
 
 		if current_boon.owner == player_unique_id then
@@ -158,7 +158,7 @@ BoonManager._deactivate_player_boons = function (self, peer_id, local_player_id)
 	local player_and_bot_units = side and side.PLAYER_AND_BOT_UNITS
 	local boons = self._boons
 
-	for boon_id = 1, #boons, 1 do
+	for boon_id = 1, #boons do
 		if boons[boon_id].owner == player_unique_id then
 			self:_deactivate_boon(boons[boon_id], player_and_bot_units)
 
@@ -178,7 +178,7 @@ end
 BoonManager.remove_boon = function (self, boon_unique_id)
 	local boons = self._boons
 
-	for i = 1, #boons, 1 do
+	for i = 1, #boons do
 		if boons[i].unique_id == boon_unique_id then
 			table.swap_delete(boons, i)
 
@@ -268,7 +268,7 @@ end
 BoonManager.on_clean_up_server_controlled_buffs = function (self, unit)
 	local boons = self._boons
 
-	for i = 1, #boons, 1 do
+	for i = 1, #boons do
 		local boon = boons[i]
 		local reward = InGameChallengeRewards[boon.reward_id]
 
@@ -287,5 +287,3 @@ end
 BoonManager.unregister_rpcs = function (self)
 	return
 end
-
-return

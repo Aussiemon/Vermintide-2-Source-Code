@@ -36,7 +36,7 @@ BuffUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local buff_widgets = {}
 
-	for i = 1, MAX_NUMBER_OF_BUFFS, 1 do
+	for i = 1, MAX_NUMBER_OF_BUFFS do
 		buff_widgets[i] = UIWidget.init(definitions.buff_widget_definition)
 	end
 
@@ -67,19 +67,19 @@ BuffUI._sync_buffs = function (self)
 	local active_buff_widgets = self._active_buff_widgets
 	local align_widgets = false
 
-	for i = 1, #active_buff_widgets, 1 do
+	for i = 1, #active_buff_widgets do
 		local widget_content = active_buff_widgets[i].content
 		widget_content.stack_count = 0
 		widget_content.end_time = math.huge
 	end
 
-	local player_unit = (self._is_spectator and self._spectated_player_unit) or self._player.player_unit
+	local player_unit = self._is_spectator and self._spectated_player_unit or self._player.player_unit
 	local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
 	if buff_extension then
 		local buffs, num_buffs = buff_extension:active_buffs()
 
-		for i = 1, #buffs, 1 do
+		for i = 1, #buffs do
 			local buff = buffs[i]
 			local icon = not buff.removed and buff.template.icon
 
@@ -196,12 +196,12 @@ BuffUI._add_buff = function (self, buff, icon)
 	widget_content.end_time = end_time
 	widget_content.duration = duration
 	widget_content.stack_count = 1
-	widget_content.progress = (is_cooldown and 1) or 0
+	widget_content.progress = is_cooldown and 1 or 0
 
 	UIRenderer.set_element_visible(self._ui_renderer, widget.element, true)
 
 	local widget_style = widget.style
-	local duration_color = (buff_template.debuff and COLOR_DEBUFF) or COLOR_BUFF
+	local duration_color = buff_template.debuff and COLOR_DEBUFF or COLOR_BUFF
 
 	Colors.copy_to(widget_style.texture_duration.color, duration_color)
 
@@ -232,7 +232,7 @@ BuffUI.set_visible = function (self, visible)
 	local ui_renderer = self._ui_renderer
 	local active_buff_widgets = self._active_buff_widgets
 
-	for i = 1, #active_buff_widgets, 1 do
+	for i = 1, #active_buff_widgets do
 		local widget = active_buff_widgets[i]
 
 		UIRenderer.set_element_visible(ui_renderer, widget.element, visible)
@@ -297,5 +297,3 @@ BuffUI.set_panel_alpha = function (self, alpha)
 		self._dirty = true
 	end
 end
-
-return

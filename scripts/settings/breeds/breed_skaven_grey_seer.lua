@@ -93,7 +93,7 @@ local breed_data = {
 			blackboard.death_sequence = true
 		end
 
-		if (blackboard.mounted_data and not blackboard.knocked_off_mount) or blackboard.stagger_count >= 5 then
+		if blackboard.mounted_data and not blackboard.knocked_off_mount or blackboard.stagger_count >= 5 then
 			stagger_type = stagger_types.none
 			blackboard.stagger_ignore_anim_cb = true
 		else
@@ -714,5 +714,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_grey_seer = table.create_copy(BreedActions.skaven_grey_seer, action_data)
-
-return

@@ -197,11 +197,9 @@ BTPackMasterSkulkAroundAction.debug = function (self, unit, blackboard)
 		QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.25, Colors.get("red"))
 	end
 
-	for i = 1, #test_points, 1 do
+	for i = 1, #test_points do
 		local pos = test_points[i]:unbox()
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.5, Color(255, 43, 43, 207))
 	end
 end
-
-return

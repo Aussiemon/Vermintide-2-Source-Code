@@ -140,7 +140,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 		attacker_unit = owner_unit
 	})
 
-	if (is_server and bot_player) or local_player then
+	if is_server and bot_player or local_player then
 		local overcharge_extension = ScriptUnit.extension(owner_unit, "overcharge_system")
 
 		overcharge_extension:reset()
@@ -205,7 +205,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 		if is_server then
 			local buff_extension = self._buff_extension
 
-			for i = 1, #buffs, 1 do
+			for i = 1, #buffs do
 				local buff_name = buffs[i]
 				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
@@ -215,7 +215,7 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 				network_transmit:send_rpc_clients("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, false)
 			end
 		else
-			for i = 1, #buffs, 1 do
+			for i = 1, #buffs do
 				local buff_name = buffs[i]
 				local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
 
@@ -259,13 +259,13 @@ CareerAbilityBWUnchained._run_ability = function (self, new_initial_speed)
 	local lh_weapon_extension = lh_weapon_unit and ScriptUnit.has_extension(lh_weapon_unit, "weapon_system")
 	local rh_weapon_extension = rh_weapon_unit and ScriptUnit.has_extension(rh_weapon_unit, "weapon_system")
 	local has_action = lh_weapon_extension and lh_weapon_extension:has_current_action()
-	has_action = has_action or (rh_weapon_extension and rh_weapon_extension:has_current_action())
+	has_action = has_action or rh_weapon_extension and rh_weapon_extension:has_current_action()
 
 	if not has_action then
 		CharacterStateHelper.play_animation_event(owner_unit, "unchained_ability_explosion")
 	end
 
-	if (is_server and bot_player) or local_player then
+	if is_server and bot_player or local_player then
 		local first_person_extension = self._first_person_extension
 
 		if not has_action then
@@ -286,5 +286,3 @@ CareerAbilityBWUnchained._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

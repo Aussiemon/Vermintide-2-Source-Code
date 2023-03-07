@@ -12,5 +12,3 @@ DeusSwapRangedInteractionUI.chest_unlock_failed = function (self, chest_type)
 		self:_start_animation("chest_unlock_failed")
 	end
 end
-
-return

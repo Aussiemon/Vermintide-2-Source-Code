@@ -208,7 +208,7 @@ local breed_data = {
 Breeds.chaos_exalted_sorcerer = table.create_copy(Breeds.chaos_exalted_sorcerer, breed_data)
 local MISSILE_RADIUS = 4
 local num_flower_waves = 12
-local angle_between_flower_waves = (2 * math.pi) / ((num_flower_waves + 1) * 0.5)
+local angle_between_flower_waves = 2 * math.pi / ((num_flower_waves + 1) * 0.5)
 local action_data = {
 	skulking = {
 		third_wave_max_distance = 7,
@@ -297,7 +297,7 @@ local action_data = {
 		num_waves = num_flower_waves,
 		spawn_rot_func = function (unit, blackboard, spawner_unit, index)
 			local spawn_rot = Unit.local_rotation(spawner_unit, 0)
-			local radians = (blackboard.random_flower_angles and blackboard.random_flower_angles[blackboard.wave_counter]) or angle_between_flower_waves * blackboard.wave_counter
+			local radians = blackboard.random_flower_angles and blackboard.random_flower_angles[blackboard.wave_counter] or angle_between_flower_waves * blackboard.wave_counter
 			local turn_rot = Quaternion(Vector3.up(), radians)
 			spawn_rot = Quaternion.multiply(spawn_rot, turn_rot)
 
@@ -307,7 +307,7 @@ local action_data = {
 			local angles = {}
 			local angle = math.random()
 
-			for i = 1, num_flower_waves, 1 do
+			for i = 1, num_flower_waves do
 				angle = angle + angle_between_flower_waves
 				angles[i] = angle
 			end
@@ -1112,5 +1112,3 @@ action_data.plague_wave_skulking = copy_action_data("exalted_plague_wave_skulkin
 action_data.magic_missile_skulking = copy_action_data("magic_missile_skulking", action_data.skulking, "magic_missile")
 action_data.seeking_bomb_missile_skulking = copy_action_data("seeking_bomb_missile_skulking", action_data.skulking, "seeking_bomb_missile")
 BreedActions.chaos_exalted_sorcerer = table.create_copy(BreedActions.chaos_exalted_sorcerer, action_data)
-
-return

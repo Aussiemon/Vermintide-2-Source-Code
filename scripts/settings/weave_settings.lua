@@ -241,7 +241,7 @@ local weaves_to_add = {
 }
 WeaveSettings.weave_wind_ranges = {}
 
-for i = 1, #weaves_to_add, 1 do
+for i = 1, #weaves_to_add do
 	local name = weaves_to_add[i]
 	local path = string.format("scripts/settings/weaves/%s", name)
 	local template = local_require(path)
@@ -262,7 +262,7 @@ function generate_missing_weave_horde_compositions()
 	local added_compositions = {}
 	local missing_composition_string = "\n"
 
-	for i = 1, #weaves_to_add, 1 do
+	for i = 1, #weaves_to_add do
 		local name = weaves_to_add[i]
 		local path = string.format("scripts/settings/weaves/%s", name)
 		local template = local_require(path)
@@ -447,7 +447,7 @@ WeaveSettings.winds = {
 WeaveSettings.templates = {}
 WeaveSettings.templates_ordered = {}
 
-for i = 1, num_templates * 4, 1 do
+for i = 1, num_templates * 4 do
 	local index = i % num_templates
 
 	if index == 0 then
@@ -479,7 +479,7 @@ for i = 1, num_templates * 4, 1 do
 	template.difficulty_key = difficulty_key
 	template.scaling_settings = scaling_settings
 
-	for k = 1, #objectives, 1 do
+	for k = 1, #objectives do
 		local objective = objectives[k]
 		local level_id = objective.level_id
 		local objective_settings = objective.objective_settings
@@ -582,7 +582,7 @@ local function calc_spawn_weave_special(event, difficulty_rank, seed)
 		local check_name = event.breed_name
 		local num_to_spawn = event.amount or 1
 
-		for i = 1, num_to_spawn, 1 do
+		for i = 1, num_to_spawn do
 			local breed_name, index = nil
 
 			if type(check_name) == "table" then
@@ -644,7 +644,7 @@ local function calculate_enemy_count_from_terror_event(terror_event_name, diffic
 	local terror_event_blueprints = TerrorEventBlueprints.weaves
 	local terror_event = terror_event_blueprints[terror_event_name]
 
-	for i = 1, #terror_event, 1 do
+	for i = 1, #terror_event do
 		local sub_event = terror_event[i]
 		local sub_event_name = sub_event[1]
 
@@ -665,7 +665,7 @@ local function calculate_enemy_count_from_terror_event(terror_event_name, diffic
 
 			fassert(event_composition ~= nil, string.format("[WeaveSettings] No horde composition found for '%s' on difficulty '%s'", event_composition_type, difficulty_key))
 
-			for j = 1, #event_composition, 1 do
+			for j = 1, #event_composition do
 				local composition = event_composition[j]
 				local breeds = composition.breeds
 
@@ -746,7 +746,7 @@ local function calculate_score_multipliers(objective, weave_name)
 	end
 
 	local num_scored_objectives = get_scored_objective_count(objective)
-	local bar_from_objectives = (num_scored_objectives == 0 and 0) or max_objective_essence
+	local bar_from_objectives = num_scored_objectives == 0 and 0 or max_objective_essence
 	local bar_from_enemies = math.max(total_required_essence - bar_from_objectives, min_essence_from_enemies)
 	local score_per_objective = bar_from_objectives / num_scored_objectives
 	local enemies_to_spawn = objective.to_spawn
@@ -819,5 +819,3 @@ for weave_name, weave_template in pairs(WeaveSettings.templates) do
 end
 
 print("TIME: " .. os.clock() - time)
-
-return

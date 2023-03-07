@@ -447,5 +447,3 @@ end
 IRCStates.wait_for_connection = function (irc_manager, dt)
 	return
 end
-
-return

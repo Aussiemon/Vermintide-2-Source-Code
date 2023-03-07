@@ -247,5 +247,3 @@ MissionObjectiveUI._start_animation = function (self, key, animation_name)
 	local anim_id = self.ui_animator:start_animation(animation_name, self._mission_widget, scenegraph_definition, params)
 	self._animations[key] = anim_id
 end
-
-return

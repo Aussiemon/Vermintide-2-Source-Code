@@ -77,5 +77,3 @@ PlayerCharacterStateUsingTransport.update = function (self, unit, input, dt, con
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
 	CharacterStateHelper.update_weapon_actions(t, unit, input_extension, inventory_extension, self.health_extension)
 end
-
-return

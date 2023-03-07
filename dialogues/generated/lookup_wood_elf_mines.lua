@@ -48,5 +48,3 @@ DialogueLookup[DialogueLookup_n + 22] = "pwe_level_mine_gloat"
 DialogueLookup[DialogueLookup_n + 23] = "pwe_level_mine_troll_doors"
 DialogueLookup[DialogueLookup_n + 24] = "pwe_level_mine_bridge"
 DialogueLookup_n = DialogueLookup_n + 24
-
-return

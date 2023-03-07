@@ -45,10 +45,10 @@ local quest_rules = QuestSettings.rules
 for quest_type, data in pairs(quest_rules) do
 	local stat_prefix = string.format("%s_quest", quest_type)
 
-	for i = 1, data.max_quests, 1 do
+	for i = 1, data.max_quests do
 		local quest_name = string.format("%s_%d", stat_prefix, i)
 
-		for j = 1, data.num_criterias, 1 do
+		for j = 1, data.num_criterias do
 			local stat_name = string.format("%s_stat_%d", quest_name, j)
 			player.quest_statistics[stat_name] = {
 				value = 0,
@@ -742,5 +742,3 @@ end
 
 add_names(player)
 add_names(unit_test)
-
-return

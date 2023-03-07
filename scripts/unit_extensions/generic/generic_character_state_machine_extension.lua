@@ -62,7 +62,7 @@ GenericCharacterStateMachineExtension.extensions_ready = function (self)
 	local states = {}
 	local character_state_class_list = self.character_state_class_list
 
-	for i = 1, #character_state_class_list, 1 do
+	for i = 1, #character_state_class_list do
 		local state_instance = character_state_class_list[i]:new(character_state_init_context)
 		local name = state_instance.name
 
@@ -91,5 +91,3 @@ end
 GenericCharacterStateMachineExtension.current_state = function (self)
 	return self.state_machine:current_state()
 end
-
-return

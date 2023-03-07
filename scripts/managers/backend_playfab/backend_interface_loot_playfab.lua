@@ -55,7 +55,7 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	local loot = {}
 	local backend_mirror = self._backend_mirror
 
-	for i = 1, num_items, 1 do
+	for i = 1, num_items do
 		local item = items[i]
 		local backend_id = item.ItemInstanceId
 		local new_backend_id = backend_mirror:add_item(backend_id, item)
@@ -71,13 +71,13 @@ BackendInterfaceLootPlayfab.loot_chest_rewards_request_cb = function (self, data
 	end
 
 	if unlocked_weapon_skins then
-		for i = 1, #unlocked_weapon_skins, 1 do
+		for i = 1, #unlocked_weapon_skins do
 			backend_mirror:add_unlocked_weapon_skin(unlocked_weapon_skins[i])
 		end
 	end
 
 	if new_cosmetics then
-		for i = 1, #new_cosmetics, 1 do
+		for i = 1, #new_cosmetics do
 			local backend_id = backend_mirror:add_item(nil, {
 				ItemId = new_cosmetics[i]
 			})
@@ -174,7 +174,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	for item_type, item_data in pairs(rewards) do
 		local backend_id, item = nil
 
-		for i = 1, num_items, 1 do
+		for i = 1, num_items do
 			item = items[i]
 
 			if item_data.ItemId == item.ItemId then
@@ -210,7 +210,7 @@ BackendInterfaceLootPlayfab.end_of_level_loot_request_cb = function (self, data,
 	end
 
 	if items_revoked then
-		for i = 1, #items_revoked, 1 do
+		for i = 1, #items_revoked do
 			local item_backend_id = items_revoked[i].ItemInstanceId
 
 			backend_mirror:remove_item(item_backend_id)
@@ -389,7 +389,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	local loot = {}
 
 	if items then
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			local item = items[i]
 			local backend_id = item.ItemInstanceId
 			local amount = item.UsesIncrementedBy or 1
@@ -407,7 +407,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	local new_keep_decorations = function_result.new_keep_decorations
 
 	if new_keep_decorations then
-		for i = 1, #new_keep_decorations, 1 do
+		for i = 1, #new_keep_decorations do
 			local keep_decoration_name = new_keep_decorations[i]
 
 			backend_mirror:add_keep_decoration(keep_decoration_name)
@@ -422,7 +422,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	local new_weapon_skins = function_result.new_weapon_skins
 
 	if new_weapon_skins then
-		for i = 1, #new_weapon_skins, 1 do
+		for i = 1, #new_weapon_skins do
 			local weapon_skin_name = new_weapon_skins[i]
 
 			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
@@ -439,7 +439,7 @@ BackendInterfaceLootPlayfab.achievement_rewards_request_cb = function (self, dat
 	if new_cosmetics then
 		local item_master_list = ItemMasterList
 
-		for i = 1, #new_cosmetics, 1 do
+		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local item = rawget(item_master_list, cosmetic_name)
 			local backend_id = backend_mirror:add_item(nil, {
@@ -492,7 +492,7 @@ BackendInterfaceLootPlayfab.can_claim_all_achievement_rewards = function (self, 
 	local mirror = self._backend_mirror
 	local claimed_achievements = mirror:get_claimed_achievements()
 
-	for i = 0, #achievement_ids, 1 do
+	for i = 0, #achievement_ids do
 		local achievement_id = achievement_ids[i]
 
 		if not claimed_achievements[achievement_id] then
@@ -513,7 +513,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards = function (self,
 	local challenge_data = {}
 	local id = self:_new_id()
 
-	for i = 1, #achievement_ids, 1 do
+	for i = 1, #achievement_ids do
 		local achievement_id = achievement_ids[i]
 		local data = {
 			achievement_id = achievement_id
@@ -562,7 +562,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 	local loot = {}
 
 	if items then
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			local item = items[i]
 			local backend_id = item.ItemInstanceId
 			local amount = item.UsesIncrementedBy or 1
@@ -580,7 +580,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 	local new_keep_decorations = function_result.new_keep_decorations
 
 	if new_keep_decorations then
-		for i = 1, #new_keep_decorations, 1 do
+		for i = 1, #new_keep_decorations do
 			local keep_decoration_name = new_keep_decorations[i]
 
 			backend_mirror:add_keep_decoration(keep_decoration_name)
@@ -595,7 +595,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 	local new_weapon_skins = function_result.new_weapon_skins
 
 	if new_weapon_skins then
-		for i = 1, #new_weapon_skins, 1 do
+		for i = 1, #new_weapon_skins do
 			local weapon_skin_name = new_weapon_skins[i]
 
 			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
@@ -612,7 +612,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 	if new_cosmetics then
 		local item_master_list = ItemMasterList
 
-		for i = 1, #new_cosmetics, 1 do
+		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local item = rawget(item_master_list, cosmetic_name)
 			local backend_id = backend_mirror:add_item(nil, {
@@ -653,7 +653,7 @@ BackendInterfaceLootPlayfab.claim_multiple_achievement_rewards_request_cb = func
 	end
 
 	if achievement_ids then
-		for i = 1, #achievement_ids, 1 do
+		for i = 1, #achievement_ids do
 			local achievement_id = achievement_ids[i].achievement_id
 
 			backend_mirror:set_achievement_claimed(achievement_id)
@@ -683,5 +683,3 @@ end
 BackendInterfaceLootPlayfab.get_loot = function (self, id)
 	return self._loot_requests[id]
 end
-
-return

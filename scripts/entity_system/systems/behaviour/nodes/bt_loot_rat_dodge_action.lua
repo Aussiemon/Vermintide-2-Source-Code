@@ -37,7 +37,7 @@ BTLootRatDodgeAction.enter = function (self, unit, blackboard, t)
 
 		local network_manager = Managers.state.network
 
-		network_manager:anim_event(unit, (right and action.dodge_right_anim) or (not right and action.dodge_left_anim) or action.dodge_anim)
+		network_manager:anim_event(unit, right and action.dodge_right_anim or not right and action.dodge_left_anim or action.dodge_anim)
 
 		if script_data.debug_ai_movement then
 			local unit_position = position_lookup[unit]
@@ -147,5 +147,3 @@ BTLootRatDodgeAction.try_dodge_position = function (self, unit, blackboard, unit
 		end
 	end
 end
-
-return

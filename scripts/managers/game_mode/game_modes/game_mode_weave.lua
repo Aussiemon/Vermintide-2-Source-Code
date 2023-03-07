@@ -372,7 +372,7 @@ GameModeWeave._get_first_available_bot_profile = function (self)
 	local profile_synchronizer = self._profile_synchronizer
 	local available_profile_by_priority = {}
 
-	for i = 1, #available_profiles, 1 do
+	for i = 1, #available_profiles do
 		local profile_name = available_profiles[i]
 		local profile_index = FindProfileIndex(profile_name)
 
@@ -418,7 +418,7 @@ GameModeWeave._setup_bot_spawn_priority_lookup = function (self)
 		if num_saved_priority > 0 then
 			self._bot_profile_id_to_priority_id = {}
 
-			for i = 1, num_saved_priority, 1 do
+			for i = 1, num_saved_priority do
 				local profile_id = saved_priority[i]
 				self._bot_profile_id_to_priority_id[profile_id] = i
 			end
@@ -439,7 +439,7 @@ GameModeWeave._handle_bots = function (self, t, dt)
 		return
 	end
 
-	if script_data.ai_bots_disabled or (not self._quick_play and not Development.parameter("enable_bots_in_weaves")) then
+	if script_data.ai_bots_disabled or not self._quick_play and not Development.parameter("enable_bots_in_weaves") then
 		if #self._bot_players > 0 then
 			local update_safe = true
 
@@ -466,13 +466,13 @@ GameModeWeave._handle_bots = function (self, t, dt)
 		local open_slots = num_slots - num_used_slots
 		local num_bots_to_add = math.min(delta, open_slots)
 
-		for i = 1, num_bots_to_add, 1 do
+		for i = 1, num_bots_to_add do
 			self:_add_bot(bot_players)
 		end
 	elseif delta < 0 then
 		local num_bots_to_remove = math.abs(delta)
 
-		for i = 1, num_bots_to_remove, 1 do
+		for i = 1, num_bots_to_remove do
 			local update_safe = true
 
 			self:_remove_bot(bot_players, #bot_players, update_safe)
@@ -513,7 +513,7 @@ GameModeWeave._remove_bot_by_profile = function (self, bot_players, profile_inde
 	local bot_index = nil
 	local num_current_bots = #bot_players
 
-	for i = 1, num_current_bots, 1 do
+	for i = 1, num_current_bots do
 		local bot_player = bot_players[i]
 		local bot_profile_index = bot_player:profile_index()
 
@@ -551,5 +551,3 @@ GameModeWeave.cleanup_game_mode_units = function (self)
 
 	self:_clear_bots(update_safe)
 end
-
-return

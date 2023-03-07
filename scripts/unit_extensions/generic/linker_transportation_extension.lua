@@ -184,7 +184,7 @@ LinkerTransportationExtension._link_all_transported_units = function (self, inte
 	if self.takes_party then
 		local player_and_bot_units = self._side.PLAYER_AND_BOT_UNITS
 
-		for i = 1, #player_and_bot_units, 1 do
+		for i = 1, #player_and_bot_units do
 			local unit = player_and_bot_units[i]
 
 			if unit_alive(unit) and unit ~= interactor_unit then
@@ -279,7 +279,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 	local nearby_ai_units = FrameTable.alloc_table()
 	local num_nearby_ai_units = Broadphase.query(ai_broadphase, position, self.oobb_mesh_max_extent + 1, nearby_ai_units)
 
-	for i = 1, num_nearby_ai_units, 1 do
+	for i = 1, num_nearby_ai_units do
 		local u = nearby_ai_units[i]
 
 		if AiUtils.unit_alive(u) then
@@ -305,7 +305,7 @@ LinkerTransportationExtension.update_units_inside_oobb = function (self)
 
 	for u, is_inside in pairs(location.human) do
 		local status_extension = ScriptUnit.extension(u, "status_system")
-		local arg = (is_inside and unit) or nil
+		local arg = is_inside and unit or nil
 
 		status_extension:set_inside_transport_unit(arg)
 	end
@@ -391,7 +391,7 @@ LinkerTransportationExtension.update = function (self, unit, input, dt, context,
 	if units_inside_oobb and self.oobb_next_update <= t then
 		self:update_units_inside_oobb()
 
-		local update_interval = (units_inside_oobb.human.count > 0 and UPDATE_INTERVAL_OOBB_HUMANS_INSIDE) or UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE
+		local update_interval = units_inside_oobb.human.count > 0 and UPDATE_INTERVAL_OOBB_HUMANS_INSIDE or UPDATE_INTERVAL_OOBB_NO_HUMANS_INSIDE
 		self.oobb_next_update = t + update_interval
 
 		if self._disable_spawning and units_inside_oobb.human.count == 0 and not self._transporting then
@@ -434,7 +434,7 @@ LinkerTransportationExtension._update_local_player_position = function (self)
 	local transported_units = self.transported_units
 	local num_transported_units = #transported_units
 
-	for i = 1, num_transported_units, 1 do
+	for i = 1, num_transported_units do
 		repeat
 			local unit = transported_units[i]
 
@@ -478,7 +478,7 @@ LinkerTransportationExtension.is_stationary = function (self)
 end
 
 LinkerTransportationExtension.can_interact = function (self, interactor_unit)
-	return (self.story_state == "stopped_beginning" and #self.transported_units == 0) or (self.story_state == "stopped_end" and not self.auto_exit and self.transported_units[1] == interactor_unit)
+	return self.story_state == "stopped_beginning" and #self.transported_units == 0 or self.story_state == "stopped_end" and not self.auto_exit and self.transported_units[1] == interactor_unit
 end
 
 LinkerTransportationExtension.destroy = function (self)
@@ -533,7 +533,7 @@ LinkerTransportationExtension._unlink_all_transported_units = function (self)
 	local transported_units = self.transported_units
 	local num_transported_units = #transported_units
 
-	for i = 1, num_transported_units, 1 do
+	for i = 1, num_transported_units do
 		local transported_unit = transported_units[i]
 		transported_units[i] = nil
 
@@ -617,5 +617,3 @@ end
 LinkerTransportationExtension.assign_position_to_bot = function (self)
 	return Unit.world_position(self.unit, 0)
 end
-
-return

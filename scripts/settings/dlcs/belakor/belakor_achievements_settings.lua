@@ -25,5 +25,3 @@ settings.achievement_template_file_names = {
 	"scripts/managers/achievements/achievement_templates_belakor"
 }
 settings.achievement_events = {}
-
-return

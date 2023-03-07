@@ -84,5 +84,3 @@ end
 AIBrain.update = function (self, unit, t, dt)
 	local result = self._bt:root():evaluate(unit, self._blackboard, t, dt)
 end
-
-return

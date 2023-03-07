@@ -51,7 +51,7 @@ DamageWaveHuskExtension.destroy = function (self)
 	local fx_list = self.fx_list
 	local num_fx = #fx_list
 
-	for i = 1, num_fx, 1 do
+	for i = 1, num_fx do
 		local fx_id = fx_list[i]
 
 		World.stop_spawning_particles(world, fx_id)
@@ -184,14 +184,12 @@ local wave_length = 1
 DamageWaveHuskExtension.debug_render_wave = function (self, t, dt, pos, travel_dir, height)
 	local k = 0
 
-	for i = -half_segments, half_segments - 1, 1 do
+	for i = -half_segments, half_segments - 1 do
 		local size = math.sin(-math.pi + k / segments * math.pi) * self.max_height
-		local p = (pos + travel_dir * i / segments * wave_length) - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
+		local p = pos + travel_dir * i / segments * wave_length - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
 
 		QuickDrawer:circle(p, self.max_height, travel_dir, Colors.get("lime_green"))
 
 		k = k + 1
 	end
 end
-
-return

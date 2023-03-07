@@ -53,5 +53,3 @@ ScriptConnectedStorageDeleteToken.info = function (self)
 
 	return info
 end
-
-return

@@ -201,7 +201,7 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 		if not SteamServerBrowser.is_refreshing(self._engine_browser) then
 			local num_servers = SteamServerBrowser.num_servers(self._engine_browser)
 
-			for i = 0, num_servers - 1, 1 do
+			for i = 0, num_servers - 1 do
 				SteamServerBrowser.request_data(self._engine_browser, i)
 			end
 
@@ -211,7 +211,7 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 		local is_fetching = false
 		local num_servers = SteamServerBrowser.num_servers(self._engine_browser)
 
-		for i = 0, num_servers - 1, 1 do
+		for i = 0, num_servers - 1 do
 			local is_fetching_data, fetch_error = SteamServerBrowser.is_fetching_data(self._engine_browser, i)
 
 			if is_fetching_data then
@@ -226,7 +226,7 @@ SteamServerBrowserWrapper.update = function (self, dt, t)
 
 			table.clear(cached_servers)
 
-			for i = 0, num_servers - 1, 1 do
+			for i = 0, num_servers - 1 do
 				local server = SteamServerBrowser.server(self._engine_browser, i)
 				server.ip_port = server.ip_address .. ":" .. server.query_port
 				local lobby_data = SteamServerBrowser.data_all(self._engine_browser, i)
@@ -273,5 +273,3 @@ SteamServerBrowserWrapper._filter_server = function (self, server_data)
 
 	return true
 end
-
-return

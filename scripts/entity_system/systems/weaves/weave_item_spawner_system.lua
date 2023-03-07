@@ -22,5 +22,3 @@ WeaveItemSpawnerSystem._get_unit_template = function (self, unit)
 
 	return spawn_id, unit_template
 end
-
-return

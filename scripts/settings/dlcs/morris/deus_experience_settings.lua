@@ -3,5 +3,3 @@ DeusExperienceSettings = {
 	COINS = 5,
 	CURSED_CHESTS = 50
 }
-
-return

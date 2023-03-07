@@ -1,6 +1,6 @@
 require("scripts/managers/game_mode/game_modes/game_mode_base")
 require("scripts/ui/views/deus_menu/deus_map_decision_view")
-require((script_data.FEATURE_old_map_ui and "scripts/ui/views/deus_menu/deus_shop_view") or "scripts/ui/views/deus_menu/deus_shop_view_v2")
+require(script_data.FEATURE_old_map_ui and "scripts/ui/views/deus_menu/deus_shop_view" or "scripts/ui/views/deus_menu/deus_shop_view_v2")
 
 local UI_RENDERER_MATERIALS = {
 	"material",
@@ -215,6 +215,7 @@ GameModeMapDeus.update = function (self, t, dt)
 			self._map_decision_view:start(transition_params)
 			Wwise.set_state("level_morris_map", "map")
 		elseif server_state == states.WAITING_FOR_PLAYERS_AFTER_MAP_DECISION then
+			-- Nothing
 		elseif server_state == states.SHOP then
 			self._ui_done = false
 
@@ -241,7 +242,9 @@ GameModeMapDeus.update = function (self, t, dt)
 			self._shop_view:start(transition_params)
 			Wwise.set_state("level_morris_map", "shrine")
 		elseif server_state == states.WAITING_FOR_PLAYERS_AFTER_SHOP then
+			-- Nothing
 		elseif server_state == states.FINISHING then
+			-- Nothing
 		end
 
 		self._shared_state:set_own(self._shared_state:get_key("state"), server_state)
@@ -379,5 +382,3 @@ GameModeMapDeus.evaluate_end_conditions = function (self, round_started)
 		return true, "won", self._final_node_selected
 	end
 end
-
-return

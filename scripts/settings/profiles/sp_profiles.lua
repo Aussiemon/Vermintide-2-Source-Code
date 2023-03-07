@@ -400,7 +400,7 @@ for profile_index, profile in pairs(SPProfiles) do
 end
 
 local function process_profiles()
-	for i = 1, #SPProfiles, 1 do
+	for i = 1, #SPProfiles do
 		local profile = SPProfiles[i]
 		local profile_name = profile.display_name
 
@@ -430,7 +430,7 @@ function GetHeroAffiliationIndex(profile_index)
 	local profile = SPProfiles[profile_index]
 	local hero_profiles = PROFILES_BY_AFFILIATION.heroes
 
-	for i = 1, #hero_profiles, 1 do
+	for i = 1, #hero_profiles do
 		local hero_profile = hero_profiles[i]
 
 		if profile.display_name == hero_profile then
@@ -472,7 +472,7 @@ PROFILES_BY_NAME = {}
 PROFILES_BY_CAREER_NAMES = {}
 PROFILES_BY_AFFILIATION = {}
 
-for i = 1, #SPProfiles, 1 do
+for i = 1, #SPProfiles do
 	local profile = SPProfiles[i]
 	profile.index = i
 	PROFILES_BY_NAME[profile.display_name] = profile
@@ -571,5 +571,3 @@ for index, profile in ipairs(SPProfiles) do
 		table.clear(camera_state_names)
 	end
 end
-
-return

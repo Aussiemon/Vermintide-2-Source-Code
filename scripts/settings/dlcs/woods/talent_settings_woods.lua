@@ -678,5 +678,3 @@ for name, data in pairs(talent_buff_templates) do
 end
 
 BuffUtils.apply_buff_tweak_data(talent_buff_templates, buff_tweak_data)
-
-return

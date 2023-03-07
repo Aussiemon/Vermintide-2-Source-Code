@@ -70,5 +70,3 @@ AdventureProfileRules.handle_profile_delegation_for_joining_player = function (s
 		end
 	end
 end
-
-return

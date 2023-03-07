@@ -66,5 +66,3 @@ WwiseUtils.make_unit_manual_source = function (wwise_world, unit, node_id)
 
 	return source
 end
-
-return

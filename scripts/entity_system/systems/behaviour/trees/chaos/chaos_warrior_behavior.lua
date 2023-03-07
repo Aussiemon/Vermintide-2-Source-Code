@@ -130,5 +130,3 @@ BreedBehaviors.chaos_warrior = {
 	},
 	name = "horde"
 }
-
-return

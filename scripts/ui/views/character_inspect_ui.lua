@@ -83,5 +83,3 @@ CharacterInspectUI.set_position = function (self, x, y)
 	position[1] = x
 	position[2] = y
 end
-
-return

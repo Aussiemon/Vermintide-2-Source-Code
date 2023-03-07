@@ -177,7 +177,7 @@ StartGameWindowWeaveQuickplay._sync_selected_difficulty = function (self)
 
 		local difficulty_widgets = self._difficulty_widgets
 
-		for i = 1, #difficulty_widgets, 1 do
+		for i = 1, #difficulty_widgets do
 			local widget = difficulty_widgets[i]
 			local content = widget.content
 			local difficulty_key = content.difficulty_key
@@ -202,7 +202,7 @@ StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 		self:_play_sound("Play_hud_hover")
 	end
 
-	local play_pressed = (not mouse_active and input_service:get("refresh_press")) or input_service:get("skip_press")
+	local play_pressed = not mouse_active and input_service:get("refresh_press") or input_service:get("skip_press")
 
 	if self._is_matchmaking then
 		if play_pressed then
@@ -217,7 +217,7 @@ StartGameWindowWeaveQuickplay._handle_input = function (self, dt, t)
 	local difficulty_widgets = self._difficulty_widgets
 
 	if mouse_active then
-		for i = 1, #difficulty_widgets, 1 do
+		for i = 1, #difficulty_widgets do
 			local widget = difficulty_widgets[i]
 
 			if self:_is_button_hover_enter(widget) then
@@ -303,7 +303,7 @@ StartGameWindowWeaveQuickplay._update_animations = function (self, dt)
 	local difficulty_widgets = self._difficulty_widgets
 
 	if difficulty_widgets then
-		for i = 1, #difficulty_widgets, 1 do
+		for i = 1, #difficulty_widgets do
 			local widget = difficulty_widgets[i]
 
 			self:_animate_difficulty_button(widget, dt)
@@ -406,7 +406,7 @@ StartGameWindowWeaveQuickplay._setup_difficulties = function (self)
 	local current_offset = 0
 	local dlc_difficulties = {}
 
-	for i = STARTING_DIFFICULTY_INDEX, #difficulties, 1 do
+	for i = STARTING_DIFFICULTY_INDEX, #difficulties do
 		local difficulty_key = difficulties[i]
 		local difficulty_settings = DifficultySettings[difficulty_key]
 		local display_name = difficulty_settings.display_name
@@ -467,5 +467,3 @@ StartGameWindowWeaveQuickplay._animate_difficulty_button = function (self, widge
 	hotspot.hover_progress = hover_progress
 	hotspot.selection_progress = selection_progress
 end
-
-return

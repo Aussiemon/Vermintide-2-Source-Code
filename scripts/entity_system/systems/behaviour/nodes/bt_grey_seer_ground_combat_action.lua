@@ -86,14 +86,14 @@ BTGreySeerGroundCombatAction.update_final_phase = function (self, unit, blackboa
 	local teleport_timer = final_phase_data.teleport_timer
 	local special_spawn_timer = final_phase_data.special_spawn_timer
 
-	if current_phase == 4 and ((teleport_timer and teleport_timer < t) or action.staggers_until_teleport <= blackboard.stagger_count) then
+	if current_phase == 4 and (teleport_timer and teleport_timer < t or action.staggers_until_teleport <= blackboard.stagger_count) then
 		local projected_wanted_pos = LocomotionUtils.pos_on_mesh(blackboard.nav_world, call_position, 1, 1)
 		blackboard.quick_teleport_exit_pos = Vector3Box(projected_wanted_pos)
 		blackboard.quick_teleport = true
 		final_phase_data.teleport_timer = t + action.final_phase_teleport_cooldown
 		blackboard.current_spell_name = "teleport"
 		blackboard.stagger_count = 0
-		final_phase_data.num_teleports = (final_phase_data.num_teleports and final_phase_data.num_teleports + 1) or 1
+		final_phase_data.num_teleports = final_phase_data.num_teleports and final_phase_data.num_teleports + 1 or 1
 
 		if final_phase_data.num_teleports > 4 then
 			final_phase_data.num_teleports = 1
@@ -207,5 +207,3 @@ BTGreySeerGroundCombatAction.spawn_allies = function (self, unit, blackboard, t)
 
 	conflict_director.horde_spawner:execute_event_horde(t, terror_event_id, side_id, composition_type, limit_spawners, silent, nil, strictly_not_close_to_players)
 end
-
-return

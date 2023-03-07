@@ -218,5 +218,3 @@ BreedBehaviors.marauder_tutorial = {
 	},
 	name = "marauder_tutorial"
 }
-
-return

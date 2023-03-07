@@ -210,5 +210,3 @@ settings.ai_group_templates = {
 		end
 	}
 }
-
-return

@@ -7,7 +7,7 @@ end
 
 StateTitleScreenMain = class(StateTitleScreenMain)
 StateTitleScreenMain.NAME = "StateTitleScreenMain"
-local ATTRACT_MODE_TIMER = (script_data.honduras_demo and DemoSettings.attract_timer) or nil
+local ATTRACT_MODE_TIMER = script_data.honduras_demo and DemoSettings.attract_timer or nil
 
 StateTitleScreenMain.on_enter = function (self, params)
 	print("[Gamestate] Enter Substate StateTitleScreenMain")
@@ -368,5 +368,3 @@ end
 StateTitleScreenMain.on_exit = function (self)
 	return
 end
-
-return

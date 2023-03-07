@@ -12,7 +12,7 @@ ActionRailGun.client_owner_start_action = function (self, new_action, t, chain_a
 	if on_shoot_particle_fx and not self.is_bot then
 		local unit = self.first_person_unit
 		local node_name = on_shoot_particle_fx.node_name
-		self._on_shoot_particle_fx_node = (Unit.has_node(unit, node_name) and Unit.node(unit, node_name)) or 0
+		self._on_shoot_particle_fx_node = Unit.has_node(unit, node_name) and Unit.node(unit, node_name) or 0
 		self._on_shoot_particle_fx = on_shoot_particle_fx
 	end
 end
@@ -38,5 +38,3 @@ ActionRailGun.finish = function (self, reason)
 	ActionRailGun.super.finish(self, reason)
 	self:_proc_spell_used(self.owner_buff_extension)
 end
-
-return

@@ -200,7 +200,7 @@ StartGameWindowTwitchLogin.cb_connection_success_callback = function (self, user
 end
 
 StartGameWindowTwitchLogin._set_disconnect_button_text = function (self)
-	local user_name = (Managers.twitch and Managers.twitch:user_name()) or "N/A"
+	local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
 	local disconnect_button_widget = self._widgets_by_name.button_2
 	disconnect_button_widget.content.button_hotspot.text = string.format(Localize("start_game_window_twitch_disconnect"), user_name)
 end
@@ -254,7 +254,7 @@ StartGameWindowTwitchLogin._update_button_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 	local widget_prefix = "button_"
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
 
@@ -324,7 +324,7 @@ StartGameWindowTwitchLogin.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -336,5 +336,3 @@ end
 StartGameWindowTwitchLogin._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

@@ -171,8 +171,8 @@ ItemGridUI.update_items_status = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local item_icon_name = "item_icon" .. name_sufix
 			local locked_icon_name = "locked_icon" .. name_sufix
@@ -269,8 +269,8 @@ ItemGridUI.set_item_selected = function (self, item)
 	self._selected_item_column = nil
 	self._selected_item_equipped = nil
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local hotspot = content[hotspot_name]
@@ -294,8 +294,8 @@ ItemGridUI.is_item_wieldable = function (self, item)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local hotspot = content[hotspot_name]
@@ -406,9 +406,9 @@ ItemGridUI.get_item_in_slot = function (self, row_number, column_number)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
+	for i = 1, rows do
 		if i == row_number then
-			for k = 1, columns, 1 do
+			for k = 1, columns do
 				if k == column_number then
 					local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 
@@ -496,7 +496,7 @@ ItemGridUI.add_item_to_slot_index = function (self, slot_index, item, optional_a
 		local item_tooltip_name = "item_tooltip" .. name_sufix
 		content[item_tooltip_name] = display_name
 		item_content[item_icon_name] = inventory_icon
-		item_content[item_amount_name] = (item_data.can_stack and amount) or ""
+		item_content[item_amount_name] = item_data.can_stack and amount or ""
 		item_content[locked_icon_name] = self._locked_item_icon
 
 		if not backend_id then
@@ -551,8 +551,8 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 	local columns = content.columns
 	local item_read_index = start_read_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local item_icon_name = "item_icon" .. name_sufix
 			local item_amount_name = "amount_text" .. name_sufix
@@ -612,7 +612,7 @@ ItemGridUI._populate_inventory_page = function (self, items, start_read_index)
 				local item_tooltip_name = "item_tooltip" .. name_sufix
 				content[item_tooltip_name] = display_name
 				item_content[item_icon_name] = inventory_icon
-				item_content[item_amount_name] = (item_data.can_stack and amount) or ""
+				item_content[item_amount_name] = item_data.can_stack and amount or ""
 				item_content[locked_icon_name] = self._locked_item_icon
 
 				if not backend_id then
@@ -656,8 +656,8 @@ ItemGridUI.clear_item_grid = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local item_icon_name = "item_icon" .. name_sufix
 			local item_amount_name = "amount_text" .. name_sufix
@@ -684,7 +684,7 @@ ItemGridUI._on_category_index_change = function (self, index, keep_page_index)
 	local career_specific_filter = settings.career_specific_filter
 
 	if hero_specific_filter then
-		local temp_item_filter = (item_filter and "and " .. item_filter) or ""
+		local temp_item_filter = item_filter and "and " .. item_filter or ""
 		item_filter = "can_wield_by_current_hero " .. temp_item_filter
 	end
 
@@ -806,15 +806,15 @@ ItemGridUI.is_item_pressed = function (self, allow_single_press)
 	local disable_locked_items = self._disable_locked_items
 	local disable_unwieldable_items = self._disable_unwieldable_items
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
 			local locked = disable_locked_items and slot_hotspot.reserved
 			local unwieldable_locked = disable_unwieldable_items and slot_hotspot.unwieldable
 
-			if not locked and not unwieldable_locked and (slot_hotspot.on_double_click or slot_hotspot.on_right_click or (allow_single_press and slot_hotspot.on_pressed)) then
+			if not locked and not unwieldable_locked and (slot_hotspot.on_double_click or slot_hotspot.on_right_click or allow_single_press and slot_hotspot.on_pressed) then
 				local item = content["item" .. name_sufix]
 				local is_equipped = slot_hotspot.equipped
 
@@ -830,8 +830,8 @@ ItemGridUI.is_item_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -851,8 +851,8 @@ ItemGridUI.get_item_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -873,8 +873,8 @@ ItemGridUI.get_item_hovered_slot = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -902,8 +902,8 @@ ItemGridUI.is_slot_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -922,14 +922,14 @@ ItemGridUI.highlight_slots = function (self, enabled, optional_alpha)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hover_name = "slot_hover" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
 			slot_hotspot.highlight = enabled
-			style[slot_hover_name].color[1] = (enabled and (optional_alpha or 255)) or 255
+			style[slot_hover_name].color[1] = enabled and (optional_alpha or 255) or 255
 		end
 	end
 end
@@ -941,16 +941,16 @@ ItemGridUI.highlight_drop_slots = function (self, enabled)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local item_icon_name = "item_icon" .. name_sufix
 			local slot_hover_name = "slot_hover" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
 			slot_hotspot.highlight = enabled
-			local alpha = (slot_hotspot.internal_is_hover and 255) or 100
-			style[slot_hover_name].color[1] = (enabled and alpha) or 255
+			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end
 end
@@ -962,8 +962,8 @@ ItemGridUI.is_item_dragged = function (self)
 	local columns = content.columns
 	local dragged_item, slot_index = nil
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local item_icon_name = "item_icon" .. name_sufix
@@ -988,8 +988,8 @@ ItemGridUI.is_dragging_item = function (self)
 	local columns = content.columns
 	local dragged_item = nil
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local item_icon_name = "item_icon" .. name_sufix
@@ -1018,5 +1018,3 @@ end
 ItemGridUI.get_selected_item_grid_slot = function (self)
 	return self._selected_item_row, self._selected_item_column
 end
-
-return

@@ -212,118 +212,118 @@ local scenegraph_definition = {
 
 local function create_reward_thumb_widget()
 	local widget_definition = {
-		scenegraph_id = "thumb_widgets_pivot",
-		element = {
-			passes = {
-				{
-					pass_type = "hotspot",
-					content_id = "button_hotspot"
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon",
-					texture_id = "icon"
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_glow",
-					texture_id = "icon_glow"
-				},
-				{
-					pass_type = "texture",
-					style_id = "icon_frame",
-					texture_id = "icon_frame",
-					content_check_function = function (content)
-						return content.draw_frame
-					end
-				},
-				{
-					pass_type = "texture",
-					style_id = "selection",
-					texture_id = "selection",
-					content_check_function = function (content)
-						return content.selected
-					end
-				}
+		scenegraph_id = "thumb_widgets_pivot"
+	}
+	widget_definition.element = {
+		passes = {
+			{
+				pass_type = "hotspot",
+				content_id = "button_hotspot"
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon",
+				texture_id = "icon"
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon_glow",
+				texture_id = "icon_glow"
+			},
+			{
+				pass_type = "texture",
+				style_id = "icon_frame",
+				texture_id = "icon_frame",
+				content_check_function = function (content)
+					return content.draw_frame
+				end
+			},
+			{
+				pass_type = "texture",
+				style_id = "selection",
+				texture_id = "selection",
+				content_check_function = function (content)
+					return content.selected
+				end
 			}
-		},
-		content = {
-			first_time = true,
-			selection = "popup_icon_selection",
-			icon_frame = "frame_01",
-			selected = false,
-			icon = "icons_placeholder",
-			draw_frame = true,
-			icon_glow = "popup_icon_glow",
-			button_hotspot = {}
-		},
-		style = {
-			icon_glow = {
-				size = {
-					128,
-					128
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-33.5,
-					-33.5,
-					0
-				}
-			},
-			icon = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					1
-				}
-			},
-			icon_frame = {
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					0,
-					2
-				}
-			},
-			selection = {
-				size = {
-					128,
-					128
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					-33.5,
-					-33.5,
-					3
-				}
-			}
-		},
-		offset = {
-			0,
-			0,
-			0
 		}
+	}
+	widget_definition.content = {
+		first_time = true,
+		selection = "popup_icon_selection",
+		icon_frame = "frame_01",
+		selected = false,
+		icon = "icons_placeholder",
+		draw_frame = true,
+		icon_glow = "popup_icon_glow",
+		button_hotspot = {}
+	}
+	widget_definition.style = {
+		icon_glow = {
+			size = {
+				128,
+				128
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-33.5,
+				-33.5,
+				0
+			}
+		},
+		icon = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				1
+			}
+		},
+		icon_frame = {
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				0,
+				2
+			}
+		},
+		selection = {
+			size = {
+				128,
+				128
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				-33.5,
+				-33.5,
+				3
+			}
+		}
+	}
+	widget_definition.offset = {
+		0,
+		0,
+		0
 	}
 
 	return widget_definition
@@ -379,304 +379,304 @@ local generic_input_actions = {
 		}
 	}
 }
-local animation_definitions = {
-	chest_unit_spawn = {
-		{
-			name = "rotation",
-			start_progress = 0,
-			end_progress = 0.7,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.popup_bg.style.texture_id.color[1] = 0
-				local chest_unit = params.chest_unit
-				params.rotation_value = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local chest_unit = params.chest_unit
+local animation_definitions = {}
+animation_definitions.chest_unit_spawn = {
+	{
+		name = "rotation",
+		start_progress = 0,
+		end_progress = 0.7,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			widgets.popup_bg.style.texture_id.color[1] = 0
+			local chest_unit = params.chest_unit
+			params.rotation_value = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local chest_unit = params.chest_unit
 
-				if chest_unit and Unit.alive(chest_unit) then
-					local anim_progress = math.easeCubic(progress)
-					local degrees = anim_progress * 720
-					local radian_angle = math.degrees_to_radians(degrees)
-					local unit_rotation = Quaternion.axis_angle(Vector3(0, 0, 1), radian_angle)
+			if chest_unit and Unit.alive(chest_unit) then
+				local anim_progress = math.easeCubic(progress)
+				local degrees = anim_progress * 720
+				local radian_angle = math.degrees_to_radians(degrees)
+				local unit_rotation = Quaternion.axis_angle(Vector3(0, 0, 1), radian_angle)
 
-					Unit.set_local_rotation(chest_unit, 0, unit_rotation)
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+				Unit.set_local_rotation(chest_unit, 0, unit_rotation)
 			end
-		},
-		{
-			name = "scale",
-			start_progress = 0,
-			end_progress = 0.25,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local chest_unit = params.chest_unit
-
-				if chest_unit and Unit.alive(chest_unit) then
-					local unit_box, box_dimension = Unit.box(chest_unit)
-
-					if box_dimension then
-						local max_value = 0.15
-						local largest_value = 0
-
-						if largest_value < box_dimension.x then
-							largest_value = box_dimension.x
-						end
-
-						if largest_value < box_dimension.z then
-							largest_value = box_dimension.z
-						end
-
-						if largest_value < box_dimension.y then
-							largest_value = box_dimension.y
-						end
-
-						if max_value < largest_value then
-							local diff = largest_value - max_value
-							local scale_fraction = 1 - diff / largest_value
-							local scale = Vector3(0, 0, 0)
-
-							Unit.set_local_scale(chest_unit, 0, scale)
-
-							params.end_scale_fraction = scale_fraction
-						end
-					end
-				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local chest_unit = params.chest_unit
-
-				if chest_unit and Unit.alive(chest_unit) then
-					local anim_progress = math.easeCubic(progress)
-					local end_scale_fraction = params.end_scale_fraction or 0.15
-					local scale_fraction = end_scale_fraction * anim_progress
-					local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
-
-					if progress == 1 then
-						print("scale_fraction", scale_fraction)
-					end
-
-					Unit.set_local_scale(chest_unit, 0, scale)
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "position",
-			start_progress = 0.01,
-			end_progress = 0.7,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local chest_unit = params.chest_unit
-
-				if chest_unit and Unit.alive(chest_unit) then
-					local anim_progress = math.easeCubic(progress)
-					local reward_viewport = params.reward_viewport
-					local camera = ScriptViewport.camera(reward_viewport)
-					local camera_rotation = ScriptCamera.rotation(camera)
-					local camera_position = ScriptCamera.position(camera)
-					local camera_forward_vector = Quaternion.forward(camera_rotation)
-					local unit_spawn_position = camera_position + camera_forward_vector
-					unit_spawn_position.z = unit_spawn_position.z - 0.3 + 0.29 * anim_progress
-					local unit_box, box_dimension = Unit.box(chest_unit)
-					local unit_center_position = Matrix4x4.translation(unit_box)
-					local unit_root_position = Unit.world_position(chest_unit, 0)
-					local offset = unit_center_position - unit_root_position
-					local scale_fraction = params.end_scale_fraction or 0
-					offset = offset * scale_fraction
-					local display_position = unit_spawn_position - offset
-
-					Unit.set_local_position(chest_unit, 0, display_position)
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "bg_fade_in",
-			start_progress = 0.6,
-			end_progress = 1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local divider = widgets.divider
-				local popup_bg = widgets.popup_bg
-				local title_text = widgets.title_text
-				local description_text = widgets.description_text
-				local alpha = 255 * anim_progress
-				divider.style.texture_id.color[1] = alpha
-				popup_bg.style.texture_id.color[1] = alpha
-				title_text.style.text.text_color[1] = alpha
-				description_text.style.text.text_color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "button_fade_in",
-			start_progress = 1.4,
-			end_progress = 1.71,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = 255 * anim_progress
-				local claim_button = widgets.claim_button
-				claim_button.style.texture.color[1] = alpha
-				claim_button.style.text.text_color[1] = alpha
-				claim_button.style.text_hover.text_color[1] = alpha
-				claim_button.style.text_selected.text_color[1] = alpha
-				claim_button.style.text_disabled.text_color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "animation_fall",
-			start_progress = 0.65,
-			end_progress = 0.71,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local chest_unit = params.chest_unit
-
-				if chest_unit and Unit.alive(chest_unit) then
-					Unit.flow_event(chest_unit, "loot_chest_fall")
-				end
-			end
-		},
-		{
-			name = "chest_land",
-			start_progress = 0.71,
-			end_progress = 1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				WwiseWorld.trigger_event(params.wwise_world, "hud_reward_chest_land")
-			end
-		},
-		{
-			name = "animation_fall_xxx",
-			start_progress = 0.71,
-			end_progress = 1.71,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	chest_unit_open = {
-		{
-			name = "animation_open",
-			start_progress = 0,
-			end_progress = 1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local chest_unit = params.chest_unit
+	{
+		name = "scale",
+		start_progress = 0,
+		end_progress = 0.25,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local chest_unit = params.chest_unit
 
-				if chest_unit and Unit.alive(chest_unit) then
-					Unit.flow_event(chest_unit, "loot_chest_open")
-				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "scale",
-			start_progress = 1.1,
-			end_progress = 1.25,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local chest_unit = params.chest_unit
+			if chest_unit and Unit.alive(chest_unit) then
+				local unit_box, box_dimension = Unit.box(chest_unit)
 
-				if chest_unit and Unit.alive(chest_unit) then
-					local unit_box, box_dimension = Unit.box(chest_unit)
+				if box_dimension then
+					local max_value = 0.15
+					local largest_value = 0
 
-					if box_dimension then
-						local max_value = 0.1
-						local largest_value = 0
+					if largest_value < box_dimension.x then
+						largest_value = box_dimension.x
+					end
 
-						if largest_value < box_dimension.x then
-							largest_value = box_dimension.x
-						end
+					if largest_value < box_dimension.z then
+						largest_value = box_dimension.z
+					end
 
-						if largest_value < box_dimension.z then
-							largest_value = box_dimension.z
-						end
+					if largest_value < box_dimension.y then
+						largest_value = box_dimension.y
+					end
 
-						if largest_value < box_dimension.y then
-							largest_value = box_dimension.y
-						end
+					if max_value < largest_value then
+						local diff = largest_value - max_value
+						local scale_fraction = 1 - diff / largest_value
+						local scale = Vector3(0, 0, 0)
 
-						if max_value < largest_value then
-							local diff = largest_value - max_value
-							local scale_fraction = 1 - diff / largest_value
-							params.end_scale_fraction = scale_fraction
-						end
+						Unit.set_local_scale(chest_unit, 0, scale)
+
+						params.end_scale_fraction = scale_fraction
 					end
 				end
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local chest_unit = params.chest_unit
-
-				if chest_unit and Unit.alive(chest_unit) then
-					local anim_progress = 1 - math.easeOutCubic(progress)
-					local end_scale_fraction = params.end_scale_fraction or 0.1
-					local scale_fraction = end_scale_fraction * anim_progress
-					local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
-
-					Unit.set_local_scale(chest_unit, 0, scale)
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
 			end
-		}
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local chest_unit = params.chest_unit
+
+			if chest_unit and Unit.alive(chest_unit) then
+				local anim_progress = math.easeCubic(progress)
+				local end_scale_fraction = params.end_scale_fraction or 0.15
+				local scale_fraction = end_scale_fraction * anim_progress
+				local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
+
+				if progress == 1 then
+					print("scale_fraction", scale_fraction)
+				end
+
+				Unit.set_local_scale(chest_unit, 0, scale)
+			end
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	thumbs_fade_in = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local thumb_widgets = widgets.thumb_widgets
+	{
+		name = "position",
+		start_progress = 0.01,
+		end_progress = 0.7,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local chest_unit = params.chest_unit
 
-				for slot9, slot10 in ipairs(thumb_widgets) do
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+			if chest_unit and Unit.alive(chest_unit) then
+				local anim_progress = math.easeCubic(progress)
+				local reward_viewport = params.reward_viewport
+				local camera = ScriptViewport.camera(reward_viewport)
+				local camera_rotation = ScriptCamera.rotation(camera)
+				local camera_position = ScriptCamera.position(camera)
+				local camera_forward_vector = Quaternion.forward(camera_rotation)
+				local unit_spawn_position = camera_position + camera_forward_vector
+				unit_spawn_position.z = unit_spawn_position.z - 0.3 + 0.29 * anim_progress
+				local unit_box, box_dimension = Unit.box(chest_unit)
+				local unit_center_position = Matrix4x4.translation(unit_box)
+				local unit_root_position = Unit.world_position(chest_unit, 0)
+				local offset = unit_center_position - unit_root_position
+				local scale_fraction = params.end_scale_fraction or 0
+				offset = offset * scale_fraction
+				local display_position = unit_spawn_position - offset
+
+				Unit.set_local_position(chest_unit, 0, display_position)
 			end
-		}
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "bg_fade_in",
+		start_progress = 0.6,
+		end_progress = 1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local divider = widgets.divider
+			local popup_bg = widgets.popup_bg
+			local title_text = widgets.title_text
+			local description_text = widgets.description_text
+			local alpha = 255 * anim_progress
+			divider.style.texture_id.color[1] = alpha
+			popup_bg.style.texture_id.color[1] = alpha
+			title_text.style.text.text_color[1] = alpha
+			description_text.style.text.text_color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "button_fade_in",
+		start_progress = 1.4,
+		end_progress = 1.71,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = 255 * anim_progress
+			local claim_button = widgets.claim_button
+			claim_button.style.texture.color[1] = alpha
+			claim_button.style.text.text_color[1] = alpha
+			claim_button.style.text_hover.text_color[1] = alpha
+			claim_button.style.text_selected.text_color[1] = alpha
+			claim_button.style.text_disabled.text_color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "animation_fall",
+		start_progress = 0.65,
+		end_progress = 0.71,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			return
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local chest_unit = params.chest_unit
+
+			if chest_unit and Unit.alive(chest_unit) then
+				Unit.flow_event(chest_unit, "loot_chest_fall")
+			end
+		end
+	},
+	{
+		name = "chest_land",
+		start_progress = 0.71,
+		end_progress = 1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			return
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			WwiseWorld.trigger_event(params.wwise_world, "hud_reward_chest_land")
+		end
+	},
+	{
+		name = "animation_fall_xxx",
+		start_progress = 0.71,
+		end_progress = 1.71,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			return
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.chest_unit_open = {
+	{
+		name = "animation_open",
+		start_progress = 0,
+		end_progress = 1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local chest_unit = params.chest_unit
+
+			if chest_unit and Unit.alive(chest_unit) then
+				Unit.flow_event(chest_unit, "loot_chest_open")
+			end
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			return
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "scale",
+		start_progress = 1.1,
+		end_progress = 1.25,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local chest_unit = params.chest_unit
+
+			if chest_unit and Unit.alive(chest_unit) then
+				local unit_box, box_dimension = Unit.box(chest_unit)
+
+				if box_dimension then
+					local max_value = 0.1
+					local largest_value = 0
+
+					if largest_value < box_dimension.x then
+						largest_value = box_dimension.x
+					end
+
+					if largest_value < box_dimension.z then
+						largest_value = box_dimension.z
+					end
+
+					if largest_value < box_dimension.y then
+						largest_value = box_dimension.y
+					end
+
+					if max_value < largest_value then
+						local diff = largest_value - max_value
+						local scale_fraction = 1 - diff / largest_value
+						params.end_scale_fraction = scale_fraction
+					end
+				end
+			end
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local chest_unit = params.chest_unit
+
+			if chest_unit and Unit.alive(chest_unit) then
+				local anim_progress = 1 - math.easeOutCubic(progress)
+				local end_scale_fraction = params.end_scale_fraction or 0.1
+				local scale_fraction = end_scale_fraction * anim_progress
+				local scale = Vector3(scale_fraction, scale_fraction, scale_fraction)
+
+				Unit.set_local_scale(chest_unit, 0, scale)
+			end
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.thumbs_fade_in = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local thumb_widgets = widgets.thumb_widgets
+
+			for index, widget in ipairs(thumb_widgets) do
+				-- Nothing
+			end
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 

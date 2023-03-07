@@ -23,7 +23,7 @@ BTFallbackIdleAction.enter = function (self, unit, blackboard, t)
 		action.anim_cycle_index = index
 	end
 
-	if blackboard.move_state ~= "idle" or (action and action.force_idle_animation) then
+	if blackboard.move_state ~= "idle" or action and action.force_idle_animation then
 		local network_manager = Managers.state.network
 
 		network_manager:anim_event(unit, animation)
@@ -49,5 +49,3 @@ BTFallbackIdleAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

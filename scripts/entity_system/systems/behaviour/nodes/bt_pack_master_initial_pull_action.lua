@@ -37,8 +37,8 @@ BTPackMasterInitialPullAction._find_pull_position = function (self, unit, blackb
 	local traverse_logic = navigation_extension:traverse_logic()
 	local num_segments = 10
 
-	for i = 1, num_segments, 1 do
-		local angle = math.degrees_to_radians((45 * i) / num_segments)
+	for i = 1, num_segments do
+		local angle = math.degrees_to_radians(45 * i / num_segments)
 		local angle_cw = angle_towards_pull + angle
 		local offset_cw = action.pull_distance * Vector3(math.cos(angle_cw), math.sin(angle_cw), 0)
 		local position_end_cw = position + offset_cw
@@ -114,5 +114,3 @@ BTPackMasterInitialPullAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

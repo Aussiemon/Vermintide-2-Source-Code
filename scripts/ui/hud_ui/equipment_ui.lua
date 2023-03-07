@@ -133,7 +133,7 @@ EquipmentUI.event_input_changed = function (self)
 	local inventory_slots = InventorySettings.slots
 	local num_inventory_slots = #inventory_slots
 
-	for i = 1, num_inventory_slots, 1 do
+	for i = 1, num_inventory_slots do
 		local slot = inventory_slots[i]
 		local slot_name = slot.name
 		local hud_index = slot.hud_index
@@ -171,7 +171,7 @@ EquipmentUI.event_swap_equipment_from_storage = function (self, slot_name, addit
 	self._time_fade_storage_slots = Managers.time:time("ui") + 2
 	local widgets = self._extra_storage_icon_widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 		local item = additional_items[i]
 
@@ -198,7 +198,7 @@ end
 EquipmentUI._set_slot_input = function (self, widget, slot_name)
 	local input_action = input_actions_by_slot[slot_name]
 	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
-	local text_length = (input_text and UTF8Utils.string_length(input_text)) or 0
+	local text_length = input_text and UTF8Utils.string_length(input_text) or 0
 	local max_length = 40
 	local input_style = widget.style.input_text
 	local ui_renderer = self.ui_renderer
@@ -219,7 +219,7 @@ EquipmentUI._get_input_texture_data = function (self, input_action)
 
 	local keymap_binding = input_service:get_keymapping(input_action, platform)
 	local device_type = keymap_binding and keymap_binding[1]
-	local key_index = (keymap_binding and keymap_binding[2]) or UNASSIGNED_KEY
+	local key_index = keymap_binding and keymap_binding[2] or UNASSIGNED_KEY
 	local key_action_type = keymap_binding and keymap_binding[3]
 	local prefix_text = nil
 
@@ -273,7 +273,7 @@ end
 
 EquipmentUI._get_wield_scroll_input = function (self)
 	local player_manager = self.player_manager
-	local player = (self._is_spectator and self._spectated_player) or self.player
+	local player = self._is_spectator and self._spectated_player or self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -315,7 +315,7 @@ local widgets_to_remove = {}
 local verified_widgets = {}
 
 EquipmentUI._sync_player_equipment = function (self)
-	local player = (self._is_spectator and self._spectated_player) or self.player
+	local player = self._is_spectator and self._spectated_player or self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -346,22 +346,21 @@ EquipmentUI._sync_player_equipment = function (self)
 	local is_cog = career_name == "dr_engineer"
 	local added_items = self._added_items
 
-	for i = 1, num_inventory_slots, 1 do
+	for i = 1, num_inventory_slots do
 		local slot = inventory_slots[i]
 		local slot_name = slot.name
 
 		if allowed_equipment_slots[slot_name] then
-			if slot_name == "slot_career_skill_weapon" and not is_cog then
-			else
+			if slot_name ~= "slot_career_skill_weapon" or is_cog then
 				local slot_data = equipment_slots[slot_name]
 				local item_data = slot_data and slot_data.item_data
 				local item_name = item_data and item_data.name
 				local item_id = item_data and item_data.backend_id
-				local is_wielded = (slot_name and wielded == slot_name) or false
+				local is_wielded = slot_name and wielded == slot_name or false
 				local verified = false
 				local widget_id = 0
 
-				for j = 1, #added_items, 1 do
+				for j = 1, #added_items do
 					local data = added_items[j]
 					local same_item = nil
 
@@ -468,8 +467,8 @@ EquipmentUI._sync_player_equipment = function (self)
 							widget.style.reload_icon.color[1] = 235
 						end
 
-						widget.style.reload_icon.color[3] = (is_exhausted and 100) or 255
-						widget.style.reload_icon.color[4] = (is_exhausted and 69) or 255
+						widget.style.reload_icon.color[3] = is_exhausted and 100 or 255
+						widget.style.reload_icon.color[4] = is_exhausted and 69 or 255
 					end
 				end
 			end
@@ -478,7 +477,7 @@ EquipmentUI._sync_player_equipment = function (self)
 
 	table.clear(widgets_to_remove)
 
-	for i = 1, #added_items, 1 do
+	for i = 1, #added_items do
 		if not verified_widgets[i] then
 			widgets_to_remove[#widgets_to_remove + 1] = i
 		end
@@ -486,7 +485,7 @@ EquipmentUI._sync_player_equipment = function (self)
 
 	local index_mod = 0
 
-	for i = 1, #widgets_to_remove, 1 do
+	for i = 1, #widgets_to_remove do
 		local index = widgets_to_remove[i] - index_mod
 
 		self:_remove_item(index)
@@ -506,7 +505,7 @@ EquipmentUI._sync_player_equipment = function (self)
 		self:_set_ammo_text_focus(false)
 	end
 
-	if (wielded_slot_name and self._wielded_slot_name ~= wielded_slot_name) or inventory_modified then
+	if wielded_slot_name and self._wielded_slot_name ~= wielded_slot_name or inventory_modified then
 		wielded_slot_name = wielded_slot_name or self._wielded_slot_name
 
 		self:_set_wielded_item(wielded_slot_name)
@@ -557,7 +556,7 @@ EquipmentUI._update_ammo_count = function (self, item_data, slot_data, player_un
 
 				self:_set_ammo_counter_alpha(255)
 
-				local ammo_text_color = (ammo_empty and ammo_colors.empty) or ammo_colors.normal
+				local ammo_text_color = ammo_empty and ammo_colors.empty or ammo_colors.normal
 
 				self:_set_ammo_counter_color(ammo_text_color)
 				self:set_dirty()
@@ -676,7 +675,7 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 	if self._draw_overheat then
 		if self._overcharge_fraction ~= nil then
 			local multiplier = 1
-			local color = (focus and ammo_colors.focus) or ammo_colors.unfocused
+			local color = focus and ammo_colors.focus or ammo_colors.unfocused
 			local widgets_by_name = self._widgets_by_name
 			local fg_widget = widgets_by_name.overcharge
 			local bg_widget = widgets_by_name.overcharge_background
@@ -702,7 +701,7 @@ EquipmentUI._set_ammo_text_focus = function (self, focus)
 
 		if not PERSISTENT_AMMO_COUNTER and (self._ammo_count ~= nil or self._remaining_ammo ~= nil) then
 			local multiplier = 1
-			local color = (focus and ammo_colors.focus) or ammo_colors.unfocused
+			local color = focus and ammo_colors.focus or ammo_colors.unfocused
 			local ammo_background_widget = self._widgets_by_name.ammo_background
 			ammo_background_widget.content.visible = focus
 
@@ -814,7 +813,7 @@ EquipmentUI._update_animations = function (self, dt, t)
 		local progress = math.clamp(t_until_fade - t, 0, 1)
 		local widgets = self._extra_storage_icon_widgets
 
-		for i = 1, #widgets, 1 do
+		for i = 1, #widgets do
 			local widget = widgets[i]
 			local style = widget.style
 			style.texture_icon.color[1] = 255 * progress
@@ -858,7 +857,7 @@ EquipmentUI._animate_slot_wield = function (self, animation_data, dt)
 	widget.style.texture_selected.color[1] = 255 * anim_progress
 	animation_data.time = time
 
-	return (progress < 1 and animation_data) or nil
+	return progress < 1 and animation_data or nil
 end
 
 EquipmentUI._animate_slot_unwield = function (self, animation_data, dt)
@@ -872,7 +871,7 @@ EquipmentUI._animate_slot_unwield = function (self, animation_data, dt)
 	widget.style.texture_selected.color[1] = 255 * anim_progress
 	animation_data.time = time
 
-	return (progress < 1 and animation_data) or nil
+	return progress < 1 and animation_data or nil
 end
 
 EquipmentUI._animate_slot_equip = function (self, animation_data, dt)
@@ -886,7 +885,7 @@ EquipmentUI._animate_slot_equip = function (self, animation_data, dt)
 	style.color[1] = 255 * anim_progress
 	animation_data.time = time
 
-	return (progress < 1 and animation_data) or nil
+	return progress < 1 and animation_data or nil
 end
 
 EquipmentUI._add_item = function (self, slot_data, data)
@@ -1352,7 +1351,7 @@ EquipmentUI._apply_crosshair_position = function (self, x, y)
 end
 
 EquipmentUI._show_hold_to_reload = function (self, t)
-	local player = (self._is_spectator and self._spectated_player) or self.player
+	local player = self._is_spectator and self._spectated_player or self.player
 	local player_unit = player.player_unit
 
 	if not player_unit then
@@ -1449,11 +1448,9 @@ EquipmentUI._update_reload_ui_state = function (self, t, item_template)
 		end_time = self._listening_timer_start + listening_duration
 	end
 
-	if (end_time ~= 0 and end_time < t) or self._reload_tip_text_shown then
+	if end_time ~= 0 and end_time < t or self._reload_tip_text_shown then
 		self._listening_timer_start = nil
 		self._reload_attempts = 0
 		self._reload_tip_text_shown = false
 	end
 end
-
-return

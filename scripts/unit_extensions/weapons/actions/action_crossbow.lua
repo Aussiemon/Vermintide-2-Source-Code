@@ -60,7 +60,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 		local current_action = self.current_action
 
 		if self.num_projectiles then
-			for i = 1, self.num_projectiles, 1 do
+			for i = 1, self.num_projectiles do
 				local fire_rotation = rotation
 				local speed = current_action.speed
 
@@ -71,7 +71,7 @@ ActionCrossbow.client_owner_post_update = function (self, dt, t, world, can_dama
 						end
 					elseif self.num_projectiles_shot > 1 and not current_action.burst then
 						local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
-						local shot_count_offset = (self.num_projectiles_shot == 1 and 0) or math.round((self.num_projectiles_shot - 1) / 2, 0)
+						local shot_count_offset = self.num_projectiles_shot == 1 and 0 or math.round((self.num_projectiles_shot - 1) / 2, 0)
 						local angle_offset = self.multi_projectile_spread * shot_count_offset
 						fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 					end
@@ -219,7 +219,7 @@ ActionCrossbow.finish = function (self, reason)
 		status_extension:set_zooming(false)
 
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
@@ -238,5 +238,3 @@ ActionCrossbow.finish = function (self, reason)
 		Unit.flow_event(self.first_person_unit, "anim_cb_unhide_ammo")
 	end
 end
-
-return

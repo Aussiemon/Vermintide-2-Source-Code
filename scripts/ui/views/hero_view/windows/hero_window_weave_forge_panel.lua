@@ -393,7 +393,7 @@ HeroWindowWeaveForgePanel._set_background_bloom_intensity = function (self, frac
 
 	Material.set_scalar(gui_material_background_wheel_1, "noise_intensity", value)
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local hdr_wheel_ring_1 = widgets_by_name["hdr_wheel_ring_" .. i .. "_1"]
 		local hdr_wheel_ring_2 = widgets_by_name["hdr_wheel_ring_" .. i .. "_2"]
 		local hdr_wheel_ring_3 = widgets_by_name["hdr_wheel_ring_" .. i .. "_3"]
@@ -417,7 +417,7 @@ HeroWindowWeaveForgePanel._set_background_wheel_visibility = function (self, vis
 	background_wheel_1.content.visible = visible
 	hdr_background_wheel_1.content.visible = visible
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local wheel_ring_1 = widgets_by_name["wheel_ring_" .. i .. "_1"]
 		local wheel_ring_2 = widgets_by_name["wheel_ring_" .. i .. "_2"]
 		local wheel_ring_3 = widgets_by_name["wheel_ring_" .. i .. "_3"]
@@ -438,7 +438,7 @@ end
 HeroWindowWeaveForgePanel._update_background_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local wheel_ring_1 = widgets_by_name["wheel_ring_" .. i .. "_1"]
 		local wheel_ring_2 = widgets_by_name["wheel_ring_" .. i .. "_2"]
 		local wheel_ring_3 = widgets_by_name["wheel_ring_" .. i .. "_3"]
@@ -464,5 +464,3 @@ HeroWindowWeaveForgePanel._update_background_animations = function (self, dt)
 
 	self:_set_background_bloom_intensity(progress)
 end
-
-return

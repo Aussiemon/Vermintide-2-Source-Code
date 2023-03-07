@@ -87,11 +87,11 @@ AnimationSystem.update_anim_variables = function (self, t)
 
 				local distance = vector3_length(to_target)
 				local scale = data.scale
-				anim_value = math_clamp(scale - (scale * distance) / data.initial_distance, 0, scale)
+				anim_value = math_clamp(scale - scale * distance / data.initial_distance, 0, scale)
 			else
 				local jump_time = t - data.start_time
 				local scale = data.scale
-				anim_value = math_clamp((scale * jump_time) / data.duration, 0, scale)
+				anim_value = math_clamp(scale * jump_time / data.duration, 0, scale)
 			end
 
 			animation_set_variable(unit, data.anim_variable_index, anim_value)
@@ -297,5 +297,3 @@ AnimationSystem.start_anim_variable_update_by_time = function (self, unit, anim_
 	self.network_transmit:send_rpc_clients("rpc_anim_set_variable_by_time", unit_id, anim_variable_index, int_16bit_duration, scale)
 	self:_set_variable_by_time(unit, anim_variable_index, duration, scale)
 end
-
-return

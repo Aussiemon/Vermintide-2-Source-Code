@@ -6,7 +6,7 @@ GenericUnitAnimationMovementExtension.init = function (self, extension_init_cont
 	self.unit = unit
 	local init_data_template_name = extension_init_data.template
 	self.template = AnimationMovementTemplates[init_data_template_name]
-	self.network_type = (extension_init_data.is_husk and "husk") or "owner"
+	self.network_type = extension_init_data.is_husk and "husk" or "owner"
 	self.data = {}
 	self.enabled = false
 end
@@ -53,5 +53,3 @@ GenericUnitAnimationMovementExtension.update = function (self, unit, input, dt, 
 		self.leave = false
 	end
 end
-
-return

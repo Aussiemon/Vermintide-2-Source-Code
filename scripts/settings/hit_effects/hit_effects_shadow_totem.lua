@@ -31,5 +31,3 @@ HitEffectsShadowTotem = {
 	}
 }
 HitEffectsShadowTotem = table.create_copy(HitEffectsShadowTotem, HitEffectsShadowTotem)
-
-return

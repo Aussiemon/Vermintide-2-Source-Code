@@ -27,5 +27,3 @@ end
 LobbyUnclaimed.unregister_rpcs = function (self)
 	return
 end
-
-return

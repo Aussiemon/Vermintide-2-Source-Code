@@ -31,7 +31,7 @@ local function create_achievement_entry(scenegraph_id, size)
 	local checklist_item_styles = {}
 	local checklist_max_items = 15
 
-	for i = 1, checklist_max_items, 1 do
+	for i = 1, checklist_max_items do
 		checklist_content[i] = {
 			text = "n/a",
 			checkbox_marker = "matchmaking_checkbox",
@@ -52,7 +52,7 @@ local function create_achievement_entry(scenegraph_id, size)
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
 				dynamic_font_size = true,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					31,
@@ -70,7 +70,7 @@ local function create_achievement_entry(scenegraph_id, size)
 				font_size = 22,
 				horizontal_alignment = "left",
 				word_wrap = true,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 0),
 				offset = {
 					33,
@@ -188,7 +188,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			style_id = "progress_frame",
 			texture_id = "progress_frame",
 			content_check_function = function (content)
-				return content.draw_bar or (content.completed and not content.claimed)
+				return content.draw_bar or content.completed and not content.claimed
 			end
 		},
 		{
@@ -288,7 +288,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			style_id = "progress_button_glass_top",
 			pass_type = "texture",
 			content_check_function = function (content)
-				return content.draw_bar or (content.completed and not content.claimed)
+				return content.draw_bar or content.completed and not content.claimed
 			end
 		},
 		{
@@ -296,7 +296,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			style_id = "progress_button_glass_bottom",
 			pass_type = "texture",
 			content_check_function = function (content)
-				return content.draw_bar or (content.completed and not content.claimed)
+				return content.draw_bar or content.completed and not content.claimed
 			end
 		},
 		{
@@ -326,7 +326,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			content_check_function = function (content)
 				local parent_content = content.parent
 
-				return parent_content.draw_bar or (parent_content.completed and not parent_content.claimed)
+				return parent_content.draw_bar or parent_content.completed and not parent_content.claimed
 			end
 		},
 		{
@@ -337,7 +337,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			content_check_function = function (content)
 				local parent_content = content.parent
 
-				return parent_content.draw_bar or (parent_content.completed and not parent_content.claimed)
+				return parent_content.draw_bar or parent_content.completed and not parent_content.claimed
 			end
 		},
 		{
@@ -662,7 +662,7 @@ local function create_achievement_entry(scenegraph_id, size)
 		reward_background = "achievement_right",
 		dlc_on_claim = false,
 		reward_hover = "item_icon_hover",
-		dlc_lock_dir = (math.random() < 0.5 and 1) or -1,
+		dlc_lock_dir = math.random() < 0.5 and 1 or -1,
 		dlc_lock_hotspot = {},
 		button_hotspot = {
 			allow_multi_hover = true
@@ -965,7 +965,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 			offset = {
 				0,
-				(progress_bar_height_offset + progress_bar_size[2]) - 17,
+				progress_bar_height_offset + progress_bar_size[2] - 17,
 				8
 			}
 		},
@@ -1052,7 +1052,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 			offset = {
 				-(progress_bar_size[1] / 2 - side_detail_texture_size[1] / 2) - 9,
-				(progress_bar_height_offset + progress_bar_size[2] / 2) - side_detail_texture_size[2] / 2,
+				progress_bar_height_offset + progress_bar_size[2] / 2 - side_detail_texture_size[2] / 2,
 				15
 			},
 			texture_size = side_detail_texture_size
@@ -1069,7 +1069,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			},
 			offset = {
 				progress_bar_size[1] / 2 - side_detail_texture_size[1] / 2 + 9,
-				(progress_bar_height_offset + progress_bar_size[2] / 2) - side_detail_texture_size[2] / 2,
+				progress_bar_height_offset + progress_bar_size[2] / 2 - side_detail_texture_size[2] / 2,
 				15
 			},
 			texture_size = side_detail_texture_size
@@ -1479,7 +1479,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = false,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				progress_bar_size[1],
@@ -1496,7 +1496,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = false,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				progress_bar_size[1],
@@ -1513,7 +1513,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = true,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				progress_bar_size[1],
@@ -1530,7 +1530,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = true,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				progress_bar_size[1],
@@ -1547,7 +1547,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = false,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 			size = {
 				progress_bar_size[1],
@@ -1564,7 +1564,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = false,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("white", 255),
 			size = {
 				progress_bar_size[1],
@@ -1581,7 +1581,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = false,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				progress_bar_size[1],
@@ -1598,7 +1598,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			upper_case = false,
 			font_size = 18,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				155,
@@ -1622,7 +1622,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			font_height_multiplier = 0.9,
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				size[1] - 300,
@@ -1641,7 +1641,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			font_height_multiplier = 0.9,
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				size[1] - 300,
@@ -1659,7 +1659,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			horizontal_alignment = "center",
 			vertical_alignment = "top",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
 				size[1] / 2 - 200,
@@ -1677,7 +1677,7 @@ local function create_achievement_entry(scenegraph_id, size)
 			horizontal_alignment = "center",
 			vertical_alignment = "top",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				size[1] / 2 - 200 + 2,

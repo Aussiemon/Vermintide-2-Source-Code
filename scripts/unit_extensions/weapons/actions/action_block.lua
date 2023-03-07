@@ -67,7 +67,7 @@ ActionBlock.finish = function (self, reason, data)
 		local ammo_extension = self._ammo_extension
 		local current_action = self.current_action
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
@@ -117,5 +117,3 @@ ActionBlock.streak_available = function (self, t, streak_action)
 
 	return false
 end
-
-return

@@ -74,7 +74,7 @@ KeystrokeHelper[Keyboard.UP] = nil
 KeystrokeHelper[Keyboard.DOWN] = nil
 
 KeystrokeHelper[Keyboard.INSERT] = function (text_table, index, mode)
-	return index, (mode == "insert" and "overwrite") or "insert"
+	return index, mode == "insert" and "overwrite" or "insert"
 end
 
 KeystrokeHelper[Keyboard.HOME] = function (text_table, index, mode)
@@ -128,11 +128,9 @@ KeystrokeHelper[Keyboard.F9] = function (text_table, index, mode, max_length)
 		n = math.min(n, max_length - #text_table)
 	end
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		text_table[#text_table + 1] = clipboard_table[i]
 	end
 
 	return index + n, mode
 end
-
-return

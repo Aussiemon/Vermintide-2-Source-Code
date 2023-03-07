@@ -21,7 +21,7 @@ ClientHuskTalentExtension.get_talent_names = function (self, talent_names)
 	local hero_name = self._hero_name
 	talent_names = talent_names or {}
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
 		talent_names[#talent_names + 1] = talent_data.name
@@ -41,5 +41,3 @@ end
 ClientHuskTalentExtension.initial_talent_synced = function (self)
 	print("[ClientHuskTalentExtension] initial_talent_synced should not be called on a client husk")
 end
-
-return

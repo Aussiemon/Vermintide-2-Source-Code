@@ -58,7 +58,7 @@ Side.set_relation = function (self, relation, sides)
 		ferror("Unknown relation (%s)", relation)
 	end
 
-	for i = 1, #sides, 1 do
+	for i = 1, #sides do
 		local side = sides[i]
 		relation_sides[i] = side
 		relation_side_lookup[side] = true
@@ -166,5 +166,3 @@ end
 Side.enemy_units = function (self)
 	return self._enemy_units
 end
-
-return

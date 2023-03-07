@@ -81,7 +81,7 @@ PlayerInventoryUI.create_ui_elements = function (self)
 	local widget_definitions = definitions.inventory_entry_definitions
 	self.inventory_slots_widgets = {}
 
-	for i = 1, #widget_definitions, 1 do
+	for i = 1, #widget_definitions do
 		self.inventory_slots_widgets[i] = UIWidget.init(widget_definitions[i])
 	end
 
@@ -276,8 +276,8 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 				local item_data = slot_data.item_data
 				local is_wielded = wielded == slot_data.item_data
 				local first_update = false
-				local master_item_name = (item_data and item_data.name) or "no_master_item_found"
-				local hud_icon_texture = (item_data and item_data.hud_icon) or temp_slot_texture_mapping[slot_name]
+				local master_item_name = item_data and item_data.name or "no_master_item_found"
+				local hud_icon_texture = item_data and item_data.hud_icon or temp_slot_texture_mapping[slot_name]
 
 				if not hud_icon_texture_lit_lookup_table[hud_icon_texture] then
 					hud_icon_texture_lit_lookup_table[hud_icon_texture] = hud_icon_texture .. "_lit"
@@ -321,7 +321,7 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 
 					if ammo_data and not ammo_data.destroy_when_out_of_ammo then
 						local ammo_text_1 = tostring(ammo_count)
-						local ammo_text_2 = (remaining_ammo and tostring(remaining_ammo)) or ""
+						local ammo_text_2 = remaining_ammo and tostring(remaining_ammo) or ""
 
 						if ammo_text_1 ~= widget_content.ammo_text_1 or ammo_text_2 ~= widget_content.ammo_text_2 then
 							widget.element.dirty = true
@@ -359,7 +359,7 @@ PlayerInventoryUI.update_inventory_slots = function (self, dt, ui_scenegraph, ui
 					end
 
 					bar_progress = math.lerp(widget_content.stance_bar.bar_value, math.min(bar_progress, 1), 0.3)
-					widget_content.stance_bar.active = (item_data.slot_type ~= "melee" and true) or false
+					widget_content.stance_bar.active = item_data.slot_type ~= "melee" and true or false
 					widget_content.stance_bar.bar_value = bar_progress
 
 					if not stance_bar_glow_pulse_lookup_table[slot_name] then
@@ -411,8 +411,8 @@ PlayerInventoryUI.update_inventory_slots_positions = function (self, dt)
 	for i = #SLOTS_LIST, 1, -1 do
 		local slot = SLOTS_LIST[i]
 		local slot_name = slot.name
-		local is_consumable_slot = (consumable_slots[slot_name] and true) or false
-		local size_multiplier = (is_consumable_slot and 0.9) or 0.6
+		local is_consumable_slot = consumable_slots[slot_name] and true or false
+		local size_multiplier = is_consumable_slot and 0.9 or 0.6
 
 		if not inventory_entry_background_lookup_table[i] then
 			inventory_entry_background_lookup_table[i] = "inventory_entry_background_" .. i
@@ -441,7 +441,7 @@ PlayerInventoryUI.on_inventory_selected_slot_changed = function (self, new_index
 
 	local duration = self:add_animation_for_slot_index(new_index, true)
 
-	for i = 1, #SLOTS_LIST, 1 do
+	for i = 1, #SLOTS_LIST do
 		if i ~= new_index then
 			self:add_animation_for_slot_index(i, false, duration)
 		end
@@ -502,7 +502,7 @@ PlayerInventoryUI.add_animation_for_slot_index = function (self, index, selected
 		animation.start_alpha = widget.style.icon.color[1]
 		animation.start_selected_alpha = widget.style.background_lit.color[1]
 		animation.start_scale_fraction = start_scale_fraction
-		animation.target_scale_fraction = (selected and 1) or 0.8
+		animation.target_scale_fraction = selected and 1 or 0.8
 	else
 		animations[scenegraph_id] = {
 			time = 0,
@@ -510,7 +510,7 @@ PlayerInventoryUI.add_animation_for_slot_index = function (self, index, selected
 			widget = self.inventory_slots_widgets[index],
 			scenegraph_id = scenegraph_id,
 			start_scale_fraction = start_scale_fraction,
-			target_scale_fraction = (selected and 1) or 0.8,
+			target_scale_fraction = selected and 1 or 0.8,
 			start_size = ui_scenegraph[scenegraph_icon_id].size,
 			start_alpha = widget.style.icon.color[1],
 			start_selected_alpha = widget.style.background_lit.color[1],
@@ -551,7 +551,7 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 	local smoothstep = math.smoothstep(progress, 0, 1)
 	local lit_progress = math.min(progress * 2, 1)
 	local lit_smoothstep = math.smoothstep(lit_progress, 0, 1)
-	local ammo_progress = (selected and math.min(math.max(0, (progress - 0.8) / 0.2), 1)) or math.min(math.max(0, progress / 0.2), 1)
+	local ammo_progress = selected and math.min(math.max(0, (progress - 0.8) / 0.2), 1) or math.min(math.max(0, progress / 0.2), 1)
 
 	if not inventory_entry_lookup_table[widget_index] then
 		inventory_entry_lookup_table[widget_index] = "inventory_entry_" .. widget_index
@@ -577,8 +577,8 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 	local widget_icon_scenegraph = ui_scenegraph[scenegraph_icon_id]
 	local widget_background_scenegraph = ui_scenegraph[scenegraph_background_id]
 	widget.element.dirty = true
-	local scale_fraction_diff = (selected and target_scale_fraction - start_scale_fraction) or start_scale_fraction - target_scale_fraction
-	local new_scale_fraction = (selected and start_scale_fraction + scale_fraction_diff * smoothstep) or start_scale_fraction - scale_fraction_diff * smoothstep
+	local scale_fraction_diff = selected and target_scale_fraction - start_scale_fraction or start_scale_fraction - target_scale_fraction
+	local new_scale_fraction = selected and start_scale_fraction + scale_fraction_diff * smoothstep or start_scale_fraction - scale_fraction_diff * smoothstep
 	local icon_default_size = scenegraph_definition[scenegraph_icon_id].size
 	widget_icon_scenegraph.size[1] = icon_default_size[1] * new_scale_fraction
 	widget_icon_scenegraph.size[2] = icon_default_size[2] * new_scale_fraction
@@ -619,16 +619,16 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 	widget_stance_bar_glow_scenegraph.size[2] = stance_bar_glow_default_size[2] * new_scale_fraction
 	local default_alpha = inventory_hud_settings.slot_default_alpha
 	local selected_alpha = inventory_hud_settings.slot_select_alpha
-	local target_alpha = (selected and selected_alpha) or default_alpha
+	local target_alpha = selected and selected_alpha or default_alpha
 	local icon_style = widget_style.icon
 
 	if icon_style.color[1] ~= target_alpha then
-		local alpha_diff = (selected and target_alpha - start_alpha) or start_alpha - target_alpha
-		local new_alpha = (selected and start_alpha + alpha_diff * smoothstep) or start_alpha - alpha_diff * smoothstep
+		local alpha_diff = selected and target_alpha - start_alpha or start_alpha - target_alpha
+		local new_alpha = selected and start_alpha + alpha_diff * smoothstep or start_alpha - alpha_diff * smoothstep
 		icon_style.color[1] = new_alpha
 		local ammo_text_style = widget_style.ammo_text_1
 		local stance_bar_style = widget_style.stance_bar
-		local ammo_alpha = (selected and ammo_progress * target_alpha) or (1 - ammo_progress) * selected_alpha
+		local ammo_alpha = selected and ammo_progress * target_alpha or (1 - ammo_progress) * selected_alpha
 		stance_bar_style.color[1] = new_alpha
 		ammo_text_style.text_color[1] = new_alpha
 	end
@@ -651,5 +651,3 @@ PlayerInventoryUI.animate_slot_widget = function (self, animation_data, dt)
 		return nil
 	end
 end
-
-return

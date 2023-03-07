@@ -139,5 +139,3 @@ CommonPopupSettings.belakor = {
 		}
 	}
 }
-
-return

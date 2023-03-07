@@ -47,7 +47,7 @@ ChallengeTrackerUI._refresh_challenge_data = function (self, data)
 	local active_widgets = data.widgets
 	local num_active_widgets = #active_widgets
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		local challenge = challenges[i]
 		local challenge_status = challenge:get_status()
 		local widget = data.widget_by_challenge[challenge]
@@ -62,7 +62,7 @@ ChallengeTrackerUI._refresh_challenge_data = function (self, data)
 		end
 	end
 
-	for i = 1, num_active_widgets, 1 do
+	for i = 1, num_active_widgets do
 		local widget = active_widgets[i]
 		local content = widget.content
 		local challenge = content.challenge
@@ -111,7 +111,7 @@ ChallengeTrackerUI._cb_on_done = function (self, widget, challenge)
 	local offset = data.offset
 	local restack_targets = self._restack_targets
 
-	for i = index + 1, num_widgets, 1 do
+	for i = index + 1, num_widgets do
 		restack_targets[data.widgets[i]] = definitions.get_widget_position(offset, i - 1)[2]
 		data.widgets[i - 1] = data.widgets[i]
 		data.widgets[i] = nil
@@ -218,5 +218,3 @@ ChallengeTrackerUI._draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

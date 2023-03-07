@@ -66,7 +66,7 @@ return {
 		local buff_params = template.buff_params
 		local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
-		for i = 1, enemies_per_frame, 1 do
+		for i = 1, enemies_per_frame do
 			buffed_current_index = buffed_current_index + 1
 			local unit = spawned_enemies[buffed_current_index]
 			local remove_buff = false
@@ -135,7 +135,7 @@ return {
 			end
 		end
 
-		for i = 1, #dead_units, 1 do
+		for i = 1, #dead_units do
 			local dead_unit = dead_units[i]
 			buffed_units[dead_unit] = nil
 		end
@@ -171,7 +171,7 @@ return {
 		local linked_units_visibility = template.linked_units_visibility
 		local player_manager = Managers.player
 		local player_unit = player_manager:local_player().player_unit
-		data.light_radius = (wind_settings and wind_settings.light_radius[difficulty_name][wind_strength]) or 6
+		data.light_radius = wind_settings and wind_settings.light_radius[difficulty_name][wind_strength] or 6
 
 		if player_unit and not data.light_spawned then
 			local position = Unit.local_position(player_unit, 0)
@@ -203,7 +203,7 @@ return {
 			player_unit = observed_player.player_unit
 		end
 
-		for i = 1, enemies_per_frame, 1 do
+		for i = 1, enemies_per_frame do
 			faded_current_index = faded_current_index + 1
 			local unit = spawned_enemies[faded_current_index]
 
@@ -236,7 +236,7 @@ return {
 
 				local radius = data.light_radius
 				local pos = POSITION_LOOKUP[player_unit]
-				local dist_sq = (player_unit and Vector3.distance_squared(pos, unit_pos)) or radius * radius
+				local dist_sq = player_unit and Vector3.distance_squared(pos, unit_pos) or radius * radius
 				local effect_unit = linked_units[unit]
 				local effect_unit_visible = linked_units_visibility[unit]
 
@@ -294,7 +294,7 @@ return {
 			end
 		end
 
-		for i = 1, #dead_units, 1 do
+		for i = 1, #dead_units do
 			local dead_unit = dead_units[i]
 			faded_units[dead_unit] = nil
 			local linked_unit = linked_units[dead_unit]

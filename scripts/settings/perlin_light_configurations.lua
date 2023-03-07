@@ -117,5 +117,3 @@ PerlinLightConfigurations.fire_small_calm = {
 		persistance = 1
 	}
 }
-
-return

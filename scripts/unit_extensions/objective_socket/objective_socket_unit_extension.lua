@@ -38,7 +38,7 @@ ObjectiveSocketUnitExtension._handle_optional_slots = function (self, unit)
 			local mesh = Unit.mesh(unit, mesh_name)
 			local num_materials = Mesh.num_materials(mesh)
 
-			for j = 0, num_materials - 1, 1 do
+			for j = 0, num_materials - 1 do
 				local material = Mesh.material(mesh, j)
 
 				Material.set_vector3(material, "rgb", color)
@@ -78,7 +78,7 @@ end
 ObjectiveSocketUnitExtension.pick_socket_ordered = function (self, sockets)
 	local num_sockets = self.num_sockets
 
-	for i = 1, num_sockets, 1 do
+	for i = 1, num_sockets do
 		local socket = sockets[i]
 
 		if socket.open then
@@ -96,7 +96,7 @@ ObjectiveSocketUnitExtension.pick_socket_closest = function (self, sockets, unit
 	local closest_dsq = math.huge
 	local closest_socket, closest_id = nil
 
-	for i = 1, num_sockets, 1 do
+	for i = 1, num_sockets do
 		local socket = sockets[i]
 
 		if socket.open then
@@ -140,5 +140,3 @@ end
 ObjectiveSocketUnitExtension.update = function (self, unit, input, dt, context, t)
 	return
 end
-
-return

@@ -21,5 +21,3 @@ end
 ScriptSaveToken.close = function (self)
 	self._adapter.close(self._token)
 end
-
-return

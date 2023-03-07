@@ -21,5 +21,3 @@ end
 MatchmakingStateIngame.update = function (self, dt, t)
 	return nil
 end
-
-return

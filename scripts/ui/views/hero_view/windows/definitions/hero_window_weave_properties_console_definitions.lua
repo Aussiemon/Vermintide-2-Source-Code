@@ -1209,7 +1209,7 @@ local function create_property_slot_definition(scenegraph_id, size, masked)
 			vertical_alignment = "center",
 			font_size = 20,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			color = {
 				255,
@@ -1548,7 +1548,7 @@ local function create_talent_slot_definition(scenegraph_id, size, masked)
 			font_size = 38,
 			word_wrap = true,
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				87,
@@ -1883,7 +1883,7 @@ local function create_trait_slot_definition(scenegraph_id, size, masked)
 			vertical_alignment = "center",
 			font_size = 20,
 			horizontal_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			color = {
 				255,
@@ -2521,12 +2521,12 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				80
 			},
 			offset = {
-				(100 + (size[1] - 185) / 2) - 17.5,
+				100 + (size[1] - 185) / 2 - 17.5,
 				8.5,
 				6
 			},
 			default_offset = {
-				(100 + (size[1] - 185) / 2) - 17.5,
+				100 + (size[1] - 185) / 2 - 17.5,
 				8.5,
 				6
 			},
@@ -2544,12 +2544,12 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				255
 			},
 			offset = {
-				(100 + (size[1] - 185) / 2) - 17.5,
+				100 + (size[1] - 185) / 2 - 17.5,
 				8.5,
 				6
 			},
 			default_offset = {
-				(100 + (size[1] - 185) / 2) - 17.5,
+				100 + (size[1] - 185) / 2 - 17.5,
 				8.5,
 				6
 			},
@@ -2570,7 +2570,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -2615,7 +2615,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				100,
@@ -2655,7 +2655,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				102,
@@ -2684,7 +2684,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -2724,7 +2724,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				100,
@@ -2754,7 +2754,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				102,
@@ -2772,7 +2772,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 			horizontal_alignment = "center",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				17,
@@ -2801,7 +2801,7 @@ local function create_menu_option_property_definition(scenegraph_id, size, maske
 			word_wrap = true,
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 0),
 			offset = {
 				size[1] - 75 + 2,
@@ -3154,12 +3154,12 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				80
 			},
 			offset = {
-				(100 + (size[1] - 160) / 2) - 17.5,
+				100 + (size[1] - 160) / 2 - 17.5,
 				12.5,
 				6
 			},
 			default_offset = {
-				(100 + (size[1] - 160) / 2) - 17.5,
+				100 + (size[1] - 160) / 2 - 17.5,
 				12.5,
 				6
 			},
@@ -3177,12 +3177,12 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				255
 			},
 			offset = {
-				(100 + (size[1] - 160) / 2) - 17.5,
+				100 + (size[1] - 160) / 2 - 17.5,
 				12.5,
 				6
 			},
 			default_offset = {
-				(100 + (size[1] - 160) / 2) - 17.5,
+				100 + (size[1] - 160) / 2 - 17.5,
 				12.5,
 				6
 			},
@@ -3203,7 +3203,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -3248,7 +3248,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				100,
@@ -3288,7 +3288,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				102,
@@ -3317,7 +3317,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				100,
@@ -3346,7 +3346,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
 				100,
@@ -3370,7 +3370,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				102,
@@ -3394,7 +3394,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				255,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -3423,7 +3423,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				255,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				90,
@@ -3447,7 +3447,7 @@ local function create_menu_option_trait_definition(scenegraph_id, size, masked)
 				255,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				92,
@@ -3822,12 +3822,12 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				80
 			},
 			offset = {
-				(110 + (size[1] - 170) / 2) - 17.5,
+				110 + (size[1] - 170) / 2 - 17.5,
 				12.5,
 				6
 			},
 			default_offset = {
-				(110 + (size[1] - 170) / 2) - 17.5,
+				110 + (size[1] - 170) / 2 - 17.5,
 				12.5,
 				6
 			},
@@ -3845,12 +3845,12 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				255
 			},
 			offset = {
-				(110 + (size[1] - 170) / 2) - 17.5,
+				110 + (size[1] - 170) / 2 - 17.5,
 				12.5,
 				6
 			},
 			default_offset = {
-				(110 + (size[1] - 170) / 2) - 17.5,
+				110 + (size[1] - 170) / 2 - 17.5,
 				12.5,
 				6
 			},
@@ -3871,7 +3871,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -3916,7 +3916,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				110,
@@ -3950,7 +3950,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 			word_wrap = true,
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				112,
@@ -3979,7 +3979,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				100,
@@ -4008,7 +4008,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_title", 255),
 			offset = {
 				110,
@@ -4032,7 +4032,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				112,
@@ -4056,7 +4056,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				255,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -4085,7 +4085,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				255,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				100,
@@ -4109,7 +4109,7 @@ local function create_menu_option_talent_definition(scenegraph_id, size, masked)
 				255,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				102,

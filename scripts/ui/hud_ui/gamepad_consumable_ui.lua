@@ -293,7 +293,7 @@ GamepadConsumableUI._update_slot_icon = function (self, widget, item_data, wield
 	local dirty = false
 	local widget_style = widget.style
 	local widget_content = widget.content
-	local hud_icon_texture = (item_data and item_data.hud_icon) or temp_slot_texture_mapping[slot_name]
+	local hud_icon_texture = item_data and item_data.hud_icon or temp_slot_texture_mapping[slot_name]
 
 	if not hud_icon_texture_lit_lookup_table[hud_icon_texture] then
 		hud_icon_texture_lit_lookup_table[hud_icon_texture] = hud_icon_texture .. "_lit"
@@ -302,7 +302,7 @@ GamepadConsumableUI._update_slot_icon = function (self, widget, item_data, wield
 	if widget_content.texture_icon ~= hud_icon_texture then
 		dirty = true
 		widget_content.texture_icon = hud_icon_texture
-		local master_item_name = (item_data and item_data.name) or "no_master_item_found"
+		local master_item_name = item_data and item_data.name or "no_master_item_found"
 
 		assert(widget_content.texture_icon, "No hud icon for weapon %s", master_item_name)
 
@@ -352,6 +352,7 @@ GamepadConsumableUI._reset_slot_widget = function (self, widget, slot_name, inde
 		dirty = true
 
 		if slot_name == "slot_healthkit" then
+			-- Nothing
 		end
 
 		if widget_content.show_ammo then
@@ -475,5 +476,3 @@ GamepadConsumableUI.on_gamepad_deactivated = function (self)
 	self:set_visible(false)
 	self:_set_dirty()
 end
-
-return

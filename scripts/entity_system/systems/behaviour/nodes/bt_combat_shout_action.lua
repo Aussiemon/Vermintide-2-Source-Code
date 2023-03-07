@@ -66,5 +66,3 @@ BTCombatShoutAction.anim_cb_shout_vo = function (self, unit, blackboard)
 		dialogue_input:trigger_networked_dialogue_event("shouting", event_data)
 	end
 end
-
-return

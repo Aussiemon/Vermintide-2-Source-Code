@@ -307,5 +307,3 @@ ItemMasterList.q1_collection_bundle = {
 	can_wield = {},
 	bundle_contains = {}
 }
-
-return

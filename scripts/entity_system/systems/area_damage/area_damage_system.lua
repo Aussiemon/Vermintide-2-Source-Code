@@ -119,7 +119,7 @@ AreaDamageSystem.create_explosion = function (self, attacker_unit, position, rot
 			if attacker_unit_id then
 				local explosion_template_id = NetworkLookup.explosion_templates[explosion_template_name]
 				local damage_source_id = NetworkLookup.damage_sources[damage_source]
-				local attacker_power_level = (attacker_power_level and math.clamp(attacker_power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL)) or 0
+				local attacker_power_level = attacker_power_level and math.clamp(attacker_power_level, MIN_POWER_LEVEL, MAX_POWER_LEVEL) or 0
 				local is_critical_strike = not not is_critical_strike
 				local source_attacker_unit_id = network_manager:unit_game_object_id(source_attacker_unit) or attacker_unit_id
 
@@ -150,7 +150,7 @@ AreaDamageSystem.is_position_in_liquid = function (self, position, nav_cost_map_
 	local num_liquid_extensions = self.num_liquid_extensions
 	local result = false
 
-	for i = 1, num_liquid_extensions, 1 do
+	for i = 1, num_liquid_extensions do
 		local extension = liquid_extensions[i]
 		result = extension:is_position_inside(position, nav_cost_map_table)
 
@@ -172,7 +172,7 @@ AreaDamageSystem._create_aoe_damage_buffer = function (self)
 		max_size = buffer_size
 	}
 
-	for index = 1, buffer_size, 1 do
+	for index = 1, buffer_size do
 		self._aoe_damage_ring_buffer.buffer[index] = {
 			radius = 0,
 			radius_max = 0,
@@ -253,7 +253,7 @@ AreaDamageSystem._update_aoe_damage_buffer = function (self)
 	local max_size = aoe_damage_ring_buffer.max_size
 	local num_updates = math.min(NUM_UNITS_TO_DAMAGE_PER_FRAME, aoe_damage_ring_buffer.size)
 
-	for i = 1, num_updates, 1 do
+	for i = 1, num_updates do
 		local aoe_damage_data = buffer[read_index]
 
 		self:_damage_unit(aoe_damage_data)
@@ -334,7 +334,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 				local buff_weapon_type_id = NetworkLookup.buff_weapon_types["n/a"]
 				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
-				RPC.rpc_buff_on_attack(channel_id, attacker_unit_id, hit_unit_id, attack_type_id, (is_critical_strike and allow_critical_proc) or false, hit_zone_id, 1, buff_weapon_type_id)
+				RPC.rpc_buff_on_attack(channel_id, attacker_unit_id, hit_unit_id, attack_type_id, is_critical_strike and allow_critical_proc or false, hit_zone_id, 1, buff_weapon_type_id)
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
 			elseif attacker_player then
 				DamageUtils.buff_on_attack(attacker_unit, hit_unit, attack_type, is_critical_strike and allow_critical_proc, hit_zone_name, target_number, send_to_server, "n/a")
@@ -364,7 +364,7 @@ AreaDamageSystem._damage_unit = function (self, aoe_damage_data)
 		end
 
 		local bot_damage_profile_name = is_bot and explosion_data.bot_damage_profile
-		local damage_profile_name = bot_damage_profile_name or (glancing_hit and explosion_data.damage_profile_glance) or explosion_data.damage_profile or "default"
+		local damage_profile_name = bot_damage_profile_name or glancing_hit and explosion_data.damage_profile_glance or explosion_data.damage_profile or "default"
 
 		if not do_damage or is_immune then
 			damage_profile_name = damage_profile_name .. "_no_damage"
@@ -550,7 +550,7 @@ AreaDamageSystem.rpc_create_thornsister_push_wave = function (self, channel_id, 
 	local damage_wave_extension = self:_create_damage_wave(source_unit, position, damage_wave_template)
 	local segment_positions = {}
 
-	for i = 1, #segments, 1 do
+	for i = 1, #segments do
 		segment_positions[i] = Vector3Box(segments[i])
 	end
 
@@ -598,5 +598,3 @@ AreaDamageSystem.rpc_abort_damage_blob = function (self, channel_id, damage_blob
 		damage_blob_extension:abort()
 	end
 end
-
-return

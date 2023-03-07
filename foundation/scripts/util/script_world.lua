@@ -268,7 +268,7 @@ end
 ScriptWorld.has_viewport = function (world, name)
 	local viewports = World.get_data(world, "viewports")
 
-	return (viewports[name] and true) or false
+	return viewports[name] and true or false
 end
 
 ScriptWorld.viewport = function (world, name, return_free_flight_viewport)
@@ -455,7 +455,7 @@ ScriptWorld.optimize_level_units = function (world, name)
 	local base_level = level_data.level
 	local nested_levels = level_data.nested_levels
 
-	for i = 1, #nested_levels, 1 do
+	for i = 1, #nested_levels do
 		local nested_level = nested_levels[i]
 		local level_units = Level.units(nested_level)
 
@@ -477,7 +477,7 @@ ScriptWorld.trigger_level_loaded = function (world, name)
 	local base_level = level_data.level
 	local nested_levels = level_data.nested_levels
 
-	for i = 1, #nested_levels, 1 do
+	for i = 1, #nested_levels do
 		local nested_level = nested_levels[i]
 
 		Level.trigger_level_loaded(nested_level)
@@ -494,5 +494,3 @@ ScriptWorld.create_particles_linked = function (world, effect_name, unit, node, 
 
 	return id
 end
-
-return

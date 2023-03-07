@@ -105,7 +105,7 @@ ObjectiveSocketSystem.hot_join_sync = function (self, peer_id)
 		local num_sockets = extension.num_sockets
 		local unit_id = self.network_manager:game_object_or_level_id(unit)
 
-		for socket_id = 1, num_sockets, 1 do
+		for socket_id = 1, num_sockets do
 			local socket = sockets[socket_id]
 
 			if not socket.open then
@@ -126,5 +126,3 @@ ObjectiveSocketSystem.rpc_objective_entered_socket_zone = function (self, channe
 
 	objective_socket_extension:objective_entered_zone_client(socket_id)
 end
-
-return

@@ -8,9 +8,7 @@ end
 
 RatOgreHealthExtension.update = function (self, dt, ...)
 	local unit = self.unit
-	local wounded_value = (self.damage / self.health > 0.5 and 1) or 0
+	local wounded_value = self.damage / self.health > 0.5 and 1 or 0
 
 	Unit.animation_set_variable(unit, self._wounded_anim_variable, wounded_value)
 end
-
-return

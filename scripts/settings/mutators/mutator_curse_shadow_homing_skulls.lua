@@ -22,7 +22,7 @@ local function find_positions(physics_world, random_player, shooter_count)
 	local side = Managers.state.side:get_side_from_name("heroes")
 	local players = side.PLAYER_AND_BOT_UNITS
 
-	for player_index = 1, #players, 1 do
+	for player_index = 1, #players do
 		local unit = players[player_index]
 		forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 	end
@@ -94,7 +94,7 @@ return {
 				local positions_found = find_positions(physics_world, random_player, shooter_count)
 
 				if positions_found and BelakorBalancing.homing_skulls_minimum_count <= #positions_found then
-					for i = 1, #positions_found, 1 do
+					for i = 1, #positions_found do
 						local position = positions_found[i]
 						local with_physics = false
 						local rotation = Quaternion.identity()
@@ -120,7 +120,7 @@ return {
 		end
 
 		if script_data.shadow_homing_skulls_debug then
-			Debug.text("homing skulls state state: %s - %s", data.state, (data.next_spawn_t and data.next_spawn_t - t) or 0)
+			Debug.text("homing skulls state state: %s - %s", data.state, data.next_spawn_t and data.next_spawn_t - t or 0)
 		end
 	end,
 	server_player_hit_function = function (context, data, hit_unit, attacker_unit, hit_data)

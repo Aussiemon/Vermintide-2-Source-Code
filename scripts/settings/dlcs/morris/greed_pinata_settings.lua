@@ -121,5 +121,3 @@ end
 for _, drop in pairs(GreedPinataSettings.possible_drops) do
 	drop.drop_weight = drop.drop_weight / total_pinata_spawn_weighting
 end
-
-return

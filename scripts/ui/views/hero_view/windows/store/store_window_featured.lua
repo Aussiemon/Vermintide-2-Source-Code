@@ -309,7 +309,7 @@ StoreWindowFeatured._handle_input = function (self, dt, t)
 		self:_play_sound("Play_hud_store_button_hover")
 	end
 
-	if UIUtils.is_button_pressed(login_rewards_button) or (input_service:get("special_1_press") and not GameSettingsDevelopment.use_offline_backend) then
+	if UIUtils.is_button_pressed(login_rewards_button) or input_service:get("special_1_press") and not GameSettingsDevelopment.use_offline_backend then
 		parent:open_login_rewards_popup()
 	end
 
@@ -616,7 +616,7 @@ StoreWindowFeatured._setup_grid_products = function (self, grid_content)
 	local layout_ids = {}
 	local grid_occupied = 0
 
-	for i = 1, #grid_content, 1 do
+	for i = 1, #grid_content do
 		local product_data = grid_content[i]
 		local product, product_type = self:_add_product(product_data)
 		local grid_size = GRID_SIZE_BY_TYPE[product_type]
@@ -692,7 +692,7 @@ StoreWindowFeatured._setup_slideshow = function (self, widget, data)
 				if unlock_manager:dlc_exists(product_id) and StoreDlcSettingsByName[product_id] then
 					valid = true
 					local dlc_id = unlock_manager:dlc_id(product_id)
-					local price_data = backend_store:get_app_price((IS_WINDOWS and dlc_id) or product_id)
+					local price_data = backend_store:get_app_price(IS_WINDOWS and dlc_id or product_id)
 					is_discounted = price_data and price_data.current_price ~= price_data.regular_price
 				end
 			elseif product_type == "item" then
@@ -752,7 +752,7 @@ end
 StoreWindowFeatured._setup_backend_image_material = function (self, reference_name, texture_name, masked)
 	local material_name = "StoreWindowFeatured_" .. reference_name
 	local gui = self._ui_top_renderer.gui
-	local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+	local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 	self:_create_material_instance(gui, material_name, template_material_name, reference_name)
 
@@ -841,7 +841,7 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 	local list_content = content.list_content
 	local thumb_pressed = false
 
-	for i = 1, num_slideshows, 1 do
+	for i = 1, num_slideshows do
 		local page_thumb_hotspot = list_content[i].button_hotspot
 		local page_thumb_style = item_styles[i]
 
@@ -927,7 +927,7 @@ StoreWindowFeatured._handle_slideshow_logic = function (self, widget, dt, input_
 
 		self:_set_slideshow_selected_read_index(widget, read_index)
 	elseif progress <= 0 then
-		read_index = ((read_index + 1) - 1) % num_slideshows + 1
+		read_index = (read_index + 1 - 1) % num_slideshows + 1
 
 		self:_set_slideshow_selected_read_index(widget, read_index)
 	end
@@ -1028,7 +1028,7 @@ StoreWindowFeatured._set_slideshow_animation_progress = function (self, widget, 
 	local default_size = content.size
 	local default_width = default_size[1]
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local id = "icon_" .. i
 		local icon_content = content[id]
 		local icon_style = style[id]
@@ -1044,7 +1044,7 @@ StoreWindowFeatured._set_slideshow_animation_progress = function (self, widget, 
 			uvs[2][1] = 1 - progress
 			size[1] = math.floor(default_width * (1 - progress))
 			offset[1] = math.floor(default_width - size[1])
-			local_read_index = ((read_index + 1) - 1) % num_slideshows + 1
+			local_read_index = (read_index + 1 - 1) % num_slideshows + 1
 		end
 
 		local slideshow = slideshow_content[local_read_index]
@@ -1197,5 +1197,3 @@ StoreWindowFeatured._select_slideshow_widget = function (self, is_selected)
 	slideshow.content.hotspot.on_hover_enter = is_selected
 	self._slideshow_selected = is_selected
 end
-
-return

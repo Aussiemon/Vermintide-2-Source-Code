@@ -31,5 +31,3 @@ end
 ScriptReceiveAppTicketToken.close = function (self)
 	return
 end
-
-return

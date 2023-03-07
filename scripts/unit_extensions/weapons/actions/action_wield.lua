@@ -59,5 +59,3 @@ ActionWield.finish = function (self, reason)
 		status_extension:set_zooming(false)
 	end
 end
-
-return

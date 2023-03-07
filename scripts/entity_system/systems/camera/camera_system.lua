@@ -72,7 +72,7 @@ CameraSystem.set_follow_unit = function (self, player, follow_unit, follow_node_
 		local camera_state = camera_state_ext.state_machine.state_current
 
 		if camera_state.refresh_follow_unit then
-			local follow_node = (follow_unit and Unit.node(follow_unit, follow_node_name)) or nil
+			local follow_node = follow_unit and Unit.node(follow_unit, follow_node_name) or nil
 
 			camera_state:refresh_follow_unit(follow_unit, follow_node)
 		end
@@ -249,5 +249,3 @@ CameraSystem.initialize_camera_states = function (self, player, profile_index, c
 
 	camera_state_extension:reinitialize_camera_states(camera_state_class_list, "idle")
 end
-
-return

@@ -55,5 +55,3 @@ CameraStateFollowAttract.update = function (self, unit, input, dt, context, t)
 
 	CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
 end
-
-return

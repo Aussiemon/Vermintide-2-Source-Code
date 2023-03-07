@@ -126,5 +126,3 @@ end
 TransitionVideo.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
 end
-
-return

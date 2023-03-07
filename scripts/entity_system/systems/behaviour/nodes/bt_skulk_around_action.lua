@@ -177,5 +177,3 @@ BTSkulkAroundAction.get_new_skulk_goal = function (self, unit, blackboard)
 
 	return pos
 end
-
-return

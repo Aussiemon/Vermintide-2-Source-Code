@@ -26,5 +26,3 @@ DialogueLookup[DialogueLookup_n + 11] = "pdr_city_walls_intro"
 DialogueLookup[DialogueLookup_n + 12] = "pdr_city_walls_intro_b"
 DialogueLookup[DialogueLookup_n + 13] = "pdr_city_walls_intro_c"
 DialogueLookup_n = DialogueLookup_n + 13
-
-return

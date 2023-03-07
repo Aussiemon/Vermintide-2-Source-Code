@@ -48,5 +48,3 @@ ActionCareerWEWaywatcherPiercing._restore_ammo = function (self)
 		ammo_extension:add_ammo_to_reserve(ammo_amount)
 	end
 end
-
-return

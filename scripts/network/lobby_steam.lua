@@ -70,7 +70,7 @@ end
 LobbyInternal.get_lobby_data_from_id_by_key = function (id, key)
 	local data = SteamMisc.get_lobby_data_by_key(id, key)
 
-	return (data ~= "" and data) or nil
+	return data ~= "" and data or nil
 end
 
 LobbyInternal.ping = function (peer_id)
@@ -137,5 +137,3 @@ end
 LobbyInternal.set_max_members = function (lobby, max_members)
 	SteamLobby.set_max_members(lobby, max_members)
 end
-
-return

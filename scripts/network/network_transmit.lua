@@ -419,5 +419,3 @@ NetworkTransmit.send_rpc_all_except = function (self, rpc_name, except, ...)
 		end
 	end
 end
-
-return

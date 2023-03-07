@@ -51,14 +51,12 @@ StateTitleScreenLoadSave._handle_tutorial_auto_start = function (self)
 end
 
 StateTitleScreenLoadSave._setup_init_network_view = function (self)
-	if Development.parameter("goto_endoflevel") then
-		if false then
-			local async = false
+	if Development.parameter("goto_endoflevel") and false then
+		local async = false
 
-			Managers.package:load("resource_packages/levels/dicegame", "StateTitleScreenLoadSave", nil, async)
+		Managers.package:load("resource_packages/levels/dicegame", "StateTitleScreenLoadSave", nil, async)
 
-			self.parent.parent.loading_context.play_end_of_level_game = true
-		end
+		self.parent.parent.loading_context.play_end_of_level_game = true
 	end
 
 	self.wanted_state = StateLoading
@@ -87,5 +85,3 @@ end
 StateTitleScreenLoadSave.on_exit = function (self, application_shutdown)
 	return
 end
-
-return

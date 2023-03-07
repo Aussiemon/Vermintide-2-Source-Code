@@ -95,5 +95,3 @@ OldTalentBuffTemplates = {
 		}
 	}
 }
-
-return

@@ -31,5 +31,3 @@ settings.dialogue_settings = {
 		"dialogues/generated/hero_conversations_dlc_bogenhafen_city"
 	}
 }
-
-return

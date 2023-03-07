@@ -21,5 +21,3 @@ OffsetCamera.update = function (self, dt, position, rotation, data)
 
 	BaseCamera.update(self, dt, position, rotation, data)
 end
-
-return

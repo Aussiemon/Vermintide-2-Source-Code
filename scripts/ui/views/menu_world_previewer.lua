@@ -301,7 +301,7 @@ MenuWorldPreviewer._update_camera_animation_data = function (self, animation_dat
 			data.time = math.min(old_time + dt, data.total_time)
 			local progress = math.min(1, data.time / data.total_time)
 			local func = data.func
-			data.value = (data.to - data.from) * ((func and func(progress)) or progress) + data.from
+			data.value = (data.to - data.from) * (func and func(progress) or progress) + data.from
 
 			if progress == 1 then
 				data.total_time = nil
@@ -313,8 +313,8 @@ end
 MenuWorldPreviewer.set_camera_axis_offset = function (self, axis, value, animation_time, func_ptr, fixed_position)
 	local data = self._camera_position_animation_data[axis]
 	local camera_default_position = self._camera_default_position
-	data.from = (animation_time and data.value) or value
-	data.to = (fixed_position and value + -camera_default_position[axis]) or value
+	data.from = animation_time and data.value or value
+	data.to = fixed_position and value + -camera_default_position[axis] or value
 	data.total_time = animation_time
 	data.time = 0
 	data.func = func_ptr
@@ -327,7 +327,7 @@ end
 
 MenuWorldPreviewer.set_camera_rotation_axis_offset = function (self, axis, value, animation_time, func_ptr)
 	local data = self._camera_rotation_animation_data[axis]
-	data.from = (animation_time and data.value) or value
+	data.from = animation_time and data.value or value
 	data.to = value
 	data.total_time = animation_time
 	data.time = 0
@@ -337,7 +337,7 @@ end
 
 MenuWorldPreviewer.set_character_axis_offset = function (self, axis, value, animation_time, func_ptr)
 	local data = self._camera_character_position_animation_data[axis]
-	data.from = (animation_time and data.value) or value
+	data.from = animation_time and data.value or value
 	data.to = value
 	data.total_time = animation_time
 	data.time = 0
@@ -519,7 +519,7 @@ MenuWorldPreviewer._load_hero_unit = function (self, profile_name, career_index,
 	local career_name = career.name
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local item_data = skin_item and skin_item.data
-	local skin_name = optional_skin or (item_data and item_data.name) or career.base_skin
+	local skin_name = optional_skin or item_data and item_data.name or career.base_skin
 
 	if state_character then
 		skin_name = career.base_skin
@@ -674,7 +674,7 @@ MenuWorldPreviewer.clear_units = function (self, reset_camera)
 	local units = self._units
 
 	if units then
-		for i = 1, #units, 1 do
+		for i = 1, #units do
 			World.destroy_unit(self.world, units[i])
 		end
 	end
@@ -695,5 +695,3 @@ end
 MenuWorldPreviewer.trigger_level_flow_event = function (self, event_name)
 	return Level.trigger_event(self.level, event_name)
 end
-
-return

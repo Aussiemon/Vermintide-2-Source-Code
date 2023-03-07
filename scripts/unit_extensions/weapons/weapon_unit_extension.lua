@@ -156,8 +156,8 @@ WeaponUnitExtension.init = function (self, extension_init_context, unit, extensi
 		local attachment_nodes = attach_nodes[1]
 		local source_node = attachment_nodes.source
 		local target_node = 0
-		local source_node_index = (type(source_node) == "string" and Unit.node(first_person_unit, source_node)) or source_node
-		local target_node_index = (type(target_node) == "string" and Unit.node(actual_damage_unit, target_node)) or target_node
+		local source_node_index = type(source_node) == "string" and Unit.node(first_person_unit, source_node) or source_node
+		local target_node_index = type(target_node) == "string" and Unit.node(actual_damage_unit, target_node) or target_node
 
 		World.link_unit(world, actual_damage_unit, target_node_index, first_person_unit, source_node_index)
 	end
@@ -280,7 +280,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local action = self:get_action(new_action, new_sub_action, actions)
 		local ammo_requirement = action.ammo_requirement or action.ammo_usage or 0
 		local ammo_count = ammo_extension:ammo_count()
-		local action_can_abort_reload = (action.can_abort_reload == nil and true) or action.can_abort_reload
+		local action_can_abort_reload = action.can_abort_reload == nil and true or action.can_abort_reload
 
 		if ammo_extension:is_reloading() then
 			if ammo_requirement <= ammo_count and action_can_abort_reload then
@@ -362,7 +362,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local allowed_chain_actions = current_action_settings.allowed_chain_actions
 		local num_chain_actions = #allowed_chain_actions
 
-		for i = 1, num_chain_actions, 1 do
+		for i = 1, num_chain_actions do
 			self.chain_action_sound_played[i] = false
 		end
 
@@ -372,9 +372,9 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		local action_time_scale = ActionUtils.get_action_time_scale(owner_unit, current_action_settings)
 		time_to_complete = time_to_complete / action_time_scale
 		local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
-		local event = (skin_data and skin_data.anim_event) or current_action_settings.anim_event
-		local event_3p = (skin_data and skin_data.anim_event_3p) or current_action_settings.anim_event_3p or event
-		local looping_event = (skin_data and skin_data.looping_anim) or current_action_settings.looping_anim
+		local event = skin_data and skin_data.anim_event or current_action_settings.anim_event
+		local event_3p = skin_data and skin_data.anim_event_3p or current_action_settings.anim_event_3p or event
+		local looping_event = skin_data and skin_data.looping_anim or current_action_settings.looping_anim
 
 		for _, data in pairs(self.action_buff_data) do
 			table.clear(data)
@@ -403,11 +403,11 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 		if self.ammo_extension then
 			if self.ammo_extension:total_remaining_ammo() == 0 then
-				event = (skin_data and skin_data.anim_event_no_ammo_left) or current_action_settings.anim_event_no_ammo_left or event
-				event_3p = (skin_data and skin_data.anim_event_no_ammo_left_3p) or current_action_settings.anim_event_no_ammo_left_3p or event_3p
+				event = skin_data and skin_data.anim_event_no_ammo_left or current_action_settings.anim_event_no_ammo_left or event
+				event_3p = skin_data and skin_data.anim_event_no_ammo_left_3p or current_action_settings.anim_event_no_ammo_left_3p or event_3p
 			elseif self.ammo_extension:total_remaining_ammo() == 1 then
-				event = (skin_data and skin_data.anim_event_last_ammo) or current_action_settings.anim_event_last_ammo or event
-				event_3p = (skin_data and skin_data.anim_event_last_ammo_3p) or current_action_settings.anim_event_last_ammo_3p or event_3p
+				event = skin_data and skin_data.anim_event_last_ammo or current_action_settings.anim_event_last_ammo or event
+				event_3p = skin_data and skin_data.anim_event_last_ammo_3p or current_action_settings.anim_event_last_ammo_3p or event_3p
 			end
 		end
 
@@ -415,8 +415,8 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 			local infinite_ammo = buff_extension:has_buff_perk("infinite_ammo")
 
 			if infinite_ammo then
-				event = (skin_data and skin_data.anim_event_infinite_ammo) or current_action_settings.anim_event_infinite_ammo or event
-				event_3p = (skin_data and skin_data.anim_event_infinite_ammo_3p) or current_action_settings.anim_event_infinite_ammo_3p or event_3p
+				event = skin_data and skin_data.anim_event_infinite_ammo or current_action_settings.anim_event_infinite_ammo or event
+				event_3p = skin_data and skin_data.anim_event_infinite_ammo_3p or current_action_settings.anim_event_infinite_ammo_3p or event_3p
 			end
 		end
 
@@ -432,7 +432,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 		if current_action_settings.enter_function then
 			local minimum_hold_time = self:get_scaled_min_hold_time(current_action_settings)
 			local input_extension = ScriptUnit.extension(owner_unit, "input_system")
-			local remaining_time = (self.action_time_started + minimum_hold_time) - t
+			local remaining_time = self.action_time_started + minimum_hold_time - t
 
 			current_action_settings.enter_function(owner_unit, input_extension, remaining_time, self)
 		end
@@ -470,7 +470,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 			Unit.animation_set_variable(first_person_unit, first_person_variable_id, anim_time_scale)
 
-			if not looping_event or (looping_event and not self._looping_anim_event_started) then
+			if not looping_event or looping_event and not self._looping_anim_event_started then
 				Unit.animation_event(first_person_unit, event)
 
 				if looping_event then
@@ -493,7 +493,7 @@ WeaponUnitExtension.start_action = function (self, action_name, sub_action_name,
 
 				Unit.animation_set_variable(owner_unit, third_person_variable_id, anim_time_scale)
 
-				if not looping_event or (looping_event and not self._looping_anim_event_started) then
+				if not looping_event or looping_event and not self._looping_anim_event_started then
 					Unit.animation_event(owner_unit, event_3p)
 
 					if looping_event then
@@ -595,9 +595,9 @@ end
 WeaponUnitExtension.anim_end_event = function (self, reason, current_action_settings)
 	local go_id = Managers.state.unit_storage:go_id(self.owner_unit)
 	local skin_data = get_skin_action_override_data(self.weapon_skin_anim_overrides, current_action_settings)
-	local event = (skin_data and skin_data.anim_end_event) or current_action_settings.anim_end_event
+	local event = skin_data and skin_data.anim_end_event or current_action_settings.anim_end_event
 	local anim_end_event_condition_func = current_action_settings.anim_end_event_condition_func
-	local do_event = (not anim_end_event_condition_func and true) or anim_end_event_condition_func(self.owner_unit, reason, self.ammo_extension)
+	local do_event = not anim_end_event_condition_func and true or anim_end_event_condition_func(self.owner_unit, reason, self.ammo_extension)
 
 	if event and do_event then
 		local event_id = NetworkLookup.anims[event]
@@ -629,7 +629,7 @@ WeaponUnitExtension.update = function (self, unit, input, dt, context, t)
 		local allowed_chain_actions = current_action_settings.allowed_chain_actions
 		local num_chain_actions = #allowed_chain_actions
 
-		for i = 1, num_chain_actions, 1 do
+		for i = 1, num_chain_actions do
 			local chain_info = allowed_chain_actions[i]
 			local chain_ready_sound = chain_info.chain_ready_sound
 
@@ -692,9 +692,9 @@ WeaponUnitExtension.is_chain_action_available = function (self, next_chain_actio
 	local chain_time_scale = self.action_time_scale or ActionUtils.get_action_time_scale(self.owner_unit, current_action_settings)
 
 	if next_chain_action.auto_chain then
-		return current_time_in_action >= ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
+		return current_time_in_action >= (next_chain_action.start_time and next_chain_action.start_time / chain_time_scale or max_time) + time_offset
 	else
-		local end_time = (next_chain_action.end_time and next_chain_action.end_time / chain_time_scale) or max_time
+		local end_time = next_chain_action.end_time and next_chain_action.end_time / chain_time_scale or max_time
 
 		return current_time_in_action >= next_chain_action.start_time / chain_time_scale + time_offset and current_time_in_action <= end_time
 	end
@@ -702,11 +702,11 @@ end
 
 WeaponUnitExtension.time_to_next_chain_action = function (self, next_chain_action, t, time_offset, action_settings)
 	action_settings = action_settings or self.current_action_settings or self.temporary_action_settings
-	local current_time_in_action = (self:has_current_action() and t - self.action_time_started) or 0
+	local current_time_in_action = self:has_current_action() and t - self.action_time_started or 0
 	local max_time = action_settings.total_time + 2
 	time_offset = time_offset or 0
 	local chain_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, action_settings)
-	local start_time = ((next_chain_action.start_time and next_chain_action.start_time / chain_time_scale) or max_time) + time_offset
+	local start_time = (next_chain_action.start_time and next_chain_action.start_time / chain_time_scale or max_time) + time_offset
 
 	return start_time - current_time_in_action
 end
@@ -778,7 +778,7 @@ WeaponUnitExtension._is_before_end_time = function (self, next_chain_action, t)
 	local current_time_in_action = t - self.action_time_started
 	local max_time = current_action_settings.total_time + 2
 	local chain_time_scale = ActionUtils.get_action_time_scale(self.owner_unit, current_action_settings)
-	local end_time = (next_chain_action.end_time and next_chain_action.end_time / chain_time_scale) or max_time
+	local end_time = next_chain_action.end_time and next_chain_action.end_time / chain_time_scale or max_time
 
 	return current_time_in_action < end_time
 end
@@ -788,7 +788,7 @@ WeaponUnitExtension._find_chain_action = function (self, actions, allowed_chain_
 	local num_chain_actions = #allowed_chain_actions
 	local found_chain_info, found_action_settings = nil
 
-	for i = 1, num_chain_actions, 1 do
+	for i = 1, num_chain_actions do
 		local chain_info = allowed_chain_actions[i]
 
 		if chain_info.input == wanted_input then
@@ -862,7 +862,7 @@ WeaponUnitExtension._process_bot_attack_request = function (self, attack_type, a
 	local wanted_input = "action_one_release"
 	local bot_wait_input = "hold_attack"
 	local bot_wanted_input = nil
-	local wanted_occurrence_number = (attack_type == "tap_attack" and 1) or (attack_type == "hold_attack" and 2)
+	local wanted_occurrence_number = attack_type == "tap_attack" and 1 or attack_type == "hold_attack" and 2
 
 	if self.current_action_settings then
 		action_settings = self.current_action_settings
@@ -1006,14 +1006,14 @@ WeaponUnitExtension.set_weapon_buffs = function (self, buffs)
 	local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 	local current_buffs = self._current_weapon_buffs
 
-	for i = 1, #current_buffs, 1 do
+	for i = 1, #current_buffs do
 		buff_extension:remove_buff(current_buffs[i])
 	end
 
 	table.clear(current_buffs)
 
 	if buffs then
-		for i = 1, #buffs, 1 do
+		for i = 1, #buffs do
 			local buff_name = buffs[i]
 			local buff_id = buff_extension:add_buff(buff_name)
 			current_buffs[i] = buff_id
@@ -1138,5 +1138,3 @@ WeaponUnitExtension.on_unwield = function (self, hand_name)
 		self:_weapon_unwield(hand_name)
 	end
 end
-
-return

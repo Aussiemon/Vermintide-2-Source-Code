@@ -89,6 +89,7 @@ local function clean_inventory(items, loadout, whitelist)
 	for profile_name, slots in pairs(loadout) do
 		for slot, backend_id in pairs(slots) do
 			if slot == "backend_id" then
+				-- Nothing
 			elseif not items[backend_id] then
 				Crashify.print_exception("BackendInterfaceItem", "Tried to equip item not found in items list, clearing slot. Profile: %q, Backend id: %d, Slot: %q", profile_name, backend_id, slot)
 				BackendItem.set_loadout_item(nil, loadout[profile_name].backend_id, slot)
@@ -145,7 +146,7 @@ end
 Items.set_item_whitelist = function (self, item_keys)
 	local whitelist = {}
 
-	for i = 1, #item_keys, 1 do
+	for i = 1, #item_keys do
 		local key = item_keys[i]
 		whitelist[key] = true
 	end
@@ -699,6 +700,7 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 	for profile_name, slots in pairs(loadout) do
 		for slot, backend_id in pairs(slots) do
 			if slot == "backend_id" then
+				-- Nothing
 			elseif not items[backend_id] then
 				BackendItem.set_loadout_item(nil, loadout[profile_name].backend_id, slot)
 
@@ -736,7 +738,7 @@ BackendInterfaceItem.clean_inventory_for_prestige = function (self, profile_inde
 			local slot_type = InventorySettings.slots_by_name[slot].type
 
 			if slot_type == "melee" or slot_type == "ranged" then
-				local slot = (slot_type == "melee" and "slot_melee") or "slot_ranged"
+				local slot = slot_type == "melee" and "slot_melee" or "slot_ranged"
 
 				inventory_extension:create_equipment_in_slot(slot, backend_id)
 				inventory_extension:wield(slot)
@@ -833,5 +835,3 @@ BackendInterfaceItem._command_item_whitelist = function (self, data)
 
 	queue:unregister_executor("item_whitelist")
 end
-
-return

@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/unit_extensions/human/ai_player_unit/ai_utils")
 
 PerceptionUtils = {}
@@ -20,7 +16,7 @@ PerceptionUtils.troll_crouch_check = function (unit, blackboard, t)
 	local infront_pos = above_pos + fwd
 	local result, hit_position = PhysicsWorld.immediate_raycast(physics_world, infront_pos, Vector3(0, 0, 1), ray_length, "closest", "collision_filter", "filter_ai_mover")
 	local result2, hit_position2 = PhysicsWorld.immediate_raycast(physics_world, above_pos, Vector3(0, 0, 1), ray_length, "closest", "collision_filter", "filter_ai_mover")
-	local crouching = (result and hit_position) or (result2 and hit_position2)
+	local crouching = result and hit_position or result2 and hit_position2
 
 	if crouching then
 		blackboard.crouch_sticky_timer = t + 1
@@ -56,7 +52,7 @@ PerceptionUtils.perception_continuous_keep_target = function (unit, blackboard, 
 	local side = blackboard.side
 	local target_alive = AiUtils_unit_alive(target_unit)
 
-	return not target_alive or (DamageUtils.is_player_unit(target_unit) and not side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit])
+	return not target_alive or DamageUtils.is_player_unit(target_unit) and not side.VALID_ENEMY_TARGETS_PLAYERS_AND_BOTS[target_unit]
 end
 
 PerceptionUtils.perception_no_seeing = function (self, unit, blackboard, breed, pick_target_func, t)
@@ -393,7 +389,7 @@ PerceptionUtils.alert_enemies_within_range = function (___world, player_unit, is
 	local ScriptUnit_extension = ScriptUnit.extension
 	local num_ai_units = AiUtils.broadphase_query(alert_position, alert_radius, ai_units)
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local ai_unit = ai_units[i]
 
 		ScriptUnit_extension(ai_unit, "ai_system"):enemy_alert(ai_unit, player_unit)
@@ -401,8 +397,6 @@ PerceptionUtils.alert_enemies_within_range = function (___world, player_unit, is
 end
 
 PerceptionUtils.pack_master_has_line_of_sight_for_attack = function (physics_world, packmaster_unit, target_unit)
-
-	-- Decompilation error in this vicinity:
 	local start_pos = Unit.world_position(packmaster_unit, Unit.node(packmaster_unit, "j_spine"))
 	local end_pos = Unit.world_position(target_unit, Unit.node(target_unit, "j_neck"))
 	local radius = 0.15
@@ -410,10 +404,20 @@ PerceptionUtils.pack_master_has_line_of_sight_for_attack = function (physics_wor
 	local offset = start_pos - end_pos
 	local success = nil
 	local hits = PhysicsWorld.linear_sphere_sweep(physics_world, start_pos, end_pos, radius, max_hits, "types", "both", "collision_filter", "filter_ai_mover", "report_initial_overlap")
-	local hit_offset = hits[1].position - start_pos
-	local sweep_offset = end_pos - start_pos
-	local hit_dist = Vector3.dot(hit_offset, Vector3.normalize(sweep_offset))
-	success = Vector3.length(sweep_offset) < hit_dist and true
+
+	if hits then
+		local hit_offset = hits[1].position - start_pos
+		local sweep_offset = end_pos - start_pos
+		local hit_dist = Vector3.dot(hit_offset, Vector3.normalize(sweep_offset))
+
+		if Vector3.length(sweep_offset) < hit_dist then
+			success = true
+		else
+			success = false
+		end
+	else
+		success = true
+	end
 
 	return success
 end
@@ -447,11 +451,11 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 	local num_enemies = #PLAYER_AND_BOT_UNITS
 	local urgency_to_engage = 0
 
-	for i = 1, #healthy_target_positions, 1 do
+	for i = 1, #healthy_target_positions do
 		healthy_target_positions[i] = nil
 	end
 
-	for i = 1, num_enemies, 1 do
+	for i = 1, num_enemies do
 		local player_unit = PLAYER_AND_BOT_UNITS[i]
 		local status_extension = ScriptUnit.extension(player_unit, "status_system")
 
@@ -489,7 +493,7 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 		local closest_dist = math.huge
 		local closest_unit = nil
 
-		for i = 1, num_healthy_targets, 1 do
+		for i = 1, num_healthy_targets do
 			local enemy_unit = healthy_targets[i]
 			local sqr_dist = Vector3.distance_squared(pos, healthy_target_positions[i])
 
@@ -517,5 +521,3 @@ PerceptionUtils.special_opportunity = function (unit, blackboard)
 
 	return urgency_to_engage
 end
-
-return

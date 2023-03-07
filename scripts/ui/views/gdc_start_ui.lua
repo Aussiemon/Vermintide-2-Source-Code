@@ -360,7 +360,7 @@ GDCStartUI.check_start_input = function (self, input_service)
 		end
 	end
 
-	if input_service and ((expected_num_of_players <= num_of_human_players and input_service:get("gdc_skip")) or (input_service:has("gdc_debug_skip") and input_service:get("gdc_debug_skip"))) then
+	if input_service and (expected_num_of_players <= num_of_human_players and input_service:get("gdc_skip") or input_service:has("gdc_debug_skip") and input_service:get("gdc_debug_skip")) then
 		if Managers.player.is_server then
 			self:rpc_on_skip_gdc_intro()
 		else
@@ -369,7 +369,7 @@ GDCStartUI.check_start_input = function (self, input_service)
 	end
 
 	if self.num_of_human_players ~= num_of_human_players then
-		local optional_text = (num_of_human_players < expected_num_of_players and Localize("waiting_for_other_players") .. " - " .. num_of_human_players .. "/" .. expected_num_of_players) or nil
+		local optional_text = num_of_human_players < expected_num_of_players and Localize("waiting_for_other_players") .. " - " .. num_of_human_players .. "/" .. expected_num_of_players or nil
 
 		self:set_input_text(optional_text)
 
@@ -425,7 +425,7 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 			local font, scaled_font_size = UIFontByResolution(button_text_style)
 			local text_width, text_height, min = UIRenderer.text_size(ui_renderer, button_text, font[1], scaled_font_size)
 
-			for i = 1, #button_texture_data, 1 do
+			for i = 1, #button_texture_data do
 				textures[i] = button_texture_data[i].texture
 				sizes[i] = button_texture_data[i].size
 
@@ -460,7 +460,7 @@ GDCStartUI.set_input_text = function (self, optinal_text)
 	local prefix_text_width = self:get_text_width(widget_style.prefix_text, prefix_text)
 	widget_content.text = text
 	widget_content.prefix_text = prefix_text
-	ui_scenegraph.input_text.position[2] = (scaled_font_size == text_style.font_size and 3) or 0
+	ui_scenegraph.input_text.position[2] = scaled_font_size == text_style.font_size and 3 or 0
 	ui_scenegraph.input_prefix_text.position[2] = ui_scenegraph.input_text.position[2]
 	ui_scenegraph.input.position[1] = -((text_width + texture_size_x) * 0.5) + prefix_text_width
 end
@@ -471,5 +471,3 @@ GDCStartUI.get_text_width = function (self, text_style, text)
 
 	return width, scaled_font_size
 end
-
-return

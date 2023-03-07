@@ -945,7 +945,7 @@ end
 local title_button_definitions = {}
 local num_buttons = 10
 
-for i = 1, num_buttons, 1 do
+for i = 1, num_buttons do
 	title_button_definitions[i] = create_title_button("title_button_start", "n/a", 32, nil, "center")
 end
 

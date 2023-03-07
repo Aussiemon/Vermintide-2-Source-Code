@@ -14,5 +14,3 @@ BoonReactivationRules.questing_knight = function (player_unique_id)
 
 	return false
 end
-
-return

@@ -908,5 +908,3 @@ settings.network_packages = {
 	"resource_packages/mutators/mutator_curse_skulls_of_fury"
 }
 settings.loading_tips_file = "scripts/settings/dlcs/morris/morris_loading_tips"
-
-return

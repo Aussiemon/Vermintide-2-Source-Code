@@ -356,7 +356,7 @@ StoreWindowItemPreview._update_environment = function (self, item_preview_enviro
 	local object_set_data = viewport_widget_content.object_set_data
 	local world = object_set_data.world
 	local shading_settings = World.get_data(world, "shading_settings")
-	shading_settings[1] = (force_default and "default") or item_preview_environment
+	shading_settings[1] = force_default and "default" or item_preview_environment
 end
 
 StoreWindowItemPreview.post_update = function (self, dt, t)
@@ -935,9 +935,9 @@ StoreWindowItemPreview._create_dlc_bundle_layout = function (self, settings, pro
 		item_row = item_row + 1
 	end
 
-	for i = 1, #bundle_contains, 1 do
+	for i = 1, #bundle_contains do
 		local item_key = bundle_contains[i]
-		layout[(item_row + i) - 1] = {
+		layout[item_row + i - 1] = {
 			type = "bundle_item",
 			id = item_key,
 			settings = {
@@ -972,7 +972,7 @@ StoreWindowItemPreview._create_item_bundle_layout_with_items = function (self, i
 	local layout = {}
 	local item_row = 1
 
-	for i = 1, #item_preview_layout, 1 do
+	for i = 1, #item_preview_layout do
 		local original_layout = item_preview_layout[i]
 		local item_row = #layout + 1
 
@@ -992,10 +992,10 @@ StoreWindowItemPreview._create_item_bundle_layout_with_items = function (self, i
 				item_row = item_row + 1
 			end
 
-			for i = 1, #bundle_contains, 1 do
+			for i = 1, #bundle_contains do
 				local steam_itemdefid = bundle_contains[i]
 				local item_key = SteamitemdefidToMasterList[steam_itemdefid]
-				layout[(item_row + i) - 1] = {
+				layout[item_row + i - 1] = {
 					type = "item",
 					id = item_key,
 					settings = {
@@ -1020,7 +1020,7 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 
 	if show_bundle_price then
 		local price, currency = backend_store:get_steam_item_price(steam_itemdefid)
-		slot9 = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
+		local price_text = tostring(currency) .. " " .. string.format("%.2f", price * 0.01)
 	end
 
 	local layout = {}
@@ -1075,10 +1075,10 @@ StoreWindowItemPreview._create_item_bundle_layout = function (self, steam_itemde
 		item_row = item_row + 1
 	end
 
-	for i = 1, #bundle_contains, 1 do
+	for i = 1, #bundle_contains do
 		local steam_itemdefid = bundle_contains[i]
 		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
-		layout[(item_row + i) - 1] = {
+		layout[item_row + i - 1] = {
 			type = "item",
 			id = item_key,
 			settings = {
@@ -1139,7 +1139,7 @@ StoreWindowItemPreview._present_dlc = function (self, settings, product_id)
 	end
 
 	local is_console = not IS_WINDOWS
-	local layout = (is_console and settings.layout_console) or settings.layout
+	local layout = is_console and settings.layout_console or settings.layout
 
 	if not layout and settings.is_bundle then
 		layout = self:_create_dlc_bundle_layout(settings, product_id)
@@ -1250,7 +1250,7 @@ StoreWindowItemPreview._present_item = function (self, item, product)
 		self._delayed_item_unit_presentation_delay = 0.3
 	end
 
-	local expire_timer_text = (end_time and self:_calculate_expire_timer_text(end_time)) or ""
+	local expire_timer_text = end_time and self:_calculate_expire_timer_text(end_time) or ""
 
 	self:_set_expire_timer_text(expire_timer_text)
 
@@ -1304,7 +1304,7 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 		self._world_previewer = world_previewer
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
 		local career_settings = CareerSettings[career_name]
-		local skin = (product_settings.part_of_bundle and item_data.store_optional_skin) or career_settings.base_skin
+		local skin = product_settings.part_of_bundle and item_data.store_optional_skin or career_settings.base_skin
 		local hat_name = item_data.key
 
 		self:_spawn_hero_with_hat(world_previewer, profile_name, career_index, skin, hat_name)
@@ -1316,7 +1316,7 @@ StoreWindowItemPreview._delayed_item_unit_presentation = function (self, item)
 		self._world_previewer = world_previewer
 		local optional_skin = item_data.name
 		local profile_name, profile_index, career_name, career_index = self:_get_hero_wield_info_by_item(item)
-		local optional_hat = (product_settings.part_of_bundle and item_data.store_optional_hat) or nil
+		local optional_hat = product_settings.part_of_bundle and item_data.store_optional_hat or nil
 
 		self:_spawn_hero_with_hat(world_previewer, profile_name, career_index, optional_skin, optional_hat)
 	end
@@ -1488,7 +1488,7 @@ StoreWindowItemPreview._setup_xb1_price_data = function (self, widget, price_dat
 	local style = widget.style
 	local spacing = 20
 	local size = content.size
-	local availability = (price_data.availabilities and price_data.availabilities[1]) or {}
+	local availability = price_data.availabilities and price_data.availabilities[1] or {}
 	local display_original_price = availability.DisplayListPrice
 	local display_price = availability.DisplayPrice
 
@@ -1655,8 +1655,8 @@ StoreWindowItemPreview._update_info_text_alignment = function (self)
 
 	local has_info_text = has_expire_text or has_disclaimer_text
 	local ui_renderer = self._ui_renderer
-	local text_1_width = (text_widget_1 and UIUtils.get_text_width(ui_renderer, text_widget_1.style.text, text_widget_1.content.text)) or 0
-	local text_2_width = (text_widget_2 and UIUtils.get_text_width(ui_renderer, text_widget_2.style.text, text_widget_2.content.text)) or 0
+	local text_1_width = text_widget_1 and UIUtils.get_text_width(ui_renderer, text_widget_1.style.text, text_widget_1.content.text) or 0
+	local text_2_width = text_widget_2 and UIUtils.get_text_width(ui_renderer, text_widget_2.style.text, text_widget_2.content.text) or 0
 	local spacing = 14
 	local divider_width = scenegraph_definition[divider_widget.scenegraph_id].size[1]
 	local total_length = text_1_width + text_2_width + divider_width
@@ -1711,28 +1711,28 @@ StoreWindowItemPreview._calculate_expire_timer_text = function (self, end_time)
 	local timer_text = Localize("menu_store_expire_timer_expires_in") .. " "
 
 	if days > 0 then
-		local day_string = (days == 1 and "datetime_day") or "datetime_days"
+		local day_string = days == 1 and "datetime_day" or "datetime_days"
 		timer_text = timer_text .. string.format(Localize(day_string), days)
 
 		return timer_text
 	end
 
 	if hours > 0 then
-		local hour_string = (hours == 1 and "datetime_hour") or "datetime_hours"
+		local hour_string = hours == 1 and "datetime_hour" or "datetime_hours"
 		timer_text = timer_text .. string.format(Localize(hour_string), hours)
 
 		return timer_text
 	end
 
 	if minutes > 0 then
-		local minute_string = (minutes == 1 and "datetime_minute") or "datetime_minutes"
+		local minute_string = minutes == 1 and "datetime_minute" or "datetime_minutes"
 		timer_text = timer_text .. string.format(Localize(minute_string), minutes)
 
 		return timer_text
 	end
 
 	local seconds_left = math.max(time_left / 1000, 0)
-	local second_string = (seconds == 1 and "datetime_second") or "datetime_seconds"
+	local second_string = seconds == 1 and "datetime_second" or "datetime_seconds"
 	timer_text = timer_text .. string.format(Localize(second_string), seconds)
 
 	return timer_text
@@ -1860,7 +1860,7 @@ StoreWindowItemPreview._sync_layout_path = function (self)
 	if path_length ~= saved_path_length then
 		path_differs = true
 	else
-		for i = 1, #path, 1 do
+		for i = 1, #path do
 			if path[i] ~= saved_path[i] then
 				path_differs = true
 
@@ -2000,7 +2000,7 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	local style = widget.style
 	local side_padding = 65
 	local frame_width = content.frame_width
-	local title_text = (already_owned and Localize(content.owned_text)) or content.title_text
+	local title_text = already_owned and Localize(content.owned_text) or content.title_text
 	local title_text_style = style.title_text
 	local title_text_width = self:_get_text_width(title_text_style, title_text)
 
@@ -2014,10 +2014,10 @@ StoreWindowItemPreview._update_unlock_button_width = function (self, width_offse
 	style.title_text_shadow.offset[1] = side_padding + 2
 	local currency_icon_style = style.currency_icon
 	local currency_icon_disabled_style = style.currency_icon_disabled
-	local currency_icon_width = (present_currency and not already_owned and currency_icon_style.texture_size[1]) or 0
+	local currency_icon_width = present_currency and not already_owned and currency_icon_style.texture_size[1] or 0
 	currency_icon_style.offset[1] = side_padding + title_text_width
 	currency_icon_disabled_style.offset[1] = currency_icon_style.offset[1]
-	local currency_text = (present_currency and not already_owned and "9999") or ""
+	local currency_text = present_currency and not already_owned and "9999" or ""
 	local currency_text_style = style.currency_text
 	local currency_text_disabled_style = style.currency_text_disabled
 	local currency_text_width = self:_get_text_width(currency_text_style, currency_text)
@@ -2219,7 +2219,7 @@ StoreWindowItemPreview._dlc_component_layout = function (self, layout)
 	local parent = self._parent
 	local dlc_layout = {}
 
-	for i = 1, #layout, 1 do
+	for i = 1, #layout do
 		local product_data = layout[i]
 		local product_id = product_data.id
 		local product_type = product_data.type
@@ -2361,5 +2361,3 @@ StoreWindowItemPreview._align_dlc_widgets = function (self)
 
 	self._total_list_height = total_height
 end
-
-return

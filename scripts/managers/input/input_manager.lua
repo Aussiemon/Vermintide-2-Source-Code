@@ -6,8 +6,8 @@ require("scripts/managers/input/input_filters")
 require("scripts/managers/input/input_debugger")
 require("scripts/managers/input/input_stack_settings")
 
-local most_recent_input_device = most_recent_input_device or (IS_WINDOWS and Keyboard) or Pad1
-local most_recent_input_device_type = most_recent_input_device_type or (IS_WINDOWS and "keyboard") or "gamepad"
+local most_recent_input_device = most_recent_input_device or IS_WINDOWS and Keyboard or Pad1
+local most_recent_input_device_type = most_recent_input_device_type or IS_WINDOWS and "keyboard" or "gamepad"
 local gamepad_disabled = Development.parameter("disable_gamepad")
 
 local function dprint(...)
@@ -376,7 +376,7 @@ end
 InputManager.device_block_services = function (self, device_type, device_index, services, services_n, block_reason)
 	device_index = device_index or 1
 
-	for i = 1, services_n, 1 do
+	for i = 1, services_n do
 		local service_name = services[i]
 
 		self:device_block_service(device_type, device_index, service_name, block_reason)
@@ -386,7 +386,7 @@ end
 InputManager.device_unblock_services = function (self, device_type, device_index, services, services_n)
 	device_index = device_index or 1
 
-	for i = 1, services_n, 1 do
+	for i = 1, services_n do
 		local service_name = services[i]
 
 		self:device_unblock_service(device_type, device_index, service_name)
@@ -410,7 +410,7 @@ InputManager.capture_input = function (self, device_types, device_index, service
 		return
 	end
 
-	for i = 1, #device_types, 1 do
+	for i = 1, #device_types do
 		self:device_unblock_service(device_types[i], device_index, service_name)
 	end
 
@@ -461,7 +461,7 @@ InputManager.release_input = function (self, device_types, device_index, service
 		return
 	end
 
-	for i = 1, #device_types, 1 do
+	for i = 1, #device_types do
 		self:device_block_service(device_types[i], device_index, service_name, block_reason)
 	end
 
@@ -552,7 +552,7 @@ InputManager._update_service_input_group = function (self, service, active_input
 end
 
 InputManager._find_active_input_group_id = function (self, device_input_groups)
-	for i = 1, #InputStackSettings, 1 do
+	for i = 1, #InputStackSettings do
 		local group_name = InputStackSettings[i].group_name
 
 		if device_input_groups[group_name] then
@@ -664,7 +664,7 @@ InputManager.update_devices = function (self, dt, t)
 		local soft_button = device_data.soft_button
 		local num_buttons = device_data.num_buttons - 1
 
-		for key = 0, num_buttons, 1 do
+		for key = 0, num_buttons do
 			local button_value = input_device.button(key)
 			soft_button[key] = button_value
 			held[key] = button_value > 0.5
@@ -673,11 +673,11 @@ InputManager.update_devices = function (self, dt, t)
 		local any_pressed = input_device.any_pressed()
 
 		if any_pressed then
-			for key = 0, num_buttons, 1 do
+			for key = 0, num_buttons do
 				pressed[key] = input_device.pressed(key)
 			end
 		else
-			for key = 0, num_buttons, 1 do
+			for key = 0, num_buttons do
 				pressed[key] = false
 			end
 		end
@@ -686,11 +686,11 @@ InputManager.update_devices = function (self, dt, t)
 		local released = device_data.released
 
 		if any_released then
-			for key = 0, num_buttons, 1 do
+			for key = 0, num_buttons do
 				released[key] = input_device.released(key)
 			end
 		else
-			for key = 0, num_buttons, 1 do
+			for key = 0, num_buttons do
 				released[key] = false
 			end
 		end
@@ -698,7 +698,7 @@ InputManager.update_devices = function (self, dt, t)
 		local any_device_input_axis_moved = false
 		local axis = device_data.axis
 
-		for key = 0, device_data.num_axes - 1, 1 do
+		for key = 0, device_data.num_axes - 1 do
 			axis[key] = input_device.axis(key)
 			local button_name = input_device.axis_name(key)
 
@@ -899,6 +899,7 @@ end
 
 InputManager.set_hovering = function (self, is_hovering)
 	if is_hovering and not self._hovering then
+		-- Nothing
 	end
 
 	self._hovering = self._hovering or is_hovering
@@ -1117,7 +1118,7 @@ InputManager.change_keybinding = function (self, keybinding_table_name, keybindi
 		n = n + 3
 	end
 
-	for i = n + 1, #keymapping, 1 do
+	for i = n + 1, #keymapping do
 		keymapping[i] = nil
 	end
 
@@ -1152,7 +1153,7 @@ InputManager.add_keybinding = function (self, keybinding_table_name, keybinding_
 	}
 	keymaps[keymap_name] = new_mapping
 
-	for i = 1, n_varargs / 3, 1 do
+	for i = 1, n_varargs / 3 do
 		local n = new_mapping.n
 		local input_device_type = select(i * 3 - 2, ...)
 		local keymap_button_index = select(i * 3 - 1, ...)
@@ -1180,5 +1181,3 @@ InputManager.add_keybinding = function (self, keybinding_table_name, keybinding_
 		new_mapping.n = n + 3
 	end
 end
-
-return

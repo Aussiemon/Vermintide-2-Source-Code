@@ -959,28 +959,28 @@ local function create_window(scenegraph_id, size)
 			style_id = "left_arrow_top",
 			pass_type = "triangle",
 			content_change_function = function (content, style)
-				style.color = (content.left_hotspot.is_hover and style.hover_color) or style.base_color
+				style.color = content.left_hotspot.is_hover and style.hover_color or style.base_color
 			end
 		},
 		{
 			style_id = "left_arrow_bottom",
 			pass_type = "triangle",
 			content_change_function = function (content, style)
-				style.color = (content.left_hotspot.is_hover and style.hover_color) or style.base_color
+				style.color = content.left_hotspot.is_hover and style.hover_color or style.base_color
 			end
 		},
 		{
 			style_id = "right_arrow_top",
 			pass_type = "triangle",
 			content_change_function = function (content, style)
-				style.color = (content.right_hotspot.is_hover and style.hover_color) or style.base_color
+				style.color = content.right_hotspot.is_hover and style.hover_color or style.base_color
 			end
 		},
 		{
 			style_id = "right_arrow_bottom",
 			pass_type = "triangle",
 			content_change_function = function (content, style)
-				style.color = (content.right_hotspot.is_hover and style.hover_color) or style.base_color
+				style.color = content.right_hotspot.is_hover and style.hover_color or style.base_color
 			end
 		},
 		{
@@ -3118,7 +3118,7 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 	local background_color = Colors.get_color_table_with_alpha(button_color_name, 255)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 
 	return {
 		element = {
@@ -3243,8 +3243,8 @@ function create_private_button(scenegraph_id, size, frame_name, background_textu
 			num_private_messages = 0,
 			glass_top = "button_glass_01",
 			has_private_conversations = false,
-			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
-			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
+			hover_glow = optional_color_name and "button_state_hover_" .. optional_color_name or "button_state_hover",
+			glow = optional_color_name and "button_state_normal_" .. optional_color_name or "button_state_normal",
 			button_hotspot = {},
 			title_text = text or "n/a",
 			frame = frame_settings.texture,
@@ -3686,8 +3686,8 @@ local function create_emoji_scroller_func()
 end
 
 local function create_channel_list_entry(scenegraph_id, frame_setting, selected_frame_setting)
-	local frame_settings = (frame_setting and UIFrameSettings[frame_setting]) or UIFrameSettings.menu_frame_06
-	local selected_frame_settings = (selected_frame_setting and UIFrameSettings[selected_frame_setting]) or UIFrameSettings.frame_outer_glow_01
+	local frame_settings = frame_setting and UIFrameSettings[frame_setting] or UIFrameSettings.menu_frame_06
+	local selected_frame_settings = selected_frame_setting and UIFrameSettings[selected_frame_setting] or UIFrameSettings.frame_outer_glow_01
 	local widget = {
 		element = {}
 	}
@@ -3720,7 +3720,7 @@ local function create_channel_list_entry(scenegraph_id, frame_setting, selected_
 			style_id = "background",
 			pass_type = "rect",
 			content_check_function = function (content, style)
-				style.color = (content.hotspot.is_hover and style.hover_color) or style.base_color
+				style.color = content.hotspot.is_hover and style.hover_color or style.base_color
 
 				return true
 			end
@@ -3904,7 +3904,7 @@ local function create_channels_window(scenegraph_id, size)
 
 				local dt = Managers.time:mean_dt()
 				local connecting_rotation_speed = 400
-				local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
+				local connecting_rotation_angle = dt * connecting_rotation_speed % 360
 				local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 				style.angle = style.angle + connecting_radians
 
@@ -4008,7 +4008,7 @@ local function create_channels_window(scenegraph_id, size)
 				end
 
 				local on = math.floor(Managers.time:time("main") * 2) % 2
-				style.caret_color[1] = (on == 0 and 255) or 0
+				style.caret_color[1] = on == 0 and 255 or 0
 
 				return true
 			end
@@ -4462,7 +4462,7 @@ local function create_create_channel_window(scenegraph_id, size)
 				end
 
 				local on = math.floor(Managers.time:time("main") * 2) % 2
-				style.caret_color[1] = (on == 0 and 255) or 0
+				style.caret_color[1] = on == 0 and 255 or 0
 
 				return true
 			end
@@ -4810,7 +4810,7 @@ local function create_send_invite_window(scenegraph_id, size)
 				end
 
 				local on = math.floor(Managers.time:time("main") * 2) % 2
-				style.caret_color[1] = (on == 0 and 255) or 0
+				style.caret_color[1] = on == 0 and 255 or 0
 
 				return true
 			end
@@ -5116,7 +5116,7 @@ local function create_recent_channels_window(scenegraph_id, size)
 
 				local dt = Managers.time:mean_dt()
 				local connecting_rotation_speed = 400
-				local connecting_rotation_angle = (dt * connecting_rotation_speed) % 360
+				local connecting_rotation_angle = dt * connecting_rotation_speed % 360
 				local connecting_radians = math.degrees_to_radians(connecting_rotation_angle)
 				style.angle = style.angle + connecting_radians
 
@@ -5388,7 +5388,7 @@ end
 function create_default_button(scenegraph_id, size, frame_name, background_texture, text, font_size, disable_dynamic_font_size)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 	local frame_width = frame_settings.texture_sizes.corner[1]
 
 	return {

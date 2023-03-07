@@ -200,5 +200,3 @@ DialogueLookup[DialogueLookup_n + 98] = "pwe_fleur_conversation_twentyeight_01"
 DialogueLookup[DialogueLookup_n + 99] = "pdr_fleur_conversation_twentyeight_02"
 DialogueLookup[DialogueLookup_n + 100] = "pwe_fleur_conversation_twentyeight_02"
 DialogueLookup_n = DialogueLookup_n + 100
-
-return

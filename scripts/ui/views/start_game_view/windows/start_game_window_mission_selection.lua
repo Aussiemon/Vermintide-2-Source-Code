@@ -133,7 +133,7 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 	local stats_id = self._stats_id
 	local assigned_widgets = {}
 	local level_width = 180
-	local level_width_spacing = (is_dlc and 80) or 34
+	local level_width_spacing = is_dlc and 80 or 34
 	local level_height_spacing = 250
 	local max_act_number = 3
 	local levels_by_act = self._levels_by_act
@@ -157,7 +157,7 @@ StartGameWindowMissionSelection._present_acts = function (self, acts)
 				end
 			end
 
-			for i = 1, #levels, 1 do
+			for i = 1, #levels do
 				local level_data = levels[i]
 
 				if not is_dlc then
@@ -229,7 +229,7 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 	local ui_scenegraph = self.ui_scenegraph
 	local assigned_widgets = self._active_node_widgets
 
-	for i = 1, #assigned_widgets, 1 do
+	for i = 1, #assigned_widgets do
 		local widget = assigned_widgets[i]
 		local level_settings = LevelSettings[widget.content.level_key]
 		local required_acts = level_settings.required_acts
@@ -241,11 +241,11 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 			local pos_x = position[1] + offset[1]
 			local pos_y = position[2] + offset[2]
 
-			for j = 1, #required_acts, 1 do
+			for j = 1, #required_acts do
 				local required_act = required_acts[j]
 				local required_level_key = self:_get_last_level_in_act(required_act)
 
-				for k = 1, #assigned_widgets, 1 do
+				for k = 1, #assigned_widgets do
 					local level_widget = assigned_widgets[k]
 
 					if level_widget.content.level_key == required_level_key then
@@ -260,7 +260,7 @@ StartGameWindowMissionSelection._setup_required_act_connections = function (self
 						local level_pos_y = level_position[2] + level_offset[2]
 						local distance = math.distance_2d(level_pos_x, level_pos_y, pos_x, pos_y)
 						local angle = math.angle(level_pos_x, level_pos_y, pos_x, pos_y)
-						angle = (pos_y < level_pos_y and math.abs(angle)) or -angle
+						angle = pos_y < level_pos_y and math.abs(angle) or -angle
 						path_style.angle = angle
 						path_style.texture_size[1] = distance
 						path_glow_style.texture_size[1] = distance
@@ -281,7 +281,7 @@ StartGameWindowMissionSelection._get_last_level_in_act = function (self, act_key
 	local best_level_id = nil
 	local best_sort_order = 0
 
-	for i = 1, #act_levels, 1 do
+	for i = 1, #act_levels do
 		local level_id = act_levels[i]
 		local level_settings = LevelSettings[level_id]
 		local sort_order = level_settings.act_presentation_order
@@ -323,7 +323,7 @@ StartGameWindowMissionSelection._is_level_presented = function (self, level_id)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local level_settings = content.level_data
@@ -341,7 +341,7 @@ StartGameWindowMissionSelection._select_level = function (self, level_id)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local level_settings = content.level_data
@@ -465,7 +465,7 @@ StartGameWindowMissionSelection._handle_input = function (self, dt, t)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 
 			if self:_is_button_hovered(widget) then
@@ -516,7 +516,7 @@ StartGameWindowMissionSelection.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -525,7 +525,7 @@ StartGameWindowMissionSelection.draw = function (self, dt)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -544,5 +544,3 @@ end
 StartGameWindowMissionSelection._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

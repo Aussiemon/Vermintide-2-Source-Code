@@ -349,7 +349,7 @@ LobbyInternal.unserialize_psn_data = function (data_string, verify_lobby_data)
 			return t, false
 		end
 
-		for i = 1, #data_string_table, 1 do
+		for i = 1, #data_string_table do
 			local key = LobbyInternal.key_order[i]
 			local value = data_string_table[i]
 			t[key] = value
@@ -527,7 +527,7 @@ PSNRoom.members = function (self)
 	local num_members = PsnRoom.num_members(room_id)
 	local t = {}
 
-	for i = 0, num_members - 1, 1 do
+	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
 		t[i + 1] = member.peer_id
 	end
@@ -539,7 +539,7 @@ PSNRoom.members_np_id = function (self, t)
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
-	for i = 0, num_members - 1, 1 do
+	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
 		t[i + 1] = member.np_id
 	end
@@ -549,7 +549,7 @@ PSNRoom.online_id_from_peer_id = function (self, peer_id)
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
-	for i = 0, num_members - 1, 1 do
+	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
 
 		if member.peer_id == peer_id then
@@ -578,7 +578,7 @@ PSNRoom.update_user_names = function (self)
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
-	for i = 0, num_members - 1, 1 do
+	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
 		self._user_names[member.peer_id] = member.online_id
 	end
@@ -589,7 +589,7 @@ PSNRoom.user_name = function (self, peer_id)
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
-	for i = 0, num_members - 1, 1 do
+	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
 
 		if member.peer_id == peer_id then
@@ -609,7 +609,7 @@ PSNRoom.user_id = function (self, peer_id)
 	local room_id = self.room_id
 	local num_members = PsnRoom.num_members(room_id)
 
-	for i = 0, num_members - 1, 1 do
+	for i = 0, num_members - 1 do
 		local member = PsnRoom.member(room_id, i)
 
 		if member.peer_id == peer_id then
@@ -655,5 +655,3 @@ end
 PSNRoomBrowser.clear_filters = function (self)
 	PsnRoomBrowser.clear_filters(self.browser)
 end
-
-return

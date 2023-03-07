@@ -148,7 +148,7 @@ StartGameWindowMissionSelectionConsole._verify_act = function (self, act)
 		return false
 	end
 
-	for i = 1, #MapPresentationActs, 1 do
+	for i = 1, #MapPresentationActs do
 		local act_key = MapPresentationActs[i]
 
 		if act == act_key then
@@ -192,13 +192,13 @@ StartGameWindowMissionSelectionConsole._present_act_levels = function (self, act
 			act_widget.offset[2] = act_position_y
 			local act_display_name = act_settings.display_name
 			act_widget.content.background = act_settings.banner_texture
-			act_widget.content.text = (act_display_name and Localize(act_display_name)) or ""
+			act_widget.content.text = act_display_name and Localize(act_display_name) or ""
 			local area_name_width = UIUtils.get_text_width(self._ui_renderer, act_widget.style.text, act_widget.content.text)
 			local num_levels_in_act = #levels
 			local level_position_x = area_name_width - 50
 			local level_position_y = 0
 
-			for i = 1, num_levels_in_act, 1 do
+			for i = 1, num_levels_in_act do
 				local level_data = levels[i]
 
 				if is_end_act then
@@ -259,7 +259,7 @@ StartGameWindowMissionSelectionConsole._select_level = function (self, level_id)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local level_settings = content.level_data
@@ -348,7 +348,7 @@ StartGameWindowMissionSelectionConsole._setup_mission_data = function (self, lev
 
 	for _, setting in ipairs(mission_settings) do
 		local key = setting.key
-		local total_amount = (setting.total_amount_func and self[setting.total_amount_func](self, level_settings)) or loot_objectives[key]
+		local total_amount = setting.total_amount_func and self[setting.total_amount_func](self, level_settings) or loot_objectives[key]
 
 		if total_amount then
 			local stat_name = setting.stat_name
@@ -423,7 +423,7 @@ StartGameWindowMissionSelectionConsole._sync_completed_difficulty = function (se
 	column = mission_count % entries_per_row
 
 	if column > 0 then
-		offset_x = offset_x + (texture_size[1] + entry_width) - 20
+		offset_x = offset_x + texture_size[1] + entry_width - 20
 	else
 		offset_x = 0
 	end
@@ -445,7 +445,7 @@ StartGameWindowMissionSelectionConsole._calculate_paint_scrap_amount = function 
 	local scrap_count_level_num = #QuestSettings.scrap_count_level
 	local total_scrap_count = 0
 
-	for i = 1, scrap_count_level_num, 1 do
+	for i = 1, scrap_count_level_num do
 		local achievement_name = "gecko_scraps_" .. level_key .. "_" .. i
 
 		if table.find(painting_scrap_achievements_array, achievement_name) then
@@ -464,7 +464,7 @@ StartGameWindowMissionSelectionConsole._sync_hero_completion = function (self, l
 	local content = widget.content
 	local style = widget.style
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local profile = SPProfiles[profile_index]
 		local hero_name = profile.display_name
@@ -481,11 +481,11 @@ StartGameWindowMissionSelectionConsole._sync_hero_completion = function (self, l
 			content[icon_data_name][icon_name_disabled] = career_settings.picking_image
 			content[icon_data_name].icon_disabled = completed_index <= 0
 			local icon_disabled_style = style[icon_name_disabled]
-			icon_disabled_style.color = (completed_index > 0 and icon_disabled_style.default_color) or icon_disabled_style.disabled_color
+			icon_disabled_style.color = completed_index > 0 and icon_disabled_style.default_color or icon_disabled_style.disabled_color
 		else
 			content["hotspot_" .. i].disable_button = completed_index <= 0
 			local icon_style = style["icon_" .. i .. "_saturated"]
-			icon_style.color = (completed_index > 0 and icon_style.default_color) or icon_style.disabled_color
+			icon_style.color = completed_index > 0 and icon_style.default_color or icon_style.disabled_color
 		end
 	end
 end
@@ -500,7 +500,7 @@ StartGameWindowMissionSelectionConsole._profile_difficulty_index_completed = fun
 	for i = #DefaultDifficulties, 1, -1 do
 		local difficulty_key = DefaultDifficulties[i]
 
-		for j = 1, #careers, 1 do
+		for j = 1, #careers do
 			local career_name = careers[j].display_name
 			local value = statistics_db:get_persistent_stat(stats_id, "completed_career_levels", career_name, level_key, difficulty_key)
 
@@ -537,7 +537,7 @@ StartGameWindowMissionSelectionConsole._sync_missions = function (self, mission_
 
 			if total_amount then
 				content.counter_text = tostring(amount) .. "/" .. tostring(total_amount)
-				counter_text_style.text_color = (total_amount <= amount and counter_text_style.completed_color) or counter_text_style.default_color
+				counter_text_style.text_color = total_amount <= amount and counter_text_style.completed_color or counter_text_style.default_color
 			else
 				content.counter_text = "x" .. tostring(amount)
 				counter_text_style.text_color = counter_text_style.completed_color
@@ -554,7 +554,7 @@ StartGameWindowMissionSelectionConsole._setup_grid_navigation = function (self)
 		if act_key then
 			local level_ids = {}
 
-			for i = 1, #levels, 1 do
+			for i = 1, #levels do
 				level_ids[i] = levels[i].level_id
 			end
 
@@ -583,13 +583,13 @@ StartGameWindowMissionSelectionConsole._find_level_location_in_grid = function (
 	local row, column = nil
 
 	if level_id then
-		for i = 1, num_rows, 1 do
+		for i = 1, num_rows do
 			local levels = navigation_grid[i]
 
 			if levels then
 				local num_levels = #levels
 
-				for j = 1, num_levels, 1 do
+				for j = 1, num_levels do
 					if levels[j] == level_id then
 						row = i
 						column = j
@@ -609,10 +609,11 @@ StartGameWindowMissionSelectionConsole._find_level_location_in_grid = function (
 	end
 
 	if not IS_XB1 then
+		-- Nothing
 	end
 
 	if not row or not column then
-		for i = 1, num_rows, 1 do
+		for i = 1, num_rows do
 			local levels = navigation_grid[i]
 
 			if levels then
@@ -666,7 +667,7 @@ StartGameWindowMissionSelectionConsole._update_animations = function (self, dt)
 
 	local node_widgets = self._node_widgets
 
-	for i = 1, #node_widgets, 1 do
+	for i = 1, #node_widgets do
 		local node_widget = node_widgets[i]
 
 		self:_animate_node_widget(node_widget, dt)
@@ -711,7 +712,7 @@ StartGameWindowMissionSelectionConsole._is_level_presented = function (self, lev
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local level_settings = content.level_data
@@ -865,7 +866,7 @@ StartGameWindowMissionSelectionConsole._handle_input = function (self, dt, t)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local level_settings = content.level_data
@@ -909,7 +910,7 @@ StartGameWindowMissionSelectionConsole._draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -918,7 +919,7 @@ StartGameWindowMissionSelectionConsole._draw = function (self, dt)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -928,7 +929,7 @@ StartGameWindowMissionSelectionConsole._draw = function (self, dt)
 	local active_act_widgets = self._active_act_widgets
 
 	if active_act_widgets then
-		for i = 1, #active_act_widgets, 1 do
+		for i = 1, #active_act_widgets do
 			local widget = active_act_widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -976,5 +977,3 @@ StartGameWindowMissionSelectionConsole._animate_node_widget = function (self, wi
 	hotspot.selected_progress = selected_progress
 	content.unlock_guidance_progress = unlock_guidance_progress
 end
-
-return

@@ -281,7 +281,7 @@ LiquidAreaDamageTemplates = {
 					"nurgle_bathed_all_cata"
 				}
 
-				for h = 1, #stat_names, 1 do
+				for h = 1, #stat_names do
 					local current_difficulty = Managers.state.difficulty:get_difficulty()
 					local stat_name = stat_names[h]
 					local allowed_difficulties = QuestSettings.allowed_difficulties[stat_name]
@@ -293,7 +293,7 @@ LiquidAreaDamageTemplates = {
 						status_extension.num_times_bathed_in_nurgle_liquid = num_times_bathed_in_nurgle_liquid + 1
 						local completed_challenge = false
 
-						for i = 0, #player_and_bot_units, 1 do
+						for i = 0, #player_and_bot_units do
 							local player_unit = player_and_bot_units[i]
 
 							if Unit.alive(player_unit) then
@@ -313,7 +313,7 @@ LiquidAreaDamageTemplates = {
 						end
 
 						if completed_challenge then
-							for i = 0, #player_and_bot_units, 1 do
+							for i = 0, #player_and_bot_units do
 								local player_unit = player_and_bot_units[i]
 
 								if Unit.alive(player_unit) then
@@ -822,5 +822,3 @@ LiquidAreaDamageTemplates = {
 		return not buff_extension:has_buff_type("stormfiend_warpfire_face")
 	end
 }
-
-return

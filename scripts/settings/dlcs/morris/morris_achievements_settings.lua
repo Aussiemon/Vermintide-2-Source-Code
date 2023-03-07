@@ -34,5 +34,3 @@ settings.achievement_outline = {
 		}
 	}
 }
-
-return

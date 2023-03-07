@@ -192,7 +192,7 @@ BTMutatorSorcererFollowAction.handle_movement_speed_bonus = function (self, unit
 	local distance = Vector3.distance(current_position, POSITION_LOOKUP[blackboard.target_unit])
 
 	if is_infront and Vector3.length(current_position - target_position) > 0 and has_line_of_sight then
-		local move_speed = (action.slow_down_on_look_at and action.slow_move_speed) or action.fast_move_speed * movement_value
+		local move_speed = action.slow_down_on_look_at and action.slow_move_speed or action.fast_move_speed * movement_value
 
 		navigation_extension:set_max_speed(move_speed)
 
@@ -216,7 +216,7 @@ BTMutatorSorcererFollowAction.handle_movement_speed_bonus = function (self, unit
 			blackboard.played_fast_movespeed_sound = true
 		end
 	else
-		local move_speed = (action.slow_down_on_look_at and action.fast_move_speed * 4) or action.slow_move_speed
+		local move_speed = action.slow_down_on_look_at and action.fast_move_speed * 4 or action.slow_move_speed
 
 		navigation_extension:set_max_speed(move_speed)
 
@@ -237,5 +237,3 @@ BTMutatorSorcererFollowAction.play_movement_sound = function (self, unit, sound_
 
 	audio_system:play_audio_unit_event(sound_event, unit)
 end
-
-return

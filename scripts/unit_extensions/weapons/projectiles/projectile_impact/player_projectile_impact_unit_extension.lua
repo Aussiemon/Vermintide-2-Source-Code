@@ -115,7 +115,7 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 
 	local num_hits = #result
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit = result[i]
 		local hit_position = hit[INDEX_POSITION]
 		local hit_normal = hit[INDEX_NORMAL]
@@ -129,7 +129,7 @@ PlayerProjectileImpactUnitExtension._do_raycast = function (self, unit, from, to
 				local num_actors = Unit.num_actors(hit_unit)
 				local actor_index = nil
 
-				for j = 0, num_actors - 1, 1 do
+				for j = 0, num_actors - 1 do
 					local actor = Unit.actor(hit_unit, j)
 
 					if hit_actor == actor then
@@ -166,7 +166,7 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 		local direction = Vector3.normalize(moved_position - cached_position)
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local hit_position = hit.position
 			local hit_normal = hit.normal
@@ -180,7 +180,7 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 					local num_actors = Unit.num_actors(hit_unit)
 					local actor_index = nil
 
-					for j = 0, num_actors - 1, 1 do
+					for j = 0, num_actors - 1 do
 						local actor = Unit.actor(hit_unit, j)
 
 						if hit_actor == actor then
@@ -197,5 +197,3 @@ PlayerProjectileImpactUnitExtension.update_sphere_sweep = function (self, unit, 
 		end
 	end
 end
-
-return

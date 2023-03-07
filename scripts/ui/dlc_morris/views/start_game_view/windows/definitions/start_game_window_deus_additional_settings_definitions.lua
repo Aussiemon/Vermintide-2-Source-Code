@@ -4,38 +4,37 @@ local game_option_size = {
 	window_size[1] - 20,
 	30
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			duration = 0.2,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			duration = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+local animation_definitions = {}
+animation_definitions.on_enter = {
+	{
+		name = "fade_in",
+		duration = 0.2,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.render_settings.alpha_multiplier = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			params.render_settings.alpha_multiplier = anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.on_exit = {
+	{
+		name = "fade_out",
+		duration = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.render_settings.alpha_multiplier = 1
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			params.render_settings.alpha_multiplier = 1 - anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 local scenegraph_definition = {

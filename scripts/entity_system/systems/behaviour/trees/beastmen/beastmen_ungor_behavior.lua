@@ -111,5 +111,3 @@ BreedBehaviors.ungor = {
 	},
 	name = "ungor"
 }
-
-return

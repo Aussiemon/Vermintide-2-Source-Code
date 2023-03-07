@@ -1036,5 +1036,3 @@ belakor_atlas = {
 		}
 	}
 }
-
-return

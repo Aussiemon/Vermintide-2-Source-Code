@@ -94,5 +94,3 @@ ActSettings.act_scorpion = {
 	display_name = "area_selection_scorpion_name",
 	console_offset = 175
 }
-
-return

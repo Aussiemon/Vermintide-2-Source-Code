@@ -128,10 +128,10 @@ local weapon_names = {
 	"es_dual_wield_hammer_sword"
 }
 
-for i = 1, #holly_lord_levels, 1 do
+for i = 1, #holly_lord_levels do
 	local level_name = holly_lord_levels[i]
 
-	for j = 1, #weapon_names, 1 do
+	for j = 1, #weapon_names do
 		local weapon_name = weapon_names[j]
 		local stat_name = "holly_completed_level_" .. level_name .. "_with_" .. weapon_name
 		player[stat_name] = {
@@ -141,5 +141,3 @@ for i = 1, #holly_lord_levels, 1 do
 		}
 	end
 end
-
-return

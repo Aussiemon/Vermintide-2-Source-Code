@@ -122,7 +122,7 @@ BTStormVerminAttackAction._init_attack = function (self, unit, blackboard, t)
 		local step_attack_target_speed_away_override = action.step_attack_target_speed_away_override or 2
 		local step_attack_distance_override = action.step_attack_distance_override or 3
 		local target_speed_away = blackboard.target_speed_away_small_sample
-		local should_use_step_attack = (step_attack_target_speed_away < target_speed_away and step_attack_distance < flat_distance) or step_attack_target_speed_away_override < target_speed_away or step_attack_distance_override < flat_distance
+		local should_use_step_attack = step_attack_target_speed_away < target_speed_away and step_attack_distance < flat_distance or step_attack_target_speed_away_override < target_speed_away or step_attack_distance_override < flat_distance
 
 		if should_use_step_attack then
 			blackboard.moving_attack = true
@@ -219,7 +219,7 @@ BTStormVerminAttackAction.run = function (self, unit, blackboard, t, dt)
 		BTStormVerminAttackAction.catapult_enemies(unit, blackboard)
 	end
 
-	if (blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t) or (not blackboard.attack_finished_t and blackboard.attack_finished) then
+	if blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t or not blackboard.attack_finished_t and blackboard.attack_finished then
 		return "done"
 	end
 
@@ -397,7 +397,7 @@ BTStormVerminAttackAction.anim_cb_damage = function (self, unit, blackboard)
 		blackboard.navigation_extension:set_enabled(false)
 		blackboard.locomotion_extension:set_wanted_velocity(Vector3(0, 0, 0))
 	else
-		slot22 = Managers.time:time("game")
+		local t = Managers.time:time("game")
 	end
 
 	for _, actor in ipairs(hit_actors) do
@@ -520,8 +520,7 @@ BTStormVerminAttackAction.catapult_enemy = function (unit, blackboard, action, t
 		return
 	end
 
-	if blocked then
-	else
+	if not blocked then
 		AiUtils.damage_target(target_unit, unit, action, action.damage)
 	end
 
@@ -538,5 +537,3 @@ BTStormVerminAttackAction.catapult_enemy = function (unit, blackboard, action, t
 		StatusUtils.set_catapulted_network(target_unit, true, push_velocity)
 	end
 end
-
-return

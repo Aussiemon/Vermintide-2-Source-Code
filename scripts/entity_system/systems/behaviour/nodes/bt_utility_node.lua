@@ -38,7 +38,7 @@ local function randomize_actions(unit, actions, blackboard, t, node_children)
 	local num_actions = #actions
 	local total_utility_score = 0
 
-	for i = 1, num_actions, 1 do
+	for i = 1, num_actions do
 		local action = actions[i]
 		local action_name = action.name
 		local node = node_children[action_name]
@@ -52,11 +52,11 @@ local function randomize_actions(unit, actions, blackboard, t, node_children)
 		total_utility_score = total_utility_score + score
 	end
 
-	for i = 1, num_actions, 1 do
+	for i = 1, num_actions do
 		local picked_index = nil
 		local random_utility_score = math.random() * total_utility_score
 
-		for j = i, num_actions, 1 do
+		for j = i, num_actions do
 			local action_utility_score = actions[j].utility_score
 
 			if random_utility_score < action_utility_score then
@@ -119,7 +119,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	local actions = self._action_list
 	local num_actions = randomize_actions(unit, actions, blackboard, t, self._children)
 
-	for i = 1, num_actions, 1 do
+	for i = 1, num_actions do
 		local action = actions[i]
 		local action_name = action.name
 		local node = self._children[action_name]
@@ -160,7 +160,7 @@ BTUtilityNode.run = function (self, unit, blackboard, t, dt)
 	fail_cooldown_t = fail_cooldown_blackboard_identifier and blackboard[fail_cooldown_blackboard_identifier]
 
 	if fail_cooldown_t == nil then
-		fail_cooldown_t = t + ((action_data and action_data.fail_cooldown) or 0.5)
+		fail_cooldown_t = t + (action_data and action_data.fail_cooldown or 0.5)
 	end
 
 	blackboard[self.fail_cooldown_name] = fail_cooldown_t
@@ -171,5 +171,3 @@ end
 BTUtilityNode.add_child = function (self, node)
 	self._children[node._identifier] = node
 end
-
-return

@@ -443,7 +443,7 @@ local function create_timer(texture, scenegraph_id)
 					content_change_function = function (content, style)
 						if content.progress_cutoff <= content.progress then
 							local time = Managers.time:time("game")
-							local progress = (content.progress < 1 and math.cos(time * math.pi * 2)) or 1
+							local progress = content.progress < 1 and math.cos(time * math.pi * 2) or 1
 							style.color[1] = 192 + progress * 64
 							style.texture_size[1] = math.lerp(texture_settings.size[1], texture_settings.size[1] * 1.25, progress)
 						end

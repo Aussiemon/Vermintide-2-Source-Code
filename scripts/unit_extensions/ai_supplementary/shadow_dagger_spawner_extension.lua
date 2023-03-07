@@ -141,5 +141,3 @@ ShadowDaggerSpawnerExtension.update = function (self, unit, input, dt, context, 
 		end
 	end
 end
-
-return

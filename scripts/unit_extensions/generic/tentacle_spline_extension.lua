@@ -40,12 +40,12 @@ TentacleSplineExtension.extensions_ready = function (self, world, unit)
 
 	if tentacle_template.use_ik_chain then
 		local start_pos = tentacle_data.wall_pos:unbox()
-		local target_pos = (self.target_unit and POSITION_LOOKUP[self.target_unit]) or tentacle_data.last_target_pos:unbox()
+		local target_pos = self.target_unit and POSITION_LOOKUP[self.target_unit] or tentacle_data.last_target_pos:unbox()
 		local joints = {}
 		local segment_length = 0.5
 		local length = segment_length * 10
 
-		for i = 1, 10, 1 do
+		for i = 1, 10 do
 			joints[i] = Vector3(0, 0, i * segment_length)
 		end
 
@@ -149,7 +149,7 @@ TentacleSplineExtension.get_spiral_length = function (self, node_spacing)
 	local num_nodes = #node_spacing
 	local length = 0
 
-	for i = num_nodes - 21, num_nodes, 1 do
+	for i = num_nodes - 21, num_nodes do
 		length = length + node_spacing[i]
 	end
 
@@ -181,7 +181,7 @@ TentacleSplineExtension.parse_nodes = function (self, unit, tip_node_name)
 	local p1 = Unit.world_position(unit, 0)
 	local p2 = nil
 
-	for i = 1, #nodes, 1 do
+	for i = 1, #nodes do
 		p2 = Unit.world_position(unit, nodes[i])
 		local spacing = Vector3.distance(p1, p2)
 		node_spacing[i] = spacing
@@ -255,7 +255,7 @@ TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard,
 	end
 
 	local dot = Vector3.dot(fwd, Vector3(0, 0, 1))
-	local spawn_type = (dot > 0.707 and "floor") or "wall"
+	local spawn_type = dot > 0.707 and "floor" or "wall"
 	local ground_pos = nil
 
 	if spawn_type == "wall" then
@@ -274,7 +274,7 @@ TentacleSplineExtension.spawn_chaos_tentacle = function (self, unit, blackboard,
 		spline_points = spline_points,
 		spline = spline,
 		last_target_pos = Vector3Box(position),
-		path_type = (self.is_server and "no_path") or "straight",
+		path_type = self.is_server and "no_path" or "straight",
 		inside_wall_distance = inside_wall_distance,
 		portal_unit = portal_unit,
 		portal_spawn_type = spawn_type,
@@ -341,9 +341,9 @@ local TentacleAlignFunctions = {
 			local side = Vector3.cross(player_fwd, to_head)
 			local fwd = Vector3.cross(side, to_head)
 			local c = s_pos
-			spline_points[k] = (c + side * w) - to_head * 0.2
+			spline_points[k] = c + side * w - to_head * 0.2
 			k = k + 1
-			spline_points[k] = (c + fwd * m) - to_head * 0.1
+			spline_points[k] = c + fwd * m - to_head * 0.1
 			k = k + 1
 			spline_points[k] = c - side * w - to_head * 0
 			k = k + 1
@@ -406,7 +406,7 @@ local TentacleAlignFunctions = {
 		local side = Vector3.cross(player_fwd, to_head)
 		local fwd = Vector3.cross(side, to_head)
 		local c = s_pos
-		spline_points[k] = (c + side * w) - to_head * 0.2
+		spline_points[k] = c + side * w - to_head * 0.2
 		k = k + 1
 		spline_points[k] = c - fwd * 1.5 - to_head * 0.1
 		k = k + 1
@@ -498,7 +498,7 @@ TentacleSplineExtension.update = function (self, unit, input, dt, context, t)
 
 	if self.is_server then
 		local target_unit = self.target_unit
-		local target_pos = (self.target_unit and POSITION_LOOKUP[self.target_unit]) or data.last_target_pos:unbox()
+		local target_pos = self.target_unit and POSITION_LOOKUP[self.target_unit] or data.last_target_pos:unbox()
 		local root_pos = data.root_pos:unbox()
 		local blackboard = self.blackboard
 
@@ -565,7 +565,7 @@ TentacleSplineExtension.update = function (self, unit, input, dt, context, t)
 		end
 
 		local server_time = t + self._server_time_delta
-		local target_pos = (self.target_unit and POSITION_LOOKUP[self.target_unit]) or data.last_target_pos:unbox()
+		local target_pos = self.target_unit and POSITION_LOOKUP[self.target_unit] or data.last_target_pos:unbox()
 		local game_session = Managers.state.network:game()
 		local target_unit_id = Managers.state.unit_storage:go_id(unit)
 		local reach_dist = GameSession.game_object_field(game_session, target_unit_id, "reach_distance")
@@ -587,7 +587,7 @@ end
 local function draw_node_list(nodes, quick_drawer)
 	local drawer = quick_drawer or QuickDrawer
 
-	for j = 1, #nodes, 1 do
+	for j = 1, #nodes do
 		drawer:sphere(nodes[j]:unbox(), 0.4, Color(0, 255, 124))
 	end
 end
@@ -615,7 +615,7 @@ TentacleSplineExtension.calculate_tentacle_path = function (self, unit, tentacle
 				local h = Vector3(0, 0, 1.3)
 				local node_list = {}
 
-				for j = 2, num_nodes, 1 do
+				for j = 2, num_nodes do
 					node_list[j - 1] = GwNavAStar.node_at_index(a_star, j) + h
 				end
 
@@ -685,7 +685,7 @@ local index_lists = {
 }
 
 TentacleSplineExtension.keep_tentacle_above_ground = function (self, nav_world, spline_points, start_index, check_list)
-	for i = start_index, #check_list, 1 do
+	for i = start_index, #check_list do
 		local index = check_list[i]
 		local pos = spline_points[index]
 		local success, altitude = GwNavQueries.triangle_from_position(nav_world, pos, 4, 1)
@@ -703,7 +703,7 @@ TentacleSplineExtension.funnel_tentacle_to_center = function (self, spline_point
 
 	Debug.text("influence dist: %.2f", influence_dist)
 
-	for i = from, to, 1 do
+	for i = from, to do
 		local point = spline_points[i]
 		local p = Geometry.closest_point_on_line(point, root_pos, wall_pos + portal_forward * influence_dist)
 		local dist_along_fwd = Vector3.length(p - root_pos)
@@ -796,7 +796,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 
 			local joints = self.ik_tentacle.joints
 
-			for i = 1, #joints, 1 do
+			for i = 1, #joints do
 				spline_points[i] = joints[i]:unbox()
 			end
 
@@ -821,7 +821,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 				spline_points[10] = base + to_player_dir * d * 0.9
 				spline_points[11] = base + to_player_dir * d * 1
 
-				for i = 1, #spline_points, 1 do
+				for i = 1, #spline_points do
 					QuickDrawer:sphere(spline_points[i], 0.26, Color(0, 255, 0))
 				end
 			else
@@ -844,7 +844,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 				spline_points[1] = root_pos
 				local to_surface = wall_pos - root_pos
 
-				for i = 1, 4, 1 do
+				for i = 1, 4 do
 					spline_points[i + 1] = root_pos + split(list[i], to_surface.z + 1, 0) + h
 				end
 			end
@@ -855,7 +855,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 			spline_points[1] = root_pos
 			spline_points[2] = root_pos + portal_forward * 3
 			spline_points[3] = root_pos + to_player_dir * (6 + 1 * math.sin(t * 2)) + Vector3.cross(to_player_dir, Vector3.up()) * 2.5 * math.sin(t * 1.5)
-			spline_points[4] = (root_pos + to_player_dir * 8.5) - Vector3.cross(to_player_dir, Vector3.up()) * 0.5 * (0.7 + 0.3 * math.cos(t * 3))
+			spline_points[4] = root_pos + to_player_dir * 8.5 - Vector3.cross(to_player_dir, Vector3.up()) * 0.5 * (0.7 + 0.3 * math.cos(t * 3))
 			k = 4
 		end
 
@@ -905,7 +905,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 
 		local anchor_point_pos = ap
 		tentacle_data.look_dir = Vector3Box(Vector3.normalize(anchor_point_pos - pos))
-		local anchor_point2_pos = (use_extra_anchor_point and anchor_point_pos - tentacle_data.look_dir:unbox() * 0.2) or nil
+		local anchor_point2_pos = use_extra_anchor_point and anchor_point_pos - tentacle_data.look_dir:unbox() * 0.2 or nil
 
 		if Vector3.dot(to_travel_node, travel_node_dir) < 0 and n > 1 then
 			tentacle_data.travel_node_dir:store(Vector3.normalize(nodes[n - 1]:unbox() - nodes[n]:unbox()))
@@ -917,9 +917,9 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 
 		spline_points = {}
 		local num_nodes = #nodes - 1
-		local alpha = (2 * math.pi) / num_nodes
+		local alpha = 2 * math.pi / num_nodes
 
-		for i = 1, num_nodes, 1 do
+		for i = 1, num_nodes do
 			local pos = nodes[i]:unbox()
 			spline_points[i] = pos
 		end
@@ -929,7 +929,7 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		if anchor_point_index then
 			spline_points[anchor_point_index + 1] = anchor_point_pos
 
-			for i = anchor_point_index + 2, #spline_points, 1 do
+			for i = anchor_point_index + 2, #spline_points do
 				spline_points[i] = nil
 			end
 
@@ -986,9 +986,9 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		end
 	end
 
-	local alpha = (20 * math.pi) / num_spacings
+	local alpha = 20 * math.pi / num_spacings
 
-	for i = 1, num_spacings, 1 do
+	for i = 1, num_spacings do
 		local node = nodes[i]
 		local pos, tangent, is_last = spline:get_point_at_distance(dists[i])
 
@@ -1007,5 +1007,3 @@ TentacleSplineExtension.align_tentacle = function (self, template_name, tentacle
 		parent_pose = world_pose
 	end
 end
-
-return

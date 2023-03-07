@@ -26,5 +26,3 @@ settings.backend_localizations = {
 		es = "store_localization_es"
 	}
 }
-
-return

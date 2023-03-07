@@ -1183,8 +1183,8 @@ local function sort_level_list(a, b)
 	local level_settings = LevelSettings
 	local a_map_settings = level_settings[a].map_settings
 	local b_map_settings = level_settings[b].map_settings
-	local a_sorting_index = (a_map_settings and (a_map_settings.sorting or 0)) or 0
-	local b_sorting_index = (b_map_settings and (b_map_settings.sorting or 0)) or 0
+	local a_sorting_index = a_map_settings and (a_map_settings.sorting or 0) or 0
+	local b_sorting_index = b_map_settings and (b_map_settings.sorting or 0) or 0
 
 	return a_sorting_index < b_sorting_index
 end
@@ -1227,7 +1227,7 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 		end
 	end
 
-	for i = 1, #game_mode_data, 1 do
+	for i = 1, #game_mode_data do
 		local data = game_mode_data[i]
 		local levels = data.levels
 
@@ -1247,7 +1247,7 @@ local function setup_game_mode_data(statistics_db, player_stats_id)
 
 	local game_modes = {}
 
-	for i = 1, #game_mode_data, 1 do
+	for i = 1, #game_mode_data do
 		local game_mode_key = game_mode_data[i].game_mode_key
 		local game_mode_index = #game_modes + 1
 		game_modes[game_mode_index] = game_mode_key
@@ -1280,11 +1280,11 @@ local show_lobbies_array = {
 	"lb_show_joinable",
 	"lb_show_all"
 }
-local distance_array = (IS_PS4 and {
+local distance_array = IS_PS4 and {
 	"map_zone_options_2",
 	"map_zone_options_3",
 	"map_zone_options_5"
-}) or {
+} or {
 	"map_zone_options_2",
 	"map_zone_options_4",
 	"map_zone_options_5"
@@ -1642,8 +1642,8 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 			use_bottom_edge = use_bottom_edge,
 			button_hotspot = {},
 			button_text = button_text or "n/a",
-			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
-			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
+			hover_glow = optional_color_name and "button_state_hover_" .. optional_color_name or "button_state_hover",
+			glow = optional_color_name and "button_state_normal_" .. optional_color_name or "button_state_normal",
 			button_background = {
 				uvs = {
 					{
@@ -1882,7 +1882,7 @@ end
 
 local hero_icons = {}
 
-for i = 1, #ProfilePriority, 1 do
+for i = 1, #ProfilePriority do
 	hero_icons[#hero_icons + 1] = "unit_frame_portrait_default"
 end
 

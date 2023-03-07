@@ -248,7 +248,7 @@ ActionRangedBase.shoot = function (self, num_shots_this_frame, shots_fired, num_
 	local bullseye = current_action.bullseye or false
 	local spread_pitch = current_action.spread_pitch or 0.8
 
-	for i = 1, num_shots_this_frame, 1 do
+	for i = 1, num_shots_this_frame do
 		shots_fired = shots_fired + 1
 		local rotation = current_rotation
 
@@ -350,7 +350,7 @@ ActionRangedBase.gen_num_shots = function (self)
 	local ammo_extension = self.ammo_extension
 	local ammo_usage = current_action.ammo_usage or 1
 	local num_shots_total = current_action.num_shots or 1
-	local max_ammo_shots = (ammo_extension and math.floor(ammo_extension:current_ammo() / ammo_usage)) or num_shots_total
+	local max_ammo_shots = ammo_extension and math.floor(ammo_extension:current_ammo() / ammo_usage) or num_shots_total
 	local projectiles_per_shot = current_action.num_projectiles_per_shot or 1
 
 	if ammo_extension and current_action.fire_all_ammo then
@@ -394,5 +394,3 @@ ActionRangedBase._add_overcharge = function (self)
 		self.overcharge_extension:add_charge(overcharge_amount)
 	end
 end
-
-return

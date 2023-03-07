@@ -33,5 +33,3 @@ TransportationSystem.rpc_hot_join_sync_linker_transport_state = function (self, 
 	local unit = Level.unit_by_index(LevelHelper:current_level(self.world), level_unit_id)
 	local ext = ScriptUnit.extension(unit, "transportation_system"):rpc_hot_join_sync_linker_transport_state(state_id, story_time)
 end
-
-return

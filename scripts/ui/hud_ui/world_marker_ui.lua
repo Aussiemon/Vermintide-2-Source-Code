@@ -106,7 +106,7 @@ WorldMarkerUI.event_remove_world_marker = function (self, id)
 	local marker_to_remove = nil
 	local markers = self._markers
 
-	for i = 1, #markers, 1 do
+	for i = 1, #markers do
 		local marker = markers[i]
 
 		if marker.id == id then
@@ -190,7 +190,7 @@ WorldMarkerUI._unregister_marker = function (self, marker)
 	local id = marker.id
 	markers_by_id[id] = nil
 
-	for i = 1, #markers, 1 do
+	for i = 1, #markers do
 		if markers[i].id == id then
 			table.remove(markers, i)
 
@@ -201,7 +201,7 @@ WorldMarkerUI._unregister_marker = function (self, marker)
 	local marker_type = marker.type
 	local type_markers = markers_by_type[marker_type]
 
-	for i = 1, #type_markers, 1 do
+	for i = 1, #type_markers do
 		if type_markers[i].id == id then
 			table.remove(type_markers, i)
 
@@ -264,7 +264,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 			local life_time = settings.life_time
 			local check_line_of_sight = settings.check_line_of_sight
 
-			for i = 1, #markers, 1 do
+			for i = 1, #markers do
 				local marker = markers[i]
 				local id = marker.id
 				local update = markers_by_id[id] ~= nil
@@ -283,7 +283,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 
 						if Unit.alive(unit) then
 							local unit_node = settings.unit_node
-							local node = (unit_node and Unit.node(unit, unit_node)) or 0
+							local node = unit_node and Unit.node(unit, unit_node) or 0
 							marker_position = Unit.world_position(unit, node)
 						else
 							remove = true
@@ -332,7 +332,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 						local camera_left = Vector3.cross(camera_direction, Vector3.up())
 						local left_dot_dir = Vector3.dot(camera_left, marker_direction)
 						local angle = math.atan2(left_dot_dir, forward_dot_dir)
-						local is_behind = (forward_dot_dir < 0 and true) or false
+						local is_behind = forward_dot_dir < 0 and true or false
 						local is_under = marker_position.z < camera_position.z
 						local x, y, distance_from_camera = self:_convert_world_to_screen_position(camera, marker_position)
 						local is_clamped = false
@@ -364,7 +364,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 						end
 
 						if not is_clamped then
-							if only_when_clamped or (is_behind and not draw_behind) then
+							if only_when_clamped or is_behind and not draw_behind then
 								draw = false
 							elseif not is_inside_frustum then
 								local root_size = UISceneGraph.get_size_scaled(ui_scenegraph, "root")
@@ -426,7 +426,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 				table.sort(temp_marker_raycast_queue, raycast_sort_func)
 			end
 
-			for i = 1, num_raycast_queue, 1 do
+			for i = 1, num_raycast_queue do
 				if RAYCASTS_PER_FRAME < i then
 					break
 				end
@@ -450,7 +450,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 		for marker_type, markers in pairs(markers_by_type) do
 			local settings = WorldMarkerTemplates[marker_type]
 
-			for i = 1, #markers, 1 do
+			for i = 1, #markers do
 				local marker = markers[i]
 				local widget = marker.widget
 				local content = widget.content
@@ -498,7 +498,7 @@ WorldMarkerUI.post_update = function (self, dt, t)
 	local markers_to_remove = #temp_array_markers_to_remove
 
 	if markers_to_remove > 0 then
-		for i = 1, markers_to_remove, 1 do
+		for i = 1, markers_to_remove do
 			local marker = temp_array_markers_to_remove[i]
 
 			self:_unregister_marker(marker)
@@ -567,7 +567,7 @@ WorldMarkerUI._apply_scale = function (self, widget, scale)
 			local offset = pass_style.offset
 			offset[1] = math.lerp(offset[1], source_offset[1] * scale, lerp_multiplier)
 			offset[2] = math.lerp(offset[2], source_offset[2] * scale, lerp_multiplier)
-			slot14 = pass_style.offset
+			local offset = pass_style.offset
 		end
 	end
 end
@@ -583,10 +583,10 @@ end
 
 WorldMarkerUI._normal_clamp_to_screen = function (self, x, y, screen_margins, is_behind, is_under, world_position, camera_position_center, camera_position_left, camera_position_right, camera_position_up, camera_position_down)
 	local root_size = UISceneGraph.get_size_scaled(self.ui_scenegraph, "root")
-	local margin_up = (screen_margins and screen_margins.up) or 0
-	local margin_down = (screen_margins and screen_margins.down) or 0
-	local margin_left = (screen_margins and screen_margins.left) or 0
-	local margin_right = (screen_margins and screen_margins.right) or 0
+	local margin_up = screen_margins and screen_margins.up or 0
+	local margin_down = screen_margins and screen_margins.down or 0
+	local margin_left = screen_margins and screen_margins.left or 0
+	local margin_right = screen_margins and screen_margins.right or 0
 	local clamped_x = math.max(margin_left, math.min(x, root_size[1] - margin_right))
 	local clamped_y = math.max(margin_down, math.min(y, root_size[2] - margin_up))
 	local is_clamped = clamped_x ~= x or clamped_y ~= y or is_behind
@@ -653,7 +653,7 @@ WorldMarkerUI._is_clamped = function (self, x, y)
 		is_y_clamped = true
 	end
 
-	return ((is_x_clamped or is_y_clamped) and true) or false
+	return (is_x_clamped or is_y_clamped) and true or false
 end
 
 WorldMarkerUI._tutorial_clamp_to_screen = function (self, x, y, forward_dot, right_dot, settings)
@@ -715,7 +715,7 @@ WorldMarkerUI._test_raycast = function (self)
 
 		print("num_hits", num_hits, num_units)
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local unit = broadphase_results[i]
 
 			self:event_add_world_marker_unit(marker_type, unit)
@@ -735,7 +735,7 @@ WorldMarkerUI._get_raycast_position = function (self, unit, from, to, physics_wo
 	local owner_unit = self.owner_unit
 	local num_hits = #result
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit = result[i]
 		local hit_position = hit[INDEX_POSITION]
 		local hit_distance = hit[INDEX_DISTANCE]
@@ -754,5 +754,3 @@ WorldMarkerUI._get_raycast_position = function (self, unit, from, to, physics_wo
 		return closest_hit[INDEX_POSITION]
 	end
 end
-
-return

@@ -14,8 +14,8 @@ ActionBountyHunterHandgun.client_owner_start_action = function (self, new_action
 	self.current_action = new_action
 	self.power_level = power_level
 	self.owner_buff_extension = buff_extension
-	self.upper_shoot_function = (action_init_data and ((action_init_data.upper_barrel == "railgun" and self._railgun_shoot) or self._shotgun_shoot)) or self._railgun_shoot
-	self.lower_shoot_function = (action_init_data and ((action_init_data.lower_barrel == "railgun" and self._railgun_shoot) or self._shotgun_shoot)) or self._shotgun_shoot
+	self.upper_shoot_function = action_init_data and (action_init_data.upper_barrel == "railgun" and self._railgun_shoot or self._shotgun_shoot) or self._railgun_shoot
+	self.lower_shoot_function = action_init_data and (action_init_data.lower_barrel == "railgun" and self._railgun_shoot or self._shotgun_shoot) or self._shotgun_shoot
 
 	Unit.set_flow_variable(weapon_unit, "upper_is_railgun", action_init_data.upper_barrel == "railgun")
 	Unit.set_flow_variable(weapon_unit, "lower_is_railgun", action_init_data.lower_barrel == "railgun")
@@ -147,7 +147,7 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 	local check_buffs = true
 	local weapon_unit = self.weapon_unit
 
-	for i = 1, num_shots, 1 do
+	for i = 1, num_shots do
 		local rotation = current_rotation
 
 		if spread_extension then
@@ -169,7 +169,7 @@ ActionBountyHunterHandgun._shotgun_shoot = function (self)
 			end
 		end
 
-		local hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
+		local hit_position = result and result[#result][1] or current_position + direction * current_action.range
 
 		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
 		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position) * 0.1)
@@ -203,7 +203,7 @@ ActionBountyHunterHandgun._do_aoe = function (self)
 	local actors, actors_n = PhysicsWorld.immediate_overlap(physics_world, "shape", "sphere", "position", attack_pos, "size", radius, "types", "dynamics", "collision_filter", collision_filter, "use_global_table")
 	local hit_units = self.hit_units
 
-	for i = 1, actors_n, 1 do
+	for i = 1, actors_n do
 		repeat
 			local hit_actor = actors[i]
 			local hit_unit = Actor.unit(hit_actor)
@@ -258,5 +258,3 @@ ActionBountyHunterHandgun.finish = function (self, reason)
 		hud_extension.show_critical_indication = false
 	end
 end
-
-return

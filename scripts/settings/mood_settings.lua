@@ -173,5 +173,3 @@ MoodSettings = {
 }
 
 table.insert(MoodPriority, 2, "ghost_mode")
-
-return

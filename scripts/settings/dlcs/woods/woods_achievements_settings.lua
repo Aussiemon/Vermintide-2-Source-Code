@@ -36,5 +36,3 @@ settings.achievement_template_file_names = {
 	"scripts/managers/achievements/achievement_templates_woods"
 }
 settings.achievement_events = {}
-
-return

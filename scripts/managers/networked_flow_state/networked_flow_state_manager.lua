@@ -178,7 +178,7 @@ NetworkedFlowStateManager.flow_cb_play_networked_story = function (self, params)
 	fassert(self._playing_stories[client_call_event_name] == nil or self._playing_stories[client_call_event_name].stopped, "Tried to play networked story with client call event name %q, but it is already playing.", client_call_event_name)
 
 	local story = self._playing_stories[client_call_event_name]
-	local start_time = params.start_time or (params.start_from_stop_time and story and story.stop_time) or 0
+	local start_time = params.start_time or params.start_from_stop_time and story and story.stop_time or 0
 
 	Managers.state.network.network_transmit:send_rpc_clients("rpc_flow_state_story_played", self._story_lookup[client_call_event_name], start_time, false)
 
@@ -460,7 +460,7 @@ NetworkedFlowStateManager.client_flow_state_changed = function (self, unit_id, s
 	end
 
 	state.value = new_state
-	local flow_event = (only_set and state.client_state_set_event) or state.client_state_changed_event
+	local flow_event = only_set and state.client_state_set_event or state.client_state_changed_event
 
 	Unit.flow_event(unit, flow_event)
 end
@@ -476,5 +476,3 @@ end
 NetworkedFlowStateManager.clear_object_state = function (self, unit)
 	self._object_states[unit] = nil
 end
-
-return

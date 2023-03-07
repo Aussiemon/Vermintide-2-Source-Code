@@ -39,7 +39,7 @@ DiceKeeper.add_die = function (self, die_type, amount)
 end
 
 DiceKeeper.bonus_dice_spawned = function (self)
-	self._bonus_dice_spawned = (self._bonus_dice_spawned and self._bonus_dice_spawned + 1) or 1
+	self._bonus_dice_spawned = self._bonus_dice_spawned and self._bonus_dice_spawned + 1 or 1
 end
 
 DiceKeeper.num_bonus_dice_spawned = function (self)
@@ -55,5 +55,3 @@ DiceKeeper.calculcate_loot_die_chance_on_remaining_chests = function (self, perc
 		self._chest_loot_dice_chance = 0.05 * 1 / percentage_chests_left
 	end
 end
-
-return

@@ -31,5 +31,3 @@ AdminManager.update = function (self, dt)
 		self._rcon_server:update(dt)
 	end
 end
-
-return

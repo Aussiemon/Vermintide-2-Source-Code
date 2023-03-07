@@ -148,5 +148,3 @@ RazerChromaSettings = {
 		end
 	}
 }
-
-return

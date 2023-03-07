@@ -150,5 +150,3 @@ for game_mode_key, settings in pairs(GameModeSettings) do
 
 	fassert(num_states <= game_mode_state_id_max, "Too many game mode states in %s, it has %u maximum is %u", game_mode_key, num_states, game_mode_state_id_max)
 end
-
-return

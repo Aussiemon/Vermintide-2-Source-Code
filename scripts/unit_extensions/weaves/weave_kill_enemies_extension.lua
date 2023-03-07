@@ -261,7 +261,7 @@ WeaveKillEnemiesExtension.on_ai_killed = function (self, killed_unit, killer_uni
 		local spawn_type = Unit.get_data(killed_unit, "spawn_type") or "unknown"
 		local score_multiplier_per_breed = self._breed_score_multipliers
 		local breed_score_multiplier = score_multiplier_per_breed[breed_name] or score_multiplier_per_breed.default
-		local score_multiplier = (spawn_type == "roam" and self._score_multiplier * roaming_multiplier) or self._score_multiplier
+		local score_multiplier = spawn_type == "roam" and self._score_multiplier * roaming_multiplier or self._score_multiplier
 		local score = score_multiplier * breed_score_multiplier
 		local despawned = death_data.despawned
 
@@ -279,5 +279,3 @@ WeaveKillEnemiesExtension.on_ai_killed = function (self, killed_unit, killer_uni
 		GameSession.set_game_object_field(game_session, self._game_object_id, "value", self:get_percentage_done() * 100)
 	end
 end
-
-return

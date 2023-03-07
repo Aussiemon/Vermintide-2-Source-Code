@@ -225,5 +225,3 @@ UIManager.handle_transition = function (self, new_transition, params)
 		end
 	end
 end
-
-return

@@ -124,5 +124,3 @@ WeaveUnitTemplates = {
 		end
 	}
 }
-
-return

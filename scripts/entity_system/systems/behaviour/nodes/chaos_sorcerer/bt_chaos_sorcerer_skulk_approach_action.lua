@@ -79,7 +79,7 @@ BTChaosSorcererSkulkApproachAction.initialize_vortex_data = function (self, blac
 	local start_check_direction = Vector3.forward() * max_radius
 	local check_directions = {}
 
-	for i = 1, 8, 1 do
+	for i = 1, 8 do
 		local current_rotation = Quaternion(Vector3.up(), VORTEX_CHECK_ANGLE_INCREMENT * (i - 1))
 		local direction = Quaternion.rotate(current_rotation, start_check_direction)
 		check_directions[i] = Vector3Box(direction)
@@ -273,13 +273,13 @@ BTChaosSorcererSkulkApproachAction.get_skulk_target = function (self, unit, blac
 
 	local cross_dir = Vector3(0, 0, direction)
 	local mod = 0.1
-	local alpha = math.pi * math.clamp((mod * 20) / dist, 0.01, 0.15)
+	local alpha = math.pi * math.clamp(mod * 20 / dist, 0.01, 0.15)
 
 	if teleporting then
 		alpha = alpha * 1.5
 	end
 
-	for i = 1, TRIES, 1 do
+	for i = 1, TRIES do
 		local rot_vec = to_target - to_target_dir * 0.5
 
 		if blackboard.num_summons and blackboard.num_summons >= (action.teleport_closer_summon_limit or 3) then
@@ -430,7 +430,7 @@ BTChaosSorcererSkulkApproachAction.update_portal_search = function (self, unit, 
 		elseif portal_data.portal_search_timer < t and not blackboard.portal_unit then
 			local target_position = POSITION_LOOKUP[blackboard.target_unit]
 			local success = BTChaosSorcererSkulkApproachAction.get_portal_location_list(portal_data, target_position)
-			portal_data.search_counter = (success and 0) or portal_data.search_counter + 1
+			portal_data.search_counter = success and 0 or portal_data.search_counter + 1
 			portal_data.portal_search_active = success
 			portal_data.portal_search_timer = t + 1
 		end
@@ -482,7 +482,7 @@ BTChaosSorcererSkulkApproachAction.prepare_wall_search = function (portal_data, 
 		local col_c = Color(70, 255, 0)
 		local up = Vector3(0, 0, 1)
 
-		for i = 1, num_cover_points, 1 do
+		for i = 1, num_cover_points do
 			local cover_unit = cover_units[i]
 			local pos_c = unit_local_position(cover_unit, 0)
 			local pos = pos_c + up
@@ -634,7 +634,7 @@ BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_d
 	if placement == "floor" then
 		local num_tries = 3
 
-		for i = 1, num_tries, 1 do
+		for i = 1, num_tries do
 			local result = BTChaosSorcererSkulkApproachAction.evaluate_floor(portal_data, nav_world, center_pos)
 
 			if result then
@@ -653,5 +653,3 @@ BTChaosSorcererSkulkApproachAction.try_next_portal_location = function (portal_d
 		return BTChaosSorcererSkulkApproachAction.evaluate_wall(portal_data, nav_world, center_pos, num_tries)
 	end
 end
-
-return

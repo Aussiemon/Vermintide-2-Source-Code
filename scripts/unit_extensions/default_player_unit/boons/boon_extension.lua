@@ -24,5 +24,3 @@ end
 BoonExtension.destroy = function (self)
 	return
 end
-
-return

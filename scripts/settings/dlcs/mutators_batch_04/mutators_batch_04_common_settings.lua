@@ -4,5 +4,3 @@ settings.mutators = {
 	"lightning_strike",
 	"chasing_spirits"
 }
-
-return

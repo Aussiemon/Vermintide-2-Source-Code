@@ -10,5 +10,3 @@ end
 NoneEndScreenUI._start = function (self)
 	self:_on_completed()
 end
-
-return

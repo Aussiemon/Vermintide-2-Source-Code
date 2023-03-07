@@ -60,9 +60,9 @@ local damage_templates = {
 				impact = 0.5
 			}
 		}
-	},
-	flaming_flail_explosion_glance = table.clone(damage_templates.flaming_flail_explosion)
+	}
 }
+damage_templates.flaming_flail_explosion_glance = table.clone(damage_templates.flaming_flail_explosion)
 damage_templates.flaming_flail_explosion_glance.default_target.dot_template_name = nil
 
 return damage_templates

@@ -421,7 +421,7 @@ local function create_reward_item_widget(day_index, reward_index)
 					content_check_function = function (content)
 						local gamepad_active = Managers.input:is_device_active("gamepad")
 
-						return content.is_hover or (gamepad_active and content.is_selected and content.show_tooltips)
+						return content.is_hover or gamepad_active and content.is_selected and content.show_tooltips
 					end
 				},
 				{
@@ -1190,7 +1190,7 @@ local widget_definitions = {
 }
 local day_widget_definitions = Script.new_array(DAYS)
 
-for i = 1, DAYS, 1 do
+for i = 1, DAYS do
 	day_widget_definitions[i] = create_day_widget(i)
 end
 

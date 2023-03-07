@@ -247,7 +247,7 @@ StoreWindowPanel._handle_input = function (self, dt, t)
 		local max_index = #title_button_widgets
 
 		if input_service:get(INPUT_ACTION_PREVIOUS) then
-			local next_index = (current_index > 1 and current_index - 1) or max_index
+			local next_index = current_index > 1 and current_index - 1 or max_index
 
 			self:_on_panel_button_selected(next_index)
 		elseif input_service:get(INPUT_ACTION_NEXT) then
@@ -500,7 +500,7 @@ StoreWindowPanel._sync_wallet_matchmaking_location = function (self)
 	if is_game_matchmaking ~= self._is_game_matchmaking then
 		self._is_game_matchmaking = is_game_matchmaking
 		local ui_scenegraph = self._ui_scenegraph
-		local offset_value = (is_game_matchmaking and 390) or 0
+		local offset_value = is_game_matchmaking and 390 or 0
 		ui_scenegraph.currency_area.position[1] = scenegraph_definition.currency_area.position[1] - offset_value
 	end
 end
@@ -529,7 +529,7 @@ StoreWindowPanel._sync_player_wallet = function (self)
 		local frame_background_margin = 12
 		ui_scenegraph.currency_area_frame.size[1] = background_size + frame_background_margin
 		local is_game_matchmaking = Managers.matchmaking:is_game_matchmaking()
-		local offset_value = (is_game_matchmaking and 390) or 0
+		local offset_value = is_game_matchmaking and 390 or 0
 		ui_scenegraph.currency_area.position[1] = scenegraph_definition.currency_area.position[1] - offset_value
 	end
 end
@@ -596,5 +596,3 @@ StoreWindowPanel._update_panel_selection_animation = function (self, dt)
 		panel_selection_animation.duration = duration
 	end
 end
-
-return

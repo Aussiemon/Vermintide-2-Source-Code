@@ -72,5 +72,3 @@ settings.explosion_templates = {
 		}
 	}
 }
-
-return

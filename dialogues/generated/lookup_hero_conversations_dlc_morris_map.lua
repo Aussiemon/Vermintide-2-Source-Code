@@ -16,5 +16,3 @@ DialogueLookup[DialogueLookup_n + 6] = "nfl_morris_map_shrine_tutorial_one"
 DialogueLookup[DialogueLookup_n + 7] = "nfl_morris_map_shrine_tutorial_two"
 DialogueLookup[DialogueLookup_n + 8] = "nfl_morris_map_shrine_tutorial_three"
 DialogueLookup_n = DialogueLookup_n + 8
-
-return

@@ -154,5 +154,3 @@ function percent_to_rgb(percent)
 
 	return r, g, b
 end
-
-return

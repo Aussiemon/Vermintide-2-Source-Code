@@ -1178,5 +1178,3 @@ SpreadTemplates.rake_twin_shot = table.create_copy(SpreadTemplates.rake_twin_sho
 SpreadTemplates.rake_twin_shot = SpreadTemplates.rake_twin_shot or table.clone(SpreadTemplates.default)
 
 DLCUtils.merge("spread_templates", SpreadTemplates)
-
-return

@@ -719,7 +719,7 @@ local widget_definitions = {
 			crosshair_component_2 = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = (11 * PI) / 6,
+				angle = 11 * PI / 6,
 				pivot = {
 					5,
 					2
@@ -743,7 +743,7 @@ local widget_definitions = {
 			crosshair_component_3 = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = (7 * PI) / 6,
+				angle = 7 * PI / 6,
 				pivot = {
 					5,
 					2
@@ -767,7 +767,7 @@ local widget_definitions = {
 			crosshair_component_4 = {
 				vertical_alignment = "center",
 				horizontal_alignment = "center",
-				angle = (5 * PI) / 6,
+				angle = 5 * PI / 6,
 				pivot = {
 					5,
 					2
@@ -898,10 +898,7 @@ local animations_definitions = {
 				local move_progres = 100 * math.easeOutCubic(progress)
 
 				for _, component in pairs(style) do
-					if not component.angle then
-						if false then
-						end
-					else
+					if component.angle then
 						local angle = component.angle
 						local offset_x = -move_progres * math.cos(angle)
 						local offset_y = move_progres * math.sin(angle)
@@ -932,10 +929,7 @@ local animations_definitions = {
 				local move_progres = 10 + 90 * (1 - math.easeOutCubic(progress))
 
 				for _, component in pairs(style) do
-					if not component.angle then
-						if false then
-						end
-					else
+					if component.angle then
 						local angle = component.angle
 						local offset_x = -move_progres * math.cos(angle)
 						local offset_y = move_progres * math.sin(angle)

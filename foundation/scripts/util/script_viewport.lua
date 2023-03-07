@@ -11,5 +11,3 @@ end
 ScriptViewport.shadow_cull_camera = function (viewport)
 	return Viewport.get_data(viewport, "shadow_cull_camera")
 end
-
-return

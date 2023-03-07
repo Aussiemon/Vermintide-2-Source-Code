@@ -37,5 +37,3 @@ WeaveLoadoutSystem.rpc_add_weave_buffs = function (self, channel_id, go_id, num_
 
 	weave_loadout_extension:add_buffs(num_buffs, buff_ids, buff_data_type_ids, buff_values)
 end
-
-return

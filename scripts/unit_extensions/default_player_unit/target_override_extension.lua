@@ -27,7 +27,7 @@ TargetOverrideExtension.taunt = function (self, radius, duration, do_stagger, ta
 	local result_table = self._result_table
 	local num_ai_units = AiUtils.broadphase_query(position, radius, result_table)
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local ai_unit = result_table[i]
 		local ai_extension = ScriptUnit.extension(ai_unit, "ai_system")
 		local ai_blackboard = ai_extension:blackboard()
@@ -67,7 +67,7 @@ TargetOverrideExtension.update = function (self, unit, input, dt, context, t)
 		local ai_slot_system = Managers.state.entity:system("ai_slot_system")
 		local num_ai_units = AiUtils.broadphase_query(position, radius, result_table)
 
-		for i = 1, num_ai_units, 1 do
+		for i = 1, num_ai_units do
 			local ai_unit = result_table[i]
 
 			if ScriptUnit.has_extension(ai_unit, "ai_slot_system") then
@@ -99,5 +99,3 @@ TargetOverrideExtension.add_to_override_targets = function (self, ai_unit, targe
 		ai_slot_system:register_prioritized_ai_unit_update(ai_unit)
 	end
 end
-
-return

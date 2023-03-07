@@ -16,7 +16,7 @@ FatigueUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 	local shields = {}
 
-	for i = 1, UISettings.max_fatigue_shields, 1 do
+	for i = 1, UISettings.max_fatigue_shields do
 		local shield = UIWidget.init(definitions.shield_definition)
 		shields[i] = shield
 	end
@@ -52,7 +52,7 @@ FatigueUI.setup_hud = function (self, status_extension)
 	local living_shields = max_fatigue_points * 0.5 - fatigue_points * 0.5
 	local shields = self.shields
 
-	for i = 1, active_shields, 1 do
+	for i = 1, active_shields do
 		local shield = shields[i]
 		local style = shield.style
 		local width_offet = half_width - offset * (i - 1)
@@ -76,7 +76,7 @@ FatigueUI.start_fade_in = function (self)
 	local active_shields = self.active_shields
 	local shields = self.shields
 
-	for i = 1, active_shields, 1 do
+	for i = 1, active_shields do
 		local shield = shields[i]
 		local style = shield.style
 		local from = 0
@@ -92,7 +92,7 @@ FatigueUI.start_fade_out = function (self)
 	local active_shields = self.active_shields
 	local shields = self.shields
 
-	for i = 1, active_shields, 1 do
+	for i = 1, active_shields do
 		local shield = shields[i]
 		local style = shield.style
 		local from = style.color[1]
@@ -146,7 +146,7 @@ FatigueUI.update = function (self, dt)
 	local active_shields = self.active_shields
 	local shields = self.shields
 
-	for i = 1, active_shields, 1 do
+	for i = 1, active_shields do
 		local shield = shields[i]
 		local style = shield.style
 
@@ -182,7 +182,7 @@ FatigueUI.update_shields = function (self, status_extension, dt)
 	local active_shields = self.active_shields
 	local shields = self.shields
 
-	for i = 1, active_shields, 1 do
+	for i = 1, active_shields do
 		local shield = shields[i]
 		local style = shield.style
 		local current_state = shield.state
@@ -216,7 +216,7 @@ FatigueUI.draw = function (self, dt)
 	local shields = self.shields
 	local active_shields = self.active_shields
 
-	for i = 1, active_shields, 1 do
+	for i = 1, active_shields do
 		local shield = shields[i]
 
 		UIRenderer.draw_widget(ui_renderer, shield)
@@ -224,5 +224,3 @@ FatigueUI.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

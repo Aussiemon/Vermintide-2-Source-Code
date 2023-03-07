@@ -85,5 +85,3 @@ for _, painting in ipairs(trophy_order) do
 end
 
 table.sort(TrophyOrder)
-
-return

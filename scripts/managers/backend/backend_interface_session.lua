@@ -241,11 +241,11 @@ end
 BackendInterfaceSessionLocal = class(BackendInterfaceSessionLocal)
 
 BackendInterfaceSessionLocal.init = function (self)
-	local mt = {
-		__index = function ()
-			return mt.__index
-		end
-	}
+	local mt = {}
+
+	mt.__index = function ()
+		return mt.__index
+	end
 
 	setmetatable(self, mt)
 
@@ -255,5 +255,3 @@ end
 BackendInterfaceSessionLocal.ready = function (self)
 	return true
 end
-
-return

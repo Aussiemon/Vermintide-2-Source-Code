@@ -206,5 +206,3 @@ settings.inventory_package_list = {
 settings.husk_lookup = {
 	"units/beings/player/third_person_base/witch_hunter_warrior_priest/chr_third_person_husk_base"
 }
-
-return

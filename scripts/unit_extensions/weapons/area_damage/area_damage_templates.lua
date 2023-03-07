@@ -279,7 +279,7 @@ AreaDamageTemplates.templates = {
 					local gravity_well_position = area_damage_position + Vector3(0, 0, gravity_well.z_offset)
 					local BLACKBOARDS = BLACKBOARDS
 
-					for i = 1, num_ai_units, 1 do
+					for i = 1, num_ai_units do
 						local ai_unit = ai_units[i]
 						local bb = BLACKBOARDS[ai_unit]
 
@@ -299,7 +299,7 @@ AreaDamageTemplates.templates = {
 					local dot_template_name = aoe_data.dot_template_name
 					local hit_zone_name = "full"
 
-					for i = 1, num_ai_units, 1 do
+					for i = 1, num_ai_units do
 						local ai_unit = ai_units[i]
 						local damage_data = {
 							area_damage_template = "explosion_template_aoe",
@@ -409,7 +409,7 @@ AreaDamageTemplates.templates = {
 				local damage_buffer = {}
 				local ai_units_n = AiUtils.broadphase_query(area_damage_position, radius, ai_units)
 
-				for i = 1, ai_units_n, 1 do
+				for i = 1, ai_units_n do
 					local ai_unit = ai_units[i]
 					local breed = Unit.get_data(ai_unit, "breed")
 					local chance_to_die = 100 - breed.poison_resistance
@@ -591,8 +591,8 @@ AreaDamageTemplates.templates = {
 
 AreaDamageTemplates.get_template = function (area_damage_template, is_husk)
 	local templates = AreaDamageTemplates.templates
-	local husk_key = (is_husk == true and "husk") or (is_husk == false and "unit") or nil
-	local template = (husk_key and templates[area_damage_template][husk_key]) or templates[area_damage_template]
+	local husk_key = is_husk == true and "husk" or is_husk == false and "unit" or nil
+	local template = husk_key and templates[area_damage_template][husk_key] or templates[area_damage_template]
 
 	fassert(template, "no area_damage_template called %s", area_damage_template)
 
@@ -600,5 +600,3 @@ AreaDamageTemplates.get_template = function (area_damage_template, is_husk)
 end
 
 DLCUtils.merge("area_damage_templates", AreaDamageTemplates.templates)
-
-return

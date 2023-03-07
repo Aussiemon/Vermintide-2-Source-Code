@@ -119,5 +119,3 @@ PlayerCharacterStateOverpowered.update = function (self, unit, input, dt, contex
 	locomotion_extension:set_disable_rotation_update()
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, inventory_extension)
 end
-
-return

@@ -132,5 +132,3 @@ LightWeightProjectileEffects = {
 }
 
 DLCUtils.merge("light_weight_projectile_effects", LightWeightProjectileEffects)
-
-return

@@ -254,7 +254,7 @@ bolt_of_change.server_update_function = function (context, data, dt, t)
 	local delete_index = nil
 	local spawn_queue = data.spawn_queue
 
-	for i = 1, #spawn_queue, 1 do
+	for i = 1, #spawn_queue do
 		local spawn_queue_entry = spawn_queue[i]
 
 		if spawn_queue_entry.spawn_at_t < t then

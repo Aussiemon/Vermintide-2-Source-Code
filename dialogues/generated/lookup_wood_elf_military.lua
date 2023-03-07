@@ -58,5 +58,3 @@ DialogueLookup[DialogueLookup_n + 27] = "pwe_helmgart_military_a"
 DialogueLookup[DialogueLookup_n + 28] = "pwe_helmgart_military_b"
 DialogueLookup[DialogueLookup_n + 29] = "pwe_helmgart_military_c"
 DialogueLookup_n = DialogueLookup_n + 29
-
-return

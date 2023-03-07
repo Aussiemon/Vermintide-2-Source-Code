@@ -141,5 +141,3 @@ BTNinjaVanishAction.find_escape_position = function (unit, blackboard)
 		end
 	end
 end
-
-return

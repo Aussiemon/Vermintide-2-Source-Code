@@ -316,5 +316,3 @@ StateDedicatedServer.on_exit = function (self, application_shutdown)
 
 	self._network_event_delegate = nil
 end
-
-return

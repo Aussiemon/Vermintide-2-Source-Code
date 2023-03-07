@@ -77,8 +77,8 @@ LoadoutUtils.create_loadout_item_from_rpc_data = function (slot_id, item_id, rar
 		rarity = rarity,
 		key = item_key,
 		ItemId = item_key,
-		properties = (num_properties > 0 and properties) or nil,
-		traits = (#traits > 0 and traits) or nil
+		properties = num_properties > 0 and properties or nil,
+		traits = #traits > 0 and traits or nil
 	}
 
 	return slot_name, item
@@ -102,7 +102,7 @@ LoadoutUtils.properties_to_rpc_params = function (item)
 	local item_traits = item.traits
 
 	if item_traits then
-		for i = 1, #item_traits, 1 do
+		for i = 1, #item_traits do
 			local trait_name = item_traits[i]
 			traits_ids[#traits_ids + 1] = traits_lookup[trait_name]
 		end
@@ -118,7 +118,7 @@ LoadoutUtils.properties_from_rpc_params = function (properties_array, properties
 	local properties = {}
 	local traits = {}
 
-	for i = 1, #properties_array, 1 do
+	for i = 1, #properties_array do
 		local property_id = properties_array[i]
 		local property_name = properties_lookup[property_id]
 		local property_value = properties_values_array[i]
@@ -126,12 +126,10 @@ LoadoutUtils.properties_from_rpc_params = function (properties_array, properties
 		num_properties = num_properties + 1
 	end
 
-	for i = 1, #traits_array, 1 do
+	for i = 1, #traits_array do
 		local trait_id = traits_array[i]
 		traits[#traits + 1] = traits_lookup[trait_id]
 	end
 
 	return num_properties, properties, traits
 end
-
-return

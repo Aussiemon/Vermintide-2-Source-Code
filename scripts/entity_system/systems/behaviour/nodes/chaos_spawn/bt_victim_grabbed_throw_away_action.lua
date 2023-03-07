@@ -59,7 +59,7 @@ BTVictimGrabbedThrowAwayAction.find_throw_direction = function (self, unit, blac
 	local rot = Unit.local_rotation(unit, 0)
 	local nav_world = blackboard.nav_world
 
-	for dir = 1, 4, 1 do
+	for dir = 1, 4 do
 		local qua = Quaternion.forward
 
 		if dir == 2 or dir == 4 then
@@ -88,7 +88,7 @@ BTVictimGrabbedThrowAwayAction.leave = function (self, unit, blackboard, t, reas
 
 	blackboard.anim_cb_throw = false
 
-	if Unit.alive(blackboard.victim_grabbed) and (reason == "aborted" or (blackboard.drop_grabbed_player and blackboard.victim_grabbed)) then
+	if Unit.alive(blackboard.victim_grabbed) and (reason == "aborted" or blackboard.drop_grabbed_player and blackboard.victim_grabbed) then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 	end
 
@@ -144,12 +144,10 @@ BTVictimGrabbedThrowAwayAction.run = function (self, unit, blackboard, t, dt)
 
 	if Unit.alive(target_unit) then
 		local saved_throw_dir = blackboard.use_stored_throw_direction and blackboard.throw_direction:unbox()
-		local rot = (saved_throw_dir and Quaternion.look(saved_throw_dir)) or (Unit_alive(target_unit) and LocomotionUtils.rotation_towards_unit_flat(unit, target_unit))
+		local rot = saved_throw_dir and Quaternion.look(saved_throw_dir) or Unit_alive(target_unit) and LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 
 		blackboard.locomotion_extension:set_wanted_rotation(rot)
 	end
 
 	return "running"
 end
-
-return

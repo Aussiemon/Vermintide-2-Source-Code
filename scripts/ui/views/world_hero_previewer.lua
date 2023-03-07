@@ -140,7 +140,7 @@ HeroPreviewer._update_delayed_material_changes = function (self)
 	local hero_material_changed = false
 	local delayed_material_changes = self._delayed_material_changes[character_unit]
 
-	for i = 1, #delayed_material_changes, 1 do
+	for i = 1, #delayed_material_changes do
 		local third_person_changes = delayed_material_changes[i]
 
 		for slot_name, material_name in pairs(third_person_changes) do
@@ -150,7 +150,7 @@ HeroPreviewer._update_delayed_material_changes = function (self)
 		end
 	end
 
-	if (hero_material_changed and self._use_highest_mip_levels) or UISettings.wait_for_mip_streaming_character then
+	if hero_material_changed and self._use_highest_mip_levels or UISettings.wait_for_mip_streaming_character then
 		self:_request_mip_streaming_for_unit(character_unit)
 	end
 
@@ -240,11 +240,11 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 		Unit.set_unit_visibility(mesh_unit, visible)
 
 		local slots_by_slot_index = InventorySettings.slots_by_slot_index
-		local attachment_lua_event = (visible and "lua_attachment_unhidden") or "lua_attachment_hidden"
+		local attachment_lua_event = visible and "lua_attachment_unhidden" or "lua_attachment_hidden"
 
 		Unit.flow_event(mesh_unit, attachment_lua_event)
 
-		local vfx_lua_event = (visible and "lua_ui_vfx_unhidden") or "lua_ui_vfx_hidden"
+		local vfx_lua_event = visible and "lua_ui_vfx_unhidden" or "lua_ui_vfx_hidden"
 
 		Unit.flow_event(mesh_unit, vfx_lua_event)
 
@@ -263,7 +263,7 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 				show_unit = visible
 			end
 
-			local weapon_lua_event = (show_unit and "lua_wield") or "lua_unwield"
+			local weapon_lua_event = show_unit and "lua_wield" or "lua_unwield"
 
 			if type(data) == "table" then
 				local left_unit = data.left
@@ -284,7 +284,7 @@ HeroPreviewer._set_character_visibility = function (self, visible)
 				end
 			elseif Unit.alive(data) then
 				if not is_weapon then
-					local non_weapon_attachment_lua_event = (show_unit and "lua_attachment_unhidden") or "lua_attachment_hidden"
+					local non_weapon_attachment_lua_event = show_unit and "lua_attachment_unhidden" or "lua_attachment_hidden"
 
 					Unit.flow_event(data, non_weapon_attachment_lua_event)
 				end
@@ -400,7 +400,7 @@ HeroPreviewer._load_hero_unit = function (self, profile_name, career_index, call
 	local career_name = career.name
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local item_data = skin_item and skin_item.data
-	local skin_name = optional_skin or (item_data and item_data.name) or career.base_skin
+	local skin_name = optional_skin or item_data and item_data.name or career.base_skin
 	self._current_career_name = career_name
 	self.character_unit_skin_data = nil
 	local package_names = CosmeticsUtils.retrieve_skin_packages_for_preview(skin_name)
@@ -439,7 +439,7 @@ HeroPreviewer._poll_hero_package_loading = function (self)
 	local package_names = data.package_names
 	local all_packages_loaded = true
 
-	for i = 1, #package_names, 1 do
+	for i = 1, #package_names do
 		local package_name = package_names[i]
 
 		if not package_manager:has_loaded(package_name, reference_name) then
@@ -519,7 +519,7 @@ HeroPreviewer._spawn_hero_unit = function (self, skin_data, optional_scale, care
 
 	if box_dimension then
 		local default_unit_height_dimension = 1.7
-		self.unit_max_look_height = (default_unit_height_dimension < box_dimension.z and 1.5) or 0.9
+		self.unit_max_look_height = default_unit_height_dimension < box_dimension.z and 1.5 or 0.9
 	else
 		self.unit_max_look_height = 0.9
 	end
@@ -700,7 +700,7 @@ HeroPreviewer._poll_item_package_loading = function (self)
 			local package_names = data.package_names
 			local all_packages_loaded = true
 
-			for i = 1, #package_names, 1 do
+			for i = 1, #package_names do
 				local package_name = package_names[i]
 
 				if not package_manager:has_loaded(package_name, reference_name) then
@@ -824,7 +824,7 @@ HeroPreviewer._spawn_item = function (self, item_name, spawn_data)
 end
 
 local function get_wield_anim(default, optional_switch, career_name)
-	return (optional_switch and optional_switch[career_name]) or default
+	return optional_switch and optional_switch[career_name] or default
 end
 
 HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_template, unit_attachment_node_linking, scene_graph_links, material_settings)
@@ -847,7 +847,7 @@ HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_temp
 			end
 
 			self._hidden_units[unit] = true
-			local flow_event = (character_visible and "lua_wield") or "lua_unwield"
+			local flow_event = character_visible and "lua_wield" or "lua_unwield"
 
 			Unit.flow_event(unit, flow_event)
 		else
@@ -856,7 +856,7 @@ HeroPreviewer._spawn_item_unit = function (self, unit, item_slot_type, item_temp
 			Unit.flow_event(unit, "lua_unwield")
 		end
 	else
-		local attachment_lua_event = (character_visible and "lua_attachment_unhidden") or "lua_attachment_hidden"
+		local attachment_lua_event = character_visible and "lua_attachment_unhidden" or "lua_attachment_hidden"
 
 		Unit.flow_event(unit, attachment_lua_event)
 
@@ -1061,7 +1061,7 @@ HeroPreviewer.clear_units = function (self)
 
 	local world = self.world
 
-	for i = 1, 6, 1 do
+	for i = 1, 6 do
 		if type(self._equipment_units[i]) == "table" then
 			if self._equipment_units[i].left then
 				World.destroy_unit(world, self._equipment_units[i].left)
@@ -1123,5 +1123,3 @@ HeroPreviewer.set_hero_look_target = function (self, look_target)
 		self.character_look_target = look_target
 	end
 end
-
-return

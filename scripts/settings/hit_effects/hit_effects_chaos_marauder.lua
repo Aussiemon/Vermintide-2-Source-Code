@@ -2677,12 +2677,12 @@ HitEffectsChaosMarauder = {
 }
 
 for hit_effect_name, hit_effect_data in pairs(HitEffectsChaosMarauder) do
-	local hit_effect_flow_event = hit_effect_data.flow_event or (hit_effect_data.inherits and HitEffectsChaosMarauder[hit_effect_data.inherits].flow_event)
+	local hit_effect_flow_event = hit_effect_data.flow_event or hit_effect_data.inherits and HitEffectsChaosMarauder[hit_effect_data.inherits].flow_event
 
 	if hit_effect_flow_event then
 		local is_table = type(hit_effect_flow_event) == "table"
 
-		if (is_table and table.contains(hit_effect_flow_event, "burn_death")) or hit_effect_flow_event == "burn_death" then
+		if is_table and table.contains(hit_effect_flow_event, "burn_death") or hit_effect_flow_event == "burn_death" then
 			local new_hit_effect_name = hit_effect_name .. "_critical"
 			local new_hit_effect_data = {
 				flow_event = "burn_death_critical",
@@ -2699,5 +2699,3 @@ for hit_effect_name, hit_effect_data in pairs(HitEffectsChaosMarauder) do
 end
 
 HitEffectsChaosMarauder = table.create_copy(HitEffectsChaosMarauder, HitEffectsChaosMarauder)
-
-return

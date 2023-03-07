@@ -56,8 +56,8 @@ IngameVotingUI.setup_option_input = function (self, option_widget, option, gamep
 		button_texture_data = nil
 	end
 
-	option_widget.content.input_text = (button_texture_data and "") or sprintf("[%s]", input_text)
-	option_widget.content.input_icon = (button_texture_data and button_texture_data.texture) or nil
+	option_widget.content.input_text = button_texture_data and "" or sprintf("[%s]", input_text)
+	option_widget.content.input_icon = button_texture_data and button_texture_data.texture or nil
 	local option_text = Localize(text)
 	option_widget.content.option_text = option_text
 	local option_text_style = option_widget.style.option_text
@@ -89,7 +89,7 @@ IngameVotingUI.setup_option_input = function (self, option_widget, option, gamep
 	local left_side = option_widget.content.left_side
 	local scenegraph_id = option_widget.scenegraph_id
 	local horizontal_offset = math.max(total_width / 2 + 10, 50)
-	self.ui_scenegraph[scenegraph_id].local_position[1] = (left_side and -horizontal_offset) or horizontal_offset
+	self.ui_scenegraph[scenegraph_id].local_position[1] = left_side and -horizontal_offset or horizontal_offset
 end
 
 IngameVotingUI.align_option_inputs = function (self)
@@ -182,7 +182,7 @@ IngameVotingUI.update_vote = function (self, votes)
 
 	local voting_manager = self.voting_manager
 	local vote_time_left = voting_manager:vote_time_left()
-	local time_text = (vote_time_left and string.format(" %02d:%02d", math.floor(vote_time_left / 60), vote_time_left % 60)) or "00:00"
+	local time_text = vote_time_left and string.format(" %02d:%02d", math.floor(vote_time_left / 60), vote_time_left % 60) or "00:00"
 	self.background.content.time_text = time_text
 end
 
@@ -352,6 +352,7 @@ end
 
 IngameVotingUI.on_gamepad_activated = function (self, active_voting)
 	if not self.has_voted then
+		-- Nothing
 	end
 
 	local platform = PLATFORM
@@ -376,6 +377,7 @@ end
 
 IngameVotingUI.on_gamepad_deactivated = function (self, active_voting)
 	if not self.has_voted then
+		-- Nothing
 	end
 
 	self.background.content.gamepad_active = false
@@ -408,11 +410,11 @@ IngameVotingUI.update_pulse_animations = function (self, dt, hold_input_pressed)
 	end
 
 	local menu_active = self.menu_active
-	local speed_multiplier = (menu_active and 8) or 5
-	local progress = (not menu_active and hold_input_pressed and 0) or 0.5 + math.sin(Managers.time:time("ui") * speed_multiplier) * 0.5
+	local speed_multiplier = menu_active and 8 or 5
+	local progress = not menu_active and hold_input_pressed and 0 or 0.5 + math.sin(Managers.time:time("ui") * speed_multiplier) * 0.5
 
 	if not menu_active then
-		slot6 = 50 + progress * 50
+		local alpha = 50 + progress * 50
 	else
 		local alpha = 100 + progress * 155
 		self.background.style.input_glow.color[1] = alpha
@@ -545,5 +547,3 @@ end
 IngameVotingUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
-
-return

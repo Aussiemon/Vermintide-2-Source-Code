@@ -64,7 +64,7 @@ BTJumpSlamImpactAction.jump_slam_impact = function (self, unit, blackboard, t)
 end
 
 BTJumpSlamImpactAction.catapult_players = function (unit_list, impact_position, radius, speed)
-	for i = 1, #unit_list, 1 do
+	for i = 1, #unit_list do
 		local target_unit = unit_list[i]
 
 		BTJumpSlamImpactAction.catapult_player(target_unit, impact_position, radius, speed)
@@ -96,7 +96,7 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 	local num_ai_units = AiUtils.broadphase_query(impact_position, radius, ai_units)
 	local BLACKBOARDS = BLACKBOARDS
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local ai_unit = ai_units[i]
 
 		if ai_unit ~= attacking_unit then
@@ -135,5 +135,3 @@ BTJumpSlamImpactAction.impact_damage = function (attacking_unit, t, radius, stag
 		end
 	end
 end
-
-return

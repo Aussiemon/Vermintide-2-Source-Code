@@ -45,7 +45,7 @@ MissionTemplates = {
 		update = function (data, positive, dt)
 			local collect_amount = data.collect_amount
 			local evaluate_at_level_end = data.evaluate_at_level_end
-			local current_amount = data:increase_current_amount((positive and 1) or -1)
+			local current_amount = data:increase_current_amount(positive and 1 or -1)
 
 			return not evaluate_at_level_end and current_amount == collect_amount
 		end,
@@ -145,7 +145,7 @@ MissionTemplates = {
 			return
 		end,
 		evaluate_mission = function (data, dt)
-			return data.done, (data.done and 1) or 0
+			return data.done, data.done and 1 or 0
 		end,
 		create_sync_data = function (data)
 			local sync_data = {}
@@ -184,8 +184,8 @@ MissionTemplates = {
 			local time = math.ceil(data.time_left)
 			local minutes = math.floor(time / 60)
 			local seconds = time % 60
-			local sminutes = (minutes >= 10 and tostring(minutes)) or string.format("0%s", tostring(minutes))
-			local sseconds = (seconds >= 10 and tostring(seconds)) or string.format("0%s", tostring(seconds))
+			local sminutes = minutes >= 10 and tostring(minutes) or string.format("0%s", tostring(minutes))
+			local sseconds = seconds >= 10 and tostring(seconds) or string.format("0%s", tostring(seconds))
 			local text = string.format("%s:%s\n%s", sminutes, sseconds, data.mission_text)
 			data.text = text
 		end,
@@ -418,7 +418,7 @@ MissionTemplates = {
 			data.text = ""
 		end,
 		evaluate_mission = function (data, dt)
-			return data.done, (data.done and 1) or 0
+			return data.done, data.done and 1 or 0
 		end,
 		create_sync_data = function (data)
 			local sync_data = {}
@@ -435,5 +435,3 @@ MissionTemplates.collect_uncompletable = table.clone(MissionTemplates.collect)
 MissionTemplates.collect_uncompletable.evaluate_mission = function (data, dt)
 	return false, data:get_current_amount()
 end
-
-return

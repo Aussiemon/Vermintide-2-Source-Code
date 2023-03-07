@@ -12,7 +12,7 @@ local scenegraph_definition = {
 			SIZE_X,
 			SIZE_Y
 		},
-		scale = (IS_WINDOWS and "hud_scale_fit") or "hud_fit"
+		scale = IS_WINDOWS and "hud_scale_fit" or "hud_fit"
 	},
 	ability_root = {
 		vertical_alignment = "bottom",

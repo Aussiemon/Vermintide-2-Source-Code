@@ -116,10 +116,10 @@ end
 local function create_social_widget(settings, widget_angle, category_settings, get_active_context_func, page_idx)
 	local size = category_settings.size
 	local dir = Vector3(math.cos(widget_angle), math.sin(widget_angle), 0)
-	local num_wedges = (page_idx and #category_settings[page_idx]) or #category_settings
+	local num_wedges = page_idx and #category_settings[page_idx] or #category_settings
 	local divider_angle = widget_angle + 2 * math.pi * 1 / num_wedges * 0.5
 	local divider_dir = Vector3(math.cos(divider_angle), math.sin(divider_angle), 0)
-	local wedge_size = (1 / num_wedges * 360) / 90 * category_settings.wedge_adjustment
+	local wedge_size = 1 / num_wedges * 360 / 90 * category_settings.wedge_adjustment
 	local scale = 3
 	local aspect_ratio = size[1] / size[2]
 
@@ -268,7 +268,7 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 			final_size_multiplier = 1,
 			icon_bg_id = "radial_chat_icon_bg",
 			icon_id = settings.icon or "radial_chat_icon_boss",
-			icon_glow_id = (settings.icon and settings.icon .. "_glow") or "radial_chat_icon_boss_glow",
+			icon_glow_id = settings.icon and settings.icon .. "_glow" or "radial_chat_icon_boss_glow",
 			settings = settings,
 			category_settings = category_settings,
 			text_id = settings.text,
@@ -463,7 +463,7 @@ local function create_social_widget(settings, widget_angle, category_settings, g
 			dir[2] * size[2],
 			1
 		},
-		scenegraph_id = (IS_WINDOWS and "pivot") or "pivot_console"
+		scenegraph_id = IS_WINDOWS and "pivot" or "pivot_console"
 	}
 end
 
@@ -786,7 +786,7 @@ local function create_bg_widget()
 			0,
 			0
 		},
-		scenegraph_id = (IS_WINDOWS and "pivot") or "pivot_console"
+		scenegraph_id = IS_WINDOWS and "pivot" or "pivot_console"
 	}
 end
 
@@ -865,7 +865,7 @@ local function create_arrow_widget()
 			0,
 			10
 		},
-		scenegraph_id = (IS_WINDOWS and "pivot") or "pivot_console"
+		scenegraph_id = IS_WINDOWS and "pivot" or "pivot_console"
 	}
 end
 
@@ -1145,7 +1145,7 @@ local function create_social_icon(social_event_setting, peer_id, camera, world, 
 			alpha = 255,
 			icon_bg_id = "radial_chat_icon_bg",
 			icon_id = social_event_setting.icon or "radial_chat_icon_boss",
-			icon_glow_id = (social_event_setting.icon and social_event_setting.icon .. "_glow") or "radial_chat_icon_boss_glow",
+			icon_glow_id = social_event_setting.icon and social_event_setting.icon .. "_glow" or "radial_chat_icon_boss_glow",
 			peer_id = peer_id,
 			camera = camera,
 			world = world,

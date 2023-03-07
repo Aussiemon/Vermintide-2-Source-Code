@@ -592,7 +592,7 @@ local action_data = {
 			local combo = blackboard.combo_attack_data
 
 			if combo and combo.aborted then
-				local berzerker_stagger_multiplier = (blackboard.stagger_type <= stagger_types.heavy and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
+				local berzerker_stagger_multiplier = blackboard.stagger_type <= stagger_types.heavy and math.clamp(blackboard.stagger_type - 1, 1, 1.5) or 1
 
 				if blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.heavy then
 					blackboard.stagger_ignore_anim_cb = true
@@ -1010,5 +1010,3 @@ action_data.frenzy_attack_ranged.combo_attacks.attack_1 = {
 	}
 }
 BreedActions.skaven_plague_monk = table.create_copy(BreedActions.skaven_plague_monk, action_data)
-
-return

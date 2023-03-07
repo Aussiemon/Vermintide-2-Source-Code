@@ -38,5 +38,3 @@ DialogueLookup[DialogueLookup_n + 17] = "pwh_bastion_vo_exiting_pwh_bastion"
 DialogueLookup[DialogueLookup_n + 18] = "pwh_bastion_vo_possessed"
 DialogueLookup[DialogueLookup_n + 19] = "pwh_bastion_vo_entering_finale"
 DialogueLookup_n = DialogueLookup_n + 19
-
-return

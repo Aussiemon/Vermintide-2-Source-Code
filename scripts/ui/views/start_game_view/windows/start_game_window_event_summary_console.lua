@@ -117,7 +117,7 @@ StartGameWindowEventSummaryConsole.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -125,5 +125,3 @@ StartGameWindowEventSummaryConsole.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 end
-
-return

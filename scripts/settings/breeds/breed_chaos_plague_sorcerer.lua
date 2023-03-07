@@ -112,136 +112,134 @@ local action_data = {
 			true,
 			true
 		}
-	},
-	stagger = {
-		custom_enter_function = function (unit, blackboard, t, action)
-			blackboard.stagger_ignore_anim_cb = true
-			local stagger_anims = action.stagger_anims[blackboard.stagger_type]
+	}
+}
+action_data.stagger = {
+	custom_enter_function = function (unit, blackboard, t, action)
+		blackboard.stagger_ignore_anim_cb = true
+		local stagger_anims = action.stagger_anims[blackboard.stagger_type]
 
-			return stagger_anims, "idle"
-		end,
-		stagger_anims = {
-			{
-				fwd = {
-					"stagger_fwd_light"
-				},
-				bwd = {
-					"stagger_bwd_light"
-				},
-				right = {
-					"stagger_left_light"
-				},
-				left = {
-					"stagger_right_light"
-				}
+		return stagger_anims, "idle"
+	end,
+	stagger_anims = {
+		{
+			fwd = {
+				"stagger_fwd_light"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				right = {
-					"stagger_left"
-				},
-				left = {
-					"stagger_right"
-				}
+			bwd = {
+				"stagger_bwd_light"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				right = {
-					"stagger_left"
-				},
-				left = {
-					"stagger_right"
-				}
+			right = {
+				"stagger_left_light"
 			},
-			{
-				fwd = {
-					"stagger_fwd_light"
-				},
-				bwd = {
-					"stagger_bwd_light"
-				},
-				right = {
-					"stagger_left_light"
-				},
-				left = {
-					"stagger_right_light"
-				}
+			left = {
+				"stagger_right_light"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd_light"
-				},
-				bwd = {
-					"stagger_bwd_light"
-				},
-				right = {
-					"stagger_left_light"
-				},
-				left = {
-					"stagger_right_light"
-				}
+			bwd = {
+				"stagger_bwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_exp"
-				},
-				right = {
-					"stagger_left_exp"
-				},
-				left = {
-					"stagger_right_exp"
-				}
+			right = {
+				"stagger_left"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				right = {
-					"stagger_left"
-				},
-				left = {
-					"stagger_right"
-				}
+			left = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
 			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
+			bwd = {
+				"stagger_bwd"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				right = {
-					"stagger_left"
-				},
-				left = {
-					"stagger_right"
-				}
+			right = {
+				"stagger_left"
+			},
+			left = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_light"
+			},
+			bwd = {
+				"stagger_bwd_light"
+			},
+			right = {
+				"stagger_left_light"
+			},
+			left = {
+				"stagger_right_light"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_light"
+			},
+			bwd = {
+				"stagger_bwd_light"
+			},
+			right = {
+				"stagger_left_light"
+			},
+			left = {
+				"stagger_right_light"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_exp"
+			},
+			right = {
+				"stagger_left_exp"
+			},
+			left = {
+				"stagger_right_exp"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			right = {
+				"stagger_left"
+			},
+			left = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			right = {
+				"stagger_left"
+			},
+			left = {
+				"stagger_right"
 			}
 		}
 	}
 }
 BreedActions.chaos_plague_sorcerer = table.create_copy(BreedActions.chaos_plague_sorcerer, action_data)
-
-return

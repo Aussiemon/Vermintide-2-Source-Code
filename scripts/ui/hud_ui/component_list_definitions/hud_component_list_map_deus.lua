@@ -37,7 +37,7 @@ local components = {
 	},
 	{
 		class_name = "IngamePlayerListUI",
-		filename = (GameSettingsDevelopment.use_new_tab_menu and "scripts/ui/views/ingame_player_list_ui_v2") or "scripts/ui/views/ingame_player_list_ui",
+		filename = GameSettingsDevelopment.use_new_tab_menu and "scripts/ui/views/ingame_player_list_ui_v2" or "scripts/ui/views/ingame_player_list_ui",
 		visibility_groups = {
 			"tab_menu",
 			"realism",

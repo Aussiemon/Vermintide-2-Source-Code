@@ -65,5 +65,3 @@ TalentSystem.hot_join_sync = function (self, peer_id)
 		end
 	end
 end
-
-return

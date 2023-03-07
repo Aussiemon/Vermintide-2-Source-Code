@@ -187,5 +187,3 @@ ItemMasterList.shilling_bag_scorpion = {
 		}
 	}
 }
-
-return

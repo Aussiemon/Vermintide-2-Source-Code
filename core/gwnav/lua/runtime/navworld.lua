@@ -184,7 +184,7 @@ NavWorld.init_graph_connector = function (self, unit)
 	local down_up = NavHelpers.unit_script_data(unit, true, "GwNavGraphConnector", "down_up")
 	local up_down = NavHelpers.unit_script_data(unit, true, "GwNavGraphConnector", "up_down")
 	local bidirectional_edges = down_up and up_down
-	local half_subdivision_count = math.floor((0.5 * unitScale[1]) / sampling_step)
+	local half_subdivision_count = math.floor(0.5 * unitScale[1] / sampling_step)
 	local current_vertex_left_offset = half_subdivision_count * sampling_step
 	local sub_graph_count = half_subdivision_count * 2 + 1
 	local is_exclusive, color, layer_id, smartobject_id, user_data_id = NavHelpers.get_layer_and_smartobject(unit, "GwNavGraphConnector")
@@ -204,7 +204,7 @@ NavWorld.init_graph_connector = function (self, unit)
 	local temp_a = unitPos
 	local temp_b = unitPos - forward * unitScale[2] + up * unitScale[3]
 
-	for i = 1, sub_graph_count, 1 do
+	for i = 1, sub_graph_count do
 		local control_points = {}
 		local start_idx = 1
 		local down_idx = 2
@@ -237,7 +237,7 @@ NavWorld.init_tagbox = function (self, unit)
 	local right = Quaternion.right(unitRot)
 	local up = Quaternion.up(unitRot)
 	local point_table = {
-		(unitPos + forward * extent_x) - right * extent_y,
+		unitPos + forward * extent_x - right * extent_y,
 		unitPos + forward * extent_x + right * extent_y,
 		unitPos - forward * extent_x + right * extent_y,
 		unitPos - forward * extent_x - right * extent_y
@@ -391,10 +391,10 @@ NavWorld.debug_draw = function (self, gui, line_object)
 	local tile_count = GwNavWorld.database_tile_count(self.gwnavworld)
 	local black = Color(255, 0, 0, 0)
 
-	for tile = 1, tile_count, 1 do
+	for tile = 1, tile_count do
 		local triangle_count = GwNavWorld.database_tile_triangle_count(self.gwnavworld, tile)
 
-		for i = 1, triangle_count, 1 do
+		for i = 1, triangle_count do
 			local temp_size = Script.temp_byte_count()
 			local a, b, c, tri_color = GwNavWorld.database_triangle(self.gwnavworld, tile, i)
 

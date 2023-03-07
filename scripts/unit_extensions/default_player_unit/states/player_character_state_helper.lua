@@ -92,11 +92,11 @@ CharacterStateHelper.apply_motion_controls = function (look_delta, input_extensi
 		local pitch_steps = MotionControlSettings.sensitivity_pitch_max - MotionControlSettings.sensitivity_pitch_min
 		local pitch_step = (base_multiplier - min) / (pitch_steps * 0.5)
 		local motion_sensitivity_pitch = base_multiplier + MotionControlSettings.motion_sensitivity_pitch * pitch_step
-		local scale_yaw = motion_sensitivity_yaw * ((MotionControlSettings.motion_invert_yaw and -1) or 1) * ((MotionControlSettings.motion_enable_yaw_motion and 1) or 0)
-		local scale_pitch = motion_sensitivity_pitch * ((MotionControlSettings.motion_invert_pitch and -1) or 1) * ((MotionControlSettings.motion_enable_pitch_motion and 1) or 0)
+		local scale_yaw = motion_sensitivity_yaw * (MotionControlSettings.motion_invert_yaw and -1 or 1) * (MotionControlSettings.motion_enable_yaw_motion and 1 or 0)
+		local scale_pitch = motion_sensitivity_pitch * (MotionControlSettings.motion_invert_pitch and -1 or 1) * (MotionControlSettings.motion_enable_pitch_motion and 1 or 0)
 		local angular_velocity = input_extension:get("angular_velocity")
-		local magnitude_x = (angular_velocity and angular_velocity.x) or 0
-		local magnitude_y = (angular_velocity and -angular_velocity.y) or 0
+		local magnitude_x = angular_velocity and angular_velocity.x or 0
+		local magnitude_y = angular_velocity and -angular_velocity.y or 0
 		look_delta = look_delta + Vector3(scale_yaw * magnitude_y, scale_pitch * magnitude_x, 0)
 	end
 
@@ -127,7 +127,7 @@ CharacterStateHelper.check_to_start_dodge = function (unit, input_extension, sta
 	local dodge_direction = Vector3(0, 0, 0)
 	local dodge_hold = input_extension:get("dodge_hold")
 	local manual_dodge = input_extension:get("dodge")
-	local dodge_input = manual_dodge or (input_extension:get("jump") and dodge_hold)
+	local dodge_input = manual_dodge or input_extension:get("jump") and dodge_hold
 	local input_length = Vector3.length(input)
 	local using_keyboard = not Managers.input:is_device_active("gamepad")
 	local stationary_dodge = Application.user_setting("toggle_stationary_dodge")
@@ -160,7 +160,7 @@ CharacterStateHelper.check_to_start_dodge = function (unit, input_extension, sta
 		local x = normalized_input.x
 		local y = normalized_input.y
 		local abs_x = math.abs(x)
-		local forward_ok = y <= 0 or (not using_keyboard and abs_x > 0.9239) or (manual_dodge and abs_x > 0.707)
+		local forward_ok = y <= 0 or not using_keyboard and abs_x > 0.9239 or manual_dodge and abs_x > 0.707
 
 		if forward_ok then
 			start_dodge = true
@@ -182,7 +182,7 @@ CharacterStateHelper.check_to_start_dodge = function (unit, input_extension, sta
 		status_extension:set_dodge_locked(true)
 		status_extension:add_dodge_cooldown()
 
-		slot15 = ScriptUnit.extension(unit, "first_person_system")
+		local first_person_extension = ScriptUnit.extension(unit, "first_person_system")
 	end
 
 	return start_dodge, dodge_direction
@@ -199,7 +199,7 @@ CharacterStateHelper.move_on_ground = function (first_person_extension, input_ex
 	end
 
 	local dot = Vector3.dot(Quaternion.forward(flat_unit_rotation), move_direction)
-	local strafe_speed_penalty = (strafe_speed_mult and 1 - strafe_speed_mult) or 0
+	local strafe_speed_penalty = strafe_speed_mult and 1 - strafe_speed_mult or 0
 	speed = speed - speed * strafe_speed_penalty * (1 - math.abs(dot))
 
 	locomotion_extension:set_wanted_velocity(move_direction * speed)
@@ -225,7 +225,7 @@ CharacterStateHelper.packmaster_move_on_ground = function (t, first_person_exten
 	local penalty = math.clamp(1 - dot, movement_settings_table.packmaster_forward_move_scale, 1)
 
 	if is_pushing then
-		local ray_dist = (idle_anim_played and 1.5) or 1.1
+		local ray_dist = idle_anim_played and 1.5 or 1.1
 		local dragged_unit_pos = POSITION_LOOKUP[dragged_unit]
 		local hit, hit_position, dist, hit_normal, actor = PhysicsWorld.immediate_raycast(physics_world, dragged_unit_pos + Vector3(0, 0, 0.5), pole_dir, ray_dist, "closest", "types", "both", "collision_filter", "filter_ground_material_check")
 
@@ -424,17 +424,17 @@ end
 
 CharacterStateHelper.is_colliding_with_gameplay_collision_box = function (world, unit, collision_filter, params)
 	local physics_world = World.get_data(world, "physics_world")
-	local position = (params and params.position) or POSITION_LOOKUP[unit]
+	local position = params and params.position or POSITION_LOOKUP[unit]
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	local movement_settings_table_name = (params and params.movement_settings_table_name) or "gameplay_collision_box"
+	local movement_settings_table_name = params and params.movement_settings_table_name or "gameplay_collision_box"
 	local player_half_height = movement_settings_table[movement_settings_table_name].collision_check_player_half_height
 	local player_height_offset = movement_settings_table[movement_settings_table_name].collision_check_player_height_offset
 	local offset = Vector3(0, 0, player_height_offset)
 	position = position + offset
 	local rotation = Unit.local_rotation(unit, 0)
-	local radius = movement_settings_table[(params and params.movement_settings_table_name) or "gameplay_collision_box"].collision_check_player_radius
+	local radius = movement_settings_table[params and params.movement_settings_table_name or "gameplay_collision_box"].collision_check_player_radius
 	local size = Vector3(radius, player_half_height, radius)
-	local shape = (player_half_height - radius > 0 and "capsule") or "sphere"
+	local shape = player_half_height - radius > 0 and "capsule" or "sphere"
 	local actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position, "rotation", rotation, "size", size, "collision_filter", collision_filter, "use_global_table")
 	local collided_actor = actors and actors[1]
 	local colliding, collided_unit = nil
@@ -535,7 +535,7 @@ CharacterStateHelper.looking_up = function (first_person_extension, threshold)
 	local normalised_direction = Vector3.normalize(direction)
 	local dot = Vector3.dot(normalised_direction, Vector3.up())
 
-	return (threshold < dot and true) or false
+	return threshold < dot and true or false
 end
 
 CharacterStateHelper.looking_down = function (first_person_extension, threshold)
@@ -545,12 +545,12 @@ CharacterStateHelper.looking_down = function (first_person_extension, threshold)
 	local normalised_direction = Vector3.normalize(direction)
 	local dot = Vector3.dot(normalised_direction, Vector3.up())
 
-	return (dot < threshold and true) or false
+	return dot < threshold and true or false
 end
 
 CharacterStateHelper.look = function (input_extension, viewport_name, first_person_extension, status_extension, inventory_extension, override_sens, override_delta)
 	local camera_manager = Managers.state.camera
-	local look_sensitivity = override_sens or (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
+	local look_sensitivity = override_sens or camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785 or 1
 	local is_3p = false
 	local look_delta = CharacterStateHelper.get_look_input(input_extension, status_extension, inventory_extension, is_3p)
 	look_delta = look_delta * look_sensitivity
@@ -564,7 +564,7 @@ end
 
 CharacterStateHelper.look_limited_rotation_freedom = function (input_extension, viewport_name, first_person_extension, unit, rotation, max_radians_yaw, max_radians_pitch, status_extension, inventory_extension, override_sens)
 	local camera_manager = Managers.state.camera
-	local look_sensitivity = override_sens or (camera_manager:has_viewport(viewport_name) and Managers.state.camera:fov(viewport_name) / 0.785) or 1
+	local look_sensitivity = override_sens or camera_manager:has_viewport(viewport_name) and Managers.state.camera:fov(viewport_name) / 0.785 or 1
 	local is_3p = false
 	local look_delta = CharacterStateHelper.get_look_input(input_extension, status_extension, inventory_extension, is_3p)
 	look_delta = look_delta * look_sensitivity
@@ -611,7 +611,7 @@ end
 CharacterStateHelper.lerp_player_rotation_radian = function (player_radian, target_radian, original_diference_radian, percentage_in_lerp)
 	local final_radian_value = nil
 
-	if (target_radian >= 0 and player_radian >= 0) or (target_radian <= 0 and player_radian <= 0) then
+	if target_radian >= 0 and player_radian >= 0 or target_radian <= 0 and player_radian <= 0 then
 		final_radian_value = player_radian + (target_radian - player_radian) * percentage_in_lerp
 	else
 		local current_rotation = original_diference_radian * percentage_in_lerp
@@ -698,7 +698,7 @@ CharacterStateHelper.show_inventory_3p = function (unit, show_inventory_3p, incl
 		return
 	end
 
-	if include_local_player or (is_server and inventory_extension.is_bot) then
+	if include_local_player or is_server and inventory_extension.is_bot then
 		inventory_extension:show_third_person_inventory(show_inventory_3p)
 	end
 
@@ -956,7 +956,12 @@ CharacterStateHelper._check_chain_action = function (wield_input, action_data, i
 		end
 	end
 
-	input = input or (action_settings and action_settings.kind == "block" and input_extension:is_input_blocked())
+	if not input then
+		local action = action_data.action
+		local sub_action = action_data.sub_action
+		local action_settings = item_template.actions[action] and item_template.actions[action][sub_action]
+		input = action_settings and action_settings.kind == "block" and input_extension:is_input_blocked()
+	end
 
 	if not input then
 		wield_input = CharacterStateHelper.wield_input(input_extension, inventory_extension, action_data.action)
@@ -1021,7 +1026,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 		local current_action_name = lookup_data.action_name
 		local num_abilities = career_extension:ability_amount()
 
-		for i = 1, num_abilities, 1 do
+		for i = 1, num_abilities do
 			local activated_ability_data = career_extension:get_activated_ability_data(i)
 			local action_name = activated_ability_data.action_name
 
@@ -1038,7 +1043,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 						local chain_actions = current_action_settings.allowed_chain_actions
 
 						if chain_actions then
-							for chain_action_idx = 1, #chain_actions, 1 do
+							for chain_action_idx = 1, #chain_actions do
 								local chain_action_data = chain_actions[chain_action_idx]
 
 								if chain_action_data.input == "action_wield" and current_action_extension:is_chain_action_available(chain_action_data, t) then
@@ -1067,7 +1072,7 @@ CharacterStateHelper._get_chain_action_data = function (item_template, current_a
 	if not new_action then
 		local chain_actions = current_action_settings.allowed_chain_actions or empty_table
 
-		for i = 1, #chain_actions, 1 do
+		for i = 1, #chain_actions do
 			local action_data = chain_actions[i]
 			done, new_action, new_sub_action, wield_input, send_buffer, clear_buffer, force_release_input = CharacterStateHelper._check_chain_action(wield_input, action_data, item_template, current_action_extension, input_extension, inventory_extension, unit, t, ammo_extension)
 
@@ -1094,7 +1099,7 @@ local function validate_action(unit, action_name, sub_action_name, action_settin
 	local input_id = action_settings.input_override or action_name
 	local hold_input = not action_settings.do_not_validate_with_hold and action_settings.hold_input
 	local allow_toggle = action_settings.allow_hold_toggle and input_extension.toggle_alternate_attack
-	local has_input = only_check_condition or input_extension:get(input_id) or input_extension:get_buffer(input_id) or input_extension:get(action_settings.attack_hold_input) or (not allow_toggle and input_extension:get(hold_input)) or (action_settings.kind == "block" and input_extension:is_input_blocked())
+	local has_input = only_check_condition or input_extension:get(input_id) or input_extension:get_buffer(input_id) or input_extension:get(action_settings.attack_hold_input) or not allow_toggle and input_extension:get(hold_input) or action_settings.kind == "block" and input_extension:is_input_blocked()
 	local wield_input, wield_input_init = nil
 
 	if not has_input then
@@ -1161,7 +1166,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 	local can_interrupt, reloading = nil
 	local player = Managers.player:owner(unit)
 	local is_bot_player = player and player.bot_player
-	local ammo_extension = (left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension) or (right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension)
+	local ammo_extension = left_hand_weapon_extension and left_hand_weapon_extension.ammo_extension or right_hand_weapon_extension and right_hand_weapon_extension.ammo_extension
 
 	if recent_damage_type and weapon_action_interrupt_damage_types[recent_damage_type] then
 		if ammo_extension then
@@ -1174,7 +1179,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 			end
 		end
 
-		if (current_action_settings and current_action_settings.uninterruptible) or script_data.uninterruptible or reloading or is_bot_player or buff_extension:has_buff_perk("uninterruptible") or uninterruptible_heavy then
+		if current_action_settings and current_action_settings.uninterruptible or script_data.uninterruptible or reloading or is_bot_player or buff_extension:has_buff_perk("uninterruptible") or uninterruptible_heavy then
 			can_interrupt = false
 		elseif recent_damage_type == "cutting_berserker" then
 			can_interrupt = true
@@ -1270,7 +1275,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 					local action_priority = action_settings.action_priority or 1
 
 					if highest_priority_action < action_priority then
-						local weapon_extension = (weapon_action_hand == "right" and right_hand_weapon_extension) or left_hand_weapon_extension
+						local weapon_extension = weapon_action_hand == "right" and right_hand_weapon_extension or left_hand_weapon_extension
 						local potential_new_action, potential_new_sub_action = validate_action(unit, action_name, sub_action_name, action_settings, input_extension, inventory_extension, false, ammo_extension, weapon_extension, t)
 
 						if potential_new_action and potential_new_sub_action then
@@ -1289,7 +1294,7 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 				local action_priority = action_settings.action_priority or 1
 
 				if highest_priority_action < action_priority then
-					local weapon_extension = (weapon_action_hand == "right" and right_hand_weapon_extension) or left_hand_weapon_extension
+					local weapon_extension = weapon_action_hand == "right" and right_hand_weapon_extension or left_hand_weapon_extension
 					local potential_new_action, potential_new_sub_action = validate_action(unit, action_name, "default", action_settings, input_extension, inventory_extension, false, ammo_extension, weapon_extension, t)
 
 					if potential_new_action and potential_new_sub_action then
@@ -1324,14 +1329,14 @@ CharacterStateHelper.update_weapon_actions = function (t, unit, input_extension,
 				right_hand_weapon_extension:stop_action("new_interupting_action", interupting_action_data)
 			end
 
-			local left_action_init_data = (next_action_init_data and table.merge(next_action_init_data, {
+			local left_action_init_data = next_action_init_data and table.merge(next_action_init_data, {
 				action_hand = "left"
-			})) or {
+			}) or {
 				action_hand = "left"
 			}
-			local right_action_init_data = (next_action_init_data and table.merge(next_action_init_data, {
+			local right_action_init_data = next_action_init_data and table.merge(next_action_init_data, {
 				action_hand = "right"
-			})) or {
+			}) or {
 				action_hand = "right"
 			}
 
@@ -1480,10 +1485,10 @@ CharacterStateHelper.get_move_animation = function (locomotion_extension, input_
 	end
 
 	if move_direction.y < 0 then
-		return "move_bwd", (slowed and "walk_bwd") or "move_bwd"
+		return "move_bwd", slowed and "walk_bwd" or "move_bwd"
 	end
 
-	return "move_fwd", (slowed and "walk_fwd") or "move_fwd"
+	return "move_fwd", slowed and "walk_fwd" or "move_fwd"
 end
 
 CharacterStateHelper.is_colliding_down = function (unit)
@@ -1647,7 +1652,7 @@ CharacterStateHelper.will_be_ledge_hanging = function (world, unit, params)
 		local colliding, ledge_unit = CharacterStateHelper.is_raycasting_to_gameplay_collision_box(world, unit, collision_filter, params)
 
 		if colliding then
-			local own_z = Vector3.z((params and params.ray_position) or Unit.world_position(unit, 0)) + ((params and params.z_offset) or 0)
+			local own_z = Vector3.z(params and params.ray_position or Unit.world_position(unit, 0)) + (params and params.z_offset or 0)
 			local trigger_box_node = Unit.node(ledge_unit, "g_gameplay_ledge_trigger_box")
 			local ledge_z = Vector3.z(Unit.world_position(ledge_unit, trigger_box_node))
 			local below_z = own_z <= ledge_z
@@ -1667,9 +1672,9 @@ local INDEX_ACTOR = 4
 
 CharacterStateHelper.is_raycasting_to_gameplay_collision_box = function (world, unit, collision_filter, params)
 	local physics_world = World.get_data(world, "physics_world")
-	local position = (params and params.ray_position) or POSITION_LOOKUP[unit]
+	local position = params and params.ray_position or POSITION_LOOKUP[unit]
 	local movement_settings_table = PlayerUnitMovementSettings.get_movement_settings_table(unit)
-	local movement_settings_table_name = (params and params.movement_settings_table_name) or "gameplay_collision_box"
+	local movement_settings_table_name = params and params.movement_settings_table_name or "gameplay_collision_box"
 	local player_half_height = movement_settings_table[movement_settings_table_name].collision_check_player_half_height
 	local player_height_offset = movement_settings_table[movement_settings_table_name].collision_check_player_height_offset
 	local offset = Vector3(0, 0, player_height_offset * 2)
@@ -1677,7 +1682,7 @@ CharacterStateHelper.is_raycasting_to_gameplay_collision_box = function (world, 
 	local colliding, collided_unit = nil
 	local hits, num_hits = PhysicsWorld.immediate_raycast(physics_world, position, Vector3.down(), player_half_height * 4, "all", "collision_filter", collision_filter, "use_global_table")
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit = hits[i]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
@@ -1694,12 +1699,12 @@ CharacterStateHelper.is_raycasting_to_gameplay_collision_box = function (world, 
 	end
 
 	if colliding and collided_unit then
-		local radius = (params and params.radius) or 0.15
+		local radius = params and params.radius or 0.15
 		local max_hits = 4
 		local result = PhysicsWorld.linear_sphere_sweep(physics_world, position, position + Vector3.down() * player_half_height * 4, radius, max_hits, "collision_filter", collision_filter, "report_initial_overlap")
 
 		if result then
-			for j = 1, #result, 1 do
+			for j = 1, #result do
 				local hit = result[j]
 				local hit_actor = hit.actor
 				local hit_unit = Actor.unit(hit_actor)
@@ -1725,7 +1730,7 @@ CharacterStateHelper.is_ledge_hanging = function (world, unit, params)
 		local colliding, ledge_unit = CharacterStateHelper.is_colliding_with_gameplay_collision_box(world, unit, "filter_ledge_collision", params)
 
 		if colliding then
-			local own_z = Vector3.z((params and params.position) or Unit.world_position(unit, 0)) + ((params and params.z_offset) or 0)
+			local own_z = Vector3.z(params and params.position or Unit.world_position(unit, 0)) + (params and params.z_offset or 0)
 			local trigger_box_node = Unit.node(ledge_unit, "g_gameplay_ledge_trigger_box")
 			local ledge_z = Vector3.z(Unit.world_position(ledge_unit, trigger_box_node))
 			local below_z = own_z <= ledge_z
@@ -1858,5 +1863,3 @@ CharacterStateHelper.handle_bot_ledge_hanging_failsafe = function (unit, is_bot)
 
 	return false
 end
-
-return

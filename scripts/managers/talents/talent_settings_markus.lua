@@ -2568,5 +2568,3 @@ Talents.empire_soldier = {
 
 BuffUtils.copy_talent_buff_names(TalentBuffTemplates.empire_soldier)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.empire_soldier, buff_tweak_data)
-
-return

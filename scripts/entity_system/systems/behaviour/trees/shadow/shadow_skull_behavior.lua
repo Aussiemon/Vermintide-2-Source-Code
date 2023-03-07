@@ -7,5 +7,3 @@ BreedBehaviors.shadow_skull = {
 	},
 	name = "shadow_skull"
 }
-
-return

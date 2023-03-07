@@ -210,14 +210,14 @@ WeaveTutorialPopupUI.populate_message = function (self, title_text, sub_title_te
 		button_2.content.visible = false
 	end
 
-	local localized_body_text = (disable_body_localization and body_text) or Localize(body_text)
+	local localized_body_text = disable_body_localization and body_text or Localize(body_text)
 	self.body_paragraphs = self:break_paragraphs(localized_body_text)
 
 	self:resize_to_fit()
 
 	local widgets = self.widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		widgets[i].element.dirty = true
 	end
 end
@@ -236,7 +236,7 @@ WeaveTutorialPopupUI.resize_to_fit = function (self)
 	local paragraphs = self.body_paragraphs
 	local num_paragraphs = #paragraphs
 
-	for i = 1, num_paragraphs, 1 do
+	for i = 1, num_paragraphs do
 		local height = UIUtils.get_text_height(ui_renderer, body_widget_size, style, paragraphs[i])
 		self.body_paragraph_heights[i] = height
 		body_height = body_height + height
@@ -249,10 +249,10 @@ WeaveTutorialPopupUI.resize_to_fit = function (self)
 	body_text_def.size[2] = body_height
 	local title_visible = self.title_text.content.visible
 	local original_subtitle_pos = scenegraph_definition.sub_title.position
-	sub_title_text_def.position[2] = (title_visible and original_subtitle_pos[2]) or 0
+	sub_title_text_def.position[2] = title_visible and original_subtitle_pos[2] or 0
 	local sub_title_visible = self.sub_title_text.content.visible
 	local original_body_pos = scenegraph_definition.body.position
-	body_text_def.position[2] = (sub_title_visible and original_body_pos[2]) or original_subtitle_pos[2]
+	body_text_def.position[2] = sub_title_visible and original_body_pos[2] or original_subtitle_pos[2]
 	local base_window_height = self:calculate_base_window_height()
 	window_def.size[2] = body_height + base_window_height
 	local button_1 = self.button_1
@@ -270,9 +270,9 @@ end
 
 WeaveTutorialPopupUI.calculate_base_window_height = function (self)
 	local title_size = self.title_start_y - self.sub_title_start_y
-	local title_offset = (self.title_text.content.visible and 0) or title_size
+	local title_offset = self.title_text.content.visible and 0 or title_size
 	local sub_title_size = self.sub_title_start_y - self.body_start_y
-	local sub_title_offset = (self.sub_title_text.content.visible and 0) or sub_title_size
+	local sub_title_offset = self.sub_title_text.content.visible and 0 or sub_title_size
 	local window_height = self.button_height - self.body_start_y - title_offset + 50
 
 	return window_height
@@ -300,7 +300,7 @@ WeaveTutorialPopupUI.draw_body = function (self, renderer)
 	local paragraph_heights = self.body_paragraph_heights
 	local num_paragraphs = #paragraphs
 
-	for i = 1, num_paragraphs, 1 do
+	for i = 1, num_paragraphs do
 		text_offset[2] = -y_offset
 		body_text_widget.content.text = paragraphs[i]
 
@@ -352,5 +352,3 @@ WeaveTutorialPopupUI._release_input = function (self)
 	}, 1, "weave_tutorial", "WeaveTutorialPopupUI")
 	ShowCursorStack.pop()
 end
-
-return

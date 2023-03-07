@@ -92,5 +92,3 @@ ActionBookCharge.finish = function (self, reason)
 		self.first_person_extension:play_hud_sound_event("priest_melee_book_charge_stop")
 	end
 end
-
-return

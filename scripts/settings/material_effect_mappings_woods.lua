@@ -508,5 +508,3 @@ MaterialEffectMappings.throwing_javelin = MaterialEffectMappings.throwing_javeli
 		water = {}
 	}
 }
-
-return

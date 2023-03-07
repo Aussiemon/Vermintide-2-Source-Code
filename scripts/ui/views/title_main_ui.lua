@@ -307,11 +307,11 @@ TitleMainUI._handle_menu_input = function (self, dt, t)
 
 				self:_play_sound("Play_console_menu_hover")
 			elseif input_service:get("up") then
-				current_index = (current_index - 1 < 1 and #self._menu_widgets) or current_index - 1
+				current_index = current_index - 1 < 1 and #self._menu_widgets or current_index - 1
 				local content = self._menu_widgets[current_index].content
 
 				while content.disabled do
-					current_index = (current_index - 1 < 1 and #self._menu_widgets) or current_index - 1
+					current_index = current_index - 1 < 1 and #self._menu_widgets or current_index - 1
 					content = self._menu_widgets[current_index].content
 				end
 
@@ -664,8 +664,8 @@ TitleMainUI.anim_select_button = function (self, animation_data, index, dt)
 	animation_data.progress = math.clamp(animation_data.timer / MENU_ITEM_FADE_IN, 0, 1)
 	local menu_item = self._menu_widgets[index]
 	local item_disabled = menu_item.content.disabled
-	local color = (item_disabled and Colors.color_definitions.gray) or Colors.color_definitions.font_title
-	local select_color = (item_disabled and Colors.color_definitions.gray) or Colors.color_definitions.white
+	local color = item_disabled and Colors.color_definitions.gray or Colors.color_definitions.font_title
+	local select_color = item_disabled and Colors.color_definitions.gray or Colors.color_definitions.white
 
 	if menu_item.style.text then
 		menu_item.style.text.text_color[2] = math.lerp(color[2], select_color[2], math.smoothstep(animation_data.progress, 0, 1))
@@ -708,8 +708,8 @@ TitleMainUI.anim_deselect_button = function (self, animation_data, index, dt, op
 
 	local menu_item = self._menu_widgets[index]
 	local item_disabled = menu_item.content.disabled
-	local color = (item_disabled and Colors.color_definitions.gray) or Colors.color_definitions.font_title
-	local select_color = (item_disabled and Colors.color_definitions.gray) or Colors.color_definitions.white
+	local color = item_disabled and Colors.color_definitions.gray or Colors.color_definitions.font_title
+	local select_color = item_disabled and Colors.color_definitions.gray or Colors.color_definitions.white
 
 	if menu_item.style.text then
 		menu_item.style.text.text_color[2] = math.lerp(color[2], select_color[2], math.smoothstep(progress, 0, 1))
@@ -743,7 +743,7 @@ end
 
 TitleMainUI._add_menu_item_animation = function (self, index, func, widgets)
 	self._menu_item_animations[index] = {
-		progress = (self._menu_item_animations[index] and self._menu_item_animations[index].progress) or 0,
+		progress = self._menu_item_animations[index] and self._menu_item_animations[index].progress or 0,
 		func = func
 	}
 end
@@ -796,7 +796,7 @@ TitleMainUI.set_menu_item_enable_state_by_index = function (self, item_lookup_na
 
 	local menu_item = menu_item_widgets[index]
 	menu_item.content.disabled = not enabled
-	local color = (enabled and Colors.color_definitions.font_title) or Colors.color_definitions.gray
+	local color = enabled and Colors.color_definitions.font_title or Colors.color_definitions.gray
 
 	if menu_item.style.text then
 		local text_color = menu_item.style.text.text_color
@@ -830,5 +830,3 @@ end
 TitleMainUI.disable_input = function (self, disable)
 	self._disable_input = disable
 end
-
-return

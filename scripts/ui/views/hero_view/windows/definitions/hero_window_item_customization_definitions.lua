@@ -913,7 +913,7 @@ local function create_property_option(scenegraph_id, text)
 					450,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("corn_flower_blue", 255),
 				color_override = {},
 				color_override_table = {
@@ -939,7 +939,7 @@ local function create_property_option(scenegraph_id, text)
 					450,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					16,
@@ -1028,7 +1028,7 @@ local function create_trait_option(scenegraph_id, title_text, description_text, 
 					400,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					30,
@@ -1048,7 +1048,7 @@ local function create_trait_option(scenegraph_id, title_text, description_text, 
 					400,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					31,
@@ -1068,7 +1068,7 @@ local function create_trait_option(scenegraph_id, title_text, description_text, 
 					400,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					30,
@@ -1088,7 +1088,7 @@ local function create_trait_option(scenegraph_id, title_text, description_text, 
 					400,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					31,
@@ -1213,7 +1213,7 @@ end
 local function create_simple_centered_textures(textures, texture_size, scenegraph_id, spacing)
 	local texture_colors = {}
 
-	for i = 1, #textures, 1 do
+	for i = 1, #textures do
 		texture_colors[i] = {
 			255,
 			255,
@@ -1344,7 +1344,7 @@ local preview_widgets = {
 local rarity_display_textures = {}
 local rarity_display_sizes = {}
 
-for i = 1, 5, 1 do
+for i = 1, 5 do
 	rarity_display_textures[i] = "item_tier_empty"
 	rarity_display_sizes[i] = {
 		37,
@@ -1448,7 +1448,7 @@ local widgets = {
 function create_button(scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad, skip_side_detail)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local side_detail_texture = optional_detail_texture or "button_detail_01"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
@@ -1787,7 +1787,7 @@ function create_button(scenegraph_id, size, frame_name, background_texture, text
 					255
 				},
 				offset = {
-					(extra_detail_offset_x and -extra_detail_offset_x) or -9,
+					extra_detail_offset_x and -extra_detail_offset_x or -9,
 					size[2] / 2 - side_detail_texture_size[2] / 2 + (extra_detail_offset_y or 0),
 					9
 				},
@@ -1992,7 +1992,7 @@ local generic_input_actions = {
 			priority = 3,
 			description_text = "input_description_information",
 			ignore_keybinding = true,
-			input_action = (IS_PS4 and "l2") or "left_trigger"
+			input_action = IS_PS4 and "l2" or "left_trigger"
 		},
 		{
 			input_action = "back",
@@ -2022,7 +2022,7 @@ local generic_input_actions = {
 			priority = 4,
 			description_text = "input_description_information",
 			ignore_keybinding = true,
-			input_action = (IS_PS4 and "l2") or "left_trigger"
+			input_action = IS_PS4 and "l2" or "left_trigger"
 		},
 		{
 			input_action = "back",

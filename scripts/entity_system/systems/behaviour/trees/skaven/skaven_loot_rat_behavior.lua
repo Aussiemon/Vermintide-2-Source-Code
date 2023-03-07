@@ -72,5 +72,3 @@ BreedBehaviors.loot_rat = {
 	},
 	name = "horde"
 }
-
-return

@@ -80,5 +80,3 @@ DialogueLookup[DialogueLookup_n + 38] = "pwe_vw_objective_in_sight"
 DialogueLookup[DialogueLookup_n + 39] = "pwe_vw_thank_you"
 DialogueLookup[DialogueLookup_n + 40] = "pwe_vw_answer_ping"
 DialogueLookup_n = DialogueLookup_n + 40
-
-return

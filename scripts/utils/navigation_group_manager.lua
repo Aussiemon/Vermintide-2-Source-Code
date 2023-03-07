@@ -130,7 +130,7 @@ NavigationGroupManager.form_groups_start = function (self, radius, finish_point,
 	self:form_groups_update()
 end
 
-local max_nodes_per_frame = (IS_WINDOWS and 1000) or 400
+local max_nodes_per_frame = IS_WINDOWS and 1000 or 400
 
 NavigationGroupManager.form_groups_update = function (self)
 	print("NavigationGroupManager -> form_groups_update")
@@ -238,11 +238,11 @@ NavigationGroupManager.assign_main_path_indexes = function (self, main_paths)
 	local Script_set_temp_count = Script.set_temp_count
 	local Script_temp_count = Script.temp_count
 
-	for main_path_index = 1, #main_paths, 1 do
+	for main_path_index = 1, #main_paths do
 		local sub_path = main_paths[main_path_index]
 		local nodes = sub_path.nodes
 
-		for node_index = 1, #nodes, 1 do
+		for node_index = 1, #nodes do
 			local num_v, num_q, num_m = Script_temp_count()
 			local node = nodes[node_index]:unbox()
 			local group = self:get_group_from_position(node)
@@ -342,7 +342,7 @@ NavigationGroupManager.poly_is_valid = function (self, poly)
 end
 
 NavigationGroupManager.unmark_polys = function (self, rejected_queue)
-	for i = self._rejected_queue_pos, #rejected_queue, 1 do
+	for i = self._rejected_queue_pos, #rejected_queue do
 		local poly = rejected_queue[i]
 		local poly_hash = self:get_poly_hash(poly)
 
@@ -682,7 +682,7 @@ NavigationGroupManager.breadth_first_search_neighbours = function (self, root_tr
 			GwNavTraversal.get_neighboring_triangles(node_tri)
 		}
 
-		for i = 1, #neighbours, 1 do
+		for i = 1, #neighbours do
 			local a, b, c = Script.temp_count()
 			local neighbour_tri = neighbours[i]
 			local neighbour_hash = self:get_poly_hash(neighbour_tri)
@@ -832,7 +832,7 @@ NavigationGroupManager.draw_group_path = function (self, path)
 	local p1 = path[1]._group_center:unbox()
 	local p2 = nil
 
-	for i = 2, #path, 1 do
+	for i = 2, #path do
 		p2 = path[i]._group_center:unbox()
 
 		QuickDrawerStay:line(p1, p2, col)
@@ -869,7 +869,7 @@ NavigationGroupManager.knit_groups_with_ledges = function (self)
 	local smart_objects = nav_graph_system.smart_objects
 
 	for smart_object_id, smart_object_data in pairs(smart_objects) do
-		for i = 1, #smart_object_data, 1 do
+		for i = 1, #smart_object_data do
 			local smart_object = smart_object_data[i]
 			local smart_object_type = smart_object.smart_object_type or "ledges"
 			local p1 = Vector3Aux.unbox(smart_object.pos1)
@@ -929,7 +929,7 @@ NavigationGroupManager.breadth_first_search_all_triangles = function (self, tria
 			get_neighboring_triangles(triangle)
 		}
 
-		for j = 1, #neighbors, 1 do
+		for j = 1, #neighbors do
 			local neighbor = neighbors[j]
 
 			if neighbor then
@@ -953,5 +953,3 @@ NavigationGroupManager.breadth_first_search_all_triangles = function (self, tria
 
 	return tri_lookup
 end
-
-return

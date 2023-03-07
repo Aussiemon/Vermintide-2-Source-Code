@@ -421,7 +421,7 @@ local function create_video_hover()
 					texture_id = "icon",
 					pass_type = "texture",
 					content_change_function = function (content, style)
-						local increase = (content.button_hotspot.is_hover and 1) or -1
+						local increase = content.button_hotspot.is_hover and 1 or -1
 						local dt = Managers.time:mean_dt()
 						local progress = style.progress
 						progress = math.clamp(progress + dt * increase * 2, 0, 1)

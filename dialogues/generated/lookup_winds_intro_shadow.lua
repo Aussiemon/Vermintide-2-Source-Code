@@ -36,5 +36,3 @@ DialogueLookup[DialogueLookup_n + 16] = "pwh_grey_weave_conversation_one_02"
 DialogueLookup[DialogueLookup_n + 17] = "pwe_grey_weave_conversation_two_01"
 DialogueLookup[DialogueLookup_n + 18] = "pwh_grey_weave_conversation_two_01"
 DialogueLookup_n = DialogueLookup_n + 18
-
-return

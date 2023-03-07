@@ -578,7 +578,7 @@ DemoTitleUI._draw_3d_logo = function (self, dt, t)
 	local base_size = Vector2(1920, 1080)
 	local w, h = Gui.resolution()
 
-	Gui.bitmap(self._world_gui, "vermintide_2_logo_demo", Vector3((-base_size[1] * w) / WORLD_GUI_RESOLUTION * 0.5, (-base_size[2] * w) / WORLD_GUI_RESOLUTION * 0.3, 1), Vector2((base_size[1] * w) / WORLD_GUI_RESOLUTION, (base_size[2] * w) / WORLD_GUI_RESOLUTION))
+	Gui.bitmap(self._world_gui, "vermintide_2_logo_demo", Vector3(-base_size[1] * w / WORLD_GUI_RESOLUTION * 0.5, -base_size[2] * w / WORLD_GUI_RESOLUTION * 0.3, 1), Vector2(base_size[1] * w / WORLD_GUI_RESOLUTION, base_size[2] * w / WORLD_GUI_RESOLUTION))
 end
 
 DemoTitleUI._draw = function (self, dt, t)
@@ -875,5 +875,3 @@ end
 DemoTitleUI.set_game_type = function (self, game_type)
 	return
 end
-
-return

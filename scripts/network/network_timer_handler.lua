@@ -93,5 +93,3 @@ end
 NetworkTimerHandler.rpc_start_network_timer = function (self, channel_id, end_time)
 	self:start_timer_client(end_time)
 end
-
-return

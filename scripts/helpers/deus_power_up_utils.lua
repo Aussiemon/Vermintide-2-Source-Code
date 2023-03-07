@@ -151,7 +151,7 @@ local function generate_random_power_up(seed, new_power_ups, existing_power_ups,
 	end
 
 	if #possible_power_ups == 0 then
-		for current_rarity_index = start_rarity_index + 1, #DeusPowerUpRarities, 1 do
+		for current_rarity_index = start_rarity_index + 1, #DeusPowerUpRarities do
 			rarity = DeusPowerUpRarities[current_rarity_index]
 			possible_power_ups = get_available_power_ups_array(career_name, new_power_ups, existing_power_ups, rarity, availability_type)
 
@@ -302,7 +302,7 @@ DeusPowerUpUtils.generate_random_power_ups = function (seed, count, existing_pow
 	local skip_metatable = true
 	existing_power_ups = table.clone(existing_power_ups, skip_metatable)
 
-	for i = 1, count, 1 do
+	for i = 1, count do
 		local power_up = nil
 		seed, power_up = generate_random_power_up(seed, new_power_ups, existing_power_ups, difficulty, run_progress, availability_type, career_name, forced_rarity)
 
@@ -345,5 +345,3 @@ DeusPowerUpUtils.activate_deus_power_up = function (power_up_instance, buff_syst
 		buff_system:add_buff(local_player_unit, power_up.buff_name, local_player_unit)
 	end
 end
-
-return

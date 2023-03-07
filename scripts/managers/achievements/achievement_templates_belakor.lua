@@ -245,7 +245,7 @@ achievements.blk_clutch_skull = {
 			local num_units = #player_and_bot_units
 			local saved = false
 
-			for i = 1, num_units, 1 do
+			for i = 1, num_units do
 				local unit = player_and_bot_units[i]
 
 				if Unit.alive(unit) and unit ~= attacker_unit then
@@ -327,5 +327,3 @@ local all_challenges = {
 }
 
 add_meta_challenge(achievements, "complete_all_belakor_challenges", all_challenges, "achievement_morris_complete_all_challenges", nil, nil, nil)
-
-return

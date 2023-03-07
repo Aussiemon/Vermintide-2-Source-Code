@@ -64,13 +64,13 @@ MutatorUtils.apply_buff_to_alive_player_units = function (context, data, buff_na
 	end
 
 	local side = Managers.state.side:get_side_from_name("heroes")
-	local current_player_units = (data.only_affect_players and side.PLAYER_UNITS) or side.PLAYER_AND_BOT_UNITS
+	local current_player_units = data.only_affect_players and side.PLAYER_UNITS or side.PLAYER_AND_BOT_UNITS
 	local num_current_player_units = #current_player_units
 	local get_extension = ScriptUnit.extension
 	local unit_alive = AiUtils.unit_alive
 	local new_buff_ids = {}
 
-	for i = 1, num_current_player_units, 1 do
+	for i = 1, num_current_player_units do
 		local unit = current_player_units[i]
 		local is_alive = unit_alive(unit)
 
@@ -152,7 +152,7 @@ MutatorUtils.tweak_pack_spawning_settings_convert_breeds = function (pack_spawni
 
 	if pack_spawning_settings.difficulty_overrides then
 		for _, difficulty_override in pairs(pack_spawning_settings.difficulty_overrides) do
-			for i = 1, #difficulty_override, 1 do
+			for i = 1, #difficulty_override do
 				local breed_pack_override = difficulty_override[i]
 				local breed = breed_pack_override[1]
 				breed_pack_override[1] = conversion_table[breed] or breed
@@ -168,7 +168,7 @@ MutatorUtils.tweak_pack_spawning_settings_density_multiplier = function (pack_sp
 		for _, difficulty_override in pairs(pack_spawning_settings.difficulty_overrides) do
 			difficulty_override.area_density_coefficient = difficulty_override.area_density_coefficient * density_multiplier
 
-			for i = 1, #difficulty_override, 1 do
+			for i = 1, #difficulty_override do
 				local breed_pack_override = difficulty_override[i]
 				breed_pack_override[3] = breed_pack_override[3] * density_multiplier
 			end
@@ -201,7 +201,7 @@ MutatorUtils.update_conflict_settings_specials_frequency = function (max_special
 				local new_1 = spawn_interval[1]
 				local new_2 = spawn_interval[2]
 				local old_1 = new_1 / spawn_time_reduction_multiplier
-				slot13 = new_2 / spawn_time_reduction_multiplier
+				local old_2 = new_2 / spawn_time_reduction_multiplier
 			end
 
 			if method_name == "specials_by_slots" then
@@ -212,12 +212,10 @@ MutatorUtils.update_conflict_settings_specials_frequency = function (max_special
 				local new_1 = spawn_cooldown[1]
 				local new_2 = spawn_cooldown[2]
 				local old_1 = new_1 / spawn_time_reduction_multiplier
-				slot13 = new_2 / spawn_time_reduction_multiplier
+				local old_2 = new_2 / spawn_time_reduction_multiplier
 			end
 
 			fassert(modified, "MutatorUtils.update_conflict_settings_specials_frequency: Found new method_name (%s)", method_name)
 		end
 	end
 end
-
-return

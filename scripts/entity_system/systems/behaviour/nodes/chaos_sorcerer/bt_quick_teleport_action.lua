@@ -159,7 +159,7 @@ BTQuickTeleportAction.anim_cb_teleport_start_finished = function (self, unit, bl
 		local side = blackboard.side
 		local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-		for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS, 1 do
+		for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS do
 			local target_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 
 			self:push_close_players(unit, blackboard, entrance_position, target_unit)
@@ -231,5 +231,3 @@ BTQuickTeleportAction.push_close_players = function (self, unit, blackboard, pos
 		hit_units[target_unit] = true
 	end
 end
-
-return

@@ -241,7 +241,7 @@ local function get_category_summary_totals(achievement_manager, category, total,
 		local count = #entries
 		total = total + count
 
-		for i = 1, count, 1 do
+		for i = 1, count do
 			local data = achievement_manager:get_data_by_id(entries[i])
 
 			if data.claimed then
@@ -255,7 +255,7 @@ local function get_category_summary_totals(achievement_manager, category, total,
 	local sub_categories = category.categories
 
 	if sub_categories then
-		for i = 1, #sub_categories, 1 do
+		for i = 1, #sub_categories do
 			total, claimed, has_unclaimed = get_category_summary_totals(achievement_manager, sub_categories[i], total, claimed, has_unclaimed)
 		end
 	end
@@ -416,7 +416,7 @@ HeroViewStateAchievements._setup_layout = function (self, layout_type)
 	local layout = self:_get_layout(layout_type)
 	local categories = layout.categories
 
-	for i = 1, num_tab_widgets, 1 do
+	for i = 1, num_tab_widgets do
 		local data = categories[i]
 		local widget = category_tab_widgets[i]
 
@@ -494,7 +494,7 @@ local function has_unclaimed_challenge(challenge_manager, base_category)
 	local entries = base_category.entries
 
 	if entries then
-		for i = 1, #entries, 1 do
+		for i = 1, #entries do
 			local data = challenge_manager:get_data_by_id(entries[i])
 
 			if data.completed and not data.claimed then
@@ -512,7 +512,7 @@ local function has_unclaimed_challenge(challenge_manager, base_category)
 	local categories = base_category.categories
 
 	if categories then
-		for i = 1, #categories, 1 do
+		for i = 1, #categories do
 			if has_unclaimed_challenge(challenge_manager, categories[i]) then
 				return true
 			end
@@ -624,20 +624,21 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 	local claimable_achievement_widgets = {}
 	local unclaimable_achievement_widgets = {}
 
-	for i = 1, #entries, 1 do
+	for i = 1, #entries do
 		local entry_id = entries[i]
 		local entry_data = manager:get_data_by_id(entry_id)
 
 		if needle ~= nil and not SearchUtils.simple_search(needle, entry_data.name) and not SearchUtils.simple_search(needle, entry_data.desc) then
+			-- Nothing
 		else
 			local completed = (entry_data.completed or script_data.set_all_challenges_claimable) and not script_data["eac-untrusted"]
 
 			if query.completed ~= nil and query.completed == not completed then
+				-- Nothing
 			else
 				local claimed = entry_data.claimed
 
-				if query.claimed ~= nil and query.claimed == not claimed then
-				else
+				if query.claimed == nil or query.claimed ~= not claimed then
 					local unlocked = true
 					local locked_text = Localize("dlc_not_owned") .. ":"
 					local dlc_name = nil
@@ -668,6 +669,7 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 					end
 
 					if query.locked ~= nil and query.locked == unlocked then
+						-- Nothing
 					else
 						table.clear(temp_content)
 
@@ -760,10 +762,6 @@ HeroViewStateAchievements._create_entries = function (self, entries, entry_type,
 							if query.reward ~= nil then
 								local data = temp_content.reward_item.data
 								local reward_type = data.slot_type or data.item_type
-
-								if query.reward ~= reward_type then
-								end
-							elseif query.rarity ~= nil and query.rarity ~= temp_content.reward_icon_background:gsub("^icon_bg_", "") then
 							end
 						else
 							local widget = UIWidget.init(widget_definition)
@@ -942,7 +940,7 @@ HeroViewStateAchievements._set_requirements = function (self, widget, requiremen
 
 		entry_content.text = display_name
 
-		Colors.set(entry_style.checkbox_marker.color, (completed and 255) or 0, 0, 0, 0)
+		Colors.set(entry_style.checkbox_marker.color, completed and 255 or 0, 0, 0, 0)
 	end
 
 	return height + larges_list_amount * CHECKLIST_ENTRY_HEIGHT
@@ -990,7 +988,7 @@ HeroViewStateAchievements._get_achievement_entries_height = function (self, star
 	local total_height = 0
 	local achievement_widgets = self._achievement_widgets
 
-	for index = start_index, #achievement_widgets, 1 do
+	for index = start_index, #achievement_widgets do
 		local widget = achievement_widgets[index]
 		local content = widget.content
 		local widget_height = ACHIEVEMENT_DEFAULT_HEIGHT
@@ -1026,7 +1024,7 @@ end
 
 HeroViewStateAchievements._get_active_tabs_height = function (self)
 	local active_tab = self._active_tab
-	local num_sub_tabs = (active_tab and active_tab.style.list_style.num_draws) or 0
+	local num_sub_tabs = active_tab and active_tab.style.list_style.num_draws or 0
 	local tab_list_entry_size = category_tab_info.tab_list_entry_size
 	local tab_list_entry_spacing = category_tab_info.tab_list_entry_spacing
 	local tab_list_height = math.max(tab_list_entry_size[2] * num_sub_tabs + tab_list_entry_spacing * (num_sub_tabs - 1), 0)
@@ -1113,7 +1111,7 @@ HeroViewStateAchievements._update_achievement_read_index = function (self, fract
 	local widgets_scrolled = 1
 	local widget_height_counter = 0
 
-	for index = 1, num_achievements, 1 do
+	for index = 1, num_achievements do
 		local widget = achievement_widgets[index]
 		local content = widget.content
 		local widget_height = ACHIEVEMENT_DEFAULT_HEIGHT
@@ -1239,7 +1237,7 @@ HeroViewStateAchievements._claim_multiple_rewards = function (self, challenge_wi
 	local reward_poll_claim_all_id, reason = nil
 	local challenges_ids = {}
 
-	for i = 1, #challenge_widgets, 1 do
+	for i = 1, #challenge_widgets do
 		local widget = challenge_widgets[i]
 		local id = widget.content.id
 		challenges_ids[i] = id
@@ -1315,7 +1313,7 @@ HeroViewStateAchievements._claim_multiple_achievement_rewards = function (self, 
 	end
 
 	if unclaimable_achievements then
-		for i = 1, #unclaimable_achievements, 1 do
+		for i = 1, #unclaimable_achievements do
 			printf("[HeroViewStateAchievements]: %s, %s", error_message, unclaimable_achievements[i])
 		end
 	end
@@ -1444,7 +1442,7 @@ end
 HeroViewStateAchievements._on_all_rewards_claimed = function (self, reward_poll_id, polling_type)
 	local rewards_widgets = self._claimable_challenge_widgets
 
-	for i = 1, #rewards_widgets, 1 do
+	for i = 1, #rewards_widgets do
 		local widget = rewards_widgets[i]
 		local content = widget.content
 		local style = widget.style
@@ -1506,7 +1504,7 @@ HeroViewStateAchievements._update_new_status_for_current_tab = function (self)
 		local category_tab_widgets = self._category_tab_widgets
 		local num_tab_widgets = #category_tab_widgets
 
-		for i = 1, num_tab_widgets, 1 do
+		for i = 1, num_tab_widgets do
 			local new_data = categories[i]
 			local widget = category_tab_widgets[i]
 
@@ -1736,7 +1734,7 @@ HeroViewStateAchievements.input_service = function (self)
 end
 
 HeroViewStateAchievements.update = function (self, dt, t)
-	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	local input_service = self._input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 
 	if self.reward_popup then
 		self.reward_popup:update(dt)
@@ -1923,7 +1921,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		return
 	end
 
-	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	local input_service = self._input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 
 	if self:_handle_search_input(dt, t, input_service) then
 		return
@@ -1942,7 +1940,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 	local achievements_button = widgets_by_name.achievements_button
 	local achievement_window_button = summary_widgets_by_name.summary_right_window_button
 	local quest_window_button = summary_widgets_by_name.summary_left_window_button
-	local claim_all_button = (self._achievement_layout_type == "achievements" and achievement_widgets.claim_all_achievements) or quest_widgets.claim_all_quests
+	local claim_all_button = self._achievement_layout_type == "achievements" and achievement_widgets.claim_all_achievements or quest_widgets.claim_all_quests
 
 	self:_handle_layout_buttons_hovered()
 
@@ -1969,7 +1967,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		local layout = self:_get_layout("quest")
 		local summary_widgets_by_name = self._summary_widgets_by_name
 
-		for index = 1, #layout.categories, 1 do
+		for index = 1, #layout.categories do
 			local widget = summary_widgets_by_name["summary_quest_bar_background_" .. index]
 
 			if UIUtils.is_button_pressed(widget) then
@@ -1988,7 +1986,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		local achievement_outline = self._achievement_manager:outline()
 		local summary_widgets_by_name = self._summary_widgets_by_name
 
-		for index = 1, #achievement_outline.categories, 1 do
+		for index = 1, #achievement_outline.categories do
 			local widget = summary_widgets_by_name["summary_achievement_bar_" .. index]
 
 			if UIUtils.is_button_pressed(widget) then
@@ -2037,7 +2035,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 		local num_draws = list_style.num_draws
 		local active_list_index = self._active_list_index
 
-		for i = 1, num_draws, 1 do
+		for i = 1, num_draws do
 			local content = item_contents[i]
 			local hotspot = content.button_hotspot or content.hotspot
 
@@ -2067,7 +2065,7 @@ HeroViewStateAchievements._handle_input = function (self, dt, t)
 			local start_index = achievement_draw_index
 			local end_index = math.min(achievement_draw_index + ACHIEVEMENT_PRESENTATION_AMOUNT + 1, #achievement_widgets)
 
-			for i = start_index, end_index, 1 do
+			for i = start_index, end_index do
 				local widget = achievement_widgets[i]
 
 				if UIUtils.is_button_hover_enter(widget) then
@@ -2317,7 +2315,7 @@ HeroViewStateAchievements.draw = function (self, input_service, dt)
 		local start_index = achievement_draw_index
 		local end_index = math.min(achievement_draw_index + ACHIEVEMENT_PRESENTATION_AMOUNT + 1, #achievement_widgets)
 
-		for i = start_index, end_index, 1 do
+		for i = start_index, end_index do
 			local widget = achievement_widgets[i]
 
 			if widget.snap_pixel_positions ~= nil then
@@ -2412,8 +2410,8 @@ HeroViewStateAchievements.set_fullscreen_effect_enable_state = function (self, e
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and 0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and 0.75 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -2473,7 +2471,7 @@ HeroViewStateAchievements._present_reward = function (self, data)
 end
 
 HeroViewStateAchievements._handle_queued_presentations = function (self)
-	if self:_is_reward_presentation_complete() or (#self._reward_presentation_queue == 0 and not self:_displaying_reward_presentation()) then
+	if self:_is_reward_presentation_complete() or #self._reward_presentation_queue == 0 and not self:_displaying_reward_presentation() then
 		local reward_presentation_queue = self._reward_presentation_queue
 		local num_queued_rewards = #reward_presentation_queue
 
@@ -2540,7 +2538,7 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 		local timer_active = true
 
 		if quest_type == "event" then
-			max_entry_amount = (has_entries and #entries) or 0
+			max_entry_amount = has_entries and #entries or 0
 			timer_active = has_entries
 		end
 
@@ -2548,28 +2546,28 @@ HeroViewStateAchievements._setup_quest_summary_progress = function (self)
 		local timer_widget = summary_widgets_by_name[timer_widget_name]
 		local timer_text_color = timer_widget.style.text.text_color
 
-		Colors.copy_to(timer_text_color, (timer_active and default_title_color) or disabled_title_color)
+		Colors.copy_to(timer_text_color, timer_active and default_title_color or disabled_title_color)
 
 		local title_widget_name = widget_prefix_title .. tostring(category_index)
 		local title_widget = summary_widgets_by_name[title_widget_name]
 		title_widget.content.text = Localize(name)
 		local title_text_color = title_widget.style.text.text_color
 
-		Colors.copy_to(title_text_color, (has_entries and default_title_color) or disabled_title_color)
+		Colors.copy_to(title_text_color, has_entries and default_title_color or disabled_title_color)
 
 		local bar_widget_name = widget_prefix_bar .. tostring(category_index)
 		local bar_widget = summary_widgets_by_name[bar_widget_name]
 		local bar_style = bar_widget.style
 		local bar_content = bar_widget.content
 		local refresh_icon_color = bar_style.refresh_icon.color
-		bar_content.slot = (quest_type == "event" and "achievement_symbol_book_event_skull") or "achievement_symbol_book"
+		bar_content.slot = quest_type == "event" and "achievement_symbol_book_event_skull" or "achievement_symbol_book"
 		local draw_refresh_icon = quest_type == "daily" and can_refresh_quest and has_entries
-		refresh_icon_color[1] = (draw_refresh_icon and alpha) or 0
+		refresh_icon_color[1] = draw_refresh_icon and alpha or 0
 		local locked_count = 0
 		local available_count = 0
 		local completed_count = 0
 
-		for index = 1, max_entry_amount, 1 do
+		for index = 1, max_entry_amount do
 			local quest_id = has_entries and entries[index]
 			local data = quest_id and quest_manager:get_data_by_id(quest_id)
 			local locked = not data
@@ -2677,6 +2675,7 @@ HeroViewStateAchievements._handle_input_desc = function (self)
 
 	if self._achievement_layout_type ~= "summary" then
 		if self._gamepad_filter_active then
+			-- Nothing
 		elseif not table.is_empty(query) then
 			input_desc = "filter_available"
 		else
@@ -2852,7 +2851,7 @@ HeroViewStateAchievements._handle_claim_all_challenges = function (self)
 	local layout = self:_get_layout(achievement_layout_type)
 	local achievement_widgets = self._additional_achievement_widgets_by_name
 	local quest_widgets = self._additional_quest_widgets_by_name
-	local claim_all_button = (achievement_layout_type == "achievements" and achievement_widgets.claim_all_achievements) or quest_widgets.claim_all_quests
+	local claim_all_button = achievement_layout_type == "achievements" and achievement_widgets.claim_all_achievements or quest_widgets.claim_all_quests
 	local active_tab = self._active_tab
 
 	if not active_tab then
@@ -2881,7 +2880,7 @@ HeroViewStateAchievements._handle_claim_all_challenges = function (self)
 		has_unclaimed_challenges = self:_has_any_unclaimed_completed_challenge_in_category(category)
 	end
 
-	local has_claimable_widgets = (self._claimable_challenge_widgets and #self._claimable_challenge_widgets > 0 and true) or false
+	local has_claimable_widgets = self._claimable_challenge_widgets and #self._claimable_challenge_widgets > 0 and true or false
 
 	if has_claimable_widgets and (has_unclaimed_challenges or self._has_claimable_filtered_challenges) and not script_data["eac-untrusted"] and not self:_is_polling() then
 		claim_all_button.content.visible = true
@@ -2900,14 +2899,13 @@ HeroViewStateAchievements._animate_claim_button = function (self, widget, within
 	local offset = widget.offset
 	local style = widget.style
 	local cooldown_duration = 2
-	local should_glow = (offset[2] < 0 and not within_display_range and true) or false
+	local should_glow = offset[2] < 0 and not within_display_range and true or false
 
 	if offset[2] < 10 and within_display_range then
 		self._button_hide_cooldown = nil
 		local increment = 200 * dt
 
-		if offset[2] >= 10 then
-		else
+		if offset[2] < 10 then
 			offset[2] = offset[2] + increment
 		end
 	end
@@ -2939,10 +2937,8 @@ HeroViewStateAchievements._handle_gamepad_activity = function (self)
 
 		local filter_widget = self._search_widgets_by_name.filters
 		local filter_content = filter_widget.content
-		filter_widget.scenegraph_id = (gamepad_active and "gamepad_search_filters") or "search_filters"
+		filter_widget.scenegraph_id = gamepad_active and "gamepad_search_filters" or "search_filters"
 	end
 
 	self._gamepad_active_last_frame = gamepad_active
 end
-
-return

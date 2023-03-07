@@ -105,15 +105,15 @@ local spiral_lines = 10
 
 VortexHuskExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius, inner_radius, outer_radius, spin_speed, height)
 	fx_radius = fx_radius + math.sin(t * 1.7) * 0.4
-	local step = (2 * math.pi) / 6
+	local step = 2 * math.pi / 6
 	local col_delta = math.floor(155 / spiral_segments)
 	local height_step = height / spiral_segments
 
-	for j = 1, spiral_lines, 1 do
-		local alpha = (j * 2 * math.pi) / spiral_lines
+	for j = 1, spiral_lines do
+		local alpha = j * 2 * math.pi / spiral_lines
 
-		for i = 1, spiral_segments, 1 do
-			local r = fx_radius + (0.5 * i * i) / spiral_segments
+		for i = 1, spiral_segments do
+			local r = fx_radius + 0.5 * i * i / spiral_segments
 			local v = t * spin_speed + i * step + alpha
 			spiral[i] = Vector3(math.sin(v) * r, math.cos(v) * r, (i - 1) * height_step)
 		end
@@ -124,7 +124,7 @@ VortexHuskExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius,
 
 		QuickDrawer:sphere(pos + pos1, (math.sin(v * 3) + 1) / 3, Color(155, 255, 155))
 
-		for i = 1, spiral_segments, 1 do
+		for i = 1, spiral_segments do
 			local pos2 = spiral[i]
 			local color = Color(155 - col_delta * i, 255 - col_delta * i, 155 - col_delta * i)
 
@@ -137,5 +137,3 @@ VortexHuskExtension.debug_render_vortex = function (self, t, dt, pos, fx_radius,
 	QuickDrawer:circle(pos, inner_radius, Vector3.up(), Colors.get("pink"))
 	QuickDrawer:circle(pos, outer_radius, Vector3.up(), Colors.get("lime_green"))
 end
-
-return

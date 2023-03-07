@@ -19,5 +19,3 @@ end
 ScriptUnlockGameToken.close = function (self)
 	return
 end
-
-return

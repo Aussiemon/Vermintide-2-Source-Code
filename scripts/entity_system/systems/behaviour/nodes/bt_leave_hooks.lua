@@ -13,7 +13,7 @@ BTLeaveHooks.check_if_victim_was_grabbed = function (unit, blackboard, t)
 		local status_extension = ScriptUnit.has_extension(blackboard.victim_grabbed, "status_system")
 		local is_grabbed = status_extension and status_extension:is_grabbed_by_chaos_spawn()
 
-		if blackboard.stagger or (is_grabbed and not AiUtils.unit_alive(unit)) then
+		if blackboard.stagger or is_grabbed and not AiUtils.unit_alive(unit) then
 			StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 
 			blackboard.has_grabbed_victim = nil
@@ -177,7 +177,7 @@ end
 BTLeaveHooks.leave_attack_grabbed_smash = function (unit, blackboard, t)
 	local victim_is_alive = Unit.alive(blackboard.victim_grabbed)
 
-	if (blackboard.stagger and victim_is_alive) or (victim_is_alive and not AiUtils.unit_alive(unit)) then
+	if blackboard.stagger and victim_is_alive or victim_is_alive and not AiUtils.unit_alive(unit) then
 		StatusUtils.set_grabbed_by_chaos_spawn_network(blackboard.victim_grabbed, false, unit)
 
 		blackboard.has_grabbed_victim = nil
@@ -272,5 +272,3 @@ BTLeaveHooks.beastmen_standard_bearer_leave_move_and_plant_standard = function (
 end
 
 DLCUtils.merge("bt_leave_hooks", BTLeaveHooks)
-
-return

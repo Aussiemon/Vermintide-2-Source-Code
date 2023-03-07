@@ -68,5 +68,3 @@ DialogueLookup[DialogueLookup_n + 32] = "pdr_morris_level_conversations_mordrek_
 DialogueLookup[DialogueLookup_n + 33] = "pwe_morris_level_conversations_mordrek_eleven_02"
 DialogueLookup[DialogueLookup_n + 34] = "pdr_morris_level_conversations_mordrek_eleven_02"
 DialogueLookup_n = DialogueLookup_n + 34
-
-return

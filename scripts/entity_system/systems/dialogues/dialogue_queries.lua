@@ -14,7 +14,7 @@ DialogueQueries = {
 			local temp_weight_table = {}
 			local temp_indexes = {}
 
-			for i = 1, dialogue.sound_events_n, 1 do
+			for i = 1, dialogue.sound_events_n do
 				temp_weight_table[i] = dialogue.sound_events_weights[i]
 				temp_indexes[i] = i
 			end
@@ -22,11 +22,11 @@ DialogueQueries = {
 			local temp_weight_table_n = dialogue.sound_events_n
 			local max_random = 1
 
-			for i = 1, dialogue.sound_events_n, 1 do
+			for i = 1, dialogue.sound_events_n do
 				local rand = math.random() * max_random
 				local selected_index = 1
 
-				for temp_index = 1, temp_weight_table_n, 1 do
+				for temp_index = 1, temp_weight_table_n do
 					if rand <= temp_weight_table[temp_index] then
 						selected_index = temp_index
 
@@ -35,9 +35,9 @@ DialogueQueries = {
 				end
 
 				if temp_weight_table_n > 1 then
-					local length_selected = temp_weight_table[selected_index] - ((selected_index == 1 and 0) or temp_weight_table[selected_index - 1])
+					local length_selected = temp_weight_table[selected_index] - (selected_index == 1 and 0 or temp_weight_table[selected_index - 1])
 
-					for accum_index = selected_index + 1, temp_weight_table_n, 1 do
+					for accum_index = selected_index + 1, temp_weight_table_n do
 						temp_weight_table[accum_index] = temp_weight_table[accum_index] - length_selected
 					end
 
@@ -56,14 +56,14 @@ DialogueQueries = {
 		else
 			local temp_rand_table = {}
 
-			for i = 1, dialogue.sound_events_n, 1 do
+			for i = 1, dialogue.sound_events_n do
 				temp_rand_table[i] = i
 			end
 
 			dialogue.randomize_indexes = {}
 
-			for i = 1, dialogue.sound_events_n, 1 do
-				local rand = math.random(1, (dialogue.sound_events_n + 1) - i)
+			for i = 1, dialogue.sound_events_n do
+				local rand = math.random(1, dialogue.sound_events_n + 1 - i)
 				local val = table.remove(temp_rand_table, rand)
 				dialogue.randomize_indexes[i] = val
 			end
@@ -114,5 +114,3 @@ function get_local_sound_character()
 
 	return voice
 end
-
-return

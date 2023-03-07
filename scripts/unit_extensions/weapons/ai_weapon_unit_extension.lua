@@ -62,5 +62,3 @@ AiWeaponUnitExtension.windup_end = function (self, unit_owner)
 
 	template.windup_end(self.world, self.unit, self.data)
 end
-
-return

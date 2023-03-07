@@ -51,7 +51,7 @@ local power_ups_working_byte_array = {}
 local function encode_power_ups(power_ups_table)
 	table.clear(power_ups_working_byte_array)
 
-	for power_up_table_index = 1, #power_ups_table, 1 do
+	for power_up_table_index = 1, #power_ups_table do
 		local power_up = power_ups_table[power_up_table_index]
 
 		ByteArray.write_int32(power_ups_working_byte_array, NetworkLookup.deus_power_up_templates[power_up.name])
@@ -118,7 +118,7 @@ end
 local function encode_bought_power_ups(bought_power_ups)
 	local string_array = {}
 
-	for power_up_table_index = 1, #bought_power_ups, 1 do
+	for power_up_table_index = 1, #bought_power_ups do
 		local power_up = bought_power_ups[power_up_table_index]
 
 		table.insert(string_array, NetworkLookup.deus_power_up_templates[power_up])
@@ -131,7 +131,7 @@ local function decode_bought_power_ups(bought_power_ups_string)
 	local power_ups = {}
 	local power_up_data_strings = string.split(bought_power_ups_string, ",")
 
-	for power_up_data_strings_index = 1, #power_up_data_strings, 1 do
+	for power_up_data_strings_index = 1, #power_up_data_strings do
 		local power_up_data_string = power_up_data_strings[power_up_data_strings_index]
 		local power_up_name = NetworkLookup.deus_power_up_templates[tonumber(power_up_data_string)]
 		power_ups[#power_ups + 1] = power_up_name
@@ -143,7 +143,7 @@ end
 local function encode_bought_blessings(bought_blessings)
 	local string_array = {}
 
-	for blessing_table_index = 1, #bought_blessings, 1 do
+	for blessing_table_index = 1, #bought_blessings do
 		local blessing = bought_blessings[blessing_table_index]
 
 		table.insert(string_array, NetworkLookup.deus_blessings[blessing])
@@ -156,7 +156,7 @@ local function decode_bought_blessings(bought_blessings_string)
 	local blessings = {}
 	local blessing_data_strings = string.split(bought_blessings_string, ",")
 
-	for blessing_data_strings_index = 1, #blessing_data_strings, 1 do
+	for blessing_data_strings_index = 1, #blessing_data_strings do
 		local blessing_data_string = blessing_data_strings[blessing_data_strings_index]
 		local blessing_name = NetworkLookup.deus_blessings[tonumber(blessing_data_string)]
 		blessings[#blessings + 1] = blessing_name

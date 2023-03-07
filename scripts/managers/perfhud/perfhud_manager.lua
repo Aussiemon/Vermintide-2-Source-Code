@@ -113,5 +113,3 @@ end
 PerfhudManager.destroy = function (self, dt, t)
 	self:_close_all_huds()
 end
-
-return

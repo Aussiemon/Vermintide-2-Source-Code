@@ -14,8 +14,8 @@ FormationUtils = {
 		local arrangement = formation.arrangement
 		local k = 0
 
-		for j = 0, num_units_y - 1, 1 do
-			for i = 0, num_units_x - 1, 1 do
+		for j = 0, num_units_y - 1 do
+			for i = 0, num_units_x - 1 do
 				k = k + 1
 				arrangement[k] = {
 					i * spacing - half_width,
@@ -36,7 +36,7 @@ FormationUtils.make_encampment = function (encampment_template)
 	local army_size = 0
 	local size = nil
 
-	for i = 1, #encampment_template, 1 do
+	for i = 1, #encampment_template do
 		local formation_template = encampment_template[i]
 		local spacing = 1
 		encampment[i], size = FormationUtils.make_formation(formation_template, spacing)
@@ -76,7 +76,7 @@ FormationUtils.draw_encampment = function (encampment, pos, rot, drawer)
 
 	drawer:sphere(pos, 0.25, Color(0, 180, 0))
 
-	for i = 1, #encampment, 1 do
+	for i = 1, #encampment do
 		local formation = encampment[i]
 		local fc = FORMATION_COLORS[formation.formation_template.category]
 		local color = Color(fc[1], fc[2], fc[3])
@@ -91,11 +91,11 @@ FormationUtils.draw_formation = function (formation, pos, rot, color, drawer)
 	drawer:line(pos, pos + Vector3(0, 0, 3), color)
 
 	local dir = formation.formation_template.dir
-	local formation_rot = (dir and Quaternion.look(Vector3(dir[1], dir[2], 0))) or Quaternion.look(Vector3(0, 1, 0))
+	local formation_rot = dir and Quaternion.look(Vector3(dir[1], dir[2], 0)) or Quaternion.look(Vector3(0, 1, 0))
 	formation_rot = Quaternion.multiply(rot, formation_rot)
 	local arrangement = formation.arrangement
 
-	for i = 1, #arrangement, 1 do
+	for i = 1, #arrangement do
 		local arr = arrangement[i]
 		local spawn_pos = pos + Quaternion.rotate(formation_rot, Vector3(arr[1], arr[2], 0))
 
@@ -108,10 +108,10 @@ FormationUtils.spawn_formation = function (formation, pos, rot, breed_name, grou
 	local nav_world = conflict_director.nav_world
 	local arrangement = formation.arrangement
 	local dir = formation.formation_template.dir
-	local formation_rot = (dir and Quaternion.look(Vector3(dir[1], dir[2], 0))) or Quaternion.look(Vector3(0, 1, 0))
+	local formation_rot = dir and Quaternion.look(Vector3(dir[1], dir[2], 0)) or Quaternion.look(Vector3(0, 1, 0))
 	formation_rot = Quaternion.multiply(rot, formation_rot)
 
-	for i = 1, #arrangement, 1 do
+	for i = 1, #arrangement do
 		local arr = arrangement[i]
 		local spawn_pos = pos + Quaternion.rotate(formation_rot, Vector3(arr[1], arr[2], 0))
 		local on_mesh, z = GwNavQueries.triangle_from_position(nav_world, spawn_pos, 2, 2)
@@ -148,7 +148,7 @@ FormationUtils.spawn_encampment = function (encampment, pos, rot, unit_compositi
 	}
 	encampment.pos = Vector3Box(pos)
 
-	for i = 1, #encampment, 1 do
+	for i = 1, #encampment do
 		local formation = encampment[i]
 		local breed_name = unit_composition[formation.formation_template.category]
 		local fpos = pos + Quaternion.rotate(rot, Vector2(formation.x, formation.y))
@@ -156,5 +156,3 @@ FormationUtils.spawn_encampment = function (encampment, pos, rot, unit_compositi
 		FormationUtils.spawn_formation(formation, fpos, rot, breed_name, group_template, side_id)
 	end
 end
-
-return

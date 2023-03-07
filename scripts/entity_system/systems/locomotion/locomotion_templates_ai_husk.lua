@@ -3,8 +3,7 @@ local LocomotionTemplates = LocomotionTemplates
 local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
-if DETAILED_PROFILING then
-else
+if not DETAILED_PROFILING then
 	function detailed_profiler_start()
 		return
 	end
@@ -286,5 +285,3 @@ LocomotionTemplates.AiHuskLocomotionExtension.update_other_update_units = functi
 		Unit.animation_set_variable(unit, extension._move_speed_anim_var, math.max(speed, WALK_THRESHOLD))
 	end
 end
-
-return

@@ -91,6 +91,7 @@ SystemDialogManager._handle_dialogs = function (self)
 				end
 			end
 		elseif status == dialog_instance.RUNNING then
+			-- Nothing
 		elseif status == dialog_instance.FINISHED then
 			if data.callback then
 				data.callback(status)
@@ -124,7 +125,7 @@ SystemDialogManager._handle_virtual_keyboards = function (self)
 					local data = self._virtual_keyboard_results[index]
 
 					if data then
-						data.text = (result == PS4ImeDialog.END_STATUS_OK and text) or current_virtual_keyboard.text
+						data.text = result == PS4ImeDialog.END_STATUS_OK and text or current_virtual_keyboard.text
 						data.done = true
 						data.success = result == PS4ImeDialog.END_STATUS_OK
 					end
@@ -263,5 +264,3 @@ end
 SystemDialogManager.has_open_dialogs = function (self)
 	return #self._dialogs > 0
 end
-
-return

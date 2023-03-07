@@ -31,5 +31,3 @@ ProjectileImpactSystem.destroy = function (self)
 	self.network_event_delegate = nil
 	self.network_transmit = nil
 end
-
-return

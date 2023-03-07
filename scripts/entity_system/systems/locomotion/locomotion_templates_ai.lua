@@ -3,8 +3,7 @@ local LocomotionTemplates = LocomotionTemplates
 local detailed_profiler_start, detailed_profiler_stop = nil
 local DETAILED_PROFILING = true
 
-if DETAILED_PROFILING then
-else
+if not DETAILED_PROFILING then
 	function detailed_profiler_start()
 		return
 	end
@@ -286,7 +285,7 @@ LocomotionTemplates.AILocomotionExtension = {
 						local size = Vector3(radius, half_height, radius)
 						local rotation = Quaternion.look(Vector3(0, 0, 1))
 						local test_pos = final_position + Vector3(0, 0, -1)
-						local shape = (half_height - radius > 0 and "capsule") or "sphere"
+						local shape = half_height - radius > 0 and "capsule" or "sphere"
 						local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", test_pos, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
 						extension._is_falling = num_hit_actors == 0
 
@@ -370,5 +369,3 @@ LocomotionTemplates.AILocomotionExtension = {
 		end
 	end
 }
-
-return

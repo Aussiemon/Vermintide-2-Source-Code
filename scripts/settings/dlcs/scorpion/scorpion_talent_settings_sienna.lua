@@ -20,5 +20,3 @@ for name, data in pairs(TalentBuffTemplates.bright_wizard) do
 end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.bright_wizard, buff_tweak_data)
-
-return

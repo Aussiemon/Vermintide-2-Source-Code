@@ -16,7 +16,7 @@ CrawlSpaceExtension.init = function (self, extension_init_context, unit, extensi
 	self.enter_pos = Vector3Box(pos - look_dir + Vector3.down())
 	self.entrance_type = Unit.get_data(unit, "entrance_type")
 	self.id = Unit.get_data(unit, "crawl_space_id")
-	self.type = (self.id == 0 and "spawner") or "tunnel"
+	self.type = self.id == 0 and "spawner" or "tunnel"
 end
 
 CrawlSpaceExtension.extensions_ready = function (self)
@@ -39,5 +39,3 @@ CrawlSpaceExtension.destroy = function (self)
 	self.unit = nil
 	self.partner_unit = nil
 end
-
-return

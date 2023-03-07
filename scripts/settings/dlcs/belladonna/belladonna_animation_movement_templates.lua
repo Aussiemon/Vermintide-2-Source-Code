@@ -26,7 +26,7 @@ local function lean_towards_position(unit, dt, data, target_position, lerp_speed
 	animation_set_variable(unit, animation_variable_lean, lean)
 
 	data.current_lean = lean
-	data.current_lean_direction = (leaning_left and "left") or "right"
+	data.current_lean_direction = leaning_left and "left" or "right"
 	data.current_lean_value = lean
 end
 
@@ -38,7 +38,7 @@ local function lean_downwards_over_time(unit, dt, data)
 		data.lean_variable = data.current_lean_value
 		local compare_value = data.current_lean_value
 
-		if (data.current_lean_direction == "left" and compare_value >= -0.1) or (data.current_lean_direction == "right" and compare_value <= 0.1) then
+		if data.current_lean_direction == "left" and compare_value >= -0.1 or data.current_lean_direction == "right" and compare_value <= 0.1 then
 			data.current_lean_value = nil
 			data.current_lean_direction = nil
 			data.lean_variable = data.lean_downwards_min
@@ -251,5 +251,3 @@ AnimationMovementTemplates.beastmen_minotaur = {
 		end
 	}
 }
-
-return

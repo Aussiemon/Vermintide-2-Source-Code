@@ -8,7 +8,7 @@ return {
 			end
 		end,
 		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
+			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or script_data.enable_reinforcement_ui_remote_sound and "hud_info"
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_saved", image_2
@@ -23,7 +23,7 @@ return {
 			end
 		end,
 		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
+			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or script_data.enable_reinforcement_ui_remote_sound and "hud_info"
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_revive", image_2
@@ -38,7 +38,7 @@ return {
 			end
 		end,
 		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
+			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or script_data.enable_reinforcement_ui_remote_sound and "hud_info"
 		end,
 		icon_function = function (image_1, image_2)
 			return image_1, "reinforcement_assisted_respawn", image_2
@@ -106,7 +106,7 @@ return {
 	},
 	collected_isha_reward = {
 		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
+			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or script_data.enable_reinforcement_ui_remote_sound and "hud_info"
 		end,
 		icon_function = function (image_1, image_2)
 			return nil, "killfeed_icon_isha", image_2
@@ -114,7 +114,7 @@ return {
 	},
 	collected_grimnir_reward = {
 		sound_function = function ()
-			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or (script_data.enable_reinforcement_ui_remote_sound and "hud_info")
+			return script_data.reinforcement_ui_local_sound or "hud_achievement_unlock_02" or script_data.enable_reinforcement_ui_remote_sound and "hud_info"
 		end,
 		icon_function = function (image_1, image_2)
 			return nil, "killfeed_icon_grimnir", image_2

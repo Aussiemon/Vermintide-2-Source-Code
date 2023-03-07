@@ -14,5 +14,3 @@ DialogueLookup[DialogueLookup_n + 5] = "pes_bell_intro_b"
 DialogueLookup[DialogueLookup_n + 6] = "pes_bell_intro_c"
 DialogueLookup[DialogueLookup_n + 7] = "pes_level_bell_horde_01"
 DialogueLookup_n = DialogueLookup_n + 7
-
-return

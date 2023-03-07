@@ -192,5 +192,3 @@ end
 PassiveAbilityEngineer.cb_game_session_disconnect = function (self)
 	self._game_object_id = nil
 end
-
-return

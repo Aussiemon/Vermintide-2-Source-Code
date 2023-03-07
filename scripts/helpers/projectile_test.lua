@@ -55,9 +55,9 @@ ProjectileTest.simulate_projectiles = function (physics_world, dt)
 
 	local destroy = false
 
-	for i = 1, #projectiles, 1 do
+	for i = 1, #projectiles do
 		local p = projectiles[i]
-		local color = (p.type == "known_angle" and Color(180, 180, 0)) or Color(80, 180, 70)
+		local color = p.type == "known_angle" and Color(180, 180, 0) or Color(80, 180, 70)
 		local target_pos = p.p2:unbox()
 		local last_pos = p.last_pos:unbox()
 		local pos = WeaponHelper.draw_ball_at_time(physics_world, p.p1:unbox(), p.vec_flat:unbox(), -p.gravity, p.x_vel_0, p.y_vel_0, p.t, color)
@@ -146,7 +146,7 @@ ProjectileTest.run_projectile_test = function (world, t, dt)
 end
 
 ProjectileTest.trajectory_test = function (set_speed, set_angle)
-	for i = 20, 35, 1 do
+	for i = 20, 35 do
 		local p1 = Vector3(0, 0, 0)
 		local p2 = Vector3(i, 0, 0)
 		local distance_vector = p2 - p1
@@ -198,5 +198,3 @@ ProjectileTest.draw_projectile_trajectory = function (p1, p2, gravity, projectil
 		end
 	end
 end
-
-return

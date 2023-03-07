@@ -203,7 +203,7 @@ MatchmakingStateJoinGame._handle_popup_result = function (self, result, t)
 
 		local player = Managers.player:local_player(1)
 		local reason = result.reason or "timed_out"
-		local time_taken = (self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t) or 0
+		local time_taken = self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t or 0
 		local is_bad_connection = false
 
 		self._matchmaking_manager:add_broken_lobby_client(self.lobby_client, t, is_bad_connection)
@@ -232,7 +232,7 @@ end
 
 MatchmakingStateJoinGame.get_transition = function (self)
 	if self._join_lobby_data and self._next_transition_state then
-		local join_method = self._join_lobby_data.join_method or (self.search_config and self.search_config.join_method)
+		local join_method = self._join_lobby_data.join_method or self.search_config and self.search_config.join_method
 		local start_lobby_data = {
 			lobby_client = self.lobby_client,
 			join_method = join_method
@@ -322,7 +322,7 @@ MatchmakingStateJoinGame.rpc_matchmaking_request_profile_reply = function (self,
 	end
 
 	local player = Managers.player:local_player(1)
-	local time_taken = (self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t) or 0
+	local time_taken = self._selected_hero_at_t and self._selected_hero_at_t - self._hero_popup_at_t or 0
 end
 
 MatchmakingStateJoinGame._current_hero = function (self)
@@ -363,5 +363,3 @@ MatchmakingStateJoinGame._set_state_to_start_lobby = function (self)
 	self._matchmaking_manager.debug.text = "starting_game"
 	self._next_transition_state = "start_lobby"
 end
-
-return

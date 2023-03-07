@@ -709,7 +709,7 @@ local animation_definitions = {
 		{
 			name = "fade_in",
 			start_progress = 0,
-			end_progress = (IS_WINDOWS and 0.05) or 0.5,
+			end_progress = IS_WINDOWS and 0.05 or 0.5,
 			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
 				params.render_settings.alpha_multiplier = 0
 			end,
@@ -1062,9 +1062,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 						local window_height = element_settings.window_height
 						local offset_y = -element_settings.spacing - content.scrollbar_progress * (window_height + style.texture_size[2])
 						style.offset[2] = offset_y
-						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
-						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
-						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
+						style.offset[1] = Math.is_valid(style.offset[1]) and style.offset[1] or 0
+						style.offset[2] = Math.is_valid(style.offset[2]) and style.offset[2] or 0
+						style.offset[3] = Math.is_valid(style.offset[3]) and style.offset[3] or 0
 					end
 				},
 				{
@@ -1077,9 +1077,9 @@ local function create_lobby_browser_frame(scenegraph_id)
 						local window_height = element_settings.window_height
 						local offset_y = -element_settings.spacing - content.scrollbar_progress * (window_height + style.texture_size[2])
 						style.offset[2] = offset_y
-						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
-						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
-						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
+						style.offset[1] = Math.is_valid(style.offset[1]) and style.offset[1] or 0
+						style.offset[2] = Math.is_valid(style.offset[2]) and style.offset[2] or 0
+						style.offset[3] = Math.is_valid(style.offset[3]) and style.offset[3] or 0
 					end
 				}
 			}
@@ -1500,11 +1500,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 1) or not gamepad_active
+							return content.filter_selection and content.filter_index == 1 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
+						if content.filter_selection and content.filter_index == 1 or content.filter_hotspot_1.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1520,11 +1520,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 1) or not gamepad_active
+							return content.filter_selection and content.filter_index == 1 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
+						if content.filter_selection and content.filter_index == 1 or content.filter_hotspot_1.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1540,11 +1540,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 2) or not gamepad_active
+							return content.filter_selection and content.filter_index == 2 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
+						if content.filter_selection and content.filter_index == 2 or content.filter_hotspot_2.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1560,11 +1560,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 2) or not gamepad_active
+							return content.filter_selection and content.filter_index == 2 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
+						if content.filter_selection and content.filter_index == 2 or content.filter_hotspot_2.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1580,11 +1580,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 3) or not gamepad_active
+							return content.filter_selection and content.filter_index == 3 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
+						if content.filter_selection and content.filter_index == 3 or content.filter_hotspot_3.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1600,11 +1600,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 3) or not gamepad_active
+							return content.filter_selection and content.filter_index == 3 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
+						if content.filter_selection and content.filter_index == 3 or content.filter_hotspot_3.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1620,11 +1620,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 4) or not gamepad_active
+							return content.filter_selection and content.filter_index == 4 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
+						if content.filter_selection and content.filter_index == 4 or content.filter_hotspot_4.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1640,11 +1640,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 4) or not gamepad_active
+							return content.filter_selection and content.filter_index == 4 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
+						if content.filter_selection and content.filter_index == 4 or content.filter_hotspot_4.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1660,11 +1660,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 5) or not gamepad_active
+							return content.filter_selection and content.filter_index == 5 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 5) or content.filter_hotspot_5.is_hover then
+						if content.filter_selection and content.filter_index == 5 or content.filter_hotspot_5.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1680,11 +1680,11 @@ local function create_filter_frame(scenegraph_id)
 						else
 							local gamepad_active = Managers.input:is_device_active("gamepad")
 
-							return (content.filter_selection and content.filter_index == 5) or not gamepad_active
+							return content.filter_selection and content.filter_index == 5 or not gamepad_active
 						end
 					end,
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 5) or content.filter_hotspot_5.is_hover then
+						if content.filter_selection and content.filter_index == 5 or content.filter_hotspot_5.is_hover then
 							style.color = style.select_color
 						else
 							style.color = style.base_color
@@ -1700,7 +1700,7 @@ local function create_filter_frame(scenegraph_id)
 					style_id = "background_1",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
+						if content.filter_selection and content.filter_index == 1 or content.filter_hotspot_1.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1716,7 +1716,7 @@ local function create_filter_frame(scenegraph_id)
 					style_id = "background_2",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
+						if content.filter_selection and content.filter_index == 2 or content.filter_hotspot_2.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1732,7 +1732,7 @@ local function create_filter_frame(scenegraph_id)
 					style_id = "background_3",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
+						if content.filter_selection and content.filter_index == 3 or content.filter_hotspot_3.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1748,7 +1748,7 @@ local function create_filter_frame(scenegraph_id)
 					style_id = "background_4",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
+						if content.filter_selection and content.filter_index == 4 or content.filter_hotspot_4.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1764,7 +1764,7 @@ local function create_filter_frame(scenegraph_id)
 					style_id = "background_5",
 					pass_type = "rect",
 					content_change_function = function (content, style)
-						if (content.filter_selection and content.filter_index == 5) or content.filter_hotspot_5.is_hover then
+						if content.filter_selection and content.filter_index == 5 or content.filter_hotspot_5.is_hover then
 							style.color = style.selection_color
 						else
 							style.color = style.base_color
@@ -1803,7 +1803,7 @@ local function create_filter_frame(scenegraph_id)
 					content_change_function = function (content, style)
 						if content.filter_hotspot_1.disable_button then
 							style.text_color = style.disabled_color
-						elseif (content.filter_selection and content.filter_index == 1) or content.filter_hotspot_1.is_hover then
+						elseif content.filter_selection and content.filter_index == 1 or content.filter_hotspot_1.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1817,7 +1817,7 @@ local function create_filter_frame(scenegraph_id)
 					content_change_function = function (content, style)
 						if content.filter_hotspot_2.disable_button then
 							style.text_color = style.disabled_color
-						elseif (content.filter_selection and content.filter_index == 2) or content.filter_hotspot_2.is_hover then
+						elseif content.filter_selection and content.filter_index == 2 or content.filter_hotspot_2.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1831,7 +1831,7 @@ local function create_filter_frame(scenegraph_id)
 					content_change_function = function (content, style)
 						if content.filter_hotspot_3.disable_button then
 							style.text_color = style.disabled_color
-						elseif (content.filter_selection and content.filter_index == 3) or content.filter_hotspot_3.is_hover then
+						elseif content.filter_selection and content.filter_index == 3 or content.filter_hotspot_3.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1845,7 +1845,7 @@ local function create_filter_frame(scenegraph_id)
 					content_change_function = function (content, style)
 						if content.filter_hotspot_4.disable_button then
 							style.text_color = style.disabled_color
-						elseif (content.filter_selection and content.filter_index == 4) or content.filter_hotspot_4.is_hover then
+						elseif content.filter_selection and content.filter_index == 4 or content.filter_hotspot_4.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1859,7 +1859,7 @@ local function create_filter_frame(scenegraph_id)
 					content_change_function = function (content, style)
 						if content.filter_hotspot_5.disable_button then
 							style.text_color = style.disabled_color
-						elseif (content.filter_selection and content.filter_index == 5) or content.filter_hotspot_5.is_hover then
+						elseif content.filter_selection and content.filter_index == 5 or content.filter_hotspot_5.is_hover then
 							style.text_color = style.selection_color
 						else
 							style.text_color = style.base_color
@@ -1945,7 +1945,7 @@ local function create_filter_frame(scenegraph_id)
 				base_color = Colors.get_color_table_with_alpha("font_default", 128),
 				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(-25 + label_distance * 1) - 7.5,
+					-25 + label_distance * 1 - 7.5,
 					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
@@ -1989,7 +1989,7 @@ local function create_filter_frame(scenegraph_id)
 				base_color = Colors.get_color_table_with_alpha("font_default", 128),
 				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(-25 + label_distance * 2) - 7.5,
+					-25 + label_distance * 2 - 7.5,
 					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
@@ -2033,7 +2033,7 @@ local function create_filter_frame(scenegraph_id)
 				base_color = Colors.get_color_table_with_alpha("font_default", 128),
 				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(-25 + label_distance * 3) - 7.5,
+					-25 + label_distance * 3 - 7.5,
 					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
@@ -2077,7 +2077,7 @@ local function create_filter_frame(scenegraph_id)
 				base_color = Colors.get_color_table_with_alpha("font_default", 128),
 				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(-25 + label_distance * 4) - 7.5,
+					-25 + label_distance * 4 - 7.5,
 					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
@@ -2121,7 +2121,7 @@ local function create_filter_frame(scenegraph_id)
 				base_color = Colors.get_color_table_with_alpha("font_default", 128),
 				color = Colors.get_color_table_with_alpha("font_default", 128),
 				offset = {
-					(-25 + label_distance * 5) - 7.5,
+					-25 + label_distance * 5 - 7.5,
 					0 - element_settings.filter_height * 1 - element_settings.spacing * 2 - 15,
 					1
 				}
@@ -2597,7 +2597,7 @@ local function create_level_filter_scroller_func(num_elements)
 	local max_length = element_settings.window_height + element_settings.filter_height + element_settings.spacing
 	local max_entries = math.ceil(max_length / (element_settings.filter_height + element_settings.spacing) - 1)
 	local visible = max_entries < num_elements
-	local size_y = (visible and math.max(max_length / (num_elements / max_entries), 30)) or 0
+	local size_y = visible and math.max(max_length / (num_elements / max_entries), 30) or 0
 	local border_length = math.clamp(num_elements * (element_settings.filter_height + element_settings.spacing), 0, max_length)
 
 	return {
@@ -2625,9 +2625,9 @@ local function create_level_filter_scroller_func(num_elements)
 						local offset_y = start_pos - content.parent.scrollbar_progress * scrollbar_length
 						local offset_y = start_pos - element_settings.spacing - content.parent.scrollbar_progress * (scrollbar_length - style.area_size[2] - start_pos)
 						style.offset[2] = offset_y
-						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
-						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
-						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
+						style.offset[1] = Math.is_valid(style.offset[1]) and style.offset[1] or 0
+						style.offset[2] = Math.is_valid(style.offset[2]) and style.offset[2] or 0
+						style.offset[3] = Math.is_valid(style.offset[3]) and style.offset[3] or 0
 					end
 				},
 				{
@@ -2647,10 +2647,10 @@ local function create_level_filter_scroller_func(num_elements)
 						local offset_y = start_pos - content.scrollbar_progress * scrollbar_length
 						local offset_y = start_pos - element_settings.spacing - content.scrollbar_progress * (scrollbar_length - style.texture_size[2] - start_pos)
 						style.offset[2] = offset_y
-						style.offset[1] = (Math.is_valid(style.offset[1]) and style.offset[1]) or 0
-						style.offset[2] = (Math.is_valid(style.offset[2]) and style.offset[2]) or 0
-						style.offset[3] = (Math.is_valid(style.offset[3]) and style.offset[3]) or 0
-						style.color = (content.scroller_hotspot.is_hover and style.highlight_color) or style.default_color
+						style.offset[1] = Math.is_valid(style.offset[1]) and style.offset[1] or 0
+						style.offset[2] = Math.is_valid(style.offset[2]) and style.offset[2] or 0
+						style.offset[3] = Math.is_valid(style.offset[3]) and style.offset[3] or 0
+						style.color = content.scroller_hotspot.is_hover and style.highlight_color or style.default_color
 					end
 				}
 			}
@@ -3456,11 +3456,11 @@ local function create_distance_filter_entry_func(distance, offset_y)
 end
 
 local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinable, completed_difficulty_index)
-	local host_name = (IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host)) or lobby_data.name or "UNKNOWN"
+	local host_name = IS_WINDOWS and (lobby_data.unique_server_name or lobby_data.host) or lobby_data.name or "UNKNOWN"
 	local num_players = lobby_data.num_players or 0
 	local country_code = lobby_data.country_code
 	local matchmaking_type_id = lobby_data.matchmaking_type
-	local matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
+	local matchmaking_type = IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 	local mechanism = lobby_data.mechanism
 	local difficulty = lobby_data.difficulty or "UNKNOWN"
 	local difficulty_settings = DifficultySettings[difficulty]
@@ -3484,7 +3484,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 			local level_settings = LevelSettings[selected_mission_id]
 			selected_level_name = Localize(level_settings.display_name or "UNKNOWN")
 		elseif lobby_data.quick_game == "true" then
-			selected_level_name = (weave_template and Localize(weave_template.display_name)) or Localize("start_game_window_weave_quickplay_title")
+			selected_level_name = weave_template and Localize(weave_template.display_name) or Localize("start_game_window_weave_quickplay_title")
 		else
 			selected_level_name = weave_index .. ". " .. Localize(weave_template.display_name)
 		end
@@ -3517,7 +3517,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 		current_level_name = Localize(level_settings.display_name or "UNKNOWN")
 	end
 
-	local country_code = (lobby_data.country_code and string.lower(lobby_data.country_code)) or Localize("lb_unknown")
+	local country_code = lobby_data.country_code and string.lower(lobby_data.country_code) or Localize("lb_unknown")
 	local flag_size = {
 		30,
 		50
@@ -3634,7 +3634,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "selected_level_name",
 					content_check_function = function (content, style)
-						return content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)
+						return content.joinable or not content.selected and not content.lobby_hotspot.is_hover
 					end
 				},
 				{
@@ -3675,7 +3675,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "no_flag_id",
 					content_check_function = function (content, style)
-						return (content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)) and not content.flag_id
+						return (content.joinable or not content.selected and not content.lobby_hotspot.is_hover) and not content.flag_id
 					end
 				},
 				{
@@ -3711,7 +3711,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "difficulty_id",
 					content_check_function = function (content, style)
-						return content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)
+						return content.joinable or not content.selected and not content.lobby_hotspot.is_hover
 					end
 				},
 				{
@@ -3719,7 +3719,7 @@ local function create_lobby_entry_func(offset_y, lobby_data, flag_index, joinabl
 					pass_type = "text",
 					text_id = "num_players_id",
 					content_check_function = function (content, style)
-						return content.joinable or (not content.selected and not content.lobby_hotspot.is_hover)
+						return content.joinable or not content.selected and not content.lobby_hotspot.is_hover
 					end
 				}
 			}
@@ -4263,7 +4263,7 @@ local function create_unavailable_lobby_entry_func(offset_y)
 					style_id = "background",
 					texture_id = "background_id",
 					content_check_function = function (content, style)
-						return (not content.selected and not content.lobby_hotspot.is_hover) or Managers.matchmaking:is_game_matchmaking()
+						return not content.selected and not content.lobby_hotspot.is_hover or Managers.matchmaking:is_game_matchmaking()
 					end
 				},
 				{
@@ -4675,7 +4675,7 @@ local base_widget_definition = {
 }
 local hero_icons = {}
 
-for i = 1, #ProfilePriority, 1 do
+for i = 1, #ProfilePriority do
 	local profile_index = ProfilePriority[i]
 	local profile = SPProfiles[profile_index]
 	hero_icons[#hero_icons + 1] = profile.ui_portrait

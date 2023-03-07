@@ -71,7 +71,7 @@ WeaveSocketExtension.deactivate = function (self)
 
 	local position = Unit.local_position(self._unit, 0)
 
-	for i = 1, 15, 1 do
+	for i = 1, 15 do
 		local x_offset = math.random(-10, 10) / 10
 		local y_offset = math.random(-10, 10) / 10
 		local z_offset = math.random(-10, 10) / 10
@@ -145,5 +145,3 @@ end
 WeaveSocketExtension.get_score = function (self)
 	return self._score
 end
-
-return

@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/helpers/debug_helper")
 require("scripts/settings/backend_settings")
 
@@ -9,8 +7,8 @@ local argv = {
 }
 GameSettingsDevelopment.trunk_path = GameSettingsDevelopment.trunk_path or false
 GameSettingsDevelopment.quicklaunch_params = GameSettingsDevelopment.quicklaunch_params or {}
-GameSettingsDevelopment.quicklaunch_params.level_key = (LEVEL_EDITOR_TEST and "editor_level") or "castle_01"
-GameSettingsDevelopment.start_state = (LEVEL_EDITOR_TEST and "game") or (DEDICATED_SERVER and "dedicated_server") or "menu"
+GameSettingsDevelopment.quicklaunch_params.level_key = LEVEL_EDITOR_TEST and "editor_level" or "castle_01"
+GameSettingsDevelopment.start_state = LEVEL_EDITOR_TEST and "game" or DEDICATED_SERVER and "dedicated_server" or "menu"
 GameSettingsDevelopment.skip_start_screen = true
 GameSettingsDevelopment.disable_shadow_lights_system = true
 GameSettingsDevelopment.use_baked_enemy_meshes = false
@@ -20,9 +18,9 @@ GameSettingsDevelopment.lobby_browser_enabled = true
 GameSettingsDevelopment.disabled_interactions = {}
 GameSettingsDevelopment.store_nags = false
 GameSettingsDevelopment.store_nags = true
-GameSettingsDevelopment.use_global_chat = (table.find(argv, "-use-global-chat") and true) or false
+GameSettingsDevelopment.use_global_chat = table.find(argv, "-use-global-chat") and true or false
 GameSettingsDevelopment.use_new_tab_menu = true
-local network_timeout = (Development.parameter("network_timeout_really_long") and 10000) or 60
+local network_timeout = Development.parameter("network_timeout_really_long") and 10000 or 60
 GameSettingsDevelopment.network_timeout = Development.parameter("network_timeout") or network_timeout
 GameSettingsDevelopment.network_silence_warning_delay = 3
 GameSettingsDevelopment.show_version_info = true
@@ -36,7 +34,7 @@ GameSettingsDevelopment.allow_retry_weave = false
 GameSettingsDevelopment.disable_carousel = Development.parameter("disable_carousel") or not DLCSettings.carousel
 GameSettingsDevelopment.use_store_unload_list = true
 local script_data = script_data
-script_data.debug_behaviour_trees = (script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees) or false
+script_data.debug_behaviour_trees = script_data.debug_behaviour_trees ~= nil and script_data.debug_behaviour_trees or false
 
 fassert(not Development.parameter("use_offline_backend") and not Development.parameter("use_local_backend"), "Unable to use local backend with DEBUG stripped. Remove --use-local-backend or --use-offline-backend")
 
@@ -129,7 +127,7 @@ if settings.steam or Development.parameter("force_steam") then
 		Application.quit_with_message("Vermintide 2. You need to have the Steam Client running to play the game.")
 	end
 elseif BUILD == "dev" or BUILD == "debug" then
-	GameSettingsDevelopment.network_mode = (LEVEL_EDITOR_TEST and "lan") or (Development.parameter("force_steam") and "steam") or "lan"
+	GameSettingsDevelopment.network_mode = LEVEL_EDITOR_TEST and "lan" or Development.parameter("force_steam") and "steam" or "lan"
 	GameSettingsDevelopment.show_fps = Development.parameter("show_fps") == nil or Development.parameter("show_fps")
 	script_data.unlock_all_levels = Development.parameter("unlock-all-levels") or script_data.unlock_all_levels
 elseif not script_data.honduras_demo and not Development.parameter("attract_mode") and not DEDICATED_SERVER then
@@ -384,7 +382,7 @@ local rpcs_logged = false
 GameSettingsDevelopment.set_ignored_rpc_logs = function ()
 	local ignored_rpc_logs = GameSettingsDevelopment.ignored_rpc_logs
 
-	for i = 1, #ignored_rpc_logs, 1 do
+	for i = 1, #ignored_rpc_logs do
 		local rpc_name = ignored_rpc_logs[i]
 
 		Network.ignore_rpc_log(rpc_name)
@@ -464,5 +462,3 @@ DefaultDisplayModes = {
 		0
 	}
 }
-
-return

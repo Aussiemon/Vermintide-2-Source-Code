@@ -307,7 +307,7 @@ HeroWindowBackgroundConsole._update_object_sets = function (self, layout_name)
 	end
 
 	for object_set_name, object_set_units in pairs(self._object_sets) do
-		local enable_visibility = (object_set_to_enable and object_set_to_enable[object_set_name]) or false
+		local enable_visibility = object_set_to_enable and object_set_to_enable[object_set_name] or false
 
 		self.world_previewer:show_level_units(object_set_units, enable_visibility)
 	end
@@ -593,6 +593,7 @@ HeroWindowBackgroundConsole._handle_input = function (self, input_service, dt, t
 	local detailed_widget = widgets_by_name.detailed
 
 	if self._draw_character then
+		-- Nothing
 	end
 end
 
@@ -764,7 +765,7 @@ HeroWindowBackgroundConsole._populate_statistics = function (self, layout)
 	local item_styles = style.item_styles
 	local num_entries = #layout
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local entry = layout[i]
 		local title = ""
 		local name = ""
@@ -816,5 +817,3 @@ HeroWindowBackgroundConsole._setup_tab_scrollbar = function (self, widget)
 		scrollbar_content.scroll_value = 1
 	end
 end
-
-return

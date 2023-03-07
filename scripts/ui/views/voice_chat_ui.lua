@@ -357,7 +357,7 @@ VoiceChatUI.update = function (self, dt)
 		local was_talking = talked_last_frame[peer_id]
 		talking_this_frame[peer_id] = talking
 
-		if (not was_talking and talking) or (was_talking and not talking) then
+		if not was_talking and talking or was_talking and not talking then
 			dirty = true
 		end
 	end
@@ -385,7 +385,7 @@ VoiceChatUI.update = function (self, dt)
 				end
 
 				local name = self._cached_names[peer_id] or tostring(peer_id)
-				local cropped_name = (PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text)) or name
+				local cropped_name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self.ui_top_renderer, name, 250, name_widget.style.text) or name
 				name_widget.content.text = cropped_name
 				name_widget.content.visible = true
 				name_widget.element.dirty = true
@@ -393,7 +393,7 @@ VoiceChatUI.update = function (self, dt)
 			end
 		end
 
-		for i = index, NUM_SLOTS, 1 do
+		for i = index, NUM_SLOTS do
 			local icon_widget = self.icon_widgets[index]
 			icon_widget.content.visible = false
 			icon_widget.element.dirty = true
@@ -425,7 +425,7 @@ VoiceChatUI.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt)
 
-	for i = 1, NUM_SLOTS, 1 do
+	for i = 1, NUM_SLOTS do
 		UIRenderer.draw_widget(ui_top_renderer, self.icon_widgets[i])
 		UIRenderer.draw_widget(ui_top_renderer, self.bg_widgets[i])
 		UIRenderer.draw_widget(ui_top_renderer, self.name_widgets[i])
@@ -435,5 +435,3 @@ VoiceChatUI.draw = function (self, dt)
 
 	self._dirty = false
 end
-
-return

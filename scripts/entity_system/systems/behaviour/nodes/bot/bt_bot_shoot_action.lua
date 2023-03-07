@@ -48,7 +48,7 @@ local function get_disengage_pos(nav_world, start_pos, disengage_vector, move_di
 	local subdivisions_per_side = 3
 	local angle_inc = math.pi / 2 / subdivisions_per_side
 
-	for i = 1, subdivisions_per_side, 1 do
+	for i = 1, subdivisions_per_side do
 		local angle = angle_inc * i
 		success, pos = check_angle(nav_world, start_pos, disengage_direction, angle, move_distance)
 
@@ -118,9 +118,9 @@ BTBotShootAction.enter = function (self, unit, blackboard, t)
 		next_evaluate_without_firing = t + action_data.evaluation_duration_without_firing,
 		minimum_charge_time = attack_meta_data.minimum_charge_time,
 		reevaluate_obstruction_time = t,
-		charge_range_squared = (attack_meta_data.charge_above_range and attack_meta_data.charge_above_range^2) or nil,
-		max_range_squared = (attack_meta_data.max_range and attack_meta_data.max_range^2) or math.huge,
-		max_range_squared_charged = (attack_meta_data.max_range_charged and attack_meta_data.max_range_charged^2) or (attack_meta_data.max_range and attack_meta_data.max_range^2) or math.huge,
+		charge_range_squared = attack_meta_data.charge_above_range and attack_meta_data.charge_above_range^2 or nil,
+		max_range_squared = attack_meta_data.max_range and attack_meta_data.max_range^2 or math.huge,
+		max_range_squared_charged = attack_meta_data.max_range_charged and attack_meta_data.max_range_charged^2 or attack_meta_data.max_range and attack_meta_data.max_range^2 or math.huge,
 		charge_when_obstructed = attack_meta_data.charge_when_obstructed,
 		charge_when_outside_max_range = attack_meta_data.charge_when_outside_max_range,
 		charge_when_outside_max_range_charged = attack_meta_data.charge_when_outside_max_range_charged == nil or attack_meta_data.charge_when_outside_max_range_charged,
@@ -150,7 +150,7 @@ end
 BTBotShootAction._update_collision_filter = function (self, target_unit, shoot_blackboard, priority_target_enemy, target_ally_unit, target_ally_needs_aid, need_type)
 	local attack_meta_data = shoot_blackboard.attack_meta_data
 	local target_bb = BLACKBOARDS[target_unit]
-	local has_important_target = target_unit == priority_target_enemy or (target_ally_needs_aid and (need_type == "hook" or need_type == "knocked_down" or need_type == "ledge") and target_bb and target_bb.target_unit == target_ally_unit)
+	local has_important_target = target_unit == priority_target_enemy or target_ally_needs_aid and (need_type == "hook" or need_type == "knocked_down" or need_type == "ledge") and target_bb and target_bb.target_unit == target_ally_unit
 
 	if has_important_target then
 		shoot_blackboard.collision_filter = "filter_bot_ranged_line_of_sight_no_allies_no_enemies"
@@ -160,7 +160,7 @@ BTBotShootAction._update_collision_filter = function (self, target_unit, shoot_b
 	end
 
 	local ignore_enemies_for_obstruction = attack_meta_data.ignore_enemies_for_obstruction
-	local ignore_enemies_for_obstruction_charged = (attack_meta_data.ignore_enemies_for_obstruction_charged == nil and ignore_enemies_for_obstruction) or attack_meta_data.ignore_enemies_for_obstruction_charged
+	local ignore_enemies_for_obstruction_charged = attack_meta_data.ignore_enemies_for_obstruction_charged == nil and ignore_enemies_for_obstruction or attack_meta_data.ignore_enemies_for_obstruction_charged
 	local ff_ranged = Managers.state.difficulty:get_difficulty_settings().friendly_fire_ranged
 	local ignore_hitting_allies, ignore_hitting_allies_charged = nil
 
@@ -172,8 +172,8 @@ BTBotShootAction._update_collision_filter = function (self, target_unit, shoot_b
 		ignore_hitting_allies_charged = true
 	end
 
-	shoot_blackboard.collision_filter = (ignore_enemies_for_obstruction and ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
-	shoot_blackboard.collision_filter_charged = (ignore_enemies_for_obstruction_charged and ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies_no_enemies") or (ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies") or (ignore_enemies_for_obstruction_charged and "filter_bot_ranged_line_of_sight_no_enemies") or "filter_bot_ranged_line_of_sight"
+	shoot_blackboard.collision_filter = ignore_enemies_for_obstruction and ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies_no_enemies" or ignore_hitting_allies and "filter_bot_ranged_line_of_sight_no_allies" or ignore_enemies_for_obstruction and "filter_bot_ranged_line_of_sight_no_enemies" or "filter_bot_ranged_line_of_sight"
+	shoot_blackboard.collision_filter_charged = ignore_enemies_for_obstruction_charged and ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies_no_enemies" or ignore_hitting_allies_charged and "filter_bot_ranged_line_of_sight_no_allies" or ignore_enemies_for_obstruction_charged and "filter_bot_ranged_line_of_sight_no_enemies" or "filter_bot_ranged_line_of_sight"
 end
 
 BTBotShootAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -198,7 +198,7 @@ BTBotShootAction.run = function (self, unit, blackboard, t, dt)
 	if done then
 		return "done", "evaluate"
 	else
-		return "running", (evaluate and "evaluate") or nil
+		return "running", evaluate and "evaluate" or nil
 	end
 end
 
@@ -216,7 +216,7 @@ end
 local function draw_estimated_arc(max_steps, max_time, position, velocity, gravity)
 	local time_step = max_time / max_steps
 
-	for i = 1, max_steps, 1 do
+	for i = 1, max_steps do
 		local new_position = position + velocity * time_step
 		local delta = new_position - position
 
@@ -228,10 +228,10 @@ local function draw_estimated_arc(max_steps, max_time, position, velocity, gravi
 end
 
 BTBotShootAction._wanted_aim_rotation = function (self, self_unit, target_unit, current_position, projectile_info, projectile_speed, aim_at_node)
-	local target_node = (Unit.has_node(target_unit, aim_at_node) and Unit.node(target_unit, aim_at_node)) or 0
+	local target_node = Unit.has_node(target_unit, aim_at_node) and Unit.node(target_unit, aim_at_node) or 0
 	local target_pos = Unit.world_position(target_unit, target_node)
 	local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
-	local target_current_velocity = (target_locomotion_extension and target_locomotion_extension:current_velocity()) or Vector3.zero()
+	local target_current_velocity = target_locomotion_extension and target_locomotion_extension:current_velocity() or Vector3.zero()
 	local target_rotation, target_position = nil
 	local prediction_function = projectile_info and ProjectileTemplates.trajectory_templates[projectile_info.trajectory_template_name].prediction_function
 
@@ -263,11 +263,11 @@ BTBotShootAction._aim_position = function (self, dt, t, self_unit, current_posit
 	if shoot_blackboard.charging_shot then
 		projectile_info = shoot_blackboard.projectile_info_charged
 		projectile_speed = shoot_blackboard.projectile_speed_charged
-		aim_at_node = (shoot_blackboard.target_breed and shoot_blackboard.target_breed.override_bot_target_node) or shoot_blackboard.aim_at_node_charged
+		aim_at_node = shoot_blackboard.target_breed and shoot_blackboard.target_breed.override_bot_target_node or shoot_blackboard.aim_at_node_charged
 	else
 		projectile_info = shoot_blackboard.projectile_info
 		projectile_speed = shoot_blackboard.projectile_speed
-		aim_at_node = (shoot_blackboard.target_breed and shoot_blackboard.target_breed.override_bot_target_node) or shoot_blackboard.aim_at_node
+		aim_at_node = shoot_blackboard.target_breed and shoot_blackboard.target_breed.override_bot_target_node or shoot_blackboard.aim_at_node
 	end
 
 	local wanted_rotation, aim_position = self:_wanted_aim_rotation(self_unit, target_unit, current_position, projectile_info, projectile_speed, aim_at_node)
@@ -339,8 +339,8 @@ BTBotShootAction._may_attack = function (self, unit, enemy_unit, shoot_blackboar
 	end
 
 	local charging = shoot_blackboard.charging_shot
-	local sufficiently_charged = not shoot_blackboard.minimum_charge_time or (not shoot_blackboard.always_charge_before_firing and not charging) or (charging and shoot_blackboard.minimum_charge_time <= t - shoot_blackboard.charge_start_time)
-	local max_range_squared = (charging and shoot_blackboard.max_range_squared_charged) or shoot_blackboard.max_range_squared
+	local sufficiently_charged = not shoot_blackboard.minimum_charge_time or not shoot_blackboard.always_charge_before_firing and not charging or charging and shoot_blackboard.minimum_charge_time <= t - shoot_blackboard.charge_start_time
+	local max_range_squared = charging and shoot_blackboard.max_range_squared_charged or shoot_blackboard.max_range_squared
 	local may_fire = nil
 
 	if bb.is_ai then
@@ -371,7 +371,7 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 	local target_breed = shoot_bb.target_breed
 	local breed_distance_override = target_breed and target_breed.bots_stay_ranged
 
-	if ((breed_distance_override and not shoot_bb.obstructed) or shoot_bb.keep_distance) and shoot_bb.disengage_update_time < t then
+	if (breed_distance_override and not shoot_bb.obstructed or shoot_bb.keep_distance) and shoot_bb.disengage_update_time < t then
 		self:_update_disengage_position(blackboard, t, breed_distance_override)
 	else
 		shoot_bb.disengage_position_set = false
@@ -418,7 +418,7 @@ BTBotShootAction._aim = function (self, unit, blackboard, dt, t)
 		done_firing = false
 	end
 
-	local evaluate = done_firing and ((shoot_bb.fired and shoot_bb.next_evaluate < t) or shoot_bb.next_evaluate_without_firing < t)
+	local evaluate = done_firing and (shoot_bb.fired and shoot_bb.next_evaluate < t or shoot_bb.next_evaluate_without_firing < t)
 
 	if evaluate then
 		shoot_bb.next_evaluate = t + action_data.evaluation_duration
@@ -437,7 +437,7 @@ BTBotShootAction._aim_good_enough = function (self, dt, t, shoot_blackboard, yaw
 	end
 
 	if bb.reevaluate_aim_time < t then
-		local aim_data = (bb.charging_shot and bb.aim_data_charged) or bb.aim_data
+		local aim_data = bb.charging_shot and bb.aim_data_charged or bb.aim_data
 		local offset = math.sqrt(pitch_offset * pitch_offset + yaw_offset * yaw_offset)
 
 		if aim_data.max_radius < offset then
@@ -477,7 +477,7 @@ end
 BTBotShootAction._should_charge = function (self, shoot_blackboard, range_squared, target_unit, t)
 	local next_charge_shot_t = shoot_blackboard.next_charge_shot_t
 
-	if not shoot_blackboard.can_charge_shot or (next_charge_shot_t and t < next_charge_shot_t) then
+	if not shoot_blackboard.can_charge_shot or next_charge_shot_t and t < next_charge_shot_t then
 		return false
 	end
 
@@ -563,7 +563,7 @@ BTBotShootAction._update_disengage_position = function (self, blackboard, t, bre
 	local proximite_enemies = blackboard.proximite_enemies
 
 	if proximite_enemies then
-		for i = 1, #proximite_enemies, 1 do
+		for i = 1, #proximite_enemies do
 			local result = get_disengage_vector(self_position, proximite_enemies[i], keep_distance, keep_distance_sq)
 
 			if result then
@@ -617,7 +617,7 @@ BTBotShootAction._reevaluate_obstruction = function (self, unit, shoot_blackboar
 	local direction = Quaternion.forward(wanted_aim_rotation)
 	local min = action_data.minimum_obstruction_reevaluation_time
 	local max = action_data.maximum_obstruction_reevaluation_time
-	local collision_filter = (shoot_blackboard.charging_shot and shoot_blackboard.collision_filter_charged) or shoot_blackboard.collision_filter
+	local collision_filter = shoot_blackboard.charging_shot and shoot_blackboard.collision_filter_charged or shoot_blackboard.collision_filter
 	local obstructed, distance_from_target, obstructed_by_static = self:_is_shot_obstructed(physics_world, ray_from, direction, unit, target_unit, actual_aim_position, collision_filter)
 	local fuzzyness = nil
 
@@ -657,7 +657,7 @@ BTBotShootAction._is_shot_obstructed = function (self, physics_world, from, dire
 
 	local num_hits = #raycast_hits
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit = raycast_hits[i]
 		local hit_actor = hit[INDEX_ACTOR]
 		local hit_unit = Actor.unit(hit_actor)
@@ -673,5 +673,3 @@ BTBotShootAction._is_shot_obstructed = function (self, physics_world, from, dire
 
 	return false
 end
-
-return

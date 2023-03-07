@@ -403,7 +403,7 @@ Pickups.ammo.all_ammo = {
 		local inventory_extension = ScriptUnit.extension(interactor_unit, "inventory_system")
 		local full_ammo = inventory_extension:has_full_ammo()
 
-		return (full_ammo and "pickup_ammo_full") or "pickup_ammo"
+		return full_ammo and "pickup_ammo_full" or "pickup_ammo"
 	end,
 	can_interact_func = function (interactor_unit, interactable_unit, data)
 		local inventory_extension = ScriptUnit.has_extension(interactor_unit, "inventory_system")
@@ -680,7 +680,7 @@ Pickups.lorebook_pages = {
 			local stats_id = local_player:stats_id()
 			local unlocked_all = true
 
-			for i = 1, num_pages, 1 do
+			for i = 1, num_pages do
 				local category_name = pages[i]
 				local id = LorebookCategoryLookup[category_name]
 				local unlocked = statistics_db:get_persistent_array_stat(stats_id, "lorebook_unlocks", id)
@@ -796,5 +796,3 @@ for group, pickups in pairs(Pickups) do
 
 	NearPickupSpawnChance[group] = NearPickupSpawnChance[group] or 0
 end
-
-return

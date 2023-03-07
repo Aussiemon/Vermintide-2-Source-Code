@@ -615,5 +615,3 @@ settings.unit_gib_settings.beastmen_standard_bearer.parts.left_leg.gib_unit = "u
 settings.unit_gib_settings.beastmen_standard_bearer.parts.right_arm.gib_unit = "units/beings/enemies/beastmen_standard_bearer/gibs/beastmen_standard_bearer_gib_r_arm"
 settings.unit_gib_settings.beastmen_standard_bearer.parts.right_leg.gib_unit = "units/beings/enemies/beastmen_bestigor/gibs/beastmen_bestigor_gib_r_leg"
 settings.unit_gib_settings.beastmen_standard_bearer.parts.upperbody.gib_unit = "units/beings/enemies/beastmen_standard_bearer/gibs/beastmen_standard_bearer_gib_upper_body"
-
-return

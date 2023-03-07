@@ -257,5 +257,3 @@ ItemMasterList.frame_0111 = {
 	item_type = "frame",
 	can_wield = CanWieldAllItemTemplates
 }
-
-return

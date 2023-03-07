@@ -62,32 +62,34 @@ function MakeTableStrict(t)
 	end
 
 	local meta = {
-		__declared = declared_args,
-		__newindex = function (t, k, v)
-			if not meta.__declared[k] then
-				if not rawget(t, k) then
-					local info = debug_getinfo(2, "Sl")
+		__declared = declared_args
+	}
 
-					if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
-						error_func("[ERROR] cannot assign undeclared member variable %q, %s", k, debug_info_string(info))
-					end
-				end
-
-				meta.__declared[k] = true
-			end
-
-			rawset(t, k, v)
-		end,
-		__index = function (t, k)
-			if not meta.__declared[k] and not rawget(t, k) then
+	meta.__newindex = function (t, k, v)
+		if not meta.__declared[k] then
+			if not rawget(t, k) then
 				local info = debug_getinfo(2, "Sl")
 
 				if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
-					error_func("[ERROR] cannot index undeclared member variable %q, %s", tostring(k), debug_info_string(info))
+					error_func("[ERROR] cannot assign undeclared member variable %q, %s", k, debug_info_string(info))
 				end
 			end
+
+			meta.__declared[k] = true
 		end
-	}
+
+		rawset(t, k, v)
+	end
+
+	meta.__index = function (t, k)
+		if not meta.__declared[k] and not rawget(t, k) then
+			local info = debug_getinfo(2, "Sl")
+
+			if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
+				error_func("[ERROR] cannot index undeclared member variable %q, %s", tostring(k), debug_info_string(info))
+			end
+		end
+	end
 
 	setmetatable(t, meta)
 
@@ -106,23 +108,24 @@ function MakeTableFrozen(t)
 	end
 
 	local meta = {
-		__declared = declared_args,
-		__newindex = function (t, k, v)
-			if not meta.__declared[k] then
-				if not rawget(t, k) then
-					local info = debug_getinfo(2, "Sl")
+		__declared = declared_args
+	}
 
-					if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
-						error_func("[ERROR] cannot assign undeclared member variable %q, %s", k, debug_info_string(info))
-					end
+	meta.__newindex = function (t, k, v)
+		if not meta.__declared[k] then
+			if not rawget(t, k) then
+				local info = debug_getinfo(2, "Sl")
+
+				if k ~= "to_console_line" and info and info.what ~= "main" and info.what ~= "C" then
+					error_func("[ERROR] cannot assign undeclared member variable %q, %s", k, debug_info_string(info))
 				end
-
-				meta.__declared[k] = true
 			end
 
-			rawset(t, k, v)
+			meta.__declared[k] = true
 		end
-	}
+
+		rawset(t, k, v)
+	end
 
 	setmetatable(t, meta)
 
@@ -172,7 +175,7 @@ if not rawget(_G, "STRICT_ENUM_INITIATED") then
 		local my_enum_table = {}
 		local num_args = select("#", ...)
 
-		for i = 1, num_args, 1 do
+		for i = 1, num_args do
 			local current_value = select(i, ...)
 			local my_object = setmetatable({
 				_enum_table = my_enum_table,
@@ -192,5 +195,3 @@ if not rawget(_G, "STRICT_ENUM_INITIATED") then
 		return my_enum_table
 	end
 end
-
-return

@@ -62,7 +62,7 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	local result = {}
 
 	if items then
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			local item = items[i]
 			local backend_id = item.ItemInstanceId
 			local amount = item.UsesIncrementedBy or 1
@@ -77,7 +77,7 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	end
 
 	if consumed_items then
-		for i = 1, #consumed_items, 1 do
+		for i = 1, #consumed_items do
 			local item = consumed_items[i]
 			local backend_id = item.ItemInstanceId
 			local remaining_uses = item.RemainingUses
@@ -91,7 +91,7 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	end
 
 	if modified_items then
-		for i = 1, #modified_items, 1 do
+		for i = 1, #modified_items do
 			local item = modified_items[i]
 			local backend_id = item.ItemInstanceId
 
@@ -100,7 +100,7 @@ BackendInterfaceCraftingPlayfab.craft_request_cb = function (self, id, result)
 	end
 
 	if unlocked_weapon_skins then
-		for i = 1, #unlocked_weapon_skins, 1 do
+		for i = 1, #unlocked_weapon_skins do
 			local weapon_skin = unlocked_weapon_skins[i]
 
 			backend_mirror:add_unlocked_weapon_skin(weapon_skin)
@@ -137,5 +137,3 @@ BackendInterfaceCraftingPlayfab.get_unlocked_cosmetics = function (self)
 
 	return mirror:get_unlocked_cosmetics()
 end
-
-return

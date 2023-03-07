@@ -681,7 +681,7 @@ UIElements = {
 					local current_offset_center_bar = current_offset_from_bottom
 					local min_world_pos = world_position[2] + half_bar_size
 					local scroll_offset_max = ui_content.scroll_offset_max
-					local max_world_pos = (world_position[2] + scroll_offset_max) - half_bar_size - ui_content.scroll_offset_min
+					local max_world_pos = world_position[2] + scroll_offset_max - half_bar_size - ui_content.scroll_offset_min
 					local current_position = math.clamp(current_offset_center_bar, 0, size[2])
 					local delta_value = math.min(current_position / size[2], 1)
 					ui_content.internal_scroll_value = delta_value
@@ -852,7 +852,7 @@ UIElements = {
 				pass_type = "texture",
 				texture_id = "texture_click_id",
 				content_check_function = function (content)
-					return (not content.disabled and content.button_hotspot.is_clicked == 0) or content.button_hotspot.is_selected
+					return not content.disabled and content.button_hotspot.is_clicked == 0 or content.button_hotspot.is_selected
 				end
 			},
 			{
@@ -967,5 +967,3 @@ UIElements = {
 		}
 	end
 }
-
-return

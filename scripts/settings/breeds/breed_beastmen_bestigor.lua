@@ -776,460 +776,458 @@ local action_data = {
 			"blocked_2"
 		},
 		difficulty_duration = BreedTweaks.blocked_duration.beastmen_elite
+	}
+}
+action_data.stagger = {
+	custom_enter_function = function (unit, blackboard, t, action)
+		local charge_stagger = blackboard.charge_stagger
+		local stagger_anims, override_rotation = nil
+
+		if blackboard.standard_bearer_stagger then
+			local stagger_anims = action.standard_stagger_anims[blackboard.stagger_type]
+			blackboard.standard_bearer_stagger = nil
+
+			return stagger_anims, "idle"
+		end
+
+		if charge_stagger and blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.weak then
+			stagger_anims = action.charge_stagger_anims[blackboard.stagger_type]
+			blackboard.charge_stagger = nil
+			local impact_dir = blackboard.stagger_direction:unbox()
+			local new_impact_dir = Quaternion.forward(Unit.local_rotation(unit, 0)) + Vector3.flat(impact_dir) * 0.5
+
+			blackboard.stagger_direction:store(Vector3.normalize(new_impact_dir))
+
+			override_rotation = Quaternion.look(Vector3.normalize(new_impact_dir))
+		else
+			stagger_anims = action.stagger_anims[blackboard.stagger_type]
+		end
+
+		if blackboard.stagger_type == stagger_types.heavy then
+			blackboard.stagger_immune_time = t + 2.25
+			blackboard.heavy_stagger_immune_time = t + 1.5
+		elseif blackboard.stagger_type == stagger_types.explosion then
+			blackboard.stagger_immune_time = t + 3.5
+			blackboard.heavy_stagger_immune_time = t + 3
+		end
+
+		return stagger_anims, "idle", nil, override_rotation
+	end,
+	stagger_anims = {
+		{
+			fwd = {
+				"stun_fwd_sword",
+				"stun_fwd_sword_2"
+			},
+			bwd = {
+				"stun_bwd_sword",
+				"stun_bwd_sword_2",
+				"stun_bwd_sword_3"
+			},
+			left = {
+				"stun_left_sword",
+				"stun_left_sword_2"
+			},
+			right = {
+				"stun_right_sword",
+				"stun_right_sword_2",
+				"stun_right_sword_3"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
+			},
+			left = {
+				"stagger_left_heavy",
+				"stagger_left_heavy_2",
+				"stagger_left_heavy_3"
+			},
+			right = {
+				"stagger_right_heavy_3"
+			}
+		},
+		{
+			fwd = {
+				"stun_ranged_fwd"
+			},
+			bwd = {
+				"stun_ranged_bwd"
+			},
+			left = {
+				"stun_ranged_left"
+			},
+			right = {
+				"stun_ranged_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_stab"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_exp"
+			},
+			left = {
+				"stagger_left_exp"
+			},
+			right = {
+				"stagger_right_exp"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
+			},
+			left = {
+				"stagger_left_heavy",
+				"stagger_left_heavy_2",
+				"stagger_left_heavy_3"
+			},
+			right = {
+				"stagger_right_heavy_3"
+			}
+		}
 	},
-	stagger = {
-		custom_enter_function = function (unit, blackboard, t, action)
-			local charge_stagger = blackboard.charge_stagger
-			local stagger_anims, override_rotation = nil
-
-			if blackboard.standard_bearer_stagger then
-				local stagger_anims = action.standard_stagger_anims[blackboard.stagger_type]
-				blackboard.standard_bearer_stagger = nil
-
-				return stagger_anims, "idle"
-			end
-
-			if charge_stagger and blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.weak then
-				stagger_anims = action.charge_stagger_anims[blackboard.stagger_type]
-				blackboard.charge_stagger = nil
-				local impact_dir = blackboard.stagger_direction:unbox()
-				local new_impact_dir = Quaternion.forward(Unit.local_rotation(unit, 0)) + Vector3.flat(impact_dir) * 0.5
-
-				blackboard.stagger_direction:store(Vector3.normalize(new_impact_dir))
-
-				override_rotation = Quaternion.look(Vector3.normalize(new_impact_dir))
-			else
-				stagger_anims = action.stagger_anims[blackboard.stagger_type]
-			end
-
-			if blackboard.stagger_type == stagger_types.heavy then
-				blackboard.stagger_immune_time = t + 2.25
-				blackboard.heavy_stagger_immune_time = t + 1.5
-			elseif blackboard.stagger_type == stagger_types.explosion then
-				blackboard.stagger_immune_time = t + 3.5
-				blackboard.heavy_stagger_immune_time = t + 3
-			end
-
-			return stagger_anims, "idle", nil, override_rotation
-		end,
-		stagger_anims = {
-			{
-				fwd = {
-					"stun_fwd_sword",
-					"stun_fwd_sword_2"
-				},
-				bwd = {
-					"stun_bwd_sword",
-					"stun_bwd_sword_2",
-					"stun_bwd_sword_3"
-				},
-				left = {
-					"stun_left_sword",
-					"stun_left_sword_2"
-				},
-				right = {
-					"stun_right_sword",
-					"stun_right_sword_2",
-					"stun_right_sword_3"
-				}
+	charge_stagger_anims = {
+		{
+			fwd = {
+				"stagger_fwd_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			bwd = {
+				"stagger_bwd_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left_heavy",
-					"stagger_left_heavy_2",
-					"stagger_left_heavy_3"
-				},
-				right = {
-					"stagger_right_heavy_3"
-				}
+			left = {
+				"stagger_left_charge"
 			},
-			{
-				fwd = {
-					"stun_ranged_fwd"
-				},
-				bwd = {
-					"stun_ranged_bwd"
-				},
-				left = {
-					"stun_ranged_left"
-				},
-				right = {
-					"stun_ranged_right"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_stab"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_exp"
-				},
-				left = {
-					"stagger_left_exp"
-				},
-				right = {
-					"stagger_right_exp"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left_heavy",
-					"stagger_left_heavy_2",
-					"stagger_left_heavy_3"
-				},
-				right = {
-					"stagger_right_heavy_3"
-				}
+			right = {
+				"stagger_right_charge"
 			}
 		},
-		charge_stagger_anims = {
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
+		{
+			fwd = {
+				"stagger_fwd_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
+			bwd = {
+				"stagger_bwd_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
+			left = {
+				"stagger_left_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_charge"
-				},
-				left = {
-					"stagger_left_charge"
-				},
-				right = {
-					"stagger_right_charge"
-				}
+			right = {
+				"stagger_right_charge"
 			}
 		},
-		standard_stagger_anims = {
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				}
+		{
+			fwd = {
+				"stagger_fwd_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				}
+			bwd = {
+				"stagger_bwd_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				}
+			left = {
+				"stagger_left_charge"
 			},
-			{
-				fwd = {
-					"stun_ranged_fwd"
-				},
-				bwd = {
-					"stun_ranged_bwd"
-				},
-				left = {
-					"stun_ranged_left"
-				},
-				right = {
-					"stun_ranged_right"
-				}
+			right = {
+				"stagger_right_charge"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd_stab"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			bwd = {
+				"stagger_bwd_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				bwd = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				left = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				},
-				right = {
-					"stagger_fwd_cheer_1",
-					"stagger_fwd_cheer_2",
-					"stagger_fwd_cheer_3"
-				}
+			left = {
+				"stagger_left_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd"
-				},
-				left = {
-					"stagger_left"
-				},
-				right = {
-					"stagger_right"
-				}
+			right = {
+				"stagger_right_charge"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
 			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
+			bwd = {
+				"stagger_bwd_charge"
 			},
-			{
-				fwd = {
-					"stagger_fwd"
-				},
-				bwd = {
-					"stagger_bwd",
-					"stagger_bwd_2",
-					"stagger_bwd_3",
-					"stagger_bwd_4"
-				},
-				left = {
-					"stagger_left",
-					"stagger_left_heavy_2"
-				},
-				right = {
-					"stagger_right",
-					"stagger_right_heavy_2"
-				}
+			left = {
+				"stagger_left_charge"
+			},
+			right = {
+				"stagger_right_charge"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_charge"
+			},
+			left = {
+				"stagger_left_charge"
+			},
+			right = {
+				"stagger_right_charge"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_charge"
+			},
+			left = {
+				"stagger_left_charge"
+			},
+			right = {
+				"stagger_right_charge"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_charge"
+			},
+			left = {
+				"stagger_left_charge"
+			},
+			right = {
+				"stagger_right_charge"
+			}
+		}
+	},
+	standard_stagger_anims = {
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			}
+		},
+		{
+			fwd = {
+				"stun_ranged_fwd"
+			},
+			bwd = {
+				"stun_ranged_bwd"
+			},
+			left = {
+				"stun_ranged_left"
+			},
+			right = {
+				"stun_ranged_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd_stab"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			bwd = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			left = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			},
+			right = {
+				"stagger_fwd_cheer_1",
+				"stagger_fwd_cheer_2",
+				"stagger_fwd_cheer_3"
+			}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd"
+			},
+			left = {
+				"stagger_left"
+			},
+			right = {
+				"stagger_right"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd"
+			},
+			bwd = {
+				"stagger_bwd",
+				"stagger_bwd_2",
+				"stagger_bwd_3",
+				"stagger_bwd_4"
+			},
+			left = {
+				"stagger_left",
+				"stagger_left_heavy_2"
+			},
+			right = {
+				"stagger_right",
+				"stagger_right_heavy_2"
 			}
 		}
 	}
 }
 BreedActions.beastmen_bestigor = table.create_copy(BreedActions.beastmen_bestigor, action_data)
-
-return

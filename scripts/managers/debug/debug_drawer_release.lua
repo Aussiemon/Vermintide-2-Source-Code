@@ -80,5 +80,3 @@ end
 DebugDrawerRelease.update = function (self, world)
 	return
 end
-
-return

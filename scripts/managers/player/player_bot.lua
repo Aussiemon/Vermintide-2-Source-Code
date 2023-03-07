@@ -127,10 +127,10 @@ PlayerBot.spawn = function (self, position, rotation, is_initial_spawn, ammo_mel
 	local base_frame = "default"
 	local career_name = career.name
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
-	local skin_name = (skin_item and skin_item.data.name) or base_skin
+	local skin_name = skin_item and skin_item.data.name or base_skin
 	local skin_data = Cosmetics[skin_name]
 	local frame_item = BackendUtils.get_loadout_item(career_name, "slot_frame")
-	local frame_name = (frame_item and frame_item.data.name) or base_frame
+	local frame_name = frame_item and frame_item.data.name or base_frame
 	local overcharge_data = OverchargeData[career_name] or {}
 	local energy_data = EnergyData[career_name] or {}
 	local status = Managers.party:get_status_from_unique_id(self._unique_id)
@@ -309,5 +309,3 @@ PlayerBot.destroy = function (self)
 		self._player_sync_data:destroy()
 	end
 end
-
-return

@@ -2121,5 +2121,3 @@ for _, dlc in pairs(DLCSettings) do
 		table.merge_recursive(UnitGibSettings, unit_gib_settings)
 	end
 end
-
-return

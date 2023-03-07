@@ -49,7 +49,7 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 		local target = blackboard.target_unit
 		local target_blackboard = BLACKBOARDS[target]
 		local target_breed = target_blackboard and target_blackboard.breed
-		local target_threat = (target_breed and target_breed.threat_value) or 0
+		local target_threat = target_breed and target_breed.threat_value or 0
 
 		if WP_MIN_THREAT <= target_threat then
 			local self_unit = blackboard.unit
@@ -60,7 +60,7 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 			local close_threat_value = 0
 			local far_threat_value = 0
 
-			for i = 1, num_proximite_enemies, 1 do
+			for i = 1, num_proximite_enemies do
 				local enemy_unit = proximite_enemies[i]
 				local enemy_position = POSITION_LOOKUP[enemy_unit]
 
@@ -115,5 +115,3 @@ BTConditions.can_activate.wh_priest = function (blackboard)
 
 	return false
 end
-
-return

@@ -23,14 +23,14 @@ TelemetryEvents.header = function (self, engine_revision, content_revision, stea
 	params.content_revision = content_revision
 	params.steam_branch = steam_branch
 	params.svn_branch = svn_branch
-	params.machine_id = (Application.machine_id and Application.machine_id()) or nil
+	params.machine_id = Application.machine_id and Application.machine_id() or nil
 	params.machine_name = machine_name
 	params.is_testify_session = is_testify_session
 
 	if IS_XB1 then
 		params.console_type = XboxOne.console_type_string()
 	elseif IS_PS4 then
-		params.console_type = (PS4.is_pro() and "pro") or "not_pro"
+		params.console_type = PS4.is_pro() and "pro" or "not_pro"
 	end
 
 	self.manager:register_event("header", params)
@@ -147,7 +147,7 @@ TelemetryEvents.ai_spawned = function (self, id, breed, position, enhancements_a
 	local enhancements = {}
 
 	if enhancements_array then
-		for i = 1, #enhancements_array, 1 do
+		for i = 1, #enhancements_array do
 			local enhancement_data = enhancements_array[i]
 			enhancements[enhancement_data.name] = true
 		end
@@ -496,9 +496,9 @@ TelemetryEvents.player_spawned = function (self, player)
 	local cosmetic_slot_skin = CosmeticUtils.get_cosmetic_slot(player, "slot_skin")
 	local cosmetic_slot_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
 	params.slot_melee = slot_melee and slot_melee.item_data.name
-	params.slot_melee_skin = (cosmetic_slot_melee and cosmetic_slot_melee.skin_name) or "default"
+	params.slot_melee_skin = cosmetic_slot_melee and cosmetic_slot_melee.skin_name or "default"
 	params.slot_ranged = slot_ranged and slot_ranged.item_data.name
-	params.slot_ranged_skin = (cosmetic_slot_ranged and cosmetic_slot_ranged.skin_name) or "default"
+	params.slot_ranged_skin = cosmetic_slot_ranged and cosmetic_slot_ranged.skin_name or "default"
 	params.slot_hat = cosmetic_slot_hat and cosmetic_slot_hat.item_name
 	params.slot_skin = cosmetic_slot_skin and cosmetic_slot_skin.item_name
 	params.slot_frame = cosmetic_slot_frame and cosmetic_slot_frame.item_name
@@ -716,7 +716,7 @@ end
 local function find_steam_currency(product)
 	local price = tonumber(product.item.steam_price)
 	local steam_data = product.item.steam_data
-	local price_table = (steam_data.discount_is_active and steam_data.discount_prices) or steam_data.regular_prices or {}
+	local price_table = steam_data.discount_is_active and steam_data.discount_prices or steam_data.regular_prices or {}
 
 	for currency, currency_price in pairs(price_table) do
 		if price == currency_price then
@@ -737,7 +737,7 @@ TelemetryEvents.steam_store_product_purchased = function (self, steam_product)
 		id = steam_product.item.id,
 		type = steam_product.item.data.item_type,
 		current_price = tonumber(steam_product.item.steam_price),
-		currency = (steam_data and find_steam_currency(steam_product)) or "?"
+		currency = steam_data and find_steam_currency(steam_product) or "?"
 	}
 
 	if steam_data and steam_data.discount_is_active then
@@ -905,7 +905,7 @@ TelemetryEvents.chat_message = function (self, message)
 	table.clear(params)
 
 	params.player_id = local_player:telemetry_id()
-	params.message_length = (message and #message) or 0
+	params.message_length = message and #message or 0
 
 	self.manager:register_event("chat_message", params)
 end
@@ -936,5 +936,3 @@ TelemetryEvents.breed_position_desync = function (self, source_position, destina
 
 	self.manager:register_event("breed_position_desync", params)
 end
-
-return

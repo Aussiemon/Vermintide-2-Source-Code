@@ -57,5 +57,3 @@ for _, chest_type in pairs(DEUS_CHEST_TYPES) do
 		database_name = database_name
 	}
 end
-
-return

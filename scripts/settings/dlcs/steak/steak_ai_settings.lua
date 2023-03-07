@@ -25,5 +25,3 @@ settings.unit_extension_templates = {
 settings.anim_lookup = {
 	"crater_intro_1"
 }
-
-return

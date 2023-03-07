@@ -167,7 +167,7 @@ VisualStateMachine.state_report = function (self)
 
 	assert(start_index ~= nil, "to make a state report the state machine itself must be on the stack")
 
-	for ii = start_index, #stack, 1 do
+	for ii = start_index, #stack do
 		local state_machine = stack[ii]
 		s = s .. string.format("State %q waits for:\n", self._current_state_name(state_machine))
 		local transitions = state_machine:_transitions_from_state()
@@ -302,5 +302,3 @@ VisualStateMachine._enter_state = function (self, state_class, args)
 
 	return state
 end
-
-return

@@ -232,7 +232,7 @@ PlayerCharacterStateDodging.update_dodge = function (self, unit, dt, t)
 	local start_point = self.current_speed_setting_index + 1
 	self.current_speed_setting_index = #speed_at_times
 
-	for index = start_point, #speed_at_times, 1 do
+	for index = start_point, #speed_at_times do
 		if time_in_dodge <= speed_at_times[index].time_in_dodge then
 			self.current_speed_setting_index = index - 1
 
@@ -316,7 +316,7 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 		local start_point = current_speed_setting_index + 1
 		current_speed_setting_index = #speed_at_times
 
-		for index = start_point, #speed_at_times, 1 do
+		for index = start_point, #speed_at_times do
 			if time_in_dodge <= speed_at_times[index].time_in_dodge then
 				current_speed_setting_index = index - 1
 
@@ -344,5 +344,3 @@ PlayerCharacterStateDodging.calculate_dodge_total_time = function (self, unit)
 
 	self.estimated_dodge_time = time_in_dodge
 end
-
-return

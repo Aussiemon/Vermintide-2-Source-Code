@@ -522,5 +522,3 @@ MorrisBuffTweakData = MorrisBuffTweakData or {
 		multiplier = 0.15
 	}
 }
-
-return

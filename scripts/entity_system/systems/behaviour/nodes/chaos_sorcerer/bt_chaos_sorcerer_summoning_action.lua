@@ -19,7 +19,7 @@ BTChaosSorcererSummoningAction.enter = function (self, unit, blackboard, t)
 	end
 
 	local target_unit = blackboard.target_unit
-	blackboard.target_position = (target_unit and Vector3Box(POSITION_LOOKUP[target_unit])) or Vector3Box()
+	blackboard.target_position = target_unit and Vector3Box(POSITION_LOOKUP[target_unit]) or Vector3Box()
 	blackboard.spell_count = blackboard.spell_count or 0
 
 	if not action.is_spawner then
@@ -203,7 +203,7 @@ BTChaosSorcererSummoningAction._start_vortex_summoning = function (self, unit, b
 	local physics_world = vortex_data.physics_world
 	local start_check_position = summon_position + Vector3.up() * VORTEX_MIN_DUMMY_MISSILE_HEIGHT
 	local hit, hit_position, hit_distance, _, _ = PhysicsWorld.immediate_raycast(physics_world, start_check_position, Vector3.up(), max_height - VORTEX_MIN_DUMMY_MISSILE_HEIGHT, "closest", "collision_filter", "filter_ai_mover")
-	local max_height = (hit and VORTEX_MIN_DUMMY_MISSILE_HEIGHT + hit_distance) or max_height
+	local max_height = hit and VORTEX_MIN_DUMMY_MISSILE_HEIGHT + hit_distance or max_height
 	vortex_data.max_height = max_height
 	local unit_position = POSITION_LOOKUP[unit]
 	local distance = Vector3.distance(unit_position, summon_position)
@@ -579,7 +579,7 @@ BTChaosSorcererSummoningAction.spawn_plague_wave = function (self, unit, blackbo
 		local target_to_start_dist = Vector3.distance(target_position, target_starting_pos)
 		local ray_check_offset = 2.5
 
-		for i = 1, tries, 1 do
+		for i = 1, tries do
 			local ray_check_position = target_position + target_to_start_normalized * ray_check_offset * i
 			local success = GwNavQueries.raycango(nav_world, projected_start_pos, ray_check_position)
 
@@ -663,8 +663,8 @@ BTChaosSorcererSummoningAction.spawn_plague_waves_in_patterns = function (self, 
 	reps = action.pattern_repetitions or 1
 	local range = action.range or 20
 
-	for j = 1, reps, 1 do
-		for i = 1, #spawner_set, 1 do
+	for j = 1, reps do
+		for i = 1, #spawner_set do
 			local spawner_unit = spawner_set[i]
 			local spawn_pos = Unit.local_position(spawner_unit, 0)
 			spawn_pos = LocomotionUtils.pos_on_mesh(nav_world, spawn_pos)
@@ -799,8 +799,8 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				local ring_position = ring.position
 				local max_radius = ring_info[ring_position].max_radius
 				local min_radius = ring_info[ring_position].min_radius
-				local premonition_time = (premonition_type == "short" and 1) or (premonition_type == "medium" and 2) or (premonition_type == "long" and 3) or 0.75
-				local premonition_effect = (premonition_type == "short" and ring_info[ring_position].premonition_effect_name_short) or (premonition_type == "medium" and ring_info[ring_position].premonition_effect_name_medium) or (premonition_type == "long" and ring_info[ring_position].premonition_effect_name_long)
+				local premonition_time = premonition_type == "short" and 1 or premonition_type == "medium" and 2 or premonition_type == "long" and 3 or 0.75
+				local premonition_effect = premonition_type == "short" and ring_info[ring_position].premonition_effect_name_short or premonition_type == "medium" and ring_info[ring_position].premonition_effect_name_medium or premonition_type == "long" and ring_info[ring_position].premonition_effect_name_long
 
 				if premonition_effect then
 					Managers.state.network:rpc_play_particle_effect_no_rotation(nil, NetworkLookup.effects[premonition_effect], NetworkConstants.invalid_game_object_id, 0, origin_pos, false)
@@ -810,7 +810,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 				local vector_min = Vector3(min_radius, 0, 0)
 
 				if debug then
-					for j = 1, 360, 1 do
+					for j = 1, 360 do
 						vector_max = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, 1), vector_max)
 						vector_min = Quaternion.rotate(Quaternion.from_euler_angles_xyz(0, 0, 1), vector_min)
 
@@ -880,7 +880,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 					local position = POSITION_LOOKUP[player_unit]
 					local distance_squared = Vector3.distance_squared(position, origin_pos)
 					local catapult_direction = ring.catapult_direction
-					local direction = (catapult_direction == "in" and origin_pos - position) or position - origin_pos
+					local direction = catapult_direction == "in" and origin_pos - position or position - origin_pos
 					direction = Vector3.normalize(direction)
 
 					if distance_squared < outer_squared and inner_squared < distance_squared then
@@ -889,7 +889,7 @@ BTChaosSorcererSummoningAction.update_boss_rings = function (self, unit, blackbo
 						local difficulty_rank = Managers.state.difficulty:get_difficulty()
 						local player = Managers.player:owner(player_unit)
 						local is_bot = player and not player:is_player_controlled()
-						local actual_power_level = (is_bot and 0) or action.power_level[difficulty_rank]
+						local actual_power_level = is_bot and 0 or action.power_level[difficulty_rank]
 
 						DamageUtils.add_damage_network_player(damage_profile, nil, actual_power_level, player_unit, unit, "torso", POSITION_LOOKUP[player_unit], Vector3.up(), "undefined")
 
@@ -936,5 +936,3 @@ BTChaosSorcererSummoningAction.clean_up_boss_rings = function (self, unit, black
 		WwiseWorld.destroy_manual_source(wwise_world, blackboard.audio_source_id)
 	end
 end
-
-return

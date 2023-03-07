@@ -25,5 +25,3 @@ settings.weighted_random_terror_events = {
 	}
 }
 settings.missions = {}
-
-return

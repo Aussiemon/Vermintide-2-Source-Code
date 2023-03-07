@@ -41,7 +41,7 @@ local function is_level_available_on_disk(level_data)
 	if rawget(_G, "PACKAGED_LEVEL_PACKAGE_NAMES") then
 		local packages = level_data.packages
 
-		for i = 1, #packages, 1 do
+		for i = 1, #packages do
 			local package = packages[i]
 
 			if not PACKAGED_LEVEL_PACKAGE_NAMES[package] then
@@ -60,7 +60,7 @@ local function validate_level_data(level_key, level_data)
 		local debug_level = false
 		local packages = level_data.packages
 
-		for i = 1, #packages, 1 do
+		for i = 1, #packages do
 			if string.find(packages[i], "^resource_packages/levels/debug/") then
 				debug_level = true
 
@@ -132,7 +132,7 @@ end
 
 local prologue_index = nil
 
-for i = 1, #MainGameLevels, 1 do
+for i = 1, #MainGameLevels do
 	if MainGameLevels[i] == "prologue" then
 		prologue_index = i
 	end
@@ -195,7 +195,7 @@ end
 LevelUnlockUtils.unlocked_journeys = function (statistics_db, player_stats_id)
 	local journeys = {}
 
-	for i = 1, #AvailableJourneyOrder, 1 do
+	for i = 1, #AvailableJourneyOrder do
 		local journey_name = AvailableJourneyOrder[i]
 
 		if i == 1 then
@@ -266,7 +266,7 @@ LevelUnlockUtils.highest_completed_difficulty_index_by_act = function (statistic
 		local difficulty_index = LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, level_key)
 
 		if not difficulty_index or difficulty_index > 5 or difficulty_index < 0 then
-			fassert(false, "highest completed difficulty index was incorrect: %s", (difficulty_index and tostring(difficulty_index)) or "n/a")
+			fassert(false, "highest completed difficulty index was incorrect: %s", difficulty_index and tostring(difficulty_index) or "n/a")
 		end
 
 		if difficulty_index < act_difficulty_completed_index then
@@ -418,7 +418,7 @@ LevelUnlockUtils.current_weave = function (statistics_db, player_stats_id, ignor
 	local highest_consecutive_unlocked_weave = 1
 	local highest_consecutive_unlocked_weave_found = false
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local template = weave_templates[i]
 		local weave_completed = LevelUnlockUtils.weave_unlocked(statistics_db, player_stats_id, template.name, ignore_dlc_check)
 
@@ -458,10 +458,10 @@ LevelUnlockUtils.weave_unlocked = function (statistics_db, player_stats_id, weav
 	local completed_season = false
 
 	if not completed_ever then
-		local min_players = (num_players and math.max(num_players, 1)) or 1
-		local max_players = (num_players and math.max(num_players, 4)) or 4
+		local min_players = num_players and math.max(num_players, 1) or 1
+		local max_players = num_players and math.max(num_players, 4) or 4
 
-		for i = min_players, max_players, 1 do
+		for i = min_players, max_players do
 			local stat_name = ScorpionSeasonalSettings.get_weave_score_stat(weave_tier, i)
 			completed_season = statistics_db:get_persistent_stat(player_stats_id, ScorpionSeasonalSettings.current_season_name, stat_name) > 0
 
@@ -654,13 +654,13 @@ LevelUnlockUtils.set_all_acts_incompleted = function ()
 end
 
 LevelUnlockUtils.get_next_adventure_level = function (statistics_db, player_stats_id)
-	for act_id = AdventureActStartId, #GameActsOrder, 1 do
+	for act_id = AdventureActStartId, #GameActsOrder do
 		local act = GameActsOrder[act_id]
 
 		if not LevelUnlockUtils.act_completed(statistics_db, player_stats_id, act) then
 			local act_levels = GameActs[act]
 
-			for act_level_id = 1, #act_levels, 1 do
+			for act_level_id = 1, #act_levels do
 				local act_level_key = act_levels[act_level_id]
 
 				if LevelUnlockUtils.completed_level_difficulty_index(statistics_db, player_stats_id, act_level_key) <= 0 then
@@ -679,7 +679,7 @@ LevelUnlockUtils.debug_set_completed_game_difficulty = function (difficulty)
 	local stats_id = player:stats_id()
 
 	for _, level_key in pairs(LevelDifficultyDBNames) do
-		slot9 = statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_key, difficulty)
+		local difficulty = statistics_db:set_stat(stats_id, "completed_levels_difficulty", level_key, difficulty)
 	end
 
 	local backend_stats = {}
@@ -802,5 +802,3 @@ LevelUnlockUtils.debug_complete_level = function (level_key)
 	Managers.backend:set_stats(backend_stats)
 	Managers.backend:commit()
 end
-
-return

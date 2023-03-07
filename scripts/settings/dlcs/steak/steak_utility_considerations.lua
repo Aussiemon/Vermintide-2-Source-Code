@@ -80,5 +80,3 @@ UtilityConsiderations.minotaur_charge = {
 		blackboard_input = "target_is_charged"
 	}
 }
-
-return

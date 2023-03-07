@@ -48,7 +48,7 @@ CircularQueue.contains = function (self, item)
 	local curr = self.first
 	local queue = self.queue
 
-	for i = 1, self.num_items, 1 do
+	for i = 1, self.num_items do
 		local queued_item = queue[curr]
 
 		if item == queued_item then
@@ -90,7 +90,7 @@ CircularQueue.foreach = function (self, obj, func, ...)
 	local queue = self.queue
 	local capacity = self.capacity
 
-	for i = 1, self.num_items, 1 do
+	for i = 1, self.num_items do
 		local queued_item = queue[curr_index]
 
 		if obj then
@@ -118,7 +118,7 @@ CircularQueue.tostring = function (self, tostringfunc, max_count)
 	local curr = self.first
 	local queue = self.queue
 
-	for i = 1, math.min(max_count, self.num_items), 1 do
+	for i = 1, math.min(max_count, self.num_items) do
 		s = s .. tostringfunc(queue[curr]) .. ","
 		curr = curr % self.capacity + 1
 	end
@@ -138,8 +138,8 @@ CircularQueue.tostring2 = function (self, tostringfunc, max_count)
 	local s = string.format("{[%d->%d][%d/%d] ", self.first, self.last, self.num_items, self.capacity)
 	local queue = self.queue
 
-	for i = 1, math.min(max_count, self.capacity), 1 do
-		s = s .. ((queue[i] and tostringfunc(queue[i])) or "_") .. ","
+	for i = 1, math.min(max_count, self.capacity) do
+		s = s .. (queue[i] and tostringfunc(queue[i]) or "_") .. ","
 	end
 
 	if max_count < self.num_items then
@@ -156,12 +156,10 @@ CircularQueue.print_items = function (self, s)
 	local curr = self.first
 	local queue = self.queue
 
-	for i = 1, self.num_items, 1 do
+	for i = 1, self.num_items do
 		s = s .. tostring(queue[curr]) .. ","
 		curr = curr % self.capacity + 1
 	end
 
 	print(s)
 end
-
-return

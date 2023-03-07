@@ -215,7 +215,7 @@ local function process_blinking(data, dt, t)
 		end
 
 		local timer_enabled = beam_effect.blinking_enabled
-		local multiplier = (timer_enabled and 1) or -1
+		local multiplier = timer_enabled and 1 or -1
 		local new_beam_softness = beam_effect.beam_softness + beam_blink_transition_speed * multiplier * dt
 		new_beam_softness = math.clamp(new_beam_softness, 0, beam_max_softness)
 		beam_effect.beam_softness = new_beam_softness

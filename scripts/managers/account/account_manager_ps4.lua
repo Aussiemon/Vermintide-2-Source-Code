@@ -326,6 +326,7 @@ end
 
 AccountManager._update_psn_presence = function (self, room_joined, room_left)
 	if room_left then
+		-- Nothing
 	end
 
 	if room_joined then
@@ -589,7 +590,7 @@ AccountManager.cb_fetch_friends = function (self, num_to_fetch, offset, external
 
 	local result_list = result.friendList
 
-	for i = 1, #result_list, 1 do
+	for i = 1, #result_list do
 		local entry = result_list[i]
 		local user = entry.user
 		local account_id = Application.dec64_to_hex(user.accountId)
@@ -807,7 +808,7 @@ AccountManager.send_session_invitation_multiple = function (self, to_account_ids
 	params = params .. "{\r\n"
 	params = params .. "  \"to\":[\r\n"
 
-	for i = 1, #to_account_ids, 1 do
+	for i = 1, #to_account_ids do
 		if to_account_ids[i + 1] then
 			params = params .. string.format("    \"%s\",\r\n", Application.hex64_to_dec(to_account_ids[i]))
 		else
@@ -900,7 +901,7 @@ AccountManager._format_session_parameters = function (self, params)
 	end
 
 	str = str .. string.format("  \"availablePlatforms\":%s,\r\n", params.platforms)
-	str = str .. string.format("  \"sessionLockFlag\":%s\r\n", (params.lock_flag and "true") or "false")
+	str = str .. string.format("  \"sessionLockFlag\":%s\r\n", params.lock_flag and "true" or "false")
 	str = str .. "}"
 
 	return str
@@ -918,15 +919,15 @@ AccountManager._set_presence_status_content = function (self, presence, append)
 
 	local str = ""
 	str = str .. "{\r\n"
-	str = str .. string.format("  \"gameStatus\":%q,\r\n", Localize(presence .. "_en") .. ((append and " " .. Localize(append)) or ""))
+	str = str .. string.format("  \"gameStatus\":%q,\r\n", Localize(presence .. "_en") .. (append and " " .. Localize(append) or ""))
 	str = str .. "  \"localizedGameStatus\":[\r\n"
 
 	if presence_data then
 		for idx, language in ipairs(presence_data) do
 			str = str .. "    {\r\n"
 			str = str .. string.format("      \"npLanguage\":%q,\r\n", language)
-			str = str .. string.format("      \"gameStatus\":%q\r\n", Localize(presence .. "_" .. language) .. ((append and " " .. Localize(append)) or ""))
-			str = str .. ((idx < #presence_data and "    },\r\n") or "    }\r\n")
+			str = str .. string.format("      \"gameStatus\":%q\r\n", Localize(presence .. "_" .. language) .. (append and " " .. Localize(append) or ""))
+			str = str .. (idx < #presence_data and "    },\r\n" or "    }\r\n")
 		end
 	end
 
@@ -973,5 +974,3 @@ AccountManager.should_throttle = function (self)
 		return true
 	end
 end
-
-return

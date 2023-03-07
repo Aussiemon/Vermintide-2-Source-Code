@@ -672,7 +672,7 @@ BackendManagerPlayFab._is_fatal = function (self, reason)
 end
 
 BackendManagerPlayFab._reason_localize_key = function (self, reason, error_code)
-	local error_code = (error_code and tonumber(error_code)) or -1
+	local error_code = error_code and tonumber(error_code) or -1
 
 	if IS_CONSOLE then
 		if not self:profiles_loaded() then
@@ -811,7 +811,7 @@ BackendManagerPlayFab._show_error_dialog = function (self, reason, details_messa
 		error_text, button_1, button_2, button_3 = self:_format_error_message_windows(reason, details_message, optional_url_button)
 	end
 
-	local localized_error_text = (error_text and Localize(error_text)) or Localize("backend_err_playfab")
+	local localized_error_text = error_text and Localize(error_text) or Localize("backend_err_playfab")
 
 	if IS_WINDOWS then
 		if localized_error_text and details_message then
@@ -891,7 +891,7 @@ end
 BackendManagerPlayFab._are_profiles_loaded = function (self)
 	local signin = self._backend_signin
 	local mirror = self._backend_mirror
-	local ready = (self._disable_backend or (signin and signin:authenticated() and mirror and mirror:ready())) and self:_interfaces_ready()
+	local ready = (self._disable_backend or signin and signin:authenticated() and mirror and mirror:ready()) and self:_interfaces_ready()
 
 	return ready
 end
@@ -1102,7 +1102,7 @@ end
 BackendManagerPlayFab.is_pending_request = function (self)
 	local mirror = self._backend_mirror
 
-	return (mirror and mirror:request_queue():is_pending_request()) or false
+	return mirror and mirror:request_queue():is_pending_request() or false
 end
 
 local EMPTY_TABLE = {}
@@ -1162,5 +1162,3 @@ end
 BackendManagerPlayFab.get_twitch_app_access_token = function (self)
 	return self._backend_mirror:get_twitch_app_access_token()
 end
-
-return

@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 script_data.dialogue_debug_proximity_system = script_data.dialogue_debug_proximity_system or Development.parameter("dialogue_debug_proximity_system")
 local PROXIMITY_DISTANCE_ENEMIES = math.max(DialogueSettings.enemies_close_distance, DialogueSettings.enemies_distant_distance)
 local PROXIMITY_DISTANCE_FRIENDS = math.max(DialogueSettings.friends_close_distance, DialogueSettings.friends_distant_distance)
@@ -295,7 +293,7 @@ ProximitySystem.update = function (self, context, t)
 
 	if script_data.debug_has_been_seen then
 		for unit, extension in pairs(self.unit_extension_data) do
-			local color = (extension.has_been_seen and Color(0, 255, 0)) or Color(255, 0, 0)
+			local color = extension.has_been_seen and Color(0, 255, 0) or Color(255, 0, 0)
 
 			QuickDrawer:sphere(POSITION_LOOKUP[unit] + Vector3.up(), 2, color)
 		end
@@ -362,7 +360,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 				local check = proximity_data.check
 				local num_matching_units = 0
 
-				for i = 1, num_nearby_units, 1 do
+				for i = 1, num_nearby_units do
 					local nearby_unit = nearby_units[i]
 
 					if nearby_unit ~= unit and check[nearby_unit] then
@@ -379,7 +377,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 					event_data.num_units = num_matching_units
 
 					if proximity_type == "friends_close" then
-						for i = 1, num_nearby_units, 1 do
+						for i = 1, num_nearby_units do
 							local nearby_unit = nearby_units[i]
 
 							if nearby_unit ~= unit and check[nearby_unit] then
@@ -413,7 +411,7 @@ ProximitySystem.physics_async_update = function (self, context, t)
 					local radius = SPECIAL_PROXIMITY_DISTANCE
 					local num_nearby_units = Broadphase.query(special_units_broadphase, position, radius, nearby_units)
 
-					for i = 1, num_nearby_units, 1 do
+					for i = 1, num_nearby_units do
 						local nearby_unit = nearby_units[i]
 						nearby_units[i] = nil
 						local is_alive = ScriptUnit.extension(nearby_unit, "health_system"):is_alive()
@@ -533,7 +531,7 @@ ProximitySystem._update_nearby_boss = function (self)
 		return
 	end
 
-	local local_player = (self._is_spectator and self._spectated_player) or Managers.player:local_player()
+	local local_player = self._is_spectator and self._spectated_player or Managers.player:local_player()
 
 	if not local_player then
 		return
@@ -555,7 +553,7 @@ ProximitySystem._update_nearby_boss = function (self)
 	local num_units = Broadphase.query(self.enemy_broadphase, player_position, 3, broadphase_result)
 	local closest_distance = math.huge
 
-	for i = 1, num_units, 1 do
+	for i = 1, num_units do
 		local unit = broadphase_result[i]
 		local breed = Unit.get_data(unit, "breed")
 
@@ -584,9 +582,9 @@ ProximitySystem._update_nearby_enemies = function (self)
 	local list = self._pseudo_sorted_list
 	local old_enabled_fx = self._old_enabled_fx
 	local new_enabled_fx = self._new_enabled_fx
-	local local_players = (self._is_spectator and {
+	local local_players = self._is_spectator and {
 		self._spectated_player
-	}) or Managers.player:players_at_peer(Network.peer_id())
+	} or Managers.player:players_at_peer(Network.peer_id())
 	local player_pos = Vector3(0, 0, 0)
 	local num_players = 0
 	local camera_manager = Managers.state.camera
@@ -606,7 +604,7 @@ ProximitySystem._update_nearby_enemies = function (self)
 		local list_len = #list
 		local num_units = Broadphase.query(self.enemy_broadphase, player_pos, 30, broadphase_result)
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = broadphase_result[i]
 			new_nearby[unit] = Vector3.distance_squared(POSITION_LOOKUP[unit], player_pos)
 
@@ -669,6 +667,14 @@ ProximitySystem._update_nearby_enemies = function (self)
 					if aim_extension then
 						aim_extension:set_enabled(true)
 					end
+				else
+					fx_list_remove(old_enabled_fx, new_enabled_fx, unit)
+
+					local aim_extension = ScriptUnit.has_extension(unit, "aim_system")
+
+					if aim_extension then
+						aim_extension:set_enabled(false)
+					end
 				end
 			end
 
@@ -709,7 +715,7 @@ ProximitySystem._nearby_enemies_debug = function (self, list, new_nearby, new_en
 					color = Color(brightness, 255, brightness)
 				end
 
-				Debug.colored_text(color, tostring(Unit.get_data(unit, "debug_random")) .. ((enabled and " enabled ") or " disabled ") .. string.format("%.2f", dist))
+				Debug.colored_text(color, tostring(Unit.get_data(unit, "debug_random")) .. (enabled and " enabled " or " disabled ") .. string.format("%.2f", dist))
 			else
 				print("ERROR", i)
 			end
@@ -772,5 +778,3 @@ end
 ProximitySystem.hot_join_sync = function (self, sender)
 	return
 end
-
-return

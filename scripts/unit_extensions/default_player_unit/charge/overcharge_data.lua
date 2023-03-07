@@ -65,5 +65,3 @@ OverchargeData.bw_unchained = {
 	overcharge_warning_med_sound_event = "staff_overcharge_warning_med",
 	hit_overcharge_threshold_sound = "ui_special_attack_ready"
 }
-
-return

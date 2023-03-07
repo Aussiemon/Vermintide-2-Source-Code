@@ -139,5 +139,3 @@ OverchargeData.wh_priest = {
 	hit_overcharge_threshold_sound = "ui_special_attack_ready"
 }
 CareerNameAchievementMapping.wh_priest = "wh_priest"
-
-return

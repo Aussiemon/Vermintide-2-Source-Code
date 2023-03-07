@@ -39,7 +39,7 @@ InventorySystem.init = function (self, entity_system_creation_context, system_na
 	local sides = Managers.state.side:sides()
 	local j = 1
 
-	for i = 1, #sides, 1 do
+	for i = 1, #sides do
 		local side = sides[i]
 
 		if side.using_grims_and_tomes then
@@ -98,7 +98,7 @@ InventorySystem.update = function (self, context, t)
 		local event_objective = self._event_objective
 		local sides = self.sides_to_update
 
-		for i = 1, #sides, 1 do
+		for i = 1, #sides do
 			local side = sides[i]
 			local units = side.PLAYER_AND_BOT_UNITS
 			self.num_grimoires = self:update_mission_inventory_item(units, "slot_potion", "wpn_grimoire_01", self.num_grimoires, add_grimoire, remove_grimoire)
@@ -114,7 +114,7 @@ end
 InventorySystem.update_mission_inventory_item = function (self, units, slot_name, item_name, previous_num_items, add_func, remove_func)
 	local num_items = 0
 
-	for i = 1, #units, 1 do
+	for i = 1, #units do
 		local unit = units[i]
 		local inventory_extension = ScriptUnit.extension(unit, "inventory_system")
 
@@ -126,13 +126,13 @@ InventorySystem.update_mission_inventory_item = function (self, units, slot_name
 	if previous_num_items < num_items then
 		local difference = num_items - previous_num_items
 
-		for i = 1, difference, 1 do
+		for i = 1, difference do
 			add_func()
 		end
 	elseif num_items < previous_num_items then
 		local difference = previous_num_items - num_items
 
-		for i = 1, difference, 1 do
+		for i = 1, difference do
 			remove_func()
 		end
 	end
@@ -441,7 +441,7 @@ InventorySystem.rpc_update_additional_slot = function (self, channel_id, go_id, 
 
 	local looked_up_items = {}
 
-	for i = 1, #items, 1 do
+	for i = 1, #items do
 		local item = items[i]
 		looked_up_items[#looked_up_items + 1] = NetworkLookup.item_names[item]
 	end
@@ -452,5 +452,3 @@ InventorySystem.rpc_update_additional_slot = function (self, channel_id, go_id, 
 
 	inventory:update_additional_items(slot_name, looked_up_items)
 end
-
-return

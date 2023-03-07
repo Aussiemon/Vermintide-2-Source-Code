@@ -58,13 +58,13 @@ local function encode_inventory(inventory)
 	ByteArray.write_int32(byte_array, inventory.inventory_id)
 	ByteArray.write_int32(byte_array, #network_inventory_list_1p)
 
-	for i = 1, #network_inventory_list_1p, 1 do
+	for i = 1, #network_inventory_list_1p do
 		ByteArray.write_int32(byte_array, network_inventory_list_1p[i])
 	end
 
 	ByteArray.write_int32(byte_array, #network_inventory_list_3p)
 
-	for i = 1, #network_inventory_list_3p, 1 do
+	for i = 1, #network_inventory_list_3p do
 		ByteArray.write_int32(byte_array, network_inventory_list_3p[i])
 	end
 
@@ -87,7 +87,7 @@ local function decode_inventory(compressed_byte_array_string)
 	inventory_pack_1p_count, index = ByteArray.read_int32(byte_array, index)
 	local first_person_packages = {}
 
-	for i = 1, inventory_pack_1p_count, 1 do
+	for i = 1, inventory_pack_1p_count do
 		local network_package = nil
 		network_package, index = ByteArray.read_int32(byte_array, index)
 		first_person_packages[NetworkLookup.inventory_packages[network_package]] = false
@@ -97,7 +97,7 @@ local function decode_inventory(compressed_byte_array_string)
 	inventory_pack_3p_count, index = ByteArray.read_int32(byte_array, index)
 	local third_person_packages = {}
 
-	for i = 1, inventory_pack_3p_count, 1 do
+	for i = 1, inventory_pack_3p_count do
 		local network_package = nil
 		network_package, index = ByteArray.read_int32(byte_array, index)
 		third_person_packages[NetworkLookup.inventory_packages[network_package]] = false
@@ -175,7 +175,7 @@ local function decode_lookup(lookup_key)
 end
 
 local function encode_level_transition_type(level_transition_type_string)
-	return (level_transition_type_string == "load_next_level" and 0) or 1
+	return level_transition_type_string == "load_next_level" and 0 or 1
 end
 
 local function decode_level_transition_type(level_transition_type_number)

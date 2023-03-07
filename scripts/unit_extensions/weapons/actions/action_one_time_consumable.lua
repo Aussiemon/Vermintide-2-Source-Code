@@ -47,5 +47,3 @@ ActionOneTimeConsumable.finish = function (self, reason)
 		ammo_extension:use_ammo(ammo_usage)
 	end
 end
-
-return

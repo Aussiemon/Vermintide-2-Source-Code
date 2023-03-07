@@ -206,5 +206,3 @@ end
 DataServerQueue.num_current_requests = function (self)
 	return #self._queue
 end
-
-return

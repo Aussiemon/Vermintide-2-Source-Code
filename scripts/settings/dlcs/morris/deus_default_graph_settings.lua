@@ -1562,5 +1562,3 @@ for seed, graph in pairs(DeusDefaultGraphs) do
 		node_data.key = id
 	end
 end
-
-return

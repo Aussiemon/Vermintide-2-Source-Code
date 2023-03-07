@@ -213,5 +213,3 @@ end
 CutsceneCamera.far_range = function (self)
 	return Camera.far_range(self.camera)
 end
-
-return

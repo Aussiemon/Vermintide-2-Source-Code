@@ -11,14 +11,14 @@ local function compare_utility()
 	local f1 = EngineOptimized.utility_from_spline
 	local utility = nil
 
-	for ii = 1, 1000, 1 do
+	for ii = 1, 1000 do
 		utility = f1(consideration.engine_spline_index, blackboard_value)
 	end
 
 	local norm_value = math.clamp(blackboard_value / consideration.max_value, 0, 1)
 	local f2 = Utility.GetUtilityValueFromSpline
 
-	for ii = 1, 1000, 1 do
+	for ii = 1, 1000 do
 		utility = f2(consideration.spline, norm_value)
 	end
 end
@@ -29,7 +29,7 @@ local function test_pointx(nodes, p)
 	local best_sub_index = -1
 	local p1 = nodes[1]:unbox()
 
-	for j = 1, #nodes - 1, 1 do
+	for j = 1, #nodes - 1 do
 		local p2 = nodes[j + 1]:unbox()
 		local closest_point = Geometry.closest_point_on_line(p, p1, p2)
 		local d = Vector3.distance_squared(p, closest_point)
@@ -69,7 +69,7 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 			Vector3Box(p)
 		}
 
-		for i = 2, num_points, 1 do
+		for i = 2, num_points do
 			local wanted_distance = total_path_dist / num_points * i
 			local pos, main_index = MainPathUtils.point_on_mainpath(main_paths, wanted_distance)
 
@@ -93,14 +93,14 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	QuickDrawer:sphere(pos, 10 + math.sin(t * 5) * 5)
 	Debug.text("DISTANCE point: %d, distance %.1f", ti, main_path_data.collapsed_travel_dists[ti])
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		closest_pos_at_main_path(main_path_data.collapsed_path, main_path_data.collapsed_travel_dists, main_path_data.breaks_lookup, pos, ti)
 	end
 
 	local closest_pos_at_main_path_opt = EngineOptimized.closest_pos_at_main_path
 	local pr2 = EngineOptimized.point_on_mainpath
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		closest_pos_at_main_path_opt(pos)
 	end
 
@@ -110,13 +110,13 @@ ConflictDirectorTests.test_main_path_optimization = function (self, t, dt)
 	local res = nil
 	local EngineOptimized_closest_point_on_line = EngineOptimized.closest_point_on_line
 
-	for i = 1, 250, 1 do
+	for i = 1, 250 do
 		res = EngineOptimized_closest_point_on_line(p, p1, p2)
 	end
 
 	local Geometry_closest_point_on_line = Geometry.closest_point_on_line
 
-	for i = 1, 250, 1 do
+	for i = 1, 250 do
 		res = Geometry_closest_point_on_line(p, p1, p2)
 	end
 
@@ -149,7 +149,7 @@ function test_spawn_pos_ahead_half_sphere(self)
 		local level = LevelHelper:current_level(self._world)
 		local nav_tag_volume_handler = self.nav_tag_volume_handler
 
-		for i = 1, 25, 1 do
+		for i = 1, 25 do
 			local p = ConflictUtils.get_hidden_pos(self._world, self.nav_world, level, nav_tag_volume_handler, true, epicenter, self.hero_player_and_bot_positions, 30, 10, avoid_dist_sqr, 10, forward_path_dir, math.pi)
 
 			if p then
@@ -226,7 +226,7 @@ ConflictDirectorTests.setup_reachable_coverpoints_test = function (self)
 	local point_list = {}
 	local num_found, cover_points = ConflictUtils.hidden_cover_points(self.hero_player_positions[1], self.hero_player_positions, 2, 45, 1)
 
-	for i = 1, num_found, 1 do
+	for i = 1, num_found do
 		point_list[i] = Vector3Box(Unit.local_position(cover_points[i], 0))
 	end
 
@@ -290,7 +290,7 @@ end
 function print_points(points, num)
 	print("[")
 
-	for i = 1, num, 1 do
+	for i = 1, num do
 		local p = points[i]
 
 		if i > 1 then
@@ -324,7 +324,7 @@ function convex_hull(points, h)
 
 	local num = 0
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		local pt = points[i]
 
 		while num >= 2 and not ccw(h[num - 1], h[num], pt) do
@@ -382,7 +382,7 @@ ConflictDirectorTests.update_jslots = function (self, unit)
 
 	local num_ai_units = AiUtils.broadphase_query(p, 7, RESULT_TABLE)
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local attacker_unit = RESULT_TABLE[i]
 		local units = jslot.units
 
@@ -412,7 +412,7 @@ ConflictDirectorTests.update_jslots = function (self, unit)
 	local slots = jslot.slots
 	local adjusted_dirs = jslot.adjusted_dirs
 
-	for i = 1, #slots, 1 do
+	for i = 1, #slots do
 		QuickDrawer:line(p, p + slots[i], Color(23, 223, 100))
 	end
 end
@@ -465,7 +465,7 @@ end
 ConflictDirectorTests.lean_slot_test = function ()
 	local max_slots = 10
 	local dist = 3
-	local slot_angle = (2 * math.pi) / max_slots
+	local slot_angle = 2 * math.pi / max_slots
 	local lean_slots = ConflictDirectorTests.lean_slots
 	local side = Managers.state.side:get_side_from_name("heroes") or Managers.state.side:get_side(1)
 	local pos = side.PLAYER_POSITIONS[1]
@@ -523,7 +523,7 @@ ConflictDirectorTests.lean_slot_test_update = function (side)
 
 		local pos = side.PLAYER_POSITIONS[1]
 
-		for i = 1, #lean_slots, 1 do
+		for i = 1, #lean_slots do
 			local slot_pos = lean_slots[i]
 
 			QuickDrawer:sphere(Vector3(pos.x + slot_pos[1], pos.y + slot_pos[2], slot_pos[3]), 0.5, Color(255, 255, 0))
@@ -571,7 +571,7 @@ ConflictDirectorTests.tentacle_test_start = function (side, t, dt)
 		local target_pos = side.PLAYER_POSITIONS[1] + Vector3(0, 0, 1)
 		local joints = {}
 
-		for i = 1, 14, 1 do
+		for i = 1, 14 do
 			joints[i] = Vector3(0, 0, i * 0.5)
 		end
 
@@ -627,8 +627,8 @@ ConflictDirectorTests.spawn_mesh_cut = function (conflict_director)
 	local cell_size = 2
 	local radius = cell_size / 2 + 0.3
 
-	for i = -xc, xc, 1 do
-		for j = -yc, yc, 1 do
+	for i = -xc, xc do
+		for j = -yc, yc do
 			local pos = spawn_pos + Vector3(i * cell_size, j * cell_size, -1)
 
 			QuickDrawerStay:sphere(pos, radius)
@@ -695,7 +695,7 @@ ConflictDirectorTests.test_cover_points = function (self, side)
 
 	local player_pos = player_positions[1]
 
-	for i = 1, #found_units, 1 do
+	for i = 1, #found_units do
 		local unit = found_units[i]
 		local pos = Unit.local_position(unit, 0)
 		local rot = Unit.local_rotation(unit, 0)
@@ -796,7 +796,7 @@ ConflictDirectorTests.update_group_astar_test = function (self, side)
 		local path = self.astar_path
 		local old_pos = nil
 
-		for i = 1, #path, 1 do
+		for i = 1, #path do
 			local pos = path[i]:get_group_center():unbox()
 
 			QuickDrawer:sphere(pos, 2)
@@ -813,7 +813,7 @@ end
 local function fake_broadphase(in_list, pos, rad)
 	out_list = {}
 
-	for i = 1, #in_list, 1 do
+	for i = 1, #in_list do
 		local u = in_list[i]
 		local p = Vector3(u.pos[1], u.pos[2], 0)
 
@@ -829,7 +829,7 @@ local function get_lean_target(enemy_list)
 	local best_dogpile_value = 99
 	local target_blackboard, best_target_unit = nil
 
-	for i = 1, #enemy_list, 1 do
+	for i = 1, #enemy_list do
 		local target_unit = enemy_list[i]
 		target_blackboard = BLACKBOARDS[target_unit]
 		local dogpile = target_blackboard.lean_dogpile
@@ -856,7 +856,7 @@ local function get_lean_target(enemy_list)
 end
 
 function slot_testing(self)
-	for i = 1, #a, 1 do
+	for i = 1, #a do
 		unit = a[i]
 	end
 end
@@ -927,8 +927,8 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 	print("starting test:", test)
 
 	if test == "sparse" then
-		for i = 1, 30, 1 do
-			for j = 1, 30, 1 do
+		for i = 1, 30 do
+			for j = 1, 30 do
 				local c = side.PLAYER_POSITIONS[1]
 				local pos = Vector3(c[1] + i * 0.3, c[2] + j * 0.3, c[3])
 
@@ -1000,7 +1000,7 @@ ConflictDirectorTests.start_test = function (conflict_director, t, dt, test)
 		local hull, num = convex_hull(points, {})
 		local z = 0.5
 
-		for i = 1, num, 1 do
+		for i = 1, num do
 			local a = hull[i]
 			local b = nil
 
@@ -1045,5 +1045,3 @@ ConflictDirectorTests.update = function (conflict_director, t, dt)
 		ConflictDirectorTests.update_group_astar_test(conflict_director, side)
 	end
 end
-
-return

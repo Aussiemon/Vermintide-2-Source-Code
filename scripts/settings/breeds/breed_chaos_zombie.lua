@@ -454,9 +454,7 @@ local action_data = {
 				}
 			}
 		}
-	},
-	fallback_idle = action_data.idle
+	}
 }
+action_data.fallback_idle = action_data.idle
 BreedActions.chaos_zombie = table.create_copy(BreedActions.chaos_zombie, action_data)
-
-return

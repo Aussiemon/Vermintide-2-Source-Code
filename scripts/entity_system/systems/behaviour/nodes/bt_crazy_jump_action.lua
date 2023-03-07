@@ -398,7 +398,7 @@ BTCrazyJumpAction.check_colliding_players = function (self, unit, blackboard, po
 		local hit_actors, actor_count = PhysicsWorld.immediate_overlap(self.physics_world, "shape", "sphere", "position", pos, "size", radius, "types", "both", "collision_filter", "filter_player_and_husk_trigger", "use_global_table")
 
 		if actor_count > 0 then
-			for i = 1, actor_count, 1 do
+			for i = 1, actor_count do
 				local hit_actor = hit_actors[i]
 				local hit_unit = Actor.unit(hit_actor)
 
@@ -416,7 +416,7 @@ BTCrazyJumpAction.check_colliding_players = function (self, unit, blackboard, po
 		local shortest_dist_squared = 4
 		local hit_unit = nil
 
-		for i = 1, #enemy_player_and_bot_units, 1 do
+		for i = 1, #enemy_player_and_bot_units do
 			local player_unit = enemy_player_and_bot_units[i]
 			local player_pos = position_lookup[player_unit]
 			local dist_squared = Vector3.distance_squared(pos, player_pos)
@@ -486,7 +486,7 @@ BTCrazyJumpAction.ray_cast = function (from, to, blackboard, ignore_unit)
 
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local hit_position = hit[INDEX_POSITION]
 			local hit_distance = hit[INDEX_DISTANCE]
@@ -523,5 +523,3 @@ BTCrazyJumpAction.debug = function (self, unit, blackboard, data, t)
 		end
 	end
 end
-
-return

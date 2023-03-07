@@ -29,7 +29,7 @@ WeaveObjectiveSystem.init = function (self, entity_system_creation_context, syst
 	}
 	self._essence_unit_data = {}
 
-	for i = 1, 20, 1 do
+	for i = 1, 20 do
 		self._essence_unit_data[i] = {}
 	end
 
@@ -94,7 +94,7 @@ WeaveObjectiveSystem.deactivate = function (self)
 
 	local essence_unit_data = self._essence_unit_data
 
-	for i = 1, #essence_unit_data, 1 do
+	for i = 1, #essence_unit_data do
 		local data = essence_unit_data[i]
 		local unit = data.unit
 
@@ -156,7 +156,7 @@ WeaveObjectiveSystem.spawn_essence_unit = function (self, position, size)
 	local essence_unit_data = self._essence_unit_data
 	local index = nil
 
-	for i = 1, #essence_unit_data, 1 do
+	for i = 1, #essence_unit_data do
 		local data = essence_unit_data[i]
 		local unit = data.unit
 
@@ -200,7 +200,7 @@ WeaveObjectiveSystem._collect_dropped_essence = function (self, dt)
 	local essence_unit_data = self._essence_unit_data
 	local unit_alive = Unit.alive
 
-	for i = 1, #essence_unit_data, 1 do
+	for i = 1, #essence_unit_data do
 		local data = essence_unit_data[i]
 		local unit = data.unit
 
@@ -252,5 +252,3 @@ WeaveObjectiveSystem.only_kill_objective = function (self)
 
 	return only_kill_objective_left
 end
-
-return

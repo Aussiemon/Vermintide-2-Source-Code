@@ -87,5 +87,3 @@ end
 Timer.delta_time = function (self)
 	return self._dt
 end
-
-return

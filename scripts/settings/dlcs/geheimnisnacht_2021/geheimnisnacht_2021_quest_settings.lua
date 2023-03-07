@@ -51,7 +51,7 @@ local function make_meta_progress(meta_quest_map)
 	return function (statistics_db, stats_id, quest_key, quest_templates, claimed_quests)
 		local count = 0
 
-		for i = 1, num_meta_quests, 1 do
+		for i = 1, num_meta_quests do
 			local quest_name = meta_quest_map[i]
 			local completed = claimed_quests[quest_name]
 
@@ -71,7 +71,7 @@ local function make_meta_completed(meta_quest_map)
 	local num_meta_quests = #meta_quest_map
 
 	return function (statistics_db, stats_id, quest_key, quest_templates, claimed_quests)
-		for i = 1, num_meta_quests, 1 do
+		for i = 1, num_meta_quests do
 			local quest_name = meta_quest_map[i]
 			local completed = claimed_quests[quest_name]
 
@@ -90,7 +90,7 @@ local function make_meta_requirements(meta_quest_map)
 	return function (statistics_db, stats_id, quest_key, quest_templates, claimed_quests)
 		local reqs = {}
 
-		for i = 1, num_meta_quests, 1 do
+		for i = 1, num_meta_quests do
 			local quest_name = meta_quest_map[i]
 			local completed = claimed_quests[quest_name]
 			local quest_display_name = quest_templates[quest_name].name
@@ -323,7 +323,7 @@ settings.quest_templates = {
 		icon = "quest_book_geheimnisnacht",
 		desc = "quest_event_geheimnisnacht_2022_play_5_hardmode_desc",
 		completed = function (statistics_db, stats_id, quest_key, quest_templates)
-			for i = 1, #hard_mode_levels, 1 do
+			for i = 1, #hard_mode_levels do
 				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 
 				if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) <= 0 then
@@ -336,7 +336,7 @@ settings.quest_templates = {
 		progress = function (statistics_db, stats_id, quest_key, quest_templates)
 			local count = 0
 
-			for i = 1, #hard_mode_levels, 1 do
+			for i = 1, #hard_mode_levels do
 				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 
 				if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0 then
@@ -352,7 +352,7 @@ settings.quest_templates = {
 		requirements = function (statistics_db, stats_id, quest_key, quest_templates, claimed_quests)
 			local reqs = {}
 
-			for i = 1, #hard_mode_levels, 1 do
+			for i = 1, #hard_mode_levels do
 				local level_id = hard_mode_levels[i]
 				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 				local completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
@@ -590,7 +590,7 @@ settings.quest_templates = {
 		icon = "quest_book_geheimnisnacht",
 		desc = "quest_event_geheimnisnacht_2021_play_5_hardmode_desc",
 		completed = function (statistics_db, stats_id, quest_key, quest_templates)
-			for i = 1, #hard_mode_levels, 1 do
+			for i = 1, #hard_mode_levels do
 				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 
 				if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) <= 0 then
@@ -603,7 +603,7 @@ settings.quest_templates = {
 		progress = function (statistics_db, stats_id, quest_key, quest_templates)
 			local count = 0
 
-			for i = 1, #hard_mode_levels, 1 do
+			for i = 1, #hard_mode_levels do
 				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 
 				if statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0 then
@@ -619,7 +619,7 @@ settings.quest_templates = {
 		requirements = function (statistics_db, stats_id, quest_key, quest_templates, claimed_quests)
 			local reqs = {}
 
-			for i = 1, #hard_mode_levels, 1 do
+			for i = 1, #hard_mode_levels do
 				local level_id = hard_mode_levels[i]
 				local stat_name = QuestSettings.stat_mappings[quest_key][i]
 				local completed = statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
@@ -644,5 +644,3 @@ settings.quest_templates = {
 		end
 	}
 }
-
-return

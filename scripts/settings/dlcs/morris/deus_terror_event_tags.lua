@@ -9,5 +9,3 @@ DeusTerrorEventTags = DeusTerrorEventTags or {
 	LESS_ELITES = "DEUS_LESS_ELITES",
 	LESS_SPECIALS = "DEUS_LESS_SPECIALS"
 }
-
-return

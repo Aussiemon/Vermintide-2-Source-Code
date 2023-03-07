@@ -138,7 +138,7 @@ end
 local is_windows_platform = IS_WINDOWS
 
 PlayerInputExtension.is_input_blocked = function (self)
-	return (self.input_service:is_blocked() or (is_windows_platform and not Window.has_focus()) or (HAS_STEAM and Managers.steam:is_overlay_active())) and not DamageUtils.is_in_inn and not Managers.state.entity:system("cutscene_system"):is_active()
+	return (self.input_service:is_blocked() or is_windows_platform and not Window.has_focus() or HAS_STEAM and Managers.steam:is_overlay_active()) and not DamageUtils.is_in_inn and not Managers.state.entity:system("cutscene_system"):is_active()
 end
 
 PlayerInputExtension.get = function (self, input_key, consume)
@@ -182,7 +182,7 @@ PlayerInputExtension.set_input_key_scale = function (self, input_key, scale, ler
 
 	local start_scale = 1
 	local t = self._t
-	local lerp_end_t = (lerp_time and t + lerp_time) or nil
+	local lerp_end_t = lerp_time and t + lerp_time or nil
 	local input_key_scale_data = self.input_key_scale[input_key]
 
 	if input_key_scale_data then
@@ -240,7 +240,7 @@ PlayerInputExtension.force_release_input = function (self, input)
 end
 
 PlayerInputExtension.reset_release_input_with_delay = function (self, delay)
-	self._release_input_delay = (self._release_input_delay and self._release_input_delay + delay) or delay
+	self._release_input_delay = self._release_input_delay and self._release_input_delay + delay or delay
 end
 
 PlayerInputExtension.get_wield_cooldown = function (self, override_cooldown_time)
@@ -316,7 +316,7 @@ PlayerInputExtension.clear_input_buffer = function (self, clear_from_wield)
 end
 
 PlayerInputExtension.add_buffer = function (self, input_key, doubleclick_window)
-	if input_key == "action_one_hold" or (input_key ~= "action_two_hold" and self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
+	if input_key == "action_one_hold" or input_key ~= "action_two_hold" and self.priority_input[self.buffer_key] and not self.priority_input[input_key] then
 		return
 	elseif input_key == "action_two_hold" then
 		return
@@ -357,5 +357,3 @@ PlayerInputExtension.add_stun_buffer = function (self, input_key)
 	self.input_buffer = self.input_buffer_user_setting
 	self.buffer_key = input_key
 end
-
-return

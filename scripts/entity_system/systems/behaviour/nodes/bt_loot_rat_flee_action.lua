@@ -136,7 +136,7 @@ BTLootRatFleeAction.update_state_moving_to_level_end = function (self, unit, bla
 			if GwNavAStar.path_found(astar) and GwNavAStar.node_count(astar) > 0 then
 				next_node_index = target_node_index + 1
 			else
-				node_data.direction = (node_data.direction == "fwd" and "bwd") or "fwd"
+				node_data.direction = node_data.direction == "fwd" and "bwd" or "fwd"
 				next_node_index = #node_data.nodes[node_data.direction] - target_node_index + 2
 			end
 
@@ -173,12 +173,12 @@ BTLootRatFleeAction.update_state_moving_to_level_end = function (self, unit, bla
 
 					return
 				else
-					node_data.direction = (node_data.direction == "fwd" and "bwd") or "fwd"
+					node_data.direction = node_data.direction == "fwd" and "bwd" or "fwd"
 					next_node_index = #node_data.nodes[node_data.direction] - target_node_index + 2
 				end
 			end
 		else
-			node_data.direction = (node_data.direction == "fwd" and "bwd") or "fwd"
+			node_data.direction = node_data.direction == "fwd" and "bwd" or "fwd"
 			next_node_index = 2
 		end
 
@@ -213,7 +213,7 @@ BTLootRatFleeAction.has_escaped_players = function (self, unit, blackboard)
 	local side = blackboard.side
 	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS, 1 do
+	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS do
 		local player_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 		local player_position = POSITION_LOOKUP[player_unit]
 		local distance_to_player_sq = Vector3.distance_squared(unit_position, player_position)
@@ -250,7 +250,7 @@ BTLootRatFleeAction.toggle_start_move_animation_lock = function (self, unit, sho
 end
 
 BTLootRatFleeAction.debug_draw_path_nodes = function (self, nav_world, nodes, break_nodes, target_node_index, t)
-	for i = 1, #nodes, 1 do
+	for i = 1, #nodes do
 		local node = nodes[i]
 		local node_position = node:unbox()
 
@@ -273,5 +273,3 @@ BTLootRatFleeAction.debug_draw_path_nodes = function (self, nav_world, nodes, br
 		end
 	end
 end
-
-return

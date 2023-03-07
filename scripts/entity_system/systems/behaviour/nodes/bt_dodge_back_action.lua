@@ -99,5 +99,3 @@ BTDodgeBackAction.anim_cb_combat_step_stop = function (self, unit, blackboard)
 		navigation_extension:stop()
 	end
 end
-
-return

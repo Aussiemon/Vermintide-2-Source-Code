@@ -101,7 +101,7 @@ BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_c
 
 	local max_i = math.min(found_cover_units_n, 15)
 
-	for i = 1, max_i, 1 do
+	for i = 1, max_i do
 		local unit = found_cover_units[i]
 		local pos = unit_position(unit, 0)
 		local dist_squared = distance_squared(pos, position)
@@ -126,5 +126,3 @@ BTPackMasterGetHookAction.find_hidden_cover = function (self, position, player_c
 		end
 	end
 end
-
-return

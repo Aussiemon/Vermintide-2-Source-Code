@@ -9,5 +9,3 @@ end
 MutatorItemSpawnerExtension.destroy = function (self)
 	return
 end
-
-return

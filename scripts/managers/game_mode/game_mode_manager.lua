@@ -83,7 +83,7 @@ GameModeManager.init = function (self, world, lobby_host, lobby_client, network_
 	if level_mutators then
 		mutators = mutators or {}
 
-		for i = 1, #level_mutators, 1 do
+		for i = 1, #level_mutators do
 			mutators[#mutators + 1] = level_mutators[i]
 		end
 	end
@@ -321,7 +321,7 @@ GameModeManager._set_flow_object_set_enabled = function (self, set, enable, set_
 	if overflow > 0 then
 		local amount_to_remove = math.min(overflow, size)
 
-		for i = 1, amount_to_remove, 1 do
+		for i = 1, amount_to_remove do
 			local unit_index = buffer[read_index]
 
 			self:_set_flow_object_set_unit_enabled(level, unit_index)
@@ -379,14 +379,14 @@ GameModeManager.update_flow_object_set_enable = function (self, dt)
 	local flush = self._flush_object_set_enable
 
 	if size > 0 then
-		local units_per_frame = (flush and math.huge) or data.units_per_frame
+		local units_per_frame = flush and math.huge or data.units_per_frame
 		local num_units = math.min(units_per_frame, size)
 		local read_index = data.read_index
 		local max_size = data.max_size
 		local buffer = data.ring_buffer
 		local level = LevelHelper:current_level(self._world)
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit_index = buffer[read_index]
 
 			self:_set_flow_object_set_unit_enabled(level, unit_index)
@@ -483,7 +483,7 @@ GameModeManager._set_flow_object_set_unit_enabled = function (self, level, index
 				actor_list = {}
 			end
 
-			for i = 0, Unit.num_actors(unit) - 1, 1 do
+			for i = 0, Unit.num_actors(unit) - 1 do
 				if new_state and actor_list[i] then
 					Unit.create_actor(unit, i)
 				elseif not new_state and Unit.actor(unit, i) then
@@ -764,7 +764,7 @@ GameModeManager.server_update = function (self, dt, t)
 
 				self._end_conditions_met = true
 				self._end_reason = reason
-				local checkpoint_available = (reason == "lost" and Managers.state.spawn:checkpoint_data() and true) or false
+				local checkpoint_available = reason == "lost" and Managers.state.spawn:checkpoint_data() and true or false
 				local mission_system = Managers.state.entity:system("mission_system")
 				local percentages_completed = mission_system:percentages_completed()
 
@@ -1015,7 +1015,7 @@ GameModeManager._update_end_level_areas = function (self)
 
 		local enabled = self._end_level_areas[unit]
 
-		QuickDrawer:box(pose, extents, (enabled and Color(0, 255, 0)) or Color(255, 0, 0))
+		QuickDrawer:box(pose, extents, enabled and Color(0, 255, 0) or Color(255, 0, 0))
 	end
 
 	if table.is_empty(self._end_level_areas) then
@@ -1147,5 +1147,3 @@ GameModeManager.rpc_trigger_level_event = function (self, channel_id, event)
 		Level.trigger_event(level, event)
 	end
 end
-
-return

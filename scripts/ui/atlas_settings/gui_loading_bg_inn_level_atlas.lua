@@ -28,5 +28,3 @@ loading_bg_inn_level_atlas = {
 		}
 	}
 }
-
-return

@@ -2,8 +2,8 @@ DebugGutterRunner = DebugGutterRunner or {}
 
 DebugGutterRunner.update = function (unit, blackboard, t)
 	local breed = blackboard.breed
-	local target_unit = (blackboard.target_unit and Unit.get_data(blackboard.target_unit, "unit_name")) or "nil"
-	local jump_target = (blackboard.jump_data and blackboard.jump_data.target_unit) or "-"
+	local target_unit = blackboard.target_unit and Unit.get_data(blackboard.target_unit, "unit_name") or "nil"
+	local jump_target = blackboard.jump_data and blackboard.jump_data.target_unit or "-"
 	local jump_range = string.format("%.1f / %.1f, close range: 8.0 ", blackboard.target_dist or 0, tostring(breed.jump_range))
 	local ai_node = blackboard.action and blackboard.action.name
 	local skulk = nil
@@ -25,9 +25,9 @@ DebugGutterRunner.update = function (unit, blackboard, t)
 		growing_aggro = "n/a"
 	end
 
-	local special_targets_text = (target_unit and blackboard.group_blackboard.special_targets[target_unit] == unit and "YES") or "NO"
-	local next_smart_object_data = (blackboard.next_smart_object_data.next_smart_object_id ~= nil and "YES") or "NO"
-	local in_smartobj_range = (blackboard.is_in_smartobject_range and "YES") or "NO"
+	local special_targets_text = target_unit and blackboard.group_blackboard.special_targets[target_unit] == unit and "YES" or "NO"
+	local next_smart_object_data = blackboard.next_smart_object_data.next_smart_object_id ~= nil and "YES" or "NO"
+	local in_smartobj_range = blackboard.is_in_smartobject_range and "YES" or "NO"
 
 	DebugGlobadier.debug_hud_print("Gutter runner:", nil, 1)
 	DebugGlobadier.debug_hud_print("behavior:", ai_node, 2)
@@ -85,5 +85,3 @@ DebugGutterRunner.debug_hud_background = function (max_index)
 
 	Gui.rect(gui, pos, size, color)
 end
-
-return

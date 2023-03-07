@@ -235,10 +235,10 @@ AbilityUI.event_input_changed = function (self)
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local inventory_slots = InventorySettings.slots
 	local num_inventory_slots = #inventory_slots
-	local input_action = (gamepad_active and "ability") or "action_career"
+	local input_action = gamepad_active and "ability" or "action_career"
 	local widget = self._widgets_by_name.ability
 	local _, input_text = self:_get_input_texture_data(input_action)
-	local text_length = (input_text and UTF8Utils.string_length(input_text)) or 0
+	local text_length = input_text and UTF8Utils.string_length(input_text) or 0
 
 	if input_text then
 		local ui_renderer = self._ui_renderer
@@ -295,5 +295,3 @@ AbilityUI._update_numeric_ui_ability_cooldown = function (self)
 
 	self:_smudge()
 end
-
-return

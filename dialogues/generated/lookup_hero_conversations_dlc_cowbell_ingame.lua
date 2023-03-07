@@ -86,5 +86,3 @@ DialogueLookup[DialogueLookup_n + 41] = "pdr_shadow_curse_curse_arrival_b"
 DialogueLookup[DialogueLookup_n + 42] = "pwe_shadow_curse_curse_arrival_b"
 DialogueLookup[DialogueLookup_n + 43] = "pes_shadow_curse_curse_arrival_b"
 DialogueLookup_n = DialogueLookup_n + 43
-
-return

@@ -73,10 +73,10 @@ InputAux.combination_functions = {
 	avg = function (lhs, rhs)
 		return (lhs + rhs) / 2
 	end,
-	or = function (lhs, rhs)
+	["or"] = function (lhs, rhs)
 		return lhs or rhs
 	end,
-	and = function (lhs, rhs)
+	["and"] = function (lhs, rhs)
 		return lhs and rhs
 	end
 }
@@ -160,5 +160,3 @@ TestFilters = {
 		}
 	}
 }
-
-return

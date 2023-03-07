@@ -2474,5 +2474,3 @@ HitEffectsSkavenPlagueMonk = {
 	}
 }
 HitEffectsSkavenPlagueMonk = table.create_copy(HitEffectsSkavenPlagueMonk, HitEffectsSkavenPlagueMonk)
-
-return

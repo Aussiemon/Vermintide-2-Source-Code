@@ -24,5 +24,3 @@ function populate_crashify(save_data)
 
 	Crashify.print_property("machine_id", id)
 end
-
-return

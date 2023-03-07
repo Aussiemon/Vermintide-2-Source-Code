@@ -286,8 +286,8 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 					17
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
-					(health_bar_offset[2] + health_bar_size[2] / 2) - 6.5,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 50,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 6.5,
 					health_bar_offset[3] + 15
 				},
 				color = {
@@ -303,8 +303,8 @@ UIWidgets.create_deus_player_status_portrait = function (scenegraph_id, frame_se
 					24
 				},
 				offset = {
-					(health_bar_offset[1] + health_bar_size[1] / 2) - 50,
-					(health_bar_offset[2] + health_bar_size[2] / 2) - 6.5 - 7,
+					health_bar_offset[1] + health_bar_size[1] / 2 - 50,
+					health_bar_offset[2] + health_bar_size[2] / 2 - 6.5 - 7,
 					health_bar_offset[3] + 20
 				},
 				color = {
@@ -663,7 +663,7 @@ UIWidgets.deus_create_player_portraits_frame = function (scenegraph_id, frame_se
 			size = data.size
 		end
 
-		size = (size and table.clone(size)) or {
+		size = size and table.clone(size) or {
 			0,
 			0
 		}
@@ -696,14 +696,19 @@ UIWidgets.deus_create_player_portraits_frame = function (scenegraph_id, frame_se
 	end
 
 	local portrait_size = {
-		portrait_size[1],
-		portrait_size[2]
+		86,
+		108
 	}
+	portrait_size[1] = portrait_size[1]
+	portrait_size[2] = portrait_size[2]
 	local level_offset = {
-		level_offset[1],
-		level_offset[2],
-		15
+		0,
+		8,
+		0
 	}
+	level_offset[1] = level_offset[1]
+	level_offset[2] = level_offset[2]
+	level_offset[3] = 15
 	local level_name = "level"
 	widget.element.passes[#widget.element.passes + 1] = {
 		pass_type = "text",
@@ -940,7 +945,7 @@ UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, in
 	}
 	local title_panel_offset = {
 		0,
-		(bottom_panel_size[2] + 2.5) - bottom_frame_offset[2],
+		bottom_panel_size[2] + 2.5 - bottom_frame_offset[2],
 		-2
 	}
 	local title_frame_settings = UIFrameSettings[title_frame_name]
@@ -965,7 +970,7 @@ UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, in
 		-2
 	}
 	local top_frame_settings = UIFrameSettings[top_frame_name]
-	local top_edge_height = (top_frame_settings and top_frame_settings.texture_sizes.horizontal[2]) or 0
+	local top_edge_height = top_frame_settings and top_frame_settings.texture_sizes.horizontal[2] or 0
 	local top_frame_size = {
 		top_panel_size[1] + top_edge_height * 2,
 		top_panel_size[2] + top_edge_height * 2
@@ -1010,7 +1015,7 @@ UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, in
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			top_panel_offset[1],
-			(top_panel_offset[2] + top_panel_size[2] / 2) - top_height / 2,
+			top_panel_offset[2] + top_panel_size[2] / 2 - top_height / 2,
 			0
 		},
 		size = top_panel_size
@@ -1033,7 +1038,7 @@ UIWidgets.create_framed_info_box = function (scenegraph_id, title_frame_name, in
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			icon_size[1] + icon_spacing + icon_edge_height + title_spacing,
-			(title_panel_offset[2] + title_panel_size[2] / 2) - title_height / 2,
+			title_panel_offset[2] + title_panel_size[2] / 2 - title_height / 2,
 			0
 		},
 		size = {
@@ -1590,7 +1595,7 @@ UIWidgets.create_start_game_difficulty_stepper = function (scenegraph_id, diffic
 					texture_id = "selected_difficulty_text_selected",
 					pass_type = "texture",
 					content_check_function = function (content)
-						return content.right_arrow_hotspot.is_hover or content.left_arrow_hotspot.is_hover or (not Managers.input:is_device_active("mouse") and content.is_selected)
+						return content.right_arrow_hotspot.is_hover or content.left_arrow_hotspot.is_hover or not Managers.input:is_device_active("mouse") and content.is_selected
 					end,
 					content_change_function = function (content, style)
 						style.color[1] = pulsate_glow(not Managers.input:is_device_active("mouse"))
@@ -3192,9 +3197,9 @@ UIWidgets.create_start_game_deus_journey_stepper = function (scenegraph_id)
 end
 
 UIWidgets.create_start_game_deus_gamemode_info_box = function (scenegraph_id, background_size, gamemode_header_text, game_mode_text, is_twitch)
-	local header_text_color_alpha = (is_twitch and 0) or 255
-	local info_hotspot_height = (is_twitch and background_size[2] / 2) or background_size[2]
-	local info_hotspot_offset_y = (is_twitch and background_size[2] / 2) or 0
+	local header_text_color_alpha = is_twitch and 0 or 255
+	local info_hotspot_height = is_twitch and background_size[2] / 2 or background_size[2]
+	local info_hotspot_offset_y = is_twitch and background_size[2] / 2 or 0
 
 	return {
 		element = {
@@ -3395,12 +3400,12 @@ UIWidgets.create_start_game_deus_gamemode_info_box = function (scenegraph_id, ba
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					25,
-					(is_twitch and background_size[2] / 2 - 20) or background_size[2] / 2 - 40,
+					is_twitch and background_size[2] / 2 - 20 or background_size[2] / 2 - 40,
 					2
 				},
 				size = {
 					background_size[1] - 50,
-					(is_twitch and background_size[2] / 2 - 10) or background_size[2] / 2 + 10
+					is_twitch and background_size[2] / 2 - 10 or background_size[2] / 2 + 10
 				}
 			},
 			expedition_highlight_text = {
@@ -3514,7 +3519,7 @@ UIWidgets.create_expedition_widget_func = function (scenegraph_id, i, journey_da
 			content_check_function = function (content)
 				local mouse_active = Managers.input:is_device_active("mouse")
 
-				return (content.button_hotspot.is_hover or (content.gamepad_selected and not mouse_active)) and not content.button_hotspot.is_selected
+				return (content.button_hotspot.is_hover or content.gamepad_selected and not mouse_active) and not content.button_hotspot.is_selected
 			end,
 			content_change_function = function (content, style)
 				style.color[1] = pulsate_glow(content.gamepad_selected)
@@ -4094,7 +4099,7 @@ UIWidgets.create_start_game_deus_difficulty_info_box = function (scenegraph_id, 
 					content_change_function = function (content, style)
 						local new_offset = {
 							2.5 + content.resize_offset[1],
-							(-content.difficulty_description_text_size - content.resize_offset[2] + 70) - content.difficulty_lock_text_height,
+							-content.difficulty_description_text_size - content.resize_offset[2] + 70 - content.difficulty_lock_text_height,
 							2
 						}
 
@@ -4299,5 +4304,3 @@ UIWidgets.create_start_game_deus_difficulty_info_box = function (scenegraph_id, 
 		scenegraph_id = scenegraph_id
 	}
 end
-
-return

@@ -36,83 +36,82 @@ local widget_definitions = {
 		}
 	}
 }
-local animations = {
-	fade_in_background = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.2,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.draw_background = true
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_fraction = math.easeOutCubic(local_progress)
-				local widget = widgets[1]
-				local color = widget.style.rect.color
-				local alpha = 255 * anim_fraction
-				color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+local animations = {}
+animations.fade_in_background = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.2,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.draw_background = true
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
+			local anim_fraction = math.easeOutCubic(local_progress)
+			local widget = widgets[1]
+			local color = widget.style.rect.color
+			local alpha = 255 * anim_fraction
+			color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animations.fade_out_background = {
+	{
+		name = "fade_out",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
+			local anim_fraction = math.easeOutCubic(local_progress)
+			local widget = widgets[1]
+			local color = widget.style.rect.color
+			local alpha = 255 - anim_fraction * 255
+			color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.draw_background = false
+		end
+	}
+}
+animations.auto_display_text = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
+			params.draw_flags.draw_text = true
+			local anim_fraction = math.easeOutCubic(local_progress)
+			local widget = widgets[1]
+			widget.style.banner_effect_texture.color[1] = anim_fraction * 255
+			widget.style.banner_texture.color[1] = anim_fraction * 255
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	fade_out_background = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_fraction = math.easeOutCubic(local_progress)
-				local widget = widgets[1]
-				local color = widget.style.rect.color
-				local alpha = 255 - anim_fraction * 255
-				color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.draw_background = false
-			end
-		}
-	},
-	auto_display_text = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				params.draw_flags.draw_text = true
-				local anim_fraction = math.easeOutCubic(local_progress)
-				local widget = widgets[1]
-				widget.style.banner_effect_texture.color[1] = anim_fraction * 255
-				widget.style.banner_texture.color[1] = anim_fraction * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fade_out",
-			start_progress = 4,
-			end_progress = 4.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
-				local anim_fraction = math.easeOutCubic(local_progress)
-				local widget = widgets[1]
-				widget.style.banner_effect_texture.color[1] = (1 - anim_fraction) * 255
-				widget.style.banner_texture.color[1] = (1 - anim_fraction) * 255
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.draw_text = false
-			end
-		}
+	{
+		name = "fade_out",
+		start_progress = 4,
+		end_progress = 4.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, local_progress, params)
+			local anim_fraction = math.easeOutCubic(local_progress)
+			local widget = widgets[1]
+			widget.style.banner_effect_texture.color[1] = (1 - anim_fraction) * 255
+			widget.style.banner_texture.color[1] = (1 - anim_fraction) * 255
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.draw_text = false
+		end
 	}
 }
 local screens = {

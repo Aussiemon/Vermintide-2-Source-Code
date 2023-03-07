@@ -166,7 +166,7 @@ StateLoadingRestartNetwork._init_network = function (self)
 		self.parent:register_rpcs()
 	end
 
-	slot9 = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
+	local lobby_data = self._starting_tutorial and Managers.invite:get_invited_lobby_data()
 	local loadout_resync_state = StateLoading.LoadoutResyncStates.WAIT_FOR_LEVEL_LOAD
 	local has_invitation = Managers.invite:has_invitation()
 
@@ -267,5 +267,3 @@ end
 StateLoadingRestartNetwork.cb_lobby_joined = function (self)
 	self._lobby_joined = true
 end
-
-return

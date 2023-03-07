@@ -48,8 +48,8 @@ end
 ObjectiveItemSpawnerSystem._trigger_spawn = function (self, item_spawner_data, objective_id, objective_data)
 	local item_spawner_unit = item_spawner_data.unit
 	local item_spawner_template = item_spawner_data.unit_template
-	local position = (item_spawner_unit and Unit.local_position(item_spawner_unit, 0)) or Vector3(0, 0, 0)
-	local rotation = (item_spawner_unit and Unit.local_rotation(item_spawner_unit, 0)) or Quaternion(Vector3(0, 0, 0), -1)
+	local position = item_spawner_unit and Unit.local_position(item_spawner_unit, 0) or Vector3(0, 0, 0)
+	local rotation = item_spawner_unit and Unit.local_rotation(item_spawner_unit, 0) or Quaternion(Vector3(0, 0, 0), -1)
 	local extension_init_data = item_spawner_template.create_extension_init_data_func(objective_id, objective_data, item_spawner_unit)
 	local spawned_unit, go_id = self:_spawn_unit(item_spawner_template, extension_init_data, position, rotation)
 
@@ -71,5 +71,3 @@ ObjectiveItemSpawnerSystem.destroy_objective = function (self, objective_id)
 		Managers.state.unit_spawner:mark_for_deletion(objective_data.unit)
 	end
 end
-
-return

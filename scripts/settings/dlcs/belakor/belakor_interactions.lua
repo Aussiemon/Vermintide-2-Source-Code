@@ -91,7 +91,7 @@ base_locus_definition.client.get_progress = function (data, config, t)
 		return 0
 	end
 
-	return (data.start_time == nil and 0) or math.min(1, (t - data.start_time) / duration)
+	return data.start_time == nil and 0 or math.min(1, (t - data.start_time) / duration)
 end
 
 base_locus_definition.client.stop = function (world, interactor_unit, interactable_unit, data, config, t, result)
@@ -155,5 +155,3 @@ InteractionDefinitions.deus_belakor_locus_with_crystal.config.allow_rotation_upd
 InteractionDefinitions.deus_belakor_locus_with_crystal.config.show_weapons = true
 InteractionDefinitions.deus_belakor_locus_with_crystal.config.animation = "insert_locus_crystal"
 InteractionDefinitions.deus_belakor_locus_with_crystal.config.rotate_toward_interactable = true
-
-return

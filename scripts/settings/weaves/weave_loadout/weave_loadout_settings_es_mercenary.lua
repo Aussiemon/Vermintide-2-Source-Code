@@ -6,5 +6,3 @@ WeaveLoadoutSettings.es_mercenary = {
 	properties = {},
 	traits = {}
 }
-
-return

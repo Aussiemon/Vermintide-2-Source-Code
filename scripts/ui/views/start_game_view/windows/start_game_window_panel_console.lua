@@ -35,7 +35,7 @@ StartGameWindowPanelConsole._create_ui_elements = function (self, definitions, p
 	local window_layouts = self._layout_settings.window_layouts
 	local parent = self.parent
 
-	for i = 1, #window_layouts, 1 do
+	for i = 1, #window_layouts do
 		local settings = window_layouts[i]
 
 		if settings.panel_sorting and parent:can_add_layout(settings) then
@@ -76,7 +76,7 @@ StartGameWindowPanelConsole._setup_text_buttons_width_and_position = function (s
 	local entry_width = math.floor(total_width / num_title_button_widgets)
 	ui_scenegraph.game_mode_option.size[1] = entry_width
 
-	for i = 1, num_title_button_widgets, 1 do
+	for i = 1, num_title_button_widgets do
 		local widget = title_button_widgets[i]
 
 		self:_set_text_button_size(widget, entry_width)
@@ -132,7 +132,7 @@ end
 StartGameWindowPanelConsole._update_title_buttons_disable_status = function (self)
 	local title_button_widgets = self._title_button_widgets
 
-	for i = 1, #title_button_widgets, 1 do
+	for i = 1, #title_button_widgets do
 		local widget = title_button_widgets[i]
 		local disable_function_name = widget.disable_function_name
 
@@ -174,7 +174,7 @@ StartGameWindowPanelConsole._update_animations = function (self, dt, t)
 
 	local title_button_widgets = self._title_button_widgets
 
-	for i = 1, #title_button_widgets, 1 do
+	for i = 1, #title_button_widgets do
 		self:_animate_title_entry(title_button_widgets[i], dt, t)
 	end
 
@@ -187,7 +187,7 @@ StartGameWindowPanelConsole._find_next_layout_name = function (self, direction)
 	local selected_layout_name = self._selected_layout_name
 	local title_button_widgets = self._title_button_widgets
 
-	for i = 1, #title_button_widgets, 1 do
+	for i = 1, #title_button_widgets do
 		local widget = title_button_widgets[i]
 		local layout_name = widget.content.layout_name
 
@@ -222,7 +222,7 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 	local selected_layout_name = nil
 	local title_button_widgets = self._title_button_widgets
 
-	for i = 1, #title_button_widgets, 1 do
+	for i = 1, #title_button_widgets do
 		local widget = title_button_widgets[i]
 
 		if not UIUtils.is_button_selected(widget) then
@@ -275,7 +275,7 @@ StartGameWindowPanelConsole._handle_input = function (self, dt, t)
 
 	if not input_made then
 		local input_service = parent:window_input_service()
-		local direction = (input_service:get(INPUT_ACTION_PREVIOUS) and -1) or (input_service:get(INPUT_ACTION_NEXT) and 1)
+		local direction = input_service:get(INPUT_ACTION_PREVIOUS) and -1 or input_service:get(INPUT_ACTION_NEXT) and 1
 
 		if direction then
 			selected_layout_name = self:_find_next_layout_name(direction)
@@ -293,7 +293,7 @@ end
 StartGameWindowPanelConsole._set_selected_option = function (self, selected_layout_name)
 	local title_button_widgets = self._title_button_widgets
 
-	for i = 1, #title_button_widgets, 1 do
+	for i = 1, #title_button_widgets do
 		local widget = title_button_widgets[i]
 		local content = widget.content
 		local layout_name = content.layout_name
@@ -492,5 +492,3 @@ StartGameWindowPanelConsole._animate_back_button = function (self, widget, dt)
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
 end
-
-return

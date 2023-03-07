@@ -40,5 +40,3 @@ BotNavTransitionExtension.destroy = function (self)
 		Managers.state.bot_nav_transition:unregister_transition(self._transition_unit)
 	end
 end
-
-return

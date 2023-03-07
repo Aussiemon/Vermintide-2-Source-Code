@@ -40,5 +40,3 @@ AIShieldUserHuskExtension.can_block_attack = function (self, attacker_unit, true
 
 	return can_block_attack
 end
-
-return

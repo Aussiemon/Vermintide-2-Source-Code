@@ -38,8 +38,8 @@ local function get_gamepad_text_pass_win32(button_name, optional_style_sufix, co
 	return {
 		pass_type = "text",
 		text_id = button_name,
-		style_id = (optional_style_sufix and button_name .. optional_style_sufix) or button_name,
-		content_check_function = (optional_style_sufix and content_check_function_texture_2_text) or content_check_function_texture_1_text
+		style_id = optional_style_sufix and button_name .. optional_style_sufix or button_name,
+		content_check_function = optional_style_sufix and content_check_function_texture_2_text or content_check_function_texture_1_text
 	}
 end
 
@@ -152,62 +152,62 @@ UIWidgets.create_gamepad_layout_win32 = function (bg_texture1, texture_size1, bg
 			},
 			left_trigger = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 40,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			left_shoulder = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 78,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			right_trigger = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 40,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			right_shoulder = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 78,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			ls = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 176,
+				offset[2] + 400 - 176,
 				offset[3] + 16
 			}),
 			rs = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 334,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 334,
 				offset[3] + 16
 			}),
 			left_thumb = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 196,
+				offset[2] + 400 - 196,
 				offset[3] + 16
 			}),
 			right_thumb = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 354,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 354,
 				offset[3] + 16
 			}),
 			d_up = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 240,
+				offset[2] + 400 - 240,
 				offset[3] + 16
 			}),
 			d_down = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 318,
+				offset[2] + 400 - 318,
 				offset[3] + 16
 			}),
 			d_left = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 280,
+				offset[2] + 400 - 280,
 				offset[3] + 16
 			}),
 			d_right = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 354,
+				offset[2] + 400 - 354,
 				offset[3] + 16
 			}),
 			back = get_gamepad_layout_text_style("left", {
@@ -216,118 +216,118 @@ UIWidgets.create_gamepad_layout_win32 = function (bg_texture1, texture_size1, bg
 				offset[3] + 16
 			}),
 			start = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
+				offset[1] + texture_size1[1] - 5,
 				offset[2] + 400 + 2,
 				offset[3] + 16
 			}),
 			x = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 290,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 290,
 				offset[3] + 16
 			}),
 			y = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 126,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 126,
 				offset[3] + 16
 			}),
 			a = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 244,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 244,
 				offset[3] + 16
 			}),
 			b = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size1[1]) - 5,
-				(offset[2] + 400) - 182,
+				offset[1] + texture_size1[1] - 5,
+				offset[2] + 400 - 182,
 				offset[3] + 16
 			}),
 			left_trigger_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 40,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			left_shoulder_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 78,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			right_trigger_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 400) - 40,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			right_shoulder_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 400) - 78,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			ls_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 346,
+				offset[2] + 440 - 346,
 				offset[3] + 16
 			}),
 			rs_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 348,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 348,
 				offset[3] + 16
 			}),
 			left_thumb_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 366,
+				offset[2] + 440 - 366,
 				offset[3] + 16
 			}),
 			right_thumb_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 368,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 368,
 				offset[3] + 16
 			}),
 			d_up_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 156,
+				offset[2] + 440 - 156,
 				offset[3] + 16
 			}),
 			d_down_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 248,
+				offset[2] + 440 - 248,
 				offset[3] + 16
 			}),
 			d_left_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 202,
+				offset[2] + 440 - 202,
 				offset[3] + 16
 			}),
 			d_right_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 298,
+				offset[2] + 440 - 298,
 				offset[3] + 16
 			}),
 			back_texture2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 38,
+				offset[2] + 440 - 38,
 				offset[3] + 16
 			}),
 			start_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 38,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 38,
 				offset[3] + 16
 			}),
 			x_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 300,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 300,
 				offset[3] + 16
 			}),
 			y_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 156,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 156,
 				offset[3] + 16
 			}),
 			a_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 250,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 250,
 				offset[3] + 16
 			}),
 			b_texture2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size2[1]) - 5,
-				(offset[2] + 440) - 204,
+				offset[1] + texture_size2[1] - 5,
+				offset[2] + 440 - 204,
 				offset[3] + 16
 			})
 		},
@@ -386,62 +386,62 @@ UIWidgets.create_gamepad_layout_xb1 = function (bg_texture, texture_size, offset
 			},
 			left_trigger = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 40,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			left_shoulder = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 78,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			right_trigger = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 40,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			right_shoulder = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 78,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			ls = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 176,
+				offset[2] + 400 - 176,
 				offset[3] + 16
 			}),
 			rs = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 334,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 334,
 				offset[3] + 16
 			}),
 			left_thumb = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 196,
+				offset[2] + 400 - 196,
 				offset[3] + 16
 			}),
 			right_thumb = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 354,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 354,
 				offset[3] + 16
 			}),
 			d_up = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 240,
+				offset[2] + 400 - 240,
 				offset[3] + 16
 			}),
 			d_down = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 318,
+				offset[2] + 400 - 318,
 				offset[3] + 16
 			}),
 			d_left = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 280,
+				offset[2] + 400 - 280,
 				offset[3] + 16
 			}),
 			d_right = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 354,
+				offset[2] + 400 - 354,
 				offset[3] + 16
 			}),
 			back = get_gamepad_layout_text_style("left", {
@@ -450,28 +450,28 @@ UIWidgets.create_gamepad_layout_xb1 = function (bg_texture, texture_size, offset
 				offset[3] + 16
 			}),
 			start = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
+				offset[1] + texture_size[1] - 5,
 				offset[2] + 400 + 2,
 				offset[3] + 16
 			}),
 			x = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 290,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 290,
 				offset[3] + 16
 			}),
 			y = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 126,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 126,
 				offset[3] + 16
 			}),
 			a = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 244,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 244,
 				offset[3] + 16
 			}),
 			b = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 182,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 182,
 				offset[3] + 16
 			})
 		},
@@ -548,92 +548,92 @@ UIWidgets.create_gamepad_layout_ps4 = function (bg_texture, texture_size, offset
 			},
 			l2 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 40,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			l1 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 400) - 78,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			r2 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 40,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 40,
 				offset[3] + 16
 			}),
 			r1 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 400) - 78,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 400 - 78,
 				offset[3] + 16
 			}),
 			ls = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 346,
+				offset[2] + 440 - 346,
 				offset[3] + 16
 			}),
 			rs = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 348,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 348,
 				offset[3] + 16
 			}),
 			l3 = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 366,
+				offset[2] + 440 - 366,
 				offset[3] + 16
 			}),
 			r3 = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 368,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 368,
 				offset[3] + 16
 			}),
 			up = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 156,
+				offset[2] + 440 - 156,
 				offset[3] + 16
 			}),
 			down = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 248,
+				offset[2] + 440 - 248,
 				offset[3] + 16
 			}),
 			left = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 202,
+				offset[2] + 440 - 202,
 				offset[3] + 16
 			}),
 			right = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 298,
+				offset[2] + 440 - 298,
 				offset[3] + 16
 			}),
 			touch = get_gamepad_layout_text_style("left", {
 				offset[1] + 5,
-				(offset[2] + 440) - 38,
+				offset[2] + 440 - 38,
 				offset[3] + 16
 			}),
 			options = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 38,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 38,
 				offset[3] + 16
 			}),
 			square = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 300,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 300,
 				offset[3] + 16
 			}),
 			triangle = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 156,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 156,
 				offset[3] + 16
 			}),
 			cross = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 250,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 250,
 				offset[3] + 16
 			}),
 			circle = get_gamepad_layout_text_style("right", {
-				(offset[1] + texture_size[1]) - 5,
-				(offset[2] + 440) - 204,
+				offset[1] + texture_size[1] - 5,
+				offset[2] + 440 - 204,
 				offset[3] + 16
 			})
 		},
@@ -1478,162 +1478,161 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 		optional_chain_suffix = ""
 	end
 
-	local passes = {
-		{
-			pass_type = "local_offset",
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_height_percentage < 1
-			end,
-			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local scroll_bar_info = ui_content.scroll_bar_info
-				local axis = scroll_bar_info.axis
-				local thumb_middle = ui_style.thumb_middle
-				local thumb_bottom = ui_style.thumb_bottom
-				local thumb_top = ui_style.thumb_top
-				local thumb_top_length = thumb_top.size[axis]
-				local thumb_middle_length = thumb_middle.size[axis]
-				local thumb_bottom_length = thumb_bottom.size[axis]
-				local hotspot = ui_style.hotspot
-				local scroll_length = scroll_bar_info.scroll_length
-				local min_height = thumb_top_length + thumb_bottom_length
-				local min_percentage = min_height / scroll_length
-				local bar_height_percentage = scroll_bar_info.bar_height_percentage
-				local percentage = math.max(bar_height_percentage, min_percentage)
-				hotspot.size[axis] = scroll_length * percentage
-				thumb_middle.size[axis] = math.max(math.floor(scroll_length * percentage) - min_height, 0)
-			end
-		},
-		{
-			style_id = "hotspot",
-			pass_type = "held",
-			content_id = "scroll_bar_info",
-			content_check_function = function (content)
-				return content.bar_height_percentage < 1
-			end,
-			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local axis = ui_content.axis
-				local gamepad_active = Managers.input:is_device_active("gamepad")
-				local base_cursor = input_service:get("cursor")
-				local cursor = UIInverseScaleVectorToResolution(base_cursor)
-				local cursor_y = cursor[axis]
+	local passes = {}
+	passes[1] = {
+		pass_type = "local_offset",
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_height_percentage < 1
+		end,
+		offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local scroll_bar_info = ui_content.scroll_bar_info
+			local axis = scroll_bar_info.axis
+			local thumb_middle = ui_style.thumb_middle
+			local thumb_bottom = ui_style.thumb_bottom
+			local thumb_top = ui_style.thumb_top
+			local thumb_top_length = thumb_top.size[axis]
+			local thumb_middle_length = thumb_middle.size[axis]
+			local thumb_bottom_length = thumb_bottom.size[axis]
+			local hotspot = ui_style.hotspot
+			local scroll_length = scroll_bar_info.scroll_length
+			local min_height = thumb_top_length + thumb_bottom_length
+			local min_percentage = min_height / scroll_length
+			local bar_height_percentage = scroll_bar_info.bar_height_percentage
+			local percentage = math.max(bar_height_percentage, min_percentage)
+			hotspot.size[axis] = scroll_length * percentage
+			thumb_middle.size[axis] = math.max(math.floor(scroll_length * percentage) - min_height, 0)
+		end
+	}
+	passes[2] = {
+		style_id = "hotspot",
+		pass_type = "held",
+		content_id = "scroll_bar_info",
+		content_check_function = function (content)
+			return content.bar_height_percentage < 1
+		end,
+		held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local axis = ui_content.axis
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+			local base_cursor = input_service:get("cursor")
+			local cursor = UIInverseScaleVectorToResolution(base_cursor)
+			local cursor_y = cursor[axis]
 
-				if IS_XB1 and not gamepad_active then
-					cursor_y = 1080 - base_cursor.y
-				end
+			if IS_XB1 and not gamepad_active then
+				cursor_y = 1080 - base_cursor.y
+			end
 
-				local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
-				local world_pos_y = world_pos[axis]
-				local scroll_length = ui_content.scroll_length
-				local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
-				local size = ui_style.size
-				local thumb_length = size[axis]
+			local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
+			local world_pos_y = world_pos[axis]
+			local scroll_length = ui_content.scroll_length
+			local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
+			local size = ui_style.size
+			local thumb_length = size[axis]
 
-				if not ui_content.input_offset then
-					local input_offset = input_coordinate - ui_style.offset[axis]
-					ui_content.input_offset = input_offset
-				end
+			if not ui_content.input_offset then
+				local input_offset = input_coordinate - ui_style.offset[axis]
+				ui_content.input_offset = input_offset
+			end
 
-				local input_offset = ui_content.input_offset
-				local start_position = 0
-				local end_position = scroll_length - thumb_length
-				local current_position = input_coordinate - input_offset
-				current_position = math.clamp(current_position, start_position, end_position)
-				local percentage = current_position / end_position
-				ui_content.value = 1 - percentage
-			end,
-			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				ui_content.input_offset = nil
-			end
-		},
-		{
-			style_id = "hotspot",
-			pass_type = "hotspot",
-			content_id = "scroll_bar_info"
-		},
-		{
-			pass_type = "local_offset",
-			content_id = "scroll_bar_info",
-			content_check_function = function (content)
-				return content.bar_height_percentage < 1
-			end,
-			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local axis = ui_content.axis
-				local hotspot = ui_style.hotspot
-				local value = 1 - ui_content.value
-				local scroll_length = ui_content.scroll_length
-				local thumb_length = hotspot.size[axis]
-				local start_position = 0
-				local end_position = scroll_length - thumb_length
-				local current_position = end_position * value
-				current_position = math.clamp(current_position, start_position, end_position)
-				hotspot.offset[axis] = current_position
-				local thumb_middle = ui_style.thumb_middle
-				local thumb_bottom = ui_style.thumb_bottom
-				local thumb_top = ui_style.thumb_top
-				local thumb_top_length = thumb_top.size[axis]
-				local thumb_middle_length = thumb_middle.size[axis]
-				local thumb_bottom_length = thumb_bottom.size[axis]
-				thumb_bottom.offset[axis] = current_position
-				thumb_middle.offset[axis] = current_position + thumb_bottom_length
-				thumb_top.offset[axis] = current_position + thumb_bottom_length + thumb_middle_length
-			end
-		},
-		{
-			style_id = "thumb_middle",
-			pass_type = "texture",
-			texture_id = "thumb_middle",
-			content_change_function = function (content, style)
-				local is_hover = content.scroll_bar_info.is_hover
-				local color = style.color
-				local color_value = (is_hover and 255) or 200
-				color[2] = color_value
-				color[3] = color_value
-				color[4] = color_value
-			end,
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_height_percentage < 1
-			end
-		},
-		{
-			style_id = "thumb_top",
-			pass_type = "texture",
-			texture_id = "thumb_top",
-			content_change_function = function (content, style)
-				local is_hover = content.scroll_bar_info.is_hover
-				local color = style.color
-				local color_value = (is_hover and 255) or 200
-				color[2] = color_value
-				color[3] = color_value
-				color[4] = color_value
-			end,
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_height_percentage < 1
-			end
-		},
-		{
-			style_id = "thumb_bottom",
-			pass_type = "texture",
-			texture_id = "thumb_bottom",
-			content_change_function = function (content, style)
-				local is_hover = content.scroll_bar_info.is_hover
-				local color = style.color
-				local color_value = (is_hover and 255) or 200
-				color[2] = color_value
-				color[3] = color_value
-				color[4] = color_value
-			end,
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_height_percentage < 1
-			end
-		},
-		{
-			pass_type = "tiled_texture",
-			style_id = "background",
-			texture_id = "background",
-			content_check_function = function (content)
-				return not content.disable_background
-			end
-		}
+			local input_offset = ui_content.input_offset
+			local start_position = 0
+			local end_position = scroll_length - thumb_length
+			local current_position = input_coordinate - input_offset
+			current_position = math.clamp(current_position, start_position, end_position)
+			local percentage = current_position / end_position
+			ui_content.value = 1 - percentage
+		end,
+		release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			ui_content.input_offset = nil
+		end
+	}
+	passes[3] = {
+		style_id = "hotspot",
+		pass_type = "hotspot",
+		content_id = "scroll_bar_info"
+	}
+	passes[4] = {
+		pass_type = "local_offset",
+		content_id = "scroll_bar_info",
+		content_check_function = function (content)
+			return content.bar_height_percentage < 1
+		end,
+		offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local axis = ui_content.axis
+			local hotspot = ui_style.hotspot
+			local value = 1 - ui_content.value
+			local scroll_length = ui_content.scroll_length
+			local thumb_length = hotspot.size[axis]
+			local start_position = 0
+			local end_position = scroll_length - thumb_length
+			local current_position = end_position * value
+			current_position = math.clamp(current_position, start_position, end_position)
+			hotspot.offset[axis] = current_position
+			local thumb_middle = ui_style.thumb_middle
+			local thumb_bottom = ui_style.thumb_bottom
+			local thumb_top = ui_style.thumb_top
+			local thumb_top_length = thumb_top.size[axis]
+			local thumb_middle_length = thumb_middle.size[axis]
+			local thumb_bottom_length = thumb_bottom.size[axis]
+			thumb_bottom.offset[axis] = current_position
+			thumb_middle.offset[axis] = current_position + thumb_bottom_length
+			thumb_top.offset[axis] = current_position + thumb_bottom_length + thumb_middle_length
+		end
+	}
+	passes[5] = {
+		style_id = "thumb_middle",
+		pass_type = "texture",
+		texture_id = "thumb_middle",
+		content_change_function = function (content, style)
+			local is_hover = content.scroll_bar_info.is_hover
+			local color = style.color
+			local color_value = is_hover and 255 or 200
+			color[2] = color_value
+			color[3] = color_value
+			color[4] = color_value
+		end,
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_height_percentage < 1
+		end
+	}
+	passes[6] = {
+		style_id = "thumb_top",
+		pass_type = "texture",
+		texture_id = "thumb_top",
+		content_change_function = function (content, style)
+			local is_hover = content.scroll_bar_info.is_hover
+			local color = style.color
+			local color_value = is_hover and 255 or 200
+			color[2] = color_value
+			color[3] = color_value
+			color[4] = color_value
+		end,
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_height_percentage < 1
+		end
+	}
+	passes[7] = {
+		style_id = "thumb_bottom",
+		pass_type = "texture",
+		texture_id = "thumb_bottom",
+		content_change_function = function (content, style)
+			local is_hover = content.scroll_bar_info.is_hover
+			local color = style.color
+			local color_value = is_hover and 255 or 200
+			color[2] = color_value
+			color[3] = color_value
+			color[4] = color_value
+		end,
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_height_percentage < 1
+		end
+	}
+	passes[8] = {
+		pass_type = "tiled_texture",
+		style_id = "background",
+		texture_id = "background",
+		content_check_function = function (content)
+			return not content.disable_background
+		end
 	}
 	local content = {
 		disable_frame = false,
@@ -1754,7 +1753,7 @@ UIWidgets.create_chain_scrollbar = function (scenegraph_id, scroll_area_scenegra
 				local parent_content = ui_content.parent
 				local scroll_bar_info = parent_content.scroll_bar_info
 				local gamepad_active = scroll_bar_info.gamepad_active
-				local axis_input = scroll_axis.y * -1 * ((gamepad_active and 0.2) or 1)
+				local axis_input = scroll_axis.y * -1 * (gamepad_active and 0.2 or 1)
 				local total_scroll_height = scroll_bar_info.total_scroll_height
 				local scroll_amount = scroll_bar_info.scroll_amount
 				local gamepad_always_hover = gamepad_active and scroll_bar_info.gamepad_always_hover
@@ -1822,162 +1821,161 @@ UIWidgets.create_horizontal_chain_scrollbar = function (scenegraph_id, scroll_ar
 		optional_chain_suffix = ""
 	end
 
-	local passes = {
-		{
-			pass_type = "local_offset",
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_length_percentage < 1
-			end,
-			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local scroll_bar_info = ui_content.scroll_bar_info
-				local axis = scroll_bar_info.axis
-				local thumb_left = ui_style.thumb_left
-				local thumb_right = ui_style.thumb_right
-				local thumb_middle = ui_style.thumb_middle
-				local thumb_left_length = thumb_left.size[axis]
-				local thumb_right_length = thumb_right.size[axis]
-				local thumb_middle_length = thumb_middle.size[axis]
-				local hotspot = ui_style.hotspot
-				local scroll_length = scroll_bar_info.scroll_length
-				local min_height = thumb_right_length + thumb_left_length
-				local min_percentage = min_height / scroll_length
-				local bar_length_percentage = scroll_bar_info.bar_length_percentage
-				local percentage = math.max(bar_length_percentage, min_percentage)
-				hotspot.size[axis] = scroll_length * percentage
-				thumb_middle.size[axis] = math.max(math.floor(scroll_length * percentage) - min_height, 0)
-			end
-		},
-		{
-			style_id = "hotspot",
-			pass_type = "held",
-			content_id = "scroll_bar_info",
-			content_check_function = function (content)
-				return content.bar_length_percentage < 1
-			end,
-			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local axis = ui_content.axis
-				local gamepad_active = Managers.input:is_device_active("gamepad")
-				local base_cursor = input_service:get("cursor")
-				local cursor = UIInverseScaleVectorToResolution(base_cursor)
-				local cursor_y = cursor[axis]
+	local passes = {}
+	passes[1] = {
+		pass_type = "local_offset",
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_length_percentage < 1
+		end,
+		offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local scroll_bar_info = ui_content.scroll_bar_info
+			local axis = scroll_bar_info.axis
+			local thumb_left = ui_style.thumb_left
+			local thumb_right = ui_style.thumb_right
+			local thumb_middle = ui_style.thumb_middle
+			local thumb_left_length = thumb_left.size[axis]
+			local thumb_right_length = thumb_right.size[axis]
+			local thumb_middle_length = thumb_middle.size[axis]
+			local hotspot = ui_style.hotspot
+			local scroll_length = scroll_bar_info.scroll_length
+			local min_height = thumb_right_length + thumb_left_length
+			local min_percentage = min_height / scroll_length
+			local bar_length_percentage = scroll_bar_info.bar_length_percentage
+			local percentage = math.max(bar_length_percentage, min_percentage)
+			hotspot.size[axis] = scroll_length * percentage
+			thumb_middle.size[axis] = math.max(math.floor(scroll_length * percentage) - min_height, 0)
+		end
+	}
+	passes[2] = {
+		style_id = "hotspot",
+		pass_type = "held",
+		content_id = "scroll_bar_info",
+		content_check_function = function (content)
+			return content.bar_length_percentage < 1
+		end,
+		held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local axis = ui_content.axis
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+			local base_cursor = input_service:get("cursor")
+			local cursor = UIInverseScaleVectorToResolution(base_cursor)
+			local cursor_y = cursor[axis]
 
-				if IS_XB1 and not gamepad_active then
-					cursor_y = 1080 - base_cursor.y
-				end
+			if IS_XB1 and not gamepad_active then
+				cursor_y = 1080 - base_cursor.y
+			end
 
-				local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
-				local world_pos_y = world_pos[axis]
-				local scroll_length = ui_content.scroll_length
-				local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
-				local size = ui_style.size
-				local thumb_length = size[axis]
+			local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
+			local world_pos_y = world_pos[axis]
+			local scroll_length = ui_content.scroll_length
+			local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
+			local size = ui_style.size
+			local thumb_length = size[axis]
 
-				if not ui_content.input_offset then
-					local input_offset = input_coordinate - ui_style.offset[axis]
-					ui_content.input_offset = input_offset
-				end
+			if not ui_content.input_offset then
+				local input_offset = input_coordinate - ui_style.offset[axis]
+				ui_content.input_offset = input_offset
+			end
 
-				local input_offset = ui_content.input_offset
-				local start_position = 0
-				local end_position = scroll_length - thumb_length
-				local current_position = input_coordinate - input_offset
-				current_position = math.clamp(current_position, start_position, end_position)
-				local percentage = current_position / end_position
-				ui_content.value = percentage
-			end,
-			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				ui_content.input_offset = nil
-			end
-		},
-		{
-			style_id = "hotspot",
-			pass_type = "hotspot",
-			content_id = "scroll_bar_info"
-		},
-		{
-			pass_type = "local_offset",
-			content_id = "scroll_bar_info",
-			content_check_function = function (content)
-				return content.bar_length_percentage < 1
-			end,
-			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local axis = ui_content.axis
-				local hotspot = ui_style.hotspot
-				local value = ui_content.value
-				local scroll_length = ui_content.scroll_length
-				local thumb_length = hotspot.size[axis]
-				local start_position = 0
-				local end_position = scroll_length - thumb_length
-				local current_position = end_position * value
-				current_position = math.clamp(current_position, start_position, end_position)
-				hotspot.offset[axis] = current_position
-				local thumb_left = ui_style.thumb_left
-				local thumb_right = ui_style.thumb_right
-				local thumb_middle = ui_style.thumb_middle
-				local thumb_left_length = thumb_left.size[axis]
-				local thumb_right_length = thumb_right.size[axis]
-				local thumb_middle_length = thumb_middle.size[axis]
-				thumb_left.offset[axis] = current_position
-				thumb_middle.offset[axis] = current_position + thumb_left_length
-				thumb_right.offset[axis] = current_position + thumb_left_length + thumb_middle_length
-			end
-		},
-		{
-			style_id = "thumb_middle",
-			pass_type = "texture",
-			texture_id = "thumb_middle",
-			content_change_function = function (content, style)
-				local is_hover = content.scroll_bar_info.is_hover
-				local color = style.color
-				local color_value = (is_hover and 255) or 200
-				color[2] = color_value
-				color[3] = color_value
-				color[4] = color_value
-			end,
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_length_percentage < 1
-			end
-		},
-		{
-			style_id = "thumb_left",
-			pass_type = "texture",
-			texture_id = "thumb_left",
-			content_change_function = function (content, style)
-				local is_hover = content.scroll_bar_info.is_hover
-				local color = style.color
-				local color_value = (is_hover and 255) or 200
-				color[2] = color_value
-				color[3] = color_value
-				color[4] = color_value
-			end,
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_length_percentage < 1
-			end
-		},
-		{
-			style_id = "thumb_right",
-			pass_type = "texture",
-			texture_id = "thumb_right",
-			content_change_function = function (content, style)
-				local is_hover = content.scroll_bar_info.is_hover
-				local color = style.color
-				local color_value = (is_hover and 255) or 200
-				color[2] = color_value
-				color[3] = color_value
-				color[4] = color_value
-			end,
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_length_percentage < 1
-			end
-		},
-		{
-			pass_type = "tiled_texture",
-			style_id = "background",
-			texture_id = "background",
-			content_check_function = function (content)
-				return not content.disable_background
-			end
-		}
+			local input_offset = ui_content.input_offset
+			local start_position = 0
+			local end_position = scroll_length - thumb_length
+			local current_position = input_coordinate - input_offset
+			current_position = math.clamp(current_position, start_position, end_position)
+			local percentage = current_position / end_position
+			ui_content.value = percentage
+		end,
+		release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			ui_content.input_offset = nil
+		end
+	}
+	passes[3] = {
+		style_id = "hotspot",
+		pass_type = "hotspot",
+		content_id = "scroll_bar_info"
+	}
+	passes[4] = {
+		pass_type = "local_offset",
+		content_id = "scroll_bar_info",
+		content_check_function = function (content)
+			return content.bar_length_percentage < 1
+		end,
+		offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local axis = ui_content.axis
+			local hotspot = ui_style.hotspot
+			local value = ui_content.value
+			local scroll_length = ui_content.scroll_length
+			local thumb_length = hotspot.size[axis]
+			local start_position = 0
+			local end_position = scroll_length - thumb_length
+			local current_position = end_position * value
+			current_position = math.clamp(current_position, start_position, end_position)
+			hotspot.offset[axis] = current_position
+			local thumb_left = ui_style.thumb_left
+			local thumb_right = ui_style.thumb_right
+			local thumb_middle = ui_style.thumb_middle
+			local thumb_left_length = thumb_left.size[axis]
+			local thumb_right_length = thumb_right.size[axis]
+			local thumb_middle_length = thumb_middle.size[axis]
+			thumb_left.offset[axis] = current_position
+			thumb_middle.offset[axis] = current_position + thumb_left_length
+			thumb_right.offset[axis] = current_position + thumb_left_length + thumb_middle_length
+		end
+	}
+	passes[5] = {
+		style_id = "thumb_middle",
+		pass_type = "texture",
+		texture_id = "thumb_middle",
+		content_change_function = function (content, style)
+			local is_hover = content.scroll_bar_info.is_hover
+			local color = style.color
+			local color_value = is_hover and 255 or 200
+			color[2] = color_value
+			color[3] = color_value
+			color[4] = color_value
+		end,
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_length_percentage < 1
+		end
+	}
+	passes[6] = {
+		style_id = "thumb_left",
+		pass_type = "texture",
+		texture_id = "thumb_left",
+		content_change_function = function (content, style)
+			local is_hover = content.scroll_bar_info.is_hover
+			local color = style.color
+			local color_value = is_hover and 255 or 200
+			color[2] = color_value
+			color[3] = color_value
+			color[4] = color_value
+		end,
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_length_percentage < 1
+		end
+	}
+	passes[7] = {
+		style_id = "thumb_right",
+		pass_type = "texture",
+		texture_id = "thumb_right",
+		content_change_function = function (content, style)
+			local is_hover = content.scroll_bar_info.is_hover
+			local color = style.color
+			local color_value = is_hover and 255 or 200
+			color[2] = color_value
+			color[3] = color_value
+			color[4] = color_value
+		end,
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_length_percentage < 1
+		end
+	}
+	passes[8] = {
+		pass_type = "tiled_texture",
+		style_id = "background",
+		texture_id = "background",
+		content_check_function = function (content)
+			return not content.disable_background
+		end
 	}
 	local content = {
 		disable_frame = false,
@@ -2137,99 +2135,98 @@ UIWidgets.create_horizontal_chain_scrollbar = function (scenegraph_id, scroll_ar
 end
 
 UIWidgets.create_scrollbar = function (scenegraph_id, size, scroll_area_scenegraph_id, thumb_color, track_color, thumb_width, corner_radius)
-	local passes = {
-		{
-			pass_type = "local_offset",
-			content_check_function = function (content)
-				return content.scroll_bar_info.bar_height_percentage < 1
-			end,
-			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local scroll_bar_info = ui_content.scroll_bar_info
-				local axis = scroll_bar_info.axis
-				local hotspot = ui_style.hotspot
-				local scroll_bar_box = ui_style.scroll_bar_box
-				local scroll_length = scroll_bar_info.scroll_length
-				local bar_height_percentage = scroll_bar_info.bar_height_percentage
-				hotspot.size[axis] = scroll_length * bar_height_percentage
-				scroll_bar_box.size[axis] = scroll_length * bar_height_percentage
+	local passes = {}
+	passes[1] = {
+		pass_type = "local_offset",
+		content_check_function = function (content)
+			return content.scroll_bar_info.bar_height_percentage < 1
+		end,
+		offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local scroll_bar_info = ui_content.scroll_bar_info
+			local axis = scroll_bar_info.axis
+			local hotspot = ui_style.hotspot
+			local scroll_bar_box = ui_style.scroll_bar_box
+			local scroll_length = scroll_bar_info.scroll_length
+			local bar_height_percentage = scroll_bar_info.bar_height_percentage
+			hotspot.size[axis] = scroll_length * bar_height_percentage
+			scroll_bar_box.size[axis] = scroll_length * bar_height_percentage
+		end
+	}
+	passes[2] = {
+		style_id = "hotspot",
+		pass_type = "held",
+		content_id = "scroll_bar_info",
+		content_check_function = function (content)
+			return content.bar_height_percentage < 1
+		end,
+		held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local axis = ui_content.axis
+			local gamepad_active = Managers.input:is_device_active("gamepad")
+			local base_cursor = input_service:get("cursor")
+			local cursor = UIInverseScaleVectorToResolution(base_cursor)
+			local cursor_y = cursor[axis]
+
+			if IS_XB1 and not gamepad_active then
+				cursor_y = 1080 - base_cursor.y
 			end
-		},
-		{
-			style_id = "hotspot",
-			pass_type = "held",
-			content_id = "scroll_bar_info",
-			content_check_function = function (content)
-				return content.bar_height_percentage < 1
-			end,
-			held_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local axis = ui_content.axis
-				local gamepad_active = Managers.input:is_device_active("gamepad")
-				local base_cursor = input_service:get("cursor")
-				local cursor = UIInverseScaleVectorToResolution(base_cursor)
-				local cursor_y = cursor[axis]
 
-				if IS_XB1 and not gamepad_active then
-					cursor_y = 1080 - base_cursor.y
-				end
+			local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
+			local world_pos_y = world_pos[axis]
+			local scroll_length = ui_content.scroll_length
+			local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
+			local size = ui_style.size
+			local thumb_length = size[axis]
 
-				local world_pos = UISceneGraph.get_world_position(ui_scenegraph, ui_content.scenegraph_id)
-				local world_pos_y = world_pos[axis]
-				local scroll_length = ui_content.scroll_length
-				local input_coordinate = math.clamp(cursor_y - world_pos_y, 0, scroll_length)
-				local size = ui_style.size
-				local thumb_length = size[axis]
-
-				if not ui_content.input_offset then
-					local input_offset = input_coordinate - ui_style.offset[axis]
-					ui_content.input_offset = input_offset
-				end
-
-				local input_offset = ui_content.input_offset
-				local start_position = 0
-				local end_position = scroll_length - thumb_length
-				local current_position = input_coordinate - input_offset
-				current_position = math.clamp(current_position, start_position, end_position)
-				local percentage = current_position / end_position
-				ui_content.value = 1 - percentage
-			end,
-			release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				ui_content.input_offset = nil
+			if not ui_content.input_offset then
+				local input_offset = input_coordinate - ui_style.offset[axis]
+				ui_content.input_offset = input_offset
 			end
-		},
-		{
-			style_id = "hotspot",
-			pass_type = "hotspot",
-			content_id = "scroll_bar_info"
-		},
-		{
-			pass_type = "local_offset",
-			content_id = "scroll_bar_info",
-			content_check_function = function (content)
-				return content.bar_height_percentage < 1
-			end,
-			offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
-				local axis = ui_content.axis
-				local hotspot = ui_style.hotspot
-				local value = 1 - ui_content.value
-				local scroll_length = ui_content.scroll_length
-				local thumb_length = hotspot.size[axis]
-				local start_position = 0
-				local end_position = scroll_length - thumb_length
-				local current_position = end_position * value
-				current_position = math.clamp(current_position, start_position, end_position)
-				hotspot.offset[axis] = current_position
-				local scroll_bar_box = ui_style.scroll_bar_box
-				scroll_bar_box.offset[axis] = current_position
-			end
-		},
-		{
-			pass_type = "rounded_background",
-			style_id = "background"
-		},
-		{
-			pass_type = "rounded_background",
-			style_id = "scroll_bar_box"
-		}
+
+			local input_offset = ui_content.input_offset
+			local start_position = 0
+			local end_position = scroll_length - thumb_length
+			local current_position = input_coordinate - input_offset
+			current_position = math.clamp(current_position, start_position, end_position)
+			local percentage = current_position / end_position
+			ui_content.value = 1 - percentage
+		end,
+		release_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			ui_content.input_offset = nil
+		end
+	}
+	passes[3] = {
+		style_id = "hotspot",
+		pass_type = "hotspot",
+		content_id = "scroll_bar_info"
+	}
+	passes[4] = {
+		pass_type = "local_offset",
+		content_id = "scroll_bar_info",
+		content_check_function = function (content)
+			return content.bar_height_percentage < 1
+		end,
+		offset_function = function (ui_scenegraph, ui_style, ui_content, input_service)
+			local axis = ui_content.axis
+			local hotspot = ui_style.hotspot
+			local value = 1 - ui_content.value
+			local scroll_length = ui_content.scroll_length
+			local thumb_length = hotspot.size[axis]
+			local start_position = 0
+			local end_position = scroll_length - thumb_length
+			local current_position = end_position * value
+			current_position = math.clamp(current_position, start_position, end_position)
+			hotspot.offset[axis] = current_position
+			local scroll_bar_box = ui_style.scroll_bar_box
+			scroll_bar_box.offset[axis] = current_position
+		end
+	}
+	passes[5] = {
+		pass_type = "rounded_background",
+		style_id = "background"
+	}
+	passes[6] = {
+		pass_type = "rounded_background",
+		style_id = "scroll_bar_box"
 	}
 	local content = {
 		disable_frame = false,
@@ -2258,7 +2255,7 @@ UIWidgets.create_scrollbar = function (scenegraph_id, size, scroll_area_scenegra
 		scroll_bar_box = {
 			corner_radius = corner_radius or 2,
 			offset = {
-				(thumb_width and size[1] / 2 - thumb_width * 0.5) or 0,
+				thumb_width and size[1] / 2 - thumb_width * 0.5 or 0,
 				0,
 				1
 			},
@@ -2438,7 +2435,7 @@ UIWidgets.create_quest_navigation_button = function (scenegraph_id, uvs, tooltip
 					content_check_function = function (content)
 						local button_hotspot = content.parent.button_hotspot
 
-						return button_hotspot.is_selected or (button_hotspot.is_hover and button_hotspot.is_clicked ~= 0 and not button_hotspot.disabled)
+						return button_hotspot.is_selected or button_hotspot.is_hover and button_hotspot.is_clicked ~= 0 and not button_hotspot.disabled
 					end
 				},
 				{
@@ -2598,7 +2595,7 @@ UIWidgets.create_gold_button_3_state = function (text, scenegraph_id, normal_tex
 					pass_type = "texture",
 					texture_id = "texture_hover_id",
 					content_check_function = function (content)
-						return content.button_hotspot.is_selected or (content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0)
+						return content.button_hotspot.is_selected or content.button_hotspot.is_hover and content.button_hotspot.is_clicked > 0
 					end
 				},
 				{
@@ -2753,7 +2750,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.is_gamepad_active and not button_hotspot.disabled and not button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0))
+						return not content.is_gamepad_active and not button_hotspot.disabled and not button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0)
 					end
 				},
 				{
@@ -2762,7 +2759,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0))
+						return not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0)
 					end
 				},
 				{
@@ -2771,7 +2768,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -2790,7 +2787,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and content.show_tokens and content.texture_token_type and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and content.show_tokens and content.texture_token_type and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -2800,7 +2797,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.charging and not content.show_cancel_text and content.show_tokens and content.texture_token_type and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and content.show_tokens and content.texture_token_type and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -2810,7 +2807,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -2820,7 +2817,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -2830,7 +2827,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.charging and not content.show_cancel_text and content.show_tokens and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and content.show_tokens and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -2880,7 +2877,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -2890,7 +2887,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and button_hotspot.is_hover and content.show_tokens and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -2900,7 +2897,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.charging and not content.show_cancel_text and content.show_tokens and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and content.show_tokens and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -3030,7 +3027,7 @@ UIWidgets.create_forge_merge_button = function (scenegraph_id, text_scenegraph_i
 			gamepad_glow_texture = "forge_button_gamepad_glow",
 			texture_disabled_id = "forge_button_03_disabled",
 			texture_id = "forge_button_03_normal",
-			use_eye_glow = (eye_glow_scenegraph_id and true) or false,
+			use_eye_glow = eye_glow_scenegraph_id and true or false,
 			text_field = Localize("merge"),
 			text_field_center = Localize("merge"),
 			button_hotspot = {},
@@ -3339,7 +3336,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return not button_hotspot.disabled and not button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0))
+						return not button_hotspot.disabled and not button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0)
 					end
 				},
 				{
@@ -3352,7 +3349,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0))
+						return not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0)
 					end
 				},
 				{
@@ -3365,7 +3362,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return (not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -3392,7 +3389,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return (not button_hotspot.disabled or (button_hotspot.disabled and content.default_text_on_disable)) and content.texture_token_type and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return (not button_hotspot.disabled or button_hotspot.disabled and content.default_text_on_disable) and content.texture_token_type and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -3406,7 +3403,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return not button_hotspot.disabled and content.texture_token_type and (button_hotspot.is_selected or (button_hotspot.is_clicked and button_hotspot.is_clicked == 0))
+						return not button_hotspot.disabled and content.texture_token_type and (button_hotspot.is_selected or button_hotspot.is_clicked and button_hotspot.is_clicked == 0)
 					end
 				},
 				{
@@ -3420,7 +3417,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return (not button_hotspot.disabled or (button_hotspot.disabled and content.default_text_on_disable)) and not button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return (not button_hotspot.disabled or button_hotspot.disabled and content.default_text_on_disable) and not button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -3434,7 +3431,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -3448,7 +3445,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return (not button_hotspot.disabled and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not button_hotspot.disabled and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -3472,7 +3469,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return (not button_hotspot.disabled or (button_hotspot.disabled and content.default_text_on_disable)) and not button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return (not button_hotspot.disabled or button_hotspot.disabled and content.default_text_on_disable) and not button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -3486,7 +3483,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 							return false
 						end
 
-						return not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -3496,7 +3493,7 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.charging and not content.show_cancel_text and not button_hotspot.disabled and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not button_hotspot.disabled and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -3809,9 +3806,9 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 				font_type = "hell_shark",
 				font_size = 24,
 				text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
-				horizontal_alignment = (text_scenegraph_id and "left") or "center",
+				horizontal_alignment = text_scenegraph_id and "left" or "center",
 				offset = {
-					(text_scenegraph_id and 10) or 0,
+					text_scenegraph_id and 10 or 0,
 					0,
 					2
 				},
@@ -3822,9 +3819,9 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 				font_type = "hell_shark",
 				font_size = 24,
 				text_color = Colors.get_color_table_with_alpha("white", 255),
-				horizontal_alignment = (text_scenegraph_id and "left") or "center",
+				horizontal_alignment = text_scenegraph_id and "left" or "center",
 				offset = {
-					(text_scenegraph_id and 10) or 0,
+					text_scenegraph_id and 10 or 0,
 					0,
 					2
 				},
@@ -3835,9 +3832,9 @@ UIWidgets.create_altar_button = function (button_text, scenegraph_id, text_scene
 				font_type = "hell_shark",
 				font_size = 24,
 				text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
-				horizontal_alignment = (text_scenegraph_id and "left") or "center",
+				horizontal_alignment = text_scenegraph_id and "left" or "center",
 				offset = {
-					(text_scenegraph_id and 10) or 0,
+					text_scenegraph_id and 10 or 0,
 					-2,
 					2
 				},
@@ -3934,7 +3931,7 @@ UIWidgets.create_dice_game_button = function (scenegraph_id)
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -4141,7 +4138,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.is_gamepad_active and not button_hotspot.disabled and not button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0))
+						return not content.is_gamepad_active and not button_hotspot.disabled and not button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0)
 					end
 				},
 				{
@@ -4150,7 +4147,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0))
+						return not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_hover and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0)
 					end
 				},
 				{
@@ -4159,7 +4156,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.is_gamepad_active and not button_hotspot.disabled and button_hotspot.is_clicked and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -4179,7 +4176,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 						if content.texture_token_type then
 							local button_hotspot = content.button_hotspot
 
-							return not content.charging and not content.show_cancel_text and not content.show_title and content.texture_token_type and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+							return not content.charging and not content.show_cancel_text and not content.show_title and content.texture_token_type and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 						end
 					end
 				},
@@ -4191,7 +4188,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 						if content.texture_token_type then
 							local button_hotspot = content.button_hotspot
 
-							return (not content.charging and not content.show_cancel_text and not content.show_title and content.texture_token_type and button_hotspot.is_selected) or (button_hotspot.is_clicked and button_hotspot.is_clicked == 0)
+							return not content.charging and not content.show_cancel_text and not content.show_title and content.texture_token_type and button_hotspot.is_selected or button_hotspot.is_clicked and button_hotspot.is_clicked == 0
 						end
 					end
 				},
@@ -4202,7 +4199,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -4212,7 +4209,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -4222,7 +4219,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -4232,7 +4229,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return not content.charging and not content.show_cancel_text and button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or (button_hotspot.is_clicked and button_hotspot.is_clicked > 0)) and not button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and button_hotspot.is_hover and not content.show_title and (not button_hotspot.is_clicked or button_hotspot.is_clicked and button_hotspot.is_clicked > 0) and not button_hotspot.is_selected
 					end
 				},
 				{
@@ -4242,7 +4239,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.charging and not content.show_cancel_text and not content.show_title and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not content.show_title and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -4252,7 +4249,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not content.charging and not content.show_cancel_text and not content.show_title and button_hotspot.is_clicked == 0) or button_hotspot.is_selected
+						return not content.charging and not content.show_cancel_text and not content.show_title and button_hotspot.is_clicked == 0 or button_hotspot.is_selected
 					end
 				},
 				{
@@ -4404,7 +4401,7 @@ UIWidgets.create_forge_upgrade_button = function (scenegraph_id, text_scenegraph
 					}
 				}
 			},
-			use_eye_glow = (eye_glow_scenegraph_id and true) or false,
+			use_eye_glow = eye_glow_scenegraph_id and true or false,
 			text_field = Localize("upgrade"),
 			button_hotspot = {},
 			text_charge_cancelled = Localize("forge_screen_melt_abort")
@@ -4663,7 +4660,7 @@ UIWidgets.create_menu_selection_bar = function (scenegraph_definition, textures,
 	}
 	local num_buttons = #icons
 
-	for i = 1, num_buttons, 1 do
+	for i = 1, num_buttons do
 		local button_hotspot_name = i
 		local tooltip_text = "tooltip_text_" .. i
 		local button_style_name = string.format("button_style_%d", i)
@@ -4709,9 +4706,9 @@ UIWidgets.create_menu_selection_bar = function (scenegraph_definition, textures,
 
 		local scenegraph_id = string.format("%s_%d", scenegraph_base, i)
 		scenegraph_definition[scenegraph_id] = {
-			parent = (i == 1 and scenegraph_base) or string.format("%s_%d", scenegraph_base, i - 1),
+			parent = i == 1 and scenegraph_base or string.format("%s_%d", scenegraph_base, i - 1),
 			size = size,
-			offset = (i ~= 1 and offset) or nil
+			offset = i ~= 1 and offset or nil
 		}
 		local style_scenegraph_id = string.format("%s_icon_%d", scenegraph_base, i)
 		scenegraph_definition[style_scenegraph_id] = {
@@ -5115,7 +5112,7 @@ UIWidgets.create_simple_two_state_button = function (scenegraph_id, normal_textu
 end
 
 UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset)
-	slot4 = {
+	return {
 		element = {
 			passes = {
 				{
@@ -5124,37 +5121,29 @@ UIWidgets.create_simple_rect = function (scenegraph_id, color, layer, offset)
 				}
 			}
 		},
-		content = {}
-	}
-	slot5 = {}
-	slot6 = {
-		color = color or {
-			255,
-			255,
-			255,
-			255
-		}
-	}
-
-	if not offset then
-		slot7 = {
+		content = {},
+		style = {
+			rect = {
+				color = color or {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = offset or {
+					0,
+					0,
+					layer or 0
+				}
+			}
+		},
+		offset = {
 			0,
 			0,
-			layer or 0
-		}
-	end
-
-	slot6.offset = slot7
-	slot5.rect = slot6
-	slot4.style = slot5
-	slot4.offset = {
-		0,
-		0,
-		0
+			0
+		},
+		scenegraph_id = scenegraph_id
 	}
-	slot4.scenegraph_id = scenegraph_id
-
-	return slot4
 end
 
 UIWidgets.create_simple_rounded_rect = function (scenegraph_id, corner_radius, color)
@@ -5244,7 +5233,7 @@ UIWidgets.create_simple_texture = function (texture, scenegraph_id, masked, reta
 end
 
 UIWidgets.create_aligned_texture = function (texture, texture_size, horizontal_alignment, vertical_alignment, scenegraph_id, masked, retained, color, layer, offset)
-	slot10 = {
+	return {
 		element = {
 			passes = {
 				{
@@ -5276,28 +5265,21 @@ UIWidgets.create_aligned_texture = function (texture, texture_size, horizontal_a
 				},
 				masked = masked
 			}
-		}
-	}
-
-	if not offset or not offset then
-		slot11 = {
+		},
+		offset = offset and offset or {
 			0,
 			0,
 			layer or 0
-		}
-	end
-
-	slot10.offset = slot11
-	slot10.scenegraph_id = scenegraph_id
-
-	return slot10
+		},
+		scenegraph_id = scenegraph_id
+	}
 end
 
 UIWidgets.create_simple_centered_texture_amount = function (texture, texture_size, scenegraph_id, amount, masked, color)
 	local textures = {}
 	local texture_colors = {}
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		textures[i] = texture
 		texture_colors[i] = color or {
 			255,
@@ -5366,7 +5348,7 @@ UIWidgets.create_simple_multi_texture = function (textures, texture_sizes, axis,
 		},
 		style = {
 			texture_id = {
-				draw_count = (textures and #textures) or 0,
+				draw_count = textures and #textures or 0,
 				axis = axis or 1,
 				spacing = spacing or {
 					0,
@@ -5396,7 +5378,7 @@ UIWidgets.create_simple_centered_uv_texture_amount = function (texture, texture_
 	local texture_uvs = {}
 	local texture_sizes = {}
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		texture_uvs[i] = {
 			{
 				0,
@@ -5711,31 +5693,27 @@ UIWidgets.create_uv_texture_with_style = function (texture, uvs, scenegraph_id, 
 end
 
 UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_style, optional_font_style, retained, disable_with_gamepad)
-	local text_offset = (text_style and text_style.offset) or {
+	local text_offset = text_style and text_style.offset or {
 		0,
 		0,
 		2
 	}
-	local text_color = (text_style and text_style.text_color) or color or {
+	local text_color = text_style and text_style.text_color or color or {
 		255,
 		255,
 		255,
 		255
 	}
-
-	if not text_style then
-		text_style = {
-			vertical_alignment = "center",
-			localize = true,
-			horizontal_alignment = "center",
-			word_wrap = true,
-			font_size = size,
-			font_type = optional_font_style or "hell_shark",
-			text_color = text_color,
-			offset = text_offset
-		}
-	end
-
+	text_style = text_style or {
+		vertical_alignment = "center",
+		localize = true,
+		horizontal_alignment = "center",
+		word_wrap = true,
+		font_size = size,
+		font_type = optional_font_style or "hell_shark",
+		text_color = text_color,
+		offset = text_offset
+	}
 	local text_shadow_style = table.clone(text_style)
 	local text_shadow_style_color = text_style.shadow_color or {
 		255,
@@ -5781,7 +5759,7 @@ UIWidgets.create_simple_text = function (text, scenegraph_id, size, color, text_
 			text = text,
 			original_text = text,
 			color = text_color,
-			use_shadow = (text_style and text_style.use_shadow) or false,
+			use_shadow = text_style and text_style.use_shadow or false,
 			disable_with_gamepad = disable_with_gamepad
 		},
 		style = {
@@ -5824,7 +5802,7 @@ UIWidgets.create_simple_text_tooltip = function (text, tooltip_text, scenegraph_
 			text = text,
 			tooltip_text = tooltip_text,
 			tooltip_hotspot = {},
-			color = (text_style and text_style.text_color) or color
+			color = text_style and text_style.text_color or color
 		},
 		style = {
 			text = text_style or {
@@ -5862,7 +5840,7 @@ UIWidgets.create_simple_text_tooltip = function (text, tooltip_text, scenegraph_
 end
 
 UIWidgets.create_simple_rect_text = function (scenegraph_id, text, font_size, color, rect_color, text_style)
-	slot6 = {
+	return {
 		element = {
 			passes = {
 				{
@@ -5874,33 +5852,26 @@ UIWidgets.create_simple_rect_text = function (scenegraph_id, text, font_size, co
 		},
 		content = {
 			text = text
-		}
-	}
-	slot7 = {}
-
-	if not text_style then
-		slot8 = {
-			localize = false,
-			horizontal_alignment = "left",
-			vertical_alignment = "top",
-			font_type = "hell_shark",
-			font_size = font_size or 24,
-			text_color = color or Colors.get_color_table_with_alpha("white", 255),
-			rect_color = rect_color or Colors.get_color_table_with_alpha("black", 150),
-			line_colors = {},
-			offset = {
-				0,
-				0,
-				50
+		},
+		style = {
+			text = text_style or {
+				localize = false,
+				horizontal_alignment = "left",
+				vertical_alignment = "top",
+				font_type = "hell_shark",
+				font_size = font_size or 24,
+				text_color = color or Colors.get_color_table_with_alpha("white", 255),
+				rect_color = rect_color or Colors.get_color_table_with_alpha("black", 150),
+				line_colors = {},
+				offset = {
+					0,
+					0,
+					50
+				}
 			}
-		}
-	end
-
-	slot7.text = slot8
-	slot6.style = slot7
-	slot6.scenegraph_id = scenegraph_id
-
-	return slot6
+		},
+		scenegraph_id = scenegraph_id
+	}
 end
 
 UIWidgets.create_forge_toggle_button = function (normal_texture, normal_hover_texture, selected_texture, selected_hover_texture, scenegraph_id, hotspot_scenegraph_id)
@@ -6808,7 +6779,7 @@ end
 UIWidgets.create_input_description_widgets = function (scenegraph_definition, parent_scenegraph_id, amount)
 	local input_description_widgets = {}
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local scenegraph_root_id = "input_description_root_" .. i
 		local scenegraph_id = "input_description_" .. i
 		local scenegraph_icon_id = "input_description_icon_" .. i
@@ -7931,7 +7902,7 @@ UIWidgets.create_map_player_entry = function (scenegraph_id, gamepad_selection_s
 					style_id = "kick_button_texture",
 					texture_id = "kick_button_texture",
 					content_check_function = function (content)
-						return not content.is_host and (content.always_show_icons or (content.kick_enabled and content.button_hotspot.is_hover and not content.kick_button_hotspot.is_hover))
+						return not content.is_host and (content.always_show_icons or content.kick_enabled and content.button_hotspot.is_hover and not content.kick_button_hotspot.is_hover)
 					end
 				},
 				{
@@ -7990,13 +7961,13 @@ UIWidgets.create_map_player_entry = function (scenegraph_id, gamepad_selection_s
 			kick_button_hotspot = {}
 		},
 		style = {
-			gamepad_selection = (gamepad_selection_scenegraph_id and {
+			gamepad_selection = gamepad_selection_scenegraph_id and {
 				texture_size = {
 					30,
 					30
 				},
 				scenegraph_id = gamepad_selection_scenegraph_id
-			}) or nil,
+			} or nil,
 			text = {
 				vertical_alignment = "center",
 				font_size = 24,
@@ -8171,7 +8142,7 @@ UIWidgets.create_map_settings_stepper = function (scenegraph_id, gamepad_selecti
 					content_check_function = function (content)
 						local button_hotspot = content.button_hotspot
 
-						return (not button_hotspot.gamepad_active and button_hotspot.is_selected) or button_hotspot.is_hover
+						return not button_hotspot.gamepad_active and button_hotspot.is_selected or button_hotspot.is_hover
 					end
 				},
 				{
@@ -8259,13 +8230,13 @@ UIWidgets.create_map_settings_stepper = function (scenegraph_id, gamepad_selecti
 			right_button_hotspot = {}
 		},
 		style = {
-			gamepad_selection = (gamepad_selection_scenegraph_id and {
+			gamepad_selection = gamepad_selection_scenegraph_id and {
 				texture_size = {
 					40,
 					40
 				},
 				scenegraph_id = gamepad_selection_scenegraph_id
-			}) or nil,
+			} or nil,
 			hover_texture = {
 				size = {
 					410,
@@ -9574,7 +9545,7 @@ UIWidgets.create_compare_menu_trait_widget = function (scenegraph_id, descriptio
 				horizontal_alignment = "left",
 				localize = false,
 				font_size = 20,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("cheeseburger", 255),
 				offset = {
 					55,
@@ -9588,7 +9559,7 @@ UIWidgets.create_compare_menu_trait_widget = function (scenegraph_id, descriptio
 				font_size = 18,
 				horizontal_alignment = "left",
 				vertical_alignment = "top",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					0,
@@ -9997,7 +9968,7 @@ UIWidgets.create_journal_reveal_mask = function (textures, scenegraph_ids, scene
 	local style = {}
 	local num_textures = #textures
 
-	for i = 1, num_textures + 1, 1 do
+	for i = 1, num_textures + 1 do
 		local is_last_pass = i == num_textures + 1
 
 		if is_last_pass then
@@ -10231,5 +10202,3 @@ UIWidgets.create_simple_atlas_texture = function (texture, scenegraph_id, masked
 
 	return definition
 end
-
-return

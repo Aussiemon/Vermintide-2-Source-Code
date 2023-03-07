@@ -28,5 +28,3 @@ DialogueLookup[DialogueLookup_n + 12] = "pes_skaven_tunnels_intro"
 DialogueLookup[DialogueLookup_n + 13] = "pes_skaven_tunnels_intro_b"
 DialogueLookup[DialogueLookup_n + 14] = "pes_skaven_tunnels_intro_c"
 DialogueLookup_n = DialogueLookup_n + 14
-
-return

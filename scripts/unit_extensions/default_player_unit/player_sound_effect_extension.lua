@@ -179,7 +179,7 @@ PlayerSoundEffectExtension._update_specials_proximity = function (self, dt)
 		local num_nearby_ai_units = Broadphase.query(self._ai_broadphase, own_position, BROADPHASE_MEDIUM_RANGE, NEARBY_AI_UNITS)
 		local state = nil
 
-		for i = 1, num_nearby_ai_units, 1 do
+		for i = 1, num_nearby_ai_units do
 			repeat
 				local ai_unit = NEARBY_AI_UNITS[i]
 
@@ -194,7 +194,7 @@ PlayerSoundEffectExtension._update_specials_proximity = function (self, dt)
 				end
 
 				local ai_position = POSITION_LOOKUP[ai_unit]
-				state = (Vector3.distance_squared(own_position, ai_position) <= BROADPHASE_NEAR_RANGE^2 and "near") or state or "medium"
+				state = Vector3.distance_squared(own_position, ai_position) <= BROADPHASE_NEAR_RANGE^2 and "near" or state or "medium"
 			until true
 		end
 
@@ -282,5 +282,3 @@ PlayerSoundEffectExtension.get_music_aggro_state = function (self)
 
 	return "husk"
 end
-
-return

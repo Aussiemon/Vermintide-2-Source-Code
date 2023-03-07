@@ -43,7 +43,7 @@ StatusUtils = {
 			if not LEVEL_EDITOR_TEST then
 				local network_manager = Managers.state.network
 				local go_id = network_manager:unit_game_object_id(revived_unit)
-				local reviver_go_id = (reviver_unit and network_manager:unit_game_object_id(reviver_unit)) or NetworkConstants.invalid_game_object_id
+				local reviver_go_id = reviver_unit and network_manager:unit_game_object_id(reviver_unit) or NetworkConstants.invalid_game_object_id
 
 				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.revived, revived, go_id, reviver_go_id)
 			end
@@ -60,14 +60,14 @@ StatusUtils = {
 			if not LEVEL_EDITOR_TEST then
 				local network_manager = Managers.state.network
 				local go_id = network_manager:unit_game_object_id(respawned_unit)
-				local helper_go_id = (helper_unit and network_manager:unit_game_object_id(helper_unit)) or NetworkConstants.invalid_game_object_id
+				local helper_go_id = helper_unit and network_manager:unit_game_object_id(helper_unit) or NetworkConstants.invalid_game_object_id
 
 				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.respawned, respawned, go_id, helper_go_id)
 			end
 		elseif not LEVEL_EDITOR_TEST then
 			local network_manager = Managers.state.network
 			local go_id = network_manager:unit_game_object_id(respawned_unit) or 0
-			local helper_go_id = (helper_unit and network_manager:unit_game_object_id(helper_unit)) or 0
+			local helper_go_id = helper_unit and network_manager:unit_game_object_id(helper_unit) or 0
 			local owner = Managers.player:owner(respawned_unit)
 			local network_id = owner:network_id()
 
@@ -82,7 +82,7 @@ StatusUtils = {
 		if not LEVEL_EDITOR_TEST then
 			local network_manager = Managers.state.network
 			local go_id = network_manager:unit_game_object_id(pulled_up_unit)
-			local helper_go_id = (helper_unit and network_manager:unit_game_object_id(helper_unit)) or NetworkConstants.invalid_game_object_id
+			local helper_go_id = helper_unit and network_manager:unit_game_object_id(helper_unit) or NetworkConstants.invalid_game_object_id
 
 			if Managers.player.is_server then
 				network_manager.network_transmit:send_rpc_clients("rpc_status_change_bool", NetworkLookup.statuses.pulled_up, pulled_up, go_id, helper_go_id)
@@ -303,7 +303,7 @@ StatusUtils = {
 
 			if go_id and go_id ~= NetworkConstants.invalid_game_object_id then
 				local other_go_id = network_manager:unit_game_object_id(attacking_unit) or NetworkConstants.invalid_game_object_id
-				local status_int = (overpowered and NetworkLookup.overpowered_templates[overpowered_template_name]) or 0
+				local status_int = overpowered and NetworkLookup.overpowered_templates[overpowered_template_name] or 0
 
 				network_manager.network_transmit:send_rpc_clients("rpc_status_change_int_and_unit", NetworkLookup.statuses.overpowered, status_int, go_id, other_go_id)
 			end
@@ -370,5 +370,3 @@ StatusUtils = {
 		end
 	end
 }
-
-return

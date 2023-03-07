@@ -181,5 +181,3 @@ end
 ProjectileScriptUnitLocomotionExtension.has_stopped = function (self)
 	return self.stopped
 end
-
-return

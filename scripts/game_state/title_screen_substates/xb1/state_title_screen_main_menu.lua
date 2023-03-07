@@ -258,7 +258,7 @@ StateTitleScreenMainMenu._init_menu_views = function (self)
 		self._views = {
 			credits_view = CreditsView:new(view_context),
 			options_view = OptionsView:new(view_context),
-			additional_content_view = (GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context)) or nil
+			additional_content_view = GameSettingsDevelopment.additional_content_view_enabled and AdditionalContentView:new(view_context) or nil
 		}
 	end
 
@@ -635,7 +635,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 	end
 
 	if level_key then
-		local environment_variation_id = (LevelHelper.get_environment_variation_id and LevelHelper:get_environment_variation_id(level_key)) or nil
+		local environment_variation_id = LevelHelper.get_environment_variation_id and LevelHelper:get_environment_variation_id(level_key) or nil
 
 		Managers.level_transition_handler:set_next_level(level_key, environment_variation_id)
 	end
@@ -646,7 +646,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self)
 		loading_context.switch_to_tutorial_backend = switch_to_tutorial_backend
 		loading_context.wanted_tutorial_state = tutorial_state
 	elseif script_data.honduras_demo then
-		self.parent.parent.loading_context.wanted_profile_index = (profile_name and FindProfileIndex(profile_name)) or DemoSettings.wanted_profile_index
+		self.parent.parent.loading_context.wanted_profile_index = profile_name and FindProfileIndex(profile_name) or DemoSettings.wanted_profile_index
 		GameSettingsDevelopment.disable_free_flight = DemoSettings.disable_free_flight
 		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer
 	elseif not level_key then
@@ -795,5 +795,3 @@ StateTitleScreenMainMenu._waiting_for_backend_signin = function (self)
 		self._state = "none"
 	end
 end
-
-return

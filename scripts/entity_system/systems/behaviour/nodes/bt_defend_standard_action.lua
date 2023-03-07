@@ -198,5 +198,3 @@ BTDefendStandardAction._calculate_walk_dir = function (self, right_vector, forwa
 
 	return dir
 end
-
-return

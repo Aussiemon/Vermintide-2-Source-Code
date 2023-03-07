@@ -72,5 +72,3 @@ DialogueLookup[DialogueLookup_n + 34] = "pwh_crawl_end_event_tunnel"
 DialogueLookup[DialogueLookup_n + 35] = "pwh_crawl_end_event_waystone"
 DialogueLookup[DialogueLookup_n + 36] = "pwh_crawl_pub_destroyed_reaction"
 DialogueLookup_n = DialogueLookup_n + 36
-
-return

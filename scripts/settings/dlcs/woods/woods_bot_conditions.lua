@@ -36,7 +36,7 @@ BTConditions.can_activate.we_thornsister = function (blackboard)
 		if wall_target_distance_sq <= wall_max_distance_sq and wall_target_distance_sq >= 4 then
 			if is_smiter_ability then
 				local target_breed = target_blackboard and target_blackboard.breed
-				local target_threat_value = (target_breed and target_breed.threat_value) or 0
+				local target_threat_value = target_breed and target_breed.threat_value or 0
 
 				if target_unit == blackboard.priority_target_enemy or target_unit == blackboard.urgent_target_enemy or target_unit == blackboard.opportunity_target_enemy or target_threat_value >= 8 then
 					wall_target = target_unit
@@ -73,5 +73,3 @@ BTConditions.can_activate.we_thornsister = function (blackboard)
 
 	return false
 end
-
-return

@@ -10,7 +10,7 @@ LobbyMembers.init = function (self, lobby)
 	self.member_count = member_count
 	local member_map = {}
 
-	for i = 1, member_count, 1 do
+	for i = 1, member_count do
 		local peer_id = current_members[i]
 		member_map[peer_id] = true
 		self.members_joined[i] = peer_id
@@ -49,7 +49,7 @@ LobbyMembers.update = function (self)
 	self.member_count = member_count
 	local members = self.members
 
-	for i = 1, member_count, 1 do
+	for i = 1, member_count do
 		local peer_id = current_members[i]
 
 		if members[peer_id] == nil then
@@ -123,5 +123,3 @@ if IS_XB1 then
 		return members_changed
 	end
 end
-
-return

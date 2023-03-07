@@ -59,8 +59,8 @@ end
 local function add_to_sound_events_table(sound_event)
 	if not SoundEvents[sound_event] then
 		local events = {
-			false = sound_event,
-			true = sound_event .. "_husk"
+			["false"] = sound_event,
+			["true"] = sound_event .. "_husk"
 		}
 		SoundEvents[sound_event] = events
 	end
@@ -69,7 +69,7 @@ end
 local function get_inheritence_list(template_list, last_template)
 	local s = ""
 
-	for i = 1, #template_list, 1 do
+	for i = 1, #template_list do
 		s = s .. sprintf("\t%q inherits from %q\n", template_list[i], template_list[i + 1] or last_template)
 	end
 
@@ -153,7 +153,7 @@ local function compile_effects_templates(template)
 			else
 				local num_events = #sound_event
 
-				for i = 1, num_events, 1 do
+				for i = 1, num_events do
 					add_to_sound_events_table(sound_event[i])
 				end
 			end
@@ -175,5 +175,3 @@ local function setup_hit_reactions()
 end
 
 setup_hit_reactions()
-
-return

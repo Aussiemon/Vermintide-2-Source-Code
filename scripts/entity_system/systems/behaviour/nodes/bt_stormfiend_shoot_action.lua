@@ -163,7 +163,7 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 		if result then
 			local num_hits = #result
 
-			for i = 1, num_hits, 1 do
+			for i = 1, num_hits do
 				local hit = result[i]
 				local actor = hit.actor
 				local hit_unit = Actor.unit(actor)
@@ -185,8 +185,8 @@ BTStormfiendShootAction._calculate_aim = function (self, unit, unit_position, at
 
 	if can_hit_target then
 		local _, projected_start_position, _, hit_position = LocomotionUtils.raycast_on_navmesh(nav_world, start_position, end_check_position, traverse_logic, above, below)
-		local end_position_distance_sq = (projected_start_position and Vector3.distance_squared(projected_start_position, hit_position)) or 0
-		firewall_start_position = (attack_minimum_length_sq < end_position_distance_sq and projected_start_position) or nil
+		local end_position_distance_sq = projected_start_position and Vector3.distance_squared(projected_start_position, hit_position) or 0
+		firewall_start_position = attack_minimum_length_sq < end_position_distance_sq and projected_start_position or nil
 		aim_start_position = projected_start_position
 		aim_end_position = aim_end_position or hit_position
 	end
@@ -255,7 +255,7 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		data.aim_start_position = Vector3Box(aim_start_position)
 		data.current_aim_position = Vector3Box(aim_start_position)
 		data.aim_end_position = Vector3Box(aim_end_position)
-		data.firewall_start_position = (firewall_start_position and Vector3Box(firewall_start_position)) or nil
+		data.firewall_start_position = firewall_start_position and Vector3Box(firewall_start_position) or nil
 		data.direction = Vector3Box(target_direction)
 		data.aim_constraint_target_var = Unit.animation_find_constraint_target(unit, aim_constraint_target_name)
 		data.attack_arm = attack_arm
@@ -275,7 +275,7 @@ BTStormfiendShootAction.init_attack = function (self, unit, blackboard, action, 
 		local attack_rotation = LocomotionUtils.look_at_position_flat(unit, aim_start_position)
 		blackboard.attack_rotation = QuaternionBox(attack_rotation)
 		blackboard.attack_started_at_t = t
-		local bot_threats = action.bot_threats and (action.bot_threats[attack_animation] or (action.bot_threats[1] and action.bot_threats))
+		local bot_threats = action.bot_threats and (action.bot_threats[attack_animation] or action.bot_threats[1] and action.bot_threats)
 
 		if bot_threats then
 			local current_threat_index = 1
@@ -367,11 +367,13 @@ BTStormfiendShootAction.run = function (self, unit, blackboard, t, dt)
 		local weapon_setup = blackboard.weapon_setup
 
 		if t < data.aim_start_t then
+			-- Nothing
 		elseif not data.aim_constrained then
 			self:constrain_aim(unit, blackboard)
 
 			data.aim_constrained = true
 		elseif t < data.start_firing_t then
+			-- Nothing
 		elseif not data.firing_initiated then
 			if weapon_setup and weapon_setup == "ratling_gun" then
 				self:initiate_firing_ratling_gun(blackboard)
@@ -543,7 +545,7 @@ BTStormfiendShootAction.shoot_hit_check = function (self, unit, blackboard)
 		local immune_breeds = action.immune_breeds
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local actor = hit.actor
 			local hit_unit = Actor.unit(actor)
@@ -642,9 +644,9 @@ BTStormfiendShootAction._update_ratling_gun = function (self, unit, blackboard, 
 	local time_in_shoot_action = t - data.start_firing_t
 	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.firing_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
-	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
+	local shots_to_fire = math.floor(time_in_shoot_action / current_time_between_shots) + 1 - data.shots_fired
 
-	for i = 1, shots_to_fire, 1 do
+	for i = 1, shots_to_fire do
 		data.shots_fired = data.shots_fired + 1
 
 		self:_shoot_ratling_gun(unit, blackboard, t, dt)
@@ -712,14 +714,14 @@ BTStormfiendShootAction._debug_firewall = function (self, minimum_length, start_
 		local success_color = Colors.get("green")
 		local neutral_color = Colors.get("yellow")
 		local fail_color = Colors.get("red")
-		local distance = (projected_start_pos and Vector3.distance(projected_start_pos, projected_end_pos)) or 0
+		local distance = projected_start_pos and Vector3.distance(projected_start_pos, projected_end_pos) or 0
 		local debug_start_pos = projected_start_pos or start_position
 		local debug_end_pos = projected_end_pos or wanted_end_pos
 		local to_wanted_pos = wanted_end_pos - debug_start_pos
 
-		drawer:sphere(debug_start_pos, 0.25, (projected_start_pos and success_color) or fail_color)
+		drawer:sphere(debug_start_pos, 0.25, projected_start_pos and success_color or fail_color)
 		drawer:vector(debug_start_pos, to_wanted_pos, neutral_color)
-		drawer:sphere(debug_end_pos, 0.25, (minimum_length < distance and success_color) or fail_color)
+		drawer:sphere(debug_end_pos, 0.25, minimum_length < distance and success_color or fail_color)
 		debug_print("FIREWALL DISTANCE", distance, "MINIMUM DISTANCE", minimum_length)
 	end
 end
@@ -747,15 +749,15 @@ BTStormfiendShootAction._debug_fire_beam = function (self, start_position, end_p
 			drawer = QuickDrawer
 		end
 
-		drawer:sphere(start_position, SPHERE_CAST_RADIUS, (success and success_color) or fail_color)
-		drawer:line(start_position, end_position, (success and success_color) or fail_color)
-		drawer:sphere(end_position, SPHERE_CAST_RADIUS, (success and success_color) or fail_color)
+		drawer:sphere(start_position, SPHERE_CAST_RADIUS, success and success_color or fail_color)
+		drawer:line(start_position, end_position, success and success_color or fail_color)
+		drawer:sphere(end_position, SPHERE_CAST_RADIUS, success and success_color or fail_color)
 
 		if hits then
 			local num_hits = #hits
 			local ray_direction = Vector3.normalize(end_position - start_position)
 
-			for i = 1, num_hits, 1 do
+			for i = 1, num_hits do
 				local hit = hits[i]
 				local distance = hit.distance
 				local hit_position_world = hit.position
@@ -789,5 +791,3 @@ BTStormfiendShootAction._debug_colliding_arm = function (self, shoulder_position
 		drawer:sphere(muzzle_position, 0.1, Colors.get("black"))
 	end
 end
-
-return

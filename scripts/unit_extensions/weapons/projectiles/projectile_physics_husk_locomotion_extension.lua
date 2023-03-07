@@ -20,7 +20,7 @@ ProjectilePhysicsHuskLocomotionExtension.init = function (self, extension_init_c
 
 	self.physics_actor = physics_actor
 
-	for i = 1, Unit.num_actors(unit), 1 do
+	for i = 1, Unit.num_actors(unit) do
 		local actor = Unit.actor(unit, i)
 
 		if actor and Actor.is_physical(actor) and actor ~= physics_actor then
@@ -87,5 +87,3 @@ end
 ProjectilePhysicsHuskLocomotionExtension.has_stopped = function (self)
 	return self.stopped
 end
-
-return

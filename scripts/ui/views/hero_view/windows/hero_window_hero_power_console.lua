@@ -225,5 +225,3 @@ end
 HeroWindowHeroPowerConsole._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

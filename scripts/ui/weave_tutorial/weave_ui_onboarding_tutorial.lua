@@ -138,7 +138,7 @@ WeaveUIOnboardingTutorial.set_completed = function (self, tutorial_data)
 end
 
 WeaveUIOnboardingTutorial.is_showing_tutorial = function (self)
-	return (self.tutorial_popup and self.tutorial_popup.is_visible) or self.delayed_tutorial
+	return self.tutorial_popup and self.tutorial_popup.is_visible or self.delayed_tutorial
 end
 
 WeaveUIOnboardingTutorial.try_show_tutorial = function (self, tutorial_data)
@@ -202,5 +202,3 @@ end
 WeaveUIOnboardingTutorial.event_weave_tutorial_message = function (self, message)
 	self:try_show_tutorial(message)
 end
-
-return

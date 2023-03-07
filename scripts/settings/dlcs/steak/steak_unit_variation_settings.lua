@@ -42,5 +42,3 @@ settings.unit_variation_settings = {
 		}
 	}
 }
-
-return

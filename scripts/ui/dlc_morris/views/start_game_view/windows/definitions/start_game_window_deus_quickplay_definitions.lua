@@ -127,48 +127,48 @@ local animation_definitions = {
 				widgets.content.left_arrow_pressed = false
 			end
 		}
-	},
-	difficulty_info_enter = {
-		{
-			name = "difficulty_info_enter",
-			start_progress = 0,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.difficulty_info.content.visible = true
-				local diff_info_style = widgets.difficulty_info.style
-				diff_info_style.background.color[1] = 0
-				diff_info_style.border.color[1] = 0
-				diff_info_style.difficulty_description.text_color[1] = 0
-				diff_info_style.highest_obtainable_level.text_color[1] = 0
-				diff_info_style.difficulty_separator.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local diff_info = widgets.difficulty_info
-				local diff_info_style = widgets.difficulty_info.style
-				local diff_info_content = widgets.difficulty_info.content
-				diff_info.offset[1] = 50 * anim_progress
-				widgets.upsell_button.offset[1] = 50 * anim_progress
-				local alpha = 200 * anim_progress
-				diff_info_style.background.color[1] = alpha
-				diff_info_style.border.color[1] = alpha
-				alpha = 255 * anim_progress
-				diff_info_style.difficulty_description.text_color[1] = alpha
-				diff_info_style.highest_obtainable_level.text_color[1] = alpha
-				diff_info_style.difficulty_separator.color[1] = alpha
+	}
+}
+animation_definitions.difficulty_info_enter = {
+	{
+		name = "difficulty_info_enter",
+		start_progress = 0,
+		end_progress = 0.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			widgets.difficulty_info.content.visible = true
+			local diff_info_style = widgets.difficulty_info.style
+			diff_info_style.background.color[1] = 0
+			diff_info_style.border.color[1] = 0
+			diff_info_style.difficulty_description.text_color[1] = 0
+			diff_info_style.highest_obtainable_level.text_color[1] = 0
+			diff_info_style.difficulty_separator.color[1] = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local diff_info = widgets.difficulty_info
+			local diff_info_style = widgets.difficulty_info.style
+			local diff_info_content = widgets.difficulty_info.content
+			diff_info.offset[1] = 50 * anim_progress
+			widgets.upsell_button.offset[1] = 50 * anim_progress
+			local alpha = 200 * anim_progress
+			diff_info_style.background.color[1] = alpha
+			diff_info_style.border.color[1] = alpha
+			alpha = 255 * anim_progress
+			diff_info_style.difficulty_description.text_color[1] = alpha
+			diff_info_style.highest_obtainable_level.text_color[1] = alpha
+			diff_info_style.difficulty_separator.color[1] = alpha
 
-				if diff_info_content.should_show_diff_lock_text then
-					diff_info_style.difficulty_lock_text.text_color[1] = alpha
-				end
-
-				if diff_info_content.should_show_dlc_lock then
-					diff_info_style.dlc_lock_text.text_color[1] = alpha
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+			if diff_info_content.should_show_diff_lock_text then
+				diff_info_style.difficulty_lock_text.text_color[1] = alpha
 			end
-		}
+
+			if diff_info_content.should_show_dlc_lock then
+				diff_info_style.dlc_lock_text.text_color[1] = alpha
+			end
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 local scenegraph_definition = {

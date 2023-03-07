@@ -92,7 +92,7 @@ end
 ModShim.start = function ()
 	local data_list = ModShim.patches
 
-	for i = 1, #data_list, 1 do
+	for i = 1, #data_list do
 		local data = data_list[i]
 		local name = data.name
 		local object_name, method_name = string.match(name, "^([^:.]+)[:.]([^:.]+)$")
@@ -116,5 +116,3 @@ ModShim.start = function ()
 		end)
 	end
 end
-
-return

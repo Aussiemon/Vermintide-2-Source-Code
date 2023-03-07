@@ -46,5 +46,3 @@ DialogueLookup[DialogueLookup_n + 21] = "pwh_elven_ruins_intro_a"
 DialogueLookup[DialogueLookup_n + 22] = "pwh_elven_ruins_intro_b"
 DialogueLookup[DialogueLookup_n + 23] = "pwh_elven_ruins_intro_c"
 DialogueLookup_n = DialogueLookup_n + 23
-
-return

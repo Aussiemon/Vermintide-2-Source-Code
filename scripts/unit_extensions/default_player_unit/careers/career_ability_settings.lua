@@ -532,7 +532,7 @@ PassiveAbilitySettings = {
 DLCUtils.require_list("career_ability_settings")
 
 for career, ability_list in pairs(ActivatedAbilitySettings) do
-	for i = 1, #ability_list, 1 do
+	for i = 1, #ability_list do
 		local data = ability_list[i]
 
 		if data.action_name then
@@ -546,5 +546,3 @@ for career, ability_list in pairs(ActivatedAbilitySettings) do
 		fassert(data.action_name or data.ability_class, "Activated ability for \"%s\" must have either a weapon action or an ability class", career)
 	end
 end
-
-return

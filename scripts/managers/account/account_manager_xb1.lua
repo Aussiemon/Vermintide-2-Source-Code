@@ -278,7 +278,7 @@ AccountManager._check_trigger_popups = function (self)
 		self._popup_id = nil
 		local wanted_profile_id = self._user_info.xbox_user_id
 		local wanted_profile = self._gamertags[wanted_profile_id]
-		local cropped_profile = (wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile)) or "?"
+		local cropped_profile = wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile) or "?"
 		local wrong_profile_str = string.format(Localize("controller_pairing"), cropped_profile)
 
 		self:_create_popup(wrong_profile_str, "controller_pairing_header", "verify_profile", "menu_retry", "restart_network", "menu_return_to_title_screen", "show_profile_picker", "menu_select_profile", true)
@@ -357,6 +357,7 @@ AccountManager._update_social_manager = function (self, dt, t)
 		end
 
 		if table.contains(events, SocialEventType.PRESENCE_CHANGED) then
+			-- Nothing
 		end
 	end
 end
@@ -453,10 +454,11 @@ AccountManager._verify_user_profile = function (self)
 	if not self._active_controller or not self._active_controller.user_id() or self._active_controller.disconnected() or not user_info or self._user_info.xbox_user_id ~= user_info.xbox_user_id or not user_info.signed_in or controller_changed then
 		local wanted_profile_id = self._user_info.xbox_user_id
 		local wanted_profile = self._gamertags[wanted_profile_id]
-		local cropped_profile = (wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile)) or "?"
+		local cropped_profile = wanted_profile and Managers.popup:fit_text_width_to_popup(wanted_profile) or "?"
 		local wrong_profile_str = string.format(Localize("controller_pairing"), cropped_profile)
 
 		if Managers.matchmaking then
+			-- Nothing
 		end
 
 		self:_verify_user_in_cache()
@@ -556,7 +558,7 @@ AccountManager._create_popup = function (self, error, header, right_action, righ
 	local right_button = right_button and Localize(right_button)
 	local left_button = left_button and Localize(left_button)
 	local extra_button = extra_button and Localize(extra_button)
-	local localized_error = (disable_localize_error and error) or Localize(error)
+	local localized_error = disable_localize_error and error or Localize(error)
 
 	assert(self._popup_id == nil, "Tried to show popup even though we already had one.")
 	print(error, header, right_action, right_button, left_action, left_button, extra_action, extra_button, disable_localize_error)
@@ -589,6 +591,7 @@ AccountManager._handle_popup_result = function (self, result)
 	if result == "verify_profile" then
 		self:verify_profile()
 	elseif result == "acknowledged" then
+		-- Nothing
 	elseif result == "restart_network" then
 		self._should_teardown_xboxlive = true
 
@@ -678,6 +681,7 @@ AccountManager.verify_profile = function (self)
 		self:_verify_user_in_cache()
 
 		if Managers.matchmaking then
+			-- Nothing
 		end
 	else
 		show_wrong_profile_popup(self)
@@ -944,7 +948,7 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 		}
 		local num_offline_friends = #offline_friends
 
-		for i = 1, num_title_online_friends, 1 do
+		for i = 1, num_title_online_friends do
 			local data = title_online_friends[i]
 			local id = data.xbox_user_id
 			data.name = data.display_name
@@ -953,7 +957,7 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 			friend_data[id] = data
 		end
 
-		for i = 1, num_online_friends, 1 do
+		for i = 1, num_online_friends do
 			local data = online_friends[i]
 			local id = data.xbox_user_id
 
@@ -965,7 +969,7 @@ AccountManager.get_friends = function (self, friends_list_limit, callback)
 			end
 		end
 
-		for i = 1, num_offline_friends, 1 do
+		for i = 1, num_offline_friends do
 			local data = offline_friends[i]
 			local id = data.xbox_user_id
 			data.name = data.display_name
@@ -998,7 +1002,7 @@ AccountManager.reset_bandwidth_query = function (self)
 end
 
 AccountManager.query_bandwidth = function (self, down_kbps, up_kbps, timeout_in_ms)
-	if self._querying_bandwidth or not Network.xboxlive_client_exists() or (Managers.voice_chat and Managers.voice_chat:bandwidth_disabled()) or not GameSettingsDevelopment.bandwidth_queries_enabled then
+	if self._querying_bandwidth or not Network.xboxlive_client_exists() or Managers.voice_chat and Managers.voice_chat:bandwidth_disabled() or not GameSettingsDevelopment.bandwidth_queries_enabled then
 		return
 	end
 
@@ -1087,5 +1091,3 @@ end
 AccountManager.update_presence = function (self)
 	return
 end
-
-return

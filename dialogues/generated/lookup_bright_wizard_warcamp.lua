@@ -46,5 +46,3 @@ DialogueLookup[DialogueLookup_n + 21] = "pbw_chaos_war_camp_intro_c"
 DialogueLookup[DialogueLookup_n + 22] = "pbw_chaos_war_camp_challenge_reply_a"
 DialogueLookup[DialogueLookup_n + 23] = "pbw_level_chaos_war_camp_dead_champion"
 DialogueLookup_n = DialogueLookup_n + 23
-
-return

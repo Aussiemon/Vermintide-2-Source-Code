@@ -171,7 +171,7 @@ DiceRoller.init = function (self, world, dice_keeper, rewards, hero_name)
 	local num_units = #units
 	local bowl_position = nil
 
-	for i = 1, num_units, 1 do
+	for i = 1, num_units do
 		local unit = units[i]
 		local is_bowl = Unit.get_data(unit, "bowl_type")
 
@@ -359,7 +359,7 @@ local dice_visibility_groups = {
 local function set_emissive(unit, emissive)
 	local num_meshes = Unit.num_meshes(unit)
 
-	for ii = 0, num_meshes - 1, 1 do
+	for ii = 0, num_meshes - 1 do
 		local mesh = Unit.mesh(unit, ii)
 		local num_materials = Mesh.num_materials(mesh)
 		local material = Mesh.material(mesh, "m_dice")
@@ -400,7 +400,7 @@ DiceRoller._create_success_table = function (self, success_list)
 		local success_amount = success_list[dice_type]
 		local success_count = 0
 
-		for i = 1, dice_amount, 1 do
+		for i = 1, dice_amount do
 			local success = success_count < success_amount
 			local data = {
 				dice_type = dice_type,
@@ -428,7 +428,7 @@ DiceRoller.roll_dices = function (self)
 	local num_dice = #dice_simulation_settings
 	local scale = Vector3(SCALAR, SCALAR, SCALAR)
 
-	for i = 1, num_dice, 1 do
+	for i = 1, num_dice do
 		local data = dice_simulation_settings[i]
 		local dice_type = data.dice_type
 		local unit_name = unit_names[dice_type] .. "_no_physics"
@@ -465,11 +465,11 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 	self._dice_simulation_units = {}
 	local initial_positions = {}
 
-	for i = 1, num_dice, 1 do
+	for i = 1, num_dice do
 		local valid_pos = false
 		local initial_position = Vector3(16, 0, 0) + Vector3(math.random() / 20, math.random() / 20, 0.07) * 100
 
-		for j = 1, #initial_positions, 1 do
+		for j = 1, #initial_positions do
 			repeat
 				if Vector3.length(initial_position - initial_positions[j]) < 2 then
 					valid_pos = false
@@ -483,7 +483,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 		initial_positions[i] = initial_position
 	end
 
-	for i = 1, num_dice, 1 do
+	for i = 1, num_dice do
 		local simulation_settings = dice_simulation_settings[i]
 		local dice_type = simulation_settings.dice_type
 		local success = simulation_settings.success
@@ -500,7 +500,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 		Actor.wake_up(actor)
 		Actor.set_velocity(actor, Vector3(-0.25, -0.5, -0.07) * 65)
 
-		local wanted_dice_result = (success and math.random(dice_type_success_amounts[dice_type], 6)) or math.random(1, dice_type_success_amounts[dice_type] - 1)
+		local wanted_dice_result = success and math.random(dice_type_success_amounts[dice_type], 6) or math.random(1, dice_type_success_amounts[dice_type] - 1)
 		dice_simulation_settings[i] = {
 			dice_result = 0,
 			unit = dice_unit,
@@ -525,7 +525,7 @@ DiceRoller.simulate_dice_rolls = function (self, success_list)
 
 	local dice_amount = #dice_simulation_settings
 
-	for i = 1, dice_amount, 1 do
+	for i = 1, dice_amount do
 		local data = dice_simulation_settings[i]
 
 		World.destroy_unit(world, data.unit)
@@ -554,7 +554,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 		local has_rerolls = false
 		self._sound_events[#self._sound_events + 1] = false
 
-		for i = 1, dice_amount, 1 do
+		for i = 1, dice_amount do
 			local data = dice_simulation_settings[i]
 			local unit = data.unit
 			local actor = Unit.actor(unit, 0)
@@ -584,7 +584,7 @@ DiceRoller.run_simulation = function (self, dice_simulation_settings)
 
 		frame_count = frame_count + 1
 
-		if frame_count == 200 or (finished and has_rerolls) then
+		if frame_count == 200 or finished and has_rerolls then
 			print("dice game broke, rerunning")
 
 			finished = true
@@ -600,7 +600,7 @@ end
 DiceRoller.calculate_results = function (self, dice_simulation_settings)
 	local amount = #dice_simulation_settings
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local data = dice_simulation_settings[i]
 		local unit = data.unit
 		local dice_result = self:get_dice_result(unit, data.dice_type)
@@ -643,7 +643,7 @@ end
 DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 	local amount = #dice_simulation_settings
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		repeat
 			local data = dice_simulation_settings[i]
 			local wanted_result = data.wanted_dice_result
@@ -665,7 +665,7 @@ DiceRoller.alter_rotations = function (self, dice_simulation_settings)
 			local rotations = data.rotations
 			local num_rotations = #rotations
 
-			for i = 1, num_rotations, 1 do
+			for i = 1, num_rotations do
 				local current_rotation = rotations[i]:unbox()
 				local new_rotation = Quaternion.multiply(current_rotation, rotation_to_apply)
 				rotations[i] = QuaternionBox(new_rotation)
@@ -758,7 +758,7 @@ DiceRoller.cleanup_post_roll = function (self)
 			finished_dice = finished_dice + 1
 		else
 			local num_successes_per_type = self.remaining_dice[data.dice_type].successes or 0
-			self.remaining_dice[data.dice_type].successes = (data.success and num_successes_per_type + 1) or num_successes_per_type
+			self.remaining_dice[data.dice_type].successes = data.success and num_successes_per_type + 1 or num_successes_per_type
 			self.needs_rerolls = true
 		end
 	end
@@ -766,7 +766,7 @@ DiceRoller.cleanup_post_roll = function (self)
 	local num_dice_units_to_remove = #dice_units_to_remove
 
 	if self.needs_rerolls then
-		for i = 1, num_dice_units_to_remove, 1 do
+		for i = 1, num_dice_units_to_remove do
 			local unit = dice_units_to_remove[i]
 			self.dice_units[unit] = nil
 
@@ -1009,18 +1009,18 @@ if Development.parameter("dice_chance_simulation") then
 	local results = {}
 	local num_simulations = 20
 
-	for i = 1, #dice_configurations, 1 do
+	for i = 1, #dice_configurations do
 		local config = dice_configurations[i]
 		local successes = {}
 
-		for j = 1, num_simulations, 1 do
+		for j = 1, num_simulations do
 			local num_successes = 0
 
-			for k = 1, 4, 1 do
+			for k = 1, 4 do
 				local die_amount = config[k]
 				local probability = probabilities[k]
 
-				for l = 1, die_amount, 1 do
+				for l = 1, die_amount do
 					if math.random() < probability then
 						num_successes = num_successes + 1
 					end
@@ -1034,7 +1034,7 @@ if Development.parameter("dice_chance_simulation") then
 			successes[num_successes] = successes[num_successes] + 1
 		end
 
-		for i = 0, 7, 1 do
+		for i = 0, 7 do
 			if successes[i] then
 				successes[i] = math.round_with_precision(successes[i] / num_simulations * 100, 3) .. "%"
 			end
@@ -1044,5 +1044,3 @@ if Development.parameter("dice_chance_simulation") then
 		table.dump(successes)
 	end
 end
-
-return

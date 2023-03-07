@@ -179,5 +179,3 @@ settings.spread_templates = {
 		}
 	}
 }
-
-return

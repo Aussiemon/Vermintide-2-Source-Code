@@ -792,384 +792,382 @@ local action_data = {
 			cataclysm_2 = 11.25,
 			easy = 3.33
 		}
-	},
-	tentacle_grab = {
-		damage_type = "cutting",
-		damage = 20,
-		fatigue_type = "ogre_shove",
-		action_weight = 6,
-		ignore_ai_damage = true,
-		ignore_shield_block = true,
-		considerations = UtilityConsiderations.chaos_spawn_tentacle_grab,
-		attacks = {
-			{
-				freeze_intensity_decay_time = 15,
-				height = 2,
-				hit_only_players = true,
-				ignore_targets_behind = true,
-				catapult_player = false,
-				rotation_time = 0.3,
-				anim_driven = false,
-				ignores_dodging = false,
-				offset_forward = 0,
-				offset_up = 0,
-				range = 2,
-				damage_done_time = 1,
-				hit_multiple_targets = false,
-				attack_time = 1.75,
-				width = 0.4,
-				attack_anim = {
-					"attack_grab"
-				},
-				hit_player_func = function (unit, blackboard, hit_unit, action, attack)
-					local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
+	}
+}
+action_data.tentacle_grab = {
+	damage_type = "cutting",
+	damage = 20,
+	fatigue_type = "ogre_shove",
+	action_weight = 6,
+	ignore_ai_damage = true,
+	ignore_shield_block = true,
+	considerations = UtilityConsiderations.chaos_spawn_tentacle_grab,
+	attacks = {
+		{
+			freeze_intensity_decay_time = 15,
+			height = 2,
+			hit_only_players = true,
+			ignore_targets_behind = true,
+			catapult_player = false,
+			rotation_time = 0.3,
+			anim_driven = false,
+			ignores_dodging = false,
+			offset_forward = 0,
+			offset_up = 0,
+			range = 2,
+			damage_done_time = 1,
+			hit_multiple_targets = false,
+			attack_time = 1.75,
+			width = 0.4,
+			attack_anim = {
+				"attack_grab"
+			},
+			hit_player_func = function (unit, blackboard, hit_unit, action, attack)
+				local status_extension = ScriptUnit.has_extension(hit_unit, "status_system")
 
-					if not status_extension:is_disabled() and not status_extension:is_invisible() then
-						blackboard.victim_grabbed = hit_unit
-						blackboard.has_grabbed = true
-						local network_manager = Managers.state.network
+				if not status_extension:is_disabled() and not status_extension:is_invisible() then
+					blackboard.victim_grabbed = hit_unit
+					blackboard.has_grabbed = true
+					local network_manager = Managers.state.network
 
-						network_manager:anim_event(unit, "attack_grab_player")
-						StatusUtils.set_grabbed_by_chaos_spawn_network(hit_unit, true, unit)
+					network_manager:anim_event(unit, "attack_grab_player")
+					StatusUtils.set_grabbed_by_chaos_spawn_network(hit_unit, true, unit)
 
-						blackboard.grabbed_time = 0
-						blackboard.grabbed_state = "tentacle_grab"
-					end
-				end,
-				continious_overlap = {
-					attack_grab = {
-						base_node_name = "j_leftforearm",
-						tip_node_name = "j_lefthand",
-						start_time = 0.6666666666666666
-					}
-				},
-				bot_threat_difficulty_data = default_bot_threat_difficulty_data,
-				bot_threats = {
-					{
-						collision_type = "cylinder",
-						offset_forward = 0,
-						radius = 4.5,
-						height = 4,
-						offset_right = 0,
-						offset_up = 0,
-						duration = 0.8333333333333334,
-						start_time = 0.16666666666666666
-					}
-				}
-			}
-		},
-		difficulty_damage = {
-			harder = 7,
-			hard = 6,
-			normal = 5,
-			hardest = 8,
-			cataclysm = 10,
-			cataclysm_3 = 10,
-			cataclysm_2 = 10,
-			easy = 3
-		}
-	},
-	erratic_follow = {
-		enter_catch_up_dist_sq = 1600,
-		enter_walk_dist_sq = 4,
-		leave_walk_dist_sq = 9,
-		uses_high_jumps = true,
-		jump_dist = 10,
-		action_weight = 1,
-		move_anim = "move_fwd",
-		walk_anim = "walk_fwd",
-		considerations = UtilityConsiderations.follow,
-		start_anims_name = {
-			bwd = "move_start_bwd",
-			fwd = "move_start_fwd",
-			left = "move_start_left",
-			right = "move_start_right"
-		},
-		walk_start_anims_name = {
-			bwd = "walk_start_bwd",
-			fwd = "walk_start_fwd",
-			left = "walk_start_left",
-			right = "walk_start_right"
-		},
-		start_anims_data = {
-			move_start_fwd = {},
-			move_start_bwd = {
-				dir = -1,
-				rad = math.pi
-			},
-			move_start_left = {
-				dir = 1,
-				rad = math.pi / 2
-			},
-			move_start_right = {
-				dir = -1,
-				rad = math.pi / 2
-			}
-		},
-		init_blackboard = {
-			chasing_timer = -10
-		},
-		move_jump_left_anims = {
-			{
-				"move_jump_left_45",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			{
-				"move_jump_left_45_turn_right_45",
-				ray_dist = 5,
-				ray_angle = -math.pi * 0.25
-			},
-			{
-				"move_jump_left_45_turn_right_90",
-				ray_dist = 5,
-				ray_angle = -math.pi * 0.5
-			},
-			name = "move_jump_left_anims",
-			ray_dist = 8,
-			ray_angle = math.pi * 0.25
-		},
-		move_jump_right_anims = {
-			{
-				"move_jump_right_45",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			{
-				"move_jump_right_45_turn_left_45",
-				ray_dist = 5,
-				ray_angle = math.pi * 0.25
-			},
-			{
-				"move_jump_right_45_turn_left_90",
-				ray_dist = 5,
-				ray_angle = math.pi * 0.5
-			},
-			name = "move_jump_right_anims",
-			ray_dist = 8,
-			ray_angle = -math.pi * 0.25
-		},
-		move_jump_fwd_anims = {
-			{
-				"move_jump_fwd",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			{
-				"move_jump_fwd_turn_left_45",
-				ray_dist = 5,
-				ray_angle = math.pi * 0.25
-			},
-			{
-				"move_jump_fwd_turn_left_90",
-				ray_dist = 5,
-				ray_angle = math.pi * 0.5
-			},
-			{
-				"move_jump_fwd_turn_right_45",
-				ray_dist = 5,
-				ray_angle = -math.pi * 0.25
-			},
-			{
-				"move_jump_fwd_turn_right_90",
-				ray_dist = 5,
-				ray_angle = -math.pi * 0.5
-			},
-			ray_angle = 0,
-			name = "move_jump_fwd_anims",
-			ray_dist = 8
-		},
-		move_jump_only_left_anims = {
-			{
-				"move_jump_left_45",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			{
-				"move_jump_left_90",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			ray_dist = 8,
-			ray_angle = math.pi * 0.25
-		},
-		move_jump_only_fwd_left_anims = {
-			{
-				"move_jump_fwd_turn_left_45",
-				ray_dist = 5,
-				ray_angle = math.pi * 0.25
-			},
-			{
-				"move_jump_fwd_turn_left_90",
-				ray_dist = 5,
-				ray_angle = math.pi * 0.5
-			},
-			ray_angle = 0,
-			ray_dist = 8
-		},
-		move_jump_only_right_anims = {
-			{
-				"move_jump_right_45",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			{
-				"move_jump_right_90",
-				ray_dist = 5,
-				ray_angle = 0
-			},
-			ray_dist = 8,
-			ray_angle = -math.pi * 0.25
-		},
-		move_jump_only_fwd_right_anims = {
-			{
-				"move_jump_fwd_turn_right_45",
-				ray_dist = 5,
-				ray_angle = -math.pi * 0.25
-			},
-			{
-				"move_jump_fwd_turn_right_90",
-				ray_dist = 5,
-				ray_angle = -math.pi * 0.5
-			},
-			ray_angle = 0,
-			ray_dist = 8
-		}
-	},
-	smash_door = {
-		unblockable = true,
-		name = "smash_door",
-		damage = 25,
-		damage_type = "cutting",
-		move_anim = "move_fwd",
-		attack_anim = "attack_melee_claw",
-		door_attack_distance = 2,
-		ignore_staggers = {
-			false,
-			true,
-			true,
-			true,
-			false,
-			true
-		}
-	},
-	target_rage = {
-		close_rage_time = 1,
-		close_anims_dist = 16,
-		rage_time = 3,
-		start_anims_name = {
-			bwd = "change_target_bwd",
-			fwd = "change_target_fwd",
-			left = "change_target_left",
-			right = "change_target_right"
-		},
-		start_anims_data = {
-			change_target_fwd = {},
-			change_target_bwd = {
-				dir = -1,
-				rad = math.pi
-			},
-			change_target_left = {
-				dir = 1,
-				rad = math.pi / 2
-			},
-			change_target_right = {
-				dir = -1,
-				rad = math.pi / 2
-			}
-		},
-		close_anims_name = {
-			bwd = "turn_bwd",
-			left = "turn_left",
-			right = "turn_right"
-		},
-		close_anims_data = {
-			turn_bwd = {
-				dir = -1,
-				rad = math.pi
-			},
-			turn_left = {
-				dir = 1,
-				rad = math.pi / 2
-			},
-			turn_right = {
-				dir = -1,
-				rad = math.pi / 2
-			}
-		}
-	},
-	target_unreachable = {
-		move_anim = "move_start_fwd"
-	},
-	stagger = {
-		scale_animation_speeds = true,
-		stagger_animation_scale = 1,
-		stagger_anims = {
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {
-					"stagger_fwd_exp"
-				},
-				bwd = {
-					"stagger_bwd_exp"
-				},
-				left = {
-					"stagger_left_exp"
-				},
-				right = {
-					"stagger_right_exp"
+					blackboard.grabbed_time = 0
+					blackboard.grabbed_state = "tentacle_grab"
+				end
+			end,
+			continious_overlap = {
+				attack_grab = {
+					base_node_name = "j_leftforearm",
+					tip_node_name = "j_lefthand",
+					start_time = 0.6666666666666666
 				}
 			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
-			},
-			{
-				fwd = {},
-				bwd = {},
-				left = {},
-				right = {}
+			bot_threat_difficulty_data = default_bot_threat_difficulty_data,
+			bot_threats = {
+				{
+					collision_type = "cylinder",
+					offset_forward = 0,
+					radius = 4.5,
+					height = 4,
+					offset_right = 0,
+					offset_up = 0,
+					duration = 0.8333333333333334,
+					start_time = 0.16666666666666666
+				}
 			}
+		}
+	},
+	difficulty_damage = {
+		harder = 7,
+		hard = 6,
+		normal = 5,
+		hardest = 8,
+		cataclysm = 10,
+		cataclysm_3 = 10,
+		cataclysm_2 = 10,
+		easy = 3
+	}
+}
+action_data.erratic_follow = {
+	enter_catch_up_dist_sq = 1600,
+	enter_walk_dist_sq = 4,
+	leave_walk_dist_sq = 9,
+	uses_high_jumps = true,
+	jump_dist = 10,
+	action_weight = 1,
+	move_anim = "move_fwd",
+	walk_anim = "walk_fwd",
+	considerations = UtilityConsiderations.follow,
+	start_anims_name = {
+		bwd = "move_start_bwd",
+		fwd = "move_start_fwd",
+		left = "move_start_left",
+		right = "move_start_right"
+	},
+	walk_start_anims_name = {
+		bwd = "walk_start_bwd",
+		fwd = "walk_start_fwd",
+		left = "walk_start_left",
+		right = "walk_start_right"
+	},
+	start_anims_data = {
+		move_start_fwd = {},
+		move_start_bwd = {
+			dir = -1,
+			rad = math.pi
+		},
+		move_start_left = {
+			dir = 1,
+			rad = math.pi / 2
+		},
+		move_start_right = {
+			dir = -1,
+			rad = math.pi / 2
+		}
+	},
+	init_blackboard = {
+		chasing_timer = -10
+	},
+	move_jump_left_anims = {
+		{
+			"move_jump_left_45",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		{
+			"move_jump_left_45_turn_right_45",
+			ray_dist = 5,
+			ray_angle = -math.pi * 0.25
+		},
+		{
+			"move_jump_left_45_turn_right_90",
+			ray_dist = 5,
+			ray_angle = -math.pi * 0.5
+		},
+		name = "move_jump_left_anims",
+		ray_dist = 8,
+		ray_angle = math.pi * 0.25
+	},
+	move_jump_right_anims = {
+		{
+			"move_jump_right_45",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		{
+			"move_jump_right_45_turn_left_45",
+			ray_dist = 5,
+			ray_angle = math.pi * 0.25
+		},
+		{
+			"move_jump_right_45_turn_left_90",
+			ray_dist = 5,
+			ray_angle = math.pi * 0.5
+		},
+		name = "move_jump_right_anims",
+		ray_dist = 8,
+		ray_angle = -math.pi * 0.25
+	},
+	move_jump_fwd_anims = {
+		{
+			"move_jump_fwd",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		{
+			"move_jump_fwd_turn_left_45",
+			ray_dist = 5,
+			ray_angle = math.pi * 0.25
+		},
+		{
+			"move_jump_fwd_turn_left_90",
+			ray_dist = 5,
+			ray_angle = math.pi * 0.5
+		},
+		{
+			"move_jump_fwd_turn_right_45",
+			ray_dist = 5,
+			ray_angle = -math.pi * 0.25
+		},
+		{
+			"move_jump_fwd_turn_right_90",
+			ray_dist = 5,
+			ray_angle = -math.pi * 0.5
+		},
+		ray_angle = 0,
+		name = "move_jump_fwd_anims",
+		ray_dist = 8
+	},
+	move_jump_only_left_anims = {
+		{
+			"move_jump_left_45",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		{
+			"move_jump_left_90",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		ray_dist = 8,
+		ray_angle = math.pi * 0.25
+	},
+	move_jump_only_fwd_left_anims = {
+		{
+			"move_jump_fwd_turn_left_45",
+			ray_dist = 5,
+			ray_angle = math.pi * 0.25
+		},
+		{
+			"move_jump_fwd_turn_left_90",
+			ray_dist = 5,
+			ray_angle = math.pi * 0.5
+		},
+		ray_angle = 0,
+		ray_dist = 8
+	},
+	move_jump_only_right_anims = {
+		{
+			"move_jump_right_45",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		{
+			"move_jump_right_90",
+			ray_dist = 5,
+			ray_angle = 0
+		},
+		ray_dist = 8,
+		ray_angle = -math.pi * 0.25
+	},
+	move_jump_only_fwd_right_anims = {
+		{
+			"move_jump_fwd_turn_right_45",
+			ray_dist = 5,
+			ray_angle = -math.pi * 0.25
+		},
+		{
+			"move_jump_fwd_turn_right_90",
+			ray_dist = 5,
+			ray_angle = -math.pi * 0.5
+		},
+		ray_angle = 0,
+		ray_dist = 8
+	}
+}
+action_data.smash_door = {
+	unblockable = true,
+	name = "smash_door",
+	damage = 25,
+	damage_type = "cutting",
+	move_anim = "move_fwd",
+	attack_anim = "attack_melee_claw",
+	door_attack_distance = 2,
+	ignore_staggers = {
+		false,
+		true,
+		true,
+		true,
+		false,
+		true
+	}
+}
+action_data.target_rage = {
+	close_rage_time = 1,
+	close_anims_dist = 16,
+	rage_time = 3,
+	start_anims_name = {
+		bwd = "change_target_bwd",
+		fwd = "change_target_fwd",
+		left = "change_target_left",
+		right = "change_target_right"
+	},
+	start_anims_data = {
+		change_target_fwd = {},
+		change_target_bwd = {
+			dir = -1,
+			rad = math.pi
+		},
+		change_target_left = {
+			dir = 1,
+			rad = math.pi / 2
+		},
+		change_target_right = {
+			dir = -1,
+			rad = math.pi / 2
+		}
+	},
+	close_anims_name = {
+		bwd = "turn_bwd",
+		left = "turn_left",
+		right = "turn_right"
+	},
+	close_anims_data = {
+		turn_bwd = {
+			dir = -1,
+			rad = math.pi
+		},
+		turn_left = {
+			dir = 1,
+			rad = math.pi / 2
+		},
+		turn_right = {
+			dir = -1,
+			rad = math.pi / 2
+		}
+	}
+}
+action_data.target_unreachable = {
+	move_anim = "move_start_fwd"
+}
+action_data.stagger = {
+	scale_animation_speeds = true,
+	stagger_animation_scale = 1,
+	stagger_anims = {
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {
+				"stagger_fwd_exp"
+			},
+			bwd = {
+				"stagger_bwd_exp"
+			},
+			left = {
+				"stagger_left_exp"
+			},
+			right = {
+				"stagger_right_exp"
+			}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
+		},
+		{
+			fwd = {},
+			bwd = {},
+			left = {},
+			right = {}
 		}
 	}
 }
 BreedActions.chaos_spawn = table.create_copy(BreedActions.chaos_spawn, action_data)
-
-return

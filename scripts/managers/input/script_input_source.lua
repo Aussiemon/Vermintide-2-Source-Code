@@ -35,7 +35,7 @@ ScriptInputSource.get = function (self, name)
 	fassert(controller, "No controller of type %q", input_desc.controller_type)
 	fassert(input_desc.func, "No input_desc.func")
 
-	return (self._active and self._input[name]) or ScriptInputSource.super.get(self, name)
+	return self._active and self._input[name] or ScriptInputSource.super.get(self, name)
 end
 
 ScriptInputSource.update = function (self, dt, t)
@@ -76,5 +76,3 @@ ScriptInputSource._update_input = function (self, dt, t)
 		self:start(self._input_settings, true)
 	end
 end
-
-return

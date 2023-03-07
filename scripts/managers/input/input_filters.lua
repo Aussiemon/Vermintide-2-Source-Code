@@ -21,9 +21,9 @@ InputFilters.virtual_axis = {
 		local forward = input_service:get(input_mappings.forward)
 		local back = input_service:get(input_mappings.back)
 		local up_key = input_mappings.up
-		local up = (up_key and input_service:get(up_key)) or 0
+		local up = up_key and input_service:get(up_key) or 0
 		local down_key = input_mappings.down
-		local down = (down_key and input_service:get(down_key)) or 0
+		local down = down_key and input_service:get(down_key) or 0
 		local result = Vector3(right - left, forward - back, up - down)
 
 		return result
@@ -182,7 +182,7 @@ InputFilters.scale_vector3_xy_accelerated_x = {
 			local atan2 = math.atan2(camera_forward.z - camera_horizon.z, camera_forward.y - camera_horizon.y)
 			local above_horizont = atan2 > 0
 			local moving_down = val.y < 0
-			local moving_towards_horizont = (above_horizont and moving_down) or (not above_horizont and not moving_down)
+			local moving_towards_horizont = above_horizont and moving_down or not above_horizont and not moving_down
 
 			if moving_towards_horizont then
 				local slow_down_angle = filter_data.angle_to_slow_down_inside
@@ -368,8 +368,8 @@ InputFilters.gamepad_cursor = {
 			local dt = 0.03333333333333333
 			local new_x = filter_data.pos_x + x * dt * filter_data.multiplier
 			local new_y = filter_data.pos_y + y * dt * filter_data.multiplier
-			filter_data.pos_x = (res_x < new_x and res_x) or (new_x < 0 and 0) or new_x
-			filter_data.pos_y = (res_y < new_y and res_y) or (new_y < 0 and 0) or new_y
+			filter_data.pos_x = res_x < new_x and res_x or new_x < 0 and 0 or new_x
+			filter_data.pos_y = res_y < new_y and res_y or new_y < 0 and 0 or new_y
 			filter_data.frame_index = GLOBAL_FRAME_INDEX
 		end
 
@@ -487,7 +487,7 @@ InputFilters.move_filter_continuous = {
 		return false
 	end
 }
-InputFilters.or = {
+InputFilters["or"] = {
 	init = function (filter_data)
 		return table.clone(filter_data)
 	end,
@@ -499,7 +499,7 @@ InputFilters.or = {
 		end
 	end
 }
-InputFilters.and = {
+InputFilters["and"] = {
 	init = function (filter_data)
 		return table.clone(filter_data)
 	end,
@@ -659,7 +659,7 @@ InputFilters.axis_check = {
 		return axis_requirement <= Vector3.dot(filter_data.axis:unbox(), input)
 	end
 }
-InputFilters.not = {
+InputFilters["not"] = {
 	init = function (filter_data)
 		return table.clone(filter_data)
 	end,
@@ -671,5 +671,3 @@ InputFilters.not = {
 		end
 	end
 }
-
-return

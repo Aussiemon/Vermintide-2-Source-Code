@@ -280,7 +280,7 @@ TwitchView.destroy = function (self)
 end
 
 TwitchView._exit = function (self, return_to_game)
-	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
+	local exit_transition = return_to_game and "exit_menu" or "ingame_menu"
 
 	self._ingame_ui:handle_transition(exit_transition)
 end
@@ -288,5 +288,3 @@ end
 TwitchView.input_service = function (self)
 	return self._input_manager:get_service("twitch_view")
 end
-
-return

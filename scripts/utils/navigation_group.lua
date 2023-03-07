@@ -205,7 +205,7 @@ NavigationGroup.breadth_first_find_nearest_group_triangle = function (self, root
 			GwNavTraversal.get_neighboring_triangles(node_tri)
 		}
 
-		for i = 1, #neighbours, 1 do
+		for i = 1, #neighbours do
 			local a, b, c = Script.temp_count()
 			local neighbour_tri = neighbours[i]
 			local neighbour_hash = self:get_poly_hash(neighbour_tri, nav_world)
@@ -238,7 +238,7 @@ NavigationGroup.print_group = function (self, world, nav_world, line_object, lin
 	print("Group", self._group_number, "has neighbours:")
 
 	for group_neighbour, _ in pairs(self._group_neighbours) do
-		print(group_neighbour._group_number, (self._group_ledge_neighbours[group_neighbour] and "connected_by_ledge") or "")
+		print(group_neighbour._group_number, self._group_ledge_neighbours[group_neighbour] and "connected_by_ledge" or "")
 	end
 
 	for _, poly in pairs(self._group_polygons) do
@@ -273,5 +273,3 @@ NavigationGroup.draw_poly_lines = function (self, poly, color, nav_world, line_o
 	LineObject.add_line(line_object, color, p2, p3)
 	Script.set_temp_count(a, b, c)
 end
-
-return

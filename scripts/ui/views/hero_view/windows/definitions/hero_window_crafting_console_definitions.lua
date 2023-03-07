@@ -717,396 +717,396 @@ local animation_definitions = {
 				return
 			end
 		}
+	}
+}
+animation_definitions.reset_crafting = {
+	{
+		name = "reset",
+		start_progress = 0,
+		end_progress = 0,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local craft_lock_top_left = widgets.craft_lock_top_left
+			local craft_lock_top_right = widgets.craft_lock_top_right
+			local max_angle = math.pi / 2
+			craft_lock_top_left.style.texture_id.angle = max_angle
+			craft_lock_top_right.style.texture_id.angle = -max_angle
+			local craft_lock_bottom_left = widgets.craft_lock_bottom_left
+			local craft_lock_bottom_right = widgets.craft_lock_bottom_right
+			craft_lock_bottom_left.offset[2] = -208
+			craft_lock_bottom_right.offset[2] = -208
+			local craft_lock_eye_left = widgets.craft_lock_eye_left
+			local craft_lock_eye_right = widgets.craft_lock_eye_right
+			local style_eye_left = craft_lock_eye_left.style.texture_id
+			local style_eye_right = craft_lock_eye_right.style.texture_id
+			local eye_width = 224
+			local eye_height = 217
+			style_eye_left.color[1] = 0
+			style_eye_left.horizontal_alignment = "center"
+			style_eye_left.vertical_alignment = "center"
+			style_eye_left.texture_size = style_eye_left.texture_size or {
+				eye_width,
+				eye_height
+			}
+			style_eye_right.color[1] = 0
+			style_eye_right.horizontal_alignment = "center"
+			style_eye_right.vertical_alignment = "center"
+			style_eye_right.texture_size = style_eye_right.texture_size or {
+				eye_width,
+				eye_height
+			}
+			local effect_width = 39
+			local effect_height = 189
+			local craft_lock_top_effect = widgets.craft_lock_top_effect
+			local style_lock_top_effect = craft_lock_top_effect.style.texture_id
+			style_lock_top_effect.color[1] = 0
+			style_lock_top_effect.horizontal_alignment = "center"
+			style_lock_top_effect.vertical_alignment = "center"
+			style_lock_top_effect.texture_size = style_lock_top_effect.texture_size or {
+				effect_width,
+				effect_height
+			}
+			local craft_effect_bottom_left = widgets.craft_effect_bottom_left
+			local style_effect_bottom_left = craft_effect_bottom_left.style.texture_id
+			style_effect_bottom_left.color[1] = 0
+			style_effect_bottom_left.horizontal_alignment = "center"
+			style_effect_bottom_left.vertical_alignment = "center"
+			style_effect_bottom_left.texture_size = style_effect_bottom_left.texture_size or {
+				effect_width,
+				effect_height
+			}
+			local craft_effect_bottom_right = widgets.craft_effect_bottom_right
+			local style_effect_bottom_right = craft_effect_bottom_right.style.texture_id
+			style_effect_bottom_right.color[1] = 0
+			style_effect_bottom_right.horizontal_alignment = "center"
+			style_effect_bottom_right.vertical_alignment = "center"
+			style_effect_bottom_right.texture_size = style_effect_bottom_right.texture_size or {
+				effect_width,
+				effect_height
+			}
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			return
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.craft_enter = {
+	{
+		name = "reset",
+		start_progress = 0,
+		end_progress = 0,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local craft_lock_top_left = widgets.craft_lock_top_left
+			local craft_lock_top_right = widgets.craft_lock_top_right
+			local max_angle = math.pi / 2
+			craft_lock_top_left.style.texture_id.angle = max_angle
+			craft_lock_top_right.style.texture_id.angle = -max_angle
+			local craft_lock_bottom_left = widgets.craft_lock_bottom_left
+			local craft_lock_bottom_right = widgets.craft_lock_bottom_right
+			craft_lock_bottom_left.offset[2] = -208
+			craft_lock_bottom_right.offset[2] = -208
+			local craft_lock_eye_left = widgets.craft_lock_eye_left
+			local craft_lock_eye_right = widgets.craft_lock_eye_right
+			local style_eye_left = craft_lock_eye_left.style.texture_id
+			local style_eye_right = craft_lock_eye_right.style.texture_id
+			local eye_width = 224
+			local eye_height = 217
+			style_eye_left.color[1] = 0
+			style_eye_left.horizontal_alignment = "center"
+			style_eye_left.vertical_alignment = "center"
+			style_eye_left.texture_size = style_eye_left.texture_size or {
+				eye_width,
+				eye_height
+			}
+			style_eye_right.color[1] = 0
+			style_eye_right.horizontal_alignment = "center"
+			style_eye_right.vertical_alignment = "center"
+			style_eye_right.texture_size = style_eye_right.texture_size or {
+				eye_width,
+				eye_height
+			}
+			local effect_width = 39
+			local effect_height = 189
+			local craft_lock_top_effect = widgets.craft_lock_top_effect
+			local style_lock_top_effect = craft_lock_top_effect.style.texture_id
+			style_lock_top_effect.color[1] = 0
+			style_lock_top_effect.horizontal_alignment = "center"
+			style_lock_top_effect.vertical_alignment = "top"
+			style_lock_top_effect.texture_size = style_lock_top_effect.texture_size or {
+				effect_width,
+				effect_height
+			}
+			local craft_effect_bottom_left = widgets.craft_effect_bottom_left
+			local style_effect_bottom_left = craft_effect_bottom_left.style.texture_id
+			style_effect_bottom_left.color[1] = 0
+			style_effect_bottom_left.horizontal_alignment = "center"
+			style_effect_bottom_left.vertical_alignment = "center"
+			style_effect_bottom_left.texture_size = style_effect_bottom_left.texture_size or {
+				effect_width,
+				effect_height
+			}
+			local craft_effect_bottom_right = widgets.craft_effect_bottom_right
+			local style_effect_bottom_right = craft_effect_bottom_right.style.texture_id
+			style_effect_bottom_right.color[1] = 0
+			style_effect_bottom_right.horizontal_alignment = "center"
+			style_effect_bottom_right.vertical_alignment = "center"
+			style_effect_bottom_right.texture_size = style_effect_bottom_right.texture_size or {
+				effect_width,
+				effect_height
+			}
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			return
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	reset_crafting = {
-		{
-			name = "reset",
-			start_progress = 0,
-			end_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local craft_lock_top_left = widgets.craft_lock_top_left
-				local craft_lock_top_right = widgets.craft_lock_top_right
-				local max_angle = math.pi / 2
-				craft_lock_top_left.style.texture_id.angle = max_angle
-				craft_lock_top_right.style.texture_id.angle = -max_angle
-				local craft_lock_bottom_left = widgets.craft_lock_bottom_left
-				local craft_lock_bottom_right = widgets.craft_lock_bottom_right
-				craft_lock_bottom_left.offset[2] = -208
-				craft_lock_bottom_right.offset[2] = -208
-				local craft_lock_eye_left = widgets.craft_lock_eye_left
-				local craft_lock_eye_right = widgets.craft_lock_eye_right
-				local style_eye_left = craft_lock_eye_left.style.texture_id
-				local style_eye_right = craft_lock_eye_right.style.texture_id
-				local eye_width = 224
-				local eye_height = 217
-				style_eye_left.color[1] = 0
-				style_eye_left.horizontal_alignment = "center"
-				style_eye_left.vertical_alignment = "center"
-				style_eye_left.texture_size = style_eye_left.texture_size or {
-					eye_width,
-					eye_height
-				}
-				style_eye_right.color[1] = 0
-				style_eye_right.horizontal_alignment = "center"
-				style_eye_right.vertical_alignment = "center"
-				style_eye_right.texture_size = style_eye_right.texture_size or {
-					eye_width,
-					eye_height
-				}
-				local effect_width = 39
-				local effect_height = 189
-				local craft_lock_top_effect = widgets.craft_lock_top_effect
-				local style_lock_top_effect = craft_lock_top_effect.style.texture_id
-				style_lock_top_effect.color[1] = 0
-				style_lock_top_effect.horizontal_alignment = "center"
-				style_lock_top_effect.vertical_alignment = "center"
-				style_lock_top_effect.texture_size = style_lock_top_effect.texture_size or {
-					effect_width,
-					effect_height
-				}
-				local craft_effect_bottom_left = widgets.craft_effect_bottom_left
-				local style_effect_bottom_left = craft_effect_bottom_left.style.texture_id
-				style_effect_bottom_left.color[1] = 0
-				style_effect_bottom_left.horizontal_alignment = "center"
-				style_effect_bottom_left.vertical_alignment = "center"
-				style_effect_bottom_left.texture_size = style_effect_bottom_left.texture_size or {
-					effect_width,
-					effect_height
-				}
-				local craft_effect_bottom_right = widgets.craft_effect_bottom_right
-				local style_effect_bottom_right = craft_effect_bottom_right.style.texture_id
-				style_effect_bottom_right.color[1] = 0
-				style_effect_bottom_right.horizontal_alignment = "center"
-				style_effect_bottom_right.vertical_alignment = "center"
-				style_effect_bottom_right.texture_size = style_effect_bottom_right.texture_size or {
-					effect_width,
-					effect_height
-				}
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	{
+		name = "shadow",
+		start_progress = 0,
+		end_progress = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_shadow = widgets.craft_lock_shadow
+			local style = craft_lock_shadow.style.texture_id
+			style.color[1] = 200 * progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	craft_enter = {
-		{
-			name = "reset",
-			start_progress = 0,
-			end_progress = 0,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local craft_lock_top_left = widgets.craft_lock_top_left
-				local craft_lock_top_right = widgets.craft_lock_top_right
-				local max_angle = math.pi / 2
-				craft_lock_top_left.style.texture_id.angle = max_angle
-				craft_lock_top_right.style.texture_id.angle = -max_angle
-				local craft_lock_bottom_left = widgets.craft_lock_bottom_left
-				local craft_lock_bottom_right = widgets.craft_lock_bottom_right
-				craft_lock_bottom_left.offset[2] = -208
-				craft_lock_bottom_right.offset[2] = -208
-				local craft_lock_eye_left = widgets.craft_lock_eye_left
-				local craft_lock_eye_right = widgets.craft_lock_eye_right
-				local style_eye_left = craft_lock_eye_left.style.texture_id
-				local style_eye_right = craft_lock_eye_right.style.texture_id
-				local eye_width = 224
-				local eye_height = 217
-				style_eye_left.color[1] = 0
-				style_eye_left.horizontal_alignment = "center"
-				style_eye_left.vertical_alignment = "center"
-				style_eye_left.texture_size = style_eye_left.texture_size or {
-					eye_width,
-					eye_height
-				}
-				style_eye_right.color[1] = 0
-				style_eye_right.horizontal_alignment = "center"
-				style_eye_right.vertical_alignment = "center"
-				style_eye_right.texture_size = style_eye_right.texture_size or {
-					eye_width,
-					eye_height
-				}
-				local effect_width = 39
-				local effect_height = 189
-				local craft_lock_top_effect = widgets.craft_lock_top_effect
-				local style_lock_top_effect = craft_lock_top_effect.style.texture_id
-				style_lock_top_effect.color[1] = 0
-				style_lock_top_effect.horizontal_alignment = "center"
-				style_lock_top_effect.vertical_alignment = "top"
-				style_lock_top_effect.texture_size = style_lock_top_effect.texture_size or {
-					effect_width,
-					effect_height
-				}
-				local craft_effect_bottom_left = widgets.craft_effect_bottom_left
-				local style_effect_bottom_left = craft_effect_bottom_left.style.texture_id
-				style_effect_bottom_left.color[1] = 0
-				style_effect_bottom_left.horizontal_alignment = "center"
-				style_effect_bottom_left.vertical_alignment = "center"
-				style_effect_bottom_left.texture_size = style_effect_bottom_left.texture_size or {
-					effect_width,
-					effect_height
-				}
-				local craft_effect_bottom_right = widgets.craft_effect_bottom_right
-				local style_effect_bottom_right = craft_effect_bottom_right.style.texture_id
-				style_effect_bottom_right.color[1] = 0
-				style_effect_bottom_right.horizontal_alignment = "center"
-				style_effect_bottom_right.vertical_alignment = "center"
-				style_effect_bottom_right.texture_size = style_effect_bottom_right.texture_size or {
-					effect_width,
-					effect_height
-				}
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				return
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "shadow",
-			start_progress = 0,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_shadow = widgets.craft_lock_shadow
-				local style = craft_lock_shadow.style.texture_id
-				style.color[1] = 200 * progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "top",
-			start_progress = 0,
-			end_progress = 0.4,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_top_left = widgets.craft_lock_top_left
-				local craft_lock_top_right = widgets.craft_lock_top_right
-				local max_angle = math.pi / 2
-				local ease_progress = math.easeInCubic(progress)
-				local anim_progress = math.catmullrom(ease_progress, -7.4, 0, 1, 0.7)
-				craft_lock_top_left.style.texture_id.angle = max_angle - max_angle * anim_progress
-				craft_lock_top_right.style.texture_id.angle = -max_angle + max_angle * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "top_effect",
-			start_progress = 0.3,
-			end_progress = 0.8,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_top_effect = widgets.craft_lock_top_effect
-				local style = craft_lock_top_effect.style.texture_id
-				local offset = craft_lock_top_effect.offset
-				style.color[1] = 150 - 150 * math.easeInCubic(progress)
-				offset[2] = -50 * math.easeOutCubic(progress)
-				local effect_width = 78
-				local effect_height = 378
-				style.texture_size[1] = effect_width * progress
-				style.texture_size[2] = effect_height * progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "bottom",
-			start_progress = 0.5,
-			end_progress = 0.8,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_bottom_left = widgets.craft_lock_bottom_left
-				local craft_lock_bottom_right = widgets.craft_lock_bottom_right
-				local anim_progress = math.catmullrom(progress, -7.4, 0, 1, 0.7)
-				local distance = 208
-				craft_lock_bottom_left.offset[2] = -distance + anim_progress * distance
-				craft_lock_bottom_right.offset[2] = -distance + anim_progress * distance
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "bottom_effect_left",
-			start_progress = 0.7,
-			end_progress = 1.1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_effect_bottom_left = widgets.craft_effect_bottom_left
-				local style = craft_effect_bottom_left.style.texture_id
-				local offset = craft_effect_bottom_left.offset
-				local anim_progress = math.easeOutCubic(progress)
-				style.color[1] = 80 - 80 * math.easeInCubic(progress)
-				local effect_width = 27.299999999999997
-				local effect_height = 132.29999999999998
-				local pivot = style.pivot
-				local texture_size = style.texture_size
-				texture_size[1] = effect_width + effect_width * anim_progress
-				texture_size[2] = effect_height * anim_progress
-				pivot[1] = texture_size[1] / 2
-				pivot[2] = texture_size[2] / 2
-				local offset_value = (effect_width - texture_size[1]) * 0.5
-				offset[1] = offset_value
-				offset[2] = offset_value * 0.5
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "bottom_effect_right",
-			start_progress = 0.7,
-			end_progress = 1.1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_effect_bottom_right = widgets.craft_effect_bottom_right
-				local style = craft_effect_bottom_right.style.texture_id
-				local offset = craft_effect_bottom_right.offset
-				local anim_progress = math.easeOutCubic(progress)
-				style.color[1] = 80 - 80 * math.easeInCubic(progress)
-				local effect_width = 27.299999999999997
-				local effect_height = 132.29999999999998
-				local pivot = style.pivot
-				local texture_size = style.texture_size
-				texture_size[1] = effect_width + effect_width * anim_progress
-				texture_size[2] = effect_height * anim_progress
-				pivot[1] = texture_size[1] / 2
-				pivot[2] = texture_size[2] / 2
-				local offset_value = (effect_width - texture_size[1]) * 0.5
-				offset[1] = -offset_value
-				offset[2] = offset_value * 0.5
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "eyes",
-			start_progress = 0.5,
-			end_progress = 0.8,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_eye_left = widgets.craft_lock_eye_left
-				local craft_lock_eye_right = widgets.craft_lock_eye_right
-				local style_eye_left = craft_lock_eye_left.style.texture_id
-				local style_eye_right = craft_lock_eye_right.style.texture_id
-				local alpha = 255 * progress
-				style_eye_left.color[1] = alpha
-				style_eye_right.color[1] = alpha
-				local eye_width = 224
-				local eye_height = 217
-				style_eye_left.texture_size[1] = eye_width * progress
-				style_eye_left.texture_size[2] = eye_height * progress
-				style_eye_right.texture_size[1] = eye_width * progress
-				style_eye_right.texture_size[2] = eye_height * progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	{
+		name = "top",
+		start_progress = 0,
+		end_progress = 0.4,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_top_left = widgets.craft_lock_top_left
+			local craft_lock_top_right = widgets.craft_lock_top_right
+			local max_angle = math.pi / 2
+			local ease_progress = math.easeInCubic(progress)
+			local anim_progress = math.catmullrom(ease_progress, -7.4, 0, 1, 0.7)
+			craft_lock_top_left.style.texture_id.angle = max_angle - max_angle * anim_progress
+			craft_lock_top_right.style.texture_id.angle = -max_angle + max_angle * anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	craft_exit = {
-		{
-			name = "eyes",
-			start_progress = 0,
-			end_progress = 0.15,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_eye_left = widgets.craft_lock_eye_left
-				local craft_lock_eye_right = widgets.craft_lock_eye_right
-				local style_eye_left = craft_lock_eye_left.style.texture_id
-				local style_eye_right = craft_lock_eye_right.style.texture_id
-				progress = 1 - progress
-				local alpha = 255 * progress
-				style_eye_left.color[1] = alpha
-				style_eye_right.color[1] = alpha
-				local eye_width = 224
-				local eye_height = 217
-				style_eye_left.texture_size[1] = eye_width * progress
-				style_eye_left.texture_size[2] = eye_height * progress
-				style_eye_right.texture_size[1] = eye_width * progress
-				style_eye_right.texture_size[2] = eye_height * progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "shadow",
-			start_progress = 0.2,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local craft_lock_shadow = widgets.craft_lock_shadow
-				local style = craft_lock_shadow.style.texture_id
-				style.color[1] = 200 - 200 * progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "top",
-			start_progress = 0.2,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				progress = 1 - progress
-				local craft_lock_top_left = widgets.craft_lock_top_left
-				local craft_lock_top_right = widgets.craft_lock_top_right
-				local max_angle = math.pi / 2
-				craft_lock_top_left.style.texture_id.angle = max_angle - max_angle * progress
-				craft_lock_top_right.style.texture_id.angle = -max_angle + max_angle * progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "bottom",
-			start_progress = 0.2,
-			end_progress = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				progress = 1 - progress
-				local craft_lock_bottom_left = widgets.craft_lock_bottom_left
-				local craft_lock_bottom_right = widgets.craft_lock_bottom_right
-				local distance = 208
-				craft_lock_bottom_left.offset[2] = -distance + progress * distance
-				craft_lock_bottom_right.offset[2] = -distance + progress * distance
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	{
+		name = "top_effect",
+		start_progress = 0.3,
+		end_progress = 0.8,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_top_effect = widgets.craft_lock_top_effect
+			local style = craft_lock_top_effect.style.texture_id
+			local offset = craft_lock_top_effect.offset
+			style.color[1] = 150 - 150 * math.easeInCubic(progress)
+			offset[2] = -50 * math.easeOutCubic(progress)
+			local effect_width = 78
+			local effect_height = 378
+			style.texture_size[1] = effect_width * progress
+			style.texture_size[2] = effect_height * progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "bottom",
+		start_progress = 0.5,
+		end_progress = 0.8,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_bottom_left = widgets.craft_lock_bottom_left
+			local craft_lock_bottom_right = widgets.craft_lock_bottom_right
+			local anim_progress = math.catmullrom(progress, -7.4, 0, 1, 0.7)
+			local distance = 208
+			craft_lock_bottom_left.offset[2] = -distance + anim_progress * distance
+			craft_lock_bottom_right.offset[2] = -distance + anim_progress * distance
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "bottom_effect_left",
+		start_progress = 0.7,
+		end_progress = 1.1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_effect_bottom_left = widgets.craft_effect_bottom_left
+			local style = craft_effect_bottom_left.style.texture_id
+			local offset = craft_effect_bottom_left.offset
+			local anim_progress = math.easeOutCubic(progress)
+			style.color[1] = 80 - 80 * math.easeInCubic(progress)
+			local effect_width = 27.299999999999997
+			local effect_height = 132.29999999999998
+			local pivot = style.pivot
+			local texture_size = style.texture_size
+			texture_size[1] = effect_width + effect_width * anim_progress
+			texture_size[2] = effect_height * anim_progress
+			pivot[1] = texture_size[1] / 2
+			pivot[2] = texture_size[2] / 2
+			local offset_value = (effect_width - texture_size[1]) * 0.5
+			offset[1] = offset_value
+			offset[2] = offset_value * 0.5
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "bottom_effect_right",
+		start_progress = 0.7,
+		end_progress = 1.1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_effect_bottom_right = widgets.craft_effect_bottom_right
+			local style = craft_effect_bottom_right.style.texture_id
+			local offset = craft_effect_bottom_right.offset
+			local anim_progress = math.easeOutCubic(progress)
+			style.color[1] = 80 - 80 * math.easeInCubic(progress)
+			local effect_width = 27.299999999999997
+			local effect_height = 132.29999999999998
+			local pivot = style.pivot
+			local texture_size = style.texture_size
+			texture_size[1] = effect_width + effect_width * anim_progress
+			texture_size[2] = effect_height * anim_progress
+			pivot[1] = texture_size[1] / 2
+			pivot[2] = texture_size[2] / 2
+			local offset_value = (effect_width - texture_size[1]) * 0.5
+			offset[1] = -offset_value
+			offset[2] = offset_value * 0.5
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "eyes",
+		start_progress = 0.5,
+		end_progress = 0.8,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_eye_left = widgets.craft_lock_eye_left
+			local craft_lock_eye_right = widgets.craft_lock_eye_right
+			local style_eye_left = craft_lock_eye_left.style.texture_id
+			local style_eye_right = craft_lock_eye_right.style.texture_id
+			local alpha = 255 * progress
+			style_eye_left.color[1] = alpha
+			style_eye_right.color[1] = alpha
+			local eye_width = 224
+			local eye_height = 217
+			style_eye_left.texture_size[1] = eye_width * progress
+			style_eye_left.texture_size[2] = eye_height * progress
+			style_eye_right.texture_size[1] = eye_width * progress
+			style_eye_right.texture_size[2] = eye_height * progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.craft_exit = {
+	{
+		name = "eyes",
+		start_progress = 0,
+		end_progress = 0.15,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_eye_left = widgets.craft_lock_eye_left
+			local craft_lock_eye_right = widgets.craft_lock_eye_right
+			local style_eye_left = craft_lock_eye_left.style.texture_id
+			local style_eye_right = craft_lock_eye_right.style.texture_id
+			progress = 1 - progress
+			local alpha = 255 * progress
+			style_eye_left.color[1] = alpha
+			style_eye_right.color[1] = alpha
+			local eye_width = 224
+			local eye_height = 217
+			style_eye_left.texture_size[1] = eye_width * progress
+			style_eye_left.texture_size[2] = eye_height * progress
+			style_eye_right.texture_size[1] = eye_width * progress
+			style_eye_right.texture_size[2] = eye_height * progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "shadow",
+		start_progress = 0.2,
+		end_progress = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local craft_lock_shadow = widgets.craft_lock_shadow
+			local style = craft_lock_shadow.style.texture_id
+			style.color[1] = 200 - 200 * progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "top",
+		start_progress = 0.2,
+		end_progress = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			progress = 1 - progress
+			local craft_lock_top_left = widgets.craft_lock_top_left
+			local craft_lock_top_right = widgets.craft_lock_top_right
+			local max_angle = math.pi / 2
+			craft_lock_top_left.style.texture_id.angle = max_angle - max_angle * progress
+			craft_lock_top_right.style.texture_id.angle = -max_angle + max_angle * progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "bottom",
+		start_progress = 0.2,
+		end_progress = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			progress = 1 - progress
+			local craft_lock_bottom_left = widgets.craft_lock_bottom_left
+			local craft_lock_bottom_right = widgets.craft_lock_bottom_right
+			local distance = 208
+			craft_lock_bottom_left.offset[2] = -distance + progress * distance
+			craft_lock_bottom_right.offset[2] = -distance + progress * distance
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 

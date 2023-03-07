@@ -82,7 +82,7 @@ WeaveTargetExtension.deactivate = function (self)
 	tutorial_system.active = false
 	local position = Unit.local_position(self._unit, 0)
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local x_offset = math.random(-10, 10) / 10
 		local y_offset = math.random(-10, 10) / 10
 		local z_offset = math.random(-10, 10) / 10
@@ -157,5 +157,3 @@ end
 WeaveTargetExtension.get_score = function (self)
 	return self._score
 end
-
-return

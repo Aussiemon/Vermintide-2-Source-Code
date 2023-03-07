@@ -99,5 +99,3 @@ ScriptWebApiPsn.send_request_session_invitation = function (self, user_id, param
 		debug_text = string.format("POST /v1/sessions/%s/invitations", session_id)
 	}
 end
-
-return

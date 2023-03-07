@@ -116,7 +116,7 @@ CareerSettings.dr_engineer = {
 		local weapon_tempalte = Weapons[weapon.template]
 		local weapon_packages = WeaponUtils.get_weapon_packages(weapon_tempalte, weapon, is_first_person)
 
-		for j = 1, #weapon_packages, 1 do
+		for j = 1, #weapon_packages do
 			local package_name = weapon_packages[j]
 			packages_list[package_name] = false
 		end
@@ -177,5 +177,3 @@ PlayerUnitStatusSettings.overcharge_values = table.merge(PlayerUnitStatusSetting
 	cog_hammer_heavy_1_explosion = 40
 })
 CareerNameAchievementMapping.dr_engineer = "engineer"
-
-return

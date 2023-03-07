@@ -210,7 +210,7 @@ BackendInterfaceWeavesPlayFab._parse_career_progress = function (self, read_only
 end
 
 BackendInterfaceWeavesPlayFab._new_id = function (self)
-	self._last_id = (self._last_id and self._last_id + 1) or 1
+	self._last_id = self._last_id and self._last_id + 1 or 1
 
 	return self._last_id
 end
@@ -233,7 +233,7 @@ BackendInterfaceWeavesPlayFab._create_leaderboard_entry = function (self, data, 
 	local linked_accounts = profile.LinkedAccounts
 	local name, position_text, platform_user_id = nil
 
-	for i = 1, #linked_accounts, 1 do
+	for i = 1, #linked_accounts do
 		local account_data = linked_accounts[i]
 
 		if account_data.Platform == "Steam" then
@@ -324,7 +324,7 @@ BackendInterfaceWeavesPlayFab._get_loadout_mastery_cost = function (self, loadou
 		for property_name, property_slots in pairs(loadout.properties) do
 			local costs = self:get_property_mastery_costs(property_name)
 
-			for i = 1, #property_slots, 1 do
+			for i = 1, #property_slots do
 				total_cost = total_cost + costs[i]
 			end
 		end
@@ -400,7 +400,7 @@ BackendInterfaceWeavesPlayFab.request_player_rank = function (self, stat_name, l
 	local success_callback = callback(self, "player_rank_request_cb")
 	local fail_callback = callback(self, "player_rank_request_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
-	local request_function = (leaderboard_type == "friends" and "GetFriendLeaderboardAroundPlayer") or "GetLeaderboardAroundPlayer"
+	local request_function = leaderboard_type == "friends" and "GetFriendLeaderboardAroundPlayer" or "GetLeaderboardAroundPlayer"
 
 	request_queue:enqueue_api_request(request_function, player_rank_request, success_callback, fail_callback)
 
@@ -437,7 +437,7 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player = function (self
 	local success_callback = callback(self, "request_leaderboard_around_player_cb")
 	local fail_callback = callback(self, "request_leaderboard_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
-	local request_function = (leaderboard_type == "friends" and "GetFriendLeaderboardAroundPlayer") or "GetLeaderboardAroundPlayer"
+	local request_function = leaderboard_type == "friends" and "GetFriendLeaderboardAroundPlayer" or "GetLeaderboardAroundPlayer"
 
 	request_queue:enqueue_api_request(request_function, request_leaderboard_around_player, success_callback, fail_callback)
 
@@ -452,7 +452,7 @@ BackendInterfaceWeavesPlayFab.request_leaderboard_around_player_cb = function (s
 
 	local idx = 1
 
-	for i = 1, #leaderboard, 1 do
+	for i = 1, #leaderboard do
 		local data = leaderboard[i]
 		local entry = nil
 
@@ -493,7 +493,7 @@ BackendInterfaceWeavesPlayFab.request_leaderboard = function (self, stat_name, s
 	local success_callback = callback(self, "leaderboard_request_cb")
 	local fail_callback = callback(self, "request_leaderboard_failed_cb", external_error_cb)
 	local request_queue = self._backend_mirror:request_queue()
-	local request_function = (leaderboard_type == "friends" and "GetFriendLeaderboard") or "GetLeaderboard"
+	local request_function = leaderboard_type == "friends" and "GetFriendLeaderboard" or "GetLeaderboard"
 
 	request_queue:enqueue_api_request(request_function, leaderboard_request, success_callback, fail_callback)
 
@@ -505,7 +505,7 @@ BackendInterfaceWeavesPlayFab.leaderboard_request_cb = function (self, result)
 
 	table.clear(self._leaderboard_entries)
 
-	for i = 1, #leaderboard, 1 do
+	for i = 1, #leaderboard do
 		local data = leaderboard[i]
 		local previous_score = i > 1 and self._leaderboard_entries[i - 1].score
 		local previous_tier = i > 1 and self._leaderboard_entries[i - 1].weave
@@ -576,7 +576,7 @@ BackendInterfaceWeavesPlayFab.get_mastery = function (self, career_name, optiona
 		end
 	end
 
-	local total_cost = (loadout and self:_get_loadout_mastery_cost(loadout)) or 0
+	local total_cost = loadout and self:_get_loadout_mastery_cost(loadout) or 0
 	local current_mastery = initial_mastery - total_cost
 
 	return initial_mastery, current_mastery
@@ -722,7 +722,7 @@ BackendInterfaceWeavesPlayFab.upgrade_career_magic_level_cb = function (self, ex
 	local upgrade_all_career_magic_levels = function_result.upgrade_all_career_magic_levels
 
 	if upgrade_all_career_magic_levels then
-		for i = 1, #CAREER_ID_LOOKUP, 1 do
+		for i = 1, #CAREER_ID_LOOKUP do
 			local name = CAREER_ID_LOOKUP[i]
 			local progress = self._career_progress[name]
 
@@ -877,7 +877,7 @@ BackendInterfaceWeavesPlayFab.buy_magic_item_cb = function (self, external_cb, r
 	local new_essence = function_result.new_essence
 	local backend_mirror = self._backend_mirror
 
-	for i = 1, #grant_results, 1 do
+	for i = 1, #grant_results do
 		local item = grant_results[i]
 		local backend_id = item.ItemInstanceId
 
@@ -1066,7 +1066,7 @@ BackendInterfaceWeavesPlayFab.get_loadout_properties = function (self, career_na
 
 	if optional_item_backend_id then
 		local item_loadout = loadout.item_loadouts[optional_item_backend_id]
-		properties = (item_loadout and item_loadout.properties) or {}
+		properties = item_loadout and item_loadout.properties or {}
 	else
 		properties = loadout.properties
 	end
@@ -1152,7 +1152,7 @@ BackendInterfaceWeavesPlayFab.get_loadout_traits = function (self, career_name, 
 
 	if optional_item_backend_id then
 		local item_loadout = loadout.item_loadouts[optional_item_backend_id]
-		traits = (item_loadout and item_loadout.traits) or {}
+		traits = item_loadout and item_loadout.traits or {}
 	else
 		traits = loadout.traits
 	end
@@ -1254,7 +1254,7 @@ BackendInterfaceWeavesPlayFab.get_talent_ids = function (self, career_name)
 	local talents = self:get_talents(career_name)
 
 	if talents then
-		for i = 1, #talents, 1 do
+		for i = 1, #talents do
 			local column = talents[i]
 
 			if column ~= 0 then
@@ -1287,7 +1287,7 @@ BackendInterfaceWeavesPlayFab.get_talents = function (self, career_name)
 
 	table.clear(TALENTS_RETURN_TABLE)
 
-	for i = 1, #tree, 1 do
+	for i = 1, #tree do
 		TALENTS_RETURN_TABLE[i] = 0
 	end
 
@@ -1378,5 +1378,3 @@ end
 BackendInterfaceWeavesPlayFab.clear_dirty_user_data = function (self)
 	table.clear(self._dirty_loadouts)
 end
-
-return

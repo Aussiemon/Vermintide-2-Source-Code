@@ -218,7 +218,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 			CharacterStateHelper.uncrouch(unit, t, first_person_extension, status_extension)
 		end
 
-		if (not input_extension:get("jump") and not gamepad_active) or status_extension:can_override_dodge_with_jump(t) or Vector3.y(movement_input) >= 0 or Vector3.length(movement_input) <= input_extension.minimum_dodge_input then
+		if not input_extension:get("jump") and not gamepad_active or status_extension:can_override_dodge_with_jump(t) or Vector3.y(movement_input) >= 0 or Vector3.length(movement_input) <= input_extension.minimum_dodge_input then
 			if Vector3.y(CharacterStateHelper.get_movement_input(input_extension)) < 0 then
 				self.temp_params.backward_jump = true
 			else
@@ -290,7 +290,7 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 		status_extension:set_slowed(is_walking)
 	end
 
-	local current_max_move_speed = (is_crouching and movement_settings_table.crouch_move_speed) or (is_walking and movement_settings_table.walk_move_speed) or movement_settings_table.move_speed
+	local current_max_move_speed = is_crouching and movement_settings_table.crouch_move_speed or is_walking and movement_settings_table.walk_move_speed or movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
 	local final_move_speed = current_max_move_speed * move_speed_multiplier * current_movement_speed_scale * movement_settings_table.player_speed_scale
 	local has_intoxication_stagger = buff_extension:has_buff_perk("intoxication_stagger")
@@ -416,5 +416,3 @@ PlayerCharacterStateWalking.update = function (self, unit, input, dt, context, t
 	self.current_movement_speed_scale = current_movement_speed_scale
 	self.walking = is_walking
 end
-
-return

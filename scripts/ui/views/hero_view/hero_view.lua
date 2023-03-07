@@ -95,7 +95,7 @@ HeroView.clear_wanted_state = function (self)
 end
 
 HeroView.input_service = function (self)
-	return (self._draw_loading and FAKE_INPUT_SERVICE) or self.input_manager:get_service("hero_view")
+	return self._draw_loading and FAKE_INPUT_SERVICE or self.input_manager:get_service("hero_view")
 end
 
 HeroView.set_input_blocked = function (self, blocked)
@@ -236,7 +236,7 @@ HeroView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	local input_service = input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -322,7 +322,7 @@ HeroView._handle_new_ui_disclaimer = function (self)
 	}
 	local disclaimer_states = global_disclaimer_states[mechanism_name] or global_disclaimer_states.default
 	local on_enter_transition_params = self._on_enter_transition_params
-	local menu_state_name = (on_enter_transition_params and on_enter_transition_params.menu_state_name) or "default"
+	local menu_state_name = on_enter_transition_params and on_enter_transition_params.menu_state_name or "default"
 	local menu_sub_state_name = on_enter_transition_params and on_enter_transition_params.menu_sub_state_name
 
 	if disclaimer_states[menu_sub_state_name] ~= nil then
@@ -364,7 +364,7 @@ HeroView._is_selection_widget_pressed = function (self, widget)
 	local content = widget.content
 	local steps = content.steps
 
-	for i = 1, steps, 1 do
+	for i = 1, steps do
 		local hotspot_name = "hotspot_" .. i
 		local hotspot = content[hotspot_name]
 
@@ -603,7 +603,7 @@ HeroView._set_loading_overlay_enabled = function (self, enabled, message)
 	local loading_widgets = self._loading_widgets
 	local loading_text_widget = loading_widgets.text
 	local loading_bg_widget = loading_widgets.background
-	local alpha = (enabled and 255) or 0
+	local alpha = enabled and 255 or 0
 	loading_bg_widget.style.color[1] = alpha
 	loading_text_widget.style.text.text_color[1] = alpha
 	loading_text_widget.content.text = message or ""
@@ -617,5 +617,3 @@ HeroView.current_state = function (self)
 
 	return self._machine:state()
 end
-
-return

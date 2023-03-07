@@ -6,5 +6,3 @@ WeaveLoadoutSettings.dr_ironbreaker = {
 	properties = {},
 	traits = {}
 }
-
-return

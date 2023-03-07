@@ -9,11 +9,11 @@ LoadedDice = {
 		else
 			local sum = 0
 
-			for i = 1, n, 1 do
+			for i = 1, n do
 				sum = sum + probabilities[i]
 			end
 
-			for i = 1, n, 1 do
+			for i = 1, n do
 				prob[i] = probabilities[i] / sum
 			end
 		end
@@ -22,7 +22,7 @@ LoadedDice = {
 		local large = {}
 		local average = 1 / n
 
-		for i = 1, n, 1 do
+		for i = 1, n do
 			if average <= prob[i] then
 				large[#large + 1] = i
 			else
@@ -36,7 +36,7 @@ LoadedDice = {
 			local more = large[#large]
 			large[#large] = nil
 			alias[less] = more
-			prob[more] = (prob[more] + prob[less]) - average
+			prob[more] = prob[more] + prob[less] - average
 
 			if average <= prob[more] then
 				large[#large + 1] = more
@@ -55,7 +55,7 @@ LoadedDice = {
 			large[#large] = nil
 		end
 
-		for i = 1, n, 1 do
+		for i = 1, n do
 			prob[i] = prob[i] * n
 		end
 
@@ -65,14 +65,14 @@ LoadedDice = {
 		local column = math.random(1, #prob)
 		local biased_coin_toss = math.random() < prob[column]
 
-		return (biased_coin_toss and column) or alias[column]
+		return biased_coin_toss and column or alias[column]
 	end,
 	roll_seeded = function (prob, alias, seed)
 		local seed, column = Math.next_random(seed, 1, #prob)
 		local seed, random_value = Math.next_random(seed)
 		local biased_coin_toss = random_value < prob[column]
 
-		return seed, (biased_coin_toss and column) or alias[column]
+		return seed, biased_coin_toss and column or alias[column]
 	end
 }
 local only_prob_table = {}
@@ -81,11 +81,11 @@ LoadedDice.create_from_mixed = function (mixed_table, normalized)
 	local only_prob_table = only_prob_table
 	local num_probabilities = #mixed_table / 2
 
-	for i = num_probabilities, #only_prob_table, 1 do
+	for i = num_probabilities, #only_prob_table do
 		only_prob_table[i] = nil
 	end
 
-	for i = 1, num_probabilities, 1 do
+	for i = 1, num_probabilities do
 		only_prob_table[i] = mixed_table[i * 2]
 	end
 
@@ -121,18 +121,16 @@ LoadedDice.test = function ()
 		0
 	}
 
-	for i = 1, tries, 1 do
+	for i = 1, tries do
 		local column = LoadedDice.roll(p, a)
 		count[column] = count[column] + 1
 	end
 
 	local s = "Loaded Dice | "
 
-	for i = 1, #test, 1 do
+	for i = 1, #test do
 		s = s .. test[i] .. "->" .. count[i] .. "( " .. count[i] / tries .. "% ) | "
 	end
 
 	print(s)
 end
-
-return

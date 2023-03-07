@@ -1569,5 +1569,3 @@ ItemMasterList.frame_scorpion_season_1_cataclysm_3 = {
 	item_type = "frame",
 	can_wield = CanWieldAllItemTemplates
 }
-
-return

@@ -33,7 +33,7 @@ ExplosiveBarrelHealthExtension.update = function (self, dt, context, t)
 	if owner_unit_health_extension then
 		local recent_damages, num_damages = owner_unit_health_extension:recent_damages()
 
-		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
+		for i = 1, num_damages / DamageDataIndex.STRIDE do
 			local j = (i - 1) * DamageDataIndex.STRIDE
 			local attacker_unit = recent_damages[j + DamageDataIndex.ATTACKER]
 			local damage_amount = recent_damages[j + DamageDataIndex.DAMAGE_AMOUNT]
@@ -103,7 +103,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 	DamageUtils.handle_hit_indication(attacker_unit, unit, damage_amount, hit_zone_name, added_dot)
 
 	if not self:get_is_invincible() and not self.dead then
-		local internal_damage_amount = (did_damage and self.insta_explode and self.health) or 0
+		local internal_damage_amount = did_damage and self.insta_explode and self.health or 0
 		self.damage = self.damage + internal_damage_amount
 
 		if self:_should_die() and (self.is_server or not unit_id) then
@@ -117,7 +117,7 @@ ExplosiveBarrelHealthExtension.add_damage = function (self, attacker_unit, damag
 
 	if did_damage and not self.ignited then
 		local network_time = Managers.state.network:network_time()
-		local fuse_time = (Unit.has_data(unit, "fuse_time") and Unit.get_data(unit, "fuse_time")) or 4
+		local fuse_time = Unit.has_data(unit, "fuse_time") and Unit.get_data(unit, "fuse_time") or 4
 		local insta_explode_time = network_time + 0.2
 		local explode_time = network_time + fuse_time
 
@@ -146,5 +146,3 @@ ExplosiveBarrelHealthExtension.health_data = function (self)
 
 	return data
 end
-
-return

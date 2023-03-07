@@ -31,5 +31,3 @@ BTFollowPlayerAction.exit_running = function (self, unit, blackboard, t)
 
 	locomotion:enter_state_onground(blackboard, t)
 end
-
-return

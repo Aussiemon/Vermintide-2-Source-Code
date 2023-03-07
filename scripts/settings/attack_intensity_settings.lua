@@ -195,5 +195,3 @@ for attack_type, _ in pairs(AttackIntensitySettings.attack_type_intesities) do
 		fassert(data[attack_type], "Missing settings for attack type [%s] in AttackIntensitySettings for difficulty [%s]", attack_type, difficulty)
 	end
 end
-
-return

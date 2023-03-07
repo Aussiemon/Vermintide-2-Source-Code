@@ -25,7 +25,7 @@ end
 local function is_husk(unit)
 	local player = Managers.player:owner(unit)
 
-	return (player and (player.remote or player.bot_player)) or false
+	return player and (player.remote or player.bot_player) or false
 end
 
 local function heal_target(unit, heal_type, heal_amount)
@@ -44,7 +44,7 @@ end
 
 local function find_pickup_buff_settings(buff, pickup_settings)
 	local template = buff.template
-	local buff_settings = (template.pickup_names and template.pickup_names[pickup_settings.pickup_name]) or (template.pickup_slot_names and template.pickup_slot_names[pickup_settings.slot_name]) or (template.pickup_types and template.pickup_types[pickup_settings.type])
+	local buff_settings = template.pickup_names and template.pickup_names[pickup_settings.pickup_name] or template.pickup_slot_names and template.pickup_slot_names[pickup_settings.slot_name] or template.pickup_types and template.pickup_types[pickup_settings.type]
 
 	return buff_settings
 end
@@ -849,7 +849,7 @@ dlc_settings.buff_function_templates = {
 		local buff_to_add = template.buff_to_add
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) and unit ~= owner_unit then
@@ -1028,7 +1028,7 @@ dlc_settings.buff_function_templates = {
 			buff.next_buff_t = t + template.interval
 			local buff_system = Managers.state.entity:system("buff_system")
 
-			for i = 1, #buff.buffs, 1 do
+			for i = 1, #buff.buffs do
 				local id = buff.buffs[i]
 
 				buff_system:remove_server_controlled_buff(unit, id)
@@ -1155,7 +1155,7 @@ dlc_settings.buff_function_templates = {
 	end,
 	apply_cursed_chest_init = function (unit, buff, params)
 		local breed = Unit.get_data(unit, "breed")
-		local effect_name = (breed.boss and "fx/cursed_chest_spawn_02") or "fx/cursed_chest_spawn_01"
+		local effect_name = breed.boss and "fx/cursed_chest_spawn_02" or "fx/cursed_chest_spawn_01"
 		local world = Application.main_world()
 		local position = POSITION_LOOKUP[unit]
 
@@ -1196,7 +1196,7 @@ dlc_settings.buff_function_templates = {
 
 			local num_pickups = pickup_system:get_pickups(player_position, magnet_distance, query_results)
 
-			for i = 1, num_pickups, 1 do
+			for i = 1, num_pickups do
 				local pickup_unit = query_results[i]
 				local pickup_extension = ScriptUnit.has_extension(pickup_unit, "pickup_system")
 
@@ -1261,7 +1261,7 @@ dlc_settings.buff_function_templates = {
 		if queued_explosions then
 			local time = Managers.time:time("main")
 
-			for i = 1, #queued_explosions, 1 do
+			for i = 1, #queued_explosions do
 				local explosion_data = queued_explosions[i]
 				local explosion_time = explosion_data.new_explosion_time
 
@@ -1968,7 +1968,7 @@ dlc_settings.proc_functions = {
 				table.insert(buff.stacked_buffs, buff_id)
 			end
 		elseif not ignored_hit_zone and buff_extension then
-			for i = 1, template.remove_amount, 1 do
+			for i = 1, template.remove_amount do
 				local last_buff_id = buff.stacked_buffs[#buff.stacked_buffs]
 
 				buff_extension:remove_buff(last_buff_id)
@@ -2007,7 +2007,7 @@ dlc_settings.proc_functions = {
 			local damage = params[param_order.damage_amount]
 			local heal_amount = damage * multiplier
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				local healed_unit = player_and_bot_units[i]
 
 				if healed_unit ~= player_unit and Unit.alive(healed_unit) then
@@ -2101,13 +2101,13 @@ dlc_settings.proc_functions = {
 				if buff.template.local_only then
 					local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-					for i = 1, #pickup_specific_settings, 1 do
+					for i = 1, #pickup_specific_settings do
 						buff_extension:add_buff(pickup_specific_settings[i])
 					end
 				else
 					local buff_system = Managers.state.entity:system("buff_system")
 
-					for i = 1, #pickup_specific_settings, 1 do
+					for i = 1, #pickup_specific_settings do
 						buff_system:add_buff(player_unit, pickup_specific_settings[i], player_unit, false)
 					end
 				end
@@ -2159,7 +2159,7 @@ dlc_settings.proc_functions = {
 				local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 				local ammo_system = Managers.state.entity:system("ammo_system")
 
-				for i = 1, #player_and_bot_units, 1 do
+				for i = 1, #player_and_bot_units do
 					local ally_unit = player_and_bot_units[i]
 
 					if ALIVE[ally_unit] and ally_unit ~= player_unit and Vector3.distance_squared(player_pos, POSITION_LOOKUP[ally_unit]) <= range_sq then
@@ -2178,7 +2178,7 @@ dlc_settings.proc_functions = {
 			local buff_to_add = buff.template.buff_to_add
 
 			if buff_to_add then
-				for i = 1, #buff_to_add, 1 do
+				for i = 1, #buff_to_add do
 					local current_buff = buff_to_add[i]
 
 					buff_system:add_buff(player_unit, current_buff, player_unit, false)
@@ -2188,7 +2188,7 @@ dlc_settings.proc_functions = {
 			local buff_to_add_revived = buff.template.buff_to_add_revived
 
 			if buff_to_add_revived then
-				for i = 1, #buff_to_add_revived, 1 do
+				for i = 1, #buff_to_add_revived do
 					local current_buff = buff_to_add_revived[i]
 
 					buff_system:add_buff(revived_unit, current_buff, player_unit, false)
@@ -2239,14 +2239,14 @@ dlc_settings.proc_functions = {
 			local broadphase = proximity_extension.enemy_broadphase
 			local hit_units = {}
 
-			for i = 1, num_chain, 1 do
+			for i = 1, num_chain do
 				local num_enemies = Broadphase.query(broadphase, hit_pos, radius, nearby_enemy_units)
 
 				table.sort(nearby_enemy_units, function (a, b)
 					return Vector3.distance_squared(POSITION_LOOKUP[a], hit_pos) < Vector3.distance_squared(POSITION_LOOKUP[b], hit_pos)
 				end)
 
-				for target_id = 1, num_enemies, 1 do
+				for target_id = 1, num_enemies do
 					local target_unit = nearby_enemy_units[target_id]
 
 					if ALIVE[target_unit] and not hit_units[target_unit] and AiUtils.unit_alive(target_unit) and target_unit ~= hit_unit then
@@ -2337,7 +2337,7 @@ dlc_settings.proc_functions = {
 
 		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -2357,7 +2357,7 @@ dlc_settings.proc_functions = {
 		local attacker_unit = params[1]
 		local owner_side = Managers.state.side.side_by_unit[player_unit]
 		local attacker_side = Managers.state.side.side_by_unit[attacker_unit]
-		local can_trigger = player_unit == attacker_unit or (owner_side and attacker_side and owner_side ~= attacker_side) or not attacker_side
+		local can_trigger = player_unit == attacker_unit or owner_side and attacker_side and owner_side ~= attacker_side or not attacker_side
 
 		if can_trigger then
 			local buff_system = Managers.state.entity:system("buff_system")
@@ -2622,7 +2622,7 @@ dlc_settings.proc_functions = {
 
 			local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-			if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+			if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 				return
 			end
 
@@ -2634,14 +2634,14 @@ dlc_settings.proc_functions = {
 			local broadphase = proximity_extension.enemy_broadphase
 			local hit_units = {}
 
-			for i = 1, 1, 1 do
+			for i = 1, 1 do
 				local num_enemies = Broadphase.query(broadphase, hit_pos, radius, nearby_enemy_units)
 
 				table.sort(nearby_enemy_units, function (a, b)
 					return Vector3.distance_squared(POSITION_LOOKUP[a], hit_pos) < Vector3.distance_squared(POSITION_LOOKUP[b], hit_pos)
 				end)
 
-				for target_id = 1, num_enemies, 1 do
+				for target_id = 1, num_enemies do
 					local target_unit = nearby_enemy_units[target_id]
 
 					if ALIVE[target_unit] and not hit_units[target_unit] and AiUtils.unit_alive(target_unit) then
@@ -2867,7 +2867,7 @@ dlc_settings.proc_functions = {
 		end
 
 		if hit_zone == "head" then
-			buff.stacks = (buff.stacks and buff.stacks + 1) or 1
+			buff.stacks = buff.stacks and buff.stacks + 1 or 1
 
 			if buff.template.hits <= buff.stacks then
 				local player_unit = player.player_unit
@@ -2897,7 +2897,7 @@ dlc_settings.proc_functions = {
 
 		local attack_type = killing_blow_data[DamageDataIndex.ATTACK_TYPE]
 
-		if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+		if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 			return
 		end
 
@@ -2941,7 +2941,7 @@ dlc_settings.proc_functions = {
 				local local_player_position = POSITION_LOOKUP[player_unit]
 				local range = buff.template.range
 
-				for i = 1, #player_units, 1 do
+				for i = 1, #player_units do
 					local unit = player_units[i]
 
 					if unit ~= player_unit then
@@ -3057,14 +3057,14 @@ dlc_settings.proc_functions = {
 			local has_cooldown = buff_extension:get_non_stacking_buff("deus_second_wind_cooldown")
 
 			if percent_health_after_damage < health_threshold and not has_cooldown and damage_source ~= "life_tap" then
-				local damage_to_deal = (percent_health_after_damage > 0 and amount) or current_health - 1
+				local damage_to_deal = percent_health_after_damage > 0 and amount or current_health - 1
 
 				DamageUtils.add_damage_network(player_unit, player_unit, damage_to_deal, "torso", "life_tap", nil, Vector3(0, 0, 0), "life_tap", nil, player_unit)
 
 				local buffs_to_add = template.buffs_to_add
 				local buff_system = Managers.state.entity:system("buff_system")
 
-				for i = 1, #buffs_to_add, 1 do
+				for i = 1, #buffs_to_add do
 					local buff_to_add = buffs_to_add[i]
 
 					buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
@@ -3214,7 +3214,7 @@ dlc_settings.proc_functions = {
 			local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 			local buff_system = Managers.state.entity:system("buff_system")
 
-			for i = 1, stacks, 1 do
+			for i = 1, stacks do
 				local current_stacks = buff_extension:num_buff_type(buff_name)
 				local max_stacks = BuffTemplates[buff_name].buffs[1].max_stacks
 
@@ -3371,7 +3371,7 @@ dlc_settings.proc_functions = {
 		local max_horizontal_velocity = template.max_horizontal_velocity
 		local vertical_velocity = template.vertical_velocity
 
-		for i = 1, barrel_count, 1 do
+		for i = 1, barrel_count do
 			local randomized_direction = Vector3(math.random() * 2 - 1, math.random() * 2 - 1, math.random() * 2 - 1)
 			local rotation = Quaternion.look(randomized_direction)
 			local velocity = Vector3(math.random() * max_horizontal_velocity * 2 - max_horizontal_velocity, math.random() * max_horizontal_velocity * 2 - max_horizontal_velocity, vertical_velocity)
@@ -3397,7 +3397,7 @@ dlc_settings.proc_functions = {
 
 				local buffs_to_add = buff_template.buffs_to_add
 
-				for i = 1, #buffs_to_add, 1 do
+				for i = 1, #buffs_to_add do
 					local buff_name = buffs_to_add[i]
 					local buff_system = Managers.state.entity:system("buff_system")
 
@@ -3536,7 +3536,7 @@ dlc_settings.proc_functions = {
 		local buff_ids = parent_buff_shared_table.buff_ids
 
 		if buff_ids then
-			for i = 1, #buff_ids, 1 do
+			for i = 1, #buff_ids do
 				local buff_id = buff_ids[i]
 
 				buff_extension:remove_buff(buff_id)
@@ -3740,7 +3740,7 @@ dlc_settings.proc_functions = {
 		local target_index = nil
 		local is_critical_strike = false
 		local backstab_multiplier, boost_damage_multiplier = nil
-		local target_settings = (damage_profile.targets and damage_profile.targets[target_index]) or damage_profile.default_target
+		local target_settings = damage_profile.targets and damage_profile.targets[target_index] or damage_profile.default_target
 		local damage_type = target_settings.damage_type
 		local boost_curve = BoostCurves[target_settings.boost_curve_type]
 		local damage = DamageUtils.calculate_damage(DamageOutput, attacking_unit, player_unit, hit_zone_name, power_level, boost_curve, boost_damage_multiplier, is_critical_strike, damage_profile, target_index, backstab_multiplier, damage_source)
@@ -3835,7 +3835,7 @@ dlc_settings.proc_functions = {
 			local cake_slice_angle_radians = 2 * math.pi
 			local orb_system = Managers.state.entity:system("orb_system")
 
-			for i = 1, orb_count, 1 do
+			for i = 1, orb_count do
 				orb_system:spawn_orb(orb_name, owner_peer_id, orb_starting_position, cake_slice_dir, cake_slice_angle_radians)
 			end
 		end
@@ -6260,5 +6260,3 @@ dlc_settings.buff_templates = {
 }
 
 table.merge_recursive(dlc_settings.buff_templates, DeusPowerUpBuffTemplates)
-
-return

@@ -6412,5 +6412,3 @@ menus_atlas = {
 		}
 	}
 }
-
-return

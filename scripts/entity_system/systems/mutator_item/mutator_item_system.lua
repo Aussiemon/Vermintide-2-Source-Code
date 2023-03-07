@@ -64,6 +64,7 @@ end
 
 MutatorItemSystem.update = function (self, dt, t)
 	if self.is_server then
+		-- Nothing
 	end
 end
 
@@ -74,5 +75,3 @@ end
 MutatorItemSystem.hot_join_sync = function (self, sender)
 	return
 end
-
-return

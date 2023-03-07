@@ -491,5 +491,3 @@ TwitchVoteTemplates.twitch_vote_invincibility = {
 		end
 	end
 }
-
-return

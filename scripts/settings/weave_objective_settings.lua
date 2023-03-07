@@ -16,5 +16,3 @@ WeaveObjectiveSettings = {
 		display_name = "objective_sockets_name_single"
 	}
 }
-
-return

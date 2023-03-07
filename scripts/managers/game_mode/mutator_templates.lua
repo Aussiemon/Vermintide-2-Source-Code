@@ -108,7 +108,7 @@ local function default_start_function_server(context, data)
 	if remove_pickup_settings then
 		local pickup_types = {}
 
-		for i = 1, #remove_pickup_settings, 1 do
+		for i = 1, #remove_pickup_settings do
 			local pickup_type = remove_pickup_settings[i]
 			pickup_types[pickup_type] = true
 		end
@@ -120,7 +120,7 @@ local function default_start_function_server(context, data)
 			local pickup_settings = extension:get_pickup_settings()
 			local is_excluded = excluded_pickup_item_names and excluded_pickup_item_names[pickup_settings.item_name]
 
-			if (not is_excluded and pickup_types.all) or pickup_types[pickup_settings.type] then
+			if not is_excluded and pickup_types.all or pickup_types[pickup_settings.type] then
 				Managers.state.unit_spawner:mark_for_deletion(unit)
 			end
 		end
@@ -509,5 +509,3 @@ for name, template in pairs(mutator_settings) do
 		MutatorTemplates[name] = template
 	end
 end
-
-return

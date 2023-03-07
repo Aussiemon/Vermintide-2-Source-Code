@@ -48,5 +48,3 @@ WorldInteractionSettings = {
 		}
 	}
 }
-
-return

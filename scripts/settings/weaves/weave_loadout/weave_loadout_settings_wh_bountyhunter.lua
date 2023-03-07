@@ -6,5 +6,3 @@ WeaveLoadoutSettings.wh_bountyhunter = {
 	properties = {},
 	traits = {}
 }
-
-return

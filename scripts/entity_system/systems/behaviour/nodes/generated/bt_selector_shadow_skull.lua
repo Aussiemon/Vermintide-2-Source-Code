@@ -46,5 +46,3 @@ end
 BTSelector_shadow_skull.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

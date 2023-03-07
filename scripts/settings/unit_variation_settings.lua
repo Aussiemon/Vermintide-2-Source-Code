@@ -1702,5 +1702,3 @@ UnitVariationSettings.chaos_fanatic_baked.enabled_from_start = {}
 UnitVariationSettings.chaos_fanatic_baked.body_parts = {}
 
 DLCUtils.merge("unit_variation_settings", UnitVariationSettings)
-
-return

@@ -67,7 +67,7 @@ CrosshairUI.create_ui_elements = function (self)
 	local hit_markers = {}
 	local hit_markers_n = 4
 
-	for i = 1, hit_markers_n, 1 do
+	for i = 1, hit_markers_n do
 		local widget_definition_name = "crosshair_hit_" .. i
 		hit_markers[i] = UIWidget.init(definitions.widget_definitions[widget_definition_name])
 	end
@@ -223,7 +223,7 @@ CrosshairUI.update_hit_markers = function (self, dt)
 end
 
 CrosshairUI.set_hit_marker_animation = function (self, hit_markers, hit_markers_n, hit_marker_animations, hit_marker_data)
-	for i = 1, hit_markers_n, 1 do
+	for i = 1, hit_markers_n do
 		local hit_marker = hit_markers[i]
 		local additional_hit_icon = self:configure_hit_marker_color_and_size(hit_marker, hit_marker_data)
 		hit_marker_animations[i] = UIAnimation.init(UIAnimation.function_by_time, hit_marker.style.rotating_texture.color, 1, 255, 0, UISettings.crosshair.hit_marker_fade, math.easeInCubic)
@@ -254,7 +254,7 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 	local hit_armored_markers = self._hit_armored_markers
 	local hit_marker_config = definitions.hit_marker_configurations
 
-	if invulnerable or (damage_amount <= 0 and has_armor and not added_dot) then
+	if invulnerable or damage_amount <= 0 and has_armor and not added_dot then
 		is_armored = true
 	elseif hit_critical then
 		is_critical = true
@@ -296,7 +296,7 @@ CrosshairUI.configure_hit_marker_color_and_size = function (self, hit_marker, hi
 end
 
 CrosshairUI.update_hit_marker_animation = function (self, hit_markers, hit_markers_n, hit_marker_animations, hud_extension, dt)
-	for i = 1, hit_markers_n, 1 do
+	for i = 1, hit_markers_n do
 		local animation = hit_marker_animations[i]
 
 		UIAnimation.update(animation, dt)
@@ -309,7 +309,7 @@ CrosshairUI.update_hit_marker_animation = function (self, hit_markers, hit_marke
 	end
 
 	if UIAnimation.completed(hit_marker_animations[1]) then
-		for i = 1, hit_markers_n, 1 do
+		for i = 1, hit_markers_n do
 			hit_marker_animations[i] = nil
 		end
 
@@ -363,7 +363,7 @@ CrosshairUI.draw = function (self, dt, t, pitch_percentage, yaw_percentage)
 	local hit_markers = self.hit_markers
 	local hit_markers_n = self.hit_markers_n
 
-	for i = 1, hit_markers_n, 1 do
+	for i = 1, hit_markers_n do
 		local hit_marker = hit_markers[i]
 
 		UIRenderer.draw_widget(ui_renderer, hit_marker)
@@ -387,7 +387,7 @@ CrosshairUI.draw_default_style_crosshair = function (self, ui_renderer, pitch_pe
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		self:_set_widget_point_offset(self.crosshair_line, i, num_points, pitch_percentage, yaw_percentage, start_degrees, pitch_offset, yaw_offset)
 		UIRenderer.draw_widget(ui_renderer, self.crosshair_line)
 	end
@@ -403,7 +403,7 @@ CrosshairUI.draw_arrows_style_crosshair = function (self, ui_renderer, pitch_per
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		self:_set_widget_point_offset(self.crosshair_arrow, i, num_points, pitch_percentage, yaw_percentage, start_degrees, pitch_offset, yaw_offset)
 		UIRenderer.draw_widget(ui_renderer, self.crosshair_arrow)
 	end
@@ -419,7 +419,7 @@ CrosshairUI.draw_shotgun_style_crosshair = function (self, ui_renderer, pitch_pe
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		self:_set_widget_point_offset(self.crosshair_shotgun, i, num_points, pitch_percentage, yaw_percentage, start_degrees, pitch_offset, yaw_offset)
 		UIRenderer.draw_widget(ui_renderer, self.crosshair_shotgun)
 	end
@@ -436,7 +436,7 @@ CrosshairUI.draw_projectile_style_crosshair = function (self, ui_renderer, pitch
 	pitch_percentage = math.max(0.0001, pitch_percentage)
 	yaw_percentage = math.max(0.0001, yaw_percentage)
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		self:_set_widget_point_offset(self.crosshair_line, i, num_points, pitch_percentage, yaw_percentage, start_degrees, pitch_offset, yaw_offset)
 		UIRenderer.draw_widget(ui_renderer, self.crosshair_line)
 	end
@@ -472,12 +472,12 @@ CrosshairUI._get_point_offset = function (self, point_index, max_points, pitch_p
 	local y = 0
 	local pitch_radius = max_radius * pitch_percentage
 	local yaw_radius = max_radius * yaw_percentage
-	local start_progress = ((start_degrees or 0) / 360) % 1
+	local start_progress = (start_degrees or 0) / 360 % 1
 	local real_index = point_index - 1
 	local fraction = real_index / max_points
 	local rotation_progress = (start_progress + fraction) % 1
 	local degress = rotation_progress * 360
-	local angle = -((degress * math.pi) / 180)
+	local angle = -(degress * math.pi / 180)
 	local pty = y + pitch_radius * math.sin(angle)
 	local ptx = x + yaw_radius * math.cos(angle)
 
@@ -487,16 +487,16 @@ end
 CrosshairUI._set_crosshair_target_info = function (self, portrait, state)
 	local content = self.wh_priest.content
 	content.state = state
-	content.career_portrait = (portrait and portrait) or self._small_career_portrait
+	content.career_portrait = portrait and portrait or self._small_career_portrait
 	content.text_id = "$KEY;Player__action_one:"
-	self._small_career_portrait = (portrait and portrait) or self._small_career_portrait
+	self._small_career_portrait = portrait and portrait or self._small_career_portrait
 end
 
 CrosshairUI._update_self_to_ally_transition = function (self)
 	local content = self.wh_priest.content
 
 	if content.state ~= self.state then
-		local animation_name = (content.state == "wh_priest_self" and "ally_to_self") or "self_to_ally"
+		local animation_name = content.state == "wh_priest_self" and "ally_to_self" or "self_to_ally"
 		self.wh_crosshair_anim = self._ui_animator:start_animation(animation_name, self.wh_priest, scenegraph_definition)
 	end
 
@@ -596,5 +596,3 @@ CrosshairUI._draw_kill_confirm = function (self, dt, t, ui_renderer)
 
 	UIRenderer.draw_widget(ui_renderer, kill_confirm_widget)
 end
-
-return

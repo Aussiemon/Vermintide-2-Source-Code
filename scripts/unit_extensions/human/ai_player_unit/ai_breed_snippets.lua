@@ -11,7 +11,7 @@ local function set_initial_aggro(unit, blackboard)
 	local best_score = 0
 	local best_enemy = nil
 
-	for i = 1, #enemy_player_and_bot_units, 1 do
+	for i = 1, #enemy_player_and_bot_units do
 		local enemy_unit = enemy_player_and_bot_units[i]
 		local enemy_pos = POSITION_LOOKUP[enemy_unit]
 		local pos = POSITION_LOOKUP[unit]
@@ -463,7 +463,7 @@ AiBreedSnippets.on_storm_vermin_champion_spawn = function (unit, blackboard)
 	if node_units then
 		local spawn_allies_positions = {}
 
-		for i = 1, #node_units, 1 do
+		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
 			spawn_allies_positions[#spawn_allies_positions + 1] = Vector3Box(pos)
@@ -535,7 +535,7 @@ AiBreedSnippets.on_storm_vermin_champion_update = function (unit, blackboard, t,
 	local breed = blackboard.breed
 
 	if blackboard.dual_wield_mode then
-		if (blackboard.dual_wield_timer < t and not blackboard.active_node) or blackboard.defensive_mode_duration then
+		if blackboard.dual_wield_timer < t and not blackboard.active_node or blackboard.defensive_mode_duration then
 			blackboard.dual_wield_timer = t + 20
 			blackboard.dual_wield_mode = false
 		end
@@ -1139,7 +1139,7 @@ AiBreedSnippets.drop_loot = function (num_die, pos, has_physics, unit)
 	local breed = unit and Unit.get_data(unit, "breed")
 	local breed_name = breed and breed.name
 
-	for i = 1, num_die, 1 do
+	for i = 1, num_die do
 		local extension_init_data = {
 			pickup_system = {
 				spawn_type = "loot",
@@ -1578,7 +1578,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	if node_units then
 		local death_sequence_positions = {}
 
-		for i = 1, #node_units, 1 do
+		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
 			death_sequence_positions[#death_sequence_positions + 1] = Vector3Box(pos)
@@ -1594,7 +1594,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	if node_units then
 		local defensive_teleport_positions = {}
 
-		for i = 1, #node_units, 1 do
+		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
 			defensive_teleport_positions[#defensive_teleport_positions + 1] = Vector3Box(pos)
@@ -1610,7 +1610,7 @@ AiBreedSnippets.on_grey_seer_spawn = function (unit, blackboard)
 	if node_units then
 		local call_stormfiend_positions = {}
 
-		for i = 1, #node_units, 1 do
+		for i = 1, #node_units do
 			local node_unit = node_units[i]
 			local pos = Unit.local_position(node_unit, 0)
 			call_stormfiend_positions[#call_stormfiend_positions + 1] = Vector3Box(pos)
@@ -1801,5 +1801,3 @@ AiBreedSnippets.on_gutter_runner_spawn = function (unit, blackboard)
 end
 
 DLCUtils.require_list("ai_breed_snippets_file_names")
-
-return

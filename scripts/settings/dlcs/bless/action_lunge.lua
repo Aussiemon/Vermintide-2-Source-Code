@@ -38,5 +38,3 @@ ActionLunge.client_owner_start_action = function (self, new_action, t, chain_act
 
 	ActionLunge.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 end
-
-return

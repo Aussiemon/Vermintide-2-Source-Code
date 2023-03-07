@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local PLACEHOLDER_ICON = AchievementTemplateHelper.PLACEHOLDER_ICON
 local achievements = AchievementTemplates.achievements
 local achievement_settings = DLCSettings.bless
@@ -404,7 +400,7 @@ achievements.bless_punch_back = {
 					local last_hit_buffer = template_data.last_hit
 					local last_hit_n = template_data.last_hit_n
 
-					for unit, attack_t in nil do
+					for unit, attack_t in last_hit_buffer, nil, nil do
 						if not ALIVE[unit] or t > attack_t + bless_punch_back_time_window then
 							last_hit_buffer[unit] = nil
 							last_hit_n = last_hit_n - 1
@@ -488,7 +484,7 @@ achievements.bless_cluch_revive = {
 			return
 		end
 
-		for i = 1, #player_units, 1 do
+		for i = 1, #player_units do
 			local other_player = player_units[i]
 
 			if other_player ~= reviver then
@@ -586,7 +582,7 @@ achievements.bless_chaos_warriors = {
 		if event_name == "righteous_fury_start" and event_data[2] then
 			template_data.righteous_fury_active = true
 			template_data.kill_count = 0
-		elseif (event_name == "righteous_fury_end" and event_data[2]) or (event_name == "player_dead" and event_data[1] and event_data[1].local_player) then
+		elseif event_name == "righteous_fury_end" and event_data[2] or event_name == "player_dead" and event_data[1] and event_data[1].local_player then
 			template_data.righteous_fury_active = false
 		elseif template_data.righteous_fury_active then
 			local breed = event_data[register_kill_victim_breed]
@@ -622,7 +618,7 @@ achievements.bless_very_righteous = {
 
 		if event_name == "righteous_fury_start" and event_data[2] then
 			template_data.righteous_fury_active = t
-		elseif (event_name == "righteous_fury_end" and event_data[2]) or (event_name == "player_dead" and event_data[1] and event_data[1].local_player) then
+		elseif event_name == "righteous_fury_end" and event_data[2] or event_name == "player_dead" and event_data[1] and event_data[1].local_player then
 			local last_activated_t = template_data.righteous_fury_active
 
 			if last_activated_t and bless_very_righteous_length <= t - last_activated_t then
@@ -1157,5 +1153,3 @@ local all_challenges = {
 }
 
 add_meta_challenge(achievements, "complete_all_warrior_priest_challenges", all_challenges, "achievement_trophy_complete_all_warrior_priest_challenges", "bless", nil, nil)
-
-return

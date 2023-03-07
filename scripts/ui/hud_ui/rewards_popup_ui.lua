@@ -203,7 +203,7 @@ RewardsPopupUI.all_presentations_done = function (self)
 end
 
 RewardsPopupUI._handle_queued_presentations = function (self)
-	if self:_is_reward_presentation_complete() or (#self._reward_presentation_queue == 0 and not self:_displaying_reward_presentation()) then
+	if self:_is_reward_presentation_complete() or #self._reward_presentation_queue == 0 and not self:_displaying_reward_presentation() then
 		local reward_presentation_queue = self._reward_presentation_queue
 		local num_queued_rewards = #reward_presentation_queue
 
@@ -222,7 +222,7 @@ RewardsPopupUI._play_sounds = function (self, sounds)
 		return
 	end
 
-	for i = 1, #sounds, 1 do
+	for i = 1, #sounds do
 		local event_name = sounds[i]
 
 		Managers.music:trigger_event(event_name)
@@ -242,5 +242,3 @@ RewardsPopupUI._present_reward = function (self, data)
 		self._reward_presentation_active = true
 	end
 end
-
-return

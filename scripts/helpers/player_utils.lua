@@ -13,7 +13,7 @@ PlayerUtils = {
 		local unit_list = {}
 		local unit_list_n = 0
 
-		for i = 1, #players, 1 do
+		for i = 1, #players do
 			local unit = players[i]
 
 			if ALIVE[unit] and ScriptUnit.extension(unit, "health_system"):is_alive() then
@@ -31,5 +31,3 @@ PlayerUtils = {
 		return nil
 	end
 }
-
-return

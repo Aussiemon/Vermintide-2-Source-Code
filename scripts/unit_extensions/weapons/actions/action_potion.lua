@@ -42,7 +42,7 @@ ActionPotion.finish = function (self, reason)
 		local num_players = #player_and_bot_units
 		local owner_player_position = POSITION_LOOKUP[owner_unit]
 
-		for i = 1, num_players, 1 do
+		for i = 1, num_players do
 			local other_player_unit = player_and_bot_units[i]
 
 			if Unit.alive(other_player_unit) and other_player_unit ~= owner_unit then
@@ -75,7 +75,7 @@ ActionPotion.finish = function (self, reason)
 	Managers.razer_chroma:play_animation(current_action.buff_template, false, RAZER_ADD_ANIMATION_TYPE.REPLACE)
 
 	if not buff_extension:has_buff_type("trait_ring_all_potions") and not buff_extension:has_buff_type("weave_trait_ring_all_potions") then
-		for i = 1, num_targets, 1 do
+		for i = 1, num_targets do
 			local target_unit = targets[i]
 			local unit_object_id = network_manager:unit_game_object_id(target_unit)
 			local target_unit_buff_extension = ScriptUnit.extension(target_unit, "buff_system")
@@ -104,7 +104,7 @@ ActionPotion.finish = function (self, reason)
 			career_extension:reduce_activated_ability_cooldown_percent(0.5)
 		end
 
-		for i = 1, #additional_potion_buffs, 1 do
+		for i = 1, #additional_potion_buffs do
 			local additional_buff_template_name_id = NetworkLookup.buff_templates[additional_potion_buffs[i]]
 
 			if self.is_server then
@@ -140,5 +140,3 @@ ActionPotion.finish = function (self, reason)
 
 	Managers.telemetry.events:player_used_item(player, self.item_name, position)
 end
-
-return

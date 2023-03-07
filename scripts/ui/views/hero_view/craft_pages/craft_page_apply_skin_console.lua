@@ -108,7 +108,7 @@ CraftPageApplySkinConsole.setup_recipe_requirements = function (self)
 			end
 
 			local has_required_amount = required_amount <= amount_owned
-			local presentation_amount = ((amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned)) or "*") .. "/" .. tostring(required_amount)
+			local presentation_amount = (amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned) or "*") .. "/" .. tostring(required_amount)
 
 			self:_add_crafting_material_requirement(requirement_index, item_key, presentation_amount, has_required_amount)
 
@@ -132,7 +132,7 @@ CraftPageApplySkinConsole.reset_requirements = function (self, num_required_ingr
 	local start_position_x = -((widget_width + spacing) * (num_required_ingredients - 1)) / 2
 	local num_crafting_materials = #UISettings.crafting_material_order
 
-	for i = 1, num_crafting_materials, 1 do
+	for i = 1, num_crafting_materials do
 		local widget = widgets_by_name["material_text_" .. i]
 		local visible = i <= num_required_ingredients
 		widget.content.visible = visible
@@ -275,7 +275,7 @@ CraftPageApplySkinConsole._handle_input = function (self, dt, t)
 	local craft_input_keyboard = is_button_enabled and not gamepad_active and input_service:get("skip")
 	local craft_input_accepted = false
 
-	if input_service:get("special_1") or (self._craft_item and input_service:get("toggle_menu", true)) then
+	if input_service:get("special_1") or self._craft_item and input_service:get("toggle_menu", true) then
 		self:reset()
 	elseif (craft_input == 0 or craft_input_gamepad or craft_input_keyboard) and self._craft_item and self._skin_item and self._has_all_requirements then
 		if not self._craft_input_time then
@@ -393,7 +393,7 @@ CraftPageApplySkinConsole.on_craft_completed = function (self)
 		local craft_item = item_interface:get_item_from_id(craft_item_backend_id)
 		local equipped_slots, num_slots = ItemHelper.get_equipped_slots(craft_item_backend_id, self.career_name)
 
-		for i = 1, num_slots, 1 do
+		for i = 1, num_slots do
 			self.super_parent:_set_loadout_item(craft_item, equipped_slots[i])
 		end
 
@@ -508,7 +508,7 @@ end
 CraftPageApplySkinConsole._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
 
-	self.parent:set_input_description((not disabled and self.settings.name) or "disabled")
+	self.parent:set_input_description(not disabled and self.settings.name or "disabled")
 end
 
 CraftPageApplySkinConsole._exit = function (self, selected_level)
@@ -538,7 +538,7 @@ end
 CraftPageApplySkinConsole._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
-	widget.content.button_text = (localize and Localize(text)) or text
+	widget.content.button_text = localize and Localize(text) or text
 end
 
 CraftPageApplySkinConsole._add_crafting_material_requirement = function (self, index, item_key, amount_text, has_required_amount)
@@ -554,5 +554,3 @@ CraftPageApplySkinConsole._add_crafting_material_requirement = function (self, i
 		data = table.clone(ItemMasterList[item_key])
 	}
 end
-
-return

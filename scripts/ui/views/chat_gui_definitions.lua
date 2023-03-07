@@ -411,7 +411,7 @@ local chat_input_widget = {
 					return GameSettingsDevelopment.use_global_chat
 				end,
 				content_change_function = function (content, style)
-					style.color = (content.info_hotspot.is_hover and style.selected_color) or style.base_color
+					style.color = content.info_hotspot.is_hover and style.selected_color or style.base_color
 				end
 			},
 			{
@@ -429,7 +429,7 @@ local chat_input_widget = {
 					return GameSettingsDevelopment.use_global_chat
 				end,
 				content_change_function = function (content, style)
-					style.text_color = (content.info_hotspot.is_hover and style.selected_color) or style.base_color
+					style.text_color = content.info_hotspot.is_hover and style.selected_color or style.base_color
 				end
 			},
 			{
@@ -444,7 +444,7 @@ local chat_input_widget = {
 					return GameSettingsDevelopment.use_global_chat
 				end,
 				content_change_function = function (content, style)
-					style.color = (content.enlarge_hotspot.is_hover and style.selected_color) or style.base_color
+					style.color = content.enlarge_hotspot.is_hover and style.selected_color or style.base_color
 				end
 			},
 			{
@@ -466,7 +466,7 @@ local chat_input_widget = {
 					return GameSettingsDevelopment.use_global_chat
 				end,
 				content_change_function = function (content, style)
-					style.color = (content.filter_hotspot.is_hover and style.selected_color) or style.base_color
+					style.color = content.filter_hotspot.is_hover and style.selected_color or style.base_color
 				end
 			},
 			{
@@ -488,7 +488,7 @@ local chat_input_widget = {
 					return GameSettingsDevelopment.use_global_chat
 				end,
 				content_change_function = function (content, style)
-					style.color = (content.target_hotspot.is_hover and style.selected_color) or style.base_color
+					style.color = content.target_hotspot.is_hover and style.selected_color or style.base_color
 				end
 			},
 			{
@@ -980,7 +980,7 @@ local chat_scrollbar_widget = {
 					local current_offset_center_bar = current_offset_from_bottom
 					local min_world_pos = world_position[2] + half_bar_size
 					local scroll_offset_max = ui_content.scroll_offset_max
-					local max_world_pos = (world_position[2] + scroll_offset_max) - half_bar_size - ui_content.scroll_offset_min
+					local max_world_pos = world_position[2] + scroll_offset_max - half_bar_size - ui_content.scroll_offset_min
 					local current_position = math.clamp(current_offset_center_bar, 0, size[2])
 					local delta_value = math.min(current_position / size[2], 1)
 					ui_content.internal_scroll_value = delta_value

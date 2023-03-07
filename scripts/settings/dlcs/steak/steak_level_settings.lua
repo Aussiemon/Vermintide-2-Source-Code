@@ -56,5 +56,3 @@ settings.missions = {
 		text = "mission_crater_portal"
 	}
 }
-
-return

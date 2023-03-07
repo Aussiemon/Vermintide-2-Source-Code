@@ -28,7 +28,7 @@ BTTrollDownedAction.enter = function (self, unit, blackboard, t)
 
 	self:trigger_dialogue_event(unit, "chaos_troll_incapacitaded")
 
-	blackboard.num_regen = (blackboard.num_regen and blackboard.num_regen + 1) or 1
+	blackboard.num_regen = blackboard.num_regen and blackboard.num_regen + 1 or 1
 end
 
 BTTrollDownedAction.leave = function (self, unit, blackboard, t, reason, destroy)
@@ -70,5 +70,3 @@ BTTrollDownedAction.trigger_dialogue_event = function (self, unit, dialogue_even
 
 	dialogue_input:trigger_networked_dialogue_event(dialogue_event, event_data)
 end
-
-return

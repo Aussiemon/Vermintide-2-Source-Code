@@ -129,24 +129,24 @@ BTStaggerAction._select_animation = function (self, unit, blackboard, impact_vec
 	if impact_vec.z == -1 and stagger_anims.dwn then
 		impact_dir.z = 0
 		impact_rot = Quaternion.look(-impact_dir)
-		anim_table = (moving_stagger and stagger_anims.moving_dwn) or stagger_anims.dwn
+		anim_table = moving_stagger and stagger_anims.moving_dwn or stagger_anims.dwn
 	else
 		impact_dir.z = 0
 
 		if angle > math.pi * 0.75 then
 			impact_rot = Quaternion.look(-impact_dir)
-			anim_table = (moving_stagger and stagger_anims.moving_bwd) or stagger_anims.bwd
+			anim_table = moving_stagger and stagger_anims.moving_bwd or stagger_anims.bwd
 		elseif angle < math.pi * 0.25 then
 			impact_rot = Quaternion.look(impact_dir)
-			anim_table = (moving_stagger and stagger_anims.moving_fwd) or stagger_anims.fwd
+			anim_table = moving_stagger and stagger_anims.moving_fwd or stagger_anims.fwd
 		elseif Vector3.cross(my_fwd, impact_dir).z > 0 then
 			local dir = Vector3.cross(Vector3(0, 0, -1), impact_dir)
 			impact_rot = Quaternion.look(dir)
-			anim_table = (moving_stagger and stagger_anims.moving_left) or stagger_anims.left
+			anim_table = moving_stagger and stagger_anims.moving_left or stagger_anims.left
 		else
 			local dir = Vector3.cross(Vector3(0, 0, 1), impact_dir)
 			impact_rot = Quaternion.look(dir)
-			anim_table = (moving_stagger and stagger_anims.moving_right) or stagger_anims.right
+			anim_table = moving_stagger and stagger_anims.moving_right or stagger_anims.right
 		end
 	end
 
@@ -294,5 +294,3 @@ BTStaggerAction.anim_cb_push_cancel = function (self, unit, blackboard)
 		blackboard.stagger_anim_done = true
 	end
 end
-
-return

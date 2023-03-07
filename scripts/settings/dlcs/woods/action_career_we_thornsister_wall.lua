@@ -19,7 +19,7 @@ ActionCareerWEThornsisterWall.client_owner_start_action = function (self, new_ac
 	ActionCareerWEThornsisterWall.super.client_owner_start_action(self, new_action, t, chain_action_data, power_level, action_init_data)
 
 	local target_data = chain_action_data
-	local num_segments = (target_data and target_data.num_segments) or 0
+	local num_segments = target_data and target_data.num_segments or 0
 
 	if num_segments > 0 then
 		self:_play_vo()
@@ -55,7 +55,7 @@ ActionCareerWEThornsisterWall.client_owner_start_action = function (self, new_ac
 			local right = Quaternion.right(rotation)
 			local segment_arr = {}
 
-			for i = 1, num_segments, 1 do
+			for i = 1, num_segments do
 				segment_arr[i] = segments[i]:unbox() + forward * (math.random() * WALL_FORWARD_OFFSET_RANGE * 2 - WALL_FORWARD_OFFSET_RANGE) + right * (math.random() * WALL_RIGHT_OFFSET_RANGE * 2 - WALL_RIGHT_OFFSET_RANGE)
 			end
 
@@ -97,7 +97,7 @@ ActionCareerWEThornsisterWall._spawn_wall = function (self, num_segments, segmen
 	local forward = Quaternion.forward(wall_rotation)
 	local right = Quaternion.right(wall_rotation)
 
-	for i = 1, num_segments, 1 do
+	for i = 1, num_segments do
 		local position = segments[i]:unbox()
 		local rotation = wall_rotation
 		local spawn_position = position + forward * (math.random() * WALL_FORWARD_OFFSET_RANGE * 2 - WALL_FORWARD_OFFSET_RANGE) + right * (math.random() * WALL_RIGHT_OFFSET_RANGE * 2 - WALL_RIGHT_OFFSET_RANGE)
@@ -105,5 +105,3 @@ ActionCareerWEThornsisterWall._spawn_wall = function (self, num_segments, segmen
 		Managers.state.unit_spawner:request_spawn_network_unit(UNIT_TEMPLATE_NAME, spawn_position, rotation, owner_unit, wall_index, i)
 	end
 end
-
-return

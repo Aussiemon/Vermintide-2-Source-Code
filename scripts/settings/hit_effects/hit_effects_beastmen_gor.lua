@@ -2282,5 +2282,3 @@ HitEffectsBeastmenGor = {
 	}
 }
 HitEffectsBeastmenGor = table.create_copy(HitEffectsBeastmenGor, HitEffectsBeastmenGor)
-
-return

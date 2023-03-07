@@ -3244,5 +3244,3 @@ MaterialEffectMappings.enemy_plague_walker_bodyfall = {
 		water = {}
 	}
 }
-
-return

@@ -77,7 +77,7 @@ SharedState.validate_spec(shared_state_spec)
 local function get_color_for_consumable_item(item_key)
 	local default_color = UISettings.inventory_consumable_slot_colors.default
 
-	return (item_key and UISettings.inventory_consumable_slot_colors[item_key]) or default_color
+	return item_key and UISettings.inventory_consumable_slot_colors[item_key] or default_color
 end
 
 DeusShopView.init = function (self, context)
@@ -218,7 +218,7 @@ DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, ble
 	local shop_item_widgets = {}
 	local num_power_ups = #power_ups
 
-	for i = 1, num_power_ups, 1 do
+	for i = 1, num_power_ups do
 		local power_up = power_ups[i]
 		local power_up_template = power_up_templates[power_up.name]
 		local is_rectangular_icon = power_up_template.rectangular_icon
@@ -258,7 +258,7 @@ DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, ble
 	local blessing_frame_widgets = {}
 	local num_blessings = #blessings
 
-	for i = 1, num_blessings, 1 do
+	for i = 1, num_blessings do
 		local widget_size = definitions.scenegraph_definition.blessing_root.size
 		local widget_definition = definitions.create_blessing_shop_item("blessing_root", widget_size, false)
 		local widget = UIWidget.init(widget_definition)
@@ -303,7 +303,7 @@ DeusShopView._create_ui_elements = function (self, shop_settings, power_ups, ble
 	local peers = self._deus_run_controller:get_peers()
 	local portrait_frame_widgets = {}
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local name = "player_portrait_frame_" .. i
 		local widget_definition, widget = nil
 
@@ -488,7 +488,7 @@ end
 
 DeusShopView._update_countdowns = function (self, state, dt, t)
 	if state == states.FINISHING then
-		self._final_countdown = (self._final_countdown and math.max(0, self._final_countdown - dt)) or nil
+		self._final_countdown = self._final_countdown and math.max(0, self._final_countdown - dt) or nil
 	end
 end
 
@@ -794,7 +794,7 @@ DeusShopView._update_player_data = function (self)
 	local local_peer_id = Network.peer_id()
 	local peers = self._deus_run_controller:get_peers()
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local peer_id = peers[i]
 
 		if peer_id then
@@ -855,7 +855,7 @@ DeusShopView._update_player_portraits = function (self, player_data)
 	local widgets_by_name = self._widgets_by_name
 	local ready_button_tokens = widgets_by_name.ready_button_tokens
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local data = player_data[i]
 		local player_portrait = widgets_by_name["player_portrait_" .. i]
 		local player_texts = widgets_by_name["player_texts_" .. i]
@@ -1052,7 +1052,7 @@ DeusShopView._draw = function (self, dt)
 
 		UIRenderer.begin_pass(ui_top_renderer, ui_scenegraph, input_service, dt, nil, render_settings)
 
-		for i = 1, #top_widgets, 1 do
+		for i = 1, #top_widgets do
 			UIRenderer.draw_widget(ui_top_renderer, top_widgets[i])
 		end
 
@@ -1070,7 +1070,7 @@ DeusShopView._draw = function (self, dt)
 	local snap_pixel_positions = render_settings.snap_pixel_positions
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		if widget.snap_pixel_positions ~= nil then
@@ -1157,7 +1157,7 @@ end
 DeusShopView._update_background_animations = function (self, dt)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local wheel_widget = widgets_by_name["background_wheel_0" .. i]
 		local current_angle = wheel_widget.style.texture_id.angle
 		local angle_add = 0
@@ -1188,5 +1188,3 @@ DeusShopView.on_ingame_menu_closed = function (self)
 
 	Managers.input:enable_gamepad_cursor()
 end
-
-return

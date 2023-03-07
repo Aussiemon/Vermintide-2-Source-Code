@@ -539,5 +539,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_explosive_loot_rat = table.create_copy(BreedActions.skaven_explosive_loot_rat, action_data)
-
-return

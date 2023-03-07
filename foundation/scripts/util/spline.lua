@@ -65,7 +65,7 @@ Spline.length = function (self, segments)
 	local length = 0
 	local last_point = Vector3.from_table(self._P1)
 
-	for fraction = 1, segments, 1 do
+	for fraction = 1, segments do
 		local point = self:calc_point(fraction / segments)
 		length = length + Vector3.length(point - last_point)
 		last_point = point
@@ -85,10 +85,10 @@ Spline.tangent = function (self, t, segment_size)
 end
 
 Spline.set_points_manual_tangents = function (self, t1, t2, p1, p2)
-	self._T1 = (t1 and Vector3.as_table(t1)) or self._T1
-	self._T2 = (t2 and Vector3.as_table(t2)) or self._T2
-	self._P1 = (p1 and Vector3.as_table(p1)) or self._P1
-	self._P2 = (p2 and Vector3.as_table(p2)) or self._P2
+	self._T1 = t1 and Vector3.as_table(t1) or self._T1
+	self._T2 = t2 and Vector3.as_table(t2) or self._T2
+	self._P1 = p1 and Vector3.as_table(p1) or self._P1
+	self._P2 = p2 and Vector3.as_table(p2) or self._P2
 end
 
 Spline.set_points_with_rotation_tangents = function (self, points, rotation_t1, rotation_t2)
@@ -134,5 +134,3 @@ end
 Spline.t2 = function (self)
 	return self._T2
 end
-
-return

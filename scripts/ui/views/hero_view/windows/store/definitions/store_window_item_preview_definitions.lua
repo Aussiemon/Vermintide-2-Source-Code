@@ -1001,7 +1001,7 @@ local top_widgets = {
 	sub_title_text = UIWidgets.create_simple_text("", "sub_title_text", nil, nil, sub_title_text_style),
 	type_title_text = UIWidgets.create_simple_text("", "sub_title_text", nil, nil, type_title_text_style),
 	career_title_text = UIWidgets.create_simple_text("", "career_title_text", nil, nil, career_title_text_style),
-	unlock_button = UIWidgets.create_store_purchase_button("unlock_button", scenegraph_definition.unlock_button.size, (not IS_PS4 and Localize("menu_store_purchase_button_unlock")) or "", 32, disable_with_gamepad),
+	unlock_button = UIWidgets.create_store_purchase_button("unlock_button", scenegraph_definition.unlock_button.size, not IS_PS4 and Localize("menu_store_purchase_button_unlock") or "", 32, disable_with_gamepad),
 	viewport_button = UIWidgets.create_simple_hotspot("viewport")
 }
 local background_color = {
@@ -1160,11 +1160,11 @@ local animation_definitions = {
 				local animated_width = math.floor(addition_width * anim_progress)
 				local animated_height = math.floor(addition_height * anim_progress)
 				local default_background_size = scenegraph_definition.background.size
-				ui_scenegraph.background.size[1] = (default_background_size[1] + addition_width) - animated_width
+				ui_scenegraph.background.size[1] = default_background_size[1] + addition_width - animated_width
 				local default_viewport_size = scenegraph_definition.viewport.size
 				local default_viewport_position = scenegraph_definition.viewport.position
-				ui_scenegraph.viewport.size[1] = (default_viewport_size[1] + addition_width) - animated_width
-				ui_scenegraph.viewport.size[2] = (default_viewport_size[2] + addition_height) - animated_height
+				ui_scenegraph.viewport.size[1] = default_viewport_size[1] + addition_width - animated_width
+				ui_scenegraph.viewport.size[2] = default_viewport_size[2] + addition_height - animated_height
 				local text_alpha = 255 * anim_progress
 				local title_text = widgets.title_text
 				title_text.style.text.text_color[1] = text_alpha
@@ -1277,7 +1277,7 @@ local generic_input_actions = {
 		{
 			input_action = "confirm",
 			priority = 2,
-			description_text = (IS_WINDOWS and "interaction_action_unlock") or "dlc1_4_input_description_storepage"
+			description_text = IS_WINDOWS and "interaction_action_unlock" or "dlc1_4_input_description_storepage"
 		},
 		{
 			input_action = "right_stick",
@@ -1308,7 +1308,7 @@ local generic_input_actions = {
 		{
 			input_action = "confirm",
 			priority = 2,
-			description_text = (IS_WINDOWS and "interaction_action_unlock") or "dlc1_4_input_description_storepage"
+			description_text = IS_WINDOWS and "interaction_action_unlock" or "dlc1_4_input_description_storepage"
 		},
 		{
 			input_action = "special_1",

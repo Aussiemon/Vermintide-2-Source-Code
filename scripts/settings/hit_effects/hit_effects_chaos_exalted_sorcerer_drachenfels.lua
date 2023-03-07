@@ -145,5 +145,3 @@ HitEffectsChaosExaltedSorcererDrachenfels = {
 	}
 }
 HitEffectsChaosExaltedSorcererDrachenfels = table.create_copy(HitEffectsChaosExaltedSorcererDrachenfels, HitEffectsChaosExaltedSorcererDrachenfels)
-
-return

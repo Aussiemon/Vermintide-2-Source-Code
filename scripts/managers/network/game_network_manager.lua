@@ -910,7 +910,7 @@ GameNetworkManager._unpack_percentages_completed_arrays = function (self, peer_i
 	local percentages_completed = {}
 	local player_manager = Managers.player
 
-	for i = 1, #peer_ids, 1 do
+	for i = 1, #peer_ids do
 		local peer_id = peer_ids[i]
 		local local_player_id = local_player_ids[i]
 		local percentage_completed = percentages[i]
@@ -1139,11 +1139,11 @@ GameNetworkManager.rpc_coop_feedback = function (self, channel_id, player1_peer_
 	elseif predicate == "discarded_grimoire" then
 		local player_1_peer_id = player1.peer_id
 		local is_player_controlled = player1:is_player_controlled()
-		local player_1_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(player_1_peer_id)) or tostring(player_1_peer_id))) or player1:name()
+		local player_1_name = is_player_controlled and (rawget(_G, "Steam") and Steam.user_name(player_1_peer_id) or tostring(player_1_peer_id)) or player1:name()
 
 		if IS_CONSOLE and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
-			player_1_name = (is_player_controlled and (lobby:user_name(player_1_peer_id) or tostring(player_1_peer_id))) or player1:name()
+			player_1_name = is_player_controlled and (lobby:user_name(player_1_peer_id) or tostring(player_1_peer_id)) or player1:name()
 		end
 
 		local pop_chat = true
@@ -1259,5 +1259,3 @@ if LEVEL_EDITOR_TEST then
 		Unit.animation_event(unit, event)
 	end
 end
-
-return

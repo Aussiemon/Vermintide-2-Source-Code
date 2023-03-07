@@ -106,7 +106,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 		local to_target_normalized = Vector3.normalize(to_target)
 		local dot = Vector3.dot(target_velocity, to_target_normalized)
 		local target_in_front = dot > 0.5
-		local target_is_running = (target_running_distance_threshold and target_running_distance_threshold < target_distance) or (velocity_threshold < dot and target_in_front)
+		local target_is_running = target_running_distance_threshold and target_running_distance_threshold < target_distance or velocity_threshold < dot and target_in_front
 		local self_running_speed_threshold = action.self_running_speed_threshold
 
 		if self_running_speed_threshold and not target_is_running then
@@ -118,7 +118,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 		end
 	end
 
-	local attacks = (use_running_attack and action.running_attacks) or action.attacks
+	local attacks = use_running_attack and action.running_attacks or action.attacks
 	local attack = nil
 
 	if action.is_combo_attack then
@@ -233,7 +233,7 @@ BTMeleeOverlapAttackAction._init_attack = function (self, unit, target_unit, bla
 		self:push_close_units(unit, blackboard, t, push_units_data)
 	end
 
-	local bot_threats = attack.bot_threats and (attack.bot_threats[attack_anim] or (attack.bot_threats[1] and attack.bot_threats))
+	local bot_threats = attack.bot_threats and (attack.bot_threats[attack_anim] or attack.bot_threats[1] and attack.bot_threats)
 
 	if bot_threats then
 		local current_threat_index = 1
@@ -421,7 +421,7 @@ BTMeleeOverlapAttackAction.run = function (self, unit, blackboard, t, dt)
 			local locomotion_extension = blackboard.locomotion_extension
 			local target_status_extension = blackboard.target_unit_status_extension
 
-			if t < blackboard.attack_rotation_update_timer and (not target_status_extension or (not target_status_extension:is_invisible() and (attack.ignores_dodging or not target_status_extension:get_is_dodging()))) then
+			if t < blackboard.attack_rotation_update_timer and (not target_status_extension or not target_status_extension:is_invisible() and (attack.ignores_dodging or not target_status_extension:get_is_dodging())) then
 				local rot = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.locked_target_unit)
 				local rotation_speed = attack.rotation_speed
 
@@ -664,7 +664,7 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 	local push_width_sq = data.push_width^2
 	local BLACKBOARDS = BLACKBOARDS
 
-	for i = 1, num_results, 1 do
+	for i = 1, num_results do
 		local hit_unit = hit_units[i]
 
 		if hit_unit ~= unit then
@@ -688,7 +688,7 @@ BTMeleeOverlapAttackAction.push_close_units = function (self, unit, blackboard, 
 	local side = blackboard.side
 	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS, 1 do
+	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS do
 		local hit_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 		local hit_unit_pos = POSITION_LOOKUP[hit_unit]
 		local to_target = hit_unit_pos - push_pos
@@ -773,7 +773,7 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 		return 0
 	end
 
-	local filter_name = (attack.hit_only_players and "filter_player_hit_box_check") or "filter_player_and_enemy_hit_box_check"
+	local filter_name = attack.hit_only_players and "filter_player_hit_box_check" or "filter_player_and_enemy_hit_box_check"
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, oobb_pos, overlap_update_radius)
 
@@ -784,7 +784,7 @@ BTMeleeOverlapAttackAction.overlap_checks = function (self, unit, blackboard, ph
 	local hit_multiple_targets = attack.hit_multiple_targets
 	local num_hit_units = 0
 
-	for i = 1, num_hit_actors, 1 do
+	for i = 1, num_hit_actors do
 		local hit_actor = hit_actors[i]
 		local hit_unit = Actor.unit(hit_actor)
 
@@ -834,5 +834,3 @@ BTMeleeOverlapAttackAction.anim_cb_attack_grabbed_smash = function (self, unit, 
 
 	AiUtils.damage_target(blackboard.victim_grabbed, unit, action, action.damage)
 end
-
-return

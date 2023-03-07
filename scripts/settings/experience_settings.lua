@@ -40,7 +40,7 @@ local num_defined_levels = #experience_levels
 local experience_for_extra_levels = experience_levels[level_used_for_extra_levels_experience]
 local total_defined_experience = 0
 
-for i = 1, num_defined_levels, 1 do
+for i = 1, num_defined_levels do
 	total_defined_experience = total_defined_experience + experience_levels[i]
 end
 
@@ -105,7 +105,7 @@ ExperienceSettings.get_level = function (experience)
 		return num_defined_levels, progress, experience_into_level
 	end
 
-	for i = 1, num_defined_levels, 1 do
+	for i = 1, num_defined_levels do
 		previous_exp_total = exp_total
 		exp_total = exp_total + experience_levels[i]
 
@@ -132,7 +132,7 @@ end
 ExperienceSettings.get_total_experience_required_for_level = function (level)
 	local experience = 0
 
-	for i = 1, level, 1 do
+	for i = 1, level do
 		local level_experience = experience_levels[i] or experience_for_extra_levels
 		experience = experience + level_experience
 	end
@@ -168,5 +168,3 @@ ExperienceSettings.level_length_experience_multiplier = {
 	short = 1,
 	long = 1
 }
-
-return

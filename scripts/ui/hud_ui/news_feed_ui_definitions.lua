@@ -217,7 +217,7 @@ end
 
 local buff_widget_definitions = {}
 
-for i = 1, MAX_NUMBER_OF_NEWS, 1 do
+for i = 1, MAX_NUMBER_OF_NEWS do
 	buff_widget_definitions[i] = create_news_widget(i)
 end
 

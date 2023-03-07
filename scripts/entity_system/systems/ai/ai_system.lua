@@ -103,7 +103,7 @@ AISystem.init = function (self, context, name)
 			[#nav_data + 1] = GwNavWorld.add_navdata(nav_world, level_name)
 		}
 
-		for i = 0, num_nested_levels - 1, 1 do
+		for i = 0, num_nested_levels - 1 do
 			local nested_level_name = LevelResource.nested_level_resource_name(level_name, i)
 
 			print("nested_level_name", nested_level_name)
@@ -353,7 +353,7 @@ end
 AISystem._recompute_nav_cost_maps = function (self)
 	local nav_cost_maps_data = self._nav_cost_maps_data
 
-	for i = 1, NAV_COST_MAP_MAX_COST_MAPS, 1 do
+	for i = 1, NAV_COST_MAP_MAX_COST_MAPS do
 		local cost_map_data = nav_cost_maps_data[i]
 
 		if cost_map_data and cost_map_data.recompute then
@@ -403,7 +403,7 @@ AISystem.destroy = function (self)
 
 	local nav_cost_maps_data = self._nav_cost_maps_data
 
-	for i = 1, NAV_COST_MAP_MAX_COST_MAPS, 1 do
+	for i = 1, NAV_COST_MAP_MAX_COST_MAPS do
 		local cost_map_data = nav_cost_maps_data[i]
 
 		if cost_map_data then
@@ -418,7 +418,7 @@ AISystem.destroy = function (self)
 	if self._nav_data then
 		local nav_data = self._nav_data
 
-		for i = 1, #nav_data, 1 do
+		for i = 1, #nav_data do
 			local data = nav_data[i]
 
 			GwNavWorld.remove_navdata(nil, data)
@@ -556,7 +556,7 @@ AISystem._cleanup_extension = function (self, unit, extension_name)
 		local ai_blackboard_prioritized_updates = self.ai_blackboard_prioritized_updates
 		local ai_blackboard_prioritized_updates_n = #ai_blackboard_prioritized_updates
 
-		for i = 1, ai_blackboard_updates_n, 1 do
+		for i = 1, ai_blackboard_updates_n do
 			if ai_blackboard_updates[i] == unit then
 				ai_blackboard_updates[i] = ai_blackboard_updates[ai_blackboard_updates_n]
 				ai_blackboard_updates[ai_blackboard_updates_n] = nil
@@ -565,7 +565,7 @@ AISystem._cleanup_extension = function (self, unit, extension_name)
 			end
 		end
 
-		for i = 1, ai_blackboard_prioritized_updates_n, 1 do
+		for i = 1, ai_blackboard_prioritized_updates_n do
 			if ai_blackboard_prioritized_updates[i] == unit then
 				ai_blackboard_prioritized_updates[i] = ai_blackboard_prioritized_updates[ai_blackboard_prioritized_updates_n]
 				ai_blackboard_prioritized_updates[ai_blackboard_prioritized_updates_n] = nil
@@ -736,7 +736,7 @@ AISystem.update_perception = function (self, t, dt)
 		local perception_continuous_name = breed.perception_continuous
 		local perception_function = PerceptionUtils[perception_continuous_name]
 		local needs_perception = perception_function(unit, blackboard, breed, t, dt)
-		ai_units_perception[unit] = (needs_perception and extension) or nil
+		ai_units_perception[unit] = needs_perception and extension or nil
 
 		self:_update_taunt(t, blackboard)
 	end
@@ -758,12 +758,12 @@ AISystem.update_perception = function (self, t, dt)
 	end
 
 	local current_perception_unit = self.current_perception_unit
-	current_perception_unit = (self.ai_units_perception[current_perception_unit] ~= nil and current_perception_unit) or nil
+	current_perception_unit = self.ai_units_perception[current_perception_unit] ~= nil and current_perception_unit or nil
 	local TIME_BETWEEN_UPDATE = 1
 	local num_perception_units = self.num_perception_units
-	local num_to_update = math.ceil((num_perception_units * dt) / TIME_BETWEEN_UPDATE)
+	local num_to_update = math.ceil(num_perception_units * dt / TIME_BETWEEN_UPDATE)
 
-	for i = 1, num_to_update, 1 do
+	for i = 1, num_to_update do
 		current_perception_unit = next(ai_units_perception, current_perception_unit)
 
 		if current_perception_unit == nil then
@@ -794,7 +794,7 @@ AISystem.update_brains = function (self, t, dt)
 		local blackboard = extension._blackboard
 
 		if blackboard.activated ~= nil then
-			local event = (blackboard.activated and "to_combat") or "to_passive"
+			local event = blackboard.activated and "to_combat" or "to_passive"
 
 			Managers.state.network:anim_event(unit, event)
 
@@ -871,7 +871,7 @@ AISystem.update_debug_unit = function (self, t)
 		leaf_node = leaf_node:current_running_child(blackboard)
 	end
 
-	local btnode_name = (leaf_node and leaf_node:id()) or "unknown_node"
+	local btnode_name = leaf_node and leaf_node:id() or "unknown_node"
 	blackboard.btnode_name = btnode_name
 	local breed = extension._breed
 	local debug_flag = breed.debug_flag
@@ -964,8 +964,8 @@ AISystem.update_debug_draw = function (self, t)
 					if ignore_staggers then
 						local ignore_stagger_info = action.name .. ": "
 
-						for i = 1, 7, 1 do
-							local ignore_stagger_value = (type(ignore_staggers[i]) == "table" and tostring(ignore_staggers[i].health.min < health_percent and health_percent <= ignore_staggers[i].health.max)) or tostring(ignore_staggers[i])
+						for i = 1, 7 do
+							local ignore_stagger_value = type(ignore_staggers[i]) == "table" and tostring(ignore_staggers[i].health.min < health_percent and health_percent <= ignore_staggers[i].health.max) or tostring(ignore_staggers[i])
 							ignore_stagger_info = ignore_stagger_info .. "[" .. ignore_stagger_value .. "]"
 						end
 
@@ -980,7 +980,7 @@ AISystem.update_debug_draw = function (self, t)
 						stagger_immune = t < stagger_immunity.stagger_immune_at + stagger_immunity.time and stagger_immunity.debug_damage_left > 0
 
 						if stagger_immune then
-							local time_left = math.round_with_precision((stagger_immunity.stagger_immune_at + stagger_immunity.time) - t, 2)
+							local time_left = math.round_with_precision(stagger_immunity.stagger_immune_at + stagger_immunity.time - t, 2)
 
 							Managers.state.debug_text:output_unit_text("time left:" .. time_left, 0.2, unit, head_node, Vector3.up() * 0.2 * index, 0.1, "stagger_immunity", color_vector, viewport_name)
 
@@ -1029,7 +1029,7 @@ AISystem.update_debug_draw = function (self, t)
 						if blackboard.attack_token then
 							QuickDrawer:sphere(position, 0.35, Colors.get("red"))
 
-							local attack_type = (blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type) or "normal"
+							local attack_type = blackboard.action.attack_intensity_type and blackboard.action.attack_intensity_type or "normal"
 
 							debug_text_manager:output_unit_text(attack_type, 0.16, unit, spine_node, Vector3.zero(), nil, "attack_type", Vector3(255, 255, 255), "player_1")
 						elseif t < attack_cooldown_at then
@@ -1048,7 +1048,7 @@ AISystem.update_debug_draw = function (self, t)
 	if script_data.debug_nav_tag_volume_layers then
 		Debug.text("Nav Tag Volume Layers Status (20-29):")
 
-		for i = NavTagVolumeStartLayer, 29, 1 do
+		for i = NavTagVolumeStartLayer, 29 do
 			local layer_name = LAYER_ID_MAPPING[i]
 			local allowed = NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] > 0
 
@@ -1092,7 +1092,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 	end
 
 	local ai_slot_system = Managers.state.entity:system("ai_slot_system")
-	blackboard.have_slot = (ai_slot_system:ai_unit_have_slot(unit) and 1) or 0
+	blackboard.have_slot = ai_slot_system:ai_unit_have_slot(unit) and 1 or 0
 	blackboard.wait_slot_distance = ai_slot_system:ai_unit_wait_slot_distance(unit)
 	blackboard.total_slots_count = ai_slot_system.num_total_enemies
 	local target_unit = blackboard.target_unit
@@ -1143,7 +1143,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 			local num_occupied_slots = target_unit_slot_extension.num_occupied_slots
 			blackboard.total_occupied_slots = num_occupied_slots
 			local disabled_slots_count = ai_slot_system:disabled_slots_count(target_unit)
-			blackboard.target_num_disabled_slots = (blackboard.have_slot > 0 and 0) or disabled_slots_count
+			blackboard.target_num_disabled_slots = blackboard.have_slot > 0 and 0 or disabled_slots_count
 		else
 			blackboard.total_occupied_slots = 0
 			blackboard.target_num_disabled_slots = 0
@@ -1208,7 +1208,7 @@ local function update_blackboard(unit, blackboard, t, dt)
 	end
 end
 
-local MAX_PRIO_UPDATES_PER_FRAME = (IS_WINDOWS and 40) or 20
+local MAX_PRIO_UPDATES_PER_FRAME = IS_WINDOWS and 40 or 20
 
 AISystem.update_ai_blackboards_prioritized = function (self, t, dt)
 	local ai_blackboard_updates = self.ai_blackboard_updates
@@ -1309,8 +1309,8 @@ AISystem.set_allowed_layer = function (self, layer_name, allowed)
 		local nav_world = self._nav_world
 		local layer_id = LAYER_ID_MAPPING[layer_name]
 		local conflict_director = Managers.state.conflict
-		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = (allowed and 1) or 0
-		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = (allowed and 1) or 0
+		NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = allowed and 1 or 0
+		NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = allowed and 1 or 0
 		local ai_extensions = entity_manager:get_entities("AINavigationExtension")
 
 		for _, extension in pairs(ai_extensions) do
@@ -1418,8 +1418,8 @@ end
 
 AISystem.rpc_set_allowed_nav_layer = function (self, channel_id, layer_id, allowed)
 	local layer_name = LAYER_ID_MAPPING[layer_id]
-	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = (allowed and 1) or 0
-	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = (allowed and 1) or 0
+	NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] = allowed and 1 or 0
+	NAV_TAG_VOLUME_LAYER_COST_BOTS[layer_name] = allowed and 1 or 0
 
 	if allowed then
 		GwNavTagLayerCostTable.allow_layer(self._navtag_layer_cost_table, layer_id)
@@ -1496,7 +1496,7 @@ end
 AISystem.get_attributes = function (self, unit)
 	local extension = self.unit_extension_data[unit]
 
-	return (extension and extension.attributes) or dummy_table
+	return extension and extension.attributes or dummy_table
 end
 
 AISystem.rpc_set_attribute_bool = function (self, channel_id, unit_id, attribute_id, category_id, value)
@@ -1524,7 +1524,7 @@ end
 AISystem.hot_join_sync = function (self, peer_id)
 	local size = #LAYER_ID_MAPPING
 
-	for i = NavTagVolumeStartLayer, size, 1 do
+	for i = NavTagVolumeStartLayer, size do
 		local layer_name = LAYER_ID_MAPPING[i]
 
 		if NAV_TAG_VOLUME_LAYER_COST_AI[layer_name] <= 0 then
@@ -1581,5 +1581,3 @@ end
 AISystem.register_unit_for_destruction = function (self, unit)
 	self._units_to_destroy[unit] = unit
 end
-
-return

@@ -18,7 +18,7 @@ BackendInterfaceTalentsPlayfab._refresh = function (self)
 			if talent_string then
 				local career_talents = string.split(talent_string, ",")
 
-				for i = 1, #career_talents, 1 do
+				for i = 1, #career_talents do
 					career_talents[i] = tonumber(career_talents[i])
 				end
 
@@ -41,7 +41,7 @@ BackendInterfaceTalentsPlayfab._validate_talents = function (self, career_name, 
 	local talent_unlock_levels = TalentUnlockLevels
 	local changed = false
 
-	for i = 1, #career_talents, 1 do
+	for i = 1, #career_talents do
 		local selected_talent = career_talents[i]
 
 		if selected_talent > 0 then
@@ -80,7 +80,7 @@ BackendInterfaceTalentsPlayfab.get_talent_ids = function (self, career_name)
 	local talents = self:get_talents(career_name)
 
 	if talents then
-		for i = 1, #talents, 1 do
+		for i = 1, #talents do
 			local column = talents[i]
 
 			if column ~= 0 then
@@ -109,7 +109,7 @@ end
 BackendInterfaceTalentsPlayfab.set_talents = function (self, career_name, talents)
 	local talent_string = ""
 
-	for i = 1, #talents, 1 do
+	for i = 1, #talents do
 		local value = talents[i]
 
 		if i == #talents then
@@ -133,5 +133,3 @@ BackendInterfaceTalentsPlayfab.get_talents = function (self, career_name)
 
 	return talents
 end
-
-return

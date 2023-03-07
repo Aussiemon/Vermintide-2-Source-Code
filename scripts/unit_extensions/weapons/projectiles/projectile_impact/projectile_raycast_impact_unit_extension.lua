@@ -8,7 +8,7 @@ ProjectileRaycastImpactUnitExtension.init = function (self, extension_init_conte
 	self.is_server = Managers.player.is_server
 	self.owner_unit = extension_init_data.owner_unit
 	local owner_player = Managers.player:owner(self.owner_unit)
-	self.owner_is_local = (owner_player and owner_player.local_player) or (owner_player and owner_player.bot_player) or false
+	self.owner_is_local = owner_player and owner_player.local_player or owner_player and owner_player.bot_player or false
 	self.server_side_raycast = extension_init_data.server_side_raycast
 	self.is_server = Managers.player.is_server
 	self.last_position = nil
@@ -82,7 +82,7 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 	local owner_unit = self.owner_unit
 	local num_hits = #result
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit = result[i]
 		local hit_position = hit[INDEX_POSITION]
 		local hit_distance = hit[INDEX_DISTANCE]
@@ -95,7 +95,7 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 			local num_actors = Unit.num_actors(hit_unit)
 			local actor_index = nil
 
-			for j = 0, num_actors - 1, 1 do
+			for j = 0, num_actors - 1 do
 				local actor = Unit.actor(hit_unit, j)
 
 				if hit_actor == actor then
@@ -113,5 +113,3 @@ ProjectileRaycastImpactUnitExtension._do_raycast = function (self, unit, from, t
 		end
 	end
 end
-
-return

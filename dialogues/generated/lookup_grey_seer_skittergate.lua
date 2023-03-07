@@ -50,5 +50,3 @@ DialogueLookup[DialogueLookup_n + 23] = "egs_level_skittergate_teleport_away"
 DialogueLookup[DialogueLookup_n + 24] = "egs_death_scene_01"
 DialogueLookup[DialogueLookup_n + 25] = "egs_level_skittergate_rasknitt_calls_mount_intro"
 DialogueLookup_n = DialogueLookup_n + 25
-
-return

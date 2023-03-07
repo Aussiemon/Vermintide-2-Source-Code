@@ -159,5 +159,3 @@ PayloadSpeedSettings.tiny_uphill.pushed.acceleration = 0.75
 PayloadSpeedSettings.tiny_uphill.not_pushed = PayloadSpeedSettings.tiny_uphill.not_pushed or {}
 PayloadSpeedSettings.tiny_uphill.not_pushed.speed = -1.75
 PayloadSpeedSettings.tiny_uphill.not_pushed.acceleration = 1.2
-
-return

@@ -84,7 +84,7 @@ return {
 		local spawn_queue = data.spawn_queue
 		local delete_index = nil
 
-		for i = 1, #spawn_queue, 1 do
+		for i = 1, #spawn_queue do
 			local spawn_queue_entry = spawn_queue[i]
 
 			if spawn_queue_entry.spawn_at_t < t then

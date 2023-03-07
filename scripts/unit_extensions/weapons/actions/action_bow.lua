@@ -25,7 +25,7 @@ ActionBow.client_owner_start_action = function (self, new_action, t, chain_actio
 
 	self.state = "waiting_to_shoot"
 	self.time_to_shoot = t + (new_action.fire_time or 0)
-	self.time_to_unzoom = (new_action.unzoom_time and t + new_action.unzoom_time) or nil
+	self.time_to_unzoom = new_action.unzoom_time and t + new_action.unzoom_time or nil
 	self.extra_buff_shot = false
 	local hud_extension = ScriptUnit.has_extension(owner_unit, "hud_system")
 
@@ -171,5 +171,3 @@ ActionBow.fire = function (self, current_action, add_spread)
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 	end
 end
-
-return

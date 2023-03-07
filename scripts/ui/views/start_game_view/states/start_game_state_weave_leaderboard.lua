@@ -113,7 +113,7 @@ StartGameStateWeaveLeaderboard.on_enter = function (self, params)
 	local season_name = Localize("menu_weave_leaderboard_filter_sesason")
 	self._current_season_id = ScorpionSeasonalSettings.current_season_id
 
-	for i = 1, self._current_season_id, 1 do
+	for i = 1, self._current_season_id do
 		season_stat_data[i] = {
 			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 1),
 			ScorpionSeasonalSettings.get_leaderboard_stat_for_season(i, 2),
@@ -192,7 +192,7 @@ StartGameStateWeaveLeaderboard._add_poll_queue = function (self, filter_value, l
 	local leaderboard_tab_data = self._leaderboard_tab_data
 	local queue_index = nil
 
-	for i = 1, #leaderboard_tab_data, 1 do
+	for i = 1, #leaderboard_tab_data do
 		if leaderboard_tab_data[i].value == leaderboard_type then
 			queue_index = i
 
@@ -228,7 +228,7 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 		local poll_queue = poll_queues[priority_index]
 		local next_poll_queue_index = nil
 
-		for i = 1, #poll_queue, 1 do
+		for i = 1, #poll_queue do
 			local poll_queue = poll_queue[i]
 			local leaderboard_type = poll_queue.leaderboard_type
 			local filter_value = poll_queue.filter_value
@@ -245,7 +245,7 @@ StartGameStateWeaveLeaderboard._handle_next_poll_request = function (self, t)
 
 		next_poll_request = table.remove(poll_queue, next_poll_queue_index)
 	else
-		for i = 1, #poll_queues, 1 do
+		for i = 1, #poll_queues do
 			local poll_queue = poll_queues[i]
 
 			if #poll_queue > 0 then
@@ -288,7 +288,7 @@ StartGameStateWeaveLeaderboard._update_leaderboard_presentation = function (self
 	local stepper_settings = self._stepper_settings
 
 	if stepper_settings then
-		for i = 1, #stepper_settings, 1 do
+		for i = 1, #stepper_settings do
 			local stepper_setting = stepper_settings[i]
 			local content = stepper_setting.content
 			local read_index = stepper_setting.read_index
@@ -348,7 +348,7 @@ end
 
 StartGameStateWeaveLeaderboard._list_including_local_player = function (self, list_entries)
 	if list_entries then
-		for i = 1, #list_entries, 1 do
+		for i = 1, #list_entries do
 			local entry = list_entries[i]
 
 			if entry.local_player then
@@ -405,7 +405,7 @@ StartGameStateWeaveLeaderboard._cb_cashe_list_data = function (self, filter_valu
 	if leaderboard_type == "global" and filter_value == "personal" then
 		local player_entry = nil
 
-		for i = 1, #list_entries, 1 do
+		for i = 1, #list_entries do
 			local entry = list_entries[i]
 
 			if entry.local_player then
@@ -774,7 +774,7 @@ StartGameStateWeaveLeaderboard._is_inventory_tab_pressed = function (self)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -790,7 +790,7 @@ StartGameStateWeaveLeaderboard._select_tab_by_index = function (self, index)
 	local widget_content = widget.content
 	local amount = widget_content.amount
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
 		local hotspot_content = widget_content[hotspot_name]
@@ -827,7 +827,7 @@ StartGameStateWeaveLeaderboard._handle_input = function (self, dt, t)
 	local stepper_settings = self._stepper_settings
 
 	if stepper_settings then
-		for i = 1, #stepper_settings, 1 do
+		for i = 1, #stepper_settings do
 			local settings = stepper_settings[i]
 			local widget = settings.widget
 			local direction = self:_on_stepper_pressed(widget)
@@ -936,7 +936,7 @@ StartGameStateWeaveLeaderboard.draw = function (self, input_service, dt)
 				local end_index = math.min(list_draw_index + LIST_PRESENTATION_AMOUNT + 1, #list_entries)
 				local draw_count = 0
 
-				for i = start_index, end_index, 1 do
+				for i = start_index, end_index do
 					draw_count = draw_count + 1
 					local content = list_widget.content
 					local style = list_widget.style
@@ -1045,8 +1045,8 @@ StartGameStateWeaveLeaderboard.set_fullscreen_effect_enable_state = function (se
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and 0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and 0.75 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -1066,11 +1066,11 @@ StartGameStateWeaveLeaderboard._create_list_entries = function (self, entries)
 	local list_entries = {}
 	local num_entries = #entries
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local entry = entries[i]
 		local career_name = entry.career_name
 		local career = CareerSettings[career_name]
-		local portrait_thumbnail = (career and career.portrait_thumbnail) or "icons_placeholder"
+		local portrait_thumbnail = career and career.portrait_thumbnail or "icons_placeholder"
 		list_entries[i] = {
 			alpha_fade_in_delay = 0.4,
 			name = entry.name or "UNKNOWN",
@@ -1089,7 +1089,7 @@ StartGameStateWeaveLeaderboard._create_list_entries = function (self, entries)
 end
 
 StartGameStateWeaveLeaderboard._populate_list = function (self, list_entries, show_no_placement)
-	local num_entries = (list_entries and #list_entries) or 0
+	local num_entries = list_entries and #list_entries or 0
 	self._list_entries = list_entries
 
 	self:_calculate_list_height(num_entries)
@@ -1108,7 +1108,7 @@ StartGameStateWeaveLeaderboard._calculate_list_height = function (self, amount)
 	local content = widget.content
 	local size = content.size
 
-	for index = 1, amount, 1 do
+	for index = 1, amount do
 		local height = size[2]
 		total_height = total_height + height
 
@@ -1168,7 +1168,7 @@ StartGameStateWeaveLeaderboard._update_visible_list_entries = function (self)
 	local start_index = 1
 	local num_entries = #list_entries
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local y_offset = LIST_EDGE_SPACING + (height + LIST_SPACING) * (i - 1)
 		local widget_position = y_offset + height
 		local is_outside = false
@@ -1243,5 +1243,3 @@ StartGameStateWeaveLeaderboard._animate_element_by_catmullrom = function (self, 
 
 	return new_animation
 end
-
-return

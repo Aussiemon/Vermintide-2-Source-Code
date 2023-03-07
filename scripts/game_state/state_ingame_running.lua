@@ -177,7 +177,7 @@ StateInGameRunning.on_enter = function (self, params)
 	local quickplay_bonus = loading_context.quickplay_bonus or loading_context.local_quickplay_bonus
 
 	if not quickplay_bonus and self.game_mode_key == "weave" then
-		local lobby = (self.is_server and self._lobby_host) or self._lobby_client
+		local lobby = self.is_server and self._lobby_host or self._lobby_client
 		quickplay_bonus = lobby:lobby_data("quick_game") == "true"
 	end
 
@@ -313,6 +313,7 @@ StateInGameRunning.handle_end_conditions = function (self)
 	local game_mode_manager = Managers.state.game_mode
 
 	if game_mode_manager and game_mode_manager:is_game_mode_ended() and game_mode_manager:is_game_mode_ended() then
+		-- Nothing
 	end
 end
 
@@ -358,9 +359,9 @@ StateInGameRunning.check_invites = function (self)
 		local current_lobby_id = nil
 
 		if IS_XB1 then
-			current_lobby_id = (self._lobby_host and self._lobby_host.lobby._data.session_name) or self._lobby_client.lobby._data.session_name
+			current_lobby_id = self._lobby_host and self._lobby_host.lobby._data.session_name or self._lobby_client.lobby._data.session_name
 		else
-			current_lobby_id = (self._lobby_host and self._lobby_host:id()) or self._lobby_client:id()
+			current_lobby_id = self._lobby_host and self._lobby_host:id() or self._lobby_client:id()
 		end
 
 		local active_mission_vote = Managers.state.voting and Managers.state.voting:vote_in_progress() and Managers.state.voting:active_vote_template().mission_vote
@@ -446,6 +447,7 @@ StateInGameRunning.wanted_transition = function (self)
 
 	if wanted_transition and IS_XB1 and not self.is_in_inn and not self.is_in_tutorial then
 		if Development.parameter("auto-host-level") ~= nil then
+			-- Nothing
 		elseif not self._xbox_event_end_triggered then
 			Application.warning("MultiplyerRoundStart was triggered without end conditions met")
 			self:_xbone_end_of_round_events(self.statistics_db)
@@ -538,7 +540,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 					local has_previous_score = previous_score and previous_score > 0
 
 					if weave_tier == i then
-						if (has_previous_score and previous_score < score) or not has_previous_score then
+						if has_previous_score and previous_score < score or not has_previous_score then
 							personal_best = true
 
 							break
@@ -650,7 +652,7 @@ StateInGameRunning.gm_event_end_conditions_met = function (self, reason, checkpo
 			ingame_ui:activate_end_screen_ui(screen_name, screen_config, screen_params)
 		end
 
-		if ((game_won and is_final_objective) or game_lost) and is_game_mode_weave then
+		if (game_won and is_final_objective or game_lost) and is_game_mode_weave then
 			Managers.weave:clear_weave_name()
 		end
 	end
@@ -783,7 +785,7 @@ StateInGameRunning.update = function (self, dt, t)
 
 	if ingame_ui then
 		local ui_ready = not ingame_ui.survey_active and not self.has_setup_end_of_level and ingame_ui:end_screen_active() and ingame_ui:end_screen_fade_in_complete()
-		local rewards_ready = self._booted_eac_untrusted or (self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global"))
+		local rewards_ready = self._booted_eac_untrusted or self.rewards:rewards_generated() and not self.rewards:consuming_deed() and self.chests_package_name and Managers.package:has_loaded(self.chests_package_name, "global")
 
 		if ui_ready and rewards_ready then
 			self:_setup_end_of_level_UI()
@@ -820,7 +822,7 @@ StateInGameRunning.update = function (self, dt, t)
 end
 
 StateInGameRunning.check_for_new_quests_or_contracts = function (self, dt)
-	self._quest_expire_check_cooldown = (self._quest_expire_check_cooldown and self._quest_expire_check_cooldown - dt) or 0
+	self._quest_expire_check_cooldown = self._quest_expire_check_cooldown and self._quest_expire_check_cooldown - dt or 0
 
 	if self._quest_expire_check_cooldown <= 0 then
 		local quest_manager = Managers.state.quest
@@ -867,7 +869,7 @@ StateInGameRunning.update_mood = function (self, dt, t)
 	local mood_blackboard = MOOD_BLACKBOARD
 	local wanted_mood = nil
 
-	for i = 1, #mood_priority, 1 do
+	for i = 1, #mood_priority do
 		local mood = mood_priority[i]
 
 		if mood_timers[mood] and mood_timers[mood] < t then
@@ -901,7 +903,7 @@ end
 
 StateInGameRunning.post_update = function (self, dt, t)
 	local level_end_view_wrapper = self._level_end_view_wrapper
-	local disable_ingame_ui = script_data.disable_ui or level_end_view_wrapper ~= nil or (self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil)
+	local disable_ingame_ui = script_data.disable_ui or level_end_view_wrapper ~= nil or self.waiting_for_transition and Managers.state.network:game_session_host() ~= nil
 
 	Managers.ui:post_update(dt, t, disable_ingame_ui)
 
@@ -1267,11 +1269,11 @@ StateInGameRunning.rpc_trigger_local_afk_system_message = function (self, channe
 
 	if player then
 		local is_player_controlled = player:is_player_controlled()
-		local player_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+		local player_name = is_player_controlled and (rawget(_G, "Steam") and Steam.user_name(peer_id) or tostring(peer_id)) or player:name()
 
 		if IS_CONSOLE and not Managers.account:offline_mode() then
 			local lobby = Managers.state.network:lobby()
-			player_name = (is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id))) or player:name()
+			player_name = is_player_controlled and (lobby:user_name(peer_id) or tostring(peer_id)) or player:name()
 		end
 
 		local channel_id = 1
@@ -1353,5 +1355,3 @@ StateInGameRunning.rpc_follow_to_lobby = function (self, channel_id, lobby_type,
 
 	Managers.matchmaking:request_join_lobby(lobby_join_data, state_context_params)
 end
-
-return

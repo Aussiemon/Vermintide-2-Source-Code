@@ -90,7 +90,7 @@ LobbyFinder.update = function (self, dt)
 
 			printf("===========Lobbyfinder REFRESHING num_lobbies: %s", num_lobbies)
 
-			for i = 0, num_lobbies - 1, 1 do
+			for i = 0, num_lobbies - 1 do
 				local engine_lobby_data = LobbyInternal.get_lobby(lobby_browser, i)
 
 				table.dump(engine_lobby_data, "LOBBY_DATA", 2)
@@ -108,5 +108,3 @@ LobbyFinder.update = function (self, dt)
 		end
 	end
 end
-
-return

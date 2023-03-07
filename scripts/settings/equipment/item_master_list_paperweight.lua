@@ -171,5 +171,3 @@ ItemMasterList.es_dual_wield_hammer_sword_skin = {
 		"es_mercenary"
 	}
 }
-
-return

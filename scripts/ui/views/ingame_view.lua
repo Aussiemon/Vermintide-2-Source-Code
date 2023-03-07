@@ -398,5 +398,3 @@ end
 IngameView.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
-
-return

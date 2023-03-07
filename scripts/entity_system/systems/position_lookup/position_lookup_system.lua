@@ -35,5 +35,3 @@ end
 PositionLookupSystem.destroy = function (self)
 	return
 end
-
-return

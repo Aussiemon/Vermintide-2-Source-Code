@@ -118,5 +118,3 @@ BTRatlingGunnerMoveToShootAction.calculate_move_position = function (self, unit,
 
 	return position
 end
-
-return

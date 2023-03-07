@@ -66,7 +66,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 			local material_surface_decals = EffectHelper.create_surface_material_drawer_mapping(effect_name)
 			local decal_unit_name = material_surface_decals[material]
 
-			if not decal_unit_name or (decal_unit_name and not Application.can_get("unit", decal_unit_name)) then
+			if not decal_unit_name or decal_unit_name and not Application.can_get("unit", decal_unit_name) then
 				decal_unit_name = "units/projection_decals/projection_test_01"
 
 				Application.warning("[EffectHelper] There is no decal_unit_name specified for effect: %q with material: %q--> Using Default: %q", effect_name, material, decal_unit_name)
@@ -96,7 +96,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 				mode = "retained",
 				name = "DEBUG_DRAW_IMPACT_DECAL_HIT"
 			})
-			local drawer_space = Matrix4x4.from_quaternion_position(rotation, position + (Quaternion.forward(rotation) * decal_settings.depth) / 2)
+			local drawer_space = Matrix4x4.from_quaternion_position(rotation, position + Quaternion.forward(rotation) * decal_settings.depth / 2)
 			local drawer_extents = Vector3(decal_settings.width / 2, decal_settings.depth / 2, decal_settings.height / 2)
 
 			drawer:box(drawer_space, drawer_extents, Color(150, 0, 255, 0))
@@ -148,7 +148,7 @@ EffectHelper.play_surface_material_effects = function (effect_name, world, hit_u
 			end
 		end
 
-		WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)
+		WwiseWorld.set_switch(wwise_world, "husk", husk and "true" or "false", wwise_source_id)
 		WwiseWorld.trigger_event(wwise_world, sound.event, true, wwise_source_id)
 	end
 
@@ -203,7 +203,7 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 		material = "armored"
 	else
 		skip_particles = not BloodSettings.enemy_blood.enabled
-		material = (breed and breed.flesh_material) or "flesh"
+		material = breed and breed.flesh_material or "flesh"
 	end
 
 	if shield_blocked then
@@ -238,11 +238,11 @@ EffectHelper.play_skinned_surface_material_effects = function (effect_name, worl
 			WwiseWorld.set_switch(wwise_world, "hit_zone", hit_zone_name, source_id)
 		end
 
-		local husk_value = (husk and "true") or "false"
+		local husk_value = husk and "true" or "false"
 
 		WwiseWorld.set_switch(wwise_world, "husk", husk_value, source_id)
 
-		local event = (no_damage and sound.no_damage_event) or sound.event
+		local event = no_damage and sound.no_damage_event or sound.event
 
 		if script_data.debug_material_effects then
 			print("playing event ", event)
@@ -493,10 +493,10 @@ EffectHelper.flow_cb_play_footstep_surface_material_effects = function (effect_n
 
 			if debug then
 				printf("[EffectHelper:play_surface_material_effects()] playing sound %s", sound.event)
-				printf("   sound param: \"husk\", sound_value %q", (husk and "true") or "false")
+				printf("   sound param: \"husk\", sound_value %q", husk and "true" or "false")
 			end
 
-			WwiseWorld.set_switch(wwise_world, "husk", (husk and "true") or "false", wwise_source_id)
+			WwiseWorld.set_switch(wwise_world, "husk", husk and "true" or "false", wwise_source_id)
 
 			if sound.parameters then
 				for parameter_name, parameter_value in pairs(sound.parameters) do
@@ -553,5 +553,3 @@ EffectHelper.query_material_surface = function (hit_unit, position, normal)
 
 	return Unit.query_material(hit_unit, query_start_position, query_end_position, material)
 end
-
-return

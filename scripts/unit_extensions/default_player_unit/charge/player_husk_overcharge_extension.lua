@@ -126,5 +126,3 @@ PlayerHuskOverchargeExtension.get_anim_blend_overcharge = function (self)
 
 	return anim_blend_value
 end
-
-return

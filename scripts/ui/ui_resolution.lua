@@ -21,5 +21,3 @@ function UIScaleVectorToResolutionRealCoordinates(vec)
 
 	return Vector3(vec[1] * scale, vec[2] or 0, vec[3] * scale)
 end
-
-return

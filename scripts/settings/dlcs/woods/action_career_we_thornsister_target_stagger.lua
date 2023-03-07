@@ -59,5 +59,3 @@ ActionCareerWEThornsisterTargetStagger._get_direction = function (self, force_fl
 
 	return player_direction_flat
 end
-
-return

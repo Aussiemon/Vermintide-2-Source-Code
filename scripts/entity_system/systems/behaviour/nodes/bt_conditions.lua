@@ -129,7 +129,7 @@ BTConditions.stormfiend_boss_rage = function (blackboard)
 end
 
 BTConditions.ratogre_target_reachable = function (blackboard)
-	return blackboard.jump_slam_data or not blackboard.target_outside_navmesh or (blackboard.target_dist and blackboard.target_dist <= blackboard.breed.reach_distance)
+	return blackboard.jump_slam_data or not blackboard.target_outside_navmesh or blackboard.target_dist and blackboard.target_dist <= blackboard.breed.reach_distance
 end
 
 BTConditions.chaos_spawn_grabbed_combat = function (blackboard)
@@ -186,7 +186,7 @@ BTConditions.at_smartobject = function (blackboard)
 	local is_in_smartobject_range = blackboard.is_in_smartobject_range
 	local moving_state = blackboard.move_state == "moving"
 
-	return (is_in_smartobject_range and moving_state) or is_smart_objecting
+	return is_in_smartobject_range and moving_state or is_smart_objecting
 end
 
 BTConditions.gutter_runner_at_smartobject = function (blackboard)
@@ -346,7 +346,7 @@ BTConditions.sorcerer_allow_tricke_spawn = function (blackboard)
 end
 
 BTConditions.spawned_allies_dead_or_time = function (blackboard)
-	return (blackboard.spawn_allies_horde and blackboard.spawn_allies_horde.is_dead) or blackboard.defensive_phase_duration == 0
+	return blackboard.spawn_allies_horde and blackboard.spawn_allies_horde.is_dead or blackboard.defensive_phase_duration == 0
 end
 
 BTConditions.first_ring_summon = function (blackboard)
@@ -370,7 +370,7 @@ BTConditions.ready_to_summon_wave = function (blackboard)
 end
 
 BTConditions.not_ready_to_summon_wave = function (blackboard)
-	return not blackboard.ready_to_summon or (not blackboard.summoning and not Unit.alive(blackboard.target_unit)) or blackboard.wave_cooldown ~= 0
+	return not blackboard.ready_to_summon or not blackboard.summoning and not Unit.alive(blackboard.target_unit) or blackboard.wave_cooldown ~= 0
 end
 
 BTConditions.ready_to_summon = function (blackboard)
@@ -688,7 +688,7 @@ BTConditions.beastmen_standard_bearer_move_and_place_standard = function (blackb
 end
 
 BTConditions.ungor_archer_enter_melee_combat = function (blackboard)
-	return blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or (blackboard.target_dist and blackboard.target_dist < 5))
+	return blackboard.confirmed_player_sighting and unit_alive(blackboard.target_unit) and (blackboard.has_switched_weapons or blackboard.target_dist and blackboard.target_dist < 5)
 end
 
 BTConditions.bestigor_at_smartobject = function (blackboard)
@@ -736,5 +736,3 @@ end
 BTConditions.has_no_idle_spot = function (blackboard)
 	return not blackboard.has_idle_spot
 end
-
-return

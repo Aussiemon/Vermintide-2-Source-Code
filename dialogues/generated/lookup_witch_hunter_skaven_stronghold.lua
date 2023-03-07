@@ -48,5 +48,3 @@ DialogueLookup[DialogueLookup_n + 22] = "pwh_gameplay_skaven_warlord_summoning_r
 DialogueLookup[DialogueLookup_n + 23] = "pwh_gameplay_chieftain_tips_special_attack_cleave"
 DialogueLookup[DialogueLookup_n + 24] = "pwh_gameplay_chieftain_tips_special_lunge_attack_2"
 DialogueLookup_n = DialogueLookup_n + 24
-
-return

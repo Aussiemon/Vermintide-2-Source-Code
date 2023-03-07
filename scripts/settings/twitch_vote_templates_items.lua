@@ -35,8 +35,8 @@ local function default_condition_func(vote_data)
 		local reset_validation_data = false
 
 		for id, player_validation_data in pairs(validation_data) do
-			if not players[id] or (players[id] and players[id]:name() ~= player_validation_data.name) then
-				debug_print(string.format("[TWITCH VOTE DATA VALIDATION] Resetting %q since a bot/player has been removed or replaced (%q ~= %q or id: %q is missing)", tostring(player_validation_data.variable), tostring((players[id] and players[id]:name()) or nil), tostring(player_validation_data.name), id))
+			if not players[id] or players[id] and players[id]:name() ~= player_validation_data.name then
+				debug_print(string.format("[TWITCH VOTE DATA VALIDATION] Resetting %q since a bot/player has been removed or replaced (%q ~= %q or id: %q is missing)", tostring(player_validation_data.variable), tostring(players[id] and players[id]:name() or nil), tostring(player_validation_data.name), id))
 
 				vote_data.options[player_validation_data.option] = 0
 				reset_validation_data = true
@@ -379,5 +379,3 @@ TwitchVoteTemplates.twitch_give_fire_grenade_t1 = {
 		end
 	end
 }
-
-return

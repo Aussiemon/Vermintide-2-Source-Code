@@ -62,7 +62,7 @@ local function _track_weapon_kill_stats(statistics_db, stats_id, weapon_item)
 	if weapon_stats_dlcs then
 		local dlc_manager = Managers.unlock
 
-		for dlc_id = 1, #weapon_stats_dlcs, 1 do
+		for dlc_id = 1, #weapon_stats_dlcs do
 			local dlc_name = weapon_stats_dlcs[dlc_id]
 
 			if dlc_manager:is_dlc_unlocked(dlc_name) then
@@ -136,7 +136,7 @@ local function _track_level_complete_with_weapon_stats(statistics_db, stats_id, 
 		if weapon_stats_dlcs then
 			local dlc_manager = Managers.unlock
 
-			for dlc_id = 1, #weapon_stats_dlcs, 1 do
+			for dlc_id = 1, #weapon_stats_dlcs do
 				local dlc_name = weapon_stats_dlcs[dlc_id]
 
 				if dlc_manager:is_dlc_unlocked(dlc_name) then
@@ -181,7 +181,7 @@ StatisticsUtil.register_kill = function (victim_unit, damage_data, statistics_db
 			local killed_race_name = breed_killed.race
 			local victim_side = Managers.state.side.side_by_unit[victim_unit]
 
-			if Breeds[breed_killed_name] or (PlayerBreeds[breed_killed_name] and Managers.state.side:is_enemy_by_side(attacker_side, victim_side)) then
+			if Breeds[breed_killed_name] or PlayerBreeds[breed_killed_name] and Managers.state.side:is_enemy_by_side(attacker_side, victim_side) then
 				statistics_db:increment_stat(stats_id, "kills_per_breed", breed_killed_name)
 			end
 
@@ -521,7 +521,7 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 
 				statistics_db:modify_stat_by_amount(stats_id, "damage_dealt", damage_amount)
 
-				if Breeds[breed_name] or (PlayerBreeds[breed_name] and Managers.state.side:is_enemy(attacker_unit, victim_unit)) then
+				if Breeds[breed_name] or PlayerBreeds[breed_name] and Managers.state.side:is_enemy(attacker_unit, victim_unit) then
 					statistics_db:modify_stat_by_amount(stats_id, "damage_dealt_per_breed", breed_name, damage_amount)
 				end
 
@@ -540,7 +540,7 @@ StatisticsUtil.register_damage = function (victim_unit, damage_data, statistics_
 						if victim_health_ext:is_alive() then
 							local target_player = player_manager:owner(victim_unit)
 							local local_human = not attacker_player.remote and not attacker_player.bot_player
-							local event_type = (local_human and "dealing_damage") or "other_dealing_damage"
+							local event_type = local_human and "dealing_damage" or "other_dealing_damage"
 							local profile_index = target_player:profile_index()
 							local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
 
@@ -575,7 +575,7 @@ StatisticsUtil.register_collected_grimoires = function (collected_grimoires, sta
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
 
-	for i = 1, collected_grimoires, 1 do
+	for i = 1, collected_grimoires do
 		statistics_db:increment_stat(stats_id, "total_collected_grimoires")
 	end
 
@@ -597,7 +597,7 @@ StatisticsUtil.register_collected_tomes = function (collected_tomes, statistics_
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
 
-	for i = 1, collected_tomes, 1 do
+	for i = 1, collected_tomes do
 		statistics_db:increment_stat(stats_id, "total_collected_tomes")
 	end
 
@@ -619,7 +619,7 @@ StatisticsUtil.register_collected_dice = function (collected_dice, statistics_db
 	local local_player = Managers.player:local_player()
 	local stats_id = local_player:stats_id()
 
-	for i = 1, collected_dice, 1 do
+	for i = 1, collected_dice do
 		statistics_db:increment_stat(stats_id, "total_collected_dice")
 	end
 
@@ -710,7 +710,7 @@ StatisticsUtil.register_complete_level = function (statistics_db)
 
 	if Managers.unlock:is_dlc_unlocked("holly") then
 		local min_difficulty_rank = DifficultySettings.hardest.rank
-		local completed_difficulty_rank = (DifficultySettings[difficulty_name] and DifficultySettings[difficulty_name].rank) or 0
+		local completed_difficulty_rank = DifficultySettings[difficulty_name] and DifficultySettings[difficulty_name].rank or 0
 		local above_legend_difficulty = min_difficulty_rank <= completed_difficulty_rank
 		local is_lord_level = level_id == "ground_zero" or level_id == "warcamp" or level_id == "skaven_stronghold" or level_id == "skittergate"
 
@@ -1054,12 +1054,12 @@ StatisticsUtil.reset_mission_streak = function (player, statistics_db, stats_id)
 	local level_id = level_settings.level_id
 
 	if statistics_db:has_stat(stats_id, "mission_streak", career_name) then
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			local act_key = "act_" .. i
 			local act_levels = GameActs[act_key]
 			local do_reset = false
 
-			for i = 1, #act_levels, 1 do
+			for i = 1, #act_levels do
 				local cleared = statistics_db:get_persistent_stat(stats_id, "mission_streak", career_name, act_levels[i])
 
 				if cleared == 0 then
@@ -1070,7 +1070,7 @@ StatisticsUtil.reset_mission_streak = function (player, statistics_db, stats_id)
 			end
 
 			if do_reset and table.contains(act_levels, level_id) then
-				for i = 1, #act_levels, 1 do
+				for i = 1, #act_levels do
 					statistics_db:set_stat(stats_id, "mission_streak", career_name, act_levels[i], 0)
 				end
 			end
@@ -1120,7 +1120,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 		local completed_time = mission_data.wave_completed_time - mission_data.start_time
 		local current_completed_time = StatisticsUtil.get_survival_stat(statistics_db, level_id, start_difficulty, "time")
 
-		if current_completed_waves < completed_waves or (completed_waves == current_completed_waves and completed_time < current_completed_time) then
+		if current_completed_waves < completed_waves or completed_waves == current_completed_waves and completed_time < current_completed_time then
 			StatisticsUtil._set_survival_stat(statistics_db, level_id, start_difficulty, "time", completed_time)
 		end
 
@@ -1135,7 +1135,7 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 		if started_on_unlocked_difficulty then
 			local difficulty = difficulty_manager:get_difficulty()
 			local difficulty_index = table.find(level_difficulties, difficulty)
-			local completed_difficulty_index = (difficulty_index == #level_difficulties and completed_waves >= 13 * (difficulty_index - start_difficulty_index + 1) and difficulty_index) or difficulty_index - 1
+			local completed_difficulty_index = difficulty_index == #level_difficulties and completed_waves >= 13 * (difficulty_index - start_difficulty_index + 1) and difficulty_index or difficulty_index - 1
 
 			if completed_difficulty_index > 0 then
 				completed_difficulty = level_difficulties[completed_difficulty_index]
@@ -1169,5 +1169,3 @@ StatisticsUtil.register_complete_survival_level = function (statistics_db)
 		end
 	end
 end
-
-return

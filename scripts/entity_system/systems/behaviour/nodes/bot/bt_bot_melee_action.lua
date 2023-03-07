@@ -37,7 +37,7 @@ local function get_engage_pos(nav_world, target_unit_pos, engage_from, melee_dis
 	local subdivisions_per_side = 3
 	local angle_inc = math.pi / (subdivisions_per_side + 1)
 
-	for i = 1, subdivisions_per_side, 1 do
+	for i = 1, subdivisions_per_side do
 		local angle = angle_inc * i
 		success, pos = check_angle(nav_world, target_unit_pos, start_direction, angle, melee_distance)
 
@@ -106,7 +106,7 @@ BTBotMeleeAction.run = function (self, unit, blackboard, t, dt)
 	if done then
 		return "done", "evaluate"
 	else
-		return "running", (evaluate and "evaluate") or nil
+		return "running", evaluate and "evaluate" or nil
 	end
 end
 
@@ -217,7 +217,7 @@ end
 
 BTBotMeleeAction._is_in_melee_range = function (self, current_position, aim_position, melee_range, attack_input, t, blackboard, target_unit)
 	local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
-	local target_velocity = (target_locomotion_extension and target_locomotion_extension:current_velocity()) or Vector3.zero()
+	local target_velocity = target_locomotion_extension and target_locomotion_extension:current_velocity() or Vector3.zero()
 	local locomotion_extension = blackboard.locomotion_extension
 	local current_velocity = locomotion_extension:current_velocity()
 	local relative_velocity = current_velocity - target_velocity
@@ -244,7 +244,7 @@ BTBotMeleeAction._aim_position = function (self, target_unit, blackboard)
 	local node = 0
 	local target_unit_blackboard = BLACKBOARDS[target_unit]
 	local target_breed = target_unit_blackboard and target_unit_blackboard.breed
-	local aim_node = (target_breed and (target_breed.bot_melee_aim_node or "j_spine")) or "rp_center"
+	local aim_node = target_breed and (target_breed.bot_melee_aim_node or "j_spine") or "rp_center"
 
 	if Unit.has_node(target_unit, aim_node) then
 		node = Unit.node(target_unit, aim_node)
@@ -268,7 +268,7 @@ BTBotMeleeAction._target_unit_position = function (self, self_position, target_u
 			target_unit_position = math.closest_position(self_position, entrance_position, exit_position)
 		else
 			local node_name = "rp_center"
-			local node = (Unit.has_node(target_unit, node_name) and Unit.node(target_unit, node_name)) or 0
+			local node = Unit.has_node(target_unit, node_name) and Unit.node(target_unit, node_name) or 0
 			local node_position = Unit.world_position(target_unit, node)
 			target_unit_position = LocomotionUtils.pos_on_mesh(nav_world, node_position, 0.5, 2) or node_position
 		end
@@ -317,14 +317,14 @@ BTBotMeleeAction._allow_engage = function (self, self_unit, target_unit, blackbo
 	local threat_override_range = action_data.override_engage_range_to_follow_pos_threat
 	local override_range = math.lerp(override_range_default, threat_override_range, party_danger)
 	local distance_to_follow_pos = Vector3.distance(aim_position, follow_pos)
-	local fuzziness = (already_engaged and 3) or 0
+	local fuzziness = already_engaged and 3 or 0
 
 	if override_range < distance_to_follow_pos - fuzziness then
 		return false
 	end
 
 	local target_ally_unit = blackboard.target_ally_unit
-	local follow_unit = (blackboard.target_ally_need_type and target_ally_unit) or blackboard.ai_bot_group_extension.data.follow_unit
+	local follow_unit = blackboard.target_ally_need_type and target_ally_unit or blackboard.ai_bot_group_extension.data.follow_unit
 
 	if follow_unit then
 		local self_segment = conflict_director:get_player_unit_segment(self_unit)
@@ -393,7 +393,7 @@ end
 BTBotMeleeAction._calculate_melee_range = function (self, target_unit, attack_meta_data)
 	local attack_range = attack_meta_data.max_range
 	local breed = Unit.get_data(target_unit, "breed")
-	local target_hitbox_radius_approximation = (breed and (breed.bot_hitbox_radius_approximation or DEFAULT_ENEMY_HITBOX_RADIUS_APPROXIMATION)) or 0
+	local target_hitbox_radius_approximation = breed and (breed.bot_hitbox_radius_approximation or DEFAULT_ENEMY_HITBOX_RADIUS_APPROXIMATION) or 0
 	local melee_range = attack_range + target_hitbox_radius_approximation
 
 	return melee_range
@@ -401,7 +401,7 @@ end
 
 BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 	local action_data = self._tree_node.action_data
-	local target_unit = (action_data.destroy_object and blackboard.breakable_object) or blackboard.target_unit
+	local target_unit = action_data.destroy_object and blackboard.breakable_object or blackboard.target_unit
 
 	if not AiUtils.unit_alive(target_unit) then
 		return true
@@ -422,7 +422,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 
 	local wants_engage, eval_timer = nil
 	local current_position = blackboard.first_person_extension:current_position()
-	local follow_pos = (blackboard.follow and blackboard.follow.target_position:unbox()) or current_position
+	local follow_pos = blackboard.follow and blackboard.follow.target_position:unbox() or current_position
 	local attack_input, attack_meta_data = self:_choose_attack(blackboard, target_unit)
 	local melee_range = self:_calculate_melee_range(target_unit, attack_meta_data)
 	local attack_performed = false
@@ -436,7 +436,7 @@ BTBotMeleeAction._update_melee = function (self, unit, blackboard, dt, t)
 			attack_performed = true
 		end
 
-		wants_engage = blackboard.aggressive_mode or (melee_bb.engaging and t - melee_bb.engage_change_time < 5)
+		wants_engage = blackboard.aggressive_mode or melee_bb.engaging and t - melee_bb.engage_change_time < 5
 		eval_timer = 2
 	elseif self:_is_in_engage_range(unit, target_unit, blackboard.nav_world, action_data, follow_pos) then
 		self:_defend(unit, blackboard, target_unit, input_ext, t, false)
@@ -488,10 +488,10 @@ BTBotMeleeAction._defend = function (self, unit, blackboard, target_unit, input_
 		local current_fatigue, max_fatigue = ScriptUnit.extension(unit, "status_system"):current_fatigue_points()
 		local stamina_left = max_fatigue - current_fatigue
 		local push_type = defense_meta_data.push
-		local low_stamina = (push_type == "light" and stamina_left <= 2) or stamina_left <= 3
+		local low_stamina = push_type == "light" and stamina_left <= 2 or stamina_left <= 3
 		local breed = Unit.get_data(target_unit, "breed")
 
-		if not in_melee_range or not breed or breed.boss or (breed.armor_category == 2 and push_type ~= "heavy") or (push_type == "light" and num_enemies > 2) or low_stamina then
+		if not in_melee_range or not breed or breed.boss or breed.armor_category == 2 and push_type ~= "heavy" or push_type == "light" and num_enemies > 2 or low_stamina then
 			input_ext:defend()
 		else
 			input_ext:melee_push()
@@ -593,14 +593,14 @@ BTBotMeleeAction._debug_draw_melee_range = function (self, unit, target_unit, bl
 	local attack_max_range = attack_meta_data.max_range
 	local melee_range = self:_calculate_melee_range(target_unit, attack_meta_data)
 	local in_range = self:_is_in_melee_range(current_position, aim_position, melee_range, attack_input, t, blackboard, target_unit)
-	local debug_color = (in_range and Colors.get("green")) or Colors.get("red")
+	local debug_color = in_range and Colors.get("green") or Colors.get("red")
 
 	QuickDrawer:sphere(current_position, attack_max_range, debug_color)
 
 	local offset = Vector3(0, 0, 2.5)
 	local viewport_name = "player_1"
 	local head_node = 0
-	local color_table = (attack_performed and Colors.get_table("green")) or Colors.get_table("red")
+	local color_table = attack_performed and Colors.get_table("green") or Colors.get_table("red")
 	local color_vector = Vector3(color_table[2], color_table[3], color_table[4])
 	local text_size = 0.25
 	local text = string.format("%s %sm", attack_input, attack_max_range)
@@ -615,5 +615,3 @@ BTBotMeleeAction._debug_draw_melee_range = function (self, unit, target_unit, bl
 
 	debug_text_manager:output_unit_text(text, text_size, unit, head_node, offset, 0.5, category, color_vector, viewport_name)
 end
-
-return

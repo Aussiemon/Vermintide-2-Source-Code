@@ -324,5 +324,3 @@ DebugTextManager._destroy_unit_texts = function (self, unit)
 
 	self._unit_texts[unit] = nil
 end
-
-return

@@ -784,7 +784,7 @@ local empty_hero_widget = {
 				texture_id = "icon",
 				pass_type = "texture",
 				content_change_function = function (content, style)
-					local target = (content.is_hover and 255) or 184
+					local target = content.is_hover and 255 or 184
 					style.color[1] = math.ceil(style.color[1] + 0.1 * (target - style.color[1]))
 				end
 			}

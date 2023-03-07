@@ -581,5 +581,3 @@ CameraSettings.cutscene = {
 		node_transitions = {}
 	}
 }
-
-return

@@ -101,5 +101,3 @@ settings.start_game_window_layout_console = {
 		}
 	}
 }
-
-return

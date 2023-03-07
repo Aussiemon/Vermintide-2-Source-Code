@@ -168,5 +168,3 @@ popup_atlas = {
 		}
 	}
 }
-
-return

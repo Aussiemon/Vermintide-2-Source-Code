@@ -116,5 +116,3 @@ end
 BTTargetRageAction.anim_cb_move = function (self, unit, blackboard, action)
 	blackboard.move_state = "moving"
 end
-
-return

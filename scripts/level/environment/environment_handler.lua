@@ -75,7 +75,7 @@ EnvironmentHandler._update_weights = function (self)
 		local weight_pool = 1
 		local i = 1
 
-		for i = 1, #blends, 1 do
+		for i = 1, #blends do
 			local b = blends[i]
 			local weight_data = weights[i] or {}
 			weight_data = weights[i] or {}
@@ -130,5 +130,3 @@ EnvironmentHandler.destroy = function (self)
 
 	self._blends = nil
 end
-
-return

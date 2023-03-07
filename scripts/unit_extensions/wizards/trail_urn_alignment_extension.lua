@@ -36,8 +36,8 @@ TrailUrnAlignmentExtension.update_interaction_position = function (self, interac
 		local steps = 10
 		local d = 1
 
-		for i = 1, steps, 1 do
-			local step = (2 * math.pi) / steps * i
+		for i = 1, steps do
+			local step = 2 * math.pi / steps * i
 			local pos = Vector3(math.sin(step) * self._interaction_distance * d, -math.cos(step) * self._interaction_distance * d, 0)
 			d = d * -1
 			local step_pos = urn_pos + pos
@@ -159,5 +159,3 @@ TrailUrnAlignmentExtension.is_state_aligned = function (self)
 
 	return false
 end
-
-return

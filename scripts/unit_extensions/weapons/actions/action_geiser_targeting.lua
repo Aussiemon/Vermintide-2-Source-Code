@@ -74,7 +74,7 @@ end
 local function ballistic_raycast(physics_world, max_steps, max_time, position, velocity, gravity, collision_filter, visualize)
 	local time_step = max_time / max_steps
 
-	for i = 1, max_steps, 1 do
+	for i = 1, max_steps do
 		local new_position = position + velocity * time_step
 		local delta = new_position - position
 		local direction = Vector3.normalize(delta)
@@ -264,5 +264,3 @@ ActionGeiserTargeting.destroy = function (self)
 
 	self:_stop_charge_sound()
 end
-
-return

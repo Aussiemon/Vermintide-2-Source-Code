@@ -114,5 +114,3 @@ DialogueLookup[DialogueLookup_n + 55] = "pwe_shadow_curse_conversation_twelve_c_
 DialogueLookup[DialogueLookup_n + 56] = "pwh_shadow_curse_conversation_twelve_d_01"
 DialogueLookup[DialogueLookup_n + 57] = "pbw_shadow_curse_conversation_twelve_e_01"
 DialogueLookup_n = DialogueLookup_n + 57
-
-return

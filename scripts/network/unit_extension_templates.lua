@@ -1,5 +1,5 @@
-local ai_locomotion_name = (_G.GameSettingsDevelopment and GameSettingsDevelopment.use_engine_optimized_ai_locomotion and "AILocomotionExtensionC") or "AILocomotionExtension"
-local eye_tracking_name = (IS_WINDOWS and "PlayerEyeTrackingExtension") or nil
+local ai_locomotion_name = _G.GameSettingsDevelopment and GameSettingsDevelopment.use_engine_optimized_ai_locomotion and "AILocomotionExtensionC" or "AILocomotionExtension"
+local eye_tracking_name = IS_WINDOWS and "PlayerEyeTrackingExtension" or nil
 local unit_templates = {
 	player_unit_base = {
 		go_type = "player_unit",
@@ -2336,7 +2336,7 @@ local extension_table_names_n = #extension_table_names
 for unit_template_name, template_data in pairs(unit_templates) do
 	template_data.NAME = unit_template_name
 
-	for i = 1, extension_table_names_n, 1 do
+	for i = 1, extension_table_names_n do
 		local extension_table_name = extension_table_names[i]
 		local extension_list = template_data[extension_table_name] or {}
 		local extension_list_n = #extension_list
@@ -2352,7 +2352,7 @@ for unit_template_name, template_data in pairs(unit_templates) do
 			if inherited_extension_list then
 				inherited_extension_list_n = #inherited_extension_list
 
-				for j = 1, inherited_extension_list_n, 1 do
+				for j = 1, inherited_extension_list_n do
 					extension_list_n = extension_list_n + 1
 					extension_list[extension_list_n] = inherited_extension_list[j]
 				end
@@ -2369,7 +2369,7 @@ for unit_template_name, template_data in pairs(unit_templates) do
 					template_data.remove_when_killed[extension_table_name] = {}
 				end
 
-				for j = 1, #inherited_remove_when_killed, 1 do
+				for j = 1, #inherited_remove_when_killed do
 					local remove_when_killed = template_data.remove_when_killed[extension_table_name]
 					remove_when_killed[#remove_when_killed + 1] = inherited_remove_when_killed[j]
 				end
@@ -2380,7 +2380,7 @@ for unit_template_name, template_data in pairs(unit_templates) do
 		local remove_when_killed = template_data.remove_when_killed
 
 		if remove_when_killed then
-			for i = 1, extension_table_names_n, 1 do
+			for i = 1, extension_table_names_n do
 				local extension_table_name = extension_table_names[i]
 				local extension_list = remove_when_killed[extension_table_name]
 

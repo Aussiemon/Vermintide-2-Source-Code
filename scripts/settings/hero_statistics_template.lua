@@ -516,7 +516,7 @@ HeroStatisticsTemplate = {
 			local movement_settings = PlayerUnitMovementSettings.get_movement_settings_table(player_unit)
 			local dodge_distance_modifier = movement_settings.dodging.distance_modifier
 			local base_dodge_distance = movement_settings.dodging.distance
-			local dodge_distance_stat = ((base_dodge_distance * dodge_distance_modifier) / base_dodge_distance - 1) * 100
+			local dodge_distance_stat = (base_dodge_distance * dodge_distance_modifier / base_dodge_distance - 1) * 100
 			local modifier = dodge_distance_stat
 			local value = dodge_distance_stat
 			local desc_key = "tooltip_hero_stats_dodge_distance_description"
@@ -849,5 +849,3 @@ HeroStatisticsTemplate = {
 		type = "empty"
 	}
 }
-
-return

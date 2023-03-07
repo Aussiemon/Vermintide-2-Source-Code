@@ -13,5 +13,3 @@ NavMeshCamera = safe_require("core/gwnav/lua/runtime/navmeshcamera")
 NavRoute = safe_require("core/gwnav/lua/runtime/navroute")
 NavTagVolume = safe_require("core/gwnav/lua/runtime/navtagvolume")
 NavWorld = safe_require("core/gwnav/lua/runtime/navworld")
-
-return

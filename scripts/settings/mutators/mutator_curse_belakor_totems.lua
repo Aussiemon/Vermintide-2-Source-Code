@@ -58,6 +58,7 @@ Totem.update = function (self, dt, t)
 			dprintf("-%s- new state %s", self._logging_prefix, self._state)
 		end
 	elseif self._state == TOTEM_STATES.READY then
+		-- Nothing
 	elseif self._state == TOTEM_STATES.ACTIVE then
 		local unit = self._active_totem_data.unit
 
@@ -163,7 +164,7 @@ return {
 	server_start_function = function (context, data)
 		local totems = {}
 
-		for i = 1, TOTEM_COUNT, 1 do
+		for i = 1, TOTEM_COUNT do
 			totems[#totems + 1] = Totem:new(i)
 		end
 
@@ -184,7 +185,7 @@ return {
 
 		local totems = data.totems
 
-		for totem_index = 1, #totems, 1 do
+		for totem_index = 1, #totems do
 			local totem = totems[totem_index]
 
 			totem:update(dt, t)
@@ -196,7 +197,7 @@ return {
 			return
 		end
 
-		for totem_index = 1, #totems, 1 do
+		for totem_index = 1, #totems do
 			local totem = totems[totem_index]
 			local state = totem:get_state()
 
@@ -213,12 +214,12 @@ return {
 					local side = Managers.state.side:get_side_from_name("heroes")
 					local players = side.PLAYER_AND_BOT_UNITS
 
-					for player_index = 1, #players, 1 do
+					for player_index = 1, #players do
 						local unit = players[player_index]
 						forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 					end
 
-					for i = 1, #totems, 1 do
+					for i = 1, #totems do
 						local other_totem = totems[i]
 						forbidden_position_list[#forbidden_position_list + 1] = other_totem:get_position()
 					end

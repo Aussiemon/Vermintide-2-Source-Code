@@ -291,128 +291,127 @@ local widgets = {
 	god_info_widget = create_widget("window"),
 	belakor_info_widget = create_widget("extra_curse")
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			duration = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				params.render_settings.alpha_multiplier = math.easeOutCubic(progress)
-			end,
-			on_complete = NOP
-		}
+local animation_definitions = {}
+animation_definitions.on_enter = {
+	{
+		name = "fade_in",
+		duration = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			params.render_settings.alpha_multiplier = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			params.render_settings.alpha_multiplier = math.easeOutCubic(progress)
+		end,
+		on_complete = NOP
+	}
+}
+animation_definitions.on_exit = {
+	{
+		name = "fade_out",
+		duration = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			params.render_settings.alpha_multiplier = 1
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			params.render_settings.alpha_multiplier = 1
+		end,
+		on_complete = NOP
+	}
+}
+animation_definitions.set_theme = {
+	{
+		name = "fade_in",
+		delay = 0,
+		duration = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			local theme_settings = params.theme_settings
+			local theme_color = theme_settings.curse_description_color
+			local style = widget.style
+			style.glow_top.color[1] = 0
+			style.glow_bottom.color[1] = 0
+			style.glow_icon.color[1] = 0
+
+			Colors.copy_no_alpha_to(style.glow_top.color, theme_color)
+			Colors.copy_no_alpha_to(style.glow_bottom.color, theme_color)
+			Colors.copy_no_alpha_to(style.glow_icon.color, theme_color)
+			Colors.copy_no_alpha_to(style.title.text_color, theme_color)
+
+			local content = widget.content
+			content.icon = theme_settings.icon
+			content.title = theme_settings.journey_title
+			local localized_deity_name = Localize(theme_settings.deity_name or "lb_unknown")
+			content.body = string.format(Localize("gaze_information"), localized_deity_name)
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			local style = widget.style
+			progress = math.easeInCubic(progress)
+			local alpha = 255 * progress
+			style.glow_top.color[1] = alpha
+			style.glow_bottom.color[1] = alpha
+			style.glow_icon.color[1] = alpha
+		end,
+		on_complete = NOP
 	},
-	on_exit = {
-		{
-			name = "fade_out",
-			duration = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			on_complete = NOP
-		}
+	{
+		name = "fade_in_icon",
+		delay = 0,
+		duration = 0.25,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			widget.style.icon.color[1] = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			progress = math.easeInCubic(progress)
+			widget.style.icon.color[1] = 255 * progress
+		end,
+		on_complete = NOP
+	}
+}
+animation_definitions.set_theme_belakor = {
+	{
+		name = "fade_in",
+		delay = 0,
+		duration = 0.5,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			local theme_settings = params.theme_settings
+			local theme_color = theme_settings.curse_description_color
+			local style = widget.style
+			style.glow_top.color[1] = 0
+			style.glow_bottom.color[1] = 0
+			style.glow_icon.color[1] = 0
+
+			Colors.copy_no_alpha_to(style.glow_top.color, theme_color)
+			Colors.copy_no_alpha_to(style.glow_bottom.color, theme_color)
+			Colors.copy_no_alpha_to(style.glow_icon.color, theme_color)
+			Colors.copy_no_alpha_to(style.title.text_color, theme_color)
+
+			local content = widget.content
+			content.icon = theme_settings.icon
+			content.title = theme_settings.journey_title
+			local localized_deity_name = Localize(theme_settings.deity_name or "lb_unknown")
+			content.body = string.format(Localize("gaze_information"), localized_deity_name)
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			local style = widget.style
+			progress = math.easeInCubic(progress)
+			local alpha = 255 * progress
+			style.glow_top.color[1] = alpha
+			style.glow_bottom.color[1] = alpha
+			style.glow_icon.color[1] = alpha
+		end,
+		on_complete = NOP
 	},
-	set_theme = {
-		{
-			name = "fade_in",
-			delay = 0,
-			duration = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				local theme_settings = params.theme_settings
-				local theme_color = theme_settings.curse_description_color
-				local style = widget.style
-				style.glow_top.color[1] = 0
-				style.glow_bottom.color[1] = 0
-				style.glow_icon.color[1] = 0
-
-				Colors.copy_no_alpha_to(style.glow_top.color, theme_color)
-				Colors.copy_no_alpha_to(style.glow_bottom.color, theme_color)
-				Colors.copy_no_alpha_to(style.glow_icon.color, theme_color)
-				Colors.copy_no_alpha_to(style.title.text_color, theme_color)
-
-				local content = widget.content
-				content.icon = theme_settings.icon
-				content.title = theme_settings.journey_title
-				local localized_deity_name = Localize(theme_settings.deity_name or "lb_unknown")
-				content.body = string.format(Localize("gaze_information"), localized_deity_name)
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				local style = widget.style
-				progress = math.easeInCubic(progress)
-				local alpha = 255 * progress
-				style.glow_top.color[1] = alpha
-				style.glow_bottom.color[1] = alpha
-				style.glow_icon.color[1] = alpha
-			end,
-			on_complete = NOP
-		},
-		{
-			name = "fade_in_icon",
-			delay = 0,
-			duration = 0.25,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				widget.style.icon.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				progress = math.easeInCubic(progress)
-				widget.style.icon.color[1] = 255 * progress
-			end,
-			on_complete = NOP
-		}
-	},
-	set_theme_belakor = {
-		{
-			name = "fade_in",
-			delay = 0,
-			duration = 0.5,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				local theme_settings = params.theme_settings
-				local theme_color = theme_settings.curse_description_color
-				local style = widget.style
-				style.glow_top.color[1] = 0
-				style.glow_bottom.color[1] = 0
-				style.glow_icon.color[1] = 0
-
-				Colors.copy_no_alpha_to(style.glow_top.color, theme_color)
-				Colors.copy_no_alpha_to(style.glow_bottom.color, theme_color)
-				Colors.copy_no_alpha_to(style.glow_icon.color, theme_color)
-				Colors.copy_no_alpha_to(style.title.text_color, theme_color)
-
-				local content = widget.content
-				content.icon = theme_settings.icon
-				content.title = theme_settings.journey_title
-				local localized_deity_name = Localize(theme_settings.deity_name or "lb_unknown")
-				content.body = string.format(Localize("gaze_information"), localized_deity_name)
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				local style = widget.style
-				progress = math.easeInCubic(progress)
-				local alpha = 255 * progress
-				style.glow_top.color[1] = alpha
-				style.glow_bottom.color[1] = alpha
-				style.glow_icon.color[1] = alpha
-			end,
-			on_complete = NOP
-		},
-		{
-			name = "fade_in_icon",
-			delay = 0,
-			duration = 0.25,
-			init = function (ui_scenegraph, scenegraph_definition, widget, params)
-				widget.style.icon.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
-				progress = math.easeInCubic(progress)
-				widget.style.icon.color[1] = 255 * progress
-			end,
-			on_complete = NOP
-		}
+	{
+		name = "fade_in_icon",
+		delay = 0,
+		duration = 0.25,
+		init = function (ui_scenegraph, scenegraph_definition, widget, params)
+			widget.style.icon.color[1] = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widget, progress, params)
+			progress = math.easeInCubic(progress)
+			widget.style.icon.color[1] = 255 * progress
+		end,
+		on_complete = NOP
 	}
 }
 

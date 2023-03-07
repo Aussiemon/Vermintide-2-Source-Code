@@ -10,7 +10,7 @@ SimpleDoorExtension.init = function (self, extension_init_context, unit, extensi
 	self.ignore_umbra = not World.umbra_available(world)
 	self.is_umbra_gate = Unit.get_data(unit, "umbra_gate")
 	local door_state = Unit.get_data(unit, "door_state")
-	self.current_state = (door_state == 0 and "open_forward") or (door_state == 1 and "closed")
+	self.current_state = door_state == 0 and "open_forward" or door_state == 1 and "closed"
 	self.animation_stop_time = 0
 end
 
@@ -108,5 +108,3 @@ SimpleDoorExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 end
-
-return

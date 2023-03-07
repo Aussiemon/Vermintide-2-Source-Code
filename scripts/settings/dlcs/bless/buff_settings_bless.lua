@@ -311,7 +311,7 @@ settings.proc_functions = {
 			amount_to_heal = amount_to_heal / 2
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				if ALIVE[player_and_bot_units[i]] then
 					local health_extension = ScriptUnit.extension(player_and_bot_units[i], "health_system")
 					local status_extension = ScriptUnit.extension(player_and_bot_units[i], "status_system")
@@ -643,7 +643,7 @@ settings.proc_functions = {
 				local num_units = #player_and_bot_units
 				heal_amount = heal_amount * 0.5
 
-				for i = 1, num_units, 1 do
+				for i = 1, num_units do
 					local unit = player_and_bot_units[i]
 
 					if ALIVE[unit] then
@@ -687,7 +687,7 @@ settings.buff_function_templates = {
 			if buff_extension:get_buff_type("victor_priest_righteous_fury_active_buff") then
 				buff.stack_ids[#buff.stack_ids + 1] = buff_extension:add_buff(buff.template.buff_to_add)
 			elseif #buff.stack_ids > 0 then
-				for i = 1, #buff.stack_ids, 1 do
+				for i = 1, #buff.stack_ids do
 					buff_extension:remove_buff(buff.stack_ids[i])
 				end
 
@@ -706,7 +706,7 @@ settings.buff_function_templates = {
 				local buff_list = buff_list_buff.buff_ids
 
 				if buff_list then
-					for i = 1, #buff_list, 1 do
+					for i = 1, #buff_list do
 						buff_extension:queue_remove_buff(buff_list[i])
 					end
 				end
@@ -900,7 +900,7 @@ settings.buff_function_templates = {
 					local temp_hp_tot = 0
 					local perm_hp_tot = 0
 
-					for i = 1, #damage_table, 1 do
+					for i = 1, #damage_table do
 						local t = Managers.time:time("game")
 						local damage_instance = damage_table[i]
 
@@ -1040,7 +1040,7 @@ settings.buff_function_templates = {
 		end
 
 		local player = Managers.player:owner(owner_unit)
-		local is_husk = (player and (player.remote or player.bot_player)) or false
+		local is_husk = player and (player.remote or player.bot_player) or false
 
 		if ALIVE[owner_unit] and is_husk then
 			local audio_system = Managers.state.entity:system("audio_system")
@@ -1088,7 +1088,7 @@ settings.buff_function_templates = {
 		local damage_source_id = NetworkLookup.damage_sources[damage_source]
 		local world = Managers.world:world("level_world")
 		local player = Managers.player:owner(owner_unit)
-		local is_husk = (player and (player.remote or player.bot_player)) or false
+		local is_husk = player and (player.remote or player.bot_player) or false
 
 		if ALIVE[owner_unit] and is_husk then
 			local audio_system = Managers.state.entity:system("audio_system")
@@ -1136,7 +1136,7 @@ settings.buff_function_templates = {
 		local position = POSITION_LOOKUP[owner_unit]
 		local num_results = Broadphase.query(broadphase, position, push_radius, broadphase_results)
 
-		for i = 1, num_results, 1 do
+		for i = 1, num_results do
 			local hit_unit = broadphase_results[i]
 			local push_t = pushed_units[hit_unit] or 0
 
@@ -1152,5 +1152,3 @@ settings.buff_function_templates = {
 		table.clear(broadphase_results)
 	end
 }
-
-return

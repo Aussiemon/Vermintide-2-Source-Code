@@ -10,5 +10,3 @@ settings.behaviour_tree_nodes = {
 settings.behaviour_trees = {
 	"scripts/entity_system/systems/behaviour/trees/critters/critter_nurgling_behavior"
 }
-
-return

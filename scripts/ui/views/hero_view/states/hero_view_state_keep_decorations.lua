@@ -126,7 +126,7 @@ HeroViewStateKeepDecorations.on_enter = function (self, params)
 			local start_index = 1
 			local widgets = self._list_widgets
 
-			for i = 1, #widgets, 1 do
+			for i = 1, #widgets do
 				if widgets[i].content.key == selected_decoration then
 					start_index = i
 
@@ -166,7 +166,7 @@ HeroViewStateKeepDecorations._initialize_simple_decoration_preview = function (s
 
 	if sound_event and sound_event ~= "" then
 		self._sound_event = sound_event
-		self._sound_event_delay = (self._sound_event and DIALOGUE_DELAY) or nil
+		self._sound_event_delay = self._sound_event and DIALOGUE_DELAY or nil
 	end
 
 	local title = Localize(hud_text_line_1)
@@ -309,7 +309,7 @@ HeroViewStateKeepDecorations.update = function (self, dt, t)
 		self:_create_ui_elements()
 	end
 
-	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	local input_service = self._input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 
 	if self._type == "painting" then
 		self:_update_client_paintings(dt)
@@ -424,7 +424,7 @@ HeroViewStateKeepDecorations._is_button_hover = function (self, widget)
 end
 
 HeroViewStateKeepDecorations._handle_input = function (self, dt, t)
-	local input_service = (self._input_blocked and FAKE_INPUT_SERVICE) or self:input_service()
+	local input_service = self._input_blocked and FAKE_INPUT_SERVICE or self:input_service()
 	local mouse_active = Managers.input:is_device_active("mouse")
 	local input_pressed = input_service:get("toggle_menu")
 	local input_close_pressed = not mouse_active and input_service:get("back")
@@ -618,8 +618,8 @@ HeroViewStateKeepDecorations.set_fullscreen_effect_enable_state = function (self
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and 0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and 0.75 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -643,8 +643,8 @@ HeroViewStateKeepDecorations._set_info_by_decoration_key = function (self, key, 
 	local display_name = settings.display_name
 	local description = settings.description
 	local artist = settings.artist
-	local description_text = (locked and Localize("interaction_unavailable")) or Localize(description)
-	local artist_text = (artist and not locked and Localize(artist)) or ""
+	local description_text = locked and Localize("interaction_unavailable") or Localize(description)
+	local artist_text = artist and not locked and Localize(artist) or ""
 	self._selected_decoration = key
 
 	self:_set_info_texts(Localize(display_name), description_text, artist_text)
@@ -652,7 +652,7 @@ HeroViewStateKeepDecorations._set_info_by_decoration_key = function (self, key, 
 
 	if not locked then
 		local sound_event = settings.sound_event
-		self._sound_event_delay = (sound_event and DIALOGUE_DELAY) or nil
+		self._sound_event_delay = sound_event and DIALOGUE_DELAY or nil
 	end
 end
 
@@ -733,7 +733,7 @@ HeroViewStateKeepDecorations._on_list_index_selected = function (self, index, sc
 
 	self:_update_confirm_button()
 
-	local input_action_key = (self._selected_equipped_decoration and "remove") or "default"
+	local input_action_key = self._selected_equipped_decoration and "remove" or "default"
 
 	self._menu_input_description:set_input_description(input_action_key and input_actions[input_action_key])
 
@@ -798,7 +798,7 @@ end
 HeroViewStateKeepDecorations._set_info_texts = function (self, title_text, description_text, artist_text)
 	local title_height = self:_set_selected_title(title_text)
 	local description_height = self:_set_selected_description(description_text)
-	local artist_height = (artist_text and self:_set_selected_artist(artist_text)) or 0
+	local artist_height = artist_text and self:_set_selected_artist(artist_text) or 0
 	local ui_scenegraph = self._ui_scenegraph
 	local title_scenegraph = ui_scenegraph.title_text
 	title_scenegraph.size[2] = title_height
@@ -867,7 +867,7 @@ HeroViewStateKeepDecorations._align_list_widgets = function (self)
 	local dummy_widgets = self._dummy_list_widgets
 	local num_widgets = #list_widgets + #dummy_widgets
 
-	for index = 1, num_widgets, 1 do
+	for index = 1, num_widgets do
 		local widget = nil
 
 		if index <= #list_widgets then
@@ -1068,7 +1068,7 @@ end
 
 HeroViewStateKeepDecorations._setup_decorations_list = function (self)
 	local backend_interface = self._keep_decoration_backend_interface
-	local unlocked_decorations = (backend_interface and backend_interface:get_unlocked_keep_decorations()) or {}
+	local unlocked_decorations = backend_interface and backend_interface:get_unlocked_keep_decorations() or {}
 	local widgets = {}
 	local index = 0
 
@@ -1177,7 +1177,7 @@ HeroViewStateKeepDecorations._animate_list_widget = function (self, widget, dt, 
 	local pulse_progress = hotspot.pulse_progress or 1
 	local offset_progress = hotspot.offset_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = ((is_hover or is_selected) and 14) or 3
+	local speed = (is_hover or is_selected) and 14 or 3
 	local pulse_speed = 3
 	local input_speed = 20
 	local offset_speed = 5
@@ -1262,5 +1262,3 @@ HeroViewStateKeepDecorations._handle_gamepad_activity = function (self)
 		self._gamepad_active_last_frame = false
 	end
 end
-
-return

@@ -88,7 +88,7 @@ PeerStates.Connecting = {
 			local matchmaking_type = "n/a"
 
 			if matchmaking_type_id then
-				matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
+				matchmaking_type = IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 			end
 
 			if mechanism == "weave" and matchmaking == "false" then
@@ -250,8 +250,7 @@ PeerStates.LoadingProfilePackages = {
 			self.wanted_career_index = old_career_index
 		elseif wanted_profile_index == 0 then
 			self.wanted_profile_index, self.wanted_career_index = profile_synchronizer:get_first_free_profile()
-		elseif is_tutorial then
-		else
+		elseif not is_tutorial then
 			self.wanted_profile_index = wanted_profile_index
 			self.wanted_career_index = wanted_career_index
 		end
@@ -521,5 +520,3 @@ for state_name, state_table in pairs(PeerStates) do
 		end
 	})
 end
-
-return

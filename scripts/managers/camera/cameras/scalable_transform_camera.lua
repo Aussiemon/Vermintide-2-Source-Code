@@ -7,7 +7,7 @@ ScalableTransformCamera.parse_parameters = function (self, camera_settings, pare
 
 	self._scale_function = camera_settings.scale_function
 	self._scale_variable = camera_settings.scale_variable
-	self._max_fov = camera_settings.vertical_fov and (camera_settings.vertical_fov * math.pi) / 180
+	self._max_fov = camera_settings.vertical_fov and camera_settings.vertical_fov * math.pi / 180
 end
 
 ScalableTransformCamera.update = function (self, dt, position, rotation, data)
@@ -28,5 +28,3 @@ ScalableTransformCamera.update = function (self, dt, position, rotation, data)
 
 	ScalableTransformCamera.super.super.update(self, dt, position, rotation, data)
 end
-
-return

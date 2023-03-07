@@ -27,5 +27,3 @@ end
 BTVortexSpawnAction.run = function (self, unit, blackboard, t, dt)
 	return "done"
 end
-
-return

@@ -7,7 +7,7 @@ IngameViewLayoutLogic.init = function (self, ingame_ui_context, params, menu_lay
 	self._params = params
 	local is_in_inn = ingame_ui_context.is_in_inn
 	self.is_server = ingame_ui_context.is_server
-	self.layout_list = (is_in_inn and menu_layouts.in_menu) or menu_layouts.in_game
+	self.layout_list = is_in_inn and menu_layouts.in_menu or menu_layouts.in_game
 end
 
 IngameViewLayoutLogic.setup_button_layout = function (self, layout_data)
@@ -107,7 +107,7 @@ IngameViewLayoutLogic._update_menu_options_enabled_states = function (self)
 			local disable_when_matchmaking = menu_option.disable_when_matchmaking
 			local disable_when_matchmaking_ready = menu_option.disable_when_matchmaking_ready
 			local requires_player_unit = menu_option.requires_player_unit
-			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking) or (requires_player_unit and not has_player)
+			local transition_not_allowed = player_ready_for_game and disable_when_matchmaking_ready or is_game_matchmaking and disable_when_matchmaking or requires_player_unit and not has_player
 
 			if transition_not_allowed and not menu_option.disabled then
 				menu_option.disabled = true
@@ -167,5 +167,3 @@ end
 IngameViewLayoutLogic.destroy = function (self)
 	return
 end
-
-return

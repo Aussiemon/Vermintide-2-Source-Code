@@ -560,5 +560,3 @@ mission_selection_atlas = {
 		}
 	}
 }
-
-return

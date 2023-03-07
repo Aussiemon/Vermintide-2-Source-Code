@@ -21,7 +21,7 @@ BTSequence.run = function (self, unit, blackboard, t, dt)
 	local child_to_run_index = node_data or 1
 	local num_children = #self._children
 
-	for i = child_to_run_index, num_children, 1 do
+	for i = child_to_run_index, num_children do
 		local child = self._children[i]
 
 		if not child:condition(blackboard) then
@@ -55,5 +55,3 @@ end
 BTSequence.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

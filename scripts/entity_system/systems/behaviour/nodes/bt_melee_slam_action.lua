@@ -62,7 +62,7 @@ BTMeleeSlamAction.init_attack = function (self, unit, blackboard, action, t)
 	blackboard.attack_started_at_t = t
 	local to_target_rotation = LocomotionUtils.rotation_towards_unit_flat(unit, target_unit)
 	blackboard.attack_rotation = QuaternionBox(to_target_rotation)
-	local bot_threats = action.bot_threats and (action.bot_threats[attack_animation] or (action.bot_threats[1] and action.bot_threats))
+	local bot_threats = action.bot_threats and (action.bot_threats[attack_animation] or action.bot_threats[1] and action.bot_threats)
 
 	if bot_threats then
 		local current_threat_index = 1
@@ -141,7 +141,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 	local unit_forward = Quaternion.forward(Unit.local_rotation(unit, 0))
 	local self_pos = POSITION_LOOKUP[unit]
 	local pos, rotation, size = self:_calculate_collision(action, self_pos, unit_forward)
-	local shape = (size.y - size.x > 0 and "capsule") or "sphere"
+	local shape = size.y - size.x > 0 and "capsule" or "sphere"
 
 	PhysicsWorld.prepare_actors_for_overlap(physics_world, pos, math.max(action.radius, action.height))
 
@@ -149,7 +149,7 @@ BTMeleeSlamAction.anim_cb_damage = function (self, unit, blackboard)
 	local t = Managers.time:time("game")
 	local hit_units = FrameTable.alloc_table()
 
-	for i = 1, num_actors, 1 do
+	for i = 1, num_actors do
 		local hit_actor = hit_actors[i]
 		local hit_unit = Actor.unit(hit_actor)
 
@@ -269,5 +269,3 @@ BTMeleeSlamAction.run = function (self, unit, blackboard, t, dt)
 
 	return "done"
 end
-
-return

@@ -960,12 +960,10 @@ local action_data = {
 	},
 	walking = {
 		move_anim = "walk_fwd"
-	},
-	anti_ladder_melee_slam = table.clone(action_data.melee_slam)
+	}
 }
+action_data.anti_ladder_melee_slam = table.clone(action_data.melee_slam)
 action_data.anti_ladder_melee_slam.considerations = UtilityConsiderations.anti_ladder_melee_slam
 action_data.fling_skaven = table.clone(action_data.melee_shove)
 action_data.fling_skaven.self_running_speed_threshold = 2
 BreedActions.skaven_rat_ogre = table.create_copy(BreedActions.skaven_rat_ogre, action_data)
-
-return

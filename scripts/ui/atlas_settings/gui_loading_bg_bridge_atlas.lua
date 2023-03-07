@@ -28,5 +28,3 @@ loading_bg_bridge_atlas = {
 		}
 	}
 }
-
-return

@@ -18,7 +18,7 @@ local function convert_from_backend(raw_value, database_type)
 				local hex_temp = hex_value / 2
 				hex_value = floor(hex_temp)
 				local new_value_n = value_n + i
-				value[new_value_n] = (hex_value ~= hex_temp and true) or false
+				value[new_value_n] = hex_value ~= hex_temp and true or false
 			end
 
 			value_n = value_n + 4
@@ -44,8 +44,8 @@ local function convert_to_backend(value, database_type)
 		for i = 1, value_n, 4 do
 			local dec_value = 0
 
-			for j = 0, 3, 1 do
-				dec_value = dec_value * 2 + ((value[i + j] == true and 1) or 0)
+			for j = 0, 3 do
+				dec_value = dec_value * 2 + (value[i + j] == true and 1 or 0)
 			end
 
 			local hex_value = string.format("%X", dec_value)
@@ -204,7 +204,7 @@ local function sync_stat(peer_id, stat_peer_id, stat_local_player_id, path, path
 
 			local default_value = stat.default_value
 
-			if stat.value ~= default_value or (stat.persistent_value and stat.persistent_value ~= default_value) then
+			if stat.value ~= default_value or stat.persistent_value and stat.persistent_value ~= default_value then
 				local networkified_path = networkified_path(path)
 				local channel_id = PEER_ID_TO_CHANNEL[peer_id]
 
@@ -230,7 +230,7 @@ local function sync_stat_to_server(network_transmit, stat_peer_id, stat_local_pl
 
 			local default_value = stat.default_value
 
-			if stat.value ~= default_value or (stat.persistent_value and stat.persistent_value ~= default_value) then
+			if stat.value ~= default_value or stat.persistent_value and stat.persistent_value ~= default_value then
 				local networkified_path = networkified_path(path)
 
 				network_transmit:send_rpc_server("rpc_sync_statistics_number", stat_peer_id, stat_local_player_id, networkified_path, cap_sync_value(stat.value), cap_sync_value(stat.persistent_value))
@@ -255,6 +255,7 @@ StatisticsDatabase.hot_join_sync = function (self, peer_id)
 
 			sync_stat(peer_id, player:network_id(), player:local_player_id(), {}, 1, stats)
 		elseif category == "session" then
+			-- Nothing
 		end
 	end
 end
@@ -264,7 +265,7 @@ local function reset_stat(stat)
 		if stat.database_type == nil then
 			stat.value = stat.persistent_value or stat.default_value or 0
 		elseif stat.database_type == "hexarray" then
-			for i = 1, #stat.value, 1 do
+			for i = 1, #stat.value do
 				stat.value[i] = false
 			end
 		end
@@ -316,7 +317,7 @@ StatisticsDatabase.increment_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n, 1 do
+	for i = 1, arg_n do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -341,7 +342,7 @@ StatisticsDatabase.decrement_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n, 1 do
+	for i = 1, arg_n do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -376,7 +377,7 @@ StatisticsDatabase.modify_stat_by_amount = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n - 1, 1 do
+	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -403,7 +404,7 @@ StatisticsDatabase.get_array_stat = function (self, id, ...)
 	local array_stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n - 1, 1 do
+	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
 		array_stat = array_stat[arg_value]
 	end
@@ -417,7 +418,7 @@ StatisticsDatabase.get_persistent_array_stat = function (self, id, ...)
 	local array_stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n - 1, 1 do
+	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
 		array_stat = array_stat[arg_value]
 	end
@@ -435,7 +436,7 @@ StatisticsDatabase.set_array_stat = function (self, id, ...)
 	local array_stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n - 2, 1 do
+	for i = 1, arg_n - 2 do
 		local arg_value = select(i, ...)
 		array_stat = array_stat[arg_value]
 	end
@@ -455,7 +456,7 @@ StatisticsDatabase.set_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n - 1, 1 do
+	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -470,7 +471,7 @@ StatisticsDatabase.set_non_persistent_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n - 1, 1 do
+	for i = 1, arg_n - 1 do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -484,7 +485,7 @@ StatisticsDatabase.get_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n, 1 do
+	for i = 1, arg_n do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -501,7 +502,7 @@ StatisticsDatabase.has_stat = function (self, id, ...)
 
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n, 1 do
+	for i = 1, arg_n do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 
@@ -517,7 +518,7 @@ StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 	local stat = self.statistics[id]
 	local arg_n = select("#", ...)
 
-	for i = 1, arg_n, 1 do
+	for i = 1, arg_n do
 		local arg_value = select(i, ...)
 		stat = stat[arg_value]
 	end
@@ -528,7 +529,7 @@ StatisticsDatabase.get_persistent_stat = function (self, id, ...)
 
 	local error = "No persistent stat found for arguments \""
 
-	for i = 1, arg_n, 1 do
+	for i = 1, arg_n do
 		error = error .. "%s"
 
 		if i < arg_n then
@@ -634,7 +635,7 @@ StatisticsDatabase.rpc_sync_statistics_number = function (self, channel_id, peer
 	local path = unnetworkified_path(statistics_path_names)
 	local stat = self.statistics[stats_id]
 
-	for i = 1, #path, 1 do
+	for i = 1, #path do
 		stat = stat[path[i]]
 	end
 
@@ -689,7 +690,7 @@ local function apply_persistant_stat(stat)
 			if stat.database_type == nil then
 				stat.persistent_value_mirror = stat.persistent_value
 			elseif stat.database_type == "hexarray" then
-				for i = 1, #stat.persistent_value, 1 do
+				for i = 1, #stat.persistent_value do
 					stat.persistent_value_mirror[i] = stat.persistent_value[i]
 				end
 			end
@@ -718,7 +719,7 @@ local function reset_persistant_stat(stat)
 				stat.persistent_value = stat.persistent_value_mirror
 				stat.value = stat.persistent_value or stat.default_value or 0
 			elseif stat.database_type == "hexarray" then
-				for i = 1, #stat.persistent_value, 1 do
+				for i = 1, #stat.persistent_value do
 					stat.persistent_value[i] = stat.persistent_value_mirror[i]
 					stat.value[i] = stat.persistent_value[i] or false
 				end
@@ -790,5 +791,3 @@ if DB_UNIT_TEST then
 
 	script_data.statistics_debug = old_debug
 end
-
-return

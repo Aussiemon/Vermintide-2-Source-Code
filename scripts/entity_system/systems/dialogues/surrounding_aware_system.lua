@@ -109,6 +109,7 @@ end
 SurroundingAwareSystem.extensions_ready = function (self, world, unit, extension_name)
 	if extension_name ~= "SurroundingObserverExtension" then
 		if extension_name == "SurroundingObserverHuskExtension" then
+			-- Nothing
 		elseif ScriptUnit.has_extension(unit, "pickup_system") then
 			local extension = ScriptUnit.extension(unit, "surrounding_aware_system")
 			extension.collision_filter = "filter_lookat_pickup_object_ray"
@@ -160,7 +161,7 @@ local function check_raycast_center(physics_world, unit, target, ray_position, r
 	if hits then
 		local num_hits = #hits
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit_data = hits[i]
 			local hit_unit = Actor.unit(hit_data[4])
 
@@ -253,7 +254,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 	local closest_observer_utility = math.huge
 	local closest_observer_unit = nil
 
-	for i = 1, num_nearby, 1 do
+	for i = 1, num_nearby do
 		local target = found_units[i]
 		found_units[i] = nil
 		local saw_unit_recently = seen_recently[target]
@@ -262,7 +263,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 			local lookat_target_ext = ScriptUnit.extension(target, "surrounding_aware_system")
 			local is_lookat_object = lookat_target_ext.is_lookat_object
 
-			if is_lookat_object or (is_server and observers[target]) then
+			if is_lookat_object or is_server and observers[target] then
 				local target_center = nil
 
 				if Unit.has_node(target, "j_spine") then
@@ -274,7 +275,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 				end
 
 				local view_distance_sq = lookat_target_ext.view_distance_sq
-				local view_angle_rad = extension.view_angle_rad * ((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
+				local view_angle_rad = extension.view_angle_rad * (target == previous_seen_observer and VIEW_ANGLE_STICKINESS or 1)
 				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
 
 				if in_range and not darkness_system:is_in_darkness(target_center) then
@@ -293,7 +294,7 @@ SurroundingAwareSystem.update_lookat = function (self, context, t)
 
 						seen_recently[target] = t
 					elseif is_in_view then
-						local angle_multiplier = BASE_ANGLE_MULTIPLIER + ((target == previous_seen_observer and STICKINESS_MODIFIER) or 0)
+						local angle_multiplier = BASE_ANGLE_MULTIPLIER + (target == previous_seen_observer and STICKINESS_MODIFIER or 0)
 						local utility = angle * angle_multiplier + observer_to_target_length
 
 						if closest_observer_utility > utility then
@@ -368,7 +369,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 	drawer:sphere(observe_position, broadphase_size, Colors.get("light_blue"))
 	drawer:vector(observer_fpp, observer_forward)
 
-	for i = 1, num_nearby, 1 do
+	for i = 1, num_nearby do
 		local target = found_units[i]
 		found_units[i] = nil
 
@@ -378,7 +379,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 			local lookat_target_ext = ScriptUnit.extension(target, "surrounding_aware_system")
 			local is_lookat_object = lookat_target_ext.is_lookat_object
 
-			if lookat_target_ext.is_lookat_object or (is_server and observers[target]) then
+			if lookat_target_ext.is_lookat_object or is_server and observers[target] then
 				local target_center = nil
 
 				if Unit.has_node(target, "j_spine") then
@@ -390,7 +391,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 				end
 
 				local view_distance_sq = lookat_target_ext.view_distance_sq
-				local view_angle_rad = extension.view_angle_rad * ((target == previous_seen_observer and VIEW_ANGLE_STICKINESS) or 1)
+				local view_angle_rad = extension.view_angle_rad * (target == previous_seen_observer and VIEW_ANGLE_STICKINESS or 1)
 				local in_range, observer_to_target_vector, observer_target_direction, angle, max_angle = is_in_range(observer_fpp, target_center, observer_forward, view_distance_sq, view_angle_rad)
 				local observer_to_target_length = Vector3.length(observer_to_target_vector)
 				debug_text = string.format(debug_text .. "DISTANCE: %.2f/%.2f", observer_to_target_length, lookat_target_ext.view_distance)
@@ -439,7 +440,7 @@ SurroundingAwareSystem.update_debug = function (self, context, t)
 			local target_center = Unit.world_position(observer_unit, spine_node)
 			local observer_is_bot = ScriptUnit.has_extension(observer_unit, "ai_system")
 
-			drawer:sphere(target_center, 0.25, (observer_is_bot and Colors.get("blue")) or Colors.get("light_blue"))
+			drawer:sphere(target_center, 0.25, observer_is_bot and Colors.get("blue") or Colors.get("light_blue"))
 		end
 	end
 end
@@ -474,7 +475,7 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 				n_targets = Broadphase.query(broadphase, source_wp, range, found_units)
 			end
 
-			for j = 1, n_targets, 1 do
+			for j = 1, n_targets do
 				local target = found_units[j]
 				found_units[j] = nil
 
@@ -490,7 +491,7 @@ SurroundingAwareSystem.update_events = function (self, context, t)
 
 					event_data.distance = distance
 
-					for k = 1, num_args / 2, 1 do
+					for k = 1, num_args / 2 do
 						local array_data_index = i + 3 + (k - 1) * 2 + 1
 						event_data[array_data[array_data_index]] = array_data[array_data_index + 1]
 					end
@@ -521,5 +522,3 @@ end
 SurroundingAwareSystem.hot_join_sync = function (self, sender)
 	return
 end
-
-return

@@ -6,5 +6,3 @@ WeaveLoadoutSettings.dr_ranger = {
 	properties = {},
 	traits = {}
 }
-
-return

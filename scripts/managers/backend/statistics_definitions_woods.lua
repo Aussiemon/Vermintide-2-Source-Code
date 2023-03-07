@@ -28,7 +28,7 @@ local database_names = {
 	"woods_free_abilities_used"
 }
 
-for i = 1, #database_names, 1 do
+for i = 1, #database_names do
 	local name = database_names[i]
 	player[name] = {
 		value = 0,
@@ -57,5 +57,3 @@ for career, _ in pairs(CareerSettings) do
 		end
 	end
 end
-
-return

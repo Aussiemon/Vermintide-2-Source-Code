@@ -8555,5 +8555,3 @@ AttachmentNodeLinking = {
 }
 
 DLCUtils.require_list("attachment_node_linking")
-
-return

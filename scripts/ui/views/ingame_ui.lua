@@ -216,6 +216,7 @@ IngameUI.destroy = function (self)
 	local menu_active = self.menu_active
 
 	if not menu_active and current_view then
+		-- Nothing
 	end
 
 	if current_view then
@@ -391,7 +392,7 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 			local disable_when_matchmaking = mapping_data.disable_when_matchmaking
 			local disable_when_matchmaking_ready = mapping_data.disable_when_matchmaking_ready
 			local vote_blocked = table.contains(hotkeys_blocked_during_vote, input)
-			local transition_not_allowed = (player_ready_for_game and disable_when_matchmaking_ready) or (is_game_matchmaking and disable_when_matchmaking) or (vote_blocked and currently_voting)
+			local transition_not_allowed = player_ready_for_game and disable_when_matchmaking_ready or is_game_matchmaking and disable_when_matchmaking or vote_blocked and currently_voting
 			local new_view = views[mapping_data.view]
 			local can_interact_flag = mapping_data.can_interact_flag
 			local can_interact_func = mapping_data.can_interact_func
@@ -423,7 +424,7 @@ IngameUI.handle_menu_hotkeys = function (self, dt, input_service, hotkeys_enable
 						break
 					end
 
-					local transition = (menu_active and mapping_data.in_transition_menu) or mapping_data.in_transition
+					local transition = menu_active and mapping_data.in_transition_menu or mapping_data.in_transition
 					local transition_params = {
 						menu_state_name = mapping_data.transition_state,
 						menu_sub_state_name = mapping_data.transition_sub_state
@@ -542,7 +543,7 @@ IngameUI.update = function (self, dt, t, disable_ingame_ui, end_of_level_ui)
 				local menu_state_name = "overview"
 
 				if is_in_inn and gamepad_active then
-					local menu_sub_state_name = (gamepad_active and "equipment") or "system"
+					local menu_sub_state_name = gamepad_active and "equipment" or "system"
 					local transition_params = {
 						menu_state_name = menu_state_name,
 						menu_sub_state_name = menu_sub_state_name
@@ -677,7 +678,7 @@ IngameUI._menu_blocking_information = function (self, input_service, end_of_leve
 	local mission_vote_active = mission_voting_ui and mission_voting_ui:is_active()
 	local cutscene_system = self.cutscene_system
 	local profile_picker = self:get_active_popup("profile_picker")
-	local in_view = self.menu_active or (end_of_level_ui and end_of_level_ui:enable_chat()) or (self.current_view ~= nil and not self.views[self.current_view].normal_chat)
+	local in_view = self.menu_active or end_of_level_ui and end_of_level_ui:enable_chat() or self.current_view ~= nil and not self.views[self.current_view].normal_chat
 	local active_cutscene = cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled
 
 	if self.current_view then
@@ -737,8 +738,8 @@ IngameUI.show_info = function (self)
 	local tome_mission_data = mission_system:get_level_end_mission_data("tome_bonus_mission")
 	local w, h = Application.resolution()
 	local pos = Vector3(100, h - 100, 999)
-	pos = self:_show_text((grimoire_mission_data and grimoire_mission_data.current_amount) or "", pos)
-	pos = self:_show_text((tome_mission_data and tome_mission_data.current_amount) or "", pos)
+	pos = self:_show_text(grimoire_mission_data and grimoire_mission_data.current_amount or "", pos)
+	pos = self:_show_text(tome_mission_data and tome_mission_data.current_amount or "", pos)
 end
 
 IngameUI._show_text = function (self, text, pos)
@@ -752,7 +753,7 @@ IngameUI._update_system_message_cooldown = function (self, dt)
 
 	if system_message_delay then
 		system_message_delay = system_message_delay - dt
-		self.system_message_delay = (system_message_delay > 0 and system_message_delay) or nil
+		self.system_message_delay = system_message_delay > 0 and system_message_delay or nil
 	end
 end
 
@@ -840,7 +841,7 @@ IngameUI.handle_transition = function (self, new_transition, params)
 
 	local previous_transition = self._previous_transition
 
-	if not self:is_transition_allowed(new_transition) or (previous_transition and previous_transition == new_transition) then
+	if not self:is_transition_allowed(new_transition) or previous_transition and previous_transition == new_transition then
 		return
 	end
 
@@ -894,7 +895,7 @@ IngameUI.transition_with_fade = function (self, new_transition, params, fade_in_
 
 	local previous_transition = self._previous_transition
 
-	if not self:is_transition_allowed(new_transition) or (previous_transition and previous_transition == new_transition) then
+	if not self:is_transition_allowed(new_transition) or previous_transition and previous_transition == new_transition then
 		return
 	end
 
@@ -1218,5 +1219,3 @@ end
 IngameUI.get_hud_component = function (self, hud_component_name)
 	return self.ingame_hud:get_hud_component(hud_component_name)
 end
-
-return

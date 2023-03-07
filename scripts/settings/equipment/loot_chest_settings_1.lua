@@ -107,5 +107,3 @@ LootChestSettings.debug = {
 for name, token_data in pairs(LootChestSettings) do
 	token_data.name = name
 end
-
-return

@@ -182,7 +182,7 @@ ActionHandgun.client_owner_post_update = function (self, dt, t, world, can_damag
 			Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, POSITION_LOOKUP[owner_unit], current_action.alert_sound_range_fire)
 		end
 
-		local hit_position = (result and result[#result][1]) or position + direction * 100
+		local hit_position = result and result[#result][1] or position + direction * 100
 
 		Unit.set_flow_variable(weapon_unit, "hit_position", hit_position)
 		Unit.set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - position) * 0.1)
@@ -222,7 +222,7 @@ ActionHandgun.finish = function (self, reason)
 		status_extension:set_zooming(false)
 
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			ammo_extension:start_reload(true)
@@ -256,5 +256,3 @@ ActionHandgun.finish = function (self, reason)
 		self.spread_extension:reset_spread_template()
 	end
 end
-
-return

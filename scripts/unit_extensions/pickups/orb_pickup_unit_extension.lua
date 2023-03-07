@@ -9,7 +9,7 @@ OrbPickupUnitExtension.init = function (self, extension_init_context, unit, exte
 	self._is_server = Managers.player.is_server
 	local side = Managers.state.side:get_side_from_name("heroes")
 	self._hero_side = side
-	self._orb_flight_target_position = (extension_init_data.flight_enabled and extension_init_data.orb_flight_target_position) or nil
+	self._orb_flight_target_position = extension_init_data.flight_enabled and extension_init_data.orb_flight_target_position or nil
 
 	Unit.flow_event(unit, "update_visuals")
 
@@ -41,7 +41,7 @@ OrbPickupUnitExtension.update = function (self, unit, input, dt, context, t)
 	local pickup_settings = self._pickup_settings
 
 	if self._is_server then
-		for i = 1, num_player_units, 1 do
+		for i = 1, num_player_units do
 			local player_unit = player_units[i]
 
 			if Unit.alive(player_unit) then
@@ -105,5 +105,3 @@ end
 OrbPickupUnitExtension.get_orb_flight_target_position = function (self)
 	return self._orb_flight_target_position
 end
-
-return

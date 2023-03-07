@@ -20,5 +20,3 @@ settings.dialogue_settings = {
 		"dialogues/generated/npc_dlc_wizards_trail"
 	}
 }
-
-return

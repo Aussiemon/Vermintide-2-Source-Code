@@ -241,7 +241,7 @@ StartGameWindowTwitchGameSettings._update_game_options_hover_effect = function (
 	local widgets_by_name = self._widgets_by_name
 	local widget_prefix = "game_option_"
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
 
@@ -333,9 +333,9 @@ StartGameWindowTwitchGameSettings._set_difficulty_option = function (self, diffi
 	local difficulty_settings = DifficultySettings[difficulty_key]
 	local display_name = difficulty_settings and difficulty_settings.display_name
 	local display_image = difficulty_settings and difficulty_settings.display_image
-	local completed_frame_texture = (difficulty_settings and difficulty_settings.completed_frame_texture) or "map_frame_00"
+	local completed_frame_texture = difficulty_settings and difficulty_settings.completed_frame_texture or "map_frame_00"
 	local widgets_by_name = self._widgets_by_name
-	widgets_by_name.game_option_2.content.option_text = (display_name and Localize(display_name)) or ""
+	widgets_by_name.game_option_2.content.option_text = display_name and Localize(display_name) or ""
 	widgets_by_name.game_option_2.content.icon = display_image or nil
 	widgets_by_name.game_option_2.content.icon_frame = completed_frame_texture
 end
@@ -396,7 +396,7 @@ StartGameWindowTwitchGameSettings.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -404,7 +404,7 @@ StartGameWindowTwitchGameSettings.draw = function (self, dt)
 
 	local other_options_widgets = self._other_options_widgets
 
-	for i = 1, #other_options_widgets, 1 do
+	for i = 1, #other_options_widgets do
 		local widget = other_options_widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -472,5 +472,3 @@ StartGameWindowTwitchGameSettings._animate_element_by_time = function (self, tar
 
 	return new_animation
 end
-
-return

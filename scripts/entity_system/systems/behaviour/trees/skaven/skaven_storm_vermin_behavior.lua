@@ -356,5 +356,3 @@ BreedBehaviors.shield_vermin = {
 	},
 	name = "shield_vermin"
 }
-
-return

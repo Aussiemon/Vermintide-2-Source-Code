@@ -99,7 +99,7 @@ BTAttackAction.enter = function (self, unit, blackboard, t)
 		dodge_window_start = dodge_window_start[difficulty]
 	end
 
-	blackboard.attack_dodge_window_start = (dodge_window_start and dodge_window_start + t) or t
+	blackboard.attack_dodge_window_start = dodge_window_start and dodge_window_start + t or t
 	blackboard.attack_dodge_window_duration = dodge_window_duration[difficulty] or DEFAULT_DODGE_ROTATION_TIME
 
 	if action.attack_finished_duration then
@@ -154,7 +154,7 @@ BTAttackAction._select_attack = function (self, action, unit, target_unit, black
 			return low_attack
 		elseif knocked_down_attack and z_offset < knocked_down_attack.z_threshold and target_unit_status_extension and target_unit_status_extension:is_knocked_down() then
 			return knocked_down_attack
-		elseif step_attack_with_callback and ((blackboard.target_speed_away > (step_attack_with_callback.step_speed_moving or 1) and flat_distance > (step_attack_with_callback.step_distance_moving or 1.5)) or flat_distance > (step_attack_with_callback.step_distance_stationary or 2.5)) then
+		elseif step_attack_with_callback and (blackboard.target_speed_away > (step_attack_with_callback.step_speed_moving or 1) and flat_distance > (step_attack_with_callback.step_distance_moving or 1.5) or flat_distance > (step_attack_with_callback.step_distance_stationary or 2.5)) then
 			blackboard.moving_attack_with_callback = true
 
 			if step_attack_with_callback.attack_hit_animation then
@@ -162,7 +162,7 @@ BTAttackAction._select_attack = function (self, action, unit, target_unit, black
 			end
 
 			return step_attack_with_callback
-		elseif step_attack and ((blackboard.target_speed_away > (step_attack.step_speed_moving or 1) and flat_distance > (step_attack.step_distance_moving or 1.5)) or flat_distance > (step_attack.step_distance_stationary or 2.5)) then
+		elseif step_attack and (blackboard.target_speed_away > (step_attack.step_speed_moving or 1) and flat_distance > (step_attack.step_distance_moving or 1.5) or flat_distance > (step_attack.step_distance_stationary or 2.5)) then
 			blackboard.moving_attack = step_attack.moving_attack
 
 			return step_attack
@@ -261,7 +261,7 @@ BTAttackAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	if (blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t) or (not blackboard.attack_finished_t and blackboard.attack_finished) then
+	if blackboard.anim_cb_attack_cooldown and blackboard.attack_finished_t and blackboard.attack_finished_t < t or not blackboard.attack_finished_t and blackboard.attack_finished then
 		return "done"
 	end
 
@@ -409,7 +409,7 @@ BTAttackAction._handle_movement = function (self, unit, t, dt, blackboard)
 		locomotion_extension:set_wanted_rotation(blackboard.attack_rotation:unbox())
 	end
 
-	if (bb.locked_attack_rotation and bb.attack_rotation_lock_timer and bb.attack_rotation_lock_timer < t) or DEFAULT_DODGE_DISTANCE_THRESHOLD < distance then
+	if bb.locked_attack_rotation and bb.attack_rotation_lock_timer and bb.attack_rotation_lock_timer < t or DEFAULT_DODGE_DISTANCE_THRESHOLD < distance then
 		bb.locked_attack_rotation = false
 	end
 end
@@ -493,5 +493,3 @@ BTAttackAction.anim_cb_attack_finished = function (self, unit, blackboard)
 		blackboard.attack_finished = true
 	end
 end
-
-return

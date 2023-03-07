@@ -52,5 +52,3 @@ DialogueLookup[DialogueLookup_n + 24] = "pbw_castle_vo_drop_down"
 DialogueLookup[DialogueLookup_n + 25] = "pbw_castle_vo_crypt_discovered"
 DialogueLookup[DialogueLookup_n + 26] = "pbw_castle_vo_crypt_not_discovered"
 DialogueLookup_n = DialogueLookup_n + 26
-
-return

@@ -41,7 +41,7 @@ local scenegraph_definition = {
 		size = ROOT_SIZE
 	},
 	screen = {
-		scale = (IS_WINDOWS and "fit") or "hud_fit",
+		scale = IS_WINDOWS and "fit" or "hud_fit",
 		position = {
 			0,
 			0,

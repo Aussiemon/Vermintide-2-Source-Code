@@ -18,5 +18,3 @@ settings.hit_effects = {
 settings.statistics_definitions = {
 	"scripts/managers/backend/statistics_definitions_belladonna"
 }
-
-return

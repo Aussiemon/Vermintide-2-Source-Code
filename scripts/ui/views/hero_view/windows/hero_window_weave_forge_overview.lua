@@ -342,7 +342,7 @@ HeroWindowWeaveForgeOverview.cb_unit_spawned_item_preview = function (self, item
 end
 
 HeroWindowWeaveForgeOverview._create_viewport_definition = function (self, scenegraph_id, invert_rendering)
-	local shading_environment = (invert_rendering and "environment/ui_weave_forge_preview_inverted") or "environment/ui_weave_forge_preview"
+	local shading_environment = invert_rendering and "environment/ui_weave_forge_preview_inverted" or "environment/ui_weave_forge_preview"
 
 	return {
 		element = UIElements.Viewport,
@@ -523,6 +523,7 @@ HeroWindowWeaveForgeOverview._update_animations = function (self, dt)
 			local customize_button = data.customize_button
 
 			if customize_button then
+				-- Nothing
 			end
 
 			local change_button = data.change_button
@@ -727,7 +728,7 @@ end
 HeroWindowWeaveForgeOverview._set_forge_upgrade_price_by_level = function (self, forge_level, current_essence_amount)
 	local backend_interface_weaves = Managers.backend:get_interface("weaves")
 	local cost = backend_interface_weaves:forge_upgrade_cost()
-	local can_afford = (cost and cost <= current_essence_amount) or false
+	local can_afford = cost and cost <= current_essence_amount or false
 
 	self:_set_essence_upgrade_cost(cost, can_afford)
 end
@@ -927,5 +928,3 @@ HeroWindowWeaveForgeOverview._set_forge_level = function (self, level)
 	widget_value.style.text.offset[1] = title_text_offset + title_text_width / 2 + value_text_width / 2 + spacing
 	widget_value.style.text_shadow.offset[1] = widget_value.style.text.offset[1]
 end
-
-return

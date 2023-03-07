@@ -6,5 +6,3 @@ WeaveLoadoutSettings.bw_adept = {
 	properties = {},
 	traits = {}
 }
-
-return

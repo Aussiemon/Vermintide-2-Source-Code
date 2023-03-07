@@ -22,5 +22,3 @@ settings.ui_texture_settings = {
 		}
 	}
 }
-
-return

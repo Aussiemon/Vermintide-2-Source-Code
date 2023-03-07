@@ -136,5 +136,3 @@ BTCombatStepAction._get_animation = function (self, rotation, direction)
 
 	return anim
 end
-
-return

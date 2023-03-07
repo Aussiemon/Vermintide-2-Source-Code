@@ -89,5 +89,3 @@ StateMachineManager._draw_panel = function (self)
 		y = y - StateMachineManager.FONT_SIZE
 	end
 end
-
-return

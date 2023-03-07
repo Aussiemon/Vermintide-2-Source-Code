@@ -1,85 +1,84 @@
 local DECAL_TARGET_POSITION_COUNT = 7
-local BaseStates = {
-	tower = {
-		mission_name = "arena_belakor_overload_statue",
-		setup = function (state_template, data)
-			if data.is_server then
-				data.active_locus = {}
-				local locus_entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
-
-				for locus_unit, extension in pairs(locus_entities) do
-					data.active_locus[#data.active_locus + 1] = {
-						locus_unit,
-						extension
-					}
-				end
-			end
-		end,
-		on_server_enter = function (state_template, data)
-			return
-		end,
-		on_server_exit = function (state_template, data)
-			return
-		end,
-		on_client_enter = function (state_template, data)
-			local mission_system = Managers.state.entity:system("mission_system")
-
-			mission_system:start_mission(state_template.base_state.mission_name)
-
+local BaseStates = {}
+BaseStates.tower = {
+	mission_name = "arena_belakor_overload_statue",
+	setup = function (state_template, data)
+		if data.is_server then
+			data.active_locus = {}
 			local locus_entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
 
 			for locus_unit, extension in pairs(locus_entities) do
-				local locus_position = Unit.local_position(locus_unit, 0)
-				local min_distance = math.huge
-				local index = nil
-				local closest_decal_pose = Unit.local_position(data.big_statue, 0)
-
-				for i = 1, #data.decal_poses, 1 do
-					local decal_pose = data.decal_poses[i]:unbox()
-					local decal_position = Matrix4x4.translation(decal_pose)
-					local distance = Vector3.distance_squared(locus_position, decal_position)
-
-					if distance < min_distance then
-						closest_decal_pose = decal_pose
-						min_distance = distance
-						index = i
-					end
-				end
-
-				extension:connect_to_statue(data.big_statue, closest_decal_pose)
-
-				if index then
-					table.swap_delete(data.decal_poses, index)
-				end
-			end
-		end,
-		on_client_exit = function (state_template, data)
-			local mission_system = Managers.state.entity:system("mission_system")
-
-			mission_system:end_mission(state_template.base_state.mission_name)
-		end,
-		server_update = function (current_state, data, dt, t)
-			local done_locus = 0
-
-			for _, unit_and_extension in ipairs(data.active_locus) do
-				local extension = unit_and_extension[2]
-				done_locus = done_locus + ((extension:is_complete() and 1) or 0)
-			end
-
-			if data.shared_state:get_server(data.shared_state:get_key("socketed_count")) ~= done_locus then
-				data.shared_state:set_server(data.shared_state:get_key("socketed_count"), done_locus)
-			end
-		end,
-		client_update = function (current_state, data, dt, t)
-			local current_value = Level.flow_variable(data.level, "socketed_count")
-			local new_value = data.shared_state:get_server(data.shared_state:get_key("socketed_count"))
-
-			if current_value ~= new_value then
-				Level.set_flow_variable(data.level, "socketed_count", new_value)
-				Level.trigger_event(data.level, "update_socketed_count")
+				data.active_locus[#data.active_locus + 1] = {
+					locus_unit,
+					extension
+				}
 			end
 		end
-	}
+	end,
+	on_server_enter = function (state_template, data)
+		return
+	end,
+	on_server_exit = function (state_template, data)
+		return
+	end,
+	on_client_enter = function (state_template, data)
+		local mission_system = Managers.state.entity:system("mission_system")
+
+		mission_system:start_mission(state_template.base_state.mission_name)
+
+		local locus_entities = Managers.state.entity:get_entities("DeusBelakorLocusExtension")
+
+		for locus_unit, extension in pairs(locus_entities) do
+			local locus_position = Unit.local_position(locus_unit, 0)
+			local min_distance = math.huge
+			local index = nil
+			local closest_decal_pose = Unit.local_position(data.big_statue, 0)
+
+			for i = 1, #data.decal_poses do
+				local decal_pose = data.decal_poses[i]:unbox()
+				local decal_position = Matrix4x4.translation(decal_pose)
+				local distance = Vector3.distance_squared(locus_position, decal_position)
+
+				if distance < min_distance then
+					closest_decal_pose = decal_pose
+					min_distance = distance
+					index = i
+				end
+			end
+
+			extension:connect_to_statue(data.big_statue, closest_decal_pose)
+
+			if index then
+				table.swap_delete(data.decal_poses, index)
+			end
+		end
+	end,
+	on_client_exit = function (state_template, data)
+		local mission_system = Managers.state.entity:system("mission_system")
+
+		mission_system:end_mission(state_template.base_state.mission_name)
+	end,
+	server_update = function (current_state, data, dt, t)
+		local done_locus = 0
+
+		for _, unit_and_extension in ipairs(data.active_locus) do
+			local extension = unit_and_extension[2]
+			done_locus = done_locus + (extension:is_complete() and 1 or 0)
+		end
+
+		if data.shared_state:get_server(data.shared_state:get_key("socketed_count")) ~= done_locus then
+			data.shared_state:set_server(data.shared_state:get_key("socketed_count"), done_locus)
+		end
+	end,
+	client_update = function (current_state, data, dt, t)
+		local current_value = Level.flow_variable(data.level, "socketed_count")
+		local new_value = data.shared_state:get_server(data.shared_state:get_key("socketed_count"))
+
+		if current_value ~= new_value then
+			Level.set_flow_variable(data.level, "socketed_count", new_value)
+			Level.trigger_event(data.level, "update_socketed_count")
+		end
+	end
 }
 local ArenaStates = nil
 ArenaStates = {
@@ -126,7 +125,7 @@ ArenaStates = {
 
 			for _, unit_and_extension in ipairs(data.active_locus) do
 				local extension = unit_and_extension[2]
-				done_locus = done_locus + ((extension:is_complete() and 1) or 0)
+				done_locus = done_locus + (extension:is_complete() and 1 or 0)
 			end
 
 			if done_locus > 0 and done_locus / #data.active_locus >= 0.5 then
@@ -142,7 +141,7 @@ ArenaStates = {
 
 			for _, unit_and_extension in ipairs(data.active_locus) do
 				local extension = unit_and_extension[2]
-				done_locus = done_locus + ((extension:is_complete() and 1) or 0)
+				done_locus = done_locus + (extension:is_complete() and 1 or 0)
 			end
 
 			if done_locus > 0 and done_locus / #data.active_locus >= 1 then
@@ -230,7 +229,7 @@ return {
 		data.big_statue = big_statue
 		local decal_poses = {}
 
-		for i = 1, DECAL_TARGET_POSITION_COUNT, 1 do
+		for i = 1, DECAL_TARGET_POSITION_COUNT do
 			local node_name = "ap_decal_0" .. i
 
 			fassert(Unit.has_node(big_statue, node_name), "There has to be a node called %s in the statue", node_name)

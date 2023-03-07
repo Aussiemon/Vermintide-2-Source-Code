@@ -89,11 +89,11 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	local camera_manager = Managers.state.camera
 	local viewport_name = camera_extension.viewport_name
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local look_input = (gamepad_active and input_source:get("look_controller_3p")) or input_source:get("look")
+	local look_input = gamepad_active and input_source:get("look_controller_3p") or input_source:get("look")
 	local look_delta = Vector3(0, 0, 0)
 
 	if look_input then
-		local look_sensitivity = (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
+		local look_sensitivity = camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785 or 1
 		look_delta = look_delta + look_input * look_sensitivity
 	end
 
@@ -116,8 +116,7 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	if self._rotation_state == "follow" then
 		look_rotation = Unit.local_rotation(self._follow_unit, 0)
 		look_rotation = Quaternion.multiply(look_rotation, pitch_rotation)
-	elseif self._rotation_state == "locked" then
-	else
+	elseif self._rotation_state ~= "locked" then
 		local yaw = Quaternion.yaw(rotation) - look_delta.x
 		local yaw_rotation = Quaternion(Vector3.up(), yaw)
 		look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
@@ -144,5 +143,3 @@ CameraStateObserverSpectator.update = function (self, unit, input, dt, context, 
 	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
 	Unit.set_local_position(unit, 0, new_position)
 end
-
-return

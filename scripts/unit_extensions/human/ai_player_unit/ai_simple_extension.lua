@@ -25,7 +25,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 	fassert(extension_init_data.side_id, "no side_id")
 
 	self._side_id = extension_init_data.side_id
-	local is_passive = (breed.initial_is_passive == nil and true) or breed.initial_is_passive
+	local is_passive = breed.initial_is_passive == nil and true or breed.initial_is_passive
 	local blackboard = Script.new_map(breed.blackboard_allocation_size or 75)
 	local optional_spawn_data = extension_init_data.optional_spawn_data
 	blackboard.world = extension_init_context.world
@@ -73,7 +73,7 @@ AISimpleExtension.init = function (self, extension_init_context, unit, extension
 		WwiseUtils.trigger_unit_event(self._world, breed.special_on_spawn_stinger, unit, 0)
 	end
 
-	local behavior = (optional_spawn_data and optional_spawn_data.behavior) or (is_horde and breed.horde_behavior) or breed.behavior
+	local behavior = optional_spawn_data and optional_spawn_data.behavior or is_horde and breed.horde_behavior or breed.behavior
 
 	self:_init_brain(behavior, is_horde)
 	self:_set_size_variation(extension_init_data.size_variation, extension_init_data.size_variation_normalized)
@@ -168,12 +168,12 @@ AISimpleExtension.unfreeze = function (self, unit, data)
 	blackboard.side = side
 	local breed = blackboard.breed
 	local is_horde = spawn_type == "horde_hidden" or spawn_type == "horde"
-	local behavior = (optional_spawn_data and optional_spawn_data.behavior) or (is_horde and breed.horde_behavior) or breed.behavior
+	local behavior = optional_spawn_data and optional_spawn_data.behavior or is_horde and breed.horde_behavior or breed.behavior
 
 	self._brain:unfreeze(blackboard, behavior)
 	self:init_perception(breed, is_horde)
 
-	if breed.far_off_despawn_immunity or (optional_spawn_data and optional_spawn_data.far_off_despawn_immunity) then
+	if breed.far_off_despawn_immunity or optional_spawn_data and optional_spawn_data.far_off_despawn_immunity then
 		blackboard.far_off_despawn_immunity = true
 	end
 
@@ -201,7 +201,7 @@ AISimpleExtension.extensions_ready = function (self, world, unit)
 
 	local optional_spawn_data = blackboard.optional_spawn_data
 
-	if breed.far_off_despawn_immunity or (optional_spawn_data and optional_spawn_data.far_off_despawn_immunity) then
+	if breed.far_off_despawn_immunity or optional_spawn_data and optional_spawn_data.far_off_despawn_immunity then
 		blackboard.far_off_despawn_immunity = true
 	end
 
@@ -241,7 +241,7 @@ AISimpleExtension.set_properties = function (self, params)
 
 			prop_iterator()
 
-			for i = 1, 10, 1 do
+			for i = 1, 10 do
 				local index = prop_iterator()
 
 				if index == nil then
@@ -274,13 +274,13 @@ end
 
 AISimpleExtension.init_perception = function (self, breed, is_horde)
 	if breed.perception then
-		self._perception_func_name = (is_horde and breed.horde_perception) or breed.perception
+		self._perception_func_name = is_horde and breed.horde_perception or breed.perception
 	else
 		self._perception_func_name = "perception_regular"
 	end
 
 	if breed.target_selection then
-		self._target_selection_func_name = (is_horde and breed.horde_target_selection) or breed.target_selection
+		self._target_selection_func_name = is_horde and breed.horde_target_selection or breed.target_selection
 	else
 		self._target_selection_func_name = "pick_closest_target_with_spillover"
 	end
@@ -353,7 +353,7 @@ end
 AISimpleExtension.current_action_name = function (self)
 	local blackboard = self._blackboard
 
-	return (blackboard.action and blackboard.action.name) or "n/a"
+	return blackboard.action and blackboard.action.name or "n/a"
 end
 
 AISimpleExtension.die = function (self, killer_unit, killing_blow)
@@ -439,7 +439,7 @@ AISimpleExtension.enemy_alert = function (self, alerting_unit, enemy_unit)
 		return
 	end
 
-	if blackboard.hesitating or (blackboard.in_alerted_state and blackboard.alerted_deadline_reached) then
+	if blackboard.hesitating or blackboard.in_alerted_state and blackboard.alerted_deadline_reached then
 		self:enemy_aggro(alerting_unit, enemy_unit)
 	end
 
@@ -479,5 +479,3 @@ AISimpleExtension.update_stagger_count = function (self)
 		blackboard.stagger_count = 0
 	end
 end
-
-return

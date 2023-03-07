@@ -44,7 +44,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 	local talent_buff_ids = self._talent_buff_ids
 	local sub_buffs_per_talent = {}
 
-	for i = 1, #talent_buff_ids, 1 do
+	for i = 1, #talent_buff_ids do
 		local id = talent_buff_ids[i]
 		local num_sub_buffs = buff_extension:num_sub_buffs(id)
 
@@ -61,7 +61,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 
 	local talent_buff_ids = self._talent_buff_ids
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
 
@@ -69,17 +69,17 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if (player.local_player and (not buffer or buffer == "client")) or (self.is_server and buffer == "server") or ((self.is_server or player.local_player) and buffer == "both") then
-				local num_buffs = (buffs and #buffs) or 0
+			if player.local_player and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" then
+				local num_buffs = buffs and #buffs or 0
 
 				if num_buffs > 0 then
-					for j = 1, num_buffs, 1 do
+					for j = 1, num_buffs do
 						local buff_template = buffs[j]
 						local id = buff_extension:add_buff(buff_template)
 						local sub_buffs = sub_buffs_per_talent[buff_template]
 
 						if sub_buffs then
-							for k = 1, sub_buffs.num_buffs, 1 do
+							for k = 1, sub_buffs.num_buffs do
 								buff_extension:add_buff(sub_buffs.buff_name, {
 									attacker_unit = player.player_unit
 								})
@@ -95,7 +95,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 				local client_buffs = talent_data.client_buffs
 
 				if client_buffs then
-					for j = 1, #client_buffs, 1 do
+					for j = 1, #client_buffs do
 						local buff_template = client_buffs[j]
 						local id = buff_extension:add_buff(buff_template)
 						talent_buff_ids[#talent_buff_ids + 1] = id
@@ -107,7 +107,7 @@ HuskTalentExtension.apply_buffs_from_talents = function (self)
 				local server_buffs = talent_data.server_buffs
 
 				if server_buffs then
-					for j = 1, #server_buffs, 1 do
+					for j = 1, #server_buffs do
 						local buff_template = server_buffs[j]
 						local id = buff_extension:add_buff(buff_template)
 						talent_buff_ids[#talent_buff_ids + 1] = id
@@ -123,7 +123,7 @@ HuskTalentExtension._clear_buffs_from_talents = function (self)
 	local talent_buff_ids = self._talent_buff_ids
 	local num_talent_buff_ids = #talent_buff_ids
 
-	for i = 1, num_talent_buff_ids, 1 do
+	for i = 1, num_talent_buff_ids do
 		local id = talent_buff_ids[i]
 
 		buff_extension:remove_buff(id)
@@ -146,7 +146,7 @@ HuskTalentExtension.has_talent = function (self, talent_name)
 
 	local wanted_talent_id = wanted_talent_lookup.talent_id
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 
 		if wanted_talent_id == talent_id then
@@ -166,7 +166,7 @@ HuskTalentExtension.get_talent_names = function (self, talent_names)
 	local hero_name = self._hero_name
 	talent_names = talent_names or {}
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
 		talent_names[#talent_names + 1] = talent_data.name
@@ -182,5 +182,3 @@ end
 HuskTalentExtension.initial_talent_synced = function (self)
 	return self._initial_talent_sync_completed
 end
-
-return

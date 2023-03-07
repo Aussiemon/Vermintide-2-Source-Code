@@ -233,5 +233,3 @@ local action_data = {
 	}
 }
 BreedActions.chaos_greed_pinata = table.create_copy(BreedActions.chaos_greed_pinata, action_data)
-
-return

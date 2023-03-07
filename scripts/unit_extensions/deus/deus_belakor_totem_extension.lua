@@ -16,7 +16,7 @@ local DEFENSIVE_PUSH_SPEED = 8
 local function is_totem_in_range(totem_position, player_positions, range)
 	local range_sq = range * range
 
-	for i = 1, #player_positions, 1 do
+	for i = 1, #player_positions do
 		local player_position = player_positions[i]
 
 		if player_position and Vector3.distance_squared(totem_position, player_position) < range_sq then
@@ -58,7 +58,7 @@ local function totem_has_los(world, totem_position, player_positions)
 
 	local up_offset = Vector3(0, 0, 1.5)
 
-	for i = 1, #player_positions, 1 do
+	for i = 1, #player_positions do
 		local player_position = player_positions[i]
 
 		if World.umbra_has_line_of_sight(world, player_position + up_offset, totem_position + up_offset) then
@@ -83,7 +83,7 @@ function push_players_away(unit_list, push_center, radius, push_speed)
 	local height = push_speed * math.sin(angle)
 	local radius_sq = radius * radius
 
-	for i = 1, #unit_list, 1 do
+	for i = 1, #unit_list do
 		local target_unit = unit_list[i]
 		local target_position = POSITION_LOOKUP[target_unit]
 		local towards_player = target_position - push_center
@@ -276,5 +276,3 @@ DeusBelakorTotemExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 end
-
-return

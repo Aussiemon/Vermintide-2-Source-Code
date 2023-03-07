@@ -165,7 +165,7 @@ BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboa
 
 		local allies_nearby = 0
 
-		for i = 1, #BROADPHASE_QUERY_RESULT, 1 do
+		for i = 1, #BROADPHASE_QUERY_RESULT do
 			local bf_unit = BROADPHASE_QUERY_RESULT[i]
 			local bb = ScriptUnit.extension(bf_unit, "ai_system"):blackboard()
 
@@ -178,7 +178,7 @@ BTHesitateAction.calculate_outnumber_multiplier = function (self, unit, blackboa
 		local side = blackboard.side
 		local positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-		for i = 1, #positions, 1 do
+		for i = 1, #positions do
 			local proximity = Vector3.distance_squared(target_pos, current_pos)
 
 			if proximity < 36 then
@@ -251,12 +251,12 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	blackboard.target_unit = nil
 	local target_alive = blackboard.target_unit and Unit.alive(blackboard.target_unit)
-	local exit_override = blackboard.is_within_proximity or blackboard.hesitate_finished or (blackboard.previous_attacker and not blackboard.taunt_unit) or not target_alive
+	local exit_override = blackboard.is_within_proximity or blackboard.hesitate_finished or blackboard.previous_attacker and not blackboard.taunt_unit or not target_alive
 	local finished_hesitating = blackboard.confirmed_player_sighting or blackboard.no_hesitation or exit_override
 
 	if finished_hesitating then
 		local deadline_reached = blackboard.hesitate_timer and blackboard.hesitate_timer < t
-		local exit_hesitate = (deadline_reached and blackboard.anim_cb_move) or exit_override
+		local exit_hesitate = deadline_reached and blackboard.anim_cb_move or exit_override
 
 		if exit_hesitate then
 			blackboard.spawn_to_running = blackboard.anim_cb_move
@@ -327,7 +327,7 @@ BTHesitateAction.run = function (self, unit, blackboard, t, dt)
 			end
 		end
 
-		local can_exit = blackboard.anim_cb_move or (blackboard.hesitate_finished and not panic_override)
+		local can_exit = blackboard.anim_cb_move or blackboard.hesitate_finished and not panic_override
 
 		if can_exit then
 			if blackboard.anim_cb_move then
@@ -391,5 +391,3 @@ BTHesitateAction._select_new_hesitate_anim = function (self, unit, blackboard)
 
 	blackboard.last_hesitate_anim = anim
 end
-
-return

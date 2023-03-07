@@ -108,5 +108,3 @@ BreedBehaviors.stormfiend_boss = {
 	},
 	name = "stormfiend_boss"
 }
-
-return

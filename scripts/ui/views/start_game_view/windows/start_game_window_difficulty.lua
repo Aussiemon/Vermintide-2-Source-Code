@@ -78,7 +78,7 @@ StartGameWindowDifficulty._setup_difficulties = function (self)
 	local current_offset = 0
 	local dlc_difficulties = {}
 
-	for i = STARTING_DIFFICULTY_INDEX, #difficulties, 1 do
+	for i = STARTING_DIFFICULTY_INDEX, #difficulties do
 		local difficulty_key = difficulties[i]
 		local difficulty_settings = DifficultySettings[difficulty_key]
 
@@ -184,7 +184,7 @@ StartGameWindowDifficulty._update_animations = function (self, dt)
 
 	local difficulty_widgets = self._difficulty_widgets
 
-	for i = 1, #difficulty_widgets, 1 do
+	for i = 1, #difficulty_widgets do
 		local widget = difficulty_widgets[i]
 
 		self:_animate_difficulty_option_button(widget, dt)
@@ -223,7 +223,7 @@ end
 StartGameWindowDifficulty._handle_input = function (self, dt, t)
 	local difficulty_widgets = self._difficulty_widgets
 
-	for i = 1, #difficulty_widgets, 1 do
+	for i = 1, #difficulty_widgets do
 		local widget = difficulty_widgets[i]
 
 		if self:_is_button_hover_enter(widget) then
@@ -284,7 +284,7 @@ end
 StartGameWindowDifficulty._set_selected_difficulty_option = function (self, new_difficulty_key)
 	local difficulty_widgets = self._difficulty_widgets
 
-	for i = 1, #difficulty_widgets, 1 do
+	for i = 1, #difficulty_widgets do
 		local widget = difficulty_widgets[i]
 		local content = widget.content
 		local difficulty_key = content.difficulty_key
@@ -344,9 +344,9 @@ StartGameWindowDifficulty._update_difficulty_lock = function (self)
 					local required_power_level = difficulty_settings.required_power_level
 					local difficulty_lock_text = Localize("required_power_level")
 					widgets_by_name.difficulty_lock_text.content.text = string.format("%s: %s", difficulty_lock_text, tostring(UIUtils.presentable_hero_power_level(required_power_level)))
-					widgets_by_name.difficulty_second_lock_text.content.text = (extra_requirement_failed and Localize(extra_requirement_failed)) or ""
+					widgets_by_name.difficulty_second_lock_text.content.text = extra_requirement_failed and Localize(extra_requirement_failed) or ""
 				else
-					widgets_by_name.difficulty_lock_text.content.text = (extra_requirement_failed and Localize(extra_requirement_failed)) or ""
+					widgets_by_name.difficulty_lock_text.content.text = extra_requirement_failed and Localize(extra_requirement_failed) or ""
 				end
 			end
 
@@ -407,7 +407,7 @@ StartGameWindowDifficulty.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -505,5 +505,3 @@ StartGameWindowDifficulty._show_storepage = function (self, store_page_url)
 		Steam.open_url(store_page_url)
 	end
 end
-
-return

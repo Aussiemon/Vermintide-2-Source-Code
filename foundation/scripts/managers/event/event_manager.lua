@@ -39,5 +39,3 @@ EventManager.trigger = function (self, event_name, ...)
 		end
 	end
 end
-
-return

@@ -166,7 +166,7 @@ UnlockManager._check_ps4_dlc_status = function (self)
 			local owned_dlcs = dlcs_interface:get_owned_dlcs()
 			local platform_dlcs = dlcs_interface:get_platform_dlcs()
 
-			for i = 1, #platform_dlcs, 1 do
+			for i = 1, #platform_dlcs do
 				local unlock_name = platform_dlcs[i]
 
 				if not table.find(owned_dlcs, unlock_name) then
@@ -706,7 +706,7 @@ UnlockManager._update_backend_unlocks = function (self, t)
 				local platform_dlcs = dlcs_interface:get_platform_dlcs()
 				local new_dlc_installed = false
 
-				for i = 1, #platform_dlcs, 1 do
+				for i = 1, #platform_dlcs do
 					local unlock_name = platform_dlcs[i]
 
 					if not self._excluded_dlcs[unlock_name] and not table.find(owned_dlcs, unlock_name) then
@@ -730,7 +730,7 @@ UnlockManager._update_backend_unlocks = function (self, t)
 					return
 				end
 
-				self._state = (new_dlc_installed and "update_backend_dlcs") or "check_unseen_rewards"
+				self._state = new_dlc_installed and "update_backend_dlcs" or "check_unseen_rewards"
 			end
 		end
 	elseif self._state == "update_backend_dlcs" then
@@ -801,7 +801,7 @@ UnlockManager._handle_unseen_rewards = function (self)
 
 	local items_by_source = {}
 
-	for i = 1, #unseen_rewards, 1 do
+	for i = 1, #unseen_rewards do
 		local reward = unseen_rewards[i]
 		local item = nil
 
@@ -886,7 +886,7 @@ UnlockManager.set_excluded_dlcs = function (self, dlcs_to_exclude)
 		return
 	end
 
-	for i = 1, #dlcs_to_exclude, 1 do
+	for i = 1, #dlcs_to_exclude do
 		local dlc = dlcs_to_exclude[i]
 		excluded_dlcs[dlc] = true
 	end
@@ -905,5 +905,3 @@ UnlockManager._has_new_dlc = function (self)
 
 	return false
 end
-
-return

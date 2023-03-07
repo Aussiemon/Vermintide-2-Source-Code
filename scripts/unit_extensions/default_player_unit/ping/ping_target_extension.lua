@@ -103,7 +103,7 @@ PingTargetExtension._add_witch_hunter_buff = function (self, pinger_unit)
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local player_unit = player_and_bot_units[i]
 			local career_extension = ScriptUnit.has_extension(player_unit, "career_system")
 			local talent_extension = ScriptUnit.has_extension(player_unit, "talent_system")
@@ -119,5 +119,3 @@ PingTargetExtension._add_witch_hunter_buff = function (self, pinger_unit)
 		end
 	end
 end
-
-return

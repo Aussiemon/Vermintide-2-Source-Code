@@ -5922,5 +5922,3 @@ MaterialEffectMappings.enemy_minotaur_attack_ground = {
 		}
 	}
 }
-
-return

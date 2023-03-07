@@ -274,7 +274,7 @@ local widget_definitions = {
 						offset[3] = 0
 						uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
 						size[uv_scale_axis] = uv_pixels
-						offset[uv_scale_axis] = ((uv_start_pixels + uv_scale_pixels) - uv_pixels) * offset_scale
+						offset[uv_scale_axis] = (uv_start_pixels + uv_scale_pixels - uv_pixels) * offset_scale
 
 						return color, uvs, size, offset
 					end

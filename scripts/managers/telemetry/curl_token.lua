@@ -29,5 +29,3 @@ CurlToken.close = function (self)
 		Curl.close(self._token)
 	end
 end
-
-return

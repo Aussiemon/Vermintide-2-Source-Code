@@ -178,5 +178,3 @@ AimTemplates.ungor_archer = {
 		end
 	}
 }
-
-return

@@ -73,5 +73,3 @@ PlayerEquipmentWorldMarkerExtension.update = function (self, unit, dummy_input, 
 		self:add_marker()
 	end
 end
-
-return

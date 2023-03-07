@@ -42,7 +42,7 @@ ActionThrowGrimoire.finish = function (self, reason)
 	local owner_name = player:name()
 
 	if not IS_CONSOLE then
-		owner_name = (is_player_controlled and ((rawget(_G, "Steam") and Steam.user_name(peer_id)) or tostring(peer_id))) or player:name()
+		owner_name = is_player_controlled and (rawget(_G, "Steam") and Steam.user_name(peer_id) or tostring(peer_id)) or player:name()
 	end
 
 	local pop_chat = true
@@ -57,5 +57,3 @@ ActionThrowGrimoire.finish = function (self, reason)
 		Managers.state.network.network_transmit:send_rpc_server("rpc_coop_feedback", player:network_id(), player:local_player_id(), NetworkLookup.coop_feedback[predicate], player:network_id(), player:local_player_id())
 	end
 end
-
-return

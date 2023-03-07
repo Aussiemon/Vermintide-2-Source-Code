@@ -54,7 +54,7 @@ DialogueLookup[DialogueLookup_n + 12] = "pwe_hm_level_bogenhafen_city_raining"
 DialogueLookup[DialogueLookup_n + 13] = "pwe_level_bogenhafen_city_smoke_pillar"
 DialogueLookup[DialogueLookup_n + 14] = "pwe_level_bogenhafen_city_revelry"
 DialogueLookup[DialogueLookup_n + 15] = "pwe_sh_level_bogenhafen_city_revelry"
-DialogueLookup[DialogueLookup_n + 16] = "pwe_level_bogenhafen_city_bögenauer"
+DialogueLookup[DialogueLookup_n + 16] = "pwe_level_bogenhafen_city_bÃ¶genauer"
 DialogueLookup[DialogueLookup_n + 17] = "pwe_level_bogenhafen_city_infestation"
 DialogueLookup[DialogueLookup_n + 18] = "pwe_sh_level_bogenhafen_city_infestation"
 DialogueLookup[DialogueLookup_n + 19] = "pwe_level_bogenhafen_city_find_priest_key"
@@ -80,5 +80,3 @@ DialogueLookup[DialogueLookup_n + 38] = "pwe_level_bogenhafen_city _intro_a"
 DialogueLookup[DialogueLookup_n + 39] = "pwe_level_bogenhafen_city _intro_b"
 DialogueLookup[DialogueLookup_n + 40] = "pwe_level_bogenhafen_city _intro_c"
 DialogueLookup_n = DialogueLookup_n + 40
-
-return

@@ -40,7 +40,7 @@ DLCUtils.append("mutators", mutators_to_add)
 
 local mutator_settings = {}
 
-for i = 1, #mutators_to_add, 1 do
+for i = 1, #mutators_to_add do
 	local name = mutators_to_add[i]
 	local path = string.format("scripts/settings/mutators/mutator_%s", name)
 	local data = local_require(path)

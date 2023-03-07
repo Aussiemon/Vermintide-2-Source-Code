@@ -819,7 +819,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			100,
@@ -857,7 +857,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			325,
@@ -888,7 +888,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			255,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			100,
@@ -926,7 +926,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			-66,
@@ -970,7 +970,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = {
 			255,
 			150,
@@ -1006,7 +1006,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("white", 255),
 		offset = {
 			-60,
@@ -1526,7 +1526,7 @@ local function create_power_up_shop_item(scenegraph_id, size, masked, is_rectang
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			offset = {
 				-130,
@@ -1603,7 +1603,7 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_title", 255),
 		offset = {
 			60,
@@ -1641,7 +1641,7 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			255,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			55,
@@ -1679,7 +1679,7 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			size[1] + 12,
@@ -1712,7 +1712,7 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			price_text.offset[1],
@@ -1743,7 +1743,7 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("font_default", 255),
 		offset = {
 			size[1] + 10,
@@ -1774,7 +1774,7 @@ local function create_blessing_shop_item(scenegraph_id, size, masked)
 			0,
 			0
 		},
-		font_type = (masked and "hell_shark_masked") or "hell_shark",
+		font_type = masked and "hell_shark_masked" or "hell_shark",
 		text_color = Colors.get_color_table_with_alpha("yellow", 255),
 		offset = {
 			size[1] + 10,
@@ -2612,7 +2612,7 @@ local texts_pos = {
 	0
 }
 
-for i = 1, player_amount, 1 do
+for i = 1, player_amount do
 	local num_player_widgets = i - 1
 	local position = {
 		player_widget_initial_offset[1] + (spacing_x + player_widget_size[1]) * num_player_widgets,
@@ -2684,7 +2684,7 @@ local function create_blessing_portraits_frame(scenegraph_id, frame_settings_nam
 			size = data.size
 		end
 
-		size = (size and table.clone(size)) or {
+		size = size and table.clone(size) or {
 			0,
 			0
 		}
@@ -2720,9 +2720,11 @@ local function create_blessing_portraits_frame(scenegraph_id, frame_settings_nam
 	end
 
 	local portrait_size = {
-		portrait_size[1],
-		portrait_size[2]
+		86,
+		108
 	}
+	portrait_size[1] = portrait_size[1]
+	portrait_size[2] = portrait_size[2]
 	local level_offset = {
 		default_offset[1] - 15,
 		default_offset[2],

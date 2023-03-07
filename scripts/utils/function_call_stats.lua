@@ -47,7 +47,7 @@ function end_function_call_collection()
 		print("Counter", COUNTER)
 		table.sort(CALL_DATA, compare)
 
-		for ii = 1, 100, 1 do
+		for ii = 1, 100 do
 			local elem = CALL_DATA[ii]
 
 			if not elem then
@@ -62,5 +62,3 @@ function end_function_call_collection()
 		CALL_DATA = {}
 	end
 end
-
-return

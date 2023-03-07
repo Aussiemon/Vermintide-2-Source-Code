@@ -102,5 +102,3 @@ ActionSpiritStorm.fire = function (self, reason)
 		Managers.state.entity:system("ai_system"):alert_enemies_within_range(owner_unit, storm_spawn_position, current_action.alert_sound_range_fire)
 	end
 end
-
-return

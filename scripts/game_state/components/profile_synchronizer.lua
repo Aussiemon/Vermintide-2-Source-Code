@@ -42,7 +42,7 @@ local function profile_packages(profile_index, career_index, is_first_person)
 	local slots_n = #InventorySettings.slots
 	local packages_list = {}
 
-	for i = 1, slots_n, 1 do
+	for i = 1, slots_n do
 		repeat
 			local slot = InventorySettings.slots[i]
 			local slot_name = slot.name
@@ -61,7 +61,7 @@ local function profile_packages(profile_index, career_index, is_first_person)
 			if slot_category == "weapon" then
 				local weapon_packages = WeaponUtils.get_weapon_packages(item_template, item_units, is_first_person)
 
-				for j = 1, #weapon_packages, 1 do
+				for j = 1, #weapon_packages do
 					local package_name = weapon_packages[j]
 					packages_list[package_name] = false
 				end
@@ -91,10 +91,10 @@ local function profile_packages(profile_index, career_index, is_first_person)
 
 	local base_skin_name = career.base_skin
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
-	local skin_name = (skin_item and skin_item.data.name) or base_skin_name
+	local skin_name = skin_item and skin_item.data.name or base_skin_name
 	local skin_packages = CosmeticsUtils.retrieve_skin_packages(skin_name, is_first_person)
 
-	for i = 1, #skin_packages, 1 do
+	for i = 1, #skin_packages do
 		local package_name = skin_packages[i]
 		packages_list[package_name] = false
 	end
@@ -202,7 +202,7 @@ local function update_local_packages(state)
 
 		if inventory_data then
 			local is_owner = peer_id == own_peer_id
-			local needed_packages = (is_owner and inventory_data.first_person) or inventory_data.third_person
+			local needed_packages = is_owner and inventory_data.first_person or inventory_data.third_person
 
 			for needed_package, _ in pairs(needed_packages) do
 				all_needed_packages[needed_package] = true
@@ -408,7 +408,7 @@ end
 ProfileSynchronizer.get_first_free_profile = function (self)
 	local career_index = 1
 
-	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+	for profile_index = 1, NUM_HERO_PROFILES do
 		local profile_reserver_peer_id = self._state:get_profile_index_reservation(profile_index)
 
 		if not profile_reserver_peer_id then
@@ -457,7 +457,7 @@ end
 
 ProfileSynchronizer._all_synced_for_peer = function (self, peer_id, local_player_id, ignore_loading_peers)
 	local current_revision = self._state:get_revision()
-	local cache_type = (ignore_loading_peers and "ingame") or "any"
+	local cache_type = ignore_loading_peers and "ingame" or "any"
 	local cache_for_peer = self._cached_all_synced_for_peer[cache_type][peer_id]
 	local cached_data = cache_for_peer and cache_for_peer[local_player_id]
 	local cached_data_revision_key = 1
@@ -503,7 +503,7 @@ ProfileSynchronizer.resync_loadout = function (self, peer_id, local_player_id)
 end
 
 ProfileSynchronizer.rpc_assign_peer_to_profile = function (self, channel_id, peer_id, local_player_id, profile_index, career_index, is_bot)
-	printf("rpc_assign_peer_to_profile peer_id:%s local_player_id:%d profile_index:%d career_index:%d is_bot:%s", peer_id, local_player_id, profile_index, career_index, (is_bot and "true") or "false")
+	printf("rpc_assign_peer_to_profile peer_id:%s local_player_id:%d profile_index:%d career_index:%d is_bot:%s", peer_id, local_player_id, profile_index, career_index, is_bot and "true" or "false")
 
 	local status = Managers.party:get_player_status(peer_id, local_player_id)
 
@@ -517,7 +517,7 @@ ProfileSynchronizer.rpc_assign_peer_to_profile = function (self, channel_id, pee
 end
 
 ProfileSynchronizer._clear_profile_index_reservation = function (self, peer_id)
-	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+	for profile_index = 1, NUM_HERO_PROFILES do
 		local profile_reserver_peer_id = self._state:get_profile_index_reservation(profile_index)
 
 		if profile_reserver_peer_id == peer_id then
@@ -576,7 +576,7 @@ ProfileSynchronizer._sync_lobby_data = function (self)
 
 	local lobby_data = self._lobby:get_stored_lobby_data()
 
-	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+	for profile_index = 1, NUM_HERO_PROFILES do
 		local peer_id = self._state:get_profile_index_reservation(profile_index)
 		local key = lobby_slot_name(profile_index)
 
@@ -595,7 +595,7 @@ ProfileSynchronizer.get_packed_lobby_profile_slots = function (self)
 	local peers = {}
 	local player_indices = {}
 
-	for profile_index = 1, NUM_HERO_PROFILES, 1 do
+	for profile_index = 1, NUM_HERO_PROFILES do
 		local peer_id = self._state:get_profile_index_reservation(profile_index)
 
 		if not peer_id or peer_id == "" then
@@ -642,7 +642,7 @@ end
 ProfileSynchronizer.unpack_lobby_profile_slots = function (peer_ids, player_indices, lobby_data)
 	assert(#peer_ids == #player_indices)
 
-	for profile_index = 1, #peer_ids, 1 do
+	for profile_index = 1, #peer_ids do
 		local slot_name = lobby_slot_name(profile_index)
 		local peer_id = peer_ids[profile_index]
 		local local_player_id = player_indices[profile_index]
@@ -664,5 +664,3 @@ ProfileSynchronizer.owner_in_lobby = function (profile_index, lobby_data)
 		return peer_id, local_player_index
 	end
 end
-
-return

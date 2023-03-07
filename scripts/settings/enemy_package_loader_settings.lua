@@ -77,7 +77,7 @@ for dlc_name, dlc in pairs(DLCSettings) do
 		for category_id, breeds_to_add in pairs(breed_categories) do
 			local target_category = nil
 
-			for i = 1, #categories, 1 do
+			for i = 1, #categories do
 				local category = categories[i]
 
 				if category.id == category_id then
@@ -89,14 +89,14 @@ for dlc_name, dlc in pairs(DLCSettings) do
 
 			fassert(target_category ~= nil, "Couldn't find EnemeyPackageLoader category %s specified in DLC %s.", category_id, dlc_name)
 
-			for i = 1, #categories, 1 do
+			for i = 1, #categories do
 				local category = categories[i]
 				local breeds = category.breeds
 
-				for j = 1, #breeds_to_add, 1 do
+				for j = 1, #breeds_to_add do
 					local breed_to_add = breeds_to_add[j]
 
-					for k = 1, #breeds, 1 do
+					for k = 1, #breeds do
 						local breed = breeds[k]
 
 						fassert(breed ~= breed_to_add, "Breed %s (DLC: %s) is already defined in category %s!", breed_to_add, dlc_name, category.id)
@@ -106,7 +106,7 @@ for dlc_name, dlc in pairs(DLCSettings) do
 
 			local target_breeds = target_category.breeds
 
-			for i = 1, #breeds_to_add, 1 do
+			for i = 1, #breeds_to_add do
 				local breed_to_add = breeds_to_add[i]
 				target_breeds[#target_breeds + 1] = breed_to_add
 
@@ -151,7 +151,7 @@ print("[EnemyPackageLoaderSettings] enemy_package_loader_policy:", EnemyPackageL
 if category_changes then
 	local categories = EnemyPackageLoaderSettings.categories
 
-	for i = 1, #categories, 1 do
+	for i = 1, #categories do
 		local category = categories[i]
 		local changes = category_changes[category.id]
 
@@ -217,5 +217,3 @@ for alias, breed_name in pairs(alias_to_breed) do
 	local aliases = breed_to_aliases[breed_name]
 	aliases[#aliases + 1] = alias
 end
-
-return

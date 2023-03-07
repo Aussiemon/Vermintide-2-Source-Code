@@ -150,7 +150,7 @@ PlayerCharacterStateCharged.update = function (self, unit, input, dt, context, t
 	end
 
 	local walking = input_extension:get("walk")
-	local move_speed = (status_extension:is_crouching() and movement_settings_table.crouch_move_speed) or (walking and movement_settings_table.walk_move_speed) or movement_settings_table.move_speed
+	local move_speed = status_extension:is_crouching() and movement_settings_table.crouch_move_speed or walking and movement_settings_table.walk_move_speed or movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
 
 	if walking ~= self.walking then
@@ -243,5 +243,3 @@ PlayerCharacterStateCharged.queue_input = function (self, input, input_extension
 		end
 	end
 end
-
-return

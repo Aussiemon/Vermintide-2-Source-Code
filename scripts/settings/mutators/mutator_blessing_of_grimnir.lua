@@ -14,7 +14,7 @@ local function buff_all_players(buff_name)
 	local buff_system = Managers.state.entity:system("buff_system")
 	local server_controlled = false
 
-	for i = 1, num_current_player_units, 1 do
+	for i = 1, num_current_player_units do
 		local unit = current_player_units[i]
 		local is_alive = unit_alive(unit)
 

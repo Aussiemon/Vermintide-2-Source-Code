@@ -92,7 +92,7 @@ ActionCareerWHPriest._cast_spells = function (self, spell_data, target)
 			local current_target = nil
 			local owner_position = POSITION_LOOKUP[owner_unit]
 
-			for i = 1, num_units, 1 do
+			for i = 1, num_units do
 				local unit = player_and_bot_units[i]
 
 				if ALIVE[unit] and unit ~= owner_unit then
@@ -116,12 +116,10 @@ ActionCareerWHPriest._add_buffs_to_target = function (self, buffs_to_add, target
 		local owner_unit = self.owner_unit
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, #buffs_to_add, 1 do
+		for i = 1, #buffs_to_add do
 			local buff_name = buffs_to_add[i]
 
 			buff_system:add_buff(target, buff_name, owner_unit)
 		end
 	end
 end
-
-return

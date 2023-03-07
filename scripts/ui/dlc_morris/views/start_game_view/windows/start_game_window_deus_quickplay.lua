@@ -190,7 +190,7 @@ StartGameWindowDeusQuickplay._handle_input = function (self, dt, t)
 	else
 		local widgets_by_name = self._widgets_by_name
 
-		for i = 1, #selector_input_definitions, 1 do
+		for i = 1, #selector_input_definitions do
 			local widget_name = selector_input_definitions[i].widget_name
 			local widget = widgets_by_name[widget_name]
 			local is_selected = widget.content.is_selected
@@ -206,7 +206,7 @@ StartGameWindowDeusQuickplay._handle_input = function (self, dt, t)
 					self:_play_sound("Play_hud_hover")
 				end
 
-				if UIUtils.is_button_hover(widget, "info_hotspot") or UIUtils.is_button_hover(self._widgets_by_name.difficulty_info, "widget_hotspot") or (not mouse_active and is_selected) then
+				if UIUtils.is_button_hover(widget, "info_hotspot") or UIUtils.is_button_hover(self._widgets_by_name.difficulty_info, "widget_hotspot") or not mouse_active and is_selected then
 					local widgets = {
 						difficulty_info = self._widgets_by_name.difficulty_info,
 						upsell_button = self._widgets_by_name.upsell_button
@@ -379,7 +379,7 @@ StartGameWindowDeusQuickplay._handle_new_selection = function (self, input_index
 	input_index = math.clamp(input_index, 1, num_inputs)
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, #selector_input_definitions, 1 do
+	for i = 1, #selector_input_definitions do
 		local widget_name = selector_input_definitions[i].widget_name
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
@@ -438,7 +438,7 @@ StartGameWindowDeusQuickplay._update_difficulty_lock = function (self)
 		if not approved then
 			if extra_requirement_failed then
 				difficulty_info_widget.content.should_show_diff_lock_text = true
-				difficulty_info_widget.content.difficulty_lock_text = (extra_requirement_failed and Localize(extra_requirement_failed)) or ""
+				difficulty_info_widget.content.difficulty_lock_text = extra_requirement_failed and Localize(extra_requirement_failed) or ""
 			else
 				difficulty_info_widget.content.should_show_diff_lock_text = false
 			end
@@ -607,5 +607,3 @@ StartGameWindowDeusQuickplay._set_expedition_text_highlight_offset = function (s
 		game_mode_info_box.content.expedition_highlight_text = ""
 	end
 end
-
-return

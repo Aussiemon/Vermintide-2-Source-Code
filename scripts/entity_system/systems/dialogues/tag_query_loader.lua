@@ -94,5 +94,3 @@ TagQueryLoader.unload_files = function (self)
 	self.loaded_files = nil
 	self.tagquery_database = nil
 end
-
-return

@@ -528,5 +528,3 @@ EntitySystem.destroy = function (self)
 
 	GarbageLeakDetector.register_object(self, "EntitySystem")
 end
-
-return

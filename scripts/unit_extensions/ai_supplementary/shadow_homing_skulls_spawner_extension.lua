@@ -52,7 +52,7 @@ local function shuffled_players(side)
 	local players = side.PLAYER_AND_BOT_UNITS
 	local unit_list = {}
 
-	for i = 1, #players, 1 do
+	for i = 1, #players do
 		local unit = players[i]
 
 		if ALIVE[unit] and ScriptUnit.extension(unit, "health_system"):is_alive() then
@@ -122,7 +122,7 @@ ShadowHomingSkullsSpawnerExtension.update = function (self, unit, input, dt, con
 		self._tracked_player = nil
 		local players = shuffled_players(self._hero_side)
 
-		for i = 1, #players, 1 do
+		for i = 1, #players do
 			local random_player = players[i]
 			local target_position = POSITION_LOOKUP[random_player] + Vector3(0, 0, Z_OFFSET_RAYCAST)
 			local own_position = self._own_position
@@ -183,5 +183,3 @@ ShadowHomingSkullsSpawnerExtension.update = function (self, unit, input, dt, con
 		self._destroyed = true
 	end
 end
-
-return

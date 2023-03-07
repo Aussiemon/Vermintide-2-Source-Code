@@ -23,7 +23,7 @@ SideManager._create_sides = function (self, side_compositions)
 	local sides = {}
 	local side_lookup = {}
 
-	for i = 0, #side_compositions, 1 do
+	for i = 0, #side_compositions do
 		local definition = side_compositions[i]
 		local side_name = definition.name
 
@@ -40,7 +40,7 @@ SideManager._create_sides = function (self, side_compositions)
 end
 
 SideManager._setup_relations = function (self, side_compositions, sides, side_lookup)
-	for i = 0, #side_compositions, 1 do
+	for i = 0, #side_compositions do
 		local definition = side_compositions[i]
 		local side = sides[i]
 		local relations = definition.relations
@@ -48,7 +48,7 @@ SideManager._setup_relations = function (self, side_compositions, sides, side_lo
 		for relation, side_list in pairs(relations) do
 			local temp_sides = {}
 
-			for j = 1, #side_list, 1 do
+			for j = 1, #side_list do
 				local relation_side_name = side_list[j]
 
 				fassert(side_lookup[relation_side_name], "Side (%s) does not exist", relation_side_name)
@@ -64,7 +64,7 @@ end
 SideManager._setup_side_by_party = function (self, sides)
 	local side_by_party = {}
 
-	for i = 0, #sides, 1 do
+	for i = 0, #sides do
 		local side = sides[i]
 		local party = side.party
 
@@ -116,7 +116,7 @@ SideManager.add_unit_to_side = function (self, unit, side_id)
 	self.side_by_unit[unit] = side
 	local enemy_sides = side:get_enemy_sides()
 
-	for i = 1, #enemy_sides, 1 do
+	for i = 1, #enemy_sides do
 		local enemy_side = enemy_sides[i]
 
 		enemy_side:add_enemy_unit(unit)
@@ -134,7 +134,7 @@ SideManager.remove_unit_from_side = function (self, unit)
 
 	local enemy_sides = side:get_enemy_sides()
 
-	for i = 1, #enemy_sides, 1 do
+	for i = 1, #enemy_sides do
 		local enemy_side = enemy_sides[i]
 
 		enemy_side:remove_enemy_unit(unit)
@@ -154,7 +154,7 @@ SideManager.add_player_unit_to_side = function (self, player_unit, side_id)
 
 	local enemy_sides = side:get_enemy_sides()
 
-	for i = 1, #enemy_sides, 1 do
+	for i = 1, #enemy_sides do
 		local enemy_side = enemy_sides[i]
 
 		enemy_side:add_enemy_player_unit(player_unit)
@@ -168,7 +168,7 @@ SideManager.remove_player_unit_from_side = function (self, player_unit)
 	local side = self.side_by_unit[player_unit]
 	local enemy_sides = side:get_enemy_sides()
 
-	for i = 1, #enemy_sides, 1 do
+	for i = 1, #enemy_sides do
 		local enemy_side = enemy_sides[i]
 
 		enemy_side:remove_enemy_player_unit(player_unit)
@@ -229,12 +229,12 @@ SideManager.remove_aggro_unit = function (self, side_id, aggro_unit)
 	local enemy_sides = side:get_enemy_sides()
 	local num_enemy_sides = #enemy_sides
 
-	for i = 1, num_enemy_sides, 1 do
+	for i = 1, num_enemy_sides do
 		local enemy_side = enemy_sides[i]
 		local ai_target_units = enemy_side.AI_TARGET_UNITS
 		local size = #ai_target_units
 
-		for j = 1, size, 1 do
+		for j = 1, size do
 			if aggro_unit == ai_target_units[j] then
 				ai_target_units[j] = ai_target_units[size]
 				ai_target_units[size] = nil
@@ -251,13 +251,13 @@ SideManager.update_frame_tables = function (self)
 	local sides = self._sides
 	local num_sides = #sides
 
-	for i = 1, num_sides, 1 do
+	for i = 1, num_sides do
 		local side = sides[i]
 
 		self:_update_frame_tables(side, ALL_PLAYER_AND_BOT_UNITS)
 	end
 
-	for i = 1, num_sides, 1 do
+	for i = 1, num_sides do
 		local side = sides[i]
 
 		self:_update_enemy_frame_tables(side)
@@ -312,7 +312,7 @@ SideManager._update_frame_tables = function (self, side, all_human_and_bot_units
 	local player_manager = Managers.player
 	local has_bots = false
 
-	for i = 1, num_added_player_units, 1 do
+	for i = 1, num_added_player_units do
 		local unit = added_player_units[i]
 
 		if is_valid(unit) then
@@ -368,7 +368,7 @@ SideManager._update_enemy_frame_tables = function (self, side)
 	local num_enemy_player_units = #enemy_player_units
 	local player_manager = Managers.player
 
-	for i = 1, num_enemy_player_units, 1 do
+	for i = 1, num_enemy_player_units do
 		local unit = enemy_player_units[i]
 
 		if is_valid(unit) then
@@ -413,7 +413,7 @@ SideManager._update_enemy_frame_tables = function (self, side)
 	local num_enemy_sides = #enemy_sides
 	local j = 1
 
-	for ii = 1, num_enemy_sides, 1 do
+	for ii = 1, num_enemy_sides do
 		local enemy_side = enemy_sides[ii]
 		local aggroable_units = aggro_system.aggroable_units[enemy_side.side_id]
 
@@ -436,13 +436,13 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 	local sides = self._sides
 	local num_sides = #sides
 
-	for i = 1, num_sides, 1 do
+	for i = 1, num_sides do
 		local side = sides[i]
 		local player_units = side.PLAYER_UNITS
 		local player_positions = side.PLAYER_POSITIONS
 		local size = #player_units
 
-		for j = 1, size, 1 do
+		for j = 1, size do
 			if player_unit == player_units[j] then
 				player_units[j] = player_units[size]
 				player_units[size] = nil
@@ -457,7 +457,7 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 		local player_and_bot_positions = side.PLAYER_AND_BOT_POSITIONS
 		size = #player_and_bot_units
 
-		for j = 1, size, 1 do
+		for j = 1, size do
 			if player_unit == player_and_bot_units[j] then
 				player_and_bot_units[j] = player_and_bot_units[size]
 				player_and_bot_units[size] = nil
@@ -472,7 +472,7 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 		local enemy_player_positions = side.ENEMY_PLAYER_POSITIONS
 		size = #enemy_player_units
 
-		for j = 1, size, 1 do
+		for j = 1, size do
 			if player_unit == enemy_player_units[j] then
 				enemy_player_units[j] = enemy_player_units[size]
 				enemy_player_units[size] = nil
@@ -487,7 +487,7 @@ SideManager._remove_player_unit_from_lists = function (self, player_unit)
 		local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 		size = #enemy_player_and_bot_units
 
-		for j = 1, size, 1 do
+		for j = 1, size do
 			if player_unit == enemy_player_and_bot_units[j] then
 				enemy_player_and_bot_units[j] = enemy_player_and_bot_units[size]
 				enemy_player_and_bot_units[size] = nil
@@ -512,5 +512,3 @@ SideManager.get_side_from_player_unique_id = function (self, unique_id)
 
 	return side
 end
-
-return

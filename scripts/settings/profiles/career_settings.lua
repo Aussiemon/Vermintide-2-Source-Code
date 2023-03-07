@@ -740,7 +740,7 @@ CareerSettings = {
 					local default_items = BackendUtils.get_item_units(default_item_data)
 					local weapon_packages = WeaponUtils.get_weapon_packages(weapon_template, default_items, is_first_person)
 
-					for j = 1, #weapon_packages, 1 do
+					for j = 1, #weapon_packages do
 						local package_name = weapon_packages[j]
 						packages_list[package_name] = false
 					end
@@ -1372,5 +1372,3 @@ if script_data.honduras_demo then
 	}
 	CareerSettings.es_knight.preview_animation = nil
 end
-
-return

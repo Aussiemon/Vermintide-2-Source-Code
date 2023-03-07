@@ -270,5 +270,3 @@ end
 AiHuskLocomotionExtension.hot_join_sync = function (self, sender)
 	assert(false, "ai is never husk on server")
 end
-
-return

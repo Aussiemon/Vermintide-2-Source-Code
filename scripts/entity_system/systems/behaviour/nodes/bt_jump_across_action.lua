@@ -96,7 +96,7 @@ BTJumpAcrossAction.leave = function (self, unit, blackboard, t, reason, destroy)
 
 	local hit_reaction_extension = ScriptUnit.extension(unit, "hit_reaction_system")
 	hit_reaction_extension.force_ragdoll_on_death = nil
-	slot8 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
 
 BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
@@ -165,7 +165,7 @@ BTJumpAcrossAction.run = function (self, unit, blackboard, t, dt)
 			local smart_object_settings = SmartObjectSettings.templates[blackboard.breed.smart_object_template]
 			local jump_across_anim_thresholds = smart_object_settings.jump_across_anim_thresholds
 
-			for i = 1, #jump_across_anim_thresholds, 1 do
+			for i = 1, #jump_across_anim_thresholds do
 				local jump_anim_threshold = jump_across_anim_thresholds[i]
 
 				if horizontal_length < jump_anim_threshold.horizontal_threshold then
@@ -227,5 +227,3 @@ BTJumpAcrossAction._debug_draw_update = function (self, unit, blackboard, t)
 	drawer:sphere(unit_position, 0.3 + math.sin(t * 5) * 0.01, Colors.get("purple"))
 	debug_graph():add_point(t, unit_position.z)
 end
-
-return

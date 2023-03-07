@@ -45,7 +45,7 @@ DoorSystem.on_add_extension = function (self, world, unit, extension_name, ...)
 	if extension_name == "BossDoorExtension" then
 		local boss_doors = self._boss_doors
 
-		for i = 0, 2, 1 do
+		for i = 0, 2 do
 			repeat
 				local map_section = Unit.get_data(unit, "map_sections", i)
 
@@ -99,7 +99,7 @@ DoorSystem.update = function (self, context, t)
 		for map_section, groups in pairs(active_groups) do
 			local open_map_section = false
 
-			for i = 1, #groups, 1 do
+			for i = 1, #groups do
 				local data = groups[i]
 				local group_id = data.group_id
 				local active = data.active
@@ -154,7 +154,7 @@ DoorSystem.update = function (self, context, t)
 			end
 		end
 
-		for i = 1, #sections_to_open, 1 do
+		for i = 1, #sections_to_open do
 			local map_section = sections_to_open[i]
 
 			self:open_boss_doors(map_section)
@@ -173,7 +173,7 @@ DoorSystem.get_boss_door_units = function (self)
 	local boss_door_units = {}
 
 	for map_section, map_section_door_units in pairs(boss_doors) do
-		for i = 1, #map_section_door_units, 1 do
+		for i = 1, #map_section_door_units do
 			local boss_door_unit = map_section_door_units[i]
 			boss_door_units[#boss_door_units + 1] = boss_door_unit
 		end
@@ -208,7 +208,7 @@ DoorSystem.close_boss_doors = function (self, map_section, group_id, breed_name)
 	local network_transmit = network_manager.network_transmit
 
 	if boss_doors then
-		for i = 1, #boss_doors, 1 do
+		for i = 1, #boss_doors do
 			local boss_door_unit = boss_doors[i]
 			local extension = ScriptUnit.extension(boss_door_unit, "door_system")
 
@@ -217,7 +217,7 @@ DoorSystem.close_boss_doors = function (self, map_section, group_id, breed_name)
 			local level = LevelHelper:current_level(self.world)
 			local level_index = Level.unit_index(level, boss_door_unit)
 			local door_state_id = NetworkLookup.door_states.closed
-			local breed_id = (breed_name and NetworkLookup.breeds[breed_name]) or NetworkLookup.breeds["n/a"]
+			local breed_id = breed_name and NetworkLookup.breeds[breed_name] or NetworkLookup.breeds["n/a"]
 
 			network_transmit:send_rpc_clients("rpc_sync_boss_door_state", level_index, door_state_id, breed_id)
 		end
@@ -239,7 +239,7 @@ DoorSystem.open_boss_doors = function (self, map_section)
 	local network_manager = Managers.state.network
 	local network_transmit = network_manager.network_transmit
 
-	for i = 1, #boss_doors, 1 do
+	for i = 1, #boss_doors do
 		local boss_door_unit = boss_doors[i]
 		local extension = ScriptUnit.extension(boss_door_unit, "door_system")
 
@@ -258,7 +258,7 @@ DoorSystem.get_boss_door_units = function (self)
 	local boss_door_units = {}
 
 	for map_section, boss_doors in pairs(self._boss_doors) do
-		for i = 1, #boss_doors, 1 do
+		for i = 1, #boss_doors do
 			local boss_door_unit = boss_doors[i]
 			boss_door_units[#boss_door_units + 1] = boss_door_unit
 		end
@@ -334,5 +334,3 @@ DoorSystem.rpc_sync_boss_door_state = function (self, channel_id, level_object_i
 		Application.warning(string.format("[DoorSystem:rpc_sync_boss_door_state] The synced level_object_id (%s) doesn't correspond to a unit with a 'door_system' extension. Unit: %s", level_object_id, tostring(door_unit)))
 	end
 end
-
-return

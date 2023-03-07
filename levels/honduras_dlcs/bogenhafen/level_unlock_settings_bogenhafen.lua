@@ -313,5 +313,3 @@ ActSettings.act_bogenhafen = {
 	display_name = "area_selection_bogenhafen_name",
 	console_offset = 350
 }
-
-return

@@ -716,7 +716,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 	}
 	local start_width_offset = size[1] - (button_size[1] * amount + slot_width_spacing * (amount - 1))
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		local offset = {
@@ -744,7 +744,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 		style[background_name] = {
 			size = button_size,
 			color = {
-				(IS_WINDOWS and 165) or 100,
+				IS_WINDOWS and 165 or 100,
 				0,
 				0,
 				0
@@ -969,7 +969,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2]) - 8,
+				offset[2] + button_size[2] - 8,
 				5
 			}
 		}
@@ -986,7 +986,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
+				offset[2] + button_size[2] / 2 - icon_size[2] / 2,
 				3
 			}
 		}
@@ -1011,7 +1011,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
+				offset[2] + button_size[2] / 2 - icon_size[2] / 2,
 				4
 			}
 		}
@@ -1035,7 +1035,7 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
+				offset[2] + button_size[2] / 2 - icon_size[2] / 2,
 				4
 			}
 		}
@@ -1052,8 +1052,8 @@ local function talent_row(scenegraph_id, size, button_size, amount)
 			},
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				(offset[1] + icon_size[1]) - 5,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2 + 1,
+				offset[1] + icon_size[1] - 5,
+				offset[2] + button_size[2] / 2 - icon_size[2] / 2 + 1,
 				6
 			}
 		}

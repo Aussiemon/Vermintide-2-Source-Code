@@ -150,5 +150,3 @@ DLCUtils.require_list("outline_settings")
 for name, settings in pairs(OutlineSettings.colors) do
 	settings.name = name
 end
-
-return

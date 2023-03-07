@@ -281,5 +281,3 @@ EmojiHelper.replace_emojis = function (text)
 
 	return text
 end
-
-return

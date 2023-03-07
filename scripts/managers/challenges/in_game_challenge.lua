@@ -256,5 +256,3 @@ InGameChallenge.client_update = function (self, progress, status_id, result_id)
 	self._status = InGameChallengeStatus[status_id]
 	self._result = InGameChallengeResult[result_id]
 end
-
-return

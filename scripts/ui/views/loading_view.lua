@@ -49,12 +49,12 @@ local max_tips = 0
 local num_tip_types = #tip_type_list
 local tip_weight_list = {}
 
-for i = 1, num_tip_types, 1 do
+for i = 1, num_tip_types do
 	local tip_type = tip_type_list[i]
 
 	fassert(tip_type_max_range[tip_type], "Missing max range of tip type %s", tip_type)
 
-	max_tips = (max_tips + tip_type_max_range[tip_type]) - ((blocked_tip_type_indices[tip_type] and #blocked_tip_type_indices[tip_type]) or 0)
+	max_tips = max_tips + tip_type_max_range[tip_type] - (blocked_tip_type_indices[tip_type] and #blocked_tip_type_indices[tip_type] or 0)
 end
 
 for name, value in pairs(tip_type_max_range) do
@@ -255,7 +255,7 @@ LoadingView.create_ui_elements = function (self)
 
 	self.bg_widget.content.bg_texture = self.default_loading_screen
 	local level_settings = self.level_key and LevelSettings[self.level_key]
-	local game_mode = (level_settings and level_settings.game_mode) or "adventure"
+	local game_mode = level_settings and level_settings.game_mode or "adventure"
 
 	self:setup_tip_text(self.act_progression_index, game_mode, self._tip_localization_key)
 
@@ -410,7 +410,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 			local random = math.random()
 			local range_start = 0
 
-			for i = 1, num_tip_types, 1 do
+			for i = 1, num_tip_types do
 				local tip_type = tip_type_list[i]
 				local chance = tip_weight_list[tip_type]
 				local range_end = range_start + chance
@@ -441,7 +441,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 				end
 			end
 
-			local tip_index = (tip_random_index < 10 and "0" .. tostring(tip_random_index)) or tostring(tip_random_index)
+			local tip_index = tip_random_index < 10 and "0" .. tostring(tip_random_index) or tostring(tip_random_index)
 			tip_localization_key = tip_prefix .. "_" .. tip_index
 		end
 
@@ -483,12 +483,12 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 						second_input_texture_data, suffix_text = self:_find_second_input_texture(suffix_text, macro_replacement, input_actions[2], font, scaled_font_size)
 					end
 
-					local second_icon_size = (second_input_texture_data.button_texture_data and second_input_texture_data.button_texture_data.size) or DEFAULT_ICON_SIZE_TABLE
+					local second_icon_size = second_input_texture_data.button_texture_data and second_input_texture_data.button_texture_data.size or DEFAULT_ICON_SIZE_TABLE
 					local second_icon_texture = second_input_texture_data.button_texture_data and second_input_texture_data.button_texture_data.texture
 					local second_icon_icon_offset = second_input_texture_data.icon_offset or 0
 					local suffix_text_width = UIRenderer.text_size(self.ui_renderer, suffix_text, font[1], scaled_font_size)
 					local total_width = prefix_text_width + icon_width + suffix_text_width + second_icon_size[1]
-					local prefix_text_offset = (-total_width * 0.5 + prefix_text_width * 0.5) - icon_width * 0.05
+					local prefix_text_offset = -total_width * 0.5 + prefix_text_width * 0.5 - icon_width * 0.05
 					local input_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05 + icon_width * 0.5
 					local second_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05 + icon_width * 0.5 + second_icon_icon_offset + second_icon_size[1] * 0.05 + second_icon_size[1]
 					local suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5 + icon_width * 0.5
@@ -498,7 +498,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 						prefix_text = text_rows[2]
 						prefix_text_width = UIRenderer.text_size(self.ui_renderer, prefix_text, font[1], scaled_font_size)
 						total_width = prefix_text_width + icon_width + suffix_text_width
-						prefix_text_offset = (-total_width * 0.5 + prefix_text_width * 0.5) - icon_width * 0.5
+						prefix_text_offset = -total_width * 0.5 + prefix_text_width * 0.5 - icon_width * 0.5
 						input_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05
 						suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5
 						self.tip_text_prefix_widget.content.text = text_rows[1]
@@ -526,7 +526,7 @@ LoadingView.setup_tip_text = function (self, act_progression_index, game_mode, t
 						suffix_text = text_rows[1]
 						suffix_text_width = UIRenderer.text_size(self.ui_renderer, suffix_text, font[1], scaled_font_size)
 						total_width = prefix_text_width + icon_width + suffix_text_width
-						prefix_text_offset = (-total_width * 0.5 + prefix_text_width * 0.5) - icon_width * 0.5
+						prefix_text_offset = -total_width * 0.5 + prefix_text_width * 0.5 - icon_width * 0.5
 						input_icon_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.05
 						suffix_text_offset = -total_width * 0.5 + prefix_text_width + icon_width * 0.5 + suffix_text_width * 0.5
 						self.second_row_tip_text_prefix_widget.content.text = text_rows[2]
@@ -650,7 +650,7 @@ LoadingView.update = function (self, dt)
 
 	if gamepad_active ~= self._gamepad_active then
 		local level_settings = self.level_key and LevelSettings[self.level_key]
-		local game_mode = (level_settings and level_settings.game_mode) or "adventure"
+		local game_mode = level_settings and level_settings.game_mode or "adventure"
 
 		self:setup_tip_text(self.act_progression_index, game_mode, self._tip_localization_key)
 
@@ -697,7 +697,7 @@ LoadingView.draw = function (self, dt)
 
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, FAKE_INPUT_SERVICE, dt, nil, self.render_settings)
 
-	for i = 1, #self.widgets, 1 do
+	for i = 1, #self.widgets do
 		UIRenderer.draw_widget(ui_renderer, self.widgets[i])
 	end
 
@@ -729,5 +729,3 @@ end
 LoadingView.is_done = function (self)
 	return true
 end
-
-return

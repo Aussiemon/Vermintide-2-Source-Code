@@ -532,5 +532,3 @@ BotBehaviors.dead = {
 	"BTNilAction",
 	name = "dead"
 }
-
-return

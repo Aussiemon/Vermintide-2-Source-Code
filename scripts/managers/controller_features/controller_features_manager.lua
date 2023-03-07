@@ -34,5 +34,3 @@ ControllerFeaturesManager.destroy = function (self)
 
 	self._impl = nil
 end
-
-return

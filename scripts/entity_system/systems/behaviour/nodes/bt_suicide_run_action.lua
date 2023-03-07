@@ -214,5 +214,3 @@ BTSuicideRunAction.StateExplode.update = function (self, dt, t)
 
 	suicide_run.done = true
 end
-
-return

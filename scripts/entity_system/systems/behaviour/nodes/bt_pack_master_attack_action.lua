@@ -162,5 +162,3 @@ BTPackMasterAttackAction.create_bot_threat = function (self, unit, blackboard, t
 		end
 	end
 end
-
-return

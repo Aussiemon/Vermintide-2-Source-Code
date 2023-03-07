@@ -49,11 +49,11 @@ CreditsView.on_exit = function (self)
 	self.active = nil
 	self.exiting = nil
 
-	Managers.music:trigger_event((IS_WINDOWS and "Play_hud_select") or "Play_console_menu_select")
+	Managers.music:trigger_event(IS_WINDOWS and "Play_hud_select" or "Play_console_menu_select")
 end
 
 CreditsView.exit = function (self, return_to_game)
-	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
+	local exit_transition = return_to_game and "exit_menu" or "ingame_menu"
 
 	self.ingame_ui:handle_transition(exit_transition)
 
@@ -65,20 +65,20 @@ CreditsView.update = function (self, dt)
 	local input_service = input_manager:get_service("credits_view")
 	local gamepad_active = input_manager:is_device_active("gamepad")
 
-	if input_service:get("toggle_menu", true) or (gamepad_active and input_service:get("back", true)) then
+	if input_service:get("toggle_menu", true) or gamepad_active and input_service:get("back", true) then
 		self:exit()
 
 		return
 	end
 
-	local input_axis = (gamepad_active and input_service:get("gamepad_left_axis")) or input_service:get("scroll_axis")
+	local input_axis = gamepad_active and input_service:get("gamepad_left_axis") or input_service:get("scroll_axis")
 	local scroll_value = input_axis.y
 
 	if not gamepad_active and IS_XB1 then
 		scroll_value = math.sign(input_axis.x) * 5
 	end
 
-	local current_offset = math.max(0, (self._current_offset + dt * 50) - scroll_value * 30)
+	local current_offset = math.max(0, self._current_offset + dt * 50 - scroll_value * 30)
 	self._current_offset = current_offset
 	local ui_top_renderer = self._ui_top_renderer
 	local widget = self._credits_widget
@@ -95,9 +95,9 @@ CreditsView.update = function (self, dt)
 
 	local credit_entries = credits.entries
 
-	for i = 1, self._num_credits, 1 do
+	for i = 1, self._num_credits do
 		local entry = credit_entries[i]
-		content.text_field = entry.localized_str or (entry.localized and Localize(entry.text)) or entry.text
+		content.text_field = entry.localized_str or entry.localized and Localize(entry.text) or entry.text
 		entry.localized_str = content.text_field
 
 		if entry.type == "header" then
@@ -133,5 +133,3 @@ CreditsView.update = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 end
-
-return

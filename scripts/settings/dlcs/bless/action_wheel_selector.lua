@@ -17,7 +17,7 @@ ActionWheelSelector.client_owner_start_action = function (self, new_action, t, c
 	self.timer_per_seg = new_action.timer_per_seg
 	self.num_seg = new_action.num_seg
 	self._timer = t + self.timer_per_seg
-	self.current_seg = (self.current_seg and self.current_seg + 1) or 1
+	self.current_seg = self.current_seg and self.current_seg + 1 or 1
 
 	if self.num_seg < self.current_seg then
 		self.current_seg = 1
@@ -50,5 +50,3 @@ end
 ActionWheelSelector.finish = function (self, reason, data)
 	ActionChangeMode.super.finish(self, reason)
 end
-
-return

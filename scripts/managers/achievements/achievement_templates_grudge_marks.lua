@@ -50,7 +50,7 @@ achievements.grudge_marks_on_kill_util = {
 		"register_kill"
 	},
 	completed = function (statistics_db, stats_id, template_data)
-		for i = 1, #achievement_to_check, 1 do
+		for i = 1, #achievement_to_check do
 			local achievement_id = achievement_to_check[i]
 			local completed = achievements[achievement_id].completed(statistics_db, stats_id)
 
@@ -116,7 +116,7 @@ for career, career_settings in pairs(CareerSettings) do
 		if career_breed and career_breed.is_hero then
 			local required_dlc = career_settings.required_dlc
 
-			for i = 1, #expeditions, 1 do
+			for i = 1, #expeditions do
 				local expedition_name = expeditions[i]
 				local achievement_id = "grudge_mark_kills_" .. career .. "_per_" .. expedition_name
 				achievements[achievement_id] = {
@@ -130,7 +130,7 @@ for career, career_settings in pairs(CareerSettings) do
 				}
 			end
 
-			for i = 1, #relevant_bosses, 1 do
+			for i = 1, #relevant_bosses do
 				local breed_name = relevant_bosses[i]
 				local achievement_id = "grudge_mark_kills_" .. career .. "_per_" .. breed_name
 				achievements[achievement_id] = {
@@ -165,7 +165,7 @@ for career, career_settings in pairs(CareerSettings) do
 			}
 			local achievement_group = {}
 
-			for i = 1, #relevant_bosses, 1 do
+			for i = 1, #relevant_bosses do
 				local breed_name = relevant_bosses[i]
 				local stat_count_achv = "grudge_mark_kills_" .. career .. "_per_" .. breed_name
 
@@ -179,7 +179,7 @@ for career, career_settings in pairs(CareerSettings) do
 
 			achievement_group = {}
 
-			for i = 1, #expeditions, 1 do
+			for i = 1, #expeditions do
 				local expedition_name = expeditions[i]
 				local stat_count_achv = "grudge_mark_kills_" .. career .. "_per_" .. expedition_name
 
@@ -204,5 +204,3 @@ for career, career_settings in pairs(CareerSettings) do
 		end
 	end
 end
-
-return

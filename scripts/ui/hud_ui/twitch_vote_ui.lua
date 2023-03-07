@@ -188,7 +188,7 @@ TwitchVoteUI.update = function (self, dt, t)
 	end
 
 	if DEBUG_VOTE_UI and self._active_vote then
-		for i = 1, 5, 1 do
+		for i = 1, 5 do
 			Debug.text("                               Vote Percentages: " .. self._active_vote.vote_percentages[i])
 		end
 	end
@@ -346,46 +346,46 @@ TwitchVoteUI._update_active_vote = function (self, dt, t)
 	local e_diff = options[5] - self._vote_count[5]
 
 	if a_diff > 0 then
-		for i = 1, a_diff, 1 do
+		for i = 1, a_diff do
 			self:_create_vote_icon(1)
 		end
 	end
 
 	if b_diff > 0 then
-		for i = 1, b_diff, 1 do
+		for i = 1, b_diff do
 			self:_create_vote_icon(2)
 		end
 	end
 
 	if c_diff > 0 then
-		for i = 1, c_diff, 1 do
+		for i = 1, c_diff do
 			self:_create_vote_icon(3)
 		end
 	end
 
 	if d_diff > 0 then
-		for i = 1, d_diff, 1 do
+		for i = 1, d_diff do
 			self:_create_vote_icon(4)
 		end
 	end
 
 	if e_diff > 0 then
-		for i = 1, e_diff, 1 do
+		for i = 1, e_diff do
 			self:_create_vote_icon(5)
 		end
 	end
 
 	local total_amount = 0
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		self._vote_count[i] = options[i]
 		total_amount = total_amount + options[i]
 	end
 
 	local percentages = {}
 
-	for i = 1, 5, 1 do
-		percentages[i] = (total_amount > 0 and options[i] / total_amount) or 0
+	for i = 1, 5 do
+		percentages[i] = total_amount > 0 and options[i] / total_amount or 0
 	end
 
 	self._active_vote.vote_percentages = self._active_vote.vote_percentages or {
@@ -396,7 +396,7 @@ TwitchVoteUI._update_active_vote = function (self, dt, t)
 		0
 	}
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		self._active_vote.vote_percentages[i] = math.lerp(self._active_vote.vote_percentages[i] or 0, percentages[i], dt * 2)
 	end
 
@@ -502,7 +502,7 @@ TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
 	local highest_percentage = 0
 	local glow_index = 0
 
-	for index = 1, 4, 1 do
+	for index = 1, 4 do
 		local widget_name = "hero_" .. index
 		local widget = self._widgets[widget_name]
 		local content = widget.content
@@ -518,7 +518,7 @@ TwitchVoteUI._update_multiple_votes_ui = function (self, dt)
 		end
 	end
 
-	for index = 1, 4, 1 do
+	for index = 1, 4 do
 		local widget_name = "hero_glow_" .. index
 		local widget = self._widgets[widget_name]
 		local glow = index == glow_index
@@ -757,5 +757,3 @@ end
 TwitchVoteUI._play_standard_vote_start = function (self)
 	WwiseWorld.trigger_event(self.wwise_world, "Play_twitch_vote_standard_buff_start")
 end
-
-return

@@ -37,7 +37,7 @@ return {
 			local num_current_player_units = #current_player_units
 			local random_num_affected_players = math.random(1, #current_player_units)
 
-			for i = 1, random_num_affected_players, 1 do
+			for i = 1, random_num_affected_players do
 				local random_player_unit = current_player_units[math.random(1, num_current_player_units)]
 				local is_alive = AiUtils.unit_alive(random_player_unit)
 
@@ -58,7 +58,7 @@ return {
 			data.apply_bomb_buff_at_t = t + random_bomb_delay
 		end
 
-		for i = 1, #player_bomb_data, 1 do
+		for i = 1, #player_bomb_data do
 			local bomb_data = player_bomb_data[i]
 			local player_unit = bomb_data.player_unit
 

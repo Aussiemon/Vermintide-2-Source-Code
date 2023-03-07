@@ -7,5 +7,3 @@ local player_unit_status_settings = {
 }
 
 table.merge_recursive(PlayerUnitStatusSettings, player_unit_status_settings)
-
-return

@@ -82,5 +82,3 @@ for _, level_name in ipairs(levels) do
 		}
 	end
 end
-
-return

@@ -413,7 +413,7 @@ StoreWindowCategoryList._animate_list_entry = function (self, content, style, dt
 	local hover_progress = hotspot.hover_progress or 0
 	local pulse_progress = hotspot.pulse_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = ((is_hover or is_selected) and 14) or 3
+	local speed = (is_hover or is_selected) and 14 or 3
 	local pulse_speed = 3
 	local input_speed = 20
 
@@ -773,5 +773,3 @@ StoreWindowCategoryList._get_scrollbar_percentage_by_index = function (self, ind
 
 	return 0
 end
-
-return

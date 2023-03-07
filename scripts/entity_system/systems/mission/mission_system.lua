@@ -76,7 +76,7 @@ MissionSystem.load_checkpoint_data = function (self, checkpoint_data)
 
 	for name, data in pairs(checkpoint_data.completed_missions) do
 		local unit_index = data.unit_index
-		local unit = (unit_index and LevelHelper:unit_by_index(world, unit_index)) or nil
+		local unit = unit_index and LevelHelper:unit_by_index(world, unit_index) or nil
 
 		self:start_mission(name, unit)
 		self:end_mission(name, true)
@@ -84,7 +84,7 @@ MissionSystem.load_checkpoint_data = function (self, checkpoint_data)
 
 	for name, data in pairs(checkpoint_data.active_missions) do
 		local unit_index = data.unit_index
-		local unit = (unit_index and LevelHelper:unit_by_index(world, unit_index)) or nil
+		local unit = unit_index and LevelHelper:unit_by_index(world, unit_index) or nil
 
 		self:start_mission(name, unit)
 	end
@@ -194,7 +194,7 @@ MissionSystem.end_mission = function (self, mission_name, sync)
 	local data = self.active_missions[mission_name]
 	local template = MissionTemplates[data.mission_data.mission_template_name]
 	local completed = template.evaluate_mission(data)
-	local info_slate_type = (data.mission_data.is_side_mission and "side_mission") or data.info_slate_type
+	local info_slate_type = data.mission_data.is_side_mission and "side_mission" or data.info_slate_type
 
 	if not data.mission_data.hidden then
 		Managers.state.event:trigger("ui_event_complete_mission", mission_name, data.mission_data.dont_show_mission_end_tooltip)
@@ -209,7 +209,7 @@ MissionSystem.end_mission = function (self, mission_name, sync)
 	local unit = data.unit
 
 	if unit then
-		local flow_event = (completed and "lua_mission_complete") or "lua_mission_failed"
+		local flow_event = completed and "lua_mission_complete" or "lua_mission_failed"
 
 		Unit.flow_event(unit, flow_event)
 	end
@@ -402,7 +402,7 @@ MissionSystem._update_level_progress = function (self, dt)
 		local hero_side = Managers.state.side:get_side_from_name("heroes")
 		local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
 
-		for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+		for i = 1, #PLAYER_AND_BOT_UNITS do
 			local player_unit = PLAYER_AND_BOT_UNITS[i]
 			local main_path_completion = conflict_director:main_path_completion(player_unit)
 			local player = player_manager:owner(player_unit)
@@ -430,5 +430,3 @@ MissionSystem.percentages_completed = function (self)
 
 	return self._percentage_completed
 end
-
-return

@@ -47,5 +47,3 @@ BreedBehaviors.chaos_greed_pinata = {
 	},
 	name = "horde"
 }
-
-return

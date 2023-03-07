@@ -22,5 +22,3 @@ Rectangle.split_vertical = function (self)
 
 	return left_rect, right_rect
 end
-
-return

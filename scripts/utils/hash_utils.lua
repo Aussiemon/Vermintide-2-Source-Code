@@ -10,5 +10,3 @@ HashUtils.fnv32_hash = function (text)
 
 	return math.fmod(counter, 4294967291.0)
 end
-
-return

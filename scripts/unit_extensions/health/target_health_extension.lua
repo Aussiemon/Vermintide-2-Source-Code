@@ -15,10 +15,8 @@ TargetHealthExtension.init = function (self, extension_init_context, unit, exten
 		out_of_combat_delay = 0,
 		amount = 0
 	}
-	slot4 = pairs
-	slot5 = extension_init_data.health_regen or {}
 
-	for key, value in slot4(slot5) do
+	for key, value in pairs(extension_init_data.health_regen or {}) do
 		self._health_regen[key] = value
 	end
 
@@ -126,5 +124,3 @@ end
 TargetHealthExtension.get_max_health = function (self)
 	return self._max_health
 end
-
-return

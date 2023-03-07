@@ -19,5 +19,3 @@ DeadlockStack.unpause = function ()
 		Deadlock.unpause()
 	end
 end
-
-return

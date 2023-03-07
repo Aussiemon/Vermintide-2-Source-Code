@@ -147,7 +147,7 @@ PlayerUnitFirstPerson.update_game_options = function (self)
 	local head_bob = Application.user_setting("head_bob")
 
 	if self._head_bob ~= head_bob then
-		Unit.animation_event(self.first_person_unit, (head_bob and "enable_headbob") or "disable_headbob")
+		Unit.animation_event(self.first_person_unit, head_bob and "enable_headbob" or "disable_headbob")
 
 		self._head_bob = head_bob
 	end
@@ -224,11 +224,11 @@ PlayerUnitFirstPerson.check_for_jumps = function (self, unit, t)
 	local best_id, best_pos = nil
 	local best_val = 0
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local level_jump_id = BROADPHASE_RESULTS[i]
 		local jump_data = level_jumps[level_jump_id]
 		local jump_object_data = jump_data.jump_object_data
-		local tp = (jump_data.swap_entrance_exit and jump_object_data.pos1) or jump_object_data.pos2
+		local tp = jump_data.swap_entrance_exit and jump_object_data.pos1 or jump_object_data.pos2
 		local smart_object_pos = Vector3(tp[1], tp[2], tp[3])
 		local to_pos_dir = Vector3.normalize(Vector3.flat(smart_object_pos - camera_position))
 		local dot = Vector3.dot(to_pos_dir, camera_forward)
@@ -259,7 +259,7 @@ PlayerUnitFirstPerson.check_for_jumps = function (self, unit, t)
 				self._valid_jump_id = best_id
 				self._valid_jump_data = jump_data
 				local swapped = jump_data.swap_entrance_exit
-				local to_vec = (swapped and p2 - p1) or p1 - p2
+				local to_vec = swapped and p2 - p1 or p1 - p2
 				local to_vec_flat = Vector3.flat(to_vec)
 				local rot = Quaternion.look(to_vec_flat)
 
@@ -385,6 +385,7 @@ PlayerUnitFirstPerson.update = function (self, unit, input, dt, context, t)
 
 			self._want_to_show_first_person_ammo = nil
 		elseif not can_show and want_to_show then
+			-- Nothing
 		elseif not can_show and not want_to_show then
 			self.inventory_extension:show_first_person_inventory(false)
 
@@ -427,9 +428,9 @@ PlayerUnitFirstPerson.update_aim_assist_multiplier = function (self, dt)
 
 		local weapon_template = inventory_extension:get_wielded_slot_item_template()
 		local aim_assist_settings = nil
-		aim_assist_settings = (not action_settings or not action_settings.aim_assist_settings or action_settings.aim_assist_settings) and weapon_template and weapon_template.aim_assist_settings
-		local aim_assist_multiplier = (aim_assist_settings and aim_assist_settings.base_multiplier) or 0
-		local no_aim_input_multiplier = (aim_assist_settings and aim_assist_settings.no_aim_input_multiplier) or aim_assist_multiplier * 0.5
+		aim_assist_settings = action_settings and action_settings.aim_assist_settings and action_settings.aim_assist_settings or weapon_template and weapon_template.aim_assist_settings
+		local aim_assist_multiplier = aim_assist_settings and aim_assist_settings.base_multiplier or 0
+		local no_aim_input_multiplier = aim_assist_settings and aim_assist_settings.no_aim_input_multiplier or aim_assist_multiplier * 0.5
 		local input_extension = self.input_extension
 		local look_raw = input_extension:get("look_raw_controller")
 		local move = input_extension:get("move_controller")
@@ -452,7 +453,7 @@ PlayerUnitFirstPerson.update_aim_assist_multiplier = function (self, dt)
 			aim_assist_ramp_multiplier = math.max(self.aim_assist_ramp_multiplier - dt, 0)
 		end
 
-		self.aim_assist_multiplier = (has_input and math.min(aim_assist_multiplier + aim_assist_ramp_multiplier, 1)) or 0
+		self.aim_assist_multiplier = has_input and math.min(aim_assist_multiplier + aim_assist_ramp_multiplier, 1) or 0
 		self.aim_assist_ramp_multiplier = aim_assist_ramp_multiplier
 		self.aim_assist_ramp_multiplier_timer = aim_assist_ramp_multiplier_timer
 	else
@@ -608,7 +609,7 @@ PlayerUnitFirstPerson.calculate_aim_assisted_rotation = function (self, look_rot
 	local target_rotation = Quaternion.look(direction, Vector3.up())
 	local aim_score = aim_assist_data.aim_score
 	local aim_assist_multiplier = self.aim_assist_multiplier
-	local horizontal_lerp = (aim_assist_data.vertical_only and look_rotation) or Quaternion.lerp(look_rotation, target_rotation, dt * 33 * aim_score * aim_assist_multiplier)
+	local horizontal_lerp = aim_assist_data.vertical_only and look_rotation or Quaternion.lerp(look_rotation, target_rotation, dt * 33 * aim_score * aim_assist_multiplier)
 	local vertical_lerp = Quaternion.lerp(look_rotation, target_rotation, aim_assist_multiplier * 0.5 * dt * 33 * aim_score * aim_assist_multiplier)
 	local yaw = Quaternion.yaw(horizontal_lerp)
 	local pitch = Quaternion.pitch(vertical_lerp)
@@ -655,7 +656,7 @@ end
 
 PlayerUnitFirstPerson.is_within_default_view = function (self, position)
 	local camera_position, camera_rotation = self:camera_position_rotation()
-	local base_vertical_fov_rad = (CameraSettings.first_person._node.vertical_fov * math.pi) / 180
+	local base_vertical_fov_rad = CameraSettings.first_person._node.vertical_fov * math.pi / 180
 	local base_horizontal_fov_rad = base_vertical_fov_rad * 1.7777777777777777
 
 	return math.point_is_inside_view(position, camera_position, camera_rotation, base_vertical_fov_rad, base_horizontal_fov_rad)
@@ -1132,7 +1133,7 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 	local motion_offset = rig_settings.motion_offset
 	local horizontal_motion_damping = rig_settings.horizontal_motion_damping
 	local vertical_motion_damping = rig_settings.vertical_motion_damping
-	local vertical_look_multiplier = (is_ranged and rig_settings.vertical_look_multiplier_ranged) or rig_settings.vertical_look_multiplier_melee
+	local vertical_look_multiplier = is_ranged and rig_settings.vertical_look_multiplier_ranged or rig_settings.vertical_look_multiplier_melee
 	local lead_multiplier = Vector3(10, 10, 0)
 	local lead_decay = 10
 	local lead_max = Vector2(0.1, 0.1)
@@ -1143,9 +1144,9 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 		lead_max = Vector2(0.5, 0.5)
 	end
 
-	lead_multiplier = lead_multiplier * ((weapon_template and weapon_template.rig_motion_multiplier) or 1)
-	lead_decay = lead_decay * ((weapon_template and weapon_template.rig_motion_multiplier) or 1)
-	lead_max = lead_max * ((weapon_template and weapon_template.rig_motion_multiplier) or 1)
+	lead_multiplier = lead_multiplier * (weapon_template and weapon_template.rig_motion_multiplier or 1)
+	lead_decay = lead_decay * (weapon_template and weapon_template.rig_motion_multiplier or 1)
+	lead_max = lead_max * (weapon_template and weapon_template.rig_motion_multiplier or 1)
 	local inv_mass = 1 / mass
 	self.spring_velocity = self.spring_velocity or Vector3Box(0, 0, 0)
 	self.spring_position = self.spring_position or Vector3Box(position)
@@ -1183,7 +1184,7 @@ PlayerUnitFirstPerson.update_rig_movement = function (self, look_delta)
 	local t = Vector3.dot(up, final_position - position)
 	final_position = final_position - up * t * vertical_motion_damping
 	local v_dot = Vector3.dot(forward, Vector3.up())
-	final_position = (final_position + forward * motion_offset) - up * v_dot * vertical_look_multiplier
+	final_position = final_position + forward * motion_offset - up * v_dot * vertical_look_multiplier
 
 	if not is_melee then
 		final_position = final_position + right * lead_offset.x + up * lead_offset.y
@@ -1361,5 +1362,3 @@ PlayerUnitFirstPerson._update_state_machine_variables = function (self, dt, t)
 	self:animation_set_variable("move_y", move_y)
 	self:animation_set_variable("move_z", move_z)
 end
-
-return

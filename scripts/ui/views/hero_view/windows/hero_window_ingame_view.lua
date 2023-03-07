@@ -385,7 +385,7 @@ HeroWindowIngameView._get_previous_available_index = function (self, index)
 	if layout_logic then
 		local layout_data = layout_logic:layout_data()
 		local num_entries = #layout_data
-		local i = (index > 1 and index - 1) or num_entries
+		local i = index > 1 and index - 1 or num_entries
 
 		while i ~= index do
 			local data = layout_data[i]
@@ -394,7 +394,7 @@ HeroWindowIngameView._get_previous_available_index = function (self, index)
 				return i
 			end
 
-			i = (i > 1 and i - 1) or num_entries
+			i = i > 1 and i - 1 or num_entries
 		end
 	end
 
@@ -450,7 +450,7 @@ HeroWindowIngameView.draw = function (self, dt)
 			local content = widget.content
 			local button_hotspot = content.button_hotspot
 			button_hotspot.disable_button = data.disabled
-			content.text_field = (data.display_name_func and data.display_name_func()) or data.display_name
+			content.text_field = data.display_name_func and data.display_name_func() or data.display_name
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
 		end
@@ -477,7 +477,7 @@ HeroWindowIngameView._update_presentation = function (self)
 		local spacing = 60
 		local total_height = 0
 
-		for index = 1, num_entries, 1 do
+		for index = 1, num_entries do
 			local widget = title_button_widgets[index]
 			local offset = widget.offset
 			offset[2] = -(spacing * index - 1)
@@ -491,5 +491,3 @@ HeroWindowIngameView._update_presentation = function (self)
 		ui_scenegraph[background_scenegraph_id].size[2] = total_height + 90
 	end
 end
-
-return

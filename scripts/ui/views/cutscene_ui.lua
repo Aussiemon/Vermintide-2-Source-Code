@@ -135,7 +135,7 @@ CutsceneUI.draw = function (self, dt)
 
 	local fx_fade_widgets = self.fx_fade_widgets
 
-	for i = 1, #fx_fade_widgets, 1 do
+	for i = 1, #fx_fade_widgets do
 		local widget = fx_fade_widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -143,7 +143,7 @@ CutsceneUI.draw = function (self, dt)
 
 	local fx_text_popup_widgets = self.fx_text_popup_widgets
 
-	for i = 1, #fx_text_popup_widgets, 1 do
+	for i = 1, #fx_text_popup_widgets do
 		local widget = fx_text_popup_widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -287,5 +287,3 @@ CutsceneUI.check_for_fade = function (self)
 		end
 	end
 end
-
-return

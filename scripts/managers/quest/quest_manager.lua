@@ -7,7 +7,7 @@ for quest_type, data in pairs(quest_rules) do
 	local stat_prefix = string.format("%s_quest", quest_type)
 	local quests = {}
 
-	for i = 1, data.max_quests, 1 do
+	for i = 1, data.max_quests do
 		local quest_name = string.format("%s_%d", stat_prefix, i)
 		quests[#quests + 1] = quest_name
 	end
@@ -57,7 +57,7 @@ QuestManager.on_achievement_event = function (self, event_name, event_data)
 	local registered_quests = event_mappings[event_name]
 
 	if registered_quests then
-		for i = 1, #registered_quests, 1 do
+		for i = 1, #registered_quests do
 			local quest_key = registered_quests[i]
 			local quest_data = event_quests[quest_key]
 
@@ -84,11 +84,11 @@ QuestManager._increment_quest_stats = function (self, quests, stats_id, ...)
 			local stat_mappings = template.stat_mappings
 
 			if stat_mappings then
-				for i = 1, #stat_mappings, 1 do
+				for i = 1, #stat_mappings do
 					local map = stat_mappings[i]
 					local success = true
 
-					for j = 1, arg_n, 1 do
+					for j = 1, arg_n do
 						local arg_value = select(j, ...)
 						map = map[arg_value]
 
@@ -135,17 +135,17 @@ QuestManager.update = function (self, dt, t)
 			if type(quest_key) == "string" then
 				local stat_names = QuestSettings.stat_mappings[quest_key]
 
-				for i = 1, #stat_names, 1 do
+				for i = 1, #stat_names do
 					local stat_name = stat_names[i]
 
 					statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
 				end
 			else
-				for i = 1, #quest_key, 1 do
+				for i = 1, #quest_key do
 					local quest_key = quest_key[i]
 					local stat_names = QuestSettings.stat_mappings[quest_key]
 
-					for i = 1, #stat_names, 1 do
+					for i = 1, #stat_names do
 						local stat_name = stat_names[i]
 
 						statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
@@ -170,7 +170,7 @@ QuestManager.update = function (self, dt, t)
 			if quest_key then
 				local stat_names = QuestSettings.stat_mappings[quest_key]
 
-				for i = 1, #stat_names, 1 do
+				for i = 1, #stat_names do
 					local stat_name = stat_names[i]
 
 					statistics_db:set_stat(stats_id, "quest_statistics", stat_name, 0)
@@ -407,7 +407,7 @@ QuestManager.refresh_daily_quest = function (self, quest_id)
 end
 
 QuestManager.polling_quest_refresh = function (self)
-	return (self._refresh_poll_id and true) or false
+	return self._refresh_poll_id and true or false
 end
 
 QuestManager.claim_reward = function (self, quest_id)
@@ -436,7 +436,7 @@ QuestManager.claim_multiple_quest_rewards = function (self, quest_ids)
 	local backend_interface_quests = self._backend_interface_quests
 	local claimable_quest_keys = {}
 
-	for i = 1, #quest_ids, 1 do
+	for i = 1, #quest_ids do
 		local quest_id = quest_ids[i]
 		local quest_key = backend_interface_quests:get_quest_key(quest_id)
 
@@ -456,7 +456,7 @@ QuestManager.claim_multiple_quest_rewards = function (self, quest_ids)
 end
 
 QuestManager.polling_quest_reward = function (self)
-	return (self._reward_poll_id and true) or false
+	return self._reward_poll_id and true or false
 end
 
 QuestManager.can_claim_quest_rewards = function (self, quest_id)
@@ -484,7 +484,7 @@ QuestManager.can_claim_multiple_quest_rewards = function (self, quest_ids)
 	local backend_interface_quests = self._backend_interface_quests
 	local claimable_quest_keys = {}
 
-	for i = 1, #quest_ids, 1 do
+	for i = 1, #quest_ids do
 		local quest_id = quest_ids[i]
 		local quest_key = backend_interface_quests:get_quest_key(quest_id)
 
@@ -532,7 +532,7 @@ QuestManager.time_left_on_event_quest = function (self)
 	if event_quests and not table.is_empty(event_quests) then
 		local keys = quest_keys.event
 
-		for i = 1, #keys, 1 do
+		for i = 1, #keys do
 			local key = keys[i]
 			local quest_data = event_quests[key]
 
@@ -569,7 +569,7 @@ QuestManager.on_quests_updated = function (self)
 		local events = template and template.events
 
 		if events then
-			for i = 1, #events, 1 do
+			for i = 1, #events do
 				local event_name = events[i]
 				quest_event_mapping[event_name] = quest_event_mapping[event_name] or {}
 				quest_event_mapping[event_name][#quest_event_mapping[event_name] + 1] = quest_key
@@ -579,5 +579,3 @@ QuestManager.on_quests_updated = function (self)
 
 	self._quest_event_mapping = quest_event_mapping
 end
-
-return

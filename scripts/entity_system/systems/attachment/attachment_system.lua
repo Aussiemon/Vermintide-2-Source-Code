@@ -95,5 +95,3 @@ AttachmentSystem.rpc_add_attachment_buffs = function (self, channel_id, go_id, s
 
 	self:add_attachment_buffs(unit, slot_id, num_buffs, buff_ids, buff_value_type_ids, buff_values)
 end
-
-return

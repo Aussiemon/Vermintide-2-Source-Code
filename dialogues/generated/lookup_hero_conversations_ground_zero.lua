@@ -86,5 +86,3 @@ DialogueLookup[DialogueLookup_n + 41] = "pwe_level_ground_zero_story_six_01"
 DialogueLookup[DialogueLookup_n + 42] = "pbw_level_ground_zero_story_six_02"
 DialogueLookup[DialogueLookup_n + 43] = "pwe_level_ground_zero_story_six_02"
 DialogueLookup_n = DialogueLookup_n + 43
-
-return

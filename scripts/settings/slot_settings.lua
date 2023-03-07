@@ -27,5 +27,3 @@ SlotSettings = {
 		dialogue_surrounded_count = 2
 	}
 }
-
-return

@@ -106,5 +106,3 @@ PingReporter.report = function (self)
 
 	Managers.telemetry.events:network_ping(avg, std_dev, p99, p95, p90, p75, p50, p25, observations)
 end
-
-return

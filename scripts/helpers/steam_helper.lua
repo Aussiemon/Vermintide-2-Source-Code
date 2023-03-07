@@ -13,7 +13,7 @@ SteamHelper.debug_friends = function ()
 	local number_of_friends = 5
 	local friends = {}
 
-	for i = 1, number_of_friends, 1 do
+	for i = 1, number_of_friends do
 		local id = "id_" .. i
 		friends[id] = {
 			playing_this_game = false,
@@ -31,7 +31,7 @@ SteamHelper.friends = function ()
 	local friends = {}
 	local app_id = Steam.app_id()
 
-	for i = 1, num_friends, 1 do
+	for i = 1, num_friends do
 		local id = Friends.id(i)
 		local playing_game = Friends.playing_game(id)
 		local playing_this_game = playing_game and playing_game.app_id == app_id
@@ -57,7 +57,7 @@ end
 SteamHelper.is_in_clan = function (clan_id)
 	local clan_count = Clans.clan_count()
 
-	for i = 0, clan_count - 1, 1 do
+	for i = 0, clan_count - 1 do
 		local id = Clans.clan_by_index(i)
 
 		if id == clan_id then
@@ -73,7 +73,7 @@ SteamHelper.clans_short = function ()
 		local clan_count = Clans.clan_count()
 		local clan_names = {}
 
-		for i = 0, clan_count - 1, 1 do
+		for i = 0, clan_count - 1 do
 			local id = Clans.clan_by_index(i)
 			local name = Clans.clan_tag(id)
 			clan_names[id] = name
@@ -89,7 +89,7 @@ SteamHelper.clans = function ()
 	local clan_count = Clans.clan_count()
 	local clan_names = {}
 
-	for i = 0, clan_count - 1, 1 do
+	for i = 0, clan_count - 1 do
 		local id = Clans.clan_by_index(i)
 		local name = Clans.clan_name(id)
 		clan_names[id] = name
@@ -97,5 +97,3 @@ SteamHelper.clans = function ()
 
 	return clan_names
 end
-
-return

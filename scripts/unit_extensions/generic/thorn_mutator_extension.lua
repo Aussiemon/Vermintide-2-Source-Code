@@ -114,5 +114,3 @@ ThornMutatorExtension._check_for_deletion = function (self, t)
 		Managers.state.unit_spawner:mark_for_deletion(self._unit)
 	end
 end
-
-return

@@ -38,7 +38,7 @@ BeastmenStandardHealthExtension.add_damage = function (self, attacker_unit, dama
 		BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
 	else
 		local can_damage_banner = false
-		can_damage_banner = (attack_type and (attack_type == "heavy_attack" or attack_type == "light_attack")) or white_listed_damage_sources[damage_source_name]
+		can_damage_banner = attack_type and (attack_type == "heavy_attack" or attack_type == "light_attack") or white_listed_damage_sources[damage_source_name]
 
 		if can_damage_banner then
 			BeastmenStandardHealthExtension.super.add_damage(self, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, damaging_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type)
@@ -54,5 +54,3 @@ BeastmenStandardHealthExtension.add_damage = function (self, attacker_unit, dama
 		end
 	end
 end
-
-return

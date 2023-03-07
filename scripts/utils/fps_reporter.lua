@@ -7,7 +7,7 @@ FPSReporter.init = function (self)
 	self._histogram = {}
 	self._num_frames = 1
 
-	for i = 1, NUM_BUCKETS + 1, 1 do
+	for i = 1, NUM_BUCKETS + 1 do
 		self._histogram[i] = 0
 	end
 end
@@ -52,5 +52,3 @@ FPSReporter._normalize_histogram = function (self)
 		self._histogram[i] = self._histogram[i] / num_frames
 	end
 end
-
-return

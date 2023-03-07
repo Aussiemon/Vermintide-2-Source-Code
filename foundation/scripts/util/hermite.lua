@@ -38,7 +38,7 @@ Hermite.draw = function (segments, script_drawer, tangent_scale, color, p0, p1, 
 	local t = 0
 	local point_a = Hermite.calc_point(t, p0, p1, p2, p3)
 
-	for segment = 0, segments, 1 do
+	for segment = 0, segments do
 		t = segment_increment * segment
 		local point_b = Hermite.calc_point(t, p0, p1, p2, p3)
 
@@ -58,7 +58,7 @@ Hermite.length = function (segments, p0, p1, p2, p3)
 	local length = 0
 	local last_point = p1
 
-	for fraction = 1, segments - 1, 1 do
+	for fraction = 1, segments - 1 do
 		local point = Hermite.calc_point(fraction / segments, p0, p1, p2, p3)
 		length = length + Vector3.length(point - last_point)
 		last_point = point
@@ -73,7 +73,7 @@ Hermite.next_index = function (points, index)
 	local next_index = index + 1
 	local next_index_end_point = next_index + 1
 
-	return (points[next_index_end_point] and next_index) or nil
+	return points[next_index_end_point] and next_index or nil
 end
 
 Hermite.spline_points = function (points, index)
@@ -84,5 +84,3 @@ Hermite.spline_points = function (points, index)
 
 	return p0, p1, p2, p3
 end
-
-return

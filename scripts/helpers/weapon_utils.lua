@@ -17,7 +17,7 @@ WeaponUtils.find_allowed_chain_action = function (allowed_chain_actions, action_
 	local found_chain_action = nil
 	local num_allowed_chain_actions = #allowed_chain_actions
 
-	for i = 1, num_allowed_chain_actions, 1 do
+	for i = 1, num_allowed_chain_actions do
 		local chain_action = allowed_chain_actions[i]
 
 		if chain_action.action == wanted_action_name and chain_action.sub_action == wanted_sub_action_name then
@@ -45,7 +45,7 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		local wwise_deps = item_template.wwise_dep_left_hand
 
 		if wwise_deps then
-			for i = 1, #wwise_deps, 1 do
+			for i = 1, #wwise_deps do
 				local wwise_dep = wwise_deps[i]
 				packages[#packages + 1] = wwise_dep
 			end
@@ -63,7 +63,7 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		local wwise_deps = item_template.wwise_dep_right_hand
 
 		if wwise_deps then
-			for i = 1, #wwise_deps, 1 do
+			for i = 1, #wwise_deps do
 				local wwise_dep = wwise_deps[i]
 				packages[#packages + 1] = wwise_dep
 			end
@@ -81,7 +81,7 @@ WeaponUtils.get_weapon_packages = function (item_template, item_units, first_per
 		local wwise_deps = item_template.wwise_dep_ammo
 
 		if wwise_deps then
-			for i = 1, #wwise_deps, 1 do
+			for i = 1, #wwise_deps do
 				local wwise_dep = wwise_deps[i]
 				packages[#packages + 1] = wwise_dep
 			end
@@ -137,7 +137,7 @@ WeaponUtils.get_used_actions = function (template)
 			local sub_action = ActionUtils.resolve_action_selector(template.actions[action_to_check_n][sub_action_to_check_n])
 			local chain_actions = sub_action.allowed_chain_actions
 
-			for chain_action_id = 1, #chain_actions, 1 do
+			for chain_action_id = 1, #chain_actions do
 				local chain_action_name = chain_actions[chain_action_id].action
 				local chain_sub_action_name = chain_actions[chain_action_id].sub_action
 
@@ -185,5 +185,3 @@ WeaponUtils.is_valid_weapon_override = function (source_slot_data, destination_i
 
 	return not destination_item_data.valid_templates_to_replace or destination_item_data.valid_templates_to_replace[source_slot_weapon_template]
 end
-
-return

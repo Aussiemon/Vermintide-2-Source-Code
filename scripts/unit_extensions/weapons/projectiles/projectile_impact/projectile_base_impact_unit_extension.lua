@@ -42,5 +42,3 @@ end
 ProjectileBaseImpactUnitExtension.recent_impacts = function (self)
 	return pdArray.data(self.impact_buffer)
 end
-
-return

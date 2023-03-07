@@ -70,5 +70,3 @@ DialogueLookup[DialogueLookup_n + 33] = "pwe_portals_crypt_exit"
 DialogueLookup[DialogueLookup_n + 34] = "pwe_portals_waystone"
 DialogueLookup[DialogueLookup_n + 35] = "pwe_portals_event_missing_gargoyle_heads"
 DialogueLookup_n = DialogueLookup_n + 35
-
-return

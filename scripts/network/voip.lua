@@ -119,7 +119,7 @@ if has_steam and not disable_voip then
 		local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 		if not self.is_server then
-			voip_warning_print("[VOIP] Got request from %s to %s but is not server", peer_id, (enter and "enter") or "leave")
+			voip_warning_print("[VOIP] Got request from %s to %s but is not server", peer_id, enter and "enter" or "leave")
 
 			return
 		end
@@ -132,7 +132,7 @@ if has_steam and not disable_voip then
 		elseif not enter and member_is_in_room then
 			self:remove_member(peer_id)
 		else
-			voip_warning_print("[VOIP] Got request from %s to %s room %s but member_is_in_room was %s", peer_id, (enter and "enter") or "leave", self.room_id, member_is_in_room)
+			voip_warning_print("[VOIP] Got request from %s to %s room %s but member_is_in_room was %s", peer_id, enter and "enter" or "leave", self.room_id, member_is_in_room)
 		end
 	end
 
@@ -231,7 +231,7 @@ if has_steam and not disable_voip then
 
 			local member_buffer, member_count = SteamVoipRoom.members(self.room_id, self._member_buffer)
 
-			for i = 1, member_count, 1 do
+			for i = 1, member_count do
 				local peer_id = member_buffer[i]
 
 				if peer_id ~= self.peer_id and PEER_ID_TO_CHANNEL[peer_id] == nil then
@@ -249,7 +249,7 @@ if has_steam and not disable_voip then
 		if script_data.debug_voip then
 			if self.voip_client then
 				Debug.text("VoIP")
-				Debug.text("VoIP - PushToTalk %s (%s)", (self.push_to_talk and "on") or "off", (self.push_to_talk_active and "pushing") or "-")
+				Debug.text("VoIP - PushToTalk %s (%s)", self.push_to_talk and "on" or "off", self.push_to_talk_active and "pushing" or "-")
 				Debug.text("VoIP - Client members")
 
 				for peer_index, peer_id in pairs(SteamVoipClient.members(self.voip_client)) do
@@ -265,7 +265,7 @@ if has_steam and not disable_voip then
 						local level = SteamVoipClient.audio_level(self.voip_client, peer_id)
 						local speaking = level > -30
 
-						Debug.text("%s [%s] %s", tostring(peer_index), tostring(peer_id), (speaking and "speaking") or "")
+						Debug.text("%s [%s] %s", tostring(peer_index), tostring(peer_id), speaking and "speaking" or "")
 					end
 				end
 			else
@@ -471,5 +471,3 @@ else
 		return -96
 	end
 end
-
-return

@@ -48,7 +48,7 @@ DamageBlobHuskExtension.destroy = function (self)
 	local world = self.world
 	local fx_list = self.fx_list
 
-	for i = 1, #fx_list, 1 do
+	for i = 1, #fx_list do
 		local fx_id = fx_list[i].id
 
 		World.stop_spawning_particles(world, fx_id)
@@ -66,7 +66,7 @@ DamageBlobHuskExtension.destroy = function (self)
 	local wwise_world = Managers.world:wwise_world(world)
 	local sfx_list = self.sfx_list
 
-	for i = 1, #sfx_list, 1 do
+	for i = 1, #sfx_list do
 		local sfx_id = sfx_list[i].source
 		local has_source = WwiseWorld.has_source(wwise_world, sfx_id)
 
@@ -111,7 +111,7 @@ DamageBlobHuskExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 	local fx_max_height = self.fx_max_height
 	local fx_list = self.fx_list
 
-	for i = 1, #fx_list, 1 do
+	for i = 1, #fx_list do
 		local fx_entry = fx_list[i]
 		local fx_id = fx_entry.id
 		local fx_size = fx_entry.size
@@ -137,7 +137,7 @@ DamageBlobHuskExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 	local sfx_name_stop_remains = self._sfx_name_stop_remains
 	local wwise_world = Managers.world:wwise_world(self.world)
 
-	for i = 1, #sfx_list, 1 do
+	for i = 1, #sfx_list do
 		local sfx_entry = sfx_list[i]
 		local sfx_source = sfx_entry.source
 		local has_source = WwiseWorld.has_source(wwise_world, sfx_source)
@@ -200,5 +200,3 @@ end
 DamageBlobHuskExtension.get_source_attacker_unit = function (self)
 	return self._source_unit
 end
-
-return

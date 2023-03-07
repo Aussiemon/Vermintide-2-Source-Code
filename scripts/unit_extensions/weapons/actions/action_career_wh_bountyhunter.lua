@@ -79,5 +79,3 @@ ActionCareerWHBountyhunter._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

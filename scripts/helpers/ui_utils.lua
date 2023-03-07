@@ -21,7 +21,7 @@ UIUtils.format_localized_description = function (fmt_str, fmt_def)
 
 	local num_defs = #fmt_def
 
-	for i = 1, num_defs, 1 do
+	for i = 1, num_defs do
 		local value_data = fmt_def[i]
 		local value_type = value_data.value_type
 		local value_fmt = value_data.value_fmt
@@ -118,7 +118,7 @@ UIUtils.get_property_description = function (property_name, lerp_value, optional
 
 		if type(value) == "table" then
 			if #value > 2 then
-				local index = (lerp_value == 1 and #value) or 1 + math.floor(lerp_value / (1 / #value))
+				local index = lerp_value == 1 and #value or 1 + math.floor(lerp_value / (1 / #value))
 				display_value = value[index]
 				min_value = value[1]
 				max_value = value[#value]
@@ -160,7 +160,7 @@ UIUtils.get_trait_description = function (trait_name, optional_trait_data)
 	if description_values then
 		local values = {}
 
-		for i = 1, #description_values, 1 do
+		for i = 1, #description_values do
 			local data = description_values[i]
 			local value_type = data.value_type
 			local value = data.value
@@ -476,7 +476,7 @@ UIUtils.align_box_inplace = function (ui_style, position, size, child_size)
 	local ha = ui_style.horizontal_alignment
 
 	if ha == "right" then
-		position[1] = (position[1] + size[1]) - child_size[1]
+		position[1] = position[1] + size[1] - child_size[1]
 	elseif ha == "center" then
 		position[1] = position[1] + 0.5 * (size[1] - child_size[1])
 	end
@@ -484,7 +484,7 @@ UIUtils.align_box_inplace = function (ui_style, position, size, child_size)
 	local va = ui_style.vertical_alignment
 
 	if va == "top" then
-		position[2] = (position[2] + size[2]) - child_size[2]
+		position[2] = position[2] + size[2] - child_size[2]
 	elseif va == "center" then
 		position[2] = position[2] + 0.5 * (size[2] - child_size[2])
 	end
@@ -500,7 +500,7 @@ end
 UIUtils.format_time_long = function (t)
 	local floor = math.floor
 	local days = floor(t / 86400)
-	local hours = floor((t / 3600) % 24)
+	local hours = floor(t / 3600 % 24)
 	local minutes = floor(t / 60) % 60
 	local seconds = t % 60
 
@@ -509,9 +509,9 @@ end
 
 UIUtils.format_duration = function (t, done_string)
 	if t > 172800 then
-		return string.format(Localize("datetime_days") .. ", " .. Localize("datetime_hours_short"), t / 86400, (t / 3600) % 24)
+		return string.format(Localize("datetime_days") .. ", " .. Localize("datetime_hours_short"), t / 86400, t / 3600 % 24)
 	elseif t > 7200 then
-		return string.format(Localize("datetime_hours_short") .. ", " .. Localize("datetime_minutes_short"), t / 3600, (t / 60) % 60)
+		return string.format(Localize("datetime_hours_short") .. ", " .. Localize("datetime_minutes_short"), t / 3600, t / 60 % 60)
 	elseif t > 120 then
 		return string.format(Localize("datetime_minutes_short") .. ", " .. Localize("datetime_seconds_short"), t / 60, t % 60)
 	elseif t > 0 then
@@ -524,7 +524,5 @@ end
 UIUtils.get_color_for_consumable_item = function (item_key)
 	local default_color = UISettings.inventory_consumable_slot_colors.default
 
-	return (item_key and UISettings.inventory_consumable_slot_colors[item_key]) or default_color
+	return item_key and UISettings.inventory_consumable_slot_colors[item_key] or default_color
 end
-
-return

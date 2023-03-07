@@ -6,5 +6,3 @@ StatisticsUtil.register_open_shrine = function (shrine_type)
 
 	statistics_db:increment_stat(stats_id, "opened_shrines", shrine_type)
 end
-
-return

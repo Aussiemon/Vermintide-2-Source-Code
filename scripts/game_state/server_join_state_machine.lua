@@ -155,5 +155,3 @@ ServerJoinStateMachine.result = function (self)
 
 	return self._action, self._user_data, self._password
 end
-
-return

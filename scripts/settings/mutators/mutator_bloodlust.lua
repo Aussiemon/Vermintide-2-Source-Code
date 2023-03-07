@@ -59,7 +59,7 @@ return {
 				local buffs = unit_data.buffs
 				local num_buffs = #buffs
 
-				for i = 1, num_buffs, 1 do
+				for i = 1, num_buffs do
 					template.remove_buff(buffs, data.buff_system, unit)
 				end
 
@@ -108,7 +108,7 @@ return {
 		local unit_data = player_units[killer_unit]
 		local amount_of_stacks = template.amount_of_stacks_per_breed[breed_name] or 1
 
-		for i = 1, amount_of_stacks, 1 do
+		for i = 1, amount_of_stacks do
 			template.add_buff(data.buff_system, killer_unit, data.buff_name)
 		end
 

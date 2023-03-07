@@ -27,6 +27,7 @@ LobbyClient.destroy = function (self)
 	end
 
 	if IS_PS4 and self._host_peer_id then
+		-- Nothing
 	end
 
 	self._host_peer_id = nil
@@ -106,7 +107,7 @@ LobbyClient.update = function (self, dt)
 		local my_peer_id = self.peer_id
 		local members_left = self.lobby_members:get_members_left()
 
-		for i = 1, #members_left, 1 do
+		for i = 1, #members_left do
 			local peer_id = members_left[i]
 
 			if peer_id == my_peer_id then
@@ -196,7 +197,7 @@ LobbyClient.failed = function (self)
 end
 
 LobbyClient.id = function (self)
-	return (LobbyInternal.lobby_id and LobbyInternal.lobby_id(self.lobby)) or "no_id"
+	return LobbyInternal.lobby_id and LobbyInternal.lobby_id(self.lobby) or "no_id"
 end
 
 LobbyClient.attempting_reconnect = function (self)
@@ -218,5 +219,3 @@ end
 LobbyClient.game_session_host = function (self)
 	return LobbyInternal.game_session_host(self.lobby)
 end
-
-return

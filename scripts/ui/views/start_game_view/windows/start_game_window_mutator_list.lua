@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 local definitions = local_require("scripts/ui/views/start_game_view/windows/definitions/start_game_window_mutator_list_definitions")
 local widget_definitions = definitions.widgets
 local scenegraph_definition = definitions.scenegraph_definition
@@ -31,8 +29,6 @@ StartGameWindowMutatorList.on_enter = function (self, params, offset)
 end
 
 StartGameWindowMutatorList.create_ui_elements = function (self, params, offset)
-
-	-- Decompilation error in this vicinity:
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(scenegraph_definition)
 	local widgets = {}
 	local widgets_by_name = {}
@@ -190,7 +186,7 @@ StartGameWindowMutatorList.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -279,5 +275,3 @@ StartGameWindowMutatorList._animate_element_by_time = function (self, target, ta
 
 	return new_animation
 end
-
-return

@@ -82,7 +82,7 @@ end
 
 RoundStartedSystem._players_left_start_area = function (self)
 	local checkpoint_data = Managers.state.spawn:checkpoint_data()
-	local volume_name = (checkpoint_data and checkpoint_data.safe_zone_volume_name) or self._start_area
+	local volume_name = checkpoint_data and checkpoint_data.safe_zone_volume_name or self._start_area
 	local level = LevelHelper:current_level(self._world)
 
 	if not Level.has_volume(level, volume_name) then
@@ -107,5 +107,3 @@ end
 RoundStartedSystem.player_spawned = function (self)
 	self._player_spawned = true
 end
-
-return

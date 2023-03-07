@@ -117,7 +117,7 @@ end
 
 CameraManager._set_shadow_light = function (self, unit, active)
 	if not GameSettingsDevelopment.disable_shadow_lights_system then
-		for i = 1, Unit.num_lights(unit), 1 do
+		for i = 1, Unit.num_lights(unit) do
 			local light = Unit.light(unit, i - 1)
 
 			Light.set_casts_shadows(light, active)
@@ -145,14 +145,14 @@ CameraManager._update_shadow_lights = function (self, dt, viewport)
 
 		local max_lights = math.min(self._shadow_lights_max_active, #lights)
 
-		for i = 1, max_lights, 1 do
+		for i = 1, max_lights do
 			self:_set_shadow_light(lights[i].unit, true)
 		end
 
 		if script_data.debug_draw_shadow_lights and max_lights > 0 then
 			local step = 255 / max_lights
 
-			for i = 1, max_lights, 1 do
+			for i = 1, max_lights do
 				QuickDrawer:sphere(Unit.local_position(lights[i].unit, 0), 0.25, Color(i * step, 255 - step * i, 0))
 			end
 		end
@@ -404,6 +404,7 @@ end
 
 CameraManager.set_camera_node = function (self, viewport_name, tree_id, node_name)
 	if not script_data.camera_debug and script_data.camera_node_debug then
+		-- Nothing
 	end
 
 	local old_tree_id = self._current_trees[viewport_name]
@@ -465,7 +466,7 @@ CameraManager.is_in_view = function (self, viewport_name, position)
 end
 
 CameraManager._remove_camera_node = function (self, camera_nodes, index)
-	for i = 1, index, 1 do
+	for i = 1, index do
 		local node_table = table.remove(camera_nodes, 1)
 
 		node_table.node:set_active(false)
@@ -722,7 +723,7 @@ CameraManager._smooth_camera_collision = function (self, camera_position, safe_p
 			if y < near_radius then
 				cd = x - cast_radius
 			else
-				cd = (x + (y - near_radius) / (smooth_radius - near_radius) * (len - x)) - cast_radius
+				cd = x + (y - near_radius) / (smooth_radius - near_radius) * (len - x) - cast_radius
 			end
 
 			if cast_distance > cd then
@@ -885,12 +886,12 @@ CameraManager.stop_weapon_recoil = function (self, id)
 end
 
 CameraManager.set_offset = function (self, x, y, z)
-	self._camera_offset = (self._camera_offset and self._camera_offset:store(Vector3(x, y, z))) or Vector3Box(x, y, z)
+	self._camera_offset = self._camera_offset and self._camera_offset:store(Vector3(x, y, z)) or Vector3Box(x, y, z)
 end
 
 CameraManager._apply_offset = function (self, current_data, t)
 	local new_data = current_data
-	local offset = (self._camera_offset and self._camera_offset:unbox()) or Vector3(0, 0, 0)
+	local offset = self._camera_offset and self._camera_offset:unbox() or Vector3(0, 0, 0)
 	local offset_x = offset.x
 	local offset_y = offset.y
 	local offset_z = offset.z
@@ -1123,16 +1124,16 @@ CameraManager._apply_recoil_event = function (self, settings, current_data, dt, 
 	local new_data = current_data
 	local current_rotation = current_data.rotation
 	local climbing = t < climb_end_time
-	local done_percentage = (climbing and current_climb_time / climb_duration) or current_restore_time / restore_duration
-	done_percentage = (climbing and climb_function(done_percentage)) or restore_function(done_percentage)
-	local starting_yaw_rotation = (not climbing and math.degrees_to_radians(horizontal_climb)) or 0
-	local starting_pitch_rotation = (not climbing and math.degrees_to_radians(vertical_climb)) or 0
-	local current_yaw_rotation = math.degrees_to_radians((climbing and horizontal_climb) or -horizontal_climb) * done_percentage
-	local current_pitch_rotation = math.degrees_to_radians((climbing and vertical_climb) or -vertical_climb) * done_percentage
+	local done_percentage = climbing and current_climb_time / climb_duration or current_restore_time / restore_duration
+	done_percentage = climbing and climb_function(done_percentage) or restore_function(done_percentage)
+	local starting_yaw_rotation = not climbing and math.degrees_to_radians(horizontal_climb) or 0
+	local starting_pitch_rotation = not climbing and math.degrees_to_radians(vertical_climb) or 0
+	local current_yaw_rotation = math.degrees_to_radians(climbing and horizontal_climb or -horizontal_climb) * done_percentage
+	local current_pitch_rotation = math.degrees_to_radians(climbing and vertical_climb or -vertical_climb) * done_percentage
 	local yaw_offset = Quaternion(Vector3.up(), starting_yaw_rotation + current_yaw_rotation)
 	local pitch_offset = Quaternion(Vector3.right(), starting_pitch_rotation + current_pitch_rotation)
 	local total_offset = Quaternion.multiply(yaw_offset, pitch_offset)
-	self._total_recoil_offset = (self._total_recoil_offset and self._total_recoil_offset:store(total_offset)) or QuaternionBox(total_offset)
+	self._total_recoil_offset = self._total_recoil_offset and self._total_recoil_offset:store(total_offset) or QuaternionBox(total_offset)
 	local final_rotation = Quaternion.multiply(current_rotation, total_offset)
 	new_data.rotation = final_rotation
 
@@ -1169,7 +1170,7 @@ CameraManager._calculate_perlin_value = function (self, x, settings)
 	local persistance = event_settings.persistance
 	local number_of_octaves = event_settings.octaves
 
-	for i = 0, number_of_octaves, 1 do
+	for i = 0, number_of_octaves do
 		local frequency = 2^i
 		local amplitude = persistance^i
 		total = total + self:_interpolated_noise(x * frequency, settings) * amplitude
@@ -1225,7 +1226,7 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 
 		if root_unit and Unit.alive(root_unit) then
 			local safe_position_offset = current_node:safe_position_offset()
-			local safe_pos = Unit.world_position(root_unit, (root_object and Unit.node(root_unit, root_object)) or 0) + safe_position_offset:unbox()
+			local safe_pos = Unit.world_position(root_unit, root_object and Unit.node(root_unit, root_object) or 0) + safe_position_offset:unbox()
 
 			assert(Vector3.is_valid(safe_pos), "Trying to use invalid safe position")
 
@@ -1271,8 +1272,8 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 	end
 
 	if script_data.fov_override then
-		Camera.set_vertical_fov(shadow_cull_camera, (math.pi * script_data.fov_override) / 180)
-		Camera.set_vertical_fov(camera, (math.pi * script_data.fov_override) / 180)
+		Camera.set_vertical_fov(shadow_cull_camera, math.pi * script_data.fov_override / 180)
+		Camera.set_vertical_fov(camera, math.pi * script_data.fov_override / 180)
 	elseif camera_data.vertical_fov then
 		local vertical_fov = camera_data.vertical_fov
 
@@ -1285,7 +1286,7 @@ CameraManager._update_camera_properties = function (self, camera, shadow_cull_ca
 		end
 
 		if script_data.camera_debug and Managers.state.debug then
-			local fov_text = string.format("Vertical FOV: %s", (vertical_fov * 180) / math.pi)
+			local fov_text = string.format("Vertical FOV: %s", vertical_fov * 180 / math.pi)
 
 			Debug.text(fov_text)
 		end
@@ -1409,5 +1410,3 @@ CameraManager._update_transition = function (self, viewport_name, nodes, dt)
 
 	return values
 end
-
-return

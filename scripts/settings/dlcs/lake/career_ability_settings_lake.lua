@@ -42,5 +42,3 @@ PassiveAbilitySettings.es_4 = {
 		}
 	}
 }
-
-return

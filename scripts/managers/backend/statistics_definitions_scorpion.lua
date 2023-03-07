@@ -8,7 +8,7 @@ local database_names_repeating = {
 	"weave_quickplay_wins"
 }
 
-for season_id = season_offset, num_seasons, 1 do
+for season_id = season_offset, num_seasons do
 	local season_name = "s" .. season_id
 	player[season_name] = {}
 	local season_table = player[season_name]
@@ -20,7 +20,7 @@ for season_id = season_offset, num_seasons, 1 do
 			source = "player_data"
 		}
 	else
-		for db_name_id = 1, #database_names_repeating, 1 do
+		for db_name_id = 1, #database_names_repeating do
 			local stat_name = database_names_repeating[db_name_id]
 			local database_name = season_name .. "_" .. stat_name
 			season_table[stat_name] = {
@@ -31,8 +31,8 @@ for season_id = season_offset, num_seasons, 1 do
 		end
 	end
 
-	for i = 1, 500, 1 do
-		for j = 1, 4, 1 do
+	for i = 1, 500 do
+		for j = 1, 4 do
 			local id = i .. "_" .. j
 			local db_name = season_name .. "_" .. id
 			season_table[id] = {
@@ -46,13 +46,13 @@ end
 
 player.season_1 = {}
 
-for i = 1, 500, 1 do
+for i = 1, 500 do
 	local definition = {
 		value = 0,
 		source = "player_data"
 	}
 
-	for j = 1, 4, 1 do
+	for j = 1, 4 do
 		local id = "weave_score_weave_" .. i .. "_" .. j .. "_players"
 		local database_name = "season_1_" .. id
 		player.season_1[id] = table.clone(definition)
@@ -62,7 +62,7 @@ end
 
 local profiles = PROFILES_BY_AFFILIATION.heroes
 
-for i = 1, #profiles, 1 do
+for i = 1, #profiles do
 	local profile_index = FindProfileIndex(profiles[i])
 
 	for _, career in pairs(SPProfiles[profile_index].careers) do
@@ -205,5 +205,3 @@ StatisticsUtil.generate_level_complete_with_weapon_stats_dlc(player, "scorpion",
 	value = 0,
 	source = "player_data"
 })
-
-return

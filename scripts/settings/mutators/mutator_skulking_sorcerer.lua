@@ -41,7 +41,7 @@ return {
 				local wanted_position = MainPathUtils.point_on_mainpath(nil, data.wanted_spawn_distance_behind)
 				data.wanted_position = Vector3Box(wanted_position)
 				local respawn_time = math.random(data.respawn_times[1], data.respawn_times[2])
-				data.spawn_at_time = (data.is_initial_spawn and t + data.initial_spawn_time) or t + respawn_time
+				data.spawn_at_time = data.is_initial_spawn and t + data.initial_spawn_time or t + respawn_time
 				data.has_wanted_position = true
 				data.is_initial_spawn = nil
 			elseif data.spawn_at_time < t then

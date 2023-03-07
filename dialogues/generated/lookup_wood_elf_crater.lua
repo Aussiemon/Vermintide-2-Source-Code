@@ -44,5 +44,3 @@ DialogueLookup[DialogueLookup_n + 20] = "pwe_crater_arena_end"
 DialogueLookup[DialogueLookup_n + 21] = "pwe_crater_arena_waystone"
 DialogueLookup[DialogueLookup_n + 22] = "pwe_crater_dummy"
 DialogueLookup_n = DialogueLookup_n + 22
-
-return

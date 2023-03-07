@@ -4,7 +4,7 @@ GameModeHelper.side_is_dead = function (side_name, ignore_bots)
 	local party = Managers.state.side:get_party_from_side_name(side_name)
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local data = status.game_mode_data
 		local health_state = data.health_state
@@ -23,7 +23,7 @@ GameModeHelper.side_is_disabled = function (side_name)
 	local party = Managers.state.side:get_party_from_side_name(side_name)
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		local status = occupied_slots[i]
 		local data = status.game_mode_data
 		local health_state = data.health_state
@@ -41,7 +41,7 @@ GameModeHelper.side_delaying_loss = function (side_name)
 	local player_units = side.PLAYER_AND_BOT_UNITS
 	local num_human_players = #player_units
 
-	for i = 1, num_human_players, 1 do
+	for i = 1, num_human_players do
 		local player_unit = player_units[i]
 		local buff_extension = ScriptUnit.has_extension(player_unit, "buff_system")
 
@@ -125,5 +125,3 @@ GameModeHelper.get_object_sets = function (level_name, game_mode_key)
 
 	return object_sets, spawned_object_sets
 end
-
-return

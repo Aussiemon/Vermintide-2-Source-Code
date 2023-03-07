@@ -145,5 +145,3 @@ DEUS_GOD_INDEX = DEUS_GOD_INDEX or {
 	"slaanesh",
 	"belakor"
 }
-
-return

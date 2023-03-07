@@ -12,5 +12,3 @@ TelemetrySettings = {
 	send = BUILD == "release" or Development.parameter("telemetry-force-send"),
 	use_session_survey = Development.parameter("use-session-survey")
 }
-
-return

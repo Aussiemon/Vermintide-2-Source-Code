@@ -20,5 +20,3 @@ DeusNodeSettings = DeusNodeSettings or {
 		mechanism_state = "map_deus"
 	}
 }
-
-return

@@ -49,5 +49,3 @@ for volume_type, volume_sub_types in pairs(VolumeSystemSettings.nav_tag_layer_co
 		end
 	end
 end
-
-return

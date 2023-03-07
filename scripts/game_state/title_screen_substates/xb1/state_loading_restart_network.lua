@@ -53,5 +53,3 @@ StateLoadingRestartNetwork._init_network = function (self)
 		self.parent:create_popup(previous_session_error, nil, "continue")
 	end
 end
-
-return

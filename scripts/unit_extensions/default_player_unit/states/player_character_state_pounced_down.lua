@@ -124,5 +124,3 @@ PlayerCharacterStatePouncedDown.update = function (self, unit, input, dt, contex
 	self.locomotion_extension:set_disable_rotation_update()
 	CharacterStateHelper.look(input_extension, self.player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
 end
-
-return

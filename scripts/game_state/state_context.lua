@@ -17,5 +17,3 @@ end
 StateContext.event = function ()
 	return StateContext.get("manager", "event")
 end
-
-return

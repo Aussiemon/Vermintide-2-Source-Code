@@ -47,5 +47,3 @@ end
 UnlockGame.requires_restart = function (self)
 	return false
 end
-
-return

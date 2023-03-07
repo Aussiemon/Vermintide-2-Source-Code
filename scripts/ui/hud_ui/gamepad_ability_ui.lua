@@ -182,7 +182,7 @@ GamePadAbilityUI._handle_gamepad = function (self)
 	local active_career_skill = self:_handle_active_ability()
 	local gamepad_active = Managers.input:is_device_active("gamepad") or IS_XB1
 
-	if ((not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always") or active_career_skill then
+	if (not gamepad_active or UISettings.use_gamepad_hud_layout == "never") and UISettings.use_gamepad_hud_layout ~= "always" or active_career_skill then
 		if self._retained_elements_visible then
 			self:_set_elements_visible(false)
 		end
@@ -293,7 +293,7 @@ GamePadAbilityUI.event_input_changed = function (self)
 	local num_inventory_slots = #inventory_slots
 	local input_manager = self._input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local input_action = (gamepad_active and "ability") or "action_career"
+	local input_action = gamepad_active and "ability" or "action_career"
 	local widget = self._widgets_by_name.ability
 
 	self:_set_input(widget, input_action)
@@ -303,7 +303,7 @@ end
 
 GamePadAbilityUI._set_input = function (self, widget, input_action)
 	local texture_data, input_text, prefix_text = self:_get_input_texture_data(input_action)
-	local text_length = (input_text and UTF8Utils.string_length(input_text)) or 0
+	local text_length = input_text and UTF8Utils.string_length(input_text) or 0
 	local max_length = 40
 	local style = widget.style
 	local content = widget.content
@@ -429,5 +429,3 @@ GamePadAbilityUI._update_muneric_ui_ability_cooldown = function (self)
 
 	self:_set_widget_dirty(widget)
 end
-
-return

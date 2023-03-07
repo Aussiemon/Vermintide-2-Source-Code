@@ -41,7 +41,7 @@ PlayerCharacterStateGrabbedByPackMaster.on_enter = function (self, unit, input, 
 
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
-		slot19, slot20 = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension:get_first_person_unit())
+		local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, "start_strangled_state", first_person_extension:get_first_person_unit())
 	end
 
 	self.last_valid_position:store(position)
@@ -83,7 +83,7 @@ PlayerCharacterStateGrabbedByPackMaster.on_exit = function (self, unit, input, d
 
 	if self.ai_extension == nil then
 		local wwise_world = Managers.world:wwise_world(self.world)
-		slot11, slot12 = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension:get_first_person_unit())
+		local wwise_playing_id, wwise_source_id = WwiseWorld.trigger_event(wwise_world, "stop_strangled_state", first_person_extension:get_first_person_unit())
 	end
 
 	if status_extension:is_blocking() then
@@ -399,12 +399,10 @@ PlayerCharacterStateGrabbedByPackMaster.update = function (self, unit, input, dt
 	local radius = 0.9
 	local half_height = 0.6
 	local size = Vector3(radius, half_height, radius)
-	local shape = (half_height - radius > 0 and "capsule") or "sphere"
+	local shape = half_height - radius > 0 and "capsule" or "sphere"
 	local actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", position + Vector3(0, 0, 0.9), "size", size, "collision_filter", "filter_player_mover", "use_global_table")
 
 	if num_actors == 0 then
 		self.last_valid_position:store(position)
 	end
 end
-
-return

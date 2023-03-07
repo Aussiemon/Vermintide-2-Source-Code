@@ -71,5 +71,3 @@ BreedBehaviors.chaos_vortex_sorcerer = {
 	},
 	name = "chaos_vortex_sorcerer"
 }
-
-return

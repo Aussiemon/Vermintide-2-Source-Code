@@ -235,5 +235,3 @@ HordeSurgeHandler.hot_join_sync = function (self, peer_id)
 		self._network_transmit:send_rpc("rpc_horde_surge_freeze", peer_id, self._freeze_time)
 	end
 end
-
-return

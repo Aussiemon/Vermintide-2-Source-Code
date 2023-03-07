@@ -52,5 +52,3 @@ FreeFlight.update = function (self, dt)
 	Matrix4x4.set_translation(cm, trans)
 	Camera.set_local_pose(self.camera, self.unit, cm)
 end
-
-return

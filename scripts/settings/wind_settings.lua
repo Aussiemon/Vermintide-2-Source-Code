@@ -2734,5 +2734,3 @@ WindSettings = {
 		}
 	}
 }
-
-return

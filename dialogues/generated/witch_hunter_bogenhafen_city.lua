@@ -719,7 +719,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.EQ,
 				0
 			}
@@ -727,7 +727,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.ADD,
 				1
 			}
@@ -769,7 +769,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.EQ,
 				0
 			}
@@ -777,7 +777,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.ADD,
 				1
 			}
@@ -819,7 +819,7 @@ return function ()
 			},
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.EQ,
 				0
 			}
@@ -827,7 +827,7 @@ return function ()
 		on_done = {
 			{
 				"faction_memory",
-				"level_bogenhafen_city_bögenauer",
+				"level_bogenhafen_city_bÃ¶genauer",
 				OP.ADD,
 				1
 			}

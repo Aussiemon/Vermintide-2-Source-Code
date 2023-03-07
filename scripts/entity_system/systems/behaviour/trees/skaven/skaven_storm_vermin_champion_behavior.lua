@@ -128,5 +128,3 @@ BreedBehaviors.storm_vermin_champion = {
 	},
 	name = "storm_vermin_champion"
 }
-
-return

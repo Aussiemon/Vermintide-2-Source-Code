@@ -136,7 +136,7 @@ LootCratesPreviewer.spawn_units = function (self, units_name)
 		local scene_graph_links = {}
 		local world = self.background_world
 
-		for i = 1, #units_name, 1 do
+		for i = 1, #units_name do
 			local spawn_position = spawn_positions[i]
 			local unit_name = units_name[i]
 			local unit = World.spawn_unit(world, unit_name)
@@ -207,5 +207,3 @@ LootCratesPreviewer._enable_units_visibility = function (self)
 		end
 	end
 end
-
-return

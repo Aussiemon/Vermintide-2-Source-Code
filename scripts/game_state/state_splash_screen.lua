@@ -95,7 +95,7 @@ StateSplashScreen.on_enter = function (self)
 			"benchmark_mode"
 		}
 
-		for i = 1, #skip_splash_screen_parameters, 1 do
+		for i = 1, #skip_splash_screen_parameters do
 			local parameter = skip_splash_screen_parameters[i]
 
 			if Development.parameter(parameter) then
@@ -110,7 +110,7 @@ StateSplashScreen.on_enter = function (self)
 		Application.argv()
 	}
 
-	for i = 1, #args, 1 do
+	for i = 1, #args do
 		local arg = args[i]
 
 		if arg == "-skip-splash" then
@@ -236,7 +236,7 @@ StateSplashScreen.update = function (self, dt, t)
 		self:update_esrb_logo(dt, t)
 	end
 
-	if not self.wanted_state and ((self.splash_view and self.splash_view:is_completed()) or self._skip_splash) and self:packages_loaded() then
+	if not self.wanted_state and (self.splash_view and self.splash_view:is_completed() or self._skip_splash) and self:packages_loaded() then
 		require("scripts/game_state/state_title_screen")
 		Managers.transition:fade_in(0.5, callback(self, "cb_fade_in_done"))
 	end
@@ -356,5 +356,3 @@ StateSplashScreen.on_exit = function (self, application_shutdown)
 		VisualAssertLog.cleanup()
 	end
 end
-
-return

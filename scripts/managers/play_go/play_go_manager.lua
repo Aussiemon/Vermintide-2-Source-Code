@@ -31,5 +31,3 @@ end
 PlayGoManager.destroy = function (self)
 	return
 end
-
-return

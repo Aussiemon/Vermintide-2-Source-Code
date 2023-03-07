@@ -70,7 +70,7 @@ BTStormVerminPushAction.run = function (self, unit, blackboard, t, dt)
 		network_manager:anim_event(unit, "idle")
 
 		return "done"
-	elseif (blackboard.attack_finished_t and blackboard.attack_finished_t < t and blackboard.attack_finished) or (not blackboard.attack_finished_t and blackboard.attack_finished) then
+	elseif blackboard.attack_finished_t and blackboard.attack_finished_t < t and blackboard.attack_finished or not blackboard.attack_finished_t and blackboard.attack_finished then
 		return "done"
 	else
 		self:attack(unit, t, dt, blackboard)
@@ -114,5 +114,3 @@ end
 BTStormVerminPushAction.anim_cb_attack_finished = function (self, unit, blackboard)
 	blackboard.attack_finished = true
 end
-
-return

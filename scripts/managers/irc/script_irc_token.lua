@@ -29,5 +29,3 @@ end
 ScriptIrcToken.close = function (self)
 	Irc.release_token(self._token)
 end
-
-return

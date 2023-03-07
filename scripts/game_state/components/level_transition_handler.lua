@@ -135,7 +135,7 @@ LevelTransitionHandler.update = function (self)
 end
 
 LevelTransitionHandler.promote_next_level_data = function (self)
-	fassert((self._network_state and self._network_state:is_server()) or not self._network_state, "only server can promote")
+	fassert(self._network_state and self._network_state:is_server() or not self._network_state, "only server can promote")
 	fassert(self._next_level_data, "can't promote without previously calling set_next_level")
 	print("promote_next_level_data")
 
@@ -175,7 +175,7 @@ LevelTransitionHandler.load_current_level = function (self)
 
 	self:_load_extra_packages(new_level_key, extra_packages)
 
-	if currently_loaded_level_key ~= new_level_key or currently_loaded_environment_variation_id ~= new_environment_variation_id or (is_not_loading and is_not_loaded) then
+	if currently_loaded_level_key ~= new_level_key or currently_loaded_environment_variation_id ~= new_environment_variation_id or is_not_loading and is_not_loaded then
 		self:_load_level_packages(new_level_key)
 
 		local level_settings = LevelSettings[new_level_key]
@@ -230,7 +230,7 @@ LevelTransitionHandler._load_extra_packages = function (self, level_key, extra_p
 		local reference_name = level_key
 		local package_manager = Managers.package
 
-		for i = 1, #extra_packages, 1 do
+		for i = 1, #extra_packages do
 			local package_path = extra_packages[i]
 
 			package_manager:load(package_path, reference_name, nil, async)
@@ -327,55 +327,55 @@ LevelTransitionHandler.get_next_difficulty_tweak = function (self)
 end
 
 LevelTransitionHandler.get_current_level_key = function (self)
-	return (self._network_state and self._network_state:get_level_key()) or self._offline_level_data.level_key
+	return self._network_state and self._network_state:get_level_key() or self._offline_level_data.level_key
 end
 
 LevelTransitionHandler.get_current_level_seed = function (self)
-	return (self._network_state and self._network_state:get_level_seed()) or self._offline_level_data.level_seed
+	return self._network_state and self._network_state:get_level_seed() or self._offline_level_data.level_seed
 end
 
 LevelTransitionHandler.get_current_game_mode = function (self)
-	return (self._network_state and self._network_state:get_game_mode()) or self._offline_level_data.game_mode
+	return self._network_state and self._network_state:get_game_mode() or self._offline_level_data.game_mode
 end
 
 LevelTransitionHandler.get_current_conflict_director = function (self)
-	return (self._network_state and self._network_state:get_conflict_director()) or self._offline_level_data.conflict_director
+	return self._network_state and self._network_state:get_conflict_director() or self._offline_level_data.conflict_director
 end
 
 LevelTransitionHandler.get_current_environment_variation_id = function (self)
-	return (self._network_state and self._network_state:get_environment_variation_id()) or self._offline_level_data.environment_variation_id
+	return self._network_state and self._network_state:get_environment_variation_id() or self._offline_level_data.environment_variation_id
 end
 
 LevelTransitionHandler.get_current_locked_director_functions = function (self)
-	return (self._network_state and self._network_state:get_locked_director_functions()) or self._offline_level_data.locked_director_functions
+	return self._network_state and self._network_state:get_locked_director_functions() or self._offline_level_data.locked_director_functions
 end
 
 LevelTransitionHandler.get_current_difficulty = function (self)
-	return (self._network_state and self._network_state:get_difficulty()) or self._offline_level_data.difficulty
+	return self._network_state and self._network_state:get_difficulty() or self._offline_level_data.difficulty
 end
 
 LevelTransitionHandler.get_current_difficulty_tweak = function (self)
-	return (self._network_state and self._network_state:get_difficulty_tweak()) or self._offline_level_data.difficulty_tweak
+	return self._network_state and self._network_state:get_difficulty_tweak() or self._offline_level_data.difficulty_tweak
 end
 
 LevelTransitionHandler.get_current_extra_packages = function (self)
-	return (self._network_state and self._network_state:get_extra_packages()) or self._offline_level_data.extra_packages
+	return self._network_state and self._network_state:get_extra_packages() or self._offline_level_data.extra_packages
 end
 
 LevelTransitionHandler.get_current_mechanism = function (self)
-	return (self._network_state and self._network_state:get_mechanism()) or self._offline_level_data.mechanism
+	return self._network_state and self._network_state:get_mechanism() or self._offline_level_data.mechanism
 end
 
 LevelTransitionHandler.get_current_level_session_id = function (self)
-	return (self._network_state and self._network_state:get_level_session_id()) or self._offline_level_data.level_session_id
+	return self._network_state and self._network_state:get_level_session_id() or self._offline_level_data.level_session_id
 end
 
 LevelTransitionHandler.get_current_level_transition_type = function (self)
-	return (self._network_state and self._network_state:get_level_transition_type()) or self._offline_level_data.level_transition_type
+	return self._network_state and self._network_state:get_level_transition_type() or self._offline_level_data.level_transition_type
 end
 
 LevelTransitionHandler.get_current_checkpoint = function (self)
-	return (self._network_state and self._network_state:get_check_point()) or self._offline_level_data.check_point
+	return self._network_state and self._network_state:get_check_point() or self._offline_level_data.check_point
 end
 
 LevelTransitionHandler.get_current_level_keys = function (self)
@@ -420,7 +420,7 @@ LevelTransitionHandler._load_level_packages = function (self, level_key)
 	local packages = table.clone(settings.packages)
 
 	if packages then
-		for i = 1, #packages, 1 do
+		for i = 1, #packages do
 			local package_path = packages[i]
 
 			package_manager:load(package_path, reference_name, nil, async)
@@ -452,7 +452,7 @@ LevelTransitionHandler._level_packages_loaded = function (self, level_key)
 	local packages = settings.packages
 
 	if packages then
-		for i = 1, #packages, 1 do
+		for i = 1, #packages do
 			local package_path = packages[i]
 
 			if not package_manager:has_loaded(package_path, reference_name) then
@@ -465,7 +465,7 @@ LevelTransitionHandler._level_packages_loaded = function (self, level_key)
 end
 
 LevelTransitionHandler.create_level_seed = function ()
-	local time_since_start = (os.clock() * 10000) % 961748927
+	local time_since_start = os.clock() * 10000 % 961748927
 	local date_time = os.time()
 	local low_time = tonumber(tostring(string.format("%d", date_time)):reverse():sub(1, 6))
 	local seed = (time_since_start + low_time) % 15485867
@@ -542,5 +542,3 @@ LevelTransitionHandler.in_hub_level = function (self)
 		return level_settings.hub_level
 	end
 end
-
-return

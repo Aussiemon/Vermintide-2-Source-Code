@@ -10168,5 +10168,3 @@ ItemMasterList.we_sword_skin_06_magic_01 = {
 		"we_waywatcher"
 	}
 }
-
-return

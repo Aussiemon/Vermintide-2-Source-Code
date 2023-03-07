@@ -187,8 +187,8 @@ HeroWindowLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	local columns = content.columns
 	local selected_row, selected_column = nil
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -420,8 +420,8 @@ HeroWindowLoadoutConsole._is_equipment_slot_right_clicked = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -439,8 +439,8 @@ HeroWindowLoadoutConsole._is_customize_item_pressed = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "customize_hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -458,8 +458,8 @@ HeroWindowLoadoutConsole._is_selected_item_customizable = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -477,8 +477,8 @@ HeroWindowLoadoutConsole._get_selected_item = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -496,8 +496,8 @@ HeroWindowLoadoutConsole._is_equipment_slot_pressed = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -515,8 +515,8 @@ HeroWindowLoadoutConsole._is_equipment_slot_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -534,8 +534,8 @@ HeroWindowLoadoutConsole._set_equipment_slot_selected = function (self, row_inde
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -551,8 +551,8 @@ HeroWindowLoadoutConsole._enable_selection_highlight = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -567,8 +567,8 @@ HeroWindowLoadoutConsole._disable_selection_highlight = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -584,8 +584,8 @@ HeroWindowLoadoutConsole._is_equipment_slot_hovered_by_type = function (self, it
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_ui_slot_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 
 			if slot_settings.type == item_type then
@@ -609,8 +609,8 @@ HeroWindowLoadoutConsole._highlight_equipment_slot_by_type = function (self, ite
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_ui_slot_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
@@ -618,8 +618,8 @@ HeroWindowLoadoutConsole._highlight_equipment_slot_by_type = function (self, ite
 			local slot_hotspot = content[hotspot_name]
 			local enabled = slot_settings.type == item_type
 			slot_hotspot.highlight = enabled
-			local alpha = (slot_hotspot.internal_is_hover and 255) or 100
-			style[slot_hover_name].color[1] = (enabled and alpha) or 255
+			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end
 end
@@ -630,5 +630,3 @@ HeroWindowLoadoutConsole._show_weapon_disclaimer = function (self, should_show)
 	disclaimer_text_background_content.visible = should_show
 	disclaimer_text_content.visible = should_show
 end
-
-return

@@ -62,7 +62,7 @@ NavTagVolumeHandler.create_tag_volume_from_mappings = function (self, level_volu
 	local bottom_points = mapping.bottom_points
 	local point_table = {}
 
-	for i = 1, #bottom_points, 1 do
+	for i = 1, #bottom_points do
 		local point = bottom_points[i]
 		point_table[i] = Vector3(point[1], point[2], point[3])
 	end
@@ -194,5 +194,3 @@ NavTagVolumeHandler.destroy = function (self)
 	self.created_tag_volumes = nil
 	self.level_volumes_by_layer = nil
 end
-
-return

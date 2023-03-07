@@ -97,7 +97,7 @@ ActionGeiser.fire = function (self, reason)
 	local start_pos = position + Vector3(0, 0, half_height)
 	local source_pos = position
 	local capsule_half_height = half_height + radius
-	local shape = (capsule_half_height - radius > 0 and "capsule") or "sphere"
+	local shape = capsule_half_height - radius > 0 and "capsule" or "sphere"
 	local hit_actors, num_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", start_pos, "size", Vector3(radius, capsule_half_height, radius), "rotation", Quaternion.look(Vector3.up(), Vector3.up()), "collision_filter", "filter_character_trigger", "use_global_table")
 	local charge_value = self.charge_value
 	local effect_name = current_action.particle_effect
@@ -165,7 +165,7 @@ ActionGeiser.fire = function (self, reason)
 	if num_actors > 0 then
 		local hit_index = 0
 
-		for i = 1, num_actors, 1 do
+		for i = 1, num_actors do
 			local hit_actor = hit_actors[i]
 			local hit_unit = Actor.unit(hit_actor)
 			local hit_position = POSITION_LOOKUP[hit_unit] or Unit.local_position(hit_unit, 0)
@@ -236,7 +236,7 @@ local UNITS_PER_FRAME = 1
 ActionGeiser._update_damage = function (self, current_action)
 	local damage_buffer = self._damage_buffer
 	local damage_buffer_index = self._damage_buffer_index
-	local num_units = (damage_buffer_index + UNITS_PER_FRAME) - 1
+	local num_units = damage_buffer_index + UNITS_PER_FRAME - 1
 	local network_manager = Managers.state.network
 	local owner_unit = self.owner_unit
 	local damage_source = self.item_name
@@ -244,7 +244,7 @@ ActionGeiser._update_damage = function (self, current_action)
 	local attacker_unit_id = network_manager:unit_game_object_id(owner_unit)
 	local attacker_position = self.position:unbox()
 
-	for i = damage_buffer_index, num_units, 1 do
+	for i = damage_buffer_index, num_units do
 		repeat
 			local damage_data = damage_buffer[i]
 
@@ -291,5 +291,3 @@ ActionGeiser._update_damage = function (self, current_action)
 
 	self._damage_buffer_index = num_units + 1
 end
-
-return

@@ -51,5 +51,3 @@ for hero_name, hero_talent_trees in pairs(TalentTrees) do
 		end
 	end
 end
-
-return

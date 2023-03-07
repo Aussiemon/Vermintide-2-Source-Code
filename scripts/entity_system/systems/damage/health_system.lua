@@ -194,7 +194,7 @@ HealthSystem.update_debug = function (self)
 			else
 				local health = extension:current_health()
 				local damage = extension:get_damage_taken()
-				local health_string = (health == math.huge and "inf") or string.format("%.2f", health)
+				local health_string = health == math.huge and "inf" or string.format("%.2f", health)
 				local breed = Unit.get_data(unit, "breed")
 
 				if breed ~= nil then
@@ -239,7 +239,7 @@ HealthSystem.update_debug = function (self)
 			local viewport_name = "player_1"
 			local debug_text_manager = Managers.state.debug_text
 
-			for i = 1, num_units, 1 do
+			for i = 1, num_units do
 				local unit = debug_units[i]
 				local head_node = Unit.has_node(unit, "c_head") and Unit.node(unit, "c_head")
 
@@ -252,7 +252,7 @@ HealthSystem.update_debug = function (self)
 						local current_health = health_extension.health - health_extension.damage
 						local max_health = health_extension.health
 						local p = current_health / max_health
-						local color = (p > 0.99 and color1) or (p > 0.25 and color2) or color3
+						local color = p > 0.99 and color1 or p > 0.25 and color2 or color3
 						local blackboard = BLACKBOARDS[unit]
 
 						if p <= 0 then
@@ -266,7 +266,7 @@ HealthSystem.update_debug = function (self)
 						end
 
 						local ai_group_extension = ScriptUnit.has_extension(unit, "ai_group_system")
-						local template_name = (ai_group_extension and ai_group_extension.template) or ""
+						local template_name = ai_group_extension and ai_group_extension.template or ""
 
 						if template_name then
 							debug_text_manager:output_unit_text(template_name, 0.15, unit, head_node, offset_vector2, nil, "health", head_color, viewport_name)
@@ -295,8 +295,8 @@ HealthSystem.update_debug = function (self)
 
 							local breed_name = BLACKBOARDS[unit].breed.name
 							local breed_count = hi_data and hi_data.breed_count and hi_data.breed_count[breed_name]
-							local count = (breed_count and breed_count.count) or " "
-							text = string.format("%s %s %q(%s)", (zone_data.island and "island_id:") or "zone_id:", zone_data.unique_zone_id, zone_data.pack_type or "?", count)
+							local count = breed_count and breed_count.count or " "
+							text = string.format("%s %s %q(%s)", zone_data.island and "island_id:" or "zone_id:", zone_data.unique_zone_id, zone_data.pack_type or "?", count)
 
 							if zone_data.hi then
 								col = desc_color2
@@ -307,7 +307,7 @@ HealthSystem.update_debug = function (self)
 							debug_text_manager:output_unit_text(text, 0.15, unit, head_node, offset_vector2, nil, "spawn_info", col, viewport_name)
 						else
 							local ai_group_extension = ScriptUnit.has_extension(unit, "ai_group_system")
-							local template_name = (ai_group_extension and ai_group_extension.template) or ""
+							local template_name = ai_group_extension and ai_group_extension.template or ""
 
 							if template_name then
 								debug_text_manager:output_unit_text(template_name, 0.15, unit, head_node, offset_vector2, nil, "spawn_info", head_color, viewport_name)
@@ -360,7 +360,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 	end
 
 	if damage_type ~= "sync_health" then
-		victim_health_extension:add_damage((attacker_unit_alive and attacker_unit) or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
+		victim_health_extension:add_damage(attacker_unit_alive and attacker_unit or victim_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, added_dot, first_hit, total_hits, attack_type, backstab_multiplier)
 	end
 
 	if victim_health_extension:is_alive() and is_dead then
@@ -369,7 +369,7 @@ HealthSystem.rpc_add_damage = function (self, channel_id, victim_unit_go_id, vic
 		local damage_direction_table = Vector3Aux.box(nil, damage_direction)
 		killing_blow[DamageDataIndex.DAMAGE_AMOUNT] = damage_amount
 		killing_blow[DamageDataIndex.DAMAGE_TYPE] = damage_type
-		killing_blow[DamageDataIndex.ATTACKER] = (attacker_unit_alive and attacker_unit) or victim_unit
+		killing_blow[DamageDataIndex.ATTACKER] = attacker_unit_alive and attacker_unit or victim_unit
 		killing_blow[DamageDataIndex.HIT_ZONE] = hit_zone_name
 		killing_blow[DamageDataIndex.POSITION] = hit_position_table
 		killing_blow[DamageDataIndex.DIRECTION] = damage_direction_table
@@ -674,5 +674,3 @@ HealthSystem.rpc_request_insta_kill = function (self, sender, unit_id, damage_ty
 
 	health_extension:die(damage_type)
 end
-
-return

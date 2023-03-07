@@ -249,5 +249,3 @@ PlayerCharacterStateGrabbedByChaosSpawn.update = function (self, unit, input, dt
 
 	CharacterStateHelper.look(input_extension, player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
 end
-
-return

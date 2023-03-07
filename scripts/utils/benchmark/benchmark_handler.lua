@@ -696,5 +696,3 @@ end
 BenchmarkHandler.cb_fade_out_done = function (self)
 	self._teleporting = nil
 end
-
-return

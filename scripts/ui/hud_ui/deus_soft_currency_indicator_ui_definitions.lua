@@ -353,7 +353,7 @@ local function create_coin_widget_definition()
 					0
 				},
 				offset = {
-					(base_offset_x + icon_size[1] + 5) - 2,
+					base_offset_x + icon_size[1] + 5 - 2,
 					base_offset_y - 2 - 2,
 					0
 				}
@@ -371,12 +371,12 @@ local function create_coin_widget_definition()
 					200
 				},
 				base_offset = {
-					(base_offset_x + icon_size[1] + 5) - 2 + 60,
+					base_offset_x + icon_size[1] + 5 - 2 + 60,
 					base_offset_y - 2 - 2,
 					3
 				},
 				offset = {
-					(base_offset_x + icon_size[1] + 5) - 2 + 60,
+					base_offset_x + icon_size[1] + 5 - 2 + 60,
 					base_offset_y - 2 - 2,
 					3
 				}
@@ -394,7 +394,7 @@ local animation_definitions = {
 				coin_widget.content.coin_delta = string.format("%+d", params.coin_delta)
 				params.delta_dir = math.sign(params.coin_delta)
 				local coin_delta_color = coin_widget.style.coin_delta.text_color
-				coin_delta_color[2] = (params.delta_dir <= 0 and 255) or 200
+				coin_delta_color[2] = params.delta_dir <= 0 and 255 or 200
 			end,
 			update = function (ui_scenegraph, scenegraph_definition, coin_widget, progress, params)
 				local p = 1 - (1 - progress)^2
@@ -413,7 +413,7 @@ local animation_definitions = {
 			update = function (ui_scenegraph, scenegraph_definition, coin_widget, progress, params)
 				local coin_delta_style = coin_widget.style.coin_delta
 				coin_delta_style.offset[2] = coin_delta_style.base_offset[2] + params.delta_dir * (progress - 0.5) * 40
-				coin_delta_style.text_color[1] = math.clamp((255 * (1 - progress)) / 0.8, 0, 255)
+				coin_delta_style.text_color[1] = math.clamp(255 * (1 - progress) / 0.8, 0, 255)
 			end,
 			on_complete = function (ui_scenegraph, scenegraph_definition, coin_widget, params)
 				coin_widget.style.coin_delta.text_color[1] = 0

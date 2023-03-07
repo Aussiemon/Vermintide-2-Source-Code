@@ -464,5 +464,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_poison_wind_globadier = table.create_copy(BreedActions.skaven_poison_wind_globadier, action_data)
-
-return

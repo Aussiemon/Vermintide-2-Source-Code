@@ -53,5 +53,3 @@ end
 AIInventoryItemSystem.update = function (self, context, t, dt)
 	return
 end
-
-return

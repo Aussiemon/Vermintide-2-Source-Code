@@ -78,5 +78,3 @@ DialogueLookup[DialogueLookup_n + 37] = "pes_crater_conversation_ten_01"
 DialogueLookup[DialogueLookup_n + 38] = "pwh_crater_conversation_ten_02"
 DialogueLookup[DialogueLookup_n + 39] = "pes_crater_conversation_ten_02"
 DialogueLookup_n = DialogueLookup_n + 39
-
-return

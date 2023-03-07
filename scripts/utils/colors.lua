@@ -1429,7 +1429,7 @@ Colors.indexed_colors, Colors.num_colors = table.values(Colors.color_definitions
 
 if not Colors.distinct_colors_lookup then
 	local i = 1
-	local f = 92 + 63 * i % 3
+	local f = 92 + 63 * (i % 3)
 	local g = f / 2
 	Colors.distinct_colors_lookup = {
 		{
@@ -1584,7 +1584,7 @@ Colors.hsl2rgb = function (h, s, l)
 	local r, g, b = nil
 
 	if s ~= 0 then
-		local q = (l < 0.5 and l * (1 + s)) or s + l * (1 - s)
+		local q = l < 0.5 and l * (1 + s) or s + l * (1 - s)
 		local p = 2 * l - q
 		r = hue2rgb(p, q, h + 0.3333333333333333)
 		g = hue2rgb(p, q, h)
@@ -1616,5 +1616,3 @@ end
 Colors.luminance = function (col)
 	return 0.2126 * col[2] + 0.7152 * col[3] + 0.0722 * col[4]
 end
-
-return

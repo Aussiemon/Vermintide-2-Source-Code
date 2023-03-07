@@ -63,5 +63,3 @@ end
 GameModeDemo.FAIL_LEVEL = function (self)
 	FAIL_LEVEL_VAR = true
 end
-
-return

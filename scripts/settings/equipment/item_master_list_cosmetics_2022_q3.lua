@@ -306,5 +306,3 @@ ItemMasterList.five_career_bundle_0005 = {
 	can_wield = {},
 	bundle_contains = {}
 }
-
-return

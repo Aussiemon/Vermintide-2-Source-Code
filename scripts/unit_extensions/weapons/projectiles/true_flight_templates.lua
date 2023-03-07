@@ -72,7 +72,7 @@ TrueFlightTemplates.sorcerer_magic_missile = {
 	time_between_raycasts = 0.1,
 	lerp_constant = 50,
 	lerp_modifier_func = function (distance)
-		return (distance < 7 and 0.01) or 5 / distance
+		return distance < 7 and 0.01 or 5 / distance
 	end
 }
 TrueFlightTemplates.sorcerer_strike_missile = {
@@ -91,7 +91,7 @@ TrueFlightTemplates.sorcerer_strike_missile = {
 	time_between_raycasts = 0.1,
 	lerp_constant = 50,
 	lerp_modifier_func = function (distance)
-		return (distance < 7 and 0.01) or 3 / distance
+		return distance < 7 and 0.01 or 3 / distance
 	end,
 	template_state_func = function (parent, projectile_unit, state_id, is_server)
 		if state_id == 1 then
@@ -111,7 +111,7 @@ TrueFlightTemplates.sorcerer_magic_missile_ground = {
 	time_between_raycasts = 0.1,
 	lerp_constant = 50,
 	lerp_modifier_func = function (distance)
-		return (distance < 7 and 0.01) or 5 / distance
+		return distance < 7 and 0.01 or 5 / distance
 	end
 }
 TrueFlightTemplates.sorcerer_slow_bomb_missile = {
@@ -143,7 +143,7 @@ TrueFlightTemplates.sorcerer_slow_bomb_missile = {
 		1
 	},
 	lerp_modifier_func = function (distance)
-		return (distance < 5 and 1) or 5 / distance
+		return distance < 5 and 1 or 5 / distance
 	end,
 	template_state_func = function (parent, projectile_unit, state_id, is_server, hit_unit)
 		if state_id == 1 then
@@ -156,6 +156,7 @@ TrueFlightTemplates.sorcerer_slow_bomb_missile = {
 			end
 
 			if is_server then
+				-- Nothing
 			end
 		end
 	end,
@@ -187,5 +188,3 @@ for name, template in pairs(TrueFlightTemplates) do
 	template.lookup_id = template_index
 	TrueFlightTemplatesLookup[template_index] = name
 end
-
-return

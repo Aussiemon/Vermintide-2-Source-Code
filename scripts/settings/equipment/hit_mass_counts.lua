@@ -91,5 +91,3 @@ FALIL_HIT_MASS_COUNT = {
 	beastmen_gor = 0.5,
 	chaos_marauder = 0.75
 }
-
-return

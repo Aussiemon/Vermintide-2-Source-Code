@@ -40,7 +40,7 @@ ActionCareerESQuestingKnight.client_owner_post_update = function (self, dt, t, w
 		local forward_offset = vfx_settings.forward or 0
 		local up_offset = vfx_settings.up or 0
 		local start_position = POSITION_LOOKUP[self.owner_unit] + direction * forward_offset + Vector3.up() * up_offset
-		local rotation_offset = (vfx_settings.pitch and Quaternion.multiply(rot, Quaternion(Vector3.right(), vfx_settings.pitch))) or Quaternion.identity()
+		local rotation_offset = vfx_settings.pitch and Quaternion.multiply(rot, Quaternion(Vector3.right(), vfx_settings.pitch)) or Quaternion.identity()
 
 		network_manager:rpc_play_particle_effect(nil, effect_name_id, NetworkConstants.invalid_game_object_id, node_id, start_position, rotation_offset, false)
 	end
@@ -79,5 +79,3 @@ end
 ActionCareerESQuestingKnight._play_vfx = function (self)
 	self.inventory_extension:start_weapon_fx("career_action", true)
 end
-
-return

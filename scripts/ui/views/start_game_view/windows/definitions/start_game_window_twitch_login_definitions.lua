@@ -779,7 +779,7 @@ function create_button(scenegraph_id, size, text, font_size, content_check_funct
 		},
 		offset = {
 			offset[1],
-			(offset[2] + size[2]) - 11,
+			offset[2] + size[2] - 11,
 			5
 		}
 	}

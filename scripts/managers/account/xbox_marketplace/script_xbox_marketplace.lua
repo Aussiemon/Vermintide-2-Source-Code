@@ -67,5 +67,3 @@ ScriptXboxMarketplace._cleanup = function (self, dt)
 	self._response_cb = nil
 	self._error_code = nil
 end
-
-return

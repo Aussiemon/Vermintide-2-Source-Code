@@ -126,5 +126,3 @@ end
 StateDedicatedServerInit.on_exit = function (self)
 	return
 end
-
-return

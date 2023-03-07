@@ -62,5 +62,3 @@ Utility.get_action_utility = function (breed_action, action_name, blackboard, fr
 
 	return total_utility
 end
-
-return

@@ -27,5 +27,3 @@ PlayerCharacterState.init = function (self, character_state_init_context, name)
 	self.cosmetic_extension = ScriptUnit.extension(unit, "cosmetic_system")
 	self.ai_extension = ScriptUnit.has_extension(unit, "ai_system") and ScriptUnit.extension(unit, "ai_system")
 end
-
-return

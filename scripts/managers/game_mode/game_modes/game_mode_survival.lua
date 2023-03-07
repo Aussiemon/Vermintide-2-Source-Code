@@ -34,7 +34,7 @@ GameModeSurvival.evaluate_end_conditions = function (self, round_started, dt, t)
 					if mission_data then
 						local wave_completed = mission_data.wave_completed
 						local starting_wave = mission_data.starting_wave
-						local end_reason = (wave_completed - starting_wave > 0 and "won") or "lost"
+						local end_reason = wave_completed - starting_wave > 0 and "won" or "lost"
 
 						return true, end_reason
 					end
@@ -92,5 +92,3 @@ end
 function FAIL_LEVEL()
 	FAIL_LEVEL_VAR = true
 end
-
-return

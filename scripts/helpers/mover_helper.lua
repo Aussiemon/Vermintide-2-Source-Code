@@ -58,5 +58,3 @@ MoverHelper.set_collision_disable_reason = function (unit, state_data, reason, n
 
 	Actor.set_scene_query_enabled(actor, true)
 end
-
-return

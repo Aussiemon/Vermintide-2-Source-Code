@@ -436,7 +436,7 @@ MatchmakingStateStartGame._update_voter_list_by_active_peers = function (self, a
 		end
 	end
 
-	for i = 1, #removed_peers, 1 do
+	for i = 1, #removed_peers do
 		local peer_id = removed_peers[i]
 
 		if results[peer_id] ~= nil then
@@ -459,5 +459,3 @@ MatchmakingStateStartGame._active_peers = function (self)
 
 	return peers_local
 end
-
-return

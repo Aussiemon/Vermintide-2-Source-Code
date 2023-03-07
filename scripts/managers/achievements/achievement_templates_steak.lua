@@ -219,7 +219,7 @@ AchievementTemplates.achievements.scorpion_crater_pendant = {
 	end
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "scorpion_crater_dark_tongue_" .. i
 	AchievementTemplates.achievements[id] = {
 		required_dlc = "scorpion",
@@ -259,5 +259,3 @@ AchievementTemplates.achievements.scorpion_crater_ambush = {
 		return statistics_db:get_persistent_stat(stats_id, "scorpion_crater_ambush") > 0
 	end
 }
-
-return

@@ -142,7 +142,7 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 			Unit.set_local_position(unit, 0, nav_position)
 
 			if not blackboard.breed.die_on_vortex_land then
-				local anim_event = (blackboard.sot_landing and "sot_landing") or "vortex_landing"
+				local anim_event = blackboard.sot_landing and "sot_landing" or "vortex_landing"
 
 				Managers.state.network:anim_event(unit, anim_event)
 			end
@@ -195,5 +195,3 @@ BTInVortexAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

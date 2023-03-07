@@ -244,5 +244,3 @@ GrudgeMarkedNames = {
 		"name_grudge_beastmen_001"
 	}
 }
-
-return

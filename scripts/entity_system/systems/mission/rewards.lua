@@ -40,7 +40,7 @@ Rewards.award_end_of_level_rewards = function (self, game_won, hero_name, is_in_
 
 		Managers.deed:consume_deed(cb)
 	else
-		local loot_profile_name = (is_in_event_game_mode and "event") or "default"
+		local loot_profile_name = is_in_event_game_mode and "event" or "default"
 
 		self:_award_end_of_level_rewards(game_won, hero_name, loot_profile_name, game_time, end_of_level_rewards_arguments, extra_mission_results)
 	end
@@ -133,13 +133,7 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 
 		local current_level_settings = LevelHelper:current_level_settings()
 		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
-
-		if disable_percentage_completed then
-			best_completed_distance = 0
-		else
-			best_completed_distance = math.clamp(best_completed_distance, 0, 1)
-		end
-
+		best_completed_distance = disable_percentage_completed and 0 or math.clamp(best_completed_distance, 0, 1)
 		local mission_failed_reward = {
 			text = "mission_failed",
 			experience = experience_reward * self:experience_multiplier() * best_completed_distance
@@ -147,6 +141,7 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 
 		table.insert(mission_results, 1, mission_failed_reward)
 	elseif game_mode_key == "versus" then
+		-- Nothing
 	elseif game_mode_key == "deus" then
 		local mission_system = Managers.state.entity:system("mission_system")
 		local percentages_completed = mission_system:percentages_completed()
@@ -160,15 +155,9 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 
 		local current_level_settings = LevelHelper:current_level_settings()
 		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
-
-		if disable_percentage_completed then
-			best_completed_distance = 0
-		else
-			best_completed_distance = math.clamp(best_completed_distance, 0, 1)
-		end
-
+		best_completed_distance = disable_percentage_completed and 0 or math.clamp(best_completed_distance, 0, 1)
 		local expedition_failed_reward = {
-			text = (difficulty == "cataclysm" and "expedition_failed_cataclysm") or "expedition_failed",
+			text = difficulty == "cataclysm" and "expedition_failed_cataclysm" or "expedition_failed",
 			experience = EXPERIENCE_REWARD * self:experience_multiplier() * best_completed_distance
 		}
 
@@ -186,13 +175,7 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 
 		local current_level_settings = LevelHelper:current_level_settings()
 		local disable_percentage_completed = current_level_settings and current_level_settings.disable_percentage_completed
-
-		if disable_percentage_completed then
-			best_completed_distance = 0
-		else
-			best_completed_distance = math.clamp(best_completed_distance, 0, 1)
-		end
-
+		best_completed_distance = disable_percentage_completed and 0 or math.clamp(best_completed_distance, 0, 1)
 		local mission_failed_reward = {
 			text = "mission_failed_" .. difficulty,
 			experience = EXPERIENCE_REWARD * self:experience_multiplier() * best_completed_distance
@@ -207,13 +190,13 @@ Rewards._mission_results = function (self, game_won, extra_mission_results)
 		local mechanism = Managers.mechanism:game_mechanism()
 		local first_prev_hero_score = mechanism:previous_hero_score(1)
 		local last_prev_hero_score = mechanism:previous_hero_score(2)
-		local num_obj_completed_first_round = (first_prev_hero_score and first_prev_hero_score.num_completed_objectives) or 0
-		local num_obj_completed_last_round = (last_prev_hero_score and last_prev_hero_score.num_completed_objectives) or 0
+		local num_obj_completed_first_round = first_prev_hero_score and first_prev_hero_score.num_completed_objectives or 0
+		local num_obj_completed_last_round = last_prev_hero_score and last_prev_hero_score.num_completed_objectives or 0
 		local objective_system = Managers.state.entity:system("versus_objective_system")
 		local total_main_objectives = objective_system:num_main_objectives()
 		local xp_all_objectives_completed = experience_settings.complete_all_objectives
 		local first_round_xp = num_obj_completed_first_round / total_main_objectives * xp_all_objectives_completed
-		local last_round_xp = (num_obj_completed_last_round and num_obj_completed_last_round / total_main_objectives * xp_all_objectives_completed) or 0
+		local last_round_xp = num_obj_completed_last_round and num_obj_completed_last_round / total_main_objectives * xp_all_objectives_completed or 0
 		local total_objective_xp = math.ceil(first_round_xp + last_round_xp)
 		mission_results[#mission_results + 1] = {
 			text = "versus_mission_completed",
@@ -409,5 +392,3 @@ Rewards.experience_multiplier = function (self)
 
 	return xp_multiplier * event_xp_multiplier
 end
-
-return

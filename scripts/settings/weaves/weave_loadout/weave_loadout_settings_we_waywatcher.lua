@@ -6,5 +6,3 @@ WeaveLoadoutSettings.we_waywatcher = {
 	properties = {},
 	traits = {}
 }
-
-return

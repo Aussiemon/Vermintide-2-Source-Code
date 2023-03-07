@@ -94,7 +94,7 @@ SocialWheelUI.init = function (self, parent, ingame_ui_context)
 	self._wwise_world = ingame_ui_context.wwise_world
 
 	if not IS_WINDOWS then
-		self._console_extension = (ingame_ui_context.is_in_inn and "_inn") or ""
+		self._console_extension = ingame_ui_context.is_in_inn and "_inn" or ""
 	end
 
 	self._current_context = nil
@@ -138,7 +138,7 @@ SocialWheelUI._create_ui_elements = function (self)
 			local category_widgets = Script.new_array(num_category_settings)
 			self._selection_widgets[category_name] = category_widgets
 
-			for i = 1, num_category_settings, 1 do
+			for i = 1, num_category_settings do
 				local widget = definitions.create_social_widget(category_settings[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func)
 				category_widgets[i] = UIWidget.init(widget)
 			end
@@ -149,13 +149,13 @@ SocialWheelUI._create_ui_elements = function (self)
 			category_widget_pages.current_page = 1
 			self._selection_widgets[category_name] = category_widget_pages
 
-			for page_idx = 1, num_pages, 1 do
+			for page_idx = 1, num_pages do
 				local page = category_settings[page_idx]
 				local num_category_settings = #page
 				local category_widgets = Script.new_array(num_category_settings)
 				category_widget_pages[page_idx] = category_widgets
 
-				for i = 1, num_category_settings, 1 do
+				for i = 1, num_category_settings do
 					local widget = definitions.create_social_widget(page[i], self:_widget_angle(category_settings.angle, num_category_settings, i), category_settings, get_active_context_func, page_idx)
 					category_widgets[i] = UIWidget.init(widget)
 				end
@@ -197,7 +197,7 @@ end
 SocialWheelUI._widget_angle = function (self, total_angle, num_elements, i)
 	local pi = math.pi
 	local segment = total_angle / num_elements
-	local radial_offset = (pi * 0.5 + pi) - total_angle * 0.5 + segment * 0.5
+	local radial_offset = pi * 0.5 + pi - total_angle * 0.5 + segment * 0.5
 	local widget_angle = -radial_offset - (i - 1) * segment
 
 	return widget_angle
@@ -206,7 +206,7 @@ end
 SocialWheelUI._select_widget = function (self, total_angle, num_elements, angle)
 	local pi = math.pi
 	local segment = total_angle / num_elements
-	local radial_offset = (pi * 0.5 + pi) - total_angle * 0.5
+	local radial_offset = pi * 0.5 + pi - total_angle * 0.5
 	local angle_offset = (-angle - radial_offset) % (2 * pi)
 	local selected_index = math.floor(angle_offset / segment) + 1
 
@@ -280,7 +280,7 @@ SocialWheelUI._add_social_wheel_event_animation = function (self, widget, is_loc
 	self._animations["social_event_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, widget.offset, 1, 500, -60, 0.25, math.easeOutCubic)
 
 	self._animation_callbacks["social_event_" .. event_index] = function ()
-		local color = (is_local_player and Colors.get_color_table_with_alpha("medium_purple", 255)) or Colors.get_color_table_with_alpha("light_sky_blue", 255)
+		local color = is_local_player and Colors.get_color_table_with_alpha("medium_purple", 255) or Colors.get_color_table_with_alpha("light_sky_blue", 255)
 		self._animations["social_event_color_" .. event_index] = UIAnimation.init(UIAnimation.linear_scale_color, widget.style.text.text_color, 255, 255, 255, color[2], color[3], color[4], 2)
 		self._animations["timer_" .. event_index] = UIAnimation.init(UIAnimation.function_by_time, GARBAGE, 1, 0, 0, 5, math.easeInCubic)
 
@@ -423,7 +423,7 @@ SocialWheelUI._draw = function (self, dt, t)
 
 		local num_selection_widgets = #selection_widgets
 
-		for i = 1, num_selection_widgets, 1 do
+		for i = 1, num_selection_widgets do
 			local widget = selection_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -452,7 +452,7 @@ SocialWheelUI._draw = function (self, dt, t)
 	local social_event_widgets = self._social_event_widgets
 	local num_social_event_widgets = #social_event_widgets
 
-	for i = 1, num_social_event_widgets, 1 do
+	for i = 1, num_social_event_widgets do
 		local widget = social_event_widgets[i]
 		local widget_offset = widget.offset
 		widget_offset[2] = offset
@@ -639,7 +639,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	if IS_WINDOWS then
 		local gamepad_enabled = Managers.input:is_device_active("gamepad")
 		local layout_settings = Application.user_setting("social_wheel_gamepad_layout")
-		local use_gamepad_layout = (layout_settings == "auto" and gamepad_enabled) or layout_settings == "always"
+		local use_gamepad_layout = layout_settings == "auto" and gamepad_enabled or layout_settings == "always"
 
 		if use_gamepad_layout then
 			category = category .. "_gamepad"
@@ -648,7 +648,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 		category = category .. self._console_extension
 	end
 
-	for i = 1, #SocialWheelPriority, 1 do
+	for i = 1, #SocialWheelPriority do
 		local data = SocialWheelPriority[i]
 		local selected_category = data[1]
 		local condition_function = data[2]
@@ -699,7 +699,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	local selection_widgets = self._current_selection_widgets
 	local num_selection_widgets = #selection_widgets
 
-	for i = 1, num_selection_widgets, 1 do
+	for i = 1, num_selection_widgets do
 		local widget = selection_widgets[i]
 		local widget_content = widget.content
 		local final_offset = widget_content.final_offset
@@ -714,7 +714,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 	local widget_content = bg_widget.content
 	animations.animation_bg_size = UIAnimation.init(UIAnimation.function_by_time, widget_content, "size_multiplier", widget_content.final_size_multiplier * 0.5, widget_content.final_size_multiplier, animation_times.SIZE, math.ease_out_elastic)
 	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")
-	local stop_lerp_time = (gamepad_enabled and STOP_LERP_TIME_CONTROLLER) or STOP_LERP_TIME
+	local stop_lerp_time = gamepad_enabled and STOP_LERP_TIME_CONTROLLER or STOP_LERP_TIME
 	self._valid_selection = true
 	self._selected_widget = nil
 	self._open_start_t = t
@@ -742,7 +742,7 @@ SocialWheelUI._open_menu = function (self, dt, t, input_service, increment_page)
 			local ping_system = Managers.state.entity:system("ping_system")
 			local _, new_position, _ = ping_system:is_ping_response(nil, unique_id, position)
 
-			if not self._world_marker_preview_id or (new_position and Vector3.distance_squared(new_position, position) == 0) then
+			if not self._world_marker_preview_id or new_position and Vector3.distance_squared(new_position, position) == 0 then
 				local final_position = new_position or position
 
 				Managers.state.event:trigger("add_world_marker_position", "ping", final_position, cb)
@@ -757,11 +757,11 @@ end
 
 SocialWheelUI.update_open = function (self, dt, t, input_service)
 	local ping_held = input_service:get("ping_hold")
-	local ping_released = input_service:get("ping_release") or (self.previous_ping_held and not ping_held)
+	local ping_released = input_service:get("ping_release") or self.previous_ping_held and not ping_held
 	local social_wheel_only_held = input_service:get("social_wheel_only_hold")
-	local social_wheel_only_released = input_service:get("social_wheel_only_release") or (self.previous_social_wheel_only_held and not social_wheel_only_held)
+	local social_wheel_only_released = input_service:get("social_wheel_only_release") or self.previous_social_wheel_only_held and not social_wheel_only_held
 	local photomode_only_held = input_service:get("photomode_only_hold")
-	local photomode_only_released = input_service:get("photomode_only_release") or (self.previous_photomode_only_held and not photomode_only_held)
+	local photomode_only_released = input_service:get("photomode_only_release") or self.previous_photomode_only_held and not photomode_only_held
 
 	if photomode_only_held and self._current_selection_widget_settings.has_pages and input_service:get("social_wheel_page") and not self._block_next_input then
 		self:_close_menu(dt, t, input_service, true)
@@ -836,7 +836,7 @@ SocialWheelUI._update_pointer = function (self, input_service, enabled, t)
 		local new_length = math.min(offset_length, 200)
 		local direction = Vector3.normalize(offset)
 		new_position = screen_center + direction * new_length
-		local aspect_ratio = (enabled and settings.size[1] / settings.size[2]) or 1
+		local aspect_ratio = enabled and settings.size[1] / settings.size[2] or 1
 
 		if new_length < 100 then
 			angle = math.atan2(direction[2] * aspect_ratio, direction[1])
@@ -946,7 +946,7 @@ SocialWheelUI._update_selection = function (self, enabled, total_angle, angle)
 				local social_wheel_event = new_widget.content.settings.name
 				local social_wheel_event_settings = SocialWheelSettingsLookup[social_wheel_event]
 				local event_text_func = social_wheel_event_settings.event_text_func
-				local event_text = (event_text_func and event_text_func(target_unit, social_wheel_event_settings, true)) or social_wheel_event_settings.event_text or Localize(social_wheel_event_settings.text)
+				local event_text = event_text_func and event_text_func(target_unit, social_wheel_event_settings, true) or social_wheel_event_settings.event_text or Localize(social_wheel_event_settings.text)
 				local bg_widget = self._bg_widget
 				local bg_widget_content = bg_widget.content
 				bg_widget_content.text_id = event_text
@@ -974,7 +974,7 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 	local selection_widgets = self._current_selection_widgets
 	local num_selection_widgets = #selection_widgets
 
-	for i = 1, num_selection_widgets, 1 do
+	for i = 1, num_selection_widgets do
 		local widget = selection_widgets[i]
 		local widget_content = widget.content
 		local offset = widget.offset
@@ -1039,11 +1039,11 @@ SocialWheelUI._close_menu = function (self, dt, t, input_service, page_only)
 	end
 
 	if not IS_WINDOWS then
-		self._console_extension = (self._ingame_ui_context.is_in_inn and "_inn") or ""
+		self._console_extension = self._ingame_ui_context.is_in_inn and "_inn" or ""
 	end
 
 	local gamepad_enabled = not IS_WINDOWS or Managers.input:is_device_active("gamepad")
-	local start_lerp_time = (gamepad_enabled and START_LERP_TIME_CONTROLLER) or START_LERP_TIME
+	local start_lerp_time = gamepad_enabled and START_LERP_TIME_CONTROLLER or START_LERP_TIME
 	local social_message_sent = nil
 
 	if self._world_marker_preview_id then
@@ -1107,5 +1107,3 @@ end
 SocialWheelUI.is_active = function (self)
 	return self._active_context ~= nil
 end
-
-return

@@ -76,7 +76,7 @@ settings.buff_function_templates = {
 				local catapult_force = 12
 				local catapult_force_z = 6
 				local rand_deg = math.random(0, 360)
-				local radians = (rand_deg * math.pi) / 180
+				local radians = rand_deg * math.pi / 180
 				local catapult_direction = Vector3(math.sin(radians), math.cos(radians), 0)
 				local velocity = Vector3.normalize(catapult_direction) * catapult_force
 
@@ -88,5 +88,3 @@ settings.buff_function_templates = {
 		WwiseUtils.trigger_unit_event(world, "Stop_mutator_ticking_bomb_tick", unit, 0)
 	end
 }
-
-return

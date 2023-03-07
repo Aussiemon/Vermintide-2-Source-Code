@@ -28,5 +28,3 @@ loading_bg_sewers_atlas = {
 		}
 	}
 }
-
-return

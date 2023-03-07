@@ -270,7 +270,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		self._system_data.snap_to_navmesh_update_units[unit] = nil
 		self._system_data.get_to_navmesh_update_units[unit] = nil
 		self._system_data.mover_constrained_update_units[unit] = nil
-		self._system_data.affected_by_gravity_update_units[unit] = (self._affected_by_gravity and self) or nil
+		self._system_data.affected_by_gravity_update_units[unit] = self._affected_by_gravity and self or nil
 
 		MoverHelper.set_disable_reason(unit, self._mover_state, "constrained_by_mover", true)
 	elseif movement_type == "snap_to_navmesh" then
@@ -299,7 +299,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		self._system_data.snap_to_navmesh_update_units[unit] = nil
 		self._system_data.get_to_navmesh_update_units[unit] = nil
 		self._system_data.mover_constrained_update_units[unit] = self
-		self._system_data.affected_by_gravity_update_units[unit] = (self._affected_by_gravity and self) or nil
+		self._system_data.affected_by_gravity_update_units[unit] = self._affected_by_gravity and self or nil
 
 		MoverHelper.set_disable_reason(unit, self._mover_state, "constrained_by_mover", false)
 
@@ -329,7 +329,7 @@ AILocomotionExtension.set_movement_type = function (self, movement_type, overrid
 		local half_height = 1.5
 		local size = Vector3(radius, half_height, radius)
 		local rotation = Quaternion.look(Vector3(0, 0, 1))
-		local shape = (half_height - radius > 0 and "capsule") or "sphere"
+		local shape = half_height - radius > 0 and "capsule" or "sphere"
 		local hit_actors, num_hit_actors = PhysicsWorld.immediate_overlap(physics_world, "shape", shape, "position", mover_position, "rotation", rotation, "size", size, "collision_filter", "filter_environment_overlap", "use_global_table")
 		self._is_falling = num_hit_actors == 0
 	end
@@ -368,5 +368,3 @@ end
 AILocomotionExtension.get_animation_translation_scale = function (self)
 	return self._animation_translation_scale_box:unbox()
 end
-
-return

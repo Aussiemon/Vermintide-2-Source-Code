@@ -100,7 +100,7 @@ LimitedItemTrackSystem.activate_group = function (self, group_name, pool_size)
 	local active_groups = self.active_groups
 	local active_groups_n = self.active_groups_n
 
-	for i = 1, active_groups_n, 1 do
+	for i = 1, active_groups_n do
 		local active_group_name = active_groups[i]
 
 		if active_group_name == group_name then
@@ -124,7 +124,7 @@ LimitedItemTrackSystem.weave_activate_spawner = function (self, unit, group_name
 	local active_groups_n = self.active_groups_n
 	local active_group_index = active_groups_n + 1
 
-	for i = 1, active_groups_n, 1 do
+	for i = 1, active_groups_n do
 		local active_group_name = active_groups[i]
 
 		if active_group_name == group_name then
@@ -143,7 +143,7 @@ LimitedItemTrackSystem.deactivate_group = function (self, group_name)
 	local active_groups = self.active_groups
 	local active_groups_n = self.active_groups_n
 
-	for i = 1, active_groups_n, 1 do
+	for i = 1, active_groups_n do
 		local active_group_name = active_groups[i]
 
 		if active_group_name == group_name then
@@ -160,7 +160,7 @@ LimitedItemTrackSystem.find_active_spawner_id = function (self, unit)
 	local active_spawners = self.active_spawners
 	local active_spawners_n = self.active_spawners_n
 
-	for i = 1, active_spawners_n, 1 do
+	for i = 1, active_spawners_n do
 		local spawner_unit = active_spawners[i]
 
 		if unit == spawner_unit then
@@ -311,14 +311,14 @@ LimitedItemTrackSystem.spawn_batch = function (self, group)
 	local spawner_ids = {}
 	local spawner_ids_n = spawners_n
 
-	for i = 1, spawners_n, 1 do
+	for i = 1, spawners_n do
 		spawner_ids[i] = i
 	end
 
 	local spawned_items = 0
 	local pool_size = group.pool_size
 
-	for i = 1, pool_size, 1 do
+	for i = 1, pool_size do
 		if spawner_ids_n == 0 then
 			break
 		end
@@ -344,13 +344,13 @@ LimitedItemTrackSystem.update = function (self, context, t)
 		local groups = self.groups
 		local active_groups = self.active_groups
 
-		for i = 1, active_groups_n, 1 do
+		for i = 1, active_groups_n do
 			local group = groups[active_groups[i]]
 			local no_items = true
 			local spawners = group.spawners
 			local spawners_n = group.spawners_n
 
-			for i = 1, spawners_n, 1 do
+			for i = 1, spawners_n do
 				local spawner = spawners[i]
 
 				if spawner.num_items > 0 then
@@ -386,5 +386,3 @@ LimitedItemTrackSystem.held_limited_item_destroyed = function (self, spawner_uni
 
 	spawner_extension:remove(id)
 end
-
-return

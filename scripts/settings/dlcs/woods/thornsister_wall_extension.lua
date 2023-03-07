@@ -20,7 +20,7 @@ ThornSisterWallExtension.init = function (self, extension_init_context, unit, ex
 	if source_talent_extension and source_talent_extension:has_talent("kerillian_thorn_sister_debuff_wall") then
 		self._is_explosive_wall = true
 		local career_extension = ScriptUnit.has_extension(self._owner_unit, "career_system")
-		self._owner_career_power_level = (career_extension and career_extension:get_career_power_level()) or 100
+		self._owner_career_power_level = career_extension and career_extension:get_career_power_level() or 100
 	end
 
 	self._original_rotation = QuaternionBox(Unit.local_rotation(unit, 0))
@@ -123,5 +123,3 @@ end
 ThornSisterWallExtension.owner = function (self)
 	return self._owner_unit
 end
-
-return

@@ -134,5 +134,3 @@ BreedBehaviors.ungor_archer = {
 	},
 	name = "ungor_archer"
 }
-
-return

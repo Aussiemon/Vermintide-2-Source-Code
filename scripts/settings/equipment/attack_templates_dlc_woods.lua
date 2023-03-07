@@ -5,5 +5,3 @@ AttackTemplates.projectile_javelin = {
 	sound_type = "heavy",
 	damage_type = "throwing_axe"
 }
-
-return

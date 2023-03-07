@@ -2205,5 +2205,3 @@ Talents.witch_hunter = {
 
 BuffUtils.copy_talent_buff_names(TalentBuffTemplates.witch_hunter)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.witch_hunter, buff_tweak_data)
-
-return

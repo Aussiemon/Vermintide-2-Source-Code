@@ -16,5 +16,3 @@ SwayCamera.update = function (self, dt, position, rotation, data)
 
 	BaseCamera.update(self, dt, position, final_rot, data)
 end
-
-return

@@ -91,5 +91,3 @@ settings.achievement_outline = {
 	}
 }
 settings.achievement_events = {}
-
-return

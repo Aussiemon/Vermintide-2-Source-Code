@@ -6,183 +6,182 @@ local inner_window_size = {
 	window_size[1] - 158,
 	window_size[2] - 158
 }
-local animation_definitions = {
-	approved = {
-		{
-			name = "product_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local product_widget = params.product_widget
-				local product_widget_content = product_widget.content
-				local product_widget_style = product_widget.style
-				product_widget.alpha_multiplier = 0
-				product_widget_style.owned_icon.color[1] = 0
-				product_widget_style.owned_icon_bg.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local product_widget = params.product_widget
-				product_widget.alpha_multiplier = progress
-				local product_widget_size = product_widget.content.size
-				local product_widget_style = product_widget.style
-				local height_offset = 25
-				product_widget.offset[2] = (product_widget_size[2] / 2 + height_offset) - height_offset * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "text_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.approved
-				widget.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local widget = widgets.approved
-				local height_offset = 25
-				widget.offset[2] = -height_offset + height_offset * anim_progress
-				widget.alpha_multiplier = progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "stamp",
-			start_progress = 0.1,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.ease_in_exp(math.ease_exp(progress))
-				local alpha = 255 * progress
-				local product_widget = params.product_widget
-				local product_widget_size = product_widget.content.size
-				local product_widget_style = product_widget.style
-				product_widget_style.owned_icon.color[1] = 255 * progress
-				product_widget_style.owned_icon_bg.color[1] = 255 * math.ease_in_exp(progress)
-				local size_multiplier = 3
-				local owned_icon = product_widget_style.owned_icon
-
-				if owned_icon then
-					local color = owned_icon.color
-					local default_size = owned_icon.default_texture_size
-					local size = owned_icon.texture_size
-					local size_increase_width = default_size[1] * size_multiplier * anim_progress
-					local size_increase_height = default_size[2] * size_multiplier * anim_progress
-					size[1] = default_size[1] * (size_multiplier + 1) - size_increase_width
-					size[2] = default_size[2] * (size_multiplier + 1) - size_increase_height
-					local default_offset = owned_icon.default_offset
-					local offset = owned_icon.offset
-					offset[1] = default_offset[1] - (default_size[1] * size_multiplier - size_increase_width) * 0.5
-					offset[2] = default_offset[2] - (default_size[2] * size_multiplier - size_increase_height) * 0.5
-				end
-
-				local owned_icon_bg = product_widget_style.owned_icon_bg
-
-				if owned_icon_bg then
-					local color = owned_icon_bg.color
-					local default_size = owned_icon_bg.default_texture_size
-					local size = owned_icon_bg.texture_size
-					local size_increase_width = default_size[1] * size_multiplier * anim_progress
-					local size_increase_height = default_size[2] * size_multiplier * anim_progress
-					size[1] = default_size[1] * (size_multiplier + 1) - size_increase_width
-					size[2] = default_size[2] * (size_multiplier + 1) - size_increase_height
-					local default_offset = owned_icon_bg.default_offset
-					local offset = owned_icon_bg.offset
-					offset[1] = default_offset[1] - (default_size[1] * size_multiplier - size_increase_width) * 0.5
-					offset[2] = default_offset[2] - (default_size[2] * size_multiplier - size_increase_height) * 0.5
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "frame_glow",
-			start_progress = 0.4,
-			end_progress = 1.9,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = widgets.approved
-				local style = widget.style
-				local frame_write_mask_style = style.frame_write_mask
-				local frame_write_mask_size = frame_write_mask_style.texture_size
-				local frame_write_mask_offset = frame_write_mask_style.offset
-				frame_write_mask_offset[1] = -frame_write_mask_size[1]
-				frame_write_mask_offset[2] = -frame_write_mask_size[2]
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local widget = widgets.approved
-				local style = widget.style
-				local frame_write_mask_style = style.frame_write_mask
-				local frame_write_mask_size = frame_write_mask_style.texture_size
-				local frame_write_mask_offset = frame_write_mask_style.offset
-				frame_write_mask_offset[1] = -frame_write_mask_size[1] + frame_write_mask_size[1] * 2 * anim_progress
-				frame_write_mask_offset[2] = -frame_write_mask_size[2] + frame_write_mask_size[2] * 2 * anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "fade_out",
-			start_progress = 1.8,
-			end_progress = 2.2,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = 1 - math.easeInCubic(progress)
-				local widget = widgets.approved
-				widget.alpha_multiplier = anim_progress
-				local product_widget = params.product_widget
-				product_widget.alpha_multiplier = anim_progress
-				local product_widget_style = product_widget.style
-				product_widget_style.owned_icon_bg.color[1] = 255 * math.ease_out_quad(1 - progress)
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "blur_progress_out",
-			start_progress = 1.9,
-			end_progress = 2.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = 1 - math.easeInCubic(progress)
-				params.blur_progress = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+local animation_definitions = {}
+animation_definitions.approved = {
+	{
+		name = "product_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local product_widget = params.product_widget
+			local product_widget_content = product_widget.content
+			local product_widget_style = product_widget.style
+			product_widget.alpha_multiplier = 0
+			product_widget_style.owned_icon.color[1] = 0
+			product_widget_style.owned_icon_bg.color[1] = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local product_widget = params.product_widget
+			product_widget.alpha_multiplier = progress
+			local product_widget_size = product_widget.content.size
+			local product_widget_style = product_widget.style
+			local height_offset = 25
+			product_widget.offset[2] = product_widget_size[2] / 2 + height_offset - height_offset * anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+	{
+		name = "text_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local widget = widgets.approved
+			widget.alpha_multiplier = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local widget = widgets.approved
+			local height_offset = 25
+			widget.offset[2] = -height_offset + height_offset * anim_progress
+			widget.alpha_multiplier = progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "stamp",
+		start_progress = 0.1,
+		end_progress = 0.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.ease_in_exp(math.ease_exp(progress))
+			local alpha = 255 * progress
+			local product_widget = params.product_widget
+			local product_widget_size = product_widget.content.size
+			local product_widget_style = product_widget.style
+			product_widget_style.owned_icon.color[1] = 255 * progress
+			product_widget_style.owned_icon_bg.color[1] = 255 * math.ease_in_exp(progress)
+			local size_multiplier = 3
+			local owned_icon = product_widget_style.owned_icon
+
+			if owned_icon then
+				local color = owned_icon.color
+				local default_size = owned_icon.default_texture_size
+				local size = owned_icon.texture_size
+				local size_increase_width = default_size[1] * size_multiplier * anim_progress
+				local size_increase_height = default_size[2] * size_multiplier * anim_progress
+				size[1] = default_size[1] * (size_multiplier + 1) - size_increase_width
+				size[2] = default_size[2] * (size_multiplier + 1) - size_increase_height
+				local default_offset = owned_icon.default_offset
+				local offset = owned_icon.offset
+				offset[1] = default_offset[1] - (default_size[1] * size_multiplier - size_increase_width) * 0.5
+				offset[2] = default_offset[2] - (default_size[2] * size_multiplier - size_increase_height) * 0.5
 			end
-		}
+
+			local owned_icon_bg = product_widget_style.owned_icon_bg
+
+			if owned_icon_bg then
+				local color = owned_icon_bg.color
+				local default_size = owned_icon_bg.default_texture_size
+				local size = owned_icon_bg.texture_size
+				local size_increase_width = default_size[1] * size_multiplier * anim_progress
+				local size_increase_height = default_size[2] * size_multiplier * anim_progress
+				size[1] = default_size[1] * (size_multiplier + 1) - size_increase_width
+				size[2] = default_size[2] * (size_multiplier + 1) - size_increase_height
+				local default_offset = owned_icon_bg.default_offset
+				local offset = owned_icon_bg.offset
+				offset[1] = default_offset[1] - (default_size[1] * size_multiplier - size_increase_width) * 0.5
+				offset[2] = default_offset[2] - (default_size[2] * size_multiplier - size_increase_height) * 0.5
+			end
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "frame_glow",
+		start_progress = 0.4,
+		end_progress = 1.9,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local widget = widgets.approved
+			local style = widget.style
+			local frame_write_mask_style = style.frame_write_mask
+			local frame_write_mask_size = frame_write_mask_style.texture_size
+			local frame_write_mask_offset = frame_write_mask_style.offset
+			frame_write_mask_offset[1] = -frame_write_mask_size[1]
+			frame_write_mask_offset[2] = -frame_write_mask_size[2]
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local widget = widgets.approved
+			local style = widget.style
+			local frame_write_mask_style = style.frame_write_mask
+			local frame_write_mask_size = frame_write_mask_style.texture_size
+			local frame_write_mask_offset = frame_write_mask_style.offset
+			frame_write_mask_offset[1] = -frame_write_mask_size[1] + frame_write_mask_size[1] * 2 * anim_progress
+			frame_write_mask_offset[2] = -frame_write_mask_size[2] + frame_write_mask_size[2] * 2 * anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "fade_out",
+		start_progress = 1.8,
+		end_progress = 2.2,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = 1 - math.easeInCubic(progress)
+			local widget = widgets.approved
+			widget.alpha_multiplier = anim_progress
+			local product_widget = params.product_widget
+			product_widget.alpha_multiplier = anim_progress
+			local product_widget_style = product_widget.style
+			product_widget_style.owned_icon_bg.color[1] = 255 * math.ease_out_quad(1 - progress)
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "blur_progress_out",
+		start_progress = 1.9,
+		end_progress = 2.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = 1 - math.easeInCubic(progress)
+			params.blur_progress = anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.on_enter = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.render_settings.alpha_multiplier = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			params.render_settings.alpha_multiplier = anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 local scenegraph_definition = {
@@ -687,7 +686,7 @@ local widget_definitions_by_state = {
 							style.progress = progress
 							local fade_out = content.fade_out
 							local alpha = 255 * math.ease_pulse(anim_progress)
-							style.color[1] = (fade_out and math.min(style.color[1], alpha)) or alpha
+							style.color[1] = fade_out and math.min(style.color[1], alpha) or alpha
 						end
 					},
 					{
@@ -702,7 +701,7 @@ local widget_definitions_by_state = {
 							style.progress = progress
 							local fade_out = content.fade_out
 							local alpha = 255 * math.ease_pulse(anim_progress)
-							style.color[1] = (fade_out and math.min(style.color[1], alpha)) or alpha
+							style.color[1] = fade_out and math.min(style.color[1], alpha) or alpha
 						end
 					}
 				}
@@ -1045,11 +1044,11 @@ end
 
 StoreItemPurchasePopup._set_fullscreen_effect_enable_state = function (self, enabled, progress, world)
 	local shading_env = World.get_data(world, "shading_environment")
-	progress = progress or (enabled and 1) or 0
+	progress = progress or enabled and 1 or 0
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and progress * 0.8) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and progress * 0.8 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -1349,7 +1348,7 @@ StoreItemPurchasePopup._calculate_discount_textures = function (self, widget, di
 	local discount_string = tostring(math.floor(discount))
 	local length = string.len(discount_string) + 2
 
-	for i = 1, length, 1 do
+	for i = 1, length do
 		local texture_name = nil
 
 		if i == 1 then
@@ -1595,8 +1594,8 @@ StoreItemPurchasePopup._populate_item_widget = function (self, widget, item, pro
 
 	if package_available then
 		content.reference_name = reference_name
-		local new_material_name = (masked and texture_name .. "_masked") or texture_name
-		local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+		local new_material_name = masked and texture_name .. "_masked" or texture_name
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 		self:_create_material_instance(gui, new_material_name, template_material_name, reference_name)
 
@@ -1708,5 +1707,3 @@ StoreItemPurchasePopup._approved_update = function (self, input_service, dt, t)
 		self._purchase_confirmation_anim_duration = purchase_confirmation_anim_duration
 	end
 end
-
-return

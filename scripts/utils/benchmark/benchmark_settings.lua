@@ -127,5 +127,3 @@ BenchmarkSettings.demo_mode_overrides = function ()
 		}
 	end
 end
-
-return

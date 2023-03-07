@@ -5,5 +5,3 @@ settings.auto_load_files = {
 settings.dialogue_lookup = {
 	"dialogues/generated/lookup_enemy_beastmen_vo"
 }
-
-return

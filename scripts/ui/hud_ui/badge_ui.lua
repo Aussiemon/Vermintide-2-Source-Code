@@ -182,5 +182,3 @@ BadgeUI._add_badge_from_queue = function (self)
 
 	self:add_badge(hash, badge, false, badge_in_queue.amount)
 end
-
-return

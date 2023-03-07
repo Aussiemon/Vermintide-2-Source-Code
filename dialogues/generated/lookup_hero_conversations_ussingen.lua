@@ -136,5 +136,3 @@ DialogueLookup[DialogueLookup_n + 66] = "pes_level_ussingen_story_two_02"
 DialogueLookup[DialogueLookup_n + 67] = "pbw_level_ussingen_story_two_01"
 DialogueLookup[DialogueLookup_n + 68] = "pwh_level_ussingen_story_two_02"
 DialogueLookup_n = DialogueLookup_n + 68
-
-return

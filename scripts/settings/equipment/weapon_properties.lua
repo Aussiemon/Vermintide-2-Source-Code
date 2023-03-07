@@ -2169,5 +2169,3 @@ WeaponProperties.combinations = {
 BuffUtils.copy_talent_buff_names(WeaponProperties.buff_templates)
 BuffUtils.apply_buff_tweak_data(WeaponProperties.buff_templates, buff_tweak_data)
 DLCUtils.require_list("weapon_properties_file_names")
-
-return

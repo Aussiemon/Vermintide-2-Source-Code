@@ -23,5 +23,3 @@ EndZoneSettings = {
 		}
 	}
 }
-
-return

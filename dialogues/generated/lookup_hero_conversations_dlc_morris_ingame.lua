@@ -390,5 +390,3 @@ DialogueLookup[DialogueLookup_n + 193] = "pdr_gameplay_cursed_chest_ping"
 DialogueLookup[DialogueLookup_n + 194] = "pbw_gameplay_cursed_chest_ping"
 DialogueLookup[DialogueLookup_n + 195] = "pwh_gameplay_cursed_chest_ping"
 DialogueLookup_n = DialogueLookup_n + 195
-
-return

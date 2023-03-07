@@ -115,5 +115,3 @@ LevelSettings.dlc_celebrate_crawl = {
 	},
 	loot_objectives = {}
 }
-
-return

@@ -48,15 +48,13 @@ local breed_data = {
 		local ping_system_data = extension_init_data.ping_system or {}
 		ping_system_data.always_pingable = true
 		extension_init_data.ping_system = ping_system_data
-	end,
-	debug_spawn_optional_data = {
-		prepare_func = function (breed, extension_init_data)
-			local is_husk = false
+	end
+}
+breed_data.debug_spawn_optional_data = {
+	prepare_func = function (breed, extension_init_data)
+		local is_husk = false
 
-			breed:modify_extension_init_data(is_husk, extension_init_data)
-		end
-	}
+		breed:modify_extension_init_data(is_husk, extension_init_data)
+	end
 }
 Breeds.shadow_totem = table.create_copy(Breeds.shadow_totem, breed_data)
-
-return

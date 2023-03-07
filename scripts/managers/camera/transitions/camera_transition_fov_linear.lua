@@ -23,7 +23,7 @@ CameraTransitionFOVLinear.update = function (self, dt, fov, update_time)
 	end
 
 	local fov = node_1_fov + self._time * fov_delta
-	local done = (node_1_fov < node_2_fov and node_2_fov <= fov) or (node_2_fov < node_1_fov and fov <= node_2_fov) or node_1_fov == node_2_fov
+	local done = node_1_fov < node_2_fov and node_2_fov <= fov or node_2_fov < node_1_fov and fov <= node_2_fov or node_1_fov == node_2_fov
 
 	if done then
 		fov = node_2_fov
@@ -31,5 +31,3 @@ CameraTransitionFOVLinear.update = function (self, dt, fov, update_time)
 
 	return fov, done
 end
-
-return

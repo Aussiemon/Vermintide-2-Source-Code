@@ -43,7 +43,7 @@ AiAnimUtils.get_start_move_animation = function (unit, target_pos, anims_table)
 		animation_name = anims_table.fwd
 	elseif dot_product > -inv_sqrt_2 then
 		local is_to_the_left = Vector3.cross(forward_vector_flat, target_vector_flat).z > 0
-		animation_name = (is_to_the_left and anims_table.left) or anims_table.right
+		animation_name = is_to_the_left and anims_table.left or anims_table.right
 	else
 		animation_name = anims_table.bwd
 	end
@@ -182,5 +182,3 @@ AiAnimUtils.cycle_anims = function (blackboard, anims, blackboard_index_name)
 
 	return anim_name
 end
-
-return

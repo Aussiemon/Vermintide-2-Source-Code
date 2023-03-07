@@ -12,7 +12,7 @@ local function update_target_location(target, aim_position)
 	local node = 0
 	local target_unit_blackboard = BLACKBOARDS[target]
 	local target_breed = target_unit_blackboard and target_unit_blackboard.breed
-	local aim_node = (target_breed and (target_breed.bot_melee_aim_node or "j_spine")) or "rp_center"
+	local aim_node = target_breed and (target_breed.bot_melee_aim_node or "j_spine") or "rp_center"
 
 	if Unit.has_node(target, aim_node) then
 		node = Unit.node(target, aim_node)
@@ -160,7 +160,7 @@ BTBotActivateAbilityAction._evaluate_end_condition = function (self, activate_ab
 		local buffs = end_condition.buffs
 		local num_buffs = #buffs
 
-		for i = 1, num_buffs, 1 do
+		for i = 1, num_buffs do
 			local buff_name = buffs[i]
 			ability_buff = buff_extension:get_non_stacking_buff(buff_name)
 
@@ -171,7 +171,7 @@ BTBotActivateAbilityAction._evaluate_end_condition = function (self, activate_ab
 
 		local offset_time = end_condition.offset_time
 
-		if ability_buff == nil or (offset_time and ability_buff and ability_buff.end_time and t > ability_buff.end_time - offset_time) then
+		if ability_buff == nil or offset_time and ability_buff and ability_buff.end_time and t > ability_buff.end_time - offset_time then
 			return "done"
 		end
 	end
@@ -198,7 +198,7 @@ BTBotActivateAbilityAction.run = function (self, unit, blackboard, t, dt)
 	local activation_data = data.activation
 
 	if activation_data.dynamic_target_unit then
-		local target_unit = (activation_data.custom_target_unit and data.target_unit) or blackboard.target_unit
+		local target_unit = activation_data.custom_target_unit and data.target_unit or blackboard.target_unit
 
 		if ALIVE[target_unit] then
 			if target_unit == unit then
@@ -251,5 +251,3 @@ BTBotActivateAbilityAction.run = function (self, unit, blackboard, t, dt)
 
 	return self:_evaluate_end_condition(data, unit, blackboard, t)
 end
-
-return

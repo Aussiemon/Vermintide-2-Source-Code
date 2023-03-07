@@ -134,7 +134,7 @@ local function sizeof(lut, o, to)
 			b = b + sizeof(lut, info.proto)
 			local ptr = toptr("uint32_t*", o)
 
-			for i = 1, uvs, 1 do
+			for i = 1, uvs do
 				local gcref32 = ptr[5 + i]
 				local _, v = debug.getupvalue(o, i)
 				b = b + 24 + sizeof(lut, gcref32, "upval") + sizeof(lut, v)
@@ -149,7 +149,7 @@ local function sizeof(lut, o, to)
 		if lut then
 			local info = jutil.funcinfo(o)
 
-			for i = -info.gcconsts, -1, 1 do
+			for i = -info.gcconsts, -1 do
 				local k = jutil.funck(o, i)
 				b = b + sizeof(lut, k)
 			end
@@ -182,5 +182,3 @@ end
 LuaJIT.bytes = function (object, exclusive)
 	return sizeof(not exclusive and {}, object)
 end
-
-return

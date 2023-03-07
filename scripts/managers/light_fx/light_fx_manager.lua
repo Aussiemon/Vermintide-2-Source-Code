@@ -167,5 +167,3 @@ LightFXManager.udpate_debug = function (self, dt)
 
 	Gui.rect(gui, Vector3(pos_x, pos_y, pos_z), Vector2(size_x, size_y), color)
 end
-
-return

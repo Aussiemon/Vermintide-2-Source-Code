@@ -18,7 +18,7 @@ Path.path_from_string = function (string_path)
 
 	while index ~= nil do
 		local next_slash_index = string_path:find("/", index)
-		local path_part = string_path:sub(index, (next_slash_index and next_slash_index - 1) or nil)
+		local path_part = string_path:sub(index, next_slash_index and next_slash_index - 1 or nil)
 		path_n = path_n + 1
 		path[path_n] = path_part
 
@@ -40,7 +40,7 @@ Path.path_from_parts = function (...)
 		size = path_n
 	}
 
-	for i = 1, path_n, 1 do
+	for i = 1, path_n do
 		local part = select(i, ...)
 		path[i] = part
 	end
@@ -53,7 +53,7 @@ Path.copy = function (path)
 		size = path.size
 	}
 
-	for i = 1, path.size, 1 do
+	for i = 1, path.size do
 		path_new[i] = path[i]
 	end
 
@@ -75,12 +75,12 @@ Path.join = function (path1, path2, result)
 	result = result or {}
 	result.size = 0
 
-	for i = 1, path1.size, 1 do
+	for i = 1, path1.size do
 		result.size = result.size + 1
 		result[result.size] = path1[i]
 	end
 
-	for i = 1, path2.size, 1 do
+	for i = 1, path2.size do
 		result.size = result.size + 1
 		result[result.size] = path2[i]
 	end
@@ -92,7 +92,7 @@ Path.tostring = function (path, separator)
 	separator = separator or "/"
 	local string_path = ""
 
-	for i = 1, path.size - 1, 1 do
+	for i = 1, path.size - 1 do
 		string_path = string_path .. path[i] .. separator
 	end
 
@@ -147,5 +147,3 @@ if UNIT_TEST then
 
 	assert(p6_string_path == "C:/trunk/lols")
 end
-
-return

@@ -42,5 +42,3 @@ local Unit_alive = Unit.alive
 BTDummyIdleAction.run = function (self, unit, blackboard, t, dt)
 	return "running"
 end
-
-return

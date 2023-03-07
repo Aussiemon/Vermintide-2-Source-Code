@@ -34,12 +34,12 @@ ActionBeam.client_owner_start_action = function (self, new_action, t, chain_acti
 	self.damage_interval = new_action.damage_interval
 	self.charge_damage_profiles = new_action.charge_damage_profiles
 	self.damage_profile = new_action.damage_profile
-	self.charge_level = (chain_action_data and chain_action_data.charge_level) or 0
+	self.charge_level = chain_action_data and chain_action_data.charge_level or 0
 	self.power_level = power_level + power_level * self.charge_level
 	self.damage_interval = self.damage_interval - self.damage_interval / 2 * self.charge_level
 
 	if self.charge_damage_profiles then
-		for i = 1, #self.charge_damage_profiles, 1 do
+		for i = 1, #self.charge_damage_profiles do
 			local info = self.charge_damage_profiles[i]
 
 			if info.threshold < self.charge_level then
@@ -366,5 +366,3 @@ ActionBeam.destroy = function (self)
 	self:_stop_client_vfx()
 	self:_stop_fx()
 end
-
-return

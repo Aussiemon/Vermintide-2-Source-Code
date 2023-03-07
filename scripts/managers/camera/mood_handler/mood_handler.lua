@@ -219,7 +219,7 @@ MoodHandler.update_environment_variables = function (self)
 			local variables = environment_vars[env_setting]
 			local mood_weight = mood_weights[i + 1]
 
-			for i = 1, #variables, 1 do
+			for i = 1, #variables do
 				local var = variables[i]
 				local var_name = var.name
 				local var_value = var.value
@@ -316,5 +316,3 @@ MoodHandler.apply_environment_variables = function (self, shading_environment)
 		end
 	end
 end
-
-return

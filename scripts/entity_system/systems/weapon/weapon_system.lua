@@ -123,7 +123,7 @@ local ARGS = {
 	}
 }
 
-for i = 1, #ARGS, 1 do
+for i = 1, #ARGS do
 	ARGS[ARGS[i].name] = i
 end
 
@@ -140,7 +140,7 @@ WeaponSystem.send_rpc_attack_hit = function (self, damage_source_id, attacker_un
 		RPC_ATTACK_HIT_TEMP[ARGS[arg]] = val
 	end
 
-	for i = 1, #ARGS, 1 do
+	for i = 1, #ARGS do
 		local setting = ARGS[i]
 		local val = RPC_ATTACK_HIT_TEMP[i]
 
@@ -203,9 +203,9 @@ WeaponSystem.rpc_attack_hit = function (self, channel_id, damage_source_id, atta
 	local hit_zone_name = NetworkLookup.hit_zones[hit_zone_id]
 	local blackboard = BLACKBOARDS[hit_unit]
 	local uses_slot_system = ScriptUnit.has_extension(hit_unit, "ai_slot_system")
-	local target_override_extension = (ScriptUnit.has_extension(attacker_unit, "target_override_system") and ScriptUnit.extension(attacker_unit, "target_override_system")) or nil
-	local status_extension = (ScriptUnit.has_extension(attacker_unit, "status_system") and ScriptUnit.extension(attacker_unit, "status_system")) or nil
-	local attacker_not_incapacitated = (status_extension and not status_extension:is_disabled()) or nil
+	local target_override_extension = ScriptUnit.has_extension(attacker_unit, "target_override_system") and ScriptUnit.extension(attacker_unit, "target_override_system") or nil
+	local status_extension = ScriptUnit.has_extension(attacker_unit, "status_system") and ScriptUnit.extension(attacker_unit, "status_system") or nil
+	local attacker_not_incapacitated = status_extension and not status_extension:is_disabled() or nil
 	local hit_unit_is_enemy = DamageUtils.is_enemy(attacker_unit, hit_unit)
 	local hit_ragdoll_actor = NetworkLookup.hit_ragdoll_actors[hit_ragdoll_actor_id]
 	local damage_profile_name = NetworkLookup.damage_profiles[damage_profile_id]
@@ -324,7 +324,7 @@ end
 local function ballistic_raycast(physics_world, max_steps, max_time, position, velocity, gravity, collision_filter, visualize)
 	local time_step = max_time / max_steps
 
-	for i = 1, max_steps, 1 do
+	for i = 1, max_steps do
 		local new_position = position + velocity * time_step
 		local delta = new_position - position
 		local direction = Vector3.normalize(delta)
@@ -706,7 +706,7 @@ WeaponSystem.rpc_play_fx = function (self, channel_id, vfx_array, sfx_array, pos
 		local sound_env_system = Managers.state.entity:system("sound_environment_system")
 		local set_source_env = sound_env_system.set_source_environment
 
-		for i = 1, #vfx_array, 1 do
+		for i = 1, #vfx_array do
 			local vfx = vfx_lookup[vfx_array[i]]
 			local sfx = sfx_lookup[sfx_array[i]]
 			local pos = position_array[i]
@@ -719,7 +719,7 @@ WeaponSystem.rpc_play_fx = function (self, channel_id, vfx_array, sfx_array, pos
 			set_source_env(sound_env_system, source, pos)
 		end
 	else
-		for i = 1, #vfx_array, 1 do
+		for i = 1, #vfx_array do
 			local vfx = vfx_lookup[vfx_array[i]]
 
 			World_create_particles(world, vfx, position_array[i])
@@ -750,5 +750,3 @@ WeaponSystem.hot_join_sync = function (self, peer_id)
 		RPC.rpc_start_geiser(channel_id, unit_id, geiser_effect_id, min_radius, max_radius, charge_time, angle, time_to_shoot)
 	end
 end
-
-return

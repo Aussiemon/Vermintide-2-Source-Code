@@ -25,5 +25,3 @@ settings.dialogue_settings = {
 		"dialogues/generated/nwd_conversations_dlc_drachenfels"
 	}
 }
-
-return

@@ -223,7 +223,7 @@ StartMenuView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and not gamepad_active and FAKE_INPUT_SERVICE) or input_manager:get_service("start_menu_view")
+	local input_service = input_blocked and not gamepad_active and FAKE_INPUT_SERVICE or input_manager:get_service("start_menu_view")
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -309,7 +309,7 @@ StartMenuView._is_selection_widget_pressed = function (self, widget)
 	local content = widget.content
 	local steps = content.steps
 
-	for i = 1, steps, 1 do
+	for i = 1, steps do
 		local hotspot_name = "hotspot_" .. i
 		local hotspot = content[hotspot_name]
 
@@ -493,7 +493,7 @@ end
 
 StartMenuView.exit = function (self, return_to_game)
 	local initial_profile_view = self:initial_profile_view()
-	local exit_transition = (initial_profile_view and "exit_initial_start_menu_view") or (return_to_game and "exit_menu") or "ingame_menu"
+	local exit_transition = initial_profile_view and "exit_initial_start_menu_view" or return_to_game and "exit_menu" or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 	self:play_sound("Play_hud_button_close")
@@ -635,5 +635,3 @@ StartMenuView._is_button_pressed = function (self, widget)
 		return true
 	end
 end
-
-return

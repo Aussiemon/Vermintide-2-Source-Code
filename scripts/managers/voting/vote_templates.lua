@@ -175,7 +175,7 @@ VoteTemplates = {
 		end,
 		modify_title_text = function (text, data)
 			local player = Managers.player:player_from_peer_id(data.kick_peer_id)
-			local name = (player and player:name()) or "n/a"
+			local name = player and player:name() or "n/a"
 
 			return sprintf("%s\n%s", text, tostring(name))
 		end,
@@ -400,12 +400,12 @@ VoteTemplates = {
 				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.act_keys[act_key],
 				NetworkLookup.difficulties[difficulty],
-				(quick_game and 1) or 2,
-				(private_game and 1) or 2,
-				(always_host and 1) or 2,
-				(strict_matchmaking and 1) or 2,
+				quick_game and 1 or 2,
+				private_game and 1 or 2,
+				always_host and 1 or 2,
+				strict_matchmaking and 1 or 2,
 				NetworkLookup.matchmaking_types[matchmaking_type],
-				(twitch_enabled and 1) or 2,
+				twitch_enabled and 1 or 2,
 				NetworkLookup.mechanisms[mechanism]
 			}
 
@@ -441,12 +441,12 @@ VoteTemplates = {
 				mission_id = mission_id,
 				act_key = act_key,
 				difficulty = difficulty,
-				quick_game = (quick_game_id == 1 and true) or false,
-				private_game = (private_game_id == 1 and true) or false,
-				always_host = (always_host_id == 1 and true) or false,
-				strict_matchmaking = (strict_matchmaking_id == 1 and true) or false,
+				quick_game = quick_game_id == 1 and true or false,
+				private_game = private_game_id == 1 and true or false,
+				always_host = always_host_id == 1 and true or false,
+				strict_matchmaking = strict_matchmaking_id == 1 and true or false,
 				matchmaking_type = matchmaking_type,
-				twitch_enabled = (twitch_enabled_id == 1 and true) or false,
+				twitch_enabled = twitch_enabled_id == 1 and true or false,
 				mechanism = mechanism
 			}
 
@@ -566,7 +566,7 @@ VoteTemplates = {
 				NetworkLookup.item_names[item_name],
 				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.difficulties[difficulty],
-				(twitch_enabled and 1) or 2,
+				twitch_enabled and 1 or 2,
 				NetworkLookup.mechanisms[mechanism]
 			}
 
@@ -591,7 +591,7 @@ VoteTemplates = {
 				item_name = item_name,
 				mission_id = mission_id,
 				difficulty = difficulty,
-				twitch_enabled = (twitch_enabled_id == 1 and true) or false,
+				twitch_enabled = twitch_enabled_id == 1 and true or false,
 				mechanism = NetworkLookup.mechanisms[mechanism_id]
 			}
 
@@ -693,11 +693,11 @@ VoteTemplates = {
 			local sync_data = {
 				NetworkLookup.mission_ids[mission_id],
 				NetworkLookup.difficulties[difficulty],
-				(twitch_enabled and 1) or 2,
+				twitch_enabled and 1 or 2,
 				NetworkLookup.mechanisms[mechanism]
 			}
 
-			for i = 1, #mutators, 1 do
+			for i = 1, #mutators do
 				local mutator_name = mutators[i]
 				local mutator_id = NetworkLookup.mutator_templates[mutator_name]
 				sync_data[#sync_data + 1] = mutator_id
@@ -713,7 +713,7 @@ VoteTemplates = {
 			local mutators = {}
 			local mutator_start_index = 5
 
-			for i = mutator_start_index, #sync_data, 1 do
+			for i = mutator_start_index, #sync_data do
 				local mutator_id = sync_data[i]
 				mutators[#mutators + 1] = NetworkLookup.mutator_templates[mutator_id]
 			end
@@ -733,7 +733,7 @@ VoteTemplates = {
 				event_data = {
 					mutators = mutators
 				},
-				twitch_enabled = (twitch_enabled_id == 1 and true) or false,
+				twitch_enabled = twitch_enabled_id == 1 and true or false,
 				mechanism = mechanism
 			}
 
@@ -858,7 +858,7 @@ VoteTemplates = {
 			local sync_data = {
 				NetworkLookup.mission_ids[weave_name],
 				objective_index,
-				(private_game and 1) or 2,
+				private_game and 1 or 2,
 				NetworkLookup.mechanisms[mechanism],
 				NetworkLookup.matchmaking_types[matchmaking_type]
 			}
@@ -871,7 +871,7 @@ VoteTemplates = {
 			local objective_index = sync_data[2]
 			local weave_template = WeaveSettings.templates[weave_name]
 			local difficulty = weave_template.difficulty_key
-			local private_game = (sync_data[3] == 1 and true) or false
+			local private_game = sync_data[3] == 1 and true or false
 			local mechanism_id = sync_data[4]
 			local mechanism = NetworkLookup.mechanisms[mechanism_id]
 			local matchmaking_type_id = sync_data[5]
@@ -1234,5 +1234,3 @@ DLCUtils.require_list("vote_template_filenames")
 for name, template in pairs(VoteTemplates) do
 	template.name = name
 end
-
-return

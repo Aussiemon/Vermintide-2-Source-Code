@@ -781,5 +781,3 @@ settings.start_game_layout_console_generic_inputs = {
 		}
 	}
 }
-
-return

@@ -383,5 +383,3 @@ for idx, pause_event in ipairs(PauseEvents.pause_events) do
 
 	PauseEvents.pause_events[pause_event.name] = pause_event
 end
-
-return

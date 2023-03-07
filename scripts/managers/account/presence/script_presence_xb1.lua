@@ -212,5 +212,3 @@ ScriptPresence.cb_async_presence_set = function (self, info)
 		str = str .. "SUCCESS"
 	end
 end
-
-return

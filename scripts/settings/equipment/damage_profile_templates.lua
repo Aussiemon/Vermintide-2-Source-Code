@@ -5013,5 +5013,3 @@ for name, damage_profile in pairs(DamageProfileTemplates) do
 end
 
 DamageProfileTemplates = table.merge(DamageProfileTemplates, no_damage_templates)
-
-return

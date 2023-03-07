@@ -381,15 +381,15 @@ StartGameWindowWeaveInfo._update_selected_weave = function (self)
 			local widget_definition = create_objective_widget(scenegraph_id, objective_size)
 			local objective_widgets = {}
 
-			for i = 1, #objectives, 1 do
+			for i = 1, #objectives do
 				local widget = UIWidget.init(widget_definition)
 				objective_widgets[#objective_widgets + 1] = widget
 				local objective = objectives[i]
 				local conflict_settings = objective.conflict_settings
 				local is_end_objective = conflict_settings == "weave_disabled"
-				local title_text = (is_end_objective and "menu_weave_play_next_end_event_title") or "menu_weave_play_main_objective_title"
+				local title_text = is_end_objective and "menu_weave_play_next_end_event_title" or "menu_weave_play_main_objective_title"
 				local objective_display_name = objective.display_name
-				local objective_icon = (is_end_objective and "objective_icon_boss") or "objective_icon_general"
+				local objective_icon = is_end_objective and "objective_icon_boss" or "objective_icon_general"
 				local objective_height = self:_assign_objective(widget, title_text, objective_display_name, objective_icon, objective_spacing)
 				local offset = widget.offset
 				offset[2] = -total_objectives_height
@@ -485,7 +485,7 @@ StartGameWindowWeaveInfo._align_private_checkbox = function (self)
 	local text_width = UIUtils.get_text_width(ui_renderer, text_style, hotspot_content.text)
 	local total_width = text_width_offset + text_width
 	offset[1] = -total_width / 2
-	offset[2] = (gamepad_active and 40) or 0
+	offset[2] = gamepad_active and 40 or 0
 	local tooltip_style = style.additional_option_info
 	local tooltip_width = tooltip_style.max_width
 	local tooltip_offset = tooltip_style.offset
@@ -611,5 +611,3 @@ StartGameWindowWeaveInfo._get_save_data_by_weave_name = function (self, weave_na
 
 	return saved_value
 end
-
-return

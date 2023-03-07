@@ -169,5 +169,3 @@ PlayerUnitStatusSettings.overcharge_values = table.merge(PlayerUnitStatusSetting
 	life_staff_light = 4
 })
 CareerNameAchievementMapping.we_thornsister = "thornsister"
-
-return

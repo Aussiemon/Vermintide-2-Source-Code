@@ -13,5 +13,3 @@ local item_master_list = {
 }
 
 table.merge_recursive(ItemMasterList, item_master_list)
-
-return

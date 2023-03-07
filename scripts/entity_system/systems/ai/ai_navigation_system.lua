@@ -134,7 +134,7 @@ AINavigationSystem.update = function (self, context, t)
 	local num_callbacks = #nav_safe_callbacks
 
 	if num_callbacks > 0 then
-		for i = 1, num_callbacks, 1 do
+		for i = 1, num_callbacks do
 			local safe_callback = nav_safe_callbacks[i]
 
 			safe_callback()
@@ -177,12 +177,12 @@ end
 AINavigationSystem.update_enabled = function (self)
 	for unit, extension in pairs(self.unit_extension_data) do
 		local enabled = extension._nav_bot ~= nil and extension._enabled
-		self.enabled_units[unit] = (enabled and extension) or nil
+		self.enabled_units[unit] = enabled and extension or nil
 	end
 
 	for unit, extension in pairs(self.delayed_units) do
 		local enabled = extension._nav_bot ~= nil and extension._enabled
-		self.enabled_units[unit] = (enabled and extension) or nil
+		self.enabled_units[unit] = enabled and extension or nil
 	end
 end
 
@@ -309,10 +309,10 @@ AINavigationSystem.update_destination = function (self, t)
 				local destination_change = Vec3_dist_sq(position_current_destination, position_wanted_destination)
 				local dist_to_destination = Vec3_dist_sq(position_unit, position_wanted_destination)
 				local destination_far_away = far_away_distance_sq < dist_to_destination
-				local change_large_enough = (destination_far_away and destination_change > 9) or (not destination_far_away and destination_change > 0.01)
+				local change_large_enough = destination_far_away and destination_change > 9 or not destination_far_away and destination_change > 0.01
 				local already_at_wanted_destination = dist_to_destination < 0.01
 				local is_path_recomputation_needed = GwNavBot.is_path_recomputation_needed(nav_bot)
-				local should_start_new_pathfind = is_path_recomputation_needed or (not already_at_wanted_destination and (not is_navbot_following_path or change_large_enough))
+				local should_start_new_pathfind = is_path_recomputation_needed or not already_at_wanted_destination and (not is_navbot_following_path or change_large_enough)
 
 				if should_start_new_pathfind then
 					GwNavBot.compute_new_path(nav_bot, position_wanted_destination)
@@ -552,7 +552,9 @@ AINavigationSystem.update_dispersion = function (self, t, dt)
 		local action = GwNavBot.update_logic_for_crowd_dispersion(extension._nav_bot)
 
 		if action == 1 then
+			-- Nothing
 		elseif action == 2 then
+			-- Nothing
 		end
 	end
 end
@@ -579,7 +581,7 @@ AINavigationSystem.update_debug_draw = function (self, t)
 	for unit, extension in pairs(self.unit_extension_data) do
 		local pos = Unit.local_position(unit, 0)
 		local enabled = self.enabled_units[unit]
-		local color = (enabled and enabled_color) or disabled_color
+		local color = enabled and enabled_color or disabled_color
 		local wanted_destination = extension._wanted_destination:unbox()
 		local destination = extension._destination:unbox()
 
@@ -606,9 +608,9 @@ AINavigationSystem.update_debug_draw = function (self, t)
 			local entrance_pos = data.entrance_pos:unbox()
 			local exit_pos = data.exit_pos:unbox()
 
-			drawer:sphere(entrance_pos, 0.3, (data.entrance_is_at_bot_progress_on_path and Colors.get("pink")) or Colors.get("red"))
-			drawer:sphere(exit_pos, 0.3, (data.exit_is_at_the_end_of_path and Colors.get("pink")) or Colors.get("red"))
-			drawer:vector(entrance_pos, exit_pos - entrance_pos, (data.next_smart_object_id and Colors.get("pink")) or Colors.get("red"))
+			drawer:sphere(entrance_pos, 0.3, data.entrance_is_at_bot_progress_on_path and Colors.get("pink") or Colors.get("red"))
+			drawer:sphere(exit_pos, 0.3, data.exit_is_at_the_end_of_path and Colors.get("pink") or Colors.get("red"))
+			drawer:vector(entrance_pos, exit_pos - entrance_pos, data.next_smart_object_id and Colors.get("pink") or Colors.get("red"))
 		end
 	end
 
@@ -630,12 +632,12 @@ end
 AINavigationSystem._debug_draw_text = function (self, debug_unit, blackboard, navigation_extension, t)
 	Debug.text("AI NAVIGATION DEBUG")
 	Debug.text("  enabled = %s", tostring(self.enabled_units[debug_unit] ~= nil))
-	Debug.text("  using far-path = %s", (blackboard.far_path and "YES") or "NO")
+	Debug.text("  using far-path = %s", blackboard.far_path and "YES" or "NO")
 	Debug.text("  has_reached = %s", tostring(navigation_extension:has_reached_destination()))
 	Debug.text("  remaining path distance = %.2f", navigation_extension:get_remaining_distance_from_progress_to_end_of_path() or 0)
 	Debug.text("  dist to dest = %.2f", tostring(navigation_extension:distance_to_destination()))
 	Debug.text("  current_speed = %.2f", navigation_extension._current_speed)
-	Debug.text("  desired_velocity = %s", (navigation_extension._nav_bot and tostring(GwNavBot.output_velocity(navigation_extension._nav_bot))) or "?")
+	Debug.text("  desired_velocity = %s", navigation_extension._nav_bot and tostring(GwNavBot.output_velocity(navigation_extension._nav_bot)) or "?")
 	Debug.text("  failed_move_attempts = %d", navigation_extension._failed_move_attempts)
 	Debug.text("  no_path_found = %s", tostring(blackboard.no_path_found))
 	Debug.text("  is_computing_path = %s", tostring(navigation_extension._is_computing_path))
@@ -666,9 +668,9 @@ AINavigationSystem._debug_draw_nav_path = function (self, drawer, navigation_ext
 		local current_node_index = GwNavBot.get_path_current_node_index(nav_bot)
 		local offset = Vector3.up() * 0.05
 
-		for i = 0, node_count - 1, 1 do
+		for i = 0, node_count - 1 do
 			local position = GwNavBot.get_path_node_pos(nav_bot, i)
-			local color = (current_node_index == i and Colors.get("green")) or Colors.get("powder_blue")
+			local color = current_node_index == i and Colors.get("green") or Colors.get("powder_blue")
 
 			drawer:sphere(position + offset, 0.1, color)
 
@@ -690,7 +692,7 @@ AINavigationSystem._debug_draw_far_path = function (self, drawer, debug_unit, bl
 		local current_far_path_index = blackboard.current_far_path_index
 		local previous_node_pos = nil
 
-		for i = 1, num_far_path_nodes, 1 do
+		for i = 1, num_far_path_nodes do
 			local group = far_path[i]
 			local node_pos = group:get_group_center():unbox()
 			local node_color = i < current_far_path_index and Colors.get("yellow")
@@ -740,7 +742,7 @@ AINavigationSystem.override_nav_funcs = function (self)
 		"GwNavTagVolume"
 	}
 
-	for i = 1, #patch_list, 1 do
+	for i = 1, #patch_list do
 		local engine_plugin_name = patch_list[i]
 		local engine_plugin = _G[engine_plugin_name]
 
@@ -755,5 +757,3 @@ AINavigationSystem.override_nav_funcs = function (self)
 		end
 	end
 end
-
-return

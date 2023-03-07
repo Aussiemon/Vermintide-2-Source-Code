@@ -131,48 +131,48 @@ local animation_definitions = {
 				return
 			end
 		}
-	},
-	difficulty_info_enter = {
-		{
-			name = "difficulty_info_enter",
-			start_progress = 0,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				widgets.difficulty_info.content.visible = true
-				local diff_info_style = widgets.difficulty_info.style
-				diff_info_style.background.color[1] = 0
-				diff_info_style.border.color[1] = 0
-				diff_info_style.difficulty_description.text_color[1] = 0
-				diff_info_style.highest_obtainable_level.text_color[1] = 0
-				diff_info_style.difficulty_separator.color[1] = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local diff_info = widgets.difficulty_info
-				local diff_info_style = widgets.difficulty_info.style
-				local diff_info_content = widgets.difficulty_info.content
-				diff_info.offset[1] = 50 * anim_progress
-				widgets.upsell_button.offset[1] = 50 * anim_progress
-				local alpha = 200 * anim_progress
-				diff_info_style.background.color[1] = alpha
-				diff_info_style.border.color[1] = alpha
-				alpha = 255 * anim_progress
-				diff_info_style.difficulty_description.text_color[1] = alpha
-				diff_info_style.highest_obtainable_level.text_color[1] = alpha
-				diff_info_style.difficulty_separator.color[1] = alpha
+	}
+}
+animation_definitions.difficulty_info_enter = {
+	{
+		name = "difficulty_info_enter",
+		start_progress = 0,
+		end_progress = 0.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			widgets.difficulty_info.content.visible = true
+			local diff_info_style = widgets.difficulty_info.style
+			diff_info_style.background.color[1] = 0
+			diff_info_style.border.color[1] = 0
+			diff_info_style.difficulty_description.text_color[1] = 0
+			diff_info_style.highest_obtainable_level.text_color[1] = 0
+			diff_info_style.difficulty_separator.color[1] = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local diff_info = widgets.difficulty_info
+			local diff_info_style = widgets.difficulty_info.style
+			local diff_info_content = widgets.difficulty_info.content
+			diff_info.offset[1] = 50 * anim_progress
+			widgets.upsell_button.offset[1] = 50 * anim_progress
+			local alpha = 200 * anim_progress
+			diff_info_style.background.color[1] = alpha
+			diff_info_style.border.color[1] = alpha
+			alpha = 255 * anim_progress
+			diff_info_style.difficulty_description.text_color[1] = alpha
+			diff_info_style.highest_obtainable_level.text_color[1] = alpha
+			diff_info_style.difficulty_separator.color[1] = alpha
 
-				if diff_info_content.should_show_diff_lock_text then
-					diff_info_style.difficulty_lock_text.text_color[1] = alpha
-				end
-
-				if diff_info_content.should_show_dlc_lock then
-					diff_info_style.dlc_lock_text.text_color[1] = alpha
-				end
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+			if diff_info_content.should_show_diff_lock_text then
+				diff_info_style.difficulty_lock_text.text_color[1] = alpha
 			end
-		}
+
+			if diff_info_content.should_show_dlc_lock then
+				diff_info_style.dlc_lock_text.text_color[1] = alpha
+			end
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 local scenegraph_definition = {
@@ -755,7 +755,7 @@ function create_button(scenegraph_id, size, text, font_size, content_check_funct
 		},
 		offset = {
 			offset[1],
-			(offset[2] + size[2]) - 11,
+			offset[2] + size[2] - 11,
 			5
 		}
 	}
@@ -1115,7 +1115,7 @@ function create_twitch_rect_with_outer_frame(scenegraph_id, size, frame_style, l
 		255,
 		255
 	}
-	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.frame_outer_fade_02
+	local frame_settings = frame_style and UIFrameSettings[frame_style] or UIFrameSettings.frame_outer_fade_02
 	local edge_height = frame_settings.texture_sizes.horizontal[2]
 	local frame_size = {
 		size[1] + edge_height * 2,
@@ -1248,7 +1248,7 @@ local selector_input_definition = {
 			self._expedition_level_index = 1
 			local expedition_widgets = self._expedition_widgets
 
-			for i = 1, #expedition_widgets, 1 do
+			for i = 1, #expedition_widgets do
 				local widget = expedition_widgets[i]
 				widget.content.gamepad_selected = false
 			end

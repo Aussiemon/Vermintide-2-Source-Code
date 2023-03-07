@@ -149,5 +149,3 @@ end
 NewsTickerManager.ingame_text = function (self)
 	return self._ingame_text
 end
-
-return

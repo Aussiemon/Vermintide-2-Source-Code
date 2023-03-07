@@ -108,5 +108,3 @@ DialogueLookup[DialogueLookup_n + 52] = "pbw_level_elven_ruins_story_seven_02"
 DialogueLookup[DialogueLookup_n + 53] = "pes_level_elven_ruins_story_seven_02"
 DialogueLookup[DialogueLookup_n + 54] = "pdr_level_elven_ruins_story_seven_01"
 DialogueLookup_n = DialogueLookup_n + 54
-
-return

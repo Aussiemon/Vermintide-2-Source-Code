@@ -1334,5 +1334,3 @@ ItemMasterList.test_item_1018 = {
 	},
 	steam_store_hidden = not Application or not Application.user_setting("show_test_item")
 }
-
-return

@@ -246,5 +246,3 @@ dlc_settings.ingame_challenge_rewards_description = {
 	deus_markus_questing_knight_passive_power_level = "markus_questing_knight_passive_power_level",
 	deus_markus_questing_knight_passive_cooldown_reduction = "markus_questing_knight_passive_cooldown_reduction"
 }
-
-return

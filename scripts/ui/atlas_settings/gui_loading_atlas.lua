@@ -1218,5 +1218,3 @@ loading_atlas = {
 		}
 	}
 }
-
-return

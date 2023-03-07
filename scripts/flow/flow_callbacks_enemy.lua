@@ -21,7 +21,7 @@ function flow_callback_enemy_dissolve_darken_vector(params)
 end
 
 local function enemy_variation_tint_meshes(unit, meshes, material, variable, value)
-	for i = 1, #meshes, 1 do
+	for i = 1, #meshes do
 		if Unit.has_mesh(unit, meshes[i]) then
 			local current_mesh = Unit.mesh(unit, meshes[i])
 			local current_material = Mesh.material(current_mesh, material)
@@ -41,11 +41,11 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 	local meshes = variation.meshes
 
 	if not meshes then
-		for j = 1, #variation.variables, 1 do
+		for j = 1, #variation.variables do
 			Unit.set_scalar_for_material_table(unit, variation.materials, variation.variables[j], variable_value)
 
 			if outfit_units ~= nil then
-				for k = 1, #outfit_units, 1 do
+				for k = 1, #outfit_units do
 					local outfit_unit = outfit_units[k]
 
 					Unit.set_scalar_for_material_table(outfit_unit, variation.materials, variation.variables[j], variable_value)
@@ -53,12 +53,12 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 			end
 		end
 	else
-		for i = 1, #variation.materials, 1 do
-			for j = 1, #variation.variables, 1 do
+		for i = 1, #variation.materials do
+			for j = 1, #variation.variables do
 				enemy_variation_tint_meshes(unit, meshes, variation.materials[i], variation.variables[j], variable_value)
 
 				if outfit_units ~= nil then
-					for k = 1, #outfit_units, 1 do
+					for k = 1, #outfit_units do
 						local outfit_unit = outfit_units[k]
 
 						enemy_variation_tint_meshes(outfit_unit, meshes, variation.materials[i], variation.variables[j], variable_value)
@@ -68,8 +68,8 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 		end
 	end
 
-	for i = 1, #variation.materials, 1 do
-		for j = 1, #variation.variables, 1 do
+	for i = 1, #variation.materials do
+		for j = 1, #variation.variables do
 			table.insert(material_result, {
 				material = variation.materials[i],
 				variable = variation.variables[j],
@@ -83,13 +83,13 @@ local function enemy_variation_tint_part(unit, outfit_units, variation, material
 end
 
 local function enemy_variation_tint_materials(unit, outfit_units, variationsettings, material_sections, material_result)
-	for i = 1, #material_sections, 1 do
+	for i = 1, #material_sections do
 		enemy_variation_tint_part(unit, outfit_units, variationsettings.material_variations[material_sections[i]], material_result)
 	end
 end
 
 local function enemy_variation_enable_parts(unit, outfit_units, variationsettings, body_parts, group_result, material_result)
-	for i = 1, #body_parts, 1 do
+	for i = 1, #body_parts do
 		local body_part = body_parts[i]
 		local part_settings = variationsettings.body_parts[body_part]
 		local variation = part_settings[math.random(#part_settings)]
@@ -117,7 +117,7 @@ local function enemy_variation_scale_nodes(unit, outfit_units, variationsettings
 	local node_id = nil
 
 	for _, scale_nodes in pairs(variationsettings.scale_variation) do
-		for j = 1, #scale_nodes, 1 do
+		for j = 1, #scale_nodes do
 			if scale_nodes[j] ~= nil then
 				if Unit.has_node(unit, scale_nodes[j]) then
 					node_id = Unit.node(unit, scale_nodes[j])
@@ -126,7 +126,7 @@ local function enemy_variation_scale_nodes(unit, outfit_units, variationsettings
 				end
 
 				if outfit_units ~= nil then
-					for k = 1, #outfit_units, 1 do
+					for k = 1, #outfit_units do
 						if Unit.has_node(outfit_units[k], scale_nodes[j]) then
 							node_id = Unit.node(outfit_units[k], scale_nodes[j])
 
@@ -149,7 +149,7 @@ local function enemy_variation_scale_nodes(unit, outfit_units, variationsettings
 			end
 
 			if outfit_units ~= nil then
-				for k = 1, #outfit_units, 1 do
+				for k = 1, #outfit_units do
 					if Unit.has_node(outfit_units[k], node_to_scale_up) then
 						node_id = Unit.node(outfit_units[k], node_to_scale_up)
 
@@ -205,7 +205,7 @@ function flow_callback_enemy_variation(params)
 	end
 
 	if outfit_units ~= nil then
-		for k = 1, #outfit_units, 1 do
+		for k = 1, #outfit_units do
 			local outfit_variation = Unit.get_data(outfit_units[k], "gib_variation")
 
 			if outfit_variation ~= nil then
@@ -217,7 +217,7 @@ function flow_callback_enemy_variation(params)
 	if helmet_units ~= nil then
 		outfit_units = table.shallow_copy(outfit_units)
 
-		for i = 1, #helmet_units, 1 do
+		for i = 1, #helmet_units do
 			table.insert(outfit_units, helmet_units[i])
 		end
 	end
@@ -266,7 +266,7 @@ local function enemy_dismember_set_dismember_filter(unit, bodypart, gibsettings)
 	end
 
 	if gibsettings.disable_gibs ~= nil then
-		for i = 1, #gibsettings.disable_gibs, 1 do
+		for i = 1, #gibsettings.disable_gibs do
 			if not table.contains(dismember_filter, gibsettings.disable_gibs[i]) then
 				table.insert(dismember_filter, gibsettings.disable_gibs[i])
 			end
@@ -278,7 +278,7 @@ end
 
 local function enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
 	local helmet_units = {}
-	helmet_units = (unit_inventory_extension == nil or unit_inventory_extension.inventory_item_helmet_units) and (Unit.get_data(unit, "helmet_items") or {})
+	helmet_units = unit_inventory_extension ~= nil and unit_inventory_extension.inventory_item_helmet_units or Unit.get_data(unit, "helmet_items") or {}
 
 	return helmet_units
 end
@@ -287,7 +287,7 @@ local function enemy_dismember_disable_helmets(unit, unit_inventory_extension, g
 	if gibsettings.gib_helmet_link_node ~= nil then
 		local helmet_units = enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
 
-		for i = 1, #helmet_units, 1 do
+		for i = 1, #helmet_units do
 			if Unit.has_animation_state_machine(helmet_units[i]) then
 				Unit.disable_animation_state_machine(helmet_units[i])
 			end
@@ -325,7 +325,7 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 	if gibsettings.gib_helmet_link_node ~= nil then
 		local helmet_units = enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
 
-		for i = 1, #helmet_units, 1 do
+		for i = 1, #helmet_units do
 			World.unlink_unit(world, helmet_units[i])
 			World.link_unit(Unit.world(gib_unit), helmet_units[i], gib_unit, Unit.node(gib_unit, gibsettings.gib_helmet_link_node))
 			Unit.set_shader_pass_flag_for_meshes_in_unit_and_childs(helmet_units[i], "outline_unit", false)
@@ -334,8 +334,7 @@ local function enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings,
 
 	local actor = Unit.actor(gib_unit, gibsettings.gib_push_actor)
 
-	if not actor then
-	else
+	if actor then
 		if Unit.has_node(gib_unit, "a_push") then
 			node_id = Unit.node(gib_unit, "a_push")
 		else
@@ -380,7 +379,7 @@ local function enemy_dismember_spawn_stump(unit_spawner, unit, world, gibsetting
 
 	World.link_unit(world, stump_unit, Script.index_offset(), unit, Unit.node(unit, parent_link_nodes[1]))
 
-	for i = 1, #parent_link_nodes, 1 do
+	for i = 1, #parent_link_nodes do
 		local parent_node_id = Unit.node(unit, parent_link_nodes[i])
 		local stump_node_id = Unit.node(stump_unit, stump_link_nodes[i])
 
@@ -412,7 +411,7 @@ local function enemy_dismember_set_variations_on_unit(new_unit, variation_data)
 	if Unit.has_visibility_group(new_unit, "all") then
 		Unit.set_visibility(new_unit, "all", false)
 
-		for i = 1, #variation_data.groups, 1 do
+		for i = 1, #variation_data.groups do
 			if Unit.has_visibility_group(new_unit, variation_data.groups[i]) then
 				Unit.set_visibility(new_unit, variation_data.groups[i], true)
 			end
@@ -433,11 +432,11 @@ local function enemy_dismember_enable_snow_state_on_unit(unit)
 	local index_offset = Script.index_offset()
 	local end_offset = 1 - index_offset
 
-	for i = index_offset, num_meshes - end_offset, 1 do
+	for i = index_offset, num_meshes - end_offset do
 		local mesh = Unit.mesh(unit, i)
 		local num_materials = Mesh.num_materials(mesh)
 
-		for j = index_offset, num_materials - end_offset, 1 do
+		for j = index_offset, num_materials - end_offset do
 			local material = Mesh.material(mesh, j)
 
 			Material.set_scalar(material, "snow", 1)
@@ -488,7 +487,7 @@ local function enemy_dismember_kill_actors(unit, actors, unit_inventory_extensio
 	if unit_inventory_extension ~= nil then
 		local disabled_actors = unit_inventory_extension.disabled_actors
 
-		for i = 1, #actors, 1 do
+		for i = 1, #actors do
 			local unit_actor = Unit.actor(unit, actors[i])
 
 			if unit_actor then
@@ -503,7 +502,7 @@ local function enemy_dismember_kill_actors(unit, actors, unit_inventory_extensio
 
 		unit_inventory_extension.disabled_actors = disabled_actors
 	else
-		for i = 1, #actors, 1 do
+		for i = 1, #actors do
 			local current_actor = Unit.actor(unit, actors[i])
 
 			if current_actor ~= nil then
@@ -599,7 +598,7 @@ local function enemy_dismember(params, spawn_gib)
 		gibbed_nodes = unit_inventory_extension.gibbed_nodes or {}
 	end
 
-	for i = 1, #gibsettings.parent_scale_nodes, 1 do
+	for i = 1, #gibsettings.parent_scale_nodes do
 		node_id = Unit.node(unit, gibsettings.parent_scale_nodes[i])
 
 		Unit.set_local_scale(unit, node_id, Vector3(gibsettings.parent_scale, gibsettings.parent_scale, gibsettings.parent_scale))
@@ -619,13 +618,13 @@ local function enemy_dismember(params, spawn_gib)
 
 	if gibsettings.send_outfit_event ~= nil then
 		if unit_inventory_extension ~= nil then
-			for i = 1, #unit_inventory_extension.inventory_item_outfit_units, 1 do
+			for i = 1, #unit_inventory_extension.inventory_item_outfit_units do
 				Unit.flow_event(unit_inventory_extension.inventory_item_outfit_units[i], gibsettings.send_outfit_event)
 			end
 		else
 			local outfit_items = Unit.get_data(unit, "outfit_items") or {}
 
-			for i = 1, #outfit_items, 1 do
+			for i = 1, #outfit_items do
 				Unit.flow_event(outfit_items[i], gibsettings.send_outfit_event)
 			end
 		end
@@ -763,9 +762,8 @@ function enemy_explode(params)
 		push_force_multiplier = explodesettings.push_force_multiplier
 	end
 
-	for i = 1, #part_combo, 1 do
-		if UnitGibSettings[breed_type].parts[part_combo[i]] == nil then
-		else
+	for i = 1, #part_combo do
+		if UnitGibSettings[breed_type].parts[part_combo[i]] ~= nil then
 			local gibsettings = UnitGibSettings[breed_type].parts[part_combo[i]]
 			local gib_unit = enemy_dismember_spawn_gib(unit_spawner, unit, world, gibsettings, push_force_multiplier, unit_inventory_extension)
 
@@ -801,17 +799,17 @@ function enemy_explode(params)
 		outfit_items = Unit.get_data(unit, "outfit_items") or {}
 	end
 
-	for i = 1, #outfit_items, 1 do
+	for i = 1, #outfit_items do
 		Unit.set_unit_visibility(outfit_items[i], false)
 	end
 
 	local gibsettings_combo_parts = UnitGibSettings[breed_type].parts
 
-	for i = 1, #part_combo, 1 do
+	for i = 1, #part_combo do
 		local gibsetting_part = gibsettings_combo_parts[part_combo[i]]
 
 		if gibsetting_part and gibsetting_part.send_outfit_event ~= nil then
-			for i = 1, #outfit_items, 1 do
+			for i = 1, #outfit_items do
 				Unit.flow_event(outfit_items[i], gibsetting_part.send_outfit_event)
 			end
 		end
@@ -819,7 +817,7 @@ function enemy_explode(params)
 
 	local helmet_units = enemy_dismember_get_helmet_units(unit, unit_inventory_extension)
 
-	for i = 1, #helmet_units, 1 do
+	for i = 1, #helmet_units do
 		if relinked_helmet == false then
 			Unit.set_unit_visibility(helmet_units[i], false)
 		else
@@ -859,5 +857,3 @@ function flow_callback_enemy_explode(params)
 
 	return {}
 end
-
-return

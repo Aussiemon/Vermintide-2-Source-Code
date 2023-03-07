@@ -108,7 +108,7 @@ AimTemplates.player = {
 
 			Unit.animation_set_variable(unit, data.aim_direction_pitch_var, block_anim_variable)
 
-			local min_head_look_z = (data.status_extension:is_crouching() and -3) or data.min_head_lookat_z
+			local min_head_look_z = data.status_extension:is_crouching() and -3 or data.min_head_lookat_z
 			local aim_direction_scaled = aim_direction * 3
 			local z = aim_direction_scaled.z
 			aim_direction_scaled.z = math.clamp(z, min_head_look_z, 3)
@@ -179,7 +179,7 @@ AimTemplates.player = {
 			local pitch_rotation = Quaternion(Vector3.right(), pitch)
 			local look_rotation = Quaternion.multiply(yaw_rotation, pitch_rotation)
 			aim_direction = Vector3.normalize(Quaternion.forward(look_rotation))
-			local min_head_look_z = (data.status_extension:is_crouching() and -3) or data.min_head_lookat_z
+			local min_head_look_z = data.status_extension:is_crouching() and -3 or data.min_head_lookat_z
 			local aim_direction_scaled = aim_direction * 3
 			local z = aim_direction_scaled.z
 			aim_direction_scaled.z = math.clamp(z, min_head_look_z, 3)
@@ -773,11 +773,7 @@ AimTemplates.chaos_marauder = {
 
 					if target_unit_id > 0 then
 						local target_unit = unit_storage:unit(target_unit_id)
-
-						if target_unit then
-							local target_distance = Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0))
-						end
-
+						local target_distance = target_unit and Vector3.distance(POSITION_LOOKUP[unit], POSITION_LOOKUP[target_unit] or Unit.world_position(target_unit, 0))
 						local head_constraint_target = data.head_constraint_target
 						data.lerp_aiming_disabled = true
 						local has_head_index = target_unit and Unit.has_node(target_unit, "j_head")
@@ -987,7 +983,7 @@ AimTemplates.innkeeper = {
 			local old_target = data.current_target
 			local stickiness_multiplier = 0.9025
 
-			for i = 1, #player_units, 1 do
+			for i = 1, #player_units do
 				local player_unit = player_units[i]
 				local dist_sq = Vector3.distance_squared(POSITION_LOOKUP[player_unit], inn_keeper_position)
 
@@ -1100,5 +1096,3 @@ AimTemplates.closest_player_flat = {
 }
 
 DLCUtils.require_list("aim_templates_file_names")
-
-return

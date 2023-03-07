@@ -16,7 +16,7 @@ end
 CommonPopupHandler.destroy = function (self)
 	Managers.state.event:unregister("ui_show_popup", self)
 
-	for i = 1, self._n_popups, 1 do
+	for i = 1, self._n_popups do
 		local popup = self._popups[i]
 
 		if popup then
@@ -101,5 +101,3 @@ CommonPopupHandler.new_popup = function (self, dlc_name, popup_settings)
 
 	self:queue_popup(popup)
 end
-
-return

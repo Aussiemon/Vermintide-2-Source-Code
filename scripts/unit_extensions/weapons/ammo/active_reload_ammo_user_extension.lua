@@ -238,5 +238,3 @@ end
 ActiveReloadAmmoUserExtension.is_reloading = function (self)
 	return self.next_reload_time ~= nil
 end
-
-return

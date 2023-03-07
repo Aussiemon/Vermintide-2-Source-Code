@@ -72,7 +72,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 	local talent_buff_ids = self._talent_buff_ids
 	local sub_buffs_per_talent = {}
 
-	for i = 1, #talent_buff_ids, 1 do
+	for i = 1, #talent_buff_ids do
 		local id = talent_buff_ids[i]
 		local buff = buff_extension:get_buff_by_id(id)
 
@@ -101,7 +101,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 		return
 	end
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = talents[talent_id]
 
@@ -109,17 +109,17 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 			local buffs = talent_data.buffs
 			local buffer = talent_data.buffer
 
-			if ((player.local_player or is_server_bot) and (not buffer or buffer == "client")) or (self.is_server and buffer == "server") or ((self.is_server or player.local_player) and buffer == "both") then
-				local num_buffs = (buffs and #buffs) or 0
+			if (player.local_player or is_server_bot) and (not buffer or buffer == "client") or self.is_server and buffer == "server" or (self.is_server or player.local_player) and buffer == "both" then
+				local num_buffs = buffs and #buffs or 0
 
 				if num_buffs > 0 then
-					for j = 1, num_buffs, 1 do
+					for j = 1, num_buffs do
 						local buff_template = buffs[j]
 						local id = buff_extension:add_buff(buff_template)
 						local sub_buffs = sub_buffs_per_talent[buff_template]
 
 						if sub_buffs then
-							for k = 1, sub_buffs.num_buffs, 1 do
+							for k = 1, sub_buffs.num_buffs do
 								buff_extension:add_buff(sub_buffs.buff_name, {
 									attacker_unit = player.player_unit
 								})
@@ -135,7 +135,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 				local client_buffs = talent_data.client_buffs
 
 				if client_buffs then
-					for j = 1, #client_buffs, 1 do
+					for j = 1, #client_buffs do
 						local buff_template = client_buffs[j]
 						local id = buff_extension:add_buff(buff_template)
 						talent_buff_ids[#talent_buff_ids + 1] = id
@@ -147,7 +147,7 @@ TalentExtension.apply_buffs_from_talents = function (self, talent_ids)
 				local server_buffs = talent_data.server_buffs
 
 				if server_buffs then
-					for j = 1, #server_buffs, 1 do
+					for j = 1, #server_buffs do
 						local buff_template = server_buffs[j]
 						local id = buff_extension:add_buff(buff_template)
 						talent_buff_ids[#talent_buff_ids + 1] = id
@@ -173,7 +173,7 @@ TalentExtension.update_talent_weapon_index = function (self, talent_ids)
 	self.talent_career_skill_index = 1
 	self.talent_career_weapon_index = nil
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = talents[talent_id]
 
@@ -202,7 +202,7 @@ TalentExtension._clear_buffs_from_talents = function (self)
 	local talent_buff_ids = self._talent_buff_ids
 	local num_talent_buff_ids = #talent_buff_ids
 
-	for i = 1, num_talent_buff_ids, 1 do
+	for i = 1, num_talent_buff_ids do
 		local id = talent_buff_ids[i]
 
 		buff_extension:remove_buff(id)
@@ -229,7 +229,7 @@ TalentExtension.has_talent = function (self, talent_name)
 
 	local wanted_talent_id = wanted_talent_lookup.talent_id
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 
 		if wanted_talent_id == talent_id then
@@ -258,7 +258,7 @@ TalentExtension.has_talent_perk = function (self, perk)
 
 	local talent_ids = self:get_talent_ids()
 
-	for i = 1, #talent_ids, 1 do
+	for i = 1, #talent_ids do
 		local talent_id = talent_ids[i]
 		local talent_data = Talents[hero_name][talent_id]
 
@@ -268,7 +268,7 @@ TalentExtension.has_talent_perk = function (self, perk)
 			if perks then
 				local num_perks = #perks
 
-				for j = 1, num_perks, 1 do
+				for j = 1, num_perks do
 					if perks[j] == perk then
 						return true
 					end
@@ -306,5 +306,3 @@ end
 TalentExtension.initial_talent_synced = function (self)
 	return true
 end
-
-return

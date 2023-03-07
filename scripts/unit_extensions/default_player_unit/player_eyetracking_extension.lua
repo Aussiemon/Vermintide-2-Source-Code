@@ -81,7 +81,7 @@ PlayerEyeTrackingExtension.update_extended_view = function (self, dt)
 	local controlling_player = not player_input_service:is_blocked()
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
 
-	if not self.eyetracking_options_opened and (not controlling_player or (cutscene_system and cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled)) then
+	if not self.eyetracking_options_opened and (not controlling_player or cutscene_system and cutscene_system.active_camera and not cutscene_system.ingame_hud_enabled) then
 		self.extended_view.yaw = 0.15 * self.extended_view.yaw
 		self.extended_view.pitch = 0.15 * self.extended_view.pitch
 	end
@@ -176,13 +176,13 @@ PlayerEyeTrackingExtension.gaze_rotation = function (self)
 end
 
 PlayerEyeTrackingExtension.get_forward_rayhit = function (self)
-	return (self.forward_rayhit_position and self.forward_rayhit_position:unbox()) or nil
+	return self.forward_rayhit_position and self.forward_rayhit_position:unbox() or nil
 end
 
 PlayerEyeTrackingExtension.get_gaze_rayhit = function (self)
 	self:update_gaze_rayhit()
 
-	return (self.gaze_rayhit_position and self.gaze_rayhit_position:unbox()) or nil
+	return self.gaze_rayhit_position and self.gaze_rayhit_position:unbox() or nil
 end
 
 PlayerEyeTrackingExtension.get_is_aiming = function (self)
@@ -210,5 +210,3 @@ end
 PlayerEyeTrackingExtension.get_is_connected = function (self)
 	return self.is_connected
 end
-
-return

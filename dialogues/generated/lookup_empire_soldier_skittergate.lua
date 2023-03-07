@@ -70,5 +70,3 @@ DialogueLookup[DialogueLookup_n + 33] = "pes_level_skittergate_rasknitt_interrup
 DialogueLookup[DialogueLookup_n + 34] = "pes_level_skittergate_rasknitt_stormfiend_dead"
 DialogueLookup[DialogueLookup_n + 35] = "pes_level_skittergate_activate_gate_01a"
 DialogueLookup_n = DialogueLookup_n + 35
-
-return

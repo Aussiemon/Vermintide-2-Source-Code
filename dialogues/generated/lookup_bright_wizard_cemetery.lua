@@ -44,5 +44,3 @@ DialogueLookup[DialogueLookup_n + 20] = "pbw_cemetary_intro"
 DialogueLookup[DialogueLookup_n + 21] = "pbw_cemetary_intro_b"
 DialogueLookup[DialogueLookup_n + 22] = "pbw_cemetary_intro_c"
 DialogueLookup_n = DialogueLookup_n + 22
-
-return

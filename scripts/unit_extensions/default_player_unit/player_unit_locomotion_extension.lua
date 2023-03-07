@@ -197,7 +197,7 @@ PlayerUnitLocomotionExtension._stop = function (self, clear_average_velocity)
 	if clear_average_velocity then
 		local velocities = self._sample_velocities
 
-		for i = 1, #velocities, 1 do
+		for i = 1, #velocities do
 			velocities[i]:store(zero)
 		end
 	end
@@ -290,7 +290,7 @@ PlayerUnitLocomotionExtension.post_update = function (self, unit, input, dt, con
 
 	if first_person_unit and self._move_speed_anim_var_1p then
 		local lerp_time = 0.3
-		local move_speed = (self.on_ground and Vector3.length(self.velocity_current:unbox())) or 0
+		local move_speed = self.on_ground and Vector3.length(self.velocity_current:unbox()) or 0
 		local move_speed_lerp_val = self._move_speed_lerp_val
 
 		if move_speed_lerp_val < move_speed then
@@ -360,7 +360,7 @@ PlayerUnitLocomotionExtension.moving_on_slope = function (self, calculate_fall_v
 	end
 
 	local on_slope = Mover.standing_frames(mover) == 0 or slippery
-	self.allow_jump = not calculate_fall_velocity or (self.allow_jump and self.on_ground) or (Mover.flying_frames(mover) == 0 and not slippery)
+	self.allow_jump = not calculate_fall_velocity or self.allow_jump and self.on_ground or Mover.flying_frames(mover) == 0 and not slippery
 
 	return on_slope and calculate_fall_velocity
 end
@@ -374,7 +374,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 	end
 
 	local external_velocity = self.external_velocity and self.external_velocity:unbox()
-	local velocity_current = self.velocity_current:unbox() + Vector3(0, 0, (external_velocity and external_velocity.z) or 0)
+	local velocity_current = self.velocity_current:unbox() + Vector3(0, 0, external_velocity and external_velocity.z or 0)
 	local velocity_wanted = self.velocity_wanted:unbox()
 	local mover = Unit.mover(unit)
 
@@ -398,6 +398,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		local external_direction_component = Vector3.dot(external_dir, velocity_wanted)
 
 		if external_length < external_direction_component then
+			-- Nothing
 		elseif external_direction_component > 0 then
 			velocity_wanted = velocity_wanted - external_dir * external_direction_component + flat_external_velocity
 		else
@@ -421,7 +422,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		end
 	end
 
-	local drag_koeff = (self.use_drag and 0.00255) or 1
+	local drag_koeff = self.use_drag and 0.00255 or 1
 	local speed = Vector3.length(velocity_wanted)
 	local drag_force = drag_koeff * speed * speed * Vector3.normalize(-velocity_wanted)
 	local dragged_velocity = velocity_wanted + drag_force * dt
@@ -453,7 +454,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		if collide_with_enemies then
 			local num_ai_units = AiUtils.broadphase_query(query_position, query_radius, ai_units)
 
-			for i = 1, num_ai_units, 1 do
+			for i = 1, num_ai_units do
 				local ai_unit = ai_units[i]
 				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
 				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
@@ -499,7 +500,7 @@ PlayerUnitLocomotionExtension.update_script_driven_movement = function (self, un
 		if collide_with_enemies then
 			local num_ai_units = AiUtils.broadphase_query(query_position, query_radius, ai_units)
 
-			for i = 1, num_ai_units, 1 do
+			for i = 1, num_ai_units do
 				local ai_unit = ai_units[i]
 				local breed = ScriptUnit.extension(ai_unit, "ai_system")._breed
 				local is_alive = ScriptUnit.extension(ai_unit, "health_system"):is_alive()
@@ -793,7 +794,7 @@ PlayerUnitLocomotionExtension.set_forced_velocity = function (self, velocity_for
 
 		if velocity_forced then
 			local current_velocity_forced = self.velocity_forced
-			self.velocity_forced = (current_velocity_forced and current_velocity_forced + velocity_forced) or velocity_forced
+			self.velocity_forced = current_velocity_forced and current_velocity_forced + velocity_forced or velocity_forced
 		else
 			self.velocity_forced = nil
 		end
@@ -1010,7 +1011,7 @@ end
 local num_armor_types = 6
 
 PlayerUnitLocomotionExtension.apply_no_clip_filter = function (self, no_clip_filter, reason)
-	for i = 1, num_armor_types, 1 do
+	for i = 1, num_armor_types do
 		if no_clip_filter[i] then
 			if not self._no_clip_filter[i] then
 				self._no_clip_filter[i] = {
@@ -1026,7 +1027,7 @@ end
 PlayerUnitLocomotionExtension.remove_no_clip_filter = function (self, reason)
 	local no_clip_filter = self._no_clip_filter
 
-	for i = 1, num_armor_types, 1 do
+	for i = 1, num_armor_types do
 		local filter_category = no_clip_filter[i]
 
 		if filter_category then
@@ -1038,5 +1039,3 @@ PlayerUnitLocomotionExtension.remove_no_clip_filter = function (self, reason)
 		end
 	end
 end
-
-return

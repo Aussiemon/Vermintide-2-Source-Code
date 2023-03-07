@@ -113,12 +113,12 @@ CareerAbilityBarUI.update = function (self, dt, t, player)
 
 	self:_update_game_options()
 
-	local actual_player = (self._is_spectator and self._spectated_player) or player
+	local actual_player = self._is_spectator and self._spectated_player or player
 	local is_dirty = self:_update_career_ability(actual_player, dt)
 	local has_twitch = Managers.twitch:is_activated()
 
 	if has_twitch ~= self._has_twitch then
-		self._ability_bar.offset[2] = (has_twitch and 140) or 0
+		self._ability_bar.offset[2] = has_twitch and 140 or 0
 		self._has_twitch = has_twitch
 		is_dirty = true
 	end
@@ -265,5 +265,3 @@ CareerAbilityBarUI._update_gamepad_input_button = function (self)
 		icon_shadow_texture_size[2] = size[2]
 	end
 end
-
-return

@@ -1565,7 +1565,7 @@ PopupHandler.update = function (self, dt, from_manager)
 			local buttons = self.button_widgets[n_args]
 			local gamepad_buttons = self.gamepad_button_widgets[n_args]
 
-			for i = 1, n_args, 1 do
+			for i = 1, n_args do
 				local button_text = " " .. args[i * 2]
 				local button_enabled = current_popup.button_enabled_state[i] == true
 
@@ -1582,7 +1582,7 @@ PopupHandler.update = function (self, dt, from_manager)
 					button_content.text = button_text
 					local button_style = gamepad_button.style
 					local text_style = button_style.text
-					text_style.text_color = (button_enabled and self.gamepad_button_colors.enabled) or self.gamepad_button_colors.disabled
+					text_style.text_color = button_enabled and self.gamepad_button_colors.enabled or self.gamepad_button_colors.disabled
 					local font, scaled_font_size = UIFontByResolution(text_style)
 					local text_width, text_height, min = UIRenderer.text_size(ui_renderer, button_text, font[1], scaled_font_size)
 					button_style.icon.offset[1] = 80 - text_width * 0.5
@@ -1714,7 +1714,7 @@ end
 PopupHandler.set_button_enabled = function (self, popup_id, button_index, enabled)
 	local popup = nil
 
-	for i = 1, self.n_popups, 1 do
+	for i = 1, self.n_popups do
 		local temp_popup = self.popups[i]
 
 		if temp_popup.popup_id == popup_id then
@@ -1752,7 +1752,7 @@ PopupHandler.queue_popup = function (self, popup_type, text, topic, ...)
 	local text_style = widget.style.text
 	local scaled_text_field_size = UIScaleVectorToResolution(scenegraph_definition.popup_text.size)
 	local number_of_text_rows = self:get_number_of_rows(text, text_style, scaled_text_field_size[1])
-	new_popup.text_font_size = (number_of_text_rows >= 7 and 20) or 28
+	new_popup.text_font_size = number_of_text_rows >= 7 and 20 or 28
 	new_popup.text = text
 	new_popup.topic = topic
 	new_popup.widget = widget
@@ -1765,7 +1765,7 @@ PopupHandler.queue_popup = function (self, popup_type, text, topic, ...)
 	new_popup.n_args = n_args / 2
 	new_popup.button_enabled_state = {}
 
-	for i = 1, new_popup.n_args, 1 do
+	for i = 1, new_popup.n_args do
 		new_popup.button_enabled_state[i] = true
 	end
 
@@ -1867,7 +1867,7 @@ PopupHandler.set_popup_verifying_password = function (self, popup_id, is_verifyi
 
 	local n_args = popup.n_args
 
-	for i = 1, n_args, 1 do
+	for i = 1, n_args do
 		self:set_button_enabled(popup_id, i, not is_verifying)
 	end
 end
@@ -1883,7 +1883,7 @@ PopupHandler.activate_timer = function (self, popup_id, time, default_result, al
 	local popups = self.popups
 	local popup = nil
 
-	for i = 1, n_popups, 1 do
+	for i = 1, n_popups do
 		local temp_popup = popups[i]
 
 		if temp_popup.popup_id == popup_id then
@@ -1913,7 +1913,7 @@ PopupHandler.activate_timer = function (self, popup_id, time, default_result, al
 	popup.timer = time
 	popup.default_result = default_result
 	popup.timer_alignment = alignment or "right"
-	popup.timer_blink = (blink == nil and true) or blink
+	popup.timer_blink = blink == nil and true or blink
 	popup.timer_format_func = optional_timer_format_func
 	popup.timer_font_size = optional_font_size
 end
@@ -1942,7 +1942,7 @@ PopupHandler.cancel_popup = function (self, popup_id)
 	local n_popups = self.n_popups
 	local popups = self.popups
 
-	for i = 1, n_popups, 1 do
+	for i = 1, n_popups do
 		local popup = popups[i]
 
 		if popup.popup_id == popup_id then
@@ -1964,7 +1964,7 @@ PopupHandler.cancel_all_popups = function (self)
 	local n_popups = self.n_popups
 	local popups = self.popups
 
-	for i = 1, n_popups, 1 do
+	for i = 1, n_popups do
 		popups[i] = nil
 	end
 
@@ -2000,5 +2000,3 @@ PopupHandler.get_number_of_rows = function (self, localized_text, text_style, te
 
 	return #lines
 end
-
-return

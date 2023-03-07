@@ -42,7 +42,7 @@ return {
 					local position = POSITION_LOOKUP[totem.unit]
 					local num_ai_units = AiUtils.broadphase_query(position, data.radius, data.ai_units_broadphase_result)
 
-					for i = 1, num_ai_units, 1 do
+					for i = 1, num_ai_units do
 						local ai_unit = data.ai_units_broadphase_result[i]
 						local buff_extension = ScriptUnit.has_extension(ai_unit, "buff_system")
 
@@ -79,7 +79,7 @@ return {
 				end
 			end
 
-			for i = 1, #to_remove, 1 do
+			for i = 1, #to_remove do
 				local ai_unit = to_remove[i]
 				data.old_ai_units_inside[ai_unit] = nil
 			end

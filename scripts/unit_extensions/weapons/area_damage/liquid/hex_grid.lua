@@ -130,7 +130,7 @@ HexGrid.sample_grid = function (self, samples, z, multiplier)
 	local j_span = max_j - min_j
 	local render_outside = true
 
-	for index = 1, samples, 1 do
+	for index = 1, samples do
 		local point = Vector3(rnd(min_x, max_x), rnd(min_y, max_y), z)
 		local i, j, k = self:find_index(point)
 		local color = nil
@@ -140,8 +140,8 @@ HexGrid.sample_grid = function (self, samples, z, multiplier)
 		else
 			local i_val = i - min_i
 			local j_val = j - min_j
-			local r = (i_val % 2 == 0 and (125 * i_val) / i_span) or 125 + (125 * i_val) / i_span
-			local g = (j_val % 2 == 0 and (125 * j_val) / j_span) or 125 + (125 * j_val) / j_span
+			local r = i_val % 2 == 0 and 125 * i_val / i_span or 125 + 125 * i_val / i_span
+			local g = j_val % 2 == 0 and 125 * j_val / j_span or 125 + 125 * j_val / j_span
 			local b = 0
 			color = Color(r, g, b)
 		end
@@ -151,5 +151,3 @@ HexGrid.sample_grid = function (self, samples, z, multiplier)
 		end
 	end
 end
-
-return

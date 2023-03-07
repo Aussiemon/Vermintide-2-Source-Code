@@ -43,11 +43,11 @@ dofile("scripts/settings/equipment/item_master_list_test_items")
 dofile("scripts/settings/equipment/item_master_list_steam_items")
 DLCUtils.dofile_list("item_master_list_file_names")
 
-for i = 1, #ItemMasertListUpdateQueue, 1 do
+for i = 1, #ItemMasertListUpdateQueue do
 	local item_names = ItemMasertListUpdateQueue[i][1]
 	local career_name = ItemMasertListUpdateQueue[i][2]
 
-	for item_id = 1, #item_names, 1 do
+	for item_id = 1, #item_names do
 		local item_name = item_names[item_id]
 		local item = ItemMasterList[item_name]
 
@@ -137,5 +137,3 @@ ItemMasterListMeta.__index = function (table, key)
 end
 
 setmetatable(ItemMasterList, ItemMasterListMeta)
-
-return

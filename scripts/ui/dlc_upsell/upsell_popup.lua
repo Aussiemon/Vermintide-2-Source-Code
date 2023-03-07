@@ -64,5 +64,3 @@ UpsellPopup._update_animations = function (self, dt)
 	UIWidgetUtils.animate_default_button(widgets_by_name.ok_button, dt)
 	UIWidgetUtils.animate_default_button(widgets_by_name.store_button, dt)
 end
-
-return

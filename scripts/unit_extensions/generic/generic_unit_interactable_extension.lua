@@ -86,5 +86,3 @@ end
 GenericUnitInteractableExtension.set_enabled = function (self, enabled)
 	self._enabled = enabled
 end
-
-return

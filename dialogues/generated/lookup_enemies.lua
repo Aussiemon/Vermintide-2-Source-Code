@@ -152,5 +152,3 @@ DialogueLookup[DialogueLookup_n + 74] = "ecw_gameplay_no_damage"
 DialogueLookup[DialogueLookup_n + 75] = "ecw_gameplay_alert"
 DialogueLookup[DialogueLookup_n + 76] = "ecw_gameplay_downing_a_player"
 DialogueLookup_n = DialogueLookup_n + 76
-
-return

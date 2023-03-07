@@ -47,7 +47,7 @@ SpawnManager._default_player_statuses = function (self)
 	local num_slots = game_mode_settings.team_a_num_slots or NUM_PLAYERS
 	local statuses = {}
 
-	for i = 1, num_slots, 1 do
+	for i = 1, num_slots do
 		local status = {
 			temporary_health_percentage = 0,
 			spawn_state = "not_spawned",
@@ -183,5 +183,3 @@ SpawnManager._update_despawns = function (self)
 
 	self._despawn_queue_size = 0
 end
-
-return

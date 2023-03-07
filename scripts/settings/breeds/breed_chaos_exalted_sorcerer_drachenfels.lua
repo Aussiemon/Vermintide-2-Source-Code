@@ -454,7 +454,7 @@ local pushed_data_continuous = {
 Breeds.chaos_exalted_sorcerer_drachenfels = table.create_copy(Breeds.chaos_exalted_sorcerer_drachenfels, breed_data)
 local MISSILE_RADIUS = 2
 local num_flower_waves = 12
-local angle_between_flower_waves = (2 * math.pi) / ((num_flower_waves + 1) * 0.5)
+local angle_between_flower_waves = 2 * math.pi / ((num_flower_waves + 1) * 0.5)
 local action_data = {
 	skulking = {
 		third_wave_max_distance = 7,
@@ -2727,5 +2727,3 @@ action_data.plague_wave_skulking = copy_action_data("exalted_plague_wave_skulkin
 action_data.magic_missile_skulking = copy_action_data("magic_missile_skulking", action_data.skulking, "magic_missile")
 action_data.seeking_bomb_missile_skulking = copy_action_data("seeking_bomb_missile_skulking", action_data.skulking, "seeking_bomb_missile")
 BreedActions.chaos_exalted_sorcerer_drachenfels = table.create_copy(BreedActions.chaos_exalted_sorcerer_drachenfels, action_data)
-
-return

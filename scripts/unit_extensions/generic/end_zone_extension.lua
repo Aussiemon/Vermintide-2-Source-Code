@@ -23,7 +23,7 @@ EndZoneExtension.init = function (self, extension_init_context, unit)
 	self._end_zone_time_since_notify = self:end_zone_long_timer_settings().notify_long_interval
 	self._visible_from_start = Unit.get_data(unit, "visible_from_start") or true
 	self._waystone_type = Unit.get_data(unit, "waystone_type")
-	self.waystone_size = (self._waystone_type == 3 and 3.8) or EndZoneSettings.size
+	self.waystone_size = self._waystone_type == 3 and 3.8 or EndZoneSettings.size
 	self._always_activated = Unit.get_data(unit, "always_activated")
 	self._activation_name = Unit.get_data(unit, "activation_name") or ""
 	self._side = Managers.state.side:get_side_from_name("heroes")
@@ -73,7 +73,7 @@ EndZoneExtension.activate_waystone_portal = function (self, wanted_waystone_type
 		return
 	end
 
-	local event = (waystone_type == wanted_waystone_type and "activate") or "deactivate"
+	local event = waystone_type == wanted_waystone_type and "activate" or "deactivate"
 
 	Unit.flow_event(unit, event)
 end
@@ -138,7 +138,7 @@ end
 EndZoneExtension._set_light_intensity = function (self, intensity)
 	local num_lights = Unit.num_lights(self._unit)
 
-	for i = 0, num_lights - 1, 1 do
+	for i = 0, num_lights - 1 do
 		local light = Unit.light(self._unit, i)
 
 		Light.set_intensity(light, intensity)
@@ -298,7 +298,7 @@ EndZoneExtension._check_proximity = function (self)
 
 		if player_pos then
 			local distance_squared = Vector3.distance_squared(end_zone_pos, player_pos)
-			self._closest_player = (distance_squared < self._closest_player and distance_squared) or self._closest_player
+			self._closest_player = distance_squared < self._closest_player and distance_squared or self._closest_player
 
 			if table.contains(player_units, player_unit) then
 				self._player_distances[player_unit] = distance_squared
@@ -322,7 +322,7 @@ EndZoneExtension._update_state = function (self, dt, t)
 			self:_activate(false)
 		end
 	else
-		slot3 = true
+		local hej = true
 	end
 
 	self[self._state](self, dt, t, self._state_data)
@@ -591,5 +591,3 @@ EndZoneExtension._all_players_joined = function (self)
 
 	return true
 end
-
-return

@@ -71,5 +71,3 @@ CosmeticsUtils.flow_event_mesh_3p = function (unit, event_name)
 		unit_flow_event(mesh_unit, event_name)
 	end
 end
-
-return

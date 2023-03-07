@@ -157,5 +157,3 @@ function visual_assert(condition, message, ...)
 
 	return condition
 end
-
-return

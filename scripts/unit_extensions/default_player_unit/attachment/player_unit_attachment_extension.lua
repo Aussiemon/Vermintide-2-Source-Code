@@ -29,7 +29,7 @@ PlayerUnitAttachmentExtension.extensions_ready = function (self, world, unit)
 	local slots_n = #attachment_slots
 	local career_name = self.career_extension:career_name()
 
-	for i = 1, slots_n, 1 do
+	for i = 1, slots_n do
 		repeat
 			local slot = attachment_slots[i]
 			local slot_name = slot.name
@@ -213,7 +213,7 @@ PlayerUnitAttachmentExtension.show_attachments = function (self, show)
 			end
 		end
 
-		local attachment_event = (show and "lua_attachment_unhidden") or "lua_attachment_hidden"
+		local attachment_event = show and "lua_attachment_unhidden" or "lua_attachment_hidden"
 
 		Unit.flow_event(self._tp_unit_mesh, attachment_event)
 
@@ -371,7 +371,7 @@ PlayerUnitAttachmentExtension._remove_buffs = function (self, slot_name)
 	local current_item_buffs = self.current_item_buffs[slot_name]
 
 	if current_item_buffs then
-		for i = 1, #current_item_buffs, 1 do
+		for i = 1, #current_item_buffs do
 			local buff_id = current_item_buffs[i]
 
 			buff_extension:remove_buff(buff_id)
@@ -380,5 +380,3 @@ PlayerUnitAttachmentExtension._remove_buffs = function (self, slot_name)
 		table.clear(current_item_buffs)
 	end
 end
-
-return

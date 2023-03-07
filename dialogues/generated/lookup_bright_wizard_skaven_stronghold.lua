@@ -52,5 +52,3 @@ DialogueLookup[DialogueLookup_n + 24] = "pbw_gameplay_skaven_warlord_kill"
 DialogueLookup[DialogueLookup_n + 25] = "pbw_gameplay_skaven_warlord_banter_reply"
 DialogueLookup[DialogueLookup_n + 26] = "pbw_gameplay_skaven_warlord_summoning_reply"
 DialogueLookup_n = DialogueLookup_n + 26
-
-return

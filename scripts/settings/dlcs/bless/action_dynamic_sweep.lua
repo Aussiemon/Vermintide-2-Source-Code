@@ -11,7 +11,7 @@ ActionDynamicSweep._get_damage_profile_name = function (self, action_hand, actio
 	local dynamic_profiles = action.dynamic_profiles
 	local profile_to_use = dynamic_profiles[current_mode]
 
-	return (action_hand and action["damage_profile_" .. action_hand]) or profile_to_use or "default"
+	return action_hand and action["damage_profile_" .. action_hand] or profile_to_use or "default"
 end
 
 ActionDynamicSweep._calculate_attack_direction = function (self, action, weapon_rotation)
@@ -21,7 +21,5 @@ ActionDynamicSweep._calculate_attack_direction = function (self, action, weapon_
 	local quaternion_axis = action.attack_direction or "forward"
 	local attack_direction = Quaternion[quaternion_axis](weapon_rotation)
 
-	return (invert_attack_direction and -attack_direction) or attack_direction
+	return invert_attack_direction and -attack_direction or attack_direction
 end
-
-return

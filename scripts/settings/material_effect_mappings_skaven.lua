@@ -1975,5 +1975,3 @@ MaterialEffectMappings.enemy_gutterrunner_footstep_run = {
 		water = {}
 	}
 }
-
-return

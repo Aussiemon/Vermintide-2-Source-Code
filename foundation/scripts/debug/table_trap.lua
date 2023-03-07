@@ -197,5 +197,3 @@ table_trap._replace_with_data_if_metatable_matches = function (lhs, rhs, metatab
 
 	return redir_lhs, redir_rhs
 end
-
-return

@@ -42,11 +42,11 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 	local best_distance_sq = -math.huge
 	local angle_sign = 1
 
-	for i = 0, CHECKS_PER_DIRECTION, 1 do
-		local directions_to_check = (i > 0 and 2) or 1
+	for i = 0, CHECKS_PER_DIRECTION do
+		local directions_to_check = i > 0 and 2 or 1
 		local done = false
 
-		for j = 1, directions_to_check, 1 do
+		for j = 1, directions_to_check do
 			local angle = angle_sign * ANGLE_INCREMENT * i
 			local rotation = Quaternion.axis_angle(Vector3.up(), angle)
 			local new_direction = Quaternion.rotate(rotation, check_direction)
@@ -96,5 +96,3 @@ BTBotTeleportToAllyAction.run = function (self, unit, blackboard, t, dt)
 
 	return "done"
 end
-
-return

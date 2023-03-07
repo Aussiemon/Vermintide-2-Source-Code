@@ -209,5 +209,3 @@ UrlLoaderManager.destroy = function (self)
 	self._reference_counters = nil
 	self._reference_callbacks = nil
 end
-
-return

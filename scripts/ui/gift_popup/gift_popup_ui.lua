@@ -116,5 +116,3 @@ GiftPopupUI.destroy = function (self)
 	self._reward_popup = nil
 	self._presentation_queue = nil
 end
-
-return

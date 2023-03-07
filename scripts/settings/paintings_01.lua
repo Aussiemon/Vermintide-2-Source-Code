@@ -1857,5 +1857,3 @@ PaintingPackageNames = PaintingPackageNames or {}
 for painting_name, _ in pairs(Paintings) do
 	PaintingPackageNames[prefix .. painting_name] = true
 end
-
-return

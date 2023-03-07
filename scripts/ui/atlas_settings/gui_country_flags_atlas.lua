@@ -657,7 +657,7 @@ country_flags_atlas = {
 			0.927734375
 		}
 	},
-	do = {
+	["do"] = {
 		size = {
 			35,
 			23
@@ -1105,7 +1105,7 @@ country_flags_atlas = {
 			0.052734375
 		}
 	},
-	in = {
+	["in"] = {
 		size = {
 			33,
 			23
@@ -2744,5 +2744,3 @@ country_flags_atlas = {
 		}
 	}
 }
-
-return

@@ -226,7 +226,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 
 		if self.prev_lockout ~= lockout then
 			self.prev_lockout = lockout
-			local anim_lockout = (lockout and 1) or 0
+			local anim_lockout = lockout and 1 or 0
 
 			Unit.animation_set_variable(first_person_unit, self.overcharge_lockout_id, anim_lockout)
 
@@ -249,7 +249,7 @@ PlayerUnitOverchargeExtension.update = function (self, unit, input, dt, context,
 			self.update_overcharge_flow_timer = t + 0.3
 		end
 
-		if (not self.is_exploding and self.time_when_overcharge_start_decreasing < t) or self.lockout == true then
+		if not self.is_exploding and self.time_when_overcharge_start_decreasing < t or self.lockout == true then
 			local decay = 1
 
 			if self.overcharge_threshold <= self.overcharge_value then
@@ -630,5 +630,3 @@ PlayerUnitOverchargeExtension._overcharge_value_state = function (self, value)
 		return OVERCHARGE_LEVELS.none
 	end
 end
-
-return

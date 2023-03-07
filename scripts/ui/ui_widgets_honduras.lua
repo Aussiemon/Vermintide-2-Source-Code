@@ -1,7 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/settings/ui_frame_settings")
 require("scripts/settings/ui_player_portrait_frame_settings")
 
@@ -650,7 +646,7 @@ end
 UIWidgets.create_hero_frame = function (scenegraph_id, size, frame_name, background_texture)
 	background_texture = background_texture or "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.menu_frame_02
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.menu_frame_02
 
 	return {
 		element = {
@@ -767,8 +763,8 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 	}
 	local offset_layer = 3
 
-	for i = 1, rows, 1 do
-		for k = 1, slots_per_row, 1 do
+	for i = 1, rows do
+		for k = 1, slots_per_row do
 			local name_suffix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local column_start_index = i - 1
 			local row_start_index = k - 1
@@ -1006,8 +1002,6 @@ UIWidgets.create_recipe_grid = function (scenegraph_id, size, rows, slots_per_ro
 end
 
 UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot_width_spacing, slot_height_spacing, use_pages, offset, disable_mouse_tooltips)
-
-	-- Decompilation error in this vicinity:
 	local default_color = {
 		255,
 		255,
@@ -1190,8 +1184,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 	}
 	local offset_layer = 3
 
-	for i = 1, rows, 1 do
-		for k = 1, slots_per_row, 1 do
+	for i = 1, rows do
+		for k = 1, slots_per_row do
 			local name_suffix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local column_start_index = i - 1
 			local row_start_index = k - 1
@@ -1297,7 +1291,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				},
 				offset = {
 					offset[1] + 8,
-					(offset[2] + icon_size[2]) - 30,
+					offset[2] + icon_size[2] - 30,
 					3
 				}
 			}
@@ -1323,7 +1317,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 				},
 				color = Colors.get_color_table_with_alpha("promo", 255),
 				offset = {
-					(offset[1] + icon_size[1]) - 28,
+					offset[1] + icon_size[1] - 28,
 					offset[2] + 8,
 					3
 				}
@@ -1658,8 +1652,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					0
 				},
 				offset = {
-					(offset[1] + icon_size[1] / 2) - 20,
-					(offset[2] + icon_size[2] / 2) - 20,
+					offset[1] + icon_size[1] / 2 - 20,
+					offset[2] + icon_size[2] / 2 - 20,
 					5
 				}
 			}
@@ -1686,8 +1680,8 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 					255
 				},
 				offset = {
-					(offset[1] + icon_size[1] / 2) - 15,
-					(offset[2] + icon_size[2] / 2) - 30,
+					offset[1] + icon_size[1] / 2 - 15,
+					offset[2] + icon_size[2] / 2 - 30,
 					5
 				}
 			}
@@ -1749,7 +1743,7 @@ UIWidgets.create_grid = function (scenegraph_id, size, rows, slots_per_row, slot
 	widget.element.passes = passes
 	widget.content = content
 	widget.style = style
-	widget.offset = {
+	widget.offset = offset and {
 		offset[1] or 0,
 		offset[2] or 0,
 		offset[3] or 0
@@ -1951,13 +1945,13 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 	local column_height = rows * slot_size[2] + slot_height_spacing * (rows - 1)
 	local column_difference_to_background = background_height - column_height
 	local slot_start_offset = {
-		(align_horizontal and row_difference_to_background / 2) or row_difference_to_background / 2,
+		align_horizontal and row_difference_to_background / 2 or row_difference_to_background / 2,
 		background_height - column_difference_to_background / 2 - slot_size[2]
 	}
 	local offset_layer = 0
 
-	for i = 1, rows, 1 do
-		for k = 1, slots_per_row, 1 do
+	for i = 1, rows do
+		for k = 1, slots_per_row do
 			local name_suffix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local column_start_index = i - 1
 			local row_start_index = k - 1
@@ -2126,7 +2120,7 @@ UIWidgets.create_loadout_grid = function (scenegraph_id, size, rows, spacing, al
 				},
 				offset = {
 					offset[1] + (slot_size[1] - 34) / 2,
-					(offset[2] + slot_size[2] - 34) - (slot_size[1] - 34) / 2,
+					offset[2] + slot_size[2] - 34 - (slot_size[1] - 34) / 2,
 					2
 				}
 			}
@@ -2252,13 +2246,13 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 	local column_height = rows * slot_size[2] + slot_height_spacing * (rows - 1)
 	local column_difference_to_background = background_height - column_height
 	local slot_start_offset = {
-		(align_horizontal and row_difference_to_background / 2) or row_difference_to_background / 2,
+		align_horizontal and row_difference_to_background / 2 or row_difference_to_background / 2,
 		background_height - column_difference_to_background / 2 - slot_size[2]
 	}
 	local offset_layer = 0
 
-	for i = 1, rows, 1 do
-		for k = 1, slots_per_row, 1 do
+	for i = 1, rows do
+		for k = 1, slots_per_row do
 			local name_suffix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local column_start_index = i - 1
 			local row_start_index = k - 1
@@ -2333,7 +2327,7 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 					texture_size = cog_icon_size,
 					offset = {
 						offset[1] - cog_icon_size[1] - 25,
-						(offset[2] + slot_size[2] * 0.5) - cog_icon_size[2] * 0.5,
+						offset[2] + slot_size[2] * 0.5 - cog_icon_size[2] * 0.5,
 						30
 					}
 				}
@@ -2397,7 +2391,7 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 					texture_size = cog_icon_size,
 					offset = {
 						offset[1] - cog_icon_size[1] - 25,
-						(offset[2] + slot_size[2] * 0.5) - cog_icon_size[2] * 0.5,
+						offset[2] + slot_size[2] * 0.5 - cog_icon_size[2] * 0.5,
 						30
 					}
 				}
@@ -2774,7 +2768,7 @@ UIWidgets.create_loadout_grid_console = function (scenegraph_id, size, rows, spa
 				},
 				offset = {
 					offset[1] + (slot_size[1] - 34) / 2,
-					(offset[2] + slot_size[2] - 34) - (slot_size[1] - 34) / 2,
+					offset[2] + slot_size[2] - 34 - (slot_size[1] - 34) / 2,
 					2
 				}
 			}
@@ -3162,7 +3156,7 @@ UIWidgets.create_weapon_statistics = function (scenegraph_id, size)
 		}
 	}
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		local height_offset = size[2] - 20 * i - 50
 		local spacing = {
 			2,
@@ -3401,8 +3395,8 @@ end
 UIWidgets.create_background_with_frame = function (scenegraph_id, size, background_texture, frame_style, bottom_aligned)
 	background_texture = background_texture or "menu_frame_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local background_size = (background_texture_settings and background_texture_settings.size) or size
-	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
+	local background_size = background_texture_settings and background_texture_settings.size or size
+	local frame_settings = frame_style and UIFrameSettings[frame_style] or UIFrameSettings.menu_frame_02
 	local uvs = nil
 
 	if bottom_aligned then
@@ -3495,7 +3489,7 @@ UIWidgets.create_background_with_frame = function (scenegraph_id, size, backgrou
 end
 
 UIWidgets.create_rect_with_frame = function (scenegraph_id, size, rect_color, frame_style)
-	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
+	local frame_settings = frame_style and UIFrameSettings[frame_style] or UIFrameSettings.menu_frame_02
 	local widget = {
 		element = {}
 	}
@@ -3714,7 +3708,7 @@ UIWidgets.create_background = function (scenegraph_id, size, background_texture,
 end
 
 UIWidgets.create_frame = function (scenegraph_id, size, frame_style, layer, color, frame_margins, masked, use_tiling, mirrored_tiling, skip_background)
-	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.menu_frame_02
+	local frame_settings = frame_style and UIFrameSettings[frame_style] or UIFrameSettings.menu_frame_02
 	local widget = {
 		element = {}
 	}
@@ -3770,7 +3764,7 @@ UIWidgets.create_rect_with_outer_frame = function (scenegraph_id, size, frame_st
 		255,
 		255
 	}
-	local frame_settings = (frame_style and UIFrameSettings[frame_style]) or UIFrameSettings.frame_outer_fade_02
+	local frame_settings = frame_style and UIFrameSettings[frame_style] or UIFrameSettings.frame_outer_fade_02
 	local edge_height = frame_settings.texture_sizes.horizontal[2]
 	local frame_size = {
 		size[1] + edge_height * 2,
@@ -3966,7 +3960,7 @@ UIWidgets.create_craft_recipe_window = function (scenegraph_id, size, num_compon
 	local row_spacing = 20
 	content.component_amount = num_components
 
-	for i = 1, num_components, 1 do
+	for i = 1, num_components do
 		local index = i - 1
 		local name_suffix = "_" .. tostring(i)
 		local offset = {
@@ -4400,8 +4394,8 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 	local style = {}
 	local offset_layer = 0
 
-	for i = 1, rows, 1 do
-		for k = 1, slots_per_row, 1 do
+	for i = 1, rows do
+		for k = 1, slots_per_row do
 			local name_suffix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local column_start_index = i - 1
 			local row_start_index = k - 1
@@ -4443,7 +4437,7 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				},
 				offset = {
 					offset[1] + (slot_size[1] - slot_size[1]) / 2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
+					offset[2] + slot_size[2] - slot_size[2] - (slot_size[1] - slot_size[1]) / 2,
 					4
 				}
 			}
@@ -4458,7 +4452,7 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				color = slot_color,
 				offset = {
 					offset[1] + (slot_size[1] - slot_size[1]) / 2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
+					offset[2] + slot_size[2] - slot_size[2] - (slot_size[1] - slot_size[1]) / 2,
 					2
 				}
 			}
@@ -4502,7 +4496,7 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				color = slot_hover_color,
 				offset = {
 					offset[1] + (slot_size[1] - slot_size[1]) / 2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
+					offset[2] + slot_size[2] - slot_size[2] - (slot_size[1] - slot_size[1]) / 2,
 					2
 				}
 			}
@@ -4521,7 +4515,7 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				color = slot_selected_color,
 				offset = {
 					offset[1] + (slot_size[1] - slot_size[1]) / 2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
+					offset[2] + slot_size[2] - slot_size[2] - (slot_size[1] - slot_size[1]) / 2,
 					2
 				}
 			}
@@ -4544,7 +4538,7 @@ UIWidgets.create_reward_slot_grid = function (scenegraph_id, size, slot_size, gr
 				size = slot_size,
 				offset = {
 					offset[1] + (slot_size[1] - slot_size[1]) / 2,
-					(offset[2] + slot_size[2] - slot_size[2]) - (slot_size[1] - slot_size[1]) / 2,
+					offset[2] + slot_size[2] - slot_size[2] - (slot_size[1] - slot_size[1]) / 2,
 					2
 				},
 				text_color = Colors.get_color_table_with_alpha("white", 255),
@@ -4987,7 +4981,8 @@ end
 UIWidgets.create_background_masked_text = function (scenegraph_id, size, text, background_texture, font_size, color, text_style, optional_font_style, retained)
 	background_texture = background_texture or "reward_pop_up_item_bg"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	slot10 = {
+
+	return {
 		element = {
 			passes = {
 				{
@@ -5006,7 +5001,7 @@ UIWidgets.create_background_masked_text = function (scenegraph_id, size, text, b
 		},
 		content = {
 			text = text,
-			color = (text_style and text_style.text_color) or color,
+			color = text_style and text_style.text_color or color,
 			background = {
 				uvs = {
 					{
@@ -5020,51 +5015,44 @@ UIWidgets.create_background_masked_text = function (scenegraph_id, size, text, b
 				},
 				texture_id = background_texture
 			}
-		}
-	}
-	slot11 = {}
-
-	if not text_style then
-		slot12 = {
-			vertical_alignment = "center",
-			localize = true,
-			horizontal_alignment = "center",
-			word_wrap = true,
-			font_size = font_size or 24,
-			font_type = optional_font_style or "hell_shark_write_mask",
-			text_color = color,
-			offset = {
-				0,
-				0,
-				2
+		},
+		style = {
+			text = text_style or {
+				vertical_alignment = "center",
+				localize = true,
+				horizontal_alignment = "center",
+				word_wrap = true,
+				font_size = font_size or 24,
+				font_type = optional_font_style or "hell_shark_write_mask",
+				text_color = color,
+				offset = {
+					0,
+					0,
+					2
+				}
+			},
+			background = {
+				masked = true,
+				color = {
+					255,
+					255,
+					255,
+					255
+				},
+				offset = {
+					0,
+					0,
+					0
+				}
 			}
-		}
-	end
-
-	slot11.text = slot12
-	slot11.background = {
-		masked = true,
-		color = {
-			255,
-			255,
-			255,
-			255
 		},
 		offset = {
 			0,
 			0,
 			0
-		}
+		},
+		scenegraph_id = scenegraph_id
 	}
-	slot10.style = slot11
-	slot10.offset = {
-		0,
-		0,
-		0
-	}
-	slot10.scenegraph_id = scenegraph_id
-
-	return slot10
 end
 
 UIWidgets.create_summary_entry = function (scenegraph_id, size, index)
@@ -5470,7 +5458,7 @@ UIWidgets.create_score_list = function (scenegraph_id, size, rows)
 		}
 	}
 
-	for i = 1, rows, 1 do
+	for i = 1, rows do
 		local name_suffix = "_" .. tostring(i)
 		local offset = {
 			0,
@@ -6175,7 +6163,7 @@ UIWidgets.create_experience_bar = function (scenegraph_id, size, masked)
 				vertical_alignment = "top",
 				font_size = 28,
 				horizontal_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					0,
@@ -6187,7 +6175,7 @@ UIWidgets.create_experience_bar = function (scenegraph_id, size, masked)
 				vertical_alignment = "center",
 				font_size = 36,
 				horizontal_alignment = "right",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					-size[1] - 10,
@@ -6199,7 +6187,7 @@ UIWidgets.create_experience_bar = function (scenegraph_id, size, masked)
 				vertical_alignment = "center",
 				font_size = 36,
 				horizontal_alignment = "left",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					size[1] + 10,
@@ -6515,7 +6503,7 @@ UIWidgets.create_statistics_bar = function (scenegraph_id, size, optional_detail
 					255
 				},
 				offset = {
-					(optional_detail_offset and -optional_detail_offset) or -9,
+					optional_detail_offset and -optional_detail_offset or -9,
 					size[2] / 2 - side_detail_texture_size[2] / 2,
 					5
 				},
@@ -7679,7 +7667,7 @@ end
 UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size, optional_color_name, optional_detail_texture, optional_detail_offset, disable_with_gamepad, skip_side_detail)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local side_detail_texture = optional_detail_texture or "button_detail_01"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
@@ -8022,7 +8010,7 @@ UIWidgets.create_default_button = function (scenegraph_id, size, frame_name, bac
 					255
 				},
 				offset = {
-					(extra_detail_offset_x and -extra_detail_offset_x) or -9,
+					extra_detail_offset_x and -extra_detail_offset_x or -9,
 					size[2] / 2 - side_detail_texture_size[2] / 2 + (extra_detail_offset_y or 0),
 					9
 				},
@@ -8061,14 +8049,14 @@ end
 UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_name, background_texture, text, font_size, background_icon, optional_color_name, optional_detail_texture, optional_detail_offset)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local side_detail_texture = optional_detail_texture or "button_detail_01"
 	local side_detail_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(side_detail_texture)
 	local side_detail_texture_size = side_detail_texture_settings.size
 	background_icon = background_icon or "loot_chest_icon"
 	local background_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_icon)
-	local background_icon_size = (background_icon_settings and background_icon_settings.size) or {
+	local background_icon_size = background_icon_settings and background_icon_settings.size or {
 		200,
 		200
 	}
@@ -8437,7 +8425,7 @@ UIWidgets.create_default_image_button = function (scenegraph_id, size, frame_nam
 					255
 				},
 				offset = {
-					(optional_detail_offset and -optional_detail_offset) or -9,
+					optional_detail_offset and -optional_detail_offset or -9,
 					size[2] / 2 - side_detail_texture_size[2] / 2,
 					10
 				},
@@ -8499,7 +8487,7 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 	}
 	local start_width_offset = 0
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + button_size[1] + slot_width_spacing
@@ -8643,7 +8631,7 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 			},
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2]) - 11,
+				offset[2] + button_size[2] - 11,
 				5
 			}
 		}
@@ -8686,8 +8674,8 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 			default_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 			select_color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
-				(offset[1] + button_size[1] / 2) - icon_size[1] / 2,
-				(offset[2] + button_size[2] / 2) - icon_size[1] / 2 + 4,
+				offset[1] + button_size[1] / 2 - icon_size[1] / 2,
+				offset[2] + button_size[2] / 2 - icon_size[1] / 2 + 4,
 				4
 			}
 		}
@@ -8703,8 +8691,8 @@ UIWidgets.create_default_icon_tabs = function (scenegraph_id, size, amount)
 			size = icon_size,
 			color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
-				(offset[1] + button_size[1] / 2) - icon_size[1] / 2 + 2,
-				(offset[2] + button_size[2] / 2) - icon_size[1] / 2 + 2,
+				offset[1] + button_size[1] / 2 - icon_size[1] / 2 + 2,
+				offset[2] + button_size[2] / 2 - icon_size[1] / 2 + 2,
 				3
 			}
 		}
@@ -8873,7 +8861,7 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 		},
 		offset = {
 			offset[1],
-			(offset[2] + size[2]) - 11,
+			offset[2] + size[2] - 11,
 			5
 		}
 	}
@@ -8921,8 +8909,8 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 			vertical_alignment = "bottom",
 			horizontal_alignment = "left",
 			offset = {
-				(draw_tooltip_above and size[1]) or 0,
-				(draw_tooltip_above and size[2]) or 0,
+				draw_tooltip_above and size[1] or 0,
+				draw_tooltip_above and size[2] or 0,
 				0
 			}
 		}
@@ -9014,8 +9002,8 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 		25
 	}
 	local checkbox_offset = {
-		(size[1] - checkbox_size[1] + offset[1]) - 20,
-		(offset[2] + size[2] / 2) - checkbox_size[2] / 2 + 2,
+		size[1] - checkbox_size[1] + offset[1] - 20,
+		offset[2] + size[2] / 2 - checkbox_size[2] / 2 + 2,
 		3
 	}
 	style[checkbox_background_name] = {
@@ -9109,7 +9097,7 @@ UIWidgets.create_default_checkbox_button = function (scenegraph_id, size, text, 
 	}
 	local marker_offset = {
 		checkbox_offset[1] + 4,
-		(checkbox_offset[2] + marker_size[2] / 2) - 1,
+		checkbox_offset[2] + marker_size[2] / 2 - 1,
 		checkbox_offset[3] + 2
 	}
 	style[checkbox_marker_name] = {
@@ -9313,7 +9301,7 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 	}
 	local checkbox_offset = {
 		offset[1] + 10,
-		(offset[2] + size[2] / 2) - checkbox_size[2] / 2 + 2,
+		offset[2] + size[2] / 2 - checkbox_size[2] / 2 + 2,
 		3
 	}
 	style[checkbox_background_name] = {
@@ -9407,7 +9395,7 @@ UIWidgets.create_default_checkbox_button_console = function (scenegraph_id, size
 	}
 	local marker_offset = {
 		checkbox_offset[1] + 4,
-		(checkbox_offset[2] + marker_size[2] / 2) - 1,
+		checkbox_offset[2] + marker_size[2] / 2 - 1,
 		checkbox_offset[3] + 2
 	}
 	style[checkbox_marker_name] = {
@@ -9469,7 +9457,7 @@ UIWidgets.create_default_text_tabs = function (scenegraph_id, size, amount)
 	}
 	local start_width_offset = 0
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + button_size[1] + slot_width_spacing
@@ -9613,7 +9601,7 @@ UIWidgets.create_default_text_tabs = function (scenegraph_id, size, amount)
 			},
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2]) - 11,
+				offset[2] + button_size[2] - 11,
 				5
 			}
 		}
@@ -10038,6 +10026,7 @@ UIWidgets.create_window_category_button = function (scenegraph_id, size, button_
 						local button_hotspot = content.button_hotspot
 
 						if not button_hotspot.disable_button and not button_hotspot.is_selected then
+							-- Nothing
 						end
 					end
 				},
@@ -10611,6 +10600,7 @@ UIWidgets.create_window_category_button_mirrored = function (scenegraph_id, size
 						local button_hotspot = parent_content.button_hotspot
 
 						if not button_hotspot.disable_button and not button_hotspot.is_selected then
+							-- Nothing
 						end
 					end
 				},
@@ -11722,7 +11712,7 @@ end
 UIWidgets.create_icon_button = function (scenegraph_id, size, frame_name, background_texture, icon_name)
 	background_texture = background_texture or "menu_frame_bg_06"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.menu_frame_06
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.menu_frame_06
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	local icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_name)
 	local icon_size = icon_settings.size
@@ -11949,8 +11939,8 @@ end
 UIWidgets.create_stepper = function (scenegraph_id, size, frame_name, background_texture, text)
 	background_texture = background_texture or "menu_frame_bg_06"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local background_size = (background_texture_settings and background_texture_settings.size) or size
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.menu_frame_06
+	local background_size = background_texture_settings and background_texture_settings.size or size
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.menu_frame_06
 	local arrow_icon_size = {
 		28,
 		34
@@ -12563,7 +12553,7 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 	local start_width_offset = 0
 	local frame_settings = UIPlayerPortraitFrameSettings.default
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + icon_size[1] + slot_width_spacing
@@ -12697,8 +12687,8 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 			},
 			color = default_color,
 			offset = {
-				(offset[1] + icon_size[1] / 2) - 15,
-				(offset[2] + icon_size[2] / 2) - 19,
+				offset[1] + icon_size[1] / 2 - 15,
+				offset[2] + icon_size[2] / 2 - 19,
 				offset[3] + 5
 			}
 		}
@@ -12712,7 +12702,7 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 				texture_id = frame_name,
 				style_id = frame_name
 			}
-			local frame_size = (optional_frame_size and table.clone(optional_frame_size)) or {
+			local frame_size = optional_frame_size and table.clone(optional_frame_size) or {
 				86,
 				108
 			}
@@ -12723,8 +12713,8 @@ UIWidgets.create_icon_selector = function (scenegraph_id, icon_size, slot_icons,
 				},
 				color = default_color,
 				offset = {
-					(offset[1] + icon_size[1] / 2) - frame_size[1] / 2,
-					(offset[2] + icon_size[2] / 2) - frame_size[2] / 2,
+					offset[1] + icon_size[1] / 2 - frame_size[1] / 2,
+					offset[2] + icon_size[2] / 2 - frame_size[2] / 2,
 					offset[3] + 3
 				}
 			}
@@ -13284,7 +13274,7 @@ UIWidgets.create_difficulty_selector = function (scenegraph_id, size, spacing, a
 	local start_width_offset = 0
 	local frame_settings = UIFrameSettings.menu_frame_06
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + slot_size[1] + slot_width_spacing
@@ -13321,8 +13311,8 @@ UIWidgets.create_difficulty_selector = function (scenegraph_id, size, spacing, a
 				255
 			},
 			offset = {
-				(offset[1] + slot_size[1] / 2) - image_size[1] / 2,
-				(offset[2] + slot_size[2]) - image_size[2],
+				offset[1] + slot_size[1] / 2 - image_size[1] / 2,
+				offset[2] + slot_size[2] - image_size[2],
 				2
 			}
 		}
@@ -13444,7 +13434,7 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 			size = data.size
 		end
 
-		size = (size and table.clone(size)) or {
+		size = size and table.clone(size) or {
 			0,
 			0
 		}
@@ -13470,14 +13460,19 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 
 	if portrait_texture then
 		local portrait_size = {
-			portrait_size[1] * scale,
-			portrait_size[2] * scale
+			86,
+			108
 		}
+		portrait_size[1] = portrait_size[1] * scale
+		portrait_size[2] = portrait_size[2] * scale
 		local portrait_offset = {
-			-(portrait_size[1] / 2) + portrait_offset[1] * scale,
-			-(portrait_size[2] / 2) + portrait_offset[2] * scale,
-			1
+			0,
+			0,
+			0
 		}
+		portrait_offset[1] = -(portrait_size[1] / 2) + portrait_offset[1] * scale
+		portrait_offset[2] = -(portrait_size[2] / 2) + portrait_offset[2] * scale
+		portrait_offset[3] = 1
 		local portrait_name = "portrait"
 		passes[#passes + 1] = {
 			pass_type = "texture",
@@ -13494,18 +13489,23 @@ UIWidgets.create_portrait_frame = function (scenegraph_id, frame_settings_name, 
 	end
 
 	local portrait_size = {
-		portrait_size[1] * scale,
-		portrait_size[2] * scale
+		86,
+		108
 	}
+	portrait_size[1] = portrait_size[1] * scale
+	portrait_size[2] = portrait_size[2] * scale
 	local level_size = {
 		22,
 		15
 	}
 	local level_offset = {
-		level_offset[1] * scale - level_size[1] / 2 - 1,
-		(-(portrait_size[2] / 2) + level_offset[2] * scale) - 4,
-		15
+		0,
+		0,
+		0
 	}
+	level_offset[1] = level_offset[1] * scale - level_size[1] / 2 - 1
+	level_offset[2] = -(portrait_size[2] / 2) + level_offset[2] * scale - 4
+	level_offset[3] = 15
 	local level_name = "level"
 	passes[#passes + 1] = {
 		pass_type = "text",
@@ -13565,7 +13565,7 @@ UIWidgets.create_portrait_frame_button = function (scenegraph_id, frame_settings
 		local texture_name = data.texture or "icons_placeholder"
 		local texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(texture_name)
 		local size = data.size or texture_settings.size
-		size = (size and table.clone(size)) or {
+		size = size and table.clone(size) or {
 			0,
 			0
 		}
@@ -13590,9 +13590,11 @@ UIWidgets.create_portrait_frame_button = function (scenegraph_id, frame_settings
 	end
 
 	local portrait_size = {
-		portrait_size[1] * scale,
-		portrait_size[2] * scale
+		86,
+		108
 	}
+	portrait_size[1] = portrait_size[1] * scale
+	portrait_size[2] = portrait_size[2] * scale
 	local offset = table.clone(default_offset)
 	offset[1] = -(portrait_size[1] / 2) + offset[1] * scale
 	offset[2] = -(portrait_size[2] / 2) + 25 * scale
@@ -13826,7 +13828,7 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 		},
 		offset = {
 			offset[1],
-			(offset[2] + size[2]) - (frame_settings.texture_sizes.vertical[1] + 3),
+			offset[2] + size[2] - (frame_settings.texture_sizes.vertical[1] + 3),
 			2
 		}
 	}
@@ -13879,12 +13881,12 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 	}
 	hotspot_content[edge_fade_name] = "edge_fade_small"
 
-	for k = 1, num_rows, 1 do
+	for k = 1, num_rows do
 		local line_suffix = "_" .. k
 		local line_height_offset = -(k * row_size[2])
 		local row_offset = {
 			offset[1],
-			(offset[2] + size[2]) - 80 + line_height_offset,
+			offset[2] + size[2] - 80 + line_height_offset,
 			offset[3] + 5
 		}
 		local row_name = "row_bg" .. line_suffix
@@ -13961,7 +13963,7 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 			horizontal_alignment = "center",
 			word_wrap = true,
 			font_type = "arial",
-			text_color = (k == 1 and select_color) or Colors.get_color_table_with_alpha("font_default", 255),
+			text_color = k == 1 and select_color or Colors.get_color_table_with_alpha("font_default", 255),
 			size = row_size,
 			offset = {
 				row_offset[1],
@@ -14042,8 +14044,8 @@ UIWidgets.create_score_entry = function (scenegraph_id, size, num_rows, side)
 				255
 			},
 			offset = {
-				(row_offset[1] + row_size[1] / 2) - 35.5,
-				(row_offset[2] + row_size[2] / 2) - 19.5,
+				row_offset[1] + row_size[1] / 2 - 35.5,
+				row_offset[2] + row_size[2] / 2 - 19.5,
 				row_offset[3] + 4
 			}
 		}
@@ -14192,7 +14194,7 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 		},
 		offset = {
 			offset[1],
-			(offset[2] + box_size[2]) - (frame_settings.texture_sizes.vertical[1] + 3),
+			offset[2] + box_size[2] - (frame_settings.texture_sizes.vertical[1] + 3),
 			1
 		}
 	}
@@ -14245,13 +14247,13 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 	}
 	hotspot_content[edge_fade_name] = "edge_fade_small"
 
-	for k = 1, num_rows, 1 do
+	for k = 1, num_rows do
 		local line_suffix = "_" .. k
 		local row_name = "row_bg" .. line_suffix
 		local line_height_offset = -(k * row_size[2])
 		local row_offset = {
 			offset[1],
-			(offset[2] + size[2]) - row_start + line_height_offset,
+			offset[2] + size[2] - row_start + line_height_offset,
 			offset[3] + 5
 		}
 		passes[#passes + 1] = {
@@ -14436,8 +14438,8 @@ UIWidgets.create_score_topics = function (scenegraph_id, size, hover_hotspot_len
 				255
 			},
 			offset = {
-				(row_offset[1] + row_size[1] / 2) - 35.5,
-				(row_offset[2] + row_size[2] / 2) - 19.5,
+				row_offset[1] + row_size[1] / 2 - 35.5,
+				row_offset[2] + row_size[2] / 2 - 19.5,
 				row_offset[3] + 2
 			}
 		}
@@ -14483,7 +14485,7 @@ UIWidgets.create_page_dot_selector = function (scenegraph_id, amount)
 	local tab_width = length_with_spacing / amount
 	local start_width_offset = -length_with_spacing / 2
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + slot_size[1] + slot_width_spacing
@@ -15034,7 +15036,7 @@ end
 UIWidgets.create_start_game_console_setting_button = function (scenegraph_id, title_text, input_text, icon_texture, icon_frame_texture, button_size, render_icon_above_glow)
 	icon_texture = icon_texture or "level_icon_01"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
 		150,
 		150
 	}
@@ -18071,7 +18073,7 @@ UIWidgets.create_item_option_overview = function (scenegraph_id, size)
 			},
 			color = Colors.get_color_table_with_alpha("promo", 255),
 			offset = {
-				(10 + icon_size[1]) - 28,
+				10 + icon_size[1] - 28,
 				13,
 				10
 			}
@@ -18468,7 +18470,7 @@ UIWidgets.create_item_option_properties = function (scenegraph_id, size)
 	local start_y_offset = size[2] - (title_size[2] + option_size[2] + 14)
 	content.num_options = num_options
 
-	for i = 1, num_options, 1 do
+	for i = 1, num_options do
 		local hotspot_name = "button_hotspot_" .. i
 		local icon_name = "icon_" .. i
 		local icon_disabled_name = "icon_disabled_" .. i
@@ -18508,7 +18510,7 @@ UIWidgets.create_item_option_properties = function (scenegraph_id, size)
 			size = icon_size,
 			offset = {
 				start_x_offset + 6,
-				(start_y_offset + option_size[2] / 2) - icon_size[2] / 2,
+				start_y_offset + option_size[2] / 2 - icon_size[2] / 2,
 				5
 			}
 		}
@@ -18532,7 +18534,7 @@ UIWidgets.create_item_option_properties = function (scenegraph_id, size)
 			size = icon_size,
 			offset = {
 				start_x_offset + 6,
-				(start_y_offset + option_size[2] / 2) - icon_size[2] / 2,
+				start_y_offset + option_size[2] / 2 - icon_size[2] / 2,
 				5
 			}
 		}
@@ -19690,7 +19692,7 @@ UIWidgets.create_item_feature = function (scenegraph_id, size, title_text, value
 			horizontal_alignment = "center",
 			vertical_alignment = "bottom",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				size[1] - 10,
@@ -19709,7 +19711,7 @@ UIWidgets.create_item_feature = function (scenegraph_id, size, title_text, value
 			horizontal_alignment = "center",
 			vertical_alignment = "bottom",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				size[1] - 10,
@@ -19728,7 +19730,7 @@ UIWidgets.create_item_feature = function (scenegraph_id, size, title_text, value
 			horizontal_alignment = "center",
 			vertical_alignment = "top",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("white", 255),
 			size = {
 				size[1] - 10,
@@ -19747,7 +19749,7 @@ UIWidgets.create_item_feature = function (scenegraph_id, size, title_text, value
 			horizontal_alignment = "center",
 			vertical_alignment = "top",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				size[1] - 10,
@@ -20111,7 +20113,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			texture_size = {
 				50,
 				50
@@ -20137,7 +20139,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			texture_size = {
 				50,
 				50
@@ -20163,7 +20165,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			texture_size = {
 				50,
 				50
@@ -20189,7 +20191,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			texture_size = {
 				50,
 				50
@@ -20215,7 +20217,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 				0,
 				0
 			},
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			texture_size = {
 				50,
 				50
@@ -20275,7 +20277,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				size[1] / 3,
@@ -20295,7 +20297,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				size[1] / 3,
@@ -20315,7 +20317,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			size = {
 				size[1] / 3,
@@ -20335,7 +20337,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			dynamic_font_size = true,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			size = {
 				size[1] / 3,
@@ -20378,8 +20380,8 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 	local available_actions = {}
 	local num_nodes = #node_positions
 
-	for j = 1, 2, 1 do
-		local line_color = (j == 1 and Colors.get_color_table_with_alpha("font_title", 255)) or {
+	for j = 1, 2 do
+		local line_color = j == 1 and Colors.get_color_table_with_alpha("font_title", 255) or {
 			255,
 			255,
 			0,
@@ -20388,7 +20390,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 		local index = num_nodes * (j - 1)
 		local layer = j
 
-		for i = 1, num_nodes, 1 do
+		for i = 1, num_nodes do
 			local node_index = index + i
 			local progress = nodes_progress[node_index]
 			local node_position = node_positions[i]
@@ -20442,7 +20444,7 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 			local next_position_x = next_end_position[1] * next_node_progress
 			local next_position_y = next_end_position[2] * next_node_progress
 			local angle = math.angle(x, y, next_position_x, next_position_y)
-			angle = (next_position_y < y and math.abs(angle)) or -angle
+			angle = next_position_y < y and math.abs(angle) or -angle
 			local distance = math.distance_2d(x, y, next_position_x, next_position_y)
 			style[line_style_id] = {
 				vertical_alignment = "center",
@@ -20485,5 +20487,3 @@ UIWidgets.create_weapon_diagram_widget = function (scenegraph_id, size, nodes_pr
 
 	return widget
 end
-
-return

@@ -20,5 +20,3 @@ for name, data in pairs(TalentBuffTemplates.empire_soldier) do
 end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.empire_soldier, buff_tweak_data)
-
-return

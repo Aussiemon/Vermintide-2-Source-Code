@@ -249,5 +249,3 @@ ProjectileLinkerSystem.rpc_spawn_and_link_units = function (self, channel_id, li
 
 	self:spawn_and_link_units(linked_unit_name, link_position, link_rotation, hit_unit, node_index)
 end
-
-return

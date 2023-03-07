@@ -687,7 +687,7 @@ ExplosionTemplates.cannon_ball_throw = {
 				"forest_fort_kill_cannonball_cata"
 			}
 
-			for i = 1, #stat_names, 1 do
+			for i = 1, #stat_names do
 				local current_difficulty = Managers.state.difficulty:get_difficulty()
 				local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 				local allowed_difficulty = allowed_difficulties[current_difficulty]
@@ -698,7 +698,7 @@ ExplosionTemplates.cannon_ball_throw = {
 					local status_extension = ScriptUnit.has_extension(local_player.player_unit, "status_system")
 
 					if status_extension and not status_extension.completed_cannonball_challenge then
-						status_extension.num_cannonball_kills = (status_extension.num_cannonball_kills and status_extension.num_cannonball_kills + 1) or 1
+						status_extension.num_cannonball_kills = status_extension.num_cannonball_kills and status_extension.num_cannonball_kills + 1 or 1
 
 						if QuestSettings.forest_fort_kill_cannonball <= status_extension.num_cannonball_kills then
 							local statistics_db = Managers.player:statistics_db()
@@ -1497,5 +1497,3 @@ DLCUtils.merge("explosion_templates", ExplosionTemplates)
 for name, templates in pairs(ExplosionTemplates) do
 	templates.name = name
 end
-
-return

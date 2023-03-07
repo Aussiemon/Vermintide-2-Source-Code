@@ -52,6 +52,7 @@ end
 
 BTNinjaSkulkAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if reason == "aborted" then
+		-- Nothing
 	end
 
 	blackboard.in_los = nil
@@ -334,7 +335,7 @@ BTNinjaSkulkAction.in_crosshairs = function (self, unit, blackboard, t, data)
 	local side = blackboard.side
 	local units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #units, 1 do
+	for i = 1, #units do
 		local player_unit = units[i]
 		status_extension = ScriptUnit.extension(player_unit, "status_system")
 
@@ -433,11 +434,9 @@ BTNinjaSkulkAction.debug = function (self, unit, blackboard)
 		QuickDrawer:sphere(pos + Vector3(0, 0, 1.725), 0.125, Color(255, 144, 43, 207))
 	end
 
-	for i = 1, #test_points, 1 do
+	for i = 1, #test_points do
 		local pos = test_points[i]:unbox()
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.5, Color(255, 43, 43, 207))
 	end
 end
-
-return

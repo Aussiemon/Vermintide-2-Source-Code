@@ -1,3 +1,1 @@
 EconomySettings = {}
-
-return

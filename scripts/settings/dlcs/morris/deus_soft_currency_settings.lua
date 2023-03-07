@@ -58,5 +58,3 @@ DeusSoftCurrencySettings = DeusSoftCurrencySettings or {
 		MONSTER = 2
 	}
 }
-
-return

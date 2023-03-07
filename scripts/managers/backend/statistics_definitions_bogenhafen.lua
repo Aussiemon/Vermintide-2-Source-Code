@@ -52,5 +52,3 @@ player.bogenhafen_slum_event_speedrun = {
 	database_name = "bogenhafen_slum_event_speedrun",
 	source = "player_data"
 }
-
-return

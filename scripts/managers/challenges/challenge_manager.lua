@@ -15,7 +15,7 @@ ChallengeManager.init = function (self, statistics_db, is_server)
 		local max_ids = MAX_UNIQUE_IDS
 		local id_pool = Script.new_array(MAX_UNIQUE_IDS)
 
-		for i = 1, max_ids, 1 do
+		for i = 1, max_ids do
 			id_pool[i] = i
 		end
 
@@ -26,7 +26,7 @@ end
 ChallengeManager.destroy = function (self)
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		all_challenges[i]:cancel()
 	end
 
@@ -42,7 +42,7 @@ ChallengeManager.on_round_start = function (self, network_event_delegate, event_
 
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 
 		challenge:on_round_start()
@@ -53,7 +53,7 @@ ChallengeManager.on_round_end = function (self)
 	if not self._is_server then
 		local all_challenges = self._all_challenges
 
-		for i = 1, #all_challenges, 1 do
+		for i = 1, #all_challenges do
 			all_challenges[i]:cancel()
 		end
 
@@ -61,7 +61,7 @@ ChallengeManager.on_round_end = function (self)
 	else
 		local all_challenges = self._all_challenges
 
-		for i = 1, #all_challenges, 1 do
+		for i = 1, #all_challenges do
 			local challenge = all_challenges[i]
 
 			challenge:on_round_end()
@@ -141,7 +141,7 @@ end
 ChallengeManager.get_challenge_from_unique_id = function (self, unique_id)
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		if all_challenges[i]:get_unique_id() == unique_id then
 			return all_challenges[i]
 		end
@@ -158,7 +158,7 @@ ChallengeManager.remove_filtered_challenges = function (self, category, owner_un
 	local all_challenges = self._all_challenges
 	local completed_challenges = self._completed_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 		local valid = not category or challenge:get_category() == category
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
@@ -168,7 +168,7 @@ ChallengeManager.remove_filtered_challenges = function (self, category, owner_un
 		end
 	end
 
-	for i = 1, #completed_challenges, 1 do
+	for i = 1, #completed_challenges do
 		local challenge = completed_challenges[i]
 		local valid = not category or challenge:get_category() == category
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
@@ -200,7 +200,7 @@ ChallengeManager.get_challenges_filtered = function (self, results, category, ow
 	local challenges = self._all_challenges
 	local results_size = #results
 
-	for i = 1, #challenges, 1 do
+	for i = 1, #challenges do
 		local challenge = challenges[i]
 		local valid = not category or challenge:get_category() == category
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
@@ -224,7 +224,7 @@ ChallengeManager.get_completed_challenges_filtered = function (self, results, ca
 	local challenges = self._completed_challenges
 	local results_size = #results
 
-	for i = 1, #challenges, 1 do
+	for i = 1, #challenges do
 		local challenge = challenges[i]
 		local valid = not category or challenge:get_category() == category
 		valid = valid and (not owner_unique_id or challenge:belongs_to(owner_unique_id))
@@ -243,7 +243,7 @@ ChallengeManager.player_entered_game_session = function (self, peer_id, local_pl
 	local player = Managers.player:player_from_unique_id(unique_id)
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 
 		if challenge:belongs_to(unique_id) and challenge:auto_resume() then
@@ -256,7 +256,7 @@ ChallengeManager.player_left_game_session = function (self, peer_id, local_playe
 	local unique_id = PlayerUtils.unique_player_id(peer_id, local_player_id)
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 
 		if challenge:belongs_to(unique_id) then
@@ -297,7 +297,7 @@ ChallengeManager._cleanup_orphanated_challenge_ids = function (self, num_to_clea
 	local num_paused_challenges = 0
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 
 		if challenge.paused_t then
@@ -315,7 +315,7 @@ ChallengeManager._cleanup_orphanated_challenge_ids = function (self, num_to_clea
 
 		local num_to_remove = math.min(num_to_cleanup, num_paused_challenges)
 
-		for i = 1, num_to_remove, 1 do
+		for i = 1, num_to_remove do
 			local challenge_to_remove = paused_challenges[i]
 
 			self:_cancel_challenge_instant(challenge_to_remove)
@@ -367,7 +367,7 @@ end
 ChallengeManager.hot_join_sync = function (self, peer_id)
 	local all_challenges = self._all_challenges
 
-	for i = 1, #all_challenges, 1 do
+	for i = 1, #all_challenges do
 		local challenge = all_challenges[i]
 		local unique_id = challenge:get_unique_id()
 		local challenge_name = challenge:get_challenge_name()
@@ -430,5 +430,3 @@ ChallengeManager.rpc_server_hot_join_sync_ingame_challenge = function (self, sen
 	new_challenge:client_update(progress, status_id, result_id)
 	table.insert(self._all_challenges, new_challenge)
 end
-
-return

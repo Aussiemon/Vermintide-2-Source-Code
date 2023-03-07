@@ -35,5 +35,3 @@ StartGameWindowWeaveLobbyBrowserConsole.on_enter = function (self, params, offse
 	self:set_input_description(nil)
 	Managers.account:get_friends(2000, callback(self, "cb_friends_collected"))
 end
-
-return

@@ -115,5 +115,3 @@ SteamManager.request_purchase_item = function (self, steam_itemdefid, amount, ca
 
 	self._purchase_item_callback = callback
 end
-
-return

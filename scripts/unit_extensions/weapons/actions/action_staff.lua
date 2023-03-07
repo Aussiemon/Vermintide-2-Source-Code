@@ -96,5 +96,3 @@ ActionStaff.fire = function (self, reason)
 		WwiseUtils.trigger_unit_event(self.world, fire_sound_event, self.weapon_unit)
 	end
 end
-
-return

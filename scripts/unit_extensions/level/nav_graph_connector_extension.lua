@@ -80,7 +80,7 @@ NavGraphConnectorExtension.extensions_ready = function (self)
 end
 
 NavGraphConnectorExtension.destroy = function (self)
-	for i = 1, #self.navgraphs, 1 do
+	for i = 1, #self.navgraphs do
 		local navgraph = self.navgraphs[i]
 
 		GwNavGraph.destroy(navgraph)
@@ -90,5 +90,3 @@ end
 NavGraphConnectorExtension.update = function (self, unit, input, dt, context, t)
 	return
 end
-
-return

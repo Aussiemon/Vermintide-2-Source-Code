@@ -60,6 +60,7 @@ BTInterestPointApproachAction.leave = function (self, unit, blackboard, t, reaso
 			blackboard.ip_request_id = nil
 		end
 	elseif reason == "aborted" then
+		-- Nothing
 	end
 
 	local group_blackboard = blackboard.group_blackboard
@@ -101,5 +102,3 @@ BTInterestPointApproachAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

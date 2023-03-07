@@ -151,7 +151,7 @@ HeroWindowInventory._handle_input = function (self, dt, t)
 		self:_play_sound("play_gui_inventory_item_hover")
 	end
 
-	for i = 1, 6, 1 do
+	for i = 1, 6 do
 		local widget = widgets_by_name["material_text_" .. i]
 
 		if self:_is_button_hovered(widget) then
@@ -225,7 +225,7 @@ HeroWindowInventory._update_crafting_material_panel = function (self)
 		local items = backend_items:get_filtered_items(item_filter)
 		local item = items and items[1]
 		local backend_id = item and item.backend_id
-		local amount = (backend_id and backend_items:get_item_amount(backend_id)) or 0
+		local amount = backend_id and backend_items:get_item_amount(backend_id) or 0
 		local widget = widgets_by_name["material_text_" .. index]
 		local content = widget.content
 		local amount_text = nil
@@ -355,5 +355,3 @@ HeroWindowInventory.change_item_filter = function (self, item_filter, change_pag
 
 	self._item_grid:change_item_filter(item_filter, change_page)
 end
-
-return

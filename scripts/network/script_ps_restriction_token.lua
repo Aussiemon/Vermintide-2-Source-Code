@@ -35,5 +35,3 @@ end
 ScriptPSRestrictionToken.close = function (self)
 	NpCheck.free(self._token)
 end
-
-return

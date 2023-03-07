@@ -5,5 +5,3 @@ settings.item_master_list_file_names = {
 settings.weapon_template_file_names = {
 	"scripts/settings/equipment/weapon_templates/belakor_crystal"
 }
-
-return

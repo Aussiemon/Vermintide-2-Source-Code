@@ -70,5 +70,3 @@ AICommanderSystem.on_unit_killed = function (self, unit, killer_unit, killing_bl
 		extension:remove_unit(unit)
 	end
 end
-
-return

@@ -119,5 +119,3 @@ BreedBehaviors.chaos_spawn = {
 	},
 	name = "chaos_spawn"
 }
-
-return

@@ -4084,5 +4084,3 @@ UtilityConsiderations = {
 }
 
 DLCUtils.require_list("utility_considerations_file_names")
-
-return

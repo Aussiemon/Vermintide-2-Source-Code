@@ -491,5 +491,3 @@ settings.patrol_formations = {
 		}
 	}
 }
-
-return

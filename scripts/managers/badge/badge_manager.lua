@@ -19,6 +19,7 @@ BadgeManager.init = function (self, statistics_db, network_event_delegate, is_se
 	if current_mechanism_name == "versus" then
 		require("scripts/settings/dlcs/carousel/carousel_badge_templates")
 	elseif current_mechanism_name == "adventure" then
+		-- Nothing
 	end
 
 	if is_server then
@@ -184,5 +185,3 @@ BadgeManager.rpc_complete_badge = function (self, channel_id, badge_id, player_p
 
 	network_transmit:send_rpc("rpc_show_badge", player_peer_id, badge_id)
 end
-
-return

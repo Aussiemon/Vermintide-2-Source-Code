@@ -63,5 +63,3 @@ settings.end_view_state = {
 settings.interactions_filenames = {
 	"scripts/settings/dlcs/scorpion/scorpion_interactions"
 }
-
-return

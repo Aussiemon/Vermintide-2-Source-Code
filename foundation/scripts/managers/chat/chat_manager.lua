@@ -752,7 +752,7 @@ ChatManager._profanity_check = function (self, message)
 			local replacement_text = ""
 			local length = UTF8Utils.string_length(profanity)
 
-			for i = 1, length, 1 do
+			for i = 1, length do
 				replacement_text = replacement_text .. "*"
 			end
 
@@ -806,8 +806,8 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 		channel_id = channel_id,
 		message_sender = message_sender,
 		local_player_id = local_player_id,
-		message = (message_edited and parsed_message) or message,
-		type = message_type or (is_system_message and Irc.SYSTEM_MSG) or Irc.PARTY_MSG,
+		message = message_edited and parsed_message or message,
+		type = message_type or is_system_message and Irc.SYSTEM_MSG or Irc.PARTY_MSG,
 		pop_chat = pop_chat,
 		is_dev = is_dev,
 		is_bot = is_bot,
@@ -831,7 +831,7 @@ ChatManager._add_message_to_list = function (self, channel_id, message_sender, l
 	if is_system_message then
 		local sender = "System"
 
-		printf("[ChatManager][%s]%s: %s", channel_id, sender, (message_edited and parsed_message) or message)
+		printf("[ChatManager][%s]%s: %s", channel_id, sender, message_edited and parsed_message or message)
 	end
 end
 
@@ -862,7 +862,7 @@ ChatManager._switch_view_internally = function (self, view_index)
 
 	local filter = CHAT_VIEW_LUT[filter_name].filter
 
-	for i = 1, #self.global_messages, 1 do
+	for i = 1, #self.global_messages do
 		message_data = self.global_messages[i]
 
 		if filter_name == "All" or message_data.type == filter then
@@ -884,7 +884,7 @@ ChatManager.switch_view = function (self, view_index)
 
 	local filter = CHAT_VIEW_LUT[filter_name].filter
 
-	for i = 1, #self.global_messages, 1 do
+	for i = 1, #self.global_messages do
 		message_data = self.global_messages[i]
 
 		if filter_name == "All" or message_data.type == filter then
@@ -1063,5 +1063,3 @@ ChatManager.clear_chat = function (self)
 	self.chat_messages = {}
 	self.clear_messages = true
 end
-
-return

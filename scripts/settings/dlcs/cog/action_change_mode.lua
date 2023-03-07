@@ -22,5 +22,3 @@ ActionChangeMode.finish = function (self, reason)
 	ActionChangeMode.super.finish(self, reason)
 	self:_play_additional_animation(self.current_action.custom_finish_anim_data)
 end
-
-return

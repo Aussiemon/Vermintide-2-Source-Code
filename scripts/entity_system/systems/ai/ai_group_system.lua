@@ -30,7 +30,7 @@ AIGroupSystem.init = function (self, context, system_name)
 end
 
 function boxify_table_pos_array(array)
-	for i = 1, #array, 1 do
+	for i = 1, #array do
 		local p = array[i]
 		array[i] = Vector3Box(p[1], p[2], p[3])
 	end
@@ -55,7 +55,7 @@ AIGroupSystem.add_ready_splines = function (self, waypoint_list, spline_type)
 		return
 	end
 
-	for i = 1, #waypoint_list, 1 do
+	for i = 1, #waypoint_list do
 		local data = waypoint_list[i]
 		local spline_points = data.astar_points
 
@@ -109,7 +109,7 @@ AIGroupSystem.init_extension = function (self, unit, extension, extension_init_d
 	local template = extension_init_data.template
 	local group = self.groups[id]
 	local formation = extension_init_data.formation
-	local formation_settings = (formation and formation.settings) or PatrolFormationSettings.default_settings
+	local formation_settings = formation and formation.settings or PatrolFormationSettings.default_settings
 	local despawn_at_end = extension_init_data.despawn_at_end
 
 	if group == nil then
@@ -299,7 +299,7 @@ AIGroupSystem.set_level = function (self, level)
 	self._event_splines = {}
 	local world = self._world
 
-	for i = 1, MAX_PATROL_SPLINES, 1 do
+	for i = 1, MAX_PATROL_SPLINES do
 		repeat
 			local spline_name = PATROL_SPLINE_PREFIX .. i
 			local spline_points = Level.spline(level, spline_name)
@@ -319,7 +319,7 @@ AIGroupSystem.set_level = function (self, level)
 		until true
 	end
 
-	for i = 1, MAX_ROAMING_SPLINES, 1 do
+	for i = 1, MAX_ROAMING_SPLINES do
 		repeat
 			local spline_name = ROAMING_SPLINE_PREFIX .. i
 			local spline_points = Level.spline(level, spline_name)
@@ -339,7 +339,7 @@ AIGroupSystem.set_level = function (self, level)
 		until true
 	end
 
-	for i = 1, MAX_EVENT_SPLINES, 1 do
+	for i = 1, MAX_EVENT_SPLINES do
 		repeat
 			local spline_name = EVENT_SPLINE_PREFIX .. i
 			local spline_points = Level.spline(level, spline_name)
@@ -452,7 +452,7 @@ AIGroupSystem.get_available_spline_type = function (self)
 		splines = self._event_splines
 	end
 
-	local spline_type = (next(self._patrol_splines) and "patrol") or (next(self._roaming_splines) and "roaming") or (next(self._event_splines) and "event")
+	local spline_type = next(self._patrol_splines) and "patrol" or next(self._roaming_splines) and "roaming" or next(self._event_splines) and "event"
 
 	return spline_type
 end
@@ -497,7 +497,7 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 	local math_abs = math.abs
 
 	if num_players >= 0 then
-		for j = 1, num_players, 1 do
+		for j = 1, num_players do
 			local to_dir = pos - player_positions[j]
 			local h = to_dir.z
 
@@ -533,7 +533,7 @@ AIGroupSystem.check_recycler_despawn = function (self, player_positions, player_
 		local enemy_recycler = conflict_director.enemy_recycler
 		local BLACKBOARDS = BLACKBOARDS
 
-		for i = 1, num_indexed_members, 1 do
+		for i = 1, num_indexed_members do
 			local member_unit = indexed_members[i]
 			local blackboard = BLACKBOARDS[member_unit]
 			local boxed_pos = Vector3Box(POSITION_LOOKUP[member_unit])
@@ -683,7 +683,7 @@ AIGroupSystem.set_allowed_layer = function (self, layer_name, allowed)
 end
 
 AIGroupSystem.create_spline_from_way_points = function (self, spline_name, spline_way_points, spline_type)
-	local navbot_kind = (spline_type == "roaming" and "roaming") or "standard"
+	local navbot_kind = spline_type == "roaming" and "roaming" or "standard"
 
 	self.patrol_analysis:compute_spline_path(spline_name, spline_way_points, navbot_kind)
 
@@ -782,7 +782,7 @@ AIGroupSystem.draw_spline = function (self, spline, drawer, color)
 	local p1 = spline[1]:unbox()
 	local h = Vector3(0, 0, 1)
 
-	for i = 2, #spline, 1 do
+	for i = 2, #spline do
 		local waypoint = spline[i]
 		local p2 = spline[i]:unbox()
 
@@ -893,7 +893,7 @@ AIGroupSystem.create_formation_data = function (self, position, formation, splin
 		end
 	end
 
-	for i = current_row, num_rows, 1 do
+	for i = current_row, num_rows do
 		local columns = formation_data[i]
 		formation_data[i] = nil
 	end
@@ -949,5 +949,3 @@ end
 AIGroupSystem.register_spline_properties = function (self, spline_name, properties)
 	self._spline_properties[spline_name] = properties
 end
-
-return

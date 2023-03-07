@@ -5,5 +5,3 @@ require("scripts/managers/account/account_manager_win32")
 require("scripts/ui/views/credits_view")
 require("scripts/ui/views/options_view")
 require("scripts/ui/views/console_friends_view")
-
-return

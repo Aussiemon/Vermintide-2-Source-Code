@@ -106,7 +106,7 @@ end
 local function create_input_description_widgets(amount)
 	local input_description_widgets = {}
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local scenegraph_root_id = "input_description_root_" .. i
 		local scenegraph_id = "input_description_" .. i
 		local scenegraph_icon_id = "input_description_icon_" .. i
@@ -248,7 +248,7 @@ MenuInputDescriptionUI.init = function (self, ingame_ui_context, ui_renderer, in
 		snap_pixel_positions = true
 	}
 	self._use_fullscreen_layout = use_fullscreen_layout
-	scenegraph_definition.screen.position[3] = (layer and layer + 10) or UILayer.controller_description
+	scenegraph_definition.screen.position[3] = layer and layer + 10 or UILayer.controller_description
 
 	self:create_ui_elements(ui_renderer, number_of_elements, use_fullscreen_layout)
 end
@@ -278,7 +278,7 @@ MenuInputDescriptionUI.draw = function (self, ui_renderer, dt)
 	local console_description_widgets = self.console_input_description_widgets
 
 	if number_of_descriptions_in_use then
-		for i = 1, number_of_descriptions_in_use, 1 do
+		for i = 1, number_of_descriptions_in_use do
 			UIRenderer.draw_widget(ui_renderer, console_description_widgets[i])
 		end
 
@@ -395,7 +395,7 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 	local total_width = 0
 	local widget_use_index = 0
 	self.current_console_selection_data = console_selection_data
-	local actions_to_add = (console_selection_data and console_selection_data.actions and table.clone(console_selection_data.actions)) or {}
+	local actions_to_add = console_selection_data and console_selection_data.actions and table.clone(console_selection_data.actions) or {}
 	local ignore_generic_actions = console_selection_data and console_selection_data.ignore_generic_actions
 	local actions = {}
 
@@ -426,7 +426,7 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 
 		if description_text then
 			widget_use_index = widget_use_index + 1
-			description_text = (action_data.ignore_localization and description_text) or Localize(description_text)
+			description_text = action_data.ignore_localization and description_text or Localize(description_text)
 			local action_texture_data = self:get_gamepad_input_texture_data(input_action, ignore_keybinding)
 			local description_widget = console_input_description_widgets[widget_use_index]
 			local widget_content = description_widget.content
@@ -456,7 +456,7 @@ MenuInputDescriptionUI.set_input_description = function (self, console_selection
 		end
 	end
 
-	self.number_of_descriptions_in_use = (widget_use_index ~= 0 and widget_use_index) or nil
+	self.number_of_descriptions_in_use = widget_use_index ~= 0 and widget_use_index or nil
 
 	self:_align_inputs(total_width, spacing, widgets_width_list)
 end
@@ -491,7 +491,7 @@ MenuInputDescriptionUI._align_inputs = function (self, total_width, spacing, wid
 		if self._use_fullscreen_layout then
 			local widget_start_position = 50
 
-			for i = 1, widget_use_index, 1 do
+			for i = 1, widget_use_index do
 				local widget_width = widgets_width_list[i]
 				local scenegraph_root_id = "input_description_root_" .. i
 				ui_scenegraph[scenegraph_root_id].local_position[1] = widget_start_position
@@ -500,7 +500,7 @@ MenuInputDescriptionUI._align_inputs = function (self, total_width, spacing, wid
 		else
 			local widget_start_position = parent_width / 2 - total_width / 2
 
-			for i = 1, widget_use_index, 1 do
+			for i = 1, widget_use_index do
 				local widget_width = widgets_width_list[i]
 				local new_x = widget_start_position + widget_width / 2
 				local scenegraph_root_id = "input_description_root_" .. i
@@ -510,5 +510,3 @@ MenuInputDescriptionUI._align_inputs = function (self, total_width, spacing, wid
 		end
 	end
 end
-
-return

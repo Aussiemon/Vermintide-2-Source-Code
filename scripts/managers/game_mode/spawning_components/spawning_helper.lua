@@ -9,7 +9,7 @@ local temp_table = {}
 SpawningHelper.netpack_consumables = function (consumables)
 	table.clear(temp_table)
 
-	for i = 1, #CONSUMABLE_SLOTS, 1 do
+	for i = 1, #CONSUMABLE_SLOTS do
 		local slot_name = CONSUMABLE_SLOTS[i]
 		temp_table[i] = NetworkLookup.item_names[consumables[slot_name] or "n/a"]
 	end
@@ -23,7 +23,7 @@ SpawningHelper.netpack_additional_items = function (additional_items)
 	table.clear(temp_table_2)
 
 	for slot_name, slot_data in pairs(additional_items) do
-		for i = 1, #slot_data.items, 1 do
+		for i = 1, #slot_data.items do
 			local item_name = slot_data.items[i].key
 			local slot_id = NetworkLookup.equipment_slots[slot_name]
 			local item_id = NetworkLookup.item_names[item_name]
@@ -58,7 +58,7 @@ SpawningHelper.unnetpack_additional_items = function (encoded_additional_items)
 end
 
 SpawningHelper.fill_consumable_table = function (consumables, inventory_extension)
-	for i = 1, #CONSUMABLE_SLOTS, 1 do
+	for i = 1, #CONSUMABLE_SLOTS do
 		local slot_name = CONSUMABLE_SLOTS[i]
 		local slot_data = inventory_extension:get_slot_data(slot_name)
 		local item_key = slot_data and slot_data.item_data.key
@@ -71,7 +71,7 @@ end
 
 SpawningHelper.default_spawn_items = function (consumables, difficulty_settings, game_mode_settings)
 	if not game_mode_settings.disable_difficulty_spawning_items then
-		for i = 1, #CONSUMABLE_SLOTS, 1 do
+		for i = 1, #CONSUMABLE_SLOTS do
 			local slot_name = CONSUMABLE_SLOTS[i]
 			consumables[slot_name] = difficulty_settings[slot_name]
 		end
@@ -114,5 +114,3 @@ SpawningHelper.fill_ammo_percentage = function (ammo, inventory_extension, playe
 		ammo[slot_name] = ammo_percentage
 	end
 end
-
-return

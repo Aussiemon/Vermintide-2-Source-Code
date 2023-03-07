@@ -10,7 +10,7 @@ LocalizationManager.init = function (self, language_id)
 	self._macros = {}
 	self._find_macro_callback_to_self = callback(self._find_macro, self)
 	local has_steam = rawget(_G, "Steam")
-	self._language_id = language_id or Application.user_setting("language_id") or (has_steam and Steam.language()) or "en"
+	self._language_id = language_id or Application.user_setting("language_id") or has_steam and Steam.language() or "en"
 	self._backend_localizations = {}
 
 	rawset(_G, "Localize", function (text_id)
@@ -48,7 +48,7 @@ LocalizationManager._base_lookup = function (self, text_id)
 	local lookup = Localizer.lookup
 	local localizer_list = self._localizers
 
-	for i = 1, #localizer_list, 1 do
+	for i = 1, #localizer_list do
 		text = lookup(localizer_list[i], text_id)
 
 		if text then
@@ -113,9 +113,9 @@ LocalizationManager.plural_form = function (self, n)
 	local loc = self._language_id
 
 	if loc == "en" or loc == "es" or loc == "it" or loc == "br-pt" then
-		return (n ~= 1 and 1) or 0
+		return n ~= 1 and 1 or 0
 	elseif loc == "fr" then
-		return (n > 1 and 1) or 0
+		return n > 1 and 1 or 0
 	elseif loc == "zh" then
 		return 0
 	elseif loc == "ru" then
@@ -143,7 +143,7 @@ function LocalizeArray(text_ids, result)
 	result = result or {}
 	local num_ids = #text_ids
 
-	for i = 1, num_ids, 1 do
+	for i = 1, num_ids do
 		local text_id = text_ids[i]
 		result[i] = Localize(text_id)
 	end
@@ -246,5 +246,3 @@ LocalizationManager.set_locale_override_setting = function (self, locale)
 	Application.set_user_setting("language_id", locale)
 	Application.save_user_settings()
 end
-
-return

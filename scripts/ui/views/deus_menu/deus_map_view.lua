@@ -1,4 +1,4 @@
-require((script_data.FEATURE_old_map_ui and "scripts/ui/views/deus_menu/deus_map_ui") or "scripts/ui/views/deus_menu/deus_map_ui_v2")
+require(script_data.FEATURE_old_map_ui and "scripts/ui/views/deus_menu/deus_map_ui" or "scripts/ui/views/deus_menu/deus_map_ui_v2")
 require("scripts/ui/views/deus_menu/deus_map_scene")
 
 local REAL_PLAYER_LOCAL_ID = 1
@@ -123,5 +123,3 @@ end
 DeusMapView._node_unhovered = function (self)
 	return
 end
-
-return

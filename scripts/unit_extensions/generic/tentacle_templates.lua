@@ -13,5 +13,3 @@ TentacleTemplates = {
 		switch_to_3p_dist_sq = 10000
 	}
 }
-
-return

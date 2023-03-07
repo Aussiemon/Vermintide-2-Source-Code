@@ -19,5 +19,3 @@ end
 StateDedicatedServerRunning.on_exit = function (self)
 	return
 end
-
-return

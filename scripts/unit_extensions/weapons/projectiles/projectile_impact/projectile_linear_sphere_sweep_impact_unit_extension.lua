@@ -46,7 +46,7 @@ ProjectileLinearSphereSweepImpactUnitExtension.update = function (self, unit, in
 		if result then
 			local num_hits = #result
 
-			for i = 1, num_hits, 1 do
+			for i = 1, num_hits do
 				local hit = result[i]
 				local hit_position = hit.position
 				local hit_normal = hit.normal
@@ -60,7 +60,7 @@ ProjectileLinearSphereSweepImpactUnitExtension.update = function (self, unit, in
 						local num_actors = Unit.num_actors(hit_unit)
 						local actor_index = nil
 
-						for j = 0, num_actors - 1, 1 do
+						for j = 0, num_actors - 1 do
 							local actor = Unit.actor(hit_unit, j)
 
 							if hit_actor == actor then
@@ -86,5 +86,3 @@ ProjectileLinearSphereSweepImpactUnitExtension.update = function (self, unit, in
 		self._next_check_t = t + CHECK_DELTA
 	end
 end
-
-return

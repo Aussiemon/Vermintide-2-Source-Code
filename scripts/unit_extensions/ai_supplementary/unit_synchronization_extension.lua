@@ -58,5 +58,3 @@ UnitSynchronizationExtension._client_validate_position_rotation = function (self
 		end
 	end
 end
-
-return

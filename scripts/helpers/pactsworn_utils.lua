@@ -13,5 +13,3 @@ PactswornUtils = {
 		return hoist_position
 	end
 }
-
-return

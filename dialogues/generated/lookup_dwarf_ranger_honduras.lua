@@ -368,5 +368,3 @@ DialogueLookup[DialogueLookup_n + 182] = "pdr_gameplay_overcharge"
 DialogueLookup[DialogueLookup_n + 183] = "pdr_targeted_by_ratling"
 DialogueLookup[DialogueLookup_n + 184] = "pdr_curse_forced"
 DialogueLookup_n = DialogueLookup_n + 184
-
-return

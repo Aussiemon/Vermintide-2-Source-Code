@@ -395,7 +395,7 @@ GenericVolumeTemplates.filters = {
 		local all_inside_disabled = volume_system:all_human_players_inside_disabled(data.volume_name)
 		local is_inside_and_disabled = is_disabled and is_inside
 		local is_outside_and_not_disabled = not is_inside and not is_disabled
-		local result = (not is_inside_and_disabled and not is_outside_and_not_disabled) or not not all_inside_disabled
+		local result = not is_inside_and_disabled and not is_outside_and_not_disabled or not not all_inside_disabled
 
 		return result
 	end,
@@ -410,5 +410,3 @@ GenericVolumeTemplates.filters = {
 		return volume_system:all_alive_human_players_inside(data.volume_name)
 	end
 }
-
-return

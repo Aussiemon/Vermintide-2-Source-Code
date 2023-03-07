@@ -33,5 +33,3 @@ end
 LureWhereaboutsExtension.closest_positions_when_outside_navmesh = function (self)
 	return self._closest_positions, self._on_navmesh
 end
-
-return

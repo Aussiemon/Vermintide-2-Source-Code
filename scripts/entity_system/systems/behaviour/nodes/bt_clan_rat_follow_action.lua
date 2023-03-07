@@ -48,7 +48,7 @@ BTClanRatFollowAction.enter = function (self, unit, blackboard, t)
 
 	local position = POSITION_LOOKUP[unit]
 	local breed = blackboard.breed
-	local enter_walk_dist_sq = (breed.enter_walk_distance and breed.enter_walk_distance^2) or ENTER_WALK_DISTANCE_SQ
+	local enter_walk_dist_sq = breed.enter_walk_distance and breed.enter_walk_distance^2 or ENTER_WALK_DISTANCE_SQ
 	local navigation_extension = blackboard.navigation_extension
 	local destination = navigation_extension:destination()
 	local should_walk = self:_should_walk(destination, position, enter_walk_dist_sq, rotation)
@@ -156,7 +156,7 @@ BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
 			self:start_move_rotation(unit, blackboard, t, dt)
 		end
 
-		if blackboard.anim_cb_move or (blackboard.anim_lock_fallback_time and blackboard.anim_lock_fallback_time <= t) then
+		if blackboard.anim_cb_move or blackboard.anim_lock_fallback_time and blackboard.anim_lock_fallback_time <= t then
 			blackboard.anim_cb_move = false
 			blackboard.move_state = "moving"
 			blackboard.anim_lock_fallback_time = nil
@@ -177,7 +177,7 @@ BTClanRatFollowAction.run = function (self, unit, blackboard, t, dt)
 	if blackboard.time_to_next_evaluate < t or navigation_extension:has_reached_destination() then
 		local prioritized_update = blackboard.have_slot == 1 and blackboard.attacks_done == 0
 		should_evaluate = "evaluate"
-		blackboard.time_to_next_evaluate = (prioritized_update and t + 0.1) or t + 0.5
+		blackboard.time_to_next_evaluate = prioritized_update and t + 0.1 or t + 0.5
 	end
 
 	return "running", should_evaluate
@@ -199,12 +199,12 @@ BTClanRatFollowAction._update_walking = function (self, unit, blackboard, dt, t)
 	local use_slow_approach = self:_slow_approach(destination, self_pos, action_data, rotation)
 	local breed = blackboard.breed
 	local leave_walk_distance = breed.leave_walk_distance
-	local leave_walk_dist_sq = (leave_walk_distance and leave_walk_distance * leave_walk_distance) or LEAVE_WALK_DISTANCE_SQ
+	local leave_walk_dist_sq = leave_walk_distance and leave_walk_distance * leave_walk_distance or LEAVE_WALK_DISTANCE_SQ
 	local should_walk = self:_should_walk(destination, self_pos, leave_walk_dist_sq, rotation)
 	local run = not use_slow_approach and not should_walk
 	local target_moving_fast = not use_slow_approach and velocity_away and WALK_MAX_TARGET_VELOCITY < velocity_away
 	local is_tired = blackboard.action.custom_is_tired_function and blackboard.action.custom_is_tired_function(unit, blackboard)
-	local run_anim = (is_tired and blackboard.action.alt_tired_anim) or "move_fwd"
+	local run_anim = is_tired and blackboard.action.alt_tired_anim or "move_fwd"
 
 	if (not breed.force_walk_while_tired or not is_tired) and (walk_timer_finished or run or target_moving_fast) then
 		blackboard.walking = false
@@ -249,7 +249,7 @@ BTClanRatFollowAction._calculate_walk_animation = function (self, walk_dir, walk
 	elseif walk_dir == "left" then
 		anim = "move_left_walk"
 	elseif walk_dir == "forward" then
-		anim = (walk_anims and randomize(walk_anims)) or "move_fwd_walk"
+		anim = walk_anims and randomize(walk_anims) or "move_fwd_walk"
 	else
 		anim = "move_bwd_walk"
 	end
@@ -303,9 +303,9 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 	elseif target_distance < (breed.match_speed_distance or 2 * weapon_reach) then
 		blackboard.deacceleration_factor = nil
 		local lerp_value = math.max((target_distance - weapon_reach) / weapon_reach, 0) * 0.4
-		local target_velocity = (target_locomotion and target_locomotion.average_velocity and target_locomotion:average_velocity()) or Vector3.zero()
+		local target_velocity = target_locomotion and target_locomotion.average_velocity and target_locomotion:average_velocity() or Vector3.zero()
 		local target_speed = Vector3.length(target_velocity) or 0
-		local wanted_speed = (breed.walk_speed < target_speed and target_speed) or breed.walk_speed
+		local wanted_speed = breed.walk_speed < target_speed and target_speed or breed.walk_speed
 		new_speed = math.lerp(wanted_speed, breed.run_speed, lerp_value)
 	elseif (current_speed > breed.run_speed + 0.1 or blackboard.deacceleration_factor) and target_distance < 2 * weapon_reach + CHASE_DEACCELERATION_DISTANCE then
 		local deaccelearation_distance_left = target_distance - weapon_reach
@@ -334,14 +334,14 @@ BTClanRatFollowAction.follow = function (self, unit, blackboard, t, dt)
 	end
 
 	if not blackboard.walking then
-		local enter_walk_dist_sq = (breed.enter_walk_distance and breed.enter_walk_distance^2) or ENTER_WALK_DISTANCE_SQ
+		local enter_walk_dist_sq = breed.enter_walk_distance and breed.enter_walk_distance^2 or ENTER_WALK_DISTANCE_SQ
 		local destination = blackboard.navigation_extension:destination()
 		local rotation = LocomotionUtils.rotation_towards_unit_flat(unit, blackboard.target_unit)
 		local position = POSITION_LOOKUP[unit]
 		local should_walk = self:_should_walk(destination, position, enter_walk_dist_sq, rotation)
 
 		if should_walk then
-			local target_velocity = (target_locomotion and target_locomotion.average_velocity and target_locomotion:average_velocity()) or Vector3.zero()
+			local target_velocity = target_locomotion and target_locomotion.average_velocity and target_locomotion:average_velocity() or Vector3.zero()
 			local target_speed = Vector3.length(target_velocity) or 0
 
 			if target_speed < WALK_MAX_TARGET_VELOCITY then
@@ -469,5 +469,3 @@ BTClanRatFollowAction.do_dialogue = function (self, unit, blackboard, t, dt)
 		end
 	end
 end
-
-return

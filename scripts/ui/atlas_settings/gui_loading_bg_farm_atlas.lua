@@ -28,5 +28,3 @@ loading_bg_farm_atlas = {
 		}
 	}
 }
-
-return

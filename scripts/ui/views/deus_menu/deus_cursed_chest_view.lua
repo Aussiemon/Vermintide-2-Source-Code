@@ -87,7 +87,7 @@ DeusCursedChestView.create_ui_elements = function (self)
 	local power_up_widgets = {}
 	local num_power_ups = #self._power_up_data
 
-	for i = 1, num_power_ups, 1 do
+	for i = 1, num_power_ups do
 		local power_up = self._power_up_data[i].power_up
 		local power_up_template = power_up_templates[power_up.name]
 		local is_rectangular_icon = power_up_template.rectangular_icon
@@ -186,7 +186,7 @@ DeusCursedChestView.draw = function (self, dt)
 	local snap_pixel_positions = render_settings.snap_pixel_positions
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		if widget.snap_pixel_positions ~= nil then
@@ -450,7 +450,7 @@ DeusCursedChestView._update_background_animations = function (self, dt)
 
 	speed_modifier = math.lerp(speed_modifier, max_speed_modifier, LERP_SPEED * dt)
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local wheel_widget = widgets_by_name["background_wheel_0" .. i]
 		local current_angle = wheel_widget.style.texture_id.angle
 		local angle_add = 0
@@ -470,5 +470,3 @@ DeusCursedChestView._update_background_animations = function (self, dt)
 
 	self._circle_speed_modifier = speed_modifier
 end
-
-return

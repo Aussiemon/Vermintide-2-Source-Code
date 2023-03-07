@@ -212,5 +212,3 @@ SoundSectorEventTemplates.distant_horde_beastmen = {
 		return is_within_distance, units_center, num_horde_units_beastmen
 	end
 }
-
-return

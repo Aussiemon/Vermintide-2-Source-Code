@@ -12,7 +12,7 @@ local left_window_size = {
 	side_window_height
 }
 local right_window_size = {
-	(window_size[1] + 22) - left_window_size[1],
+	window_size[1] + 22 - left_window_size[1],
 	side_window_height
 }
 local achievement_entry_size = {
@@ -1155,7 +1155,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 	}
 	local item_styles = {}
 
-	for i = 1, CATEGORY_LIST_LIMIT, 1 do
+	for i = 1, CATEGORY_LIST_LIMIT do
 		local spacing = tab_list_entry_spacing
 		list_content[i] = {
 			text = "n/a",
@@ -1211,7 +1211,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				font_size = 22,
 				horizontal_alignment = "left",
 				word_wrap = true,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				offset = {
 					40,
@@ -1225,7 +1225,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				font_size = 22,
 				horizontal_alignment = "left",
 				word_wrap = true,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					40,
@@ -1239,7 +1239,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				font_size = 22,
 				horizontal_alignment = "left",
 				word_wrap = true,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					40,
@@ -1253,7 +1253,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				font_size = 22,
 				horizontal_alignment = "left",
 				word_wrap = true,
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					42,
@@ -1871,7 +1871,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				font_size = 24,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				default_text_color = Colors.get_color_table_with_alpha("font_button_normal", 255),
 				select_text_color = Colors.get_color_table_with_alpha("white", 255),
@@ -1887,7 +1887,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("gray", 255),
 				default_text_color = Colors.get_color_table_with_alpha("gray", 255),
 				offset = {
@@ -1902,7 +1902,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id)
 				word_wrap = true,
 				horizontal_alignment = "left",
 				vertical_alignment = "center",
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				default_text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
@@ -3284,7 +3284,7 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 							end
 						end
 
-						style.parent.reset_filter_fg.color[1] = (hotspot.is_hover and 255) or 0
+						style.parent.reset_filter_fg.color[1] = hotspot.is_hover and 255 or 0
 					end
 				},
 				{
@@ -3491,7 +3491,7 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 	local divider_left_size = widget.style.divider_left.texture_size
 	local y_position = -80
 
-	for i = 1, #search_definitions, 1 do
+	for i = 1, #search_definitions do
 		local search_definition = search_definitions[i]
 		local search_key = search_definition.key
 		local header_pass_name = search_key .. "_header"
@@ -3519,7 +3519,7 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 		local BASE_X_POSITION = 200
 		local x_position = BASE_X_POSITION
 
-		for j = 1, #search_definition, 1 do
+		for j = 1, #search_definition do
 			local tuple = search_definition[j]
 			local search_value = tuple[1]
 			local search_kword = tuple[2]
@@ -3563,11 +3563,11 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 				content_change_function = function (content, style)
 					local hotspot = content[pass_hotspot]
 					local is_selected = search_value == content.query[search_key]
-					local wanted_color = (is_selected and FILTER_COLOR_SELECTED) or FILTER_COLOR_DEFAULT
+					local wanted_color = is_selected and FILTER_COLOR_SELECTED or FILTER_COLOR_DEFAULT
 
 					Colors.copy_to(style.color, wanted_color)
 
-					style.color[1] = (hotspot.is_hover and 255) or 175
+					style.color[1] = hotspot.is_hover and 255 or 175
 
 					if hotspot.on_pressed then
 						if is_selected then
@@ -3624,7 +3624,7 @@ local function create_search_filters_widget(scenegraph_id, ui_renderer, search_d
 				color = Colors.get_table("font_title"),
 				offset = {
 					x_position - frame_width,
-					(y_position + frame_width) - 7,
+					y_position + frame_width - 7,
 					5
 				},
 				area_size = {
@@ -3977,7 +3977,7 @@ local summary_widgets = {
 }
 local category_tab_widgets = {}
 
-for i = 1, 8, 1 do
+for i = 1, 8 do
 	local first_entry = i == 1
 	local scenegraph_id = "category_tab_" .. i
 	local scenegraph_list_id = "category_tab_" .. i .. "_list"
@@ -3985,12 +3985,12 @@ for i = 1, 8, 1 do
 	local previous_scenegraph_list_id = "category_tab_" .. i - 1 .. "_list"
 	scenegraph_definition[scenegraph_id] = {
 		horizontal_alignment = "center",
-		parent = (first_entry and "category_root") or previous_scenegraph_list_id,
-		vertical_alignment = (first_entry and "top") or "bottom",
+		parent = first_entry and "category_root" or previous_scenegraph_list_id,
+		vertical_alignment = first_entry and "top" or "bottom",
 		size = tab_size,
 		position = {
-			(first_entry and -15) or 0,
-			(first_entry and -20) or -(tab_size[2] + tab_list_entry_spacing),
+			first_entry and -15 or 0,
+			first_entry and -20 or -(tab_size[2] + tab_list_entry_spacing),
 			0
 		}
 	}

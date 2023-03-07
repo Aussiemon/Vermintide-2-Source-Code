@@ -63,6 +63,7 @@ Storm.update = function (self, dt, t)
 			dprintf("-%s- new state %s", self._logging_prefix, self._state)
 		end
 	elseif self._state == STORM_STATES.READY then
+		-- Nothing
 	elseif self._state == STORM_STATES.ACTIVE then
 		local unit = self._active_storm_data.summoned_vortex_unit
 
@@ -228,7 +229,7 @@ return {
 	server_start_function = function (context, data)
 		local storms = {}
 
-		for i = 1, STORM_COUNT, 1 do
+		for i = 1, STORM_COUNT do
 			storms[#storms + 1] = Storm:new(VORTEX_TEMPLATE_NAME, INNER_DECAL_UNIT_NAME, OUTER_DECAL_UNIT_NAME, MIN_COOLDOWN, MAX_COOLDOWN, i)
 		end
 
@@ -249,13 +250,13 @@ return {
 
 		local storms = data.storms
 
-		for storm_index = 1, #storms, 1 do
+		for storm_index = 1, #storms do
 			local storm = storms[storm_index]
 
 			storm:update(dt, t)
 		end
 
-		for storm_index = 1, #storms, 1 do
+		for storm_index = 1, #storms do
 			local storm = storms[storm_index]
 			local state = storm:get_state()
 
@@ -268,12 +269,12 @@ return {
 					local side = Managers.state.side:get_side_from_name("heroes")
 					local players = side.PLAYER_AND_BOT_UNITS
 
-					for player_index = 1, #players, 1 do
+					for player_index = 1, #players do
 						local unit = players[player_index]
 						forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 					end
 
-					for i = 1, #storms, 1 do
+					for i = 1, #storms do
 						local other_storm = storms[i]
 						forbidden_position_list[#forbidden_position_list + 1] = other_storm:get_position()
 					end
@@ -307,7 +308,7 @@ return {
 								local buff_system = Managers.state.entity:system("buff_system")
 								local difficulty = Managers.state.difficulty:get_difficulty()
 								local power_level = DIFFICULTY_POWER_LEVEL[difficulty]
-								local buff = (player.bot_player and BLEED_BUFF_BOTS) or BLEED_BUFF
+								local buff = player.bot_player and BLEED_BUFF_BOTS or BLEED_BUFF
 
 								buff_system:add_buff(player_unit, buff, vortex_unit, false, power_level)
 							end

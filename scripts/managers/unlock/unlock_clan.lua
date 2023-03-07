@@ -52,5 +52,3 @@ end
 UnlockClan.is_cosmetic = function (self)
 	return true
 end
-
-return

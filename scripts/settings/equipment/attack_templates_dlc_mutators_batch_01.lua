@@ -23,5 +23,3 @@ AttackTemplates.ticking_bomb_explosion_bot = {
 		1
 	}
 }
-
-return

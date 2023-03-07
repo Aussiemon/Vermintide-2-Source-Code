@@ -260,5 +260,3 @@ function FindNewsTemplateIndex(template_name)
 		end
 	end
 end
-
-return

@@ -24,7 +24,7 @@ BTTeleportAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	blackboard.entrance_position = nil
 	blackboard.teleport_timeout = nil
 	local navigation_extension = blackboard.navigation_extension
-	slot7 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
 
 BTTeleportAction.run = function (self, unit, blackboard, t, dt)
@@ -46,7 +46,7 @@ BTTeleportAction.run = function (self, unit, blackboard, t, dt)
 
 	local dist_sq = target_offset.x + target_offset.y + target_offset.z
 
-	if dist_sq < 1 or (blackboard.teleport_timeout and blackboard.teleport_timeout < t) then
+	if dist_sq < 1 or blackboard.teleport_timeout and blackboard.teleport_timeout < t then
 		local teleport_position = blackboard.teleport_position:unbox()
 
 		navigation_extension:set_navbot_position(teleport_position)
@@ -58,5 +58,3 @@ BTTeleportAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 end
-
-return

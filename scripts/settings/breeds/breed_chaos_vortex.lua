@@ -70,5 +70,3 @@ local action_data = {
 	}
 }
 BreedActions.chaos_vortex = table.create_copy(BreedActions.chaos_vortex, action_data)
-
-return

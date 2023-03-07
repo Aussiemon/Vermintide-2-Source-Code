@@ -51,7 +51,7 @@ BuffUtils.buffs_from_rpc_params = function (num_buffs, buff_ids, buff_data_type_
 	local lookup_data_types = NetworkLookup.buff_data_types
 	local buffs = {}
 
-	for i = 1, num_buffs, 1 do
+	for i = 1, num_buffs do
 		local id = buff_ids[i]
 		local data_type_id = buff_data_type_ids[i]
 		local value = buff_values[i]
@@ -94,7 +94,7 @@ end
 local unit_node = Unit.node
 
 local function _get_particle_link_node(fx, link_target)
-	return (fx.link_node and unit_node(link_target, fx.link_node)) or 0
+	return fx.link_node and unit_node(link_target, fx.link_node) or 0
 end
 
 BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_first_person)
@@ -109,19 +109,19 @@ BuffUtils.create_attached_particles = function (world, particle_fx, unit, is_fir
 		destroy_fx = destroy_fx
 	}
 
-	for i = 1, #particle_fx, 1 do
+	for i = 1, #particle_fx do
 		local fx = particle_fx[i]
 
-		if (is_first_person and fx.first_person) or (not is_first_person and fx.third_person) then
+		if is_first_person and fx.first_person or not is_first_person and fx.third_person then
 			local link_target = unit
 
 			if link_target then
 				local node_id = _get_particle_link_node(fx, link_target)
-				local pose = (fx.pose and fx.pose:unbox()) or nil
+				local pose = fx.pose and fx.pose:unbox() or nil
 				local fx_id = ScriptWorld.create_particles_linked(world, fx.effect, link_target, node_id, fx.orphaned_policy, pose)
 
 				if fx.custom_variables then
-					for i = 1, #fx.custom_variables, 1 do
+					for i = 1, #fx.custom_variables do
 						local data = fx.custom_variables[i]
 						local name = data.name
 						data.cached_id = data.cached_id or World.find_particles_variable(world, fx.effect, name)
@@ -152,7 +152,7 @@ BuffUtils.destroy_attached_particles = function (world, fx_ids)
 		local destroy_fx = fx_ids.destroy_fx
 
 		if destroy_fx then
-			for i = 1, #destroy_fx, 1 do
+			for i = 1, #destroy_fx do
 				World.destroy_particles(world, destroy_fx[i])
 			end
 		end
@@ -160,7 +160,7 @@ BuffUtils.destroy_attached_particles = function (world, fx_ids)
 		local stop_fx = fx_ids.stop_fx
 
 		if stop_fx then
-			for i = 1, #stop_fx, 1 do
+			for i = 1, #stop_fx do
 				World.stop_spawning_particles(world, stop_fx[i])
 			end
 		end
@@ -208,5 +208,3 @@ BuffUtils.create_liquid_forward = function (unit, buff)
 		end
 	end
 end
-
-return

@@ -778,5 +778,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_slave_rat = table.create_copy(BreedActions.skaven_slave_rat, action_data)
-
-return

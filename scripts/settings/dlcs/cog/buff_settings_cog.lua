@@ -158,5 +158,3 @@ settings.buff_function_templates = {
 		end
 	end
 }
-
-return

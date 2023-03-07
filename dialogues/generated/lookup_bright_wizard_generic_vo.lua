@@ -34,5 +34,3 @@ DialogueLookup[DialogueLookup_n + 15] = "pbw_generic_getting_dark_outside"
 DialogueLookup[DialogueLookup_n + 16] = "pbw_generic_rain"
 DialogueLookup[DialogueLookup_n + 17] = "pbw_generic_falling"
 DialogueLookup_n = DialogueLookup_n + 17
-
-return

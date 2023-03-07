@@ -262,8 +262,8 @@ HeroWindowCosmeticsLoadout._is_equipment_slot_pressed = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -281,8 +281,8 @@ HeroWindowCosmeticsLoadout._is_equipment_slot_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -300,8 +300,8 @@ HeroWindowCosmeticsLoadout._set_equipment_slot_selected = function (self, column
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -317,8 +317,8 @@ HeroWindowCosmeticsLoadout._is_equipment_slot_hovered_by_type = function (self, 
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_cosmetic_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 
 			if slot_settings.type == item_type then
@@ -342,8 +342,8 @@ HeroWindowCosmeticsLoadout._highlight_equipment_slot_by_type = function (self, i
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_cosmetic_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
@@ -351,10 +351,8 @@ HeroWindowCosmeticsLoadout._highlight_equipment_slot_by_type = function (self, i
 			local slot_hotspot = content[hotspot_name]
 			local enabled = slot_settings.type == item_type
 			slot_hotspot.highlight = enabled
-			local alpha = (slot_hotspot.internal_is_hover and 255) or 100
-			style[slot_hover_name].color[1] = (enabled and alpha) or 255
+			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end
 end
-
-return

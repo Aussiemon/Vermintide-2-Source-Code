@@ -154,5 +154,3 @@ startup_settings_atlas = {
 		}
 	}
 }
-
-return

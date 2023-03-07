@@ -15,6 +15,7 @@ ScriptBackendPlayFab.init = function (self)
 	if HAS_STEAM then
 		self._steam_ticket_id = Steam.retrieve_auth_session_ticket()
 	elseif GameSettingsDevelopment.use_offline_backend then
+		-- Nothing
 	end
 
 	self._metadata = Managers.backend:get_metadata()
@@ -31,6 +32,7 @@ ScriptBackendPlayFab.update_signin = function (self)
 		if HAS_STEAM then
 			ticket = Steam.poll_auth_session_ticket(self._steam_ticket_id)
 		elseif GameSettingsDevelopment.use_offline_backend then
+			-- Nothing
 		end
 
 		if ticket then
@@ -214,5 +216,3 @@ end
 ScriptBackendPlayFab.destroy = function (self)
 	return
 end
-
-return

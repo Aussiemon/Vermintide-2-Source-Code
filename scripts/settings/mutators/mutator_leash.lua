@@ -24,7 +24,7 @@ return {
 		local hero_side = data.hero_side
 		local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
-		for i = 1, #PLAYER_UNITS, 1 do
+		for i = 1, #PLAYER_UNITS do
 			local player_unit = PLAYER_UNITS[i]
 			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
@@ -53,7 +53,7 @@ return {
 		local hero_side = data.hero_side
 		local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
-		for i = 1, #PLAYER_UNITS, 1 do
+		for i = 1, #PLAYER_UNITS do
 			local player_unit = PLAYER_UNITS[i]
 			local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 
@@ -174,7 +174,7 @@ return {
 			local hero_side = data.hero_side
 			local PLAYER_UNITS = hero_side.PLAYER_UNITS
 
-			for i = 1, #PLAYER_UNITS, 1 do
+			for i = 1, #PLAYER_UNITS do
 				local player_unit = PLAYER_UNITS[i]
 				local player_health_extension = ScriptUnit.has_extension(player_unit, "health_system")
 

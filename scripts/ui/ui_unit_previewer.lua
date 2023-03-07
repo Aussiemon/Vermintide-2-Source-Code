@@ -108,7 +108,7 @@ UIUnitPreviewer._auto_spin_values = function (self, dt, t)
 	local progress_range = 0.3
 	local progress = math.sin((start_seed + t) * progress_speed) * progress_range
 	local auto_tilt_angle = -(progress * 0.5)
-	local auto_turn_angle = -((progress * math.pi) / 2)
+	local auto_turn_angle = -(progress * math.pi / 2)
 
 	return auto_tilt_angle, auto_turn_angle
 end
@@ -255,5 +255,3 @@ UIUnitPreviewer._spawn_unit = function (self, unit_name, visible)
 
 	return unit
 end
-
-return

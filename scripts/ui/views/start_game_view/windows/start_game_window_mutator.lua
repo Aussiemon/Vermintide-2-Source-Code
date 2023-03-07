@@ -70,7 +70,7 @@ StartGameWindowMutator.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -79,7 +79,7 @@ StartGameWindowMutator.draw = function (self, dt)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -88,5 +88,3 @@ StartGameWindowMutator.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

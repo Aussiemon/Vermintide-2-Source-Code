@@ -146,7 +146,7 @@ DamageWaveExtension.launch_wave = function (self, target_unit, optional_target_p
 	local create_bot_aoe_threat = template.create_bot_aoe_threat
 
 	if create_bot_aoe_threat then
-		local threat_duration = (start_speed > 0 and initial_dist / start_speed) or initial_dist
+		local threat_duration = start_speed > 0 and initial_dist / start_speed or initial_dist
 		local width = self.player_query_distance * 2
 		local range = initial_dist + self.overflow_dist
 		local height = self.player_query_distance
@@ -218,7 +218,7 @@ DamageWaveExtension.destroy = function (self)
 	local ai_system = self.ai_system
 	local cost_map_id = self._nav_cost_map_id
 
-	for i = 1, num_blobs, 1 do
+	for i = 1, num_blobs do
 		local blob = blobs[i]
 		local volume_id = blob[6]
 
@@ -241,7 +241,7 @@ DamageWaveExtension.destroy = function (self)
 	local fx_list = self.fx_list
 	local num_fx = #fx_list
 
-	for i = 1, num_fx, 1 do
+	for i = 1, num_fx do
 		local fx_entry = fx_list[i]
 		local fx_id = fx_entry.id
 
@@ -290,7 +290,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	local target_pos = self.target_pos:unbox()
 	local to_target = target_pos - position
 	local dist_to_target = Vector3.length(to_target)
-	local to_target_dir = (dist_to_target < 0.001 and Vector3.zero()) or Vector3.divide(to_target, dist_to_target)
+	local to_target_dir = dist_to_target < 0.001 and Vector3.zero() or Vector3.divide(to_target, dist_to_target)
 	local wave_dir = self.wave_direction:unbox()
 	local frame_dist = math.min(current_speed * dt, dist_to_target)
 	self.travel_dist = self.travel_dist + frame_dist
@@ -298,7 +298,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	self.original_pos_z = position.z
 	local nav_world = self.nav_world
 	local above = 1.5
-	local below = (self.template.ignore_obstacles and 15) or 1.5
+	local below = self.template.ignore_obstacles and 15 or 1.5
 	local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, position, above, below)
 
 	if success then
@@ -322,7 +322,7 @@ DamageWaveExtension.move_wave = function (self, unit, t, dt, total_dist, grow)
 	end
 
 	local height_percentage = nil
-	local p = (total_dist > 0 and dist_to_target / total_dist) or 0
+	local p = total_dist > 0 and dist_to_target / total_dist or 0
 
 	if grow then
 		height_percentage = math.clamp(p, 0, 1)
@@ -477,7 +477,7 @@ DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radiu
 	local ai_units = FrameTable.alloc_table()
 	local num_ai_units = AiUtils.broadphase_query(impact_position, radius, ai_units)
 
-	for i = 1, num_ai_units, 1 do
+	for i = 1, num_ai_units do
 		local hit_unit = ai_units[i]
 
 		if wave_drag_vector or t >= (ai_hit_by_wavefront[hit_unit] or 0) then
@@ -496,8 +496,8 @@ DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radiu
 
 					if stagger_types.none < stagger_type then
 						local hit_unit_pos = position_lookup[hit_unit]
-						local direction = (push_along_wave_dir and wave_dir) or Vector3.normalize(hit_unit_pos - impact_position)
-						local distance = (stagger_distance_table and stagger_distance_table[target_unit_armor]) or stagger_distance
+						local direction = push_along_wave_dir and wave_dir or Vector3.normalize(hit_unit_pos - impact_position)
+						local distance = stagger_distance_table and stagger_distance_table[target_unit_armor] or stagger_distance
 
 						AiUtils.stagger(hit_unit, hit_unit_blackboard, attacker_unit, direction, distance, stagger_type, stagger_duration, nil, t)
 
@@ -518,7 +518,7 @@ DamageWaveExtension.wavefront_impact = function (self, t, impact_position, radiu
 					local locomotion_extension = hit_unit_blackboard.locomotion_extension
 
 					if locomotion_extension then
-						local wave_drag_str = (wave_drag_multiplier_table and wave_drag_multiplier_table[target_unit_armor]) or wave_drag_multiplier
+						local wave_drag_str = wave_drag_multiplier_table and wave_drag_multiplier_table[target_unit_armor] or wave_drag_multiplier
 
 						if wave_drag_str > 0 then
 							locomotion_extension:set_animation_external_velocity(wave_drag_vector * wave_drag_str)
@@ -719,7 +719,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 		local enemy_player_and_bot_units = self._source_side.ENEMY_PLAYER_AND_BOT_UNITS
 		local wave_radius = self.player_query_distance
 
-		for i = 1, #enemy_player_and_bot_units, 1 do
+		for i = 1, #enemy_player_and_bot_units do
 			local target_unit = enemy_player_and_bot_units[i]
 
 			self:check_overlap(unit, target_unit, wave_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
@@ -747,7 +747,7 @@ DamageWaveExtension.update_blob_overlaps = function (self)
 		local ai_units_inside_blob = blob[5]
 		local num_ai_units = AiUtils.broadphase_query(blob_pos, blob_radius, ai_units)
 
-		for i = 1, num_ai_units, 1 do
+		for i = 1, num_ai_units do
 			local target_unit = ai_units[i]
 			local already_checked = inside_this_frame[target_unit] ~= nil
 			local inside_blob = ai_units_inside[target_unit]
@@ -849,7 +849,7 @@ DamageWaveExtension.is_position_inside = function (self, position, nav_cost_map_
 	local template = self.template
 	local nav_cost_map_cost_type = template.nav_cost_map_cost_type
 
-	if nav_cost_map_cost_type == nil or (nav_cost_map_table and nav_cost_map_table[nav_cost_map_cost_type] == 1) then
+	if nav_cost_map_cost_type == nil or nav_cost_map_table and nav_cost_map_table[nav_cost_map_cost_type] == 1 then
 		return false
 	end
 
@@ -859,7 +859,7 @@ DamageWaveExtension.is_position_inside = function (self, position, nav_cost_map_
 	local last_blob_position = Vector3(last_blob[1], last_blob[2], last_blob[3])
 	local pos_projected_on_wave_line = Geometry.closest_point_on_line(position, first_blob_position, last_blob_position)
 	local distance_sq = Vector3.distance_squared(position, pos_projected_on_wave_line)
-	local wave_radius = (is_player and self.player_query_distance) or self.ai_query_distance
+	local wave_radius = is_player and self.player_query_distance or self.ai_query_distance
 
 	return distance_sq <= wave_radius * wave_radius
 end
@@ -881,7 +881,7 @@ DamageWaveExtension.hot_join_sync = function (self, peer_id)
 		local fx_list = self.fx_list
 		local num_fx = #fx_list
 
-		for i = 1, num_fx, 1 do
+		for i = 1, num_fx do
 			local fx_entry = fx_list[i]
 			local position = fx_entry.position:unbox()
 
@@ -905,9 +905,9 @@ local wave_length = 1
 DamageWaveExtension.debug_render_wave = function (self, t, dt, pos, travel_dir, height)
 	local k = 0
 
-	for i = -half_segments, half_segments - 1, 1 do
+	for i = -half_segments, half_segments - 1 do
 		local size = math.sin(-math.pi + k / segments * math.pi) * self.max_height
-		local p = (pos + travel_dir * i / segments * wave_length) - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
+		local p = pos + travel_dir * i / segments * wave_length - size * Vector3(0, 0, 1) - Vector3(0, 0, height * 2)
 
 		QuickDrawer:circle(p, self.max_height, travel_dir, Colors.get("lime_green"))
 
@@ -918,7 +918,7 @@ end
 DamageWaveExtension.debug_render_blobs = function (self)
 	local blobs = self.blobs
 
-	for i = 1, #blobs, 1 do
+	for i = 1, #blobs do
 		local blob = blobs[i]
 		local blob_pos = Vector3(blob[1], blob[2], blob[3])
 		local radius = blob[4]
@@ -939,7 +939,7 @@ DamageWaveExtension.debug_render_blobs = function (self)
 
 	local rim_nodes = self.rim_nodes
 
-	for i = 1, #rim_nodes, 1 do
+	for i = 1, #rim_nodes do
 		local position = rim_nodes[i]:unbox()
 
 		QuickDrawer:sphere(position, 0.05)
@@ -955,5 +955,3 @@ DamageWaveExtension.debug_render_blobs = function (self)
 		end
 	end
 end
-
-return

@@ -111,7 +111,7 @@ ActionCharge._start_charge_sound = function (self)
 
 		if charge_sound_switch then
 			local overcharge_extension = ScriptUnit.extension(self.owner_unit, "overcharge_system")
-			local overcharge_state = (overcharge_extension:above_overcharge_threshold() and "above_overcharge_threshold") or "below_overcharge_threshold"
+			local overcharge_state = overcharge_extension:above_overcharge_threshold() and "above_overcharge_threshold" or "below_overcharge_threshold"
 
 			weapon_extension:set_looping_audio_switch(self.audio_loop_id, charge_sound_switch, overcharge_state)
 		end
@@ -148,7 +148,7 @@ ActionCharge.client_owner_post_update = function (self, dt, t, world, can_damage
 
 	if full_charge_time > 0 and charge_time > 0 then
 		current_charge_time = 1 - full_charge_time / charge_time
-	elseif (full_charge_time > 0 and charge_time <= 0) or (full_charge_time <= 0 and charge_time > 0) or (full_charge_time <= 0 and charge_time <= 0) then
+	elseif full_charge_time > 0 and charge_time <= 0 or full_charge_time <= 0 and charge_time > 0 or full_charge_time <= 0 and charge_time <= 0 then
 		current_charge_time = 1
 	end
 
@@ -319,5 +319,3 @@ end
 ActionCharge.destroy = function (self)
 	self:_clean_up()
 end
-
-return

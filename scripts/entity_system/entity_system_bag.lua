@@ -12,7 +12,7 @@ end
 EntitySystemBag.destroy = function (self)
 	local systems = self.systems
 
-	for i = 1, #systems, 1 do
+	for i = 1, #systems do
 		local system = systems[i]
 
 		system:destroy()
@@ -58,7 +58,7 @@ EntitySystemBag.update = function (self, entity_system_update_context, update_fu
 	local update_list = self[update_function_list_name]
 	local t = entity_system_update_context.t
 
-	for i = 1, #update_list, 1 do
+	for i = 1, #update_list do
 		local system = update_list[i]
 
 		system[update_function](system, entity_system_update_context, t)
@@ -72,5 +72,3 @@ EntitySystemBag.hot_join_sync = function (self, peer_id)
 		end
 	end
 end
-
-return

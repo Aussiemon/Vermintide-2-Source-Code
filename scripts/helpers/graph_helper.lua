@@ -24,10 +24,7 @@ GraphHelper.create = function (graph_name, stat_names, stat_names_vector3)
 
 	console_command("graph", "make", graph_name)
 
-	slot3 = 1
-	slot4 = stat_names or {}
-
-	for i = slot3, #slot4, 1 do
+	for i = 1, #(stat_names or {}) do
 		local stat = stat_names[i]
 
 		if GraphHelper._known_stats[stat] == nil then
@@ -39,10 +36,7 @@ GraphHelper.create = function (graph_name, stat_names, stat_names_vector3)
 		end
 	end
 
-	slot3 = 1
-	slot4 = stat_names_vector3 or {}
-
-	for i = slot3, #slot4, 1 do
+	for i = 1, #(stat_names_vector3 or {}) do
 		local stat = stat_names_vector3[i]
 
 		if GraphHelper._known_stats[stat] == nil then
@@ -81,5 +75,3 @@ GraphHelper.record_statistics = function (stat, value)
 	assert(GraphHelper._known_stats[stat] == type(value))
 	record_statistics(stat, value)
 end
-
-return

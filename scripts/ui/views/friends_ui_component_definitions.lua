@@ -576,7 +576,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id, edge_ta
 	}
 	local list_content = content.list_content
 
-	for i = 1, FRIEND_LIST_LIMIT, 1 do
+	for i = 1, FRIEND_LIST_LIMIT do
 		list_content[i] = {
 			name = "friends_view_unknown",
 			button_hotspot = {},
@@ -749,7 +749,7 @@ local function create_tab(scenegraph_id, size, text, list_scenegraph_id, edge_ta
 	}
 	local item_styles = style.list_style.item_styles
 
-	for i = 1, FRIEND_LIST_LIMIT, 1 do
+	for i = 1, FRIEND_LIST_LIMIT do
 		item_styles[i] = {
 			list_member_offset = {
 				0,

@@ -197,7 +197,7 @@ ContextAwarePingExtension.ping_attempt = function (self, unit, unit_to_ping, t, 
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
 	local pinged_unit_id = network_manager:unit_game_object_id(unit_to_ping)
-	ping_type = ping_type or (self._world_markers_enabled and PingTypes.CONTEXT) or PingTypes.PING_ONLY
+	ping_type = ping_type or self._world_markers_enabled and PingTypes.CONTEXT or PingTypes.PING_ONLY
 
 	network_manager.network_transmit:send_rpc_server("rpc_ping_unit", pinger_unit_id, pinged_unit_id, false, ping_type, social_wheel_event_id)
 
@@ -259,7 +259,7 @@ ContextAwarePingExtension.social_message_attempt = function (self, unit, social_
 	social_wheel_event_id = social_wheel_event_id or NetworkLookup.social_wheel_events["n/a"]
 	local network_manager = Managers.state.network
 	local pinger_unit_id = network_manager:unit_game_object_id(unit)
-	local pinged_unit_id = (target_unit and Unit.alive(target_unit) and network_manager:unit_game_object_id(target_unit)) or 0
+	local pinged_unit_id = target_unit and Unit.alive(target_unit) and network_manager:unit_game_object_id(target_unit) or 0
 
 	network_manager.network_transmit:send_rpc_server("rpc_social_message", pinger_unit_id, social_wheel_event_id, pinged_unit_id)
 	self:_consume_ping_event()
@@ -288,7 +288,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 		local best_ping_utility = -math.huge
 		local best_social_utility = 2000
 
-		for i = 1, hits_n, 1 do
+		for i = 1, hits_n do
 			local hit = hits[i]
 			local actor = hit[INDEX_ACTOR]
 			local hit_position = hit[INDEX_POSITION]
@@ -350,7 +350,7 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 							local is_enemy = has_breed and Managers.state.side:is_enemy(self._unit, hit_unit)
 							local is_incapacitated_player = status_ext and status_ext:is_disabled()
 
-							if (ping_ext.always_pingable or is_pickup or (is_alive and (is_enemy or is_incapacitated_player))) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
+							if (ping_ext.always_pingable or is_pickup or is_alive and (is_enemy or is_incapacitated_player)) and not darkness_system:is_in_darkness(hit_position) and best_ping_utility < utility then
 								ping_unit = hit_unit
 								ping_unit_distance = distance
 								best_ping_utility = utility
@@ -364,14 +364,13 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 								is_valid_social_wheel_pickup = pickup_settings.slot_name or pickup_settings.type == "ammo"
 							end
 
-							if ((is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE) or (is_alive and status_ext)) and best_social_utility < utility then
+							if (is_valid_social_wheel_pickup and distance <= INTERACT_RAY_DISTANCE or is_alive and status_ext) and best_social_utility < utility then
 								social_wheel_unit = hit_unit
 								social_wheel_unit_distance = distance
 								best_social_utility = utility
 							end
 						end
-					elseif Unit.get_data(hit_unit, "breed") then
-					else
+					elseif not Unit.get_data(hit_unit, "breed") then
 						position = hit_position
 
 						break
@@ -383,5 +382,3 @@ ContextAwarePingExtension._check_raycast = function (self, unit)
 
 	return ping_unit, social_wheel_unit, ping_unit_distance, social_wheel_unit_distance, position
 end
-
-return

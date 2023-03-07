@@ -1005,7 +1005,7 @@ TitleLoadingUI._create_elements = function (self)
 		self._ui_scenegraph.console_input_icon_2.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_2.size[2] = texture_data.size[2]
 		local platform = PLATFORM
-		local texture_data, input_text = ButtonTextureByName("d_horizontal", (IS_WINDOWS and "xb1") or platform)
+		local texture_data, input_text = ButtonTextureByName("d_horizontal", IS_WINDOWS and "xb1" or platform)
 		gamma_adjuster.content.gamepad_navigation_icon = texture_data.texture
 		self._ui_scenegraph.console_input_icon_1.size[1] = texture_data.size[1]
 		self._ui_scenegraph.console_input_icon_1.size[2] = texture_data.size[2]
@@ -1112,7 +1112,7 @@ TitleLoadingUI.update = function (self, dt, t)
 
 				self:_change_sound_panning_display_by_value(index)
 			else
-				for i = 1, 2, 1 do
+				for i = 1, 2 do
 					local widget_name = "sound_option_button_" .. i
 					local widget = panning_widgets_by_name[widget_name]
 					local hotspot = widget.content.hotspot
@@ -1169,7 +1169,7 @@ TitleLoadingUI._change_sound_panning_display_by_value = function (self, value)
 	stepper.content.value = option_value
 	stepper.content.internal_value = internal_value
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local widget_name = "sound_option_" .. i
 		local glow_widget_name = widget_name .. "_glow"
 		local widget = panning_widgets_by_name[glow_widget_name]
@@ -1204,7 +1204,7 @@ TitleLoadingUI._update_continue_button = function (self, gamepad_active, dt)
 
 	local input_service = Managers.input:get_service("title_loading_ui")
 
-	if (gamepad_active and input_service:get("confirm")) or self._done_button.content.button_hotspot.on_release then
+	if gamepad_active and input_service:get("confirm") or self._done_button.content.button_hotspot.on_release then
 		self._done_button.content.button_hotspot.on_release = nil
 		local settings_index = self._settings_index
 
@@ -1340,7 +1340,7 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 	if input_cooldown then
 		on_cooldown_last_frame = true
 		local new_cooldown = math.max(input_cooldown - dt, 0)
-		input_cooldown = (new_cooldown > 0 and new_cooldown) or nil
+		input_cooldown = new_cooldown > 0 and new_cooldown or nil
 		content.input_cooldown = input_cooldown
 	end
 
@@ -1356,12 +1356,12 @@ TitleLoadingUI._handle_stepper_input = function (self, widget, stepper_settings,
 	local current_time = Managers.time:time("main")
 	local input_been_made = false
 
-	if left_hotspot.is_clicked == 0 or (gamepad_active and input_service:get("move_left_hold")) then
+	if left_hotspot.is_clicked == 0 or gamepad_active and input_service:get("move_left_hold") then
 		if not input_cooldown then
 			internal_value = math.clamp(internal_value - step, 0, 1)
 			input_been_made = true
 		end
-	elseif right_hotspot.is_clicked == 0 or (gamepad_active and input_service:get("move_right_hold")) then
+	elseif right_hotspot.is_clicked == 0 or gamepad_active and input_service:get("move_right_hold") then
 		if not input_cooldown then
 			internal_value = math.clamp(internal_value + step, 0, 1)
 			input_been_made = true
@@ -1478,7 +1478,7 @@ TitleLoadingUI._get_input_texture_data = function (self, input_action)
 		local key_action_type = keymap_binding[3]
 		local is_button_unassigned = key_index == UNASSIGNED_KEY
 
-		return nil, (is_button_unassigned and "") or Keyboard.button_locale_name(key_index)
+		return nil, is_button_unassigned and "" or Keyboard.button_locale_name(key_index)
 	elseif Managers.input:is_device_active("gamepad") or not IS_WINDOWS then
 		return UISettings.get_gamepad_input_texture_data(input_service, input_action, true)
 	end
@@ -1510,7 +1510,7 @@ TitleLoadingUI._update_input_text = function (self, dt)
 	end
 
 	local icon_spacing = 10
-	local using_keyboard = (not texture_data and true) or false
+	local using_keyboard = not texture_data and true or false
 	widget_content.using_keyboard = IS_WINDOWS and using_keyboard
 	local font, scaled_font_size = UIFontByResolution(widget_style.input_text_1)
 	local text_width, text_height, min = UIRenderer.text_size(self._ui_renderer, widget_content.input_text_1, font[1], scaled_font_size)
@@ -1600,7 +1600,7 @@ TitleLoadingUI._update_input = function (self, dt)
 	self._cancel_timer = math.clamp(self._cancel_timer, 0, total_hold_time)
 	local progress = self._cancel_timer / total_hold_time
 
-	if progress >= 1 or (cancel_video and self._cancel_video) then
+	if progress >= 1 or cancel_video and self._cancel_video then
 		self._cancel_timer = nil
 		self._force_done = true
 		self._done = true
@@ -1802,5 +1802,3 @@ end
 TitleLoadingUI._has_active_subtitles = function (self)
 	return self.cutscene_overlay_ui ~= nil
 end
-
-return

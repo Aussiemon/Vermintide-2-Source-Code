@@ -339,5 +339,3 @@ end
 NewUIPopup._play_sound = function (self, event_name)
 	Managers.music:trigger_event(event_name)
 end
-
-return

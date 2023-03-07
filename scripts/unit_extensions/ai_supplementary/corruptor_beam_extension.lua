@@ -190,5 +190,3 @@ CorruptorBeamExtension.update = function (self, unit, input, dt, context, t)
 		end
 	end
 end
-
-return

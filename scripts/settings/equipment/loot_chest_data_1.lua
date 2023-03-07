@@ -22,7 +22,7 @@ LootChestData.score_thresholds_per_chest = {
 	0
 }
 
-for i = 2, #LootChestData.score_thresholds, 1 do
+for i = 2, #LootChestData.score_thresholds do
 	LootChestData.score_thresholds_per_chest[i] = LootChestData.score_thresholds[i] - LootChestData.score_thresholds[i - 1]
 end
 
@@ -7377,5 +7377,3 @@ LootChestData.items_new = {
 }
 
 DLCUtils.merge("extra_loot_chest_score_types", LootChestData.scores)
-
-return

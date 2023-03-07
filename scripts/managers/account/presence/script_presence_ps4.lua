@@ -15,5 +15,3 @@ end
 ScriptPresence.set_presence_ingame = function (self, level_key)
 	return
 end
-
-return

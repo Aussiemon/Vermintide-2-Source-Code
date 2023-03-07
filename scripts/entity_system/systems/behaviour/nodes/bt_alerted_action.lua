@@ -94,7 +94,7 @@ BTAlertedAction.decide_deadline = function (self, unit, blackboard, t)
 	local rotation = Unit.local_rotation(unit, 0)
 	local forward_vector_flat = Vector3.normalize(Vector3.flat(Quaternion.forward(rotation)))
 	local dot_product = Vector3.dot(forward_vector_flat, target_vector_flat)
-	local min_deadline = (dot_product > 0.25 and 0.5) or 1
+	local min_deadline = dot_product > 0.25 and 0.5 or 1
 	local max_deadline = math.max(min_deadline, 2 - dot_product * 2)
 	local time_alerted = Math.random(min_deadline, max_deadline)
 	local breed = blackboard.breed
@@ -256,7 +256,7 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 	local action = blackboard.action
 	local target_unit = blackboard.target_unit
 
-	if blackboard.previous_attacker or (blackboard.no_alert and blackboard.alerted_action.deadline < t) then
+	if blackboard.previous_attacker or blackboard.no_alert and blackboard.alerted_action.deadline < t then
 		blackboard.is_alerted = true
 
 		return "done"
@@ -322,5 +322,3 @@ BTAlertedAction.run = function (self, unit, blackboard, t, dt)
 		return "running"
 	end
 end
-
-return

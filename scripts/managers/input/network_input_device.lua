@@ -9,5 +9,3 @@ NetworkInputDevice = {
 		return true
 	end
 }
-
-return

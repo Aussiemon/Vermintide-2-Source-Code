@@ -104,13 +104,13 @@ end
 PlayerWhereaboutsExtension.last_position_on_navmesh = function (self)
 	local pos = self._last_pos_on_nav_mesh:unbox()
 
-	return (Vector3.is_valid(pos) and pos) or nil
+	return Vector3.is_valid(pos) and pos or nil
 end
 
 PlayerWhereaboutsExtension.last_position_onground_on_navmesh = function (self)
 	local pos = self._last_onground_pos_on_nav_mesh:unbox()
 
-	return (Vector3.is_valid(pos) and pos) or nil
+	return Vector3.is_valid(pos) and pos or nil
 end
 
 local EPSILON = 0.0001
@@ -138,7 +138,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._falling and not self._jumping, "Tried to jump or fall while falling without aborting landing")
 
 		self._jumping = true
-		local perform_distance_check = input.player_state == nil or (input.player_state ~= "lunging" and input.player_state ~= "leaping")
+		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" and input.player_state ~= "leaping"
 		local pos = self:_find_start_position(current_position, perform_distance_check)
 
 		if pos then
@@ -149,7 +149,7 @@ PlayerWhereaboutsExtension._check_bot_nav_transition = function (self, nav_world
 		fassert(not self._jumping and not self._falling, "Tried to fall or jump while jumping without aborting landing")
 
 		self._falling = true
-		local perform_distance_check = input.player_state == nil or (input.player_state ~= "lunging" and input.player_state ~= "leaping")
+		local perform_distance_check = input.player_state == nil or input.player_state ~= "lunging" and input.player_state ~= "leaping"
 		local pos = self:_find_start_position(current_position, perform_distance_check)
 
 		if pos then
@@ -220,7 +220,7 @@ PlayerWhereaboutsExtension._get_closest_positions = function (self, pos, is_ongr
 	if p then
 		point_list[1] = Vector3Box(p)
 
-		for i = 2, #point_list, 1 do
+		for i = 2, #point_list do
 			point_list[i] = nil
 		end
 
@@ -232,7 +232,7 @@ PlayerWhereaboutsExtension._get_closest_positions = function (self, pos, is_ongr
 	if p then
 		point_list[1] = Vector3Box(p)
 
-		for i = 2, #point_list, 1 do
+		for i = 2, #point_list do
 			point_list[i] = nil
 		end
 
@@ -241,7 +241,7 @@ PlayerWhereaboutsExtension._get_closest_positions = function (self, pos, is_ongr
 
 	local list_size = #point_list
 
-	for i = 1, list_size, 1 do
+	for i = 1, list_size do
 		point_list[i] = nil
 	end
 
@@ -297,11 +297,9 @@ PlayerWhereaboutsExtension._debug_draw = function (self, unit_position, point_li
 		QuickDrawer:sphere(unit_position, cos_2t * 0.05 + 0.05, debug_color)
 	end
 
-	for i = 1, #point_list, 1 do
+	for i = 1, #point_list do
 		local pos = point_list[i]:unbox()
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, 0.25), 0.77, Color(255, 144, 23, 67))
 	end
 end
-
-return

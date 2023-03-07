@@ -36,5 +36,3 @@ DeusShopSettings = DeusShopSettings or {
 		}
 	}
 }
-
-return

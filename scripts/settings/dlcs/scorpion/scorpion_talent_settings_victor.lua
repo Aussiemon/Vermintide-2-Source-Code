@@ -20,5 +20,3 @@ for name, data in pairs(TalentBuffTemplates.witch_hunter) do
 end
 
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.witch_hunter, buff_tweak_data)
-
-return

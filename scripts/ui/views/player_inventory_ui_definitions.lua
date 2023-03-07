@@ -60,10 +60,10 @@ local consumable_slots = {
 local function create_inventory_entry_widgets(num_of_entries)
 	local entries = {}
 
-	for i = 1, num_of_entries, 1 do
+	for i = 1, num_of_entries do
 		local slot = SLOTS_LIST[i]
 		local slot_name = slot.name
-		local is_consumable_slot = (consumable_slots[slot_name] and true) or false
+		local is_consumable_slot = consumable_slots[slot_name] and true or false
 		local scenegraph_id = "inventory_entry_" .. i
 		local scenegraph_root_id = "inventory_entry_root_" .. i
 		local scenegraph_background_id = "inventory_entry_background_" .. i
@@ -442,8 +442,8 @@ local function create_inventory_entry_widgets(num_of_entries)
 				stance_bar_lit = "stance_bar_frame_lit",
 				icon = "weapon_icon_empty",
 				ammo_text_2 = "ammo_text",
-				background = (is_consumable_slot and "consumables_frame_bg_lit") or "weapon_generic_icons_bg",
-				background_lit = (is_consumable_slot and "consumables_frame_lit") or "weapon_generic_icons_bg_lit",
+				background = is_consumable_slot and "consumables_frame_bg_lit" or "weapon_generic_icons_bg",
+				background_lit = is_consumable_slot and "consumables_frame_lit" or "weapon_generic_icons_bg_lit",
 				stance_bar = {
 					bar_value = 0,
 					active = false,

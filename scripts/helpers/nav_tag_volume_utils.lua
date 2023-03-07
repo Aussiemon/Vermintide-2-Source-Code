@@ -8,7 +8,7 @@ NavTagVolumeUtils.nav_tags_from_position = function (nav_world, position, above,
 	if query_output then
 		local tag_volume_n = GwNavQueries.nav_tag_volume_count(query_output)
 
-		for i = 1, tag_volume_n, 1 do
+		for i = 1, tag_volume_n do
 			local tag_volume = GwNavQueries.nav_tag_volume(query_output, i)
 			local is_exclusive, color, layer_id, smart_object_id, user_data_id = GwNavTagVolume.navtag(tag_volume)
 
@@ -38,7 +38,7 @@ NavTagVolumeUtils.inside_nav_tag_layer = function (nav_world, position, above, b
 	if query_output then
 		local tag_volume_n = GwNavQueries.nav_tag_volume_count(query_output)
 
-		for i = 1, tag_volume_n, 1 do
+		for i = 1, tag_volume_n do
 			local tag_volume = GwNavQueries.nav_tag_volume(query_output, i)
 			local is_exclusive, color, layer_id, smart_object_id, user_data_id = GwNavTagVolume.navtag(tag_volume)
 
@@ -62,11 +62,9 @@ NavTagVolumeUtils.inside_level_volume_layer = function (level, nav_tag_volume_ha
 		return
 	end
 
-	for i = 1, #level_volumes, 1 do
+	for i = 1, #level_volumes do
 		if Level.is_point_inside_volume(level, level_volumes[i], position) then
 			return true
 		end
 	end
 end
-
-return

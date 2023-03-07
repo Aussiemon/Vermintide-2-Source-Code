@@ -224,7 +224,7 @@ ActionChargedProjectile._shoot = function (self, t)
 				local sin = -throw_vector[3]
 				local cos = math.sqrt(1 - sin * sin)
 				local speed_squared_limit = 22500
-				local speed_squared = math.clamp((-0.5 * gravity * dl * dl) / (dh * cos * cos - dl * sin * cos), 0.1, speed_squared_limit)
+				local speed_squared = math.clamp(-0.5 * gravity * dl * dl / (dh * cos * cos - dl * sin * cos), 0.1, speed_squared_limit)
 				speed = math.sqrt(speed_squared) * 100
 			end
 		end
@@ -294,7 +294,7 @@ ActionChargedProjectile.finish = function (self, reason)
 		local t = Managers.time:time("game")
 		local max_iteration_count = 5
 
-		for i = 1, max_iteration_count, 1 do
+		for i = 1, max_iteration_count do
 			self:_shoot(t)
 			self:_proc_spell_used(self.owner_buff_extension)
 
@@ -312,7 +312,7 @@ ActionChargedProjectile.finish = function (self, reason)
 
 	if reason ~= "new_interupting_action" then
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			ammo_extension:start_reload(true)
@@ -333,5 +333,3 @@ ActionChargedProjectile.finish = function (self, reason)
 		hud_extension.show_critical_indication = false
 	end
 end
-
-return

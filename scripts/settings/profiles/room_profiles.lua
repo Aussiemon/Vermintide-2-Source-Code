@@ -15,5 +15,3 @@ RoomProfiles = {
 		level_name = "levels/inn/rooms/empire_soldier/world"
 	}
 }
-
-return

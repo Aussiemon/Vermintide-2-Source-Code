@@ -28,7 +28,7 @@ local function repel(config, repeller, reppeled)
 		local distance = math.sqrt(dx * dx + dy * dy)
 		dx = dx / distance
 		dy = dy / distance
-		local strength = config.REPEL_CONSTANT * (repeller.mass * reppeled.mass) / (distance * distance)
+		local strength = config.REPEL_CONSTANT * repeller.mass * reppeled.mass / (distance * distance)
 
 		add_force(config, reppeled, strength * dx, strength * dy)
 	end
@@ -72,7 +72,7 @@ local function normalize(nodes)
 
 	for _, node in pairs(nodes) do
 		local layer_height = max_height_per_layer[node.layout_x]
-		max_height_per_layer[node.layout_x] = (layer_height and math.max(layer_height, node.layout_y)) or node.layout_y
+		max_height_per_layer[node.layout_x] = layer_height and math.max(layer_height, node.layout_y) or node.layout_y
 		max_layer = math.max(max_layer, node.layout_x)
 	end
 
@@ -189,8 +189,8 @@ local function apply_result(config, layout_nodes, base_graph)
 		local base_graph_node = base_graph[key]
 
 		if base_graph_node then
-			base_graph[key].layout_x = (width ~= 0 and (node.pos_x - min_x) / width) or 0
-			base_graph[key].layout_y = (height ~= 0 and (node.pos_y - min_y) / height) or 0
+			base_graph[key].layout_x = width ~= 0 and (node.pos_x - min_x) / width or 0
+			base_graph[key].layout_y = height ~= 0 and (node.pos_y - min_y) / height or 0
 		end
 	end
 end
@@ -202,7 +202,7 @@ end
 function deus_layout_base_graph(base_graph, config)
 	local nodes, edges = setup(config, base_graph)
 
-	for i = 1, config.LAYOUT_TICKS, 1 do
+	for i = 1, config.LAYOUT_TICKS do
 		update(config, nodes, edges)
 	end
 
@@ -228,5 +228,3 @@ function debug_deus_create_realtime_layout_updater(base_graph, config)
 		return true, base_graph
 	end
 end
-
-return

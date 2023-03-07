@@ -114,7 +114,7 @@ WeaveManager._setup_weave_data = function (self, is_server)
 	end
 
 	local weave_name = self._next_weave_name or Development.parameter("weave_name")
-	local weave_objective_index = self._next_objective_index or (Development.parameter("weave_name") and 1)
+	local weave_objective_index = self._next_objective_index or Development.parameter("weave_name") and 1
 	local time_left = self._remaining_time or WeaveSettings.starting_time
 	local damage_taken = self._damage_taken or 0
 	local player_ids = self._player_ids
@@ -569,7 +569,7 @@ WeaveManager.current_bar_score = function (self)
 	if game and self._go_id then
 		local game_object_score = GameSession.game_object_field(game, self._go_id, "bar_score")
 		local bar_score = self._bar_score
-		local score = (game_object_score < bar_score and bar_score) or game_object_score
+		local score = game_object_score < bar_score and bar_score or game_object_score
 
 		return score
 	else
@@ -665,7 +665,7 @@ end
 WeaveManager.get_wind_strength = function (self)
 	local weave_template = WeaveSettings.templates[self._active_weave_name]
 
-	return (weave_template and weave_template.wind_strength) or 1
+	return weave_template and weave_template.wind_strength or 1
 end
 
 WeaveManager._create_game_object = function (self)
@@ -867,5 +867,3 @@ end
 WeaveManager.rpc_weave_final_objective_completed = function (self, channel_id)
 	self:final_objective_completed()
 end
-
-return

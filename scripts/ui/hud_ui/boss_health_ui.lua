@@ -161,7 +161,7 @@ BossHealthUI._generate_attributes = function (self, attributes, widget, current_
 	local bg_style = widget.style.lower_marked_bg
 
 	if j <= 4 then
-		bg_style.offset[2] = (-83 + current_style.font_size) - 4
+		bg_style.offset[2] = -83 + current_style.font_size - 4
 	else
 		bg_style.offset[2] = -83
 	end
@@ -225,7 +225,7 @@ BossHealthUI.update = function (self, dt, t)
 end
 
 BossHealthUI._update_targeted_boss = function (self, dt, t)
-	local local_player = (self._is_spectator and self._spectated_player) or self.player_manager:local_player()
+	local local_player = self._is_spectator and self._spectated_player or self.player_manager:local_player()
 
 	if not local_player then
 		return
@@ -332,7 +332,7 @@ BossHealthUI._show_boss_health_bar = function (self, unit)
 
 		self:_update_enemy_portrait_name_and_attributes(unit, breed_name)
 
-		self.render_settings.alpha_multiplier = (not self._boss_unit and 0) or self.render_settings.alpha_multiplier
+		self.render_settings.alpha_multiplier = not self._boss_unit and 0 or self.render_settings.alpha_multiplier
 		self._boss_unit = unit
 
 		self:_set_healing_amount(0, 0)
@@ -423,7 +423,7 @@ BossHealthUI._sync_boss_health = function (self, dt, t)
 	local current_raw_progress = self._current_raw_progress
 	local healing_gained = false
 
-	if (progress and current_raw_progress and current_raw_progress < progress) or (progress and self._switch_healthbars) then
+	if progress and current_raw_progress and current_raw_progress < progress or progress and self._switch_healthbars then
 		local healing_start_progress = self._current_progress or 0
 
 		self:_set_healing_amount(healing_start_progress, progress, t)
@@ -596,5 +596,3 @@ BossHealthUI._set_health_effect_alpha = function (self, alpha)
 	local portrait_healing_color = portrait_healing_style.color
 	portrait_healing_color[1] = alpha
 end
-
-return

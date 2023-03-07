@@ -135,5 +135,3 @@ StateLoadingMigrateHost.cb_lobby_joined = function (self)
 
 	self._lobby_joined = true
 end
-
-return

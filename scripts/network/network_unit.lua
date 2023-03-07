@@ -83,5 +83,3 @@ NetworkUnit.transfer_unit = function (unit, unit_new)
 	unit_network_data[unit_new] = unit_network_data[unit]
 	unit_network_data[unit] = nil
 end
-
-return

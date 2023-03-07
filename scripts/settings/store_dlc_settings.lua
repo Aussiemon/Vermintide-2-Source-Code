@@ -4391,5 +4391,3 @@ for _, settings in ipairs(StoreDlcSettings) do
 		StoreDlcSettingsByName[settings.dlc_name] = settings
 	end
 end
-
-return

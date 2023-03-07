@@ -230,7 +230,7 @@ PlayerCharacterStateClimbingLadder._move_on_ladder = function (self, first_perso
 		local speed_lerp_interval = math.degrees_to_radians(movement_settings_table.ladder.climb_speed_lerp_interval)
 		local pitch_value = math.clamp(math.auto_lerp(-speed_lerp_interval, speed_lerp_interval, -1, 1, pitch_value), -1, 1)
 
-		if y_input > 0 or (y_input < 0 and not collides_down) then
+		if y_input > 0 or y_input < 0 and not collides_down then
 			local percentage_to_increase_input = nil
 
 			if pitch_value > 0 then
@@ -291,5 +291,3 @@ PlayerCharacterStateClimbingLadder.on_ladder_animation = function (self)
 		self.currently_playing_move_animation = true
 	end
 end
-
-return

@@ -146,7 +146,7 @@ PlayGoTutorialSystem.remove_player_ammo = function (self)
 		local slot_data = inventory_extension:get_slot_data("slot_ranged")
 		local left_unit_1p = slot_data.left_unit_1p
 		local right_unit_1p = slot_data.right_unit_1p
-		local ammo_extension = (ScriptUnit.has_extension(left_unit_1p, "ammo_system") and ScriptUnit.extension(left_unit_1p, "ammo_system")) or (ScriptUnit.has_extension(right_unit_1p, "ammo_system") and ScriptUnit.extension(right_unit_1p, "ammo_system"))
+		local ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system") and ScriptUnit.extension(left_unit_1p, "ammo_system") or ScriptUnit.has_extension(right_unit_1p, "ammo_system") and ScriptUnit.extension(right_unit_1p, "ammo_system")
 
 		if ammo_extension then
 			ammo_extension:use_ammo(1)
@@ -332,8 +332,8 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 	}
 	local career_index = 1
 	local is_first_person = {
-		4 = true,
-		3 = false
+		["4"] = true,
+		["3"] = false
 	}
 	local slots = InventorySettings.slots
 	local num_slots = #InventorySettings.slots
@@ -344,7 +344,7 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 		local career = profile.careers[career_index]
 		local career_name = career.name
 
-		for i = 1, num_slots, 1 do
+		for i = 1, num_slots do
 			repeat
 				local slot = slots[i]
 				local slot_name = slot.NAME
@@ -388,7 +388,11 @@ PlayGoTutorialSystem._load_profile_packages = function (self)
 							profile_packages[ammo_unit_name] = true
 						end
 
-						profile_packages[item_units.ammo_unit_3p or ammo_unit_name .. "_3p"] = true
+						if not item_units.ammo_unit_3p then
+							local actions = ammo_unit_name .. "_3p"
+						end
+
+						profile_packages[actions] = true
 					end
 
 					local actions = item_template.actions
@@ -573,5 +577,3 @@ PlayGoTutorialSystem.bot_portrait_enabled = function (self, player)
 
 	return self._bot_portraits_enabled[display_name]
 end
-
-return

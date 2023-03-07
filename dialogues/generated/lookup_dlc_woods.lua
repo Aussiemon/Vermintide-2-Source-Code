@@ -256,5 +256,3 @@ DialogueLookup[DialogueLookup_n + 126] = "pes_woods_conversation_twentynine_01"
 DialogueLookup[DialogueLookup_n + 127] = "pdr_woods_conversation_twentynine_01"
 DialogueLookup[DialogueLookup_n + 128] = "pwe_st_lullaby_full"
 DialogueLookup_n = DialogueLookup_n + 128
-
-return

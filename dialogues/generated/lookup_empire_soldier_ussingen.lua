@@ -48,5 +48,3 @@ DialogueLookup[DialogueLookup_n + 22] = "pes_ussingen_intro_a"
 DialogueLookup[DialogueLookup_n + 23] = "pes_ussingen_intro_b"
 DialogueLookup[DialogueLookup_n + 24] = "pes_ussingen_intro_c"
 DialogueLookup_n = DialogueLookup_n + 24
-
-return

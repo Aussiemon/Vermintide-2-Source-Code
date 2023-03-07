@@ -62,7 +62,7 @@ LimitedItemTrackSpawner.find_item_id = function (self, unit)
 	local pool = self.pool
 	local items = self.items
 
-	for i = 1, pool, 1 do
+	for i = 1, pool do
 		local item = items[i]
 
 		if item == unit then
@@ -75,7 +75,7 @@ LimitedItemTrackSpawner.find_empty_id = function (self)
 	local pool = self.pool
 	local items = self.items
 
-	for i = 1, pool, 1 do
+	for i = 1, pool do
 		local item = items[i]
 
 		if not item then
@@ -116,7 +116,7 @@ LimitedItemTrackSpawner.is_any_transformed = function (self)
 	local pool = self.pool
 	local items = self.items
 
-	for i = 1, pool, 1 do
+	for i = 1, pool do
 		if self:is_transformed(i) then
 			return true
 		end
@@ -131,5 +131,3 @@ LimitedItemTrackSpawner.is_any_item_spawned = function (self)
 
 	return #items > 0
 end
-
-return

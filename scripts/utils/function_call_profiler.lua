@@ -7,7 +7,7 @@ if _G.FunctionCallProfiler == nil then
 		frames = {}
 	}
 
-	for i = 1, FunctionCallProfiler.num_frames, 1 do
+	for i = 1, FunctionCallProfiler.num_frames do
 		FunctionCallProfiler.frames[i] = {}
 	end
 end
@@ -42,7 +42,7 @@ FunctionCallProfiler.render = function ()
 	local start_y = res_y / 2
 	local pos = Vector3(start_x, start_y - font_size, 200)
 
-	for i = 1, num_frames, 1 do
+	for i = 1, num_frames do
 		render_frame_index = render_frame_index % num_frames + 1
 		local frame = frames[render_frame_index]
 
@@ -76,5 +76,3 @@ end
 function LogFunctionCall(name)
 	FunctionCallProfiler.log_function_call(name)
 end
-
-return

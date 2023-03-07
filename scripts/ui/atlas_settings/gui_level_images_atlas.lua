@@ -938,5 +938,3 @@ level_images_atlas = {
 		}
 	}
 }
-
-return

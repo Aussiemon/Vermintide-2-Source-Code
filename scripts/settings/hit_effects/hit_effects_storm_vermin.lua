@@ -2233,5 +2233,3 @@ HitEffectsStormVermin = {
 	}
 }
 HitEffectsStormVermin = table.create_copy(HitEffectsStormVermin, HitEffectsStormVermin)
-
-return

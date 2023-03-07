@@ -307,5 +307,3 @@ ItemMasterList.test_bundle_1016 = {
 	},
 	steam_store_hidden = store_item_hidden
 }
-
-return

@@ -16,7 +16,7 @@ local function update_option(cs, option_index, dont_save)
 	cs.selected_id = option_index
 
 	if option == "[clear value]" then
-		option, cs.selected_id = nil
+		cs.selected_id = nil
 	end
 
 	if cs.copy then
@@ -27,7 +27,7 @@ local function update_option(cs, option_index, dont_save)
 		local command_list = cs.commands[cs.hot_id]
 
 		if command_list then
-			for i = 1, #command_list, 1 do
+			for i = 1, #command_list do
 				local command_table = command_list[i]
 
 				Application.console_command(unpack(command_table))
@@ -55,11 +55,11 @@ end
 
 local function activate_preset(cs)
 	for preset_key, preset_value in pairs(cs.preset) do
-		for cs2_i = 1, #DebugScreen.console_settings, 1 do
+		for cs2_i = 1, #DebugScreen.console_settings do
 			local cs2 = DebugScreen.console_settings[cs2_i]
 
 			if cs2.title == preset_key and cs2.is_boolean then
-				update_option(cs2, (preset_value and 1) or 2)
+				update_option(cs2, preset_value and 1 or 2)
 			end
 		end
 	end
@@ -75,20 +75,8 @@ end
 
 DebugScreen = DebugScreen or {}
 local DebugScreen = DebugScreen
-
-if not DebugScreen.console_width then
-	slot9 = RESOLUTION_LOOKUP.scale or 1
-	slot9 = 800 * slot9
-end
-
-DebugScreen.console_width = slot9
-
-if not DebugScreen.font_size then
-	slot9 = RESOLUTION_LOOKUP.scale or 1
-	slot9 = 20 * slot9
-end
-
-DebugScreen.font_size = slot9
+DebugScreen.console_width = DebugScreen.console_width or 800 * (RESOLUTION_LOOKUP.scale or 1)
+DebugScreen.font_size = DebugScreen.font_size or 20 * (RESOLUTION_LOOKUP.scale or 1)
 
 DebugScreen.setup = function (world, settings, callbacks)
 	local DebugScreen = DebugScreen
@@ -98,7 +86,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 	local script_data = script_data
 	DebugScreen.console_settings = {}
 
-	for i = 1, #settings, 1 do
+	for i = 1, #settings do
 		local cs = {
 			hot_id = 1,
 			options = {}
@@ -134,7 +122,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 		elseif setting.command_list then
 			cs.commands = {}
 
-			for j = 1, #setting.command_list, 1 do
+			for j = 1, #setting.command_list do
 				local command = setting.command_list[j]
 				cs.options[#cs.options + 1] = command.description
 				cs.commands[#cs.commands + 1] = command.commands
@@ -162,7 +150,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 		cs.close_when_selected = setting.close_when_selected
 		cs.clear_when_selected = setting.clear_when_selected
 
-		for j = 1, #cs.options, 1 do
+		for j = 1, #cs.options do
 			local option = cs.options[j]
 
 			if Development.parameter(cs.title) == option then
@@ -180,7 +168,7 @@ DebugScreen.setup = function (world, settings, callbacks)
 		DebugScreen.console_settings[#DebugScreen.console_settings + 1] = cs
 	end
 
-	for i = 1, #DebugScreen.console_settings, 1 do
+	for i = 1, #DebugScreen.console_settings do
 		local cs = DebugScreen.console_settings[i]
 
 		if cs.preset and Development.parameter(cs.title) then
@@ -194,12 +182,12 @@ DebugScreen.setup = function (world, settings, callbacks)
 		"debug_weapons"
 	}
 
-	for i = 1, #DebugScreen.shortcuts, 1 do
+	for i = 1, #DebugScreen.shortcuts do
 		local shortcut_input = DebugScreen.shortcuts[i]
 		local shortcut_setting = DebugScreen.shortcuts[i + 1]
 		i = i + 1
 
-		for j = 1, #DebugScreen.console_settings, 1 do
+		for j = 1, #DebugScreen.console_settings do
 			local cs = DebugScreen.console_settings[j]
 
 			if cs.title == shortcut_setting then
@@ -212,10 +200,10 @@ DebugScreen.setup = function (world, settings, callbacks)
 
 	DebugScreen.favorites = Development.setting("debug_favorites") or {}
 
-	for i = 1, #DebugScreen.favorites, 1 do
+	for i = 1, #DebugScreen.favorites do
 		local favorite = DebugScreen.favorites[i]
 
-		for j = 1, #DebugScreen.console_settings, 1 do
+		for j = 1, #DebugScreen.console_settings do
 			local cs = DebugScreen.console_settings[j]
 
 			if cs.title == favorite then
@@ -340,6 +328,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local filtered_console_settings = DebugScreen.console_settings
 
 	if DebugScreen.hot_id == nil then
+		-- Nothing
 	end
 
 	local current_hot_cs = DebugScreen.filtered_console_settings[DebugScreen.hot_id]
@@ -349,7 +338,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 		filtered_console_settings = {}
 		local search_string = string.gsub(setting_search_string, "[_ ]", "")
 
-		for i = 1, #DebugScreen.console_settings, 1 do
+		for i = 1, #DebugScreen.console_settings do
 			local cs = DebugScreen.console_settings[i]
 			local current_item = cs.title:lower()
 			current_item = string.gsub(current_item, "[_ ]", "")
@@ -362,7 +351,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 	DebugScreen.hot_id = 1
 
-	for i = 1, #filtered_console_settings, 1 do
+	for i = 1, #filtered_console_settings do
 		local cs = filtered_console_settings[i]
 
 		if cs == current_hot_cs then
@@ -379,7 +368,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			local cs_current = filtered_console_settings[hot_id]
 			local search_string = string.gsub(option_search_string, "[_ ]", "")
 
-			for j = 1, #cs_current.options, 1 do
+			for j = 1, #cs_current.options do
 				local option = cs_current.options[j]
 				local option_name = tostring(option)
 				local current_item = option_name:lower()
@@ -397,7 +386,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			local hot_id = DebugScreen.hot_id
 			local cs_current = filtered_console_settings[hot_id]
 
-			for i = 1, #cs_current.options, 1 do
+			for i = 1, #cs_current.options do
 				filtered_option_ids[i] = i
 			end
 		end
@@ -421,12 +410,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				local hot_id = DebugScreen.hot_id
 				local cs_current = filtered_console_settings[hot_id]
 				local category_current = cs_current.category
-				local ignore_changed_cs = (not cs_current.is_boolean and cs_current.selected_id ~= nil) or cs_current.options[cs_current.selected_id]
+				local ignore_changed_cs = not cs_current.is_boolean and cs_current.selected_id ~= nil or cs_current.options[cs_current.selected_id]
 
 				while hot_id > 1 do
 					hot_id = hot_id - 1
 					local cs = filtered_console_settings[hot_id]
-					local cs_value_changed = (not cs.is_boolean and cs.selected_id ~= nil) or cs.options[cs.selected_id]
+					local cs_value_changed = not cs.is_boolean and cs.selected_id ~= nil or cs.options[cs.selected_id]
 
 					if cs_value_changed and not ignore_changed_cs then
 						break
@@ -449,7 +438,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			local current_filtered_id = table.find(filtered_option_ids, cs.hot_id)
 
 			if current_filtered_id then
-				local next_filtered_id = ((current_filtered_id + num_filtered_options) - 2) % num_filtered_options + 1
+				local next_filtered_id = (current_filtered_id + num_filtered_options - 2) % num_filtered_options + 1
 				cs.hot_id = filtered_option_ids[next_filtered_id]
 			end
 		end
@@ -473,12 +462,12 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				local hot_id = DebugScreen.hot_id
 				local cs_current = filtered_console_settings[hot_id]
 				local category_current = cs_current.category
-				local ignore_changed_cs = (not cs_current.is_boolean and cs_current.selected_id ~= nil) or cs_current.options[cs_current.selected_id]
+				local ignore_changed_cs = not cs_current.is_boolean and cs_current.selected_id ~= nil or cs_current.options[cs_current.selected_id]
 
 				while hot_id < #filtered_console_settings do
 					hot_id = hot_id + 1
 					local cs = filtered_console_settings[hot_id]
-					local cs_value_changed = (not cs.is_boolean and cs.selected_id ~= nil) or cs.options[cs.selected_id]
+					local cs_value_changed = not cs.is_boolean and cs.selected_id ~= nil or cs.options[cs.selected_id]
 
 					if cs_value_changed and not ignore_changed_cs then
 						break
@@ -522,11 +511,11 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local category_list_above = {}
 	local category_list_total = {}
 
-	for i = 1, DebugScreen.hot_id, 1 do
+	for i = 1, DebugScreen.hot_id do
 		category_list_above[filtered_console_settings[i].category] = true
 	end
 
-	for i = 1, #filtered_console_settings, 1 do
+	for i = 1, #filtered_console_settings do
 		category_list_total[filtered_console_settings[i].category] = true
 	end
 
@@ -570,10 +559,10 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local hacky_offset_pls_calculate_this_better = 500
 	local total_height = #DebugScreen.console_settings * (font_size + 2) + num_categories_total * font_size * 1.4 + hacky_offset_pls_calculate_this_better
 	local current_height = (DebugScreen.hot_id - 1) * (font_size + 2) + num_categories_above * font_size * 1.4
-	local scrollbar_size = (res_y * res_y) / total_height
+	local scrollbar_size = res_y * res_y / total_height
 	local scrollarea_size = total_height - res_y
 	local scrollposition_ratio = current_height / scrollarea_size
-	local scrollbar_pos = (res_y * current_height) / total_height
+	local scrollbar_pos = res_y * current_height / total_height
 	local scrollbar_layer = base_layer + 1
 
 	Gui.rect(gui, Vector3(0, 0, base_layer), Vector2(offset_x, res_y), Color(offset_lerp * 220, 25, 50, 25))
@@ -598,7 +587,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 	local row_highlight_layer = base_layer + 1
 	local bitmap_layer = base_layer + 1
 
-	for i = 1, #filtered_console_settings, 1 do
+	for i = 1, #filtered_console_settings do
 		local is_active = i == DebugScreen.active_id
 		local is_hot = i == DebugScreen.hot_id
 		local cs = filtered_console_settings[i]
@@ -642,7 +631,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 			local reuse_global_table = true
 			local description_word_wrapped = Gui.word_wrap(gui, cs.description, font_mtrl, font_size, 500, " ", "", "\n", reuse_global_table)
 
-			for j = 1, #description_word_wrapped, 1 do
+			for j = 1, #description_word_wrapped do
 				local description = description_word_wrapped[j]
 
 				Gui.text(gui, description, font_mtrl, font_size, font, Vector3(setting_x, pos_y, base_text_layer), text_color_description)
@@ -650,7 +639,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				pos_y = pos_y - (font_size + 2)
 			end
 
-			for j = 1, #filtered_option_ids, 1 do
+			for j = 1, #filtered_option_ids do
 				local current_option_index = filtered_option_ids[j]
 				local option = cs.options[current_option_index]
 				local is_hot_sub = current_option_index == cs.hot_id
@@ -658,6 +647,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				local text_sub = tostring(option)
 
 				if is_hot_sub then
+					-- Nothing
 				end
 
 				if is_selected_sub then
@@ -668,7 +658,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 
 					Gui.text(gui, text_sub, font_mtrl, font_size, font, Vector3(option_x, pos_y, base_text_layer), text_color_active)
 				elseif is_hot_sub then
-					if (input_service:get("right_key") or (input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key"))) and not opened_this_frame then
+					if (input_service:get("right_key") or input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key")) and not opened_this_frame then
 						update_option(cs, current_option_index)
 
 						if current_selected_option_position then
@@ -710,7 +700,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				pos_y = pos_y - (font_size + 2)
 			end
 
-			if cs.func and (input_service:get("right_key") or (input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key"))) and not opened_this_frame then
+			if cs.func and (input_service:get("right_key") or input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key")) and not opened_this_frame then
 				cs.func(cs.options, cs.hot_id)
 
 				if cs.clear_setting then
@@ -733,7 +723,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				Application.save_user_settings()
 			end
 
-			if cs.preset and (input_service:get("right_key") or (input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key"))) and not opened_this_frame then
+			if cs.preset and (input_service:get("right_key") or input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key")) and not opened_this_frame then
 				activate_preset(cs)
 				Application.save_user_settings()
 			end
@@ -774,14 +764,14 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				end
 			end
 
-			if (input_service:get("right_key") or (input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key"))) and not opened_this_frame then
+			if (input_service:get("right_key") or input_service:has("exclusive_right_key") and input_service:get("exclusive_right_key")) and not opened_this_frame then
 				if cs.load_items_source_func then
 					cs.load_items_source_func(cs.options)
 				end
 
 				if mod_key_down and #cs.options > 0 then
 					if cs.is_boolean then
-						cs.hot_id = (cs.selected_id == 1 and 2) or 1
+						cs.hot_id = cs.selected_id == 1 and 2 or 1
 					elseif cs.hot_id == #cs.options then
 						cs.hot_id = 1
 					else
@@ -831,7 +821,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 				end
 			end
 
-			for i = 0, 9, 1 do
+			for i = 0, 9 do
 				local shortcut_input = "numpad " .. tostring(i)
 
 				if Keyboard.pressed(Keyboard.button_index(shortcut_input)) then
@@ -868,7 +858,7 @@ DebugScreen.update = function (dt, t, input_service, input_manager)
 					Application.save_user_settings()
 				end
 			end
-		elseif (not cs.is_boolean and cs.selected_id ~= nil) or cs.options[cs.selected_id] then
+		elseif not cs.is_boolean and cs.selected_id ~= nil or cs.options[cs.selected_id] then
 			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(setting_x, pos_y, base_text_layer), text_color_overridden)
 		else
 			Gui.text(gui, text, font_mtrl, font_size, font, Vector3(setting_x, pos_y, base_text_layer), text_color)
@@ -905,7 +895,7 @@ end
 DebugScreen.reset_settings = function ()
 	local all_false = true
 
-	for i = 1, #DebugScreen.console_settings, 1 do
+	for i = 1, #DebugScreen.console_settings do
 		local cs = DebugScreen.console_settings[i]
 
 		if cs.is_boolean then
@@ -915,13 +905,16 @@ DebugScreen.reset_settings = function ()
 				update_option(cs, 2, true)
 			end
 		elseif cs.item_source then
+			-- Nothing
 		elseif cs.bitmap then
+			-- Nothing
 		elseif cs.func then
+			-- Nothing
 		end
 	end
 
 	if all_false then
-		for i = 1, #DebugScreen.console_settings, 1 do
+		for i = 1, #DebugScreen.console_settings do
 			local cs = DebugScreen.console_settings[i]
 
 			if cs.is_boolean and cs.selected_id == 2 then
@@ -999,8 +992,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	if not DebugScreen.search_active then
 		DebugScreen.search_text_box_width = math.max(0, DebugScreen.search_text_box_width - 2000 * dt)
 
-		if DebugScreen.hot_id > 5 then
-		else
+		if DebugScreen.hot_id <= 5 then
 			Gui.rect(gui, search_text_box_pos, Vector2(DebugScreen.search_text_box_width, 35), Colors.get_color_with_alpha("dark_olive_green", 100 + math.cos(hot_anim_t) * 25))
 			Gui.rect(gui, search_title_box_pos, Vector2(200, 35), Colors.get_color_with_alpha("orange", 15 + math.cos(hot_anim_t) * 5))
 			Gui.text(gui, "Search (backspace) ", font_mtrl, font_size, font, search_title_pos, Colors.get_color_with_alpha("white", 100 + math.cos(hot_anim_t) * 100))
@@ -1012,7 +1004,7 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 	DebugScreen.search_text_box_width = math.min(400, DebugScreen.search_text_box_width + 2000 * dt)
 	local keystrokes = Keyboard.keystrokes()
 
-	for i = 1, #keystrokes, 1 do
+	for i = 1, #keystrokes do
 		local stroke = keystrokes[i]
 
 		if type(stroke) == "string" then
@@ -1042,5 +1034,3 @@ DebugScreen.update_search = function (input_manager, input_service, gui, t, dt)
 
 	Gui.rect(gui, search_text_pos + Vector3(width + 1, -2, 0), Vector2(10, 20), Colors.get_color_with_alpha("white", -50 + math.cos(hot_anim_t) * 250))
 end
-
-return

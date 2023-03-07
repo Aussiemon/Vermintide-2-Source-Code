@@ -140,7 +140,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 
 	local params = self.temp_params
 
-	if (self.explosion_time <= t and not self.has_exploded) or not status_extension:is_overcharge_exploding() then
+	if self.explosion_time <= t and not self.has_exploded or not status_extension:is_overcharge_exploding() then
 		if status_extension:is_overcharge_exploding() then
 			self:explode()
 		end
@@ -201,7 +201,7 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 	end
 
 	local walking = input_extension:get("walk")
-	local move_speed = (status_extension:is_crouching() and movement_settings_table.crouch_move_speed) or (walking and movement_settings_table.walk_move_speed) or movement_settings_table.move_speed
+	local move_speed = status_extension:is_crouching() and movement_settings_table.crouch_move_speed or walking and movement_settings_table.walk_move_speed or movement_settings_table.move_speed
 	local move_speed_multiplier = status_extension:current_move_speed_multiplier()
 
 	if walking ~= self.walking then
@@ -252,5 +252,3 @@ PlayerCharacterStateOverchargeExploding.update = function (self, unit, input, dt
 
 	self.walking = walking
 end
-
-return

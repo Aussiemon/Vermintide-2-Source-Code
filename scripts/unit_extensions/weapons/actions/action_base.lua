@@ -147,5 +147,3 @@ end
 ActionBase.finish = function (self, reason)
 	return
 end
-
-return

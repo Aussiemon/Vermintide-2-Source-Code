@@ -57,5 +57,3 @@ DebugHelper.enable_physics_dump = function ()
 		end
 	end
 end
-
-return

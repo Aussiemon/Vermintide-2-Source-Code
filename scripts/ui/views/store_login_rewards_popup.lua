@@ -78,12 +78,12 @@ StoreLoginRewardsPopup._setup_rewards_data = function (self, login_rewards)
 	local cursor_y = self._cursor_y or 1
 	self._cursor_x = cursor_x
 	self._cursor_y = cursor_y
-	local calendar_type = (login_rewards.type and login_rewards.type) or "personal_time_strike"
-	local claimed_rewards = (login_rewards.claimed_rewards and login_rewards.claimed_rewards) or {}
+	local calendar_type = login_rewards.type and login_rewards.type or "personal_time_strike"
+	local claimed_rewards = login_rewards.claimed_rewards and login_rewards.claimed_rewards or {}
 	local cooldown = login_rewards.next_claim_timestamp - os.time()
 	local is_loop = reward_index == #day_widgets and cooldown <= 0
 
-	for day_index = 1, #day_widgets, 1 do
+	for day_index = 1, #day_widgets do
 		local day_widget_content = day_widgets[day_index].content
 		day_widget_content.is_today = not is_loop and day_index == reward_index
 		local is_claimed = nil
@@ -102,7 +102,7 @@ StoreLoginRewardsPopup._setup_rewards_data = function (self, login_rewards)
 		day_widget_content.current_day = reward_index
 		day_widget_content.is_loop = is_loop
 
-		for item_index = 1, #reward_item_list, 1 do
+		for item_index = 1, #reward_item_list do
 			local widget_def = definitions.create_reward_item_widget(day_index, item_index)
 			local widget = UIWidget.init(widget_def)
 			reward_widgets[#reward_widgets + 1] = widget
@@ -114,7 +114,7 @@ StoreLoginRewardsPopup._setup_rewards_data = function (self, login_rewards)
 
 			fassert(item.data, "Reward item %s not found in ItemMasterList", reward_item.item_id)
 
-			local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
+			local rarity = item.rarity or item.data and item.data.rarity or "plentiful"
 			local content = widget.content
 			content.item = item
 			content.item_icon = UIUtils.get_ui_information_from_item(item) or "icons_placeholder"
@@ -162,7 +162,7 @@ StoreLoginRewardsPopup._claim_rewards = function (self)
 	local next_reward_index = self._next_reward_index
 	local day_widgets = self._day_widgets
 
-	for i = 1, #day_widgets, 1 do
+	for i = 1, #day_widgets do
 		day_widgets[i].content.is_today = false
 	end
 
@@ -200,7 +200,7 @@ StoreLoginRewardsPopup.update = function (self, input_service, dt, t)
 			self._refresh_cooldown = t + 3
 		end
 	elseif state == STATE.default then
-		if expiry <= -1 or (login_rewards.reward_index >= 8 and cooldown <= -1) then
+		if expiry <= -1 or login_rewards.reward_index >= 8 and cooldown <= -1 then
 			local cb = callback(self, "_refresh_login_rewards_cb")
 
 			backend_store:refresh_login_rewards(cb)
@@ -259,7 +259,7 @@ StoreLoginRewardsPopup._present_rewards = function (self, rewards)
 	local item_interface = Managers.backend:get_interface("items")
 	local presentation_data = {}
 
-	for i = 1, num_rewards, 1 do
+	for i = 1, num_rewards do
 		local data = rewards[i]
 		local reward_type = data.reward_type
 
@@ -324,7 +324,7 @@ StoreLoginRewardsPopup._update_timer = function (self, cooldown, expiry)
 			if self._will_loop then
 				local day_widgets = self._day_widgets
 
-				for i = 1, #day_widgets, 1 do
+				for i = 1, #day_widgets do
 					local content = day_widgets[i].content
 					content.is_today = false
 					content.is_claimed = false
@@ -427,7 +427,7 @@ StoreLoginRewardsPopup._handle_gamepad_input = function (self, input_service)
 		self._cursor_y = cursor_y
 		local reward_widgets = self._reward_widgets
 
-		for i = 1, #reward_widgets, 1 do
+		for i = 1, #reward_widgets do
 			local widget = reward_widgets[i]
 			local content = widget.content
 			local is_selected = content.day_index == cursor_x and content.item_index == cursor_y
@@ -441,7 +441,7 @@ StoreLoginRewardsPopup._handle_gamepad_input = function (self, input_service)
 		self._show_gamepad_tooltips = not self._show_gamepad_tooltips
 		local reward_widgets = self._reward_widgets
 
-		for i = 1, #reward_widgets, 1 do
+		for i = 1, #reward_widgets do
 			local widget = reward_widgets[i]
 			local content = widget.content
 			content.show_tooltips = self._show_gamepad_tooltips
@@ -460,7 +460,7 @@ StoreLoginRewardsPopup._handle_gamepad_input = function (self, input_service)
 
 	local day_widgets = self._day_widgets
 
-	for day_index = 1, #day_widgets, 1 do
+	for day_index = 1, #day_widgets do
 		local content = day_widgets[day_index].content
 		content.selection_index = self._cursor_x
 	end
@@ -515,5 +515,3 @@ end
 StoreLoginRewardsPopup.has_claimed_rewards = function (self)
 	return self._has_claimed_rewards
 end
-
-return

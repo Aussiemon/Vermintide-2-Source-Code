@@ -85,5 +85,3 @@ BreedBehaviors.minotaur = {
 	},
 	name = "minotaur"
 }
-
-return

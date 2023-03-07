@@ -666,5 +666,3 @@ AchievementTemplates.achievements.holly_sienna_weapon_skin_3 = {
 		}
 	end
 }
-
-return

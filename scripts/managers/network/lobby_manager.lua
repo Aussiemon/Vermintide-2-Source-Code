@@ -3,7 +3,7 @@ local network_options = {
 	project_hash = "bulldozer",
 	config_file_name = "global",
 	map = "None",
-	lobby_port = (LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port) or GameSettingsDevelopment.network_port,
+	lobby_port = LEVEL_EDITOR_TEST and GameSettingsDevelopment.editor_lobby_port or GameSettingsDevelopment.network_port,
 	ip_address = Network.default_network_address()
 }
 LobbyManager = class(LobbyManager)
@@ -60,5 +60,3 @@ LobbyManager.setup_network_options = function (self, increment_lobby_port)
 
 	print("LobbyManager:setup_network_options server_port:", network_options.server_port)
 end
-
-return

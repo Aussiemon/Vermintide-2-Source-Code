@@ -84,5 +84,3 @@ PeerStateMachine.update = function (self, dt)
 		state_data:change_state(new_state)
 	end
 end
-
-return

@@ -7677,7 +7677,7 @@ WeaponSkins.matching_weapon_skin_item_key = function (skin_name)
 				for drop_rarity, weapon_skins_list in pairs(skin_tables) do
 					for _, weapon_skin in ipairs(weapon_skins_list) do
 						local item_masterlist_data = rawget(ItemMasterList, weapon_skin)
-						local rarity = (item_masterlist_data and item_masterlist_data.rarity) or drop_rarity
+						local rarity = item_masterlist_data and item_masterlist_data.rarity or drop_rarity
 						WeaponSkins._matching_weapon_skin_item_keys[weapon_skin] = {
 							rarity = rarity,
 							item_key = skin_item_key
@@ -7706,5 +7706,3 @@ WeaponSkins.matching_weapon_skin_item_key = function (skin_name)
 		return nil
 	end
 end
-
-return

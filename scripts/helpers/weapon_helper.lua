@@ -49,7 +49,7 @@ WeaponHelper.speed_to_hit_moving_target = function (p1, p2, projectile_angle, ta
 	local old_estimated_target_position = p2
 	local math_cos = math.cos(projectile_angle)
 
-	for i = 1, 10, 1 do
+	for i = 1, 10 do
 		local distance_vector = estimated_target_position - p1
 		local projectile_speed, flat_distance = WeaponHelper:wanted_projectile_speed(distance_vector, gravity, projectile_angle)
 		local tof = flat_distance / (projectile_speed * math_cos)
@@ -75,7 +75,7 @@ WeaponHelper.angle_to_hit_moving_target = function (p1, p2, projectile_speed, ta
 	local flat_distance = Vector3.length(Vector3.flat(estimated_target_position - p1))
 	local old_flat_distance = flat_distance
 
-	for i = 1, 10, 1 do
+	for i = 1, 10 do
 		local height = estimated_target_position.z - p1.z
 		local speed_squared = projectile_speed^2
 
@@ -92,7 +92,7 @@ WeaponHelper.angle_to_hit_moving_target = function (p1, p2, projectile_speed, ta
 		local second_degree_component = math.sqrt(sqrt_val)
 		local angle1 = math.atan((speed_squared + second_degree_component) / (gravity * flat_distance))
 		local angle2 = math.atan((speed_squared - second_degree_component) / (gravity * flat_distance))
-		angle = (use_greatest_angle and math.max(angle1, angle2)) or math.min(angle1, angle2)
+		angle = use_greatest_angle and math.max(angle1, angle2) or math.min(angle1, angle2)
 		t = flat_distance / (projectile_speed * math.cos(angle))
 		estimated_target_position = p2 + t * target_velocity
 		flat_distance = Vector3.length(Vector3.flat(estimated_target_position - p1))
@@ -135,7 +135,7 @@ WeaponHelper.test_angled_trajectory = function (physics_world, p1, p2, gravity, 
 		local segment_pos2 = nil
 		segment_list[1] = p1
 
-		for i = 1, sections, 1 do
+		for i = 1, sections do
 			t = t_total * i / sections
 			local x = x_vel_0 * t
 			local z = y_vel_0 * t + 0.5 * gravity * t^2
@@ -171,12 +171,12 @@ WeaponHelper.ray_segmented_test = function (physics_world, segment_list, delta)
 	local pos1 = segment_list[1] + delta
 	local sections = #segment_list
 
-	for i = 2, sections, 1 do
+	for i = 2, sections do
 		local pos2 = segment_list[i] + delta
 		local current_velocity = pos2 - pos1
 
 		if Vector3.length(current_velocity) < 0.001 then
-			slot11 = math.random()
+			local lol = math.random()
 		end
 
 		local result, hit_position, _, _, actor = PhysicsWorld.immediate_raycast(physics_world, pos1, current_velocity, Vector3.length(current_velocity), "closest", "collision_filter", "filter_ai_mover")
@@ -279,7 +279,7 @@ WeaponHelper.calculate_trajectory = function (self, world, initial_position, tar
 	end
 
 	if not trajectory_hits_target then
-		for i = 0, 4, 1 do
+		for i = 0, 4 do
 			angle = 30 + 10 * i
 			radians = math.degrees_to_radians(angle)
 			projectile_speed = math.round(WeaponHelper:wanted_projectile_speed(target_vector, gravity, radians) * 100, 0)
@@ -321,7 +321,7 @@ WeaponHelper._trajectory_hits_target = function (self, world, radians, speed, gr
 			if result then
 				local unit_hit_is_player = DamageUtils.is_player_unit(Actor.unit(actor))
 				local hit_to_target_distance_squared = Vector3.distance_squared(target_position, hit_position)
-				local hit_target = hit_to_target_distance_squared < 0.04 or (hit_to_target_distance_squared < 1 and unit_hit_is_player)
+				local hit_target = hit_to_target_distance_squared < 0.04 or hit_to_target_distance_squared < 1 and unit_hit_is_player
 
 				if Development.parameter("ai_debug_trajectory_raycast") then
 					WeaponHelper:debug_draw_trajectory_hit(hit_position, hit_target, drawer)
@@ -345,7 +345,7 @@ WeaponHelper.position_on_trajectory = function (self, initial_position, normaliz
 end
 
 WeaponHelper.debug_draw_trajectory_hit = function (self, position, hit_target, drawer)
-	local color = (hit_target and Color(255, 74, 247, 115)) or Color(255, 245, 108, 49)
+	local color = hit_target and Color(255, 74, 247, 115) or Color(255, 245, 108, 49)
 
 	drawer:sphere(position, 0.1, color)
 end
@@ -359,7 +359,7 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 	local position = origin
 	local unit_fit_offset_vector = Vector3(0, 0, 0.1)
 
-	for i = 1, GROUND_TARGET_MAX_STEPS, 1 do
+	for i = 1, GROUND_TARGET_MAX_STEPS do
 		local new_position = position + velocity * time_step
 		local delta = new_position - position
 		local direction = Vector3.normalize(delta)
@@ -383,9 +383,9 @@ WeaponHelper.ground_target = function (self, physics_world, fitting_unit, origin
 			if hit_wall or not good_landing then
 				local flat_velocity = Vector3.length(Vector3.flat(velocity))
 
-				for j = 1, GROUND_TARGET_MAX_STEPS, 1 do
-					local step_back_distance = (j == 1 and 0.5) or 1
-					local step_back_t = (flat_velocity <= EPSILON and 0) or step_back_distance / flat_velocity
+				for j = 1, GROUND_TARGET_MAX_STEPS do
+					local step_back_distance = j == 1 and 0.5 or 1
+					local step_back_t = flat_velocity <= EPSILON and 0 or step_back_distance / flat_velocity
 					local step_back_position = nil
 
 					if step_back_t > 0 then
@@ -423,7 +423,7 @@ end
 WeaponHelper.ballistic_raycast = function (self, physics_world, max_steps, max_time, position, velocity, gravity, collision_filter, visualize)
 	local time_step = max_time / max_steps
 
-	for i = 1, max_steps, 1 do
+	for i = 1, max_steps do
 		local new_position = position + velocity * time_step
 		local delta = new_position - position
 		local direction = Vector3.normalize(delta)
@@ -440,5 +440,3 @@ WeaponHelper.ballistic_raycast = function (self, physics_world, max_steps, max_t
 
 	return false, position
 end
-
-return

@@ -12,7 +12,7 @@ ProjectileTemplates.trajectory_templates = {
 
 			local estimated_target_position = target_position
 
-			for i = 1, ITERATIONS, 1 do
+			for i = 1, ITERATIONS do
 				estimated_target_position = target_position + t * target_velocity
 				local height = estimated_target_position.z - initial_position.z
 				local speed_squared = speed^2
@@ -276,7 +276,7 @@ ProjectileTemplates.impact_templates = {
 
 ProjectileTemplates.get_trajectory_template = function (trajectory_template_name, is_husk)
 	local templates = ProjectileTemplates.trajectory_templates
-	local husk_key = (is_husk == true and "husk") or (is_husk == false and "unit")
+	local husk_key = is_husk == true and "husk" or is_husk == false and "unit"
 	local template = templates[trajectory_template_name][husk_key]
 
 	return template
@@ -294,7 +294,7 @@ function check_for_afro_hit(recent_impacts, num_impacts)
 	local only_hit_afro = true
 	local non_afro_hit_index = nil
 
-	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE, 1 do
+	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE do
 		local j = (i - 1) * ProjectileImpactDataIndex.STRIDE
 		hit_unit = recent_impacts[j + ProjectileImpactDataIndex.UNIT]
 		actor_index = recent_impacts[j + ProjectileImpactDataIndex.ACTOR_INDEX]
@@ -322,5 +322,3 @@ function check_for_afro_hit(recent_impacts, num_impacts)
 
 	return hit_unit, actor_index, hit_actor, node_index, only_hit_afro, non_afro_hit_index
 end
-
-return

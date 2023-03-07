@@ -29,5 +29,3 @@ UnlockSettings = {
 }
 
 DLCUtils.merge("unlock_settings", UnlockSettings[1].unlocks)
-
-return

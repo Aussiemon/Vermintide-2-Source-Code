@@ -51,7 +51,7 @@ local database_names = {
 	"complete_all_engineer_challenges"
 }
 
-for i = 1, #database_names, 1 do
+for i = 1, #database_names do
 	local name = database_names[i]
 	player[name] = {
 		value = 0,
@@ -112,5 +112,3 @@ for career, _ in pairs(CareerSettings) do
 		end
 	end
 end
-
-return

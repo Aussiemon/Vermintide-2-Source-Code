@@ -358,5 +358,3 @@ settings.missions = {
 		text = "morris_arena_belakor_escape"
 	}
 }
-
-return

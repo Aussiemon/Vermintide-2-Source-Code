@@ -29,7 +29,7 @@ for _, dlc in pairs(DLCSettings) do
 	end
 end
 
-for i = 1, #weapon_template_files_names, 1 do
+for i = 1, #weapon_template_files_names do
 	local file_name = weapon_template_files_names[i]
 	local weapon_templates = dofile(file_name)
 
@@ -125,8 +125,9 @@ Dots = {
 		return do_dot
 	end,
 	burning_dot = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
-		if damage_profile then
-			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
+		if damage_profile and not dot_template_name then
+			local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+			dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name
 		end
 
 		if not dot_template_name then
@@ -154,8 +155,9 @@ Dots = {
 		return true
 	end,
 	slow_debuff = function (dot_template_name, damage_profile, target_index, power_level, target_unit, attacker_unit, hit_zone_name, damage_source, boost_curve_multiplier, is_critical_strike, source_attacker_unit)
-		if damage_profile then
-			dot_template_name = dot_template_name or target_settings.dot_template_name or damage_profile.dot_template_name
+		if damage_profile and not dot_template_name then
+			local target_settings = damage_profile.targets[target_index] or damage_profile.default_target
+			dot_template_name = target_settings.dot_template_name or damage_profile.dot_template_name
 		end
 
 		if not dot_template_name then
@@ -215,7 +217,7 @@ for _, item in pairs(ItemMasterList) do
 
 		local careers = item.can_wield
 
-		for i = 1, #careers, 1 do
+		for i = 1, #careers do
 			local career_name = careers[i]
 			local career_data = CareerSettings[career_name]
 			local profile_name = career_data.profile_name
@@ -226,7 +228,7 @@ for _, item in pairs(ItemMasterList) do
 				local template = Weapons[template_name]
 				local actions = template.actions
 
-				for j = 1, #action_names, 1 do
+				for j = 1, #action_names do
 					local action_name = action_names[j]
 					actions[action_name] = ActionTemplates[action_name]
 				end
@@ -310,7 +312,7 @@ for item_template_name, item_template in pairs(Weapons) do
 					local link_hit_zones = pickup_settings.link_hit_zones
 
 					if link_hit_zones then
-						for i = 1, #link_hit_zones, 1 do
+						for i = 1, #link_hit_zones do
 							local hit_zone_name = link_hit_zones[i]
 							link_hit_zones[hit_zone_name] = true
 						end
@@ -320,5 +322,3 @@ for item_template_name, item_template in pairs(Weapons) do
 		end
 	end
 end
-
-return

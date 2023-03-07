@@ -224,11 +224,11 @@ local weapon_template = {
 			external_optional_multiplier = 1
 		}
 	},
-	particle_fx = {},
-	particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx)),
-	wwise_dep_left_hand = {
-		"wwise/two_handed_swords"
-	}
+	particle_fx = {}
+}
+weapon_template.particle_fx_lookup = table.mirror_array_inplace(table.keys(weapon_template.particle_fx))
+weapon_template.wwise_dep_left_hand = {
+	"wwise/two_handed_swords"
 }
 
 return {

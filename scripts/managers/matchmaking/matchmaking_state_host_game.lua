@@ -42,7 +42,7 @@ MatchmakingStateHostGame.set_debug_info = function (self)
 	local player = Managers.player:player_from_peer_id(peer_id)
 	local profile_index = player:profile_index()
 	local profile = profile_index and SPProfiles[profile_index]
-	local profile_name = (profile and profile.display_name) or "random"
+	local profile_name = profile and profile.display_name or "random"
 	Managers.matchmaking.debug.state = "hosting game"
 	Managers.matchmaking.debug.mission_id = mission_id
 	Managers.matchmaking.debug.difficulty = difficulty
@@ -120,6 +120,7 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 	self._skip_waystone = self.search_config.skip_waystone
 
 	if self._wait_to_start_game then
+		-- Nothing
 	elseif not self._skip_waystone then
 		local waystone_type = 1
 
@@ -135,5 +136,3 @@ MatchmakingStateHostGame._start_hosting_game = function (self)
 		self._matchmaking_manager:activate_waystone_portal(waystone_type)
 	end
 end
-
-return

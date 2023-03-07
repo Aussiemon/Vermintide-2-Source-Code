@@ -76,5 +76,3 @@ Development.init_parameters = function ()
 		hardcoded_dev_params[param] = value
 	end
 end
-
-return

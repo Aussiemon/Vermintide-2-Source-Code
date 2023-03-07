@@ -317,7 +317,7 @@ HeroWindowCraftingInventoryConsole._update_crafting_material_panel = function (s
 		local items = backend_items:get_filtered_items(item_filter)
 		local item = items and items[1]
 		local backend_id = item and item.backend_id
-		local amount = (backend_id and backend_items:get_item_amount(backend_id)) or 0
+		local amount = backend_id and backend_items:get_item_amount(backend_id) or 0
 		local widget = widgets_by_name["material_text_" .. index]
 		local content = widget.content
 		local amount_text = nil
@@ -548,5 +548,3 @@ HeroWindowCraftingInventoryConsole._handle_gamepad_activity = function (self, fo
 		self:_set_gamepad_input_buttons_visibility(false)
 	end
 end
-
-return

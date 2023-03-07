@@ -15,5 +15,3 @@ settings.husk_lookup = {
 settings.dialogue_event_data_lookup = {
 	"mutator_statue_01"
 }
-
-return

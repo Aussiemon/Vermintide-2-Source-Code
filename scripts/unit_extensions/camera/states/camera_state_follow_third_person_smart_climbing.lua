@@ -87,5 +87,3 @@ CameraStateFollowThirdPersonSmartClimbing.update = function (self, unit, input, 
 		end
 	end
 end
-
-return

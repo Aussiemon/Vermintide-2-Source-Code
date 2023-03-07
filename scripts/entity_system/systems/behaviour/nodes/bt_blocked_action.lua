@@ -124,5 +124,3 @@ BTBlockedAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

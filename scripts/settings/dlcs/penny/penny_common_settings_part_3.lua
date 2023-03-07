@@ -27,5 +27,3 @@ settings.effects = {
 	"fx/drachenfels_shockwave",
 	"fx/drachenfels_flies"
 }
-
-return

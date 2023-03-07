@@ -10,7 +10,7 @@ UIAnimation = UIAnimation or {
 			else
 				local start_value = p1 * target_value
 
-				for i = 1, #target, 1 do
+				for i = 1, #target do
 					target[i] = start_value
 				end
 			end
@@ -26,7 +26,7 @@ UIAnimation = UIAnimation or {
 			if target_index then
 				target[target_index] = new_value
 			else
-				for i = 1, #target, 1 do
+				for i = 1, #target do
 					target[i] = new_value
 				end
 			end
@@ -45,7 +45,7 @@ UIAnimation = UIAnimation or {
 				target[target_index] = start_value
 				offset_target[target_index] = value_diff
 			else
-				for i = 1, #target, 1 do
+				for i = 1, #target do
 					target[i] = start_value
 					offset_target[i] = value_diff
 				end
@@ -64,7 +64,7 @@ UIAnimation = UIAnimation or {
 				target[target_index] = new_value
 				offset_target[i] = value_diff
 			else
-				for i = 1, #target, 1 do
+				for i = 1, #target do
 					target[i] = new_value
 					offset_target[i] = value_diff
 				end
@@ -147,7 +147,7 @@ UIAnimation = UIAnimation or {
 				value = origin
 			end
 
-			for i = 2, #target, 1 do
+			for i = 2, #target do
 				target[i] = value
 			end
 
@@ -323,7 +323,7 @@ UIAnimation = UIAnimation or {
 			local timer_value = values[timer_index or #values]
 			target[target_index] = timer_value
 
-			return (timer_index and true) or false, progressed_time
+			return timer_index and true or false, progressed_time
 		end
 	}
 }
@@ -344,7 +344,7 @@ UIAnimation.init = function (...)
 		local num_args = animation_type.num_args
 		data_array[current_index + 1] = animation_type
 
-		for j = 1, num_args, 1 do
+		for j = 1, num_args do
 			data_array[current_index + 1 + j] = select(i + j, ...)
 		end
 
@@ -367,7 +367,7 @@ local function debug_print_ui_animation(...)
 
 	local num_varargs = select("#", ...)
 
-	for i = 1, num_varargs, 1 do
+	for i = 1, num_varargs do
 		local var = select(i, ...)
 
 		Application.error(string.format("Variable %d: %s", i, tostring(var)))
@@ -400,7 +400,7 @@ UIAnimation.init_debug = function (...)
 		local num_args = animation_type.num_args
 		data_array[current_index + 1] = animation_type
 
-		for j = 1, num_args, 1 do
+		for j = 1, num_args do
 			data_array[current_index + 1 + j] = select(i + j, ...)
 		end
 
@@ -452,5 +452,3 @@ end
 UIAnimation.completed = function (ui_animation)
 	return ui_animation.current_index >= #ui_animation.data_array
 end
-
-return

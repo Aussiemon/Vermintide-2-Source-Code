@@ -25,5 +25,3 @@ BreedBehaviors.dummy_exalted_sorcerer_drachenfels = {
 	},
 	name = "chaos_dummy_exalted_sorcerer_drachenfels"
 }
-
-return

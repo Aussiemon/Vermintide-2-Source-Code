@@ -22,5 +22,3 @@ DialogueLookup[DialogueLookup_n + 9] = "pwe_ground_zero_intro_a"
 DialogueLookup[DialogueLookup_n + 10] = "pwe_ground_zero_intro_b"
 DialogueLookup[DialogueLookup_n + 11] = "pwe_ground_zero_intro_c"
 DialogueLookup_n = DialogueLookup_n + 11
-
-return

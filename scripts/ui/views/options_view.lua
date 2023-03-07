@@ -1,11 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- Decompilation Error: _run_step(_unwarp_expressions, node)
-
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 require("scripts/ui/views/ui_calibration_view")
 
 OptionsView = class(OptionsView)
@@ -42,7 +34,7 @@ local generic_input_actions = {
 				priority = 49,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -61,7 +53,7 @@ local generic_input_actions = {
 				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -85,7 +77,7 @@ local generic_input_actions = {
 				priority = 45,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -114,7 +106,7 @@ local generic_input_actions = {
 				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -140,7 +132,7 @@ local generic_input_actions = {
 				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -159,7 +151,7 @@ local generic_input_actions = {
 				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -183,7 +175,7 @@ local generic_input_actions = {
 				priority = 46,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -212,7 +204,7 @@ local generic_input_actions = {
 				priority = 47,
 				description_text = "input_description_information",
 				ignore_keybinding = true,
-				input_action = (IS_PS4 and "l2") or "left_trigger"
+				input_action = IS_PS4 and "l2" or "left_trigger"
 			},
 			{
 				input_action = "l1_r1",
@@ -312,7 +304,7 @@ OptionsView._setup_input_functions = function (self)
 			local num_options = content.num_options
 			local current_selection = content.current_selection
 
-			for i = 1, num_options, 1 do
+			for i = 1, num_options do
 				local hotspot_id = "option_" .. i
 				local hotspot = content[hotspot_id]
 
@@ -355,7 +347,7 @@ OptionsView._setup_input_functions = function (self)
 			if input_cooldown then
 				on_cooldown_last_frame = true
 				local new_cooldown = math.max(input_cooldown - dt, 0)
-				input_cooldown = (new_cooldown > 0 and new_cooldown) or nil
+				input_cooldown = new_cooldown > 0 and new_cooldown or nil
 				content.input_cooldown = input_cooldown
 			end
 
@@ -438,7 +430,7 @@ OptionsView._setup_input_functions = function (self)
 			else
 				local options_texts = content.options_texts
 
-				for i = start_index, start_index - 1 + num_draws, 1 do
+				for i = start_index, start_index - 1 + num_draws do
 					local item_content = item_contents[i]
 					local hotspot = item_content.hotspot
 
@@ -573,7 +565,7 @@ OptionsView._setup_input_functions = function (self)
 				end
 			else
 				local stop = false
-				local index = (content.active_1 and 1) or 2
+				local index = content.active_1 and 1 or 2
 
 				if content.controller_input_pressed then
 					stop = true
@@ -683,7 +675,7 @@ OptionsView._setup_input_functions = function (self)
 				WwiseWorld.trigger_event(wwise_world, "Play_hud_select")
 				content:callback(style)
 			else
-				for i = 1, num_items, 1 do
+				for i = 1, num_items do
 					local item_content = list_content[i]
 
 					if item_content ~= previous_selected_item_content then
@@ -994,7 +986,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 	local definition_n = #definition
 	local unlock_manager = Managers.unlock
 
-	for i = 1, definition_n, 1 do
+	for i = 1, definition_n do
 		local element = definition[i]
 		local base_offset = {
 			0,
@@ -1006,7 +998,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 		local widget_type = element.widget_type
 		local required_dlc = element.required_dlc
 
-		if not required_dlc or (unlock_manager:dlc_exists(required_dlc) and unlock_manager:is_dlc_unlocked(required_dlc)) then
+		if not required_dlc or unlock_manager:dlc_exists(required_dlc) and unlock_manager:is_dlc_unlocked(required_dlc) then
 			if widget_type == "drop_down" then
 				widget = self:build_drop_down_widget(element, scenegraph_id_start, base_offset)
 			elseif widget_type == "option" then
@@ -1028,7 +1020,7 @@ OptionsView.build_settings_list = function (self, definition, scenegraph_id)
 				self.gamepad_layout_widget = widget
 				local gamepad_layout = assigned(self.changed_user_settings.gamepad_layout, Application.user_setting("gamepad_layout"))
 				local using_left_handed_option = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
-				local gamepad_keymaps_layout = (using_left_handed_option and AlternatateGamepadKeymapsLayoutsLeftHanded) or AlternatateGamepadKeymapsLayouts
+				local gamepad_keymaps_layout = using_left_handed_option and AlternatateGamepadKeymapsLayoutsLeftHanded or AlternatateGamepadKeymapsLayouts
 				local gamepad_keymaps = gamepad_keymaps_layout[gamepad_layout]
 
 				self:update_gamepad_layout_widget(gamepad_keymaps, using_left_handed_option)
@@ -1298,7 +1290,7 @@ end
 
 OptionsView.clear_gamepad_layout_widget = function (self)
 	local using_left_handed_option = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
-	local default_gamepad_actions_by_key = (using_left_handed_option and AlternatateGamepadSettings.left_handed.default_gamepad_actions_by_key) or AlternatateGamepadSettings.default.default_gamepad_actions_by_key
+	local default_gamepad_actions_by_key = using_left_handed_option and AlternatateGamepadSettings.left_handed.default_gamepad_actions_by_key or AlternatateGamepadSettings.default.default_gamepad_actions_by_key
 	local widget = self.gamepad_layout_widget
 	local widget_content = widget.content
 	local background_texture = widget_content.background
@@ -1330,8 +1322,8 @@ OptionsView.update_gamepad_layout_widget = function (self, keymaps, using_left_h
 
 	self:clear_gamepad_layout_widget()
 
-	local ignore_gamepad_action_names = (using_left_handed_option and AlternatateGamepadSettings.left_handed.ignore_gamepad_action_names) or AlternatateGamepadSettings.default.ignore_gamepad_action_names
-	local replace_gamepad_action_names = (using_left_handed_option and AlternatateGamepadSettings.left_handed.replace_gamepad_action_names) or AlternatateGamepadSettings.default.replace_gamepad_action_names
+	local ignore_gamepad_action_names = using_left_handed_option and AlternatateGamepadSettings.left_handed.ignore_gamepad_action_names or AlternatateGamepadSettings.default.ignore_gamepad_action_names
+	local replace_gamepad_action_names = using_left_handed_option and AlternatateGamepadSettings.left_handed.replace_gamepad_action_names or AlternatateGamepadSettings.default.replace_gamepad_action_names
 
 	for keymaps_table_name, keymaps_table in pairs(keymaps) do
 		for keybindings_name, keybindings in pairs(keymaps_table) do
@@ -1364,7 +1356,7 @@ OptionsView.update_gamepad_layout_widget = function (self, keymaps, using_left_h
 	end
 
 	for button_name, actions in pairs(display_keybinds) do
-		for i = 1, #actions, 1 do
+		for i = 1, #actions do
 			local action_name = actions[i]
 
 			if not widget_content[button_name] then
@@ -1459,7 +1451,7 @@ OptionsView.widget_from_name = function (self, name)
 	local widgets = selected_settings_list.widgets
 	local widgets_n = selected_settings_list.widgets_n
 
-	for i = 1, widgets_n, 1 do
+	for i = 1, widgets_n do
 		local widget = widgets[i]
 
 		if widget.name and widget.name == name then
@@ -1479,7 +1471,7 @@ OptionsView.force_set_widget_value = function (self, name, value)
 		local content = widget.content
 		local options_values = content.options_values
 
-		for i = 1, #options_values, 1 do
+		for i = 1, #options_values do
 			if value == options_values[i] then
 				content.current_selection = i
 			end
@@ -1581,7 +1573,7 @@ end
 OptionsView.exit = function (self, return_to_game)
 	self:exit_reset_params()
 
-	local exit_transition = (return_to_game and "exit_menu") or self._exit_transition or "ingame_menu"
+	local exit_transition = return_to_game and "exit_menu" or self._exit_transition or "ingame_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition)
 end
@@ -1746,7 +1738,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		network_manager:set_small_network_packets(user_settings.small_network_packets)
 	end
 
-	MatchmakingSettings.max_distance_filter = (GameSettingsDevelopment.network_mode == "lan" and "close") or user_settings.max_quick_play_search_range or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+	MatchmakingSettings.max_distance_filter = GameSettingsDevelopment.network_mode == "lan" and "close" or user_settings.max_quick_play_search_range or Application.user_setting("max_quick_play_search_range") or DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
 	local max_stacking_frames = user_settings.max_stacking_frames
 
 	if max_stacking_frames then
@@ -1862,7 +1854,7 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local sound_panning_rule = user_settings.sound_panning_rule
 
 	if sound_panning_rule then
-		local value = (sound_panning_rule == "headphones" and "PANNING_RULE_HEADPHONES") or "PANNING_RULE_SPEAKERS"
+		local value = sound_panning_rule == "headphones" and "PANNING_RULE_HEADPHONES" or "PANNING_RULE_SPEAKERS"
 
 		Managers.music:set_panning_rule(value)
 	end
@@ -1905,13 +1897,13 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		local input_filters = player_input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look
 		local function_data = look_filter.function_data
-		function_data.filter_type = (mouse_look_invert_y and "scale_vector3") or "scale_vector3_invert_y"
+		function_data.filter_type = mouse_look_invert_y and "scale_vector3" or "scale_vector3_invert_y"
 	end
 
 	local gamepad_look_sensitivity = user_settings.gamepad_look_sensitivity
 
 	if gamepad_look_sensitivity then
-		local platform_key = (IS_WINDOWS and "xb1") or self.platform
+		local platform_key = IS_WINDOWS and "xb1" or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller.multiplier_x
 		local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
@@ -1920,21 +1912,21 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
 		function_data.multiplier_x = base_look_multiplier * 0.85^(-gamepad_look_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x * 0.25
+		function_data.min_multiplier_x = base_filter.look_controller.multiplier_min_x and base_filter.look_controller.multiplier_min_x * 0.85^(-gamepad_look_sensitivity) or function_data.multiplier_x * 0.25
 		local melee_look_filter = input_filters.look_controller_melee
 		local function_data = melee_look_filter.function_data
 		function_data.multiplier_x = base_melee_look_multiplier * 0.85^(-gamepad_look_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x * 0.25
+		function_data.min_multiplier_x = base_filter.look_controller_melee.multiplier_min_x and base_filter.look_controller_melee.multiplier_min_x * 0.85^(-gamepad_look_sensitivity) or function_data.multiplier_x * 0.25
 		local ranged_look_filter = input_filters.look_controller_ranged
 		local function_data = ranged_look_filter.function_data
 		function_data.multiplier_x = base_ranged_look_multiplier * 0.85^(-gamepad_look_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-gamepad_look_sensitivity)) or function_data.multiplier_x * 0.25
+		function_data.min_multiplier_x = base_filter.look_controller_ranged.multiplier_min_x and base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-gamepad_look_sensitivity) or function_data.multiplier_x * 0.25
 	end
 
 	local gamepad_look_sensitivity_y = user_settings.gamepad_look_sensitivity_y
 
 	if gamepad_look_sensitivity_y then
-		local platform_key = (IS_WINDOWS and "xb1") or self.platform
+		local platform_key = IS_WINDOWS and "xb1" or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller.multiplier_y
 		local base_melee_look_multiplier = base_filter.look_controller.multiplier_y
@@ -1954,20 +1946,20 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_zoom_sensitivity = user_settings.gamepad_zoom_sensitivity
 
 	if gamepad_zoom_sensitivity then
-		local platform_key = (IS_WINDOWS and "xb1") or self.platform
+		local platform_key = IS_WINDOWS and "xb1" or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
 		local input_filters = player_input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller_zoom
 		local function_data = look_filter.function_data
 		function_data.multiplier_x = base_look_multiplier * 0.85^(-gamepad_zoom_sensitivity)
-		function_data.min_multiplier_x = (base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-gamepad_zoom_sensitivity)) or function_data.multiplier_x * 0.25
+		function_data.min_multiplier_x = base_filter.look_controller_zoom.multiplier_min_x and base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-gamepad_zoom_sensitivity) or function_data.multiplier_x * 0.25
 	end
 
 	local gamepad_zoom_sensitivity_y = user_settings.gamepad_zoom_sensitivity_y
 
 	if gamepad_zoom_sensitivity_y then
-		local platform_key = (IS_WINDOWS and "xb1") or self.platform
+		local platform_key = IS_WINDOWS and "xb1" or self.platform
 		local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 		local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
 		local input_filters = player_input_service:get_active_filters(platform_key)
@@ -2005,20 +1997,20 @@ OptionsView.apply_changes = function (self, user_settings, render_settings, bot_
 	local gamepad_look_invert_y = user_settings.gamepad_look_invert_y
 
 	if gamepad_look_invert_y ~= nil then
-		local platform_key = (IS_WINDOWS and "xb1") or self.platform
+		local platform_key = IS_WINDOWS and "xb1" or self.platform
 		local input_filters = player_input_service:get_active_filters(platform_key)
 		local look_filter = input_filters.look_controller
 		local function_data = look_filter.function_data
-		function_data.filter_type = (gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 		local look_filter = input_filters.look_controller_melee
 		local function_data = look_filter.function_data
-		function_data.filter_type = (gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 		local look_filter = input_filters.look_controller_ranged
 		local function_data = look_filter.function_data
-		function_data.filter_type = (gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 		local look_filter = input_filters.look_controller_zoom
 		local function_data = look_filter.function_data
-		function_data.filter_type = (gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted") or "scale_vector3_xy_accelerated_x"
+		function_data.filter_type = gamepad_look_invert_y and "scale_vector3_xy_accelerated_x_inverted" or "scale_vector3_xy_accelerated_x"
 	end
 
 	local gamepad_use_ps4_style_input_icons = user_settings.gamepad_use_ps4_style_input_icons
@@ -2284,7 +2276,7 @@ end
 OptionsView.apply_bot_spawn_priority_changes = function (self, new_priority_order, show_popup)
 	local saved_priority = PlayerData.bot_spawn_priority
 
-	for i = 1, #new_priority_order, 1 do
+	for i = 1, #new_priority_order do
 		saved_priority[i] = new_priority_order[i]
 	end
 
@@ -2592,7 +2584,7 @@ OptionsView.update = function (self, dt)
 			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
 		end
 
-		if not disable_all_input and not self:has_popup() and not self.draw_gamepad_tooltip and ((not selected_widget and input_service:get("toggle_menu", true)) or (exit_button_hotspot.is_hover and exit_button_hotspot.on_release)) then
+		if not disable_all_input and not self:has_popup() and not self.draw_gamepad_tooltip and (not selected_widget and input_service:get("toggle_menu", true) or exit_button_hotspot.is_hover and exit_button_hotspot.on_release) then
 			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 			self:on_exit_pressed()
 		end
@@ -2611,7 +2603,7 @@ OptionsView.on_gamepad_activated = function (self)
 	local title_buttons = self.title_buttons
 	local title_buttons_n = self.title_buttons_n
 
-	for i = 1, title_buttons_n, 1 do
+	for i = 1, title_buttons_n do
 		local widget = title_buttons[i]
 		widget.content.disable_side_textures = true
 	end
@@ -2621,7 +2613,7 @@ OptionsView.on_gamepad_deactivated = function (self)
 	local title_buttons = self.title_buttons
 	local title_buttons_n = self.title_buttons_n
 
-	for i = 1, title_buttons_n, 1 do
+	for i = 1, title_buttons_n do
 		local widget = title_buttons[i]
 		widget.content.disable_side_textures = false
 	end
@@ -2742,15 +2734,12 @@ OptionsView.handle_exit_button_popup_results = function (self, result)
 		self:set_original_settings()
 		self:reset_changed_settings()
 		self:exit()
-	elseif result == "cancel" then
-	else
+	elseif result ~= "cancel" then
 		print(result)
 	end
 end
 
 OptionsView.update_apply_button = function (self)
-
-	-- Decompilation error in this vicinity:
 	local widget = self.apply_button
 
 	if self:changes_been_made() then
@@ -2794,7 +2783,7 @@ OptionsView.handle_apply_button = function (self, input_service, allow_gamepad_i
 		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
 	end
 
-	if (apply_button_hotspot.is_hover and apply_button_hotspot.on_release) or (allow_gamepad_input and input_service:get("refresh")) then
+	if apply_button_hotspot.is_hover and apply_button_hotspot.on_release or allow_gamepad_input and input_service:get("refresh") then
 		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 
 		if self.apply_popup_id then
@@ -2893,7 +2882,7 @@ OptionsView.reset_current_settings_list_to_default = function (self)
 	local widgets = selected_settings_list.widgets
 	local widgets_n = selected_settings_list.widgets_n
 
-	for i = 1, widgets_n, 1 do
+	for i = 1, widgets_n do
 		local widget = widgets[i]
 
 		if widget.content.default_value then
@@ -2937,7 +2926,7 @@ OptionsView.handle_reset_to_default_button = function (self, input_service, allo
 		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_hover")
 	end
 
-	if reset_to_default_hotspot.on_release or (allow_gamepad_input and input_service:get("special_1")) then
+	if reset_to_default_hotspot.on_release or allow_gamepad_input and input_service:get("special_1") then
 		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
 
 		local text = Localize("reset_settings_popup_text")
@@ -2960,7 +2949,7 @@ OptionsView.draw_widgets = function (self, dt, disable_all_input)
 	local background_widgets = self.background_widgets
 	local background_widgets_n = self.background_widgets_n
 
-	for i = 1, background_widgets_n, 1 do
+	for i = 1, background_widgets_n do
 		UIRenderer.draw_widget(ui_top_renderer, background_widgets[i])
 	end
 
@@ -3045,7 +3034,7 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 	local visible_widgets_n = 0
 	local setting_has_changed = false
 
-	for i = 1, widgets_n, 1 do
+	for i = 1, widgets_n do
 		local widget = widgets[i]
 		local style = widget.style
 		local widget_name = widget.name
@@ -3085,7 +3074,7 @@ OptionsView.update_settings_list = function (self, settings_list, ui_renderer, u
 		local hotspot_content_ids = content.hotspot_content_ids
 
 		if hotspot_content_ids then
-			for i = 1, #hotspot_content_ids, 1 do
+			for i = 1, #hotspot_content_ids do
 				content[hotspot_content_ids[i]].disable_button = disable_widget_input
 			end
 		end
@@ -3156,7 +3145,7 @@ OptionsView.handle_title_buttons = function (self, ui_renderer, disable_all_inpu
 	local title_buttons = self.title_buttons
 	local title_buttons_n = self.title_buttons_n
 
-	for i = 1, title_buttons_n, 1 do
+	for i = 1, title_buttons_n do
 		local widget = title_buttons[i]
 
 		if disable_all_input then
@@ -3208,7 +3197,7 @@ OptionsView.set_widget_values = function (self, settings_list)
 	local widgets = settings_list.widgets
 	local widgets_n = settings_list.widgets_n
 
-	for i = 1, widgets_n, 1 do
+	for i = 1, widgets_n do
 		local widget = widgets[i]
 		local saved_value_cb = widget.content.saved_value_cb
 
@@ -3321,7 +3310,7 @@ OptionsView.select_settings_title = function (self, i)
 	self:set_widget_values(settings_list)
 
 	self.selected_settings_list = settings_list
-	self.keybind_info_text = (settings_list_name == "keybind_settings" and Localize("keybind_deselect_info")) or nil
+	self.keybind_info_text = settings_list_name == "keybind_settings" and Localize("keybind_deselect_info") or nil
 end
 
 OptionsView.deselect_title = function (self, i)
@@ -3351,12 +3340,12 @@ OptionsView.deselect_title = function (self, i)
 end
 
 OptionsView.handle_dropdown_lists = function (self, dropdown_lists, dropdown_lists_n)
-	for i = 1, dropdown_lists_n, 1 do
+	for i = 1, dropdown_lists_n do
 		local ddl = dropdown_lists[i]
 		local ddl_content = ddl.content
 		local list_content = content.list_content
 
-		for i = 1, #list_content, 1 do
+		for i = 1, #list_content do
 			local content = list_content[i]
 
 			if content.selected then
@@ -3421,7 +3410,7 @@ end
 OptionsView.change_gamepad_generic_input_action = function (self, reset_input_description)
 	local in_settings_sub_menu = self.in_settings_sub_menu
 	local actions_name_to_use = "default"
-	local menu_name_to_use = (in_settings_sub_menu and "sub_menu") or "main_menu"
+	local menu_name_to_use = in_settings_sub_menu and "sub_menu" or "main_menu"
 	local reset_disabled = self.reset_to_default.content.hidden or self.reset_to_default.content.button_text.disabled
 	local apply_disabled = self.apply_button.content.button_text.disabled
 
@@ -3452,7 +3441,7 @@ OptionsView._find_next_title_tab = function (self)
 	local selected_title = 1 + self.selected_title % self.title_buttons_n
 	local new_tab_index = nil
 
-	for i = selected_title, self.title_buttons_n, 1 do
+	for i = selected_title, self.title_buttons_n do
 		local widget = self.title_buttons[i]
 
 		if not widget then
@@ -3500,199 +3489,863 @@ OptionsView._find_previous_title_tab = function (self)
 end
 
 OptionsView.handle_controller_navigation_input = function (self, dt, input_service)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
+
+	-- Decompilation error in this vicinity:
 	self:change_gamepad_generic_input_action()
 
-	if self.controller_cooldown > 0 then
-		self.controller_cooldown = self.controller_cooldown - dt
-		local speed_multiplier = self.speed_multiplier or 1
-		local decrease = GamepadSettings.menu_speed_multiplier_frame_decrease
-		local min_multiplier = GamepadSettings.menu_min_speed_multiplier
-		self.speed_multiplier = math.max(speed_multiplier - decrease, min_multiplier)
+	--- END OF BLOCK #0 ---
 
-		return
+	FLOW; TARGET BLOCK #39
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-13, warpins: 1 ---
+	self.controller_cooldown = self.controller_cooldown - dt
+	--- END OF BLOCK #1 ---
+
+	slot3 = if not self.speed_multiplier then
+	JUMP TO BLOCK #2
 	else
-		local in_settings_sub_menu = self.in_settings_sub_menu
-
-		if not in_settings_sub_menu then
-			in_settings_sub_menu = true
-			self.in_settings_sub_menu = in_settings_sub_menu
-
-			self:set_console_setting_list_selection(1, true, false)
-		end
-
-		self.draw_gamepad_tooltip = self.gamepad_tooltip_available and input_service:get("trigger_cycle_previous_hold")
-
-		if self.draw_gamepad_tooltip then
-			return
-		end
-
-		local input_handled, is_active = self:handle_settings_list_widget_input(input_service, dt)
-
-		if input_handled then
-			if is_active ~= nil then
-				self:set_selected_input_description_by_active(is_active)
-			end
-
-			return
-		elseif input_service:get("back", true) then
-			local selected_settings_list = self.selected_settings_list
-
-			if selected_settings_list.scrollbar then
-				self:setup_scrollbar(selected_settings_list)
-			end
-
-			in_settings_sub_menu = false
-			self.in_settings_sub_menu = in_settings_sub_menu
-
-			self:clear_console_setting_list_selection()
-
-			self.gamepad_active_generic_actions_name = nil
-
-			self:change_gamepad_generic_input_action(true)
-			WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
-
-			if self:changes_been_made() then
-				local text = Localize("unapplied_changes_popup_text")
-				self.title_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "apply_changes", Localize("menu_settings_apply"), "revert_changes", Localize("popup_choice_discard"))
-			else
-				self:on_exit_pressed()
-			end
-		end
-
-		local new_tab_index = nil
-
-		if input_service:get("cycle_previous") then
-			new_tab_index = self:_find_previous_title_tab()
-		elseif input_service:get("cycle_next") then
-			new_tab_index = self:_find_next_title_tab()
-		end
-
-		if new_tab_index then
-			if self:changes_been_made() then
-				local text = Localize("unapplied_changes_popup_text")
-				self.title_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "apply_changes", Localize("menu_settings_apply"), "revert_changes", Localize("popup_choice_discard"))
-				self.delayed_title_change = new_tab_index
-			else
-				self:select_settings_title(new_tab_index)
-				self:set_console_setting_list_selection(1, true)
-
-				self.in_settings_sub_menu = true
-			end
-		end
-
-		if in_settings_sub_menu then
-			local speed_multiplier = self.speed_multiplier or 1
-			local selected_settings_list = self.selected_settings_list
-			local list_widgets = selected_settings_list.widgets
-			local selected_list_index = selected_settings_list.selected_index or 0
-
-			repeat
-
-				-- Decompilation error in this vicinity:
-				local move_up = input_service:get("move_up")
-				local move_up_hold = input_service:get("move_up_hold")
-
-				if move_up or move_up_hold then
-					self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
-
-					self:set_console_setting_list_selection(selected_list_index - 1, false)
-
-					return
-				end
-
-				local move_down = input_service:get("move_down")
-				local move_down_hold = input_service:get("move_down_hold")
-				self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
-
-				self:set_console_setting_list_selection(selected_list_index + 1, true)
-
-				return
-			until true
-		else
-			local speed_multiplier = self.speed_multiplier or 1
-			local selected_title_index = self.selected_title or 0
-
-			repeat
-				local move_up = input_service:get("move_up")
-				local move_up_hold = input_service:get("move_up_hold")
-
-				if move_up or move_up_hold then
-					self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
-
-					self:set_console_title_selection(selected_title_index - 1)
-
-					return
-				end
-
-				local move_down = input_service:get("move_down")
-				local move_down_hold = input_service:get("move_down_hold")
-
-				if move_down or move_down_hold then
-					self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
-
-					self:set_console_title_selection(selected_title_index + 1)
-
-					return
-				end
-			until true
-		end
+	JUMP TO BLOCK #3
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	local speed_multiplier = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-26, warpins: 2 ---
+	local decrease = GamepadSettings.menu_speed_multiplier_frame_decrease
+	local min_multiplier = GamepadSettings.menu_min_speed_multiplier
+	self.speed_multiplier = math.max(speed_multiplier - decrease, min_multiplier)
+
+	return
+
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #53
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 27-29, warpins: 1 ---
+	local in_settings_sub_menu = self.in_settings_sub_menu
+	--- END OF BLOCK #4 ---
+
+	slot3 = if not in_settings_sub_menu then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 30-37, warpins: 1 ---
+	in_settings_sub_menu = true
+	self.in_settings_sub_menu = in_settings_sub_menu
+
+	self:set_console_setting_list_selection(1, true, false)
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 38-40, warpins: 2 ---
+	--- END OF BLOCK #6 ---
+
+	slot4 = if self.gamepad_tooltip_available then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 41-44, warpins: 1 ---
+	slot4 = input_service:get("trigger_cycle_previous_hold")
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 45-48, warpins: 2 ---
+	self.draw_gamepad_tooltip = slot4
+
+	--- END OF BLOCK #8 ---
+
+	slot4 = if self.draw_gamepad_tooltip then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 49-49, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 50-56, warpins: 2 ---
+	local input_handled, is_active = self:handle_settings_list_widget_input(input_service, dt)
+
+	--- END OF BLOCK #10 ---
+
+	slot4 = if input_handled then
+	JUMP TO BLOCK #11
+	else
+	JUMP TO BLOCK #14
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 57-58, warpins: 1 ---
+	--- END OF BLOCK #11 ---
+
+	if is_active ~= nil then
+	JUMP TO BLOCK #12
+	else
+	JUMP TO BLOCK #13
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 59-62, warpins: 1 ---
+	self:set_selected_input_description_by_active(is_active)
+
+	--- END OF BLOCK #12 ---
+
+	FLOW; TARGET BLOCK #13
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 63-64, warpins: 2 ---
+	return
+
+	--- END OF BLOCK #13 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #20
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 65-71, warpins: 1 ---
+	--- END OF BLOCK #14 ---
+
+	slot6 = if input_service:get("back", true)
+
+	 then
+	JUMP TO BLOCK #15
+	else
+	JUMP TO BLOCK #20
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #15 72-75, warpins: 1 ---
+	local selected_settings_list = self.selected_settings_list
+
+	--- END OF BLOCK #15 ---
+
+	slot7 = if selected_settings_list.scrollbar then
+	JUMP TO BLOCK #16
+	else
+	JUMP TO BLOCK #17
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #16 76-79, warpins: 1 ---
+	self:setup_scrollbar(selected_settings_list)
+
+	--- END OF BLOCK #16 ---
+
+	FLOW; TARGET BLOCK #17
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #17 80-100, warpins: 2 ---
+	in_settings_sub_menu = false
+	self.in_settings_sub_menu = in_settings_sub_menu
+
+	self:clear_console_setting_list_selection()
+
+	self.gamepad_active_generic_actions_name = nil
+
+	self:change_gamepad_generic_input_action(true)
+	WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+	--- END OF BLOCK #17 ---
+
+	slot7 = if self:changes_been_made()
+
+	 then
+	JUMP TO BLOCK #18
+	else
+	JUMP TO BLOCK #19
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #18 101-122, warpins: 1 ---
+	local text = Localize("unapplied_changes_popup_text")
+	self.title_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "apply_changes", Localize("menu_settings_apply"), "revert_changes", Localize("popup_choice_discard"))
+
+	--- END OF BLOCK #18 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #20
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #19 123-125, warpins: 1 ---
+	self:on_exit_pressed()
+
+	--- END OF BLOCK #19 ---
+
+	FLOW; TARGET BLOCK #20
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #20 126-132, warpins: 4 ---
+	local new_tab_index = nil
+
+	--- END OF BLOCK #20 ---
+
+	slot7 = if input_service:get("cycle_previous")
+
+	 then
+	JUMP TO BLOCK #21
+	else
+	JUMP TO BLOCK #22
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #21 133-137, warpins: 1 ---
+	new_tab_index = self:_find_previous_title_tab()
+
+	--- END OF BLOCK #21 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #24
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #22 138-143, warpins: 1 ---
+	--- END OF BLOCK #22 ---
+
+	slot7 = if input_service:get("cycle_next")
+
+	 then
+	JUMP TO BLOCK #23
+	else
+	JUMP TO BLOCK #24
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #23 144-147, warpins: 1 ---
+	new_tab_index = self:_find_next_title_tab()
+
+	--- END OF BLOCK #23 ---
+
+	FLOW; TARGET BLOCK #24
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #24 148-149, warpins: 3 ---
+	--- END OF BLOCK #24 ---
+
+	slot6 = if new_tab_index then
+	JUMP TO BLOCK #25
+	else
+	JUMP TO BLOCK #28
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #25 150-154, warpins: 1 ---
+	--- END OF BLOCK #25 ---
+
+	slot7 = if self:changes_been_made()
+
+	 then
+	JUMP TO BLOCK #26
+	else
+	JUMP TO BLOCK #27
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #26 155-177, warpins: 1 ---
+	local text = Localize("unapplied_changes_popup_text")
+	self.title_popup_id = Managers.popup:queue_popup(text, Localize("popup_discard_changes_topic"), "apply_changes", Localize("menu_settings_apply"), "revert_changes", Localize("popup_choice_discard"))
+	self.delayed_title_change = new_tab_index
+
+	--- END OF BLOCK #26 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #28
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #27 178-188, warpins: 1 ---
+	self:select_settings_title(new_tab_index)
+	self:set_console_setting_list_selection(1, true)
+
+	self.in_settings_sub_menu = true
+	--- END OF BLOCK #27 ---
+
+	FLOW; TARGET BLOCK #28
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #28 189-190, warpins: 3 ---
+	--- END OF BLOCK #28 ---
+
+	slot3 = if in_settings_sub_menu then
+	JUMP TO BLOCK #29
+	else
+	JUMP TO BLOCK #41
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #29 191-193, warpins: 1 ---
+	--- END OF BLOCK #29 ---
+
+	slot7 = if not self.speed_multiplier then
+	JUMP TO BLOCK #30
+	else
+	JUMP TO BLOCK #31
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #30 194-194, warpins: 1 ---
+	local speed_multiplier = 1
+	--- END OF BLOCK #30 ---
+
+	FLOW; TARGET BLOCK #31
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #31 195-199, warpins: 2 ---
+	local selected_settings_list = self.selected_settings_list
+	local list_widgets = selected_settings_list.widgets
+	--- END OF BLOCK #31 ---
+
+	slot10 = if not selected_settings_list.selected_index then
+	JUMP TO BLOCK #32
+	else
+	JUMP TO BLOCK #33
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #32 200-200, warpins: 1 ---
+	local selected_list_index = 0
+	--- END OF BLOCK #32 ---
+
+	FLOW; TARGET BLOCK #33
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #33 201-201, warpins: 3 ---
+	--- END OF BLOCK #33 ---
+
+	FLOW; TARGET BLOCK #33
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #34 202-211, warpins: 1 ---
+	local move_up = input_service:get("move_up")
+	local move_up_hold = input_service:get("move_up_hold")
+	--- END OF BLOCK #34 ---
+
+	slot11 = if not move_up then
+	JUMP TO BLOCK #35
+	else
+	JUMP TO BLOCK #36
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #35 212-213, warpins: 1 ---
+	--- END OF BLOCK #35 ---
+
+	slot12 = if move_up_hold then
+	JUMP TO BLOCK #36
+	else
+	JUMP TO BLOCK #37
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #36 214-223, warpins: 2 ---
+	self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+	self:set_console_setting_list_selection(selected_list_index - 1, false)
+
+	return
+
+	--- END OF BLOCK #36 ---
+
+	FLOW; TARGET BLOCK #37
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #37 224-233, warpins: 2 ---
+	local move_down = input_service:get("move_down")
+	local move_down_hold = input_service:get("move_down_hold")
+	--- END OF BLOCK #37 ---
+
+	slot13 = if not move_down then
+	JUMP TO BLOCK #38
+	else
+	JUMP TO BLOCK #39
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #38 234-235, warpins: 1 ---
+	--- END OF BLOCK #38 ---
+
+	slot14 = if move_down_hold then
+	JUMP TO BLOCK #39
+	else
+	JUMP TO BLOCK #53
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #39 236-247, warpins: 2 ---
+	self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+	self:set_console_setting_list_selection(selected_list_index + 1, true)
+
+	return
+
+	--- END OF BLOCK #39 ---
+
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #40 248-248, warpins: 1 ---
+	--- END OF BLOCK #40 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #53
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #41 249-251, warpins: 1 ---
+	--- END OF BLOCK #41 ---
+
+	slot7 = if not self.speed_multiplier then
+	JUMP TO BLOCK #42
+	else
+	JUMP TO BLOCK #43
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #42 252-252, warpins: 1 ---
+	local speed_multiplier = 1
+	--- END OF BLOCK #42 ---
+
+	FLOW; TARGET BLOCK #43
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #43 253-255, warpins: 2 ---
+	--- END OF BLOCK #43 ---
+
+	slot8 = if not self.selected_title then
+	JUMP TO BLOCK #44
+	else
+	JUMP TO BLOCK #45
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #44 256-256, warpins: 1 ---
+	local selected_title_index = 0
+	--- END OF BLOCK #44 ---
+
+	FLOW; TARGET BLOCK #45
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #45 257-257, warpins: 3 ---
+	--- END OF BLOCK #45 ---
+
+	FLOW; TARGET BLOCK #45
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #46 258-267, warpins: 1 ---
+	local move_up = input_service:get("move_up")
+	local move_up_hold = input_service:get("move_up_hold")
+	--- END OF BLOCK #46 ---
+
+	slot9 = if not move_up then
+	JUMP TO BLOCK #47
+	else
+	JUMP TO BLOCK #48
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #47 268-269, warpins: 1 ---
+	--- END OF BLOCK #47 ---
+
+	slot10 = if move_up_hold then
+	JUMP TO BLOCK #48
+	else
+	JUMP TO BLOCK #49
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #48 270-278, warpins: 2 ---
+	self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+	self:set_console_title_selection(selected_title_index - 1)
+
+	return
+
+	--- END OF BLOCK #48 ---
+
+	FLOW; TARGET BLOCK #49
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #49 279-288, warpins: 2 ---
+	local move_down = input_service:get("move_down")
+	local move_down_hold = input_service:get("move_down_hold")
+	--- END OF BLOCK #49 ---
+
+	slot11 = if not move_down then
+	JUMP TO BLOCK #50
+	else
+	JUMP TO BLOCK #51
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #50 289-290, warpins: 1 ---
+	--- END OF BLOCK #50 ---
+
+	slot12 = if move_down_hold then
+	JUMP TO BLOCK #51
+	else
+	JUMP TO BLOCK #52
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #51 291-299, warpins: 2 ---
+	self.controller_cooldown = GamepadSettings.menu_cooldown * speed_multiplier
+
+	self:set_console_title_selection(selected_title_index + 1)
+
+	return
+
+	--- END OF BLOCK #51 ---
+
+	FLOW; TARGET BLOCK #52
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #52 300-301, warpins: 2 ---
+	--- END OF BLOCK #52 ---
+
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #53 302-304, warpins: 4 ---
 	local in_settings_sub_menu = 1
 	self.speed_multiplier = in_settings_sub_menu
+
+	return
+	--- END OF BLOCK #53 ---
+
+
+
 end
 
 OptionsView.handle_mouse_widget_input = function (self, widget, input_service, dt)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local widget_type = widget.type
 
 	self._input_functions[widget_type](widget, input_service, dt)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.handle_settings_list_widget_input = function (self, input_service, dt)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	local selected_settings_list = self.selected_settings_list
 	local widgets = selected_settings_list.widgets
+	--- END OF BLOCK #0 ---
 
-	if not selected_settings_list.selected_index then
-		local selected_list_index = 1
+	slot5 = if not selected_settings_list.selected_index then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-6, warpins: 1 ---
+	local selected_list_index = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 7-10, warpins: 2 ---
 	local selected_widget = widgets[selected_list_index]
 	local widgets_n = selected_settings_list.widgets_n
 
-	if widgets_n == 0 or selected_widget.content.disabled then
-		return false
+	--- END OF BLOCK #2 ---
+
+	if widgets_n ~= 0 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 11-14, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	slot8 = if selected_widget.content.disabled then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 15-16, warpins: 2 ---
+	return false
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 17-25, warpins: 2 ---
 	local widget_type = selected_widget.type
 	local widget_type_template = SettingsWidgetTypeTemplate[widget_type]
 	local input_function = widget_type_template.input_function
 
 	return input_function(selected_widget, input_service, dt)
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.set_console_title_selection = function (self, index, ignore_sound)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-3, warpins: 1 ---
 	local selected_title_index = self.selected_title
 
+	--- END OF BLOCK #0 ---
+
 	if selected_title_index == index then
-		return
-	elseif not selected_title_index then
-		index = 1
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 4-5, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 6-7, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if not selected_title_index then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 8-8, warpins: 1 ---
+	index = 1
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 9-12, warpins: 3 ---
 	local number_of_menu_entries = #SettingsMenuNavigation
 
-	if index > number_of_menu_entries or index <= 0 then
-		return
+	--- END OF BLOCK #4 ---
+
+	if index <= number_of_menu_entries then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
-	if not ignore_sound then
-		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 13-15, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if index <= 0 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 16-16, warpins: 2 ---
+	return
+
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 17-18, warpins: 2 ---
+	--- END OF BLOCK #7 ---
+
+	slot2 = if not ignore_sound then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #9
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 19-23, warpins: 1 ---
+	WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+	--- END OF BLOCK #8 ---
+
+	FLOW; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 24-28, warpins: 2 ---
 	self:select_settings_title(index)
+
+	return
+	--- END OF BLOCK #9 ---
+
+
+
 end
 
 OptionsView.set_console_setting_list_selection = function (self, index, increment_if_disabled, ignore_sound)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local selected_settings_list = self.selected_settings_list
 	local selected_list_index = selected_settings_list.selected_index
 	local list_widgets = selected_settings_list.widgets
@@ -3701,201 +4354,834 @@ OptionsView.set_console_setting_list_selection = function (self, index, incremen
 	local widget = list_widgets[new_index]
 	local is_valid_index = self:is_widget_selectable(widget)
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-12, warpins: 2 ---
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-42, warpins: 0 ---
 	while not is_valid_index do
-		if increment_if_disabled then
-			new_index = math.min(new_index + 1, widgets_n + 1)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 13-13, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 14-15, warpins: 1 ---
+		--- END OF BLOCK #1 ---
+
+		slot2 = if increment_if_disabled then
+		JUMP TO BLOCK #2
 		else
-			new_index = math.max(new_index - 1, 0)
+		JUMP TO BLOCK #3
 		end
 
-		if new_index < 1 or widgets_n < new_index then
-			return
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 16-22, warpins: 1 ---
+		new_index = math.min(new_index + 1, widgets_n + 1)
+		--- END OF BLOCK #2 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-28, warpins: 1 ---
+		new_index = math.max(new_index - 1, 0)
+
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 29-31, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+		if new_index >= 1 then
+		JUMP TO BLOCK #5
+		else
+		JUMP TO BLOCK #6
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 32-33, warpins: 1 ---
+		--- END OF BLOCK #5 ---
+
+		if widgets_n < new_index then
+		JUMP TO BLOCK #6
+		else
+		JUMP TO BLOCK #7
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #6 34-34, warpins: 2 ---
+		return
+
+		--- END OF BLOCK #6 ---
+
+		FLOW; TARGET BLOCK #7
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #7 35-41, warpins: 2 ---
 		widget = list_widgets[new_index]
 		is_valid_index = self:is_widget_selectable(widget)
+		--- END OF BLOCK #7 ---
+
+		FLOW; TARGET BLOCK #8
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #8 42-42, warpins: 2 ---
+		--- END OF BLOCK #8 ---
+
+
+
 	end
 
-	if not ignore_sound then
-		WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 42-43, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	slot3 = if not ignore_sound then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 44-48, warpins: 1 ---
+	WwiseWorld.trigger_event(self.wwise_world, "Play_hud_select")
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 49-51, warpins: 2 ---
 	local using_scrollbar = selected_settings_list.scrollbar
 
-	if using_scrollbar then
-		self:move_scrollbar_based_on_selection(new_index)
+	--- END OF BLOCK #5 ---
+
+	slot11 = if using_scrollbar then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 52-55, warpins: 1 ---
+	self:move_scrollbar_based_on_selection(new_index)
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 56-60, warpins: 2 ---
 	self:select_settings_list_widget(new_index)
+
+	return
+	--- END OF BLOCK #7 ---
+
+
+
 end
 
 OptionsView.is_widget_selectable = function (self, widget)
-	if widget then
-		if widget.type == "image" or widget.type == "gamepad_layout" or widget.type == "title" then
-			slot2 = false
-		else
-			slot2 = true
-		end
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-2, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if widget then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 3-5, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	if widget.type ~= "image" then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 6-8, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	if widget.type ~= "gamepad_layout" then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 9-11, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if widget.type == "title" then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 12-13, warpins: 3 ---
+	slot2 = false
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 14-14, warpins: 1 ---
+	slot2 = true
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 15-15, warpins: 3 ---
 	return slot2
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.clear_console_setting_list_selection = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-3, warpins: 1 ---
 	local selected_settings_list = self.selected_settings_list
 
-	if not selected_settings_list then
-		return
+	--- END OF BLOCK #0 ---
+
+	slot1 = if not selected_settings_list then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 4-4, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 5-7, warpins: 2 ---
 	local selected_list_index = selected_settings_list.selected_index
+	--- END OF BLOCK #2 ---
 
-	if selected_list_index then
-		local list_widgets = selected_settings_list.widgets
-		local deselect_widget = list_widgets[selected_list_index]
-
-		self:deselect_settings_list_widget(deselect_widget)
-
-		selected_settings_list.selected_index = nil
+	slot2 = if selected_list_index then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 8-15, warpins: 1 ---
+	local list_widgets = selected_settings_list.widgets
+	local deselect_widget = list_widgets[selected_list_index]
+
+	self:deselect_settings_list_widget(deselect_widget)
+
+	selected_settings_list.selected_index = nil
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 16-16, warpins: 2 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.move_scrollbar_based_on_selection = function (self, index)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	local selected_settings_list = self.selected_settings_list
 	local selected_list_index = selected_settings_list.selected_index
+	--- END OF BLOCK #0 ---
 
-	if not selected_list_index then
-		slot4 = true
-	elseif selected_list_index >= index then
-		slot4 = false
+	slot3 = if not selected_list_index then
+	JUMP TO BLOCK #1
 	else
-		local going_downwards = true
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 5-6, warpins: 1 ---
+	slot4 = true
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 7-8, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	if selected_list_index >= index then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 9-10, warpins: 1 ---
+	slot4 = false
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 11-11, warpins: 1 ---
+	local going_downwards = true
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 12-14, warpins: 3 ---
 	local widgets = selected_settings_list.widgets
+	--- END OF BLOCK #5 ---
 
-	if not going_downwards or not widgets[index + 1] then
-		local base_widget = widgets[index - 1]
-	end
-
-	if base_widget then
-		local max_offset_y = selected_settings_list.max_offset_y
-		local ui_scenegraph = self.ui_scenegraph
-		local scenegraph_id_start = selected_settings_list.scenegraph_id_start
-		local mask_pos = Vector3.deprecated_copy(UISceneGraph.get_world_position(ui_scenegraph, "list_mask"))
-		local mask_size = UISceneGraph.get_size(ui_scenegraph, "list_mask")
-		local list_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id_start)
-
-		if selected_list_index then
-			local selected_widget = widgets[selected_list_index]
-			local selected_widget_offset = selected_widget.style.offset
-			local selected_widget_size = selected_widget.style.size
-			temp_pos_table[1] = list_position[1] + selected_widget_offset[1]
-			temp_pos_table[2] = list_position[2] + selected_widget_offset[2]
-			local selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-			temp_pos_table[2] = temp_pos_table[2] + selected_widget_size[2]
-
-			if selected_widget_visible then
-				selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-			end
-
-			if not selected_widget_visible then
-				local below_baseline = nil
-
-				if list_position[2] + selected_widget_offset[2] < mask_pos[2] then
-					below_baseline = true
-				else
-					below_baseline = false
-				end
-
-				if (not going_downwards and below_baseline) or (going_downwards and not below_baseline) then
-					going_downwards = not going_downwards
-					base_widget = selected_widget
-				end
-			end
-		end
-
-		local base_widget_style = base_widget.style
-		local base_widget_size = base_widget_style.size
-		local base_widget_offset = base_widget_style.offset
-		temp_pos_table[1] = list_position[1] + base_widget_offset[1]
-		temp_pos_table[2] = list_position[2] + base_widget_offset[2]
-		local widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		temp_pos_table[2] = temp_pos_table[2] + base_widget_size[2]
-
-		if widget_visible then
-			widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
-		end
-
-		if not widget_visible then
-			local step = 0
-
-			if going_downwards then
-				local mask_pos_y = mask_pos[2]
-				local widget_pos_y = list_position[2] + base_widget_offset[2]
-				local diff = math.abs(mask_pos_y - widget_pos_y)
-				step = diff / max_offset_y
-			else
-				local mask_upper_pos_y = mask_pos[2] + mask_size[2]
-				local widget_upper_pos_y = temp_pos_table[2]
-				local diff = math.abs(mask_upper_pos_y - widget_upper_pos_y)
-				step = -(diff / max_offset_y)
-			end
-
-			local scrollbar = self.scrollbar
-			local value = scrollbar.content.scroll_bar_info.value
-
-			self:set_scrollbar_value(math.clamp(value + step, 0, 1))
-		end
+	slot4 = if going_downwards then
+	JUMP TO BLOCK #6
 	else
-		local scrollbar = self.scrollbar
-
-		if going_downwards then
-			self:set_scrollbar_value(1)
-		else
-			self:set_scrollbar_value(0)
-		end
+	JUMP TO BLOCK #7
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 15-18, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	slot6 = if not widgets[index + 1] then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 19-20, warpins: 2 ---
+	local base_widget = widgets[index - 1]
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 21-22, warpins: 2 ---
+	--- END OF BLOCK #8 ---
+
+	slot6 = if base_widget then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #28
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 23-45, warpins: 1 ---
+	local max_offset_y = selected_settings_list.max_offset_y
+	local ui_scenegraph = self.ui_scenegraph
+	local scenegraph_id_start = selected_settings_list.scenegraph_id_start
+	local mask_pos = Vector3.deprecated_copy(UISceneGraph.get_world_position(ui_scenegraph, "list_mask"))
+	local mask_size = UISceneGraph.get_size(ui_scenegraph, "list_mask")
+	local list_position = UISceneGraph.get_world_position(ui_scenegraph, scenegraph_id_start)
+	--- END OF BLOCK #9 ---
+
+	slot3 = if selected_list_index then
+	JUMP TO BLOCK #10
+	else
+	JUMP TO BLOCK #21
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 46-74, warpins: 1 ---
+	local selected_widget = widgets[selected_list_index]
+	local selected_widget_offset = selected_widget.style.offset
+	local selected_widget_size = selected_widget.style.size
+	temp_pos_table[1] = list_position[1] + selected_widget_offset[1]
+	temp_pos_table[2] = list_position[2] + selected_widget_offset[2]
+	local selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+	temp_pos_table[2] = temp_pos_table[2] + selected_widget_size[2]
+	--- END OF BLOCK #10 ---
+
+	slot16 = if selected_widget_visible then
+	JUMP TO BLOCK #11
+	else
+	JUMP TO BLOCK #12
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 75-81, warpins: 1 ---
+	selected_widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+	--- END OF BLOCK #11 ---
+
+	FLOW; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 82-83, warpins: 2 ---
+	--- END OF BLOCK #12 ---
+
+	slot16 = if not selected_widget_visible then
+	JUMP TO BLOCK #13
+	else
+	JUMP TO BLOCK #21
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 84-90, warpins: 1 ---
+	local below_baseline = nil
+	--- END OF BLOCK #13 ---
+
+	if list_position[2] + selected_widget_offset[2] < mask_pos[2] then
+	JUMP TO BLOCK #14
+	else
+	JUMP TO BLOCK #15
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 91-92, warpins: 1 ---
+	below_baseline = true
+	--- END OF BLOCK #14 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #16
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #15 93-93, warpins: 1 ---
+	below_baseline = false
+	--- END OF BLOCK #15 ---
+
+	FLOW; TARGET BLOCK #16
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #16 94-95, warpins: 2 ---
+	--- END OF BLOCK #16 ---
+
+	slot4 = if not going_downwards then
+	JUMP TO BLOCK #17
+	else
+	JUMP TO BLOCK #18
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #17 96-97, warpins: 1 ---
+	--- END OF BLOCK #17 ---
+
+	slot17 = if not below_baseline then
+	JUMP TO BLOCK #18
+	else
+	JUMP TO BLOCK #20
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #18 98-99, warpins: 2 ---
+	--- END OF BLOCK #18 ---
+
+	slot4 = if going_downwards then
+	JUMP TO BLOCK #19
+	else
+	JUMP TO BLOCK #21
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #19 100-101, warpins: 1 ---
+	--- END OF BLOCK #19 ---
+
+	slot17 = if not below_baseline then
+	JUMP TO BLOCK #20
+	else
+	JUMP TO BLOCK #21
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #20 102-103, warpins: 2 ---
+	going_downwards = not going_downwards
+	base_widget = selected_widget
+	--- END OF BLOCK #20 ---
+
+	FLOW; TARGET BLOCK #21
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #21 104-130, warpins: 5 ---
+	local base_widget_style = base_widget.style
+	local base_widget_size = base_widget_style.size
+	local base_widget_offset = base_widget_style.offset
+	temp_pos_table[1] = list_position[1] + base_widget_offset[1]
+	temp_pos_table[2] = list_position[2] + base_widget_offset[2]
+	local widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+	temp_pos_table[2] = temp_pos_table[2] + base_widget_size[2]
+	--- END OF BLOCK #21 ---
+
+	slot16 = if widget_visible then
+	JUMP TO BLOCK #22
+	else
+	JUMP TO BLOCK #23
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #22 131-137, warpins: 1 ---
+	widget_visible = math.point_is_inside_2d_box(temp_pos_table, mask_pos, mask_size)
+	--- END OF BLOCK #22 ---
+
+	FLOW; TARGET BLOCK #23
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #23 138-139, warpins: 2 ---
+	--- END OF BLOCK #23 ---
+
+	slot16 = if not widget_visible then
+	JUMP TO BLOCK #24
+	else
+	JUMP TO BLOCK #31
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #24 140-142, warpins: 1 ---
+	local step = 0
+	--- END OF BLOCK #24 ---
+
+	slot4 = if going_downwards then
+	JUMP TO BLOCK #25
+	else
+	JUMP TO BLOCK #26
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #25 143-152, warpins: 1 ---
+	local mask_pos_y = mask_pos[2]
+	local widget_pos_y = list_position[2] + base_widget_offset[2]
+	local diff = math.abs(mask_pos_y - widget_pos_y)
+	step = diff / max_offset_y
+	--- END OF BLOCK #25 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #27
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #26 153-163, warpins: 1 ---
+	local mask_upper_pos_y = mask_pos[2] + mask_size[2]
+	local widget_upper_pos_y = temp_pos_table[2]
+	local diff = math.abs(mask_upper_pos_y - widget_upper_pos_y)
+	step = -(diff / max_offset_y)
+	--- END OF BLOCK #26 ---
+
+	FLOW; TARGET BLOCK #27
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #27 164-177, warpins: 2 ---
+	local scrollbar = self.scrollbar
+	local value = scrollbar.content.scroll_bar_info.value
+
+	self:set_scrollbar_value(math.clamp(value + step, 0, 1))
+
+	--- END OF BLOCK #27 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #31
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #28 178-180, warpins: 1 ---
+	local scrollbar = self.scrollbar
+
+	--- END OF BLOCK #28 ---
+
+	slot4 = if going_downwards then
+	JUMP TO BLOCK #29
+	else
+	JUMP TO BLOCK #30
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #29 181-185, warpins: 1 ---
+	self:set_scrollbar_value(1)
+	--- END OF BLOCK #29 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #31
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #30 186-189, warpins: 1 ---
+	self:set_scrollbar_value(0)
+
+	--- END OF BLOCK #30 ---
+
+	FLOW; TARGET BLOCK #31
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #31 190-190, warpins: 4 ---
+	return
+	--- END OF BLOCK #31 ---
+
+
+
 end
 
 OptionsView.set_selected_input_description_by_active = function (self, is_active)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-3, warpins: 1 ---
 	local selected_settings_list = self.selected_settings_list
 
-	if not selected_settings_list then
-		return
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not selected_settings_list then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 4-4, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 5-14, warpins: 2 ---
 	local selected_list_index = selected_settings_list.selected_index
 	local list_widgets = selected_settings_list.widgets
 	local widget = list_widgets[selected_list_index]
 	local is_disabled = widget.content.disabled
 	local widget_type = widget.type
 	local widget_type_template = SettingsWidgetTypeTemplate[widget_type]
+	--- END OF BLOCK #2 ---
 
-	if not is_active or not widget_type_template.active_input_description then
-		local widget_input_description = widget_type_template.input_description
-	end
-
-	if is_disabled then
-		self.menu_input_description:set_input_description(nil)
+	slot1 = if is_active then
+	JUMP TO BLOCK #3
 	else
-		self.menu_input_description:set_input_description(widget_input_description)
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-17, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	slot9 = if not widget_type_template.active_input_description then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 2 ---
+	local widget_input_description = widget_type_template.input_description
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot6 = if is_disabled then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 21-26, warpins: 1 ---
+	self.menu_input_description:set_input_description(nil)
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 27-31, warpins: 1 ---
+	self.menu_input_description:set_input_description(widget_input_description)
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 32-32, warpins: 2 ---
+	return
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.animate_element_by_time = function (self, target, target_index, from, to, time)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local new_animation = UIAnimation.init(UIAnimation.function_by_time, target, target_index, from, to, time, math.ease_out_quad)
 
 	return new_animation
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.animate_element_by_catmullrom = function (self, target, target_index, target_value, p0, p1, p2, p3, time)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local new_animation = UIAnimation.init(UIAnimation.catmullrom, target, target_index, target_value, p0, p1, p2, p3, time)
 
 	return new_animation
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.on_stepper_arrow_pressed = function (self, widget, style_id)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local widget_animations = widget.ui_animations
 	local widget_style = widget.style
 	local pass_style = widget_style[style_id]
@@ -3907,20 +5193,53 @@ OptionsView.on_stepper_arrow_pressed = function (self, widget, style_id)
 	local target_alpha = 255
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = total_time
+	--- END OF BLOCK #0 ---
 
 	if animation_duration > 0 then
-		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
-		local animation_name_width = "stepper_widget_arrow_width_" .. style_id
-		local animation_name_height = "stepper_widget_arrow_height_" .. style_id
-		widget_animations[animation_name_hover] = self:animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
-		widget_animations[animation_name_width] = self:animate_element_by_catmullrom(pass_style.size, 1, default_size[1], 0.7, 1, 1, 0.7, animation_duration)
-		widget_animations[animation_name_height] = self:animate_element_by_catmullrom(pass_style.size, 2, default_size[2], 0.7, 1, 1, 0.7, animation_duration)
+	JUMP TO BLOCK #1
 	else
-		pass_style.color[1] = target_alpha
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-57, warpins: 1 ---
+	local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
+	local animation_name_width = "stepper_widget_arrow_width_" .. style_id
+	local animation_name_height = "stepper_widget_arrow_height_" .. style_id
+	widget_animations[animation_name_hover] = self:animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+	widget_animations[animation_name_width] = self:animate_element_by_catmullrom(pass_style.size, 1, default_size[1], 0.7, 1, 1, 0.7, animation_duration)
+	widget_animations[animation_name_height] = self:animate_element_by_catmullrom(pass_style.size, 2, default_size[2], 0.7, 1, 1, 0.7, animation_duration)
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 58-59, warpins: 1 ---
+	pass_style.color[1] = target_alpha
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 60-60, warpins: 2 ---
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.on_stepper_arrow_hover = function (self, widget, style_id)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local widget_animations = widget.ui_animations
 	local widget_style = widget.style
 	local pass_style = widget_style[style_id]
@@ -3928,16 +5247,49 @@ OptionsView.on_stepper_arrow_hover = function (self, widget, style_id)
 	local target_alpha = 255
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = (1 - current_alpha / target_alpha) * total_time
+	--- END OF BLOCK #0 ---
 
 	if animation_duration > 0 then
-		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
-		widget_animations[animation_name_hover] = self:animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+	JUMP TO BLOCK #1
 	else
-		pass_style.color[1] = target_alpha
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-28, warpins: 1 ---
+	local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
+	widget_animations[animation_name_hover] = self:animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 29-30, warpins: 1 ---
+	pass_style.color[1] = target_alpha
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 31-31, warpins: 2 ---
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.on_stepper_arrow_dehover = function (self, widget, style_id)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local widget_animations = widget.ui_animations
 	local widget_style = widget.style
 	local pass_style = widget_style[style_id]
@@ -3945,207 +5297,565 @@ OptionsView.on_stepper_arrow_dehover = function (self, widget, style_id)
 	local target_alpha = 0
 	local total_time = UISettings.scoreboard.topic_hover_duration
 	local animation_duration = current_alpha / 255 * total_time
+	--- END OF BLOCK #0 ---
 
 	if animation_duration > 0 then
-		local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
-		widget_animations[animation_name_hover] = self:animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+	JUMP TO BLOCK #1
 	else
-		pass_style.color[1] = target_alpha
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-27, warpins: 1 ---
+	local animation_name_hover = "stepper_widget_arrow_hover_" .. style_id
+	widget_animations[animation_name_hover] = self:animate_element_by_time(pass_style.color, 1, current_alpha, target_alpha, animation_duration)
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 28-29, warpins: 1 ---
+	pass_style.color[1] = target_alpha
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 30-30, warpins: 2 ---
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.checkbox_test_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-3, warpins: 1 ---
 	return false, "test"
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.checkbox_test_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	widget.content.flag = false
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.checkbox_test = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local flag = content.flag
 
 	print("OptionsView:checkbox_test(flag)", self, flag)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.slider_test_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	return 0.5, 5, 500, 0, "Music Volume"
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.slider_test_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	widget.content.value = 0.5
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.slider_test = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local value = content.value
 
 	print("OptionsView:slider_test(flag)", self, value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.drop_down_test_setup = function (self)
-	local options = {
-		{
-			text = "1920x1080",
-			value = {
-				1920,
-				1080
-			}
-		},
-		{
-			text = "1680x1050",
-			value = {
-				1680,
-				1050
-			}
-		},
-		{
-			text = "1680x1050",
-			value = {
-				1680,
-				1050
-			}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-17, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		text = "1920x1080",
+		value = {
+			1920,
+			1080
+		}
+	}
+	options[2] = {
+		text = "1680x1050",
+		value = {
+			1680,
+			1050
+		}
+	}
+	options[3] = {
+		text = "1680x1050",
+		value = {
+			1680,
+			1050
 		}
 	}
 
 	return 1, options, "Resolution"
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.drop_down_test_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local options_texts = widget.content.options_texts
 	widget.content.selected_option = options_texts[1]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.drop_down_test = function (self, content, i)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	print("OptionsView:dropdown_test(flag)", self, content, i)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_stepper_test_setup = function (self)
-	local options = {
-		{
-			text = "value_1",
-			value = 1
-		},
-		{
-			text = "value_2_maddafakkaaa",
-			value = 2
-		},
-		{
-			text = "value_3_yobro",
-			value = 3
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		text = "value_1",
+		value = 1
+	}
+	options[2] = {
+		text = "value_2_maddafakkaaa",
+		value = 2
+	}
+	options[3] = {
+		text = "value_3_yobro",
+		value = 3
 	}
 
 	return 1, options, "stepper_test"
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_stepper_test_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	widget.content.current_selection = 1
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_stepper_test = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
 
 	print(value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_vsync_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("vsync") then
-		local vsync = false
-	end
+	--- END OF BLOCK #0 ---
 
-	if vsync then
-		slot3 = 2
+	slot2 = if not Application.user_setting("vsync")
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "vsync") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local vsync = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if vsync then
+	JUMP TO BLOCK #3
 	else
-		local default_value = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "vsync")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_value = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "settings_menu_vsync", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_vsync_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local vsync = assigned(self.changed_user_settings.vsync, Application.user_setting("vsync"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if vsync then
-		slot4 = 2
+	slot2 = if vsync then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_vsync = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.vsync = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_hud_clamp_ui_scaling_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("hud_clamp_ui_scaling") then
-		local hud_clamp_ui_scaling = false
-	end
+	--- END OF BLOCK #0 ---
 
-	if hud_clamp_ui_scaling then
-		slot3 = 2
+	slot2 = if not Application.user_setting("hud_clamp_ui_scaling")
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "hud_clamp_ui_scaling") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local hud_clamp_ui_scaling = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if hud_clamp_ui_scaling then
+	JUMP TO BLOCK #3
 	else
-		local default_value = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "hud_clamp_ui_scaling")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_value = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "settings_menu_hud_clamp_ui_scaling", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_hud_clamp_ui_scaling_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local use_custom_hud_scale = assigned(self.changed_user_settings.hud_clamp_ui_scaling, Application.user_setting("hud_clamp_ui_scaling"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if use_custom_hud_scale then
-		slot4 = 2
+	slot2 = if use_custom_hud_scale then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_hud_clamp_ui_scaling = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
@@ -4153,930 +5863,3328 @@ OptionsView.cb_hud_clamp_ui_scaling = function (self, content)
 	local force_update = true
 
 	UPDATE_RESOLUTION_LOOKUP(force_update)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_hud_custom_scale_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("use_custom_hud_scale") then
-		local use_custom_hud_scale = false
-	end
+	--- END OF BLOCK #0 ---
 
-	if use_custom_hud_scale then
-		slot3 = 2
+	slot2 = if not Application.user_setting("use_custom_hud_scale")
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_custom_hud_scale") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local use_custom_hud_scale = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_custom_hud_scale then
+	JUMP TO BLOCK #3
 	else
-		local default_value = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "use_custom_hud_scale")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_value = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "settings_menu_hud_custom_scale", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_hud_custom_scale_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local use_custom_hud_scale = assigned(self.changed_user_settings.use_custom_hud_scale, Application.user_setting("use_custom_hud_scale"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if use_custom_hud_scale then
-		slot4 = 2
+	slot2 = if use_custom_hud_scale then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_hud_custom_scale = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
 	self.changed_user_settings.use_custom_hud_scale = value
 
+	--- END OF BLOCK #0 ---
+
 	if value == true then
-		self:set_widget_disabled("hud_scale", false)
+	JUMP TO BLOCK #1
 	else
-		self:set_widget_disabled("hud_scale", true)
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-13, warpins: 1 ---
+	self:set_widget_disabled("hud_scale", false)
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 1 ---
+	self:set_widget_disabled("hud_scale", true)
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-23, warpins: 2 ---
 	local force_update = true
 
 	UPDATE_RESOLUTION_LOOKUP(force_update)
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_enabled_pc_menu_layout_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("use_pc_menu_layout") then
-		local use_pc_menu_layout = false
-	end
+	--- END OF BLOCK #0 ---
 
-	if use_pc_menu_layout then
-		slot3 = 2
+	slot2 = if not Application.user_setting("use_pc_menu_layout")
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_pc_menu_layout") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local use_pc_menu_layout = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_pc_menu_layout then
+	JUMP TO BLOCK #3
 	else
-		local default_value = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "use_pc_menu_layout")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_value = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "settings_menu_enabled_pc_menu_layout", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_enabled_pc_menu_layout_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local use_pc_menu_layout = assigned(self.changed_user_settings.use_pc_menu_layout, Application.user_setting("use_pc_menu_layout"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if use_pc_menu_layout then
-		slot4 = 2
+	slot2 = if use_pc_menu_layout then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_enabled_pc_menu_layout = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_pc_menu_layout = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_enabled_gamepad_hud_layout_setup = function (self)
-	local options = {
-		{
-			value = "auto",
-			text = Localize("map_host_option_1")
-		},
-		{
-			value = "always",
-			text = Localize("map_host_option_2")
-		},
-		{
-			value = "never",
-			text = Localize("map_host_option_3")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-25, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "auto",
+		text = Localize("map_host_option_1")
+	}
+	options[2] = {
+		value = "always",
+		text = Localize("map_host_option_2")
+	}
+	options[3] = {
+		value = "never",
+		text = Localize("map_host_option_3")
 	}
 
-	if not Application.user_setting("use_gamepad_hud_layout") then
-		local use_gamepad_hud_layout = "auto"
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("use_gamepad_hud_layout")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 26-26, warpins: 1 ---
+	local use_gamepad_hud_layout = "auto"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-37, warpins: 2 ---
 	local selection = 1
 	local default_value = 1
 	local default_setting = DefaultUserSettings.get("user_settings", "use_gamepad_hud_layout")
 
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 38-49, warpins: 0 ---
 	for idx, option in ipairs(options) do
-		if use_gamepad_hud_layout == option.value and not idx then
-			selection = selection
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 38-40, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if use_gamepad_hud_layout == option.value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
 
-		if default_setting == option.value and not idx then
-			default_value = default_value
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 41-42, warpins: 1 ---
+		--- END OF BLOCK #1 ---
+
+		slot3 = if not idx then
+		JUMP TO BLOCK #2
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 42-42, warpins: 1 ---
+		selection = selection
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 43-45, warpins: 3 ---
+		--- END OF BLOCK #3 ---
+
+		if default_setting == option.value then
+		JUMP TO BLOCK #4
+		else
+		JUMP TO BLOCK #6
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 46-47, warpins: 1 ---
+		--- END OF BLOCK #4 ---
+
+		slot4 = if not idx then
+		JUMP TO BLOCK #5
+		else
+		JUMP TO BLOCK #6
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 47-47, warpins: 1 ---
+		default_value = default_value
+		--- END OF BLOCK #5 ---
+
+		FLOW; TARGET BLOCK #6
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #6 48-49, warpins: 4 ---
+		--- END OF BLOCK #6 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 50-54, warpins: 1 ---
 	return selection, options, "settings_menu_enabled_gamepad_hud_layout", default_value
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_enabled_gamepad_hud_layout_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local use_gamepad_hud_layout = assigned(self.changed_user_settings.use_gamepad_hud_layout, Application.user_setting("use_gamepad_hud_layout"))
 	local options_values = widget.content.options_values
 
-	for idx, option_value in ipairs(options_values) do
-		if use_gamepad_hud_layout == option_value then
-			widget.content.current_selection = idx
+	--- END OF BLOCK #0 ---
 
-			break
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-21, warpins: 0 ---
+	for idx, option_value in ipairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 15-16, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if use_gamepad_hud_layout == option_value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 17-19, warpins: 1 ---
+		widget.content.current_selection = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 20-21, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-22, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_enabled_gamepad_hud_layout = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_gamepad_hud_layout = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_fullscreen_setup = function (self)
-	local options = {
-		{
-			value = "fullscreen",
-			text = Localize("menu_settings_fullscreen")
-		},
-		{
-			value = "borderless_fullscreen",
-			text = Localize("menu_settings_borderless_window")
-		},
-		{
-			value = "windowed",
-			text = Localize("menu_settings_windowed")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-29, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "fullscreen",
+		text = Localize("menu_settings_fullscreen")
+	}
+	options[2] = {
+		value = "borderless_fullscreen",
+		text = Localize("menu_settings_borderless_window")
+	}
+	options[3] = {
+		value = "windowed",
+		text = Localize("menu_settings_windowed")
 	}
 	local fullscreen = Application.user_setting("fullscreen")
 	local borderless_fullscreen = Application.user_setting("borderless_fullscreen")
+	--- END OF BLOCK #0 ---
 
-	if not fullscreen then
-		slot4 = not borderless_fullscreen
+	slot2 = if not fullscreen then
+	JUMP TO BLOCK #1
 	else
-		slot4 = false
-
-		if false then
-			local windowed = true
-		end
+	JUMP TO BLOCK #2
 	end
 
-	if fullscreen then
-		slot5 = 1
-	elseif borderless_fullscreen then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 30-31, warpins: 1 ---
+	slot4 = not borderless_fullscreen
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 32-33, warpins: 1 ---
+	slot4 = false
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 34-34, warpins: 0 ---
+	local windowed = true
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 35-36, warpins: 3 ---
+	--- END OF BLOCK #4 ---
+
+	slot2 = if fullscreen then
+	JUMP TO BLOCK #5
 	else
-		local selected_option = 3
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 37-38, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #5 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 39-40, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	slot3 = if borderless_fullscreen then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 41-42, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #7 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 43-43, warpins: 1 ---
+	local selected_option = 3
+	--- END OF BLOCK #8 ---
+
+	FLOW; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 44-55, warpins: 3 ---
 	local default_fullscreen = DefaultUserSettings.get("user_settings", "fullscreen")
 	local default_borderless_fullscreen = DefaultUserSettings.get("user_settings", "borderless_fullscreen")
+	--- END OF BLOCK #9 ---
 
-	if default_fullscreen then
-		slot8 = 1
-	elseif borderless_fullscreen then
-		slot8 = 2
+	slot6 = if default_fullscreen then
+	JUMP TO BLOCK #10
 	else
-		local default_option = 3
+	JUMP TO BLOCK #11
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 56-57, warpins: 1 ---
+	slot8 = 1
+	--- END OF BLOCK #10 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #14
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 58-59, warpins: 1 ---
+	--- END OF BLOCK #11 ---
+
+	slot3 = if borderless_fullscreen then
+	JUMP TO BLOCK #12
+	else
+	JUMP TO BLOCK #13
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 60-61, warpins: 1 ---
+	slot8 = 2
+	--- END OF BLOCK #12 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #14
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 62-62, warpins: 1 ---
+	local default_option = 3
+
+	--- END OF BLOCK #13 ---
+
+	FLOW; TARGET BLOCK #14
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 63-67, warpins: 3 ---
 	return selected_option, options, "menu_settings_windowed_mode", default_option
+	--- END OF BLOCK #14 ---
+
+
+
 end
 
 OptionsView.cb_fullscreen_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-22, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local options_texts = widget.content.options_texts
 	local fullscreen = assigned(self.changed_user_settings.fullscreen, Application.user_setting("fullscreen"))
 	local borderless_fullscreen = assigned(self.changed_user_settings.borderless_fullscreen, Application.user_setting("borderless_fullscreen"))
+	--- END OF BLOCK #0 ---
 
-	if not fullscreen then
-		slot6 = not borderless_fullscreen
+	slot4 = if not fullscreen then
+	JUMP TO BLOCK #1
 	else
-		slot6 = false
-
-		if false then
-			local windowed = true
-		end
+	JUMP TO BLOCK #2
 	end
 
-	if fullscreen then
-		slot7 = 1
-	elseif borderless_fullscreen then
-		slot7 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 23-24, warpins: 1 ---
+	slot6 = not borderless_fullscreen
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 25-26, warpins: 1 ---
+	slot6 = false
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 27-27, warpins: 0 ---
+	local windowed = true
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 28-29, warpins: 3 ---
+	--- END OF BLOCK #4 ---
+
+	slot4 = if fullscreen then
+	JUMP TO BLOCK #5
 	else
-		local selected_option = 3
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 30-31, warpins: 1 ---
+	slot7 = 1
+	--- END OF BLOCK #5 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 32-33, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	slot5 = if borderless_fullscreen then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 34-35, warpins: 1 ---
+	slot7 = 2
+	--- END OF BLOCK #7 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-36, warpins: 1 ---
+	local selected_option = 3
+	--- END OF BLOCK #8 ---
+
+	FLOW; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 37-39, warpins: 3 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #9 ---
+
+
+
 end
 
 OptionsView.cb_fullscreen = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local selected_index = content.current_selection
 	local options_values = content.options_values
 	local value = options_values[selected_index]
 	local changed_user_settings = self.changed_user_settings
+	--- END OF BLOCK #0 ---
 
 	if value == "fullscreen" then
-		changed_user_settings.fullscreen = true
-		changed_user_settings.borderless_fullscreen = false
-	elseif value == "borderless_fullscreen" then
-		changed_user_settings.fullscreen = false
-		changed_user_settings.borderless_fullscreen = true
-	elseif value == "windowed" then
-		changed_user_settings.fullscreen = false
-		changed_user_settings.borderless_fullscreen = false
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 7-11, warpins: 1 ---
+	changed_user_settings.fullscreen = true
+	changed_user_settings.borderless_fullscreen = false
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-13, warpins: 1 ---
+	--- END OF BLOCK #2 ---
 
 	if value == "borderless_fullscreen" then
-		self:set_widget_disabled("resolutions", true)
+	JUMP TO BLOCK #3
 	else
-		self:set_widget_disabled("resolutions", false)
+	JUMP TO BLOCK #4
 	end
 
-	if value == "fullscreen" then
-		self:set_widget_disabled("minimize_on_alt_tab", false)
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 14-18, warpins: 1 ---
+	changed_user_settings.fullscreen = false
+	changed_user_settings.borderless_fullscreen = true
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 19-20, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if value == "windowed" then
+	JUMP TO BLOCK #5
 	else
-		self:set_widget_disabled("minimize_on_alt_tab", true)
+	JUMP TO BLOCK #6
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 21-24, warpins: 1 ---
+	changed_user_settings.fullscreen = false
+	changed_user_settings.borderless_fullscreen = false
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 25-26, warpins: 4 ---
+	--- END OF BLOCK #6 ---
+
+	if value == "borderless_fullscreen" then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 27-32, warpins: 1 ---
+	self:set_widget_disabled("resolutions", true)
+	--- END OF BLOCK #7 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 33-37, warpins: 1 ---
+	self:set_widget_disabled("resolutions", false)
+	--- END OF BLOCK #8 ---
+
+	FLOW; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 38-39, warpins: 2 ---
+	--- END OF BLOCK #9 ---
+
+	if value == "fullscreen" then
+	JUMP TO BLOCK #10
+	else
+	JUMP TO BLOCK #11
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 40-45, warpins: 1 ---
+	self:set_widget_disabled("minimize_on_alt_tab", false)
+	--- END OF BLOCK #10 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 46-50, warpins: 1 ---
+	self:set_widget_disabled("minimize_on_alt_tab", true)
+
+	--- END OF BLOCK #11 ---
+
+	FLOW; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 51-51, warpins: 2 ---
+	return
+	--- END OF BLOCK #12 ---
+
+
+
 end
 
 OptionsView.cb_adapter_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local num_adapters = DisplayAdapter.num_adapters()
 	local options = {}
 
-	for i = 0, num_adapters - 1, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-18, warpins: 0 ---
+	for i = 0, num_adapters - 1 do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 9-18, warpins: 2 ---
 		options[#options + 1] = {
 			text = tostring(i),
 			value = i
 		}
+		--- END OF BLOCK #0 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 19-34, warpins: 1 ---
 	local adapter_index = Application.user_setting("adapter_index")
 	local selected_option = adapter_index + 1
 	local default_adapter = DefaultUserSettings.get("user_settings", "adapter_index")
 	local default_option = default_adapter + 1
 
 	return selected_option, options, "menu_settings_adapter", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_adapter_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local adapter_index = assigned(self.changed_user_settings.adapter_index, Application.user_setting("adapter_index"))
 	local selected_option = adapter_index + 1
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_adapter = function (self, content, selected_index)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local value = options_values[content.current_selection]
 	local changed_user_settings = self.changed_user_settings
 	changed_user_settings.adapter_index = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_minimize_on_alt_tab_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-22, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local minimize_on_alt_tab = Application.user_setting("fullscreen_minimize_on_alt_tab")
 	local selected_option = 1
 
-	for i, step in ipairs(options) do
-		if minimize_on_alt_tab == step.value then
-			selected_option = i
+	--- END OF BLOCK #0 ---
 
-			break
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 23-29, warpins: 0 ---
+	for i, step in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if minimize_on_alt_tab == step.value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-29, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 30-34, warpins: 2 ---
 	return selected_option, options, "menu_settings_minimize_on_alt_tab", true
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_minimize_on_alt_tab_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local minimize_on_alt_tab = assigned(self.changed_user_settings.fullscreen_minimize_on_alt_tab, Application.user_setting("fullscreen_minimize_on_alt_tab"))
 	local selected_option = 1
 
-	for i, value in ipairs(options_values) do
-		if minimize_on_alt_tab == value then
-			selected_option = i
+	--- END OF BLOCK #0 ---
 
-			break
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-21, warpins: 0 ---
+	for i, value in ipairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-17, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if minimize_on_alt_tab == value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 18-19, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 20-21, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-24, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_minimize_on_alt_tab = function (self, content, selected_index)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local value = options_values[content.current_selection]
 	local changed_user_settings = self.changed_user_settings
 	changed_user_settings.fullscreen_minimize_on_alt_tab = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_graphics_quality_setup = function (self)
-	local options = {
-		{
-			value = "custom",
-			text = Localize("menu_settings_custom")
-		},
-		{
-			value = "lowest",
-			text = Localize("menu_settings_lowest")
-		},
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-46, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "custom",
+		text = Localize("menu_settings_custom")
+	}
+	options[2] = {
+		value = "lowest",
+		text = Localize("menu_settings_lowest")
+	}
+	options[3] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[4] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[5] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[6] = {
+		value = "extreme",
+		text = Localize("menu_settings_extreme")
 	}
 	local graphics_quality = Application.user_setting("graphics_quality")
 	local selected_option = 1
 
-	for i, step in ipairs(options) do
-		if graphics_quality == step.value then
-			selected_option = i
+	--- END OF BLOCK #0 ---
 
-			break
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 47-53, warpins: 0 ---
+	for i, step in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 47-49, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if graphics_quality == step.value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 50-51, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 52-52, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 52-53, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 54-58, warpins: 2 ---
 	return selected_option, options, "menu_settings_graphics_quality", "high"
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_graphics_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local graphics_quality = assigned(self.changed_user_settings.graphics_quality, Application.user_setting("graphics_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i, value in ipairs(options_values) do
-		if graphics_quality == value then
-			selected_option = i
+	--- END OF BLOCK #0 ---
 
-			break
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-21, warpins: 0 ---
+	for i, value in ipairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-17, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if graphics_quality == value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 18-19, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 20-21, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-24, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_graphics_quality = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local value = options_values[content.current_selection]
 	self.changed_user_settings.graphics_quality = value
 
+	--- END OF BLOCK #0 ---
+
 	if value == "custom" then
-		return
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-8, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 9-15, warpins: 2 ---
 	local settings = GraphicsQuality[value]
 	local user_settings = settings.user_settings
 
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-19, warpins: 0 ---
 	for setting, value in pairs(user_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-17, warpins: 1 ---
 		self.changed_user_settings[setting] = value
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 18-19, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 20-24, warpins: 1 ---
 	local render_settings = settings.render_settings
 
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 25-28, warpins: 0 ---
 	for setting, value in pairs(render_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 25-26, warpins: 1 ---
 		self.changed_render_settings[setting] = value
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 27-28, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 29-36, warpins: 1 ---
 	local widgets = self.selected_settings_list.widgets
 	local widgets_n = self.selected_settings_list.widgets_n
 
-	for i = 1, widgets_n, 1 do
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 37-50, warpins: 0 ---
+	for i = 1, widgets_n do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 37-40, warpins: 2 ---
 		local widget = widgets[i]
+		--- END OF BLOCK #0 ---
 
 		if widget.name ~= "graphics_quality_settings" then
-			local content = widget.content
-
-			content.saved_value_cb(widget)
-			content:callback(widget.style, true)
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 41-49, warpins: 1 ---
+		local content = widget.content
+
+		content.saved_value_cb(widget)
+		content:callback(widget.style, true)
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 50-50, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 51-51, warpins: 1 ---
+	return
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_resolutions_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
 	local screen_resolution = Application.user_setting("screen_resolution")
 	local output_screen = Application.user_setting("fullscreen_output")
 	local adapter_index = Application.user_setting("adapter_index")
 
-	if DisplayAdapter.num_outputs(adapter_index) < 1 then
-		local num_adapters = DisplayAdapter.num_adapters()
+	--- END OF BLOCK #0 ---
 
-		for i = 0, num_adapters - 1, 1 do
-			if DisplayAdapter.num_outputs(i) > 0 then
-				adapter_index = i
+	if DisplayAdapter.num_outputs(adapter_index)
 
-				break
-			end
+	 < 1 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #3
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-26, warpins: 1 ---
+	local num_adapters = DisplayAdapter.num_adapters()
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-36, warpins: 0 ---
+	for i = 0, num_adapters - 1 do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 27-33, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if DisplayAdapter.num_outputs(i)
+
+		 > 0 then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 34-35, warpins: 1 ---
+		adapter_index = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 36-36, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 36-36, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
-	if DisplayAdapter.num_outputs(adapter_index) < 1 then
-		return 1, {
-			{
-				text = "1280x720 -- NO OUTPUTS",
-				value = {
-					1280,
-					720
-				}
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 37-43, warpins: 3 ---
+	--- END OF BLOCK #3 ---
+
+	if DisplayAdapter.num_outputs(adapter_index)
+
+	 < 1 then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 44-51, warpins: 1 ---
+	return 1, {
+		{
+			text = "1280x720 -- NO OUTPUTS",
+			value = {
+				1280,
+				720
 			}
-		}, "menu_settings_resolution"
-	end
+		}
+	}, "menu_settings_resolution"
 
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 52-61, warpins: 1 ---
 	local options = {}
 	local num_modes = DisplayAdapter.num_modes(adapter_index, output_screen)
 
-	for i = 0, num_modes - 1, 1 do
-		repeat
-			local width, height = DisplayAdapter.mode(adapter_index, output_screen, i)
+	--- END OF BLOCK #5 ---
 
-			if width < GameSettingsDevelopment.lowest_resolution then
-				break
-			end
+	FLOW; TARGET BLOCK #6
 
-			local text = tostring(width) .. "x" .. tostring(height)
-			options[#options + 1] = {
-				text = text,
-				value = {
-					width,
-					height
-				}
-			}
-		until true
-	end
 
-	local function comparator(a, b)
-		if b.value[1] >= a.value[1] then
-			slot2 = false
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 62-93, warpins: 0 ---
+	for i = 0, num_modes - 1 do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 62-62, warpins: 3 ---
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 63-72, warpins: 1 ---
+		local width, height = DisplayAdapter.mode(adapter_index, output_screen, i)
+		--- END OF BLOCK #1 ---
+
+		if width < GameSettingsDevelopment.lowest_resolution then
+		JUMP TO BLOCK #2
 		else
-			slot2 = true
+		JUMP TO BLOCK #3
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 73-73, warpins: 1 ---
+		--- END OF BLOCK #2 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 74-92, warpins: 1 ---
+		local text = tostring(width) .. "x" .. tostring(height)
+		options[#options + 1] = {
+			text = text,
+			value = {
+				width,
+				height
+			}
+		}
+		--- END OF BLOCK #3 ---
+
+		slot2000000001 = if true then
+		JUMP TO BLOCK #4
+		else
+		JUMP TO BLOCK #0
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 93-93, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
+	end
+
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 94-104, warpins: 1 ---
+	local function comparator(a, b)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-6, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if b.value[1] >= a.value[1] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 7-8, warpins: 1 ---
+		slot2 = false
+		--- END OF BLOCK #1 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 9-9, warpins: 1 ---
+		slot2 = true
+
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 10-10, warpins: 2 ---
 		return slot2
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
 	table.sort(options, comparator)
 
 	local selected_option = 1
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 105-118, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 105-110, warpins: 2 ---
 		local resolution = options[i]
+		--- END OF BLOCK #0 ---
 
-		if resolution.value[1] == screen_resolution[1] and resolution.value[2] == screen_resolution[2] then
-			selected_option = i
-
-			break
+		if resolution.value[1] == screen_resolution[1] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 111-115, warpins: 1 ---
+		--- END OF BLOCK #1 ---
+
+		if resolution.value[2] == screen_resolution[2] then
+		JUMP TO BLOCK #2
+		else
+		JUMP TO BLOCK #4
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 116-117, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 118-118, warpins: 1 ---
+		break
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 118-118, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #8 ---
+
+	FLOW; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 119-123, warpins: 2 ---
 	return selected_option, options, "menu_settings_resolution"
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 124-124, warpins: 2 ---
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_resolutions_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-17, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local options_texts = widget.content.options_texts
 	local resolution = assigned(self.changed_user_settings.screen_resolution, Application.user_setting("screen_resolution"))
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 18-29, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 18-22, warpins: 2 ---
 		local value = options_values[i]
+		--- END OF BLOCK #0 ---
 
-		if value[1] == resolution[1] and value[2] == resolution[2] then
-			selected_option = i
-
-			break
+		if value[1] == resolution[1] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 23-26, warpins: 1 ---
+		--- END OF BLOCK #1 ---
+
+		if value[2] == resolution[2] then
+		JUMP TO BLOCK #2
+		else
+		JUMP TO BLOCK #4
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 27-28, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 29-29, warpins: 1 ---
+		break
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 29-29, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 30-49, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	local fullscreen = assigned(self.changed_user_settings.fullscreen, Application.user_setting("fullscreen"))
 	local borderless_fullscreen = assigned(self.changed_user_settings.borderless_fullscreen, Application.user_setting("borderless_fullscreen"))
+	--- END OF BLOCK #2 ---
 
-	if not fullscreen and borderless_fullscreen then
-		widget.content.disabled = true
+	slot6 = if not fullscreen then
+	JUMP TO BLOCK #3
 	else
-		widget.content.disabled = false
+	JUMP TO BLOCK #5
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 50-51, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	slot7 = if borderless_fullscreen then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 52-55, warpins: 1 ---
+	widget.content.disabled = true
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 56-58, warpins: 2 ---
+	widget.content.disabled = false
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 59-59, warpins: 2 ---
+	return
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_resolutions = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	local selected_index = content.current_selection
 	local options_values = content.options_values
 	local value = options_values[selected_index]
+	--- END OF BLOCK #0 ---
 
-	if value then
-		self.changed_user_settings.screen_resolution = table.clone(value)
+	slot4 = if value then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-11, warpins: 1 ---
+	self.changed_user_settings.screen_resolution = table.clone(value)
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-12, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_lock_framerate_setup = function (self)
-	local options = {
-		{
-			value = 0,
-			text = Localize("menu_settings_off")
-		},
-		{
-			text = "30",
-			value = 30
-		},
-		{
-			text = "60",
-			value = 60
-		},
-		{
-			text = "90",
-			value = 90
-		},
-		{
-			text = "120",
-			value = 120
-		},
-		{
-			text = "144",
-			value = 144
-		},
-		{
-			text = "165",
-			value = 165
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-32, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = 0,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		text = "30",
+		value = 30
+	}
+	options[3] = {
+		text = "60",
+		value = 60
+	}
+	options[4] = {
+		text = "90",
+		value = 90
+	}
+	options[5] = {
+		text = "120",
+		value = 120
+	}
+	options[6] = {
+		text = "144",
+		value = 144
+	}
+	options[7] = {
+		text = "165",
+		value = 165
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_fps")
 	local default_option = nil
 	local selected_option = 1
 
-	if not Application.user_setting("max_fps") then
-		local max_fps = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not Application.user_setting("max_fps")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 33-33, warpins: 1 ---
+	local max_fps = 0
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 34-37, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 38-48, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 38-41, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if max_fps == options[i].value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 42-42, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 43-46, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 47-47, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 48-48, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 49-53, warpins: 1 ---
 	return selected_option, options, "menu_settings_lock_framerate", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_lock_framerate_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local options_texts = widget.content.options_texts
 	local selected_option = nil
 
-	if not assigned(self.changed_user_settings.max_fps, Application.user_setting("max_fps")) then
-		local max_fps = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.max_fps, Application.user_setting("max_fps"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options_values, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-16, warpins: 1 ---
+	local max_fps = 0
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 17-20, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 21-26, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 21-23, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if max_fps == options_values[i] then
-			selected_option = i
-
-			break
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 24-25, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 26-26, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 26-26, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 27-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_lock_framerate = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local selected_index = content.current_selection
 	local value = content.options_values[selected_index]
 	self.changed_user_settings.max_fps = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_max_stacking_frames_setup = function (self)
-	local options = {
-		{
-			value = -1,
-			text = Localize("menu_settings_auto")
-		},
-		{
-			text = "1",
-			value = 1
-		},
-		{
-			text = "2",
-			value = 2
-		},
-		{
-			text = "3",
-			value = 3
-		},
-		{
-			text = "4",
-			value = 4
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-28, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = -1,
+		text = Localize("menu_settings_auto")
+	}
+	options[2] = {
+		text = "1",
+		value = 1
+	}
+	options[3] = {
+		text = "2",
+		value = 2
+	}
+	options[4] = {
+		text = "3",
+		value = 3
+	}
+	options[5] = {
+		text = "4",
+		value = 4
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_stacking_frames")
 	local default_option = nil
 	local selected_option = 1
 
-	if not Application.user_setting("max_stacking_frames") then
-		local max_stacking_frames = -1
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not Application.user_setting("max_stacking_frames")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 29-29, warpins: 1 ---
+	local max_stacking_frames = -1
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 30-33, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 34-44, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 34-37, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if max_stacking_frames == options[i].value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 38-38, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 39-42, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 43-43, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 44-44, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 45-49, warpins: 1 ---
 	return selected_option, options, "menu_settings_max_stacking_frames", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_max_stacking_frames_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local current_selection = nil
 
-	if not assigned(self.changed_user_settings.max_stacking_frames, Application.user_setting("max_stacking_frames")) then
-		local max_stacking_frames = -1
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not assigned(self.changed_user_settings.max_stacking_frames, Application.user_setting("max_stacking_frames"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options_values, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local max_stacking_frames = -1
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-18, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-21, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if max_stacking_frames == options_values[i] then
-			current_selection = i
-
-			break
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 22-23, warpins: 1 ---
+		current_selection = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 24-24, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 24-24, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-27, warpins: 2 ---
 	widget.content.current_selection = current_selection
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_max_stacking_frames = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	self.changed_user_settings.max_stacking_frames = content.options_values[content.current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_anti_aliasing_setup = function (self)
-	local options = {
-		{
-			value = "none",
-			text = Localize("menu_settings_none")
-		},
-		{
-			value = "FXAA",
-			text = Localize("menu_settings_fxaa")
-		},
-		{
-			value = "TAA",
-			text = Localize("menu_settings_taa")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-31, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "none",
+		text = Localize("menu_settings_none")
+	}
+	options[2] = {
+		value = "FXAA",
+		text = Localize("menu_settings_fxaa")
+	}
+	options[3] = {
+		value = "TAA",
+		text = Localize("menu_settings_taa")
 	}
 	local fxaa_enabled = Application.user_setting("render_settings", "fxaa_enabled")
 	local taa_enabled = Application.user_setting("render_settings", "taa_enabled")
+	--- END OF BLOCK #0 ---
 
-	if fxaa_enabled then
-		slot4 = 2
-	elseif taa_enabled then
-		slot4 = 3
+	slot2 = if fxaa_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 32-33, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 34-35, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if taa_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 36-37, warpins: 1 ---
+	slot4 = 3
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 38-38, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 39-50, warpins: 3 ---
 	local default_fxaa_enabled = DefaultUserSettings.get("render_settings", "fxaa_enabled")
 	local default_taa_enabled = DefaultUserSettings.get("render_settings", "taa_enabled")
+	--- END OF BLOCK #5 ---
 
-	if default_fxaa_enabled then
-		slot7 = 2
-	elseif default_taa_enabled then
-		slot7 = 3
+	slot5 = if default_fxaa_enabled then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 51-52, warpins: 1 ---
+	slot7 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 53-54, warpins: 1 ---
+	--- END OF BLOCK #7 ---
+
+	slot6 = if default_taa_enabled then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #9
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 55-56, warpins: 1 ---
+	slot7 = 3
+	--- END OF BLOCK #8 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 57-57, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 58-62, warpins: 3 ---
 	return selected_option, options, "menu_settings_anti_aliasing", default_option
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_anti_aliasing_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
 	local fxaa_enabled = assigned(self.changed_render_settings.fxaa_enabled, Application.user_setting("render_settings", "fxaa_enabled"))
 	local taa_enabled = assigned(self.changed_render_settings.taa_enabled, Application.user_setting("render_settings", "taa_enabled"))
+	--- END OF BLOCK #0 ---
 
-	if fxaa_enabled then
-		slot4 = 2
-	elseif taa_enabled then
-		slot4 = 3
+	slot2 = if fxaa_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-22, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 23-24, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if taa_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 25-26, warpins: 1 ---
+	slot4 = 3
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 27-27, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 28-30, warpins: 3 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_anti_aliasing = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	local selected_index = content.current_selection
 	local value = content.options_values[selected_index]
+	--- END OF BLOCK #0 ---
 
 	if value == "FXAA" then
-		self.changed_render_settings.fxaa_enabled = true
-		self.changed_render_settings.taa_enabled = false
-	elseif value == "TAA" then
-		self.changed_render_settings.fxaa_enabled = false
-		self.changed_render_settings.taa_enabled = true
+	JUMP TO BLOCK #1
 	else
-		self.changed_render_settings.fxaa_enabled = false
-		self.changed_render_settings.taa_enabled = false
+	JUMP TO BLOCK #2
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-12, warpins: 1 ---
+	self.changed_render_settings.fxaa_enabled = true
+	self.changed_render_settings.taa_enabled = false
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-14, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	if value == "TAA" then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-21, warpins: 1 ---
+	self.changed_render_settings.fxaa_enabled = false
+	self.changed_render_settings.taa_enabled = true
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 22-27, warpins: 1 ---
+	self.changed_render_settings.fxaa_enabled = false
+	self.changed_render_settings.taa_enabled = false
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 28-29, warpins: 3 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 30-34, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 2 ---
+	return
+	--- END OF BLOCK #7 ---
+
+
+
 end
 
 OptionsView.cb_gamma_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local min = 1.5
 	local max = 5
 
-	if not Application.user_setting("render_settings", "gamma") then
-		local gamma = 2.2
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("render_settings", "gamma")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 10-10, warpins: 1 ---
+	local gamma = 2.2
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-37, warpins: 2 ---
 	local value = get_slider_value(min, max, gamma)
 	local default_value = math.clamp(DefaultUserSettings.get("render_settings", "gamma"), min, max)
 
 	Application.set_render_setting("gamma", gamma)
 
 	return value, min, max, 1, "menu_settings_gamma", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamma_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_render_settings.gamma, Application.user_setting("render_settings", "gamma")) then
-		local gamma = 2.2
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_render_settings.gamma, Application.user_setting("render_settings", "gamma"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-15, warpins: 1 ---
+	local gamma = 2.2
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-35, warpins: 2 ---
 	gamma = math.clamp(gamma, min, max)
 	content.internal_value = get_slider_value(min, max, gamma)
 	content.value = gamma
 
 	Application.set_render_setting("gamma", content.value)
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamma = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	self.changed_render_settings.gamma = content.value
 
 	Application.set_render_setting("gamma", content.value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_fsr_enabled_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-25, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local fsr_enabled = Application.user_setting("render_settings", "fsr_enabled")
 	local default_value = DefaultUserSettings.get("render_settings", "fsr_enabled")
+	--- END OF BLOCK #0 ---
 
-	if fsr_enabled then
-		slot4 = 2
+	slot2 = if fsr_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 26-27, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 28-28, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 1
+	JUMP TO BLOCK #5
 	end
 
-	if not IS_WINDOWS then
-		slot6 = Application.set_render_setting
-		slot7 = "fsr_enabled"
 
-		if not fsr_enabled or not tostring(fsr_enabled) then
-			slot8 = tostring(default_value)
-		end
 
-		slot6(slot7, slot8)
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-32, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-33, warpins: 1 ---
+	local default_option = 1
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-36, warpins: 2 ---
+	--- END OF BLOCK #6 ---
+
+	slot6 = if not IS_WINDOWS then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #11
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 37-41, warpins: 1 ---
+	slot6 = Application.set_render_setting
+	slot7 = "fsr_enabled"
+
+	--- END OF BLOCK #7 ---
+
+	slot2 = if fsr_enabled then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #9
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 42-46, warpins: 1 ---
+	--- END OF BLOCK #8 ---
+
+	slot8 = if not tostring(fsr_enabled)
+
+	 then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 47-49, warpins: 2 ---
+	slot8 = tostring(default_value)
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 50-50, warpins: 2 ---
+	slot6(slot7, slot8)
+
+	--- END OF BLOCK #10 ---
+
+	FLOW; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 51-55, warpins: 2 ---
 	return selected_option, options, "menu_settings_fsr_enabled", default_option
+	--- END OF BLOCK #11 ---
+
+
+
 end
 
 OptionsView.cb_fsr_enabled_saved_value = function (self, widget)
-	local fsr_enabled = assigned(self.changed_render_settings.fsr_enabled, Application.user_setting("render_settings", "fsr_enabled"))
 
-	if fsr_enabled then
-		slot3 = 2
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	local fsr_enabled = assigned(self.changed_render_settings.fsr_enabled, Application.user_setting("render_settings", "fsr_enabled"))
+	--- END OF BLOCK #0 ---
+
+	slot2 = if fsr_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-17, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_fsr_enabled = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.fsr_enabled = value
 
-	if not IS_WINDOWS then
-		Application.set_render_setting("fsr_enabled", tostring(value))
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not IS_WINDOWS then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-15, warpins: 1 ---
+	Application.set_render_setting("fsr_enabled", tostring(value))
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-16, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_fsr_enabled_condition = function (self, content, style)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local content_enabled = not content.disable
 	local taa_enabled_changed_value = self.changed_render_settings.taa_enabled
 	local taa_enabled_value = Application.user_setting("render_settings", "taa_enabled")
 	local fsr_allowed = nil
+	--- END OF BLOCK #0 ---
 
 	if taa_enabled_changed_value ~= nil then
-		fsr_allowed = taa_enabled_changed_value
+	JUMP TO BLOCK #1
 	else
-		fsr_allowed = taa_enabled_value
+	JUMP TO BLOCK #2
 	end
 
-	if not fsr_allowed and content_enabled and content.current_selection ~= content.default_value then
-		content.current_selection = content.default_value
 
-		self:cb_fsr_enabled(content, style)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-14, warpins: 1 ---
+	fsr_allowed = taa_enabled_changed_value
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-15, warpins: 1 ---
+	fsr_allowed = taa_enabled_value
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot6 = if not fsr_allowed then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-19, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	slot3 = if content_enabled then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 20-23, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if content.current_selection ~= content.default_value then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 24-30, warpins: 1 ---
+	content.current_selection = content.default_value
+
+	self:cb_fsr_enabled(content, style)
+
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 31-33, warpins: 4 ---
 	content.disabled = not fsr_allowed
+
+	return
+	--- END OF BLOCK #7 ---
+
+
+
 end
 
 OptionsView.cb_fsr_quality_setup = function (self)
-	local options = {
-		{
-			value = 1,
-			text = Localize("menu_settings_performance")
-		},
-		{
-			value = 2,
-			text = Localize("menu_settings_balanced")
-		},
-		{
-			value = 3,
-			text = Localize("menu_settings_quality")
-		},
-		{
-			value = 4,
-			text = Localize("menu_settings_ultra_quality")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-42, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = 1,
+		text = Localize("menu_settings_performance")
+	}
+	options[2] = {
+		value = 2,
+		text = Localize("menu_settings_balanced")
+	}
+	options[3] = {
+		value = 3,
+		text = Localize("menu_settings_quality")
+	}
+	options[4] = {
+		value = 4,
+		text = Localize("menu_settings_ultra_quality")
 	}
 	local fsr_quality = Application.user_setting("render_settings", "fsr_quality")
 	local default_value = DefaultUserSettings.get("render_settings", "fsr_quality")
@@ -5084,347 +9192,1276 @@ OptionsView.cb_fsr_quality_setup = function (self)
 	local default_option = default_value
 
 	return selected_option, options, "menu_settings_fsr_quality", default_option
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_fsr_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local fsr_quality = assigned(self.changed_render_settings.fsr_quality, Application.user_setting("render_settings", "fsr_quality"))
 	widget.content.current_selection = fsr_quality
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_fsr_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.fsr_quality = value
 
-	if not IS_WINDOWS then
-		Application.set_render_setting("fsr_quality", value)
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not IS_WINDOWS then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-13, warpins: 1 ---
+	Application.set_render_setting("fsr_quality", value)
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_fsr_quality_condition = function (self, content, style)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local content_enabled = not content.disable
 	local taa_enabled_changed_value = self.changed_render_settings.taa_enabled
 	local taa_enabled_value = Application.user_setting("render_settings", "taa_enabled")
 	local fsr_allowed = nil
+	--- END OF BLOCK #0 ---
 
 	if taa_enabled_changed_value ~= nil then
-		fsr_allowed = taa_enabled_changed_value
+	JUMP TO BLOCK #1
 	else
-		fsr_allowed = taa_enabled_value
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-14, warpins: 1 ---
+	fsr_allowed = taa_enabled_changed_value
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-15, warpins: 1 ---
+	fsr_allowed = taa_enabled_value
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-18, warpins: 2 ---
 	content.disabled = not fsr_allowed
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_sun_shadows_setup = function (self)
-	local options = {
-		{
-			value = "off",
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-43, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "off",
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[3] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[4] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[5] = {
+		value = "extreme",
+		text = Localize("menu_settings_extreme")
 	}
 	local sun_shadows = Application.user_setting("render_settings", "sun_shadows")
 	local sun_shadow_quality = Application.user_setting("sun_shadow_quality")
 	local selection = nil
+	--- END OF BLOCK #0 ---
 
-	if sun_shadows then
-		if sun_shadow_quality == "low" then
-			selection = 2
-		elseif sun_shadow_quality == "medium" then
-			selection = 3
-		elseif sun_shadow_quality == "high" then
-			selection = 4
-		elseif sun_shadow_quality == "extreme" then
-			selection = 5
-		end
+	slot2 = if sun_shadows then
+	JUMP TO BLOCK #1
 	else
-		selection = 1
+	JUMP TO BLOCK #9
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 44-45, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	if sun_shadow_quality == "low" then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 46-47, warpins: 1 ---
+	selection = 2
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 48-49, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if sun_shadow_quality == "medium" then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 50-51, warpins: 1 ---
+	selection = 3
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 52-53, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if sun_shadow_quality == "high" then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 54-55, warpins: 1 ---
+	selection = 4
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 56-57, warpins: 1 ---
+	--- END OF BLOCK #7 ---
+
+	if sun_shadow_quality == "extreme" then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 58-59, warpins: 1 ---
+	selection = 5
+	--- END OF BLOCK #8 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 60-60, warpins: 1 ---
+	selection = 1
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 61-64, warpins: 6 ---
 	return selection, options, "menu_settings_sun_shadows"
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_sun_shadows_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
 	local sun_shadows = assigned(self.changed_render_settings.sun_shadows, Application.user_setting("render_settings", "sun_shadows"))
 	local sun_shadow_quality = assigned(self.changed_user_settings.sun_shadow_quality, Application.user_setting("sun_shadow_quality"))
 	local selection = nil
+	--- END OF BLOCK #0 ---
 
-	if sun_shadows then
-		if sun_shadow_quality == "low" then
-			selection = 2
-		elseif sun_shadow_quality == "medium" then
-			selection = 3
-		elseif sun_shadow_quality == "high" then
-			selection = 4
-		elseif sun_shadow_quality == "extreme" then
-			selection = 5
-		end
+	slot2 = if sun_shadows then
+	JUMP TO BLOCK #1
 	else
-		selection = 1
+	JUMP TO BLOCK #9
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-22, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	if sun_shadow_quality == "low" then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 23-24, warpins: 1 ---
+	selection = 2
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 25-26, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if sun_shadow_quality == "medium" then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 27-28, warpins: 1 ---
+	selection = 3
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 29-30, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if sun_shadow_quality == "high" then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 31-32, warpins: 1 ---
+	selection = 4
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 33-34, warpins: 1 ---
+	--- END OF BLOCK #7 ---
+
+	if sun_shadow_quality == "extreme" then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 35-36, warpins: 1 ---
+	selection = 5
+	--- END OF BLOCK #8 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 37-37, warpins: 1 ---
+	selection = 1
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 38-40, warpins: 6 ---
 	widget.content.current_selection = selection
+
+	return
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_sun_shadows = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local sun_shadow_quality = nil
 	local value = options_values[current_selection]
+	--- END OF BLOCK #0 ---
 
 	if value == "off" then
-		self.changed_render_settings.sun_shadows = false
-		sun_shadow_quality = "low"
+	JUMP TO BLOCK #1
 	else
-		self.changed_render_settings.sun_shadows = true
-		sun_shadow_quality = value
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 7-11, warpins: 1 ---
+	self.changed_render_settings.sun_shadows = false
+	sun_shadow_quality = "low"
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-15, warpins: 1 ---
+	self.changed_render_settings.sun_shadows = true
+	sun_shadow_quality = value
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-23, warpins: 2 ---
 	self.changed_user_settings.sun_shadow_quality = sun_shadow_quality
 	local sun_shadow_quality_settings = SunShadowQuality[sun_shadow_quality]
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 24-27, warpins: 0 ---
 	for setting, key in pairs(sun_shadow_quality_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 24-25, warpins: 1 ---
 		self.changed_render_settings[setting] = key
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 28-29, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 30-34, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 2 ---
+	return
+	--- END OF BLOCK #7 ---
+
+
+
 end
 
 OptionsView.cb_lod_quality_setup = function (self)
-	local options = {
-		{
-			value = 0.6,
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = 0.8,
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = 1,
-			text = Localize("menu_settings_high")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-32, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = 0.6,
+		text = Localize("menu_settings_low")
+	}
+	options[2] = {
+		value = 0.8,
+		text = Localize("menu_settings_medium")
+	}
+	options[3] = {
+		value = 1,
+		text = Localize("menu_settings_high")
 	}
 	local default_value = DefaultUserSettings.get("render_settings", "lod_object_multiplier")
 	local default_option = nil
 
-	if not Application.user_setting("render_settings", "lod_object_multiplier") then
-		local saved_option = 1
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not Application.user_setting("render_settings", "lod_object_multiplier")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 33-33, warpins: 1 ---
+	local saved_option = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 34-38, warpins: 2 ---
 	local selected_option = 1
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 39-49, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 39-42, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if saved_option == options[i].value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 43-43, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 44-47, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 48-48, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 49-49, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 50-54, warpins: 1 ---
 	return selected_option, options, "menu_settings_lod_quality", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_lod_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	if not assigned(self.changed_render_settings.lod_object_multiplier, Application.user_setting("render_settings", "lod_object_multiplier")) then
-		local lod_object_multiplier = 1
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not assigned(self.changed_render_settings.lod_object_multiplier, Application.user_setting("render_settings", "lod_object_multiplier"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options_values, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-15, warpins: 1 ---
+	local lod_object_multiplier = 1
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-19, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-25, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 20-22, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if lod_object_multiplier == options_values[i] then
-			selected_option = i
-
-			break
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 23-24, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 25-25, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 25-25, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 26-28, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_lod_quality = function (self, content)
-	if not content.options_values[content.current_selection] then
-		local value = 1
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not content.options_values[content.current_selection] then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-6, warpins: 1 ---
+	local value = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 7-9, warpins: 2 ---
 	self.changed_render_settings.lod_object_multiplier = value
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_scatter_density_setup = function (self)
-	local options = {
-		{
-			value = 0,
-			text = Localize("menu_settings_off")
-		},
-		{
-			text = "25%",
-			value = 0.25
-		},
-		{
-			text = "50%",
-			value = 0.5
-		},
-		{
-			text = "75%",
-			value = 0.75
-		},
-		{
-			text = "100%",
-			value = 1
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-28, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = 0,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		text = "25%",
+		value = 0.25
+	}
+	options[3] = {
+		text = "50%",
+		value = 0.5
+	}
+	options[4] = {
+		text = "75%",
+		value = 0.75
+	}
+	options[5] = {
+		text = "100%",
+		value = 1
 	}
 	local default_value = DefaultUserSettings.get("render_settings", "lod_scatter_density")
 	local default_option = nil
 
-	if not Application.user_setting("render_settings", "lod_scatter_density") then
-		local saved_option = 1
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not Application.user_setting("render_settings", "lod_scatter_density")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 29-29, warpins: 1 ---
+	local saved_option = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 30-34, warpins: 2 ---
 	local selected_option = 1
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 35-45, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 35-38, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if saved_option == options[i].value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 39-39, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 40-43, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 44-44, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 45-45, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 46-50, warpins: 1 ---
 	return selected_option, options, "menu_settings_scatter_density", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_scatter_density_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	if not assigned(self.changed_render_settings.lod_scatter_density, Application.user_setting("render_settings", "lod_scatter_density")) then
-		local lod_scatter_density = 1
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not assigned(self.changed_render_settings.lod_scatter_density, Application.user_setting("render_settings", "lod_scatter_density"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options_values, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-15, warpins: 1 ---
+	local lod_scatter_density = 1
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-19, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-25, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 20-22, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if lod_scatter_density == options_values[i] then
-			selected_option = i
-
-			break
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 23-24, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 25-25, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 25-25, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 26-28, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_scatter_density = function (self, content, style, called_from_graphics_quality)
-	if not content.options_values[content.current_selection] then
-		local value = 1
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not content.options_values[content.current_selection] then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-6, warpins: 1 ---
+	local value = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 7-10, warpins: 2 ---
 	self.changed_render_settings.lod_scatter_density = value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #2 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 11-15, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 16-16, warpins: 2 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_decoration_density_setup = function (self)
-	local options = {
-		{
-			value = 0,
-			text = Localize("menu_settings_off")
-		},
-		{
-			text = "25%",
-			value = 0.25
-		},
-		{
-			text = "50%",
-			value = 0.5
-		},
-		{
-			text = "75%",
-			value = 0.75
-		},
-		{
-			text = "100%",
-			value = 1
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-22, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = 0,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		text = "25%",
+		value = 0.25
+	}
+	options[3] = {
+		text = "50%",
+		value = 0.5
+	}
+	options[4] = {
+		text = "75%",
+		value = 0.75
+	}
+	options[5] = {
+		text = "100%",
+		value = 1
 	}
 
-	if not Application.user_setting("render_settings", "lod_decoration_density") then
-		local saved_option = 1
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "lod_decoration_density")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 23-23, warpins: 1 ---
+	local saved_option = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 24-28, warpins: 2 ---
 	local selected_option = 1
 
-	for i = 1, #options, 1 do
-		if saved_option == options[i].value then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-35, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 29-32, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if saved_option == options[i].value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 33-34, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 35-35, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 35-35, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 36-39, warpins: 2 ---
 	return selected_option, options, "menu_settings_decoration_density"
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_decoration_density_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	if not assigned(self.changed_render_settings.lod_decoration_density, Application.user_setting("render_settings", "lod_decoration_density")) then
-		local lod_decoration_density = 1
+	--- END OF BLOCK #0 ---
+
+	slot4 = if not assigned(self.changed_render_settings.lod_decoration_density, Application.user_setting("render_settings", "lod_decoration_density"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	for i = 1, #options_values, 1 do
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-15, warpins: 1 ---
+	local lod_decoration_density = 1
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-19, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-25, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 20-22, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if lod_decoration_density == options_values[i] then
-			selected_option = i
-
-			break
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 23-24, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 25-25, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 25-25, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 26-28, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_decoration_density = function (self, content)
-	if not content.options_values[content.current_selection] then
-		local value = 1
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not content.options_values[content.current_selection] then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-6, warpins: 1 ---
+	local value = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 7-9, warpins: 2 ---
 	self.changed_render_settings.lod_decoration_density = value
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_maximum_shadow_casting_lights_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-18, warpins: 1 ---
 	local min = 1
 	local max = 10
 	local max_shadow_casting_lights = Application.user_setting("render_settings", "max_shadow_casting_lights")
 	local value = get_slider_value(min, max, max_shadow_casting_lights)
 
 	return value, min, max, 0, "menu_settings_maximum_shadow_casting_lights"
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_maximum_shadow_casting_lights_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-27, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
@@ -5432,916 +10469,3314 @@ OptionsView.cb_maximum_shadow_casting_lights_saved_value = function (self, widge
 	max_shadow_casting_lights = math.clamp(max_shadow_casting_lights, min, max)
 	content.internal_value = get_slider_value(min, max, max_shadow_casting_lights)
 	content.value = max_shadow_casting_lights
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_maximum_shadow_casting_lights = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	self.changed_render_settings.max_shadow_casting_lights = content.value
 
 	print("max_shadow_casting_lights", content.value)
+	--- END OF BLOCK #0 ---
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 10-14, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-15, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_local_light_shadow_quality_setup = function (self)
-	local options = {
-		{
-			value = "off",
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-48, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "off",
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[3] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[4] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[5] = {
+		value = "extreme",
+		text = Localize("menu_settings_extreme")
 	}
 	local local_light_shadow_quality = Application.user_setting("local_light_shadow_quality")
 	local deferred_local_lights_cast_shadows = Application.user_setting("render_settings", "deferred_local_lights_cast_shadows")
 	local forward_local_lights_cast_shadows = Application.user_setting("render_settings", "forward_local_lights_cast_shadows")
 	local selection = nil
+	--- END OF BLOCK #0 ---
 
-	if not deferred_local_lights_cast_shadows or not forward_local_lights_cast_shadows then
-		selection = 1
-	elseif local_light_shadow_quality == "low" then
-		selection = 2
-	elseif local_light_shadow_quality == "medium" then
-		selection = 3
-	elseif local_light_shadow_quality == "high" then
-		selection = 4
-	elseif local_light_shadow_quality == "extreme" then
-		selection = 5
+	slot3 = if deferred_local_lights_cast_shadows then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 49-50, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	slot4 = if not forward_local_lights_cast_shadows then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 51-52, warpins: 2 ---
+	selection = 1
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 53-54, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if local_light_shadow_quality == "low" then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 55-56, warpins: 1 ---
+	selection = 2
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 57-58, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if local_light_shadow_quality == "medium" then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 59-60, warpins: 1 ---
+	selection = 3
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 61-62, warpins: 1 ---
+	--- END OF BLOCK #7 ---
+
+	if local_light_shadow_quality == "high" then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #9
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 63-64, warpins: 1 ---
+	selection = 4
+	--- END OF BLOCK #8 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 65-66, warpins: 1 ---
+	--- END OF BLOCK #9 ---
+
+	if local_light_shadow_quality == "extreme" then
+	JUMP TO BLOCK #10
+	else
+	JUMP TO BLOCK #11
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 67-67, warpins: 1 ---
+	selection = 5
+
+	--- END OF BLOCK #10 ---
+
+	FLOW; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 68-71, warpins: 6 ---
 	return selection, options, "menu_settings_local_light_shadow_quality"
+	--- END OF BLOCK #11 ---
+
+
+
 end
 
 OptionsView.cb_local_light_shadow_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-29, warpins: 1 ---
 	local local_light_shadow_quality = assigned(self.changed_user_settings.local_light_shadow_quality, Application.user_setting("local_light_shadow_quality"))
 	local deferred_local_lights_cast_shadows = assigned(self.changed_render_settings.deferred_local_lights_cast_shadows, Application.user_setting("render_settings", "deferred_local_lights_cast_shadows"))
 	local forward_local_lights_cast_shadows = assigned(self.changed_render_settings.forward_local_lights_cast_shadows, Application.user_setting("render_settings", "forward_local_lights_cast_shadows"))
 	local selection = nil
+	--- END OF BLOCK #0 ---
 
-	if not deferred_local_lights_cast_shadows or not forward_local_lights_cast_shadows then
-		selection = 1
-	elseif local_light_shadow_quality == "low" then
-		selection = 2
-	elseif local_light_shadow_quality == "medium" then
-		selection = 3
-	elseif local_light_shadow_quality == "high" then
-		selection = 4
-	elseif local_light_shadow_quality == "extreme" then
-		selection = 5
+	slot3 = if deferred_local_lights_cast_shadows then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 30-31, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	slot4 = if not forward_local_lights_cast_shadows then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 32-33, warpins: 2 ---
+	selection = 1
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 34-35, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if local_light_shadow_quality == "low" then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 36-37, warpins: 1 ---
+	selection = 2
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 38-39, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if local_light_shadow_quality == "medium" then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 40-41, warpins: 1 ---
+	selection = 3
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 42-43, warpins: 1 ---
+	--- END OF BLOCK #7 ---
+
+	if local_light_shadow_quality == "high" then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #9
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 44-45, warpins: 1 ---
+	selection = 4
+	--- END OF BLOCK #8 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 46-47, warpins: 1 ---
+	--- END OF BLOCK #9 ---
+
+	if local_light_shadow_quality == "extreme" then
+	JUMP TO BLOCK #10
+	else
+	JUMP TO BLOCK #11
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 48-48, warpins: 1 ---
+	selection = 5
+	--- END OF BLOCK #10 ---
+
+	FLOW; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 49-51, warpins: 6 ---
 	widget.content.current_selection = selection
+
+	return
+	--- END OF BLOCK #11 ---
+
+
+
 end
 
 OptionsView.cb_local_light_shadow_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	local local_light_shadow_quality = nil
+	--- END OF BLOCK #0 ---
 
 	if value == "off" then
-		self.changed_render_settings.deferred_local_lights_cast_shadows = false
-		self.changed_render_settings.forward_local_lights_cast_shadows = false
-		local_light_shadow_quality = "low"
+	JUMP TO BLOCK #1
 	else
-		self.changed_render_settings.deferred_local_lights_cast_shadows = true
-		self.changed_render_settings.forward_local_lights_cast_shadows = true
-		local_light_shadow_quality = value
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 7-14, warpins: 1 ---
+	self.changed_render_settings.deferred_local_lights_cast_shadows = false
+	self.changed_render_settings.forward_local_lights_cast_shadows = false
+	local_light_shadow_quality = "low"
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-21, warpins: 1 ---
+	self.changed_render_settings.deferred_local_lights_cast_shadows = true
+	self.changed_render_settings.forward_local_lights_cast_shadows = true
+	local_light_shadow_quality = value
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 22-29, warpins: 2 ---
 	self.changed_user_settings.local_light_shadow_quality = local_light_shadow_quality
 	local local_light_shadow_quality_settings = LocalLightShadowQuality[local_light_shadow_quality]
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-33, warpins: 0 ---
 	for setting, key in pairs(local_light_shadow_quality_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 30-31, warpins: 1 ---
 		self.changed_render_settings[setting] = key
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 32-33, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 34-35, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 36-40, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 41-41, warpins: 2 ---
+	return
+	--- END OF BLOCK #7 ---
+
+
+
 end
 
 OptionsView.cb_motion_blur_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local motion_blur_enabled = Application.user_setting("render_settings", "motion_blur_enabled")
+	--- END OF BLOCK #0 ---
 
 	if motion_blur_enabled == nil then
-		motion_blur_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	motion_blur_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_motion_blur_enabled = DefaultUserSettings.get("render_settings", "motion_blur_enabled")
+	--- END OF BLOCK #2 ---
 
-	if motion_blur_enabled then
-		slot4 = 2
+	slot2 = if motion_blur_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_motion_blur_enabled then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_motion_blur_enabled then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
-	if not IS_WINDOWS then
-		Application.set_render_setting("motion_blur_enabled", tostring(motion_blur_enabled))
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-39, warpins: 2 ---
+	--- END OF BLOCK #8 ---
+
+	slot6 = if not IS_WINDOWS then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 40-46, warpins: 1 ---
+	Application.set_render_setting("motion_blur_enabled", tostring(motion_blur_enabled))
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 47-51, warpins: 2 ---
 	return selected_option, options, "menu_settings_motion_blur", default_option
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_motion_blur_saved_value = function (self, widget)
-	local motion_blur_enabled = assigned(self.changed_render_settings.motion_blur_enabled, Application.user_setting("render_settings", "motion_blur_enabled"))
 
-	if motion_blur_enabled then
-		slot3 = 2
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	local motion_blur_enabled = assigned(self.changed_render_settings.motion_blur_enabled, Application.user_setting("render_settings", "motion_blur_enabled"))
+	--- END OF BLOCK #0 ---
+
+	slot2 = if motion_blur_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-17, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_motion_blur = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.motion_blur_enabled = value
 
-	if IS_WINDOWS and not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
-	elseif not IS_WINDOWS then
-		Application.set_render_setting("motion_blur_enabled", tostring(value))
+	--- END OF BLOCK #0 ---
+
+	slot5 = if IS_WINDOWS then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #3
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-10, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-16, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 17-19, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot5 = if not IS_WINDOWS then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 20-26, warpins: 1 ---
+	Application.set_render_setting("motion_blur_enabled", tostring(value))
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 27-27, warpins: 3 ---
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_dof_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local dof_enabled = Application.user_setting("render_settings", "dof_enabled")
+	--- END OF BLOCK #0 ---
 
-	if dof_enabled then
-		slot3 = 2
+	slot2 = if dof_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-22, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 23-23, warpins: 1 ---
+	local selected_option = 1
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 24-27, warpins: 2 ---
 	return selected_option, options, "menu_settings_dof"
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_dof_saved_value = function (self, widget)
-	local dof_enabled = assigned(self.changed_render_settings.dof_enabled, Application.user_setting("render_settings", "dof_enabled"))
 
-	if dof_enabled then
-		slot3 = 2
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	local dof_enabled = assigned(self.changed_render_settings.dof_enabled, Application.user_setting("render_settings", "dof_enabled"))
+	--- END OF BLOCK #0 ---
+
+	slot2 = if dof_enabled then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-17, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_dof = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.dof_enabled = value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_bloom_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "bloom_enabled") then
-		local bloom_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "bloom_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local bloom_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "bloom_enabled")
+	--- END OF BLOCK #2 ---
 
-	if bloom_enabled then
-		slot4 = 2
+	slot2 = if bloom_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_bloom", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_bloom_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.bloom_enabled, Application.user_setting("render_settings", "bloom_enabled")) then
-		local bloom_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if bloom_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.bloom_enabled, Application.user_setting("render_settings", "bloom_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local bloom_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if bloom_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_bloom = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.bloom_enabled = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_light_shafts_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "light_shafts_enabled") then
-		local light_shafts_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "light_shafts_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local light_shafts_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "light_shafts_enabled")
+	--- END OF BLOCK #2 ---
 
-	if light_shafts_enabled then
-		slot4 = 2
+	slot2 = if light_shafts_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_light_shafts", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_light_shafts_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.light_shafts_enabled, Application.user_setting("render_settings", "light_shafts_enabled")) then
-		local light_shafts_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if light_shafts_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.light_shafts_enabled, Application.user_setting("render_settings", "light_shafts_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local light_shafts_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if light_shafts_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_light_shafts = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.light_shafts_enabled = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_sun_flare_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "sun_flare_enabled") then
-		local sun_flare_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "sun_flare_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local sun_flare_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "sun_flare_enabled")
+	--- END OF BLOCK #2 ---
 
-	if sun_flare_enabled then
-		slot4 = 2
+	slot2 = if sun_flare_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_sun_flare", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_sun_flare_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.sun_flare_enabled, Application.user_setting("render_settings", "sun_flare_enabled")) then
-		local sun_flare_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if sun_flare_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.sun_flare_enabled, Application.user_setting("render_settings", "sun_flare_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local sun_flare_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if sun_flare_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_sun_flare = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.sun_flare_enabled = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_sharpen_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "sharpen_enabled") then
-		local sharpen_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "sharpen_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local sharpen_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "sharpen_enabled")
+	--- END OF BLOCK #2 ---
 
-	if sharpen_enabled then
-		slot4 = 2
+	slot2 = if sharpen_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_sharpen", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_sharpen_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.sharpen_enabled, Application.user_setting("render_settings", "sharpen_enabled")) then
-		local sharpen_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if sharpen_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.sharpen_enabled, Application.user_setting("render_settings", "sharpen_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local sharpen_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if sharpen_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_sharpen = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
 	self.changed_render_settings.sharpen_enabled = value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_lens_quality_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "lens_quality_enabled") then
-		local lens_quality_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "lens_quality_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local lens_quality_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "lens_quality_enabled")
+	--- END OF BLOCK #2 ---
 
-	if lens_quality_enabled then
-		slot4 = 2
+	slot2 = if lens_quality_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_lens_quality", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_lens_quality_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.lens_quality_enabled, Application.user_setting("render_settings", "lens_quality_enabled")) then
-		local lens_quality_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if lens_quality_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.lens_quality_enabled, Application.user_setting("render_settings", "lens_quality_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local lens_quality_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if lens_quality_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_lens_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.lens_quality_enabled = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_skin_shading_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "skin_material_enabled") then
-		local skin_material_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "skin_material_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local skin_material_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "skin_material_enabled")
+	--- END OF BLOCK #2 ---
 
-	if skin_material_enabled then
-		slot4 = 2
+	slot2 = if skin_material_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_skin_shading", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_skin_shading_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.skin_material_enabled, Application.user_setting("render_settings", "skin_material_enabled")) then
-		local skin_material_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if skin_material_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.skin_material_enabled, Application.user_setting("render_settings", "skin_material_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local skin_material_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if skin_material_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_skin_shading = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.skin_material_enabled = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_ssao_setup = function (self)
-	local options = {
-		{
-			value = "off",
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-40, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "off",
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[3] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[4] = {
+		value = "extreme",
+		text = Localize("menu_settings_extreme")
 	}
 	local ao_quality = Application.user_setting("ao_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "ao_quality")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 41-51, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 41-44, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if options[i].value == ao_quality then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 45-45, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 46-49, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 50-50, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 51-51, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 52-56, warpins: 1 ---
 	return selected_option, options, "menu_settings_ssao", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_ssao_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local ao_quality = assigned(self.changed_user_settings.ao_quality, Application.user_setting("ao_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if ao_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_ssao = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.ao_quality = value
 	local ao_quality_settings = AmbientOcclusionQuality[value]
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-15, warpins: 0 ---
 	for setting, key in pairs(ao_quality_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 12-13, warpins: 1 ---
 		self.changed_render_settings[setting] = key
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 14-15, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-17, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 18-22, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 23-23, warpins: 2 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_char_texture_quality_setup = function (self)
-	local options = {
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-34, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[2] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[3] = {
+		value = "high",
+		text = Localize("menu_settings_high")
 	}
 	local char_texture_quality = Application.user_setting("char_texture_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "char_texture_quality")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 35-45, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 35-38, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if char_texture_quality == options[i].value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 39-39, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 40-43, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 44-44, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 45-45, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 46-50, warpins: 1 ---
 	return selected_option, options, "menu_settings_char_texture_quality", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_char_texture_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local char_texture_quality = assigned(self.changed_user_settings.char_texture_quality, Application.user_setting("char_texture_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if char_texture_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-28, warpins: 1 ---
 	widget.content.current_selection = selected_option
 
 	print("OptionsView:cb_char_texture_quality_saved_value", selected_option, char_texture_quality)
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_char_texture_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.char_texture_quality = value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_env_texture_quality_setup = function (self)
-	local options = {
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-34, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[2] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[3] = {
+		value = "high",
+		text = Localize("menu_settings_high")
 	}
 	local env_texture_quality = Application.user_setting("env_texture_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "env_texture_quality")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 35-45, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 35-38, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if env_texture_quality == options[i].value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 39-39, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 40-43, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 44-44, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 45-45, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 46-50, warpins: 1 ---
 	return selected_option, options, "menu_settings_env_texture_quality", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_env_texture_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local env_texture_quality = assigned(self.changed_user_settings.env_texture_quality, Application.user_setting("env_texture_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if env_texture_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-28, warpins: 1 ---
 	widget.content.current_selection = selected_option
 
 	print("OptionsView:cb_env_texture_quality_saved_value", selected_option, env_texture_quality)
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_env_texture_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.env_texture_quality = value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_subtitles_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("use_subtitles") then
-		local use_subtitles = false
-	end
+	--- END OF BLOCK #0 ---
 
-	if use_subtitles then
-		slot3 = 2
+	slot2 = if not Application.user_setting("use_subtitles")
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_subtitles") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local use_subtitles = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_subtitles then
+	JUMP TO BLOCK #3
 	else
-		local default_value = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "use_subtitles")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_value = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_subtitles", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_subtitles_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.use_subtitles, Application.user_setting("use_subtitles")) then
-		local use_subtitles = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if use_subtitles then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_user_settings.use_subtitles, Application.user_setting("use_subtitles"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local use_subtitles = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_subtitles then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_subtitles = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_subtitles = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_language_setup = function (self)
-	local options = {
-		{
-			value = "en",
-			text = Localize("english")
-		},
-		{
-			value = "fr",
-			text = Localize("french")
-		},
-		{
-			value = "pl",
-			text = Localize("polish")
-		},
-		{
-			value = "es",
-			text = Localize("spanish")
-		},
-		{
-			value = "tr",
-			text = Localize("turkish")
-		},
-		{
-			value = "de",
-			text = Localize("german")
-		},
-		{
-			value = "br-pt",
-			text = Localize("brazilian")
-		},
-		{
-			value = "ru",
-			text = Localize("russian")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-55, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "en",
+		text = Localize("english")
+	}
+	options[2] = {
+		value = "fr",
+		text = Localize("french")
+	}
+	options[3] = {
+		value = "pl",
+		text = Localize("polish")
+	}
+	options[4] = {
+		value = "es",
+		text = Localize("spanish")
+	}
+	options[5] = {
+		value = "tr",
+		text = Localize("turkish")
+	}
+	options[6] = {
+		value = "de",
+		text = Localize("german")
+	}
+	options[7] = {
+		value = "br-pt",
+		text = Localize("brazilian")
+	}
+	options[8] = {
+		value = "ru",
+		text = Localize("russian")
 	}
 
-	if not Application.user_setting("language_id") and (not rawget(_G, "Steam") or not Steam.language()) then
-		local language_id = "en"
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("language_id")
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #4
 	end
 
-	if not DefaultUserSettings.get("user_settings", "language_id") then
-		local default_value = "en"
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 56-61, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	slot2 = if rawget(_G, "Steam")
+	 then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 62-66, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if not Steam.language()
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 67-67, warpins: 2 ---
+	local language_id = "en"
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 68-74, warpins: 3 ---
+	--- END OF BLOCK #4 ---
+
+	slot3 = if not DefaultUserSettings.get("user_settings", "language_id")
+
+	 then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 75-75, warpins: 1 ---
+	local default_value = "en"
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 76-80, warpins: 2 ---
 	local selection = 1
 
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 81-90, warpins: 0 ---
 	for idx, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 81-83, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == language_id then
-			selection = idx
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 84-84, warpins: 1 ---
+		selection = idx
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 85-87, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_value = idx
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 88-88, warpins: 1 ---
+		default_value = idx
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 89-90, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 91-95, warpins: 1 ---
 	return selection, options, "menu_settings_language", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_language_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.language_id, Application.user_setting("language_id")) then
-		local language_id = "en"
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.language_id, Application.user_setting("language_id"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local language_id = "en"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-18, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-23, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-21, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if language_id == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 22-22, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 24-26, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_language = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.language_id = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.reload_language = function (self, language_id)
-	if Managers.package:has_loaded("resource_packages/strings", "boot") then
-		Managers.package:unload("resource_packages/strings", "boot")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if Managers.package:has_loaded("resource_packages/strings", "boot")
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 10-16, warpins: 1 ---
+	Managers.package:unload("resource_packages/strings", "boot")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 17-18, warpins: 2 ---
+	--- END OF BLOCK #2 ---
 
 	if language_id == "en" then
-		Application.set_resource_property_preference_order("en")
+	JUMP TO BLOCK #3
 	else
-		Application.set_resource_property_preference_order(language_id, "en")
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-23, warpins: 1 ---
+	Application.set_resource_property_preference_order("en")
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 24-28, warpins: 1 ---
+	Application.set_resource_property_preference_order(language_id, "en")
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 29-59, warpins: 2 ---
 	Managers.package:load("resource_packages/strings", "boot")
 
 	Managers.localizer = LocalizationManager:new(language_id)
 
 	local function tweak_parser(tweak_name)
-		if not LocalizerTweakData[tweak_name] then
-			slot1 = "<missing LocalizerTweakData \"" .. tweak_name .. "\">"
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-4, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		slot1 = if not LocalizerTweakData[tweak_name] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 5-8, warpins: 1 ---
+		slot1 = "<missing LocalizerTweakData \"" .. tweak_name .. "\">"
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 9-9, warpins: 2 ---
 		return slot1
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
 	Managers.localizer:add_macro("TWEAK", tweak_parser)
 
 	local function key_parser(input_service_and_key_name)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-8, warpins: 1 ---
 		local split_start, split_end = string.find(input_service_and_key_name, "__")
 		slot3 = assert
+		--- END OF BLOCK #0 ---
 
-		if split_start then
-			slot4 = split_end
+		slot4 = if split_start then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 9-9, warpins: 1 ---
+		slot4 = split_end
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 10-57, warpins: 2 ---
 		slot3(slot4, "[key_parser] You need to specify a key using this format $KEY;<input_service>__<key>. Example: $KEY;options_menu__back (note the dubbel underline separating input service and key")
 
 		local input_service_name = string.sub(input_service_and_key_name, 1, split_start - 1)
@@ -6358,63 +13793,295 @@ OptionsView.reload_language = function (self, language_id)
 		local device_type = InputAux.get_device_type(device)
 		local button_index = nil
 
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 58-64, warpins: 0 ---
 		for _, mapping in ipairs(key.input_mappings) do
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #0 58-60, warpins: 1 ---
+			--- END OF BLOCK #0 ---
+
 			if mapping[1] == device_type then
-				button_index = mapping[2]
-
-				break
-			end
-		end
-
-		local key_locale_name = nil
-
-		if button_index then
-			key_locale_name = device.button_name(button_index)
-
-			if device_type == "keyboard" and not device.button_locale_name(button_index) then
-				key_locale_name = key_locale_name
-			end
-
-			if device_type == "mouse" then
-				key_locale_name = string.format("%s %s", "mouse", key_locale_name)
-			end
-		else
-			local button_index = nil
-			local default_device_type = "keyboard"
-
-			for _, mapping in ipairs(key.input_mappings) do
-				if mapping[1] == default_device_type then
-					button_index = mapping[2]
-
-					break
-				end
-			end
-
-			if button_index then
-				key_locale_name = Keyboard.button_name(button_index)
-
-				if not Keyboard.button_locale_name(button_index) then
-					key_locale_name = key_locale_name
-				end
+			JUMP TO BLOCK #1
 			else
-				key_locale_name = Localize(unassigned_keymap)
+			JUMP TO BLOCK #3
 			end
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #1 61-62, warpins: 1 ---
+			button_index = mapping[2]
+
+			--- END OF BLOCK #1 ---
+
+			FLOW; TARGET BLOCK #2
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #2 63-63, warpins: 1 ---
+			break
+			--- END OF BLOCK #2 ---
+
+			FLOW; TARGET BLOCK #3
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #3 63-64, warpins: 2 ---
+			--- END OF BLOCK #3 ---
+
+
+
 		end
 
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 65-67, warpins: 2 ---
+		local key_locale_name = nil
+		--- END OF BLOCK #4 ---
+
+		slot9 = if button_index then
+		JUMP TO BLOCK #5
+		else
+		JUMP TO BLOCK #10
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 68-73, warpins: 1 ---
+		key_locale_name = device.button_name(button_index)
+
+		--- END OF BLOCK #5 ---
+
+		if device_type == "keyboard" then
+		JUMP TO BLOCK #6
+		else
+		JUMP TO BLOCK #8
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #6 74-78, warpins: 1 ---
+		--- END OF BLOCK #6 ---
+
+		slot10 = if not device.button_locale_name(button_index)
+
+		 then
+		JUMP TO BLOCK #7
+		else
+		JUMP TO BLOCK #8
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #7 78-78, warpins: 1 ---
+		key_locale_name = key_locale_name
+		--- END OF BLOCK #7 ---
+
+		FLOW; TARGET BLOCK #8
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #8 79-80, warpins: 3 ---
+		--- END OF BLOCK #8 ---
+
+		if device_type == "mouse" then
+		JUMP TO BLOCK #9
+		else
+		JUMP TO BLOCK #17
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #9 81-88, warpins: 1 ---
+		key_locale_name = string.format("%s %s", "mouse", key_locale_name)
+		--- END OF BLOCK #9 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #17
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #10 89-94, warpins: 1 ---
+		local button_index = nil
+		local default_device_type = "keyboard"
+
+		--- END OF BLOCK #10 ---
+
+		FLOW; TARGET BLOCK #11
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #11 95-101, warpins: 0 ---
+		for _, mapping in ipairs(key.input_mappings) do
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #0 95-97, warpins: 1 ---
+			--- END OF BLOCK #0 ---
+
+			if mapping[1] == default_device_type then
+			JUMP TO BLOCK #1
+			else
+			JUMP TO BLOCK #3
+			end
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #1 98-99, warpins: 1 ---
+			button_index = mapping[2]
+
+			--- END OF BLOCK #1 ---
+
+			FLOW; TARGET BLOCK #2
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #2 100-100, warpins: 1 ---
+			break
+			--- END OF BLOCK #2 ---
+
+			FLOW; TARGET BLOCK #3
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #3 100-101, warpins: 2 ---
+			--- END OF BLOCK #3 ---
+
+
+
+		end
+
+		--- END OF BLOCK #11 ---
+
+		FLOW; TARGET BLOCK #12
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #12 102-103, warpins: 2 ---
+		--- END OF BLOCK #12 ---
+
+		slot11 = if button_index then
+		JUMP TO BLOCK #13
+		else
+		JUMP TO BLOCK #16
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #13 104-114, warpins: 1 ---
+		key_locale_name = Keyboard.button_name(button_index)
+
+		--- END OF BLOCK #13 ---
+
+		slot10 = if not Keyboard.button_locale_name(button_index)
+
+		 then
+		JUMP TO BLOCK #14
+		else
+		JUMP TO BLOCK #15
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #14 114-114, warpins: 1 ---
+		key_locale_name = key_locale_name
+		--- END OF BLOCK #14 ---
+
+		FLOW; TARGET BLOCK #15
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #15 115-115, warpins: 2 ---
+		--- END OF BLOCK #15 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #17
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #16 116-119, warpins: 1 ---
+		key_locale_name = Localize(unassigned_keymap)
+
+		--- END OF BLOCK #16 ---
+
+		FLOW; TARGET BLOCK #17
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #17 120-120, warpins: 4 ---
 		return key_locale_name
+		--- END OF BLOCK #17 ---
+
+
+
 	end
 
 	Managers.localizer:add_macro("KEY", key_parser)
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_mouse_look_sensitivity_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = -10
 	local max = 10
 
-	if not Application.user_setting("mouse_look_sensitivity") then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("mouse_look_sensitivity")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-50, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "mouse_look_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
 	local platform_key = "win32"
@@ -6427,61 +14094,178 @@ OptionsView.cb_mouse_look_sensitivity_setup = function (self)
 	function_data.multiplier = base_look_multiplier * 0.85^(-sensitivity)
 
 	return value, min, max, 1, "menu_settings_mouse_look_sensitivity", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_mouse_look_sensitivity_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.mouse_look_sensitivity, Application.user_setting("mouse_look_sensitivity")) then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.mouse_look_sensitivity, Application.user_setting("mouse_look_sensitivity"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_mouse_look_sensitivity = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.mouse_look_sensitivity = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_hud_scale_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 50
 	local max = 100
 
-	if not Application.user_setting("hud_scale") then
-		local hud_scale = 100
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("hud_scale")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local hud_scale = 100
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-31, warpins: 2 ---
 	local value = get_slider_value(min, max, hud_scale)
 	local default_value = math.clamp(DefaultUserSettings.get("user_settings", "hud_scale"), min, max)
 
 	return value, min, max, 0, "settings_menu_hud_scale", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_hud_scale_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.hud_scale, Application.user_setting("hud_scale")) then
-		local hud_scale = 100
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.hud_scale, Application.user_setting("hud_scale"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local hud_scale = 100
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-34, warpins: 2 ---
 	hud_scale = math.clamp(hud_scale, min, max)
 	content.internal_value = get_slider_value(min, max, hud_scale)
 	content.value = hud_scale
 
-	if not Application.user_setting("use_custom_hud_scale") then
-		local use_custom_hud_scale = DefaultUserSettings.get("user_settings", "use_custom_hud_scale")
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not Application.user_setting("use_custom_hud_scale")
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 35-39, warpins: 1 ---
+	local use_custom_hud_scale = DefaultUserSettings.get("user_settings", "use_custom_hud_scale")
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 40-42, warpins: 2 ---
 	content.disabled = not use_custom_hud_scale
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_hud_scale = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.hud_scale = value
 	UISettings.hud_scale = value
@@ -6489,86 +14273,269 @@ OptionsView.cb_hud_scale = function (self, content)
 
 	UPDATE_RESOLUTION_LOOKUP(force_update)
 	self:_setup_text_buttons_width()
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_safe_rect_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local w, h = Gui.resolution()
 	local min = 0
 	local max = 20
 
-	if not Application.user_setting("safe_rect") then
-		local ui_safe_rect = min
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not Application.user_setting("safe_rect")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local ui_safe_rect = min
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-34, warpins: 2 ---
 	local value = get_slider_value(min, max, ui_safe_rect)
 	local default_value = math.clamp(DefaultUserSettings.get("user_settings", "safe_rect"), min, max)
 
 	return value, min, max, 0, "settings_menu_hud_safe_rect", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_safe_rect_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local w, h = Gui.resolution()
 	local min = 0
 	local max = 20
+	--- END OF BLOCK #0 ---
 
-	if IS_PS4 then
-		min = 5
+	slot6 = if IS_PS4 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	min = 5
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-22, warpins: 2 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.safe_rect, Application.user_setting("safe_rect")) then
-		local safe_rect = min
+	--- END OF BLOCK #2 ---
+
+	slot9 = if not assigned(self.changed_user_settings.safe_rect, Application.user_setting("safe_rect"))
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-23, warpins: 1 ---
+	local safe_rect = min
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 24-38, warpins: 2 ---
 	safe_rect = math.clamp(safe_rect, min, max)
 	content.internal_value = get_slider_value(min, max, safe_rect)
 	content.value = safe_rect
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_safe_rect = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	local min = 0
 	local max = 20
+	--- END OF BLOCK #0 ---
 
-	if IS_PS4 then
-		min = 5
+	slot4 = if IS_PS4 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-6, warpins: 1 ---
+	min = 5
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 7-13, warpins: 2 ---
 	local value = content.value
 
-	if not Application.user_setting("safe_rect") then
-		local saved_value = min
+	--- END OF BLOCK #2 ---
+
+	slot5 = if not Application.user_setting("safe_rect")
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 14-14, warpins: 1 ---
+	local saved_value = min
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 15-23, warpins: 2 ---
 	self.changed_user_settings.safe_rect = value
 
 	Application.set_user_setting("safe_rect", value)
 
+	--- END OF BLOCK #4 ---
+
 	if value ~= saved_value then
-		self.safe_rect_alpha_timer = SAFE_RECT_ALPHA_TIMER
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 24-25, warpins: 1 ---
+	self.safe_rect_alpha_timer = SAFE_RECT_ALPHA_TIMER
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 26-26, warpins: 2 ---
+	return
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = -10
 	local max = 10
 
-	if not Application.user_setting("gamepad_look_sensitivity") then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("gamepad_look_sensitivity")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-29, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
+	--- END OF BLOCK #2 ---
 
-	if IS_WINDOWS then
-		slot6 = "xb1"
+	slot6 = if IS_WINDOWS then
+	JUMP TO BLOCK #3
 	else
-		local platform_key = self.platform
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 30-31, warpins: 1 ---
+	slot6 = "xb1"
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 32-32, warpins: 1 ---
+	local platform_key = self.platform
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-63, warpins: 2 ---
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller.multiplier_x
 	local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_x
@@ -6578,70 +14545,240 @@ OptionsView.cb_gamepad_look_sensitivity_setup = function (self)
 	local look_filter = input_filters.look_controller
 	local function_data = look_filter.function_data
 	function_data.multiplier_x = base_look_multiplier * 0.85^(-sensitivity)
+	--- END OF BLOCK #5 ---
 
-	if not base_filter.look_controller.multiplier_min_x or not (base_filter.look_controller.multiplier_min_x * 0.85^(-sensitivity)) then
-		slot15 = function_data.multiplier_x * 0.25
+	slot15 = if base_filter.look_controller.multiplier_min_x then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
 
-	function_data.min_multiplier_x = slot15
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 64-71, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	slot15 = if not (base_filter.look_controller.multiplier_min_x * 0.85^(-sensitivity)) then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 72-73, warpins: 2 ---
+	local melee_look_filter = function_data.multiplier_x * 0.25
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 74-85, warpins: 2 ---
+	function_data.min_multiplier_x = melee_look_filter
 	local melee_look_filter = input_filters.look_controller_melee
 	local function_data = melee_look_filter.function_data
 	function_data.multiplier_x = base_melee_look_multiplier * 0.85^(-sensitivity)
+	--- END OF BLOCK #8 ---
 
-	if not base_filter.look_controller_melee.multiplier_min_x or not (base_filter.look_controller_melee.multiplier_min_x * 0.85^(-sensitivity)) then
-		slot17 = function_data.multiplier_x * 0.25
+	slot17 = if base_filter.look_controller_melee.multiplier_min_x then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
 	end
 
-	function_data.min_multiplier_x = slot17
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 86-93, warpins: 1 ---
+	--- END OF BLOCK #9 ---
+
+	slot17 = if not (base_filter.look_controller_melee.multiplier_min_x * 0.85^(-sensitivity)) then
+	JUMP TO BLOCK #10
+	else
+	JUMP TO BLOCK #11
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 94-95, warpins: 2 ---
+	local ranged_look_filter = function_data.multiplier_x * 0.25
+	--- END OF BLOCK #10 ---
+
+	FLOW; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 96-107, warpins: 2 ---
+	function_data.min_multiplier_x = ranged_look_filter
 	local ranged_look_filter = input_filters.look_controller_ranged
 	local function_data = ranged_look_filter.function_data
 	function_data.multiplier_x = base_ranged_look_multiplier * 0.85^(-sensitivity)
+	--- END OF BLOCK #11 ---
 
-	if not base_filter.look_controller_ranged.multiplier_min_x or not (base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-sensitivity)) then
-		slot19 = function_data.multiplier_x * 0.25
+	slot19 = if base_filter.look_controller_ranged.multiplier_min_x then
+	JUMP TO BLOCK #12
+	else
+	JUMP TO BLOCK #13
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 108-115, warpins: 1 ---
+	--- END OF BLOCK #12 ---
+
+	slot19 = if not (base_filter.look_controller_ranged.multiplier_min_x * 0.85^(-sensitivity)) then
+	JUMP TO BLOCK #13
+	else
+	JUMP TO BLOCK #14
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 116-117, warpins: 2 ---
+	slot19 = function_data.multiplier_x * 0.25
+	--- END OF BLOCK #13 ---
+
+	FLOW; TARGET BLOCK #14
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 118-125, warpins: 2 ---
 	function_data.min_multiplier_x = slot19
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity", default_value
+	--- END OF BLOCK #14 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_sensitivity_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.gamepad_look_sensitivity, Application.user_setting("gamepad_look_sensitivity")) then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.gamepad_look_sensitivity, Application.user_setting("gamepad_look_sensitivity"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_sensitivity = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.gamepad_look_sensitivity = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_sensitivity_y_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = -10
 	local max = 10
 
-	if not Application.user_setting("gamepad_look_sensitivity_y") then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("gamepad_look_sensitivity_y")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-29, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_look_sensitivity_y")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
+	--- END OF BLOCK #2 ---
 
-	if IS_WINDOWS then
-		slot6 = "xb1"
+	slot6 = if IS_WINDOWS then
+	JUMP TO BLOCK #3
 	else
-		local platform_key = self.platform
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 30-31, warpins: 1 ---
+	slot6 = "xb1"
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 32-32, warpins: 1 ---
+	local platform_key = self.platform
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-80, warpins: 2 ---
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller.multiplier_y
 	local base_melee_look_multiplier = base_filter.look_controller_melee.multiplier_y
@@ -6659,44 +14796,130 @@ OptionsView.cb_gamepad_look_sensitivity_y_setup = function (self)
 	function_data.multiplier_y = base_ranged_look_multiplier * 0.85^(-sensitivity)
 
 	return value, min, max, 1, "menu_settings_gamepad_look_sensitivity_y", default_value
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_sensitivity_y_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.gamepad_look_sensitivity_y, Application.user_setting("gamepad_look_sensitivity_y")) then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.gamepad_look_sensitivity_y, Application.user_setting("gamepad_look_sensitivity_y"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_sensitivity_y = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.gamepad_look_sensitivity_y = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = -10
 	local max = 10
 
-	if not Application.user_setting("gamepad_zoom_sensitivity") then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("gamepad_zoom_sensitivity")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-29, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_zoom_sensitivity")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
+	--- END OF BLOCK #2 ---
 
-	if IS_WINDOWS then
-		slot6 = "xb1"
+	slot6 = if IS_WINDOWS then
+	JUMP TO BLOCK #3
 	else
-		local platform_key = self.platform
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 30-31, warpins: 1 ---
+	slot6 = "xb1"
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 32-32, warpins: 1 ---
+	local platform_key = self.platform
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-59, warpins: 2 ---
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller_zoom.multiplier_x
 	local input_service = self.input_manager:get_service("Player")
@@ -6704,52 +14927,166 @@ OptionsView.cb_gamepad_zoom_sensitivity_setup = function (self)
 	local look_filter = input_filters.look_controller_zoom
 	local function_data = look_filter.function_data
 	function_data.multiplier_x = base_look_multiplier * 0.85^(-sensitivity)
+	--- END OF BLOCK #5 ---
 
-	if not base_filter.look_controller_zoom.multiplier_min_x or not (base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-sensitivity)) then
-		slot13 = function_data.multiplier_x * 0.25
+	slot13 = if base_filter.look_controller_zoom.multiplier_min_x then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 60-67, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	slot13 = if not (base_filter.look_controller_zoom.multiplier_min_x * 0.85^(-sensitivity)) then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 68-69, warpins: 2 ---
+	slot13 = function_data.multiplier_x * 0.25
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 70-77, warpins: 2 ---
 	function_data.min_multiplier_x = slot13
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity", default_value
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_zoom_sensitivity_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.gamepad_zoom_sensitivity, Application.user_setting("gamepad_zoom_sensitivity")) then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.gamepad_zoom_sensitivity, Application.user_setting("gamepad_zoom_sensitivity"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_zoom_sensitivity = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.gamepad_zoom_sensitivity = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_zoom_sensitivity_y_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = -10
 	local max = 10
 
-	if not Application.user_setting("gamepad_zoom_sensitivity_y") then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("gamepad_zoom_sensitivity_y")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-29, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "gamepad_zoom_sensitivity_y")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
+	--- END OF BLOCK #2 ---
 
-	if IS_WINDOWS then
-		slot6 = "xb1"
+	slot6 = if IS_WINDOWS then
+	JUMP TO BLOCK #3
 	else
-		local platform_key = self.platform
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 30-31, warpins: 1 ---
+	slot6 = "xb1"
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 32-32, warpins: 1 ---
+	local platform_key = self.platform
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-62, warpins: 2 ---
 	local base_filter = InputUtils.get_platform_filters(PlayerControllerFilters, platform_key)
 	local base_look_multiplier = base_filter.look_controller_zoom.multiplier_y
 	local input_service = self.input_manager:get_service("Player")
@@ -6759,213 +15096,706 @@ OptionsView.cb_gamepad_zoom_sensitivity_y_setup = function (self)
 	function_data.multiplier_y = base_look_multiplier * 0.85^(-sensitivity)
 
 	return value, min, max, 1, "menu_settings_gamepad_zoom_sensitivity_y", default_value
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_zoom_sensitivity_y_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.gamepad_zoom_sensitivity_y, Application.user_setting("gamepad_zoom_sensitivity_y")) then
-		local sensitivity = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.gamepad_zoom_sensitivity_y, Application.user_setting("gamepad_zoom_sensitivity_y"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local sensitivity = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_zoom_sensitivity_y = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.gamepad_zoom_sensitivity_y = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_max_upload_speed = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.max_upload_speed = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_max_upload_speed_setup = function (self)
-	local options = {
-		{
-			value = 256,
-			text = Localize("menu_settings_256kbit")
-		},
-		{
-			value = 512,
-			text = Localize("menu_settings_512kbit")
-		},
-		{
-			value = 1024,
-			text = Localize("menu_settings_1mbit")
-		},
-		{
-			value = 2048,
-			text = Localize("menu_settings_2mbit_plus")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-39, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = 256,
+		text = Localize("menu_settings_256kbit")
+	}
+	options[2] = {
+		value = 512,
+		text = Localize("menu_settings_512kbit")
+	}
+	options[3] = {
+		value = 1024,
+		text = Localize("menu_settings_1mbit")
+	}
+	options[4] = {
+		value = 2048,
+		text = Localize("menu_settings_2mbit_plus")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_upload_speed")
 	local user_settings_value = Application.user_setting("max_upload_speed")
 	local default_option, selected_option = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 40-49, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 40-42, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == user_settings_value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 43-43, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 44-46, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 47-47, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 48-49, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 50-56, warpins: 1 ---
 	fassert(default_option, "default option %i does not exist in cb_max_upload_speed_setup options table", default_value)
 
-	if not selected_option then
-		slot6 = default_option
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not selected_option then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 57-57, warpins: 1 ---
+	slot6 = default_option
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 58-61, warpins: 2 ---
 	return slot6, options, "menu_settings_max_upload", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_max_upload_speed_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.max_upload_speed, Application.user_setting("max_upload_speed")) then
-		local value = DefaultUserSettings.get("user_settings", "max_upload_speed")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.max_upload_speed, Application.user_setting("max_upload_speed"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-15, warpins: 1 ---
+	local value = DefaultUserSettings.get("user_settings", "max_upload_speed")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-22, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
-		if value == options_values[i] then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-28, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if value == options_values[i] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-31, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_small_network_packets = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.small_network_packets = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_small_network_packets_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "small_network_packets")
 	local small_network_packets = Application.user_setting("small_network_packets")
+	--- END OF BLOCK #0 ---
 
-	if small_network_packets then
-		slot4 = 2
+	slot3 = if small_network_packets then
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 1
+	JUMP TO BLOCK #5
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-37, warpins: 2 ---
 	return selection, options, "menu_settings_small_network_packets", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_small_network_packets_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.small_network_packets, Application.user_setting("small_network_packets")) then
-		local small_network_packets = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if small_network_packets then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_user_settings.small_network_packets, Application.user_setting("small_network_packets"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local small_network_packets = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if small_network_packets then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_max_quick_play_search_range = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.max_quick_play_search_range = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_max_quick_play_search_range_setup = function (self)
-	local options = {
-		{
-			value = "close",
-			text = Localize("menu_settings_near")
-		},
-		{
-			value = "far",
-			text = Localize("menu_settings_far")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-27, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "close",
+		text = Localize("menu_settings_near")
+	}
+	options[2] = {
+		value = "far",
+		text = Localize("menu_settings_far")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
 	local user_settings_value = Application.user_setting("max_quick_play_search_range")
 	local default_option, selected_option = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 28-37, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 28-30, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == user_settings_value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 31-31, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 32-34, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 35-35, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 36-37, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 38-44, warpins: 1 ---
 	fassert(default_option, "default option %i does not exist in cb_max_quick_play_search_range_setup options table", default_value)
 
-	if not selected_option then
-		slot6 = default_option
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not selected_option then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 45-45, warpins: 1 ---
+	slot6 = default_option
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 46-49, warpins: 2 ---
 	return slot6, options, "menu_settings_max_quick_play_search_range", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_max_quick_play_search_range_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.max_quick_play_search_range, Application.user_setting("max_quick_play_search_range")) then
-		local value = DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.max_quick_play_search_range, Application.user_setting("max_quick_play_search_range"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-15, warpins: 1 ---
+	local value = DefaultUserSettings.get("user_settings", "max_quick_play_search_range")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-22, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
-		if value == options_values[i] then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-28, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if value == options_values[i] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-31, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_mouse_look_invert_y_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-36, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "mouse_look_invert_y")
 	local invert_mouse_y = Application.user_setting("mouse_look_invert_y")
@@ -6974,1916 +15804,6231 @@ OptionsView.cb_mouse_look_invert_y_setup = function (self)
 	local input_filters = input_service:get_active_filters(platform_key)
 	local look_filter = input_filters.look
 	local function_data = look_filter.function_data
+	--- END OF BLOCK #0 ---
 
-	if invert_mouse_y then
-		slot9 = "scale_vector3"
+	slot3 = if invert_mouse_y then
+	JUMP TO BLOCK #1
 	else
-		slot9 = "scale_vector3_invert_y"
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 37-38, warpins: 1 ---
+	slot9 = "scale_vector3"
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 39-39, warpins: 1 ---
+	slot9 = "scale_vector3_invert_y"
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 40-42, warpins: 2 ---
 	function_data.filter_type = slot9
+	--- END OF BLOCK #3 ---
 
-	if invert_mouse_y then
-		slot9 = 2
+	slot3 = if invert_mouse_y then
+	JUMP TO BLOCK #4
 	else
-		local selection = 1
+	JUMP TO BLOCK #5
 	end
 
-	if default_value then
-		slot10 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 43-44, warpins: 1 ---
+	slot9 = 2
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 45-45, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 46-47, warpins: 2 ---
+	--- END OF BLOCK #6 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #7
 	else
-		local default_option = 1
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 48-49, warpins: 1 ---
+	slot10 = 2
+	--- END OF BLOCK #7 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 50-50, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #8 ---
+
+	FLOW; TARGET BLOCK #9
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 51-55, warpins: 2 ---
 	return selection, options, "menu_settings_mouse_look_invert_y", default_option
+	--- END OF BLOCK #9 ---
+
+
+
 end
 
 OptionsView.cb_mouse_look_invert_y_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.mouse_look_invert_y, Application.user_setting("mouse_look_invert_y")) then
-		local invert_mouse_y = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if invert_mouse_y then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_user_settings.mouse_look_invert_y, Application.user_setting("mouse_look_invert_y"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local invert_mouse_y = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if invert_mouse_y then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_mouse_look_invert_y = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.mouse_look_invert_y = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_invert_y_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_look_invert_y") then
-		local default_value = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "gamepad_look_invert_y")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-33, warpins: 2 ---
 	local invert_gamepad_y = Application.user_setting("gamepad_look_invert_y")
 	local input_service = self.input_manager:get_service("Player")
+	--- END OF BLOCK #2 ---
 
-	if IS_WINDOWS then
-		slot5 = "xb1"
+	slot5 = if IS_WINDOWS then
+	JUMP TO BLOCK #3
 	else
-		local platform_key = self.platform
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 34-35, warpins: 1 ---
+	slot5 = "xb1"
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 36-36, warpins: 1 ---
+	local platform_key = self.platform
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 37-44, warpins: 2 ---
 	local input_filters = input_service:get_active_filters(platform_key)
 	local look_filter = input_filters.look_controller
 	local function_data = look_filter.function_data
+	--- END OF BLOCK #5 ---
 
-	if invert_gamepad_y then
-		slot9 = "scale_vector3_xy_accelerated_x_inverted"
+	slot3 = if invert_gamepad_y then
+	JUMP TO BLOCK #6
 	else
-		slot9 = "scale_vector3_xy_accelerated_x"
+	JUMP TO BLOCK #7
 	end
 
-	function_data.filter_type = slot9
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 45-46, warpins: 1 ---
+	slot9 = "scale_vector3_xy_accelerated_x_inverted"
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 47-47, warpins: 1 ---
+	local look_filter = "scale_vector3_xy_accelerated_x"
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 48-52, warpins: 2 ---
+	function_data.filter_type = look_filter
 	local look_filter = input_filters.look_controller_ranged
 	local function_data = look_filter.function_data
+	--- END OF BLOCK #8 ---
 
-	if invert_gamepad_y then
-		slot11 = "scale_vector3_xy_accelerated_x_inverted"
+	slot3 = if invert_gamepad_y then
+	JUMP TO BLOCK #9
 	else
-		slot11 = "scale_vector3_xy_accelerated_x"
+	JUMP TO BLOCK #10
 	end
 
-	function_data.filter_type = slot11
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 53-54, warpins: 1 ---
+	slot11 = "scale_vector3_xy_accelerated_x_inverted"
+	--- END OF BLOCK #9 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 55-55, warpins: 1 ---
+	local look_filter = "scale_vector3_xy_accelerated_x"
+	--- END OF BLOCK #10 ---
+
+	FLOW; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 56-60, warpins: 2 ---
+	function_data.filter_type = look_filter
 	local look_filter = input_filters.look_controller_melee
 	local function_data = look_filter.function_data
+	--- END OF BLOCK #11 ---
 
-	if invert_gamepad_y then
-		slot13 = "scale_vector3_xy_accelerated_x_inverted"
+	slot3 = if invert_gamepad_y then
+	JUMP TO BLOCK #12
 	else
-		slot13 = "scale_vector3_xy_accelerated_x"
+	JUMP TO BLOCK #13
 	end
 
-	function_data.filter_type = slot13
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 61-62, warpins: 1 ---
+	slot13 = "scale_vector3_xy_accelerated_x_inverted"
+	--- END OF BLOCK #12 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #14
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 63-63, warpins: 1 ---
+	local look_filter = "scale_vector3_xy_accelerated_x"
+	--- END OF BLOCK #13 ---
+
+	FLOW; TARGET BLOCK #14
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 64-68, warpins: 2 ---
+	function_data.filter_type = look_filter
 	local look_filter = input_filters.look_controller_zoom
 	local function_data = look_filter.function_data
+	--- END OF BLOCK #14 ---
 
-	if invert_gamepad_y then
-		slot15 = "scale_vector3_xy_accelerated_x_inverted"
+	slot3 = if invert_gamepad_y then
+	JUMP TO BLOCK #15
 	else
-		slot15 = "scale_vector3_xy_accelerated_x"
+	JUMP TO BLOCK #16
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #15 69-70, warpins: 1 ---
+	slot15 = "scale_vector3_xy_accelerated_x_inverted"
+	--- END OF BLOCK #15 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #17
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #16 71-71, warpins: 1 ---
+	slot15 = "scale_vector3_xy_accelerated_x"
+	--- END OF BLOCK #16 ---
+
+	FLOW; TARGET BLOCK #17
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #17 72-74, warpins: 2 ---
 	function_data.filter_type = slot15
+	--- END OF BLOCK #17 ---
 
-	if invert_gamepad_y then
-		slot15 = 2
+	slot3 = if invert_gamepad_y then
+	JUMP TO BLOCK #18
 	else
-		local selection = 1
+	JUMP TO BLOCK #19
 	end
 
-	if default_value then
-		slot16 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #18 75-76, warpins: 1 ---
+	slot15 = 2
+	--- END OF BLOCK #18 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #20
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #19 77-77, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #19 ---
+
+	FLOW; TARGET BLOCK #20
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #20 78-79, warpins: 2 ---
+	--- END OF BLOCK #20 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #21
 	else
-		local default_option = 1
+	JUMP TO BLOCK #22
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #21 80-81, warpins: 1 ---
+	slot16 = 2
+	--- END OF BLOCK #21 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #23
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #22 82-82, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #22 ---
+
+	FLOW; TARGET BLOCK #23
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #23 83-87, warpins: 2 ---
 	return selection, options, "menu_settings_gamepad_look_invert_y", default_option
+	--- END OF BLOCK #23 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_invert_y_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.gamepad_look_invert_y, Application.user_setting("gamepad_look_invert_y")) then
-		local invert_gamepad_y = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if invert_gamepad_y then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_user_settings.gamepad_look_invert_y, Application.user_setting("gamepad_look_invert_y"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local invert_gamepad_y = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if invert_gamepad_y then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_look_invert_y = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_look_invert_y = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_left_dead_zone_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
 	local min = 0
 	local max = 1
 	local active_controller = Managers.account:active_controller()
 	local default_dead_zone_settings = active_controller.default_dead_zone()
 	local axis = active_controller.axis_index("left")
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_left_dead_zone") then
-		local default_value = 0
+	--- END OF BLOCK #0 ---
+
+	slot6 = if not DefaultUserSettings.get("user_settings", "gamepad_left_dead_zone")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	if not Application.user_setting("gamepad_left_dead_zone") then
-		local gamepad_left_dead_zone = default_value
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local default_value = 0
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-26, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot7 = if not Application.user_setting("gamepad_left_dead_zone")
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 27-27, warpins: 1 ---
+	local gamepad_left_dead_zone = default_value
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 28-40, warpins: 2 ---
 	local value = get_slider_value(min, max, gamepad_left_dead_zone)
 	local default_dead_zone_value = default_dead_zone_settings[axis].dead_zone
 	local dead_zone_value = default_dead_zone_value + value * (0.9 - default_dead_zone_value)
+	--- END OF BLOCK #4 ---
 
 	if gamepad_left_dead_zone > 0 then
-		local mode = active_controller.CIRCULAR
-
-		active_controller.set_dead_zone(axis, mode, dead_zone_value)
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 41-46, warpins: 1 ---
+	local mode = active_controller.CIRCULAR
+
+	active_controller.set_dead_zone(axis, mode, dead_zone_value)
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 47-53, warpins: 2 ---
 	return value, min, max, 1, "menu_settings_gamepad_left_dead_zone", default_value
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_left_dead_zone_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.gamepad_left_dead_zone, Application.user_setting("gamepad_left_dead_zone")) then
-		local gamepad_left_dead_zone = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.gamepad_left_dead_zone, Application.user_setting("gamepad_left_dead_zone"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local gamepad_left_dead_zone = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	gamepad_left_dead_zone = math.clamp(gamepad_left_dead_zone, min, max)
 	content.internal_value = get_slider_value(min, max, gamepad_left_dead_zone)
 	content.value = gamepad_left_dead_zone
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_left_dead_zone = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.gamepad_left_dead_zone = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_right_dead_zone_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
 	local min = 0
 	local max = 1
 	local active_controller = Managers.account:active_controller()
 	local default_dead_zone_settings = active_controller.default_dead_zone()
 	local axis = active_controller.axis_index("right")
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_right_dead_zone") then
-		local default_value = 0
+	--- END OF BLOCK #0 ---
+
+	slot6 = if not DefaultUserSettings.get("user_settings", "gamepad_right_dead_zone")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	if not Application.user_setting("gamepad_right_dead_zone") then
-		local gamepad_right_dead_zone = default_value
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	local default_value = 0
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-26, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot7 = if not Application.user_setting("gamepad_right_dead_zone")
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 27-27, warpins: 1 ---
+	local gamepad_right_dead_zone = default_value
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 28-40, warpins: 2 ---
 	local value = get_slider_value(min, max, gamepad_right_dead_zone)
 	local default_dead_zone_value = default_dead_zone_settings[axis].dead_zone
 	local dead_zone_value = default_dead_zone_value + value * (0.9 - default_dead_zone_value)
+	--- END OF BLOCK #4 ---
 
 	if gamepad_right_dead_zone > 0 then
-		local mode = active_controller.CIRCULAR
-
-		active_controller.set_dead_zone(axis, mode, dead_zone_value)
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 41-46, warpins: 1 ---
+	local mode = active_controller.CIRCULAR
+
+	active_controller.set_dead_zone(axis, mode, dead_zone_value)
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 47-53, warpins: 2 ---
 	return value, min, max, 1, "menu_settings_gamepad_right_dead_zone", default_value
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_right_dead_zone_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.gamepad_right_dead_zone, Application.user_setting("gamepad_right_dead_zone")) then
-		local gamepad_right_dead_zone = 0
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.gamepad_right_dead_zone, Application.user_setting("gamepad_right_dead_zone"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local gamepad_right_dead_zone = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-29, warpins: 2 ---
 	gamepad_right_dead_zone = math.clamp(gamepad_right_dead_zone, min, max)
 	content.internal_value = get_slider_value(min, max, gamepad_right_dead_zone)
 	content.value = gamepad_right_dead_zone
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_right_dead_zone = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.gamepad_right_dead_zone = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_auto_aim_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_auto_aim_enabled") then
-		local default_value = true
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "gamepad_auto_aim_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-27, warpins: 2 ---
 	local enable_auto_aim = Application.user_setting("gamepad_auto_aim_enabled")
+	--- END OF BLOCK #2 ---
 
-	if enable_auto_aim then
-		slot4 = 1
+	slot3 = if enable_auto_aim then
+	JUMP TO BLOCK #3
 	else
-		local selection = 2
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 2
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_gamepad_auto_aim_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_auto_aim_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local gamepad_auto_aim_enabled = assigned(self.changed_user_settings.gamepad_auto_aim_enabled, Application.user_setting("gamepad_auto_aim_enabled"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if gamepad_auto_aim_enabled then
-		slot4 = 1
+	slot2 = if gamepad_auto_aim_enabled then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_auto_aim_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_auto_aim_enabled = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_acceleration_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "enable_gamepad_acceleration") then
-		local default_value = true
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "enable_gamepad_acceleration")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-27, warpins: 2 ---
 	local enable_gamepad_acceleration = Application.user_setting("enable_gamepad_acceleration")
+	--- END OF BLOCK #2 ---
 
-	if enable_gamepad_acceleration then
-		slot4 = 1
+	slot3 = if enable_gamepad_acceleration then
+	JUMP TO BLOCK #3
 	else
-		local selection = 2
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 2
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_enable_gamepad_acceleration", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_acceleration_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local enable_gamepad_acceleration = assigned(self.changed_user_settings.enable_gamepad_acceleration, Application.user_setting("enable_gamepad_acceleration"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if enable_gamepad_acceleration then
-		slot4 = 1
+	slot2 = if enable_gamepad_acceleration then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_acceleration_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.enable_gamepad_acceleration = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_rumble_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_rumble_enabled") then
-		local default_value = true
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "gamepad_rumble_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-27, warpins: 2 ---
 	local enable_rumble = Application.user_setting("gamepad_rumble_enabled")
+	--- END OF BLOCK #2 ---
 
-	if enable_rumble then
-		slot4 = 1
+	slot3 = if enable_rumble then
+	JUMP TO BLOCK #3
 	else
-		local selection = 2
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 2
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_gamepad_rumble_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_rumble_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local gamepad_rumble_enabled = assigned(self.changed_user_settings.gamepad_rumble_enabled, Application.user_setting("gamepad_rumble_enabled"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if gamepad_rumble_enabled then
-		slot4 = 1
+	slot2 = if gamepad_rumble_enabled then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_rumble_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_rumble_enabled = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_motion_controls_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "use_motion_controls") then
-		local default_value = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "use_motion_controls")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-27, warpins: 2 ---
 	local motion_controls_enabled = Application.user_setting("use_motion_controls")
+	--- END OF BLOCK #2 ---
 
-	if motion_controls_enabled then
-		slot4 = 1
+	slot3 = if motion_controls_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 2
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 2
+	JUMP TO BLOCK #7
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-37, warpins: 2 ---
+	--- END OF BLOCK #8 ---
 
 	if motion_controls_enabled == nil then
-		motion_controls_enabled = MotionControlSettings.motion_controls_enabled
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 38-39, warpins: 1 ---
+	motion_controls_enabled = MotionControlSettings.motion_controls_enabled
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 40-46, warpins: 2 ---
 	MotionControlSettings.use_motion_controls = motion_controls_enabled
 
 	return selection, options, "menu_settings_motion_controls_enabled", default_option
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_motion_controls_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local motion_controls_enabled = assigned(self.changed_user_settings.use_motion_controls, Application.user_setting("use_motion_controls"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if motion_controls_enabled then
-		slot4 = 1
+	slot2 = if motion_controls_enabled then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_motion_controls_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_motion_controls = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_motion_yaw_sensitivity_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local min = MotionControlSettings.sensitivity_yaw_min
 	local max = MotionControlSettings.sensitivity_yaw_max
 
-	if not Application.user_setting("motion_sensitivity_yaw") then
-		local sensitivity = MotionControlSettings.default_sensitivity_yaw
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("motion_sensitivity_yaw")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-12, warpins: 1 ---
+	local sensitivity = MotionControlSettings.default_sensitivity_yaw
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-31, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "motion_sensitivity_yaw")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
+	--- END OF BLOCK #2 ---
 
 	if sensitivity == nil then
-		motion_controls_enabled = MotionControlSettings.default_sensitivity_yaw
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 32-34, warpins: 1 ---
+	motion_controls_enabled = MotionControlSettings.default_sensitivity_yaw
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 35-43, warpins: 2 ---
 	MotionControlSettings.motion_sensitivity_yaw = sensitivity
 
 	return value, min, max, 0, "menu_settings_sensitivity_yaw", default_value
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_motion_yaw_sensitivity_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.motion_sensitivity_yaw, Application.user_setting("motion_sensitivity_yaw")) then
-		local sensitivity = MotionControlSettings.default_sensitivity_yaw
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.motion_sensitivity_yaw, Application.user_setting("motion_sensitivity_yaw"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-15, warpins: 1 ---
+	local sensitivity = MotionControlSettings.default_sensitivity_yaw
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-30, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_motion_yaw_sensitivity = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.motion_sensitivity_yaw = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_motion_pitch_sensitivity_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local min = MotionControlSettings.sensitivity_pitch_min
 	local max = MotionControlSettings.sensitivity_pitch_max
 
-	if not Application.user_setting("motion_sensitivity_pitch") then
-		local sensitivity = MotionControlSettings.default_sensitivity_pitch
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("motion_sensitivity_pitch")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-12, warpins: 1 ---
+	local sensitivity = MotionControlSettings.default_sensitivity_pitch
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-31, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "motion_sensitivity_pitch")
 	local value = get_slider_value(min, max, sensitivity)
 	sensitivity = math.clamp(sensitivity, min, max)
+	--- END OF BLOCK #2 ---
 
 	if sensitivity == nil then
-		MotionControlSettings.motion_sensitivity_pitch = MotionControlSettings.default_sensitivity_pitch
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 32-35, warpins: 1 ---
+	MotionControlSettings.motion_sensitivity_pitch = MotionControlSettings.default_sensitivity_pitch
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 36-44, warpins: 2 ---
 	MotionControlSettings.motion_sensitivity_pitch = sensitivity
 
 	return value, min, max, 0, "menu_settings_sensitivity_pitch", default_value
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_motion_pitch_sensitivity_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.motion_sensitivity_pitch, Application.user_setting("motion_sensitivity_pitch")) then
-		local sensitivity = MotionControlSettings.default_sensitivity_pitch
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.motion_sensitivity_pitch, Application.user_setting("motion_sensitivity_pitch"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-15, warpins: 1 ---
+	local sensitivity = MotionControlSettings.default_sensitivity_pitch
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-30, warpins: 2 ---
 	sensitivity = math.clamp(sensitivity, min, max)
 	content.internal_value = get_slider_value(min, max, sensitivity)
 	content.value = sensitivity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_motion_pitch_sensitivity = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.motion_sensitivity_pitch = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_disable_right_stick_look_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_disable_right_stick_vertical")
 	local motion_disable_right_stick_vertical = Application.user_setting("motion_disable_right_stick_vertical")
+	--- END OF BLOCK #0 ---
 
-	if motion_disable_right_stick_vertical then
-		slot4 = 1
+	slot3 = if motion_disable_right_stick_vertical then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 2 ---
+	--- END OF BLOCK #6 ---
 
 	if motion_disable_right_stick_vertical == nil then
-		MotionControlSettings.motion_disable_right_stick_vertical = MotionControlSettings.motion_disable_right_stick_vertical
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-38, warpins: 1 ---
+	MotionControlSettings.motion_disable_right_stick_vertical = MotionControlSettings.motion_disable_right_stick_vertical
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-45, warpins: 2 ---
 	MotionControlSettings.motion_disable_right_stick_vertical = motion_disable_right_stick_vertical
 
 	return selection, options, "menu_settings_disable_right_stick_vertical", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_disable_right_stick_look_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local motion_disable_right_stick_vertical = assigned(self.changed_user_settings.motion_disable_right_stick_vertical, Application.user_setting("motion_disable_right_stick_vertical"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if motion_disable_right_stick_vertical then
-		slot4 = 1
+	slot2 = if motion_disable_right_stick_vertical then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_disable_right_stick_look = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.motion_disable_right_stick_vertical = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_yaw_motion_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_enable_yaw_motion")
 	local motion_enable_yaw_motion = Application.user_setting("motion_enable_yaw_motion")
+	--- END OF BLOCK #0 ---
 
-	if motion_enable_yaw_motion then
-		slot4 = 1
+	slot3 = if motion_enable_yaw_motion then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 2 ---
+	--- END OF BLOCK #6 ---
 
 	if motion_enable_yaw_motion == nil then
-		MotionControlSettings.motion_enable_yaw_motion = MotionControlSettings.motion_enable_yaw_motion
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-38, warpins: 1 ---
+	MotionControlSettings.motion_enable_yaw_motion = MotionControlSettings.motion_enable_yaw_motion
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-45, warpins: 2 ---
 	MotionControlSettings.motion_enable_yaw_motion = motion_enable_yaw_motion
 
 	return selection, options, "menu_settings_motion_yaw_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_yaw_motion_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local motion_enable_yaw_motion = assigned(self.changed_user_settings.motion_enable_yaw_motion, Application.user_setting("motion_enable_yaw_motion"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if motion_enable_yaw_motion then
-		slot4 = 1
+	slot2 = if motion_enable_yaw_motion then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_yaw_motion_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.motion_enable_yaw_motion = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_pitch_motion_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_enable_pitch_motion")
 	local motion_enable_pitch_motion = Application.user_setting("motion_enable_pitch_motion")
+	--- END OF BLOCK #0 ---
 
-	if motion_enable_pitch_motion then
-		slot4 = 1
+	slot3 = if motion_enable_pitch_motion then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 2 ---
+	--- END OF BLOCK #6 ---
 
 	if motion_enable_pitch_motion == nil then
-		MotionControlSettings.motion_enable_pitch_motion = MotionControlSettings.motion_enable_pitch_motion
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-38, warpins: 1 ---
+	MotionControlSettings.motion_enable_pitch_motion = MotionControlSettings.motion_enable_pitch_motion
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-45, warpins: 2 ---
 	MotionControlSettings.motion_enable_pitch_motion = motion_enable_pitch_motion
 
 	return selection, options, "menu_settings_motion_pitch_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_pitch_motion_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local motion_enable_pitch_motion = assigned(self.changed_user_settings.motion_enable_pitch_motion, Application.user_setting("motion_enable_pitch_motion"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if motion_enable_pitch_motion then
-		slot4 = 1
+	slot2 = if motion_enable_pitch_motion then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_pitch_motion_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.motion_enable_pitch_motion = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_invert_yaw_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_invert_yaw")
 	local motion_invert_yaw = Application.user_setting("motion_invert_yaw")
+	--- END OF BLOCK #0 ---
 
-	if motion_invert_yaw then
-		slot4 = 1
+	slot3 = if motion_invert_yaw then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 2 ---
+	--- END OF BLOCK #6 ---
 
 	if motion_invert_yaw == nil then
-		MotionControlSettings.motion_invert_yaw = MotionControlSettings.motion_invert_yaw
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-38, warpins: 1 ---
+	MotionControlSettings.motion_invert_yaw = MotionControlSettings.motion_invert_yaw
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-45, warpins: 2 ---
 	MotionControlSettings.motion_invert_yaw = motion_invert_yaw
 
 	return selection, options, "menu_settings_invert_yaw", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_invert_yaw_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local motion_invert_yaw = assigned(self.changed_user_settings.motion_invert_yaw, Application.user_setting("motion_invert_yaw"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if motion_invert_yaw then
-		slot4 = 1
+	slot2 = if motion_invert_yaw then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_invert_yaw_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.motion_invert_yaw = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_invert_pitch_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "motion_invert_pitch")
 	local motion_invert_pitch = Application.user_setting("motion_invert_pitch")
+	--- END OF BLOCK #0 ---
 
-	if motion_invert_pitch then
-		slot4 = 1
+	slot3 = if motion_invert_pitch then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 2 ---
+	--- END OF BLOCK #6 ---
 
 	if motion_invert_pitch == nil then
-		MotionControlSettings.motion_invert_pitch = MotionControlSettings.motion_invert_pitch
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-38, warpins: 1 ---
+	MotionControlSettings.motion_invert_pitch = MotionControlSettings.motion_invert_pitch
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-45, warpins: 2 ---
 	MotionControlSettings.motion_invert_pitch = motion_invert_pitch
 
 	return selection, options, "menu_settings_invert_pitch", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_invert_pitch_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local motion_invert_pitch = assigned(self.changed_user_settings.motion_invert_pitch, Application.user_setting("motion_invert_pitch"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if motion_invert_pitch then
-		slot4 = 1
+	slot2 = if motion_invert_pitch then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_invert_pitch_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.motion_invert_pitch = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_use_ps4_style_input_icons_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_xb1_input_icons")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_ps4_input_icons")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_xb1_input_icons")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_ps4_input_icons")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_use_ps4_style_input_icons") then
-		local default_value = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "gamepad_use_ps4_style_input_icons")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-27, warpins: 2 ---
 	local use_ps4_style_icons = Application.user_setting("gamepad_use_ps4_style_input_icons")
+	--- END OF BLOCK #2 ---
 
-	if use_ps4_style_icons then
-		slot4 = 2
+	slot3 = if use_ps4_style_icons then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_gamepad_use_ps4_style_input_icons", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_use_ps4_style_input_icons_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local gamepad_use_ps4_style_input_icons = assigned(self.changed_user_settings.gamepad_use_ps4_style_input_icons, Application.user_setting("gamepad_use_ps4_style_input_icons"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if gamepad_use_ps4_style_input_icons then
-		slot4 = 2
+	slot2 = if gamepad_use_ps4_style_input_icons then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_use_ps4_style_input_icons = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-17, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_use_ps4_style_input_icons = options_values[current_selection]
 	local gamepad_layout_widget = self.gamepad_layout_widget
 	local gamepad_use_ps4_style_input_icons = assigned(self.changed_user_settings.gamepad_use_ps4_style_input_icons, Application.user_setting("gamepad_use_ps4_style_input_icons"))
 	gamepad_layout_widget.content.use_texture2_layout = gamepad_use_ps4_style_input_icons
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_layout_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local options = AlternatateGamepadKeymapsOptionsMenu
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_layout") then
-		local default_value = "default"
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "gamepad_layout")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local default_value = "default"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-19, warpins: 2 ---
 	local gamepad_layout = Application.user_setting("gamepad_layout")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-38, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 20-23, warpins: 2 ---
 		local option = options[i]
+		--- END OF BLOCK #0 ---
 
 		if gamepad_layout == option.value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 24-24, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 25-27, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == option.value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
 
-		if not option.localized then
-			option.localized = true
-			option.text = Localize(option.text)
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 29-31, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+		slot11 = if not option.localized then
+		JUMP TO BLOCK #5
+		else
+		JUMP TO BLOCK #6
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 32-37, warpins: 1 ---
+		option.localized = true
+		option.text = Localize(option.text)
+		--- END OF BLOCK #5 ---
+
+		FLOW; TARGET BLOCK #6
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #6 38-38, warpins: 2 ---
+		--- END OF BLOCK #6 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 39-43, warpins: 1 ---
 	return selected_option, options, "menu_settings_gamepad_layout", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_layout_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local gamepad_layout = assigned(self.changed_user_settings.gamepad_layout, Application.user_setting("gamepad_layout"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if gamepad_layout == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_layout = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-16, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.gamepad_layout = value
 	local using_left_handed_option = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
 	local gamepad_keymaps_layout = nil
+	--- END OF BLOCK #0 ---
 
-	if using_left_handed_option then
-		gamepad_keymaps_layout = AlternatateGamepadKeymapsLayoutsLeftHanded
+	slot3 = if using_left_handed_option then
+	JUMP TO BLOCK #1
 	else
-		gamepad_keymaps_layout = AlternatateGamepadKeymapsLayouts
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 17-18, warpins: 1 ---
+	gamepad_keymaps_layout = AlternatateGamepadKeymapsLayoutsLeftHanded
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 19-19, warpins: 1 ---
+	gamepad_keymaps_layout = AlternatateGamepadKeymapsLayouts
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-26, warpins: 2 ---
 	local gamepad_keymaps = gamepad_keymaps_layout[value]
 
 	self:update_gamepad_layout_widget(gamepad_keymaps, using_left_handed_option)
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.using_left_handed_gamepad_layout = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local default_left_handed_option = Application.user_setting("gamepad_left_handed")
 	local changed_left_handed_option = self.changed_user_settings.gamepad_left_handed
 	local using_left_handed_option = nil
+	--- END OF BLOCK #0 ---
 
 	if changed_left_handed_option ~= nil then
-		using_left_handed_option = changed_left_handed_option
+	JUMP TO BLOCK #1
 	else
-		using_left_handed_option = default_left_handed_option
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 10-11, warpins: 1 ---
+	using_left_handed_option = changed_left_handed_option
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-12, warpins: 1 ---
+	using_left_handed_option = default_left_handed_option
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 13-13, warpins: 2 ---
 	return using_left_handed_option
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_left_handed_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 
-	if not DefaultUserSettings.get("user_settings", "gamepad_left_handed") then
-		local default_value = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not DefaultUserSettings.get("user_settings", "gamepad_left_handed")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local default_value = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-27, warpins: 2 ---
 	local enable_left_handed = Application.user_setting("gamepad_left_handed")
+	--- END OF BLOCK #2 ---
 
-	if enable_left_handed then
-		slot4 = 1
+	slot3 = if enable_left_handed then
+	JUMP TO BLOCK #3
 	else
-		local selection = 2
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 2
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_gamepad_left_handed_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_left_handed_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local gamepad_left_handed = assigned(self.changed_user_settings.gamepad_left_handed, Application.user_setting("gamepad_left_handed"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if gamepad_left_handed then
-		slot4 = 1
+	slot2 = if gamepad_left_handed then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_gamepad_left_handed_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.gamepad_left_handed = options_values[current_selection]
 	local gamepad_layout = assigned(self.changed_user_settings.gamepad_layout, Application.user_setting("gamepad_layout"))
 
 	self:force_set_widget_value("gamepad_layout", gamepad_layout)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_toggle_crouch_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "toggle_crouch")
 	local toggle_crouch = Application.user_setting("toggle_crouch")
+	--- END OF BLOCK #0 ---
 
-	if toggle_crouch then
-		slot4 = 1
+	slot3 = if toggle_crouch then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-37, warpins: 2 ---
 	return selection, options, "menu_settings_toggle_crouch", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_toggle_crouch_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local toggle_crouch = assigned(self.changed_user_settings.toggle_crouch, Application.user_setting("toggle_crouch"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if toggle_crouch then
-		slot4 = 1
+	slot2 = if toggle_crouch then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_toggle_crouch = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.toggle_crouch = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_toggle_stationary_dodge_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "toggle_stationary_dodge")
 	local toggle_stationary_dodge = Application.user_setting("toggle_stationary_dodge")
+	--- END OF BLOCK #0 ---
 
-	if toggle_stationary_dodge then
-		slot4 = 1
+	slot3 = if toggle_stationary_dodge then
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-26, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 27-27, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 2 ---
+	--- END OF BLOCK #3 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #4
 	else
-		local default_option = 2
+	JUMP TO BLOCK #5
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-31, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-32, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-37, warpins: 2 ---
 	return selection, options, "menu_settings_toggle_stationary_dodge", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_toggle_stationary_dodge_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local toggle_stationary_dodge = assigned(self.changed_user_settings.toggle_stationary_dodge, Application.user_setting("toggle_stationary_dodge"))
 	slot3 = widget.content
+	--- END OF BLOCK #0 ---
 
-	if toggle_stationary_dodge then
-		slot4 = 1
+	slot2 = if toggle_stationary_dodge then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_toggle_stationary_dodge = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.toggle_stationary_dodge = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_matchmaking_region_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	local temp = {}
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-15, warpins: 0 ---
 	for region_type, regions in pairs(MatchmakingRegions) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 6-9, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 10-13, warpins: 0 ---
 		for region, _ in pairs(regions) do
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #0 10-11, warpins: 1 ---
 			temp[region] = true
+			--- END OF BLOCK #0 ---
+
+			FLOW; TARGET BLOCK #1
+
+
+
+			-- Decompilation error in this vicinity:
+			--- BLOCK #1 12-13, warpins: 2 ---
+			--- END OF BLOCK #1 ---
+
+
+
 		end
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 14-15, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
-	local options = {
-		{
-			value = "auto",
-			text = Localize("menu_settings_auto")
-		}
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-26, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "auto",
+		text = Localize("menu_settings_auto")
 	}
 
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 27-37, warpins: 0 ---
 	for region, _ in pairs(temp) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 27-35, warpins: 1 ---
 		options[#options + 1] = {
 			text = Localize(region),
 			value = region
 		}
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 36-37, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 38-52, warpins: 1 ---
 	local default_value = DefaultUserSettings.get("user_settings", "matchmaking_region")
 	local saved_value = Application.user_setting("matchmaking_region")
 	local default_option = 1
 	local selected_option = 1
 
-	for i, option in ipairs(options) do
-		if option.value == saved_value then
-			selected_option = i
+	--- END OF BLOCK #4 ---
 
-			break
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 53-59, warpins: 0 ---
+	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 53-55, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if option.value == saved_value then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 56-57, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 58-58, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 58-59, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 60-64, warpins: 2 ---
 	return selected_option, options, "menu_settings_matchmaking_region", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_matchmaking_region_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-14, warpins: 1 ---
 	local matchmaking_region = assigned(self.changed_user_settings.matchmaking_region, Application.user_setting("matchmaking_region"))
 	local current_selection = 1
 
-	for i, value in ipairs(widget.content.options_values) do
-		if value == matchmaking_region then
-			current_selection = i
+	--- END OF BLOCK #0 ---
 
-			break
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 15-20, warpins: 0 ---
+	for i, value in ipairs(widget.content.options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 15-16, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == matchmaking_region then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 17-18, warpins: 1 ---
+		current_selection = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 19-19, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 19-20, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 2 ---
 	widget.content.current_selection = current_selection
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_matchmaking_region = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local selected_index = content.current_selection
 	local options_values = content.options_values
 	local value = options_values[selected_index]
 	self.changed_user_settings.matchmaking_region = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_overcharge_opacity_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("overcharge_opacity") then
-		local overcharge_opacity = DefaultUserSettings.get("user_settings", "overcharge_opacity")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("overcharge_opacity")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-13, warpins: 1 ---
+	local overcharge_opacity = DefaultUserSettings.get("user_settings", "overcharge_opacity")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-30, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "overcharge_opacity")
 	local value = get_slider_value(min, max, overcharge_opacity)
 
 	return value, min, max, 0, "menu_settings_overcharge_opacity", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_overcharge_opacity_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	slot5 = assigned
+	local overcharge_opacity = assigned
 	slot6 = self.changed_user_settings.overcharge_opacity
 
-	if not Application.user_setting("overcharge_opacity") then
-		slot7 = DefaultUserSettings.get("user_settings", "overcharge_opacity")
+	--- END OF BLOCK #0 ---
+
+	slot7 = if not Application.user_setting("overcharge_opacity")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-17, warpins: 1 ---
+	slot7 = DefaultUserSettings.get("user_settings", "overcharge_opacity")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 18-33, warpins: 2 ---
 	local overcharge_opacity = slot5(slot6, slot7)
 	overcharge_opacity = math.clamp(overcharge_opacity, min, max)
 	content.internal_value = get_slider_value(min, max, overcharge_opacity)
 	content.value = overcharge_opacity
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_overcharge_opacity = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.overcharge_opacity = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_input_buffer_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 1
 
-	if not Application.user_setting("input_buffer") then
-		local input_buffer = DefaultUserSettings.get("user_settings", "input_buffer")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("input_buffer")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-13, warpins: 1 ---
+	local input_buffer = DefaultUserSettings.get("user_settings", "input_buffer")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-30, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "input_buffer")
 	local value = get_slider_value(min, max, input_buffer)
 
 	return value, min, max, 1, "menu_settings_input_buffer", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_input_buffer_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	slot5 = assigned
+	local input_buffer = assigned
 	slot6 = self.changed_user_settings.input_buffer
 
-	if not Application.user_setting("input_buffer") then
-		slot7 = DefaultUserSettings.get("user_settings", "input_buffer")
+	--- END OF BLOCK #0 ---
+
+	slot7 = if not Application.user_setting("input_buffer")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-17, warpins: 1 ---
+	slot7 = DefaultUserSettings.get("user_settings", "input_buffer")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 18-33, warpins: 2 ---
 	local input_buffer = slot5(slot6, slot7)
 	input_buffer = math.clamp(input_buffer, min, max)
 	content.internal_value = get_slider_value(min, max, input_buffer)
 	content.value = input_buffer
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_input_buffer = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.input_buffer = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_priority_input_buffer_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 2
 
-	if not Application.user_setting("priority_input_buffer") then
-		local priority_input_buffer = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("priority_input_buffer")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-13, warpins: 1 ---
+	local priority_input_buffer = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-30, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "priority_input_buffer")
 	local value = get_slider_value(min, max, priority_input_buffer)
 
 	return value, min, max, 1, "menu_settings_priority_input_buffer", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_priority_input_buffer_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	slot5 = assigned
+	local priority_input_buffer = assigned
 	slot6 = self.changed_user_settings.priority_input_buffer
 
-	if not Application.user_setting("priority_input_buffer") then
-		slot7 = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	--- END OF BLOCK #0 ---
+
+	slot7 = if not Application.user_setting("priority_input_buffer")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-17, warpins: 1 ---
+	slot7 = DefaultUserSettings.get("user_settings", "priority_input_buffer")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 18-33, warpins: 2 ---
 	local priority_input_buffer = slot5(slot6, slot7)
 	priority_input_buffer = math.clamp(priority_input_buffer, min, max)
 	content.internal_value = get_slider_value(min, max, priority_input_buffer)
 	content.value = priority_input_buffer
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_priority_input_buffer = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_user_settings.priority_input_buffer = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_weapon_scroll_type_setup = function (self)
-	local options = {
-		{
-			value = "scroll_wrap",
-			text = Localize("menu_settings_scroll_type_wrap")
-		},
-		{
-			value = "scroll_clamp",
-			text = Localize("menu_settings_scroll_type_clamp")
-		},
-		{
-			value = "scroll_disabled",
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-30, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "scroll_wrap",
+		text = Localize("menu_settings_scroll_type_wrap")
+	}
+	options[2] = {
+		value = "scroll_clamp",
+		text = Localize("menu_settings_scroll_type_clamp")
+	}
+	options[3] = {
+		value = "scroll_disabled",
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "weapon_scroll_type")
 
-	if not Application.user_setting("weapon_scroll_type") then
-		local scroll_type = "scroll_wrap"
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("weapon_scroll_type")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 31-31, warpins: 1 ---
+	local scroll_type = "scroll_wrap"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 32-33, warpins: 2 ---
+	--- END OF BLOCK #2 ---
 
 	if scroll_type == "scroll_clamp" then
-		slot4 = 2
-	elseif scroll_type == "scroll_disabled" then
-		slot4 = 3
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 34-35, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 36-37, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if scroll_type == "scroll_disabled" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 38-39, warpins: 1 ---
+	slot4 = 3
+	--- END OF BLOCK #5 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 40-40, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 41-42, warpins: 3 ---
+	--- END OF BLOCK #7 ---
 
 	if default_value == "scroll_clamp" then
-		slot5 = 2
-	elseif default_value == "scroll_disabled" then
-		slot5 = 3
+	JUMP TO BLOCK #8
 	else
-		local default_option = 1
+	JUMP TO BLOCK #9
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 43-44, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #8 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 45-46, warpins: 1 ---
+	--- END OF BLOCK #9 ---
+
+	if default_value == "scroll_disabled" then
+	JUMP TO BLOCK #10
+	else
+	JUMP TO BLOCK #11
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 47-48, warpins: 1 ---
+	slot5 = 3
+	--- END OF BLOCK #10 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 49-49, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #11 ---
+
+	FLOW; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 50-54, warpins: 3 ---
 	return selection, options, "menu_settings_weapon_scroll_type", default_option
+	--- END OF BLOCK #12 ---
+
+
+
 end
 
 OptionsView.cb_weapon_scroll_type_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.weapon_scroll_type, Application.user_setting("weapon_scroll_type")) then
-		local scroll_type = "scroll_wrap"
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.weapon_scroll_type, Application.user_setting("weapon_scroll_type"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local scroll_type = "scroll_wrap"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
 	slot3 = widget.content
+	--- END OF BLOCK #2 ---
 
 	if scroll_type == "scroll_clamp" then
-		slot4 = 2
-	elseif scroll_type == "scroll_disabled" then
-		slot4 = 3
+	JUMP TO BLOCK #3
 	else
-		slot4 = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-18, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if scroll_type == "scroll_disabled" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 1 ---
+	slot4 = 3
+	--- END OF BLOCK #5 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 21-21, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #6 ---
+
+	FLOW; TARGET BLOCK #7
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 22-23, warpins: 3 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #7 ---
+
+
+
 end
 
 OptionsView.cb_weapon_scroll_type = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.weapon_scroll_type = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_double_tap_dodge = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.double_tap_dodge = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_double_tap_dodge_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "double_tap_dodge")
 	local enabled = Application.user_setting("double_tap_dodge")
+	--- END OF BLOCK #0 ---
 
 	if enabled == nil then
-		enabled = default_value
-	end
-
-	if enabled then
-		slot4 = 1
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-27, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if enabled then
+	JUMP TO BLOCK #3
 	else
-		local default_option = 2
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_double_tap_dodge", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_double_tap_dodge_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local enabled = assigned(self.changed_user_settings.double_tap_dodge, Application.user_setting("double_tap_dodge"))
+	--- END OF BLOCK #0 ---
 
 	if enabled == nil then
-		enabled = DefaultUserSettings.get("user_settings", "double_tap_dodge")
-	end
-
-	slot3 = widget.content
-
-	if enabled then
-		slot4 = 1
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-16, warpins: 1 ---
+	enabled = DefaultUserSettings.get("user_settings", "double_tap_dodge")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 17-19, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-21, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 22-22, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 23-24, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_tutorials_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "tutorials_enabled")
 	local tutorials_enabled = Application.user_setting("tutorials_enabled")
+	--- END OF BLOCK #0 ---
 
 	if tutorials_enabled == nil then
-		tutorials_enabled = true
-	end
-
-	if tutorials_enabled then
-		slot4 = 1
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	tutorials_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-27, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if tutorials_enabled then
+	JUMP TO BLOCK #3
 	else
-		local default_option = 2
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_tutorials_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_tutorials_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local tutorials_enabled = assigned(self.changed_user_settings.tutorials_enabled, Application.user_setting("tutorials_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if tutorials_enabled == nil then
-		tutorials_enabled = true
-	end
-
-	slot3 = widget.content
-
-	if tutorials_enabled then
-		slot4 = 1
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	tutorials_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if tutorials_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_tutorials_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.tutorials_enabled = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_master_volume_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("master_bus_volume") then
-		local master_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("master_bus_volume")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local master_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-25, warpins: 2 ---
 	local value = get_slider_value(min, max, master_bus_volume)
 
 	return value, min, max, 0, "menu_settings_master_volume", DefaultUserSettings.get("user_settings", "master_bus_volume")
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_master_volume_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.master_bus_volume, Application.user_setting("master_bus_volume")) then
-		local master_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.master_bus_volume, Application.user_setting("master_bus_volume"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local master_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-22, warpins: 2 ---
 	content.internal_value = get_slider_value(min, max, master_bus_volume)
 	content.value = master_bus_volume
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_master_volume = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.master_bus_volume = value
 
 	self:set_wwise_parameter("master_bus_volume", value)
 	Managers.music:set_master_volume(value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_music_bus_volume_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("music_bus_volume") then
-		local music_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("music_bus_volume")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local music_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-25, warpins: 2 ---
 	local value = get_slider_value(min, max, music_bus_volume)
 
 	return value, min, max, 0, "menu_settings_music_volume", DefaultUserSettings.get("user_settings", "music_bus_volume")
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_music_bus_volume_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.music_bus_volume, Application.user_setting("music_bus_volume")) then
-		local music_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.music_bus_volume, Application.user_setting("music_bus_volume"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local music_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-22, warpins: 2 ---
 	content.internal_value = get_slider_value(min, max, music_bus_volume)
 	content.value = music_bus_volume
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_music_bus_volume = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.music_bus_volume = value
 
 	Managers.music:set_music_volume(value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_sfx_bus_volume_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("sfx_bus_volume") then
-		local sfx_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("sfx_bus_volume")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local sfx_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-25, warpins: 2 ---
 	local value = get_slider_value(min, max, sfx_bus_volume)
 
 	return value, min, max, 0, "menu_settings_sfx_volume", DefaultUserSettings.get("user_settings", "sfx_bus_volume")
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_sfx_bus_volume_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.sfx_bus_volume, Application.user_setting("sfx_bus_volume")) then
-		local sfx_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.sfx_bus_volume, Application.user_setting("sfx_bus_volume"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local sfx_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-22, warpins: 2 ---
 	content.internal_value = get_slider_value(min, max, sfx_bus_volume)
 	content.value = sfx_bus_volume
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_sfx_bus_volume = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.sfx_bus_volume = value
 
 	self:set_wwise_parameter("sfx_bus_volume", value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_voice_bus_volume_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("voice_bus_volume") then
-		local voice_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("voice_bus_volume")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local voice_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-25, warpins: 2 ---
 	local value = get_slider_value(min, max, voice_bus_volume)
 
 	return value, min, max, 0, "menu_settings_voice_volume", DefaultUserSettings.get("user_settings", "voice_bus_volume")
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_voice_bus_volume_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.voice_bus_volume, Application.user_setting("voice_bus_volume")) then
-		local voice_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.voice_bus_volume, Application.user_setting("voice_bus_volume"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local voice_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-22, warpins: 2 ---
 	content.internal_value = get_slider_value(min, max, voice_bus_volume)
 	content.value = voice_bus_volume
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_voice_bus_volume = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.voice_bus_volume = value
 
 	self:set_wwise_parameter("voice_bus_volume", value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_voip_bus_volume_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("voip_bus_volume") then
-		local voip_bus_volume = 0
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("voip_bus_volume")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-9, warpins: 1 ---
+	local voip_bus_volume = 0
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 10-25, warpins: 2 ---
 	local value = get_slider_value(min, max, voip_bus_volume)
 
 	return value, min, max, 0, "menu_settings_voip_volume", DefaultUserSettings.get("user_settings", "voip_bus_volume")
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_voip_bus_volume_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.voip_bus_volume, Application.user_setting("voip_bus_volume")) then
-		local voip_bus_volume = 90
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.voip_bus_volume, Application.user_setting("voip_bus_volume"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-14, warpins: 1 ---
+	local voip_bus_volume = 90
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-22, warpins: 2 ---
 	content.internal_value = get_slider_value(min, max, voip_bus_volume)
 	content.value = voip_bus_volume
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_voip_bus_volume = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.voip_bus_volume = value
 
 	self.voip:set_volume(value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_voip_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local voip_enabled = Application.user_setting("voip_is_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "voip_is_enabled")
+	--- END OF BLOCK #0 ---
 
 	if voip_enabled == nil then
-		voip_enabled = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	if self.voip then
-		self.voip:set_enabled(voip_enabled)
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	voip_enabled = default_value
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-28, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot4 = if self.voip then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-33, warpins: 1 ---
+	self.voip:set_enabled(voip_enabled)
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 34-36, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not voip_enabled then
-		selected_option = 2
+	slot2 = if not voip_enabled then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 37-37, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 38-40, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #6 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 41-41, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 42-46, warpins: 2 ---
 	return selected_option, options, "menu_settings_voip_enabled", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_voip_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local voip_enabled = assigned(self.changed_user_settings.voip_is_enabled, Application.user_setting("voip_is_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if voip_enabled == nil then
-		voip_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	voip_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == voip_enabled then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == voip_enabled then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_voip_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.voip_is_enabled = value
 
 	self.voip:set_enabled(value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_voip_push_to_talk_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local voip_push_to_talk = Application.user_setting("voip_push_to_talk")
 	local default_value = DefaultUserSettings.get("user_settings", "voip_push_to_talk")
+	--- END OF BLOCK #0 ---
 
 	if voip_push_to_talk == nil then
-		voip_push_to_talk = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	voip_push_to_talk = default_value
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-33, warpins: 2 ---
 	self.voip:set_push_to_talk(voip_push_to_talk)
 
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
-	if not voip_push_to_talk then
-		selected_option = 2
+	slot2 = if not voip_push_to_talk then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 34-34, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 35-37, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 38-38, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 39-43, warpins: 2 ---
 	return selected_option, options, "menu_settings_voip_push_to_talk", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_voip_push_to_talk_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local voip_push_to_talk = assigned(self.changed_user_settings.voip_push_to_talk, Application.user_setting("voip_push_to_talk"))
+	--- END OF BLOCK #0 ---
 
 	if voip_push_to_talk == nil then
-		voip_push_to_talk = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	voip_push_to_talk = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == voip_push_to_talk then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == voip_push_to_talk then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_voip_push_to_talk = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.voip_push_to_talk = value
 
 	self.voip:set_push_to_talk(value)
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_particles_resolution_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_low")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_high")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_low")
 	}
 	local low_res_transparency = Application.user_setting("render_settings", "low_res_transparency")
+	--- END OF BLOCK #0 ---
 
-	if low_res_transparency then
-		slot3 = 2
+	slot2 = if low_res_transparency then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-22, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 23-23, warpins: 1 ---
+	local selected_option = 1
+
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 24-27, warpins: 2 ---
 	return selected_option, options, "menu_settings_low_res_transparency"
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_particles_resolution_saved_value = function (self, widget)
-	local low_res_transparency = assigned(self.changed_render_settings.low_res_transparency, Application.user_setting("render_settings", "low_res_transparency"))
 
-	if low_res_transparency then
-		slot3 = 2
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	local low_res_transparency = assigned(self.changed_render_settings.low_res_transparency, Application.user_setting("render_settings", "low_res_transparency"))
+	--- END OF BLOCK #0 ---
+
+	slot2 = if low_res_transparency then
+	JUMP TO BLOCK #1
 	else
-		local selected_option = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-13, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-14, warpins: 1 ---
+	local selected_option = 1
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-17, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #3 ---
+
+
+
 end
 
 OptionsView.cb_particles_resolution = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_render_settings.low_res_transparency = value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_particles_quality_setup = function (self)
-	local options = {
-		{
-			value = "lowest",
-			text = Localize("menu_settings_lowest")
-		},
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-46, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "lowest",
+		text = Localize("menu_settings_lowest")
+	}
+	options[2] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[3] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[4] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[5] = {
+		value = "extreme",
+		text = Localize("menu_settings_extreme")
 	}
 	local particles_quality = Application.user_setting("particles_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "particles_quality")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 47-57, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 47-50, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if options[i].value == particles_quality then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 51-51, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 52-55, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 56-56, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 57-57, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 58-62, warpins: 1 ---
 	return selected_option, options, "menu_settings_particles_quality", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_particles_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local particles_quality = assigned(self.changed_user_settings.particles_quality, Application.user_setting("particles_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if particles_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_particles_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.particles_quality = value
 	local particle_quality_settings = ParticlesQuality[value]
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-15, warpins: 0 ---
 	for setting, key in pairs(particle_quality_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 12-13, warpins: 1 ---
 		self.changed_render_settings[setting] = key
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 14-15, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-17, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 18-22, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 23-23, warpins: 2 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_ambient_light_quality_setup = function (self)
-	local options = {
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-28, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[2] = {
+		value = "high",
+		text = Localize("menu_settings_high")
 	}
 	local ambient_light_quality = Application.user_setting("ambient_light_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "ambient_light_quality")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 29-39, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 29-32, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if options[i].value == ambient_light_quality then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 33-33, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 34-37, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 38-38, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 39-39, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 40-44, warpins: 1 ---
 	return selected_option, options, "menu_settings_ambient_light_quality", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_ambient_light_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local ambient_light_quality = assigned(self.changed_user_settings.ambient_light_quality, Application.user_setting("ambient_light_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if ambient_light_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_ambient_light_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.ambient_light_quality = value
 	local ambient_light_quality_settings = AmbientLightQuality[value]
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-15, warpins: 0 ---
 	for setting, key in pairs(ambient_light_quality_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 12-13, warpins: 1 ---
 		self.changed_render_settings[setting] = key
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 14-15, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-17, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 18-22, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 23-23, warpins: 2 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_auto_exposure_speed_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local min = 0.1
 	local max = 2
 
-	if not Application.user_setting("render_settings", "eye_adaptation_speed") then
-		local auto_exposure_speed = 1
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("render_settings", "eye_adaptation_speed")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 10-10, warpins: 1 ---
+	local auto_exposure_speed = 1
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-31, warpins: 2 ---
 	local value = get_slider_value(min, max, auto_exposure_speed)
 	local default_value = math.clamp(DefaultUserSettings.get("render_settings", "eye_adaptation_speed"), min, max)
 
 	return value, min, max, 1, "menu_settings_auto_exposure_speed"
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_auto_exposure_speed_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-27, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
@@ -8891,822 +22036,2728 @@ OptionsView.cb_auto_exposure_speed_saved_value = function (self, widget)
 	auto_exposure_speed = math.clamp(auto_exposure_speed, min, max)
 	content.internal_value = get_slider_value(min, max, auto_exposure_speed)
 	content.value = auto_exposure_speed
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_auto_exposure_speed = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	self.changed_render_settings.eye_adaptation_speed = content.value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-10, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-11, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_volumetric_fog_quality_setup = function (self)
-	local options = {
-		{
-			value = "lowest",
-			text = Localize("menu_settings_lowest")
-		},
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "extreme",
-			text = Localize("menu_settings_extreme")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-46, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "lowest",
+		text = Localize("menu_settings_lowest")
+	}
+	options[2] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[3] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[4] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[5] = {
+		value = "extreme",
+		text = Localize("menu_settings_extreme")
 	}
 	local volumetric_fog_quality = Application.user_setting("volumetric_fog_quality")
 	local default_value = DefaultUserSettings.get("user_settings", "volumetric_fog_quality")
 	local selected_option = 1
 	local default_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 47-57, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 47-50, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if options[i].value == volumetric_fog_quality then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 51-51, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 52-55, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == options[i].value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 56-56, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 57-57, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 58-62, warpins: 1 ---
 	return selected_option, options, "menu_settings_volumetric_fog_quality", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_volumetric_fog_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local volumetric_fog_quality = assigned(self.changed_user_settings.volumetric_fog_quality, Application.user_setting("volumetric_fog_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if volumetric_fog_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_volumetric_fog_quality = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.volumetric_fog_quality = value
 	local volumetric_fog_quality_settings = VolumetricFogQuality[value]
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-15, warpins: 0 ---
 	for setting, key in pairs(volumetric_fog_quality_settings) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 12-13, warpins: 1 ---
 		self.changed_render_settings[setting] = key
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 14-15, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-17, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 18-22, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 23-23, warpins: 2 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_physic_debris_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local use_physic_debris = Application.user_setting("use_physic_debris")
+	--- END OF BLOCK #0 ---
 
 	if use_physic_debris == nil then
-		use_physic_debris = true
-	end
-
-	if use_physic_debris then
-		slot3 = 2
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_physic_debris") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	use_physic_debris = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_physic_debris then
+	JUMP TO BLOCK #3
 	else
-		local default_selection = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "use_physic_debris")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_selection = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_physic_debris", default_selection
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_physic_debris_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local use_physic_debris = assigned(self.changed_user_settings.use_physic_debris, Application.user_setting("use_physic_debris"))
+	--- END OF BLOCK #0 ---
 
 	if use_physic_debris == nil then
-		use_physic_debris = true
-	end
-
-	slot3 = widget.content
-
-	if use_physic_debris then
-		slot4 = 2
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	use_physic_debris = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_physic_debris then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_physic_debris = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_physic_debris = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_alien_fx_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-19, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local use_alien_fx = Application.user_setting("use_alien_fx")
+	--- END OF BLOCK #0 ---
 
 	if use_alien_fx == nil then
-		use_alien_fx = true
-	end
-
-	if use_alien_fx then
-		slot3 = 2
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_alien_fx") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 20-20, warpins: 1 ---
+	use_alien_fx = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-22, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_alien_fx then
+	JUMP TO BLOCK #3
 	else
-		local default_selection = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-24, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-25, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "use_alien_fx")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_selection = 1
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-42, warpins: 2 ---
 	GameSettingsDevelopment.use_alien_fx = use_alien_fx
 
 	return selection, options, "menu_settings_alien_fx", default_selection
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_alien_fx_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local use_alien_fx = assigned(self.changed_user_settings.use_alien_fx, Application.user_setting("use_alien_fx"))
+	--- END OF BLOCK #0 ---
 
 	if use_alien_fx == nil then
-		use_alien_fx = true
-	end
-
-	slot3 = widget.content
-
-	if use_alien_fx then
-		slot4 = 2
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	use_alien_fx = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_alien_fx then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_alien_fx = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_alien_fx = options_values[current_selection]
 	GameSettingsDevelopment.use_alien_fx = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_razer_chroma_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-22, warpins: 1 ---
 	print("cb_razer_chroma_setup")
 
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 	local use_razer_chroma = Application.user_setting("use_razer_chroma")
+	--- END OF BLOCK #0 ---
 
 	if use_razer_chroma == nil then
-		use_razer_chroma = false
-	end
-
-	if use_razer_chroma then
-		slot3 = 2
+	JUMP TO BLOCK #1
 	else
-		local selection = 1
+	JUMP TO BLOCK #2
 	end
 
-	if DefaultUserSettings.get("user_settings", "use_razer_chroma") then
-		slot4 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 23-23, warpins: 1 ---
+	use_razer_chroma = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 24-25, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_razer_chroma then
+	JUMP TO BLOCK #3
 	else
-		local default_selection = 1
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 26-27, warpins: 1 ---
+	slot3 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 28-28, warpins: 1 ---
+	local selection = 1
+
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 29-35, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot4 = if DefaultUserSettings.get("user_settings", "use_razer_chroma")
+
+	 then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 36-37, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 38-38, warpins: 1 ---
+	local default_selection = 1
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-45, warpins: 2 ---
 	GameSettingsDevelopment.use_razer_chroma = use_razer_chroma
 
 	return selection, options, "menu_settings_razer_chroma", default_selection
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_razer_chroma_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local use_razer_chroma = assigned(self.changed_user_settings.use_razer_chroma, Application.user_setting("use_razer_chroma"))
+	--- END OF BLOCK #0 ---
 
 	if use_razer_chroma == nil then
-		use_razer_chroma = false
-	end
-
-	slot3 = widget.content
-
-	if use_razer_chroma then
-		slot4 = 2
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	use_razer_chroma = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if use_razer_chroma then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-17, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 18-19, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_razer_chroma = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-9, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.use_razer_chroma = options_values[current_selection]
 	GameSettingsDevelopment.use_razer_chroma = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_ssr_setup = function (self)
-	local options = {
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = false,
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = true,
+		text = Localize("menu_settings_on")
 	}
 
-	if not Application.user_setting("render_settings", "ssr_enabled") then
-		local ssr_enabled = false
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not Application.user_setting("render_settings", "ssr_enabled")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 21-21, warpins: 1 ---
+	local ssr_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 22-28, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("render_settings", "ssr_enabled")
+	--- END OF BLOCK #2 ---
 
-	if ssr_enabled then
-		slot4 = 2
+	slot2 = if ssr_enabled then
+	JUMP TO BLOCK #3
 	else
-		local selection = 1
+	JUMP TO BLOCK #4
 	end
 
-	if default_value then
-		slot5 = 2
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-30, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 31-31, warpins: 1 ---
+	local selection = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 32-33, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot3 = if default_value then
+	JUMP TO BLOCK #6
 	else
-		local default_option = 1
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-35, warpins: 1 ---
+	slot5 = 2
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-36, warpins: 1 ---
+	local default_option = 1
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 37-41, warpins: 2 ---
 	return selection, options, "menu_settings_ssr", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_ssr_saved_value = function (self, widget)
-	if not assigned(self.changed_render_settings.ssr_enabled, Application.user_setting("render_settings", "ssr_enabled")) then
-		local ssr_enabled = false
-	end
 
-	slot3 = widget.content
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
+	--- END OF BLOCK #0 ---
 
-	if ssr_enabled then
-		slot4 = 2
+	slot2 = if not assigned(self.changed_render_settings.ssr_enabled, Application.user_setting("render_settings", "ssr_enabled"))
+
+	 then
+	JUMP TO BLOCK #1
 	else
-		slot4 = 1
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local ssr_enabled = false
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-15, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if ssr_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 16-17, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 18-18, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_ssr = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_render_settings.ssr_enabled = options_values[current_selection]
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-12, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-13, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_fov_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	local min = 45
 	local max = 120
+	--- END OF BLOCK #0 ---
 
-	if not IS_WINDOWS then
-		max = 90
-		min = 65
+	slot3 = if not IS_WINDOWS then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-8, warpins: 1 ---
+	max = 90
+	min = 65
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 9-19, warpins: 2 ---
 	local base_fov = CameraSettings.first_person._node.vertical_fov
 
-	if not Application.user_setting("render_settings", "fov") then
-		local fov = base_fov
+	--- END OF BLOCK #2 ---
+
+	slot4 = if not Application.user_setting("render_settings", "fov")
+
+	 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-20, warpins: 1 ---
+	local fov = base_fov
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 21-38, warpins: 2 ---
 	local value = get_slider_value(min, max, fov)
 	fov = math.clamp(fov, min, max)
 	local fov_multiplier = fov / base_fov
 	local camera_manager = Managers.state.camera
 
-	if camera_manager then
-		camera_manager:set_fov_multiplier(fov_multiplier)
+	--- END OF BLOCK #4 ---
+
+	slot7 = if camera_manager then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 39-42, warpins: 1 ---
+	camera_manager:set_fov_multiplier(fov_multiplier)
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 43-59, warpins: 2 ---
 	local default_value = math.clamp(DefaultUserSettings.get("render_settings", "fov"), min, max)
 
 	return value, min, max, 0, "menu_settings_fov", default_value
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_fov_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-18, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 	local base_fov = CameraSettings.first_person._node.vertical_fov
 
-	if not assigned(self.changed_render_settings.fov, Application.user_setting("render_settings", "fov")) then
-		local fov = base_fov
+	--- END OF BLOCK #0 ---
+
+	slot6 = if not assigned(self.changed_render_settings.fov, Application.user_setting("render_settings", "fov"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 19-19, warpins: 1 ---
+	local fov = base_fov
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 20-34, warpins: 2 ---
 	fov = math.clamp(fov, min, max)
 	content.internal_value = get_slider_value(min, max, fov)
 	content.value = fov
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_fov = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	self.changed_render_settings.fov = content.value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_enabled_crosshairs = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.enabled_crosshairs = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_enabled_crosshairs_setup = function (self)
-	local options = {
-		{
-			value = "all",
-			text = Localize("menu_settings_crosshair_all")
-		},
-		{
-			value = "melee",
-			text = Localize("menu_settings_crosshair_melee")
-		},
-		{
-			value = "ranged",
-			text = Localize("menu_settings_crosshair_ranged")
-		},
-		{
-			value = "none",
-			text = Localize("menu_settings_crosshair_none")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-39, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "all",
+		text = Localize("menu_settings_crosshair_all")
+	}
+	options[2] = {
+		value = "melee",
+		text = Localize("menu_settings_crosshair_melee")
+	}
+	options[3] = {
+		value = "ranged",
+		text = Localize("menu_settings_crosshair_ranged")
+	}
+	options[4] = {
+		value = "none",
+		text = Localize("menu_settings_crosshair_none")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "enabled_crosshairs")
 	local user_settings_value = Application.user_setting("enabled_crosshairs")
 	local default_option, selected_option = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 40-49, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 40-42, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == user_settings_value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 43-43, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 44-46, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 47-47, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 48-49, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 50-56, warpins: 1 ---
 	fassert(default_option, "default option %i does not exist in cb_enabled_crosshairs_setup options table", default_value)
 
-	if not selected_option then
-		slot6 = default_option
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not selected_option then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 57-57, warpins: 1 ---
+	slot6 = default_option
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 58-61, warpins: 2 ---
 	return slot6, options, "menu_settings_enabled_crosshairs", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_enabled_crosshairs_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.enabled_crosshairs, Application.user_setting("enabled_crosshairs")) then
-		local value = DefaultUserSettings.get("user_settings", "enabled_crosshairs")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.enabled_crosshairs, Application.user_setting("enabled_crosshairs"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-15, warpins: 1 ---
+	local value = DefaultUserSettings.get("user_settings", "enabled_crosshairs")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-22, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
-		if value == options_values[i] then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-28, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if value == options_values[i] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-31, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_blood_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local blood_enabled = Application.user_setting("blood_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "blood_enabled")
+	--- END OF BLOCK #0 ---
 
 	if blood_enabled == nil then
-		blood_enabled = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	blood_enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-28, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
-	if not blood_enabled then
-		selected_option = 2
+	slot2 = if not blood_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-29, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-32, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-33, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-38, warpins: 2 ---
 	return selected_option, options, "menu_settings_blood_enabled", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_blood_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local blood_enabled = assigned(self.changed_user_settings.blood_enabled, Application.user_setting("blood_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if blood_enabled == nil then
-		blood_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	blood_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == blood_enabled then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == blood_enabled then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_blood_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.blood_enabled = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_screen_blood_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local screen_blood_enabled = Application.user_setting("screen_blood_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "screen_blood_enabled")
+	--- END OF BLOCK #0 ---
 
 	if screen_blood_enabled == nil then
-		screen_blood_enabled = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	screen_blood_enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-28, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
-	if not screen_blood_enabled then
-		selected_option = 2
+	slot2 = if not screen_blood_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-29, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-32, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-33, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-38, warpins: 2 ---
 	return selected_option, options, "menu_settings_screen_blood_enabled", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_screen_blood_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local screen_blood_enabled = assigned(self.changed_user_settings.screen_blood_enabled, Application.user_setting("screen_blood_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if screen_blood_enabled == nil then
-		screen_blood_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	screen_blood_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == screen_blood_enabled then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == screen_blood_enabled then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_screen_blood_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.screen_blood_enabled = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_dismemberment_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local dismemberment_enabled = Application.user_setting("dismemberment_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "dismemberment_enabled")
+	--- END OF BLOCK #0 ---
 
 	if dismemberment_enabled == nil then
-		dismemberment_enabled = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	dismemberment_enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-28, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
-	if not dismemberment_enabled then
-		selected_option = 2
+	slot2 = if not dismemberment_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-29, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-32, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-33, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-38, warpins: 2 ---
 	return selected_option, options, "menu_settings_dismemberment_enabled", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_dismemberment_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local dismemberment_enabled = assigned(self.changed_user_settings.dismemberment_enabled, Application.user_setting("dismemberment_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if dismemberment_enabled == nil then
-		dismemberment_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	dismemberment_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == dismemberment_enabled then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == dismemberment_enabled then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_dismemberment_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.dismemberment_enabled = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_ragdoll_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local ragdoll_enabled = Application.user_setting("ragdoll_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "ragdoll_enabled")
+	--- END OF BLOCK #0 ---
 
 	if ragdoll_enabled == nil then
-		ragdoll_enabled = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	ragdoll_enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-28, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
-	if not ragdoll_enabled then
-		selected_option = 2
+	slot2 = if not ragdoll_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-29, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-32, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-33, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-38, warpins: 2 ---
 	return selected_option, options, "menu_settings_ragdoll_enabled", default_option
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_ragdoll_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local ragdoll_enabled = assigned(self.changed_user_settings.ragdoll_enabled, Application.user_setting("ragdoll_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if ragdoll_enabled == nil then
-		ragdoll_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	ragdoll_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == ragdoll_enabled then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == ragdoll_enabled then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_ragdoll_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.ragdoll_enabled = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_chat_enabled_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local chat_enabled = Application.user_setting("chat_enabled")
 	local default_value = DefaultUserSettings.get("user_settings", "chat_enabled")
+	--- END OF BLOCK #0 ---
 
 	if chat_enabled == nil then
-		chat_enabled = default_value
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	chat_enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-28, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
-	if not chat_enabled then
-		selected_option = 2
+	slot2 = if not chat_enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 29-29, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-32, warpins: 2 ---
 	local default_option = 1
+	--- END OF BLOCK #4 ---
 
-	if not default_value then
-		default_option = 2
+	slot3 = if not default_value then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 33-33, warpins: 1 ---
+	default_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 34-37, warpins: 2 ---
 	local setting_name = "menu_settings_chat_enabled"
+	--- END OF BLOCK #6 ---
 
-	if not IS_WINDOWS then
-		setting_name = "menu_settings_chat_enabled_" .. PLATFORM
+	slot7 = if not IS_WINDOWS then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 38-40, warpins: 1 ---
+	setting_name = "menu_settings_chat_enabled_" .. PLATFORM
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 41-45, warpins: 2 ---
 	return selected_option, options, setting_name, default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_chat_enabled_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local chat_enabled = assigned(self.changed_user_settings.chat_enabled, Application.user_setting("chat_enabled"))
+	--- END OF BLOCK #0 ---
 
 	if chat_enabled == nil then
-		chat_enabled = true
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	chat_enabled = true
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == chat_enabled then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == chat_enabled then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_chat_enabled = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.chat_enabled = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_chat_font_size = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.chat_font_size = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_chat_font_size_setup = function (self)
-	local options = {
-		{
-			text = "16",
-			value = 16
-		},
-		{
-			text = "20",
-			value = 20
-		},
-		{
-			text = "24",
-			value = 24
-		},
-		{
-			text = "28",
-			value = 28
-		},
-		{
-			text = "32",
-			value = 32
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-25, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		text = "16",
+		value = 16
+	}
+	options[2] = {
+		text = "20",
+		value = 20
+	}
+	options[3] = {
+		text = "24",
+		value = 24
+	}
+	options[4] = {
+		text = "28",
+		value = 28
+	}
+	options[5] = {
+		text = "32",
+		value = 32
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "chat_font_size")
 	local user_settings_value = Application.user_setting("chat_font_size")
 	local default_option, selected_option = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 26-35, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 26-28, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == user_settings_value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 29-29, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 30-32, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 33-33, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 34-35, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 36-42, warpins: 1 ---
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if not selected_option then
-		slot6 = default_option
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not selected_option then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 43-43, warpins: 1 ---
+	slot6 = default_option
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 44-47, warpins: 2 ---
 	return slot6, options, "menu_settings_chat_font_size", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_chat_font_size_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.chat_font_size, Application.user_setting("chat_font_size")) then
-		local value = DefaultUserSettings.get("user_settings", "chat_font_size")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.chat_font_size, Application.user_setting("chat_font_size"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-15, warpins: 1 ---
+	local value = DefaultUserSettings.get("user_settings", "chat_font_size")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-22, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
-		if value == options_values[i] then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-28, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if value == options_values[i] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-31, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_clan_tag_setup = function (self)
-	local options = {
-		{
-			value = "0",
-			text = Localize("menu_settings_none")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-21, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "0",
+		text = Localize("menu_settings_none")
 	}
 	local clan_tag = Application.user_setting("clan_tag")
 	local clans = SteamHelper.clans_short()
@@ -9714,485 +24765,1746 @@ OptionsView.cb_clan_tag_setup = function (self)
 	local default_option = 1
 	local selected_option = default_option
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 22-33, warpins: 0 ---
 	for id, clan_name in pairs(clans) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 22-23, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if clan_name ~= "" then
-			options[i] = {
-				text = clan_name,
-				value = id
-			}
-
-			if id == clan_tag then
-				selected_option = i
-			end
-
-			i = i + 1
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 24-29, warpins: 1 ---
+		options[i] = {
+			text = clan_name,
+			value = id
+		}
+		--- END OF BLOCK #1 ---
+
+		if id == clan_tag then
+		JUMP TO BLOCK #2
+		else
+		JUMP TO BLOCK #3
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 30-30, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 31-31, warpins: 2 ---
+		i = i + 1
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 32-33, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 34-38, warpins: 1 ---
 	return selected_option, options, "menu_settings_clan_tag", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_clan_tag_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local options_values = widget.content.options_values
 	local clan_tag = assigned(self.changed_user_settings.clan_tag, Application.user_setting("clan_tag"))
+	--- END OF BLOCK #0 ---
 
 	if clan_tag == nil then
-		clan_tag = "0"
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-13, warpins: 1 ---
+	clan_tag = "0"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-18, warpins: 2 ---
 	local selected_option = 1
 
-	for idx, value in pairs(options_values) do
-		if value == clan_tag then
-			selected_option = idx
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 19-24, warpins: 0 ---
+	for idx, value in pairs(options_values) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 19-20, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		if value == clan_tag then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 21-22, warpins: 1 ---
+		selected_option = idx
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 23-23, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 2 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 25-29, warpins: 2 ---
 	widget.content.current_selection = selected_option
 	widget.content.selected_option = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_clan_tag = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.clan_tag = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_blood_decals_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 500
 
-	if not Application.user_setting("num_blood_decals") then
-		local num_blood_decals = BloodSettings.blood_decals.num_decals
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("num_blood_decals")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-11, warpins: 1 ---
+	local num_blood_decals = BloodSettings.blood_decals.num_decals
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-38, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "num_blood_decals")
 	local value = get_slider_value(min, max, num_blood_decals)
 	num_blood_decals = math.clamp(num_blood_decals, min, max)
 	BloodSettings.blood_decals.num_decals = num_blood_decals
 
 	return value, min, max, 0, "menu_settings_num_blood_decals", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_blood_decals_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.num_blood_decals, Application.user_setting("num_blood_decals")) then
-		local num_blood_decals = BloodSettings.blood_decals.num_decals
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.num_blood_decals, Application.user_setting("num_blood_decals"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-16, warpins: 1 ---
+	local num_blood_decals = BloodSettings.blood_decals.num_decals
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 17-31, warpins: 2 ---
 	num_blood_decals = math.clamp(num_blood_decals, min, max)
 	content.internal_value = get_slider_value(min, max, num_blood_decals)
 	content.value = num_blood_decals
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_blood_decals = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	self.changed_user_settings.num_blood_decals = content.value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-10, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-11, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_dynamic_range_sound_setup = function (self)
-	local options = {
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-30, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "high",
+		text = Localize("menu_settings_high")
+	}
+	options[2] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[3] = {
+		value = "low",
+		text = Localize("menu_settings_low")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "dynamic_range_sound")
 
-	if not Application.user_setting("dynamic_range_sound") then
-		local dynamic_range_sound = default_value
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("dynamic_range_sound")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 31-31, warpins: 1 ---
+	local dynamic_range_sound = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 32-34, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
 	if dynamic_range_sound == "high" then
-		selected_option = 1
-	elseif dynamic_range_sound == "medium" then
-		selected_option = 2
-	elseif dynamic_range_sound == "low" then
-		selected_option = 3
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 35-36, warpins: 1 ---
+	selected_option = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 37-38, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if dynamic_range_sound == "medium" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 39-40, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #5 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 41-42, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	if dynamic_range_sound == "low" then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 43-43, warpins: 1 ---
+	selected_option = 3
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 44-49, warpins: 4 ---
 	local default_option = 1
 
 	return selected_option, options, "menu_settings_dynamic_range_sound", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_dynamic_range_sound_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.dynamic_range_sound, Application.user_setting("dynamic_range_sound")) then
-		local dynamic_range_sound = "low"
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.dynamic_range_sound, Application.user_setting("dynamic_range_sound"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-11, warpins: 1 ---
+	local dynamic_range_sound = "low"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-14, warpins: 2 ---
 	local selected_option = 1
+	--- END OF BLOCK #2 ---
 
 	if dynamic_range_sound == "high" then
-		selected_option = 1
-	elseif dynamic_range_sound == "medium" then
-		selected_option = 2
-	elseif dynamic_range_sound == "low" then
-		selected_option = 3
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	selected_option = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-18, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if dynamic_range_sound == "medium" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-20, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #5 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 21-22, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	if dynamic_range_sound == "low" then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 23-23, warpins: 1 ---
+	selected_option = 3
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 24-26, warpins: 4 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_dynamic_range_sound = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.dynamic_range_sound = value
 	local setting = nil
+	--- END OF BLOCK #0 ---
 
 	if value == "high" then
-		setting = 0
-	elseif value == "medium" then
-		setting = 0.5
-	elseif value == "low" then
-		setting = 1
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-10, warpins: 1 ---
+	setting = 0
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-12, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	if value == "medium" then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 13-14, warpins: 1 ---
+	setting = 0.5
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 15-16, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if value == "low" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 17-17, warpins: 1 ---
+	setting = 1
+
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 18-23, warpins: 4 ---
 	self:set_wwise_parameter("dynamic_range_sound", setting)
+
+	return
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_sound_panning_rule_setup = function (self)
-	local options = {
-		{
-			value = "headphones",
-			text = Localize("menu_settings_headphones")
-		},
-		{
-			value = "speakers",
-			text = Localize("menu_settings_speakers")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-26, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "headphones",
+		text = Localize("menu_settings_headphones")
+	}
+	options[2] = {
+		value = "speakers",
+		text = Localize("menu_settings_speakers")
 	}
 	local selected_option = 1
 	local default_option = nil
 	local default_value = DefaultUserSettings.get("user_settings", "sound_panning_rule")
 
-	if not Application.user_setting("sound_panning_rule") then
-		local sound_panning_rule = default_value
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not Application.user_setting("sound_panning_rule")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 27-27, warpins: 1 ---
+	local sound_panning_rule = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 28-29, warpins: 2 ---
+	--- END OF BLOCK #2 ---
 
 	if sound_panning_rule == "headphones" then
-		selected_option = 1
-	elseif sound_panning_rule == "speakers" then
-		selected_option = 2
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 30-31, warpins: 1 ---
+	selected_option = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 32-33, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if sound_panning_rule == "speakers" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 34-34, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 35-36, warpins: 3 ---
+	--- END OF BLOCK #6 ---
 
 	if default_value == "headphones" then
-		default_option = 1
-	elseif default_value == "speakers" then
-		default_option = 2
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #8
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 37-38, warpins: 1 ---
+	default_option = 1
+	--- END OF BLOCK #7 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 39-40, warpins: 1 ---
+	--- END OF BLOCK #8 ---
+
+	if default_value == "speakers" then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 41-41, warpins: 1 ---
+	default_option = 2
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 42-46, warpins: 3 ---
 	return selected_option, options, "menu_settings_sound_panning_rule", default_option
+	--- END OF BLOCK #10 ---
+
+
+
 end
 
 OptionsView.cb_sound_panning_rule_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-11, warpins: 1 ---
 	local selected_option = 1
 
-	if not assigned(self.changed_user_settings.sound_panning_rule, Application.user_setting("sound_panning_rule")) then
-		local sound_panning_rule = "headphones"
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not assigned(self.changed_user_settings.sound_panning_rule, Application.user_setting("sound_panning_rule"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 12-12, warpins: 1 ---
+	local sound_panning_rule = "headphones"
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 13-14, warpins: 2 ---
+	--- END OF BLOCK #2 ---
 
 	if sound_panning_rule == "headphones" then
-		selected_option = 1
-	elseif sound_panning_rule == "speakers" then
-		selected_option = 2
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 15-16, warpins: 1 ---
+	selected_option = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 17-18, warpins: 1 ---
+	--- END OF BLOCK #4 ---
+
+	if sound_panning_rule == "speakers" then
+	JUMP TO BLOCK #5
+	else
+	JUMP TO BLOCK #6
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 19-19, warpins: 1 ---
+	selected_option = 2
+	--- END OF BLOCK #5 ---
+
+	FLOW; TARGET BLOCK #6
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 20-22, warpins: 3 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #6 ---
+
+
+
 end
 
 OptionsView.cb_sound_panning_rule = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.sound_panning_rule = value
 
+	--- END OF BLOCK #0 ---
+
 	if value == "headphones" then
-		Managers.music:set_panning_rule("PANNING_RULE_HEADPHONES")
-	elseif value == "speakers" then
-		Managers.music:set_panning_rule("PANNING_RULE_SPEAKERS")
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-14, warpins: 1 ---
+	Managers.music:set_panning_rule("PANNING_RULE_HEADPHONES")
+	--- END OF BLOCK #1 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 15-16, warpins: 1 ---
+	--- END OF BLOCK #2 ---
+
+	if value == "speakers" then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 17-22, warpins: 1 ---
+	Managers.music:set_panning_rule("PANNING_RULE_SPEAKERS")
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 23-23, warpins: 3 ---
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_sound_quality_setup = function (self)
-	local options = {
-		{
-			value = "low",
-			text = Localize("menu_settings_low")
-		},
-		{
-			value = "medium",
-			text = Localize("menu_settings_medium")
-		},
-		{
-			value = "high",
-			text = Localize("menu_settings_high")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-33, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "low",
+		text = Localize("menu_settings_low")
+	}
+	options[2] = {
+		value = "medium",
+		text = Localize("menu_settings_medium")
+	}
+	options[3] = {
+		value = "high",
+		text = Localize("menu_settings_high")
 	}
 	local sound_quality = Application.user_setting("sound_quality")
 	local default_option = DefaultUserSettings.get("user_settings", "sound_quality")
 	local selected_option = nil
 
-	for i = 1, #options, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 34-42, warpins: 0 ---
+	for i = 1, #options do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 34-37, warpins: 2 ---
 		local value = options[i].value
+		--- END OF BLOCK #0 ---
 
 		if sound_quality == value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 38-38, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 39-40, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_option == value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 41-41, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 42-42, warpins: 2 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 43-47, warpins: 1 ---
 	return selected_option, options, "menu_settings_sound_quality", default_option
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_sound_quality_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local sound_quality = assigned(self.changed_user_settings.sound_quality, Application.user_setting("sound_quality"))
 	local options_values = widget.content.options_values
 	local selected_option = nil
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
 		if sound_quality == options_values[i] then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_sound_quality = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local value = content.options_values[content.current_selection]
 	self.changed_user_settings.sound_quality = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_animation_lod_distance_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 1
 
-	if not Application.user_setting("animation_lod_distance_multiplier") then
-		local animation_lod_distance_multiplier = GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("animation_lod_distance_multiplier")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-11, warpins: 1 ---
+	local animation_lod_distance_multiplier = GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 12-22, warpins: 2 ---
 	local value = get_slider_value(min, max, animation_lod_distance_multiplier)
 
 	return value, min, max, 1, "menu_settings_animation_lod_multiplier"
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_animation_lod_distance_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-13, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
 
-	if not assigned(self.changed_user_settings.animation_lod_distance_multiplier, Application.user_setting("animation_lod_distance_multiplier")) then
-		local animation_lod_distance_multiplier = GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not assigned(self.changed_user_settings.animation_lod_distance_multiplier, Application.user_setting("animation_lod_distance_multiplier"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 14-16, warpins: 1 ---
+	local animation_lod_distance_multiplier = GameSettingsDevelopment.bone_lod_husks.lod_multiplier
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 17-31, warpins: 2 ---
 	animation_lod_distance_multiplier = math.clamp(animation_lod_distance_multiplier, min, max)
 	content.internal_value = get_slider_value(min, max, animation_lod_distance_multiplier)
 	content.value = animation_lod_distance_multiplier
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_animation_lod_distance = function (self, content, style, called_from_graphics_quality)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-5, warpins: 1 ---
 	self.changed_user_settings.animation_lod_distance_multiplier = content.value
 
-	if not called_from_graphics_quality then
-		self:force_set_widget_value("graphics_quality_settings", "custom")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not called_from_graphics_quality then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 6-10, warpins: 1 ---
+	self:force_set_widget_value("graphics_quality_settings", "custom")
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 11-11, warpins: 2 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_player_outlines_setup = function (self)
-	local options = {
-		{
-			value = "off",
-			text = Localize("menu_settings_off")
-		},
-		{
-			value = "on",
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = "always_on",
-			text = Localize("menu_settings_always_on")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-33, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = "off",
+		text = Localize("menu_settings_off")
+	}
+	options[2] = {
+		value = "on",
+		text = Localize("menu_settings_on")
+	}
+	options[3] = {
+		value = "always_on",
+		text = Localize("menu_settings_always_on")
 	}
 	local player_outlines = Application.user_setting("player_outlines")
 	local default_value = DefaultUserSettings.get("user_settings", "player_outlines")
 	local selection, default_selection = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 34-43, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 34-36, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if player_outlines == option.value then
-			selection = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 37-37, warpins: 1 ---
+		selection = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 38-40, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if default_value == option.value then
-			default_selection = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 41-41, warpins: 1 ---
+		default_selection = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 42-43, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 44-48, warpins: 1 ---
 	return selection, options, "menu_settings_player_outlines", default_selection
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_player_outlines_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-15, warpins: 1 ---
 	local player_outlines = assigned(self.changed_user_settings.player_outlines, Application.user_setting("player_outlines"))
 	local selection = nil
 	local options_values = widget.content.options_values
 
-	for i = 1, #options_values, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 16-20, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 16-18, warpins: 2 ---
 		local value = options_values[i]
+		--- END OF BLOCK #0 ---
 
 		if player_outlines == value then
-			selection = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 19-19, warpins: 1 ---
+		selection = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 20-20, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 21-23, warpins: 1 ---
 	widget.content.current_selection = selection
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_player_outlines = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local current_selection = content.current_selection
 	local options_values = content.options_values
 	local value = options_values[current_selection]
 	self.changed_user_settings.player_outlines = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 local function AddTobiiStepperSetting(setting_name, setter_cb)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
 	local value_set_name = "cb_" .. setting_name
 	local value_setup_name = value_set_name .. "_setup"
 
 	OptionsView[value_setup_name] = function (self)
-		local options = {
-			{
-				value = false,
-				text = Localize("menu_settings_off")
-			},
-			{
-				value = true,
-				text = Localize("menu_settings_on")
-			}
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-19, warpins: 1 ---
+		local options = {}
+		options[1] = {
+			value = false,
+			text = Localize("menu_settings_off")
+		}
+		options[2] = {
+			value = true,
+			text = Localize("menu_settings_on")
 		}
 		local use_tobii = Application.user_setting(setting_name)
+		--- END OF BLOCK #0 ---
 
 		if use_tobii == nil then
-			use_tobii = true
-		end
-
-		if use_tobii then
-			slot3 = 2
+		JUMP TO BLOCK #1
 		else
-			local selection = 1
+		JUMP TO BLOCK #2
 		end
 
-		if DefaultUserSettings.get("user_settings", setting_name) then
-			slot4 = 2
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 20-20, warpins: 1 ---
+		use_tobii = true
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 21-22, warpins: 2 ---
+		--- END OF BLOCK #2 ---
+
+		slot2 = if use_tobii then
+		JUMP TO BLOCK #3
 		else
-			local default_selection = 1
+		JUMP TO BLOCK #4
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 23-24, warpins: 1 ---
+		slot3 = 2
+		--- END OF BLOCK #3 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 25-25, warpins: 1 ---
+		local selection = 1
+
+		--- END OF BLOCK #4 ---
+
+		FLOW; TARGET BLOCK #5
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 26-32, warpins: 2 ---
+		--- END OF BLOCK #5 ---
+
+		slot4 = if DefaultUserSettings.get("user_settings", setting_name)
+
+		 then
+		JUMP TO BLOCK #6
+		else
+		JUMP TO BLOCK #7
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #6 33-34, warpins: 1 ---
+		slot4 = 2
+		--- END OF BLOCK #6 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #7 35-35, warpins: 1 ---
+		local default_selection = 1
+		--- END OF BLOCK #7 ---
+
+		FLOW; TARGET BLOCK #8
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #8 36-45, warpins: 2 ---
 		GameSettingsDevelopment[setting_name] = use_tobii
 
 		return selection, options, "menu_settings_" .. setting_name, default_selection
+		--- END OF BLOCK #8 ---
+
+
+
 	end
 
 	OptionsView[value_set_name] = function (self, content)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-13, warpins: 1 ---
 		local options_values = content.options_values
 		local current_selection = content.current_selection
 		self.changed_user_settings[setting_name] = options_values[current_selection]
 		GameSettingsDevelopment[setting_name] = options_values[current_selection]
+		--- END OF BLOCK #0 ---
 
 		if setter_cb ~= nil then
-			slot4 = setter_cb
-			slot5 = self
-
-			if content.current_selection ~= 2 then
-				slot6 = false
-			else
-				slot6 = true
-			end
-
-			slot4(slot5, slot6)
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #5
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 14-18, warpins: 1 ---
+		slot4 = setter_cb
+		slot5 = self
+		--- END OF BLOCK #1 ---
+
+		if content.current_selection ~= 2 then
+		JUMP TO BLOCK #2
+		else
+		JUMP TO BLOCK #3
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 19-20, warpins: 1 ---
+		slot6 = false
+		--- END OF BLOCK #2 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 21-21, warpins: 1 ---
+		slot6 = true
+
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 22-22, warpins: 2 ---
+		slot4(slot5, slot6)
+
+		--- END OF BLOCK #4 ---
+
+		FLOW; TARGET BLOCK #5
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 23-23, warpins: 2 ---
+		return
+		--- END OF BLOCK #5 ---
+
+
+
 	end
 
 	local value_saved_name = value_set_name .. "_saved_value"
 
 	OptionsView[value_saved_name] = function (self, widget)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-11, warpins: 1 ---
 		local use_tobii = assigned(self.changed_user_settings[setting_name], Application.user_setting(setting_name))
+		--- END OF BLOCK #0 ---
 
 		if use_tobii == nil then
-			use_tobii = true
-		end
-
-		slot3 = widget.content
-
-		if use_tobii then
-			slot4 = 2
+		JUMP TO BLOCK #1
 		else
-			slot4 = 1
+		JUMP TO BLOCK #2
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 12-12, warpins: 1 ---
+		use_tobii = true
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 13-15, warpins: 2 ---
+		slot3 = widget.content
+		--- END OF BLOCK #2 ---
+
+		slot2 = if use_tobii then
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 16-17, warpins: 1 ---
+		slot4 = 2
+		--- END OF BLOCK #3 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 18-18, warpins: 1 ---
+		slot4 = 1
+		--- END OF BLOCK #4 ---
+
+		FLOW; TARGET BLOCK #5
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 19-20, warpins: 2 ---
 		slot3.current_selection = slot4
+
+		return
+		--- END OF BLOCK #5 ---
+
+
+
 	end
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 local function AddTobiiSliderSetting(setting_name, setting_min, setting_max, num_decimals, setter_cb)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-20, warpins: 1 ---
 	local value_set_name = "cb_" .. setting_name
 	local value_setup_name = value_set_name .. "_setup"
 
 	OptionsView[value_setup_name] = function (self)
-		if not Application.user_setting(setting_name) then
-			local value = DefaultUserSettings[setting_name]
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-6, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
+		slot1 = if not Application.user_setting(setting_name)
+
+		 then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 7-9, warpins: 1 ---
+		local value = DefaultUserSettings[setting_name]
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 10-28, warpins: 2 ---
 		local default_value = DefaultUserSettings.get("user_settings", setting_name)
 		local new_value = get_slider_value(setting_min, setting_max, value)
 
 		return new_value, setting_min, setting_max, num_decimals, "menu_settings_" .. setting_name, default_value
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
 	OptionsView[value_set_name] = function (self, content)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-7, warpins: 1 ---
 		self.changed_user_settings[setting_name] = content.value
 
+		--- END OF BLOCK #0 ---
+
 		if setter_cb ~= nil then
-			setter_cb(self, content.internal_value)
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 8-11, warpins: 1 ---
+		setter_cb(self, content.internal_value)
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 12-12, warpins: 2 ---
+		return
+		--- END OF BLOCK #2 ---
+
+
+
 	end
 
 	local value_saved_name = value_set_name .. "_saved_value"
 
 	OptionsView[value_saved_name] = function (self, widget)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-25, warpins: 1 ---
 		local content = widget.content
 		local new_value = assigned(self.changed_user_settings[setting_name], Application.user_setting(setting_name))
 		new_value = math.clamp(new_value, setting_min, setting_max)
 		content.internal_value = get_slider_value(setting_min, setting_max, new_value)
 		content.value = new_value
+
+		return
+		--- END OF BLOCK #0 ---
+
+
+
 	end
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 local tobii_custom_callbacks = {
 	responsiveness = function (self, value)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-5, warpins: 1 ---
 		Tobii.set_extended_view_responsiveness(value)
+
+		return
+		--- END OF BLOCK #0 ---
+
+
+
 	end,
 	use_head_tracking = function (self, value)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-5, warpins: 1 ---
 		Tobii.set_extended_view_use_head_tracking(value)
+
+		return
+		--- END OF BLOCK #0 ---
+
+
+
 	end,
 	use_clean_ui = function (self, value)
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 1-7, warpins: 1 ---
 		self.ingame_ui.ingame_hud:enable_clean_ui(value)
+
+		return
+		--- END OF BLOCK #0 ---
+
+
+
 	end
 }
 
@@ -10205,435 +26517,1506 @@ AddTobiiStepperSetting("tobii_clean_ui", tobii_custom_callbacks.use_clean_ui)
 AddTobiiSliderSetting("tobii_extended_view_sensitivity", 1, 100, 0, tobii_custom_callbacks.responsiveness)
 
 local function get_button_locale_name(controller_type, button_name)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	local button_locale_name = nil
 	local is_unassigned = false
+	--- END OF BLOCK #0 ---
 
-	if button_name == nil or button_name == UNASSIGNED_KEY then
-		button_locale_name = Localize(UNASSIGNED_KEY)
-		is_unassigned = true
-	elseif controller_type == "keyboard" then
-		local button_index = Keyboard.button_index(button_name)
-		button_locale_name = Keyboard.button_locale_name(button_index)
-	elseif controller_type == "mouse" then
-		button_locale_name = string.format("%s %s", "mouse", button_name)
-	elseif controller_type == "gamepad" then
-		local button_index = Pad1.button_index(button_name)
-
-		if Pad1.button_locale_name(button_index) == "" then
-			button_locale_name = button_name
-
-			if button_name then
-				button_locale_name = false
-			end
-		else
-			button_locale_name = true
-		end
+	if button_name ~= nil then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	if button_locale_name == "" or not button_locale_name then
-		slot4 = TextToUpper(button_name)
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 5-7, warpins: 1 ---
+	--- END OF BLOCK #1 ---
+
+	if button_name == UNASSIGNED_KEY then
+	JUMP TO BLOCK #2
+	else
+	JUMP TO BLOCK #3
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 8-13, warpins: 2 ---
+	button_locale_name = Localize(UNASSIGNED_KEY)
+	is_unassigned = true
+	--- END OF BLOCK #2 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 14-15, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if controller_type == "keyboard" then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 16-25, warpins: 1 ---
+	local button_index = Keyboard.button_index(button_name)
+	button_locale_name = Keyboard.button_locale_name(button_index)
+	--- END OF BLOCK #4 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 26-27, warpins: 1 ---
+	--- END OF BLOCK #5 ---
+
+	if controller_type == "mouse" then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 28-35, warpins: 1 ---
+	button_locale_name = string.format("%s %s", "mouse", button_name)
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 36-37, warpins: 1 ---
+	--- END OF BLOCK #7 ---
+
+	if controller_type == "gamepad" then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #12
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 38-47, warpins: 1 ---
+	local button_index = Pad1.button_index(button_name)
+
+	--- END OF BLOCK #8 ---
+
+	if Pad1.button_locale_name(button_index)
+
+	 == "" then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #11
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 48-49, warpins: 1 ---
+	button_locale_name = button_name
+	--- END OF BLOCK #9 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 50-51, warpins: 0 ---
+	button_locale_name = false
+	--- END OF BLOCK #10 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 52-52, warpins: 1 ---
+	button_locale_name = true
+	--- END OF BLOCK #11 ---
+
+	FLOW; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 53-54, warpins: 7 ---
+	--- END OF BLOCK #12 ---
+
+	if button_locale_name ~= "" then
+	JUMP TO BLOCK #13
+	else
+	JUMP TO BLOCK #14
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 55-56, warpins: 1 ---
+	--- END OF BLOCK #13 ---
+
+	slot4 = if not button_locale_name then
+	JUMP TO BLOCK #14
+	else
+	JUMP TO BLOCK #15
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 57-59, warpins: 2 ---
+	slot4 = TextToUpper(button_name)
+
+	--- END OF BLOCK #14 ---
+
+	FLOW; TARGET BLOCK #15
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #15 60-61, warpins: 2 ---
 	return slot4, is_unassigned
+	--- END OF BLOCK #15 ---
+
+
+
 end
 
 OptionsView.cb_keybind_setup = function (self, keymappings_key, keymappings_table_key, actions)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local session_keymaps = self.session_keymaps
 	local session_keybindings = session_keymaps[keymappings_key][keymappings_table_key]
 	local actions_info = {}
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-19, warpins: 0 ---
 	for i, action in ipairs(actions) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 9-17, warpins: 1 ---
 		local keybind = session_keybindings[action]
 		actions_info[i] = {
 			action = action,
 			keybind = table.clone(keybind)
 		}
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 18-19, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 20-49, warpins: 1 ---
 	local first_action = actions_info[1]
 	local button_locale_name_1 = get_button_locale_name(first_action.keybind[1], first_action.keybind[2])
 	local button_locale_name_2 = get_button_locale_name(first_action.keybind[4], first_action.keybind[5])
 	local default_keymappings_data = rawget(_G, keymappings_key)
 	local default_keymappings = default_keymappings_data[keymappings_table_key]
 	local default_keybind = default_keymappings[actions[1]]
-	local default_value = {
-		controller = default_keybind[1],
-		key = default_keybind[2]
-	}
+	local default_value = {}
+	default_value.controller = default_keybind[1]
+	default_value.key = default_keybind[2]
 
 	return button_locale_name_1, button_locale_name_2, actions_info, default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_keybind_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	local actions = widget.content.actions
 
-	if not actions then
-		return
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not actions then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 5-5, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 6-17, warpins: 2 ---
 	local keymappings_key = widget.content.keymappings_key
 	local keymappings_table_key = widget.content.keymappings_table_key
 	local keymaps = self.original_keymaps
 	local keybindings = keymaps[keymappings_key][keymappings_table_key]
 	local actions_info = {}
 
+	--- END OF BLOCK #2 ---
+
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 18-28, warpins: 0 ---
 	for i, action in ipairs(actions) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 18-26, warpins: 1 ---
 		local keybind = keybindings[action]
 		actions_info[i] = {
 			action = action,
 			keybind = table.clone(keybind)
 		}
+		--- END OF BLOCK #0 ---
+
+		FLOW; TARGET BLOCK #1
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 27-28, warpins: 2 ---
+		--- END OF BLOCK #1 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-52, warpins: 1 ---
 	local first_action = actions_info[1]
 	widget.content.selected_key_1, widget.content.is_unassigned_1 = get_button_locale_name(first_action.keybind[1], first_action.keybind[2])
 	widget.content.selected_key_2, widget.content.is_unassigned_2 = get_button_locale_name(first_action.keybind[4], first_action.keybind[5])
 	widget.content.actions_info = actions_info
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cleanup_duplicates = function (self, new_key, device)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-7, warpins: 1 ---
 	local selected_settings_list = self.selected_settings_list
 	local widgets = selected_settings_list.widgets
 	local widgets_n = selected_settings_list.widgets_n
 
-	for i = 1, widgets_n, 1 do
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 8-29, warpins: 0 ---
+	for i = 1, widgets_n do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 8-11, warpins: 2 ---
 		local widget = widgets[i]
 		local widget_type = widget.type
+		--- END OF BLOCK #0 ---
 
 		if widget_type == "keybind" then
-			local content = widget.content
-			local actions_info = content.actions_info
-			local mapped_device = actions_info[1].keybind[1]
-			local mapped_key = actions_info[1].keybind[2]
-
-			if mapped_key == new_key and mapped_device == device then
-				content.callback(UNASSIGNED_KEY, device, content)
-			end
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 12-21, warpins: 1 ---
+		local content = widget.content
+		local actions_info = content.actions_info
+		local mapped_device = actions_info[1].keybind[1]
+		local mapped_key = actions_info[1].keybind[2]
+
+		--- END OF BLOCK #1 ---
+
+		if mapped_key == new_key then
+		JUMP TO BLOCK #2
+		else
+		JUMP TO BLOCK #4
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 22-23, warpins: 1 ---
+		--- END OF BLOCK #2 ---
+
+		if mapped_device == device then
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
+		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 24-28, warpins: 1 ---
+		content.callback(UNASSIGNED_KEY, device, content)
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 29-29, warpins: 4 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 30-30, warpins: 1 ---
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_keybind_changed = function (self, new_key, device, content, index)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-3, warpins: 1 ---
 	local actions_info = content.actions_info
 
-	if not actions_info then
-		return
+	--- END OF BLOCK #0 ---
+
+	slot5 = if not actions_info then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
-	if index == 2 and actions_info[1].keybind[2] == UNASSIGNED_KEY then
-		index = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 4-4, warpins: 1 ---
+	return
+
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 5-6, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	if index == 2 then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #5
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 7-12, warpins: 1 ---
+	--- END OF BLOCK #3 ---
+
+	if actions_info[1].keybind[2] == UNASSIGNED_KEY then
+	JUMP TO BLOCK #4
+	else
+	JUMP TO BLOCK #5
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 13-13, warpins: 1 ---
+	index = 1
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 14-18, warpins: 3 ---
 	local first_keybind = actions_info[1].keybind
 
-	if (first_keybind[1] == device and first_keybind[2] == new_key) or (first_keybind[4] == device and first_keybind[5] == new_key) then
-		return
+	--- END OF BLOCK #5 ---
+
+	if first_keybind[1] == device then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 19-21, warpins: 1 ---
+	--- END OF BLOCK #6 ---
+
+	if first_keybind[2] ~= new_key then
+	JUMP TO BLOCK #7
+	else
+	JUMP TO BLOCK #9
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 22-24, warpins: 2 ---
+	--- END OF BLOCK #7 ---
+
+	if first_keybind[4] == device then
+	JUMP TO BLOCK #8
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 25-27, warpins: 1 ---
+	--- END OF BLOCK #8 ---
+
+	if first_keybind[5] == new_key then
+	JUMP TO BLOCK #9
+	else
+	JUMP TO BLOCK #10
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #9 28-28, warpins: 2 ---
+	return
+
+	--- END OF BLOCK #9 ---
+
+	FLOW; TARGET BLOCK #10
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #10 29-37, warpins: 3 ---
 	local session_keymaps = self.session_keymaps
 	local keymappings_key = content.keymappings_key
 	local keymappings_table_key = content.keymappings_table_key
 	local input_manager = Managers.input
 
+	--- END OF BLOCK #10 ---
+
+	FLOW; TARGET BLOCK #11
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #11 38-66, warpins: 0 ---
 	for i, info in ipairs(actions_info) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 38-41, warpins: 1 ---
 		local keybind = info.keybind
 		local action = info.action
+		--- END OF BLOCK #0 ---
 
 		if index == 2 then
-			keybind[4] = device
-			keybind[5] = new_key
-			keybind[6] = keybind[3]
+		JUMP TO BLOCK #1
 		else
-			keybind[1] = device
-			keybind[2] = new_key
+		JUMP TO BLOCK #2
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 42-46, warpins: 1 ---
+		keybind[4] = device
+		keybind[5] = new_key
+		keybind[6] = keybind[3]
+		--- END OF BLOCK #1 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 47-48, warpins: 1 ---
+		keybind[1] = device
+		keybind[2] = new_key
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 49-55, warpins: 2 ---
 		keybind.changed = true
 		local session_keybind = session_keymaps[keymappings_key][keymappings_table_key][action]
+		--- END OF BLOCK #3 ---
 
 		if index == 2 then
-			session_keybind[4] = device
-			session_keybind[5] = new_key
-			session_keybind[6] = session_keybind[3]
+		JUMP TO BLOCK #4
 		else
-			session_keybind[1] = device
-			session_keybind[2] = new_key
+		JUMP TO BLOCK #5
 		end
 
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 56-60, warpins: 1 ---
+		session_keybind[4] = device
+		session_keybind[5] = new_key
+		session_keybind[6] = session_keybind[3]
+		--- END OF BLOCK #4 ---
+
+		UNCONDITIONAL JUMP; TARGET BLOCK #6
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #5 61-62, warpins: 1 ---
+		session_keybind[1] = device
+		session_keybind[2] = new_key
+		--- END OF BLOCK #5 ---
+
+		FLOW; TARGET BLOCK #6
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #6 63-64, warpins: 2 ---
 		session_keybind.changed = true
+		--- END OF BLOCK #6 ---
+
+		FLOW; TARGET BLOCK #7
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #7 65-66, warpins: 2 ---
+		--- END OF BLOCK #7 ---
+
+
+
 	end
 
+	--- END OF BLOCK #11 ---
+
+	FLOW; TARGET BLOCK #12
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #12 67-74, warpins: 1 ---
 	self.changed_keymaps = true
 	local button_name, is_unassigned = get_button_locale_name(device, new_key)
+	--- END OF BLOCK #12 ---
 
-	if is_unassigned then
-		slot13 = "keybind_bind_cancel"
+	slot12 = if is_unassigned then
+	JUMP TO BLOCK #13
 	else
-		local loc_key = "keybind_bind_success"
+	JUMP TO BLOCK #14
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #13 75-76, warpins: 1 ---
+	slot13 = "keybind_bind_cancel"
+	--- END OF BLOCK #13 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #15
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #14 77-77, warpins: 1 ---
+	local loc_key = "keybind_bind_success"
+	--- END OF BLOCK #14 ---
+
+	FLOW; TARGET BLOCK #15
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #15 78-118, warpins: 2 ---
 	local pretty_action_name = "{#color(193,91,36)}" .. Utf8.upper(Localize(content.text)) .. "{#reset()}"
 	local pretty_button_name = Utf8.upper(button_name)
 	self.keybind_info_text = string.format(Localize(loc_key), pretty_action_name, pretty_button_name)
 	local anim = UIAnimation.init(UIAnimation.function_by_time, self.keybind_info_widget.style.text.text_color, 1, 0, 255, 0.4, math.easeOutCubic)
 	self.ui_animations.keybind_info_attract = anim
+	--- END OF BLOCK #15 ---
 
 	if index == 1 then
-		content.is_unassigned_1 = is_unassigned
-		content.selected_key_1 = button_name
+	JUMP TO BLOCK #16
 	else
-		content.is_unassigned_2 = is_unassigned
-		content.selected_key_2 = button_name
+	JUMP TO BLOCK #17
 	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #16 119-122, warpins: 1 ---
+	content.is_unassigned_1 = is_unassigned
+	content.selected_key_1 = button_name
+	--- END OF BLOCK #16 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #18
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #17 123-125, warpins: 1 ---
+	content.is_unassigned_2 = is_unassigned
+	content.selected_key_2 = button_name
+
+	--- END OF BLOCK #17 ---
+
+	FLOW; TARGET BLOCK #18
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #18 126-126, warpins: 2 ---
+	return
+	--- END OF BLOCK #18 ---
+
+
+
 end
 
 OptionsView.cb_toggle_profanity_check = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	self.changed_user_settings.profanity_check = options_values[current_selection]
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_toggle_profanity_check_setup = function (self)
-	local options = {
-		{
-			value = true,
-			text = Localize("menu_settings_on")
-		},
-		{
-			value = false,
-			text = Localize("menu_settings_off")
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-24, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		value = true,
+		text = Localize("menu_settings_on")
+	}
+	options[2] = {
+		value = false,
+		text = Localize("menu_settings_off")
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "profanity_check")
 	local enabled = Application.user_setting("profanity_check")
+	--- END OF BLOCK #0 ---
 
 	if enabled == nil then
-		enabled = default_value
-	end
-
-	if enabled then
-		slot4 = 1
+	JUMP TO BLOCK #1
 	else
-		local selection = 2
+	JUMP TO BLOCK #2
 	end
 
-	if default_value then
-		slot5 = 1
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 25-25, warpins: 1 ---
+	enabled = default_value
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 26-27, warpins: 2 ---
+	--- END OF BLOCK #2 ---
+
+	slot3 = if enabled then
+	JUMP TO BLOCK #3
 	else
-		local default_option = 2
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 28-29, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 30-30, warpins: 1 ---
+	local selection = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 31-32, warpins: 2 ---
+	--- END OF BLOCK #5 ---
+
+	slot2 = if default_value then
+	JUMP TO BLOCK #6
+	else
+	JUMP TO BLOCK #7
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #6 33-34, warpins: 1 ---
+	slot5 = 1
+	--- END OF BLOCK #6 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #7 35-35, warpins: 1 ---
+	local default_option = 2
+
+	--- END OF BLOCK #7 ---
+
+	FLOW; TARGET BLOCK #8
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #8 36-40, warpins: 2 ---
 	return selection, options, "menu_settings_profanity_check", default_option
+	--- END OF BLOCK #8 ---
+
+
+
 end
 
 OptionsView.cb_toggle_profanity_check_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
 	local enabled = assigned(self.changed_user_settings.profanity_check, Application.user_setting("profanity_check"))
+	--- END OF BLOCK #0 ---
 
 	if enabled == nil then
-		enabled = DefaultUserSettings.get("user_settings", "profanity_check")
-	end
-
-	slot3 = widget.content
-
-	if enabled then
-		slot4 = 1
+	JUMP TO BLOCK #1
 	else
-		slot4 = 2
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-16, warpins: 1 ---
+	enabled = DefaultUserSettings.get("user_settings", "profanity_check")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 17-19, warpins: 2 ---
+	slot3 = widget.content
+	--- END OF BLOCK #2 ---
+
+	slot2 = if enabled then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
+	end
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 20-21, warpins: 1 ---
+	slot4 = 1
+	--- END OF BLOCK #3 ---
+
+	UNCONDITIONAL JUMP; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 22-22, warpins: 1 ---
+	slot4 = 2
+	--- END OF BLOCK #4 ---
+
+	FLOW; TARGET BLOCK #5
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #5 23-24, warpins: 2 ---
 	slot3.current_selection = slot4
+
+	return
+	--- END OF BLOCK #5 ---
+
+
+
 end
 
 OptionsView.cb_twitch_vote_time = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
 	self.changed_user_settings.twitch_vote_time = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_twitch_vote_time_setup = function (self)
-	local options = {
-		{
-			text = "15",
-			value = 15
-		},
-		{
-			text = "30",
-			value = 30
-		},
-		{
-			text = "45",
-			value = 45
-		},
-		{
-			text = "60",
-			value = 60
-		},
-		{
-			text = "75",
-			value = 75
-		},
-		{
-			text = "90",
-			value = 90
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-27, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		text = "15",
+		value = 15
+	}
+	options[2] = {
+		text = "30",
+		value = 30
+	}
+	options[3] = {
+		text = "45",
+		value = 45
+	}
+	options[4] = {
+		text = "60",
+		value = 60
+	}
+	options[5] = {
+		text = "75",
+		value = 75
+	}
+	options[6] = {
+		text = "90",
+		value = 90
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "twitch_vote_time")
 	local user_settings_value = Application.user_setting("twitch_vote_time")
 	local default_option, selected_option = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 28-37, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 28-30, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == user_settings_value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 31-31, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 32-34, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 35-35, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 36-37, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 38-44, warpins: 1 ---
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if not selected_option then
-		slot6 = default_option
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not selected_option then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 45-45, warpins: 1 ---
+	slot6 = default_option
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 46-49, warpins: 2 ---
 	return slot6, options, "menu_settings_twitch_vote_time", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_twitch_vote_time_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.twitch_vote_time, Application.user_setting("twitch_vote_time")) then
-		local value = DefaultUserSettings.get("user_settings", "twitch_vote_time")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.twitch_vote_time, Application.user_setting("twitch_vote_time"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-15, warpins: 1 ---
+	local value = DefaultUserSettings.get("user_settings", "twitch_vote_time")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-22, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
-		if value == options_values[i] then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-28, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if value == options_values[i] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-31, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_twitch_time_between_votes = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-6, warpins: 1 ---
 	local options_values = content.options_values
 	local current_selection = content.current_selection
 	local value = options_values[current_selection]
 	self.changed_user_settings.twitch_time_between_votes = value
+
+	return
+	--- END OF BLOCK #0 ---
+
+
+
 end
 
 OptionsView.cb_twitch_time_between_votes_setup = function (self)
-	local options = {
-		{
-			text = "5",
-			value = 5
-		},
-		{
-			text = "15",
-			value = 15
-		},
-		{
-			text = "30",
-			value = 30
-		},
-		{
-			text = "45",
-			value = 45
-		},
-		{
-			text = "60",
-			value = 60
-		},
-		{
-			text = "75",
-			value = 75
-		},
-		{
-			text = "90",
-			value = 90
-		}
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-29, warpins: 1 ---
+	local options = {}
+	options[1] = {
+		text = "5",
+		value = 5
+	}
+	options[2] = {
+		text = "15",
+		value = 15
+	}
+	options[3] = {
+		text = "30",
+		value = 30
+	}
+	options[4] = {
+		text = "45",
+		value = 45
+	}
+	options[5] = {
+		text = "60",
+		value = 60
+	}
+	options[6] = {
+		text = "75",
+		value = 75
+	}
+	options[7] = {
+		text = "90",
+		value = 90
 	}
 	local default_value = DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
 	local user_settings_value = Application.user_setting("twitch_time_between_votes")
 	local default_option, selected_option = nil
 
+	--- END OF BLOCK #0 ---
+
+	FLOW; TARGET BLOCK #1
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 30-39, warpins: 0 ---
 	for i, option in ipairs(options) do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 30-32, warpins: 1 ---
+		--- END OF BLOCK #0 ---
+
 		if option.value == user_settings_value then
-			selected_option = i
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #2
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 33-33, warpins: 1 ---
+		selected_option = i
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 34-36, warpins: 2 ---
+		--- END OF BLOCK #2 ---
 
 		if option.value == default_value then
-			default_option = i
+		JUMP TO BLOCK #3
+		else
+		JUMP TO BLOCK #4
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 37-37, warpins: 1 ---
+		default_option = i
+		--- END OF BLOCK #3 ---
+
+		FLOW; TARGET BLOCK #4
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #4 38-39, warpins: 3 ---
+		--- END OF BLOCK #4 ---
+
+
+
 	end
 
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 40-46, warpins: 1 ---
 	fassert(default_option, "default option %i does not exist in cb_chat_font_size_setup options table", default_value)
 
-	if not selected_option then
-		slot6 = default_option
+	--- END OF BLOCK #2 ---
+
+	slot6 = if not selected_option then
+	JUMP TO BLOCK #3
+	else
+	JUMP TO BLOCK #4
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 47-47, warpins: 1 ---
+	slot6 = default_option
+
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 48-51, warpins: 2 ---
 	return slot6, options, "menu_settings_twitch_time_between_votes", default_option
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_twitch_time_between_votes_saved_value = function (self, widget)
-	if not assigned(self.changed_user_settings.twitch_time_between_votes, Application.user_setting("twitch_time_between_votes")) then
-		local value = DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-10, warpins: 1 ---
+	--- END OF BLOCK #0 ---
+
+	slot2 = if not assigned(self.changed_user_settings.twitch_time_between_votes, Application.user_setting("twitch_time_between_votes"))
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 11-15, warpins: 1 ---
+	local value = DefaultUserSettings.get("user_settings", "twitch_time_between_votes")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 16-22, warpins: 2 ---
 	local options_values = widget.content.options_values
 	local selected_option = 1
 
-	for i = 1, #options_values, 1 do
-		if value == options_values[i] then
-			selected_option = i
+	--- END OF BLOCK #2 ---
 
-			break
+	FLOW; TARGET BLOCK #3
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #3 23-28, warpins: 0 ---
+	for i = 1, #options_values do
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #0 23-25, warpins: 2 ---
+		--- END OF BLOCK #0 ---
+
+		if value == options_values[i] then
+		JUMP TO BLOCK #1
+		else
+		JUMP TO BLOCK #3
 		end
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #1 26-27, warpins: 1 ---
+		selected_option = i
+
+		--- END OF BLOCK #1 ---
+
+		FLOW; TARGET BLOCK #2
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #2 28-28, warpins: 1 ---
+		break
+		--- END OF BLOCK #2 ---
+
+		FLOW; TARGET BLOCK #3
+
+
+
+		-- Decompilation error in this vicinity:
+		--- BLOCK #3 28-28, warpins: 1 ---
+		--- END OF BLOCK #3 ---
+
+
+
 	end
 
+	--- END OF BLOCK #3 ---
+
+	FLOW; TARGET BLOCK #4
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #4 29-31, warpins: 2 ---
 	widget.content.current_selection = selected_option
+
+	return
+	--- END OF BLOCK #4 ---
+
+
+
 end
 
 OptionsView.cb_twitch_difficulty_setup = function (self)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-8, warpins: 1 ---
 	local min = 0
 	local max = 100
 
-	if not Application.user_setting("twitch_difficulty") then
-		local twitch_difficulty = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	--- END OF BLOCK #0 ---
+
+	slot3 = if not Application.user_setting("twitch_difficulty")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 9-13, warpins: 1 ---
+	local twitch_difficulty = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 14-30, warpins: 2 ---
 	local default_value = DefaultUserSettings.get("user_settings", "twitch_difficulty")
 	local value = get_slider_value(min, max, twitch_difficulty)
 
 	return value, min, max, 0, "menu_settings_twitch_difficulty", default_value
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_twitch_difficulty_saved_value = function (self, widget)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-12, warpins: 1 ---
 	local content = widget.content
 	local min = content.min
 	local max = content.max
-	slot5 = assigned
+	local twitch_difficulty = assigned
 	slot6 = self.changed_user_settings.twitch_difficulty
 
-	if not Application.user_setting("twitch_difficulty") then
-		slot7 = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	--- END OF BLOCK #0 ---
+
+	slot7 = if not Application.user_setting("twitch_difficulty")
+
+	 then
+	JUMP TO BLOCK #1
+	else
+	JUMP TO BLOCK #2
 	end
 
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #1 13-17, warpins: 1 ---
+	slot7 = DefaultUserSettings.get("user_settings", "twitch_difficulty")
+	--- END OF BLOCK #1 ---
+
+	FLOW; TARGET BLOCK #2
+
+
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #2 18-33, warpins: 2 ---
 	local twitch_difficulty = slot5(slot6, slot7)
 	twitch_difficulty = math.clamp(twitch_difficulty, min, max)
 	content.internal_value = get_slider_value(min, max, twitch_difficulty)
 	content.value = twitch_difficulty
+
+	return
+	--- END OF BLOCK #2 ---
+
+
+
 end
 
 OptionsView.cb_twitch_difficulty = function (self, content)
+
+	-- Decompilation error in this vicinity:
+	--- BLOCK #0 1-4, warpins: 1 ---
 	local value = content.value
 	self.changed_user_settings.twitch_difficulty = value
-end
 
-return
+	return
+	--- END OF BLOCK #0 ---
+
+
+
+end

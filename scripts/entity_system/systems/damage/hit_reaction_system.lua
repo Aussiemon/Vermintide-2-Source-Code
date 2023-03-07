@@ -83,5 +83,3 @@ HitReactionSystem.update = function (self, context, t)
 		extension:update(unit, nil, dt, context, t)
 	end
 end
-
-return

@@ -74,5 +74,3 @@ BreedBehaviors.curse_mutator_sorcerer = {
 	},
 	name = "curse_mutator_sorcerer"
 }
-
-return

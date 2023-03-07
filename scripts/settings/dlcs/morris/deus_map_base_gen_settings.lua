@@ -248,5 +248,3 @@ DEUS_BASE_MAP_GEN_SETTINGS.journey_citadel.FINAL_NODE_VALIDATIONS = {
 for name, settings in pairs(DEUS_BASE_MAP_GEN_SETTINGS) do
 	settings.name = name
 end
-
-return

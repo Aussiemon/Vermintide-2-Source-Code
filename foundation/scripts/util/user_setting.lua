@@ -8,9 +8,9 @@ if IS_CONSOLE and not PATCHED_USER_SETTINGS then
 		local t = UserSettings
 		local num_args = select("#", ...)
 
-		for i = 1, num_args - 2, 1 do
+		for i = 1, num_args - 2 do
 			local key = select(i, ...)
-			t[key] = (type(t[key]) == "table" and t[key]) or {}
+			t[key] = type(t[key]) == "table" and t[key] or {}
 			t = t[key]
 		end
 
@@ -23,7 +23,7 @@ if IS_CONSOLE and not PATCHED_USER_SETTINGS then
 		local t = UserSettings
 		local num_args = select("#", ...)
 
-		for i = 1, num_args - 1, 1 do
+		for i = 1, num_args - 1 do
 			local key = select(i, ...)
 			t = t[key]
 
@@ -105,7 +105,7 @@ Application.test_user_setting = function (...)
 	local t = UserSettings
 	local num_args = select("#", ...)
 
-	for i = 1, num_args - 1, 1 do
+	for i = 1, num_args - 1 do
 		local key = select(i, ...)
 		t = t[key]
 
@@ -116,5 +116,3 @@ Application.test_user_setting = function (...)
 
 	return t[select(num_args, ...)]
 end
-
-return

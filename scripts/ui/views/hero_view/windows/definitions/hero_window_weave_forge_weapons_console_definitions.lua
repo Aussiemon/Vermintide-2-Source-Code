@@ -861,7 +861,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			font_size = 28,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			hover_text_color = Colors.get_color_table_with_alpha("white", 255),
 			default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -880,7 +880,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			horizontal_alignment = "left",
 			localize = false,
 			font_size = 28,
-			font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+			font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				92,
@@ -897,7 +897,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			font_size = 20,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				120,
@@ -926,7 +926,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			horizontal_alignment = "left",
 			localize = false,
 			font_size = 20,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				92,
@@ -943,7 +943,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			font_size = 20,
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				120,
@@ -972,7 +972,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			horizontal_alignment = "left",
 			localize = false,
 			font_size = 20,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				(size[1] - 100) / 2 + 2,
@@ -989,7 +989,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			font_size = 32,
 			horizontal_alignment = "right",
 			vertical_alignment = "center",
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			hover_text_color = Colors.get_color_table_with_alpha("white", 255),
 			default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -1005,7 +1005,7 @@ local function create_weapon_entry_widget(scenegraph_id, size)
 			horizontal_alignment = "right",
 			localize = false,
 			font_size = 32,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				-13,
@@ -1431,7 +1431,7 @@ local function create_divider_option(size, scenegraph_id, masked, text)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+				font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					0,
@@ -1451,7 +1451,7 @@ local function create_divider_option(size, scenegraph_id, masked, text)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_header_masked") or "hell_shark_header",
+				font_type = masked and "hell_shark_header_masked" or "hell_shark_header",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					2,
@@ -1527,7 +1527,7 @@ local function create_property_option(size, scenegraph_id, masked, text, icon)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				color_override = {},
 				color_override_table = {
@@ -1552,7 +1552,7 @@ local function create_property_option(size, scenegraph_id, masked, text, icon)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					51,
@@ -1640,7 +1640,7 @@ local function create_trait_option(size, scenegraph_id, masked, title_text, desc
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					60,
@@ -1660,7 +1660,7 @@ local function create_trait_option(size, scenegraph_id, masked, title_text, desc
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -1680,7 +1680,7 @@ local function create_trait_option(size, scenegraph_id, masked, title_text, desc
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					60,
@@ -1700,7 +1700,7 @@ local function create_trait_option(size, scenegraph_id, masked, title_text, desc
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -1765,7 +1765,7 @@ local function create_item_block_option(size, scenegraph_id, masked, angle)
 			slot_texture = "icon_block",
 			title_text = Localize("menu_weave_forge_weapon_block_title"),
 			description_text = Localize("menu_weave_forge_weapon_block_description"),
-			arch_texture = (masked and "icon_block_arch_masked") or "icon_block_arch",
+			arch_texture = masked and "icon_block_arch_masked" or "icon_block_arch",
 			size = size
 		},
 		style = {
@@ -1859,7 +1859,7 @@ local function create_item_block_option(size, scenegraph_id, masked, angle)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					60,
@@ -1879,7 +1879,7 @@ local function create_item_block_option(size, scenegraph_id, masked, angle)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -1899,7 +1899,7 @@ local function create_item_block_option(size, scenegraph_id, masked, angle)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					60,
@@ -1919,7 +1919,7 @@ local function create_item_block_option(size, scenegraph_id, masked, angle)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -2028,7 +2028,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					50,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					-20,
@@ -2048,7 +2048,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					50,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-18,
@@ -2068,7 +2068,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					50,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-20,
@@ -2088,7 +2088,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					50,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-20,
@@ -2108,7 +2108,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					60,
@@ -2128,7 +2128,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -2148,7 +2148,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					60,
@@ -2168,7 +2168,7 @@ local function create_item_stamina_option(size, scenegraph_id, masked, amount)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -2218,7 +2218,7 @@ local function create_item_keywords_option(size, scenegraph_id, masked, text)
 					370,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("forest_green", 255),
 				offset = {
 					0,
@@ -2237,7 +2237,7 @@ local function create_item_keywords_option(size, scenegraph_id, masked, text)
 					370,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					1,
@@ -2325,7 +2325,7 @@ local function create_item_overheat_option(size, scenegraph_id, masked)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					60,
@@ -2345,7 +2345,7 @@ local function create_item_overheat_option(size, scenegraph_id, masked)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -2365,7 +2365,7 @@ local function create_item_overheat_option(size, scenegraph_id, masked)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					60,
@@ -2385,7 +2385,7 @@ local function create_item_overheat_option(size, scenegraph_id, masked)
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -2539,7 +2539,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					60,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("white", 255),
 				offset = {
 					-8,
@@ -2559,7 +2559,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					60,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-6,
@@ -2579,7 +2579,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					60,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-8,
@@ -2599,7 +2599,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					60,
 					size[2]
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					-8,
@@ -2619,7 +2619,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_title", 255),
 				offset = {
 					60,
@@ -2639,7 +2639,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,
@@ -2659,7 +2659,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("font_default", 255),
 				offset = {
 					60,
@@ -2679,7 +2679,7 @@ local function create_item_ammunition_option(size, scenegraph_id, masked, amount
 					300,
 					50
 				},
-				font_type = (masked and "hell_shark_masked") or "hell_shark",
+				font_type = masked and "hell_shark_masked" or "hell_shark",
 				text_color = Colors.get_color_table_with_alpha("black", 255),
 				offset = {
 					61,

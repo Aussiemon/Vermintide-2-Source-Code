@@ -11,7 +11,7 @@ local database_names = {
 	"penny_bastion_torch"
 }
 
-for i = 1, #database_names, 1 do
+for i = 1, #database_names do
 	local name = database_names[i]
 	player[name] = {
 		value = 0,
@@ -19,5 +19,3 @@ for i = 1, #database_names, 1 do
 		database_name = name
 	}
 end
-
-return

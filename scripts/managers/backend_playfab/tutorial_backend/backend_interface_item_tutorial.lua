@@ -445,5 +445,3 @@ end
 BackendInterfaceItemTutorial.set_game_mode_specific_items = function (self, game_mode)
 	return
 end
-
-return

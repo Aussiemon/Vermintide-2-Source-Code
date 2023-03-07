@@ -14,5 +14,3 @@ BreedBehaviors.dummy_sorcerer = {
 	},
 	name = "chaos_dummy_sorcerer"
 }
-
-return

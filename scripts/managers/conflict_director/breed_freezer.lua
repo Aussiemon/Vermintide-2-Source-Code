@@ -132,8 +132,8 @@ end
 
 BreedFreezer._setup_freeze_box = function (self)
 	local offset_z = 0
-	local freezer_pos = (script_data.debug_breed_freeze and Vector3Aux.unbox(self._breed_freezer_settings.freezer_pos_debug)) or Vector3Aux.unbox(self._breed_freezer_settings.freezer_pos)
-	local freezer_offset = (script_data.debug_breed_freeze and Vector3Aux.unbox(self._breed_freezer_settings.freezer_offset_debug)) or Vector3Aux.unbox(self._breed_freezer_settings.freezer_offset)
+	local freezer_pos = script_data.debug_breed_freeze and Vector3Aux.unbox(self._breed_freezer_settings.freezer_pos_debug) or Vector3Aux.unbox(self._breed_freezer_settings.freezer_pos)
+	local freezer_offset = script_data.debug_breed_freeze and Vector3Aux.unbox(self._breed_freezer_settings.freezer_offset_debug) or Vector3Aux.unbox(self._breed_freezer_settings.freezer_offset)
 	self.freezer_pos = Vector3Box(freezer_pos)
 	self.freezer_offset = Vector3Box(freezer_offset)
 	local world = self.world
@@ -152,7 +152,7 @@ BreedFreezer._setup_freeze_box = function (self)
 		local systems = self.systems_by_breed[breed_name]
 		local breed_extension_names = self.extension_names_by_breed[breed_name]
 
-		for i = 1, num_extension_names, 1 do
+		for i = 1, num_extension_names do
 			local ext_name = extension_names[i]
 			local system = entity_manager:system_by_extension(ext_name)
 
@@ -165,7 +165,7 @@ BreedFreezer._setup_freeze_box = function (self)
 			end
 		end
 
-		local base_unit = (script_data.use_optimized_breed_units and breed.opt_base_unit) or breed.base_unit
+		local base_unit = script_data.use_optimized_breed_units and breed.opt_base_unit or breed.base_unit
 		local variants = 0
 
 		if base_unit and type(base_unit) == "table" then
@@ -227,7 +227,7 @@ BreedFreezer.try_mark_unit_for_freeze = function (self, breed, unit)
 		return false
 	end
 
-	for i = 1, #units_to_freeze, 1 do
+	for i = 1, #units_to_freeze do
 		if units_to_freeze[i] == unit then
 			print("ERROR: Tried to freeze unit twice in the same frame.")
 
@@ -254,7 +254,7 @@ BreedFreezer.rpc_breed_freeze_units = function (self, channel_id, unit_go_ids)
 
 	local unit_storage = Managers.state.unit_storage
 
-	for i = 1, #unit_go_ids, 1 do
+	for i = 1, #unit_go_ids do
 		local go_id = unit_go_ids[i]
 		local unit = unit_storage:unit(go_id)
 		local ai_extension = ScriptUnit.has_extension(unit, "ai_system")
@@ -294,7 +294,7 @@ BreedFreezer.commit_freezes = function (self)
 	for breed_name, units in pairs(self.units_to_freeze) do
 		local queue = self.breed_spawn_queues[breed_name]
 
-		for i = 1, #units, 1 do
+		for i = 1, #units do
 			local unit = units[i]
 			units[i] = nil
 
@@ -443,7 +443,7 @@ BreedFreezer.unfreeze_unit = function (self, unit, breed_name, data)
 	local systems = self.systems_by_breed[breed_name]
 	local breed_extension_names = self.extension_names_by_breed[breed_name]
 
-	for i = 1, #systems, 1 do
+	for i = 1, #systems do
 		local system = systems[i]
 
 		if system.unfreeze then
@@ -481,7 +481,7 @@ BreedFreezer.hot_join_sync = function (self, peer_id)
 	local frozen_goids = Managers.state.unit_storage.frozen_bimap_goid_unit
 	local indexed_lookup = self._breed_freezer_settings.breeds_index_lookup
 
-	for i = 1, #indexed_lookup, 1 do
+	for i = 1, #indexed_lookup do
 		local breed_name = indexed_lookup[i]
 		local queue = self.breed_spawn_queues[breed_name]
 		local num_units_of_breed = queue:size()
@@ -537,7 +537,7 @@ BreedFreezer.rpc_breed_freezer_sync_breeds = function (self, channel_id, starts,
 
 		local units_to_freeze = self.units_to_freeze[breed_name]
 
-		for j = 1, amount, 1 do
+		for j = 1, amount do
 			local go_id = unit_go_ids[unit_count]
 			local unit = Managers.state.unit_storage:unit(go_id)
 			units_to_freeze[#units_to_freeze + 1] = unit
@@ -560,5 +560,3 @@ BreedFreezer.rpc_breed_freezer_sync_breeds = function (self, channel_id, starts,
 		self:commit_freezes()
 	end
 end
-
-return

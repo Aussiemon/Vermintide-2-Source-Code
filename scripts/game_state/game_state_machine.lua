@@ -64,5 +64,3 @@ GameStateMachine.destroy = function (self, ...)
 
 	self.super.destroy(self, ...)
 end
-
-return

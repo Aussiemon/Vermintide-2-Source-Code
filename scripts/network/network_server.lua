@@ -90,7 +90,7 @@ NetworkServer.init = function (self, player_manager, lobby_host, wanted_profile_
 		server_name = "lan"
 	end
 
-	if DEDICATED_SERVER or (HAS_STEAM and not Development.parameter("use_lan_backend")) then
+	if DEDICATED_SERVER or HAS_STEAM and not Development.parameter("use_lan_backend") then
 		self._eac_server = EACServer.create(server_name)
 	end
 
@@ -154,7 +154,13 @@ NetworkServer.rpc_notify_connected = function (self, channel_id)
 		local profile_index, career_index = nil
 		local level_key = self._network_state:get_level_key()
 		local level_settings = LevelSettings[level_key]
-		profile_index = (not level_settings or level_settings.game_mode ~= "tutorial" or self.wanted_profile_index) and (wanted_profile_index or self.profile_synchronizer:get_first_free_profile())
+
+		if level_settings and level_settings.game_mode == "tutorial" then
+			profile_index = self.wanted_profile_index
+		else
+			local wanted_profile_index = FindProfileIndex(Development.parameter("wanted_profile")) or self.wanted_profile_index or SaveData.wanted_profile_index
+			profile_index = wanted_profile_index or self.profile_synchronizer:get_first_free_profile()
+		end
 
 		if profile_index == self.wanted_profile_index then
 			career_index = Development.parameter("wanted_career_index") or self.wanted_career_index
@@ -227,6 +233,7 @@ NetworkServer.rpc_to_client_spawn_player = function (self, channel_id, ...)
 	local peer_id = CHANNEL_TO_PEER_ID[channel_id]
 
 	if peer_id == self.my_peer_id then
+		-- Nothing
 	end
 end
 
@@ -571,9 +578,9 @@ NetworkServer.game_object_sync_done = function (self, peer_id)
 		local session_id = self._host_migration_session_id
 		local session_template_name = self.lobby_host:session_template_name()
 
-		RPC.rpc_set_migration_host_xbox(channel_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false, session_id, session_template_name)
+		RPC.rpc_set_migration_host_xbox(channel_id, self.host_to_migrate_to or "", self.host_to_migrate_to and true or false, session_id, session_template_name)
 	else
-		RPC.rpc_set_migration_host(channel_id, self.host_to_migrate_to or "", (self.host_to_migrate_to and true) or false)
+		RPC.rpc_set_migration_host(channel_id, self.host_to_migrate_to or "", self.host_to_migrate_to and true or false)
 	end
 end
 
@@ -724,7 +731,7 @@ NetworkServer.update = function (self, dt)
 	local joined_peers = self._joined_peers
 
 	if #joined_peers > 0 then
-		for i = 1, #joined_peers, 1 do
+		for i = 1, #joined_peers do
 			local joined = joined_peers[i]
 			local remote_peer_id = joined.peer_id
 			local channel_id = joined.channel_id
@@ -789,9 +796,9 @@ NetworkServer.update = function (self, dt)
 				local session_id = self._host_migration_session_id
 				local session_template_name = self.lobby_host:session_template_name()
 
-				self.network_transmit:send_rpc_clients("rpc_set_migration_host_xbox", host_to_migrate_to or "", (host_to_migrate_to and true) or false, session_id, session_template_name)
+				self.network_transmit:send_rpc_clients("rpc_set_migration_host_xbox", host_to_migrate_to or "", host_to_migrate_to and true or false, session_id, session_template_name)
 			else
-				self.network_transmit:send_rpc_clients("rpc_set_migration_host", host_to_migrate_to or "", (host_to_migrate_to and true) or false)
+				self.network_transmit:send_rpc_clients("rpc_set_migration_host", host_to_migrate_to or "", host_to_migrate_to and true or false)
 			end
 		end
 	end
@@ -810,10 +817,10 @@ NetworkServer.update = function (self, dt)
 
 		if eac_state ~= "undetermined" then
 			local eac_authorized = eac_state == "trusted"
-			local eac_authorized_string = (eac_authorized and "true") or "false"
+			local eac_authorized_string = eac_authorized and "true" or "false"
 
 			if self._eac_authorized_written_to_lobby_data ~= eac_authorized_string then
-				cprintf("Server is " .. ((eac_authorized and "trusted") or "untrusted"))
+				cprintf("Server is " .. (eac_authorized and "trusted" or "untrusted"))
 
 				local lobby_data = self.lobby_host:get_stored_lobby_data()
 				lobby_data.eac_authorized = eac_authorized_string
@@ -907,8 +914,7 @@ NetworkServer._update_eac_match = function (self, dt)
 			if data.eac_match_timer == 0 then
 				local determined, can_play = self:eac_check_peer(peer_id)
 
-				if can_play then
-				else
+				if not can_play then
 					printf("[NetworkServer] Peer's EAC status doesn't match the server, disconnecting peer (%s)", peer_id)
 					self:disconnect_peer(peer_id, "eac_authorize_failed")
 					peer_state_machine.state_data:change_state(PeerStates.Disconnecting)
@@ -953,7 +959,7 @@ NetworkServer.eac_check_peer = function (self, peer_id)
 	end
 
 	local match = nil
-	match = ((server_state ~= "banned" and peer_state ~= "banned") or false) and server_state == peer_state
+	match = (server_state ~= "banned" and peer_state ~= "banned" or false) and server_state == peer_state
 
 	if not match then
 		printf("[NetworkServer] Host EAC state is %s, peer %s's state is %s", server_state, peer_id, peer_state)
@@ -1257,7 +1263,7 @@ NetworkServer.deregister_shared_state = function (self, shared_state)
 end
 
 NetworkServer.get_peers = function (self)
-	return (self._network_state and self._network_state:get_peers()) or {}
+	return self._network_state and self._network_state:get_peers() or {}
 end
 
 NetworkServer.hot_join_sync_party_and_profiles = function (self, peer_id)
@@ -1273,5 +1279,3 @@ NetworkServer.hot_join_sync_party_and_profiles = function (self, peer_id)
 
 	profile_synchronizer:hot_join_sync(peer_id)
 end
-
-return

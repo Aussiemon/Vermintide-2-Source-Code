@@ -76,7 +76,7 @@ BTCritterNurglingFleeAction.has_escaped_players = function (self, unit, blackboa
 	local side = blackboard.side
 	local ENEMY_PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS, 1 do
+	for i = 1, #ENEMY_PLAYER_AND_BOT_UNITS do
 		local player_unit = ENEMY_PLAYER_AND_BOT_UNITS[i]
 		local player_pos = POSITION_LOOKUP[player_unit]
 		local distance_to_player_sq = Vector3.distance_squared(unit_pos, player_pos)
@@ -115,5 +115,3 @@ BTCritterNurglingFleeAction.start_idle_animation = function (self, unit, blackbo
 
 	blackboard.move_state = "idle"
 end
-
-return

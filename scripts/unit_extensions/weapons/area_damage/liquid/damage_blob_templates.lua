@@ -208,5 +208,3 @@ DamageBlobTemplates = {
 		end
 	end
 }
-
-return

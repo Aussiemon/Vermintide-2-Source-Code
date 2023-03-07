@@ -32,7 +32,7 @@ SmartMatchCleaner.update = function (self, dt)
 end
 
 SmartMatchCleaner._update_cleanup = function (self, dt)
-	for i = 1, #self._sessions_to_clean, 1 do
+	for i = 1, #self._sessions_to_clean do
 		local session_data = self._sessions_to_clean[i]
 
 		self[session_data.state](self, dt, i, session_data)
@@ -137,5 +137,3 @@ end
 SmartMatchCleaner._do_remove = function (self)
 	return
 end
-
-return

@@ -265,5 +265,3 @@ FreeFlightControllerSettings.padps3 = {
 		func = "pressed"
 	}
 }
-
-return

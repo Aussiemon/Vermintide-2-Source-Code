@@ -35,7 +35,7 @@ BTComboAttackAction.enter = function (self, unit, blackboard, t)
 	local current_rotation = Unit.local_rotation(unit, 0)
 	local target_locomotion_extension = ScriptUnit.has_extension(target_unit, "locomotion_system")
 	blackboard.target_locomotion_extension = target_locomotion_extension
-	local target_velocity = (target_locomotion_extension and target_locomotion_extension:current_velocity()) or Vector3.zero()
+	local target_velocity = target_locomotion_extension and target_locomotion_extension:current_velocity() or Vector3.zero()
 	local combo = blackboard.combo_attack_data
 
 	if combo then
@@ -140,7 +140,7 @@ BTComboAttackAction._start_attack = function (self, unit, blackboard, t, action,
 	self.last_attack_time = t
 	local attack_data = action.combo_attacks[attack_name]
 	local target_moving = blackboard.target_speed_away > 1.5 or blackboard.target_dist > 3
-	local anim = randomize((target_moving and attack_data.move_anim) or attack_data.anim, blackboard)
+	local anim = randomize(target_moving and attack_data.move_anim or attack_data.anim, blackboard)
 
 	Managers.state.network:anim_event(unit, anim)
 
@@ -283,10 +283,10 @@ BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 		blackboard.attacking_target = nil
 	end
 
-	if blackboard.attack_finished or (combo.has_been_blocked and current_attack.block_interrupts) then
+	if blackboard.attack_finished or combo.has_been_blocked and current_attack.block_interrupts then
 		local has_hit = combo.successful_hit
 		local has_been_blocked = combo.has_been_blocked
-		local next_attack_table = (has_been_blocked and current_attack.next_blocked) or (has_hit and current_attack.next_hit) or current_attack.next
+		local next_attack_table = has_been_blocked and current_attack.next_blocked or has_hit and current_attack.next_hit or current_attack.next
 		local next_attack_name = randomize(next_attack_table, blackboard)
 
 		if current_attack.combo_cooldown_start then
@@ -315,7 +315,7 @@ BTComboAttackAction.run = function (self, unit, blackboard, t, dt)
 		navigation_extension:set_max_speed(0)
 	end
 
-	local rotation_scheme = (blackboard.attack_damage_triggered and "no_rotation") or current_attack.rotation_scheme
+	local rotation_scheme = blackboard.attack_damage_triggered and "no_rotation" or current_attack.rotation_scheme
 
 	if rotation_scheme == "continuous" then
 		self:_update_rotation_target(t, unit, blackboard, combo)
@@ -349,7 +349,7 @@ BTComboAttackAction._follow = function (self, dt, t, unit, blackboard, current_a
 
 	if target_distance_sq < weapon_reach_sq then
 		local target_locomotion_extension = blackboard.target_locomotion_extension
-		local target_velocity = (target_locomotion_extension and target_locomotion_extension.average_velocity and target_locomotion_extension:average_velocity()) or Vector3.zero()
+		local target_velocity = target_locomotion_extension and target_locomotion_extension.average_velocity and target_locomotion_extension:average_velocity() or Vector3.zero()
 		max_speed = math.max(math.min(max_speed, Vector3.dot(target_velocity, Vector3.normalize(target_offset))), 0)
 	end
 
@@ -418,7 +418,7 @@ BTComboAttackAction._set_target_position = function (self, blackboard, combo, po
 	local target_locomotion_extension = blackboard.target_locomotion_extension
 
 	combo.last_target_position:store(position)
-	combo.last_target_velocity:store((target_locomotion_extension and target_locomotion_extension:current_velocity()) or Vector3.zero())
+	combo.last_target_velocity:store(target_locomotion_extension and target_locomotion_extension:current_velocity() or Vector3.zero())
 
 	combo.last_target_position_time = t
 end
@@ -461,7 +461,7 @@ BTComboAttackAction._push_non_targets = function (self, unit, self_pos, current_
 	local side = Managers.state.side.side_by_unit[unit]
 	local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #player_and_bot_units, 1 do
+	for i = 1, #player_and_bot_units do
 		local player_unit = player_and_bot_units[i]
 
 		if player_unit ~= current_target and not combo.pushed_targets[player_unit] then
@@ -493,7 +493,7 @@ BTComboAttackAction.stagger_override = function (self, unit, blackboard, attacke
 	local current_attack = action.combo_attacks[combo.current_attack_name]
 	local staggers_allowed = current_attack.staggers_allowed
 
-	if staggers_allowed[stagger_type] or (is_push and current_attack.allow_push_stagger) then
+	if staggers_allowed[stagger_type] or is_push and current_attack.allow_push_stagger then
 		return false
 	else
 		return true
@@ -585,5 +585,3 @@ BTComboAttackAction.anim_cb_attack_vce = function (self, unit, blackboard)
 		DialogueSystem:trigger_attack(blackboard, blackboard.target_unit, unit, false, false)
 	end
 end
-
-return

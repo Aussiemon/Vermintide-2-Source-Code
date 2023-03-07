@@ -153,5 +153,3 @@ end
 MusicPlayer.event_match = function (self, start_event, stop_event)
 	return self._start_event == start_event and self._stop_event == stop_event
 end
-
-return

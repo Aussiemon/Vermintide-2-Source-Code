@@ -48,5 +48,3 @@ HitEffectsShadowSkull = {
 	}
 }
 HitEffectsShadowSkull = table.create_copy(HitEffectsShadowSkull, HitEffectsShadowSkull)
-
-return

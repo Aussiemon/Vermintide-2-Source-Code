@@ -57,5 +57,3 @@ settings.interactions_filenames = {
 settings.anim_lookup = {
 	"interaction_torch"
 }
-
-return

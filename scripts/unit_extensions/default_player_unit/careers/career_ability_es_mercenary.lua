@@ -186,7 +186,7 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 		end
 	end
 
-	if (is_server and bot_player) or local_player then
+	if is_server and bot_player or local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("ability_shout")
@@ -205,7 +205,7 @@ CareerAbilityESMercenary._run_ability = function (self, new_initial_speed)
 	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 	local num_player_units = #player_and_bot_units
 
-	for i = 1, num_player_units, 1 do
+	for i = 1, num_player_units do
 		local player_unit = player_and_bot_units[i]
 		local friendly_attack_intensity_extension = ScriptUnit.has_extension(player_unit, "attack_intensity_system")
 
@@ -260,5 +260,3 @@ CareerAbilityESMercenary._play_vfx = function (self)
 		network_transmit:send_rpc_server("rpc_play_particle_effect", effect_id, game_object_id, node_id, offset, rotation_offset, linked)
 	end
 end
-
-return

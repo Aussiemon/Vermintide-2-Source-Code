@@ -198,5 +198,3 @@ InteractionHelper.player_modify_interaction_type = function (interactor_unit, in
 
 	return interaction_type
 end
-
-return

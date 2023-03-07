@@ -146,5 +146,3 @@ PlayerUnitWeaveLoadoutExtension._sync_buffs = function (self, unit_go_id)
 
 	self._synced_buff_params = rpc_params
 end
-
-return

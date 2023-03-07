@@ -101,5 +101,3 @@ WaitForRescueUI.update = function (self, dt, t)
 	UIRenderer.draw_widget(ui_renderer, self.waiting_for_rescue_text)
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

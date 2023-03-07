@@ -28,5 +28,3 @@ loading_bg_courtyard_atlas = {
 		}
 	}
 }
-
-return

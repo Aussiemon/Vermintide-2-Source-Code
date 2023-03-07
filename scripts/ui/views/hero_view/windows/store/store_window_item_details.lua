@@ -192,7 +192,7 @@ StoreWindowItemDetails._setup_career_icons = function (self, careers)
 		local total_length = step_size * amount
 		local offset_x = -(total_length / 2 + step_size / 2)
 
-		for i = 1, amount, 1 do
+		for i = 1, amount do
 			local career_name = careers[i]
 			local settings = CareerSettings[career_name]
 			local display_name = settings.display_name
@@ -347,5 +347,3 @@ StoreWindowItemDetails._handle_gamepad_activity = function (self)
 		self._gamepad_active_last_frame = false
 	end
 end
-
-return

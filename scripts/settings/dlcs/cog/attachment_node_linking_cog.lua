@@ -290,5 +290,3 @@ AttachmentNodeLinking.rotary_gun = {
 		}
 	}
 }
-
-return

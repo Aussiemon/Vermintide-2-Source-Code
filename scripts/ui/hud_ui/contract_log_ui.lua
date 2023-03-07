@@ -106,7 +106,7 @@ ContractLogUI._sync_active_contracts = function (self)
 		if num_added_contracts and num_added_contracts > 0 then
 			local log_entries = self._log_entries
 
-			for i = 1, num_added_contracts, 1 do
+			for i = 1, num_added_contracts do
 				local entry_data = log_entries[i]
 
 				if entry_data then
@@ -257,7 +257,7 @@ ContractLogUI._add_contract = function (self, contract_id)
 	local contract_name = self.quest_manager:get_title_for_contract_id(contract_id)
 	local rewards = contract_template.rewards
 	local quest_reward = rewards.quest
-	local contract_color = (quest_reward and QuestSettings.contract_ui_dlc_colors[quest_reward.quest_type]) or Colors.get_table("white")
+	local contract_color = quest_reward and QuestSettings.contract_ui_dlc_colors[quest_reward.quest_type] or Colors.get_table("white")
 	local icon_color = widget_style.texture_icon_bg.color
 	icon_color[2] = contract_color[2]
 	icon_color[3] = contract_color[3]
@@ -319,7 +319,7 @@ ContractLogUI._remove_contract = function (self, contract_id)
 	local contract_data, index = nil
 	local log_entries = self._log_entries
 
-	for i = 1, #log_entries, 1 do
+	for i = 1, #log_entries do
 		local entry_data = log_entries[i]
 		local entry_contract_id = entry_data.contract_id
 
@@ -357,7 +357,7 @@ ContractLogUI._get_text_size = function (self, text_style, text)
 	local text_height = UIUtils.get_text_height(ui_renderer, size, text_style, text)
 	local longest_width = 0
 
-	for i = 1, num_texts, 1 do
+	for i = 1, num_texts do
 		local text_line = texts[i]
 		local width = UIUtils.get_text_width(ui_renderer, text_style, text_line)
 
@@ -383,7 +383,7 @@ ContractLogUI.update = function (self, dt, t)
 		dirty = true
 	end
 
-	if self._is_visible and ((self.num_added_contracts and self.num_added_contracts <= 0) or not self.num_added_contracts) then
+	if self._is_visible and (self.num_added_contracts and self.num_added_contracts <= 0 or not self.num_added_contracts) then
 		self:set_visible(false)
 	elseif not self._is_visible and self.num_added_contracts and self.num_added_contracts > 0 then
 		self:set_visible(true)
@@ -464,5 +464,3 @@ end
 ContractLogUI.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
-
-return

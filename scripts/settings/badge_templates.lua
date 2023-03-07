@@ -2,5 +2,3 @@ BadgeTemplates = {
 	server = {},
 	client = {}
 }
-
-return

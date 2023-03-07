@@ -155,5 +155,3 @@ HitEffectsChaosSpawn = {
 	}
 }
 HitEffectsChaosSpawn = table.create_copy(HitEffectsChaosSpawn, HitEffectsChaosSpawn)
-
-return

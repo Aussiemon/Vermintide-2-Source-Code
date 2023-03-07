@@ -92,7 +92,7 @@ TestCases.load_all_weaves = function ()
 	Testify:run_case(function ()
 		Testify:make_request("set_game_mode_to_weave")
 
-		for weave_number = 1, 160, 1 do
+		for weave_number = 1, 160 do
 			local weave_name = "weave_" .. weave_number
 
 			print("[Testify] Loading " .. weave_name)
@@ -147,7 +147,7 @@ TestCases.run_through_level = function (case_settings, skip_cinematic)
 		local next_memory_measure_point = 0
 		local bots_stuck_data = {}
 
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			bots_stuck_data[i] = {
 				Vector3Box(Vector3(-999, -999, -999)),
 				os.time()
@@ -251,7 +251,7 @@ TestCases.run_through_weave = function (case_settings)
 		local next_memory_measure_point = 0
 		local bots_stuck_data = {}
 
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			bots_stuck_data[i] = {
 				Vector3Box(Vector3(-999, -999, -999)),
 				os.time()
@@ -448,8 +448,8 @@ TestCases.measure_performance = function (level_key, skip_cinematic)
 
 		Testify:make_request("activate_free_flight")
 
-		for i = 1, NB_POINTS, 1 do
-			for j = 1, #ROTATIONS, 1 do
+		for i = 1, NB_POINTS do
+			for j = 1, #ROTATIONS do
 				Testify:make_request("move_free_flight_camera", {
 					position = main_path_points[i],
 					rotation = ROTATIONS[j]
@@ -504,7 +504,7 @@ TestCases.run_through_deus_level_terror_event = function (level_key, terror_even
 		main_path_point = math.clamp(main_path_point, 0, total_main_path_distance - 1)
 		local bots_stuck_data = {}
 
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			bots_stuck_data[i] = {
 				Vector3Box(Vector3(-999, -999, -999)),
 				os.time()
@@ -612,7 +612,7 @@ TestCases.run_through_pvp_level = function (case_settings)
 		local next_memory_measure_point = 0
 		local bots_stuck_data = {}
 
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			bots_stuck_data[i] = {
 				Vector3Box(Vector3(-999, -999, -999)),
 				os.time()
@@ -767,7 +767,7 @@ TestCases.spawn_all_enemies = function (case_settings)
 			end
 		end
 
-		local wait_duration = (spawn_simultaneously and kill_timer) or 5
+		local wait_duration = spawn_simultaneously and kill_timer or 5
 
 		TestifySnippets.wait(wait_duration)
 
@@ -834,7 +834,7 @@ TestCases.equip_deus_power_ups = function (case_settings)
 		main_path_point = math.clamp(main_path_point, 0, total_main_path_distance - 1)
 		local bots_stuck_data = {}
 
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			bots_stuck_data[i] = {
 				Vector3Box(Vector3(-999, -999, -999)),
 				os.time()
@@ -903,7 +903,7 @@ TestCases.write_morris_levels_to_file = function ()
 			"        extra_session_args: -skip-splash -disable-intro-trailer -debug-testify -use-local-backend -mechanism deus"
 		}
 
-		for i = 1, 7, 1 do
+		for i = 1, 7 do
 			file:write(suite_definition[i], "\n")
 		end
 
@@ -929,7 +929,7 @@ TestCases.write_morris_levels_to_file = function ()
 					case_definition[3] = "        name: Load Deus Level - " .. level_key
 					case_definition[5] = "          - " .. level_key
 
-					for i = 1, 6, 1 do
+					for i = 1, 6 do
 						file:write(case_definition[i], "\n")
 					end
 
@@ -965,5 +965,3 @@ TestCases.equip_hats = function ()
 		end
 	end)
 end
-
-return

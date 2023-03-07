@@ -24,5 +24,3 @@ ActSettings.act_4 = {
 	sorting = 4,
 	display_name = "act_4_display_name"
 }
-
-return

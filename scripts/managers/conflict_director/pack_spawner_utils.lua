@@ -68,7 +68,7 @@ PackSpawnerUtils.spawn_in_circle = function (breed_pack, pack_size, pos)
 		local start_point = Vector3(radius, 0, 5)
 		local points_left = total_points - points_found
 
-		for j = 1, point_cap, 1 do
+		for j = 1, point_cap do
 			if points_found == total_points then
 				print("Fallback pack spawning moved inside:", total_points, " units.")
 
@@ -117,7 +117,7 @@ PackSpawnerUtils.spawn_random_pack = function (breed_pack, pos, mesh)
 	local unit = pack[1]
 	local random_amount = Math.random(pack.amount[1], pack.amount[2])
 
-	for i = 1, random_amount, 1 do
+	for i = 1, random_amount do
 		local rot = Quaternion(Vector3.up(), math.degrees_to_radians(Math.random(1, 360)))
 		local spawn_range = pack.spawn_range[2]
 		local attempts = 0
@@ -167,7 +167,7 @@ PackSpawnerUtils.check_unit_overlap = function (pos, other_units, units_count)
 	if not next(other_units) then
 		return false
 	else
-		for i = 1, units_count, 1 do
+		for i = 1, units_count do
 			local unit = other_units[i]
 			local distance = Vector3.distance(pos, unit[1])
 
@@ -195,5 +195,3 @@ PackSpawnerUtils.random_predefined_pack_index = function ()
 
 	return index
 end
-
-return

@@ -201,7 +201,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		local best_index = nil
 		local num_spawners = #spawners
 
-		for i = 1, num_spawners, 1 do
+		for i = 1, num_spawners do
 			local spawner = spawners[i]
 			local pos = ScriptUnit.extension(spawner, "spawner_system"):spawn_position()
 			SPAWN_POS_TEMP[i] = pos
@@ -221,7 +221,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 		local best_other_index = nil
 		local best_other_dist_sq = math.huge
 
-		for i = 1, num_spawners, 1 do
+		for i = 1, num_spawners do
 			if i ~= best_index then
 				local pos = SPAWN_POS_TEMP[i]
 				local dist_sq = Vector3_distance_squared(Vector3.flat(pos), Vector3.flat(best_pos))
@@ -257,7 +257,7 @@ BTSpawnAllies.find_spawn_point = function (unit, blackboard, action, data, overr
 
 		draw("line", average_pos, check_pos, Color(0, 255, 255))
 
-		for i = 1, 10, 1 do
+		for i = 1, 10 do
 			local old_check = check_pos
 			check_pos = check_pos + step * fwd
 			success, z = GwNavQueries.triangle_from_position(nav_world, check_pos, above, below)
@@ -327,7 +327,7 @@ BTSpawnAllies._spawn = function (self, unit, data, blackboard, t)
 
 		local spawner_system = Managers.state.entity:system("spawner_system")
 
-		for i = 1, #spawn_list, 1 do
+		for i = 1, #spawn_list do
 			local unit = spawners[(i - 1) % #spawners + 1]
 
 			spawner_system:spawn_horde(unit, {
@@ -394,5 +394,3 @@ BTSpawnAllies._release_animation_lock = function (self, unit, blackboard)
 	LocomotionUtils.set_animation_driven_movement(unit, false)
 	blackboard.locomotion_extension:use_lerp_rotation(true)
 end
-
-return

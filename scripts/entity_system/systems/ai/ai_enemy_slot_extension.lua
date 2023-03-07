@@ -37,7 +37,7 @@ AIEnemySlotExtension.cleanup_extension = function (self, unit, update_slots_ai_u
 	self:_detach_from_slot()
 	self:_detach_from_ai_slot()
 
-	for i = 1, update_slots_ai_units_n, 1 do
+	for i = 1, update_slots_ai_units_n do
 		local ai_unit = update_slots_ai_units[i]
 
 		if ai_unit == unit then
@@ -156,8 +156,7 @@ AIEnemySlotExtension._improve_ai_slot_position_with_sparse_grid = function (self
 	if not occupied then
 		self._navigation_ext:move_to(new_position)
 		book_sparse_grid(self_unit, hash, x, y, z)
-	elseif occupied.u == self_unit then
-	else
+	elseif occupied.u ~= self_unit then
 		local p3 = POSITION_LOOKUP[occupied.u]
 		local new_position = p3 + dir
 
@@ -410,7 +409,7 @@ local function find_free_lean_slot(lean_slots, unit)
 
 	local start_idx = math.random(2, amount_lean_slots)
 
-	for i = start_idx, start_idx + amount_lean_slots, 1 do
+	for i = start_idx, start_idx + amount_lean_slots do
 		local idx = i % amount_lean_slots + 1
 
 		if not lean_slots[idx] then
@@ -421,7 +420,7 @@ local function find_free_lean_slot(lean_slots, unit)
 	return nil
 end
 
-local slot_angle = (math.pi * 2) / 8
+local slot_angle = math.pi * 2 / 8
 
 AIEnemySlotExtension.request_best_slot = function (self, attacker_slot_extension)
 	local unit = self.unit
@@ -521,7 +520,7 @@ AIEnemySlotExtension.debug_draw = function (self, drawer, t, nav_world, i_target
 	local slot_position_boxed = blackboard and blackboard.slot_position_boxed
 
 	if slot_position_boxed then
-		local slot_color = (script_data.debug_unit == unit and Color(255, 0, 255)) or Color(255, 255, 255)
+		local slot_color = script_data.debug_unit == unit and Color(255, 0, 255) or Color(255, 255, 255)
 
 		QuickDrawer:sphere(slot_position_boxed:unbox(), 0.3, slot_color)
 
@@ -538,5 +537,3 @@ AIEnemySlotExtension.debug_draw = function (self, drawer, t, nav_world, i_target
 		Managers.state.debug_text:output_unit_text(text, text_size, unit, head_node, offset_vector, nil, category, color_vector, viewport_name)
 	end
 end
-
-return

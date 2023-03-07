@@ -77,5 +77,3 @@ BTChaosPlagueWaveSpawnerSummoningAction.run = function (self, unit, blackboard, 
 
 	return "running"
 end
-
-return

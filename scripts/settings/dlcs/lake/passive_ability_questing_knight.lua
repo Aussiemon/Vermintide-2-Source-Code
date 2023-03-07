@@ -170,7 +170,7 @@ PassiveAbilityQuestingKnight._create_quests = function (self)
 	local num_existing_challenges = #passive_challenges
 
 	if num_existing_challenges > 0 then
-		for i = 1, num_existing_challenges, 1 do
+		for i = 1, num_existing_challenges do
 			passive_challenges[i]:set_paused(false)
 		end
 	else
@@ -209,7 +209,7 @@ PassiveAbilityQuestingKnight._get_possible_challenges = function (self)
 
 	local filtered_challenges = {}
 
-	for possible_challenges_index = 1, #possible_challenges, 1 do
+	for possible_challenges_index = 1, #possible_challenges do
 		local possible_challenge = possible_challenges[possible_challenges_index]
 
 		if not possible_challenge.condition or possible_challenge.condition() then
@@ -242,7 +242,7 @@ PassiveAbilityQuestingKnight._start_quest_from_pool = function (self, quest_pool
 	local difficulty_rank = self._difficulty_rank
 	local num_available_challenges = #quest_pool
 
-	for i = 1, num_to_start, 1 do
+	for i = 1, num_to_start do
 		if num_available_challenges == 0 then
 			print("PassiveAbilityQuestingKnight: Not enought challenges, requested", num_to_start)
 
@@ -290,5 +290,3 @@ PassiveAbilityQuestingKnight._unregister_events = function (self)
 		Managers.state.event:unregister("on_initial_talents_synced", self)
 	end
 end
-
-return

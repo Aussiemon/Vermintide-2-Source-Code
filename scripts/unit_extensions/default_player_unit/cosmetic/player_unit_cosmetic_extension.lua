@@ -37,7 +37,7 @@ PlayerUnitCosmeticExtension.init = function (self, extension_init_context, unit,
 	CosmeticUtils.update_cosmetic_slot(self._player, "slot_frame", frame_name)
 	CosmeticUtils.update_cosmetic_slot(self._player, "slot_skin", skin_name)
 
-	local career_index = (self._player and self._player:career_index()) or 1
+	local career_index = self._player and self._player:career_index() or 1
 	local career = profile.careers[career_index]
 
 	self:_init_mesh_attachment(self._world, unit, skin_name, profile, career)
@@ -269,5 +269,3 @@ PlayerUnitCosmeticExtension._update_player_standing_still_events = function (sel
 		afk_data.last_tick = t
 	end
 end
-
-return

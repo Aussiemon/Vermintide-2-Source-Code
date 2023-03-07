@@ -54,6 +54,7 @@ end
 
 HelpScreenUI.show_help = function (self, help_screen_name, input_service_name, on_init)
 	if on_init then
+		-- Nothing
 	end
 
 	if HelpScreens[help_screen_name] then
@@ -138,5 +139,3 @@ end
 HelpScreenUI.destroy = function (self)
 	return
 end
-
-return

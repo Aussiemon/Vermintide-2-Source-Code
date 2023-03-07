@@ -184,22 +184,22 @@ local function check_if_key_belongs_to_spec(spec, key)
 	local composite_keys = spec[key_type].composite_keys
 	local peer_id = key.peer_id
 
-	fassert(peer_id == "0" or (composite_keys and composite_keys.peer_id), "[SharedState] key type '%s' does not have peer_id as key parameter", tostring(key_type))
+	fassert(peer_id == "0" or composite_keys and composite_keys.peer_id, "[SharedState] key type '%s' does not have peer_id as key parameter", tostring(key_type))
 	fassert(peer_id ~= "0" or not composite_keys or not composite_keys.peer_id, "[SharedState] key type '%s' needs peer_id as key parameter", tostring(key_type))
 
 	local local_player_id = key.local_player_id
 
-	fassert(local_player_id == 0 or (composite_keys and composite_keys.local_player_id), "[SharedState] key type '%s' does not have local_player_id as key parameter", tostring(key_type))
+	fassert(local_player_id == 0 or composite_keys and composite_keys.local_player_id, "[SharedState] key type '%s' does not have local_player_id as key parameter", tostring(key_type))
 	fassert(local_player_id ~= 0 or not composite_keys or not composite_keys.local_player_id, "[SharedState] key type '%s' needs local_player_id as key parameter", tostring(key_type))
 
 	local profile_index = key.profile_index
 
-	fassert(profile_index == 0 or (composite_keys and composite_keys.profile_index), "[SharedState] key type '%s' does not have profile_index as key parameter", tostring(key_type))
+	fassert(profile_index == 0 or composite_keys and composite_keys.profile_index, "[SharedState] key type '%s' does not have profile_index as key parameter", tostring(key_type))
 	fassert(profile_index ~= 0 or not composite_keys or not composite_keys.profile_index, "[SharedState] key type '%s' needs profile_index as key parameter", tostring(key_type))
 
 	local career_index = key.career_index
 
-	fassert(career_index == 0 or (composite_keys and composite_keys.career_index), "[SharedState] key type '%s' does not have career_index as key parameter", tostring(key_type))
+	fassert(career_index == 0 or composite_keys and composite_keys.career_index, "[SharedState] key type '%s' does not have career_index as key parameter", tostring(key_type))
 	fassert(career_index ~= 0 or not composite_keys or not composite_keys.career_index, "[SharedState] key type '%s' needs career_index as key parameter", tostring(key_type))
 end
 
@@ -267,7 +267,7 @@ local function send_set_peer_rpc(channel_id, context, owner, key_type_lookup, pe
 			RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value, true)
 		else
 			for i = 1, encoded_len, STRING_CHUNK_SIZE do
-				local string_chunk = encoded_value:sub(i, (i + STRING_CHUNK_SIZE) - 1)
+				local string_chunk = encoded_value:sub(i, i + STRING_CHUNK_SIZE - 1)
 				local complete = encoded_len < i + STRING_CHUNK_SIZE
 
 				RPC[rpc](channel_id, context, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, string_chunk, complete)
@@ -289,7 +289,7 @@ local function send_set_server_rpc(channel_id, context, key_type_lookup, peer_id
 			RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value, true)
 		else
 			for i = 1, encoded_len, STRING_CHUNK_SIZE do
-				local string_chunk = encoded_value:sub(i, (i + STRING_CHUNK_SIZE) - 1)
+				local string_chunk = encoded_value:sub(i, i + STRING_CHUNK_SIZE - 1)
 				local complete = encoded_len < i + STRING_CHUNK_SIZE
 
 				RPC[rpc](channel_id, context, key_type_lookup, peer_id, local_player_id, profile_index, career_index, string_chunk, complete)
@@ -456,7 +456,7 @@ SharedState.set_peer = function (self, owner, key, value)
 		dprintf("%s: <set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
 
 		local encoder = self._spec.peer[key.key_type].encode
-		local encoded_value = (encoder and encoder(value)) or value
+		local encoded_value = encoder and encoder(value) or value
 
 		if self._is_server then
 			if self._network_server then
@@ -543,7 +543,7 @@ SharedState.set_server = function (self, key, value)
 		dprintf("%s: <set server> %s:%s:%d:%d:%d = %s", self._original_context, key.key_type, key.peer_id, key.local_player_id, key.profile_index, key.career_index, printable_value(value))
 
 		local encoder = self._spec.server[key.key_type].encode
-		local encoded_value = (encoder and encoder(value)) or value
+		local encoded_value = encoder and encoder(value) or value
 
 		if self._network_server then
 			local connected_peers = self._network_server:get_peers()
@@ -607,7 +607,7 @@ SharedState.rpc_shared_state_request_sync = function (self, channel_id, context)
 					for profile_index, profile_index_state in pairs(local_player_id_state) do
 						for career_index, value in pairs(profile_index_state) do
 							local encoder = self._spec.server[key_type].encode
-							local encoded_value = (encoder and encoder(value)) or value
+							local encoded_value = encoder and encoder(value) or value
 
 							send_set_server_rpc(channel_id, self._context, self._key_type_lookup[key_type], peer_id, local_player_id, profile_index, career_index, encoded_value)
 						end
@@ -769,7 +769,7 @@ end
 SharedState._set_rpc = function (self, sender_channel_id, owner, key_type_lookup, peer_id, local_player_id, profile_index, career_index, encoded_value)
 	local key_type = self._key_type_lookup[key_type_lookup]
 	local decoder = self._spec.peer[key_type].decode
-	local value = (decoder and decoder(encoded_value)) or encoded_value
+	local value = decoder and decoder(encoded_value) or encoded_value
 
 	dprintf("%s: <rpc set %s> %s:%s:%d:%d:%d = %s", self._original_context, owner, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
 	set(self._peer_state, owner, key_type, peer_id, local_player_id, profile_index, career_index, value)
@@ -811,7 +811,7 @@ SharedState._set_server_rpc = function (self, sender_channel_id, key_type_lookup
 
 	local key_type = self._key_type_lookup[key_type_lookup]
 	local decoder = self._spec.server[key_type].decode
-	local value = (decoder and decoder(encoded_value)) or encoded_value
+	local value = decoder and decoder(encoded_value) or encoded_value
 
 	dprintf("%s: <rpc set server> %s:%s:%d:%d:%d = %s", self._original_context, key_type, peer_id, local_player_id, profile_index, career_index, printable_value(value))
 	set_server(self._server_state, key_type, peer_id, local_player_id, profile_index, career_index, value)
@@ -825,7 +825,7 @@ SharedState._send_all = function (self, channel_id, player_id, player_state)
 				for profile_index, profile_index_state in pairs(local_player_id_state) do
 					for career_index, value in pairs(profile_index_state) do
 						local encoder = self._spec.peer[key_type].encode
-						local encoded_value = (encoder and encoder(value)) or value
+						local encoded_value = encoder and encoder(value) or value
 
 						send_set_peer_rpc(channel_id, self._context, player_id, self._key_type_lookup[key_type], peer_id, local_player_id, profile_index, career_index, encoded_value)
 					end
@@ -930,7 +930,7 @@ local function check_spec_part(spec_part)
 			fassert(key_param == "peer_id" or key_param == "local_player_id" or key_param == "profile_index" or key_param == "career_index", "spec %s invalid, invalid key_param %s, must be one of peer_id, local_player_id, profile_index, career_index", key_type)
 		end
 
-		fassert(not elem_spec.clear_when_peer_id_leaves or (elem_spec.clear_when_peer_id_leaves and elem_spec.composite_keys.peer_id), "--")
+		fassert(not elem_spec.clear_when_peer_id_leaves or elem_spec.clear_when_peer_id_leaves and elem_spec.composite_keys.peer_id, "--")
 	end
 end
 
@@ -941,5 +941,3 @@ SharedState.validate_spec = function (spec)
 	check_spec_part(spec.peer)
 	check_spec_part(spec.server)
 end
-
-return

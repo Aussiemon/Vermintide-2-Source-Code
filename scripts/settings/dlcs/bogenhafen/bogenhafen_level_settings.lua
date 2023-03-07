@@ -146,5 +146,3 @@ settings.missions = {
 		text = "mission_bogenhafen_slum_escape_portal"
 	}
 }
-
-return

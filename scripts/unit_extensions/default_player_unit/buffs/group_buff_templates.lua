@@ -10,5 +10,3 @@ GroupBuffTemplates = {
 }
 
 DLCUtils.merge("group_buff_templates", GroupBuffTemplates)
-
-return

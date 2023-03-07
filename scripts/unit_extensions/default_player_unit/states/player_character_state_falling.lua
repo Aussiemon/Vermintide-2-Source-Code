@@ -228,7 +228,7 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 
 		local jump_speed = movement_settings_table.jump.initial_vertical_speed
 		local velocity_current = self.locomotion_extension:current_velocity()
-		local velocity_jump = Vector3(velocity_current.x, velocity_current.y, (velocity_current.z < -3 and jump_speed * 0.5) or jump_speed * 1.5)
+		local velocity_jump = Vector3(velocity_current.x, velocity_current.y, velocity_current.z < -3 and jump_speed * 0.5 or jump_speed * 1.5)
 
 		self.locomotion_extension:set_forced_velocity(velocity_jump)
 		self.locomotion_extension:set_wanted_velocity(velocity_jump)
@@ -283,5 +283,3 @@ PlayerCharacterStateFalling.update = function (self, unit, input, dt, context, t
 		return
 	end
 end
-
-return

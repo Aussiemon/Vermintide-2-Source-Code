@@ -279,5 +279,3 @@ settings.enemy_package_loader_breed_categories = {
 		"chaos_exalted_sorcerer_drachenfels"
 	}
 }
-
-return

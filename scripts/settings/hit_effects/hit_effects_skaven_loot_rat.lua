@@ -2479,5 +2479,3 @@ HitEffectsSkavenLootRat = {
 	}
 }
 HitEffectsSkavenLootRat = table.create_copy(HitEffectsSkavenLootRat, HitEffectsSkavenLootRat)
-
-return

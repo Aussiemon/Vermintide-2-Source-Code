@@ -333,7 +333,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 	if result then
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local actor = hit.actor
 			local hit_unit = Actor.unit(actor)
@@ -374,7 +374,7 @@ BTWarpfireThrowerShootAction._close_range_attack = function (self, unit, attack_
 							local is_valid_player_status = target_status_extension and not target_status_extension:is_invisible()
 							local to_target_normalized = Vector3.normalize(to_target)
 							local dot = Vector3.dot(to_target_normalized, forward_normalized)
-							local is_valid_target = (dot > 0.99 or (distance < action.aim_rotation_override_distance and dot > 0.55)) and is_valid_player_status
+							local is_valid_target = (dot > 0.99 or distance < action.aim_rotation_override_distance and dot > 0.55) and is_valid_player_status
 
 							if target_power_block_perk and target_blocking and shield_block then
 								if is_valid_target and not DamageUtils.check_ranged_block(unit, hit_unit, dot, "blocked_berzerker") then
@@ -408,7 +408,7 @@ BTWarpfireThrowerShootAction._aim_at_target = function (self, unit, target_unit,
 	local wanted_aim_rotation = Quaternion.look(wanted_aim_position_offset, Vector3.up())
 	local current_aim_rotation = attack_pattern_data.current_aim_rotation:unbox()
 	local distance_to_target = Vector3.distance(self_pos, target_position)
-	local aim_rotation_modifier = (distance_to_target < aim_rotation_override_distance and aim_rotation_override_speed_multiplier) or (target_is_dodging and aim_rotation_dodge_multipler) or math.max(1 - distance_to_target / action.close_attack_range, 0.1)
+	local aim_rotation_modifier = distance_to_target < aim_rotation_override_distance and aim_rotation_override_speed_multiplier or target_is_dodging and aim_rotation_dodge_multipler or math.max(1 - distance_to_target / action.close_attack_range, 0.1)
 	local upper_body_rotation_speed = action.radial_speed_upper_body_shooting * math.min(aim_rotation_modifier, aim_rotation_override_speed_multiplier)
 	local lerped_rotation = self:_rotate_from_to(current_aim_rotation, wanted_aim_rotation, upper_body_rotation_speed, dt)
 	local aim_position = pivot + Quaternion.forward(lerped_rotation) * Vector3.length(wanted_aim_position_offset)
@@ -456,7 +456,7 @@ BTWarpfireThrowerShootAction._rotate_from_to = function (self, from, to, max_ang
 	local inner_product = Quaternion.dot(to, from)
 	local angle_difference = 2 * math.acos(math.clamp(inner_product, -1, 1))
 	local max_delta = max_angle_speed * dt
-	local lerp_t = (angle_difference == 0 and 1) or math.min(max_delta / angle_difference, 1)
+	local lerp_t = angle_difference == 0 and 1 or math.min(max_delta / angle_difference, 1)
 	local normalized_angle_diff = math.abs((angle_difference % TWO_PI + PI) % TWO_PI - PI)
 
 	return Quaternion.lerp(from, to, lerp_t), math.max(normalized_angle_diff - max_delta, 0)
@@ -554,5 +554,3 @@ BTWarpfireThrowerShootAction._create_bot_aoe_threat = function (self, unit, acti
 
 	ai_bot_group_system:aoe_threat_created(obstacle_position, "cylinder", obstacle_size, nil, bot_threat_duration)
 end
-
-return

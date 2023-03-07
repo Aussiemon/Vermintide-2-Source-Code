@@ -191,16 +191,16 @@ GenericHealthExtension.set_max_health = function (self, health)
 end
 
 GenericHealthExtension._add_to_damage_history_buffer = function (self, unit, attacker_unit, damage_amount, hit_zone_name, damage_type, hit_position, damage_direction, damage_source_name, hit_ragdoll_actor, source_attacker_unit, hit_react_type, is_critical_strike, first_hit, total_hits, attack_type, backstab_multiplier)
-	local hit_position_table = (hit_position and {
+	local hit_position_table = hit_position and {
 		hit_position.x,
 		hit_position.y,
 		hit_position.z
-	}) or nil
-	local damage_direction_table = (damage_direction and {
+	} or nil
+	local damage_direction_table = damage_direction and {
 		damage_direction.x,
 		damage_direction.y,
 		damage_direction.z
-	}) or nil
+	} or nil
 	local damage_buffers = self.damage_buffers
 	local system_data = self.system_data
 	local active_damage_buffer_index = system_data.active_damage_buffer_index
@@ -471,5 +471,3 @@ end
 GenericHealthExtension.was_attacked_by = function (self, unit)
 	return self._recent_attackers[unit]
 end
-
-return

@@ -273,7 +273,7 @@ DLCUtils.map("start_game_window_layout", function (start_game_window_layout)
 	local new_window_layouts = start_game_window_layout.window_layouts
 
 	if new_window_layouts then
-		for i = 1, #new_window_layouts, 1 do
+		for i = 1, #new_window_layouts do
 			window_layouts[#window_layouts + 1] = new_window_layouts[i]
 		end
 	end

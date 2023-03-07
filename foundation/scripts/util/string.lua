@@ -36,5 +36,3 @@ end
 string.remove = function (str, i, j)
 	return sub(str, 1, i - 1) .. sub(str, j + 1)
 end
-
-return

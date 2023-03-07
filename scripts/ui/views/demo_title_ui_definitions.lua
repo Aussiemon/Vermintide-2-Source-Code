@@ -563,8 +563,8 @@ local attract_mode_video = {
 	scenegraph_id = "splash_video",
 	loop = false,
 	material_name = "vermintide_2_reveal",
-	sound_start = (IS_XB1 and "Play_reveal_trailer") or "Play_vermintide_2_reveal",
-	sound_stop = (IS_XB1 and "Stop_reveal_trailer") or "Stop_vermintide_2_reveal"
+	sound_start = IS_XB1 and "Play_reveal_trailer" or "Play_vermintide_2_reveal",
+	sound_stop = IS_XB1 and "Stop_reveal_trailer" or "Stop_vermintide_2_reveal"
 }
 local skill_title_style = {
 	vertical_alignment = "bottom",
@@ -722,7 +722,7 @@ local function create_video(scenegraph_id, material_name)
 end
 
 local function create_simple_pulsating_text(text, scenegraph_id, size, color, text_style, optional_font_style)
-	slot6 = {
+	return {
 		element = {
 			passes = {
 				{
@@ -739,38 +739,31 @@ local function create_simple_pulsating_text(text, scenegraph_id, size, color, te
 		},
 		content = {
 			text = text,
-			color = (text_style and text_style.text_color) or color
-		}
-	}
-	slot7 = {}
-
-	if not text_style then
-		slot8 = {
-			vertical_alignment = "center",
-			localize = true,
-			horizontal_alignment = "center",
-			word_wrap = true,
-			font_size = size,
-			font_type = optional_font_style or "hell_shark",
-			text_color = color,
-			offset = {
-				0,
-				0,
-				2
+			color = text_style and text_style.text_color or color
+		},
+		style = {
+			text = text_style or {
+				vertical_alignment = "center",
+				localize = true,
+				horizontal_alignment = "center",
+				word_wrap = true,
+				font_size = size,
+				font_type = optional_font_style or "hell_shark",
+				text_color = color,
+				offset = {
+					0,
+					0,
+					2
+				}
 			}
-		}
-	end
-
-	slot7.text = slot8
-	slot6.style = slot7
-	slot6.offset = {
-		0,
-		0,
-		0
+		},
+		offset = {
+			0,
+			0,
+			0
+		},
+		scenegraph_id = scenegraph_id
 	}
-	slot6.scenegraph_id = scenegraph_id
-
-	return slot6
 end
 
 local widget_definitions = {
@@ -815,5 +808,5 @@ return {
 	start_game_button_widget = UIWidgets.create_default_button("start_game_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("start_game_menu_button_name")),
 	back_button_widget = UIWidgets.create_default_button("back_button", scenegraph_definition.start_game_button.size, nil, nil, Localize("back_menu_button_name")),
 	console_cursor_definition = UIWidgets.create_console_cursor("console_cursor"),
-	press_start_widget = create_simple_pulsating_text((IS_WINDOWS and "press_any_key_to_continue") or "press_any_button_to_continue", "press_start", nil, nil, press_start_style)
+	press_start_widget = create_simple_pulsating_text(IS_WINDOWS and "press_any_key_to_continue" or "press_any_button_to_continue", "press_start", nil, nil, press_start_style)
 }

@@ -1518,5 +1518,3 @@ if DLCSettings.cog then
 		"dr_deus_01_magic"
 	}, "dr_engineer")
 end
-
-return

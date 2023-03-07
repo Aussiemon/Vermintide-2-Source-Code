@@ -47,5 +47,3 @@ BTInterestPointChooseAction.run = function (self, unit, blackboard, t, dt)
 		return "done"
 	end
 end
-
-return

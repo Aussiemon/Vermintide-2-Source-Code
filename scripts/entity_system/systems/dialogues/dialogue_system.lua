@@ -252,7 +252,7 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 			local event_data_array_temp = FrameTable.alloc_table()
 			local event_data_array_temp_n = table.table_to_array(event_data, event_data_array_temp)
 
-			for i = 1, event_data_array_temp_n, 1 do
+			for i = 1, event_data_array_temp_n do
 				local value = event_data_array_temp[i]
 
 				if type(value) == "number" then
@@ -286,7 +286,7 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 			update_switch_group(wwise_world, wwise_source_id, extension)
 
-			local playing_id, _ = dialogue_system:_check_play_debug_sound(sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
+			local playing_id, _ = dialogue_system:_check_play_debug_sound(sound_event, extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle or "")
 
 			if not playing_id then
 				return WwiseWorld.trigger_event(wwise_world, sound_event, use_occlusion, wwise_source_id)
@@ -303,7 +303,7 @@ DialogueSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 			update_switch_group(wwise_world, wwise_source_id, extension)
 
-			local playing_id, _ = dialogue_system:_check_play_debug_sound(sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
+			local playing_id, _ = dialogue_system:_check_play_debug_sound(sound_event, extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle or "")
 
 			if not playing_id then
 				return WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
@@ -575,7 +575,7 @@ DialogueSystem._update_currently_playing_dialogues = function (self, dt)
 							local on_done = success_rule.on_done
 
 							if on_done then
-								for i = 1, #on_done, 1 do
+								for i = 1, #on_done do
 									local on_done_command = on_done[i]
 									local table_name = on_done_command[1]
 									local argument_name = on_done_command[2]
@@ -655,7 +655,7 @@ DialogueSystem._handle_wwise_markers = function (self, dt, t)
 	local marker_events = WwiseWorld.pull_marker_events(self.wwise_world)
 
 	if marker_events then
-		for i = 1, #marker_events, 1 do
+		for i = 1, #marker_events do
 			local marker_event = marker_events[i]
 			local marker_data = self._markers[marker_event.label]
 
@@ -702,7 +702,7 @@ DialogueSystem._trigger_marker = function (self, marker_data)
 
 			update_switch_group(wwise_world, wwise_source_id, extension)
 
-			local source_id, _ = self:_check_play_debug_sound(sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
+			local source_id, _ = self:_check_play_debug_sound(sound_event, extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle or "")
 			source_id = source_id or WwiseWorld.trigger_event(wwise_world, sound_event, wwise_source_id)
 
 			if source_id ~= 0 then
@@ -777,8 +777,7 @@ DialogueSystem.physics_async_update = function (self, context, t)
 						will_play = false
 
 						break
-					elseif playable_during_category[playing_dialogue.category] then
-					else
+					elseif not playable_during_category[playing_dialogue.category] then
 						will_play = false
 
 						break
@@ -1345,7 +1344,7 @@ DialogueSystem.rpc_trigger_dialogue_event = function (self, channel_id, go_id, e
 
 	local event_data_array_n = #event_data_array
 
-	for i = 1, event_data_array_n, 1 do
+	for i = 1, event_data_array_n do
 		local value_id = event_data_array[i]
 		local is_bool = event_data_array_types[i]
 
@@ -1392,7 +1391,7 @@ DialogueSystem.rpc_play_marker_event = function (self, channel_id, go_id, marker
 
 	update_switch_group(wwise_world, wwise_source_id, extension)
 
-	local playing_id, _ = self:_check_play_debug_sound(marker_sound_event, (extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle) or "")
+	local playing_id, _ = self:_check_play_debug_sound(marker_sound_event, extension.currently_playing_dialogue and extension.currently_playing_dialogue.currently_playing_subtitle or "")
 
 	if not playing_id then
 		WwiseWorld.trigger_event(wwise_world, marker_sound_event, wwise_source_id)
@@ -1534,5 +1533,3 @@ DialogueSystem.rpc_update_current_wind = function (self, channel_id, weave_name_
 	local current_wind = NetworkLookup.weave_winds[weave_name_id]
 	self.global_context.current_wind = current_wind
 end
-
-return

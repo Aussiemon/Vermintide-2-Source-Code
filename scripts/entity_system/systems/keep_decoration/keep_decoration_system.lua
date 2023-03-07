@@ -122,7 +122,7 @@ KeepDecorationSystem.on_painting_set = function (self, painting, asking_extensio
 	local painting_data = Paintings[painting]
 	local painting_frame = painting_data.frame
 
-	for i = 1, #painting_extensions, 1 do
+	for i = 1, #painting_extensions do
 		local extension = painting_extensions[i]
 		local extension_painting = extension:get_selected_decoration()
 		local extension_painting_data = Paintings[extension_painting]
@@ -139,12 +139,12 @@ end
 KeepDecorationSystem.on_decoration_set = function (self, decoration, asking_extension, type)
 	local extensions = self._extensions
 
-	for i = 1, #extensions, 1 do
+	for i = 1, #extensions do
 		local extension = extensions[i]
 		local current_decoration = extension:get_selected_decoration()
 
 		if current_decoration == decoration and asking_extension ~= extension then
-			local empty = (type == "painting" and "hor_none") or (type == "trophy" and "hub_trophy_empty")
+			local empty = type == "painting" and "hor_none" or type == "trophy" and "hub_trophy_empty"
 
 			extension:decoration_selected(empty)
 			extension:sync_decoration()
@@ -155,7 +155,7 @@ end
 KeepDecorationSystem.is_decoration_in_use = function (self, decoration)
 	local extensions = self._extensions
 
-	for i = 1, #extensions, 1 do
+	for i = 1, #extensions do
 		local extension = extensions[i]
 		local extension_decoration = extension:get_selected_decoration()
 
@@ -206,7 +206,7 @@ KeepDecorationSystem._refresh_client_paintings = function (self)
 		count = count + 1
 	end
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local painting = paintings[i] or "hidden"
 		local extension = self._client_painting_extensions[i]
 
@@ -237,5 +237,3 @@ KeepDecorationSystem.hot_join_sync = function (self, peer_id)
 		RPC.rpc_request_painting(channel_id)
 	end
 end
-
-return

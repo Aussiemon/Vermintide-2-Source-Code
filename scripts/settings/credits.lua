@@ -78,7 +78,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -134,7 +134,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Erik Ekstrˆm",
+			text = "Erik Ekstr√∂m",
 			type = "person"
 		},
 		{
@@ -190,7 +190,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -255,7 +255,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -281,7 +281,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -298,7 +298,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -375,7 +375,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -461,7 +461,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "LinnÈa Grˆndalen",
+			text = "Linn√©a Gr√∂ndalen",
 			type = "person"
 		},
 		{
@@ -539,7 +539,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -760,7 +760,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Henrik NÂmark",
+			text = "Henrik N√•mark",
 			type = "person"
 		},
 		{
@@ -1135,7 +1135,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -1183,7 +1183,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Johan Idesjˆ",
+			text = "Johan Idesj√∂",
 			type = "person"
 		},
 		{
@@ -1265,7 +1265,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Ivan Radovi\u0107",
+			text = "Ivan Radoviƒá",
 			type = "person"
 		},
 		{
@@ -1371,7 +1371,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -1391,7 +1391,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -1527,11 +1527,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -1551,7 +1551,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -1583,7 +1583,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -1595,7 +1595,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -1675,7 +1675,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "S\u0142awomir \"SkacikPL\" Sici\u0144ski",
+			text = "S≈Çawomir \"SkacikPL\" Sici≈Ñski",
 			type = "person"
 		},
 		{
@@ -1831,7 +1831,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -1883,7 +1883,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Erik Ekstrˆm",
+			text = "Erik Ekstr√∂m",
 			type = "person"
 		},
 		{
@@ -1939,7 +1939,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -1982,7 +1982,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Fabian Soto Rˆnnqvist",
+			text = "Fabian Soto R√∂nnqvist",
 			type = "person"
 		},
 		{
@@ -2021,7 +2021,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -2047,7 +2047,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -2068,7 +2068,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -2128,7 +2128,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -2201,7 +2201,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -2279,7 +2279,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -2521,7 +2521,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Henrik NÂmark",
+			text = "Henrik N√•mark",
 			type = "person"
 		},
 		{
@@ -2887,7 +2887,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -2935,7 +2935,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Johan Idesjˆ",
+			text = "Johan Idesj√∂",
 			type = "person"
 		},
 		{
@@ -3017,7 +3017,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Ivan Radovi\u0107",
+			text = "Ivan Radoviƒá",
 			type = "person"
 		},
 		{
@@ -3123,7 +3123,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -3143,7 +3143,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -3279,11 +3279,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -3303,7 +3303,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -3335,7 +3335,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -3347,7 +3347,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -3427,7 +3427,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "S\u0142awomir \"SkacikPL\" Sici\u0144ski",
+			text = "S≈Çawomir \"SkacikPL\" Sici≈Ñski",
 			type = "person"
 		},
 		{
@@ -3583,7 +3583,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -3635,7 +3635,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Erik Ekstrˆm",
+			text = "Erik Ekstr√∂m",
 			type = "person"
 		},
 		{
@@ -3691,7 +3691,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -3734,7 +3734,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Fabian Soto Rˆnnqvist",
+			text = "Fabian Soto R√∂nnqvist",
 			type = "person"
 		},
 		{
@@ -3773,7 +3773,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -3799,7 +3799,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -3820,7 +3820,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -3884,7 +3884,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -3957,7 +3957,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -4035,7 +4035,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -4273,7 +4273,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Henrik NÂmark",
+			text = "Henrik N√•mark",
 			type = "person"
 		},
 		{
@@ -4639,7 +4639,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -4687,7 +4687,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Johan Idesjˆ",
+			text = "Johan Idesj√∂",
 			type = "person"
 		},
 		{
@@ -4753,7 +4753,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Ivan Radovi\u0107",
+			text = "Ivan Radoviƒá",
 			type = "person"
 		},
 		{
@@ -4859,7 +4859,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -4879,7 +4879,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -5015,11 +5015,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -5039,7 +5039,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -5071,7 +5071,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -5083,7 +5083,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -5243,7 +5243,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -5295,7 +5295,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Erik Ekstrˆm",
+			text = "Erik Ekstr√∂m",
 			type = "person"
 		},
 		{
@@ -5351,7 +5351,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -5394,7 +5394,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Fabian Soto Rˆnnqvist",
+			text = "Fabian Soto R√∂nnqvist",
 			type = "person"
 		},
 		{
@@ -5433,7 +5433,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -5459,7 +5459,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -5480,7 +5480,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -5544,7 +5544,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -5617,7 +5617,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -5695,7 +5695,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -5913,7 +5913,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Henrik NÂmark",
+			text = "Henrik N√•mark",
 			type = "person"
 		},
 		{
@@ -6130,7 +6130,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -6320,7 +6320,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MickaÎl Broussal",
+			text = "Micka√´l Broussal",
 			type = "person"
 		},
 		{
@@ -6366,7 +6366,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Lea J‰hrling",
+			text = "Lea J√§hrling",
 			type = "person"
 		},
 		{
@@ -6379,7 +6379,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peter J¸rgensen",
+			text = "Peter J√ºrgensen",
 			type = "person"
 		},
 		{
@@ -6436,7 +6436,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Johan Idesjˆ",
+			text = "Johan Idesj√∂",
 			type = "person"
 		},
 		{
@@ -6576,7 +6576,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -6596,7 +6596,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -6732,11 +6732,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -6756,7 +6756,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -6788,7 +6788,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -6800,7 +6800,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -6964,7 +6964,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -7085,7 +7085,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -7119,7 +7119,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -7145,7 +7145,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -7166,7 +7166,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -7205,7 +7205,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peder Nordenstrˆm",
+			text = "Peder Nordenstr√∂m",
 			type = "person"
 		},
 		{
@@ -7226,7 +7226,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -7295,7 +7295,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -7373,7 +7373,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -7771,7 +7771,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -7819,7 +7819,7 @@ local Credits = {
 			type = "header"
 		},
 		{
-			text = "Johan Idesjˆ",
+			text = "Johan Idesj√∂",
 			type = "person"
 		},
 		{
@@ -7959,7 +7959,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -7979,7 +7979,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -8115,11 +8115,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -8139,7 +8139,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -8171,7 +8171,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -8183,7 +8183,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -8330,7 +8330,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -8416,7 +8416,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -8463,7 +8463,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -8489,7 +8489,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -8510,7 +8510,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -8549,7 +8549,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peder Nordenstrˆm",
+			text = "Peder Nordenstr√∂m",
 			type = "person"
 		},
 		{
@@ -8574,7 +8574,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -8608,7 +8608,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Alex Sundstrˆm",
+			text = "Alex Sundstr√∂m",
 			type = "person"
 		},
 		{
@@ -8660,7 +8660,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -8738,7 +8738,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -9148,7 +9148,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -9287,7 +9287,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -9307,7 +9307,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -9443,11 +9443,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -9467,7 +9467,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -9499,7 +9499,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -9511,7 +9511,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -9658,7 +9658,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -9697,7 +9697,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "HÂkan Frisk",
+			text = "H√•kan Frisk",
 			type = "person"
 		},
 		{
@@ -9753,7 +9753,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -9787,7 +9787,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -9804,7 +9804,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Kristoffer Lˆvgren",
+			text = "Kristoffer L√∂vgren",
 			type = "person"
 		},
 		{
@@ -9834,7 +9834,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -9855,7 +9855,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -9894,7 +9894,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peder Nordenstrˆm",
+			text = "Peder Nordenstr√∂m",
 			type = "person"
 		},
 		{
@@ -9919,7 +9919,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -9953,7 +9953,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Alex Sundstrˆm",
+			text = "Alex Sundstr√∂m",
 			type = "person"
 		},
 		{
@@ -10018,7 +10018,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -10048,7 +10048,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Patrik ≈nberg",
+			text = "Patrik √Önberg",
 			type = "person"
 		},
 		{
@@ -10099,7 +10099,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Staffan Ahlstrˆm",
+			text = "Staffan Ahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -10133,7 +10133,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -10557,7 +10557,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -10678,7 +10678,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -10698,7 +10698,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -10834,11 +10834,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -10858,7 +10858,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -10890,7 +10890,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -10902,7 +10902,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -11025,7 +11025,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -11107,7 +11107,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -11120,7 +11120,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peter Hˆglund",
+			text = "Peter H√∂glund",
 			type = "person"
 		},
 		{
@@ -11167,7 +11167,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "PÂl Wallo",
+			text = "P√•l Wallo",
 			type = "person"
 		},
 		{
@@ -11206,7 +11206,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "AndrÈ Melander",
+			text = "Andr√© Melander",
 			type = "person"
 		},
 		{
@@ -11231,7 +11231,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niklas H‰ll",
+			text = "Niklas H√§ll",
 			type = "person"
 		},
 		{
@@ -11274,7 +11274,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Ri\u010dardas Dukauskas",
+			text = "Riƒçardas Dukauskas",
 			type = "person"
 		},
 		{
@@ -11295,7 +11295,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peder Nordenstrˆm",
+			text = "Peder Nordenstr√∂m",
 			type = "person"
 		},
 		{
@@ -11320,7 +11320,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -11363,7 +11363,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Alex Sundstrˆm",
+			text = "Alex Sundstr√∂m",
 			type = "person"
 		},
 		{
@@ -11409,7 +11409,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "AndrÈe Di Pisa",
+			text = "Andr√©e Di Pisa",
 			type = "person"
 		},
 		{
@@ -11473,7 +11473,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan Sˆderberg",
+			text = "Johan S√∂derberg",
 			type = "person"
 		},
 		{
@@ -11503,7 +11503,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Patrik ≈nberg",
+			text = "Patrik √Önberg",
 			type = "person"
 		},
 		{
@@ -11567,7 +11567,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Staffan Ahlstrˆm",
+			text = "Staffan Ahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -11606,7 +11606,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -11722,7 +11722,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Jonas ≈kerlund",
+			text = "Jonas √Ökerlund",
 			type = "person"
 		},
 		{
@@ -12081,7 +12081,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Olof Jˆnsson (Marauders, Skaven",
+			text = "Olof J√∂nsson (Marauders, Skaven",
 			type = "person"
 		},
 		{
@@ -12110,7 +12110,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -12231,7 +12231,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -12251,7 +12251,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -12387,11 +12387,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -12411,7 +12411,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -12443,7 +12443,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -12455,7 +12455,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{
@@ -12585,7 +12585,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "MÂrten Stormdal",
+			text = "M√•rten Stormdal",
 			type = "person"
 		},
 		{
@@ -12624,7 +12624,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Robert B‰ckstrˆm",
+			text = "Robert B√§ckstr√∂m",
 			type = "person"
 		},
 		{
@@ -12701,7 +12701,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Markus OlsÈn",
+			text = "Markus Ols√©n",
 			type = "person"
 		},
 		{
@@ -12757,7 +12757,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Sara S‰llemark",
+			text = "Sara S√§llemark",
 			type = "person"
 		},
 		{
@@ -12795,7 +12795,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Michael Sˆderqvist",
+			text = "Michael S√∂derqvist",
 			type = "person"
 		},
 		{
@@ -12825,7 +12825,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Joakim Wahlstrˆm",
+			text = "Joakim Wahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -12876,7 +12876,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niklas H‰ll",
+			text = "Niklas H√§ll",
 			type = "person"
 		},
 		{
@@ -12949,7 +12949,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Peder Nordenstrˆm",
+			text = "Peder Nordenstr√∂m",
 			type = "person"
 		},
 		{
@@ -12974,7 +12974,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas HultÈn",
+			text = "Jonas Hult√©n",
 			type = "person"
 		},
 		{
@@ -13013,7 +13013,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Philip Skˆld",
+			text = "Philip Sk√∂ld",
 			type = "person"
 		},
 		{
@@ -13034,7 +13034,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Alex Sundstrˆm",
+			text = "Alex Sundstr√∂m",
 			type = "person"
 		},
 		{
@@ -13119,7 +13119,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Mathias S‰llstrˆm",
+			text = "Mathias S√§llstr√∂m",
 			type = "person"
 		},
 		{
@@ -13188,7 +13188,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Patrik ≈nberg",
+			text = "Patrik √Önberg",
 			type = "person"
 		},
 		{
@@ -13256,7 +13256,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Staffan Ahlstrˆm",
+			text = "Staffan Ahlstr√∂m",
 			type = "person"
 		},
 		{
@@ -13410,7 +13410,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Jonas ≈kerlund",
+			text = "Jonas √Ökerlund",
 			type = "person"
 		},
 		{
@@ -13514,7 +13514,7 @@ local Credits = {
 			type = "title"
 		},
 		{
-			text = "Oscar Strˆms‰ter",
+			text = "Oscar Str√∂ms√§ter",
 			type = "person"
 		},
 		{
@@ -13992,7 +13992,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Olof Jˆnsson (Marauders, Skaven",
+			text = "Olof J√∂nsson (Marauders, Skaven",
 			type = "person"
 		},
 		{
@@ -14021,7 +14021,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Stina V‰llfors",
+			text = "Stina V√§llfors",
 			type = "person"
 		},
 		{
@@ -14106,7 +14106,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Juni Lˆfdahl",
+			text = "Juni L√∂fdahl",
 			type = "person"
 		},
 		{
@@ -14156,7 +14156,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Gustaf Strˆm",
+			text = "Gustaf Str√∂m",
 			type = "person"
 		},
 		{
@@ -14176,7 +14176,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Harry Hˆglund",
+			text = "Harry H√∂glund",
 			type = "person"
 		},
 		{
@@ -14312,11 +14312,11 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Fabian HÂrdberg",
+			text = "Fabian H√•rdberg",
 			type = "person"
 		},
 		{
-			text = "Niklas ƒngelid",
+			text = "Niklas √Ñngelid",
 			type = "person"
 		},
 		{
@@ -14336,7 +14336,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan MarmÈn",
+			text = "Johan Marm√©n",
 			type = "person"
 		},
 		{
@@ -14368,7 +14368,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Johan ≈sberg",
+			text = "Johan √Ösberg",
 			type = "person"
 		},
 		{
@@ -14380,7 +14380,7 @@ local Credits = {
 			type = "person"
 		},
 		{
-			text = "Niclas Hj‰lm",
+			text = "Niclas Hj√§lm",
 			type = "person"
 		},
 		{

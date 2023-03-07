@@ -127,5 +127,3 @@ WeaveUITutorials.new_ui_disclaimer = {
 	onboarding_step = 0,
 	custom_popup = "NewUIPopup"
 }
-
-return

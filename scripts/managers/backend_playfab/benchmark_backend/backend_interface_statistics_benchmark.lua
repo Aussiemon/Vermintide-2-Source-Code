@@ -35,5 +35,3 @@ end
 BackendInterfaceStatisticsBenchmark.reset = function (self)
 	return
 end
-
-return

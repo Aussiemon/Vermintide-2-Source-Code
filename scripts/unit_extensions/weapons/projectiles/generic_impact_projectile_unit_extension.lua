@@ -49,7 +49,7 @@ GenericImpactProjectileUnitExtension.update = function (self, unit, input, _, co
 	local network_manager = self.network_manager
 	local self_unit_id = network_manager:unit_game_object_id(self.unit)
 
-	for i = 1, num_impacts / STRIDE, 1 do
+	for i = 1, num_impacts / STRIDE do
 		local j = (i - 1) * STRIDE
 		local unit = recent_impacts[j + UNIT]
 		local position = recent_impacts[j + POSITION]:unbox()
@@ -124,5 +124,3 @@ GenericImpactProjectileUnitExtension.force_impact = function (self, unit, hit_po
 		locomotion_extension:stop()
 	end
 end
-
-return

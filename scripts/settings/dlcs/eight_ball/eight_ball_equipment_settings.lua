@@ -76,5 +76,3 @@ settings.inventory_package_list = {
 	"units/beings/player/witch_hunter_captain/skins/white/chr_witch_hunter_captain_white",
 	"units/beings/player/witch_hunter_zealot/skins/white/chr_witch_hunter_zealot_white"
 }
-
-return

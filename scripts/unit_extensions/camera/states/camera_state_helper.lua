@@ -26,12 +26,12 @@ CameraStateHelper.set_camera_rotation = function (camera_unit, camera_extension)
 	local camera_manager = Managers.state.camera
 	local input_source = input_manager:get_service("Player")
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local look_input = (gamepad_active and input_source:get("look_controller_3p")) or input_source:get("look")
+	local look_input = gamepad_active and input_source:get("look_controller_3p") or input_source:get("look")
 	local look_delta = Vector3.zero()
 
 	if look_input then
 		local viewport_name = camera_extension.viewport_name
-		local look_sensitivity = (camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785) or 1
+		local look_sensitivity = camera_manager:has_viewport(viewport_name) and camera_manager:fov(viewport_name) / 0.785 or 1
 		look_delta = look_delta + look_input * look_sensitivity
 	end
 
@@ -67,5 +67,3 @@ CameraStateHelper.set_follow_camera_position = function (camera_unit, follow_uni
 	fassert(Vector3.is_valid(new_position), "Camera position invalid.")
 	Unit.set_local_position(camera_unit, 0, new_position)
 end
-
-return

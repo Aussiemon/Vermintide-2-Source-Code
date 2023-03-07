@@ -420,5 +420,3 @@ LevelSettings.plaza = {
 		"act_holly"
 	}
 }
-
-return

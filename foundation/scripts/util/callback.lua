@@ -95,5 +95,3 @@ function callback(...)
 		ferror("callback(...) incorrectly called")
 	end
 end
-
-return

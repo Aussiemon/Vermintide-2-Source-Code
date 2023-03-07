@@ -110,5 +110,3 @@ HealthTriggerSystem.update = function (self, context, t)
 		end
 	end
 end
-
-return

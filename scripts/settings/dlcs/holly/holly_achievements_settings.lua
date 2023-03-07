@@ -40,5 +40,3 @@ settings.achievement_outline = {
 settings.achievement_template_file_names = {
 	"scripts/managers/achievements/achievement_templates_holly"
 }
-
-return

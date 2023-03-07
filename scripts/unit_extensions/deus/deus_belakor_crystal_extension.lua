@@ -133,5 +133,3 @@ DeusBelakorCrystalExtension._find_nearest_locus = function (self)
 
 	return nearest_locus
 end
-
-return

@@ -9,7 +9,7 @@ TABLE_NEW = TABLE_NEW or function ()
 end
 CONST = CONST or setmetatable({}, {
 	__call = function (self, x)
-		return (x == nil and NOP) or self[x]
+		return x == nil and NOP or self[x]
 	end,
 	__index = function (self, x)
 		local function f()
@@ -70,7 +70,7 @@ function to_boolean(a)
 end
 
 function bool_string(b)
-	return (to_boolean(b) and "true") or "false"
+	return to_boolean(b) and "true" or "false"
 end
 
 function vector_string(v)
@@ -95,7 +95,7 @@ varargs.to_table = function (...)
 	local values = {}
 	local num_args = select("#", ...)
 
-	for i = 1, num_args, 1 do
+	for i = 1, num_args do
 		local val = select(i, ...)
 
 		table.insert(values, val)
@@ -108,7 +108,7 @@ varargs.join = function (delimiter, ...)
 	local output = ""
 	local num_args = select("#", ...)
 
-	for i = 1, num_args - 1, 1 do
+	for i = 1, num_args - 1 do
 		local val = select(i, ...)
 		output = output .. tostring(val) .. delimiter
 	end
@@ -144,5 +144,3 @@ function ituple_iterator(t, k)
 
 	return k1, val1, t[k + 3]
 end
-
-return

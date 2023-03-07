@@ -14,7 +14,7 @@ TeamPreviewer.setup_team = function (self, hero_data, hero_arrangement)
 
 	local previewers = self.hero_previewers
 
-	for i = 1, #hero_data, 1 do
+	for i = 1, #hero_data do
 		local hero_previewer = HeroPreviewer:new(self._context)
 
 		self:_spawn_hero(hero_previewer, hero_data[i])
@@ -35,7 +35,7 @@ end
 TeamPreviewer.update = function (self, dt, t)
 	local previewers = self.hero_previewers
 
-	for i = 1, #previewers, 1 do
+	for i = 1, #previewers do
 		previewers[i]:update(dt, t)
 	end
 end
@@ -43,7 +43,7 @@ end
 TeamPreviewer.post_update = function (self, dt, t)
 	local previewers = self.hero_previewers
 
-	for i = 1, #previewers, 1 do
+	for i = 1, #previewers do
 		previewers[i]:post_update(dt, t)
 	end
 end
@@ -55,7 +55,7 @@ end
 TeamPreviewer.clear_team = function (self)
 	local previewers = self.hero_previewers
 
-	for i = 1, #previewers, 1 do
+	for i = 1, #previewers do
 		local hero_previewer = previewers[i]
 
 		if hero_previewer then
@@ -67,7 +67,7 @@ end
 TeamPreviewer.destroy_previewers = function (self)
 	local previewers = self.hero_previewers
 
-	for i = 1, #previewers, 1 do
+	for i = 1, #previewers do
 		local hero_previewer = previewers[i]
 
 		if hero_previewer then
@@ -92,7 +92,7 @@ TeamPreviewer.cb_hero_unit_spawned_skin_preview = function (self, hero_previewer
 	local preview_items = hero_data.preview_items
 	local weapon_slot = hero_data.weapon_slot
 
-	for i = 1, #preview_items, 1 do
+	for i = 1, #preview_items do
 		local item = preview_items[i]
 
 		if item then
@@ -126,7 +126,7 @@ TeamPreviewer.update_hero_arrangement = function (self, hero_arrangement, lookat
 	local previewers = self.hero_previewers
 	local camera_location = ScriptCamera.position(self.camera)
 
-	for i = 1, #previewers, 1 do
+	for i = 1, #previewers do
 		local hero_previewer = previewers[i]
 
 		if hero_previewer then
@@ -157,5 +157,3 @@ end
 TeamPreviewer.set_camera_fov = function (self, fov)
 	Camera.set_vertical_fov(self.camera, math.degrees_to_radians(fov))
 end
-
-return

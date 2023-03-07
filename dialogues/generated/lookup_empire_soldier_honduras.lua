@@ -358,5 +358,3 @@ DialogueLookup[DialogueLookup_n + 177] = "pes_gameplay_killing_a_minotaur"
 DialogueLookup[DialogueLookup_n + 178] = "pes_gameplay_seeing_a_ungor_archer"
 DialogueLookup[DialogueLookup_n + 179] = "pes_gameplay_incoming_attack"
 DialogueLookup_n = DialogueLookup_n + 179
-
-return

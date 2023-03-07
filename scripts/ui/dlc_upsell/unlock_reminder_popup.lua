@@ -73,5 +73,3 @@ end
 UnlockReminderPopup.should_show = function (self)
 	return self._ui_context.is_in_inn and Managers.popup:has_popup() == false and self._ui_context.ingame_ui.current_view == nil and self._ui_context.ingame_ui.has_left_menu and not self._is_visible
 end
-
-return

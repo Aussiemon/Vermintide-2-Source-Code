@@ -1224,5 +1224,3 @@ for weapon_name, skin_data in pairs(skin_combinations) do
 		end
 	end
 end
-
-return

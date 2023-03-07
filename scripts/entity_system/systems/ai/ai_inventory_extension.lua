@@ -8,7 +8,7 @@ local function store_scene_graph_data(item_unit, attachment_node_linking)
 		local target_node = attachment_nodes.target
 
 		if target_node ~= 0 then
-			local target_node_index = (type(target_node) == "string" and Unit.node(item_unit, target_node)) or target_node
+			local target_node_index = type(target_node) == "string" and Unit.node(item_unit, target_node) or target_node
 			scene_graph_data[#scene_graph_data + 1] = {
 				i = target_node_index,
 				parent = Unit.scene_graph_parent(item_unit, target_node_index),
@@ -24,8 +24,8 @@ local function link_unit(attachment_node_linking, world, target, source)
 	for i, attachment_nodes in ipairs(attachment_node_linking) do
 		local source_node = attachment_nodes.source
 		local target_node = attachment_nodes.target
-		local source_node_index = (type(source_node) == "string" and Unit.node(source, source_node)) or source_node
-		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node
+		local source_node_index = type(source_node) == "string" and Unit.node(source, source_node) or source_node
+		local target_node_index = type(target_node) == "string" and Unit.node(target, target_node) or target_node
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
 	end
@@ -51,7 +51,7 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 	local unit_spawner = Managers.state.unit_spawner
 	local index = start_n
 
-	for i = 1, items_n, 1 do
+	for i = 1, items_n do
 		index = index + 1
 		local item_category = items[i]
 		local item_category_n = item_category.count
@@ -79,7 +79,7 @@ AIInventoryExtension._setup_configuration = function (self, unit, start_n, inven
 		for _, data in ipairs(node_linking_data) do
 			if data.target == 0 then
 				local source_node = data.source
-				local source_node_index = (type(source_node) == "string" and Unit.node(unit, source_node)) or source_node
+				local source_node_index = type(source_node) == "string" and Unit.node(unit, source_node) or source_node
 				item_position = Unit.world_position(unit, source_node_index)
 				item_rotation = Unit.world_rotation(unit, source_node_index)
 
@@ -153,7 +153,7 @@ AIInventoryExtension.init = function (self, unit, extension_init_data)
 	if multiple_configurations then
 		self.item_sets = {}
 
-		for i = 1, #multiple_configurations, 1 do
+		for i = 1, #multiple_configurations do
 			local item_set = {
 				start_index = items_n + 1
 			}
@@ -183,20 +183,20 @@ AIInventoryExtension.destroy = function (self)
 	local unit_spawner = Managers.state.unit_spawner
 	local inventory_items_n = self.inventory_items_n
 
-	for i = 1, inventory_items_n, 1 do
+	for i = 1, inventory_items_n do
 		if Unit.alive(self.inventory_item_units[i]) then
 			unit_spawner:mark_for_deletion(self.inventory_item_units[i])
 			self:destroy_dropped_items(i)
 		end
 	end
 
-	for i = 1, #self.gib_items, 1 do
+	for i = 1, #self.gib_items do
 		unit_spawner:mark_for_deletion(self.gib_items[i])
 	end
 
 	self.gib_items = {}
 
-	for i = 1, #self.stump_items, 1 do
+	for i = 1, #self.stump_items do
 		unit_spawner:mark_for_deletion(self.stump_items[i])
 	end
 
@@ -228,7 +228,7 @@ AIInventoryExtension.freeze = function (self)
 	local inventory_items_n = self.inventory_items_n
 	local unit = self.unit
 
-	for i = 1, inventory_items_n, 1 do
+	for i = 1, inventory_items_n do
 		if Unit.alive(self.inventory_item_units[i]) then
 			unit_spawner:mark_for_deletion(self.inventory_item_units[i])
 			self:destroy_dropped_items(i)
@@ -241,13 +241,13 @@ AIInventoryExtension.freeze = function (self)
 	self.inventory_item_helmet_units = {}
 	local one_scale = Vector3(1, 1, 1)
 
-	for i = 1, #self.gibbed_nodes, 1 do
+	for i = 1, #self.gibbed_nodes do
 		Unit.set_local_scale(unit, self.gibbed_nodes[i], one_scale)
 	end
 
 	self.gibbed_nodes = {}
 
-	for i = 1, #self.disabled_actors, 1 do
+	for i = 1, #self.disabled_actors do
 		local unit_actor = Unit.actor(unit, self.disabled_actors[i])
 
 		if unit_actor then
@@ -257,13 +257,13 @@ AIInventoryExtension.freeze = function (self)
 
 	self.disabled_actors = {}
 
-	for i = 1, #self.gib_items, 1 do
+	for i = 1, #self.gib_items do
 		unit_spawner:mark_for_deletion(self.gib_items[i])
 	end
 
 	self.gib_items = {}
 
-	for i = 1, #self.stump_items, 1 do
+	for i = 1, #self.stump_items do
 		unit_spawner:mark_for_deletion(self.stump_items[i])
 	end
 
@@ -286,7 +286,7 @@ AIInventoryExtension.unfreeze = function (self)
 	if multiple_configurations then
 		self.item_sets = {}
 
-		for i = 1, #multiple_configurations, 1 do
+		for i = 1, #multiple_configurations do
 			local item_set = {
 				start_index = items_n + 1
 			}
@@ -317,7 +317,7 @@ AIInventoryExtension.show_single_item = function (self, item_inventory_index, sh
 	end
 
 	local item_unit = self.inventory_item_units[item_inventory_index]
-	self.hidden_item_index = (not show and item_inventory_index) or nil
+	self.hidden_item_index = not show and item_inventory_index or nil
 
 	Unit.set_unit_visibility(item_unit, show)
 end
@@ -327,7 +327,7 @@ AIInventoryExtension.get_unit = function (self, category)
 end
 
 AIInventoryExtension.get_item_inventory_index = function (self, item_unit)
-	for i = 1, self.inventory_items_n, 1 do
+	for i = 1, self.inventory_items_n do
 		if self.inventory_item_units[i] == item_unit then
 			return i
 		end
@@ -359,7 +359,7 @@ AIInventoryExtension.drop_single_item = function (self, item_inventory_index, re
 		elseif item.drop_unit_names ~= nil and reason == "shield_break" then
 			local drop_units = item.drop_unit_names
 
-			for i = 1, #drop_units, 1 do
+			for i = 1, #drop_units do
 				local unit_name_to_drop = drop_units[i]
 
 				self:_drop_unit(unit_name_to_drop, item_unit, item, item_inventory_index, reason, true, optional_drop_direction)
@@ -392,7 +392,7 @@ AIInventoryExtension.disable_inventory_item = function (self, item, item_unit)
 	local item_system = ScriptUnit.has_extension(item_unit, "ai_inventory_item_system")
 	local num_actors = Unit.num_actors(item_unit)
 
-	for i = 1, num_actors, 1 do
+	for i = 1, num_actors do
 		local actor = Unit.actor(item_unit, i)
 
 		if actor then
@@ -461,7 +461,7 @@ end
 AIInventoryExtension.unwield_set = function (self, item_set_index)
 	local item_set = self.item_sets[item_set_index]
 
-	for j = item_set.start_index, item_set.end_index, 1 do
+	for j = item_set.start_index, item_set.end_index do
 		local item = self.inventory_item_definitions[j]
 		local attachment_node_linking = item.attachment_node_linking
 		local unwielded = attachment_node_linking.unwielded
@@ -494,7 +494,7 @@ AIInventoryExtension.play_hit_sound = function (self, victim_unit, damage_type)
 	if self._additional_hit_sounds then
 		local hit_sounds = self._additional_hit_sounds
 
-		for i = 1, #hit_sounds, 1 do
+		for i = 1, #hit_sounds do
 			local source_id, wwise_world = WwiseUtils.make_unit_auto_source(world, victim_unit)
 
 			WwiseWorld.set_switch(wwise_world, "husk", tostring(is_husk), source_id)
@@ -513,6 +513,7 @@ AIInventoryExtension.hot_join_sync = function (self, peer_id)
 	end
 
 	if self.dropped then
+		-- Nothing
 	elseif self.wielded then
 		local go_id = Managers.state.unit_storage:go_id(self.unit)
 
@@ -601,5 +602,3 @@ AIInventoryExtension.remove_additioanl_hit_sfx = function (self, override_id)
 		end
 	end
 end
-
-return

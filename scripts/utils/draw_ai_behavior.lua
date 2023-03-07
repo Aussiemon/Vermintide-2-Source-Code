@@ -57,8 +57,8 @@ local function chaos_sorc_skulk_action_debug(blackboard, fill_lines)
 	local portal_data = blackboard.portal_data
 
 	if portal_data then
-		local sa = (portal_data.portal_search_active and "searching") or "no search"
-		local portal_out = (blackboard.portal_unit and "1") or "0"
+		local sa = portal_data.portal_search_active and "searching" or "no search"
+		local portal_out = blackboard.portal_unit and "1" or "0"
 		local count = portal_data.search_counter
 		local wall_index = tostring(portal_data.cover_point_index)
 		fill_lines[1] = sa .. " ,P:" .. portal_out .. ",SC:" .. count .. " ,Wi:" .. wall_index
@@ -84,7 +84,7 @@ end
 
 local function chaos_sorc_exalt_skulk_action_debug(blackboard, fill_lines)
 	fill_lines[1] = "phase=" .. tostring(blackboard.phase)
-	fill_lines[2] = "current_spell=" .. tostring((blackboard.current_spell and blackboard.current_spell.name) or "nil")
+	fill_lines[2] = "current_spell=" .. tostring(blackboard.current_spell and blackboard.current_spell.name or "nil")
 	fill_lines[3] = "spell count=" .. tostring(blackboard.spell_count)
 	fill_lines[4] = "freeze spell casting=" .. tostring(blackboard.freeze_spell_casting)
 
@@ -226,7 +226,7 @@ local function present_circle_array(gui, x, y)
 
 	ScriptGUI.icrect(gui, RES_X, RES_Y, x1 - 5, y1 - 5, x1 + 300, y1 + num_items * 20 + 10, LAYER, Color(100, 100, 100, 150))
 
-	for i = 1, num_items, 1 do
+	for i = 1, num_items do
 		local text = a[index]
 
 		ScriptGUI.ictext(gui, RES_X, RES_Y, text, FONT_MTRL, FONT_SIZE, FONT, x1, y1 + 20 * i, 400, Color(255, 220, 120))
@@ -254,7 +254,7 @@ local function present_perception(gui, x, y, blackboard)
 			local target_unit = blackboard.target_unit
 
 			if target_unit and BLACKBOARDS[target_unit] then
-				target_unit_text = BLACKBOARDS[target_unit].breed.name .. "  (" .. ((AiUtils.unit_alive(target_unit) and "alive") or "dead") .. ")"
+				target_unit_text = BLACKBOARDS[target_unit].breed.name .. "  (" .. (AiUtils.unit_alive(target_unit) and "alive" or "dead") .. ")"
 			end
 
 			y2 = y2 + 10
@@ -411,7 +411,7 @@ local function draw_blackboard(gui, node, blackboard, x1, y1, extra_info, node_w
 			elseif type(key) == "function" then
 				local num_lines = key(blackboard, reuse_fill_lines)
 
-				for i = 1, num_lines, 1 do
+				for i = 1, num_lines do
 					extra_height = extra_height + text_height
 					bb_text = reuse_fill_lines[i]
 
@@ -461,7 +461,7 @@ local function draw_utility_nodes(gui, blackboard, running, action_data, text, c
 	local size = Vector2(160, 100)
 	local step_y = size.y + 40
 	local pos_y = -215
-	local pos = Vector3(x1 * RES_X, ((1 - y1 + NODE_HEIGHT) - extra_height) * RES_Y, LAYER + 10)
+	local pos = Vector3(x1 * RES_X, (1 - y1 + NODE_HEIGHT - extra_height) * RES_Y, LAYER + 10)
 	local num = 0
 
 	for name, consideration_data in pairs(considerations) do
@@ -666,10 +666,10 @@ local function draw_node_children(bt, gui, node, node_children, blackboard, row,
 
 	if node.name == "BTSequence" then
 		bounding_box_x2 = start_x + max_child_width + xb
-		bounding_box_y2 = (cy + yb) - NODE_HEIGHT * 0.5
+		bounding_box_y2 = cy + yb - NODE_HEIGHT * 0.5
 		ocolor = Color(70, 150, 50, 200)
 	else
-		bounding_box_x2 = (cx + xb) - NODE_SPACING
+		bounding_box_x2 = cx + xb - NODE_SPACING
 		bounding_box_y2 = cy + NODE_HEIGHT + max_child_extra_height + yb
 	end
 
@@ -766,5 +766,3 @@ DrawAiBehaviour.draw_tree = function (bt, gui, node, blackboard, row, t, dt, x, 
 
 	return extra_width, max_child_extra_height, extra_height, node_width
 end
-
-return

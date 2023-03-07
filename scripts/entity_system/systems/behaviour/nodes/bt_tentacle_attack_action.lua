@@ -267,5 +267,3 @@ BTTentacleAttackAction.target_tentacle_status_check = function (self, target_uni
 		return true
 	end
 end
-
-return

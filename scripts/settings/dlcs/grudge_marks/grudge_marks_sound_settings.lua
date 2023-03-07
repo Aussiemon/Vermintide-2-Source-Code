@@ -16,5 +16,3 @@ settings.network_sound_events = {
 	"enemy_grudge_siren_break",
 	"enemy_grudge_intangible_destroy"
 }
-
-return

@@ -244,7 +244,7 @@ LiquidAreaDamageExtension._create_liquid = function (self, real_index, angle)
 
 	local neighbours = {}
 
-	for index = 1, #dirs, 1 do
+	for index = 1, #dirs do
 		local dir = dirs[index]
 		local new_i = i + dir[1]
 		local new_j = j + dir[2]
@@ -327,12 +327,12 @@ LiquidAreaDamageExtension.destroy = function (self)
 
 	local sides = Managers.state.side:sides()
 
-	for k = 1, #sides, 1 do
+	for k = 1, #sides do
 		local side = sides[k]
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_player_units = #player_and_bot_units
 
-		for i = 1, num_player_units, 1 do
+		for i = 1, num_player_units do
 			local player_unit = player_and_bot_units[i]
 
 			if Unit.alive(player_unit) then
@@ -486,7 +486,7 @@ LiquidAreaDamageExtension.update = function (self, unit, input, dt, context, t)
 			local starting_angle = self._starting_flow_angle
 			local use_linearized_flow = self._linearized_flow
 
-			for i = 1, fill_list_index, 1 do
+			for i = 1, fill_list_index do
 				local entry = fill_list[i]
 				local neighbour_index = entry.index
 				local weight = entry.weight
@@ -594,12 +594,12 @@ LiquidAreaDamageExtension._update_collision_detection = function (self, dt, t)
 	if self._check_player_units then
 		local sides = Managers.state.side:sides()
 
-		for k = 1, #sides, 1 do
+		for k = 1, #sides do
 			local side = sides[k]
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 			local num_player_units = #player_and_bot_units
 
-			for i = 1, num_player_units, 1 do
+			for i = 1, num_player_units do
 				local unit = player_and_bot_units[i]
 				local status_extension = ScriptUnit.extension(unit, "status_system")
 
@@ -692,7 +692,7 @@ LiquidAreaDamageExtension._is_unit_colliding = function (self, grid, unit)
 	local unit_pos = POSITION_LOOKUP[unit]
 
 	if unit_pos then
-		for i = 0, 1, 1 do
+		for i = 0, 1 do
 			local i, j, k = grid:find_index(unit_pos + i * Vector3.up())
 
 			if grid:is_out_of_bounds(i, j, k) then
@@ -733,7 +733,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 		local is_player = DamageUtils.is_player_unit(unit)
 
 		if AiUtils.unit_alive(unit) then
-			if (is_player and do_direct_damage_player) or (not is_player and do_direct_damage_ai) then
+			if is_player and do_direct_damage_player or not is_player and do_direct_damage_ai then
 				local damage = damage_table[armor_category] or damage_table[1]
 
 				DamageUtils.add_damage_network(unit, unit, damage, "torso", damage_type, nil, damage_dir, nil, nil, source_attacker_unit)
@@ -763,7 +763,7 @@ LiquidAreaDamageExtension._pulse_damage = function (self)
 		end
 	end
 
-	for i = 1, remove_i, 1 do
+	for i = 1, remove_i do
 		local unit = remove_list[i]
 		self._colliding_units[unit] = nil
 	end
@@ -779,7 +779,7 @@ LiquidAreaDamageExtension.is_position_inside = function (self, position, nav_cos
 
 	local nav_cost_map_cost_type = self._nav_cost_map_cost_type
 
-	if nav_cost_map_cost_type == nil or (nav_cost_map_table and nav_cost_map_table[nav_cost_map_cost_type] == 1) then
+	if nav_cost_map_cost_type == nil or nav_cost_map_table and nav_cost_map_table[nav_cost_map_cost_type] == 1 then
 		return false
 	end
 
@@ -813,5 +813,3 @@ end
 LiquidAreaDamageExtension.get_source_attacker_unit = function (self)
 	return self._source_attacker_unit
 end
-
-return

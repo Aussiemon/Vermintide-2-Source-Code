@@ -234,7 +234,7 @@ UICalibrationView.init = function (self)
 	self.bottom_right_reticule = UIWidget.init(widget_definitions.bottom_right_reticule)
 	local buttons = {}
 
-	for i = 1, #button_definitions, 1 do
+	for i = 1, #button_definitions do
 		buttons[i] = UIWidget.init(button_definitions[i])
 	end
 
@@ -367,5 +367,3 @@ UICalibrationView.save_new_root_scale = function (self, root_scale)
 	Application.set_user_setting("root_scale_y", root_scale[2])
 	Application.save_user_settings()
 end
-
-return

@@ -109,7 +109,7 @@ CameraStateObserver._get_valid_players_to_observe = function (self)
 
 	local allowed_num_players = table.size(allowed_players_to_observe)
 
-	return (allowed_num_players > 0 and allowed_players_to_observe) or nil
+	return allowed_num_players > 0 and allowed_players_to_observe or nil
 end
 
 CameraStateObserver.follow_next_unit = function (self)
@@ -123,18 +123,24 @@ CameraStateObserver.follow_next_unit = function (self)
 	local follow_unit = nil
 	local num_players = table.size(players)
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		if players[observed_player_id] then
 			observed_player_id = next(players, observed_player_id)
-			observed_player_id = not observed_player_id and next(players) and next(players)
-			local player = players[observed_player_id]
-			local player_unit = player.player_unit
 
-			if Unit.alive(player_unit) then
-				follow_unit = player_unit
-
-				break
+			if not observed_player_id then
+				observed_player_id = next(players)
 			end
+		else
+			observed_player_id = next(players)
+		end
+
+		local player = players[observed_player_id]
+		local player_unit = player.player_unit
+
+		if Unit.alive(player_unit) then
+			follow_unit = player_unit
+
+			break
 		end
 	end
 
@@ -217,5 +223,3 @@ CameraStateObserver._set_follow_unit = function (self, observed_player_id, follo
 
 	return true
 end
-
-return

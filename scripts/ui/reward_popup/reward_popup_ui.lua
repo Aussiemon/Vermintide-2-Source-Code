@@ -273,7 +273,7 @@ end
 RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 	local widget_definitions = definitions.widget_definitions
 	local value = entry_data.value
-	local widget_type = (entry_data.widget_type and widget_definitions[entry_data.widget_type] and entry_data.widget_type) or "item"
+	local widget_type = entry_data.widget_type and widget_definitions[entry_data.widget_type] and entry_data.widget_type or "item"
 	local ignore_height = entry_data.ignore_height
 	local widget = UIWidget.init(widget_definitions[widget_type])
 	local scenegraph_id = widget.scenegraph_id
@@ -325,7 +325,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local backend_id = value.backend_id
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(backend_id)
-		local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
+		local rarity = item.rarity or item.data and item.data.rarity or "plentiful"
 		local inventory_icon = UIUtils.get_ui_information_from_item(item)
 		widget.content.texture_id = inventory_icon
 		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
@@ -342,7 +342,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		content.cols = math.min(max_columns, item_count)
 		content.item_count = item_count
 
-		for i = 1, item_count, 1 do
+		for i = 1, item_count do
 			local rarity_key = "rarity" .. i
 			local icon_key = "icon" .. i
 			local frame_key = "frame" .. i
@@ -350,11 +350,11 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 			local tooltip_key = "tooltip" .. i
 			local item_key = "item" .. i
 			local size_and_padding = 80 + PADDING
-			local x = size_and_padding * (i - 1) % max_columns
+			local x = size_and_padding * ((i - 1) % max_columns)
 			local y = size_and_padding * (rows_minus_1 - math.floor((i - 1) / max_columns))
 
 			if i > rows_minus_1 * max_columns then
-				x = x + size_and_padding * 0.5 * -item_count % max_columns
+				x = x + size_and_padding * 0.5 * (-item_count % max_columns)
 			end
 
 			set_xy(style[rarity_key], x, y)
@@ -369,14 +369,14 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 
 			local item = value[i]
 			local item_data = item.data
-			local rarity = item.rarity or (item_data and item_data.rarity) or "plentiful"
+			local rarity = item.rarity or item_data and item_data.rarity or "plentiful"
 			content[icon_key] = UIUtils.get_ui_information_from_item(item) or "icons_placeholder"
 			content[rarity_key] = UISettings.item_rarity_textures[rarity] or "icons_placeholder"
 			content[item_key] = item
 			content[illusion_key] = item_data and item_data.item_type == "weapon_skin"
 		end
 
-		for i = item_count + 1, definitions.item_list_max_rows * max_columns, 1 do
+		for i = item_count + 1, definitions.item_list_max_rows * max_columns do
 			content["item_" .. i] = nil
 		end
 
@@ -385,7 +385,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		local backend_id = value.backend_id
 		local item_interface = Managers.backend:get_interface("items")
 		local item = item_interface:get_item_from_id(backend_id)
-		local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
+		local rarity = item.rarity or item.data and item.data.rarity or "plentiful"
 		local inventory_icon, _, _ = UIUtils.get_ui_information_from_item(item)
 		widget.content.texture_id = inventory_icon
 		widget.content.rarity_texture = UISettings.item_rarity_textures[rarity]
@@ -429,7 +429,7 @@ RewardPopupUI._setup_entry_widget = function (self, entry_data, index)
 		widget_height = 0
 	end
 
-	return widget, (ignore_height and 0) or widget_height
+	return widget, ignore_height and 0 or widget_height
 end
 
 RewardPopupUI._setup_presentation = function (self, presentation_data)
@@ -451,12 +451,12 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 	end
 
 	local animation_wait_time = presentation_animation_data.animation_wait_time
-	animation_wait_time = animation_wait_time or (animation_data.claim_button and 0) or 2
+	animation_wait_time = animation_wait_time or animation_data.claim_button and 0 or 2
 	local spacing = 20
 	local min_height = 80
 	self._skip_blur = presentation_data.skip_blur
 
-	for i = 1, #presentation_data, 1 do
+	for i = 1, #presentation_data do
 		local presentation_entries = presentation_data[i]
 		local widgets_data = {}
 		local data = {
@@ -468,7 +468,7 @@ RewardPopupUI._setup_presentation = function (self, presentation_data)
 		}
 		local highest_height = 0
 
-		for j = 1, #presentation_entries, 1 do
+		for j = 1, #presentation_entries do
 			local presentation_entry = presentation_entries[j]
 			local widget, height = self:_setup_entry_widget(presentation_entry, j)
 			widgets_data[j] = {
@@ -501,7 +501,7 @@ RewardPopupUI._align_entry_widgets = function (self, entry)
 	local ui_scenegraph = self._ui_scenegraph
 	local widgets_data = entry.widgets_data
 
-	for i = 1, #widgets_data, 1 do
+	for i = 1, #widgets_data do
 		local data = widgets_data[i]
 		local widget = data.widget
 		local scenegraph_id = widget.scenegraph_id
@@ -635,7 +635,7 @@ RewardPopupUI._handle_input = function (self, entry)
 	if cursor_x > 1 and input_service:get("move_left") then
 		cursor_x = cursor_x - 1
 		modified = true
-	elseif cursor_x < ((cursor_y == rows and last_row_columns) or max_columns) and input_service:get("move_right") then
+	elseif cursor_x < (cursor_y == rows and last_row_columns or max_columns) and input_service:get("move_right") then
 		cursor_x = cursor_x + 1
 		modified = true
 	end
@@ -666,11 +666,11 @@ RewardPopupUI.set_fullscreen_effect_enable_state = function (self, enabled, prog
 
 	local world = self.world
 	local shading_env = World.get_data(world, "shading_environment")
-	progress = progress or (enabled and 1) or 0
+	progress = progress or enabled and 1 or 0
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and progress * 0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and progress * 0.75 or 0)
 		ShadingEnvironment.apply(shading_env)
 
 		self.screen_background_widget.style.rect.color[1] = 100 * progress
@@ -741,5 +741,3 @@ RewardPopupUI.input_service = function (self)
 		return FAKE_INPUT_SERVICE
 	end
 end
-
-return

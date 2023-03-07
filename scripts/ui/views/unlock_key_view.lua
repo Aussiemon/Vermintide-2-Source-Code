@@ -170,7 +170,7 @@ UnlockKeyView.draw_widgets = function (self, dt, t)
 	local text_input_widget = self.text_input_widget
 	text_input_widget.content.text_field = self.key_text
 	text_input_widget.content.caret_index = self.key_text_index
-	local value = (1 + math.sin((t * 3) % math.pi)) / 2
+	local value = (1 + math.sin(t * 3 % math.pi)) / 2
 	text_input_widget.style.text.caret_color[1] = value * 255
 
 	UIRenderer.draw_widget(ui_renderer, text_input_widget)
@@ -190,7 +190,7 @@ UnlockKeyView.handle_input = function (self, input_service)
 		local available_unlock_keys = self.available_unlock_keys
 		local num_available_unlock_keys = #available_unlock_keys
 
-		for i = 1, num_available_unlock_keys, 1 do
+		for i = 1, num_available_unlock_keys do
 			local key = available_unlock_keys[i]
 			local text = self.key_text
 
@@ -208,6 +208,7 @@ UnlockKeyView.handle_controller_input = function (self, input_service, dt)
 		self.controller_cooldown = self.controller_cooldown - dt
 	elseif self.confirm_gamepad_button_widget.content.gamepad_button.is_clicked ~= 0 then
 		if self.confirm_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
+			-- Nothing
 		elseif self.back_gamepad_button_widget.content.gamepad_button.is_clicked == 0 or self.back_gamepad_button_widget.content.button_hotspot.is_clicked == 0 then
 			self.controller_cooldown = GamepadSettings.menu_cooldown
 		end
@@ -229,5 +230,3 @@ end
 if rawget(_G, "my_global_ass_pointer") then
 	my_global_ass_pointer:create_ui_elements()
 end
-
-return

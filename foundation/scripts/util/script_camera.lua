@@ -41,5 +41,3 @@ ScriptCamera.force_update = function (world, camera)
 
 	World.update_unit(world, camera_unit)
 end
-
-return

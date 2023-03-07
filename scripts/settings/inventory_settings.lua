@@ -296,5 +296,3 @@ InventorySettings.item_types = {
 }
 
 DLCUtils.require_list("inventory_settings")
-
-return

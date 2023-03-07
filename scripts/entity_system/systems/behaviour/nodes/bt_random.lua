@@ -12,7 +12,7 @@ end
 BTRandom.ready = function (self, lua_node)
 	local probabilities = {}
 
-	for i = 1, #self._children, 1 do
+	for i = 1, #self._children do
 		local child = self._children[i]
 		probabilities[i] = child._tree_node.weight
 	end
@@ -48,8 +48,8 @@ BTRandom.run = function (self, unit, blackboard, t, dt)
 	local child_to_run_index = node_data
 	local num_children = #self._children
 
-	for i = 1, num_children, 1 do
-		local actual_index = ((i + child_to_run_index) - 2) % num_children + 1
+	for i = 1, num_children do
+		local actual_index = (i + child_to_run_index - 2) % num_children + 1
 		local child = self._children[actual_index]
 
 		if child:condition(blackboard) then
@@ -67,5 +67,3 @@ end
 BTRandom.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

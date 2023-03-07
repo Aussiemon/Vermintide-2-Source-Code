@@ -9,5 +9,3 @@ ApiVerification.ensure_public_api = function (interface_class, implementation_cl
 		end
 	end
 end
-
-return

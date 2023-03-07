@@ -126,13 +126,13 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 	local spread_extension = self.spread_extension
 	local num_projectiles = self.num_projectiles
 
-	for i = 1, num_projectiles, 1 do
+	for i = 1, num_projectiles do
 		local fire_rotation = rotation
 
 		if spread_extension then
 			if self.num_projectiles_shot > 1 then
 				local spread_horizontal_angle = math.pi * (self.num_projectiles_shot % 2 + 0.5)
-				local shot_count_offset = (self.num_projectiles_shot == 1 and 0) or math.round((self.num_projectiles_shot - 1) * 0.5, 0)
+				local shot_count_offset = self.num_projectiles_shot == 1 and 0 or math.round((self.num_projectiles_shot - 1) * 0.5, 0)
 				local angle_offset = self.multi_projectile_spread * shot_count_offset
 				fire_rotation = spread_extension:combine_spread_rotations(spread_horizontal_angle, angle_offset, fire_rotation)
 			end
@@ -149,7 +149,7 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 			speed = speed * (1 - i * 0.05)
 		end
 
-		local target_unit = self.targets and ((current_action.single_target and self.targets[1]) or self.targets[i])
+		local target_unit = self.targets and (current_action.single_target and self.targets[1] or self.targets[i])
 		local lookup_data = current_action.lookup_data
 
 		ActionUtils.spawn_true_flight_projectile(owner_unit, target_unit, self.true_flight_template_id, position, fire_rotation, angle, target_vector, speed, self.item_name, lookup_data.item_template_name, lookup_data.action_name, lookup_data.sub_action_name, nil, self._is_critical_strike, self.power_level)
@@ -184,5 +184,3 @@ ActionTrueFlightBow.fire = function (self, current_action, add_spread)
 		end
 	end
 end
-
-return

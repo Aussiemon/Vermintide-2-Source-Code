@@ -87,5 +87,3 @@ CraftingManager.debug_set_salvaged_items_stat = function (self, value)
 	Managers.backend:commit()
 	print("Number of salvaged items set to", value)
 end
-
-return

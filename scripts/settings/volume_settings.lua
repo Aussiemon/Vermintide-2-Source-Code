@@ -340,5 +340,3 @@ for volume_type, volume_sub_types in pairs(VolumeExtensionSettings) do
 end
 
 VolumeSystemSettings.nav_tag_layer_costs = nav_tag_layer_costs
-
-return

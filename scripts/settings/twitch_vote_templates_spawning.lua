@@ -15,7 +15,7 @@ local function spawn_custom_horde(breed_name, difficulty_amounts)
 	local side_id = side.side_id
 	local spawn_list = {}
 
-	for i = 1, amount_of_enemies, 1 do
+	for i = 1, amount_of_enemies do
 		spawn_list[#spawn_list + 1] = breed_name
 	end
 
@@ -42,7 +42,7 @@ local function spawn_hidden(breed_name, difficulty_amounts)
 
 	local conflict_director = Managers.state.conflict
 
-	for i = 1, amount_of_enemies, 1 do
+	for i = 1, amount_of_enemies do
 		local hidden_pos = conflict_director.specials_pacing:get_special_spawn_pos()
 
 		conflict_director:spawn_one(Breeds[breed_name], hidden_pos)
@@ -66,7 +66,7 @@ TwitchVoteTemplates.twitch_spawn_rat_ogre = {
 			local breed = Breeds.skaven_rat_ogre
 			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
-			for i = 1, spawn_amount, 1 do
+			for i = 1, spawn_amount do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
 					max_health_modifier = 0.85
 				})
@@ -90,7 +90,7 @@ TwitchVoteTemplates.twitch_spawn_stormfiend = {
 			local breed = Breeds.skaven_stormfiend
 			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
-			for i = 1, spawn_amount, 1 do
+			for i = 1, spawn_amount do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
 					max_health_modifier = 0.85
 				})
@@ -114,7 +114,7 @@ TwitchVoteTemplates.twitch_spawn_chaos_troll = {
 			local breed = Breeds.chaos_troll
 			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
-			for i = 1, spawn_amount, 1 do
+			for i = 1, spawn_amount do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
 					max_health_modifier = 0.85
 				})
@@ -138,7 +138,7 @@ TwitchVoteTemplates.twitch_spawn_chaos_spawn = {
 			local breed = Breeds.chaos_spawn
 			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
-			for i = 1, spawn_amount, 1 do
+			for i = 1, spawn_amount do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
 					max_health_modifier = 0.85
 				})
@@ -165,7 +165,7 @@ TwitchVoteTemplates.twitch_spawn_minotaur = {
 			local breed = Breeds.beastmen_minotaur
 			local spawn_amount = math.floor(1 * twitch_settings.spawn_amount_multiplier)
 
-			for i = 1, spawn_amount, 1 do
+			for i = 1, spawn_amount do
 				Managers.state.conflict:spawn_one(breed, nil, nil, {
 					max_health_modifier = 0.85
 				})
@@ -572,7 +572,7 @@ TwitchVoteTemplates.twitch_spawn_loot_rat_fiesta = {
 
 			local amount = 10 * twitch_settings.spawn_amount_multiplier
 
-			for i = 1, amount, 1 do
+			for i = 1, amount do
 				local breed = Breeds.skaven_loot_rat
 
 				Managers.state.conflict:spawn_one(breed)
@@ -580,5 +580,3 @@ TwitchVoteTemplates.twitch_spawn_loot_rat_fiesta = {
 		end
 	end
 }
-
-return

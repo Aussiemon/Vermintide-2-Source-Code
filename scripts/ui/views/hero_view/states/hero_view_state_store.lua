@@ -182,7 +182,7 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 	local includes_dlc_rewards = false
 	local includes_base_game_reward = false
 
-	for i = 1, #unseen_currency_rewards, 1 do
+	for i = 1, #unseen_currency_rewards do
 		local reward = unseen_currency_rewards[i]
 		reward_data[#reward_data + 1] = {
 			value = reward.currency_amount,
@@ -247,7 +247,7 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 	local starting_line_count = #layout
 	local total_amount = 0
 
-	for i = 1, #reward_data, 1 do
+	for i = 1, #reward_data do
 		local data = reward_data[i]
 		local value = data.value
 		local rewarded_from = data.rewarded_from
@@ -264,7 +264,7 @@ HeroViewStateStore._trigger_welcome_popup = function (self, unseen_currency_rewa
 		else
 			local text = rewarded_from
 
-			for j = 1, #StoreDlcSettings, 1 do
+			for j = 1, #StoreDlcSettings do
 				local store_dlc_setting = StoreDlcSettings[j]
 
 				if store_dlc_setting.dlc_name == rewarded_from then
@@ -465,7 +465,7 @@ HeroViewStateStore._initial_windows_setups = function (self, params)
 end
 
 HeroViewStateStore.window_input_service = function (self, force)
-	if force or (not self._input_blocked and not self._friends_list_active) then
+	if force or not self._input_blocked and not self._friends_list_active then
 		return self:input_service()
 	else
 		return FAKE_INPUT_SERVICE
@@ -573,7 +573,7 @@ HeroViewStateStore.set_layout = function (self, index)
 
 	self._selected_layout_index = index
 
-	for i = 1, self._max_active_windows, 1 do
+	for i = 1, self._max_active_windows do
 		local window_changed = false
 
 		for window_name, window_position_index in pairs(windows) do
@@ -667,7 +667,7 @@ HeroViewStateStore.go_to_product = function (self, product_id, optional_path, op
 
 		if not new_path then
 			new_path = table.clone(current_store_path)
-			new_path[#new_path + 1] = (dlc_settings.is_bundle and "bundles") or "dlc"
+			new_path[#new_path + 1] = dlc_settings.is_bundle and "bundles" or "dlc"
 		end
 	else
 		local item = self:get_item_by_key(product_id)
@@ -914,7 +914,7 @@ HeroViewStateStore._delayed_update = function (self, dt, t)
 		if welcome_popup:completed() then
 			welcome_popup:destroy()
 
-			welcome_popup, self._welcome_popup = nil
+			self._welcome_popup = nil
 
 			self:unblock_input()
 		end
@@ -991,7 +991,7 @@ HeroViewStateStore._update_dlc_purchases = function (self)
 	local unseen_rewards = item_interface:get_unseen_item_rewards()
 
 	if unseen_rewards then
-		for i = 1, #unseen_rewards, 1 do
+		for i = 1, #unseen_rewards do
 			local unseen_reward = unseen_rewards[i]
 			local backend_id = unseen_reward.backend_id
 			local item = nil
@@ -1549,7 +1549,7 @@ HeroViewStateStore._calculate_discount_textures = function (self, widget, discou
 	local discount_string = tostring(math.floor(discount))
 	local length = string.len(discount_string) + 2
 
-	for i = 1, length, 1 do
+	for i = 1, length do
 		local texture_name = nil
 
 		if i == 1 then
@@ -1696,7 +1696,7 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	local item_owned = backend_items:has_item(item_key) or backend_items:has_weapon_illusion(item_key) or backend_items:has_bundle_contents(item.data.bundle_contains)
 	content.owned = item_owned
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
-	content.type_tag_icon = (rarity and item_type_icon .. "_" .. rarity) or item_type_icon
+	content.type_tag_icon = rarity and item_type_icon .. "_" .. rarity or item_type_icon
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	self._reference_id = (self._reference_id or 0) + 1
@@ -1708,8 +1708,8 @@ HeroViewStateStore._populate_item_widget = function (self, widget, product, prod
 	if package_available then
 		content.reference_name = reference_name
 		content.icon = nil
-		local new_material_name = (masked and texture_name .. "_masked") or texture_name
-		local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+		local new_material_name = masked and texture_name .. "_masked" or texture_name
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
@@ -1885,7 +1885,7 @@ HeroViewStateStore._setup_xb1_price_data = function (self, widget, price_data)
 	local style = widget.style
 	local spacing = 20
 	local size = content.size
-	local availability = (price_data.availabilities and price_data.availabilities[1]) or {}
+	local availability = price_data.availabilities and price_data.availabilities[1] or {}
 	local display_original_price = availability.DisplayListPrice
 	local display_price = availability.DisplayPrice
 
@@ -2003,7 +2003,7 @@ HeroViewStateStore.can_use_item = function (self, item)
 	local careers = item.data.can_wield
 	local hero_attributes = Managers.backend:get_interface("hero_attributes")
 
-	for i = 1, #careers, 1 do
+	for i = 1, #careers do
 		local career = careers[i]
 		local profile = PROFILES_BY_CAREER_NAMES[career]
 		local hero_experience = hero_attributes:get(profile.display_name, "experience") or 0
@@ -2020,7 +2020,7 @@ end
 HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
 	local dlc_id = Managers.unlock:dlc_exists(dlc_name) and Managers.unlock:dlc_id(dlc_name)
 	local backend_store = Managers.backend:get_interface("peddler")
-	local price_data = backend_store:get_app_price((IS_WINDOWS and dlc_id) or dlc_name) or {}
+	local price_data = backend_store:get_app_price(IS_WINDOWS and dlc_id or dlc_name) or {}
 	local price_text = Localize("dlc_price_unavailable")
 
 	if price_data then
@@ -2038,7 +2038,7 @@ HeroViewStateStore.get_dlc_price_text = function (self, dlc_name)
 		elseif IS_PS4 then
 			price_text = price_data.display_price or Localize("dlc_price_unavailable")
 		elseif IS_XB1 then
-			price_text = (price_data.availabilities and price_data.availabilities[1] and price_data.availabilities[1].DisplayPrice) or Localize("dlc_price_unavailable")
+			price_text = price_data.availabilities and price_data.availabilities[1] and price_data.availabilities[1].DisplayPrice or Localize("dlc_price_unavailable")
 		end
 	end
 
@@ -2176,8 +2176,8 @@ HeroViewStateStore._populate_dlc_feature_horizontal_widget = function (self, wid
 
 	if package_available then
 		content.reference_name = reference_name
-		local new_material_name = (masked and "dlc_feature_masked_" .. product_id) or "dlc_feature_" .. product_id
-		local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+		local new_material_name = masked and "dlc_feature_masked_" .. product_id or "dlc_feature_" .. product_id
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
@@ -2231,8 +2231,8 @@ HeroViewStateStore._populate_dlc_logo_widget = function (self, widget, settings,
 
 	if package_available then
 		content.reference_name = reference_name
-		local new_material_name = (masked and "dlc_feature_masked_" .. product_id) or "dlc_feature_" .. product_id
-		local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+		local new_material_name = masked and "dlc_feature_masked_" .. product_id or "dlc_feature_" .. product_id
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
@@ -2293,8 +2293,8 @@ HeroViewStateStore._populate_dlc_feature_vertical_widget = function (self, widge
 
 	if package_available then
 		content.reference_name = reference_name
-		local new_material_name = (masked and "dlc_feature_masked_" .. product_id) or "dlc_feature_" .. product_id
-		local template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+		local new_material_name = masked and "dlc_feature_masked_" .. product_id or "dlc_feature_" .. product_id
+		local template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 		self:_create_material_instance(top_gui, new_material_name, template_material_name, reference_name)
 
@@ -2319,14 +2319,14 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	local display_name = settings.name
 	local texture = settings.store_banner_texture
 	local dlc_name = settings.dlc_name
-	local item_type = (settings.is_bundle and "bundle") or "dlc"
+	local item_type = settings.is_bundle and "bundle" or "dlc"
 	local currency_type = "SM"
 	local style = widget.style
 	local content = widget.content
 	local optional_name = settings.optional_dlc_display_name
 	local optional_subtitle = settings.optional_dlc_subtitle
-	content.optional_item_name = (optional_name and Localize(optional_name)) or ""
-	content.optional_subtitle = (optional_subtitle and Localize(optional_subtitle)) or ""
+	content.optional_item_name = optional_name and Localize(optional_name) or ""
+	content.optional_subtitle = optional_subtitle and Localize(optional_subtitle) or ""
 	local price_text, platform_price_data = self:get_dlc_price_text(dlc_name)
 	local real_currency = true
 
@@ -2340,7 +2340,7 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	content.owned = Managers.unlock:is_dlc_unlocked(dlc_name)
 	local masked = style.icon.masked
 	local item_type_icon = item_type_store_icons[item_type] or item_type_store_icons.default
-	content.type_tag_icon = (settings.is_bundle and item_type_icon .. "_promo") or item_type_icon
+	content.type_tag_icon = settings.is_bundle and item_type_icon .. "_promo" or item_type_icon
 	local ui_top_renderer = self._ui_top_renderer
 	local top_gui = ui_top_renderer.gui
 	local package_name = settings.store_texture_package
@@ -2352,8 +2352,8 @@ HeroViewStateStore._populate_dlc_widget = function (self, widget, settings, prod
 	if package_available then
 		content.reference_name = reference_name
 		content.icon = nil
-		local new_banner_material_name = (masked and "store_dlc_banner_masked_" .. product_id) or "store_dlc_banner_" .. product_id
-		local banner_template_material_name = (masked and "template_store_diffuse_masked") or "template_store_diffuse"
+		local new_banner_material_name = masked and "store_dlc_banner_masked_" .. product_id or "store_dlc_banner_" .. product_id
+		local banner_template_material_name = masked and "template_store_diffuse_masked" or "template_store_diffuse"
 
 		self:_create_material_instance(top_gui, new_banner_material_name, banner_template_material_name, reference_name)
 
@@ -2524,7 +2524,7 @@ end
 HeroViewStateStore._clear_unload_list = function (self)
 	for package_name, reference_names in pairs(self._unload_list) do
 		for reference_name, num_references in pairs(reference_names) do
-			for i = 1, num_references, 1 do
+			for i = 1, num_references do
 				Managers.package:unload(package_name, reference_name)
 			end
 
@@ -2540,7 +2540,7 @@ HeroViewStateStore._update_unload = function (self)
 
 	if package_name then
 		for reference_name, num_references in pairs(reference_names) do
-			for i = 1, num_references, 1 do
+			for i = 1, num_references do
 				Managers.package:unload(package_name, reference_name)
 			end
 
@@ -2686,7 +2686,7 @@ HeroViewStateStore._animate_item_product = function (self, widget, dt, optional_
 	local hover_progress = hotspot.hover_progress or 0
 	local pulse_progress = hotspot.pulse_progress or 1
 	local selection_progress = hotspot.selection_progress or 0
-	local speed = ((is_hover or is_selected) and 14) or 3
+	local speed = (is_hover or is_selected) and 14 or 3
 	local pulse_speed = 3
 	local input_speed = 20
 
@@ -2743,5 +2743,3 @@ HeroViewStateStore._animate_item_product = function (self, widget, dt, optional_
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
 end
-
-return

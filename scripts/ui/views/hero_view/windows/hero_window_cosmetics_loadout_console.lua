@@ -179,8 +179,8 @@ HeroWindowCosmeticsLoadoutConsole._handle_gamepad_input = function (self, dt, t)
 	local columns = content.columns
 	local selected_row, selected_column = nil
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -392,8 +392,8 @@ HeroWindowCosmeticsLoadoutConsole._is_equipment_slot_right_clicked = function (s
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -411,8 +411,8 @@ HeroWindowCosmeticsLoadoutConsole._is_equipment_slot_pressed = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -430,8 +430,8 @@ HeroWindowCosmeticsLoadoutConsole._is_equipment_slot_hovered = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -449,8 +449,8 @@ HeroWindowCosmeticsLoadoutConsole._set_equipment_slot_selected = function (self,
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -466,8 +466,8 @@ HeroWindowCosmeticsLoadoutConsole._enable_selection_highlight = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -482,8 +482,8 @@ HeroWindowCosmeticsLoadoutConsole._disable_selection_highlight = function (self)
 	local rows = content.rows
 	local columns = content.columns
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
 			local slot_hotspot = content[hotspot_name]
@@ -499,8 +499,8 @@ HeroWindowCosmeticsLoadoutConsole._is_equipment_slot_hovered_by_type = function 
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_ui_slot_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 
 			if slot_settings.type == item_type then
@@ -524,8 +524,8 @@ HeroWindowCosmeticsLoadoutConsole._highlight_equipment_slot_by_type = function (
 	local columns = content.columns
 	local slots = InventorySettings.slots_by_ui_slot_index
 
-	for i = 1, rows, 1 do
-		for k = 1, columns, 1 do
+	for i = 1, rows do
+		for k = 1, columns do
 			local slot_settings = slots[k]
 			local name_sufix = "_" .. tostring(i) .. "_" .. tostring(k)
 			local hotspot_name = "hotspot" .. name_sufix
@@ -533,10 +533,8 @@ HeroWindowCosmeticsLoadoutConsole._highlight_equipment_slot_by_type = function (
 			local slot_hotspot = content[hotspot_name]
 			local enabled = slot_settings.type == item_type
 			slot_hotspot.highlight = enabled
-			local alpha = (slot_hotspot.internal_is_hover and 255) or 100
-			style[slot_hover_name].color[1] = (enabled and alpha) or 255
+			local alpha = slot_hotspot.internal_is_hover and 255 or 100
+			style[slot_hover_name].color[1] = enabled and alpha or 255
 		end
 	end
 end
-
-return

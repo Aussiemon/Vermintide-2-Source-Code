@@ -20,13 +20,8 @@ AISpawner.init = function (self, world, unit)
 			local terror_event_id = Unit.get_data(unit, "terror_event_id")
 
 			if terror_event_id then
-				if terror_event_id ~= "" then
-				else
+				if terror_event_id == "" then
 					terror_event_id = false
-
-					if false then
-						terror_event_id = true
-					end
 				end
 			end
 
@@ -53,13 +48,8 @@ AISpawner.init = function (self, world, unit)
 		local terror_event_id = Unit.get_data(self._unit, "terror_event_id")
 
 		if terror_event_id then
-			if terror_event_id ~= "" then
-			else
+			if terror_event_id == "" then
 				terror_event_id = false
-
-				if false then
-					terror_event_id = true
-				end
 			end
 		end
 
@@ -97,7 +87,7 @@ AISpawner.on_activate = function (self, breed_list, side_id, group_template, opt
 	self._max_amount = self._max_amount + #breed_list
 	local j = size + 1
 
-	for i = 1, #breed_list, 1 do
+	for i = 1, #breed_list do
 		list[j] = breed_list[i]
 		j = j + 1
 		list[j] = spawn_data
@@ -149,7 +139,7 @@ AISpawner.spawn_unit = function (self)
 	local parent_world_rotation = Unit.world_rotation(unit, parent_index)
 	local spawn_node_rotation = Unit.local_rotation(unit, node)
 	local spawn_rotation = Quaternion.multiply(parent_world_rotation, spawn_node_rotation)
-	local spawn_type = (Unit.get_data(self._unit, "hidden") and "horde_hidden") or "horde"
+	local spawn_type = Unit.get_data(self._unit, "hidden") and "horde_hidden" or "horde"
 	local spawn_pos = Unit.world_position(unit, node)
 	local animation_events = self._config.animation_events
 
@@ -188,5 +178,3 @@ end
 AISpawner.destroy = function (self)
 	return
 end
-
-return

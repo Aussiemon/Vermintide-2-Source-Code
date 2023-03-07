@@ -2479,5 +2479,3 @@ HitEffectsSkavenPackMaster = {
 	}
 }
 HitEffectsSkavenPackMaster = table.create_copy(HitEffectsSkavenPackMaster, HitEffectsSkavenPackMaster)
-
-return

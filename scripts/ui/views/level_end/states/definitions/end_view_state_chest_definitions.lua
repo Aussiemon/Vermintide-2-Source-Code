@@ -357,7 +357,7 @@ local sub_title_text_style = {
 local score_entry_widgets = {}
 local num_score_entries = 10
 
-for i = 1, num_score_entries, 1 do
+for i = 1, num_score_entries do
 	score_entry_widgets[i] = UIWidgets.create_chest_score_entry("score_entry_root", scenegraph_definition.score_entry_root.size, i)
 end
 
@@ -491,295 +491,295 @@ local animation_definitions = {
 				return
 			end
 		}
+	}
+}
+animation_definitions.score_entry_add = {
+	{
+		name = "icon_entry",
+		start_progress = 0.3,
+		end_progress = 0.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local widget = params.widget
+			local icon_style = widget.style.texture_id
+			icon_style.color[1] = 0
+			params.enter_sound_played = false
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			if not params.enter_sound_played then
+				params.enter_sound_played = true
+
+				WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_chest_upgrade_topic_enter")
+			end
+
+			local widget = params.widget
+			local style = widget.style
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = anim_progress * 255
+			style.texture_id.color[1] = alpha
+			style.text.text_color[1] = alpha
+			style.text_disabled.text_color[1] = 255 - alpha
+			local marker_color_from = Colors.color_definitions.font_default
+			local marker_color_to = Colors.color_definitions.white
+			local marker_color = style.marker.color
+
+			Colors.lerp_color_tables(marker_color_from, marker_color_to, anim_progress, marker_color)
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	score_entry_add = {
-		{
-			name = "icon_entry",
-			start_progress = 0.3,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local widget = params.widget
-				local icon_style = widget.style.texture_id
-				icon_style.color[1] = 0
-				params.enter_sound_played = false
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				if not params.enter_sound_played then
-					params.enter_sound_played = true
+	{
+		name = "icon_size",
+		start_progress = 0.3,
+		end_progress = 0.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.ease_pulse(progress)
+			local widget = params.widget
+			local icon_style = widget.style.texture_id
+			local size = icon_style.texture_size
+			local default_size = icon_style.default_size
+			local offset = icon_style.offset
+			local size_increase = 10
+			size[1] = default_size[1] + size_increase * anim_progress
+			size[2] = default_size[2] + size_increase * anim_progress
+			offset[1] = -(size[1] - default_size[1]) * 0.5
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.score_presentation_start = {
+	{
+		name = "highlight_start",
+		start_progress = 0.5,
+		end_progress = 0.8,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.enter_sound_played = false
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			if not params.enter_sound_played then
+				params.enter_sound_played = true
+				local sound_event = "play_gui_mission_summary_chest_upgrade_check_0" .. params.entry_index
 
-					WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_chest_upgrade_topic_enter")
-				end
-
-				local widget = params.widget
-				local style = widget.style
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress * 255
-				style.texture_id.color[1] = alpha
-				style.text.text_color[1] = alpha
-				style.text_disabled.text_color[1] = 255 - alpha
-				local marker_color_from = Colors.color_definitions.font_default
-				local marker_color_to = Colors.color_definitions.white
-				local marker_color = style.marker.color
-
-				Colors.lerp_color_tables(marker_color_from, marker_color_to, anim_progress, marker_color)
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+				WwiseWorld.trigger_event(params.wwise_world, sound_event)
 			end
-		},
-		{
-			name = "icon_size",
-			start_progress = 0.3,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.ease_pulse(progress)
-				local widget = params.widget
-				local icon_style = widget.style.texture_id
-				local size = icon_style.texture_size
-				local default_size = icon_style.default_size
-				local offset = icon_style.offset
-				local size_increase = 10
-				size[1] = default_size[1] + size_increase * anim_progress
-				size[2] = default_size[2] + size_increase * anim_progress
-				offset[1] = -(size[1] - default_size[1]) * 0.5
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+
+			local widget = params.widget
+			local style = widget.style
+			local offset = widget.offset
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = anim_progress * 255
+			local icon_glow_color = style.texture_id_glow.color
+			local text_color = style.text.text_color
+			icon_glow_color[1] = alpha
+			local text_color_from = Colors.color_definitions.white
+			local text_color_to = Colors.color_definitions.font_title
+
+			Colors.lerp_color_tables(text_color_from, text_color_to, anim_progress, text_color)
+
+			offset[1] = anim_progress * 20
+			style.marker.offset[1] = -10 + -offset[1]
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.score_presentation_end = {
+	{
+		name = "highlight_end",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local widget = params.widget
+			local style = widget.style
+			local offset = widget.offset
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = 255 - anim_progress * 255
+			local icon_color = style.texture_id.color
+			local icon_glow_color = style.texture_id_glow.color
+			local text_color = style.text.text_color
+			icon_glow_color[1] = alpha
+			local text_color_from = Colors.color_definitions.font_title
+			local text_color_to = Colors.get_color_table_with_alpha("font_default", 255)
+			local color_multiplier = 0.8
+			text_color_to[2] = text_color_to[2] * color_multiplier
+			text_color_to[3] = text_color_to[3] * color_multiplier
+			text_color_to[4] = text_color_to[4] * color_multiplier
+
+			Colors.lerp_color_tables(text_color_from, text_color_to, anim_progress, text_color)
+			Colors.lerp_color_tables(Colors.color_definitions.white, text_color_to, anim_progress, icon_color)
+
+			offset[1] = 20 - anim_progress * 20
+			style.marker.offset[1] = -10 + -offset[1]
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	score_presentation_start = {
-		{
-			name = "highlight_start",
-			start_progress = 0.5,
-			end_progress = 0.8,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.enter_sound_played = false
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				if not params.enter_sound_played then
-					params.enter_sound_played = true
-					local sound_event = "play_gui_mission_summary_chest_upgrade_check_0" .. params.entry_index
+	{
+		name = "checkbox_enter",
+		start_progress = 0.3,
+		end_progress = 0.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.checkbox_sound_played = false
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			if not params.checkbox_sound_played then
+				params.checkbox_sound_played = true
 
-					WwiseWorld.trigger_event(params.wwise_world, sound_event)
-				end
-
-				local widget = params.widget
-				local style = widget.style
-				local offset = widget.offset
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress * 255
-				local icon_glow_color = style.texture_id_glow.color
-				local text_color = style.text.text_color
-				icon_glow_color[1] = alpha
-				local text_color_from = Colors.color_definitions.white
-				local text_color_to = Colors.color_definitions.font_title
-
-				Colors.lerp_color_tables(text_color_from, text_color_to, anim_progress, text_color)
-
-				offset[1] = anim_progress * 20
-				style.marker.offset[1] = -10 + -offset[1]
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
+				WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_chest_upgrade_topic_ticked")
 			end
-		}
+
+			local widget = params.widget
+			local style = widget.style
+			local offset = widget.offset
+			local anim_progress = math.easeOutCubic(progress)
+			local alpha = anim_progress * 255
+			style.checkbox.color[1] = alpha
+			style.checkbox_shadow.color[1] = alpha
+			local size = style.checkbox.texture_size
+			local default_width = 37
+			local default_height = 31
+			size[1] = default_width + (1 - anim_progress) * default_width * 2
+			size[2] = default_height + (1 - anim_progress) * default_height * 2
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.chest_title_initialize = {
+	{
+		name = "fade_in",
+		start_progress = 0.5,
+		end_progress = 0.9,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = anim_progress * 255
+			widgets.chest_title.style.text.text_color[1] = alpha
+			widgets.chest_title.style.text_shadow.text_color[1] = alpha
+			widgets.chest_sub_title.style.text.text_color[1] = alpha
+			widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.chest_title_update = {
+	{
+		name = "upgrade_background_fade_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local alpha = 0
+			widgets.upgrade_background.style.texture_id.color[1] = alpha
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = anim_progress * 255
+			widgets.upgrade_background.style.texture_id.color[1] = alpha
+			local scenegraph_id = "upgrade_background"
+			local default_size = scenegraph_definition[scenegraph_id].size
+			local size = ui_scenegraph[scenegraph_id].size
+			size[1] = default_size[1] + default_size[1] * (1 - anim_progress)
+			size[2] = default_size[2] + default_size[2] * (1 - anim_progress)
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	score_presentation_end = {
-		{
-			name = "highlight_end",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local widget = params.widget
-				local style = widget.style
-				local offset = widget.offset
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = 255 - anim_progress * 255
-				local icon_color = style.texture_id.color
-				local icon_glow_color = style.texture_id_glow.color
-				local text_color = style.text.text_color
-				icon_glow_color[1] = alpha
-				local text_color_from = Colors.color_definitions.font_title
-				local text_color_to = Colors.get_color_table_with_alpha("font_default", 255)
-				local color_multiplier = 0.8
-				text_color_to[2] = text_color_to[2] * color_multiplier
-				text_color_to[3] = text_color_to[3] * color_multiplier
-				text_color_to[4] = text_color_to[4] * color_multiplier
-
-				Colors.lerp_color_tables(text_color_from, text_color_to, anim_progress, text_color)
-				Colors.lerp_color_tables(Colors.color_definitions.white, text_color_to, anim_progress, icon_color)
-
-				offset[1] = 20 - anim_progress * 20
-				style.marker.offset[1] = -10 + -offset[1]
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "checkbox_enter",
-			start_progress = 0.3,
-			end_progress = 0.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.checkbox_sound_played = false
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				if not params.checkbox_sound_played then
-					params.checkbox_sound_played = true
-
-					WwiseWorld.trigger_event(params.wwise_world, "play_gui_mission_summary_chest_upgrade_topic_ticked")
-				end
-
-				local widget = params.widget
-				local style = widget.style
-				local offset = widget.offset
-				local anim_progress = math.easeOutCubic(progress)
-				local alpha = anim_progress * 255
-				style.checkbox.color[1] = alpha
-				style.checkbox_shadow.color[1] = alpha
-				local size = style.checkbox.texture_size
-				local default_width = 37
-				local default_height = 31
-				size[1] = default_width + (1 - anim_progress) * default_width * 2
-				size[2] = default_height + (1 - anim_progress) * default_height * 2
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	{
+		name = "upgrade_text_fade_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local alpha = 0
+			widgets.upgrade_text.style.text.text_color[1] = alpha
+			widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = anim_progress * 255
+			local widget = widgets.upgrade_text
+			widget.style.text.text_color[1] = alpha
+			widget.style.text_shadow.text_color[1] = alpha
+			local font_size = 50
+			local max_font_size = 100
+			local new_font_size = font_size + (max_font_size - font_size) * (1 - anim_progress)
+			widget.style.text.font_size = new_font_size
+			widget.style.text_shadow.font_size = new_font_size
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	chest_title_initialize = {
-		{
-			name = "fade_in",
-			start_progress = 0.5,
-			end_progress = 0.9,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress * 255
-				widgets.chest_title.style.text.text_color[1] = alpha
-				widgets.chest_title.style.text_shadow.text_color[1] = alpha
-				widgets.chest_sub_title.style.text.text_color[1] = alpha
-				widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	{
+		name = "upgrade_background_fade_out",
+		start_progress = 0.8,
+		end_progress = 1.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = 255 - anim_progress * 255
+			widgets.upgrade_background.style.texture_id.color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	},
-	chest_title_update = {
-		{
-			name = "upgrade_background_fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local alpha = 0
-				widgets.upgrade_background.style.texture_id.color[1] = alpha
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress * 255
-				widgets.upgrade_background.style.texture_id.color[1] = alpha
-				local scenegraph_id = "upgrade_background"
-				local default_size = scenegraph_definition[scenegraph_id].size
-				local size = ui_scenegraph[scenegraph_id].size
-				size[1] = default_size[1] + default_size[1] * (1 - anim_progress)
-				size[2] = default_size[2] + default_size[2] * (1 - anim_progress)
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "upgrade_text_fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local alpha = 0
-				widgets.upgrade_text.style.text.text_color[1] = alpha
-				widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress * 255
-				local widget = widgets.upgrade_text
-				widget.style.text.text_color[1] = alpha
-				widget.style.text_shadow.text_color[1] = alpha
-				local font_size = 50
-				local max_font_size = 100
-				local new_font_size = font_size + (max_font_size - font_size) * (1 - anim_progress)
-				widget.style.text.font_size = new_font_size
-				widget.style.text_shadow.font_size = new_font_size
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "upgrade_background_fade_out",
-			start_progress = 0.8,
-			end_progress = 1.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = 255 - anim_progress * 255
-				widgets.upgrade_background.style.texture_id.color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "upgrade_text_fade_out",
-			start_progress = 0.9,
-			end_progress = 1.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = 255 - anim_progress * 255
-				widgets.upgrade_text.style.text.text_color[1] = alpha
-				widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		},
-		{
-			name = "title_fade_in",
-			start_progress = 1.2,
-			end_progress = 1.6,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				local alpha = 0
-				widgets.chest_title.style.text.text_color[1] = alpha
-				widgets.chest_title.style.text_shadow.text_color[1] = alpha
-				widgets.chest_sub_title.style.text.text_color[1] = alpha
-				widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeInCubic(progress)
-				local alpha = anim_progress * 255
-				widgets.chest_title.style.text.text_color[1] = alpha
-				widgets.chest_title.style.text_shadow.text_color[1] = alpha
-				widgets.chest_sub_title.style.text.text_color[1] = alpha
-				widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	{
+		name = "upgrade_text_fade_out",
+		start_progress = 0.9,
+		end_progress = 1.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = 255 - anim_progress * 255
+			widgets.upgrade_text.style.text.text_color[1] = alpha
+			widgets.upgrade_text.style.text_shadow.text_color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	},
+	{
+		name = "title_fade_in",
+		start_progress = 1.2,
+		end_progress = 1.6,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			local alpha = 0
+			widgets.chest_title.style.text.text_color[1] = alpha
+			widgets.chest_title.style.text_shadow.text_color[1] = alpha
+			widgets.chest_sub_title.style.text.text_color[1] = alpha
+			widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeInCubic(progress)
+			local alpha = anim_progress * 255
+			widgets.chest_title.style.text.text_color[1] = alpha
+			widgets.chest_title.style.text_shadow.text_color[1] = alpha
+			widgets.chest_sub_title.style.text.text_color[1] = alpha
+			widgets.chest_sub_title.style.text_shadow.text_color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 

@@ -1,4 +1,4 @@
-local window_default_settings = (not IS_PS4 and UISettings.game_start_windows) or UISettings.game_start_windows_console
+local window_default_settings = not IS_PS4 and UISettings.game_start_windows or UISettings.game_start_windows_console
 local window_frame = window_default_settings.frame
 local small_window_size = window_default_settings.size
 local small_window_spacing = window_default_settings.spacing
@@ -155,7 +155,7 @@ local scenegraph_definition = {
 		},
 		position = {
 			0,
-			(not IS_PS4 and 25) or 15,
+			not IS_PS4 and 25 or 15,
 			3
 		}
 	},
@@ -193,7 +193,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1] - 60,
-			(not IS_PS4 and 72) or 0
+			not IS_PS4 and 72 or 0
 		},
 		position = {
 			0,
@@ -207,7 +207,7 @@ local scenegraph_definition = {
 		horizontal_alignment = "center",
 		size = {
 			game_option_size[1],
-			(not IS_PS4 and 72) or 0
+			not IS_PS4 and 72 or 0
 		},
 		position = {
 			0,
@@ -728,19 +728,11 @@ local title_text_style = {
 local function create_settings_option(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
 	icon_texture = icon_texture or "map_frame_fade"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
 		150,
 		150
 	}
-
-	if icon_visible ~= nil then
-		if false then
-			icon_visible = false
-		end
-	else
-		icon_visible = true
-	end
-
+	icon_visible = icon_visible == nil or icon_visible
 	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
@@ -1012,19 +1004,11 @@ end
 local function create_settings_option_deus(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
 	icon_texture = icon_texture or "map_frame_fade"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
 		150,
 		150
 	}
-
-	if icon_visible ~= nil then
-		if false then
-			icon_visible = false
-		end
-	else
-		icon_visible = true
-	end
-
+	icon_visible = icon_visible == nil or icon_visible
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name("vote_background_morris")
 	local frame_settings = UIFrameSettings.menu_frame_02_morris
 	local frame_width = frame_settings.texture_sizes.corner[1]
@@ -1296,19 +1280,11 @@ end
 local function create_weave_settings_option(scenegraph_id, size, title_text, icon_texture, background_texture, icon_visible)
 	icon_texture = icon_texture or "map_frame_fade"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
 		150,
 		150
 	}
-
-	if icon_visible ~= nil then
-		if false then
-			icon_visible = false
-		end
-	else
-		icon_visible = true
-	end
-
+	icon_visible = icon_visible == nil or icon_visible
 	background_texture = background_texture or "game_options_bg_02"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
 	local frame_name = "menu_frame_08"
@@ -1994,7 +1970,7 @@ local function create_additional_settings_option(scenegraph_id, size, title_text
 					150
 				},
 				color = {
-					(background_texture and 255) or 0,
+					background_texture and 255 or 0,
 					255,
 					255,
 					255
@@ -2794,7 +2770,7 @@ function create_twitch_disclaimer(is_server)
 		108 / size[2]
 	}
 	local service_name = "Twitch"
-	local disclaimer_text_id = (is_server and "twitch_warning_text_server") or "twitch_warning_text_client"
+	local disclaimer_text_id = is_server and "twitch_warning_text_server" or "twitch_warning_text_client"
 	local disclaimer_text = string.format(Localize(disclaimer_text_id), service_name, service_name)
 	local widget = {
 		element = {
@@ -3784,7 +3760,7 @@ local rating_texture_sizes = {}
 local rating_textures = {}
 local rating_bg_textures = {}
 
-for i = 1, 5, 1 do
+for i = 1, 5 do
 	rating_textures[i] = "icon_score_rating"
 	rating_bg_textures[i] = "icon_score_rating_empty"
 	rating_texture_sizes[i] = {

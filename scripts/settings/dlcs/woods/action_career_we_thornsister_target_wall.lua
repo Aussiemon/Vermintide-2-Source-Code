@@ -79,8 +79,8 @@ ActionCareerWEThornsisterTargetWall.client_owner_start_action = function (self, 
 	if max_segments < segment_count then
 		local segment_positions = self._segment_positions
 
-		for i = max_segments, segment_count, 1 do
-			for idx = 1, 2, 1 do
+		for i = max_segments, segment_count do
+			for idx = 1, 2 do
 				segment_positions[idx][i + 1] = Vector3Box()
 			end
 		end
@@ -97,7 +97,7 @@ end
 
 ActionCareerWEThornsisterTargetWall._update_targeting = function (self)
 	local start_pos, start_rot = self._first_person_extension:get_projectile_start_position_rotation()
-	local wall_direction_func = (self._vertical_rotation and Quaternion.right) or Quaternion.forward
+	local wall_direction_func = self._vertical_rotation and Quaternion.right or Quaternion.forward
 	local player_direction_flat = Vector3.flat(wall_direction_func(start_rot))
 	local player_rotation_flat = Quaternion.look(player_direction_flat, Vector3.up())
 	local velocity = Quaternion.forward(start_rot) * self._target_sim_speed
@@ -211,7 +211,7 @@ ActionCareerWEThornsisterTargetWall._check_wall_linear = function (self, center,
 		local previous_pos = nil
 		local wall_right_offset = 0
 
-		for i = middle_segment, segment_count - 1, 1 do
+		for i = middle_segment, segment_count - 1 do
 			local position = wall_start + segment_increment * i
 			previous_pos = self:_check_segment(previous_pos, position, forward)
 
@@ -262,11 +262,11 @@ ActionCareerWEThornsisterTargetWall._check_wall_radial = function (self, center,
 		local middle_segment = math.floor(segment_count / 2)
 		local segment_positions = self._segment_positions[self._current_segment_positions_idx]
 		local forward = Quaternion.forward(wall_rotation)
-		local segment_increment = (2 * math.pi) / segment_count
+		local segment_increment = 2 * math.pi / segment_count
 		local forward_offset = forward * self._radial_center_offset
 		local current_segment_idx = 0
 
-		for i = 1, segment_count, 1 do
+		for i = 1, segment_count do
 			local position = center + Quaternion.rotate(Quaternion(Vector3.up(), segment_increment * i), forward_offset)
 			position = self:_check_segment(center, position, forward)
 
@@ -313,7 +313,7 @@ ActionCareerWEThornsisterTargetWall._check_segment = function (self, prev_positi
 			if prev_position then
 				local sweep_from = prev_position + Vector3.up() * WALL_OVERLAP_HEIGHT_OFFSET
 				local sweep_results = PhysicsWorld.linear_obb_sweep(physics_world, sweep_from, overlap_pos, overlap_size, overlap_rot, 5, "collision_filter", "filter_player_mover", "types", "statics", "report_initial_overlap", "use_global_table")
-				actor_count = (sweep_results and #sweep_results) or 0
+				actor_count = sweep_results and #sweep_results or 0
 			else
 				local hit_actors = nil
 				hit_actors, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rot, "size", overlap_size, "shape", "oobb", "types", "statics", "collision_filter", "filter_player_mover", "use_global_table")
@@ -329,5 +329,3 @@ ActionCareerWEThornsisterTargetWall._check_segment = function (self, prev_positi
 
 	return false
 end
-
-return

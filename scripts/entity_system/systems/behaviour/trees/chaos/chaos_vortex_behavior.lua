@@ -28,5 +28,3 @@ BreedBehaviors.chaos_vortex = {
 	},
 	name = "chaos_vortex"
 }
-
-return

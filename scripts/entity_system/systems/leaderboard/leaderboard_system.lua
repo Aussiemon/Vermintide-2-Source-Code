@@ -52,7 +52,7 @@ function get_wave_and_time_from_score(score)
 end
 
 local function debug_steam_wave_print_entries(status, total_scores, scores)
-	for i = 1, total_scores, 1 do
+	for i = 1, total_scores do
 		local entry = scores[i]
 		local global_rank = entry.global_rank
 		local player_name = entry.name
@@ -64,7 +64,7 @@ local function debug_steam_wave_print_entries(status, total_scores, scores)
 		local my_hero_name = Localize(my_profile.display_name)
 		local accompanying_players_string = ""
 
-		for j = 1, 3, 1 do
+		for j = 1, 3 do
 			local steamid_32 = extra_data[j]
 
 			if steamid_32 ~= NO_PLAYER_ID then
@@ -86,7 +86,7 @@ local function debug_steam_wave_print_entries(status, total_scores, scores)
 end
 
 local function debug_simply_print(status, total_scores, scores)
-	for i = 1, total_scores, 1 do
+	for i = 1, total_scores do
 		local entry = scores[i]
 		local global_rank = entry.global_rank
 		local player_name = entry.name
@@ -118,7 +118,7 @@ LeaderboardSystem.init = function (self, entity_system_creation_context, system_
 	self.round_start_time = nil
 
 	if script_data.debug_leaderboard then
-		local debug_string = string.format("[LeaderboardSystem] %s", (STEAM_AVAILABLE and "Steam detected, using leaderboards") or "Leaderboards are disabled")
+		local debug_string = string.format("[LeaderboardSystem] %s", STEAM_AVAILABLE and "Steam detected, using leaderboards" or "Leaderboards are disabled")
 
 		print(debug_string)
 	end
@@ -194,7 +194,7 @@ LeaderboardSystem.debug_simulate_wave_score_enty = function (self, wave, time, n
 		4
 	}
 
-	for i = 1, nr_players, 1 do
+	for i = 1, nr_players do
 		local network_id_64_bit = net_ids[i]
 		local network_id_32_bit = Steam.id_to_id_32bit(network_id_64_bit)
 		human_players[#human_players + 1] = network_id_32_bit
@@ -371,5 +371,3 @@ LeaderboardSystem.rpc_client_leaderboard_register_score = function (self, channe
 
 	self:register_score(level_key, difficulty_name, score, human_players)
 end
-
-return

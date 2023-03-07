@@ -105,5 +105,3 @@ LevelSettings.dlc_wizards_trail = {
 		"location_trail_tockstadt_outskirts"
 	}
 }
-
-return

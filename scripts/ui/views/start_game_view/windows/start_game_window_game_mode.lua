@@ -47,7 +47,7 @@ StartGameWindowGameMode.create_ui_elements = function (self, params, offset)
 	local window_layouts = layout_settings.window_layouts
 	local game_mode_option_spacing = 16
 
-	for i = 1, #window_layouts, 1 do
+	for i = 1, #window_layouts do
 		local settings = window_layouts[i]
 
 		if settings.panel_sorting and self.parent:can_add_layout(settings) then
@@ -165,7 +165,7 @@ end
 StartGameWindowGameMode._handle_input = function (self, dt, t)
 	local game_mode_widgets = self._game_mode_widgets
 
-	for i = 1, #game_mode_widgets, 1 do
+	for i = 1, #game_mode_widgets do
 		local widget = game_mode_widgets[i]
 
 		if self:_is_button_pressed(widget) and not self:_is_button_selected(widget) then
@@ -188,7 +188,7 @@ end
 StartGameWindowGameMode._update_game_options_hover_effect = function (self, dt)
 	local game_mode_widgets = self._game_mode_widgets
 
-	for i = 1, #game_mode_widgets, 1 do
+	for i = 1, #game_mode_widgets do
 		local widget = game_mode_widgets[i]
 
 		UIWidgetUtils.animate_option_button(widget, dt)
@@ -211,7 +211,7 @@ end
 StartGameWindowGameMode._set_selected_option = function (self, selected_layout_name)
 	local game_mode_widgets = self._game_mode_widgets
 
-	for i = 1, #game_mode_widgets, 1 do
+	for i = 1, #game_mode_widgets do
 		local widget = game_mode_widgets[i]
 		local layout_name = widget.content.layout_name
 		local is_selected = layout_name == selected_layout_name
@@ -243,7 +243,7 @@ StartGameWindowGameMode.draw = function (self, dt)
 
 	local game_mode_widgets = self._game_mode_widgets
 
-	for i = 1, #game_mode_widgets, 1 do
+	for i = 1, #game_mode_widgets do
 		local widget = game_mode_widgets[i]
 
 		if not widget.content.disabled then
@@ -257,5 +257,3 @@ end
 StartGameWindowGameMode._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

@@ -106,7 +106,7 @@ CharacterSelectionView.input_service = function (self, ignore_input_blocked)
 	if ignore_input_blocked then
 		return self.input_manager:get_service("character_selection_view")
 	else
-		return (self._input_blocked and FAKE_INPUT_SERVICE) or self.input_manager:get_service("character_selection_view")
+		return self._input_blocked and FAKE_INPUT_SERVICE or self.input_manager:get_service("character_selection_view")
 	end
 end
 
@@ -232,7 +232,7 @@ CharacterSelectionView.update = function (self, dt, t)
 	local input_manager = self.input_manager
 	local gamepad_active = input_manager:is_device_active("gamepad")
 	local input_blocked = self:input_blocked()
-	local input_service = (input_blocked and not gamepad_active and FAKE_INPUT_SERVICE) or input_manager:get_service("character_selection_view")
+	local input_service = input_blocked and not gamepad_active and FAKE_INPUT_SERVICE or input_manager:get_service("character_selection_view")
 	self._state_machine_params.input_service = input_service
 	local transitioning = self:transitioning()
 
@@ -370,7 +370,7 @@ CharacterSelectionView._is_selection_widget_pressed = function (self, widget)
 	local content = widget.content
 	local steps = content.steps
 
-	for i = 1, steps, 1 do
+	for i = 1, steps do
 		local hotspot_name = "hotspot_" .. i
 		local hotspot = content[hotspot_name]
 
@@ -537,7 +537,7 @@ CharacterSelectionView.on_exit = function (self, params)
 end
 
 CharacterSelectionView.exit = function (self, return_to_game)
-	local exit_transition = self._exit_transition or (self:initial_profile_view() and "exit_initial_character_selection") or "exit_menu"
+	local exit_transition = self._exit_transition or self:initial_profile_view() and "exit_initial_character_selection" or "exit_menu"
 
 	self.ingame_ui:transition_with_fade(exit_transition, self._exit_transition_params)
 	self:play_sound("Play_hud_button_close")
@@ -657,5 +657,3 @@ CharacterSelectionView._is_button_pressed = function (self, widget)
 		return true
 	end
 end
-
-return

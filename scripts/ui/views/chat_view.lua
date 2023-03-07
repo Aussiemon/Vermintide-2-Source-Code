@@ -167,9 +167,9 @@ end
 ChatView._find_end_index = function (self, match_str, start_index)
 	local space_end_index = (string.find(match_str, " ", start_index) or math.huge) - 1
 	local colon_end_index = string.find(match_str, ":", start_index) or math.huge
-	local potential_end_index = (space_end_index <= colon_end_index and space_end_index) or colon_end_index
+	local potential_end_index = space_end_index <= colon_end_index and space_end_index or colon_end_index
 
-	return (potential_end_index < math.huge - 1 and potential_end_index) or nil
+	return potential_end_index < math.huge - 1 and potential_end_index or nil
 end
 
 ChatView.cb_channel_message = function (self, key, message_type, username, message, parameter)
@@ -433,7 +433,7 @@ ChatView._create_ui_elements = function (self)
 	local test_max_users = 60
 	local test_user_data = {}
 
-	for i = 1, test_max_users, 1 do
+	for i = 1, test_max_users do
 		test_user_data[i] = {
 			name = "test_" .. i
 		}
@@ -441,7 +441,7 @@ ChatView._create_ui_elements = function (self)
 
 	local user_entries = {}
 
-	for i = 1, num_users_in_list, 1 do
+	for i = 1, num_users_in_list do
 		local widget_definition = create_entry_func(i)
 		local widget = UIWidget.init(widget_definition)
 		user_entries[i] = widget
@@ -518,7 +518,7 @@ ChatView._update_filter = function (self, filter)
 
 	local a, b, c = Script.temp_count()
 
-	for i = 1, #user_names, 1 do
+	for i = 1, #user_names do
 		if string.find(string.lower(user_names[i]), filter) then
 			new_sub_table[#new_sub_table + 1] = user_names[i]
 		end
@@ -571,7 +571,7 @@ ChatView._update_recent_channels_input = function (self, dt, t)
 		else
 			local base_name = "channel_entry_"
 
-			for i = 1, 5, 1 do
+			for i = 1, 5 do
 				local channel_entry = self._recent_channels_widgets[base_name .. i]
 
 				if channel_entry then
@@ -982,10 +982,10 @@ ChatView._handle_and_draw_channels_list = function (self, ui_renderer, ui_sceneg
 	channel_entry_offset[2] = base_offset[2]
 	local channel_to_join = nil
 
-	for i = 1, math.min(rows_to_draw, 4), 1 do
+	for i = 1, math.min(rows_to_draw, 4) do
 		channel_entry_offset[2] = base_offset[2] - (i - 1) * channel_entry_size[2] - (i - 1) * channels_height_spacing
 
-		for j = 1, channels_per_row, 1 do
+		for j = 1, channels_per_row do
 			local index = (i - 1) * channels_per_row + j
 
 			if not CHANNEL_MATCHES[index] then
@@ -1523,7 +1523,7 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 
 	if emoji_scrollbar_widget then
 		local scroll_input = input_service:get("chat_scroll")[2]
-		self._emoji_scroll = (math.abs(self._emoji_scroll) < math.abs(scroll_input) and scroll_input) or self._emoji_scroll
+		self._emoji_scroll = math.abs(self._emoji_scroll) < math.abs(scroll_input) and scroll_input or self._emoji_scroll
 	end
 
 	local max_offset = rows * emoji_size[2] + (rows - 1) * emoji_offset[2]
@@ -1546,16 +1546,16 @@ ChatView._handle_and_draw_emoji_list_input = function (self, dt)
 
 	local is_hover = false
 
-	for i = 1 + row_index_offset, rows_to_show + row_index_offset, 1 do
+	for i = 1 + row_index_offset, rows_to_show + row_index_offset do
 		emoji_widget_offset[2] = emoji_widget_offset[2] - emoji_size[2] - emoji_offset[2]
 
-		for k = 1, emojis_per_row, 1 do
+		for k = 1, emojis_per_row do
 			local row_start_index = k - 1
 			local x = row_start_index * (emoji_size[1] + emoji_width_spacing)
 			emoji_widget_offset[1] = x
 			local index = (i - 1) * emojis_per_row + k
 			local emoji_data = EMOJI_SETTINGS[index]
-			emoji_widget_content.texture_id = (emoji_data and emoji_data.texture) or nil
+			emoji_widget_content.texture_id = emoji_data and emoji_data.texture or nil
 
 			UIRenderer.draw_widget(ui_renderer, emoji_widget)
 
@@ -1841,14 +1841,14 @@ ChatView._show_welcome_message = function (self)
 	channel_messages_table[self._current_channel_name] = channel_messages_table[self._current_channel_name] or {}
 	local message_tables = channel_messages_table[self._current_channel_name]
 
-	for i = 1, #WELCOME_MESSAGE, 1 do
+	for i = 1, #WELCOME_MESSAGE do
 		local message = WELCOME_MESSAGE[i]
 		local new_message_table = {
-			sender = string.format(message, self._current_channel_name),
-			trimmed_sender = new_message_table.sender,
-			message = "",
-			type = nil
+			sender = string.format(message, self._current_channel_name)
 		}
+		new_message_table.trimmed_sender = new_message_table.sender
+		new_message_table.message = ""
+		new_message_table.type = nil
 		message_tables[#message_tables + 1] = new_message_table
 		chat_output_content.text_start_offset = #message_tables
 	end
@@ -1887,7 +1887,7 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local user_name = parameters[2]
 		local message = ""
 
-		for i = 3, #parameters, 1 do
+		for i = 3, #parameters do
 			message = message .. " " .. parameters[i]
 		end
 
@@ -1915,7 +1915,7 @@ ChatView._send_channel_message = function (self, content, emojis)
 		local user_name = Managers.irc:user_name()
 		local message = ""
 
-		for i = 2, #parameters, 1 do
+		for i = 2, #parameters do
 			message = message .. " " .. parameters[i]
 		end
 
@@ -1990,7 +1990,7 @@ ChatView._send_private_message = function (self, content, emojis)
 	elseif command == "game_invite" then
 		local message = ""
 
-		for i = 2, #parameters, 1 do
+		for i = 2, #parameters do
 			message = message .. " " .. parameters[i]
 		end
 
@@ -2179,7 +2179,7 @@ ChatView.destroy = function (self)
 end
 
 ChatView._exit = function (self, return_to_game)
-	local exit_transition = (return_to_game and "exit_menu") or "ingame_menu"
+	local exit_transition = return_to_game and "exit_menu" or "ingame_menu"
 
 	self._ingame_ui:handle_transition(exit_transition)
 end
@@ -2271,5 +2271,3 @@ ChatView._update_members = function (self, read_index)
 	self._user_names = user_names
 	self._user_list_read_index = read_index
 end
-
-return

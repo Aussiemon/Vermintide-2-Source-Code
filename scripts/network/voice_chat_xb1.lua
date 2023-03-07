@@ -284,5 +284,3 @@ VoiceChatXboxOneManager.destroy = function (self)
 
 	VoiceChat.shutdown()
 end
-
-return

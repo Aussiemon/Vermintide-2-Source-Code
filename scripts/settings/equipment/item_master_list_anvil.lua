@@ -434,5 +434,3 @@ ItemMasterList.wh_2h_billhook_skin_02 = {
 		"wh_captain"
 	}
 }
-
-return

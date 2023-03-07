@@ -139,7 +139,7 @@ function trigger_ai_equipment_flow_event(params)
 		local inventory_item_units = inv_ext.inventory_item_units
 		local unit_flow = Unit.flow_event
 
-		for i = 1, inv_ext.inventory_items_n, 1 do
+		for i = 1, inv_ext.inventory_items_n do
 			unit_flow(inventory_item_units[i], params.event)
 		end
 	end
@@ -474,7 +474,7 @@ function flow_callback_broadphase_ai_set_goal_destination(params)
 		local broadphase_result = FrameTable.alloc_table()
 		local num_result = Broadphase.query(ai_system.broadphase, broadphase_position, broadphase_radius, broadphase_result)
 
-		for i = 1, num_result, 1 do
+		for i = 1, num_result do
 			local ai_unit = broadphase_result[i]
 			local blackboard = BLACKBOARDS[ai_unit]
 			local breed = blackboard.breed
@@ -501,5 +501,3 @@ function flow_callback_get_crossroad_path_id(params)
 
 	return flow_return_table
 end
-
-return

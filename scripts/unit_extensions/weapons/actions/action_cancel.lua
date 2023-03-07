@@ -15,5 +15,3 @@ end
 ActionCancel.finish = function (self, reason)
 	return
 end
-
-return

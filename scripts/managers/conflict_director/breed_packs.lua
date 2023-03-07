@@ -7066,7 +7066,7 @@ BackupBreedPack = {
 local function calc_num_in_packs(breed_packs, roaming_set_name)
 	local num_breed_packs = #breed_packs
 
-	for i = 1, num_breed_packs, 1 do
+	for i = 1, num_breed_packs do
 		local pack = breed_packs[i]
 		local size = #pack.members
 
@@ -7086,7 +7086,7 @@ local function generate_breed_pack_by_size(breed_packs, roaming_set_name)
 	local breed_pack_by_size = {}
 	local by_size = {}
 
-	for i = 1, num_breed_packs, 1 do
+	for i = 1, num_breed_packs do
 		local pack = breed_packs[i]
 		local size = pack.members_n
 
@@ -7132,12 +7132,12 @@ if #InterestPointPickListIndexLookup == 0 then
 
 	for i, data in ipairs(InterestPointUnits) do
 		if data then
-			for j = 1, data.spawn_weight, 1 do
+			for j = 1, data.spawn_weight do
 				items = items + 1
 				weight_lookup[items] = i
 			end
 
-			for j = 1, #data, 1 do
+			for j = 1, #data do
 				local unit_name = data[j]
 				SizeOfInterestPoint[unit_name] = i
 			end
@@ -7156,5 +7156,3 @@ if #InterestPointPickListIndexLookup == 0 then
 end
 
 BenchmarkSettings.demo_mode_overrides()
-
-return

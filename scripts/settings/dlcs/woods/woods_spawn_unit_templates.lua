@@ -76,7 +76,7 @@ SpawnUnitTemplates.thornsister_thorn_wall_unit = {
 		local buff_extension = ScriptUnit.has_extension(wall_unit, "buff_system")
 
 		if buff_extension and buffs_to_add then
-			for i = 1, #buffs_to_add, 1 do
+			for i = 1, #buffs_to_add do
 				buff_extension:add_buff(buffs_to_add[i])
 			end
 		end
@@ -131,5 +131,3 @@ SpawnUnitTemplates.vortex_unit = {
 		Managers.state.unit_spawner:spawn_network_unit(UNIT_NAME, UNIT_TEMPLATE_NAME, extension_init_data, position, rotation)
 	end
 }
-
-return

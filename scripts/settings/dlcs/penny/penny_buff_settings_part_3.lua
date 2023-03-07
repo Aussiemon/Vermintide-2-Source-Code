@@ -29,7 +29,7 @@ settings.buff_function_templates = {
 	enemy_penny_curse_pulse = function (unit, buff, params, world)
 		local t = params.t
 
-		if Managers.state.network.is_server and AiUtils.unit_alive(unit) and (buff.next_tick == nil or (buff.next_tick and buff.next_tick < t)) then
+		if Managers.state.network.is_server and AiUtils.unit_alive(unit) and (buff.next_tick == nil or buff.next_tick and buff.next_tick < t) then
 			local buff_system = Managers.state.entity:system("buff_system")
 			local side_manager = Managers.state.side
 			local template = buff.template
@@ -54,5 +54,3 @@ settings.buff_function_templates = {
 		end
 	end
 }
-
-return

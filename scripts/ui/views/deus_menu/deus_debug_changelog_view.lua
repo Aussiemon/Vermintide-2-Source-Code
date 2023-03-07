@@ -101,5 +101,3 @@ end
 DeusDebugChangelogView._close = function (self)
 	self.ingame_ui:handle_transition("exit_menu")
 end
-
-return

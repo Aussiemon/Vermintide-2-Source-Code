@@ -928,5 +928,3 @@ WeaponTraits.combinations = {
 BuffUtils.copy_talent_buff_names(WeaponTraits.buff_templates)
 BuffUtils.apply_buff_tweak_data(WeaponTraits.buff_templates, buff_tweak_data)
 DLCUtils.require_list("weapon_traits_file_names")
-
-return

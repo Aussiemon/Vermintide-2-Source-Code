@@ -20,7 +20,7 @@ local function get_mean(list)
 	local n = #list
 	local s = 0
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		s = s + list[i]
 	end
 
@@ -33,7 +33,7 @@ local function get_sd(list, median)
 	local n = #list
 	local differences = 0
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		local val = list[i]
 		local difference_squared = (val - median)^2
 		differences = differences + difference_squared
@@ -73,7 +73,7 @@ NetworkClockClient.unregister_rpcs = function (self)
 end
 
 NetworkClockClient.synchronized = function (self)
-	return (self._state == "synced" and true) or false
+	return self._state == "synced" and true or false
 end
 
 NetworkClockClient.time = function (self)
@@ -230,5 +230,3 @@ NetworkClockClient.rpc_network_current_server_time_response = function (self, ch
 
 	self:_update_clock(delta)
 end
-
-return

@@ -40,7 +40,7 @@ NetworkClient.init = function (self, server_peer_id, wanted_profile_index, wante
 	end
 
 	self.lobby_client = lobby_client
-	local display_name = (profile and profile.display_name) or "no profile wanted"
+	local display_name = profile and profile.display_name or "no profile wanted"
 
 	network_printf("init - wanted_profile_index, %s, %s", self.wanted_profile_index, display_name)
 
@@ -96,7 +96,7 @@ NetworkClient.destroy = function (self)
 end
 
 NetworkClient.register_rpcs = function (self, network_event_delegate, network_transmit)
-	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", (IS_XB1 and "rpc_set_migration_host_xbox") or "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
+	network_event_delegate:register(self, "rpc_loading_synced", "rpc_notify_in_post_game", "rpc_game_started", "rpc_connection_failed", "rpc_notify_connected", IS_XB1 and "rpc_set_migration_host_xbox" or "rpc_set_migration_host", "rpc_client_update_lobby_data", "rpc_client_connection_state")
 
 	self._network_event_delegate = network_event_delegate
 
@@ -198,7 +198,7 @@ end
 NetworkClient.rpc_set_migration_host = function (self, channel_id, peer_id, do_migrate)
 	if do_migrate then
 		local player = Managers.player:player_from_peer_id(peer_id)
-		local name = (player and player:name()) or tostring(peer_id)
+		local name = player and player:name() or tostring(peer_id)
 		self.host_to_migrate_to = {
 			peer_id = peer_id,
 			name = name
@@ -211,7 +211,7 @@ end
 NetworkClient.rpc_set_migration_host_xbox = function (self, channel_id, peer_id, do_migrate, session_id, session_template_name)
 	if do_migrate then
 		local player = Managers.player:player_from_peer_id(peer_id)
-		local name = (player and player:name()) or tostring(peer_id)
+		local name = player and player:name() or tostring(peer_id)
 		self.host_to_migrate_to = {
 			peer_id = peer_id,
 			name = name,
@@ -362,8 +362,7 @@ NetworkClient._update_eac_match = function (self, dt)
 	self._eac_state_determined = state_determined
 	self._eac_can_play = can_play
 
-	if can_play then
-	else
+	if not can_play then
 		printf("eac mismatch leading to eac_authorize_failed")
 
 		self.fail_reason = "eac_authorize_failed"
@@ -402,7 +401,7 @@ NetworkClient._eac_host_check = function (self)
 	end
 
 	local match = nil
-	match = ((host_state ~= "banned" and own_state ~= "banned") or false) and host_state == own_state
+	match = (host_state ~= "banned" and own_state ~= "banned" or false) and host_state == own_state
 
 	if not match then
 		printf("Host (%s) EAC state is %s, own (%s) state is %s", self.server_peer_id, host_state, own_id, own_state)
@@ -428,7 +427,5 @@ NetworkClient.is_peer_ingame = function (self, peer_id)
 end
 
 NetworkClient.get_peers = function (self)
-	return (self._network_state and self._network_state:get_peers()) or {}
+	return self._network_state and self._network_state:get_peers() or {}
 end
-
-return

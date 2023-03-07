@@ -66,7 +66,7 @@ KeepDecorationPaintingExtension.extensions_ready = function (self)
 		return
 	end
 
-	local selected_painting = (self._is_client_painting and "hidden") or self:get_selected_decoration()
+	local selected_painting = self._is_client_painting and "hidden" or self:get_selected_decoration()
 	self._current_preview_painting = selected_painting
 
 	local function on_material_loaded()
@@ -422,5 +422,3 @@ end
 KeepDecorationPaintingExtension.on_game_object_destroyed = function (self)
 	self._go_id = nil
 end
-
-return

@@ -47,7 +47,7 @@ DeusMapUI._create_ui_elements = function (self)
 	local peers = self._deus_run_controller:get_peers()
 	local portrait_frame_widgets = {}
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local name = "player_portrait_frame_" .. i
 		local widget_definition, widget = nil
 
@@ -103,13 +103,7 @@ DeusMapUI._update_animations = function (self, dt, t)
 
 	local progress = nil
 	local interpolation_time = anim_data.alpha_multiplier_animation_end_time - anim_data.alpha_multiplier_animation_start_time
-
-	if interpolation_time <= 0.001 then
-		progress = 1
-	else
-		progress = math.clamp((t - anim_data.alpha_multiplier_animation_start_time) / interpolation_time, 0, 1)
-	end
-
+	progress = interpolation_time <= 0.001 and 1 or math.clamp((t - anim_data.alpha_multiplier_animation_start_time) / interpolation_time, 0, 1)
 	local new_value = math.lerp(anim_data.source_alpha_multiplier, anim_data.target_alpha_multiplier, progress)
 	anim_data.alpha_multiplier = new_value
 
@@ -174,9 +168,9 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 	end
 
 	if minor_modifier_group then
-		content_node_info.minor_modifier_1_section.text = (minor_modifier_group[1] and Localize("mutator_" .. minor_modifier_group[1] .. "_name")) or ""
-		content_node_info.minor_modifier_2_section.text = (minor_modifier_group[2] and Localize("mutator_" .. minor_modifier_group[2] .. "_name")) or ""
-		content_node_info.minor_modifier_3_section.text = (minor_modifier_group[3] and Localize("mutator_" .. minor_modifier_group[3] .. "_name")) or ""
+		content_node_info.minor_modifier_1_section.text = minor_modifier_group[1] and Localize("mutator_" .. minor_modifier_group[1] .. "_name") or ""
+		content_node_info.minor_modifier_2_section.text = minor_modifier_group[2] and Localize("mutator_" .. minor_modifier_group[2] .. "_name") or ""
+		content_node_info.minor_modifier_3_section.text = minor_modifier_group[3] and Localize("mutator_" .. minor_modifier_group[3] .. "_name") or ""
 	else
 		content_node_info.minor_modifier_1_section.text = ""
 		content_node_info.minor_modifier_2_section.text = ""
@@ -218,8 +212,8 @@ DeusMapUI.enable_hover_text = function (self, screen_pos, type, level, theme, mi
 		content_node_info.breed_text = ""
 	end
 
-	content_node_info.none_modifier_info.click_to_vote = (selectable and "deus_map_node_info_click_to_vote") or ""
-	content_node_info.frame_settings_name = (selected and "menu_frame_12_gold") or "menu_frame_12"
+	content_node_info.none_modifier_info.click_to_vote = selectable and "deus_map_node_info_click_to_vote" or ""
+	content_node_info.frame_settings_name = selected and "menu_frame_12_gold" or "menu_frame_12"
 end
 
 DeusMapUI._update_portrait_frame = function (self, frame_name, level_text, index)
@@ -234,7 +228,7 @@ DeusMapUI.update_player_data = function (self, player_data)
 	local ui_renderer = self._ui_renderer
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local data = player_data[i]
 		local player_portrait = widgets_by_name["player_" .. i .. "_portrait"]
 		local player_texts = widgets_by_name["player_" .. i .. "_texts"]
@@ -309,7 +303,7 @@ DeusMapUI.update_timer = function (self, time_left, optional_override_text)
 	if optional_override_text then
 		widget.content.time = optional_override_text
 	else
-		local timer_text = string.format("%.2d:%.2d", (time_left / 60) % 60, time_left % 60)
+		local timer_text = string.format("%.2d:%.2d", time_left / 60 % 60, time_left % 60)
 		widget.content.time = timer_text
 	end
 end
@@ -378,5 +372,3 @@ end
 DeusMapUI.destroy = function (self)
 	Managers.state.event:unregister("ingame_player_list_enabled", self)
 end
-
-return

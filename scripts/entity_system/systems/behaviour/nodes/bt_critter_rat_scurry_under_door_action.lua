@@ -176,5 +176,3 @@ BTCritterRatScurryUnderDoorAction._waiting_to_reach_end_update = function (self,
 		blackboard.scurry_state = "done"
 	end
 end
-
-return

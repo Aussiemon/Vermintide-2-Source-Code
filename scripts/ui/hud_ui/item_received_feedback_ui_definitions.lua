@@ -159,7 +159,7 @@ local widget_definitions = {
 local function create_message_widgets(number_of_slots)
 	local entries = {}
 
-	for i = 1, number_of_slots, 1 do
+	for i = 1, number_of_slots do
 		local message = {
 			scenegraph_id = "message_animated",
 			element = {
@@ -338,7 +338,7 @@ local function create_reinforcement_widget(index, scenegraph_id, frame_settings_
 	}
 	text_style_ids[#text_style_ids + 1] = arrow_name
 
-	for i = 1, 1, 1 do
+	for i = 1, 1 do
 		local portrait_offset = {
 			0,
 			0,
@@ -346,9 +346,11 @@ local function create_reinforcement_widget(index, scenegraph_id, frame_settings_
 		}
 		local portrait_texture = "icons_placeholder"
 		local portrait_size = {
-			portrait_size[1] * scale,
-			portrait_size[2] * scale
+			86,
+			108
 		}
+		portrait_size[1] = portrait_size[1] * scale
+		portrait_size[2] = portrait_size[2] * scale
 		local offset = table.clone(default_offset)
 		offset[1] = portrait_offset[1] - portrait_size[1] / 2 + offset[1] * scale
 		offset[2] = portrait_offset[2] - portrait_size[2] / 2 + offset[2] * scale
@@ -412,7 +414,7 @@ end
 
 local message_widgets = {}
 
-for i = 1, MAX_NUMBER_OF_MESSAGES, 1 do
+for i = 1, MAX_NUMBER_OF_MESSAGES do
 	local widget = create_reinforcement_widget(i, "message_animated", "positive_reinforcement", 1)
 	message_widgets[i] = widget
 end

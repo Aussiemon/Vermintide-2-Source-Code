@@ -160,5 +160,3 @@ if not Presence then
 end
 
 ColorBox = QuaternionBox
-
-return

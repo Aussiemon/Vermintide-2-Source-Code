@@ -1027,5 +1027,3 @@ MaterialEffectMappings.melee_hit_deus_relic_01 = MaterialEffectMappings.melee_hi
 		metal_hollow = "fx/hit_metal_hollow_blunt"
 	}
 }
-
-return

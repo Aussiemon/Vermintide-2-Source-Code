@@ -440,7 +440,7 @@ ActionTemplates.action_career_we_3_piercing = {
 DLCUtils.require_list("action_template_files")
 
 for _, action_names in pairs(CareerActionNames) do
-	for i = 1, #action_names, 1 do
+	for i = 1, #action_names do
 		local action_name = action_names[i]
 		local template = ActionTemplates[action_name]
 		local default_data = template.default
@@ -448,5 +448,3 @@ for _, action_names in pairs(CareerActionNames) do
 		default_data.chain_condition_func = condition_func
 	end
 end
-
-return

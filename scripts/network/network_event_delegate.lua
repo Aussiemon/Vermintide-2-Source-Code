@@ -28,7 +28,7 @@ NetworkEventDelegate.init = function (self)
 end
 
 NetworkEventDelegate.register = function (self, object, ...)
-	for i = 1, select("#", ...), 1 do
+	for i = 1, select("#", ...) do
 		local callback_name = select(i, ...)
 
 		fassert(object[callback_name], "[NetworkEventDelegate]: No callback function with name %q specified in passed object", callback_name)
@@ -41,7 +41,7 @@ NetworkEventDelegate.register = function (self, object, ...)
 				local registered_objects = self._registered_objects[callback_name]
 				local num_registered_objects = #registered_objects
 
-				for i = 1, num_registered_objects, 1 do
+				for i = 1, num_registered_objects do
 					local object = registered_objects[i]
 
 					object[callback_name](object, ...)
@@ -122,5 +122,3 @@ NetworkEventDelegate.destroy = function (self)
 
 	GarbageLeakDetector.register_object(self, "NetworkEventDelegate")
 end
-
-return

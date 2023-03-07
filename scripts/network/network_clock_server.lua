@@ -61,5 +61,3 @@ end
 NetworkClockServer.rpc_network_current_server_time_request = function (self, channel_id, client_time)
 	RPC.rpc_network_current_server_time_response(channel_id, client_time, self._clock)
 end
-
-return

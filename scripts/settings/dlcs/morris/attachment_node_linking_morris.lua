@@ -70,5 +70,3 @@ AttachmentNodeLinking.dr_deus_01_projectile = {
 		}
 	}
 }
-
-return

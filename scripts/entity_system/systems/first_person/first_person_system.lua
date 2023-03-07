@@ -105,5 +105,3 @@ FirstPersonSystem.rpc_first_person_flow_event = function (self, channel_id, unit
 		Unit.flow_event(first_person_unit, event_name)
 	end
 end
-
-return

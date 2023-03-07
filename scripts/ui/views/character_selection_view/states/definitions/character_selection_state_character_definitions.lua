@@ -1023,7 +1023,7 @@ local function create_hero_icon_widget(scenegraph_id, size)
 						return content.use_empty_icon
 					end,
 					content_change_function = function (content, style)
-						local target = (content.is_hover and 255) or 184
+						local target = content.is_hover and 255 or 184
 						style.color[1] = math.ceil(style.color[1] + 0.1 * (target - style.color[1]))
 					end
 				},
@@ -1094,7 +1094,7 @@ local function create_hero_icon_widget(scenegraph_id, size)
 					end,
 					content_change_function = function (content, style)
 						local hotspot = content.bot_change_order_hotspot
-						style.color[1] = (hotspot.is_hover and 255) or 128
+						style.color[1] = hotspot.is_hover and 255 or 128
 					end
 				},
 				{
@@ -1475,7 +1475,7 @@ local empty_hero_widget = {
 				texture_id = "icon",
 				pass_type = "texture",
 				content_change_function = function (content, style)
-					local target = (content.is_hover and 255) or 184
+					local target = content.is_hover and 255 or 184
 					style.color[1] = math.ceil(style.color[1] + 0.1 * (target - style.color[1]))
 				end
 			}
@@ -1555,7 +1555,7 @@ local function create_info_text(text, scenegraph_id)
 					pass_type = "text",
 					text_id = "text",
 					content_change_function = function (content, style)
-						style.text_color = (content.locked and style.locked_text_color) or style.default_text_color
+						style.text_color = content.locked and style.locked_text_color or style.default_text_color
 					end
 				},
 				{

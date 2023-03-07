@@ -3493,5 +3493,3 @@ PowerLevelTemplates = {
 }
 
 DLCUtils.require_list("power_level_template_files_names")
-
-return

@@ -13,7 +13,8 @@ local function bimap_remove(bm, a)
 
 	fassert(b, "bimap_remove, didn't contain item")
 
-	bm[a], bm[b] = nil
+	bm[b] = nil
+	bm[a] = nil
 end
 
 local type = type
@@ -138,5 +139,3 @@ NetworkUnitStorage.transfer_go_id = function (self, unit, unit_new)
 
 	NetworkUnit.transfer_unit(unit, unit_new)
 end
-
-return

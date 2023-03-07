@@ -35,5 +35,3 @@ WeaveOnboardingUtils.complete_onboarding = function ()
 	statistics_db:set_stat(stats_id, onboarding_step_stat, 10)
 	statistics_db:set_stat(stats_id, ui_onboarding_state_stat, -1)
 end
-
-return

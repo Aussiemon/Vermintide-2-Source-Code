@@ -21,5 +21,3 @@ end
 MatchmakingStateIdle.update = function (self, dt, t)
 	return nil
 end
-
-return

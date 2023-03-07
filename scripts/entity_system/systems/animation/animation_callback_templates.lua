@@ -79,7 +79,7 @@ local DEFAULT_SPEED_LERP_TIME_ON_TARGET_DODGE_DAMAGE_DONE = 0.3
 
 AnimationCallbackTemplates.server.anim_cb_damage = function (unit, param)
 	local blackboard = BLACKBOARDS[unit]
-	local target_unit = (blackboard.smash_door and blackboard.smash_door.target_unit) or blackboard.attacking_target or blackboard.drag_target_unit
+	local target_unit = blackboard.smash_door and blackboard.smash_door.target_unit or blackboard.attacking_target or blackboard.drag_target_unit
 	local action = blackboard.action
 
 	if not action then
@@ -854,5 +854,3 @@ AnimationCallbackTemplates.server.anim_cb_attack_grabbed_smash = function (unit,
 end
 
 DLCUtils.require_list("animation_callback_template_files")
-
-return

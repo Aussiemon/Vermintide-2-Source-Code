@@ -80,7 +80,7 @@ WeaveLimitedItemSpawnerExtension.set_weave_settings = function (self, objective_
 	self._on_spawn_func = objective_data.on_spawn_func
 	self._on_complete_func = objective_data.on_complete_func
 	local template_name = objective_data.template_name or Unit.get_data(self._unit, "template_name")
-	local pickup_name = (template_name == "gargoyle_head_spawner" and "magic_crystal") or "magic_barrel"
+	local pickup_name = template_name == "gargoyle_head_spawner" and "magic_crystal" or "magic_barrel"
 
 	Unit.set_data(self._unit, "template_name", template_name)
 	Unit.set_data(self._unit, "pickup_name", pickup_name)
@@ -224,5 +224,3 @@ WeaveLimitedItemSpawnerExtension._client_update = function (self, dt, t)
 		self._value = GameSession.game_object_field(game_session, self._game_object_id, "value")
 	end
 end
-
-return

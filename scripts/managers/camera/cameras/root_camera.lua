@@ -42,7 +42,7 @@ RootCamera.parse_parameters = function (self, camera_settings, parent_node)
 	local degrees_to_radians = math.pi / 180
 	self._vertical_fov = camera_settings.vertical_fov and camera_settings.vertical_fov * degrees_to_radians
 	self._should_apply_fov_multiplier = camera_settings.should_apply_fov_multiplier or false
-	self._default_fov = (camera_settings.default_fov and camera_settings.default_fov * degrees_to_radians) or self._vertical_fov
+	self._default_fov = camera_settings.default_fov and camera_settings.default_fov * degrees_to_radians or self._vertical_fov
 	self._near_range = camera_settings.near_range
 	self._far_range = camera_settings.far_range
 	self._pitch_min = camera_settings.pitch_min and camera_settings.pitch_min * degrees_to_radians
@@ -89,7 +89,7 @@ RootCamera.update_pitch_yaw = function (self, dt, data, current_node)
 	local dyn_pitch_scale = 1
 	local dyn_yaw_scale = 1
 	local max_yaw_speed = nil
-	local look_vec = (data.look_controller_input and data.look_controller_input:unbox()) or Vector3(0, 0, 0)
+	local look_vec = data.look_controller_input and data.look_controller_input:unbox() or Vector3(0, 0, 0)
 
 	if self._root_unit and Unit.alive(self._root_unit) then
 		dyn_pitch_scale = 1
@@ -166,5 +166,3 @@ end
 RootCamera.set_aim_yaw = function (self, yaw)
 	self._aim_yaw = yaw
 end
-
-return

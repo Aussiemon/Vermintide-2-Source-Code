@@ -129,7 +129,7 @@ ActionAssertFuncs = {
 		fassert(default_sub_action, "Linked to invalid default sub_action [\"%s.%s\"] for [\"%s.%s\"] in weapon [\"%s\"]", default_action_name, default_sub_action_name, action_name, sub_action_name, weapon_name)
 		fassert(default_sub_action.kind ~= "action_selector", "Recursive action_selector in [\"%s.%s\"] -> [\"%s.%s\"]  in weapon [\"%s\"]", action_name, sub_action_name, default_action_name, default_sub_action_name, weapon_name)
 
-		for i = 1, #conditional_actions, 1 do
+		for i = 1, #conditional_actions do
 			local linked_sub_action = conditional_actions[i].sub_action
 
 			fassert(linked_sub_action, "No linked sub action set for [\"%s.%s\"] in weapon [\"%s\"]", action_name, sub_action_name, weapon_name)
@@ -150,5 +150,3 @@ ActionAssertFuncs = {
 		end
 	end
 }
-
-return

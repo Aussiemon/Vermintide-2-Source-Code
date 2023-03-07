@@ -1,5 +1,3 @@
--- WARNING: Error occurred during decompilation.
---   Code may be incomplete or incorrect.
 BuffFunctionTemplates = BuffFunctionTemplates or {}
 local unit_is_frozen = Unit.is_frozen
 local dot_tick_sound_events = {}
@@ -66,7 +64,7 @@ end
 
 local function is_husk(unit)
 	local player = Managers.player:owner(unit)
-	local is_husk = (player and (player.remote or player.bot_player)) or false
+	local is_husk = player and (player.remote or player.bot_player) or false
 
 	return is_husk
 end
@@ -347,7 +345,7 @@ BuffFunctionTemplates.functions = {
 
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				DamageUtils.heal_network(player_and_bot_units[i], unit, heal_amount, heal_type)
 			end
 		end
@@ -558,7 +556,7 @@ BuffFunctionTemplates.functions = {
 			if Managers.state.network.is_server then
 				local attacker_unit = params.attacker_unit
 				local source_attacker_unit = params.source_attacker_unit
-				local used_attacker_unit = (ALIVE[attacker_unit] and attacker_unit) or (ALIVE[source_attacker_unit] and source_attacker_unit)
+				local used_attacker_unit = ALIVE[attacker_unit] and attacker_unit or ALIVE[source_attacker_unit] and source_attacker_unit
 
 				if used_attacker_unit then
 					if buff.template.custom_dot_tick_func then
@@ -652,7 +650,7 @@ BuffFunctionTemplates.functions = {
 			if liquid_extension then
 				local source_unit = liquid_extension:get_source_attacker_unit()
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
-				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+				buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			end
 		end
 	end,
@@ -664,7 +662,7 @@ BuffFunctionTemplates.functions = {
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 
 			if health_extension:is_alive() then
-				local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+				local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
@@ -766,7 +764,7 @@ BuffFunctionTemplates.functions = {
 			if liquid_extension then
 				local source_unit = liquid_extension:get_source_attacker_unit()
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
-				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+				buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			end
 		end
 	end,
@@ -778,7 +776,7 @@ BuffFunctionTemplates.functions = {
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 
 			if health_extension:is_alive() then
-				local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+				local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
@@ -832,7 +830,7 @@ BuffFunctionTemplates.functions = {
 			if liquid_extension then
 				local source_unit = liquid_extension._source_unit
 				local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
-				buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+				buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			end
 		end
 	end,
@@ -844,7 +842,7 @@ BuffFunctionTemplates.functions = {
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 
 			if health_extension:is_alive() then
-				local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+				local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage
 				local damage_source = buff.damage_source
@@ -927,7 +925,7 @@ BuffFunctionTemplates.functions = {
 
 		if Unit.alive(attacker_unit) then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
-			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
@@ -964,7 +962,7 @@ BuffFunctionTemplates.functions = {
 
 		if Unit.alive(attacker_unit) then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
-			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
@@ -988,7 +986,7 @@ BuffFunctionTemplates.functions = {
 
 			if health_extension:is_alive() then
 				local attacker_unit = params.attacker_unit
-				attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
@@ -1047,7 +1045,7 @@ BuffFunctionTemplates.functions = {
 
 		if Unit.alive(attacker_unit) then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
-			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
@@ -1076,7 +1074,7 @@ BuffFunctionTemplates.functions = {
 
 			if health_extension:is_alive() then
 				local attacker_unit = params.attacker_unit
-				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
@@ -1141,7 +1139,7 @@ BuffFunctionTemplates.functions = {
 			local is_enemy = DamageUtils.is_enemy(attacker_unit, unit)
 			local attacker_breed = ALIVE[attacker_unit] and Unit.get_data(attacker_unit, "breed")
 			local attacker_breed_name = attacker_breed and attacker_breed.name
-			local damage_source = (is_enemy and attacker_breed_name) or "dot_debuff"
+			local damage_source = is_enemy and attacker_breed_name or "dot_debuff"
 			buff.damage_source = damage_source
 		end
 	end,
@@ -1154,7 +1152,7 @@ BuffFunctionTemplates.functions = {
 
 			if health_extension:is_alive() then
 				local attacker_unit = params.attacker_unit
-				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
@@ -1214,7 +1212,7 @@ BuffFunctionTemplates.functions = {
 			local liquid_extension = ScriptUnit.extension(attacker_unit, "area_damage_system")
 			local source_unit = liquid_extension:get_source_attacker_unit()
 			local source_breed = ALIVE[source_unit] and Unit.get_data(source_unit, "breed")
-			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 
 			if ALIVE[source_unit] then
 				local source_buff_extension = ScriptUnit.has_extension(source_unit, "buff_system")
@@ -1252,7 +1250,7 @@ BuffFunctionTemplates.functions = {
 			local warpfire_unit_breed = Unit.get_data(attacker_unit, "breed")
 			local damage = warpfire_unit_breed.shoot_warpfire_long_attack_damage
 			buff.damage = damage
-			buff.damage_source = (warpfire_unit_breed and warpfire_unit_breed.name) or "dot_debuff"
+			buff.damage_source = warpfire_unit_breed and warpfire_unit_breed.name or "dot_debuff"
 		end
 	end,
 	update_warpfire_thrower_long_distance_damage = function (unit, buff, params, world)
@@ -1264,7 +1262,7 @@ BuffFunctionTemplates.functions = {
 
 			if health_extension:is_alive() then
 				local attacker_unit = params.attacker_unit
-				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
 				local armor_type = buff.armor_type
 				local buff_template = buff.template
 				local damage_type = buff_template.damage_type
@@ -1301,7 +1299,7 @@ BuffFunctionTemplates.functions = {
 
 			if health_extension:is_alive() then
 				local attacker_unit = params.attacker_unit
-				local attacker_unit = (Unit.alive(attacker_unit) and attacker_unit) or unit
+				local attacker_unit = Unit.alive(attacker_unit) and attacker_unit or unit
 				local armor_type = buff.armor_type
 				local damage_type = buff_template.damage_type
 				local damage = buff.damage[armor_type]
@@ -1552,13 +1550,13 @@ BuffFunctionTemplates.functions = {
 			if difference < 0 then
 				local amount_to_remove = math.abs(difference)
 
-				for i = 1, amount_to_remove, 1 do
+				for i = 1, amount_to_remove do
 					local buff_id = table.remove(buff.buff_list)
 
 					buff_extension:remove_buff(buff_id)
 				end
 			else
-				for i = 1, difference, 1 do
+				for i = 1, difference do
 					table.insert(buff.buff_list, buff_extension:add_buff(buff_to_add))
 				end
 			end
@@ -1600,7 +1598,7 @@ BuffFunctionTemplates.functions = {
 
 						local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-						for i = 1, #player_and_bot_units, 1 do
+						for i = 1, #player_and_bot_units do
 							if Unit.alive(player_and_bot_units[i]) then
 								local health_extension = ScriptUnit.extension(player_and_bot_units[i], "health_system")
 								local status_extension = ScriptUnit.extension(player_and_bot_units[i], "status_system")
@@ -1648,7 +1646,7 @@ BuffFunctionTemplates.functions = {
 
 		if ALIVE[attacker_unit] then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
-			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
@@ -1679,7 +1677,7 @@ BuffFunctionTemplates.functions = {
 
 		if Managers.state.network.is_server then
 			local attacker_unit_is_alive = ALIVE[params.attacker_unit]
-			local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
+			local attacker_unit = attacker_unit_is_alive and params.attacker_unit or unit
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 
 			if health_extension:is_alive() then
@@ -1739,7 +1737,7 @@ BuffFunctionTemplates.functions = {
 
 		if ALIVE[attacker_unit] then
 			local source_breed = Unit.get_data(attacker_unit, "breed")
-			buff.damage_source = (source_breed and source_breed.name) or "dot_debuff"
+			buff.damage_source = source_breed and source_breed.name or "dot_debuff"
 			local victim_position = POSITION_LOOKUP[unit]
 			local attacker_position = POSITION_LOOKUP[attacker_unit]
 			local to_victim = victim_position - attacker_position
@@ -1767,7 +1765,7 @@ BuffFunctionTemplates.functions = {
 
 		if Managers.state.network.is_server then
 			local attacker_unit_is_alive = ALIVE[params.attacker_unit]
-			local attacker_unit = (attacker_unit_is_alive and params.attacker_unit) or unit
+			local attacker_unit = attacker_unit_is_alive and params.attacker_unit or unit
 			local health_extension = ScriptUnit.extension(unit, "health_system")
 
 			if health_extension:is_alive() then
@@ -1811,7 +1809,7 @@ BuffFunctionTemplates.functions = {
 			local num_enemies = Broadphase.query(ai_broadphase, position, range, broadphase_results)
 			local buff_name = buff_template.buff
 
-			for i = 1, num_enemies, 1 do
+			for i = 1, num_enemies do
 				local enemy_unit = broadphase_results[i]
 				local buff_extension = ScriptUnit.has_extension(enemy_unit, "buff_system")
 
@@ -1841,7 +1839,7 @@ BuffFunctionTemplates.functions = {
 				local num_enemies = Broadphase.query(ai_broadphase, position, range, broadphase_results)
 				local buff_name = buff_template.buff
 
-				for i = 1, num_enemies, 1 do
+				for i = 1, num_enemies do
 					local unit = broadphase_results[i]
 					local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
@@ -1904,7 +1902,7 @@ BuffFunctionTemplates.functions = {
 			if server_buff_ids then
 				local buff_system = Managers.state.entity:system("buff_system")
 
-				for i = 1, #server_buff_ids, 1 do
+				for i = 1, #server_buff_ids do
 					local buff_id = server_buff_ids[i]
 
 					buff_system:remove_server_controlled_buff(unit, buff_id)
@@ -1935,7 +1933,7 @@ BuffFunctionTemplates.functions = {
 							}
 						end
 
-						for i = 1, #buffs_to_add, 1 do
+						for i = 1, #buffs_to_add do
 							buff_extension:add_buff(buffs_to_add[i], params)
 						end
 					end
@@ -1955,7 +1953,7 @@ BuffFunctionTemplates.functions = {
 					local buff_extension = ScriptUnit.has_extension(unit, "buff_system")
 
 					if buff_extension then
-						for i = 1, #buffs_to_remove, 1 do
+						for i = 1, #buffs_to_remove do
 							local buff = buff_extension:get_non_stacking_buff(buffs_to_remove[i])
 
 							if buff then
@@ -1975,7 +1973,7 @@ BuffFunctionTemplates.functions = {
 				local template = buff.template
 				local remove_buff_stack_data_array = template.remove_buff_stack_data
 
-				for i = 1, #remove_buff_stack_data_array, 1 do
+				for i = 1, #remove_buff_stack_data_array do
 					local remove_buff_stack_data = remove_buff_stack_data_array[i]
 					local buff_to_remove = remove_buff_stack_data.buff_to_remove
 					local num_stacks = remove_buff_stack_data.num_stacks or 1
@@ -1985,15 +1983,15 @@ BuffFunctionTemplates.functions = {
 
 						local buff_system = Managers.state.entity:system("buff_system")
 						local server_buff_ids = buff.server_buff_ids
-						num_stacks = (server_buff_ids and math.min(#server_buff_ids, num_stacks)) or 0
+						num_stacks = server_buff_ids and math.min(#server_buff_ids, num_stacks) or 0
 
-						for i = 1, num_stacks, 1 do
+						for i = 1, num_stacks do
 							local buff_to_remove = table.remove(server_buff_ids)
 
 							buff_system:remove_server_controlled_buff(unit, buff_to_remove)
 						end
 					else
-						for i = 1, num_stacks, 1 do
+						for i = 1, num_stacks do
 							local buff = buff_extension:get_buff_type(buff_to_remove)
 
 							if not buff then
@@ -2056,7 +2054,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
-		for i = 1, num_nearby_enemies, 1 do
+		for i = 1, num_nearby_enemies do
 			local enemy_unit = broadphase_results[i]
 			local alive = ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive()
 
@@ -2100,7 +2098,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
-		for i = 1, num_nearby_enemies, 1 do
+		for i = 1, num_nearby_enemies do
 			local enemy_unit = broadphase_results[i]
 			local alive = ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive()
 
@@ -2145,7 +2143,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
-		for i = 1, num_nearby_enemies, 1 do
+		for i = 1, num_nearby_enemies do
 			local enemy_unit = broadphase_results[i]
 			local alive = ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive()
 
@@ -2168,7 +2166,7 @@ BuffFunctionTemplates.functions = {
 		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				local stack_ids = buff.stack_ids
 				stack_ids[#stack_ids + 1] = buff_id
@@ -2176,7 +2174,7 @@ BuffFunctionTemplates.functions = {
 		elseif num_chunks < num_buff_stacks then
 			local difference = num_buff_stacks - num_chunks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
 
@@ -2205,9 +2203,9 @@ BuffFunctionTemplates.functions = {
 		local player_and_bot_units = side and side.PLAYER_AND_BOT_UNITS
 		local own_position = POSITION_LOOKUP[unit]
 		local num_nearby_allies = 0
-		local allies = (player_and_bot_units and #player_and_bot_units) or 0
+		local allies = player_and_bot_units and #player_and_bot_units or 0
 
-		for i = 1, allies, 1 do
+		for i = 1, allies do
 			local ally_unit = player_and_bot_units[i]
 
 			if ally_unit ~= unit then
@@ -2234,7 +2232,7 @@ BuffFunctionTemplates.functions = {
 		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				local stack_ids = buff.stack_ids
 				stack_ids[#stack_ids + 1] = buff_id
@@ -2242,7 +2240,7 @@ BuffFunctionTemplates.functions = {
 		elseif num_chunks < num_buff_stacks then
 			local difference = num_buff_stacks - num_chunks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
 
@@ -2267,7 +2265,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
-		for i = 1, num_nearby_enemies, 1 do
+		for i = 1, num_nearby_enemies do
 			local enemy_unit = broadphase_results[i]
 			local alive = ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive()
 
@@ -2314,7 +2312,7 @@ BuffFunctionTemplates.functions = {
 			if num_buff_stacks < num_chunks then
 				local difference = num_chunks - num_buff_stacks
 
-				for i = 1, difference, 1 do
+				for i = 1, difference do
 					local buff_id = buff_extension:add_buff(buff_to_add)
 					local stack_ids = buff.stack_ids
 					stack_ids[#stack_ids + 1] = buff_id
@@ -2322,7 +2320,7 @@ BuffFunctionTemplates.functions = {
 			elseif num_chunks < num_buff_stacks then
 				local difference = num_buff_stacks - num_chunks
 
-				for i = 1, difference, 1 do
+				for i = 1, difference do
 					local stack_ids = buff.stack_ids
 					local buff_id = table.remove(stack_ids, 1)
 
@@ -2355,14 +2353,14 @@ BuffFunctionTemplates.functions = {
 		if num_chunks > num_buff_stacks then
 			local difference = num_chunks - num_buff_stacks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local server_buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				stack_server_ids[#stack_server_ids + 1] = server_buff_id
 			end
 		elseif num_chunks < num_buff_stacks then
 			local difference = num_buff_stacks - num_chunks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local server_buff_id = table.remove(stack_server_ids, 1)
 
 				buff_system:remove_server_controlled_buff(unit, server_buff_id)
@@ -2394,7 +2392,7 @@ BuffFunctionTemplates.functions = {
 		if num_buff_stacks < num_chunks then
 			local difference = num_chunks - num_buff_stacks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 				local stack_ids = buff.stack_ids
 				stack_ids[#stack_ids + 1] = buff_id
@@ -2402,7 +2400,7 @@ BuffFunctionTemplates.functions = {
 		elseif num_chunks < num_buff_stacks then
 			local difference = num_buff_stacks - num_chunks
 
-			for i = 1, difference, 1 do
+			for i = 1, difference do
 				local stack_ids = buff.stack_ids
 				local buff_id = table.remove(stack_ids, 1)
 
@@ -2441,7 +2439,7 @@ BuffFunctionTemplates.functions = {
 					add_second_buff = true
 				end
 
-				if num_buff_stacks < 1 or (add_second_buff and num_buff_stacks == 1) then
+				if num_buff_stacks < 1 or add_second_buff and num_buff_stacks == 1 then
 					local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 					buff.stack_ids[#buff.stack_ids + 1] = buff_id
 				end
@@ -2482,7 +2480,7 @@ BuffFunctionTemplates.functions = {
 				if num_buff_stacks < max_stacks then
 					local difference = max_stacks - num_buff_stacks
 
-					for i = 1, difference, 1 do
+					for i = 1, difference do
 						local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 						local stack_ids = buff.stack_ids
 						stack_ids[#stack_ids + 1] = buff_id
@@ -2490,7 +2488,7 @@ BuffFunctionTemplates.functions = {
 				elseif max_stacks < num_buff_stacks then
 					local difference = num_buff_stacks - max_stacks
 
-					for i = 1, difference, 1 do
+					for i = 1, difference do
 						local stack_ids = buff.stack_ids
 						local buff_id = table.remove(stack_ids, 1)
 
@@ -2513,7 +2511,7 @@ BuffFunctionTemplates.functions = {
 			local buff_stack_ids = buff.stack_ids
 
 			if buff_extension:has_buff_type(buff_to_add) and buff_stack_ids then
-				for i = 1, #buff_stack_ids, 1 do
+				for i = 1, #buff_stack_ids do
 					local buff_id = buff_stack_ids[i]
 
 					buff_system:remove_server_controlled_buff(unit, buff_id)
@@ -2563,7 +2561,7 @@ BuffFunctionTemplates.functions = {
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) and (not disregard_self or unit ~= owner_unit) then
@@ -2609,7 +2607,7 @@ BuffFunctionTemplates.functions = {
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local allies = #player_and_bot_units
 
-		for i = 1, allies, 1 do
+		for i = 1, allies do
 			local unit = player_and_bot_units[i]
 
 			if ALIVE[unit] then
@@ -2617,7 +2615,7 @@ BuffFunctionTemplates.functions = {
 				local stack_ids = buff.stack_ids[unit]
 
 				if stack_ids then
-					for i = 1, #stack_ids, 1 do
+					for i = 1, #stack_ids do
 						local buff_id = table.remove(stack_ids)
 
 						buff_system:remove_server_controlled_buff(unit, buff_id)
@@ -2649,7 +2647,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_allies = 0
 		local allies = #player_and_bot_units
 
-		for i = 1, allies, 1 do
+		for i = 1, allies do
 			local ally_unit = player_and_bot_units[i]
 
 			if ally_unit ~= owner_unit then
@@ -2670,7 +2668,7 @@ BuffFunctionTemplates.functions = {
 			buff.stack_ids = {}
 		end
 
-		for i = 1, allies, 1 do
+		for i = 1, allies do
 			local unit = player_and_bot_units[i]
 
 			if ALIVE[unit] then
@@ -2685,7 +2683,7 @@ BuffFunctionTemplates.functions = {
 				if range_squared < distance_squared then
 					local stack_ids = buff.stack_ids[unit]
 
-					for i = 1, #stack_ids, 1 do
+					for i = 1, #stack_ids do
 						local stack_ids = buff.stack_ids[unit]
 						local buff_id = table.remove(stack_ids)
 
@@ -2699,7 +2697,7 @@ BuffFunctionTemplates.functions = {
 						local difference = num_chunks - num_buff_stacks
 						local stack_ids = buff.stack_ids[unit]
 
-						for i = 1, difference, 1 do
+						for i = 1, difference do
 							local buff_id = buff_system:add_buff(unit, buff_to_add, unit, true)
 							stack_ids[#stack_ids + 1] = buff_id
 						end
@@ -2707,7 +2705,7 @@ BuffFunctionTemplates.functions = {
 						local difference = num_buff_stacks - num_chunks
 						local stack_ids = buff.stack_ids[unit]
 
-						for i = 1, difference, 1 do
+						for i = 1, difference do
 							local buff_id = table.remove(stack_ids)
 
 							buff_system:remove_server_controlled_buff(unit, buff_id)
@@ -2739,7 +2737,7 @@ BuffFunctionTemplates.functions = {
 		local distance_squared = math.huge
 		local current_unit = buff.current_unit
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if ALIVE[unit] and unit ~= current_unit and unit ~= owner_unit then
@@ -2836,7 +2834,7 @@ BuffFunctionTemplates.functions = {
 			local buff_to_add = template.buff_to_add
 			local buff_list = template.buff_list
 
-			for i = 1, amount_to_add, 1 do
+			for i = 1, amount_to_add do
 				if amount_to_add > #buff_list then
 					template.buff_list[#template.buff_list + 1] = buff_extension:add_buff(buff_to_add)
 				end
@@ -2857,7 +2855,7 @@ BuffFunctionTemplates.functions = {
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 			local num_units = #player_and_bot_units
 
-			for i = 1, num_units, 1 do
+			for i = 1, num_units do
 				local unit = player_and_bot_units[i]
 
 				if ALIVE[unit] then
@@ -2929,7 +2927,7 @@ BuffFunctionTemplates.functions = {
 		local num_units = #player_and_bot_units
 		local closest_player = nil
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) then
@@ -2983,7 +2981,7 @@ BuffFunctionTemplates.functions = {
 		local power_talent = talent_extension:has_talent("markus_knight_guard")
 		local range_talent = talent_extension:has_talent("markus_knight_passive_block_cost_aura")
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) then
@@ -3025,14 +3023,14 @@ BuffFunctionTemplates.functions = {
 
 		local side = Managers.state.side.side_by_unit[owner_unit]
 		local player_and_bot_units = side and side.PLAYER_AND_BOT_UNITS
-		local num_units = (player_and_bot_units and #player_and_bot_units) or 0
+		local num_units = player_and_bot_units and #player_and_bot_units or 0
 		local buff_extension = ScriptUnit.extension(owner_unit, "buff_system")
 		local buff_system = Managers.state.entity:system("buff_system")
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
 		local disabled_allies = nil
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local is_disabled = status_extension:is_disabled()
@@ -3076,7 +3074,7 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = "kerillian_maidenguard_passive_stamina_regen_buff"
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) then
@@ -3158,7 +3156,7 @@ BuffFunctionTemplates.functions = {
 				if table.contains(CurrentConflictSettings.factions, "chaos") then
 					local buff_list_chaos = template.buffs_to_add_chaos
 
-					for i = 1, #buff_list_chaos, 1 do
+					for i = 1, #buff_list_chaos do
 						buff_list[#buff_list + 1] = buff_list_chaos[i]
 					end
 				end
@@ -3166,7 +3164,7 @@ BuffFunctionTemplates.functions = {
 				if table.contains(CurrentConflictSettings.factions, "skaven") then
 					local buff_list_skaven = template.buffs_to_add_skaven
 
-					for i = 1, #buff_list_skaven, 1 do
+					for i = 1, #buff_list_skaven do
 						buff_list[#buff_list + 1] = buff_list_skaven[i]
 					end
 				end
@@ -3174,7 +3172,7 @@ BuffFunctionTemplates.functions = {
 				if table.contains(CurrentConflictSettings.factions, "beastmen") then
 					local buffs_to_add_beastmen = template.buffs_to_add_beastmen
 
-					for i = 1, #buffs_to_add_beastmen, 1 do
+					for i = 1, #buffs_to_add_beastmen do
 						buff_list[#buff_list + 1] = buffs_to_add_beastmen[i]
 					end
 				end
@@ -3182,7 +3180,7 @@ BuffFunctionTemplates.functions = {
 				if buff_extension:num_buff_type(template.reward_to_add) > 5 then
 					local buff_list_special = template.buffs_to_add_special
 
-					for i = 1, #buff_list_special, 1 do
+					for i = 1, #buff_list_special do
 						buff_list[#buff_list + 1] = buff_list_special[i]
 					end
 				end
@@ -3217,7 +3215,7 @@ BuffFunctionTemplates.functions = {
 			local stat_increase_buffs = template.stat_increase_buffs
 			local activation_buff = template.buff_to_add
 
-			for i = 1, #stat_increase_buffs, 1 do
+			for i = 1, #stat_increase_buffs do
 				local stat_increase_buff = stat_increase_buffs[i]
 				local has_activation_buff = buff_extension:has_buff_type(activation_buff)
 				local applied_stat_increase_buff = buff_extension:get_non_stacking_buff(stat_increase_buff)
@@ -3233,8 +3231,6 @@ BuffFunctionTemplates.functions = {
 		end
 	end,
 	activate_buff_on_other_buff = function (unit, buff, params)
-
-		-- Decompilation error in this vicinity:
 		local template = buff.template
 		local buff_to_add = template.buff_to_add
 		local buff_extension = ScriptUnit.extension(unit, "buff_system")
@@ -3267,14 +3263,14 @@ BuffFunctionTemplates.functions = {
 		local owner_unit = nil
 		local targets = {}
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 			targets[#targets + 1] = unit
 		end
 
 		local disabled_allies = {}
 
-		for i = 1, #targets, 1 do
+		for i = 1, #targets do
 			local unit = targets[i]
 			local status_extension = ScriptUnit.extension(unit, "status_system")
 			local is_disabled = status_extension:is_disabled()
@@ -3319,14 +3315,14 @@ BuffFunctionTemplates.functions = {
 		local owner_unit = nil
 		local targets = {}
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 			targets[#targets + 1] = unit
 		end
 
 		local disabled_allies = {}
 
-		for i = 1, #targets, 1 do
+		for i = 1, #targets do
 			local unit = targets[i]
 
 			if unit then
@@ -3374,14 +3370,14 @@ BuffFunctionTemplates.functions = {
 		local targets = {}
 		local local_player = is_local(owner_unit)
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 			targets[#targets + 1] = unit
 		end
 
 		local disabled_allies = {}
 
-		for i = 1, #targets, 1 do
+		for i = 1, #targets do
 			local target_unit = targets[i]
 
 			if target_unit then
@@ -3443,7 +3439,7 @@ BuffFunctionTemplates.functions = {
 		local health_percent = health_extension:current_health_percent()
 		local adding_buff = nil
 
-		if (health_percent < activation_health and activate_below) or (activation_health < health_percent and not activate_below) then
+		if health_percent < activation_health and activate_below or activation_health < health_percent and not activate_below then
 			adding_buff = true
 		end
 
@@ -3685,7 +3681,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
-		for i = 1, num_nearby_enemies, 1 do
+		for i = 1, num_nearby_enemies do
 			local enemy_unit = broadphase_results[i]
 			local alive = ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive()
 
@@ -3844,7 +3840,7 @@ BuffFunctionTemplates.functions = {
 		local num_nearby_enemies = Broadphase.query(ai_broadphase, own_position, range, broadphase_results)
 		local num_alive_nearby_enemies = 0
 
-		for i = 1, num_nearby_enemies, 1 do
+		for i = 1, num_nearby_enemies do
 			local enemy_unit = broadphase_results[i]
 			local alive = ALIVE[enemy_unit] and ScriptUnit.extension(enemy_unit, "health_system"):is_alive()
 
@@ -3881,7 +3877,7 @@ BuffFunctionTemplates.functions = {
 		local previous_bonus = buff.previous_bonus or 0
 		local bonus = 0
 
-		if (health_percent < activation_health and activate_below) or (activation_health < health_percent and not activate_below) then
+		if health_percent < activation_health and activate_below or activation_health < health_percent and not activate_below then
 			bonus = activation_bonus
 		end
 
@@ -3907,7 +3903,7 @@ BuffFunctionTemplates.functions = {
 		local previous_multiplier = buff.previous_multiplier or 0
 		local multiplier = 0
 
-		if (health_percent < activation_health and activate_below) or (activation_health < health_percent and not activate_below) then
+		if health_percent < activation_health and activate_below or activation_health < health_percent and not activate_below then
 			multiplier = activation_multiplier
 		end
 
@@ -3935,11 +3931,11 @@ BuffFunctionTemplates.functions = {
 		if slot_data then
 			local left_unit_1p = slot_data.left_unit_1p
 			local right_unit_1p = slot_data.right_unit_1p
-			local ammo_extension = (ScriptUnit.has_extension(left_unit_1p, "ammo_system") and ScriptUnit.extension(left_unit_1p, "ammo_system")) or (ScriptUnit.has_extension(right_unit_1p, "ammo_system") and ScriptUnit.extension(right_unit_1p, "ammo_system"))
+			local ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system") and ScriptUnit.extension(left_unit_1p, "ammo_system") or ScriptUnit.has_extension(right_unit_1p, "ammo_system") and ScriptUnit.extension(right_unit_1p, "ammo_system")
 			local ammo_percent = ammo_extension:total_ammo_fraction()
 			local previous_bonus = buff.previous_bonus or 0
 
-			if (ammo_percent < activation_ammo and activate_below) or (activation_ammo < ammo_percent and not activate_below) then
+			if ammo_percent < activation_ammo and activate_below or activation_ammo < ammo_percent and not activate_below then
 				bonus = activation_bonus
 			end
 		end
@@ -3968,11 +3964,11 @@ BuffFunctionTemplates.functions = {
 		if slot_data then
 			local left_unit_1p = slot_data.left_unit_1p
 			local right_unit_1p = slot_data.right_unit_1p
-			local ammo_extension = (ScriptUnit.has_extension(left_unit_1p, "ammo_system") and ScriptUnit.extension(left_unit_1p, "ammo_system")) or (ScriptUnit.has_extension(right_unit_1p, "ammo_system") and ScriptUnit.extension(right_unit_1p, "ammo_system"))
+			local ammo_extension = ScriptUnit.has_extension(left_unit_1p, "ammo_system") and ScriptUnit.extension(left_unit_1p, "ammo_system") or ScriptUnit.has_extension(right_unit_1p, "ammo_system") and ScriptUnit.extension(right_unit_1p, "ammo_system")
 			local ammo_percent = ammo_extension:total_ammo_fraction()
 			local previous_multiplier = buff.previous_multiplier or 0
 
-			if (ammo_percent < activation_ammo and activate_below) or (activation_ammo < ammo_percent and not activate_below) then
+			if ammo_percent < activation_ammo and activate_below or activation_ammo < ammo_percent and not activate_below then
 				multiplier = activation_multiplier
 			end
 		end
@@ -4116,7 +4112,7 @@ BuffFunctionTemplates.functions = {
 			local num_nearby_enemies = Broadphase.query(ai_broadphase, position, range, broadphase_results)
 			local num_alive_nearby_enemies = 0
 
-			for i = 1, num_nearby_enemies, 1 do
+			for i = 1, num_nearby_enemies do
 				local enemy_unit = broadphase_results[i]
 
 				if AiUtils.unit_alive(enemy_unit) then
@@ -4337,7 +4333,7 @@ BuffFunctionTemplates.functions = {
 			local unit_id = network_manager:unit_game_object_id(unit)
 			local node_id = 0
 
-			for i = 1, #events, 1 do
+			for i = 1, #events do
 				local event = events[i]
 				local event_id = NetworkLookup.sound_events[event]
 
@@ -4371,7 +4367,7 @@ BuffFunctionTemplates.functions = {
 			local unit_id = network_manager:unit_game_object_id(unit)
 			local node_id = 0
 
-			for i = 1, #events, 1 do
+			for i = 1, #events do
 				local event = events[i]
 				local event_id = NetworkLookup.sound_events[event]
 
@@ -4411,7 +4407,7 @@ BuffFunctionTemplates.functions = {
 		if reference_buff and reference_buff.buff_list then
 			local amount_to_remove = #reference_buff.buff_list
 
-			for i = 1, amount_to_remove, 1 do
+			for i = 1, amount_to_remove do
 				local buff_to_remove = table.remove(reference_buff.buff_list)
 
 				if buff_to_remove then
@@ -4592,7 +4588,7 @@ BuffFunctionTemplates.functions = {
 		local num_units = #player_and_bot_units
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local current_unit = player_and_bot_units[i]
 
 			if Unit.alive(current_unit) then
@@ -4714,7 +4710,7 @@ BuffFunctionTemplates.functions = {
 		local buff_to_add = template.smoke_buff
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if ALIVE[unit] then
@@ -5042,6 +5038,7 @@ BuffFunctionTemplates.functions = {
 	end,
 	remove_speed_scaled_dot_buff = function (unit, buff, params)
 		if is_local(unit) then
+			-- Nothing
 		end
 	end,
 	apply_twitch_invisibility_buff = function (unit, buff, params)
@@ -5267,5 +5264,3 @@ BuffFunctionTemplates.functions.ai_update_max_health = function (unit, buff, par
 		end
 	end
 end
-
-return

@@ -71,7 +71,7 @@ curse_blood_storm.server_update_function = function (context, data, dt, t)
 				local buff_system = Managers.state.entity:system("buff_system")
 				local difficulty = Managers.state.difficulty:get_difficulty()
 				local power_level = DIFFICULTY_POWER_LEVEL[difficulty]
-				local buff = (player.bot_player and data.bleed_buff_bots) or data.bleed_buff
+				local buff = player.bot_player and data.bleed_buff_bots or data.bleed_buff
 
 				buff_system:add_buff(player_unit, buff, vortex_unit, false, power_level)
 			end

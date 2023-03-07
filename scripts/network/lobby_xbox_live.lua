@@ -117,7 +117,7 @@ LobbyInternal.get_lobby = function (lobby_browser, index)
 	lobby_data.name = xbox_lobby_data.name
 	lobby_data.template_name = xbox_lobby_data.template_name
 
-	for i = 1, #xbox_lobby_data.keywords, 1 do
+	for i = 1, #xbox_lobby_data.keywords do
 		local key_value = string.split(xbox_lobby_data.keywords[i], ":")
 		local key = key_value[1]
 		local value = tonumber(key_value[2]) or key_value[2]
@@ -267,7 +267,7 @@ XboxLiveLobby.set_hosting = function (self, hosting)
 end
 
 XboxLiveLobby.enable_smartmatch = function (self, enable, params, timeout, hopper_name)
-	fassert((enable and params ~= nil) or not enable, "You need to supply ticket_params if you want to enable matchmaking")
+	fassert(enable and params ~= nil or not enable, "You need to supply ticket_params if you want to enable matchmaking")
 
 	self._hopper_name = hopper_name or LobbyInternal.HOPPER_NAME
 	self._smartmatch_enabled = enable
@@ -807,5 +807,3 @@ XboxLiveLobbyBrowser.destroy = function (self)
 		Network.free_session_browsing(self._session_browsing_id)
 	end
 end
-
-return

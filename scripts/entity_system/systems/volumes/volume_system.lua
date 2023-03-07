@@ -136,7 +136,7 @@ VolumeSystem.ai_ready = function (self)
 	self.nav_tag_volume_handler = Managers.state.conflict.nav_tag_volume_handler
 	local nav_tag_volumes_to_create = self.nav_tag_volumes_to_create
 
-	for i = 1, #nav_tag_volumes_to_create, 1 do
+	for i = 1, #nav_tag_volumes_to_create do
 		local volume_data = nav_tag_volumes_to_create[i]
 
 		self:create_nav_tag_volume(volume_data.volume_name, volume_data.layer_name, volume_data.layer_costs)
@@ -255,7 +255,7 @@ VolumeSystem.all_alive_or_respawned_human_players_inside = function (self, volum
 	for _, player_unit in ipairs(PLAYER_UNITS) do
 		local status_ext = Unit.alive(player_unit) and ScriptUnit.has_extension(player_unit, "status_system")
 
-		if status_ext and (not status_ext:is_disabled() or (status_ext:is_disabled() and not status_ext:is_ready_for_assisted_respawn())) then
+		if status_ext and (not status_ext:is_disabled() or status_ext:is_disabled() and not status_ext:is_ready_for_assisted_respawn()) then
 			to_test_count = to_test_count + 1
 			to_test[to_test_count] = player_unit
 		end
@@ -297,5 +297,3 @@ end
 VolumeSystem.player_inside = function (self, volume_name, unit)
 	return EngineOptimizedExtensions.volume_has_all_units_inside(self._volume_system, volume_name, unit)
 end
-
-return

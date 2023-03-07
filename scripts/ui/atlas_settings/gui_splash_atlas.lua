@@ -168,5 +168,3 @@ splash_atlas = {
 		}
 	}
 }
-
-return

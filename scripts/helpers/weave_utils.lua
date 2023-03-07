@@ -6,7 +6,7 @@ WeaveUtils.get_rating = function (score)
 	local rating = 0
 
 	if score then
-		for i = 1, #rating_values, 1 do
+		for i = 1, #rating_values do
 			if rating_values[i] < score then
 				rating = max_rating - i + 1
 
@@ -17,5 +17,3 @@ WeaveUtils.get_rating = function (score)
 
 	return rating
 end
-
-return

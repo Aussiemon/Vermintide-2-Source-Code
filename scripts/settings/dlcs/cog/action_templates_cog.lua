@@ -34,5 +34,3 @@ ActionTemplates.action_career_dr_4 = {
 		allowed_chain_actions = {}
 	}
 }
-
-return

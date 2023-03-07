@@ -52,7 +52,7 @@ settings.game_object_initializers = {
 			position = Unit.local_position(unit, 0),
 			rotation = Unit.local_rotation(unit, 0),
 			orb_flight_target_position = orb_flight_target_position and orb_flight_target_position:unbox(),
-			flight_enabled = (orb_flight_target_position and true) or false
+			flight_enabled = orb_flight_target_position and true or false
 		}
 
 		return data_table
@@ -717,5 +717,3 @@ settings.hit_effects = {
 	"scripts/settings/hit_effects/hit_effects_shadow_totem",
 	"scripts/settings/hit_effects/hit_effects_shadow_skull"
 }
-
-return

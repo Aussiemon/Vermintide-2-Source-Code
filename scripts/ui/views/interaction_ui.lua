@@ -411,89 +411,89 @@ local widget_definitions = {
 				}
 			}
 		}
-	},
-	interaction_bar = {
-		scenegraph_id = "interaction_bar",
-		element = {
-			passes = {
-				{
-					pass_type = "texture",
-					style_id = "glow",
-					texture_id = "glow"
-				},
-				{
-					style_id = "bar",
-					pass_type = "texture_uv_dynamic_color_uvs_size_offset",
-					content_id = "bar",
-					dynamic_function = function (content, style, size, dt)
-						local bar_value = content.bar_value
-						local uv_start_pixels = style.uv_start_pixels
-						local uv_scale_pixels = style.uv_scale_pixels
-						local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value
-						local uvs = style.uvs
-						local uv_scale_axis = style.scale_axis
-						local offset_scale = style.offset_scale
-						local offset = style.offset
-						uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
-						size[uv_scale_axis] = uv_pixels
-
-						return content.color, uvs, size, offset
-					end
-				}
-			}
-		},
-		content = {
-			glow = "interaction_pop_up_glow_2",
-			bar = {
-				texture_id = "interaction_pop_up_glow_1",
-				bar_value = 1
-			}
-		},
-		style = {
-			glow = {
-				scenegraph_id = "interaction_bar_fill",
-				size = {
-					57,
-					111
-				},
-				color = {
-					255,
-					255,
-					255,
-					255
-				},
-				offset = {
-					0,
-					-35.5,
-					1
-				}
+	}
+}
+widget_definitions.interaction_bar = {
+	scenegraph_id = "interaction_bar",
+	element = {
+		passes = {
+			{
+				pass_type = "texture",
+				style_id = "glow",
+				texture_id = "glow"
 			},
-			bar = {
-				uv_start_pixels = 0,
-				scenegraph_id = "interaction_bar_fill",
-				uv_scale_pixels = 217,
-				offset_scale = 1,
-				scale_axis = 1,
-				offset = {
-					0,
+			{
+				style_id = "bar",
+				pass_type = "texture_uv_dynamic_color_uvs_size_offset",
+				content_id = "bar",
+				dynamic_function = function (content, style, size, dt)
+					local bar_value = content.bar_value
+					local uv_start_pixels = style.uv_start_pixels
+					local uv_scale_pixels = style.uv_scale_pixels
+					local uv_pixels = uv_start_pixels + uv_scale_pixels * bar_value
+					local uvs = style.uvs
+					local uv_scale_axis = style.scale_axis
+					local offset_scale = style.offset_scale
+					local offset = style.offset
+					uvs[2][uv_scale_axis] = uv_pixels / (uv_start_pixels + uv_scale_pixels)
+					size[uv_scale_axis] = uv_pixels
+
+					return content.color, uvs, size, offset
+				end
+			}
+		}
+	},
+	content = {
+		glow = "interaction_pop_up_glow_2",
+		bar = {
+			texture_id = "interaction_pop_up_glow_1",
+			bar_value = 1
+		}
+	},
+	style = {
+		glow = {
+			scenegraph_id = "interaction_bar_fill",
+			size = {
+				57,
+				111
+			},
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			offset = {
+				0,
+				-35.5,
+				1
+			}
+		},
+		bar = {
+			uv_start_pixels = 0,
+			scenegraph_id = "interaction_bar_fill",
+			uv_scale_pixels = 217,
+			offset_scale = 1,
+			scale_axis = 1,
+			offset = {
+				0,
+				0,
+				0
+			},
+			color = {
+				0,
+				255,
+				255,
+				255
+			},
+			uvs = {
+				{
 					0,
 					0
 				},
-				color = {
-					0,
-					255,
-					255,
-					255
-				},
-				uvs = {
-					{
-						0,
-						0
-					},
-					{
-						1,
-						1
-					}
+				{
+					1,
+					1
 				}
 			}
 		}
@@ -669,13 +669,13 @@ InteractionUI.update = function (self, dt, t, my_player)
 	title_text, action_text, interact_action, failed_reason, override_text_color, interaction_component, hotkey_text = self:_get_interaction_text(player_unit, is_channeling)
 
 	if action_text then
-		title_text = (title_text and Localize(title_text)) or ""
+		title_text = title_text and Localize(title_text) or ""
 
 		if failed_reason == "ammo_blocked" or failed_reason == "throwing_axe" then
-			local hold_to_reload_key = (Managers.input:is_device_active("gamepad") and "$KEY;Player__weapon_reload_hold_input:") or "$KEY;Player__weapon_reload_hold:"
-			action_text = (action_text and TextToUpper(Localize(action_text)) .. hold_to_reload_key) or ""
+			local hold_to_reload_key = Managers.input:is_device_active("gamepad") and "$KEY;Player__weapon_reload_hold_input:" or "$KEY;Player__weapon_reload_hold:"
+			action_text = action_text and TextToUpper(Localize(action_text)) .. hold_to_reload_key or ""
 		else
-			action_text = (action_text and Localize(action_text)) or ""
+			action_text = action_text and Localize(action_text) or ""
 		end
 
 		self:_assign_button_info(interact_action, failed_reason, is_channeling, override_text_color)
@@ -827,7 +827,7 @@ InteractionUI._get_wielded_interaction_text = function (self, player_unit)
 			if action_settings.interaction_type ~= nil and highest_prio < interaction_priority then
 				local show_interaction_ui = action_settings.show_interaction_ui and action_settings.show_interaction_ui(player_unit)
 
-				if show_interaction_ui or action_settings.condition_func(player_unit) or (is_interacting and action_settings.interaction_type == interaction_type) then
+				if show_interaction_ui or action_settings.condition_func(player_unit) or is_interacting and action_settings.interaction_type == interaction_type then
 					local input_device_supports_action = self:button_texture_data_by_input_action(action_settings.hold_input or action_name)
 
 					if input_device_supports_action then
@@ -945,5 +945,3 @@ InteractionUI.external_interact_ui_description = function (self, player_unit)
 		return "interaction_overheat", "interaction_action_vent", "weapon_reload"
 	end
 end
-
-return

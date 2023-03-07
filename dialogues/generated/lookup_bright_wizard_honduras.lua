@@ -324,5 +324,3 @@ DialogueLookup[DialogueLookup_n + 160] = "pbw_gameplay_killing_a_minotaur"
 DialogueLookup[DialogueLookup_n + 161] = "pbw_gameplay_seeing_a_ungor_archer"
 DialogueLookup[DialogueLookup_n + 162] = "pbw_gameplay_incoming_attack"
 DialogueLookup_n = DialogueLookup_n + 162
-
-return

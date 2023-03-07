@@ -699,5 +699,3 @@ UtilityConsiderations.bestigor_cleave_attack = {
 		is_condition = true
 	}
 }
-
-return

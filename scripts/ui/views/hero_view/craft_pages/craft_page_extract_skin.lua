@@ -247,7 +247,7 @@ CraftPageExtractSkin.on_craft_completed = function (self)
 
 	table.clear(self._craft_items)
 
-	for i = 1, NUM_CRAFT_SLOTS, 1 do
+	for i = 1, NUM_CRAFT_SLOTS do
 		self._craft_items[i] = nil
 	end
 
@@ -355,7 +355,7 @@ CraftPageExtractSkin._add_craft_item = function (self, backend_id, slot_index, i
 	local craft_items = self._craft_items
 
 	if not slot_index then
-		for i = 1, 1, 1 do
+		for i = 1, 1 do
 			if not craft_items[i] then
 				slot_index = i
 
@@ -415,7 +415,5 @@ end
 CraftPageExtractSkin._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
-	widget.content.button_text = (localize and Localize(text)) or text
+	widget.content.button_text = localize and Localize(text) or text
 end
-
-return

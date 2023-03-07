@@ -461,7 +461,7 @@ achievements.woods_chaos_pinata = {
 			local damage_data = event_data[register_damage_damage_data]
 			local attack_type = damage_data[DamageDataIndex.ATTACK_TYPE]
 
-			if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+			if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 				return
 			end
 
@@ -561,7 +561,7 @@ achievements.woods_ability_combo = {
 			local passed = true
 			local time_to_check = use_times[1]
 
-			for i = 1, #use_times, 1 do
+			for i = 1, #use_times do
 				local checked_time = use_times[i]
 
 				if checked_time - time_to_check > 10 then
@@ -945,7 +945,7 @@ local difficulties = {
 	"cataclysm"
 }
 
-for i = 1, #difficulties, 1 do
+for i = 1, #difficulties do
 	local difficulty_key = difficulties[i]
 	local difficulty_name = DifficultyMapping[difficulty_key]
 	local name = "woods_complete_all_helmgart_levels_" .. difficulty_name
@@ -982,5 +982,3 @@ local all_challenges = {
 }
 
 add_meta_challenge(achievements, "complete_all_thorn_sister_challenges", all_challenges, "achievement_trophy_thornsister_reborn_through_the_weave", "woods", nil, nil)
-
-return

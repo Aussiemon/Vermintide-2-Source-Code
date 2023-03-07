@@ -54,5 +54,3 @@ ActionInspect.finish = function (self, reason)
 	Unit.flow_event(self.owner_unit, "lua_force_stop")
 	Unit.flow_event(self.first_person_unit, "lua_force_stop")
 end
-
-return

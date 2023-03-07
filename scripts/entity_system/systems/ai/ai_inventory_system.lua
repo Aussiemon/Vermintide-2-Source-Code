@@ -47,8 +47,8 @@ local function link_unit(attachment_node_linking, world, target, source)
 	for i, attachment_nodes in ipairs(attachment_node_linking) do
 		local source_node = attachment_nodes.source
 		local target_node = attachment_nodes.target
-		local source_node_index = (type(source_node) == "string" and Unit.node(source, source_node)) or source_node
-		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node
+		local source_node_index = type(source_node) == "string" and Unit.node(source, source_node) or source_node
+		local target_node_index = type(target_node) == "string" and Unit.node(target, target_node) or target_node
 
 		World.link_unit(world, target, target_node_index, source, source_node_index)
 	end
@@ -156,7 +156,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 	local units_to_wield = self.units_to_wield
 	local units_to_wield_n = self.units_to_wield_n
 
-	for i = 1, units_to_wield_n, 1 do
+	for i = 1, units_to_wield_n do
 		local unit = units_to_wield[i]
 		local extension = self.unit_extension_data[unit]
 		local start_index, end_index = nil
@@ -170,36 +170,23 @@ AIInventorySystem.update = function (self, context, t, dt)
 			local set_index = self.item_set_to_wield[unit]
 			extension.current_item_set_index = set_index
 			local item_set = item_sets[set_index]
-			slot18 = item_set.start_index
-
-			if extension.dropped then
-				end_index = 0
-			else
-				end_index = item_set.end_index
-			end
-
-			start_index = slot18
+			end_index = extension.dropped and 0 or item_set.end_index
+			start_index = item_set.start_index
 		else
-			slot16 = 1
-
-			if extension.dropped then
-				end_index = 0
-			else
-				end_index = extension.inventory_items_n
-			end
-
-			start_index = slot16
+			end_index = extension.dropped and 0 or extension.inventory_items_n
+			start_index = 1
 		end
 
 		extension.wielded = true
 		local inventory_item_definitions = extension.inventory_item_definitions
 		local inventory_item_units = extension.inventory_item_units
-		local inventory_items_n = (extension.dropped and 0) or extension.inventory_items_n
+		local inventory_items_n = extension.dropped and 0 or extension.inventory_items_n
 
 		if script_data.ai_debug_inventory then
+			-- Nothing
 		end
 
-		for j = start_index, end_index, 1 do
+		for j = start_index, end_index do
 			local item = inventory_item_definitions[j]
 			local attachment_node_linking = item.attachment_node_linking
 			local wielded = attachment_node_linking.wielded
@@ -216,7 +203,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 	local units_to_drop = self.units_to_drop
 	local units_to_drop_n = self.units_to_drop_n
 
-	for i = 1, units_to_drop_n, 1 do
+	for i = 1, units_to_drop_n do
 		local unit = units_to_drop[i]
 		local extension = self.unit_extension_data[unit]
 
@@ -226,7 +213,7 @@ AIInventorySystem.update = function (self, context, t, dt)
 		local inventory_item_definitions = extension.inventory_item_definitions
 		local inventory_items_n = extension.inventory_items_n
 
-		for j = 1, inventory_items_n, 1 do
+		for j = 1, inventory_items_n do
 			extension:drop_single_item(j, "death")
 		end
 	end
@@ -287,5 +274,3 @@ AIInventorySystem.hot_join_sync = function (self, peer_id)
 		extension:hot_join_sync(peer_id)
 	end
 end
-
-return

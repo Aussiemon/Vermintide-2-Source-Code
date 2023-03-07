@@ -168,5 +168,3 @@ DeusCostSettings = DeusCostSettings or {
 		}
 	}
 }
-
-return

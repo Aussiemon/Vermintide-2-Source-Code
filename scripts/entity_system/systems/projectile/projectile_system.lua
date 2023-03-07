@@ -167,7 +167,7 @@ ProjectileSystem.spawn_player_projectile = function (self, owner_unit, position,
 	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
-	local radius = projectile_info.radius or (min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale)) or nil
+	local radius = projectile_info.radius or min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale) or nil
 	local time_initialized = Managers.time:time("game")
 	local extension_init_data = {
 		projectile_locomotion_system = {
@@ -225,7 +225,7 @@ end
 
 ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector, angle, speed, initial_radius, radius, duration, owner_unit, damage_source, aoe_dot_damage, aoe_init_damage, aoe_dot_damage_interval, create_nav_tag_volume, instant_explosion, fixed_impact_data)
 	if self.is_server then
-		local nav_tag_volume_layer = (create_nav_tag_volume and "bot_poison_wind") or nil
+		local nav_tag_volume_layer = create_nav_tag_volume and "bot_poison_wind" or nil
 		local is_versus = Managers.mechanism:current_mechanism_name() == "versus"
 
 		if instant_explosion then
@@ -267,7 +267,7 @@ ProjectileSystem.spawn_globadier_globe = function (self, position, target_vector
 				},
 				projectile_system = {
 					damage_source = damage_source,
-					impact_template_name = (is_versus and "vs_globadier_impact") or "explosion_impact",
+					impact_template_name = is_versus and "vs_globadier_impact" or "explosion_impact",
 					owner_unit = owner_unit
 				},
 				area_damage_system = {
@@ -385,7 +385,7 @@ ProjectileSystem.rpc_spawn_pickup_projectile = function (self, channel_id, proje
 		return
 	end
 
-	local owner_peer_id = (channel_id and CHANNEL_TO_PEER_ID[channel_id]) or Network.peer_id()
+	local owner_peer_id = channel_id and CHANNEL_TO_PEER_ID[channel_id] or Network.peer_id()
 	local projectile_unit_name = NetworkLookup.husks[projectile_unit_name_id]
 	local projectile_unit_template_name = NetworkLookup.go_types[projectile_unit_template_name_id]
 	local pickup_name = NetworkLookup.pickup_names[pickup_name_id]
@@ -559,7 +559,7 @@ ProjectileSystem.spawn_true_flight_projectile = function (self, owner_unit, targ
 	scale = scale / 100
 	local min = projectile_info.radius_min
 	local max = projectile_info.radius_max
-	local radius = projectile_info.radius or (min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale)) or nil
+	local radius = projectile_info.radius or min and max and math.lerp(projectile_info.radius_min, projectile_info.radius_max, scale) or nil
 	local extension_init_data = {
 		projectile_locomotion_system = {
 			angle = angle,
@@ -647,7 +647,7 @@ ProjectileSystem.get_and_delete_indexed_projectile = function (self, owner_unit,
 	local removed_unit = table.remove(indexed_projectiles, index)
 	local is_alive = removed_unit and Unit.alive(removed_unit)
 
-	if not is_alive or (is_alive and unit_spawner:is_marked_for_deletion(removed_unit)) then
+	if not is_alive or is_alive and unit_spawner:is_marked_for_deletion(removed_unit) then
 		return nil
 	end
 
@@ -806,7 +806,7 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 	local vfx_settings = effect_settings and effect_settings.vfx
 
 	if vfx_settings then
-		for vfx_id = 1, #vfx_settings, 1 do
+		for vfx_id = 1, #vfx_settings do
 			local vfx = vfx_settings[vfx_id]
 			local condition_function = vfx.condition_function
 
@@ -831,7 +831,7 @@ ProjectileSystem.create_light_weight_projectile = function (self, damage_source,
 	local sfx_settings = effect_settings and effect_settings.sfx
 
 	if sfx_settings then
-		for sfx_id = 1, #sfx_settings, 1 do
+		for sfx_id = 1, #sfx_settings do
 			local sfx = sfx_settings[sfx_id]
 			local looping_sound_name = sfx.looping_sound_event_name
 			local manual_source_id = WwiseWorld.make_manual_source(self._wwise_world, position)
@@ -885,7 +885,7 @@ ProjectileSystem.hot_join_sync = function (self, joining_client)
 	local projectiles = data.projectiles
 	local owner_peer_id = data.owner_peer_id
 
-	for i = 1, data.current_index, 1 do
+	for i = 1, data.current_index do
 		local projectile = projectiles[i]
 		local position = projectile.position:unbox()
 		local direction = projectile.direction:unbox()
@@ -951,10 +951,10 @@ ProjectileSystem._update_shooting = function (self, dt, t, husk_shooting_data)
 		local time_in_shoot_action = t - data.shoot_start
 		local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 		local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
-		local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
+		local shots_to_fire = math.floor(time_in_shoot_action / current_time_between_shots) + 1 - data.shots_fired
 		local light_weight_projectile_template = data.light_weight_projectile_template
 
-		for i = 1, shots_to_fire, 1 do
+		for i = 1, shots_to_fire do
 			data.shots_fired = data.shots_fired + 1
 
 			self:_shoot(owner_peer_id, data, t, dt)
@@ -1298,7 +1298,7 @@ ProjectileSystem._server_update_light_weight_projectiles = function (self, dt, t
 	local world = self.world
 	local remove_list = REMOVE_LIST
 
-	for i = 1, index, 1 do
+	for i = 1, index do
 		local projectile = projectiles[i]
 
 		if projectile.distance_moved < projectile.range then
@@ -1325,7 +1325,7 @@ ProjectileSystem._client_update_light_weight_projectiles = function (self, dt, t
 	local index = data.current_index
 	local world = self.world
 
-	for i = 1, index, 1 do
+	for i = 1, index do
 		local projectile = projectiles[i]
 
 		self:_move_light_weight_projectile(dt, world, projectile, debug)
@@ -1367,5 +1367,3 @@ ProjectileSystem._move_light_weight_projectile = function (self, dt, world, proj
 
 	return pos, dir, dist
 end
-
-return

@@ -6,7 +6,7 @@ ProjectileFixedImpactUnitExtension.init = function (self, extension_init_context
 	self.is_server = Managers.player.is_server
 	self.owner_unit = extension_init_data.owner_unit
 	local owner_player = Managers.player:owner(self.owner_unit)
-	self.owner_is_local = (owner_player and owner_player.local_player) or (owner_player and owner_player.bot_player) or false
+	self.owner_is_local = owner_player and owner_player.local_player or owner_player and owner_player.bot_player or false
 	self.last_position = nil
 	self.impact_data = extension_init_data.impact_data
 	self._time_to_impact = self.impact_data.time
@@ -37,5 +37,3 @@ ProjectileFixedImpactUnitExtension.update = function (self, unit, input, dt, con
 
 	self._time_to_impact = self._time_to_impact - dt
 end
-
-return

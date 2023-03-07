@@ -87,7 +87,7 @@ AreaDamageExtension.destroy = function (self)
 	local ids = self.nav_mesh_effect_ids
 
 	if ids then
-		for i = 1, #ids, 1 do
+		for i = 1, #ids do
 			local id = ids[i]
 
 			World.stop_spawning_particles(world, id)
@@ -131,7 +131,7 @@ AreaDamageExtension.enable = function (self, enable)
 		local ids = self.nav_mesh_effect_ids
 
 		if ids then
-			for i = 1, #ids, 1 do
+			for i = 1, #ids do
 				local id = ids[i]
 
 				World.stop_spawning_particles(world, id)
@@ -212,13 +212,13 @@ AreaDamageExtension.start = function (self)
 		num_particles = num_particles + 1
 		ids[num_particles] = id
 
-		for i = 1, floored_layers, 1 do
+		for i = 1, floored_layers do
 			local current_radius = radius - (floored_layers - i) * particle_space_diameter - particle_radius
 			local circumference = current_radius * 2 * pi
 			local particles_in_layer = math.floor(circumference / particle_space_diameter)
-			local particle_radial_spacing = (2 * pi) / particles_in_layer
+			local particle_radial_spacing = 2 * pi / particles_in_layer
 
-			for j = 1, particles_in_layer, 1 do
+			for j = 1, particles_in_layer do
 				local angle = j * particle_radial_spacing
 				local particle_pos = unit_pos + current_radius * Vector3(math.cos(angle), math.sin(angle), 0)
 				local success, z = GwNavQueries.triangle_from_position(nav_world, particle_pos, 1.5, 2)
@@ -336,10 +336,10 @@ AreaDamageExtension._update_damage_buffer = function (self)
 	end
 
 	local current_damage_buffer_index = self._current_damage_buffer_index
-	local num_units_this_frame = (current_damage_buffer_index + NUM_UNITS_PER_FRAME) - 1
+	local num_units_this_frame = current_damage_buffer_index + NUM_UNITS_PER_FRAME - 1
 	local reset = false
 
-	for i = current_damage_buffer_index, num_units_this_frame, 1 do
+	for i = current_damage_buffer_index, num_units_this_frame do
 		local damage_data = damage_buffer[i]
 
 		if not damage_data then
@@ -374,7 +374,7 @@ AreaDamageExtension._add_to_damage_buffer = function (self, temp_damage_buffer)
 	local num_units_in_buffer = #self._damage_buffer
 	local num_units_in_temp_buffer = #temp_damage_buffer
 
-	for i = 1, num_units_in_temp_buffer, 1 do
+	for i = 1, num_units_in_temp_buffer do
 		damage_buffer[num_units_in_buffer + i] = temp_damage_buffer[i]
 	end
 end
@@ -382,5 +382,3 @@ end
 AreaDamageExtension.hot_join_sync = function (self, peer_id)
 	return
 end
-
-return

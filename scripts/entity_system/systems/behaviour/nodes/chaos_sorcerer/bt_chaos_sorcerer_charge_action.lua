@@ -114,7 +114,7 @@ BTChaosSorcererChargeAction.leave = function (self, unit, blackboard, t, reason,
 		StatusUtils.set_charged_network(blackboard.charge_target_unit, false)
 	end
 
-	if (blackboard.stagger and blackboard.charge_state == "charging") or (blackboard.charge_state == "lunge" and not blackboard.anim_cb_disable_charge_collision) then
+	if blackboard.stagger and blackboard.charge_state == "charging" or blackboard.charge_state == "lunge" and not blackboard.anim_cb_disable_charge_collision then
 		blackboard.charge_stagger = true
 	end
 
@@ -216,7 +216,7 @@ BTChaosSorcererChargeAction._start_lunge = function (self, unit, blackboard, dis
 	blackboard.time_to_impact = t + 0.25
 	local distance_thresholds = action.enter_lunge_thresholds
 	local distance_identifier = self:_pick_distance_identifier(distance_thresholds, distance_to_target)
-	slot8 = action.lunge_animations and action.lunge_animations[distance_identifier]
+	local lunge_animation = action.lunge_animations and action.lunge_animations[distance_identifier]
 	local locomotion_extension = blackboard.locomotion_extension
 	local current_velocity = locomotion_extension:current_velocity()
 	local lunge_velocity_scaling = action.lunge_velocity_scaling
@@ -305,7 +305,7 @@ BTChaosSorcererChargeAction._check_overlap = function (self, unit, blackboard, a
 	local side = blackboard.side
 	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+	for i = 1, #PLAYER_AND_BOT_UNITS do
 		local target_unit = PLAYER_AND_BOT_UNITS[i]
 		local pos = POSITION_LOOKUP[target_unit]
 		local to_target_dir = Vector3.normalize(pos - self_pos)
@@ -334,7 +334,7 @@ BTChaosSorcererChargeAction._check_overlap = function (self, unit, blackboard, a
 	local hit_ai_radius = action.hit_ai_radius
 	local num_results = Broadphase.query(broadphase, self_pos, hit_ai_radius, broadphase_query_result)
 
-	for i = 1, num_results, 1 do
+	for i = 1, num_results do
 		local hit_unit = broadphase_query_result[i]
 		local pos = POSITION_LOOKUP[hit_unit]
 		local to_target_dir = Vector3.normalize(pos - self_pos)
@@ -514,7 +514,7 @@ BTChaosSorcererChargeAction._run_impact = function (self, unit, blackboard, t, d
 		end
 	end
 
-	local slow_down_speed = (blackboard.hit_target and blackboard.action.hit_target_slow_down_speed) or blackboard.action.slow_down_speed
+	local slow_down_speed = blackboard.hit_target and blackboard.action.hit_target_slow_down_speed or blackboard.action.slow_down_speed
 
 	self:_slow_down(unit, blackboard, slow_down_speed, t, dt)
 end
@@ -609,5 +609,3 @@ end
 BTChaosSorcererChargeAction.anim_cb_disable_charge_collision = function (self, unit, blackboard)
 	blackboard.anim_cb_disable_charge_collision = true
 end
-
-return

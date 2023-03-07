@@ -81,5 +81,3 @@ BreedBehaviors.skaven_warpfire_thrower = {
 	},
 	name = "skaven_warpfire_thrower"
 }
-
-return

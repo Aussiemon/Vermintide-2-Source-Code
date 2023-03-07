@@ -142,5 +142,3 @@ HitEffectsCritterRat = {
 	}
 }
 HitEffectsCritterRat = table.create_copy(HitEffectsCritterRat, HitEffectsCritterRat)
-
-return

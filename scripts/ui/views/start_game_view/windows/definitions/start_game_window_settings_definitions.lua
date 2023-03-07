@@ -5,40 +5,39 @@ local game_option_size = {
 	window_size[1] - 20,
 	233
 }
-local animation_definitions = {
-	on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 0
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
-	},
-	on_exit = {
-		{
-			name = "fade_out",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				params.render_settings.alpha_multiplier = 1
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				params.render_settings.alpha_multiplier = 1 - anim_progress
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+local animation_definitions = {}
+animation_definitions.on_enter = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.render_settings.alpha_multiplier = 0
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			params.render_settings.alpha_multiplier = anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
+	}
+}
+animation_definitions.on_exit = {
+	{
+		name = "fade_out",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			params.render_settings.alpha_multiplier = 1
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			params.render_settings.alpha_multiplier = 1 - anim_progress
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 local scenegraph_definition = {
@@ -258,7 +257,7 @@ local scenegraph_definition = {
 local function create_settings_option(scenegraph_id, size, title_text, button_text, icon_texture, background_texture)
 	icon_texture = icon_texture or "level_icon_01"
 	local icon_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(icon_texture)
-	local icon_texture_size = (icon_texture_settings and icon_texture_settings.size) or {
+	local icon_texture_size = icon_texture_settings and icon_texture_settings.size or {
 		150,
 		150
 	}

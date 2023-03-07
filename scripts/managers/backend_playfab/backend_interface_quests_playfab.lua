@@ -261,7 +261,7 @@ BackendInterfaceQuestsPlayfab.can_claim_multiple_quest_rewards = function (self,
 	local event_quests = self._quests.event
 	local claimable_keys = {}
 
-	for i = 1, #keys, 1 do
+	for i = 1, #keys do
 		local key = keys[i]
 
 		if daily_quests[key] or weekly_quests[key] or event_quests[key] then
@@ -315,7 +315,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	local loot = rewards.loot
 
 	if items then
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			local item = items[i]
 			local backend_id = item.ItemInstanceId
 			local amount = item.UsesIncrementedBy or 1
@@ -333,7 +333,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	local new_keep_decorations = function_result.new_keep_decorations
 
 	if new_keep_decorations then
-		for i = 1, #new_keep_decorations, 1 do
+		for i = 1, #new_keep_decorations do
 			local keep_decoration_name = new_keep_decorations[i]
 
 			backend_mirror:add_keep_decoration(keep_decoration_name)
@@ -348,7 +348,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	local new_weapon_skins = function_result.new_weapon_skins
 
 	if new_weapon_skins then
-		for i = 1, #new_weapon_skins, 1 do
+		for i = 1, #new_weapon_skins do
 			local weapon_skin_name = new_weapon_skins[i]
 
 			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
@@ -365,7 +365,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 	if new_cosmetics then
 		local item_master_list = ItemMasterList
 
-		for i = 1, #new_cosmetics, 1 do
+		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
 				ItemId = cosmetic_name
@@ -389,7 +389,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 			local code = data.code
 			local amount = data.amount
 			local current_amount = rewarded_currency[code]
-			rewarded_currency[code] = (current_amount and current_amount) or 0 + amount
+			rewarded_currency[code] = current_amount and current_amount or 0 + amount
 			loot[#loot + 1] = {
 				type = "currency",
 				currency_code = code,
@@ -426,7 +426,7 @@ BackendInterfaceQuestsPlayfab.quest_rewards_request_cb = function (self, data, r
 		}
 		local quest_data = backend_mirror:get_quest_data()
 
-		for i = 1, #quest_types, 1 do
+		for i = 1, #quest_types do
 			local key = quest_types[i]
 			local current_quests = quest_data[key]
 			local claimed_quest_data = current_quests[data.quest_key]
@@ -488,7 +488,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards = function (self, key
 	local quest_data = {}
 	local id = self:_new_id()
 
-	for i = 1, #keys, 1 do
+	for i = 1, #keys do
 		local key = keys[i]
 		local data = {
 			quest_key = key
@@ -528,7 +528,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	local quest_names = function_result.quest_data_names
 	local quest_keys = {}
 
-	for i = 1, #data, 1 do
+	for i = 1, #data do
 		quest_keys[#quest_keys + 1] = data[i].quest_key
 	end
 
@@ -539,7 +539,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	local loot = rewards.loot
 
 	if items then
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			local item = items[i]
 			local backend_id = item.ItemInstanceId
 			local amount = item.UsesIncrementedBy or 1
@@ -557,7 +557,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	local new_keep_decorations = function_result.new_keep_decorations
 
 	if new_keep_decorations then
-		for i = 1, #new_keep_decorations, 1 do
+		for i = 1, #new_keep_decorations do
 			local keep_decoration_name = new_keep_decorations[i]
 
 			backend_mirror:add_keep_decoration(keep_decoration_name)
@@ -572,7 +572,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	local new_weapon_skins = function_result.new_weapon_skins
 
 	if new_weapon_skins then
-		for i = 1, #new_weapon_skins, 1 do
+		for i = 1, #new_weapon_skins do
 			local weapon_skin_name = new_weapon_skins[i]
 
 			backend_mirror:add_unlocked_weapon_skin(weapon_skin_name)
@@ -589,7 +589,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	if new_cosmetics then
 		local item_master_list = ItemMasterList
 
-		for i = 1, #new_cosmetics, 1 do
+		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
 				ItemId = cosmetic_name
@@ -613,7 +613,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 			local code = data.code
 			local amount = data.amount
 			local current_amount = rewarded_currency[code]
-			rewarded_currency[code] = (current_amount and current_amount) or 0 + amount
+			rewarded_currency[code] = current_amount and current_amount or 0 + amount
 			loot[#loot + 1] = {
 				type = "currency",
 				currency_code = code,
@@ -636,7 +636,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 	local claimed_quest_type = nil
 
 	if quest_names then
-		for i = 1, #quest_names, 1 do
+		for i = 1, #quest_names do
 			claimed_quest_names[#claimed_quest_names + 1] = quest_names[i]
 		end
 
@@ -654,8 +654,8 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 		}
 		local quest_data = backend_mirror:get_quest_data()
 
-		for j = 1, #data, 1 do
-			for i = 1, #quest_types, 1 do
+		for j = 1, #data do
+			for i = 1, #quest_types do
 				local key = quest_types[i]
 				local current_quests = quest_data[key]
 				local claimed_quest_data = current_quests[data[j].quest_key]
@@ -691,7 +691,7 @@ BackendInterfaceQuestsPlayfab.claim_multiple_quest_rewards_request_cb = function
 		local daily_quests = quests.daily
 		local weekly_quests = quests.weekly
 
-		for i = 1, #data, 1 do
+		for i = 1, #data do
 			for quest_key, _ in pairs(daily_quests) do
 				if quest_key == data[i].quest_key then
 					statistics_db:increment_stat(player_stats_id, "completed_daily_quests")
@@ -793,5 +793,3 @@ BackendInterfaceQuestsPlayfab.get_claimed_event_quests = function (self)
 
 	return mirror:get_claimed_event_quests()
 end
-
-return

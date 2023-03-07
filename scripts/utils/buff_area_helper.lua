@@ -15,7 +15,7 @@ BuffAreaHelper.update_range_check = function (unit, buff, params, world)
 
 	if range_check_state.update_time < params.t then
 		range_check_state.update_time = params.t + range_check_template.update_rate
-		local radius = (buff_template.custom_radius and buff.radius) or range_check_template.radius
+		local radius = buff_template.custom_radius and buff.radius or range_check_template.radius
 		local units_in_range = range_check_state.units_in_range
 		local unit_entered_range_func_name = range_check_template.unit_entered_range_func
 		local unit_left_range_func_name = range_check_template.unit_left_range_func
@@ -32,7 +32,7 @@ BuffAreaHelper.update_range_check = function (unit, buff, params, world)
 			local side = Managers.state.side:get_side_from_name("heroes")
 			local other_player_positions = side.PLAYER_AND_BOT_POSITIONS
 
-			for i = 1, #other_player_positions, 1 do
+			for i = 1, #other_player_positions do
 				local other_player_position = other_player_positions[i]
 				local radius_squared = math.pow(radius, 2)
 				local distance_squared = Vector3.distance_squared(position, other_player_position)
@@ -44,7 +44,7 @@ BuffAreaHelper.update_range_check = function (unit, buff, params, world)
 			end
 		end
 
-		for i = num_hits + 1, initial_length_temp_new_units_in_range, 1 do
+		for i = num_hits + 1, initial_length_temp_new_units_in_range do
 			temp_new_units_in_range[i] = nil
 		end
 

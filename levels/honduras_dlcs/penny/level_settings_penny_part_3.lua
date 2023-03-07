@@ -129,5 +129,3 @@ LevelSettings.dlc_castle = {
 		0
 	}
 }
-
-return

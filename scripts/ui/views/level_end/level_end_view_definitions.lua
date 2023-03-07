@@ -730,7 +730,7 @@ local player_title_style = {
 		2
 	}
 }
-local leave_party_text = (IS_XB1 and "leave_party_xb1") or "leave_party"
+local leave_party_text = IS_XB1 and "leave_party_xb1" or "leave_party"
 local masked = true
 local disable_with_gamepad = true
 local widgets_definitions = {

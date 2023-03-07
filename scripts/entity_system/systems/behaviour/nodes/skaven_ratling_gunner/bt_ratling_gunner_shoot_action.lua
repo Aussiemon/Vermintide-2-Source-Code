@@ -223,9 +223,9 @@ BTRatlingGunnerShootAction._update_shooting = function (self, unit, blackboard, 
 	local time_in_shoot_action = t - data.shoot_start
 	local percentage_in_shoot_action = math.clamp(time_in_shoot_action / data.shoot_duration * data.max_fire_rate_at_percentage_modifier, 0, 1)
 	local current_time_between_shots = math.lerp(data.time_between_shots_at_start, data.time_between_shots_at_end, percentage_in_shoot_action)
-	local shots_to_fire = (math.floor(time_in_shoot_action / current_time_between_shots) + 1) - data.shots_fired
+	local shots_to_fire = math.floor(time_in_shoot_action / current_time_between_shots) + 1 - data.shots_fired
 
-	for i = 1, shots_to_fire, 1 do
+	for i = 1, shots_to_fire do
 		data.shots_fired = data.shots_fired + 1
 
 		self:_shoot(unit, blackboard, t, dt)
@@ -334,7 +334,7 @@ BTRatlingGunnerShootAction._update_target = function (self, unit, blackboard, ac
 			local self_pos = POSITION_LOOKUP[unit]
 			local target_switch_distance_sq = data.target_switch_distance_squared
 
-			if target == blackboard.taunt_unit or (target_distance_sq < target_switch_distance_sq and target_switch_distance_sq < old_target_distance_sq) then
+			if target == blackboard.taunt_unit or target_distance_sq < target_switch_distance_sq and target_switch_distance_sq < old_target_distance_sq then
 				data.target_unit = target
 				data.target_node_name = node_name
 				data.target_obscured = false
@@ -541,7 +541,7 @@ BTRatlingGunnerShootAction._rotate_from_to = function (self, from, to, max_angle
 	local inner_product = Quaternion.dot(to, from)
 	local angle_difference = 2 * math.acos(math.clamp(inner_product, -1, 1))
 	local normalized_angle_diff = math.abs((angle_difference % TWO_PI + PI) % TWO_PI - PI)
-	local lerp_t = (angle_difference == 0 and 1) or math.min(max_delta / angle_difference, 1)
+	local lerp_t = angle_difference == 0 and 1 or math.min(max_delta / angle_difference, 1)
 
 	return Quaternion.lerp(from, to, lerp_t), math.max(normalized_angle_diff - max_delta, 0)
 end
@@ -607,5 +607,3 @@ BTRatlingGunnerShootAction._create_bot_threat_box = function (self, unit, attack
 		ai_bot_group_system:aoe_threat_created(obstacle_position, "oobb", obstacle_size, obstacle_rotation, duration)
 	end
 end
-
-return

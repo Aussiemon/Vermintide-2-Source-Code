@@ -7,5 +7,3 @@ ActionCareerAim.client_owner_start_action = function (self, new_action, t, chain
 
 	inventory_extension:check_and_drop_pickups("career_ability")
 end
-
-return

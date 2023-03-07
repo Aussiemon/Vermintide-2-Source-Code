@@ -80,5 +80,3 @@ Music.post_trigger = function (self, trigger)
 	dprint("post trigger", trigger)
 	WwiseWorld.trigger_event(self._wwise_world, trigger)
 end
-
-return

@@ -24,7 +24,7 @@ end
 local function teleport_validation_func(pos, validation_data)
 	local enemy_positions = validation_data.side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-	for i = 1, #enemy_positions, 1 do
+	for i = 1, #enemy_positions do
 		if Vector3.distance_squared(pos, enemy_positions[i]) < validation_data.min_dist_sqr then
 			return false
 		end
@@ -546,7 +546,7 @@ settings.buff_function_templates = {
 			local buff_system = Managers.state.entity:system("buff_system")
 			local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				local player_unit = player_and_bot_units[i]
 
 				buff_system:add_buff(player_unit, buff_name, unit, false)
@@ -648,7 +648,7 @@ settings.buff_function_templates = {
 				local old_mirrors = buff._mirror_units or {}
 				buff._mirror_units = old_mirrors
 
-				for i = 1, #old_mirrors, 1 do
+				for i = 1, #old_mirrors do
 					local mirror_unit = old_mirrors[i]
 
 					if ALIVE[mirror_unit] then
@@ -662,7 +662,7 @@ settings.buff_function_templates = {
 				local min_dist_sqr = 6.25
 
 				local function valid_teleport_pos_func(pos, pos_list)
-					for i = 1, #pos_list, 1 do
+					for i = 1, #pos_list do
 						if Vector3.distance_squared(pos, pos_list[i]) < min_dist_sqr then
 							return false
 						end
@@ -670,7 +670,7 @@ settings.buff_function_templates = {
 
 					local enemy_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-					for i = 1, #enemy_positions, 1 do
+					for i = 1, #enemy_positions do
 						if Vector3.distance_squared(pos, enemy_positions[i]) < min_dist_sqr then
 							return false
 						end
@@ -682,7 +682,7 @@ settings.buff_function_templates = {
 				local buff_template = buff.template
 				local num_mirrors = buff_template.num_mirrors
 
-				for i = 1, num_mirrors, 1 do
+				for i = 1, num_mirrors do
 					local mirror_pos = ConflictUtils.get_spawn_pos_on_circle_with_func(blackboard.nav_world, unit_pos, dist, spread, tries, valid_teleport_pos_func, pos_list, 8, 8)
 
 					if mirror_pos then
@@ -814,7 +814,7 @@ settings.buff_function_templates = {
 		local nearby_players_n = Broadphase.query(player_broadphase, position, max_distance, nearby_players)
 		local inside_this_frame = FrameTable.alloc_table()
 
-		for i = 1, nearby_players_n, 1 do
+		for i = 1, nearby_players_n do
 			local player_unit = nearby_players[i]
 			inside_this_frame[player_unit] = true
 
@@ -855,12 +855,12 @@ settings.buff_function_templates = {
 					end
 				end
 
-				inside_last_frame[cursed_player] = (inside_this_frame[cursed_player] and true) or nil
+				inside_last_frame[cursed_player] = inside_this_frame[cursed_player] and true or nil
 			end
 
-			buff.last_curse_t = (should_apply_buff and next_curse_t) or buff.last_curse_t
+			buff.last_curse_t = should_apply_buff and next_curse_t or buff.last_curse_t
 		elseif ALIVE[local_player] then
-			inside_last_frame[local_player] = (inside_this_frame[local_player] and true) or nil
+			inside_last_frame[local_player] = inside_this_frame[local_player] and true or nil
 		end
 	end,
 	ai_create_explosion = function (unit, buff, params, world)
@@ -1247,5 +1247,3 @@ settings.proc_functions = {
 	ai_create_explosion = settings.buff_function_templates.ai_create_explosion
 }
 settings.max_stacks_functions = {}
-
-return

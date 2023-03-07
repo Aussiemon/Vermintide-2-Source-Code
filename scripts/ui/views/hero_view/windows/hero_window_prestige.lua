@@ -97,9 +97,11 @@ HeroWindowPrestige._setup_prestige_reward = function (self)
 		local display_name = item_data.display_name
 
 		if item_type == "hat" then
+			-- Nothing
 		elseif item_type == "frame" then
 			reward_portrait_frame = item_data.name
 		elseif item_type == "skin" then
+			-- Nothing
 		end
 
 		self:_set_prestige_reward_portrait_frame(reward_portrait_frame)
@@ -288,5 +290,3 @@ HeroWindowPrestige._set_prestige_reward_portrait_frame = function (self, frame_s
 
 	self._reward_portrait_widget = widget
 end
-
-return

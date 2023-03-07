@@ -209,5 +209,3 @@ end
 KeepDecorationTrophyExtension.on_game_object_destroyed = function (self)
 	self._go_id = nil
 end
-
-return

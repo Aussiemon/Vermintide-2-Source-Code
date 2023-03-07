@@ -294,7 +294,7 @@ HeroWindowCharacterPreview._populate_loadout = function (self)
 			local item_slot_type = slot.type
 			local current_item_name = world_previewer:item_name_by_slot_type(item_slot_type)
 
-			if (item_name and item_name ~= current_item_name) or item_slot_type == "melee" or item_slot_type == "ranged" then
+			if item_name and item_name ~= current_item_name or item_slot_type == "melee" or item_slot_type == "ranged" then
 				local backend_id = item.backend_id
 
 				world_previewer:equip_item(item_name, slot, backend_id)
@@ -496,7 +496,7 @@ HeroWindowCharacterPreview._populate_statistics = function (self, layout)
 	local item_styles = style.item_styles
 	local num_entries = #layout
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local entry = layout[i]
 		local title = ""
 		local name = ""
@@ -561,5 +561,3 @@ HeroWindowCharacterPreview._show_weapon_disclaimer = function (self, should_show
 	disclaimer_text_background_content.visible = should_show
 	disclaimer_text_content.visible = should_show
 end
-
-return

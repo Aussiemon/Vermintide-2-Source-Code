@@ -99,5 +99,3 @@ settings.achievement_events = {
 		end
 	end
 }
-
-return

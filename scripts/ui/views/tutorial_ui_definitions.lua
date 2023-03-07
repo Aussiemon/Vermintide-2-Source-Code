@@ -140,7 +140,7 @@ local scenegraph_definition = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local slot_name_start = string.format("info_slate_slot%d_start", i)
 	local slot_name_end = string.format("info_slate_slot%d_end", i)
 	local y = (i - 1) * (INFO_SLATE_ENTRY_SIZE[2] + INFO_SLATE_ENTRY_SPACING)
@@ -417,7 +417,7 @@ local floating_icons_scene_graph = {
 local function create_health_bar_definitions(num_health_bars)
 	local definitions = {}
 
-	for i = 1, num_health_bars, 1 do
+	for i = 1, num_health_bars do
 		local scenegraph_id = "health_bar_" .. i
 		floating_icons_scene_graph[scenegraph_id] = {
 			parent = "screen_fit",
@@ -490,7 +490,7 @@ end
 local function create_info_slate_widgets(num_of_entries)
 	local entries = {}
 
-	for i = 1, num_of_entries, 1 do
+	for i = 1, num_of_entries do
 		local scenegraph_anchor_id = "info_slate_entry_anchor" .. i
 		local scenegraph_id = "info_slate_entry_root" .. i
 		local text_scenegraph_id = scenegraph_id .. "_text"
@@ -886,7 +886,7 @@ end
 local function create_objective_tooltip_definitions(num_objective_tooltips)
 	local definitions = {}
 
-	for i = 1, num_objective_tooltips, 1 do
+	for i = 1, num_objective_tooltips do
 		local scenegraph_root = "objective_tooltip_root_" .. i
 		local scenegraph_id = "objective_tooltip_" .. i
 		local scenegraph_text = "objective_tooltip_text" .. i

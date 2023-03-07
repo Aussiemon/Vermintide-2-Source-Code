@@ -219,8 +219,8 @@ local INDEX_DISTANCE = 2
 
 ActionCareerDREngineer.fire_hitscan = function (self, position, direction, range)
 	local result = ActionCareerDREngineer.super.fire_hitscan(self, position, direction, range)
-	local end_position = (result and result[#result][INDEX_POSITION]) or position + direction * range
-	local life_time = ((result and result[#result][INDEX_DISTANCE]) or range) * 0.1
+	local end_position = result and result[#result][INDEX_POSITION] or position + direction * range
+	local life_time = (result and result[#result][INDEX_DISTANCE] or range) * 0.1
 
 	self:_add_bullet_trail(end_position, life_time)
 	Managers.state.event:trigger("on_engineer_weapon_fire", self._visual_heat_generation)
@@ -276,5 +276,3 @@ ActionCareerDREngineer._fake_activate_ability = function (self, t)
 		end
 	end
 end
-
-return

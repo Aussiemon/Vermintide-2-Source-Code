@@ -60,5 +60,3 @@ DialogueLookup[DialogueLookup_n + 28] = "pes_morris_gorge_river_course"
 DialogueLookup[DialogueLookup_n + 29] = "pes_morris_gorge_skull"
 DialogueLookup[DialogueLookup_n + 30] = "pes_morris_gorge_cliff_town"
 DialogueLookup_n = DialogueLookup_n + 30
-
-return

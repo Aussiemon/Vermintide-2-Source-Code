@@ -70,5 +70,3 @@ PlayerCharacterStateInHangingCage.update = function (self, unit, input, dt, cont
 		self.state = new_state
 	end
 end
-
-return

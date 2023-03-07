@@ -454,7 +454,7 @@ local widgets = {
 }
 local area_widgets = {}
 
-for i = 1, 10, 1 do
+for i = 1, 10 do
 	area_widgets[i] = create_area_widget(i)
 end
 

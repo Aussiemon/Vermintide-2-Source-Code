@@ -37,5 +37,3 @@ end
 ScaleUnitExtension.despawn = function (self)
 	return
 end
-
-return

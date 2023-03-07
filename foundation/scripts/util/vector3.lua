@@ -73,5 +73,3 @@ end
 Vector3Aux.unbox = function (boxed_vector)
 	return Vector3(boxed_vector[1], boxed_vector[2], boxed_vector[3])
 end
-
-return

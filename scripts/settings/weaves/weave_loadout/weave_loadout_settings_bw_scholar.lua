@@ -6,5 +6,3 @@ WeaveLoadoutSettings.bw_scholar = {
 	properties = {},
 	traits = {}
 }
-
-return

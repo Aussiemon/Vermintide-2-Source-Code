@@ -156,7 +156,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 			reference_buff.buff_list = {}
 		end
 
-		for i = 1, max_stacks, 1 do
+		for i = 1, max_stacks do
 			if max_stacks > #reference_buff.buff_list then
 				table.insert(reference_buff.buff_list, buff_extension:add_buff("markus_huntsman_auto_headshot"))
 			end
@@ -218,7 +218,7 @@ CareerAbilityESHuntsman._run_ability = function (self, skip_cooldown)
 		MOOD_BLACKBOARD.skill_huntsman_stealth = true
 	end
 
-	if local_player or (is_server and bot_player) then
+	if local_player or is_server and bot_player then
 		local status_extension = self._status_extension
 
 		status_extension:set_invisible(true)
@@ -239,5 +239,3 @@ CareerAbilityESHuntsman._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

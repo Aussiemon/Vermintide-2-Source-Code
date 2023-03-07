@@ -38,24 +38,27 @@ CurlManager.destroy = function (self)
 end
 
 local Request = {
-	__index = Request,
-	new = function ()
-		local self = setmetatable({}, Request)
-		self.headers = {}
-
-		return self
-	end,
-	OnResponse = function (self, data)
-		self.data = (self.data and self.data .. data) or data
-	end,
-	OnHeader = function (self, data)
-		local k, v = data:match("([^:]+):%s+([^:]+)")
-
-		if k ~= nil then
-			self.headers[k] = string.gsub(v, "\r\n", "")
-		end
-	end
+	__index = Request
 }
+
+Request.new = function ()
+	local self = setmetatable({}, Request)
+	self.headers = {}
+
+	return self
+end
+
+Request.OnResponse = function (self, data)
+	self.data = self.data and self.data .. data or data
+end
+
+Request.OnHeader = function (self, data)
+	local k, v = data:match("([^:]+):%s+([^:]+)")
+
+	if k ~= nil then
+		self.headers[k] = string.gsub(v, "\r\n", "")
+	end
+end
 
 CurlManager.update = function (self, handle_callbacks)
 	DeadlockStack.pause()
@@ -180,5 +183,3 @@ CurlManager.upload = function (self, url, data, cb)
 
 	self._requests[easy] = request
 end
-
-return

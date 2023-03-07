@@ -73,5 +73,3 @@ WorldMarkerExtension.cb_add_marker = function (self, cb_func, id)
 		self:remove_marker()
 	end
 end
-
-return

@@ -142,5 +142,3 @@ DifficultyManager.players_below_difficulty_rank = function (difficulty_key, play
 
 	return player_below_difficulty_rank
 end
-
-return

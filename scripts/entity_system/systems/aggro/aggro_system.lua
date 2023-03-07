@@ -11,7 +11,7 @@ AggroSystem.init = function (self, context, name)
 	}
 	local sides = Managers.state.side:sides()
 
-	for i = 1, #sides, 1 do
+	for i = 1, #sides do
 		self.aggroable_units[i] = {}
 	end
 
@@ -47,5 +47,3 @@ AggroSystem.destroy = function (self)
 
 	self.aggroable_units = nil
 end
-
-return

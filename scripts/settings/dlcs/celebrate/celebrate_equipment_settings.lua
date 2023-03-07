@@ -18,5 +18,3 @@ settings.action_template_file_names = {
 settings.action_classes_lookup = {
 	one_time_consumable = "ActionOneTimeConsumable"
 }
-
-return

@@ -61,12 +61,7 @@ PlayerCharacterStateJumping.on_enter = function (self, unit, input, dt, context,
 	local move_anim = nil
 	local item_template = inventory_extension:get_wielded_slot_item_template()
 	self._play_fp_anim = item_template and item_template.jump_anim_enabled_1p
-
-	if CharacterStateHelper.has_move_input(input_extension) then
-		move_anim = "jump_fwd"
-	else
-		move_anim = "jump_idle"
-	end
+	move_anim = CharacterStateHelper.has_move_input(input_extension) and "jump_fwd" or "jump_idle"
 
 	CharacterStateHelper.play_animation_event(unit, move_anim)
 
@@ -224,5 +219,3 @@ PlayerCharacterStateJumping.update = function (self, unit, input, dt, context, t
 		return
 	end
 end
-
-return

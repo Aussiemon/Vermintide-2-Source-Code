@@ -67,5 +67,3 @@ end
 ProjectileExtrapolatedHuskLocomotionExtension.stop = function (self)
 	self._stopped = true
 end
-
-return

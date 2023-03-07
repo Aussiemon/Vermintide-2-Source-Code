@@ -222,7 +222,7 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_input = function (self,
 	local gamepad_widget_navigation = self._gamepad_widget_navigation
 	local num_inputs = #gamepad_widget_navigation
 
-	for i = 1, num_inputs, 1 do
+	for i = 1, num_inputs do
 		local widget_name = gamepad_widget_navigation[i]
 		local widget = widgets_by_name[widget_name]
 		local hotspot = widget.content.button_hotspot
@@ -246,7 +246,7 @@ StartGameWindowAdditionalSettingsConsole._handle_mouse_input = function (self, d
 	local gamepad_widget_navigation = self._gamepad_widget_navigation
 	local num_inputs = #gamepad_widget_navigation
 
-	for i = 1, num_inputs, 1 do
+	for i = 1, num_inputs do
 		local widget_name = gamepad_widget_navigation[i]
 		local widget = widgets_by_name[widget_name]
 
@@ -366,7 +366,7 @@ StartGameWindowAdditionalSettingsConsole.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -394,5 +394,3 @@ StartGameWindowAdditionalSettingsConsole._handle_gamepad_activity = function (se
 		self.render_settings.alpha_multiplier = 1
 	end
 end
-
-return

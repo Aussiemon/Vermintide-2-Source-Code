@@ -19,7 +19,7 @@ EnduranceBadgeUI.create_ui_elements = function (self)
 	local widget_definitions = definitions.widget_definitions
 	local badge_widgets = {}
 
-	for i = 1, #widget_definitions, 1 do
+	for i = 1, #widget_definitions do
 		badge_widgets[i] = UIWidget.init(widget_definitions[i])
 	end
 
@@ -162,5 +162,3 @@ EnduranceBadgeUI.set_badge_amount = function (self, widget, amount, ignore_anima
 		self.ui_animations[scenegraph_id] = UIAnimation.init(UIAnimation.catmullrom, size, nil, 64, p1, p2, p3, p4, duration)
 	end
 end
-
-return

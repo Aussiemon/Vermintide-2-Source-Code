@@ -95,5 +95,3 @@ BTCritterNurglingRoamAction.has_overlap = function (self, unit, blackboard, acti
 
 	return num_results > 1
 end
-
-return

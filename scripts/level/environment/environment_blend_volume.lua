@@ -15,7 +15,7 @@ EnvironmentBlendVolume.init = function (self, data)
 	self._is_inside = false
 	self._override_values = {
 		self._environment,
-		(not data.override_sun_snap and "sun_direction") or nil
+		not data.override_sun_snap and "sun_direction" or nil
 	}
 	self._data = data
 
@@ -81,10 +81,10 @@ EnvironmentBlendVolume.update = function (self, dt)
 		end
 	end
 
-	local target = (self._is_inside and 1) or -1
+	local target = self._is_inside and 1 or -1
 
 	if self._blend_time <= 0 or self._force_blend then
-		self._current_timer = (self._is_inside and 1) or 0
+		self._current_timer = self._is_inside and 1 or 0
 		self._force_blend = false
 	else
 		self._current_timer = math.clamp(self._current_timer + 1 / self._blend_time * dt * target, 0, 1)
@@ -101,5 +101,3 @@ EnvironmentBlendVolume.destroy = function (self)
 		event_manager:unregister("force_blend_environment_volume", self)
 	end
 end
-
-return

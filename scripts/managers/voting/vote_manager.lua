@@ -322,7 +322,7 @@ VoteManager.update = function (self, dt)
 			local vote_options_n = #vote_options
 			local input_hold_timer = active_voting.input_hold_timer or 0
 
-			for i = 1, vote_options_n, 1 do
+			for i = 1, vote_options_n do
 				local vote_option = vote_options[i]
 
 				if gamepad_active then
@@ -390,7 +390,7 @@ VoteManager._vote_result = function (self, vote_time_ended)
 		end
 	end
 
-	local num_of_votes_needed = (minimum_voter_percent and minimum_voter_percent <= num_of_votes / number_of_voters) or false
+	local num_of_votes_needed = minimum_voter_percent and minimum_voter_percent <= num_of_votes / number_of_voters or false
 
 	if num_of_votes_needed or num_of_votes == number_of_voters then
 		return 0
@@ -440,7 +440,7 @@ VoteManager._server_start_vote = function (self, name, ignore_peer_list, data)
 	self.active_voting = {
 		name = name,
 		template = vote_template,
-		end_time = (vote_template.duration and network_time + vote_template.duration) or nil,
+		end_time = vote_template.duration and network_time + vote_template.duration or nil,
 		votes = {},
 		voters = self:_get_voter_start_list(ignore_peer_list),
 		data = data
@@ -461,7 +461,7 @@ VoteManager._get_voter_start_list = function (self, ignore_list)
 	local ignore_peers = {}
 
 	if ignore_list then
-		for i = 1, #ignore_list, 1 do
+		for i = 1, #ignore_list do
 			ignore_peers[ignore_list[i]] = true
 		end
 	end
@@ -505,7 +505,7 @@ VoteManager._update_voter_list_by_active_peers = function (self, active_peers, v
 		end
 	end
 
-	for i = 1, #removed_peers, 1 do
+	for i = 1, #removed_peers do
 		local peer_id = removed_peers[i]
 
 		if votes[peer_id] ~= nil then
@@ -641,7 +641,7 @@ VoteManager._handle_undecided_votes = function (self, active_voting)
 	local voters = active_voting.voters
 	local votes = active_voting.votes
 
-	for i = 1, #voters, 1 do
+	for i = 1, #voters do
 		local peer_id = voters[i]
 
 		if not votes[peer_id] then
@@ -684,7 +684,7 @@ VoteManager._start_vote_base = function (self, peer_id, vote_type_id, sync_data,
 	self.active_voting = {
 		name = vote_type_name,
 		template = vote_template,
-		end_time = (vote_template.duration and network_time + vote_template.duration) or nil,
+		end_time = vote_template.duration and network_time + vote_template.duration or nil,
 		voters = voters,
 		votes = {},
 		data = data
@@ -746,7 +746,7 @@ VoteManager.rpc_update_voters_list = function (self, channel_id, voters)
 	if active_voting then
 		local active_peers = {}
 
-		for i = 1, #voters, 1 do
+		for i = 1, #voters do
 			active_peers[voters[i]] = true
 		end
 
@@ -823,7 +823,7 @@ VoteManager.get_current_voters = function (self)
 		local voters = self.active_voting.voters
 		local num_voters = #voters
 
-		for i = 1, num_voters, 1 do
+		for i = 1, num_voters do
 			local peer_id = voters[i]
 			local vote = votes[peer_id]
 
@@ -852,5 +852,3 @@ VoteManager._active_peers = function (self)
 
 	return peers_local
 end
-
-return

@@ -134,7 +134,7 @@ SimpleHuskInventoryExtension._unlink_unit = function (self, unit, reason, attach
 		local target_node = attachment_nodes.target
 
 		if target_node ~= 0 then
-			local target_node_index = (type(target_node) == "string" and Unit.node(unit, target_node)) or target_node
+			local target_node_index = type(target_node) == "string" and Unit.node(unit, target_node) or target_node
 			local parent = Unit.scene_graph_parent(unit, target_node_index)
 
 			Unit.scene_graph_link(unit, target_node_index, 0)
@@ -161,14 +161,14 @@ SimpleHuskInventoryExtension.drop_equipped_weapons = function (self, reason)
 	local right_hand_unit_name = wielded.right_hand_unit
 
 	if left_hand_unit_name then
-		local attachment_node_linking = (linking_template.left and linking_template.left.third_person) or linking_template.third_person
+		local attachment_node_linking = linking_template.left and linking_template.left.third_person or linking_template.third_person
 		local left_hand_unit = equipment.left_hand_wielded_unit_3p
 
 		self:_unlink_unit(left_hand_unit, reason, attachment_node_linking)
 	end
 
 	if right_hand_unit_name then
-		local attachment_node_linking = (linking_template.right and linking_template.right.third_person) or linking_template.third_person
+		local attachment_node_linking = linking_template.right and linking_template.right.third_person or linking_template.third_person
 		local right_hand_unit = equipment.right_hand_wielded_unit_3p
 
 		self:_unlink_unit(right_hand_unit, reason, attachment_node_linking)
@@ -381,7 +381,7 @@ SimpleHuskInventoryExtension._refresh_buffs = function (self, buffs, reason, slo
 		current_item_buffs = current_item_buffs[slot_name]
 	end
 
-	for i = 1, #current_item_buffs, 1 do
+	for i = 1, #current_item_buffs do
 		local buff_id = current_item_buffs[i]
 
 		buff_extension:remove_buff(buff_id)
@@ -581,7 +581,7 @@ SimpleHuskInventoryExtension._override_career_skill_item_template = function (se
 end
 
 local function get_wield_anim(default, optional_switch, career_name)
-	return (optional_switch and optional_switch[career_name]) or default
+	return optional_switch and optional_switch[career_name] or default
 end
 
 SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slot_name, unit_1p, unit_3p)
@@ -681,7 +681,7 @@ SimpleHuskInventoryExtension._wield_slot = function (self, world, equipment, slo
 		if Unit.animation_has_variable(unit_1p, "animation_variation_id") then
 			local weapon_skin_data = WeaponSkins.skins[slot.skin]
 			local weapon_skin_anim_overrides = weapon_skin_data and weapon_skin_data.action_anim_overrides
-			local animation_variation_id = (weapon_skin_anim_overrides and weapon_skin_anim_overrides.animation_variation_id) or 0
+			local animation_variation_id = weapon_skin_anim_overrides and weapon_skin_anim_overrides.animation_variation_id or 0
 			local animation_variation_param = Unit.animation_find_variable(unit_1p, "animation_variation_id")
 
 			Unit.animation_set_variable(unit_1p, animation_variation_param, animation_variation_id)
@@ -809,11 +809,9 @@ SimpleHuskInventoryExtension.update_additional_items = function (self, slot_name
 
 		table.clear(additional_items_slot.items)
 
-		for i = 1, #items, 1 do
+		for i = 1, #items do
 			local item_name = items[i]
 			additional_items_slot.items[#additional_items_slot.items + 1] = ItemMasterList[item_name]
 		end
 	end
 end
-
-return

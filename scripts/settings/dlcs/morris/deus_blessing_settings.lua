@@ -94,5 +94,3 @@ DeusBlessingSettings = DeusBlessingSettings or {
 		}
 	}
 }
-
-return

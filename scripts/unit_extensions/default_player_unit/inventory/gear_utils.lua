@@ -106,7 +106,7 @@ GearUtils.apply_properties_to_item_template = function (template, backend_id)
 
 	if properties then
 		local template_clone = table.clone(template)
-		local properties_data = (item.rarity == "magic" and WeaveProperties.properties) or WeaponProperties.properties
+		local properties_data = item.rarity == "magic" and WeaveProperties.properties or WeaponProperties.properties
 
 		for property_key, _ in pairs(properties) do
 			local property_data = properties_data[property_key]
@@ -314,8 +314,8 @@ GearUtils.link_units = function (world, attachment_node_linking, link_table, sou
 	for i, attachment_nodes in ipairs(attachment_node_linking) do
 		local source_node = attachment_nodes.source
 		local target_node = attachment_nodes.target
-		local source_node_index = (type(source_node) == "string" and Unit.node(source, source_node)) or source_node
-		local target_node_index = (type(target_node) == "string" and Unit.node(target, target_node)) or target_node
+		local source_node_index = type(source_node) == "string" and Unit.node(source, source_node) or source_node
+		local target_node_index = type(target_node) == "string" and Unit.node(target, target_node) or target_node
 		link_table[#link_table + 1] = {
 			unit = target,
 			i = target_node_index,
@@ -402,7 +402,7 @@ GearUtils.destroy_slot = function (world, unit, slot_data, equipment, allow_dest
 	local item_data = slot_data.item_data
 	local slot_name = slot_data.id
 
-	fassert(allow_destroy_weapon or (slot_name ~= "slot_ranged" and slot_name ~= "slot_melee"), "Trying to destroy weapon without permission")
+	fassert(allow_destroy_weapon or slot_name ~= "slot_ranged" and slot_name ~= "slot_melee", "Trying to destroy weapon without permission")
 
 	if item_data == equipment.wielded then
 		GearUtils.destroy_equipment(world, equipment)
@@ -489,7 +489,7 @@ GearUtils.hot_join_sync = function (peer_id, unit, equipment, additional_items)
 
 		table.clear(temp_table)
 
-		for i = 1, #data.items, 1 do
+		for i = 1, #data.items do
 			local item = data.items[i]
 			temp_table[#temp_table + 1] = NetworkLookup.item_names[item.name]
 		end
@@ -587,7 +587,7 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 	local properties = item and item.properties
 
 	if properties then
-		local properties_data = (item.rarity == "magic" and WeaveProperties.properties) or WeaponProperties.properties
+		local properties_data = item.rarity == "magic" and WeaveProperties.properties or WeaponProperties.properties
 
 		for property_key, property_value in pairs(properties) do
 			local property_data = properties_data[property_key]
@@ -612,7 +612,7 @@ GearUtils.get_property_and_trait_buffs = function (backend_items, backend_id, bu
 	local traits = item and item.traits
 
 	if traits then
-		local traits_data = (item.rarity == "magic" and WeaveTraits.traits) or WeaponTraits.traits
+		local traits_data = item.rarity == "magic" and WeaveTraits.traits or WeaponTraits.traits
 
 		for _, trait_key in pairs(traits) do
 			local trait_data = traits_data[trait_key]
@@ -641,9 +641,9 @@ local function _get_item_particle_link_target(fx, equipment, unit_3p, unit_1p, i
 	local link_target = nil
 
 	if fx.link_target == "left_weapon" then
-		link_target = (is_first_person and equipment.left_hand_wielded_unit) or equipment.left_hand_wielded_unit_3p
+		link_target = is_first_person and equipment.left_hand_wielded_unit or equipment.left_hand_wielded_unit_3p
 	elseif fx.link_target == "right_weapon" then
-		link_target = (is_first_person and equipment.right_hand_wielded_unit) or equipment.right_hand_wielded_unit_3p
+		link_target = is_first_person and equipment.right_hand_wielded_unit or equipment.right_hand_wielded_unit_3p
 	elseif fx.link_target == "owner_3p" then
 		link_target = unit_3p
 	elseif fx.link_target == "owner_1p" then
@@ -654,7 +654,7 @@ local function _get_item_particle_link_target(fx, equipment, unit_3p, unit_1p, i
 end
 
 local function _get_item_particle_link_node(fx, link_target)
-	return (fx.link_node and unit_node(link_target, fx.link_node)) or 0
+	return fx.link_node and unit_node(link_target, fx.link_node) or 0
 end
 
 GearUtils.create_attached_particles = function (world, particle_fx, equipment, unit_3p, unit_1p, is_first_person)
@@ -669,10 +669,10 @@ GearUtils.create_attached_particles = function (world, particle_fx, equipment, u
 		destroy_fx = destroy_fx
 	}
 
-	for i = 1, #particle_fx, 1 do
+	for i = 1, #particle_fx do
 		local fx = particle_fx[i]
 
-		if (is_first_person and fx.first_person) or (not is_first_person and fx.third_person) then
+		if is_first_person and fx.first_person or not is_first_person and fx.third_person then
 			local link_target = _get_item_particle_link_target(fx, equipment, unit_3p, unit_1p, is_first_person)
 
 			if link_target then
@@ -696,7 +696,7 @@ GearUtils.destroy_attached_particles = function (world, fx_ids)
 		local destroy_fx = fx_ids.destroy_fx
 
 		if destroy_fx then
-			for i = 1, #destroy_fx, 1 do
+			for i = 1, #destroy_fx do
 				World.destroy_particles(world, destroy_fx[i])
 			end
 		end
@@ -704,7 +704,7 @@ GearUtils.destroy_attached_particles = function (world, fx_ids)
 		local stop_fx = fx_ids.stop_fx
 
 		if stop_fx then
-			for i = 1, #stop_fx, 1 do
+			for i = 1, #stop_fx do
 				World.stop_spawning_particles(world, stop_fx[i])
 			end
 		end
@@ -712,5 +712,3 @@ GearUtils.destroy_attached_particles = function (world, fx_ids)
 
 	return nil
 end
-
-return

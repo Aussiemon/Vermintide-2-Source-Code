@@ -94,5 +94,3 @@ DEUS_MAP_SEED_WHITELIST = {
 		}
 	}
 }
-
-return

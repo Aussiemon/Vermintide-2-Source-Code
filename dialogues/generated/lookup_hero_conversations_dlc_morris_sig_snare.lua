@@ -150,5 +150,3 @@ DialogueLookup[DialogueLookup_n + 73] = "pes_morris_snare_e_one"
 DialogueLookup[DialogueLookup_n + 74] = "pes_morris_snare_e_two"
 DialogueLookup[DialogueLookup_n + 75] = "pes_morris_snare_e_three"
 DialogueLookup_n = DialogueLookup_n + 75
-
-return

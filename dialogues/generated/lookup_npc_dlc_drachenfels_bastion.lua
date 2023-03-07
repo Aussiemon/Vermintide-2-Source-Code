@@ -20,5 +20,3 @@ DialogueLookup[DialogueLookup_n + 8] = "pbw_bastion_vo_finale_sorcerer"
 DialogueLookup[DialogueLookup_n + 9] = "pwe_bastion_vo_finale_sorcerer"
 DialogueLookup[DialogueLookup_n + 10] = "pes_bastion_vo_finale_sorcerer"
 DialogueLookup_n = DialogueLookup_n + 10
-
-return

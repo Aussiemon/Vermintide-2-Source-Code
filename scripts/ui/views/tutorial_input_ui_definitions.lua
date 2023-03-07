@@ -131,7 +131,7 @@ local alpha = 0
 local function create_tutorial_tooltip_input_description_definitions(amount, unassigned)
 	local input_description_widgets = {}
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local scenegraph_root_id = "input_description_root_" .. i
 		local scenegraph_id = "input_description_" .. i
 		local scenegraph_prefix_text_id = "input_description_prefix_text_" .. i

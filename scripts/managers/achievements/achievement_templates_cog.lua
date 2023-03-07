@@ -241,7 +241,7 @@ achievements.cog_all_kill_barrage = {
 			local attacker_unit = damage_data[DamageDataIndex.SOURCE_ATTACKER_UNIT]
 			local damage_source = damage_data[DamageDataIndex.DAMAGE_SOURCE_NAME]
 
-			if not attacker_unit or (damage_source ~= "bardin_engineer_career_skill_weapon" and damage_source ~= "bardin_engineer_career_skill_weapon_heavy") then
+			if not attacker_unit or damage_source ~= "bardin_engineer_career_skill_weapon" and damage_source ~= "bardin_engineer_career_skill_weapon_heavy" then
 				return false
 			end
 
@@ -768,7 +768,7 @@ achievements.cog_hammer_cliff_push = {
 		local damage_data = event_data[register_kill_damage_data]
 		local damage_type = damage_data[DamageDataIndex.DAMAGE_TYPE]
 
-		if not damage_type or (damage_type ~= "volume_insta_kill" and damage_type ~= "forced") then
+		if not damage_type or damage_type ~= "volume_insta_kill" and damage_type ~= "forced" then
 			return
 		end
 
@@ -976,7 +976,7 @@ achievements.cog_kill_register = {
 	completed = function (statistics_db, stats_id, template_data)
 		local max_count = 0
 
-		for i = 1, #elite_special_breeds, 1 do
+		for i = 1, #elite_special_breeds do
 			local count = statistics_db:get_persistent_stat(stats_id, "weapon_kills_per_breed", "dr_steam_pistol", elite_special_breeds[i])
 			max_count = max_count + count
 		end
@@ -1081,7 +1081,7 @@ local difficulties = {
 	"cataclysm"
 }
 
-for i = 1, #difficulties, 1 do
+for i = 1, #difficulties do
 	local difficulty_key = difficulties[i]
 	local name = "cog_complete_all_helmgart_levels_" .. DifficultyMapping[difficulty_key]
 
@@ -1121,5 +1121,3 @@ local wizard_hammerer = {
 
 add_meta_challenge(achievements, "complete_all_engineer_challenges", all_challenges, "achievement_trophy_complete_all_engineer_challenges", "cog_upgrade", nil, nil)
 add_meta_challenge(achievements, "cog_wizard_hammer", wizard_hammerer, "achievement_trophy_cog_wizard_hammer", "cog_upgrade", nil, nil)
-
-return

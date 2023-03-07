@@ -1190,5 +1190,3 @@ UIFrameSettings = {
 		}
 	}
 }
-
-return

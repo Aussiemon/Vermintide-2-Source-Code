@@ -51,5 +51,3 @@ end
 BackendInterfaceLootBenchmark.get_loot = function (self, id)
 	return nil
 end
-
-return

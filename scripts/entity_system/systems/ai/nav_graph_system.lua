@@ -105,7 +105,7 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 	local count = 0
 	local num_smart_objects_in_unit = #smart_object_unit_data
 
-	for i = 1, num_smart_objects_in_unit, 1 do
+	for i = 1, num_smart_objects_in_unit do
 		local smart_object_data = smart_object_unit_data[i]
 		local smart_object_type = smart_object_data.smart_object_type or "ledges"
 		local layer_id = LAYER_ID_MAPPING[smart_object_type]
@@ -113,7 +113,7 @@ NavGraphSystem.init_nav_graphs = function (self, unit, smart_object_id, extensio
 		control_points[2] = Vector3Aux.unbox(smart_object_data.pos2)
 		local is_bidirectional = true
 
-		if smart_object_unit_data.is_one_way or (smart_object_type ~= "teleporters" and SmartObjectSettings.jump_up_max_height < math.abs(control_points[1].z - control_points[2].z)) then
+		if smart_object_unit_data.is_one_way or smart_object_type ~= "teleporters" and SmartObjectSettings.jump_up_max_height < math.abs(control_points[1].z - control_points[2].z) then
 			is_bidirectional = false
 		end
 
@@ -205,7 +205,7 @@ NavGraphSystem.spawn_versus_jump_unit = function (self, jump_object_data, swap)
 			self._stored_jump_data[jump_object_data.smart_object_index] = storage
 		end
 
-		local index = (not swap and 1) or 2
+		local index = not swap and 1 or 2
 		storage[index] = unit_jump_data
 	end
 end
@@ -284,7 +284,7 @@ NavGraphSystem.on_add_extension = function (self, world, unit, extension_name, e
 		end
 
 		local storage = self._stored_jump_data[smart_object_index]
-		local index = (not swap and 1) or 2
+		local index = not swap and 1 or 2
 		local jump_data = storage[index]
 		self.level_jumps[unit] = jump_data
 	end
@@ -356,7 +356,7 @@ NavGraphSystem.add_nav_graph = function (self, unit)
 	if extension.nav_graph_removed then
 		local navgraphs = extension.navgraphs
 
-		for i = 1, #navgraphs, 1 do
+		for i = 1, #navgraphs do
 			local navgraph = navgraphs[i]
 
 			GwNavGraph.add_to_database(navgraph)
@@ -375,7 +375,7 @@ NavGraphSystem.remove_nav_graph = function (self, unit)
 	if not extension.nav_graph_removed then
 		local navgraphs = extension.navgraphs
 
-		for i = 1, #navgraphs, 1 do
+		for i = 1, #navgraphs do
 			local navgraph = navgraphs[i]
 
 			GwNavGraph.remove_from_database(navgraph)
@@ -486,7 +486,7 @@ NavGraphSystem.on_remove_extension = function (self, unit, extension_name)
 
 	local extension = self.unit_extension_data[unit]
 
-	for i = 1, #extension.navgraphs, 1 do
+	for i = 1, #extension.navgraphs do
 		local navgraph = extension.navgraphs[i]
 
 		GwNavGraph.destroy(navgraph)
@@ -497,7 +497,7 @@ end
 
 NavGraphSystem.update = function (self, context, t, dt)
 	if self.nav_graphs_units_to_add then
-		for i = 1, #self.nav_graphs_units_to_add, 1 do
+		for i = 1, #self.nav_graphs_units_to_add do
 			local nav_graphs_unit_to_add = self.nav_graphs_units_to_add[i]
 
 			self:add_nav_graph(nav_graphs_unit_to_add)
@@ -505,7 +505,7 @@ NavGraphSystem.update = function (self, context, t, dt)
 
 		self.nav_graphs_units_to_add = nil
 	elseif self.nav_graphs_units_to_remove then
-		for i = 1, #self.nav_graphs_units_to_remove, 1 do
+		for i = 1, #self.nav_graphs_units_to_remove do
 			local nav_graphs_unit_to_remove = self.nav_graphs_units_to_remove[i]
 
 			self:remove_nav_graph(nav_graphs_unit_to_remove)
@@ -544,5 +544,3 @@ NavGraphSystem.has_nav_graph = function (self, unit)
 		return false, false
 	end
 end
-
-return

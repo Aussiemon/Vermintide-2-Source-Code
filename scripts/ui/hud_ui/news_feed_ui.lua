@@ -115,7 +115,7 @@ NewsFeedUI._sync_news = function (self, dt, t)
 	if player_unit then
 		table.clear(news_to_add)
 
-		for i = 1, #active_news, 1 do
+		for i = 1, #active_news do
 			local data = active_news[i]
 			data.verified = false
 		end
@@ -129,7 +129,7 @@ NewsFeedUI._sync_news = function (self, dt, t)
 			if not templates_on_cooldown[template_name] and (condition_func(conditions_params) or script_data.show_all_news_feed_items) then
 				local verified = false
 
-				for j = 1, #active_news, 1 do
+				for j = 1, #active_news do
 					local data = active_news[j]
 
 					if data.name == template_name then
@@ -155,7 +155,7 @@ NewsFeedUI._sync_news = function (self, dt, t)
 			end
 		end
 
-		for i = 1, #widgets_to_remove, 1 do
+		for i = 1, #widgets_to_remove do
 			local index = widgets_to_remove[i]
 
 			self:_mark_entry_for_removal(index)
@@ -477,7 +477,7 @@ NewsFeedUI.draw = function (self, dt)
 
 	local active_news = self._active_news
 
-	for i = 1, #active_news, 1 do
+	for i = 1, #active_news do
 		local widget = active_news[i].widget
 
 		if widget then
@@ -487,5 +487,3 @@ NewsFeedUI.draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

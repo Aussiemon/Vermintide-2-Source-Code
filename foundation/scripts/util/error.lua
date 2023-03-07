@@ -1,7 +1,7 @@
 local function format_error_message(message, ...)
 	local args = {}
 
-	for i = 1, select("#", ...), 1 do
+	for i = 1, select("#", ...) do
 		args[i] = tostring(select(i, ...))
 	end
 
@@ -33,5 +33,3 @@ function ferror(message, ...)
 
 	error(message)
 end
-
-return

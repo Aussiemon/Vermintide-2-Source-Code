@@ -37,5 +37,3 @@ settings.network_sound_events = {
 	"Play_exalted_sorcerer_drachenfels_attack_short_vce",
 	"Play_exalted_sorcerer_drachenfels_magic_throw_vce"
 }
-
-return

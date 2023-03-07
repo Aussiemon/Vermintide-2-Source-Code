@@ -231,5 +231,3 @@ BreedBehaviors.chaos_exalted_sorcerer = {
 	},
 	name = "chaos_exalted_sorcerer"
 }
-
-return

@@ -106,7 +106,7 @@ BeastmenStandardExtension.on_death = function (self, killer_unit)
 			end
 		end
 
-		for i = 1, #self.player_astar_data, 1 do
+		for i = 1, #self.player_astar_data do
 			local astar_data = self.player_astar_data[i]
 
 			if astar_data.astar then
@@ -181,7 +181,7 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 		local self_position = self.self_position_boxed:unbox()
 		local num_ai_units = AiUtils.broadphase_query(self_position, radius, ai_units_broadphase_result)
 
-		for i = 1, num_ai_units, 1 do
+		for i = 1, num_ai_units do
 			local ai_unit = ai_units_broadphase_result[i]
 			local buff_extension = ScriptUnit.has_extension(ai_unit, "buff_system")
 			local blackboard = BLACKBOARDS[ai_unit]
@@ -196,7 +196,7 @@ BeastmenStandardExtension.update = function (self, unit, input, dt, context, t)
 		for ai_unit, buff_id in pairs(ai_units_inside) do
 			local is_inside = false
 
-			for i = 1, num_ai_units, 1 do
+			for i = 1, num_ai_units do
 				local inside_ai_unit = ai_units_broadphase_result[i]
 
 				if ai_unit == inside_ai_unit then
@@ -239,7 +239,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 	local player_units = self.side.ENEMY_PLAYER_UNITS
 	local num_player_units = #player_units
 
-	for i = 1, num_player_units, 1 do
+	for i = 1, num_player_units do
 		local player_unit = player_units[i]
 
 		if AiUtils.unit_alive(player_unit) then
@@ -257,7 +257,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 					if path_found then
 						data.path_found = true
 
-						for j = 1, #player_astar_data, 1 do
+						for j = 1, #player_astar_data do
 							local astar_data = player_astar_data[j]
 							local player_astar = astar_data.astar
 
@@ -318,7 +318,7 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 	local has_path_to_any_player = nil
 	local num_path_calculations = 0
 
-	for i = 1, #player_astar_data, 1 do
+	for i = 1, #player_astar_data do
 		local data = player_astar_data[i]
 
 		if data.path_found then
@@ -332,5 +332,3 @@ BeastmenStandardExtension._update_self_destruction = function (self, unit, dt, t
 		AiUtils.kill_unit(self.unit, self.unit, nil, nil, nil, "suicide")
 	end
 end
-
-return

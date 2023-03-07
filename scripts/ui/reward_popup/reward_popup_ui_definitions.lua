@@ -601,7 +601,7 @@ local function create_item_list_widget(scenegraph_id)
 	}
 	local style = {}
 
-	for i = 1, ITEM_LIST_MAX_COLUMNS * ITEM_LIST_MAX_ROWS, 1 do
+	for i = 1, ITEM_LIST_MAX_COLUMNS * ITEM_LIST_MAX_ROWS do
 		local rarity_key = "rarity" .. i
 		local icon_key = "icon" .. i
 		local illusion_key = "illusion" .. i
@@ -1804,7 +1804,7 @@ local animations = {
 				local total_uv_change = height_fraction * inv_anim_fraction
 				center_uvs[1][2] = math.min(0.5 + total_uv_change, 1)
 				center_uvs[2][2] = math.max(0.5 - total_uv_change, 0)
-				current_background_top_position[2] = (default_background_top_position[2] + half_center_height) - half_center_height * anim_fraction
+				current_background_top_position[2] = default_background_top_position[2] + half_center_height - half_center_height * anim_fraction
 				current_background_bottom_position[2] = default_background_bottom_position[2] - half_center_height + half_center_height * anim_fraction
 				local background_top_glow_widget = widgets.background_top_glow
 				background_top_glow_widget.content.texture_id.uvs[2][2] = inv_anim_fraction
@@ -2022,7 +2022,7 @@ local animations = {
 				local total_uv_change = height_fraction * inv_anim_fraction
 				center_uvs[1][2] = math.min(0.5 + total_uv_change, 1)
 				center_uvs[2][2] = math.max(0.5 - total_uv_change, 0)
-				current_background_top_position[2] = (default_background_top_position[2] + half_center_height) - half_center_height * anim_fraction
+				current_background_top_position[2] = default_background_top_position[2] + half_center_height - half_center_height * anim_fraction
 				current_background_bottom_position[2] = default_background_bottom_position[2] - half_center_height + half_center_height * anim_fraction
 				local background_top_glow_widget = widgets.deus_background_top_glow
 				background_top_glow_widget.content.texture_id.uvs[2][2] = inv_anim_fraction

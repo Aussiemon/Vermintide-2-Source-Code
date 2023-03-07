@@ -18816,5 +18816,3 @@ icons_atlas = {
 		}
 	}
 }
-
-return

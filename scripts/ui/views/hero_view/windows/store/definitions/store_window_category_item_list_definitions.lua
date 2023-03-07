@@ -446,7 +446,7 @@ local animation_definitions = {
 				end
 
 				local mask_default_width = params.mask_default_width
-				local mask_size = math.floor((mask_default_width + longest_anim_distance) - longest_anim_distance * anim_progress)
+				local mask_size = math.floor(mask_default_width + longest_anim_distance - longest_anim_distance * anim_progress)
 				local list_widget = widgets_by_name.list
 				local style = list_widget.style
 				style.mask.texture_size[1] = mask_size
@@ -491,7 +491,7 @@ local animation_definitions = {
 				end
 
 				local mask_default_width = params.mask_default_width
-				local mask_size = math.floor((mask_default_width + longest_anim_distance) - longest_anim_distance * anim_progress)
+				local mask_size = math.floor(mask_default_width + longest_anim_distance - longest_anim_distance * anim_progress)
 				local list_widget = widgets_by_name.list
 				local style = list_widget.style
 				style.mask.texture_size[1] = mask_size

@@ -94,5 +94,3 @@ DifficultyTweak = DifficultyTweak or {
 		end
 	}
 }
-
-return

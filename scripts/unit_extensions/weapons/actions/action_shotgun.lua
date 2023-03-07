@@ -177,7 +177,7 @@ ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 	local owner_unit = self.owner_unit
 	local is_server = self.is_server
 
-	for i = 1, num_shots_this_frame, 1 do
+	for i = 1, num_shots_this_frame do
 		self._shots_fired = self._shots_fired + 1
 		local rotation = self:_get_spread_rotation(num_shots_total, current_rotation, num_layers_spread, bullseye, spread_pitch)
 		local direction = Quaternion.forward(rotation)
@@ -195,7 +195,7 @@ ActionShotgun._shoot = function (self, num_shots_total, num_shots_this_frame)
 			end
 		end
 
-		local hit_position = (result and result[#result][1]) or current_position + direction * current_action.range
+		local hit_position = result and result[#result][1] or current_position + direction * current_action.range
 
 		unit_set_flow_variable(weapon_unit, "hit_position", hit_position)
 		unit_set_flow_variable(weapon_unit, "trail_life", Vector3.length(hit_position - current_position) * 0.1)
@@ -254,7 +254,7 @@ ActionShotgun.reload = function (self, current_action)
 	end
 
 	local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-	local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(self.owner_unit)
+	local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(self.owner_unit)
 
 	if ammo_extension:can_reload() and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 then
 		local play_reload_animation = current_action.play_reload_animation
@@ -298,5 +298,3 @@ ActionShotgun._get_spread_rotation = function (self, num_shots_total, current_ro
 		return current_rotation
 	end
 end
-
-return

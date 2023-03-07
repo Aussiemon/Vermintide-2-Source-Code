@@ -145,7 +145,7 @@ OverchargeBarUI.update = function (self, dt, t, player)
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local actual_player = (self._is_spectator and self._spectated_player) or player
+	local actual_player = self._is_spectator and self._spectated_player or player
 
 	if HudCustomizer.run(ui_renderer, ui_scenegraph, customizer_data) then
 		UISceneGraph.update_scenegraph(ui_scenegraph)
@@ -155,7 +155,7 @@ OverchargeBarUI.update = function (self, dt, t, player)
 	local has_twitch = Managers.twitch:is_activated()
 
 	if has_twitch ~= self._has_twitch then
-		self.charge_bar.offset[2] = (has_twitch and 140) or 0
+		self.charge_bar.offset[2] = has_twitch and 140 or 0
 		self._has_twitch = has_twitch
 		is_dirty = true
 	end
@@ -190,7 +190,7 @@ OverchargeBarUI.set_charge_bar_fraction = function (self, player, overcharge_fra
 	local bar_color = style.bar_1.color
 	local career_name = player:career_name()
 	local overcharge_data = OverchargeData[career_name]
-	local ui_data = (overcharge_data and overcharge_data.overcharge_ui) or DEFAULT_UI_DATA
+	local ui_data = overcharge_data and overcharge_data.overcharge_ui or DEFAULT_UI_DATA
 	content.bar_1 = ui_data.material
 
 	if overcharge_fraction <= min_threshold_fraction then
@@ -234,5 +234,3 @@ OverchargeBarUI._apply_crosshair_position = function (self, x, y)
 	position[1] = x
 	position[2] = y
 end
-
-return

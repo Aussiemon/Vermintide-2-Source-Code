@@ -47,5 +47,3 @@ UTF8Utils.sub_string = function (text, from, to)
 		return ""
 	end
 end
-
-return

@@ -23,5 +23,3 @@ end
 Stack.clear = function (self)
 	self._stack = {}
 end
-
-return

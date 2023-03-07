@@ -70,7 +70,7 @@ NavBoxObstacle.update = function (self, dt)
 	if Quaternion.is_valid(rotation) and Quaternion.is_valid(last_rot) then
 		local rotation_delta = Quaternion.multiply(Quaternion.inverse(rotation), last_rot)
 		local angular_velocity_vector, angular_delta = Quaternion.decompose(rotation_delta)
-		angular_velocity = (angular_velocity_vector * angular_delta) / dt
+		angular_velocity = angular_velocity_vector * angular_delta / dt
 	end
 
 	self:set_next_update_config(transform, linear_velocity, angular_velocity)

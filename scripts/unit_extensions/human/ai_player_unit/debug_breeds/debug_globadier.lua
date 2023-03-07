@@ -23,8 +23,8 @@ DebugGlobadier.update = function (unit, blackboard, t)
 		QuickDrawer:circle(target_position + offset, lurk_radius, Vector3.up(), Colors.get("light_green"))
 	end
 
-	local target_distance = (blackboard.target_dist and math.round_with_precision(blackboard.target_dist, 2)) or "-"
-	local wanted_distance = (blackboard.wanted_distance and math.round_with_precision(blackboard.wanted_distance, 2)) or "-"
+	local target_distance = blackboard.target_dist and math.round_with_precision(blackboard.target_dist, 2) or "-"
+	local wanted_distance = blackboard.wanted_distance and math.round_with_precision(blackboard.wanted_distance, 2) or "-"
 	local slot_count = blackboard.total_slots_count
 	local ai_node = blackboard.action and blackboard.action.name
 	local time_until_first_throw_string = "-"
@@ -140,5 +140,3 @@ DebugGlobadier.debug_hud_background = function (max_index)
 
 	Gui.rect(gui, pos, size, color)
 end
-
-return

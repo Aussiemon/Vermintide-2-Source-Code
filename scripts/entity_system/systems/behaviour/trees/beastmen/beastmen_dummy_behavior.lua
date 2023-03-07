@@ -23,5 +23,3 @@ BreedBehaviors.beastmen_dummy = {
 	},
 	name = "beastmen_dummy"
 }
-
-return

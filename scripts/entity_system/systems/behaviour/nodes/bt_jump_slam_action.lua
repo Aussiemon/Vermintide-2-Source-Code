@@ -152,5 +152,3 @@ BTJumpSlamAction.progress_to_in_flight = function (blackboard, unit, velocity)
 	locomotion:set_gravity(blackboard.breed.jump_slam_gravity)
 	locomotion:set_wanted_velocity(velocity)
 end
-
-return

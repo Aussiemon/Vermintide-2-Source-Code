@@ -149,7 +149,7 @@ MissionVotingUI.start_vote = function (self, active_voting)
 		local event_data = vote_data.event_data
 		local mission_id = vote_data.mission_id
 		local difficulty = vote_data.difficulty
-		local mutators = (event_data and event_data.mutators) or {}
+		local mutators = event_data and event_data.mutators or {}
 
 		self:_set_event_game_presentation(difficulty, mission_id, mutators)
 	elseif mechanism == "weave" then
@@ -371,7 +371,7 @@ MissionVotingUI._set_switch_mechanism_presentation = function (self, vote_data)
 	switch_mechanism_widgets_by_name.title.content.text = mechanism_settings.display_name
 	switch_mechanism_widgets_by_name.subtitle.content.text = level_settings.display_name
 	switch_mechanism_widgets_by_name.description.content.text = info_blurb
-	local text_color_key = (self._active_mechanism == "deus" and "morris_text_color") or "adventure_text_color"
+	local text_color_key = self._active_mechanism == "deus" and "morris_text_color" or "adventure_text_color"
 	local title_style = switch_mechanism_widgets_by_name.title.style.text
 
 	Colors.copy_to(title_style.text_color, title_style[text_color_key])
@@ -493,7 +493,7 @@ MissionVotingUI._set_weave_presentation = function (self, difficulty, mission_id
 	wind_icon_size[1] = thumbnail_icon_size[1] * 0.8
 	wind_icon_size[2] = thumbnail_icon_size[2] * 0.8
 	wind_icon_offset[1] = wind_icon_glow_offset[1] - wind_icon_glow_size[1] / 2 + wind_icon_size[1] / 2
-	wind_icon_offset[2] = (wind_icon_glow_offset[2] + wind_icon_glow_size[2] / 2) - wind_icon_size[2] / 2
+	wind_icon_offset[2] = wind_icon_glow_offset[2] + wind_icon_glow_size[2] / 2 - wind_icon_size[2] / 2
 	game_option_1.content.wind_icon = thumbnail_icon
 	game_option_1.content.mission_name = Localize(level_settings.display_name)
 	game_option_1.content.wind_name = Localize(wind_settings.display_name)
@@ -515,7 +515,7 @@ MissionVotingUI._set_weave_presentation = function (self, difficulty, mission_id
 	local objective_spacing = 10
 	local largest_objective_width = 0
 
-	for i = 1, #objectives, 1 do
+	for i = 1, #objectives do
 		local objective = objectives[i]
 		local objective_display_name = objective.display_name
 		local objective_icon = objective.icon
@@ -664,7 +664,7 @@ MissionVotingUI.update = function (self, dt, t)
 						local vote_options = vote_template.vote_options
 						local input_service = self.input_manager:get_service("mission_voting")
 
-						for i = 1, #vote_options, 1 do
+						for i = 1, #vote_options do
 							local vote_option = vote_options[i]
 
 							if input_service:get(vote_option.gamepad_input) then
@@ -720,7 +720,7 @@ MissionVotingUI.draw = function (self, dt)
 	local snap_pixel_positions = render_settings.snap_pixel_positions
 	local _, widgets = self:get_chrome_widgets()
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		if widget.snap_pixel_positions ~= nil then
@@ -750,7 +750,7 @@ MissionVotingUI.draw = function (self, dt)
 		if presentation_type == "adventure" then
 			local adventure_game_widgets = self._adventure_game_widgets
 
-			for i = 1, #adventure_game_widgets, 1 do
+			for i = 1, #adventure_game_widgets do
 				local widget = adventure_game_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -764,7 +764,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "custom" then
 			local custom_game_widgets = self._custom_game_widgets
 
-			for i = 1, #custom_game_widgets, 1 do
+			for i = 1, #custom_game_widgets do
 				local widget = custom_game_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -778,7 +778,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "deed" then
 			local deed_widgets = self._deed_widgets
 
-			for i = 1, #deed_widgets, 1 do
+			for i = 1, #deed_widgets do
 				local widget = deed_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -792,7 +792,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "event" then
 			local event_game_widgets = self._event_game_widgets
 
-			for i = 1, #event_game_widgets, 1 do
+			for i = 1, #event_game_widgets do
 				local widget = event_game_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -806,7 +806,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "weave" then
 			local weave_game_widgets = self._weave_game_widgets
 
-			for i = 1, #weave_game_widgets, 1 do
+			for i = 1, #weave_game_widgets do
 				local widget = weave_game_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -820,7 +820,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "weave_quickplay" then
 			local weave_quickplay_widgets = self._weave_quickplay_widgets
 
-			for i = 1, #weave_quickplay_widgets, 1 do
+			for i = 1, #weave_quickplay_widgets do
 				local widget = weave_quickplay_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -834,7 +834,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "deus_quickplay" then
 			local deus_quickplay_widgets = self._deus_quickplay_widgets
 
-			for i = 1, #deus_quickplay_widgets, 1 do
+			for i = 1, #deus_quickplay_widgets do
 				local widget = deus_quickplay_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -848,7 +848,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "deus_custom" then
 			local deus_custom_widgets = self._deus_custom_widgets
 
-			for i = 1, #deus_custom_widgets, 1 do
+			for i = 1, #deus_custom_widgets do
 				local widget = deus_custom_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -862,7 +862,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "game_mode" then
 			local game_mode_widgets = self._game_mode_widgets
 
-			for i = 1, #game_mode_widgets, 1 do
+			for i = 1, #game_mode_widgets do
 				local widget = game_mode_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -876,7 +876,7 @@ MissionVotingUI.draw = function (self, dt)
 		elseif presentation_type == "switch_mechanism" then
 			local switch_mechanism_widgets = self._switch_mechanism_widgets
 
-			for i = 1, #switch_mechanism_widgets, 1 do
+			for i = 1, #switch_mechanism_widgets do
 				local widget = switch_mechanism_widgets[i]
 
 				if widget.snap_pixel_positions ~= nil then
@@ -907,8 +907,8 @@ MissionVotingUI._update_pulse_animations = function (self, dt)
 	local menu_active = self.menu_active
 
 	if not menu_active then
-		local speed_multiplier = (menu_active and 5) or 8
-		local progress = (menu_active and 0) or 0.5 + math.sin(Managers.time:time("ui") * speed_multiplier) * 0.5
+		local speed_multiplier = menu_active and 5 or 8
+		local progress = menu_active and 0 or 0.5 + math.sin(Managers.time:time("ui") * speed_multiplier) * 0.5
 		local alpha = 100 + progress * 155
 		local widgets_by_name = self._widgets_by_name
 		widgets_by_name.timer_fg.style.texture_id.color[1] = alpha
@@ -957,5 +957,3 @@ end
 MissionVotingUI._play_sound = function (self, sound_event)
 	WwiseWorld.trigger_event(self.wwise_world, sound_event)
 end
-
-return

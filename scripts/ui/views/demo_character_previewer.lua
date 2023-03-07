@@ -160,7 +160,7 @@ DemoCharacterPreviewer.cb_spawn_hero_unit = function (self, profile, career, ski
 	if box_dimension then
 		local default_unit_height_dimension = 1.7
 		local default_diff = box_dimension.z - default_unit_height_dimension
-		self.unit_max_look_height = (default_unit_height_dimension < box_dimension.z and 1.5) or 0.9
+		self.unit_max_look_height = default_unit_height_dimension < box_dimension.z and 1.5 or 0.9
 	else
 		self.unit_max_look_height = 0.9
 	end
@@ -592,5 +592,3 @@ DemoCharacterPreviewer.destroy = function (self)
 		self._line_object = nil
 	end
 end
-
-return

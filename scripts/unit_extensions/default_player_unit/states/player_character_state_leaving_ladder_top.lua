@@ -106,5 +106,3 @@ PlayerCharacterStateLeavingLadderTop.update = function (self, unit, input, dt, c
 
 	CharacterStateHelper.look_limited_rotation_freedom(input_extension, self.player.viewport_name, self.first_person_extension, unit, ladder_rotation, max_radians, nil, status_extension, self.inventory_extension)
 end
-
-return

@@ -205,5 +205,3 @@ end
 StoreWindowBackground._play_sound = function (self, event)
 	self._parent:play_sound(event)
 end
-
-return

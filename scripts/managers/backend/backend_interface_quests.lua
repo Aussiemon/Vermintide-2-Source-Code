@@ -335,5 +335,3 @@ end
 BackendInterfaceQuests.get_status = function (self)
 	return self._status
 end
-
-return

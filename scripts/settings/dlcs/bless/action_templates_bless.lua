@@ -28,5 +28,3 @@ ActionTemplates.action_career_wh_priest = {
 		allowed_chain_actions = {}
 	}
 }
-
-return

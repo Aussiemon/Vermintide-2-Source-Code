@@ -52,5 +52,3 @@ MatchmakingStateFriendClient.rpc_matchmaking_broadcast_game_server_ip_address = 
 		}
 	}
 end
-
-return

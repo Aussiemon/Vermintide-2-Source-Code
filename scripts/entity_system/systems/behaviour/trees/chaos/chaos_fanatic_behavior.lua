@@ -119,5 +119,3 @@ BreedBehaviors.fanatic = {
 	},
 	name = "fanatic"
 }
-
-return

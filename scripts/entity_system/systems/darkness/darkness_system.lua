@@ -73,7 +73,7 @@ DarknessSystem.on_add_extension = function (self, world, unit, extension_name, e
 
 	local script_data_intensity = Unit.get_data(unit, "light_intensity")
 	local extension = {
-		intensity = (extension_init_data and extension_init_data.intensity) or script_data_intensity or 1
+		intensity = extension_init_data and extension_init_data.intensity or script_data_intensity or 1
 	}
 
 	ScriptUnit.set_extension(unit, self.name, extension)
@@ -182,7 +182,7 @@ DarknessSystem._update_darkness_fx = function (self, dt, t)
 
 		local data = self._player_unit_darkness_data[unit]
 		local in_darkness = data and data.in_darkness
-		local intensity = (data and data.intensity) or 0
+		local intensity = data and data.intensity or 0
 		local wwise_world = Managers.world:wwise_world(world)
 
 		if not in_darkness and self._in_darkness then
@@ -241,7 +241,7 @@ DarknessSystem.is_in_darkness_volume = function (self, position)
 		local is_inside_func = Level.is_point_inside_volume
 		local level = self._level
 
-		for i = 1, self._num_volumes, 1 do
+		for i = 1, self._num_volumes do
 			local vol_name = volumes[i]
 
 			if is_inside_func(level, vol_name, position) then
@@ -268,7 +268,7 @@ DarknessSystem.calculate_light_value = function (self, position, player_units)
 	if self._player_light_intensity then
 		local closest_distance_sq = math.huge
 
-		for i = 1, #player_units, 1 do
+		for i = 1, #player_units do
 			local player_unit = player_units[i]
 			local player_position = POSITION_LOOKUP[player_unit]
 			local distance_sq = math.max(Vector3.distance_squared(player_position, position), 1)
@@ -361,5 +361,3 @@ DarknessSystem.rpc_shadow_flare_done = function (self, channel_id, unit_id)
 		script:set_flare_done()
 	end
 end
-
-return

@@ -11,8 +11,8 @@ local info_window_size = {
 	list_window_size[2] + 20
 }
 local IS_PC = IS_WINDOWS
-local entry_height = (IS_PC and 35) or 50
-local entry_font_size = (IS_PC and 22) or 28
+local entry_height = IS_PC and 35 or 50
+local entry_font_size = IS_PC and 22 or 28
 local list_entry_size = {
 	400,
 	entry_height
@@ -467,7 +467,7 @@ local function create_entry_widget()
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			font_size = entry_font_size,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("font_default", 255),
 			hover_text_color = Colors.get_color_table_with_alpha("white", 255),
 			default_text_color = Colors.get_color_table_with_alpha("font_default", 255),
@@ -486,7 +486,7 @@ local function create_entry_widget()
 			horizontal_alignment = "left",
 			vertical_alignment = "center",
 			font_size = entry_font_size,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = {
 				255,
 				80,
@@ -520,7 +520,7 @@ local function create_entry_widget()
 			horizontal_alignment = "left",
 			localize = false,
 			font_size = entry_font_size,
-			font_type = (masked and "hell_shark_masked") or "hell_shark",
+			font_type = masked and "hell_shark_masked" or "hell_shark",
 			text_color = Colors.get_color_table_with_alpha("black", 255),
 			offset = {
 				41,

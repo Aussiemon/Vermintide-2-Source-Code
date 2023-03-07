@@ -90,7 +90,7 @@ CutsceneOverlayUI._present_template_entry = function (self, template_list_name, 
 	if text then
 		widget = widgets.text_widget
 		local localize = entry.localize
-		widget.content.text = (localize and Localize(text)) or text
+		widget.content.text = localize and Localize(text) or text
 		local font_size = entry.font_size
 		local font_type = entry.font_type
 		local word_wrap = entry.word_wrap
@@ -218,7 +218,7 @@ CutsceneOverlayUI.update = function (self, dt)
 
 				if fade_in_duration and current_time <= start_time + fade_in_duration then
 					alpha_progress = math.min((current_time - start_time) / fade_in_duration, 1)
-				elseif fade_out_duration and current_time >= (start_time + duration) - fade_out_duration then
+				elseif fade_out_duration and current_time >= start_time + duration - fade_out_duration then
 					alpha_progress = 1 - math.min((current_time - (end_time - fade_out_duration)) / fade_out_duration, 1)
 				end
 
@@ -275,5 +275,3 @@ CutsceneOverlayUI._draw = function (self, widget, dt)
 	UIRenderer.draw_widget(ui_renderer, widget)
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

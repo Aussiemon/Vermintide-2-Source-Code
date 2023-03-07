@@ -76,5 +76,3 @@ MatchmakingStateRequestProfiles._update_profiles_data = function (self, profile_
 	self.state_context.profiles_data = self.profiles_data
 	self._matchmaking_manager.debug.profiles_data = self.profiles_data
 end
-
-return

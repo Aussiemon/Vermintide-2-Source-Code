@@ -211,7 +211,7 @@ local function spawn_graph_units(world, level_ref_values, graph)
 			local new_distance_squared = Vector3.length_squared(next_pos - pos)
 			local lerp_ratio = (new_distance_squared - distance_a_squared) / (distance_b_squared - distance_a_squared)
 			local distance_to_edge_squared = math.lerp(distance_to_edge_a_squared, distance_to_edge_b_squared, lerp_ratio)
-			local distance_to_edge = (distance_to_edge_squared >= 0 and math.sqrt(distance_to_edge_squared)) or 0
+			local distance_to_edge = distance_to_edge_squared >= 0 and math.sqrt(distance_to_edge_squared) or 0
 			local edge_pos = pos + direction * distance_to_edge
 			edge_pos.z = edge_pos.z + random_z_offset_to_fix_z_fighting()
 
@@ -307,7 +307,7 @@ local function setup_fog_plane(world, level_ref_values, graph_data, visibility_d
 		local distance = math.sqrt(vector_x * vector_x + vector_y * vector_y)
 		local unit_vector_x = vector_x / distance
 		local unit_vector_y = vector_y / distance
-		local hole_radius = (start_node_key == "final" and FINAL_HOLE_RADIUS) or HOLE_RADIUS
+		local hole_radius = start_node_key == "final" and FINAL_HOLE_RADIUS or HOLE_RADIUS
 		local hole_width = hole_radius * w
 		local hole_height = hole_radius * width_ratio * h
 		local start_a_x = start_layout_x + unit_vector_y * hole_width
@@ -328,7 +328,7 @@ local function setup_fog_plane(world, level_ref_values, graph_data, visibility_d
 		local layout_x, layout_y = transform_uv(node.layout_x, node.layout_y)
 		layout_x = layout_x * w
 		layout_y = layout_y * h
-		local hole_radius = (node_key == "final" and FINAL_HOLE_RADIUS) or HOLE_RADIUS
+		local hole_radius = node_key == "final" and FINAL_HOLE_RADIUS or HOLE_RADIUS
 		local hole_width = hole_radius * w
 		local hole_height = hole_radius * width_ratio * h
 		local start_a_x = layout_x - hole_width
@@ -853,5 +853,3 @@ DeusMapScene._hide_token = function (self, profile_index)
 
 	Unit.set_unit_visibility(token, false)
 end
-
-return

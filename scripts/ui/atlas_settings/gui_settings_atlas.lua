@@ -938,5 +938,3 @@ settings_atlas = {
 		}
 	}
 }
-
-return

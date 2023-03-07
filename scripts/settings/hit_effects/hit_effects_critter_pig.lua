@@ -141,5 +141,3 @@ HitEffectsCritterPig = {
 	}
 }
 HitEffectsCritterPig = table.create_copy(HitEffectsCritterPig, HitEffectsCritterPig)
-
-return

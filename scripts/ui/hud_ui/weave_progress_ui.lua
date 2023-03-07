@@ -310,5 +310,3 @@ WeaveProgressUI._draw = function (self, dt, t)
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

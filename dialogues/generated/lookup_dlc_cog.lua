@@ -488,5 +488,3 @@ DialogueLookup[DialogueLookup_n + 242] = "pdr_cog_conversation_twentyseven_02"
 DialogueLookup[DialogueLookup_n + 243] = "nik_cog_conversation_twentyeight_01"
 DialogueLookup[DialogueLookup_n + 244] = "pdr_cog_conversation_twentyeight_01"
 DialogueLookup_n = DialogueLookup_n + 244
-
-return

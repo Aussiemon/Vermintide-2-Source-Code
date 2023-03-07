@@ -179,5 +179,3 @@ base_trail_light_urn_definition.client.can_interact = function (interactor_unit,
 
 	return not used and not being_used
 end
-
-return

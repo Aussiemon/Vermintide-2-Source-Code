@@ -657,5 +657,3 @@ UpdateItemMasterList({
 	"es_mace_shield_magic_01",
 	"es_dual_wield_hammer_sword_magic_01"
 }, "es_questingknight")
-
-return

@@ -66,5 +66,3 @@ ShadowFlareExtension.delete_with_delay = function (self, unit, dt)
 
 	self._delete_timer = timer
 end
-
-return

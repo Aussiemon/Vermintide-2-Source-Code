@@ -75,5 +75,3 @@ BreedBehaviors.chaos_mutator_sorcerer = {
 	},
 	name = "chaos_mutator_sorcerer"
 }
-
-return

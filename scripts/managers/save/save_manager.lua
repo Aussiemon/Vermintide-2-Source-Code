@@ -13,7 +13,7 @@ SaveManager.init = function (self, disable_cloud_save)
 end
 
 SaveManager.auto_save = function (self, file_name, data, callback, force_local_save)
-	local system = (force_local_save and SaveSystem) or self._impl
+	local system = force_local_save and SaveSystem or self._impl
 	local token = system.auto_save(file_name, data)
 	local save_token = ScriptSaveToken:new(system, token)
 
@@ -23,7 +23,7 @@ SaveManager.auto_save = function (self, file_name, data, callback, force_local_s
 end
 
 SaveManager.auto_load = function (self, file_name, callback, force_local_save)
-	local system = (force_local_save and SaveSystem) or self._impl
+	local system = force_local_save and SaveSystem or self._impl
 	local token = system.auto_load(file_name)
 	local save_token = ScriptSaveToken:new(system, token)
 
@@ -31,5 +31,3 @@ SaveManager.auto_load = function (self, file_name, callback, force_local_save)
 
 	return save_token
 end
-
-return

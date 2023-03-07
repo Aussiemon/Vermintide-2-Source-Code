@@ -24,5 +24,3 @@ for _, slot_settings in pairs(InventorySettings.slots) do
 end
 
 table.merge_recursive(InventorySettings.item_types, item_types)
-
-return

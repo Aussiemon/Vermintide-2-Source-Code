@@ -23,5 +23,3 @@ settings.inventory_package_list = {
 	"units/beings/player/witch_hunter_flagellant/first_person_base/chr_first_person_mesh",
 	"units/beings/player/witch_hunter_flagellant/third_person_base/chr_third_person_mesh"
 }
-
-return

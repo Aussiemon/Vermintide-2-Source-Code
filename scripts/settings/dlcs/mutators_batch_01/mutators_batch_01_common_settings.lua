@@ -5,5 +5,3 @@ settings.mutators = {
 	"ticking_bomb",
 	"realism"
 }
-
-return

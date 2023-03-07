@@ -98,7 +98,7 @@ UIWidgetUtils.animate_default_icon_tabs = function (widget, dt)
 	local speed = 8
 	local input_speed = 20
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_suffix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_suffix
 		local hotspot = content[hotspot_name]
@@ -313,7 +313,7 @@ UIWidgetUtils.animate_default_text_tabs = function (widget, dt)
 	local speed = 8
 	local input_speed = 20
 
-	for i = 1, amount, 1 do
+	for i = 1, amount do
 		local name_suffix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_suffix
 		local hotspot = content[hotspot_name]
@@ -594,7 +594,7 @@ UIWidgetUtils.animate_play_button = function (widget, dt)
 	style.texture_icon_id.color[1] = 255 - hover_alpha
 	style.texture_icon_hover_id.color[1] = hover_alpha
 	style.texture_text_bg_effect_id.color[1] = hover_alpha
-	local active_progress = (is_disabled and 0) or 1
+	local active_progress = is_disabled and 0 or 1
 	local active_alpha_progress = 0.5 + math.sin(Managers.time:time("ui") * 5) * 0.5
 	local active_alpha = math.max(hover_alpha, active_progress * (active_alpha_progress * 200 + 55))
 	style.texture_hover_id.color[1] = active_alpha
@@ -622,7 +622,7 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 		local on_hover_enter = hotspot.on_hover_enter
 		local is_hover = hotspot.is_hover
 		local gamepad_active = Managers.input:is_device_active("gamepad")
-		local speed = ((is_hover or is_selected) and 14) or 200
+		local speed = (is_hover or is_selected) and 14 or 200
 		local pulse_speed = 3
 		local hover_progress = hotspot.hover_progress or 0
 		local pulse_progress = hotspot.pulse_progress or 1
@@ -747,7 +747,7 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 	local num_options = content.num_options
 
 	if num_options then
-		for i = 1, num_options, 1 do
+		for i = 1, num_options do
 			local hotspot_name = "button_hotspot_" .. i
 			local hotspot = content[hotspot_name]
 
@@ -787,5 +787,3 @@ UIWidgetUtils.animate_game_option_button = function (widget, dt)
 		end
 	end
 end
-
-return

@@ -66,7 +66,7 @@ BTFireProjectileAction._check_for_volley_attack = function (self, blackboard, un
 		local group_position = Vector3(0, 0, 0)
 
 		if num_results >= 3 then
-			for i = 1, num_results, 1 do
+			for i = 1, num_results do
 				local nearby_unit = broadphase_query_result[i]
 				local nearby_unit_blackboard = BLACKBOARDS[nearby_unit]
 				local nearby_unit_breed = nearby_unit_blackboard.breed
@@ -84,7 +84,7 @@ BTFireProjectileAction._check_for_volley_attack = function (self, blackboard, un
 		if num_nearby_archers >= 3 then
 			local longest_fire_time = 0
 
-			for i = 1, num_nearby_archers, 1 do
+			for i = 1, num_nearby_archers do
 				local nearby_unit_blackboard = nearby_archers[i]
 
 				if nearby_unit_blackboard.unit ~= unit then
@@ -230,7 +230,7 @@ BTFireProjectileAction._fire_from_position_direction = function (self, blackboar
 	local fire_node = Unit.node(unit, "j_lefthand")
 	local fire_position = Unit.world_position(unit, fire_node)
 	local target_locomotion = ScriptUnit.has_extension(attacking_target, "locomotion_system")
-	local target_current_velocity = (target_locomotion.small_sample_size_average_velocity and target_locomotion:small_sample_size_average_velocity()) or Vector3.zero()
+	local target_current_velocity = target_locomotion.small_sample_size_average_velocity and target_locomotion:small_sample_size_average_velocity() or Vector3.zero()
 	local target_current_speed = Vector3.length(target_current_velocity)
 
 	if target_current_speed > 4 then
@@ -289,8 +289,8 @@ BTFireProjectileAction._fire_projectile = function (self, unit, blackboard, dt)
 	local normalized_direction = Vector3.normalize(velocity)
 	local spread = light_weight_projectile_template.spread
 	local dodge_spread = light_weight_projectile_template.dodge_spread
-	local spread_angle = Math.random() * (first_shot_spread or (target_is_dodging and dodge_spread) or spread)
-	spread_angle = (hit and spread_angle) or light_weight_projectile_template.miss_spread or 0
+	local spread_angle = Math.random() * (first_shot_spread or target_is_dodging and dodge_spread or spread)
+	spread_angle = hit and spread_angle or light_weight_projectile_template.miss_spread or 0
 	local pitch = Quaternion(Vector3.right(), spread_angle)
 	local roll = Quaternion(Vector3.forward(), (Math.random() - 0.5) * PI)
 	local dir_rot = Quaternion.look(normalized_direction, Vector3.up())
@@ -312,5 +312,3 @@ BTFireProjectileAction._fire_projectile = function (self, unit, blackboard, dt)
 
 	blackboard.fired_first_shot = true
 end
-
-return

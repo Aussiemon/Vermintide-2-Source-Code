@@ -30,7 +30,7 @@ end
 BonusDiceUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph_definition)
 
-	for i = 1, 10, 1 do
+	for i = 1, 10 do
 		self.dice_widgets[i] = UIWidget.init(definitions.dice_widget_definition)
 	end
 end
@@ -82,14 +82,14 @@ BonusDiceUI.update_dices = function (self)
 	local die_types = self.die_types
 	local die_types_n = self.die_types_n
 
-	for i = 1, die_types_n, 1 do
+	for i = 1, die_types_n do
 		local die_type = die_types[i]
 		local count = die_count[die_type]
 		local new = dice_keeper:num_new_dices(die_type)
 		local diff = new - count
 
 		if diff > 0 then
-			for j = 1, diff, 1 do
+			for j = 1, diff do
 				self:add_die(die_type)
 			end
 		end
@@ -106,11 +106,9 @@ BonusDiceUI.draw = function (self, dt)
 	local dice_widgets = self.dice_widgets
 	local active_dice_widgets = self.active_dice_widgets
 
-	for i = 1, active_dice_widgets, 1 do
+	for i = 1, active_dice_widgets do
 		UIRenderer.draw_widget(ui_renderer, dice_widgets[i])
 	end
 
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

@@ -157,7 +157,7 @@ BackendInterfacePeddlerPlayFab._refresh_stock_cb = function (self, external_cb, 
 	local seen_shop_items = PlayerData.seen_shop_items
 	local new_items = false
 
-	for i = 1, #stock, 1 do
+	for i = 1, #stock do
 		local item = stock[i]
 		local key = item.ItemId
 
@@ -409,12 +409,12 @@ BackendInterfacePeddlerPlayFab._refresh_steam_item_prices_cb = function (self, e
 		end
 	end
 
-	for i = 1, #bundles, 1 do
+	for i = 1, #bundles do
 		local bundle_item_data = bundles[i]
 		local price_sum = 0
 		local bundle_contains = bundle_item_data.bundle_contains
 
-		for j = 1, #bundle_contains, 1 do
+		for j = 1, #bundle_contains do
 			local steam_itemdefid = bundle_contains[j]
 			price_sum = price_sum + (self._steam_item_prices[steam_itemdefid] or 0)
 		end
@@ -552,7 +552,7 @@ BackendInterfacePeddlerPlayFab._refresh_app_prices_psn_cb = function (self, exte
 		for idx, product in pairs(result) do
 			local product_label = product.label
 			local skus = product.skus
-			local sku = (skus and skus[1]) or empty_table
+			local sku = skus and skus[1] or empty_table
 			local dlc_name = product_label_lookup[product_label]
 			self._app_prices[dlc_name] = {
 				name = product.name,
@@ -667,7 +667,7 @@ BackendInterfacePeddlerPlayFab._exchange_chips_success_cb = function (self, exte
 	local chips = self._chips
 	local mirror = self._backend_mirror
 
-	for i = 1, #items, 1 do
+	for i = 1, #items do
 		local item = items[i]
 		local item_instance_id = item.ItemInstanceId
 		local chip_type = item.UnitCurrency
@@ -806,7 +806,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	if granted_items then
 		local backend_mirror = self._backend_mirror
 
-		for i = 1, #granted_items, 1 do
+		for i = 1, #granted_items do
 			local item = granted_items[i]
 			local backend_id = item.ItemInstanceId
 			local amount = item.UsesIncrementedBy or 1
@@ -822,7 +822,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	if new_cosmetics then
 		local backend_mirror = self._backend_mirror
 
-		for i = 1, #new_cosmetics, 1 do
+		for i = 1, #new_cosmetics do
 			local cosmetic_name = new_cosmetics[i]
 			local backend_id = backend_mirror:add_item(nil, {
 				ItemId = cosmetic_name
@@ -839,7 +839,7 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 	if new_steam_items then
 		local backend_mirror = self._backend_mirror
 
-		for i = 1, #new_steam_items, 1 do
+		for i = 1, #new_steam_items do
 			local item = new_steam_items[i]
 			local steam_itemdefid = tonumber(item[1])
 			local steam_backend_unique_id = item[2]
@@ -864,5 +864,3 @@ BackendInterfacePeddlerPlayFab._claim_store_rewards_cb = function (self, externa
 
 	self._is_done_claiming = true
 end
-
-return

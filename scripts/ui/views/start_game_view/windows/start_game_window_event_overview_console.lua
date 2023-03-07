@@ -175,7 +175,7 @@ StartGameWindowEventOverviewConsole._handle_input = function (self, dt, t)
 
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, #selector_input_definition, 1 do
+	for i = 1, #selector_input_definition do
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = widget.content.is_selected
@@ -254,7 +254,7 @@ StartGameWindowEventOverviewConsole._handle_new_selection = function (self, inpu
 		return
 	end
 
-	for i = 1, #selector_input_definition, 1 do
+	for i = 1, #selector_input_definition do
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
@@ -296,7 +296,7 @@ StartGameWindowEventOverviewConsole._draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -304,5 +304,3 @@ StartGameWindowEventOverviewConsole._draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 end
-
-return

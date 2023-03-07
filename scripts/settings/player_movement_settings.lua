@@ -440,5 +440,3 @@ PlayerUnitMovementSettings.block = PlayerUnitMovementSettings.block or {}
 PlayerUnitMovementSettings.block.raise_delay = 0.18
 
 DLCUtils.require("player_movement_settings")
-
-return

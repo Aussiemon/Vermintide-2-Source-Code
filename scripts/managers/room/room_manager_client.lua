@@ -67,5 +67,3 @@ end
 RoomManagerClient.get_spawn_point_by_peer = function (self, peer_id)
 	return self._peer_rooms[peer_id].room_id
 end
-
-return

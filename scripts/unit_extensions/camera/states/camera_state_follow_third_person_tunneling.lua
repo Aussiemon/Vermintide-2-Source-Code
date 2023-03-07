@@ -95,5 +95,3 @@ CameraStateFollowThirdPersonTunneling.update = function (self, unit, input, dt, 
 		end
 	end
 end
-
-return

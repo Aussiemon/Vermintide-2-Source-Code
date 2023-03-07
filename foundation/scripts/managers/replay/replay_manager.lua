@@ -135,5 +135,3 @@ end
 ReplayManager.set_stories = function (self, stories)
 	self._stories = stories
 end
-
-return

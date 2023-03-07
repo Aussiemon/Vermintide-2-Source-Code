@@ -151,5 +151,3 @@ StateTitleScreenInitNetwork._handle_popup = function (self)
 		print(string.format("[StateTitleScreenInitNetwork] No such result handled (%s)", result))
 	end
 end
-
-return

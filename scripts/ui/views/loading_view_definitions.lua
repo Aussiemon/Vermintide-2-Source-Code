@@ -348,35 +348,30 @@ local press_to_continue_widget = {
 		}
 	},
 	content = {
-		text = (IS_WINDOWS and "press_any_key_to_continue") or "press_any_button_to_continue",
+		text = IS_WINDOWS and "press_any_key_to_continue" or "press_any_button_to_continue",
 		color = Colors.get_color_table_with_alpha("white", 255)
-	}
-}
-slot5 = {}
-
-if not text_style then
-	slot6 = {
-		vertical_alignment = "bottom",
-		font_size = 28,
-		localize = true,
-		word_wrap = false,
-		horizontal_alignment = "right",
-		font_type = optional_font_style or "hell_shark",
-		text_color = Colors.get_color_table_with_alpha("white", 255),
-		offset = {
-			-200,
-			0,
-			20
+	},
+	style = {
+		text = text_style or {
+			vertical_alignment = "bottom",
+			font_size = 28,
+			localize = true,
+			word_wrap = false,
+			horizontal_alignment = "right",
+			font_type = optional_font_style or "hell_shark",
+			text_color = Colors.get_color_table_with_alpha("white", 255),
+			offset = {
+				-200,
+				0,
+				20
+			}
 		}
+	},
+	offset = {
+		0,
+		0,
+		0
 	}
-end
-
-slot5.text = slot6
-press_to_continue_widget.style = slot5
-press_to_continue_widget.offset = {
-	0,
-	0,
-	0
 }
 local background_image = {
 	scenegraph_id = "background_image",

@@ -49,5 +49,3 @@ end
 Player.spawn_state = function (self)
 	return self._spawn_state
 end
-
-return

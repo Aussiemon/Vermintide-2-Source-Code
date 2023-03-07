@@ -31,5 +31,3 @@ settings.achievement_outline = {
 settings.achievement_template_file_names = {
 	"scripts/managers/achievements/achievement_templates_penny_part_3"
 }
-
-return

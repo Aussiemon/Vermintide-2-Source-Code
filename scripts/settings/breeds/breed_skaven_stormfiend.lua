@@ -955,9 +955,7 @@ local action_data = {
 		move_anim = "move_start_fwd",
 		action_weight = 1,
 		considerations = UtilityConsiderations.target_outside_navmesh
-	},
-	fling_skaven = table.clone(action_data.melee_shove)
+	}
 }
+action_data.fling_skaven = table.clone(action_data.melee_shove)
 BreedActions.skaven_stormfiend = table.create_copy(BreedActions.skaven_stormfiend, action_data)
-
-return

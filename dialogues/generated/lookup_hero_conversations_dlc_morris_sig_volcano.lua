@@ -70,5 +70,3 @@ DialogueLookup[DialogueLookup_n + 33] = "pes_morris_volcano_glacier"
 DialogueLookup[DialogueLookup_n + 34] = "pes_morris_volcano_face"
 DialogueLookup[DialogueLookup_n + 35] = "pes_morris_volcano_fortress"
 DialogueLookup_n = DialogueLookup_n + 35
-
-return

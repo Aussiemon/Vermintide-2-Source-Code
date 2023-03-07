@@ -82,5 +82,3 @@ end
 DialogueContextSystem.hot_join_sync = function (self, sender)
 	return
 end
-
-return

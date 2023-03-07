@@ -100,7 +100,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 		local damage_datas, num_damages = self.health_extension:recent_damages()
 		local interrupted = false
 
-		for i = 1, num_damages / DamageDataIndex.STRIDE, 1 do
+		for i = 1, num_damages / DamageDataIndex.STRIDE do
 			local zero_index = i - 1
 			local damage_amount = damage_datas[zero_index * DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_AMOUNT]
 			local damage_type = damage_datas[zero_index * DamageDataIndex.STRIDE + DamageDataIndex.DAMAGE_TYPE]
@@ -167,7 +167,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			local selected_interaction_unit, selected_interaction_type = nil
 			local new_units_in_range = self.units_in_range_back_buffer
 
-			for i = 1, hits_n, 1 do
+			for i = 1, hits_n do
 				local hit = hits[i]
 				local actor = hit[4]
 
@@ -250,7 +250,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 			local best_unit = nil
 			local best_dist = math.huge
 
-			for i = 1, num_hits, 1 do
+			for i = 1, num_hits do
 				local actor = hits[i]
 
 				if actor then
@@ -292,7 +292,7 @@ GenericUnitInteractorExtension.update = function (self, unit, input, dt, context
 	interaction_data.is_server = self.is_server
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
-	local interaction_config = (interaction_template and (interaction_template.config or interaction_template.get_config())) or nil
+	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
 
 	if self.state == "starting_interaction" then
 		interaction_template.client.start(world, unit, interactable_unit, interaction_data, interaction_config, t)
@@ -376,7 +376,7 @@ GenericUnitInteractorExtension._stop_interaction = function (self, interactable_
 	interaction_data.is_server = self.is_server
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
-	local interaction_config = (interaction_template and (interaction_template.config or interaction_template.get_config())) or nil
+	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
 	local go_id, is_level_unit = Managers.state.network:game_object_or_level_id(interactable_unit)
 
 	if not is_level_unit and go_id == nil then
@@ -504,7 +504,7 @@ end
 GenericUnitInteractorExtension.interaction_config = function (self)
 	local interaction_type = self.interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
-	local interaction_config = (interaction_template and (interaction_template.config or interaction_template.get_config())) or nil
+	local interaction_config = interaction_template and (interaction_template.config or interaction_template.get_config()) or nil
 
 	return interaction_config
 end
@@ -542,7 +542,7 @@ GenericUnitInteractorExtension.get_progress = function (self, t)
 	local interaction_data = interaction_context.data
 	local interaction_type = interaction_context.interaction_type
 	local interaction_template = InteractionDefinitions[interaction_type]
-	local interaction_config = (interaction_template and interaction_template.config) or nil
+	local interaction_config = interaction_template and interaction_template.config or nil
 
 	return interaction_template.client.get_progress(interaction_data, interaction_config, t)
 end
@@ -657,5 +657,3 @@ GenericUnitInteractorExtension.allow_movement_during_interaction = function (sel
 
 	return allow_movement
 end
-
-return

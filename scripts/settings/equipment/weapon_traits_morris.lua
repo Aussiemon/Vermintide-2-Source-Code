@@ -957,5 +957,3 @@ for key, value in pairs(morris_weapon_traits.combinations) do
 
 	WeaponTraits.combinations[key] = value
 end
-
-return

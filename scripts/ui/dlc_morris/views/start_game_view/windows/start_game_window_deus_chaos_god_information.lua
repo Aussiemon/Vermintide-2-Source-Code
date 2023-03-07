@@ -96,7 +96,7 @@ StartGameWindowDeusChaosGodInformation._draw = function (self, dt, t)
 
 	UIRenderer.begin_pass(ui_renderer, self._ui_scenegraph, input_service, dt, nil, self._render_settings)
 
-	for i = 1, #self._widgets, 1 do
+	for i = 1, #self._widgets do
 		local widget = self._widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -122,8 +122,8 @@ StartGameWindowDeusChaosGodInformation._update_time_left = function (self)
 
 	if remaining_time > 120 then
 		local days = remaining_time / 86400
-		local hours = (remaining_time / 3600) % 24
-		local minutes = (remaining_time / 60) % 60
+		local hours = remaining_time / 3600 % 24
+		local minutes = remaining_time / 60 % 60
 		local fmt = Localize("deus_start_game_mod_timer")
 		widget_content.subtitle = string.format(fmt, days, hours, minutes)
 	else
@@ -211,8 +211,8 @@ StartGameWindowDeusChaosGodInformation._update_belakor_time_left = function (sel
 		local belakor_widget_content = belakor_widget.content
 
 		if belakor_remaining_time > 120 then
-			local hours = (belakor_remaining_time / 3600) % 24
-			local minutes = (belakor_remaining_time / 60) % 60
+			local hours = belakor_remaining_time / 3600 % 24
+			local minutes = belakor_remaining_time / 60 % 60
 			local hrs = Localize("datetime_hours_short")
 			local min = Localize("datetime_minutes_short")
 			belakor_widget_content.subtitle = string.format(hrs, hours) .. " " .. string.format(min, minutes)
@@ -255,5 +255,3 @@ StartGameWindowDeusChaosGodInformation._update_belakor_status = function (self)
 
 	widget.content.visible = belakor_active_in_expedition
 end
-
-return

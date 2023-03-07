@@ -45,13 +45,13 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	end
 
 	local action_hand = action_init_data and action_init_data.action_hand
-	local damage_profile_name = (action_hand and new_action["damage_profile_" .. action_hand]) or new_action.damage_profile or "default"
+	local damage_profile_name = action_hand and new_action["damage_profile_" .. action_hand] or new_action.damage_profile or "default"
 	self.damage_profile_id = NetworkLookup.damage_profiles[damage_profile_name]
 	self.damage_profile = DamageProfileTemplates[damage_profile_name]
-	local damage_profile_name_aoe = (action_hand and new_action["damage_profile_aoe_" .. action_hand]) or new_action.damage_profile_aoe or "default"
+	local damage_profile_name_aoe = action_hand and new_action["damage_profile_aoe_" .. action_hand] or new_action.damage_profile_aoe or "default"
 	self.damage_profile_aoe_id = NetworkLookup.damage_profiles[damage_profile_name_aoe]
 	self.damage_profile_aoe = DamageProfileTemplates[damage_profile_name_aoe]
-	local damage_profile_target_name = (action_hand and new_action["damage_profile_target" .. action_hand]) or new_action.damage_profile_target or "default"
+	local damage_profile_target_name = action_hand and new_action["damage_profile_target" .. action_hand] or new_action.damage_profile_target or "default"
 	self.damage_profile_target_id = NetworkLookup.damage_profiles[damage_profile_target_name]
 	self.damage_profile_target = DamageProfileTemplates[damage_profile_target_name]
 	local ammo_extension = self.ammo_extension
@@ -77,13 +77,13 @@ ActionShieldSlam.client_owner_start_action = function (self, new_action, t, chai
 	local difficulty_settings = Managers.state.difficulty:get_difficulty_settings()
 	local owner_player = Managers.player:owner(owner_unit)
 	local melee_friendly_fire = DamageUtils.allow_friendly_fire_melee(difficulty_settings, owner_player)
-	local collision_filter = (melee_friendly_fire and "filter_melee_sweep") or "filter_melee_sweep_no_player"
+	local collision_filter = melee_friendly_fire and "filter_melee_sweep" or "filter_melee_sweep_no_player"
 	local results = PhysicsWorld.immediate_raycast(physics_world, pos, direction, new_action.dedicated_target_range, "all", "collision_filter", collision_filter)
 
 	if results then
 		local num_results = #results
 
-		for i = 1, num_results, 1 do
+		for i = 1, num_results do
 			local result = results[i]
 			local actor = result[4]
 			local hit_unit = Actor.unit(actor)
@@ -207,7 +207,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 	local side = Managers.state.side.side_by_unit[owner_unit]
 	local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 
-	for i = 1, actors_n, 1 do
+	for i = 1, actors_n do
 		repeat
 			local hit_actor = actors[i]
 			local hit_unit = Actor.unit(hit_actor)
@@ -225,7 +225,7 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 
 				local node = Actor.node(hit_actor)
 				local hit_zone = breed and breed.hit_zones_lookup[node]
-				local target_hit_zone_name = (hit_zone and hit_zone.name) or "torso"
+				local target_hit_zone_name = hit_zone and hit_zone.name or "torso"
 				local target_hit_position = Unit.has_node(hit_unit, "j_spine") and Unit.world_position(hit_unit, Unit.node(hit_unit, "j_spine"))
 				local target_world_position = POSITION_LOOKUP[hit_unit] or Unit.world_position(hit_unit, 0)
 				local hit_position = target_hit_position or target_world_position
@@ -327,8 +327,8 @@ ActionShieldSlam._hit = function (self, world, can_damage, owner_unit, current_a
 		if (breed or dummy) and self:_is_infront_player(self_pos, unit_forward, hit_position, current_action.push_dot) then
 			local is_server = self.is_server
 			local hit_default_target = hit_unit == target_breed_unit
-			local damage_profile = (hit_default_target and self.damage_profile_target) or self.damage_profile
-			local damage_profile_id = (hit_default_target and self.damage_profile_target_id) or self.damage_profile_id
+			local damage_profile = hit_default_target and self.damage_profile_target or self.damage_profile
+			local damage_profile_id = hit_default_target and self.damage_profile_target_id or self.damage_profile_id
 			local target_index = 1
 			local power_level = self.power_level
 			local is_critical_strike = self._is_critical_strike
@@ -418,7 +418,7 @@ ActionShieldSlam.finish = function (self, reason)
 
 	if reason ~= "new_interupting_action" then
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
@@ -444,5 +444,3 @@ ActionShieldSlam.destroy = function (self)
 		self.critical_strike_particle_id = nil
 	end
 end
-
-return

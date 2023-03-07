@@ -150,14 +150,14 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 		local replacement_breeds = BreedTweaks.standard_bearer_spawn_list_replacements
 		local new_spawn_list = {}
 
-		for i = 1, #spawn_list, 1 do
+		for i = 1, #spawn_list do
 			local breed_name = spawn_list[i]
 
 			if not startup_breeds[breed_name] then
 				local replacement = nil
 				local check_breeds = false
 
-				for j = 1, #replacement_breeds, 1 do
+				for j = 1, #replacement_breeds do
 					local replacement_breed = replacement_breeds[j]
 
 					if check_breeds and startup_breeds[replacement_breed] then
@@ -181,7 +181,7 @@ AiBreedSnippets.on_beastmen_standard_bearer_spawn = function (unit, blackboard)
 		local above = 1
 		local below = 1
 
-		for i = 1, num_to_spawn, 1 do
+		for i = 1, num_to_spawn do
 			local offset = Vector3(-num_columns / 2 + i % num_columns, -num_columns / 2 + math.floor(i / num_columns), 0)
 			local spawn_pos = bearer_position + offset * 2
 			local spawn_pos_on_navmesh = LocomotionUtils.pos_on_mesh(nav_world, spawn_pos, above, below)
@@ -364,7 +364,7 @@ AiBreedSnippets.on_beastmen_ungor_archer_death = function (unit, blackboard)
 		local nearby_archers = blackboard.nearby_archers
 		local num_nearby_archers = #nearby_archers
 
-		for i = 1, num_nearby_archers, 1 do
+		for i = 1, num_nearby_archers do
 			local nearby_unit_blackboard = nearby_archers[i]
 
 			if nearby_unit_blackboard then
@@ -377,5 +377,3 @@ AiBreedSnippets.on_beastmen_ungor_archer_death = function (unit, blackboard)
 		blackboard.is_volley_leader = nil
 	end
 end
-
-return

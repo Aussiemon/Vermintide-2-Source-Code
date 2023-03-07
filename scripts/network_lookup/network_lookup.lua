@@ -164,7 +164,7 @@ for _, dlc in pairs(DLCSettings) do
 				local table_names = string.split(table_data, ".")
 				local table_values = rawget(_G, table_names[1])
 
-				for i = 2, #table_names, 1 do
+				for i = 2, #table_names do
 					local table_name = table_names[i]
 					table_values = table_values[table_name]
 				end
@@ -1258,7 +1258,7 @@ for _, dlc in pairs(DLCSettings) do
 	local effects = dlc.effects
 
 	if effects then
-		for i = 1, #effects, 1 do
+		for i = 1, #effects do
 			local name = effects[i]
 
 			if not table.contains(NetworkLookup.effects, name) then
@@ -1585,7 +1585,7 @@ for _, dlc in pairs(DLCSettings) do
 	local sound_events = dlc.network_sound_events
 
 	if sound_events then
-		for i = 1, #sound_events, 1 do
+		for i = 1, #sound_events do
 			local sound_event = sound_events[i]
 			NetworkLookup.sound_events[#NetworkLookup.sound_events + 1] = sound_event
 		end
@@ -2270,11 +2270,9 @@ if not temp_aws_test_dumped and Development.parameter("mechanism") == "versus" t
 
 	local level_keys = NetworkLookup.level_keys
 
-	for i = 1, #level_keys, 1 do
+	for i = 1, #level_keys do
 		print(i, level_keys[i])
 	end
 
 	temp_aws_test_dumped = true
 end
-
-return

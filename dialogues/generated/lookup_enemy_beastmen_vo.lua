@@ -34,5 +34,3 @@ DialogueLookup[DialogueLookup_n + 15] = "ebb_gameplay_bardin_present"
 DialogueLookup[DialogueLookup_n + 16] = "ebb_gameplay_no_damage_taunt"
 DialogueLookup[DialogueLookup_n + 17] = "ebb_a_gameplay_running_towards_players"
 DialogueLookup_n = DialogueLookup_n + 17
-
-return

@@ -574,5 +574,3 @@ ScriptInputSettings = {
 		}
 	}
 }
-
-return

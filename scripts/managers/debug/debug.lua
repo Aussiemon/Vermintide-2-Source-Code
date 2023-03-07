@@ -40,7 +40,7 @@ Debug.test_popup = function ()
 end
 
 Debug.update = function (t, dt)
-	if not Debug.active or (script_data and script_data.disable_debug_draw) then
+	if not Debug.active or script_data and script_data.disable_debug_draw then
 		return
 	end
 
@@ -64,15 +64,16 @@ Debug.update = function (t, dt)
 	local max = 100
 
 	if num_debug_texts > max then
+		-- Nothing
 	end
 
-	for i = 1, num_debug_texts, 1 do
+	for i = 1, num_debug_texts do
 		local data = Debug.debug_texts[i]
 		local text = data.text
 		local instance_text_color = data.color
 		local text_pos = Vector3(130, pos, 700)
 
-		Gui.text(gui, text, font_mtrl, font_size, font, text_pos, (instance_text_color and instance_text_color:unbox()) or text_color)
+		Gui.text(gui, text, font_mtrl, font_size, font, text_pos, instance_text_color and instance_text_color:unbox() or text_color)
 
 		if show_debug_text_background then
 			local text_min, text_max = Gui.text_extents(gui, text, font_mtrl, font_size)
@@ -147,7 +148,7 @@ Debug.cond_text = function (c, ...)
 end
 
 Debug.text = function (...)
-	if not Debug.active or (script_data and script_data.disable_debug_draw) then
+	if not Debug.active or script_data and script_data.disable_debug_draw then
 		return
 	end
 
@@ -158,7 +159,7 @@ Debug.text = function (...)
 end
 
 Debug.colored_text = function (color, ...)
-	if not Debug.active or (script_data and script_data.disable_debug_draw) then
+	if not Debug.active or script_data and script_data.disable_debug_draw then
 		return
 	end
 
@@ -218,7 +219,7 @@ Debug.update_world_texts = function ()
 	local num_texts = #wt
 	local tm = Matrix4x4.identity()
 
-	for i = 1, num_texts, 1 do
+	for i = 1, num_texts do
 		local item = wt[i]
 		local text = item[1]
 		local min, max, caret = Gui.text_extents(world_gui, text, font_mtrl, 2)
@@ -241,7 +242,7 @@ Debug.update_world_sticky_texts = function ()
 	local num_texts = Debug.num_world_sticky_texts
 	local tm = Matrix4x4.identity()
 
-	for i = 1, num_texts, 1 do
+	for i = 1, num_texts do
 		local item = wt[i]
 		local text = item[1]
 
@@ -250,7 +251,7 @@ Debug.update_world_sticky_texts = function ()
 end
 
 Debug.world_text = function (pos, text, color_name)
-	if not Debug.active or (script_data and script_data.disable_debug_draw) then
+	if not Debug.active or script_data and script_data.disable_debug_draw then
 		return
 	end
 
@@ -280,7 +281,7 @@ Debug.world_text = function (pos, text, color_name)
 end
 
 Debug.world_sticky_text = function (pos, text, color_name)
-	if not Debug.active or (script_data and script_data.disable_debug_draw) then
+	if not Debug.active or script_data and script_data.disable_debug_draw then
 		return
 	end
 
@@ -324,7 +325,7 @@ Debug.reset_sticky_world_texts = function ()
 end
 
 Debug.sticky_text = function (...)
-	if not Debug.active or (script_data and script_data.disable_debug_draw) then
+	if not Debug.active or script_data and script_data.disable_debug_draw then
 		return
 	end
 
@@ -456,7 +457,7 @@ Debug.visualize_level_unit = function (level_unit_id)
 
 	QuickDrawer:sphere(position, 1, Colors.get("medium_aqua_marine"))
 
-	for i = 1, 20, 1 do
+	for i = 1, 20 do
 		QuickDrawer:sphere(position, i * 10, Colors.get("medium_aqua_marine"))
 	end
 end
@@ -476,7 +477,7 @@ Debug.aim_position = function ()
 	if result then
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local hit_actor = hit[4]
 			local hit_unit = Actor.unit(hit_actor)
@@ -498,7 +499,7 @@ Debug.test_spawn_unit = function (profile_name, career_index)
 	local career_name = career.name
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local item_data = skin_item and skin_item.data
-	local skin_name = (item_data and item_data.name) or career.base_skin
+	local skin_name = item_data and item_data.name or career.base_skin
 	local package_names = {}
 	local skin_data = Cosmetics[skin_name]
 	local unit_name = skin_data.third_person
@@ -551,7 +552,7 @@ Debug.test_despawn_unit = function (profile_name, career_index)
 	local career_name = career.name
 	local skin_item = BackendUtils.get_loadout_item(career_name, "slot_skin")
 	local item_data = skin_item and skin_item.data
-	local skin_name = (item_data and item_data.name) or career.base_skin
+	local skin_name = item_data and item_data.name or career.base_skin
 	local package_names = {}
 	local skin_data = Cosmetics[skin_name]
 	local unit_name = skin_data.third_person
@@ -617,5 +618,3 @@ Debug.unhook = function (obj, method, silent)
 
 	return true
 end
-
-return

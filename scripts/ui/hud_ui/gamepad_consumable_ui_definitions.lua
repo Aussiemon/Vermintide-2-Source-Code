@@ -251,26 +251,25 @@ local widget_definitions = {
 	selection = UIWidgets.create_gamepad_selection("selection", true),
 	background = UIWidgets.create_simple_texture("player_consumable_bg", "background")
 }
-local animations = {
-	pickup = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 1,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_fraction = math.easeInCubic(progress)
-				local widget = widgets[1]
-				local highlight_color = widget.style.texture_highlight.color
-				local alpha = 255 * anim_fraction
-				highlight_color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+local animations = {}
+animations.pickup = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 1,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_fraction = math.easeInCubic(progress)
+			local widget = widgets[1]
+			local highlight_color = widget.style.texture_highlight.color
+			local alpha = 255 * anim_fraction
+			highlight_color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 

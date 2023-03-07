@@ -75,7 +75,7 @@ ActPresentationUI.start = function (self, level_key, previous_completed_difficul
 		render_settings = self.render_settings
 	}
 	self.animation_params = animation_params
-	local animation_name = (first_time_completed and "enter_first_time") or "enter"
+	local animation_name = first_time_completed and "enter_first_time" or "enter"
 
 	self:start_presentation_animation(animation_name, animation_params)
 
@@ -92,7 +92,7 @@ ActPresentationUI._set_presentation_info = function (self, act_key, level_key)
 	local act_display_name = act_settings.display_name
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.level.content.icon = level_image
-	widgets_by_name.act_title.content.text = (act_display_name and Localize(act_display_name)) or ""
+	widgets_by_name.act_title.content.text = act_display_name and Localize(act_display_name) or ""
 	widgets_by_name.level_title.content.text = Localize(level_display_name)
 end
 
@@ -102,7 +102,7 @@ ActPresentationUI._setup_level = function (self, act_key, played_level_key, prev
 	local stats_id = self.stats_id
 	local level_stat = statistics_db:get_persistent_stat(stats_id, "completed_levels", played_level_key) or 0
 	local level_completed = level_stat ~= 0
-	local difficulty_complete_index = (level_completed and LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, played_level_key)) or 0
+	local difficulty_complete_index = level_completed and LevelUnlockUtils.completed_level_difficulty_index(statistics_db, stats_id, played_level_key) or 0
 	local first_time_completed = previous_difficulty_index_completed < difficulty_complete_index
 	local widget_name = "level"
 	local widget = widgets_by_name[widget_name]
@@ -141,7 +141,7 @@ end
 ActPresentationUI.presentation_completed = function (self)
 	local animation_params = self.animation_params
 
-	return (animation_params and animation_params.presentation_completed) or self._presentation_aborted
+	return animation_params and animation_params.presentation_completed or self._presentation_aborted
 end
 
 ActPresentationUI.update = function (self, dt, t)
@@ -190,5 +190,3 @@ ActPresentationUI.start_presentation_animation = function (self, animation_name,
 
 	return animation_key
 end
-
-return

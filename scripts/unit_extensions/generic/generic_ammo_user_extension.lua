@@ -165,7 +165,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 
 					inventory_extension:destroy_slot(self.slot_name, false, true)
 
-					if (self._last_ammo_used_was_given and self._force_wield_previous_weapon_when_ammo_given) or self._wield_previous_weapon_when_destroyed then
+					if self._last_ammo_used_was_given and self._force_wield_previous_weapon_when_ammo_given or self._wield_previous_weapon_when_destroyed then
 						local grabbed_by_packmaster = status_extension and CharacterStateHelper.pack_master_status(status_extension)
 
 						if not grabbed_by_packmaster then
@@ -193,7 +193,7 @@ GenericAmmoUserExtension.update = function (self, unit, input, dt, context, t)
 		if not self._start_reloading then
 			local buff_extension = self.owner_buff_extension
 			local missing_in_clip = self._ammo_per_clip - self._current_ammo
-			local reload_amount = (self._ammo_per_reload and self._ammo_per_reload <= missing_in_clip and self._ammo_per_reload) or missing_in_clip
+			local reload_amount = self._ammo_per_reload and self._ammo_per_reload <= missing_in_clip and self._ammo_per_reload or missing_in_clip
 			reload_amount = math.min(reload_amount, self._available_ammo)
 			self._current_ammo = self._current_ammo + reload_amount
 
@@ -608,5 +608,3 @@ GenericAmmoUserExtension._update_anim_ammo = function (self)
 
 	Unit.animation_set_variable(self.first_person_unit, self._anim_ammo_variable_id, self._current_ammo - self._shots_fired)
 end
-
-return

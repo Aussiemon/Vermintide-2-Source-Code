@@ -36,5 +36,3 @@ DialogueLookup[DialogueLookup_n + 16] = "pes_level_ground_zero_complete"
 DialogueLookup[DialogueLookup_n + 17] = "pes_level_ground_zero_canal_crossing"
 DialogueLookup[DialogueLookup_n + 18] = "pes_level_ground_zero_the_hole_second_view"
 DialogueLookup_n = DialogueLookup_n + 18
-
-return

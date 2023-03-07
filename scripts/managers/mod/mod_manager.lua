@@ -18,10 +18,10 @@ ModManager.init = function (self, boot_gui)
 	self._network_callbacks = {}
 	local in_modded_realm = script_data["eac-untrusted"]
 
-	Crashify.print_property("realm", (in_modded_realm and "modded") or "official")
+	Crashify.print_property("realm", in_modded_realm and "modded" or "official")
 
 	if rawget(_G, "Presence") then
-		Presence.set_presence("status", (in_modded_realm and "Modded Realm") or "Official Realm")
+		Presence.set_presence("status", in_modded_realm and "Modded Realm" or "Official Realm")
 	end
 
 	ModShim.start()
@@ -65,7 +65,7 @@ ModManager._draw_state_to_gui = function (self, gui, dt)
 		status_str = "Fetching mod metadata"
 	end
 
-	Gui.text(gui, status_str .. string.rep(".", (2 * t) % 4), "materials/fonts/arial", 16, nil, Vector3(5, 10, 1))
+	Gui.text(gui, status_str .. string.rep(".", 2 * t % 4), "materials/fonts/arial", 16, nil, Vector3(5, 10, 1))
 end
 
 ModManager.remove_gui = function (self)
@@ -81,7 +81,7 @@ ModManager._has_enabled_mods = function (self, in_modded_realm)
 		return false
 	end
 
-	for i = 1, #mod_settings, 1 do
+	for i = 1, #mod_settings do
 		if mod_settings[i].enabled then
 			return true
 		end
@@ -104,7 +104,7 @@ ModManager.update = function (self, dt)
 	local num_delayed_prints = #chat_print_buffer
 
 	if num_delayed_prints > 0 and Managers.chat then
-		for i = 1, num_delayed_prints, 1 do
+		for i = 1, num_delayed_prints do
 			Managers.chat:add_local_system_message(1, chat_print_buffer[i], true)
 
 			chat_print_buffer[i] = nil
@@ -122,7 +122,7 @@ ModManager.update = function (self, dt)
 	end
 
 	if self._state == "done" then
-		for i = 1, self._num_mods, 1 do
+		for i = 1, self._num_mods do
 			local mod = self._mods[i]
 
 			if mod and mod.enabled and not mod.callbacks_disabled then
@@ -452,7 +452,7 @@ end
 ModManager._reload_mods = function (self)
 	self:print("info", "reloading mods")
 
-	for i = 1, self._num_mods, 1 do
+	for i = 1, self._num_mods do
 		local mod = self._mods[i]
 
 		if mod and mod.state == "running" then
@@ -472,7 +472,7 @@ end
 
 ModManager.on_game_state_changed = function (self, status, state_name, state_object)
 	if self._state == "done" then
-		for i = 1, self._num_mods, 1 do
+		for i = 1, self._num_mods do
 			local mod = self._mods[i]
 
 			if mod and mod.enabled and not mod.callbacks_disabled then
@@ -512,10 +512,8 @@ ModManager._visit = function (self, mod_list, visited, sorted, mod_data)
 
 	visited[mod_data] = false
 	local enabled = mod_data.enabled or false
-	slot6 = 1
-	slot7 = mod_data.num_children or 0
 
-	for i = slot6, slot7, 1 do
+	for i = 1, mod_data.num_children or 0 do
 		local child_id = mod_data.children[j]
 		local child_index = table.find_by_key(mod_list, "id", child_id)
 		local child_mod_data = mod_list[child_index]
@@ -581,7 +579,7 @@ ModManager.network_send = function (self, destination_peer_id, port, payload)
 		Managers.state.network.network_transmit:queue_local_rpc("rpc_mod_user_data", port, payload)
 	end
 
-	local channel_id = PEER_ID_TO_CHANNEL[(self._is_server and destination_peer_id) or self._host_peer_id]
+	local channel_id = PEER_ID_TO_CHANNEL[self._is_server and destination_peer_id or self._host_peer_id]
 
 	if channel_id then
 		RPC.rpc_mod_user_data(channel_id, self._my_peer_id, destination_peer_id, port, payload)
@@ -621,5 +619,3 @@ ModManager.network_context_created = function (self, host_peer_id, my_peer_id, i
 	self._my_peer_id = my_peer_id
 	self._is_server = is_server
 end
-
-return

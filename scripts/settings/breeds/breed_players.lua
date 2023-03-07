@@ -254,5 +254,3 @@ PlayerBreeds.hero_wh_captain = {
 	threat_value = 8,
 	hit_zones = PlayerBreedHitZones.player_breed_hit_zones
 }
-
-return

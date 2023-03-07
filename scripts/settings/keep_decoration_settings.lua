@@ -131,5 +131,3 @@ KeepDecorationSettings = {
 }
 
 DLCUtils.require_list("keep_decoration_file_names")
-
-return

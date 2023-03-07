@@ -657,8 +657,8 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 	local delta_up = Vector3.up() * 0.05
 	local result = nil
 
-	for j = 1, 2, 1 do
-		for i = 1, max_tries, 1 do
+	for j = 1, 2 do
+		for i = 1, max_tries do
 			local angle = min_angle + math.random(min_angle_step * i, max_angle_step * i) * direction
 			local position, wanted_distance = LocomotionUtils.outside_goal(nav_world, from_position, to_position, min_distance, max_distance, angle, outside_goal_tries, above, below)
 
@@ -674,7 +674,7 @@ LocomotionUtils.pick_visible_outside_goal = function (params)
 				if to_unit_line_of_sight and radius_check_directions then
 					min_found_radius_sq = math.huge
 
-					for i = 1, num_directions, 1 do
+					for i = 1, num_directions do
 						local check_direction = radius_check_directions[i]:unbox()
 						local check_end_position = position + check_direction
 						local hit, hit_position = nil
@@ -713,8 +713,8 @@ LocomotionUtils.test_pos = function (nav_world, pos)
 	local fail = 0
 	local success = 0
 
-	for i = -10, 10, 1 do
-		for j = -10, 10, 1 do
+	for i = -10, 10 do
+		for j = -10, 10 do
 			local test_pos = pos + Vector3(i, j, 0)
 			local mesh_pos = LocomotionUtils.pos_on_mesh(nav_world, test_pos)
 
@@ -746,9 +746,9 @@ LocomotionUtils.get_close_pos_on_mesh = function (nav_world, pos, searches)
 	failed_points[#failed_points + 1] = Vector3Box(pos)
 	searches = searches or 4
 
-	for k = 1, 4, 1 do
-		for x = -1, 1, 1 do
-			for y = -1, 1, 1 do
+	for k = 1, 4 do
+		for x = -1, 1 do
+			for y = -1, 1 do
 				if x ~= 0 or y ~= 0 then
 					local new_pos = pos + Vector3(x * k, y * k, 0)
 					local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, new_pos, 30, 30)
@@ -785,9 +785,9 @@ LocomotionUtils.get_close_pos_below_on_mesh = function (nav_world, pos, searches
 	failed_points[#failed_points + 1] = Vector3Box(pos)
 	searches = searches or 4
 
-	for k = 1, 4, 1 do
-		for x = -1, 1, 1 do
-			for y = -1, 1, 1 do
+	for k = 1, 4 do
+		for x = -1, 1 do
+			for y = -1, 1 do
 				if x ~= 0 or y ~= 0 then
 					local new_pos = pos + Vector3(x * k, y * k, 0)
 					local success, altitude, p1, p2, p3 = GwNavQueries.triangle_from_position(nav_world, new_pos, above, below)
@@ -850,7 +850,7 @@ LocomotionUtils.closest_mesh_positions_outward = function (nav_world, outside_po
 		local x = circle_points[i]
 		local y = circle_points[i + 1]
 
-		for r = 1, steps, 1 do
+		for r = 1, steps do
 			local test_pos = outside_pos + Vector3(x * r * step_dist, y * r * step_dist, 0)
 			local p = GwNavQueries.inside_position_from_outside_position(nav_world, test_pos, 30, 30)
 
@@ -891,7 +891,7 @@ end
 
 LocomotionUtils.raycast_on_navmesh = function (nav_world, position_start, position_end, traverse_logic, above, below, end_pos_nav_projection)
 	local projected_start_pos = LocomotionUtils.pos_on_mesh(nav_world, position_start, above, below)
-	local projected_end_pos = projected_start_pos and ((not end_pos_nav_projection and position_end) or LocomotionUtils.pos_on_mesh(nav_world, position_end, above, below))
+	local projected_end_pos = projected_start_pos and (not end_pos_nav_projection and position_end or LocomotionUtils.pos_on_mesh(nav_world, position_end, above, below))
 	local success, hit_position = nil
 
 	if projected_end_pos then
@@ -929,7 +929,7 @@ local WALL_CHECK_RAYCAST_LOW_HEIGHT = 0.4
 
 LocomotionUtils.navmesh_movement_check = function (unit_position, unit_velocity, nav_world, physics_world, traverse_logic)
 	local is_moving = EPSILON_SQ < Vector3.length_squared(unit_velocity)
-	local direction = (is_moving and Vector3.normalize(unit_velocity)) or Vector3.zero()
+	local direction = is_moving and Vector3.normalize(unit_velocity) or Vector3.zero()
 	local target_position = unit_position + direction * NAV_CHECK_DISTANCE
 	local raycango, projected_unit_pos, projected_target_pos = LocomotionUtils.ray_can_go_on_mesh(nav_world, unit_position, target_position, traverse_logic, NAV_CHECK_ABOVE, NAV_CHECK_BELOW)
 	local result = "navmesh_ok"
@@ -964,7 +964,7 @@ LocomotionUtils.clear_los = function (physics_world, p1, p2, ignore_unit1, ignor
 	local result, num_hits = PhysicsWorld.immediate_raycast(physics_world, p1, to_vec, dist, "all", "collision_filter", "filter_ai_mover", "use_global_table")
 
 	if result then
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local hit_actor = hit[INDEX_ACTOR]
 			local hit_unit = Actor.unit(hit_actor)
@@ -996,7 +996,7 @@ LocomotionUtils.target_in_los = function (unit, blackboard)
 	if result then
 		local num_hits = #result
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local hit_actor = hit[INDEX_ACTOR]
 			local hit_unit = Actor.unit(hit_actor)
@@ -1069,7 +1069,7 @@ LocomotionUtils.in_crosshairs_dodge = function (unit, blackboard, t, radius, in_
 	local aim_times = blackboard.aim_times
 	local debug_ai_movement = script_data.debug_ai_movement
 
-	for i = 1, #units, 1 do
+	for i = 1, #units do
 		local player_unit = units[i]
 		local player_inventory = ScriptUnit.extension(player_unit, "inventory_system")
 		local using_ranged_weapon = player_inventory:get_wielded_slot_name() == "slot_ranged"
@@ -1136,7 +1136,7 @@ LocomotionUtils.separate_mover_fallbacks = function (mover, seprarate_dist)
 		Mover.set_position(mover, new_position)
 	end
 
-	local success = (is_colliding and new_position) or not is_colliding
+	local success = is_colliding and new_position or not is_colliding
 
 	return success
 end
@@ -1226,7 +1226,7 @@ LocomotionUtils.check_start_turning = function (unit, t, dt, blackboard)
 		return
 	end
 
-	local nav_path_node_position = (next_node_2_position and next_node_2_position) or next_node_1_position
+	local nav_path_node_position = next_node_2_position and next_node_2_position or next_node_1_position
 	local nav_path_direction = Vector3.normalize(nav_path_node_position - current_node_position)
 	local rotation = Unit.world_rotation(unit, 0)
 	local forward = Quaternion.forward(rotation)
@@ -1323,5 +1323,3 @@ LocomotionUtils.reset_turning = function (unit, blackboard)
 	blackboard.lean_target_position_boxed = nil
 	blackboard.enabled_animation_movement_system = nil
 end
-
-return

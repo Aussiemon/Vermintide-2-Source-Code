@@ -115,5 +115,3 @@ DeusRunStatsView._update_inventory = function (self)
 		self._healing_slot = healing_slot
 	end
 end
-
-return

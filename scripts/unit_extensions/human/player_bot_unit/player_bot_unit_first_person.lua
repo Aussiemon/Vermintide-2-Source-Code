@@ -381,5 +381,3 @@ end
 PlayerBotUnitFirstPerson.play_camera_recoil = function (self)
 	return
 end
-
-return

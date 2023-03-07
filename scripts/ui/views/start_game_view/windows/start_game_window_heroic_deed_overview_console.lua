@@ -108,8 +108,8 @@ StartGameWindowHeroicDeedOverviewConsole._present_heroic_deed = function (self, 
 	local item_interface = Managers.backend:get_interface("items")
 	local data = backend_id and item_interface:get_item_masterlist_data(backend_id)
 	local heroic_deed_setting = self._widgets_by_name.heroic_deed_setting
-	heroic_deed_setting.content.input_text = (data and Localize(data.display_name)) or Localize("not_assigned")
-	heroic_deed_setting.content.icon_texture = (data and data.inventory_icon) or nil
+	heroic_deed_setting.content.input_text = data and Localize(data.display_name) or Localize("not_assigned")
+	heroic_deed_setting.content.icon_texture = data and data.inventory_icon or nil
 end
 
 StartGameWindowHeroicDeedOverviewConsole._update_heroic_deed_selection = function (self)
@@ -181,7 +181,7 @@ StartGameWindowHeroicDeedOverviewConsole._handle_input = function (self, dt, t)
 
 	local widgets_by_name = self._widgets_by_name
 
-	for i = 1, #selector_input_definition, 1 do
+	for i = 1, #selector_input_definition do
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = widget.content.is_selected
@@ -247,7 +247,7 @@ StartGameWindowHeroicDeedOverviewConsole._handle_new_selection = function (self,
 		return
 	end
 
-	for i = 1, #selector_input_definition, 1 do
+	for i = 1, #selector_input_definition do
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 		local is_selected = i == input_index
@@ -289,7 +289,7 @@ StartGameWindowHeroicDeedOverviewConsole._draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -297,5 +297,3 @@ StartGameWindowHeroicDeedOverviewConsole._draw = function (self, dt)
 
 	UIRenderer.end_pass(ui_top_renderer)
 end
-
-return

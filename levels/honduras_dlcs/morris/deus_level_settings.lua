@@ -1179,5 +1179,3 @@ DEUS_SHRINE_LEVEL_SETTINGS.shop_strife = {
 	themes = {},
 	paths = {}
 }
-
-return

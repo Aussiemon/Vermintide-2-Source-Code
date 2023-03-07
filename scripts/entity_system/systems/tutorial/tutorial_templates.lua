@@ -611,5 +611,3 @@ end
 
 table.sort(TutorialTooltipTemplates, tooltip_sort_function)
 table.sort(TutorialObjectiveTooltipTemplates, tooltip_sort_function)
-
-return

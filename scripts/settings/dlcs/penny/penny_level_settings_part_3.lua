@@ -43,5 +43,3 @@ settings.missions = {
 		text = "mission_castle_get_out"
 	}
 }
-
-return

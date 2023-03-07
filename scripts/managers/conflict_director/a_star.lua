@@ -22,7 +22,7 @@ function lowest_f_score_node(nodes, f_score)
 	local lowest = math.huge
 	local best_node = nil
 
-	for i = 1, #nodes, 1 do
+	for i = 1, #nodes do
 		local node = nodes[i]
 		local score = f_score[node]
 
@@ -49,7 +49,7 @@ end
 function not_in(nodes, node)
 	local size = #nodes
 
-	for i = 1, size, 1 do
+	for i = 1, size do
 		if nodes[i] == node then
 			return false
 		end
@@ -61,7 +61,7 @@ end
 function remove_node(nodes, node)
 	local size = #nodes
 
-	for i = 1, size, 1 do
+	for i = 1, size do
 		if nodes[i] == node then
 			nodes[i] = nodes[size]
 			nodes[size] = nil
@@ -107,7 +107,7 @@ LuaAStar.a_star_plain = function (nodes, node1, node2)
 		closed_set[#closed_set + 1] = current
 		local neighbour_nodes = neighbour_nodes(current, nodes)
 
-		for i = 1, #neighbour_nodes, 1 do
+		for i = 1, #neighbour_nodes do
 			local neighbour = neighbour_nodes[i]
 
 			if not_in(closed_set, neighbour) then
@@ -150,5 +150,3 @@ LuaAStar.a_star_cached = function (nodes, a1, a2)
 
 	return path, length
 end
-
-return

@@ -388,7 +388,7 @@ DeusRunState.get_arena_belakor_node = function (self)
 	local key = self._shared_state:get_key("arena_belakor_node")
 	local value = self._shared_state:get_server(key)
 
-	return (value ~= "" and value) or nil
+	return value ~= "" and value or nil
 end
 
 DeusRunState.set_arena_belakor_node = function (self, value)
@@ -401,7 +401,7 @@ DeusRunState.get_seen_arena_belakor_node = function (self, peer_id)
 	local key = self._shared_state:get_key("seen_arena_belakor_node", peer_id)
 	local value = self._shared_state:get_server(key)
 
-	return (value ~= "" and value) or nil
+	return value ~= "" and value or nil
 end
 
 DeusRunState.set_seen_arena_belakor_node = function (self, peer_id, value)
@@ -548,7 +548,7 @@ DeusRunState.get_player_consumable_healthkit_slot = function (self, peer_id, loc
 	local key = self._shared_state:get_key("healthkit", peer_id, local_player_id, profile_index, career_index)
 	local val = self._shared_state:get_server(key)
 
-	return (val ~= "" and val) or nil
+	return val ~= "" and val or nil
 end
 
 DeusRunState.set_player_consumable_healthkit_slot = function (self, peer_id, local_player_id, profile_index, career_index, item_name)
@@ -562,7 +562,7 @@ DeusRunState.get_player_consumable_potion_slot = function (self, peer_id, local_
 	local key = self._shared_state:get_key("potion", peer_id, local_player_id, profile_index, career_index)
 	local val = self._shared_state:get_server(key)
 
-	return (val ~= "" and val) or nil
+	return val ~= "" and val or nil
 end
 
 DeusRunState.set_player_consumable_potion_slot = function (self, peer_id, local_player_id, profile_index, career_index, item_name)
@@ -576,7 +576,7 @@ DeusRunState.get_player_consumable_grenade_slot = function (self, peer_id, local
 	local key = self._shared_state:get_key("grenade", peer_id, local_player_id, profile_index, career_index)
 	local val = self._shared_state:get_server(key)
 
-	return (val ~= "" and val) or nil
+	return val ~= "" and val or nil
 end
 
 DeusRunState.set_player_consumable_grenade_slot = function (self, peer_id, local_player_id, profile_index, career_index, item_name)
@@ -602,7 +602,7 @@ DeusRunState.get_player_loadout = function (self, peer_id, local_player_id, prof
 	local key = self._shared_state:get_key(slot, peer_id, local_player_id, profile_index, career_index)
 	local val = self._shared_state:get_server(key)
 
-	return (val ~= "" and val) or nil
+	return val ~= "" and val or nil
 end
 
 DeusRunState.set_player_loadout = function (self, peer_id, local_player_id, profile_index, career_index, slot, serialized_deus_weapon)
@@ -672,5 +672,3 @@ DeusRunState.set_own_player_telemetry_id = function (self, telemetry_id)
 
 	self._shared_state:set_own(key, telemetry_id)
 end
-
-return

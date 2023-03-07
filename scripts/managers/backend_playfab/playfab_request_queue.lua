@@ -1,5 +1,5 @@
 local PlayFabClientApi = require("PlayFab.PlayFabClientApi")
-local guid = (IS_PS4 and math.uuid) or Application.guid
+local guid = IS_PS4 and math.uuid or Application.guid
 PlayFabRequestQueue = class(PlayFabRequestQueue)
 local MAX_RETRIES = 2
 local TIMEOUT_TIME = 20
@@ -102,7 +102,7 @@ PlayFabRequestQueue._update_throttling = function (self, t, entry)
 		return false
 	end
 
-	local name = (entry.request and entry.request.FunctionName) or entry.api_function_name
+	local name = entry.request and entry.request.FunctionName or entry.api_function_name
 
 	if self:_need_throttle(name, t) then
 		return false
@@ -178,7 +178,7 @@ PlayFabRequestQueue.eac_challenge_success_cb = function (self, result)
 	local challenge = function_result.challenge
 	local eac_id = function_result.eac_id
 
-	if not entry or (eac_id and eac_id ~= entry.expected_eac_id) then
+	if not entry or eac_id and eac_id ~= entry.expected_eac_id then
 		print("[PlayFabRequestQueue] Received Timed Out EAC Response - Ignoring", eac_id)
 
 		return
@@ -233,7 +233,7 @@ PlayFabRequestQueue.playfab_request_success_cb = function (self, success_callbac
 	local entry = self._active_entry
 	local function_result = result.FunctionResult
 
-	if not entry or (id and id ~= entry.id) then
+	if not entry or id and id ~= entry.id then
 		print("[PlayFabRequestQueue] Received Timed Out Success Response - Ignoring", id)
 
 		return
@@ -267,7 +267,7 @@ PlayFabRequestQueue.playfab_request_error_cb = function (self, error_callback, i
 	local entry = self._active_entry
 	local request = entry.request
 
-	if not entry or (id and id ~= entry.id) then
+	if not entry or id and id ~= entry.id then
 		print("[PlayFabRequestQueue] Received Timed Out Error Response - Ignoring", id)
 
 		return
@@ -307,5 +307,3 @@ PlayFabRequestQueue._get_eac_response = function (self, challenge)
 
 	return eac_response, response
 end
-
-return

@@ -21,7 +21,7 @@ TutorialTooltipUI.create_ui_elements = function (self)
 	self.ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
 	self.tutorial_tooltip_widget = UIWidget.init(definitions.widgets.tutorial_tooltip)
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		self.tutorial_tooltip_input_widgets[i] = UIWidget.init(definitions.tutorial_tooltip_input_widgets[i])
 	end
 end
@@ -72,7 +72,7 @@ TutorialTooltipUI.update = function (self, tooltip_tutorial, player_unit, dt)
 	local texture_size_y = 0
 	local texture_size_x = 0
 	local gamepad_active = self.input_manager:is_device_active("gamepad")
-	local inputs = (gamepad_active and active_template.gamepad_inputs) or active_template.inputs
+	local inputs = gamepad_active and active_template.gamepad_inputs or active_template.inputs
 
 	if inputs and #inputs > 0 then
 		if not active_tooltip_name then
@@ -90,7 +90,7 @@ TutorialTooltipUI.update = function (self, tooltip_tutorial, player_unit, dt)
 			local num_inputs = #inputs
 			local num_widgets = 0
 
-			for i = 1, num_inputs, 1 do
+			for i = 1, num_inputs do
 				local widget = input_widgets[i]
 				local widget_content = widget.content
 				local widget_style = widget.style
@@ -124,7 +124,7 @@ TutorialTooltipUI.update = function (self, tooltip_tutorial, player_unit, dt)
 						local font, scaled_font_size = UIFontByResolution(widget_style.button_text)
 						local text_width, text_height, min = UIRenderer.text_size(ui_renderer, button_text, font[1], scaled_font_size)
 
-						for i = 1, #button_texture_data, 1 do
+						for i = 1, #button_texture_data do
 							textures[i] = button_texture_data[i].texture
 							sizes[i] = button_texture_data[i].size
 
@@ -155,7 +155,7 @@ TutorialTooltipUI.update = function (self, tooltip_tutorial, player_unit, dt)
 
 					ui_scenegraph["input_description_icon_" .. i].size[1] = texture_size_x
 					ui_scenegraph["input_description_icon_" .. i].size[2] = texture_size_y
-					widget_content.prefix_text = (input.prefix and input.prefix ~= "" and Localize(input.prefix)) or ""
+					widget_content.prefix_text = input.prefix and input.prefix ~= "" and Localize(input.prefix) or ""
 					widget_content.suffix_text = input.suffix
 					local prefix_font, prefix_scaled_font_size = UIFontByResolution(widget_style.prefix_text)
 					local suffix_font, suffix_scaled_font_size = UIFontByResolution(widget_style.suffix_text)
@@ -172,7 +172,7 @@ TutorialTooltipUI.update = function (self, tooltip_tutorial, player_unit, dt)
 
 			self.tutorial_tooltip_widget.element.dirty = true
 
-			for i = num_widgets + 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+			for i = num_widgets + 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 				local widget = input_widgets[i]
 				widget.content.visible = false
 				widget.element.dirty = true
@@ -193,7 +193,7 @@ TutorialTooltipUI.draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, self.tutorial_tooltip_widget)
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		UIRenderer.draw_widget(ui_renderer, self.tutorial_tooltip_input_widgets[i])
 	end
 
@@ -204,7 +204,7 @@ TutorialTooltipUI.set_dirty = function (self)
 	self.tutorial_tooltip_widget.element.dirty = true
 	local input_widgets = self.tutorial_tooltip_input_widgets
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		local widget = input_widgets[i]
 		widget.element.dirty = true
 	end
@@ -218,7 +218,7 @@ TutorialTooltipUI.hide = function (self)
 
 	local input_widgets = self.tutorial_tooltip_input_widgets
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		local widget = input_widgets[i]
 
 		UIRenderer.set_element_visible(ui_renderer, widget.element, false)
@@ -243,7 +243,7 @@ TutorialTooltipUI._fade = function (self, from_alpha, to_alpha, duration)
 	self.tutorial_tooltip_animations.tooltip_description_fade = UIAnimation.init(UIAnimation.function_by_time, description_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	local input_widgets = self.tutorial_tooltip_input_widgets
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		local widget = input_widgets[i]
 		local input_widget_style = widget.style
 		local prefix_text_style = input_widget_style.prefix_text
@@ -275,5 +275,3 @@ TutorialTooltipUI.set_visible = function (self, visible)
 
 	UIRenderer.set_element_visible(ui_renderer, self.tutorial_tooltip_widget.element, visible)
 end
-
-return

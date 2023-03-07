@@ -36,7 +36,7 @@ CameraStateFollowThirdPerson.on_enter = function (self, unit, input, dt, context
 	local camera_offset = params.camera_offset
 	self._camera_offset = camera_offset and Vector3Box(camera_offset)
 	self._allow_camera_movement = params.allow_camera_movement
-	self._follow_unit_rotation = (params.follow_unit_rotation == nil and true) or params.follow_unit_rotation
+	self._follow_unit_rotation = params.follow_unit_rotation == nil and true or params.follow_unit_rotation
 	self._follow_unit = follow_unit
 	self._follow_node = follow_node
 	local camera_manager = Managers.state.camera
@@ -116,5 +116,3 @@ CameraStateFollowThirdPerson.update = function (self, unit, input, dt, context, 
 		CameraStateHelper.set_follow_camera_position(unit, follow_unit, follow_node, camera_offset, nil, dt)
 	end
 end
-
-return

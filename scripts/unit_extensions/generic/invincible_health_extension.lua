@@ -67,5 +67,3 @@ end
 InvincibleHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
 	return
 end
-
-return

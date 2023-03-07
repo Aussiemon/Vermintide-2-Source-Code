@@ -46,7 +46,11 @@ BTSelector_gutter_runner.run = function (self, unit, blackboard, t, dt)
 	local condition_result = nil
 
 	if blackboard.stagger then
-		condition_result = not blackboard.stagger_prohibited
+		if blackboard.stagger_prohibited then
+			blackboard.stagger = false
+		else
+			condition_result = true
+		end
 	end
 
 	if condition_result then
@@ -245,5 +249,3 @@ end
 BTSelector_gutter_runner.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

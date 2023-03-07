@@ -36,9 +36,9 @@ ActionTrueFlightBowAim.client_owner_start_action = function (self, new_action, t
 	self.aim_sticky_timer = 0
 	self._is_sticky_target = false
 	self._current_target_priority = -1
-	self.target = (chain_action_data and chain_action_data.target) or nil
-	self.targets = (chain_action_data and chain_action_data.targets) or {}
-	self.aimed_target = (chain_action_data and chain_action_data.target) or nil
+	self.target = chain_action_data and chain_action_data.target or nil
+	self.targets = chain_action_data and chain_action_data.targets or {}
+	self.aimed_target = chain_action_data and chain_action_data.target or nil
 
 	self:_mark_target(self.target)
 
@@ -188,7 +188,7 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 			local prio_breeds = self.prioritized_breeds or EMPTY_TABLE
 			local ignore_bosses = current_action.ignore_bosses
 
-			for i = 1, num_results, 1 do
+			for i = 1, num_results do
 				local result = results[i]
 				local hit_actor = result[RAYCAST_INDEX_ACTOR]
 
@@ -217,14 +217,14 @@ ActionTrueFlightBowAim.client_owner_post_update = function (self, dt, t, world, 
 
 		if current_action.aim_sticky_target_size and POSITION_LOOKUP[current_target] and self._is_sticky_target and higest_priority <= self._current_target_priority then
 			local old_target_distance_sq = vector3_distance_squared(POSITION_LOOKUP[current_target], player_position)
-			local new_target_distance_sq = (hit_unit and vector3_distance_squared(POSITION_LOOKUP[hit_unit], player_position)) or math.huge
+			local new_target_distance_sq = hit_unit and vector3_distance_squared(POSITION_LOOKUP[hit_unit], player_position) or math.huge
 
-			if old_target_distance_sq < new_target_distance_sq or (self._priority_target and not priority_target) then
-				local target_node = (unit_has_node(current_target, "j_spine1") and unit_node(current_target, "j_spine1")) or 0
+			if old_target_distance_sq < new_target_distance_sq or self._priority_target and not priority_target then
+				local target_node = unit_has_node(current_target, "j_spine1") and unit_node(current_target, "j_spine1") or 0
 				local position = unit_world_position(current_target, target_node)
 				local to_old_target = position - player_position
 				local dist_to_old_target = vector3_length(to_old_target)
-				local dir_to_old_target = (dist_to_old_target > 0 and to_old_target / dist_to_old_target) or 0
+				local dir_to_old_target = dist_to_old_target > 0 and to_old_target / dist_to_old_target or 0
 				local radius = current_action.aim_sticky_target_size
 				local sticky_target_threshold = math.cos(math.atan2(radius, dist_to_old_target))
 				local aim_dir = vector3_dot(direction, dir_to_old_target)
@@ -291,7 +291,7 @@ ActionTrueFlightBowAim._get_visible_targets = function (self, aimed_target, num_
 	local aimed_target_nearby = false
 
 	if num_nearby_ai_units then
-		for i = 1, num_nearby_ai_units, 1 do
+		for i = 1, num_nearby_ai_units do
 			local unit = nearby_ai_units[i]
 
 			if AiUtils.unit_alive(unit) then
@@ -385,5 +385,3 @@ ActionTrueFlightBowAim._mark_target = function (self, unit)
 		end
 	end
 end
-
-return

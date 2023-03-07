@@ -103,7 +103,7 @@ CraftPageApplySkin.setup_recipe_requirements = function (self)
 			end
 
 			local has_required_amount = required_amount <= amount_owned
-			local presentation_amount = ((amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned)) or "*") .. "/" .. tostring(required_amount)
+			local presentation_amount = (amount_owned < UISettings.max_craft_material_presentation_amount and tostring(amount_owned) or "*") .. "/" .. tostring(required_amount)
 			local fake_item = {
 				data = table.clone(ItemMasterList[item_key]),
 				amount = presentation_amount,
@@ -359,7 +359,7 @@ CraftPageApplySkin.on_craft_completed = function (self)
 		local craft_item = item_interface:get_item_from_id(craft_item_backend_id)
 		local equipped_slots, num_slots = ItemHelper.get_equipped_slots(craft_item_backend_id, self.career_name)
 
-		for i = 1, num_slots, 1 do
+		for i = 1, num_slots do
 			self.super_parent:_set_loadout_item(craft_item, equipped_slots[i])
 		end
 
@@ -509,7 +509,5 @@ end
 CraftPageApplySkin._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
-	widget.content.button_text = (localize and Localize(text)) or text
+	widget.content.button_text = localize and Localize(text) or text
 end
-
-return

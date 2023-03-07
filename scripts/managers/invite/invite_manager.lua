@@ -4,7 +4,7 @@ local REFRESH_TIME = 1
 InviteManager.init = function (self)
 	self.lobby_data = nil
 	self._pending_lobby_data = {}
-	self.is_steam = (rawget(_G, "Steam") and rawget(_G, "Friends") and true) or false
+	self.is_steam = rawget(_G, "Steam") and rawget(_G, "Friends") and true or false
 	self._refresh_timer = REFRESH_TIME
 end
 
@@ -107,5 +107,3 @@ end
 InviteManager.get_invite_error = function (self)
 	return
 end
-
-return

@@ -215,7 +215,7 @@ StartGameWindowWeavePanelConsole._handle_input = function (self, dt, t)
 		local max_index = #title_button_widgets
 
 		if input_service:get(INPUT_ACTION_PREVIOUS) then
-			local next_index = (current_index > 1 and current_index - 1) or max_index
+			local next_index = current_index > 1 and current_index - 1 or max_index
 
 			self:_on_panel_button_selected(next_index)
 		elseif input_service:get(INPUT_ACTION_NEXT) then
@@ -494,5 +494,3 @@ StartGameWindowWeavePanelConsole._update_panel_selection_animation = function (s
 		panel_selection_animation.duration = duration
 	end
 end
-
-return

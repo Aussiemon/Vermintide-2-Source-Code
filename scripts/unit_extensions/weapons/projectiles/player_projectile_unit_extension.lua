@@ -113,7 +113,7 @@ PlayerProjectileUnitExtension.initialize_projectile = function (self, projectile
 		local difficulty_level = Managers.state.difficulty:get_difficulty()
 		local cleave_power_level = ActionUtils.scale_power_levels(self.power_level, "cleave", owner_unit, difficulty_level)
 		local max_mass_attack, max_mass_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
-		self._max_mass = (max_mass_impact < max_mass_attack and max_mass_attack) or max_mass_impact
+		self._max_mass = max_mass_impact < max_mass_attack and max_mass_attack or max_mass_impact
 	end
 
 	local timed_data = self._timed_data
@@ -148,7 +148,7 @@ PlayerProjectileUnitExtension.initialize_projectile = function (self, projectile
 		local owner_unit_1p = first_person_extension:get_first_person_unit()
 		local link_node = projectile_info.anim_blend_settings.link_node
 		self._owner_unit_1p = owner_unit_1p
-		self._anim_node_id = (Unit.has_node(owner_unit_1p, link_node) and Unit.node(owner_unit_1p, link_node)) or 0
+		self._anim_node_id = Unit.has_node(owner_unit_1p, link_node) and Unit.node(owner_unit_1p, link_node) or 0
 		self._anim_blend_enabled = true
 	end
 
@@ -309,7 +309,7 @@ PlayerProjectileUnitExtension.destroy = function (self)
 end
 
 PlayerProjectileUnitExtension.validate_position = function (self, position, min, max)
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local coord = position[i]
 
 		if coord < min or max < coord then
@@ -358,7 +358,7 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 	local pos_min = NetworkConstants.position.min
 	local pos_max = NetworkConstants.position.max
 
-	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE, 1 do
+	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE do
 		local j = (i - 1) * ProjectileImpactDataIndex.STRIDE
 		local hit_position = impacts[j + POSITION_INDEX]:unbox()
 		local hit_unit = impacts[j + UNIT_INDEX]
@@ -373,7 +373,7 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 			if hit_zone and hit_zone.name ~= "afro" then
 				local potential_hit_zone = best_hit_units[hit_unit]
 
-				if not potential_hit_zone or (potential_hit_zone and hit_zone.prio < potential_hit_zone.prio) then
+				if not potential_hit_zone or potential_hit_zone and hit_zone.prio < potential_hit_zone.prio then
 					best_hit_units[hit_unit] = hit_zone
 				end
 			elseif not hit_afro_units[hit_unit] and hit_zone and hit_zone.name == "afro" then
@@ -384,7 +384,7 @@ PlayerProjectileUnitExtension.handle_impacts = function (self, impacts, num_impa
 		end
 	end
 
-	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE, 1 do
+	for i = 1, num_impacts / ProjectileImpactDataIndex.STRIDE do
 		repeat
 			if self._stop_impacts then
 				return
@@ -555,7 +555,7 @@ PlayerProjectileUnitExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	local grenade = impact_data.grenade
 
-	if self._num_additional_penetrations == 0 and (grenade or (aoe_data and self._max_mass <= self._amount_of_mass_hit)) then
+	if self._num_additional_penetrations == 0 and (grenade or aoe_data and self._max_mass <= self._amount_of_mass_hit) then
 		self:do_aoe(aoe_data, hit_position)
 
 		if grenade then
@@ -614,7 +614,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local hit_zone_name = action.projectile_info.forced_hitzone or hit_zone.name
 	local attack_direction = hit_direction
 	local forced_penetration = false
-	local was_alive = (is_server and AiUtils.unit_alive(hit_unit)) or AiUtils.client_predicted_unit_alive(hit_unit)
+	local was_alive = is_server and AiUtils.unit_alive(hit_unit) or AiUtils.client_predicted_unit_alive(hit_unit)
 
 	if was_alive then
 		self._num_targets_hit = self._num_targets_hit + 1
@@ -649,7 +649,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	local is_dummy = Unit.get_data(hit_unit, "is_dummy")
 	local multiplier_type = DamageUtils.get_breed_damage_multiplier_type(breed, hit_zone_name, is_dummy)
 
-	if (multiplier_type == "headshot" or (multiplier_type == "weakspot" and not shield_blocked)) and not action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
+	if (multiplier_type == "headshot" or multiplier_type == "weakspot" and not shield_blocked) and not action.no_headshot_sound and AiUtils.unit_alive(hit_unit) then
 		local first_person_extension = ScriptUnit.extension(owner_unit, "first_person_system")
 
 		first_person_extension:play_hud_sound_event("Play_hud_headshot", nil, false)
@@ -658,7 +658,7 @@ PlayerProjectileUnitExtension.hit_enemy_damage = function (self, damage_profile,
 	if was_alive then
 		local action_mass_override = action.hit_mass_count
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
+		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
 
 		if action_mass_override and action_mass_override[breed.name] then
 			local mass_cost_multiplier = action_mass_override[breed.name]
@@ -1331,7 +1331,7 @@ PlayerProjectileUnitExtension._spawn_pickup_projectile = function (self, pickup_
 	end
 
 	local random_angle = math.random(-math.half_pi, math.half_pi)
-	local bounce_dir = (hit_enemy_or_player and hit_direction) or Vector3.reflect(hit_direction, hit_normal)
+	local bounce_dir = hit_enemy_or_player and hit_direction or Vector3.reflect(hit_direction, hit_normal)
 	local position = hit_position + bounce_dir * 0.2
 	local rotation = Quaternion.axis_angle(bounce_dir, random_angle)
 	local pickup_name_id = NetworkLookup.pickup_names[pickup_name]
@@ -1421,5 +1421,3 @@ end
 PlayerProjectileUnitExtension.are_impacts_stopped = function (self)
 	return self._stop_impacts
 end
-
-return

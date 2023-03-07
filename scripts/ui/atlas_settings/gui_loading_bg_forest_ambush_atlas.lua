@@ -28,5 +28,3 @@ loading_bg_forest_ambush_atlas = {
 		}
 	}
 }
-
-return

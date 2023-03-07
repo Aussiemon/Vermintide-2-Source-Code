@@ -111,13 +111,13 @@ BuffPresentationUI._sync_buffs = function (self)
 		local active_buffs = buff_extension:active_buffs()
 		local num_buffs = buff_extension._num_buffs
 
-		for i = 1, num_buffs, 1 do
+		for i = 1, num_buffs do
 			local buff = active_buffs[i]
 
 			if not buff.removed then
 				local buff_template = buff.template
 				local name = buff_template.name
-				local handle_buff = debug_buffs or (buff_template.icon ~= nil and buff_template.priority_buff and not buffs_to_add[name] and not buffs_presented[name])
+				local handle_buff = debug_buffs or buff_template.icon ~= nil and buff_template.priority_buff and not buffs_to_add[name] and not buffs_presented[name]
 
 				if handle_buff then
 					self:_add_buff(buff)
@@ -147,7 +147,7 @@ BuffPresentationUI._sync_buffs = function (self)
 		for name, _ in pairs(buffs_presented) do
 			local buff_removed = true
 
-			for i = 1, num_buffs, 1 do
+			for i = 1, num_buffs do
 				local buff = active_buffs[i]
 
 				if not buff.removed then
@@ -206,7 +206,7 @@ end
 BuffPresentationUI._next_buff = function (self, dt)
 	local added_buff_presentations = self._added_buff_presentations
 
-	if not self._active_buff_name or (self._active_buff_name and not self._animations.presentation) then
+	if not self._active_buff_name or self._active_buff_name and not self._animations.presentation then
 		if self._active_buff_name then
 			self._buffs_presented[self._active_buff_name] = true
 			self._active_buff_name = nil
@@ -229,5 +229,3 @@ BuffPresentationUI._set_buff_to_present = function (self, buff)
 	local icon = buff.icon or "icons_placeholder"
 	widget.content.texture_icon = icon
 end
-
-return

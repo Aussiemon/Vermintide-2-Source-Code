@@ -34,7 +34,7 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 		local progress = string.gsub(without_suffix, "_.*$", "")
 		start_node.level = level
 		start_node.base_level = base_level
-		start_node.run_progress = (progress ~= "" and tonumber(progress) / 1000) or 0
+		start_node.run_progress = progress ~= "" and tonumber(progress) / 1000 or 0
 
 		if string.starts_with(level, "pat") then
 			start_node.level_type = "TRAVEL"
@@ -62,7 +62,7 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 
 		if script_data.deus_force_load_curse then
 			start_node.curse = script_data.deus_force_load_curse
-			start_node.theme = (theme ~= "wastes" and theme) or "khorne"
+			start_node.theme = theme ~= "wastes" and theme or "khorne"
 		end
 
 		return graph
@@ -71,7 +71,7 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 	elseif DeusDefaultGraphs[seed] then
 		return DeusDefaultGraphs[seed]
 	else
-		local seed_number = (type(seed) == "string" and tonumber(seed)) or (type(seed) == "number" and seed) or 0
+		local seed_number = type(seed) == "string" and tonumber(seed) or type(seed) == "number" and seed or 0
 		local graphs = base_graphs[journey_name] or base_graphs.default
 		seed_number = Math.next_random(seed_number)
 		local keys = {}
@@ -91,5 +91,3 @@ function deus_generate_graph(seed, journey_name, dominant_god, populate_config, 
 		return complete_graph
 	end
 end
-
-return

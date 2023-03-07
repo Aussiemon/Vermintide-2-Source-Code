@@ -136,7 +136,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 	elseif state == "waiting_to_join_lobby" then
 		if lobby_client:is_joined() and host ~= "0" then
 			self._matchmaking_manager.debug.text = "Connecting to host"
-			local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or (lobby_client.user_name and lobby_client:user_name(host)) or "-"
+			local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or lobby_client.user_name and lobby_client:user_name(host) or "-"
 
 			mm_printf("Joined lobby, checking network hash...")
 
@@ -146,7 +146,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 	elseif state == "check_network_hash" then
 		local this_hash = lobby_client.network_hash
 		local other_hash = lobby_client:lobby_data("network_hash")
-		local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
+		local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or "-"
 
 		if other_hash ~= nil then
 			if this_hash == other_hash then
@@ -196,7 +196,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 					self._state = "verify_difficulty"
 				end
 			else
-				local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
+				local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or "-"
 				local game_reply = "failure_start_join_server_game_mode_requirements_failed"
 
 				return self:_join_game_failed(game_reply, t, false, nil, true)
@@ -213,37 +213,37 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 
 			return
+		end
 
-			local difficulty = lobby_client:lobby_data("difficulty") or "normal"
-			local difficutly_settings = DifficultySettings[difficulty]
-			local local_player = Managers.player:local_player()
-			local best_aquired_power_level = local_player:best_aquired_power_level()
-			local difficulty_approved = true
-			local requirements = ""
+		local difficulty = lobby_client:lobby_data("difficulty") or "normal"
+		local difficutly_settings = DifficultySettings[difficulty]
+		local local_player = Managers.player:local_player()
+		local best_aquired_power_level = local_player:best_aquired_power_level()
+		local difficulty_approved = true
+		local requirements = ""
 
-			if best_aquired_power_level < difficutly_settings.required_power_level then
+		if best_aquired_power_level < difficutly_settings.required_power_level then
+			difficulty_approved = false
+			requirements = string.format("%s: %s\n", Localize("required_power_level"), tostring(UIUtils.presentable_hero_power_level(difficutly_settings.required_power_level)))
+		end
+
+		if difficutly_settings.extra_requirement_name then
+			local extra_requirement_data = ExtraDifficultyRequirements[difficutly_settings.extra_requirement_name]
+
+			if not extra_requirement_data.requirement_function() then
 				difficulty_approved = false
-				requirements = string.format("%s: %s\n", Localize("required_power_level"), tostring(UIUtils.presentable_hero_power_level(difficutly_settings.required_power_level)))
+				requirements = requirements .. "* " .. Localize(extra_requirement_data.description_text) .. "\n"
 			end
+		end
 
-			if difficutly_settings.extra_requirement_name then
-				local extra_requirement_data = ExtraDifficultyRequirements[difficutly_settings.extra_requirement_name]
+		if not difficulty_approved then
+			local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or "-"
+			local game_reply = "failure_start_join_server_difficulty_requirements_failed"
 
-				if not extra_requirement_data.requirement_function() then
-					difficulty_approved = false
-					requirements = requirements .. "* " .. Localize(extra_requirement_data.description_text) .. "\n"
-				end
-			end
-
-			if not difficulty_approved then
-				local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
-				local game_reply = "failure_start_join_server_difficulty_requirements_failed"
-
-				return self:_join_game_failed(game_reply, t, false, requirements, true)
-			else
-				self._state = "waiting_to_connect"
-				self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
-			end
+			return self:_join_game_failed(game_reply, t, false, requirements, true)
+		else
+			self._state = "waiting_to_connect"
+			self._connect_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 		end
 	elseif state == "waiting_to_connect" then
 		if self._connected_to_server then
@@ -264,7 +264,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 			self._join_timeout = t + MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME
 			self._state = "asking_to_join"
 		elseif self._connect_timeout < t then
-			local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
+			local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or "-"
 
 			mm_printf_force("Failed to connect to host due to timeout. lobby_id=%s, host_id:%s", lobby_id, host_name)
 
@@ -273,7 +273,7 @@ MatchmakingStateRequestJoinGame.update = function (self, dt, t)
 	elseif state == "asking_to_join" then
 		local join_time = MatchmakingSettings.REQUEST_JOIN_LOBBY_REPLY_TIME - (self._join_timeout - t)
 		self._matchmaking_manager.debug.text = string.format("Requesting to join game %s [%.0f]", self.lobby_client:id(), join_time)
-		local host_name = (LobbyInternal.user_name and LobbyInternal.user_name(host)) or "-"
+		local host_name = LobbyInternal.user_name and LobbyInternal.user_name(host) or "-"
 		local game_reply = self._game_reply
 
 		if self._join_timeout < t then
@@ -376,5 +376,3 @@ end
 MatchmakingStateRequestJoinGame.rpc_notify_connected = function (self, channel_id)
 	self._connected_to_server = true
 end
-
-return

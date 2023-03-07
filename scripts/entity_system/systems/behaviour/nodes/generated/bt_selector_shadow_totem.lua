@@ -41,5 +41,3 @@ end
 BTSelector_shadow_totem.add_child = function (self, node)
 	self._children[#self._children + 1] = node
 end
-
-return

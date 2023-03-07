@@ -3232,5 +3232,3 @@ ConflictDirectors.deus_chaos_beastmen = {
 		"beastmen"
 	}
 }
-
-return

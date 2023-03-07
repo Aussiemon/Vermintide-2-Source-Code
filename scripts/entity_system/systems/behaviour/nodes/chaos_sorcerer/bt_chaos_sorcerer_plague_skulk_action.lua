@@ -179,7 +179,7 @@ BTChaosSorcererPlagueSkulkAction.run = function (self, unit, blackboard, t, dt)
 			blackboard.vanish_countdown = t + action.vanish_countdown
 			plague_wave_data.plague_wave_timer = t + skulk_time
 			blackboard.ready_to_summon = true
-			blackboard.num_plague_waves = (blackboard.num_plague_waves and blackboard.num_plague_waves + 1) or 1
+			blackboard.num_plague_waves = blackboard.num_plague_waves and blackboard.num_plague_waves + 1 or 1
 
 			if blackboard.num_plague_waves >= 4 then
 				blackboard.num_plague_waves = 0
@@ -330,7 +330,7 @@ BTChaosSorcererPlagueSkulkAction.get_plague_wave_cast_position = function (self,
 
 	if target_start_pos then
 		local rand_deg = math.random(0, 360)
-		local radians = (rand_deg * pi) / 180
+		local radians = rand_deg * pi / 180
 		local direction = Vector3(math.sin(radians), math.cos(radians), 0)
 		local projected_end_pos = target_position + direction * max_dist
 
@@ -399,13 +399,13 @@ BTChaosSorcererPlagueSkulkAction.get_skulk_target = function (self, unit, blackb
 
 	local cross_dir = Vector3(0, 0, direction)
 	local mod = 0.1
-	local alpha = math.pi * math.clamp((mod * 20) / dist, 0.01, 0.15)
+	local alpha = math.pi * math.clamp(mod * 20 / dist, 0.01, 0.15)
 
 	if teleporting then
 		alpha = alpha * 1.5
 	end
 
-	for i = 1, TRIES, 1 do
+	for i = 1, TRIES do
 		local rot_vec = to_target - to_target_dir * 0.5
 		local pos = target_position + Quaternion.rotate(Quaternion(cross_dir, alpha * i), rot_vec)
 		pos = ConflictUtils.find_center_tri(nav_world, pos)
@@ -417,5 +417,3 @@ BTChaosSorcererPlagueSkulkAction.get_skulk_target = function (self, unit, blackb
 
 	skulk_data.direction = skulk_data.direction * -1
 end
-
-return

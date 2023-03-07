@@ -108,7 +108,7 @@ StartGameWindowBackgroundConsole._setup_object_sets = function (self)
 	local object_set_names = LevelResource.object_set_names(level_name)
 	self._object_sets = {}
 
-	for i = 1, #object_set_names, 1 do
+	for i = 1, #object_set_names do
 		local object_set_name = object_set_names[i]
 		self._object_sets[object_set_name] = LevelResource.unit_indices_in_object_set(level_name, object_set_name)
 	end
@@ -250,5 +250,3 @@ StartGameWindowBackgroundConsole._update_loading_overlay_fadeout_animation = fun
 		self._show_loading_overlay = false
 	end
 end
-
-return

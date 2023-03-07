@@ -8,9 +8,9 @@ local function player_stuck_cb()
 end
 
 local tobii_contest_url = "https://vermintide2beta.com/?utm_medium=referral&utm_campaign=vermintide2beta&utm_source=ingame#challenge"
-local leave_party_button_text = (IS_XB1 and "leave_party_menu_button_name_xb1") or "leave_party_menu_button_name"
-local disband_party_button_text = (IS_XB1 and "disband_party_menu_button_name_xb1") or "disband_party_menu_button_name"
-local quit_menu_button_text = (IS_XB1 and "quit_menu_button_name_xb1") or "quit_menu_button_name_ps4"
+local leave_party_button_text = IS_XB1 and "leave_party_menu_button_name_xb1" or "leave_party_menu_button_name"
+local disband_party_button_text = IS_XB1 and "disband_party_menu_button_name_xb1" or "disband_party_menu_button_name"
+local quit_menu_button_text = IS_XB1 and "quit_menu_button_name_xb1" or "quit_menu_button_name_ps4"
 local menu_layouts = {}
 
 if IS_PS4 then

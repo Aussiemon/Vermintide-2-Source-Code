@@ -300,13 +300,13 @@ settings.buff_function_templates = {
 
 			local num_wanted_buffs = intoxication_level - #buff.intoxication_stack_ids
 
-			for i = 1, num_wanted_buffs, 1 do
+			for i = 1, num_wanted_buffs do
 				local buff_id = buff_extension:add_buff("intoxication_effect")
 				buff.intoxication_stack_ids[#buff.intoxication_stack_ids + 1] = buff_id
 			end
 
 			if intoxication_level >= 3 then
-				for i = 1, #buff.intoxication_vfx_stack_ids, 1 do
+				for i = 1, #buff.intoxication_vfx_stack_ids do
 					local buff_id = buff.intoxication_vfx_stack_ids[i]
 
 					buff_extension:remove_buff(buff_id)
@@ -317,7 +317,7 @@ settings.buff_function_templates = {
 				local buff_id = buff_extension:add_buff("intoxication_effect_max_stacks_vfx")
 				buff.intoxication_vfx_max_stack_ids[#buff.intoxication_vfx_max_stack_ids + 1] = buff_id
 			else
-				for i = 1, #buff.intoxication_vfx_max_stack_ids, 1 do
+				for i = 1, #buff.intoxication_vfx_max_stack_ids do
 					local buff_id = buff.intoxication_vfx_max_stack_ids[i]
 
 					buff_extension:remove_buff(buff_id)
@@ -331,7 +331,7 @@ settings.buff_function_templates = {
 
 			local num_buffs_to_remove = #buff.hungover_stack_ids
 
-			for i = 1, num_buffs_to_remove, 1 do
+			for i = 1, num_buffs_to_remove do
 				local buff_id = buff.hungover_stack_ids[i]
 
 				buff_extension:remove_buff(buff_id)
@@ -361,21 +361,21 @@ settings.buff_function_templates = {
 			if adding_buff then
 				local num_buffs_to_add = math.abs(intoxication_level)
 
-				for i = #buff.hungover_stack_ids + 1, num_buffs_to_add, 1 do
+				for i = #buff.hungover_stack_ids + 1, num_buffs_to_add do
 					local buff_id = buff_extension:add_buff("hungover_effect")
 					buff.hungover_stack_ids[i] = buff_id
 				end
 			else
 				local num_buffs_to_remove = num_hungover_stacks - math.abs(intoxication_level)
 
-				for i = 1, num_buffs_to_remove, 1 do
+				for i = 1, num_buffs_to_remove do
 					local buff_id = table.remove(buff.hungover_stack_ids, 1)
 
 					buff_extension:remove_buff(buff_id)
 				end
 			end
 
-			for i = 1, #buff.intoxication_stack_ids, 1 do
+			for i = 1, #buff.intoxication_stack_ids do
 				local buff_id = buff.intoxication_stack_ids[i]
 
 				buff_extension:remove_buff(buff_id)
@@ -383,7 +383,7 @@ settings.buff_function_templates = {
 
 			table.clear(buff.intoxication_stack_ids)
 
-			for i = 1, #buff.intoxication_vfx_max_stack_ids, 1 do
+			for i = 1, #buff.intoxication_vfx_max_stack_ids do
 				local buff_id = buff.intoxication_vfx_max_stack_ids[i]
 
 				buff_extension:remove_buff(buff_id)
@@ -391,7 +391,7 @@ settings.buff_function_templates = {
 
 			table.clear(buff.intoxication_vfx_max_stack_ids)
 
-			for i = 1, #buff.intoxication_vfx_stack_ids, 1 do
+			for i = 1, #buff.intoxication_vfx_stack_ids do
 				local buff_id = buff.intoxication_vfx_stack_ids[i]
 
 				buff_extension:remove_buff(buff_id)
@@ -457,7 +457,7 @@ settings.buff_function_templates = {
 					local persistance = shake_settings.persistance
 					local number_of_octaves = shake_settings.octaves
 
-					for i = 0, number_of_octaves, 1 do
+					for i = 0, number_of_octaves do
 						local frequency = 2^i
 						local amplitude = persistance^i
 						total = total + buff.shake_functions.interpolated_noise_func(buff, x * frequency) * amplitude
@@ -754,5 +754,3 @@ settings.add_sub_buffs_to_core_buffs = {
 		}
 	}
 }
-
-return

@@ -146,13 +146,7 @@ DeusMapDecisionView._start = function (self)
 
 		local start_dialogue_event = nil
 		local next_node_types = get_next_node_types(self._deus_run_controller)
-
-		if table.contains(next_node_types, "shop") then
-			start_dialogue_event = "deus_before_shrine_tutorial"
-		else
-			start_dialogue_event = "deus_map_tutorial"
-		end
-
+		start_dialogue_event = table.contains(next_node_types, "shop") and "deus_before_shrine_tutorial" or "deus_map_tutorial"
 		local vo_unit = LevelHelper:find_dialogue_unit(self._world, "ferry_lady_01")
 		local dialogue_input = ScriptUnit.extension_input(vo_unit, "dialogue_system")
 		local event_data = FrameTable.alloc_table()
@@ -187,7 +181,7 @@ DeusMapDecisionView._start = function (self)
 
 	self._scene:traversed_node(prev_node)
 
-	for i = 1, #traversed_nodes, 1 do
+	for i = 1, #traversed_nodes do
 		local node = traversed_nodes[i]
 
 		if node ~= "start" then
@@ -443,7 +437,7 @@ DeusMapDecisionView._enable_hover = function (self, node_key)
 	local own_peer_id = self._deus_run_controller:get_own_peer_id()
 	local profile_index, career_index = self._deus_run_controller:get_player_profile(own_peer_id, REAL_PLAYER_LOCAL_ID)
 
-	self._ui:enable_hover_text(self._scene:get_screen_pos_of_node(node_key), node.level_type, (reveal_base_level and node.base_level) or nil, (reveal_theme and node.theme) or nil, (reveal_minor_modifier and node.minor_modifier_group) or nil, (reveal_conflict_settings and node.conflict_settings) or nil, (reveal_terror_event_power_up and node.terror_event_power_up) or nil, (reveal_terror_event_power_up and node.grant_random_power_up_count) or nil, (reveal_terror_event_power_up and node.terror_event_power_up_rarity) or nil, self._shared_state:get_own(self._shared_state:get_key("vote")) == node_key, table.contains(current_node.next, node_key), profile_index, career_index)
+	self._ui:enable_hover_text(self._scene:get_screen_pos_of_node(node_key), node.level_type, reveal_base_level and node.base_level or nil, reveal_theme and node.theme or nil, reveal_minor_modifier and node.minor_modifier_group or nil, reveal_conflict_settings and node.conflict_settings or nil, reveal_terror_event_power_up and node.terror_event_power_up or nil, reveal_terror_event_power_up and node.grant_random_power_up_count or nil, reveal_terror_event_power_up and node.terror_event_power_up_rarity or nil, self._shared_state:get_own(self._shared_state:get_key("vote")) == node_key, table.contains(current_node.next, node_key), profile_index, career_index)
 	self._scene:hover_node(node_key)
 
 	self._hovered_node = node_key
@@ -617,7 +611,7 @@ DeusMapDecisionView._update_player_state = function (self)
 			data.ammo_percentage = self._deus_run_controller:get_player_ranged_ammo(peer_id, REAL_PLAYER_LOCAL_ID)
 			data.soft_currency = self._deus_run_controller:get_player_soft_currency(peer_id) or 0
 			local vote = self._shared_state:get_peer(peer_id, self._shared_state:get_key("vote")) or ""
-			data.vote = (vote ~= "" and deus_graph_data[vote].base_level) or nil
+			data.vote = vote ~= "" and deus_graph_data[vote].base_level or nil
 		else
 			data.profile_index = 0
 			data.career_index = 0
@@ -653,7 +647,7 @@ DeusMapDecisionView._update_player_state = function (self)
 
 		if profile_index ~= 0 then
 			local vote = self._shared_state:get_peer(peer_id, self._shared_state:get_key("vote"))
-			local node_key = (final_node_selected and final_node_selected ~= "" and final_node_selected) or (vote and vote ~= "" and vote) or current_node_key
+			local node_key = final_node_selected and final_node_selected ~= "" and final_node_selected or vote and vote ~= "" and vote or current_node_key
 
 			self._scene:place_token(profile_index, index, node_key)
 
@@ -688,7 +682,7 @@ DeusMapDecisionView._handle_voting_end = function (self)
 
 		if vote ~= "" then
 			local vote_count = votes[vote]
-			vote_count = (vote_count and vote_count + 1) or 1
+			vote_count = vote_count and vote_count + 1 or 1
 			votes[vote] = vote_count
 
 			if max_vote_count < vote_count then
@@ -829,5 +823,3 @@ end
 DeusMapDecisionView.on_ingame_menu_closed = function (self)
 	Managers.input:enable_gamepad_cursor()
 end
-
-return

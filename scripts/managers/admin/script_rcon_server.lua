@@ -330,7 +330,7 @@ ScriptRconServer._command_status = function (self)
 	local status = ""
 
 	if backend ~= nil then
-		sign_in_state = (backend:signed_in() and tr("rcon_backend_signed_in")) or tr("rcon_backend_not_signed_in")
+		sign_in_state = backend:signed_in() and tr("rcon_backend_signed_in") or tr("rcon_backend_not_signed_in")
 		status = tr("rcon_backend_state") .. ": " .. tr("rcon_backend_state_ok") .. "\n"
 
 		if backend:has_error() then
@@ -361,5 +361,3 @@ ScriptRconServer._command_unban = function (self, id_or_name)
 
 	return string.format("%s\n", tr("rcon_server_command_response_ok"))
 end
-
-return

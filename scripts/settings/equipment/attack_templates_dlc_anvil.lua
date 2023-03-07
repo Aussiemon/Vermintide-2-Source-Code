@@ -14,5 +14,3 @@ AttackTemplates.projectile_axe = {
 	ranged_stagger = true,
 	stagger_value = 2
 }
-
-return

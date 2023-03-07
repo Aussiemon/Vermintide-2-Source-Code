@@ -38,7 +38,11 @@ StoreDisplayItemGizmoExtension.spawn_prop = function (self, item_master_list_id)
 
 	if item_data then
 		local unit_name = item_data.unit
-		unit_name = unit_name or (unit_name and unit_name .. "_3p")
+
+		if not unit_name then
+			unit_name = item_data.left_hand_unit or item_data.right_hand_unit
+			unit_name = unit_name and unit_name .. "_3p"
+		end
 
 		print("[StoreDisplayItemGizmoExtension] spawn prop", item_master_list_id, unit_name)
 
@@ -62,5 +66,3 @@ StoreDisplayItemGizmoExtension.destroy = function (self)
 		Managers.package:unload(self._display_unit_name, "StoreDisplayItemGizmoExtension")
 	end
 end
-
-return

@@ -10,5 +10,3 @@ DialogueLookup[DialogueLookup_n + 3] = "pdr_morris_introspection"
 DialogueLookup[DialogueLookup_n + 4] = "pwe_morris_introspection"
 DialogueLookup[DialogueLookup_n + 5] = "pes_morris_introspection"
 DialogueLookup_n = DialogueLookup_n + 5
-
-return

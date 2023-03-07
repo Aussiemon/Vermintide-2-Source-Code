@@ -568,8 +568,8 @@ local function create_window_button(scenegraph_id, size, button_text, font_size,
 			use_bottom_edge = use_bottom_edge,
 			button_hotspot = {},
 			button_text = button_text or "n/a",
-			hover_glow = (optional_color_name and "button_state_hover_" .. optional_color_name) or "button_state_hover",
-			glow = (optional_color_name and "button_state_normal_" .. optional_color_name) or "button_state_normal",
+			hover_glow = optional_color_name and "button_state_hover_" .. optional_color_name or "button_state_hover",
+			glow = optional_color_name and "button_state_normal_" .. optional_color_name or "button_state_normal",
 			button_background = {
 				uvs = {
 					{
@@ -854,7 +854,7 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 	}
 	local start_width_offset = 0
 
-	for k = 1, amount, 1 do
+	for k = 1, amount do
 		local name_suffix = "_" .. tostring(k)
 		local row_start_index = k - 1
 		total_length = total_length + button_size[1] + slot_width_spacing
@@ -1000,7 +1000,7 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 			},
 			offset = {
 				offset[1],
-				(offset[2] + button_size[2]) - 3,
+				offset[2] + button_size[2] - 3,
 				1
 			}
 		}
@@ -1016,7 +1016,7 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
+				offset[2] + button_size[2] / 2 - icon_size[2] / 2,
 				2
 			}
 		}
@@ -1032,7 +1032,7 @@ local function talent_row(scenegraph_id, size, amount, optional_color_name)
 			color = Colors.get_color_table_with_alpha("white", 255),
 			offset = {
 				offset[1] + 10,
-				(offset[2] + button_size[2] / 2) - icon_size[2] / 2,
+				offset[2] + button_size[2] / 2 - icon_size[2] / 2,
 				3
 			}
 		}

@@ -98,5 +98,3 @@ start_screen_atlas = {
 		}
 	}
 }
-
-return

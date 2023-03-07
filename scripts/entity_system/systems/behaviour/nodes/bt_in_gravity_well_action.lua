@@ -23,7 +23,7 @@ BTInGravityWellAction.enter = function (self, unit, blackboard, t)
 	local overlap_rotation = Quaternion.look(Vector3.down(), Vector3.forward())
 	local world = blackboard.world
 	local physics_world = World.get_data(world, "physics_world")
-	local shape = (overlap_half_height - overlap_radius > 0 and "capsule") or "sphere"
+	local shape = overlap_half_height - overlap_radius > 0 and "capsule" or "sphere"
 	local _, actor_count = PhysicsWorld.immediate_overlap(physics_world, "position", overlap_pos, "rotation", overlap_rotation, "size", overlap_size, "shape", shape, "types", "both", "collision_filter", "filter_environment_overlap", "use_global_table")
 
 	if actor_count == 0 then
@@ -112,7 +112,5 @@ BTInGravityWellAction.run = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	return ((broke_free or blackboard.gravity_well_time < t) and "done") or "running"
+	return (broke_free or blackboard.gravity_well_time < t) and "done" or "running"
 end
-
-return

@@ -106,7 +106,7 @@ GameModeDeus.evaluate_end_conditions = function (self, round_started, dt, t, mut
 	local human_players_present = false
 	local occupied_slots = party.occupied_slots
 
-	for i = 1, #occupied_slots, 1 do
+	for i = 1, #occupied_slots do
 		human_players_present = human_players_present or not occupied_slots[i].is_bot
 	end
 
@@ -230,7 +230,7 @@ GameModeDeus.get_end_screen_config = function (self, game_won, game_lost, player
 		local stats_id = local_player:stats_id()
 		local previous_completed_difficulty_index = LevelUnlockUtils.completed_journey_difficulty_index(statistics_db, stats_id, journey_name)
 
-		return (game_won and "deus_victory") or "defeat", {
+		return game_won and "deus_victory" or "defeat", {
 			journey_name = journey_name,
 			profile_index = profile_index,
 			previous_completed_difficulty_index = previous_completed_difficulty_index
@@ -240,7 +240,7 @@ GameModeDeus.get_end_screen_config = function (self, game_won, game_lost, player
 		local granted_power_ups = self._deus_run_controller:try_grant_end_of_level_deus_power_ups()
 
 		if granted_power_ups then
-			for i = 1, #granted_power_ups, 1 do
+			for i = 1, #granted_power_ups do
 				local granted_power_up = granted_power_ups[i]
 				local reward = {
 					type = "deus_power_up_end_of_level",
@@ -343,7 +343,7 @@ GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 	local units = Level.units(current_level)
 	local num_units = #units
 
-	for j = 1, num_units, 1 do
+	for j = 1, num_units do
 		local level_unit = units[j]
 		local is_reflection_probe = Unit.is_a(level_unit, "core/stingray_renderer/helper_units/reflection_probe/reflection_probe")
 
@@ -351,7 +351,7 @@ GameModeDeus.local_player_game_starts = function (self, player, loading_context)
 			local num_lights = Unit.num_lights(level_unit)
 
 			if num_lights then
-				for i = 1, num_lights, 1 do
+				for i = 1, num_lights do
 					local light = Unit.light(level_unit, i - 1)
 
 					Light.set_color(light, color)
@@ -441,7 +441,7 @@ GameModeDeus._get_first_available_bot_profile = function (self)
 	local profile_synchronizer = self._profile_synchronizer
 	local available_profile_by_priority = {}
 
-	for i = 1, #available_profiles, 1 do
+	for i = 1, #available_profiles do
 		local profile_name = available_profiles[i]
 		local profile_index = FindProfileIndex(profile_name)
 
@@ -485,7 +485,7 @@ GameModeDeus._setup_bot_spawn_priority_lookup = function (self)
 		if num_saved_priority > 0 then
 			self._bot_profile_id_to_priority_id = {}
 
-			for i = 1, num_saved_priority, 1 do
+			for i = 1, num_saved_priority do
 				local profile_id = saved_priority[i]
 				self._bot_profile_id_to_priority_id[profile_id] = i
 			end
@@ -533,13 +533,13 @@ GameModeDeus._handle_bots = function (self, t, dt)
 		local open_slots = num_slots - num_used_slots
 		local num_bots_to_add = math.min(delta, open_slots)
 
-		for i = 1, num_bots_to_add, 1 do
+		for i = 1, num_bots_to_add do
 			self:_add_bot(bot_players)
 		end
 	elseif delta < 0 then
 		local num_bots_to_remove = math.abs(delta)
 
-		for i = 1, num_bots_to_remove, 1 do
+		for i = 1, num_bots_to_remove do
 			local update_safe = true
 
 			self:_remove_bot(bot_players, #bot_players, update_safe)
@@ -589,7 +589,7 @@ GameModeDeus._remove_bot_by_profile = function (self, bot_players, profile_index
 	local bot_index = nil
 	local num_current_bots = #bot_players
 
-	for i = 1, num_current_bots, 1 do
+	for i = 1, num_current_bots do
 		local bot_player = bot_players[i]
 		local bot_profile_index = bot_player:profile_index()
 
@@ -766,5 +766,3 @@ GameModeDeus._update_morris_music_intensity = function (self)
 
 	self._sent_intensity = clamped_intensity
 end
-
-return

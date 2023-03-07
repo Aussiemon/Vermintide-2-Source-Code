@@ -30,14 +30,14 @@ return {
 			local conflict_director = Managers.state.conflict
 			local main_path_info = conflict_director.main_path_info
 			local spawn_ahead = math.random() > 0.5
-			local player_unit = (spawn_ahead and main_path_info.ahead_unit) or main_path_info.behind_unit
+			local player_unit = spawn_ahead and main_path_info.ahead_unit or main_path_info.behind_unit
 
 			if player_unit then
 				local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 				local offset_spawn_distance = data.offset_spawn_distance
 				local player_info = conflict_director.main_path_player_info[player_unit]
 				local player_travel_dist = player_info.travel_dist
-				local dist = math.max(player_travel_dist + offset_spawn_distance * ((spawn_ahead and 1) or -1), 0)
+				local dist = math.max(player_travel_dist + offset_spawn_distance * (spawn_ahead and 1 or -1), 0)
 				local wanted_position = MainPathUtils.point_on_mainpath(nil, dist)
 				local storm_spawn_position = wanted_position and LocomotionUtils.pos_on_mesh(nav_world, wanted_position, 1, 1)
 				local backup_wanted_position = POSITION_LOOKUP[player_unit]
@@ -60,7 +60,7 @@ return {
 				end
 
 				if storm_spawn_position and backup_storm_spawn_position then
-					local directed_wander_distance = player_travel_dist + offset_spawn_distance * 2 * ((spawn_ahead and -1) or 1)
+					local directed_wander_distance = player_travel_dist + offset_spawn_distance * 2 * (spawn_ahead and -1 or 1)
 					local directed_wander_position = MainPathUtils.point_on_mainpath(nil, directed_wander_distance)
 					data.unchecked_positions.storm_spawn_position = Vector3Box(storm_spawn_position)
 					data.unchecked_positions.directed_wander_position = Vector3Box(directed_wander_position)

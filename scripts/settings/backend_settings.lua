@@ -128,5 +128,3 @@ BackendSettings.morris_dev_ps4_playfab = {
 	title_id = "D54E0",
 	environment = rawget(_G, "Backend") and Backend.ENV_STAGE
 }
-
-return

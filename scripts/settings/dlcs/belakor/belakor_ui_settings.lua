@@ -25,5 +25,3 @@ settings.ui_texture_settings = {
 settings.breed_textures = {
 	shadow_lieutenant = "unit_frame_portrait_enemy_shadowchampion"
 }
-
-return

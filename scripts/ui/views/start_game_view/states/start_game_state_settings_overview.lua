@@ -117,7 +117,7 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 	local highest_consecutive_unlocked_weave = 1
 	local highest_consecutive_unlocked_weave_found = false
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local template = weave_templates[i]
 		local weave_completed = LevelUnlockUtils.weave_unlocked(statistics_db, stats_id, template.name, ignore_dlc_check)
 
@@ -134,7 +134,7 @@ StartGameStateSettingsOverview._calculate_current_weave = function (self)
 		end
 	end
 
-	local weave_template = (highest_consecutive_unlocked_weave and weave_templates[highest_consecutive_unlocked_weave]) or weave_templates[1]
+	local weave_template = highest_consecutive_unlocked_weave and weave_templates[highest_consecutive_unlocked_weave] or weave_templates[1]
 	local weave_name = weave_template.name
 	self._next_weave = weave_name
 
@@ -371,7 +371,7 @@ StartGameStateSettingsOverview._initial_windows_setups = function (self, params)
 end
 
 StartGameStateSettingsOverview.window_input_service = function (self)
-	return (self._show_difficulty_option and FAKE_INPUT_SERVICE) or self:input_service()
+	return self._show_difficulty_option and FAKE_INPUT_SERVICE or self:input_service()
 end
 
 StartGameStateSettingsOverview._close_window_at_index = function (self, window_index)
@@ -553,19 +553,20 @@ StartGameStateSettingsOverview.set_layout = function (self, index)
 
 	local close_on_exit = layout_setting.close_on_exit
 	local reset_on_exit = layout_setting.reset_on_exit
-	slot8 = self._widgets_by_name.exit_button.content
+	local windows = self._widgets_by_name.exit_button.content
 
 	if reset_on_exit then
+		-- Nothing
 	end
 
-	slot8.visible = close_on_exit
+	windows.visible = close_on_exit
 	self._widgets_by_name.back_button.content.visible = reset_on_exit or not close_on_exit
 	self._close_on_exit = close_on_exit
 	self._reset_on_exit = reset_on_exit
 	local windows = layout_setting.windows
 	local max_active_windows = self._max_active_windows
 
-	for i = 1, max_active_windows, 1 do
+	for i = 1, max_active_windows do
 		local window_changed = false
 
 		for window_name, window_position_index in pairs(windows) do
@@ -651,7 +652,7 @@ end
 StartGameStateSettingsOverview.get_layout_setting_by_name = function (self, name)
 	local window_layouts = self._window_layouts
 
-	for i = 1, #window_layouts, 1 do
+	for i = 1, #window_layouts do
 		local layout_setting = window_layouts[i]
 		local layout_name = layout_setting.name
 
@@ -664,7 +665,7 @@ end
 StartGameStateSettingsOverview._get_first_game_mode_option_layout = function (self)
 	local window_layouts = self._window_layouts
 
-	for i = 1, #window_layouts, 1 do
+	for i = 1, #window_layouts do
 		local layout_setting = window_layouts[i]
 
 		if self:can_add_layout(layout_setting) then
@@ -1070,7 +1071,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local backend_deus = Managers.backend:get_interface("deus")
 		local journey_cycle = backend_deus:get_journey_cycle()
 		local journey_name = self:get_selected_level_id()
-		journey_name = (DeusJourneySettings[journey_name] and journey_name) or AvailableJourneyOrder[1]
+		journey_name = DeusJourneySettings[journey_name] and journey_name or AvailableJourneyOrder[1]
 		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
 		local params = {
 			matchmaking_type = "custom",
@@ -1090,7 +1091,7 @@ StartGameStateSettingsOverview.play = function (self, t, vote_type, force_close_
 		local backend_deus = Managers.backend:get_interface("deus")
 		local journey_cycle = backend_deus:get_journey_cycle()
 		local journey_name = self:get_selected_level_id()
-		journey_name = (DeusJourneySettings[journey_name] and journey_name) or AvailableJourneyOrder[1]
+		journey_name = DeusJourneySettings[journey_name] and journey_name or AvailableJourneyOrder[1]
 		local dominant_god = journey_cycle.journey_data[journey_name].dominant_god
 		local params = {
 			private_game = true,
@@ -1267,7 +1268,7 @@ StartGameStateSettingsOverview.get_selected_level_id = function (self)
 		end
 	end
 
-	return (dlc_approved and extra_requirements_approved and self._specific_level_id) or nil
+	return dlc_approved and extra_requirements_approved and self._specific_level_id or nil
 end
 
 StartGameStateSettingsOverview.set_selected_level_id = function (self, level_id)
@@ -1425,9 +1426,9 @@ StartGameStateSettingsOverview.get_difficulty_option = function (self, ignore_ap
 end
 
 StartGameStateSettingsOverview.set_dedicated_or_player_hosted_search = function (self, use_dedicated_win_servers, use_dedicated_aws_servers, use_player_hosted)
-	self._use_dedicated_win_servers = (use_dedicated_win_servers == nil and true) or use_dedicated_win_servers
-	self._use_dedicated_aws_servers = (use_dedicated_aws_servers == nil and true) or use_dedicated_aws_servers
-	self._use_player_hosted = (use_player_hosted == nil and true) or use_player_hosted
+	self._use_dedicated_win_servers = use_dedicated_win_servers == nil and true or use_dedicated_win_servers
+	self._use_dedicated_aws_servers = use_dedicated_aws_servers == nil and true or use_dedicated_aws_servers
+	self._use_player_hosted = use_player_hosted == nil and true or use_player_hosted
 
 	if self._layout_save_settings then
 		self._layout_save_settings.use_dedicated_win_servers = use_dedicated_win_servers
@@ -1457,8 +1458,8 @@ StartGameStateSettingsOverview.set_fullscreen_effect_enable_state = function (se
 	local shading_env = World.get_data(world, "shading_environment")
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and 0.75) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and 0.75 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -1499,7 +1500,7 @@ StartGameStateSettingsOverview.setup_backend_image_material = function (self, gu
 		return material_name
 	end
 
-	local template_material_name = (masked and "template_menu_diffuse_masked") or "template_menu_diffuse"
+	local template_material_name = masked and "template_menu_diffuse_masked" or "template_menu_diffuse"
 
 	self:_create_material_instance(gui, material_name, template_material_name, reference_name)
 
@@ -1613,5 +1614,3 @@ StartGameStateSettingsOverview._reset_cloned_materials = function (self)
 		self:reset_cloned_material(reference_name)
 	end
 end
-
-return

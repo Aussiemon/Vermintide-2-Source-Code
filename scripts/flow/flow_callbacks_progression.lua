@@ -572,5 +572,3 @@ function flow_query_local_player_get_persistant_stat(params)
 
 	return flow_return_table
 end
-
-return

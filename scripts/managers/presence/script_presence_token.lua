@@ -32,5 +32,3 @@ end
 ScriptPresenceToken.close = function (self)
 	Presence.close(self._token)
 end
-
-return

@@ -6,5 +6,3 @@ settings.backend_interfaces = {
 		playfab_class = "BackendInterfaceWeavesPlayFab"
 	}
 }
-
-return

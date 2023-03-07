@@ -38,5 +38,3 @@ DialogueLookup[DialogueLookup_n + 17] = "nik_morris_idle_01"
 DialogueLookup[DialogueLookup_n + 18] = "pwh_morris_saltzpyre_monologue"
 DialogueLookup[DialogueLookup_n + 19] = "nik_morris_idle_02"
 DialogueLookup_n = DialogueLookup_n + 19
-
-return

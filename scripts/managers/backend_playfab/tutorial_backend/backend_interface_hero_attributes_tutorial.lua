@@ -54,5 +54,3 @@ end
 BackendInterfaceHeroAttributesTutorial.save = function (self, save_hero_attributes_cb)
 	return false
 end
-
-return

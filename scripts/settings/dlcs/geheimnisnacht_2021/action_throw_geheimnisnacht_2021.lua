@@ -25,5 +25,3 @@ ActionThrowGeheimnisnacht2021.finish = function (self, reason)
 
 	self.ammo_extension:use_ammo(ammo_usage)
 end
-
-return

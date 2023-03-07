@@ -84,5 +84,3 @@ chat_atlas = {
 		}
 	}
 }
-
-return

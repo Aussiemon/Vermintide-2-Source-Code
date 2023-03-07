@@ -87,12 +87,12 @@ BTFindRangedPositionAction._find_ranged_position = function (self, unit, blackbo
 		local random_deg_range_1 = math.max(-90 - num_find_position_attempts * 10, -180)
 		local random_deg_range_2 = math.min(90 + num_find_position_attempts * 10, 180)
 
-		for i = 1, max_tries, 1 do
+		for i = 1, max_tries do
 			local pi = math.pi
 			local max_dist = math.random(action.max_dist[1], action.max_dist[2])
 			local min_dist = action.min_dist
 			local rand_deg = math.random(random_deg_range_1, random_deg_range_2)
-			local radians = (rand_deg * pi) / 180
+			local radians = rand_deg * pi / 180
 			local randomized_direction = Vector3(math.sin(radians), math.cos(radians), 0)
 			local randomized_rotation = Quaternion.look(randomized_direction)
 			local wanted_rotation = Quaternion.multiply(target_to_self_rotation, randomized_rotation)
@@ -109,9 +109,6 @@ BTFindRangedPositionAction._find_ranged_position = function (self, unit, blackbo
 					if is_within_bounds then
 						local wanted_pos = target_position + wanted_direction * math.random(min_dist, distance)
 						wanted_position = LocomotionUtils.pos_on_mesh(nav_world, wanted_pos, 1, 1)
-
-						if LocomotionUtils.pos_on_mesh(nav_world, wanted_pos, 1, 1) then
-						end
 					end
 				end
 			end
@@ -136,5 +133,3 @@ BTFindRangedPositionAction._find_ranged_position = function (self, unit, blackbo
 
 	return wanted_position
 end
-
-return

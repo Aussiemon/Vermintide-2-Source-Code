@@ -1269,5 +1269,3 @@ ItemMasterList.wh_priest_career_weapon_preview = {
 UpdateItemMasterList({
 	"bountyhunter_hat_1010"
 }, "wh_priest")
-
-return

@@ -201,5 +201,3 @@ ControllerSettingsView.update = function (self, dt)
 		self.ingame_ui:handle_transition("ingame_menu", "OptionsMenu")
 	end
 end
-
-return

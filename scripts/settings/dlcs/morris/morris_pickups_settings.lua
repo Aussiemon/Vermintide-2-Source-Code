@@ -355,5 +355,3 @@ for deus_potion_name, _ in pairs(settings.pickups.deus_potions) do
 	deus_loot_rat_pickups[deus_potion_name] = loot_rat_deus_potion_amount
 	bardin_scavenger_custom_potions[#bardin_scavenger_custom_potions + 1] = deus_potion_name
 end
-
-return

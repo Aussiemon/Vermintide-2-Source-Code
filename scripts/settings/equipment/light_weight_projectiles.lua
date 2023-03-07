@@ -116,5 +116,3 @@ LightWeightProjectiles = {
 }
 
 DLCUtils.merge("light_weight_projectiles", LightWeightProjectiles)
-
-return

@@ -967,7 +967,7 @@ local action_data = {
 						"exalted_champion_charge_chaos_warrior_cata"
 					}
 
-					for i = 1, #stat_names, 1 do
+					for i = 1, #stat_names do
 						local current_difficulty = Managers.state.difficulty:get_difficulty()
 						local allowed_difficulties = QuestSettings.allowed_difficulties[stat_names[i]]
 						local allowed_difficulty = allowed_difficulties[current_difficulty]
@@ -1176,5 +1176,3 @@ BreedActions.chaos_exalted_champion.angry_charge = table.create_copy(BreedAction
 BreedActions.chaos_exalted_champion.angry_charge.considerations = UtilityConsiderations.chaos_exalted_champion_angry_lunge_attack
 BreedActions.chaos_exalted_champion.norsca_charge = table.create_copy(BreedActions.chaos_exalted_champion.norsca_charge, BreedActions.chaos_exalted_champion.charge)
 BreedActions.chaos_exalted_champion.norsca_charge.attacks[1].hit_ai_func = nil
-
-return

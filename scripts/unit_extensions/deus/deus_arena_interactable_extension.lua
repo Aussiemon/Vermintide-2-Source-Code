@@ -157,5 +157,3 @@ DeusArenaInteractableExtension._set_state = function (self, state)
 
 	self._state = state
 end
-
-return

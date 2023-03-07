@@ -20,5 +20,3 @@ settings.enemy_package_loader_breed_categories = {
 		"chaos_mutator_sorcerer"
 	}
 }
-
-return

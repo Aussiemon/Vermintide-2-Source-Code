@@ -247,7 +247,7 @@ GameMechanismManager.sync_players_session_score = function (self, statistics_db,
 		local_player_ids[#local_player_ids + 1] = player_data.local_player_id
 		local stats = player_data.group_scores.offense
 
-		for i = 1, #stats, 1 do
+		for i = 1, #stats do
 			scores[#scores + 1] = stats[i].score
 		end
 	end
@@ -706,7 +706,7 @@ GameMechanismManager.progress_state = function (self)
 end
 
 GameMechanismManager.get_starting_level = function (self)
-	local level_key = (self._game_mechanism.get_starting_level and self._game_mechanism:get_starting_level()) or LevelSettings.default_start_level
+	local level_key = self._game_mechanism.get_starting_level and self._game_mechanism:get_starting_level() or LevelSettings.default_start_level
 
 	return level_key
 end
@@ -813,7 +813,7 @@ GameMechanismManager.check_venture_end = function (self, left_lobby)
 	local venture_end_states_in = self:mechanism_setting("venture_end_states_in")
 	local venture_end_states_out = self:mechanism_setting("venture_end_states_out")
 
-	if left_lobby or self._venture_ended_manually or (self._venture_started and (table.contains(venture_end_states_in, state) or table.contains(venture_end_states_out, prior_state))) then
+	if left_lobby or self._venture_ended_manually or self._venture_started and (table.contains(venture_end_states_in, state) or table.contains(venture_end_states_out, prior_state)) then
 		self:_on_venture_end()
 	end
 
@@ -954,13 +954,13 @@ GameMechanismManager.rpc_sync_players_session_score = function (self, channel_id
 		local peer_id = player_data.peer_id
 		local local_player_id = player_data.local_player_id
 
-		for i = 1, num_players, 1 do
+		for i = 1, num_players do
 			if peer_id == peer_ids[i] and local_player_id == local_player_ids[i] then
 				local scores = player_data.group_scores.offense
 				local start_value = (i - 1) * num_stats_per_player + 1
 				local score_index = 1
 
-				for j = start_value, (start_value + num_stats_per_player) - 1, 1 do
+				for j = start_value, start_value + num_stats_per_player - 1 do
 					scores[score_index].score = players_session_score[j]
 					score_index = score_index + 1
 				end
@@ -1069,5 +1069,3 @@ GameMechanismManager.get_slot_reservation_handler = function (self)
 		return self._game_mechanism:get_slot_reservation_handler()
 	end
 end
-
-return

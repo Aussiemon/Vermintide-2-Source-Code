@@ -45,5 +45,3 @@ TokenManager.destroy = function (self)
 
 	self._tokens = nil
 end
-
-return

@@ -89,5 +89,3 @@ end
 UnlockDlc.requires_restart = function (self)
 	return self._status_changed and self._requires_restart
 end
-
-return

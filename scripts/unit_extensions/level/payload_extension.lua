@@ -43,10 +43,7 @@ PayloadExtension.init = function (self, extension_init_context, unit, extension_
 	local stats_id = player:stats_id()
 
 	if unit_hazard_type == "sled" then
-		if statistics_db:get_persistent_stat(stats_id, "trail_sleigher") > 50 then
-			if true then
-			end
-		else
+		if statistics_db:get_persistent_stat(stats_id, "trail_sleigher") <= 50 then
 			Managers.state.event:register(self, "on_killed", "increment_kill_stat")
 		end
 	end
@@ -141,8 +138,8 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local payload_position_flat = Vector3.flat(payload_position)
 	local payload_pose, half_extents = Unit.box(payload_unit, true)
 	local payload_forward = Vector3.normalize(Matrix4x4.forward(payload_pose))
-	local largest_extent = (half_extents.y < half_extents.x and half_extents.x) or half_extents.y
-	largest_extent = (half_extents.z < largest_extent and largest_extent) or half_extents.z
+	local largest_extent = half_extents.y < half_extents.x and half_extents.x or half_extents.y
+	largest_extent = half_extents.z < largest_extent and largest_extent or half_extents.z
 	local radius = largest_extent * 2
 	local small_box_extents = half_extents * 1.2
 	local large_box_extents = half_extents * 2
@@ -165,7 +162,7 @@ PayloadExtension._hit_enemies = function (self, abs_speed, t)
 	local shield_breaking_hit = false
 	local num_hits = AiUtils.broadphase_query(payload_position, radius, RESULT_TABLE)
 
-	for i = 1, num_hits, 1 do
+	for i = 1, num_hits do
 		local hit_unit = RESULT_TABLE[i]
 		local enemy_position = POSITION_LOOKUP[hit_unit]
 		local inside_small_box = math.point_is_inside_oobb(enemy_position, payload_pose, small_box_extents)
@@ -208,12 +205,12 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 	if id and game then
 		if self._is_server then
 			local speed_settings = metadata.speed_settings
-			local used_speed_settings = (has_players_in_proximity and speed_settings.pushed) or speed_settings.not_pushed
+			local used_speed_settings = has_players_in_proximity and speed_settings.pushed or speed_settings.not_pushed
 			local bonus_speed = (used_speed_settings.bonus_speed_per_player or 0) * num_players_in_proximity
 			local target_speed = used_speed_settings.speed + bonus_speed
 			local acceleration = used_speed_settings.acceleration
 
-			if (target_speed > 0 and self._previous_status == "end") or (target_speed < 0 and self._previous_status == "start") or not self._activated then
+			if target_speed > 0 and self._previous_status == "end" or target_speed < 0 and self._previous_status == "start" or not self._activated then
 				target_speed = 0
 			end
 
@@ -251,7 +248,7 @@ PayloadExtension.update = function (self, unit, input, dt, context, t)
 			local push_speed = math.abs(new_speed)
 
 			if has_players_in_proximity and push_speed > 0.1 then
-				for i = 1, num_players_in_proximity, 1 do
+				for i = 1, num_players_in_proximity do
 					self:_push_player(players_in_proximity[i], push_speed)
 				end
 			end
@@ -347,7 +344,7 @@ PayloadExtension._players_in_proximity = function (self)
 	local payload_position = Unit.world_position(self._unit, 0)
 	local num_players_in_proximity = 0
 
-	for i = 1, num_player_units, 1 do
+	for i = 1, num_player_units do
 		local unit = player_units[i]
 		local position = positions[unit]
 		local distance = Vector3.distance(position, payload_position)
@@ -415,7 +412,7 @@ PayloadExtension._init_movement_spline = function (self, world, unit, payload_gi
 	table.clear(gizmo_point_map)
 
 	if payload_gizmos then
-		for i = 1, #payload_gizmos, 1 do
+		for i = 1, #payload_gizmos do
 			local gizmo_unit = payload_gizmos[i]
 			local gizmo_position = Unit.world_position(gizmo_unit, 0)
 			local smallest_distance = math.huge
@@ -520,5 +517,3 @@ PayloadExtension.increment_kill_stat = function (self, killing_blow, breed_kille
 		statistics_db:increment_stat(stats_id, "trail_sleigher")
 	end
 end
-
-return

@@ -63,5 +63,3 @@ BTZombieExplodeAction.explode = function (self, unit, blackboard, t)
 
 	AiUtils.kill_unit(unit, nil, nil, damage_type, damage_direction)
 end
-
-return

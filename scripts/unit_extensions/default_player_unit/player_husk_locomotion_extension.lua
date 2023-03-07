@@ -68,7 +68,7 @@ PlayerHuskLocomotionExtension.add_external_velocity = function (self, velocity, 
 		return
 	end
 
-	local rpc_name = (upper_limit and "rpc_add_external_velocity_with_upper_limit") or "rpc_add_external_velocity"
+	local rpc_name = upper_limit and "rpc_add_external_velocity_with_upper_limit" or "rpc_add_external_velocity"
 
 	if self.is_server then
 		Managers.state.network.network_transmit:send_rpc(rpc_name, self.player:network_id(), self.id, velocity, upper_limit)
@@ -218,7 +218,7 @@ PlayerHuskLocomotionExtension._extrapolation_movement = function (self, unit, dt
 	local accumulated_movement = Unit.get_data(unit, "accumulated_movement") or Vector3(0, 0, 0)
 	self._pos_lerp_time = (self._pos_lerp_time or 0) + dt
 	self._velocity_lerp_time = (self._velocity_lerp_time or 0) + dt
-	local pos_lerp_time = (linked_movement and POS_LERP_TIME_LINKED) or POS_LERP_TIME
+	local pos_lerp_time = linked_movement and POS_LERP_TIME_LINKED or POS_LERP_TIME
 	local lerp_t = self._pos_lerp_time / pos_lerp_time
 	local move_delta = velocity * dt
 	accumulated_movement = accumulated_movement + move_delta
@@ -346,5 +346,3 @@ PlayerHuskLocomotionExtension.teleport_to = function (self, pos, rot)
 	Unit.set_local_position(unit, 0, pos)
 	self:move_to_non_intersecting_position()
 end
-
-return

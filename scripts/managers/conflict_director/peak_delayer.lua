@@ -94,7 +94,5 @@ PeakDelayer.set_peaks = function (self, peaks)
 end
 
 PeakDelayer.get_peaks = function (self)
-	return (self._peaks and table.clone(self._peaks)) or {}
+	return self._peaks and table.clone(self._peaks) or {}
 end
-
-return

@@ -13,7 +13,7 @@ UIAnimator.start_animation = function (self, anim_name, widget, scenegraph_def, 
 	initial_delay = initial_delay or 0
 	local anim_def = self._animation_definitions[anim_name]
 
-	for i = 1, #anim_def, 1 do
+	for i = 1, #anim_def do
 		local anim = anim_def[i]
 		anim.is_completed = nil
 
@@ -72,7 +72,7 @@ UIAnimator.update = function (self, dt)
 			local all_done = true
 			local anim_def = data.anim_def
 
-			for i = 1, #anim_def, 1 do
+			for i = 1, #anim_def do
 				local anim = anim_def[i]
 				local t0 = times[i * 2 - 1]
 				local t1 = times[i * 2]
@@ -101,5 +101,3 @@ UIAnimator.update = function (self, dt)
 		end
 	end
 end
-
-return

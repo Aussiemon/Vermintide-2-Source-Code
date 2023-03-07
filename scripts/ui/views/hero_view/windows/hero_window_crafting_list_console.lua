@@ -414,7 +414,7 @@ HeroWindowCraftingListConsole._set_alignment_progress = function (self, progress
 		local angle = 0.001 * offset[2]
 		style.holder.angle = -(angle * progress)
 		start_height = start_height - spacing
-		layer_index = (math.ceil(num_recipies / 2) < index and layer_index - 1) or layer_index + 1
+		layer_index = math.ceil(num_recipies / 2) < index and layer_index - 1 or layer_index + 1
 
 		if content.button_hotspot.is_selected then
 			offset[3] = (num_recipies + 1) * num_layers
@@ -506,5 +506,3 @@ HeroWindowCraftingListConsole._animate_entry = function (self, widget, dt)
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
 end
-
-return

@@ -111,7 +111,7 @@ ActionCareerWHPriestTarget.client_owner_post_update = function (self, dt, t, wor
 		end
 	else
 		local blackboard = BLACKBOARDS[owner_unit]
-		local aimed_target = (blackboard and blackboard.activate_ability_data.target_unit) or owner_unit
+		local aimed_target = blackboard and blackboard.activate_ability_data.target_unit or owner_unit
 
 		self._weapon_extension:set_mode(aimed_target ~= owner_unit)
 	end
@@ -159,7 +159,7 @@ ActionCareerWHPriestTarget._mark_target = function (self, new_target)
 	end
 
 	local current_action = self.current_action
-	local anim_event = (is_other_target and current_action.target_other_anim_event) or current_action.target_self_anim_event
+	local anim_event = is_other_target and current_action.target_other_anim_event or current_action.target_self_anim_event
 	local first_person_unit = self.first_person_extension:get_first_person_unit()
 
 	if anim_event then
@@ -178,12 +178,12 @@ ActionCareerWHPriestTarget._target_ally_from_crosshair = function (self)
 	local player_direction = Vector3.normalize(Quaternion.forward(player_rotation))
 	local side = Managers.state.side.side_by_unit[owner_unit]
 	local friendly_units = side and side.PLAYER_AND_BOT_UNITS
-	local num_friendly_units = (friendly_units and #friendly_units) or 0
+	local num_friendly_units = friendly_units and #friendly_units or 0
 	local best_target = nil
 	local best_distance = 0
 	local best_dot_value = 0
 
-	for i = 1, num_friendly_units, 1 do
+	for i = 1, num_friendly_units do
 		local friendly_unit = friendly_units[i]
 
 		if friendly_unit ~= self.owner_unit then
@@ -227,7 +227,7 @@ ActionCareerWHPriestTarget.finish = function (self, reason, data)
 
 	if is_bot then
 		local blackboard = BLACKBOARDS[self.owner_unit]
-		aimed_target = (blackboard and blackboard.activate_ability_data.target_unit) or self.owner_unit
+		aimed_target = blackboard and blackboard.activate_ability_data.target_unit or self.owner_unit
 	end
 
 	local chain_action_data = {
@@ -255,5 +255,3 @@ ActionCareerWHPriestTarget.finish = function (self, reason, data)
 
 	return chain_action_data
 end
-
-return

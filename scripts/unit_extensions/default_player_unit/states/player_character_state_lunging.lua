@@ -32,7 +32,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 	self.career_extension = ScriptUnit.extension(unit, "career_system")
 	local first_person_unit = first_person_extension:get_first_person_unit()
 	self._first_person_unit = first_person_unit
-	self.damage_start_time = (lunge_data.damage_start_time and t + lunge_data.damage_start_time) or t
+	self.damage_start_time = lunge_data.damage_start_time and t + lunge_data.damage_start_time or t
 	self.ledge_falloff_immunity_time = lunge_data.ledge_falloff_immunity and t + lunge_data.ledge_falloff_immunity
 	local forward_direction = Quaternion.forward(self.first_person_extension:current_rotation())
 
@@ -83,7 +83,7 @@ PlayerCharacterStateLunging.on_enter = function (self, unit, input, dt, context,
 		local max_targets_attack, max_targets_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
 		self.max_targets_attack = max_targets_attack
 		self.max_targets_impact = max_targets_impact
-		self.max_targets = (max_targets_impact < max_targets_attack and max_targets_attack) or max_targets_impact
+		self.max_targets = max_targets_impact < max_targets_attack and max_targets_attack or max_targets_impact
 	end
 
 	if lunge_data.dodge and Managers.state.network:game() then
@@ -320,7 +320,7 @@ PlayerCharacterStateLunging._check_ledge_hang = function (self, unit, dt, t, mov
 	self.temp_params.collision_filter = "filter_lunge_ledge_collision"
 	self.temp_params.radius = step_distance * 1.5
 
-	for i = 1, steps, 1 do
+	for i = 1, steps do
 		local ray_position = current_pos + move_direction * step_distance * i
 		self.temp_params.ray_position = ray_position
 		local will_ledge_hang = CharacterStateHelper.will_be_ledge_hanging(world, unit, self.temp_params)
@@ -358,7 +358,7 @@ PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge
 
 	local base_speed = 1
 	local use_base_speed = speed > base_speed
-	local speed_to_use = (use_base_speed and base_speed) or speed
+	local speed_to_use = use_base_speed and base_speed or speed
 	local will_ledge_hang = self:_check_ledge_hang(unit, dt, t, move_direction, speed, -1.6)
 
 	if will_ledge_hang then
@@ -373,7 +373,7 @@ PlayerCharacterStateLunging._move_on_ground = function (self, unit, dt, t, lunge
 
 	local lunge_ended = lunge_time < duration
 
-	return (lunge_ended and "continue") or "stop"
+	return lunge_ended and "continue" or "stop"
 end
 
 PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_data)
@@ -413,7 +413,7 @@ PlayerCharacterStateLunging._move_in_air = function (self, unit, dt, t, lunge_da
 
 	local lunge_ended = lunge_time < duration
 
-	return (lunge_ended and "continue") or "stop"
+	return lunge_ended and "continue" or "stop"
 end
 
 PlayerCharacterStateLunging._parse_attack_data = function (self, damage_settings)
@@ -435,7 +435,7 @@ PlayerCharacterStateLunging._calculate_hit_mass = function (self, shield_blocked
 
 	if breed and is_enemy and AiUtils.unit_alive(hit_unit) then
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
+		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
 		local action_mass_override = current_action.hit_mass_count
 
 		if action_mass_override and action_mass_override[breed.name] then
@@ -475,7 +475,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 	local weapon_system = Managers.state.entity:system("weapon_system")
 	local buff_hit_target_index = 0
 
-	for i = 1, num_actors, 1 do
+	for i = 1, num_actors do
 		local hit_actor = actors[i]
 		local hit_unit = Actor.unit(hit_actor)
 
@@ -515,7 +515,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 				if damage_data.stagger_angles then
 					local owner_to_hit_dir = Vector3.normalize(hit_unit_pos - new_pos)
 					local cross = Vector3.cross(Vector3.flat(owner_to_hit_dir), Vector3.flat(forward_direction))
-					local additional_stagger_angle = Math.random(damage_data.stagger_angles.min, damage_data.stagger_angles.max) * ((cross.z < 0 and -1) or 1)
+					local additional_stagger_angle = Math.random(damage_data.stagger_angles.min, damage_data.stagger_angles.max) * (cross.z < 0 and -1 or 1)
 					local new_attack_direction = attack_direction
 					new_attack_direction.x = math.cos(additional_stagger_angle) * attack_direction.x - math.sin(additional_stagger_angle) * attack_direction.y
 					new_attack_direction.y = math.sin(additional_stagger_angle) * attack_direction.x + math.cos(additional_stagger_angle) * attack_direction.y
@@ -552,7 +552,7 @@ PlayerCharacterStateLunging._update_damage = function (self, unit, dt, t, damage
 
 				local hit_mass_count_reached = self.max_targets <= self._amount_of_mass_hit or breed.armor_category == 2 or breed.armor_category == 3
 
-				if AiUtils.unit_alive(hit_unit) and (damage_data.interrupt_on_first_hit or (hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass)) then
+				if AiUtils.unit_alive(hit_unit) and (damage_data.interrupt_on_first_hit or hit_mass_count_reached and damage_data.interrupt_on_max_hit_mass) then
 					self:_do_blast(new_pos, forward_direction)
 
 					return true
@@ -587,7 +587,7 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 
 		table.clear(hit_units)
 
-		for i = 1, num_actors, 1 do
+		for i = 1, num_actors do
 			local hit_actor = actors[i]
 			local hit_unit = Actor.unit(hit_actor)
 
@@ -617,5 +617,3 @@ PlayerCharacterStateLunging._do_blast = function (self, new_pos, forward_directi
 		end
 	end
 end
-
-return

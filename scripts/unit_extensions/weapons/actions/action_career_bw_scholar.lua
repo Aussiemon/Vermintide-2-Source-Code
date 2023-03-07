@@ -18,7 +18,7 @@ ActionCareerBWScholar.client_owner_start_action = function (self, new_action, t,
 	if talent_extension:has_talent("sienna_scholar_activated_ability_dump_overcharge", "bright_wizard", true) then
 		local player = Managers.player:owner(owner_unit)
 
-		if player.local_player or (self.is_server and player.bot_player) then
+		if player.local_player or self.is_server and player.bot_player then
 			local overcharge_extension = self.overcharge_extension
 
 			overcharge_extension:reset()
@@ -69,5 +69,3 @@ ActionCareerBWScholar._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

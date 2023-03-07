@@ -40,7 +40,7 @@ BTTargetUnreachableAction.run = function (self, unit, blackboard, t, dt)
 	if whereabouts_extension then
 		position_list, target_on_mesh = whereabouts_extension:closest_positions_when_outside_navmesh()
 
-		for i = 1, #position_list, 1 do
+		for i = 1, #position_list do
 			local test_position = position_list[i]:unbox()
 			local score = 0
 			local distance_enemy_and_target_sq = Vector3.distance_squared(target_position, test_position)
@@ -124,5 +124,3 @@ BTTargetUnreachableAction._debug_distance_text = function (self, unit, navigatio
 		Debug.text("Unreachable distance to target: %.2f Flat: %.2f", distance, flat_distance)
 	end
 end
-
-return

@@ -29,5 +29,3 @@ ScriptExtendedReplay.request_moving_units = function ()
 
 	Application.console_send(cmd)
 end
-
-return

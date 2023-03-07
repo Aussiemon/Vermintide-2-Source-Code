@@ -43,5 +43,3 @@ dlc_settings.imgui_system_params = {
 		category = "Deus"
 	}
 }
-
-return

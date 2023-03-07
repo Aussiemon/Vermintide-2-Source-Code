@@ -52,5 +52,3 @@ AchievementTemplates.achievements.scorpion_slay_gors_warpfire_damage = {
 		return statistics_db:get_persistent_stat(stats_id, "scorpion_slay_gors_warpfire_damage") > 0
 	end
 }
-
-return

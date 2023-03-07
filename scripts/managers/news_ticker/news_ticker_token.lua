@@ -24,5 +24,3 @@ end
 NewsTickerToken.close = function (self)
 	UrlLoader.unload(self._loader, self._job)
 end
-
-return

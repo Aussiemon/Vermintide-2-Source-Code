@@ -38,7 +38,7 @@ BTPackMasterDragAction.enter = function (self, unit, blackboard, t)
 	blackboard.destination_test_astar = GwNavAStar.create()
 	blackboard.packmaster_destinations = {}
 
-	for i = 1, DRAG_DESTINATIONS_N, 1 do
+	for i = 1, DRAG_DESTINATIONS_N do
 		blackboard.packmaster_destinations[i] = {}
 	end
 
@@ -110,7 +110,7 @@ BTPackMasterDragAction.find_hoist_pos = function (self, nav_world, unit, blackbo
 
 	local angle = 0
 
-	for i = 1, 6, 1 do
+	for i = 1, 6 do
 		angle = angle + DELTA_ANGLE
 		local direction = Quaternion.rotate(Quaternion(Vector3.up(), angle), start_direction)
 		new_pos = validate_pos(nav_world, player_pos + direction)
@@ -232,6 +232,7 @@ BTPackMasterDragAction.run = function (self, unit, blackboard, t, dt)
 		local valid_destinations = self:test_destinations(unit, blackboard)
 
 		if not valid_destinations then
+			-- Nothing
 		end
 
 		return "running"
@@ -299,7 +300,7 @@ BTPackMasterDragAction.find_destinations = function (self, unit, blackboard, t, 
 
 	if script_data.debug_ai_movement then
 		QuickDrawerStay:vector(position, blackboard.last_path_direction:unbox() * 2, Colors.get("purple"))
-		QuickDrawerStay:sphere(position + Vector3.up() * 1.7, 0.5, (blackboard.threatened and Colors.get("red")) or Colors.get("yellow"))
+		QuickDrawerStay:sphere(position + Vector3.up() * 1.7, 0.5, blackboard.threatened and Colors.get("red") or Colors.get("yellow"))
 	end
 end
 
@@ -362,7 +363,7 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 
 	local cover_index = 1
 
-	for i = 1, found_cover_units_n, 1 do
+	for i = 1, found_cover_units_n do
 		local unit = found_cover_units[i]
 		local pos = unit_position(unit, 0)
 		local dist_squared = distance_squared(pos, position)
@@ -395,7 +396,7 @@ BTPackMasterDragAction.find_valid_covers = function (self, position, destination
 		end
 	end
 
-	for i = cover_index, DRAG_DESTINATIONS_N, 1 do
+	for i = cover_index, DRAG_DESTINATIONS_N do
 		destinations[i][2] = -math.huge
 	end
 end
@@ -412,7 +413,7 @@ BTPackMasterDragAction.find_valid_interest_points = function (self, position, de
 	local dot = Vector3.dot
 	local ip_index = 1
 
-	for i = 1, found_interest_points_n, 1 do
+	for i = 1, found_interest_points_n do
 		local interest_point_unit = found_interest_points[i]
 
 		if Unit.alive(interest_point_unit) then
@@ -449,7 +450,7 @@ BTPackMasterDragAction.find_valid_interest_points = function (self, position, de
 		end
 	end
 
-	for i = ip_index, DRAG_DESTINATIONS_N, 1 do
+	for i = ip_index, DRAG_DESTINATIONS_N do
 		destinations[i][2] = -math.huge
 	end
 
@@ -482,8 +483,8 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 		local dir_score_modifier = math.max(0, dir_dot)
 
 		if script_data.debug_ai_movement then
-			QuickDrawerStay:sphere(nav_group_position, 3, (dir_dot > -0.25 and Colors.get("yellow")) or Colors.get("red"))
-			QuickDrawerStay:line(nav_group_position, position, (dir_dot > -0.25 and Colors.get("yellow")) or Colors.get("red"))
+			QuickDrawerStay:sphere(nav_group_position, 3, dir_dot > -0.25 and Colors.get("yellow") or Colors.get("red"))
+			QuickDrawerStay:line(nav_group_position, position, dir_dot > -0.25 and Colors.get("yellow") or Colors.get("red"))
 		end
 
 		if dir_dot > -0.25 then
@@ -514,7 +515,7 @@ BTPackMasterDragAction.find_nav_group_neighbour = function (self, blackboard, po
 		end
 	end
 
-	for i = destination_index, DRAG_DESTINATIONS_N, 1 do
+	for i = destination_index, DRAG_DESTINATIONS_N do
 		destinations[i][DESTINATION_SCORE_I] = -math.huge
 	end
 
@@ -533,7 +534,7 @@ BTPackMasterDragAction.find_escape_destination = function (self, unit, blackboar
 	local traverse_logic = navigation_extension:traverse_logic()
 	local nav_world = blackboard.nav_world
 
-	for i = 1, num_segments, 1 do
+	for i = 1, num_segments do
 		local angle_modifier = math.ceil((i - 1) * 0.5) * (i % 2 * 2 - 1)
 		local angle = angle_modifier * angle_per_segment
 		local angle_cw = angle_towards_pull + angle
@@ -656,7 +657,7 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 			local good_path = path_length_ratio > 0.4444444444444444 and reverse_score_modifier > 0
 
 			if good_path then
-				for i = 2, GwNavAStar.node_count(astar), 1 do
+				for i = 2, GwNavAStar.node_count(astar) do
 					local last = GwNavAStar.node_at_index(astar, i - 1)
 					local new = GwNavAStar.node_at_index(astar, i)
 					local success = GwNavQueries.raycango(nav_world, last, new, traverse_logic)
@@ -686,15 +687,15 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 			if script_data.debug_ai_movement then
 				local count = GwNavAStar.node_count(astar)
 
-				for i = 1, count, 1 do
+				for i = 1, count do
 					local node = GwNavAStar.node_at_index(astar, i)
 
-					QuickDrawerStay:sphere(node, 0.1, (good_path and Colors.get("yellow")) or Colors.get("red"))
+					QuickDrawerStay:sphere(node, 0.1, good_path and Colors.get("yellow") or Colors.get("red"))
 
 					local next_node = GwNavAStar.node_at_index(astar, i + 1)
 
 					if next_node then
-						QuickDrawerStay:line(node, next_node, (good_path and Colors.get("yellow")) or Colors.get("red"))
+						QuickDrawerStay:line(node, next_node, good_path and Colors.get("yellow") or Colors.get("red"))
 					end
 				end
 			end
@@ -707,5 +708,3 @@ BTPackMasterDragAction.test_destinations = function (self, unit, blackboard)
 
 	return true
 end
-
-return

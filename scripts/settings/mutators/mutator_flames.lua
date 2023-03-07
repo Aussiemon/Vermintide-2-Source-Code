@@ -42,7 +42,7 @@ return {
 	end,
 	apply_buff = function (data, hit_unit, attacker_unit, is_enemy)
 		local is_alive = AiUtils.unit_alive(hit_unit)
-		local buff_template_name = (is_enemy and data.buff_name_enemy) or data.buff_name_player
+		local buff_template_name = is_enemy and data.buff_name_enemy or data.buff_name_player
 		local buff_extension = ScriptUnit.extension(hit_unit, "buff_system")
 		local unit_has_buff = buff_extension:has_buff_type(buff_template_name)
 

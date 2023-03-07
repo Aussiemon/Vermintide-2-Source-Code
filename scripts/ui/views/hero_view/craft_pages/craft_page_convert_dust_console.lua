@@ -176,7 +176,7 @@ CraftPageConvertDustConsole.reset_requirements = function (self, num_required_in
 	local spacing = 30
 	local start_position_x = -((widget_width + spacing) * (num_required_ingredients - 1)) / 2
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local widget = widgets_by_name["material_text_" .. i]
 		local visible = i <= num_required_ingredients
 		widget.content.visible = visible
@@ -497,7 +497,7 @@ CraftPageConvertDustConsole._add_craft_item = function (self, backend_id, slot_i
 	local craft_items = self._craft_items
 
 	if not slot_index then
-		for i = 1, 1, 1 do
+		for i = 1, 1 do
 			if not craft_items[i] then
 				slot_index = i
 
@@ -531,7 +531,7 @@ end
 CraftPageConvertDustConsole._set_craft_button_disabled = function (self, disabled)
 	self._widgets_by_name.craft_button.content.button_hotspot.disable_button = disabled
 
-	self.parent:set_input_description((not disabled and self.settings.name) or "disabled")
+	self.parent:set_input_description(not disabled and self.settings.name or "disabled")
 end
 
 CraftPageConvertDustConsole._exit = function (self, selected_level)
@@ -561,13 +561,13 @@ end
 CraftPageConvertDustConsole._set_craft_button_text = function (self, text, localize)
 	local widgets_by_name = self._widgets_by_name
 	local widget = widgets_by_name.craft_button
-	widget.content.button_text = (localize and Localize(text)) or text
+	widget.content.button_text = localize and Localize(text) or text
 end
 
 CraftPageConvertDustConsole._has_added_item_by_id = function (self, backend_id)
 	local craft_items = self._craft_items
 
-	for i = 1, NUM_CRAFT_SLOTS, 1 do
+	for i = 1, NUM_CRAFT_SLOTS do
 		if craft_items[i] == backend_id then
 			return true
 		end
@@ -580,7 +580,7 @@ CraftPageConvertDustConsole._clear_item_grid = function (self)
 	local craft_items = self._craft_items
 	local super_parent = self.super_parent
 
-	for i = 1, NUM_CRAFT_SLOTS, 1 do
+	for i = 1, NUM_CRAFT_SLOTS do
 		if craft_items[i] then
 			super_parent:set_disabled_backend_id(craft_items[i], false)
 		end
@@ -589,5 +589,3 @@ CraftPageConvertDustConsole._clear_item_grid = function (self)
 	self._item_grid:clear_item_grid()
 	table.clear(craft_items)
 end
-
-return

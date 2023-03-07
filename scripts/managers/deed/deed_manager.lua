@@ -23,7 +23,7 @@ DeedManager.network_context_created = function (self, lobby, server_peer_id, own
 	self._lobby = lobby
 	self._server_peer_id = server_peer_id
 	self._peer_id = own_peer_id
-	self._network_server = (is_server and network_handler) or nil
+	self._network_server = is_server and network_handler or nil
 	self._is_server = is_server
 	local ignore_send = true
 
@@ -147,7 +147,7 @@ DeedManager.delete_marked_deeds = function (self, deed_list)
 end
 
 DeedManager.is_deleting_deeds = function (self)
-	return (self._is_deleting_deeds and true) or false
+	return self._is_deleting_deeds and true or false
 end
 
 DeedManager._update_deed_deletion = function (self)
@@ -167,8 +167,8 @@ DeedManager.can_delete_deeds = function (self, current_deeds, marked_deeds)
 	local item_interface = Managers.backend:get_interface("items")
 	local can_delete, remaining_deeds, deletable_deeds = item_interface:can_delete_deeds(current_deeds, marked_deeds)
 	local num_marked_deeds, num_deletable_deeds = nil
-	num_marked_deeds = (marked_deeds and #marked_deeds) or 0
-	num_deletable_deeds = (deletable_deeds and #deletable_deeds) or 0
+	num_marked_deeds = marked_deeds and #marked_deeds or 0
+	num_deletable_deeds = deletable_deeds and #deletable_deeds or 0
 
 	if can_delete and num_deletable_deeds ~= num_marked_deeds then
 		return remaining_deeds, deletable_deeds, "Not all marked deeds could be deleted."
@@ -302,7 +302,7 @@ DeedManager._send_rpc_to_clients = function (self, rpc_name, ...)
 	local server_peer_id = self._server_peer_id
 	local client_peer_ids = network_server:players_past_connecting()
 
-	for i = 1, #client_peer_ids, 1 do
+	for i = 1, #client_peer_ids do
 		local peer_id = client_peer_ids[i]
 
 		if peer_id ~= server_peer_id then
@@ -324,7 +324,7 @@ DeedManager._send_rpc_to_clients_except = function (self, rpc_name, except, ...)
 	local server_peer_id = self._server_peer_id
 	local client_peer_ids = network_server:players_past_connecting()
 
-	for i = 1, #client_peer_ids, 1 do
+	for i = 1, #client_peer_ids do
 		local peer_id = client_peer_ids[i]
 
 		if peer_id ~= server_peer_id and peer_id ~= except then
@@ -347,5 +347,3 @@ DeedManager._send_rpc_to_client = function (self, rpc_name, client_peer_id, ...)
 
 	rpc(channel_id, ...)
 end
-
-return

@@ -9,7 +9,7 @@ PlayerSyncData.init = function (self, player, network_manager)
 	self._player = player
 	self._network_manager = network_manager
 
-	if player.local_player or (player.bot_player and player.is_server) then
+	if player.local_player or player.bot_player and player.is_server then
 		local highest_unlocked_difficulty = self:_calc_highest_unlocked_difficulty()
 		local game_object_data_table = {
 			best_aquired_power_level = 0,
@@ -119,7 +119,7 @@ end
 PlayerSyncData.destroy = function (self)
 	local player = self._player
 
-	if (player.local_player or (player.bot_player and player.is_server)) and self._game_object_id then
+	if (player.local_player or player.bot_player and player.is_server) and self._game_object_id then
 		local game = self._network_manager:game()
 
 		if GameSession.game_object_exists(game, self._game_object_id) then
@@ -165,5 +165,3 @@ PlayerSyncData.get_data = function (self, key)
 
 	return GameSession.game_object_field(game, self._game_object_id, key)
 end
-
-return

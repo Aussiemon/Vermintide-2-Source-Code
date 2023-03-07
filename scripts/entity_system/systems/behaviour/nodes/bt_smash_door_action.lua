@@ -263,7 +263,7 @@ BTSmashDoorAction.StateAttacking.update = function (self, dt, t)
 	local health_extension = ScriptUnit.extension(target_unit, "health_system")
 	local door_extension = ScriptUnit.extension(target_unit, "door_system")
 
-	if not health_extension:is_alive() or (door_extension:is_open() and not door_extension:is_opening()) then
+	if not health_extension:is_alive() or door_extension:is_open() and not door_extension:is_opening() then
 		if door_extension.move_to_exit_when_opened then
 			return BTSmashDoorAction.StateMovingToSmartObjectExit
 		else
@@ -350,5 +350,3 @@ BTSmashDoorAction.anim_cb_damage = function (self, unit, blackboard)
 		AiUtils.damage_target(blackboard.smash_door.target_unit, unit, action, action.damage)
 	end
 end
-
-return

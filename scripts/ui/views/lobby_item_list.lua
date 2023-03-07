@@ -480,7 +480,7 @@ local function lobby_level_display_name(lobby_data)
 
 		local level_setting = level_key and LevelSettings[level_key]
 		local level_display_name = level_key and level_setting.display_name
-		local level_text = (level_key and Localize(level_display_name)) or "-"
+		local level_text = level_key and Localize(level_display_name) or "-"
 
 		return level_text
 	end
@@ -498,7 +498,7 @@ local function lobby_difficulty_display_name(lobby_data)
 	local difficulty = lobby_data.difficulty
 	local difficulty_setting = difficulty and DifficultySettings[difficulty]
 	local difficulty_display_name = difficulty and difficulty_setting.display_name
-	local difficulty_text = (difficulty and Localize(difficulty_display_name)) or "-"
+	local difficulty_text = difficulty and Localize(difficulty_display_name) or "-"
 
 	return difficulty_text
 end
@@ -506,14 +506,14 @@ end
 local function lobby_difficulty_rank(lobby_data)
 	local difficulty = lobby_data.difficulty
 	local difficulty_setting = difficulty and DifficultySettings[difficulty]
-	local difficulty_rank = (difficulty and difficulty_setting.rank) or 0
+	local difficulty_rank = difficulty and difficulty_setting.rank or 0
 
 	return difficulty_rank
 end
 
 local function lobby_country_text(lobby_data)
 	local country_code = lobby_data.country_code
-	local country_text = (country_code and iso_countries[country_code]) or ""
+	local country_text = country_code and iso_countries[country_code] or ""
 
 	return country_text
 end
@@ -657,7 +657,7 @@ local function create_lobby_list_entry_content(lobby_data)
 	local difficulty_text = lobby_difficulty_display_name(lobby_data)
 	local status_text = LobbyItemsList.lobby_status_text(lobby_data)
 	local is_invalid = not lobby_data.valid
-	local status_text_parsed = (is_invalid and "[INV]" .. status_text) or status_text
+	local status_text_parsed = is_invalid and "[INV]" .. status_text or status_text
 	local country_text = lobby_country_text(lobby_data)
 	local content = {
 		locked_difficulty = "locked_icon_01",
@@ -906,7 +906,7 @@ end
 LobbyItemsList.lobby_status_text = function (lobby_data)
 	local is_dedicated_server = lobby_data.server_info ~= nil
 	local mission_id = lobby_data.mission_id
-	local is_private = (is_dedicated_server and lobby_data.server_info.password) or (not is_dedicated_server and lobby_data.matchmaking == "false")
+	local is_private = is_dedicated_server and lobby_data.server_info.password or not is_dedicated_server and lobby_data.matchmaking == "false"
 	local is_full = lobby_data.num_players == MatchmakingSettings.MAX_NUMBER_OF_PLAYERS
 	local matchmaking_type_index = tonumber(lobby_data.matchmaking_type)
 	local matchmaking_type_names = table.clone(NetworkLookup.matchmaking_types, true)
@@ -924,8 +924,8 @@ LobbyItemsList.lobby_status_text = function (lobby_data)
 	local level_setting = LevelSettings[mission_id]
 	local is_in_inn = level_setting.hub_level
 	local is_broken = lobby_data.is_broken
-	local status = (is_broken and "lb_broken") or (is_private and "lb_private") or (is_full and "lb_full") or (is_in_inn and "lb_in_inn") or "lb_started"
-	local status_text = (status and Localize(status)) or ""
+	local status = is_broken and "lb_broken" or is_private and "lb_private" or is_full and "lb_full" or is_in_inn and "lb_in_inn" or "lb_started"
+	local status_text = status and Localize(status) or ""
 
 	return status_text
 end
@@ -1075,7 +1075,7 @@ LobbyItemsList.update = function (self, dt, loading)
 		self.gamepad_changed_selected_list_index = nil
 	end
 
-	for i = 1, num_list_content, 1 do
+	for i = 1, num_list_content do
 		local button_content = list_content[i]
 		local button_hotspot = button_content.button_hotspot
 
@@ -1225,7 +1225,7 @@ LobbyItemsList.is_entry_outside = function (self, index)
 
 		if index < current_start_index then
 			return true, "above"
-		elseif math.min((current_start_index + max_visible_elements) - 1, total_elements) < index then
+		elseif math.min(current_start_index + max_visible_elements - 1, total_elements) < index then
 			return true, "below"
 		end
 	end
@@ -1328,7 +1328,7 @@ LobbyItemsList.remove_invalid_lobbies = function (self, lobbies)
 	local valid_lobbies = {}
 	local num_lobbies = #lobbies
 
-	for i = 1, num_lobbies, 1 do
+	for i = 1, num_lobbies do
 		local lobby = lobbies[i]
 
 		if lobby then
@@ -1381,7 +1381,7 @@ LobbyItemsList.populate_lobby_list = function (self, lobbies, ignore_scroll_rese
 		local num_empty = num_draws - num_lobbies % num_draws
 
 		if num_draws >= num_empty then
-			for i = 1, num_empty, 1 do
+			for i = 1, num_empty do
 				local content = create_empty_lobby_list_entry_content()
 				local style = create_lobby_list_entry_style()
 				local index = #list_content + 1
@@ -1433,7 +1433,7 @@ LobbyItemsList.set_scrollbar_length = function (self, start_scroll_value, ignore
 	local step_fraction = 0
 
 	if item_diff_count > 0 then
-		local number_of_elements_per_step = (columns and columns) or 1
+		local number_of_elements_per_step = columns and columns or 1
 		local number_of_steps_possible = math.ceil(item_diff_count / number_of_elements_per_step)
 		local number_of_steps_total = math.ceil(number_of_items_in_list / number_of_elements_per_step)
 		local list_fraction = 1 / number_of_steps_total
@@ -1473,7 +1473,7 @@ LobbyItemsList.scroll_inventory_list = function (self, value)
 			local new_start_index = math.max(0, math.round(value * elements_to_scroll)) + 1
 
 			if column_count and new_start_index % column_count == 0 then
-				new_start_index = (new_start_index + column_count) - 1
+				new_start_index = new_start_index + column_count - 1
 			end
 
 			list_style.start_index = new_start_index
@@ -1495,7 +1495,7 @@ LobbyItemsList.on_lobby_selected = function (self, index, play_sound)
 	end
 
 	if index and list_content[index] then
-		for i = 1, #list_content, 1 do
+		for i = 1, #list_content do
 			list_content[i].button_hotspot.is_selected = i == index
 		end
 
@@ -1529,7 +1529,7 @@ LobbyItemsList.set_selected_lobby = function (self, selected_lobby_data)
 	local list_content = item_list_widget.content.list_content
 	local number_of_items_in_list = self.number_of_items_in_list
 
-	for i = 1, number_of_items_in_list, 1 do
+	for i = 1, number_of_items_in_list do
 		local content = list_content[i]
 		local lobby_data = content.lobby_data
 		local lobby_id = lobby_data.id
@@ -1549,5 +1549,3 @@ end
 LobbyItemsList.play_sound = function (self, event)
 	WwiseWorld.trigger_event(self.wwise_world, event)
 end
-
-return

@@ -102,5 +102,3 @@ BackendInterfaceHeroAttributesPlayFab.set = function (self, hero, attribute, val
 
 	self._dirty = true
 end
-
-return

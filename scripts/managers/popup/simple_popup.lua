@@ -29,5 +29,3 @@ end
 SimplePopup.destroy = function (self)
 	return
 end
-
-return

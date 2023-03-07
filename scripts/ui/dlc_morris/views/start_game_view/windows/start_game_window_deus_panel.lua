@@ -5,5 +5,3 @@ StartGameWindowDeusPanel.NAME = "StartGameWindowDeusPanel"
 StartGameWindowDeusPanel._create_ui_elements = function (self, _, params, offset)
 	return StartGameWindowDeusPanel.super._create_ui_elements(self, definitions, params, offset)
 end
-
-return

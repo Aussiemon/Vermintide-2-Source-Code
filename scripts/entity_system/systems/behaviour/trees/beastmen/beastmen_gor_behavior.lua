@@ -129,5 +129,3 @@ BreedBehaviors.gor = {
 	},
 	name = "gor"
 }
-
-return

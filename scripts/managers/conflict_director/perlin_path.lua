@@ -23,13 +23,13 @@ PerlinPath = {
 		local total = 0
 		local octave_table = {}
 
-		for i = start_oktave, end_oktave, 1 do
+		for i = start_oktave, end_oktave do
 			local waves = {}
 			local amplitude = persistance^i
 			local x = 0
 			local step_dist = 1 / i
 
-			for j = 0, i, 1 do
+			for j = 0, i do
 				local next_seed, _ = Math.next_random(x + seed)
 				local _, value = Math.next_random(next_seed)
 				waves[j] = {
@@ -56,7 +56,7 @@ PerlinPath.make_easy_path = function (nav_world, main_path, path_length)
 	local new_cycle_length = path_length / math.floor(num_cycles)
 	local x = 0
 
-	for i = 1, num_cycles, 1 do
+	for i = 1, num_cycles do
 		local pos = LevelAnalysis.get_path_point(main_path, path_length, i / num_cycles)
 		new_path[#new_path + 1] = Vector3Box(pos)
 	end
@@ -74,7 +74,7 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 	local seed_list = {}
 	local area_list = {}
 
-	for i = 1, #main_path, 1 do
+	for i = 1, #main_path do
 		local pos = main_path[i]:unbox()
 		local triangle = GwNavTraversal.get_seed_triangle(nav_world, pos)
 
@@ -115,7 +115,7 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 			GwNavTraversal.get_neighboring_triangles(triangle)
 		}
 
-		for k = 1, #neighbors, 1 do
+		for k = 1, #neighbors do
 			local neighbour = neighbors[k]
 			local t1, t2, t3 = Script.temp_count()
 			p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
@@ -124,9 +124,9 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 
 			if not lookup[key] then
 				local p1, p2, p3 = GwNavTraversal.get_triangle_vertices(nav_world, neighbour)
-				local a = (seed_a and vector3_distance_squared(seed_a, tri_center)) or math.huge
-				local b = (seed_b and vector3_distance_squared(seed_b, tri_center)) or math.huge
-				local c = (seed_c and vector3_distance_squared(seed_c, tri_center)) or math.huge
+				local a = seed_a and vector3_distance_squared(seed_a, tri_center) or math.huge
+				local b = seed_b and vector3_distance_squared(seed_b, tri_center) or math.huge
+				local c = seed_c and vector3_distance_squared(seed_c, tri_center) or math.huge
 				local closest = nil
 
 				if a < b then
@@ -162,7 +162,7 @@ PerlinPath.fill_spawns = function (nav_world, main_path, path_length, density_pa
 		end
 	end
 
-	for i = 1, #area_list, 1 do
+	for i = 1, #area_list do
 		print("area " .. i .. ") " .. area_list[i])
 	end
 
@@ -178,7 +178,7 @@ end
 PerlinPath.draw_debug_spawns = function (nav_world, gui, triangles, lookup, area_list)
 	local size = #triangles
 
-	for i = 1, size, 1 do
+	for i = 1, size do
 		local triangle = triangles[i]
 		local a, b, c = Script.temp_count()
 		local h = Vector3(0, 0, 0.1)
@@ -195,7 +195,7 @@ PerlinPath.make_path = function (oktave_table, points)
 	local step_dist = 1 / points
 	local x = 0
 
-	for i = start_oktave, end_oktave, 1 do
+	for i = start_oktave, end_oktave do
 		x = x + step_dist
 	end
 end
@@ -204,7 +204,7 @@ PerlinPath.normalize_path = function (points, wanted_area_fill_rate)
 	local area = 0
 	local segments = #points - 1
 
-	for i = 1, segments, 1 do
+	for i = 1, segments do
 		area = area + (points[i][2] + points[i + 1][2]) * 0.5
 	end
 
@@ -214,5 +214,3 @@ PerlinPath.normalize_path = function (points, wanted_area_fill_rate)
 
 	return multiply_with
 end
-
-return

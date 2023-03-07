@@ -30,5 +30,3 @@ RotationCamera.update = function (self, dt, position, rotation, data)
 
 	BaseCamera.update(self, dt, position, new_rot, data)
 end
-
-return

@@ -39,5 +39,3 @@ settings.dialogue_settings = {
 		"dialogues/generated/wood_elf_forest_ambush"
 	}
 }
-
-return

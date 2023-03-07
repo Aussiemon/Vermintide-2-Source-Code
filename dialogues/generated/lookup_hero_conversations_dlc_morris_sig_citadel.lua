@@ -70,5 +70,3 @@ DialogueLookup[DialogueLookup_n + 33] = "pes_morris_citadel_fall"
 DialogueLookup[DialogueLookup_n + 34] = "pes_morris_citadel_third_vista"
 DialogueLookup[DialogueLookup_n + 35] = "pes_morris_citadel_throne"
 DialogueLookup_n = DialogueLookup_n + 35
-
-return

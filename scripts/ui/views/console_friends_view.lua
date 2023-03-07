@@ -318,7 +318,7 @@ ConsoleFriendsView._setup_party_entries = function (self)
 
 	local empty_entries = 4 - #self._party_entries
 
-	for i = 1, empty_entries, 1 do
+	for i = 1, empty_entries do
 		self._party_entries[#self._party_entries + 1] = UIWidget.init(entry_definitions.create_party_entry(nil, nil, offset * (#self._party_entries + 1)))
 	end
 end
@@ -350,7 +350,7 @@ ConsoleFriendsView._update_input_descriptions = function (self, dt, t)
 		local friend = friend_widget_content.friend
 		local friend_id = friend.xbox_user_id
 		local friend_online = friend.status == "online"
-		local invite = ((not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and Managers.account:has_session() and "invite") or nil
+		local invite = (not self._invite_cooldown[friend_id] or self._invite_cooldown[friend_id] < t) and friend_online and Managers.account:has_session() and "invite" or nil
 		local refresh = not self._is_refreshing and "refresh"
 
 		if IS_PS4 and refresh and not friend_online then
@@ -533,9 +533,9 @@ ConsoleFriendsView._handle_input = function (self, dt, t)
 		end
 	elseif not gamepad_active and not IS_PS4 then
 		local first_index = math.clamp(self._current_friend_index - (self._cursor_position - 1), 1, math.max(num_friends - (num_visible_friends - 1), 1))
-		local last_index = math.clamp((first_index + num_visible_friends) - 1, 1, num_friends)
+		local last_index = math.clamp(first_index + num_visible_friends - 1, 1, num_friends)
 
-		for i = first_index, last_index, 1 do
+		for i = first_index, last_index do
 			local entry = self._friend_list_widgets[i]
 			local entry_content = entry.content
 
@@ -647,7 +647,7 @@ ConsoleFriendsView._send_invite = function (self, widget, t)
 	local friend_id = content.friend.id
 	local cooldown = self._invite_cooldown[friend_id]
 
-	if (self._invite_cooldown[friend_id] and t < self._invite_cooldown[friend_id]) or not Managers.account:has_session() then
+	if self._invite_cooldown[friend_id] and t < self._invite_cooldown[friend_id] or not Managers.account:has_session() then
 		return
 	end
 
@@ -668,5 +668,3 @@ ConsoleFriendsView.cleanup_popups = function (self)
 		self._popup_id = nil
 	end
 end
-
-return

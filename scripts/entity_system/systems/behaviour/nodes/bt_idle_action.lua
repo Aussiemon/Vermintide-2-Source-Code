@@ -48,7 +48,7 @@ BTIdleAction.enter = function (self, unit, blackboard, t)
 		animation = idle_animation
 	end
 
-	if blackboard.move_state ~= "idle" or (action and action.force_idle_animation) then
+	if blackboard.move_state ~= "idle" or action and action.force_idle_animation then
 		network_manager:anim_event(unit, animation)
 
 		blackboard.move_state = "idle"
@@ -66,7 +66,7 @@ local function player_within_distance(unit, sqr_near_dist, side)
 	local pos = POSITION_LOOKUP[unit]
 	local player_positions = side.ENEMY_PLAYER_POSITIONS
 
-	for i = 1, #player_positions, 1 do
+	for i = 1, #player_positions do
 		local player_pos = player_positions[i]
 		local sqr_dist = Vector3.distance_squared(pos, player_pos)
 
@@ -113,5 +113,3 @@ BTIdleAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

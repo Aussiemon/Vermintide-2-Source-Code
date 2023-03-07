@@ -74,5 +74,3 @@ for title_name, settings in pairs(PerformanceTitles.titles) do
 
 	fassert(template, "Performance Titles %s failed, no evaluation_template called %s", title_name, tostring(evaluation_template))
 end
-
-return

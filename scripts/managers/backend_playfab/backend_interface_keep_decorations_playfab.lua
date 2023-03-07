@@ -63,5 +63,3 @@ BackendInterfaceKeepDecorationsPlayFab.get_unlocked_keep_decorations = function 
 
 	return self._unlocked_keep_decorations
 end
-
-return

@@ -253,7 +253,7 @@ TwitchManager.cb_on_notify_connected = function (self, connected)
 		self._twitch_game_mode = nil
 	end
 
-	Application.error(string.format("[TwitchManager] %s %s Twitch!", (connected and "Connected") or "Disconnected", (connected and "to") or "from"))
+	Application.error(string.format("[TwitchManager] %s %s Twitch!", connected and "Connected" or "Disconnected", connected and "to" or "from"))
 
 	local is_server = Managers.state.network and Managers.state.network.is_server
 
@@ -800,7 +800,7 @@ TwitchManager._handle_results = function (self, vote_results)
 	local num_options = table.size(settings_options)
 	local options = vote_results.options
 
-	for i = 1, num_options, 1 do
+	for i = 1, num_options do
 		repeat
 			if vote_type == "multiple_choice" then
 				local valid_player_index = self:_valid_player_index(i)
@@ -826,7 +826,7 @@ TwitchManager._handle_results = function (self, vote_results)
 		until true
 	end
 
-	for i = 1, num_options, 1 do
+	for i = 1, num_options do
 		local vote_template_name = vote_results.vote_templates[i]
 		local vote_template = TwitchVoteTemplates[vote_template_name]
 		local breed_name = vote_template.breed_name
@@ -933,7 +933,7 @@ TwitchManager.activate_twitch_game_mode = function (self, network_event_delegate
 		end
 
 		local lobby = network_manager:lobby()
-		self._activated = (lobby:lobby_data("twitch_enabled") == "true" and true) or false
+		self._activated = lobby:lobby_data("twitch_enabled") == "true" and true or false
 
 		if Development.parameter("twitch_debug_voting") then
 			self._activated = true
@@ -1022,7 +1022,7 @@ TwitchManager._update_debug_voting = function (self, dt)
 	local vote_type = current_vote.vote_type
 
 	if vote_type == "standard_vote" then
-		local debug_result = (script_data.twitch_mode_force_vote_template and 1) or math.random(2)
+		local debug_result = script_data.twitch_mode_force_vote_template and 1 or math.random(2)
 		message_index = debug_messages[debug_result]
 	else
 		local debug_result = math.random(5)
@@ -1097,7 +1097,7 @@ end
 TwitchGameMode._clear_used_votes = function (self, force_clear)
 	local used_vote_templates = self._used_vote_templates
 	local game_mode_whitelist = self:_get_game_mode_whitelist()
-	local num_available_vote_templates = (game_mode_whitelist and #game_mode_whitelist) or #TwitchVoteTemplatesLookup
+	local num_available_vote_templates = game_mode_whitelist and #game_mode_whitelist or #TwitchVoteTemplatesLookup
 
 	if force_clear or num_available_vote_templates - table.size(used_vote_templates) <= MIN_VOTES_LEFT_IN_ROTATION then
 		table.clear(used_vote_templates)
@@ -1142,9 +1142,9 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 
 		table.shuffle(replacement_breeds)
 
-		local templates = (is_boss and TwitchBossesSpawnBreedNamesLookup) or (is_special and TwitchSpecialsSpawnBreedNamesLookup)
+		local templates = is_boss and TwitchBossesSpawnBreedNamesLookup or is_special and TwitchSpecialsSpawnBreedNamesLookup
 
-		for i = 1, #replacement_breeds, 1 do
+		for i = 1, #replacement_breeds do
 			local breed_name = replacement_breeds[i]
 
 			if templates[breed_name] then
@@ -1165,7 +1165,7 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 
 		table.shuffle(templates)
 
-		for i = 1, #templates, 1 do
+		for i = 1, #templates do
 			local replacement_template_name = templates[i]
 
 			if not used_vote_templates[replacement_template_name] then
@@ -1189,7 +1189,7 @@ TwitchGameMode._check_breed_package_loading = function (self, wanted_template, p
 		local templates = TwitchSpecialsSpawnBreedNamesLookup
 		local replacement_template = templates[replacement_breed_name]
 
-		if not used_vote_templates[replacement_template.name] and (previous_template == nil or (previous_template and previous_template.name ~= replacement_template.name)) and wanted_template.name ~= replacement_template.name then
+		if not used_vote_templates[replacement_template.name] and (previous_template == nil or previous_template and previous_template.name ~= replacement_template.name) and wanted_template.name ~= replacement_template.name then
 			override_template = replacement_template
 		end
 	end
@@ -1234,7 +1234,7 @@ TwitchGameMode._get_next_vote = function (self)
 
 		local best_diff = -math.huge
 
-		for i = 1, #templates, 1 do
+		for i = 1, #templates do
 			local template_name = templates[i]
 
 			if not used_vote_templates[template_name] then
@@ -1260,7 +1260,7 @@ TwitchGameMode._get_next_vote = function (self)
 
 		local best_diff = math.huge
 
-		for i = 1, #templates, 1 do
+		for i = 1, #templates do
 			local template_name = templates[i]
 
 			if not used_vote_templates[template_name] then
@@ -1286,7 +1286,7 @@ TwitchGameMode._get_next_vote = function (self)
 
 		table.shuffle(templates)
 
-		for i = 1, #templates, 1 do
+		for i = 1, #templates do
 			local template_name = templates[i]
 
 			if not used_vote_templates[template_name] then
@@ -1317,7 +1317,7 @@ end
 TwitchGameMode._next_multiple_choice_vote = function (self, template)
 	local vote_templates = {}
 
-	for i = 1, 5, 1 do
+	for i = 1, 5 do
 		vote_templates[i] = template.name
 	end
 
@@ -1337,7 +1337,7 @@ TwitchGameMode._next_standard_vote = function (self, template_a)
 	local best_template = nil
 	local best_diff = math.huge
 
-	for i = 1, #templates, 1 do
+	for i = 1, #templates do
 		local template_b_name = templates[i]
 
 		if template_a_name ~= template_b_name and not used_vote_templates[template_b_name] then
@@ -1422,5 +1422,3 @@ TwitchGameMode.destroy = function (self)
 		Managers.state.event:trigger("reset_vote_ui")
 	end
 end
-
-return

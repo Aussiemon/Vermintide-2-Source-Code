@@ -578,7 +578,7 @@ StoreWindowCategoryItemList._sync_layout_path = function (self, force_update)
 	if path_length ~= saved_path_length then
 		path_differs = true
 	else
-		for i = 1, #path, 1 do
+		for i = 1, #path do
 			if path[i] ~= saved_path[i] then
 				path_differs = true
 
@@ -815,5 +815,3 @@ StoreWindowCategoryItemList._get_scrollbar_percentage_by_index = function (self,
 
 	return 0
 end
-
-return

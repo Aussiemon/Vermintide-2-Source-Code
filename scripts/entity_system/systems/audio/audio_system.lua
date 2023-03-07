@@ -106,7 +106,7 @@ AudioSystem.play_audio_unit_event = function (self, event, unit, object)
 		return
 	end
 
-	local object_id = (object and Unit.node(unit, object)) or 0
+	local object_id = object and Unit.node(unit, object) or 0
 
 	self:_play_event(event, unit, object_id)
 
@@ -159,7 +159,7 @@ AudioSystem._play_event_with_source = function (self, wwise_world, event, source
 end
 
 AudioSystem.play_audio_unit_param_string_event = function (self, event, param, value, unit, object)
-	local object_id = (object and Unit.node(unit, object)) or 0
+	local object_id = object and Unit.node(unit, object) or 0
 
 	self:_play_param_event(event, param, value, unit, object_id)
 
@@ -177,7 +177,7 @@ AudioSystem.play_audio_unit_param_string_event = function (self, event, param, v
 end
 
 AudioSystem.play_audio_unit_param_int_event = function (self, event, param, value, unit, object)
-	local object_id = (object and Unit.node(unit, object)) or 0
+	local object_id = object and Unit.node(unit, object) or 0
 
 	self:_play_param_event(event, param, value, unit, object_id)
 
@@ -205,7 +205,7 @@ AudioSystem.set_global_parameter = function (self, name, value)
 end
 
 AudioSystem.play_audio_unit_param_float_event = function (self, event, param, value, unit, object)
-	local object_id = (object and Unit.node(unit, object)) or 0
+	local object_id = object and Unit.node(unit, object) or 0
 
 	self:_play_param_event(event, param, value, unit, object_id)
 
@@ -374,5 +374,3 @@ AudioSystem.rpc_client_audio_set_global_parameter = function (self, channel_id, 
 
 	self:set_global_parameter(name, value)
 end
-
-return

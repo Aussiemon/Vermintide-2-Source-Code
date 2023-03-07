@@ -47,5 +47,3 @@ PassiveAbilitySettings.we_thornsister = {
 		}
 	}
 }
-
-return

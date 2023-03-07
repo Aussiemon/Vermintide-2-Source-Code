@@ -242,7 +242,7 @@ StateLoading._setup_first_time_ui = function (self)
 	if (loading_context.first_time or loading_context.gamma_correct or loading_context.play_trailer) and not GameSettingsDevelopment.disable_intro_trailer and not script_data.skip_intro_trailer then
 		local mechanism = Managers.mechanism:game_mechanism()
 		local inn_level_name = mechanism:get_hub_level_key()
-		local level_name = (Boot.loading_context and Boot.loading_context.level_key) or inn_level_name
+		local level_name = Boot.loading_context and Boot.loading_context.level_key or inn_level_name
 		local auto_skip = nil
 		local params = {}
 		local next_level_key = Managers.level_transition_handler:get_next_level_key()
@@ -337,7 +337,7 @@ StateLoading._trigger_loading_view = function (self, level_key, act_progression_
 	if not self._loading_music_triggered then
 		if Managers.mechanism:game_mechanism():should_play_level_introduction() and not Development.parameter("gdc") then
 			local level_settings = LevelSettings[level_key]
-			local weave_name = (self._lobby_client and self._lobby_client:lobby_data("weave_name")) or Managers.weave:get_next_weave() or Development.parameter("weave_name")
+			local weave_name = self._lobby_client and self._lobby_client:lobby_data("weave_name") or Managers.weave:get_next_weave() or Development.parameter("weave_name")
 			local weave_template = WeaveSettings.templates[weave_name]
 
 			if weave_template then
@@ -391,7 +391,7 @@ StateLoading.setup_loading_view = function (self, level_key)
 		local weave_name = Managers.weave:get_next_weave() or Development.parameter("weave_name")
 
 		if level_settings.game_mode == "weave" then
-			local weave_name = (self._lobby_client and self._lobby_client:lobby_data("selected_mission_id")) or weave_name
+			local weave_name = self._lobby_client and self._lobby_client:lobby_data("selected_mission_id") or weave_name
 
 			if not weave_name or weave_name == "false" or not WeaveSettings.templates[weave_name] then
 				if IS_XB1 and not self._lobby_client:is_updating_lobby_data() then
@@ -507,12 +507,12 @@ StateLoading._trigger_sound_events = function (self, level_key)
 	if loading_screen_wwise_events then
 		local network_server = self._network_server
 		local network_client = self._network_client
-		local profile_synchronizer = (network_server and network_server.profile_synchronizer) or (network_client and network_client.profile_synchronizer)
+		local profile_synchronizer = network_server and network_server.profile_synchronizer or network_client and network_client.profile_synchronizer
 
 		if profile_synchronizer then
 			local peers_with_full_profiles = profile_synchronizer:get_peers_with_full_profiles()
 
-			for i = 1, #peers_with_full_profiles, 1 do
+			for i = 1, #peers_with_full_profiles do
 				local peer_data = peers_with_full_profiles[i]
 				local profile_index = peer_data.profile_index
 				local career_index = peer_data.career_index
@@ -790,7 +790,7 @@ StateLoading._update_network = function (self, dt)
 			self._in_post_game_popup_shown = true
 
 			Managers.popup:activate_timer(self._in_post_game_popup_id, 200, "timeout", "center", false, function (timer)
-				return string.format(Localize("timer_max_time") .. ": %.2d:%.2d", (timer / 60) % 60, timer % 60)
+				return string.format(Localize("timer_max_time") .. ": %.2d:%.2d", timer / 60 % 60, timer % 60)
 			end, 28)
 		elseif not self._network_client:is_in_post_game() and self._in_post_game_popup_id then
 			Managers.popup:cancel_popup(self._in_post_game_popup_id)
@@ -991,7 +991,7 @@ StateLoading._verify_joined_lobby = function (self, dt, t)
 	lobby_difficulty = lobby_difficulty or self._lobby_client:lobby_data("difficulty")
 	lobby_mechanism = lobby_mechanism or self._lobby_client:lobby_data("mechanism")
 	lobby_quick_game = lobby_quick_game or self._lobby_client:lobby_data("quick_game")
-	local lobby_matchmaking_type = (IS_PS4 and lobby_matchmaking_type_id) or (lobby_matchmaking_type_id and NetworkLookup.game_modes[tonumber(lobby_matchmaking_type_id)])
+	local lobby_matchmaking_type = IS_PS4 and lobby_matchmaking_type_id or lobby_matchmaking_type_id and NetworkLookup.game_modes[tonumber(lobby_matchmaking_type_id)]
 	local ready_to_compare_data = host ~= "0" and lobby_network_hash and lobby_matchmaking_type and lobby_difficulty and self._popup_id == nil
 
 	if ready_to_compare_data then
@@ -1337,7 +1337,7 @@ StateLoading._try_next_state = function (self, dt)
 	end
 
 	if Managers.account:leaving_game() then
-		if not self._ui_package_name or (self._ui_package_name and Managers.package:has_loaded(self._ui_package_name)) then
+		if not self._ui_package_name or self._ui_package_name and Managers.package:has_loaded(self._ui_package_name) then
 			if self._first_time_view then
 				self._first_time_view:destroy()
 
@@ -1509,7 +1509,7 @@ StateLoading._handle_afk_timer = function (self, dt)
 		local time = Managers.time:time("main")
 		self._afk_timer = self._afk_timer or time + AFK_TIMER
 
-		if self._afk_timer < time and (not self._ui_package_name or (self._ui_package_name and Managers.package:has_loaded(self._ui_package_name))) then
+		if self._afk_timer < time and (not self._ui_package_name or self._ui_package_name and Managers.package:has_loaded(self._ui_package_name)) then
 			if self._first_time_view then
 				self._first_time_view:destroy()
 
@@ -1936,6 +1936,7 @@ StateLoading._update_loadout_resync = function (self)
 	end
 
 	if state == states.WAIT_FOR_LEVEL_LOAD then
+		-- Nothing
 	end
 
 	if state == states.CHECK_RESYNC and self:has_joined() and Managers.mechanism:can_resync_loadout() then
@@ -1966,7 +1967,7 @@ StateLoading._update_loadout_resync = function (self)
 	if state == states.NEEDS_RESYNC then
 		local network_server = self._network_server
 		local network_client = self._network_client
-		local profile_synchronizer = (network_server and network_server.profile_synchronizer) or (network_client and network_client.profile_synchronizer)
+		local profile_synchronizer = network_server and network_server.profile_synchronizer or network_client and network_client.profile_synchronizer
 
 		if profile_synchronizer then
 			local peer_id = Network.peer_id()
@@ -1983,7 +1984,7 @@ StateLoading._update_loadout_resync = function (self)
 	if state == states.RESYNCING then
 		local network_server = self._network_server
 		local network_client = self._network_client
-		local profile_synchronizer = (network_server and network_server.profile_synchronizer) or (network_client and network_client.profile_synchronizer)
+		local profile_synchronizer = network_server and network_server.profile_synchronizer or network_client and network_client.profile_synchronizer
 
 		if profile_synchronizer then
 			local all_loaded = profile_synchronizer:all_synced()
@@ -2100,7 +2101,7 @@ StateLoading._tear_down_level_end_view_wrappers = function (self)
 	local level_end_view_wrappers = self._level_end_view_wrappers
 
 	if level_end_view_wrappers then
-		for i = 1, #level_end_view_wrappers, 1 do
+		for i = 1, #level_end_view_wrappers do
 			level_end_view_wrappers[i]:destroy()
 		end
 	end
@@ -2284,7 +2285,7 @@ StateLoading.setup_lobby_host = function (self, wait_for_joined_callback, platfo
 
 	local network_options = Managers.lobby:network_options()
 	local network_options_info = table.tostring(network_options)
-	local platform_lobby_info = (type(platform_lobby) == "table" and table.tostring(platform_lobby)) or tostring(platform_lobby)
+	local platform_lobby_info = type(platform_lobby) == "table" and table.tostring(platform_lobby) or tostring(platform_lobby)
 
 	printf("StateLoading:setup_lobby_host - creating lobby_host with network_options: %s platform_lobby: %s", network_options_info, platform_lobby_info)
 
@@ -2394,7 +2395,7 @@ StateLoading.setup_global_managers = function (self, lobby, host_peer_id, my_pee
 end
 
 StateLoading.setup_network_transmit = function (self, network_handler)
-	local server_peer_id = (self._network_server and self._network_server.server_peer_id) or (self._network_client and self._network_client.server_peer_id)
+	local server_peer_id = self._network_server and self._network_server.server_peer_id or self._network_client and self._network_client.server_peer_id
 	self._network_transmit = self.parent.loading_context.network_transmit or NetworkTransmit:new(true, server_peer_id)
 
 	self._network_transmit:set_network_event_delegate(self._network_event_delegate)
@@ -2529,7 +2530,7 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 		if IS_PS4 then
 			matchmaking_type = stored_lobby_host_data.matchmaking_type or "n/a"
 		else
-			matchmaking_type = (stored_lobby_host_data.matchmaking_type and NetworkLookup.matchmaking_types[tonumber(stored_lobby_host_data.matchmaking_type)]) or "n/a"
+			matchmaking_type = stored_lobby_host_data.matchmaking_type and NetworkLookup.matchmaking_types[tonumber(stored_lobby_host_data.matchmaking_type)] or "n/a"
 		end
 
 		if matchmaking_type ~= "weave" then
@@ -2541,18 +2542,18 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 
 		if level_setting.hub_level then
 			stored_lobby_host_data.matchmaking = "false"
-			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "n/a") or NetworkLookup.matchmaking_types["n/a"]
+			stored_lobby_host_data.matchmaking_type = IS_PS4 and "n/a" or NetworkLookup.matchmaking_types["n/a"]
 			stored_lobby_host_data.selected_mission_id = level_key
 		end
 
 		if level_key == "prologue" then
 			stored_lobby_host_data.matchmaking = "false"
-			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "tutorial") or NetworkLookup.matchmaking_types.tutorial
+			stored_lobby_host_data.matchmaking_type = IS_PS4 and "tutorial" or NetworkLookup.matchmaking_types.tutorial
 		end
 
 		local current_mechanism = Managers.level_transition_handler:get_current_mechanism()
 		local current_game_mode = Managers.level_transition_handler:get_current_game_mode()
-		stored_lobby_host_data.mechanism = (current_game_mode == "weave" and current_game_mode) or current_mechanism
+		stored_lobby_host_data.mechanism = current_game_mode == "weave" and current_game_mode or current_mechanism
 
 		if IS_PS4 then
 			local region = Managers.account:region()
@@ -2565,11 +2566,11 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 
 		if weave_name then
 			stored_lobby_host_data.mission_id = weave_name
-			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "custom") or NetworkLookup.matchmaking_types.custom
+			stored_lobby_host_data.matchmaking_type = IS_PS4 and "custom" or NetworkLookup.matchmaking_types.custom
 		elseif Managers.level_transition_handler:get_current_mechanism() == "versus" then
-			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "versus") or NetworkLookup.matchmaking_types.versus
+			stored_lobby_host_data.matchmaking_type = IS_PS4 and "versus" or NetworkLookup.matchmaking_types.versus
 		elseif Development.parameter("auto_host_level") then
-			stored_lobby_host_data.matchmaking_type = (IS_PS4 and "custom") or NetworkLookup.matchmaking_types.custom
+			stored_lobby_host_data.matchmaking_type = IS_PS4 and "custom" or NetworkLookup.matchmaking_types.custom
 		end
 
 		local eac_authorized = false
@@ -2586,7 +2587,7 @@ StateLoading.set_lobby_host_data = function (self, level_key)
 				eac_authorized = eac_state == "trusted"
 			end
 
-			stored_lobby_host_data.eac_authorized = (eac_authorized and "true") or "false"
+			stored_lobby_host_data.eac_authorized = eac_authorized and "true" or "false"
 		end
 
 		lobby_host:set_lobby_data(stored_lobby_host_data)
@@ -2614,5 +2615,3 @@ StateLoading.has_joined = function (self)
 
 	return lobby and lobby:is_joined()
 end
-
-return

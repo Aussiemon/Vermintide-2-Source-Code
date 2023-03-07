@@ -37,5 +37,3 @@ BreedBehaviors.critter_nurgling = {
 	},
 	name = "critter_nurgling"
 }
-
-return

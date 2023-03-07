@@ -114,7 +114,7 @@ SmartMatch._handle_smartmatch_session = function (self)
 	local status = MultiplayerSession.status(self._session_id)
 
 	if status ~= self._status then
-		dprintf("Session status changed from: %s to %s", (self._status and SMARTMATCH_SESSION_STATUS_LUT[self._status]) or "NONE", (status and SMARTMATCH_SESSION_STATUS_LUT[status]) or "NONE")
+		dprintf("Session status changed from: %s to %s", self._status and SMARTMATCH_SESSION_STATUS_LUT[self._status] or "NONE", status and SMARTMATCH_SESSION_STATUS_LUT[status] or "NONE")
 
 		self._status = status
 		self._ready = status == MultiplayerSession.READY
@@ -127,10 +127,10 @@ SmartMatch._start_smartmatch = function (self, dt)
 		return
 	end
 
-	local timeout_in_seconds = (self._is_host and self._timout * 10) or self._timout
-	local preserve_session_mode = (self._is_host and PreserveSessionMode.ALWAYS) or PreserveSessionMode.NEVER
+	local timeout_in_seconds = self._is_host and self._timout * 10 or self._timout
+	local preserve_session_mode = self._is_host and PreserveSessionMode.ALWAYS or PreserveSessionMode.NEVER
 
-	dprintf("PreserveSessionMode %s. is host %s", (preserve_session_mode == PreserveSessionMode.ALWAYS and "ALWAYS") or "NEVER", (self._is_host and "TRUE") or "FALSE")
+	dprintf("PreserveSessionMode %s. is host %s", preserve_session_mode == PreserveSessionMode.ALWAYS and "ALWAYS" or "NEVER", self._is_host and "TRUE" or "FALSE")
 
 	local ticket_param_str = nil
 
@@ -140,7 +140,7 @@ SmartMatch._start_smartmatch = function (self, dt)
 		dprintf("Ticket Params: %s Hopper Name: %s", ticket_param_str, self._hopper_name)
 	end
 
-	dprintf("Starting SmartMatch with session_id: %s Hopper name: %s PreserveSessionMode: %s Ticket params: %s Timeout: %i", tostring(self._session_id), self._hopper_name, (preserve_session_mode == PreserveSessionMode.ALWAYS and "ALWAYS") or "NEVER", ticket_param_str, timeout_in_seconds)
+	dprintf("Starting SmartMatch with session_id: %s Hopper name: %s PreserveSessionMode: %s Ticket params: %s Timeout: %i", tostring(self._session_id), self._hopper_name, preserve_session_mode == PreserveSessionMode.ALWAYS and "ALWAYS" or "NEVER", ticket_param_str, timeout_in_seconds)
 	MultiplayerSession.start_smartmatch(self._session_id, self._hopper_name, timeout_in_seconds, preserve_session_mode, ticket_param_str)
 
 	self._smartmatch_started = true
@@ -168,11 +168,11 @@ SmartMatch._check_smartmatch_result = function (self, dt)
 
 	local smartmatch_status = MultiplayerSession.smartmatch_status(self._session_id)
 	local session_name, session_template_name, estimated_waiting_time = MultiplayerSession.smartmatch_result(self._session_id)
-	self._estimated_waiting_time = (estimated_waiting_time > 0 and estimated_waiting_time) or self._estimated_waiting_time
+	self._estimated_waiting_time = estimated_waiting_time > 0 and estimated_waiting_time or self._estimated_waiting_time
 
 	if self._smartmatch_status ~= smartmatch_status then
 		if DEBUG_SMARTMATCH then
-			dprintf("SmartMatch Status Changed from %s to %s", (self._smartmatch_status and SMARTMATCH_STATUS_LUT[self._smartmatch_status]) or "NONE", (smartmatch_status and SMARTMATCH_STATUS_LUT[smartmatch_status]) or "NONE")
+			dprintf("SmartMatch Status Changed from %s to %s", self._smartmatch_status and SMARTMATCH_STATUS_LUT[self._smartmatch_status] or "NONE", smartmatch_status and SMARTMATCH_STATUS_LUT[smartmatch_status] or "NONE")
 
 			if session_name ~= "" then
 				dprintf("Current session name: %s. Smartmatch session name: %s. Smartmatch session template: %s", self._session_name, session_name, session_template_name)
@@ -184,7 +184,7 @@ SmartMatch._check_smartmatch_result = function (self, dt)
 		if self._smartmatch_status == SmartMatchStatus.FOUND then
 			local is_my_own_session = session_name == self._session_name
 
-			dprintf("Found session - Session name: %s %s Session template: %s", session_name, (is_my_own_session and "(My own session)") or "", session_template_name)
+			dprintf("Found session - Session name: %s %s Session template: %s", session_name, is_my_own_session and "(My own session)" or "", session_template_name)
 
 			self._found_session_name = session_name
 			self._found_session_template = session_template_name
@@ -290,5 +290,3 @@ SmartMatch.destroy = function (self)
 
 	Managers.account:add_session_to_cleanup(session_data)
 end
-
-return

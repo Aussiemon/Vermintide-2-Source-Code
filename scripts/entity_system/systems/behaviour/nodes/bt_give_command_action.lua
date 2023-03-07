@@ -80,7 +80,9 @@ BTGiveCommandAction.run = function (self, unit, blackboard, t, dt)
 				dialogue_input:trigger_networked_dialogue_event("command_change_target", event_data)
 			end
 		elseif order == "cheer" then
+			-- Nothing
 		elseif order == "rally" then
+			-- Nothing
 		elseif order == "command_globadier" then
 			dialogue_input:trigger_networked_dialogue_event("command_globadier", event_data)
 		elseif order == "command_gutter_runner" then
@@ -96,5 +98,3 @@ BTGiveCommandAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running", "evaluate"
 end
-
-return

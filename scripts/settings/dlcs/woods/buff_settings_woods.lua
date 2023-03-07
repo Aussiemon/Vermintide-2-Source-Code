@@ -309,7 +309,7 @@ settings.proc_functions = {
 			local amount_to_add = template.amount_to_add
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 
-			for i = 1, amount_to_add, 1 do
+			for i = 1, amount_to_add do
 				buff_extension:add_buff(buff_name)
 			end
 		end
@@ -394,7 +394,7 @@ settings.proc_functions = {
 		if ALIVE[player_unit] and AiUtils.unit_alive(hit_unit) then
 			local attack_type = params[2]
 
-			if not attack_type or (attack_type ~= "light_attack" and attack_type ~= "heavy_attack") then
+			if not attack_type or attack_type ~= "light_attack" and attack_type ~= "heavy_attack" then
 				return
 			end
 
@@ -544,7 +544,7 @@ settings.proc_functions = {
 			local range_squared = range * range
 			local buff_system = Managers.state.entity:system("buff_system")
 
-			for i = 1, num_targets, 1 do
+			for i = 1, num_targets do
 				local target_unit = player_and_bot_units[i]
 				local ally_position = POSITION_LOOKUP[target_unit]
 				local distance_squared = Vector3.distance_squared(owner_position, ally_position)
@@ -568,7 +568,7 @@ settings.buff_function_templates = {
 				local template = buff.template
 				local buffs_to_remove = template.add_buffs_data.buffs_to_add
 
-				for i = 1, #buffs_to_remove, 1 do
+				for i = 1, #buffs_to_remove do
 					local buff = buff_extension:get_buff_type(buffs_to_remove[i])
 
 					if buff then
@@ -619,7 +619,7 @@ settings.buff_function_templates = {
 		local player_and_bot_units = side.PLAYER_AND_BOT_UNITS
 		local num_units = #player_and_bot_units
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 			local buff_instance = buff.buff_instances and buff.buff_instances[unit]
 
@@ -748,7 +748,7 @@ settings.max_stacks_functions = {
 				local buffs_to_add = max_stack_data.buffs_to_add
 				local buff_system = Managers.state.entity:system("buff_system")
 
-				for i = 1, #buffs_to_add, 1 do
+				for i = 1, #buffs_to_add do
 					local buff_to_add = buffs_to_add[i]
 
 					buff_system:add_buff(player_unit, buff_to_add, player_unit, false)
@@ -757,5 +757,3 @@ settings.max_stacks_functions = {
 		end
 	end
 }
-
-return

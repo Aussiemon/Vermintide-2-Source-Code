@@ -28,5 +28,3 @@ loading_bg_city_wall_atlas = {
 		}
 	}
 }
-
-return

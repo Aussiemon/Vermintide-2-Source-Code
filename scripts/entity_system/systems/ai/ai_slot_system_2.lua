@@ -218,7 +218,7 @@ end
 AISlotSystem2.update_target_slots = function (self, t)
 	local target_units = self.target_units
 
-	for i = 1, #target_units, 1 do
+	for i = 1, #target_units do
 		local target_unit_extension = target_units[i]
 		local successful = target_unit_extension:update_target_slots(t, target_units, self.nav_world, self._traverse_logic)
 
@@ -231,7 +231,7 @@ end
 AISlotSystem2.update_disabled_slots_count = function (self, t)
 	local target_units = self.target_units
 
-	for i = 1, #target_units, 1 do
+	for i = 1, #target_units do
 		local target_unit_extension = target_units[i]
 
 		target_unit_extension:update_disabled_slots_count(t)
@@ -241,7 +241,7 @@ end
 AISlotSystem2.update_slot_sound = function (self, t)
 	local target_units = self.target_units
 
-	for unit_i = 1, #target_units, 1 do
+	for unit_i = 1, #target_units do
 		local target_unit_extension = target_units[unit_i]
 
 		target_unit_extension:update_slot_sound(t)
@@ -314,10 +314,10 @@ AISlotSystem2.update_slot_consumers = function (self, t)
 	end
 
 	local start_index = self.current_ai_index
-	local end_index = math.min((start_index + AI_UPDATES_PER_FRAME) - 1, update_slots_ai_units_n)
+	local end_index = math.min(start_index + AI_UPDATES_PER_FRAME - 1, update_slots_ai_units_n)
 	self.current_ai_index = end_index + 1
 
-	for i = start_index, end_index, 1 do
+	for i = start_index, end_index do
 		local ai_unit = update_slots_ai_units[i]
 		local extension = unit_extension_data[ai_unit]
 
@@ -346,7 +346,7 @@ AISlotSystem2.update_total_slots_count = function (self, t)
 	local num_slots = 0
 	local num_slots_occupied_total = 0
 
-	for j = 1, #target_units, 1 do
+	for j = 1, #target_units do
 		local target_unit_extension = target_units[j]
 		local available, occupied = target_unit_extension:update_total_slots_count(t)
 		num_slots = num_slots + available
@@ -366,7 +366,7 @@ AISlotSystem2.prioritize_queued_units_on_slot = function (self, slot)
 		local queue = slot.queue
 		local queue_n = #queue
 
-		for i = 1, queue_n, 1 do
+		for i = 1, queue_n do
 			local queued_unit = queue[i].unit
 
 			self:register_prioritized_ai_unit_update(queued_unit)
@@ -455,7 +455,7 @@ AISlotSystem2._cleanup_extension = function (self, unit, extension_name)
 		local all_slot_proviers = self.target_units
 		local target_units_n = #all_slot_proviers
 
-		for i = 1, target_units_n, 1 do
+		for i = 1, target_units_n do
 			if all_slot_proviers[i] == extension then
 				all_slot_proviers[i] = all_slot_proviers[target_units_n]
 				all_slot_proviers[target_units_n] = nil
@@ -513,7 +513,7 @@ function debug_print_slots_count(target_units)
 
 	Debug.text("OCCUPIED SLOTS")
 
-	for unit_i = 1, target_slots_n, 1 do
+	for unit_i = 1, target_slots_n do
 		local target_unit_extension = target_units[unit_i]
 		local target_unit = target_unit_extension.unit
 		local player_manager = Managers.player
@@ -558,5 +558,3 @@ AISlotSystem2.set_allowed_layer = function (self, layer_name, allowed)
 		GwNavTagLayerCostTable.forbid_layer(self._navtag_layer_cost_table, layer_id)
 	end
 end
-
-return

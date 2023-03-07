@@ -148,7 +148,7 @@ WeaveCapturePointExtension.deactivate = function (self)
 
 	local size = self._size
 
-	for i = 1, size * 15, 1 do
+	for i = 1, size * 15 do
 		local x_offset = math.random(-size * 10, size * 10) / 10
 		local y_offset = math.random(-size * 10, size * 10) / 10
 		local unit_position = Unit.local_position(self._unit, 0)
@@ -183,7 +183,7 @@ end
 WeaveCapturePointExtension._update_num_players_required = function (self, num_players)
 	local percentage = self._percentage_of_players_required
 	local num_players_req = math.floor(num_players * percentage)
-	self._num_players_required = (num_players_req == 0 and 1) or num_players_req
+	self._num_players_required = num_players_req == 0 and 1 or num_players_req
 	self._num_players = num_players
 end
 
@@ -328,5 +328,3 @@ end
 WeaveCapturePointExtension.get_score = function (self)
 	return self._score
 end
-
-return

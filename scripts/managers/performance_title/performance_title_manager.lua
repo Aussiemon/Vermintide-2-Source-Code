@@ -169,7 +169,7 @@ PerformanceTitleManager._sync_assigned_titles = function (self, assigned_titles)
 	local title_ids = {}
 	local amounts = {}
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local data = assigned_titles[i]
 
 		if data then
@@ -233,7 +233,7 @@ end
 PerformanceTitleManager.rpc_sync_performance_titles = function (self, channel_id, peer_ids, local_player_ids, title_ids, amounts)
 	local assigned_titles = {}
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local peer_id = peer_ids[i]
 
 		if peer_id ~= INVALID_PEER then
@@ -251,5 +251,3 @@ PerformanceTitleManager.rpc_sync_performance_titles = function (self, channel_id
 
 	self._assigned_titles = assigned_titles
 end
-
-return

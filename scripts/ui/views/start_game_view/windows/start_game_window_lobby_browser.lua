@@ -231,7 +231,7 @@ StartGameWindowLobbyBrowser._assign_hero_portraits = function (self)
 	local widget = self._lobby_info_box_base_widgets_by_name.hero_tabs
 	local content = widget.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -247,7 +247,7 @@ StartGameWindowLobbyBrowser._assign_hero_portraits = function (self)
 	local widget = self._lobby_info_box_deus_widgets_by_name.hero_tabs
 	local content = widget.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -470,7 +470,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 			local objective_spacing = 10
 			local largest_objective_width = 0
 
-			for i = 1, #objectives, 1 do
+			for i = 1, #objectives do
 				local objective = objectives[i]
 				local objective_display_name = objective.display_name
 				local objective_icon = objective.icon
@@ -492,7 +492,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	local mission_id = lobby_data.mission_id or lobby_data.selected_mission_id
 
 	if mission_id and mission_id ~= "n/a" then
-		local level_key = (weave_template and weave_template.objectives[1].level_id) or mission_id
+		local level_key = weave_template and weave_template.objectives[1].level_id or mission_id
 		local level_settings = LevelSettings[level_key]
 		level_image = level_settings.level_image
 		level_name = level_settings.display_name
@@ -501,7 +501,7 @@ StartGameWindowLobbyBrowser._handle_weave_data = function (self, lobby_data)
 	local level_image_widget = info_box_widgets.level_image
 	level_image_widget.content.texture_id = level_image
 	local level_name_widget = info_box_widgets.level_name
-	level_name_widget.content.text = (weave_template and weave_template.display_name and Localize(weave_template.display_name)) or ""
+	level_name_widget.content.text = weave_template and weave_template.display_name and Localize(weave_template.display_name) or ""
 	local num_players_text = "n/a"
 	local num_players = lobby_data.num_players
 
@@ -581,13 +581,13 @@ StartGameWindowLobbyBrowser._handle_lobby_data = function (self, game_type, lobb
 		local ip_adress = server_info.ip_address
 		info_box_widgets_servers.info_frame_ip_adress_text.content.text = ip_adress or Localize("lb_unknown")
 		local password_protected = server_info.password
-		local password_text = (password_protected == true and "lb_yes") or (password_protected == false and "lb_no") or "lb_unknown"
+		local password_text = password_protected == true and "lb_yes" or password_protected == false and "lb_no" or "lb_unknown"
 		info_box_widgets_servers.info_frame_password_protected_text.content.text = Localize(password_text)
 		local ping = server_info.ping
-		info_box_widgets_servers.info_frame_ping_text.content.text = (ping and tostring(ping)) or Localize("lb_unknown")
+		info_box_widgets_servers.info_frame_ping_text.content.text = ping and tostring(ping) or Localize("lb_unknown")
 		local favorite = server_info.favorite
-		info_box_widgets_servers.info_frame_favorite_text.content.text = (favorite and Localize("lb_yes")) or Localize("lb_no")
-		info_box_widgets_servers.add_to_favorites_button.content.button_text = (favorite and Localize("lb_remove_from_favorites")) or Localize("lb_add_to_favorites")
+		info_box_widgets_servers.info_frame_favorite_text.content.text = favorite and Localize("lb_yes") or Localize("lb_no")
+		info_box_widgets_servers.add_to_favorites_button.content.button_text = favorite and Localize("lb_remove_from_favorites") or Localize("lb_add_to_favorites")
 	end
 
 	self._show_widget_type = "adventure"
@@ -613,7 +613,7 @@ StartGameWindowLobbyBrowser._handle_deus_data = function (self, lobby_data)
 	local occupied_profiles = {}
 	local num_profiles = #SPProfiles
 
-	for i = 1, num_profiles, 1 do
+	for i = 1, num_profiles do
 		if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 			occupied_profiles[i] = true
 		end
@@ -622,7 +622,7 @@ StartGameWindowLobbyBrowser._handle_deus_data = function (self, lobby_data)
 	local hero_tabs_widget = info_box_widgets.hero_tabs
 	local hero_tabs_content = hero_tabs_widget.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -703,7 +703,7 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 	local occupied_profiles = {}
 	local num_profiles = #SPProfiles
 
-	for i = 1, num_profiles, 1 do
+	for i = 1, num_profiles do
 		if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 			occupied_profiles[i] = true
 		end
@@ -711,7 +711,7 @@ StartGameWindowLobbyBrowser._setup_lobby_info_box = function (self, lobby_data)
 
 	local content = self._lobby_info_box_base_widgets_by_name.hero_tabs.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -849,7 +849,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 	self._base_widgets_by_name.search_button.content.button_hotspot.disable_button = join_lobby_data_id or loading
 	local base_widgets = self._base_widgets
 
-	for i = 1, #base_widgets, 1 do
+	for i = 1, #base_widgets do
 		local widget = base_widgets[i]
 
 		UIRenderer.draw_widget(ui_renderer, widget)
@@ -861,7 +861,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 		if self._show_widget_type == "weave" then
 			local lobby_info_box_base_widgets = self._lobby_info_box_base_widgets
 
-			for i = 1, #lobby_info_box_base_widgets, 1 do
+			for i = 1, #lobby_info_box_base_widgets do
 				local widget = lobby_info_box_base_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -869,7 +869,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 
 			local lobby_info_box_weaves_widgets = self._lobby_info_box_weaves_widgets
 
-			for i = 1, #lobby_info_box_weaves_widgets, 1 do
+			for i = 1, #lobby_info_box_weaves_widgets do
 				local widget = lobby_info_box_weaves_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -877,7 +877,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 
 			local lobby_info_box_lobbies_weaves_widgets = self._lobby_info_box_lobbies_weaves_widgets
 
-			for i = 1, #lobby_info_box_lobbies_weaves_widgets, 1 do
+			for i = 1, #lobby_info_box_lobbies_weaves_widgets do
 				local widget = lobby_info_box_lobbies_weaves_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -885,7 +885,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 		elseif self._show_widget_type == "deus" then
 			local lobby_info_box_deus_widgets = self._lobby_info_box_deus_widgets
 
-			for i = 1, #lobby_info_box_deus_widgets, 1 do
+			for i = 1, #lobby_info_box_deus_widgets do
 				local widget = lobby_info_box_deus_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -893,7 +893,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 
 			local lobby_info_box_lobbies_deus_widgets = self._lobby_info_box_lobbies_deus_widgets
 
-			for i = 1, #lobby_info_box_lobbies_deus_widgets, 1 do
+			for i = 1, #lobby_info_box_lobbies_deus_widgets do
 				local widget = lobby_info_box_lobbies_deus_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -901,7 +901,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 		else
 			local lobby_info_box_base_widgets = self._lobby_info_box_base_widgets
 
-			for i = 1, #lobby_info_box_base_widgets, 1 do
+			for i = 1, #lobby_info_box_base_widgets do
 				local widget = lobby_info_box_base_widgets[i]
 
 				UIRenderer.draw_widget(ui_renderer, widget)
@@ -910,7 +910,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 			if current_lobby_type == "lobbies" then
 				local lobby_info_box_lobbies_widgets = self._lobby_info_box_lobbies_widgets
 
-				for i = 1, #lobby_info_box_lobbies_widgets, 1 do
+				for i = 1, #lobby_info_box_lobbies_widgets do
 					local widget = lobby_info_box_lobbies_widgets[i]
 
 					UIRenderer.draw_widget(ui_renderer, widget)
@@ -918,7 +918,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 			elseif current_lobby_type == "servers" then
 				local lobby_info_box_servers_widgets = self._lobby_info_box_servers_widgets
 
-				for i = 1, #lobby_info_box_servers_widgets, 1 do
+				for i = 1, #lobby_info_box_servers_widgets do
 					local widget = lobby_info_box_servers_widgets[i]
 
 					UIRenderer.draw_widget(ui_renderer, widget)
@@ -930,7 +930,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 	if current_lobby_type == "lobbies" then
 		local lobbies_widgets = self._lobbies_widgets
 
-		for i = 1, #lobbies_widgets, 1 do
+		for i = 1, #lobbies_widgets do
 			local widget = lobbies_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -938,7 +938,7 @@ StartGameWindowLobbyBrowser.draw = function (self, dt)
 	elseif current_lobby_type == "servers" then
 		local server_widgets = self._server_widgets
 
-		for i = 1, #server_widgets, 1 do
+		for i = 1, #server_widgets do
 			local widget = server_widgets[i]
 
 			UIRenderer.draw_widget(ui_renderer, widget)
@@ -963,7 +963,7 @@ StartGameWindowLobbyBrowser._populate_lobby_list = function (self, auto_update)
 	local lobbies = self:_get_lobbies()
 	local ignore_scroll_reset = true
 	local show_lobbies_index = self.selected_show_lobbies_index
-	local show_all_lobbies = (show_lobbies_index == 2 and true) or false
+	local show_all_lobbies = show_lobbies_index == 2 and true or false
 	local lobbies_to_present = {}
 	local lobby_count = 0
 
@@ -980,7 +980,7 @@ StartGameWindowLobbyBrowser._populate_lobby_list = function (self, auto_update)
 		self.lobby_list:animate_loading_text()
 	end
 
-	self.lobby_list_update_timer = (keep_searching and MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH) or nil
+	self.lobby_list_update_timer = keep_searching and MatchmakingSettings.TIME_BETWEEN_EACH_SEARCH or nil
 
 	self.lobby_list:populate_lobby_list(lobbies_to_present, ignore_scroll_reset)
 
@@ -1162,9 +1162,10 @@ end
 StartGameWindowLobbyBrowser._switch_lobby_type = function (self, new_lobby_type)
 	self._current_lobby_type = new_lobby_type
 	local lobby_type_button = self._base_widgets_by_name.lobby_type_button
-	lobby_type_button.content.button_text = (new_lobby_type == "lobbies" and Localize("lb_lobby_type_lobbies")) or Localize("lb_lobby_type_servers")
+	lobby_type_button.content.button_text = new_lobby_type == "lobbies" and Localize("lb_lobby_type_lobbies") or Localize("lb_lobby_type_servers")
 
 	if new_lobby_type == "lobbies" then
+		-- Nothing
 	elseif new_lobby_type == "servers" then
 		self:_on_search_type_stepper_input(0, 1)
 	else
@@ -1188,7 +1189,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local distance_index = self.selected_distance_index
 	local distance_filter = LobbyAux.map_lobby_distance_filter[distance_index]
 	local show_lobbies_index = self.selected_show_lobbies_index
-	local show_all_lobbies = (show_lobbies_index == 2 and true) or false
+	local show_all_lobbies = show_lobbies_index == 2 and true or false
 	local matchmaking = not show_all_lobbies
 	local free_slots = 1
 	local requirements = {
@@ -1222,7 +1223,7 @@ StartGameWindowLobbyBrowser._create_filter_requirements = function (self)
 	local eac_authorized = eac_state == "trusted"
 	requirements.filters.eac_authorized = {
 		comparison = "equal",
-		value = (eac_authorized and "true") or "false"
+		value = eac_authorized and "true" or "false"
 	}
 
 	if difficulty_key ~= "any" and difficulty_key then
@@ -1309,7 +1310,7 @@ StartGameWindowLobbyBrowser._get_levels = function (self)
 	local game_modes = game_mode_data.game_modes
 	local game_mode_index = self.selected_game_mode_index or game_modes.any
 	local data = game_mode_data[game_mode_index]
-	local levels = (data and data.levels) or {
+	local levels = data and data.levels or {
 		"any"
 	}
 
@@ -1321,7 +1322,7 @@ StartGameWindowLobbyBrowser._get_difficulties = function (self)
 	local game_modes = game_mode_data.game_modes
 	local game_mode_index = self.selected_game_mode_index or game_modes.any
 	local data = game_mode_data[game_mode_index]
-	local difficulties = (data and data.difficulties) or {
+	local difficulties = data and data.difficulties or {
 		"any"
 	}
 
@@ -1578,5 +1579,3 @@ StartGameWindowLobbyBrowser._animate_element_by_catmullrom = function (self, tar
 
 	return new_animation
 end
-
-return

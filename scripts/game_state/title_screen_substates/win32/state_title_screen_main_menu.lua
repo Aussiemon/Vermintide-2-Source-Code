@@ -203,7 +203,7 @@ StateTitleScreenMainMenu.cb_fade_in_done = function (self, level_key, profile_na
 
 		self.parent.parent.loading_context.wanted_profile_index = 4
 	elseif script_data.honduras_demo then
-		self.parent.parent.loading_context.wanted_profile_index = (profile_name and FindProfileIndex(profile_name)) or DemoSettings.wanted_profile_index
+		self.parent.parent.loading_context.wanted_profile_index = profile_name and FindProfileIndex(profile_name) or DemoSettings.wanted_profile_index
 		GameSettingsDevelopment.disable_free_flight = DemoSettings.disable_free_flight
 		GameSettingsDevelopment.disable_intro_trailer = DemoSettings.disable_intro_trailer
 	end
@@ -235,5 +235,3 @@ StateTitleScreenMainMenu.exit_current_view = function (self)
 
 	input_manager:block_device_except_service("main_menu", "gamepad", 1)
 end
-
-return

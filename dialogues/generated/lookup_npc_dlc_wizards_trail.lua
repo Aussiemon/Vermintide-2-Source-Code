@@ -50,5 +50,3 @@ DialogueLookup[DialogueLookup_n + 23] = "nik_wizard_trail_dead_end"
 DialogueLookup[DialogueLookup_n + 24] = "nik_wizard_trail_idle"
 DialogueLookup[DialogueLookup_n + 25] = "nik_wizard_trail_sleigh_lost"
 DialogueLookup_n = DialogueLookup_n + 25
-
-return

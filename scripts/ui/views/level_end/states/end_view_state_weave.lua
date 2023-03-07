@@ -12,7 +12,7 @@ local player_frame_spacing = 430
 local player_name_width = player_frame_spacing - 20
 
 local function draw_widgets(ui_renderer, widgets)
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		UIRenderer.draw_widget(ui_renderer, widgets[i])
 	end
 end
@@ -378,7 +378,7 @@ EndViewStateWeave._setup_team_results = function (self, players_session_scores)
 
 	table.sort(sorted_stat_ids)
 
-	for i = 1, #sorted_stat_ids, 1 do
+	for i = 1, #sorted_stat_ids do
 		local player_stat_id = sorted_stat_ids[i]
 		local player_data = players_session_scores[player_stat_id]
 		local peer_id = player_data.peer_id
@@ -391,12 +391,12 @@ EndViewStateWeave._setup_team_results = function (self, players_session_scores)
 		local portrait_frame = player_data.portrait_frame
 		local player_level = player_data.player_level
 		local is_player_controlled = player_data.is_player_controlled
-		local level_text = (is_player_controlled and ((player_level and tostring(player_level)) or "-")) or "BOT"
+		local level_text = is_player_controlled and (player_level and tostring(player_level) or "-") or "BOT"
 
 		self:_fill_portrait(i, portrait_frame, level_text, portrait_image, player_data.name)
 	end
 
-	for i = #sorted_stat_ids + 1, self._player_count, 1 do
+	for i = #sorted_stat_ids + 1, self._player_count do
 		self:_fill_portrait(i)
 	end
 
@@ -478,7 +478,7 @@ EndViewStateWeave._setup_score_panel = function (self)
 	local time = math.max(WeaveSettings.max_time - math.floor(time_left), 0)
 	local seconds = time % 60
 	local minutes = math.floor(time / 60)
-	local total_score = (game_won and weave_manager:get_score()) or 0
+	local total_score = game_won and weave_manager:get_score() or 0
 	local time_score = weave_manager:get_time_score()
 	local damage_score = weave_manager:get_damage_score()
 	local widgets_by_name = self._widgets_by_name
@@ -526,5 +526,3 @@ end
 EndViewStateWeave._play_sound = function (self, event)
 	self.parent:play_sound(event)
 end
-
-return

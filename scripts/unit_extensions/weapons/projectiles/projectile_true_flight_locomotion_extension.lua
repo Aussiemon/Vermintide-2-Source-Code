@@ -54,10 +54,10 @@ ProjectileTrueFlightLocomotionExtension.init = function (self, extension_init_co
 		self._update_towards_target_func = self.update_towards_target
 	end
 
-	self._legitimate_target_func = (template.legitimate_target_func and self[template.legitimate_target_func]) or self.legitimate_target
-	self._keep_target_on_miss_check_func = (template.keep_target_on_miss_check_func and self[template.keep_target_on_miss_check_func]) or self.legitimate_never
+	self._legitimate_target_func = template.legitimate_target_func and self[template.legitimate_target_func] or self.legitimate_target
+	self._keep_target_on_miss_check_func = template.keep_target_on_miss_check_func and self[template.keep_target_on_miss_check_func] or self.legitimate_never
 	self._lerp_modifier_func = template.lerp_modifier_func or function (distance)
-		return (distance < 5 and 1) or 5 / distance
+		return distance < 5 and 1 or 5 / distance
 	end
 	self.target_players = template.target_players
 
@@ -97,7 +97,7 @@ local function valid_position(position)
 	local pmin = NetworkConstants.position.min
 	local pmax = NetworkConstants.position.max
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local coord = position[i]
 
 		if coord < pmin or pmax < coord then
@@ -306,7 +306,7 @@ ProjectileTrueFlightLocomotionExtension.update_towards_slow_bomb_target = functi
 		network_manager.network_transmit:send_rpc_clients("rpc_set_projectile_state", unit_id, 1)
 	end
 
-	local speed_mod = math.clamp((distance < 10 and 1) or distance / 10, 0, 3)
+	local speed_mod = math.clamp(distance < 10 and 1 or distance / 10, 0, 3)
 	local speed = self.speed * speed_multiplier * speed_mod
 	local lerp_modifier = self._lerp_modifier_func(distance)
 	lerp_modifier = lerp_modifier * lerp_modifier * math.min(self.on_target_time, 0.25) / 0.25
@@ -488,7 +488,7 @@ ProjectileTrueFlightLocomotionExtension.find_player_target = function (self, pos
 	if players_n > 0 then
 		local start_index = Math.random(1, players_n)
 
-		for i = start_index, start_index + players_n, 1 do
+		for i = start_index, start_index + players_n do
 			local index = (i - 1) % players_n + 1
 			local unit = player_units[index]
 
@@ -526,7 +526,7 @@ ProjectileTrueFlightLocomotionExtension.find_broadphase_target = function (self,
 	if ai_units_n > 0 then
 		table.shuffle(ai_units)
 
-		for i = 1, ai_units_n, 1 do
+		for i = 1, ai_units_n do
 			local unit = ai_units[i]
 
 			if ScriptUnit.has_extension(unit, "health_system") and AiUtils.unit_alive(unit) and not self.hit_units[unit] and self:_legitimate_target_func(unit, position) then
@@ -562,7 +562,7 @@ ProjectileTrueFlightLocomotionExtension.find_closest_highest_value_target = func
 	local closest_distance = math.huge
 
 	if ai_units_n > 0 then
-		for i = 1, ai_units_n, 1 do
+		for i = 1, ai_units_n do
 			local unit = ai_units[i]
 			local breed = Unit.get_data(unit, "breed")
 
@@ -592,7 +592,7 @@ ProjectileTrueFlightLocomotionExtension.legitimate_never = function (self, unit,
 end
 
 ProjectileTrueFlightLocomotionExtension.legitimate_only_dot_check = function (self, unit, position)
-	local node = (Unit.has_node(unit, "c_spine") and Unit.node(unit, "c_spine")) or 0
+	local node = Unit.has_node(unit, "c_spine") and Unit.node(unit, "c_spine") or 0
 	local target_position = Unit.world_position(unit, node)
 	local current_direction = self.current_direction:unbox()
 	local direction_to_target = target_position - position
@@ -786,5 +786,3 @@ ProjectileTrueFlightLocomotionExtension.stop = function (self)
 
 	self.stopped = true
 end
-
-return

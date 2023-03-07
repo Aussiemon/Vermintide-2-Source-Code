@@ -98,5 +98,3 @@ end
 AiHuskBaseExtension.destroy = function (self, unit, input)
 	return
 end
-
-return

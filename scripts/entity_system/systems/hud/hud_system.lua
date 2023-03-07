@@ -46,5 +46,3 @@ end
 HUDSystem.remove_subtitle = function (self, speaker)
 	Managers.state.event:trigger("ui_event_stop_subtitle", speaker)
 end
-
-return

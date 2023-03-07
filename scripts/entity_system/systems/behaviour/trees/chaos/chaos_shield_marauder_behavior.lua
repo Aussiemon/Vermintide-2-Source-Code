@@ -106,5 +106,3 @@ BreedBehaviors.shield_marauder = {
 	},
 	name = "shield_marauder"
 }
-
-return

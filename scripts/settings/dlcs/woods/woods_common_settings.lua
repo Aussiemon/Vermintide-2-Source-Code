@@ -264,7 +264,7 @@ settings.game_object_initializers = {
 		local wall_index = wall_extension.wall_index
 		local group_spawn_index = wall_extension.group_spawn_index
 		local source_unit = wall_extension:owner()
-		local source_unit_id = (source_unit and Managers.state.unit_storage:go_id(source_unit)) or NetworkConstants.invalid_game_object_id
+		local source_unit_id = source_unit and Managers.state.unit_storage:go_id(source_unit) or NetworkConstants.invalid_game_object_id
 		local data_table = {
 			go_type = NetworkLookup.go_types.thornsister_thorn_wall_unit,
 			husk_unit = NetworkLookup.husks[unit_name],
@@ -320,7 +320,7 @@ settings.game_object_initializers = {
 			fx_radius_percentage = 1,
 			go_type = NetworkLookup.go_types.vortex_unit,
 			husk_unit = NetworkLookup.husks[unit_name],
-			position = (mover and Mover.position(mover)) or Unit.local_position(unit, 0),
+			position = mover and Mover.position(mover) or Unit.local_position(unit, 0),
 			yaw_rot = Quaternion.yaw(Unit.local_rotation(unit, 0)),
 			velocity = Vector3(0, 0, 0),
 			vortex_template_id = NetworkLookup.vortex_templates[vortex_extension.vortex_template_name],
@@ -455,5 +455,3 @@ settings.game_object_extractors = {
 		return unit_template_name, extension_init_data
 	end
 }
-
-return

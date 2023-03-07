@@ -191,7 +191,7 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 		local ray_succeded, hit_position, ray_goal_position = nil
 		local num_rays = 5
 
-		for i = 1, num_rays, 1 do
+		for i = 1, num_rays do
 			ray_goal_position = below_player_position + to_player * 0.5 * i
 			ray_succeded, hit_position = is_in_line_of_sight(unit, ray_origin_position, ray_goal_position, physics_world)
 
@@ -207,10 +207,9 @@ PlayerCharacterStateLedgeHanging.calculate_offset_rotation = function (self)
 			local new_rotation = Quaternion.look(cross_dir)
 			rotation = new_rotation
 		elseif script_data.debug_hang_ledges then
+			-- Nothing
 		end
 	end
 
 	Unit.set_local_rotation(unit, 0, rotation)
 end
-
-return

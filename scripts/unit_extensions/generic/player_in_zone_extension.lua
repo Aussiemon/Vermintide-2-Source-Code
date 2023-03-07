@@ -23,7 +23,7 @@ PlayerInZoneExtension.init = function (self, extension_init_context, unit)
 	self._has_been_in_zone = false
 	self._progression_percentage = {}
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		self._progression_percentage[i * 25] = false
 	end
 end
@@ -39,7 +39,7 @@ PlayerInZoneExtension._get_script_data = function (self)
 	self._show_progress_bar_personal = Unit.get_data(self._unit, "player_in_zone", "show_progress_bar_personal")
 	self._progress_zone_size = Unit.get_data(self._unit, "player_in_zone", "zone_radius")
 	local time_modifier_has_data = Unit.has_data(self._unit, "player_in_zone", "time_modifier_per_player")
-	self._time_modifier_per_player = (time_modifier_has_data and Unit.get_data(self._unit, "player_in_zone", "time_modifier_per_player")) or 0
+	self._time_modifier_per_player = time_modifier_has_data and Unit.get_data(self._unit, "player_in_zone", "time_modifier_per_player") or 0
 	local player_side = Unit.get_data(self._unit, "player_in_zone", "player_side")
 	local side_name = player_side or "heroes"
 	local side = Managers.state.side:get_side_from_name(side_name)
@@ -525,5 +525,3 @@ PlayerInZoneExtension._debug_drawer = function (self, current_debug_state)
 		self._drawer:sphere(Unit.local_position(self._unit, 0), self._progress_zone_size, Color(255, 255, 0), 30, 30)
 	end
 end
-
-return

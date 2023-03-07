@@ -385,37 +385,37 @@ local animation_definitions = {
 				return
 			end
 		}
-	},
-	list_detail_on_enter = {
-		{
-			name = "fade_in",
-			start_progress = 0,
-			end_progress = 0.3,
-			init = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end,
-			update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
-				local anim_progress = math.easeOutCubic(progress)
-				local list_detail_top_left = widgets.list_detail_top_left
-				local list_detail_top_right = widgets.list_detail_top_right
-				local list_detail_bottom_left = widgets.list_detail_bottom_left
-				local list_detail_bottom_center = widgets.list_detail_bottom_center
-				local list_detail_top_center = widgets.list_detail_top_center
-				local list_detail_bottom_right = widgets.list_detail_bottom_right
-				local chain = widgets.chain
-				local alpha = 255 * anim_progress
-				chain.style.tiling_texture.color[1] = alpha
-				list_detail_top_center.style.tiling_texture.color[1] = alpha
-				list_detail_bottom_center.style.tiling_texture.color[1] = alpha
-				list_detail_top_left.style.texture_id.color[1] = alpha
-				list_detail_bottom_left.style.texture_id.color[1] = alpha
-				list_detail_top_right.style.texture_id.color[1] = alpha
-				list_detail_bottom_right.style.texture_id.color[1] = alpha
-			end,
-			on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
-				return
-			end
-		}
+	}
+}
+animation_definitions.list_detail_on_enter = {
+	{
+		name = "fade_in",
+		start_progress = 0,
+		end_progress = 0.3,
+		init = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end,
+		update = function (ui_scenegraph, scenegraph_definition, widgets, progress, params)
+			local anim_progress = math.easeOutCubic(progress)
+			local list_detail_top_left = widgets.list_detail_top_left
+			local list_detail_top_right = widgets.list_detail_top_right
+			local list_detail_bottom_left = widgets.list_detail_bottom_left
+			local list_detail_bottom_center = widgets.list_detail_bottom_center
+			local list_detail_top_center = widgets.list_detail_top_center
+			local list_detail_bottom_right = widgets.list_detail_bottom_right
+			local chain = widgets.chain
+			local alpha = 255 * anim_progress
+			chain.style.tiling_texture.color[1] = alpha
+			list_detail_top_center.style.tiling_texture.color[1] = alpha
+			list_detail_bottom_center.style.tiling_texture.color[1] = alpha
+			list_detail_top_left.style.texture_id.color[1] = alpha
+			list_detail_bottom_left.style.texture_id.color[1] = alpha
+			list_detail_top_right.style.texture_id.color[1] = alpha
+			list_detail_bottom_right.style.texture_id.color[1] = alpha
+		end,
+		on_complete = function (ui_scenegraph, scenegraph_definition, widgets, params)
+			return
+		end
 	}
 }
 local generic_input_actions = {

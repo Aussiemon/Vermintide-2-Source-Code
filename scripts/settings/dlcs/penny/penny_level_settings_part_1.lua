@@ -78,5 +78,3 @@ settings.missions = {
 		text = "mission_portals_exit_through_waystone"
 	}
 }
-
-return

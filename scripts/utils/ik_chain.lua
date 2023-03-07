@@ -1,7 +1,7 @@
 IkChain = class(IkChain)
 
 local function unbox_pos_array(boxed_source_array, target_array, num)
-	for i = 1, num, 1 do
+	for i = 1, num do
 		target_array[i] = boxed_source_array[i]:unbox()
 	end
 
@@ -9,7 +9,7 @@ local function unbox_pos_array(boxed_source_array, target_array, num)
 end
 
 local function save_joints_in_boxed_array(source_array, target_array, num)
-	for i = 1, num, 1 do
+	for i = 1, num do
 		target_array[i]:store(source_array[i])
 	end
 end
@@ -20,13 +20,13 @@ IkChain.init = function (self, joints, start_pos, target_pos, tolerance, use_max
 	local sum = 0
 	local boxed_joints = {}
 
-	for i = 1, #joints - 1, 1 do
+	for i = 1, #joints - 1 do
 		local d = Vector3.length(joints[i] - joints[i + 1])
 		lengths[i] = d
 		sum = sum + d
 	end
 
-	for i = 1, #joints, 1 do
+	for i = 1, #joints do
 		boxed_joints[i] = Vector3Box(joints[i])
 	end
 
@@ -73,10 +73,10 @@ IkChain.update_whip = function (self, joints, angular_velocity, t, dt)
 end
 
 IkChain.debug_draw = function (self, joints, num_joints)
-	local line_color = (self.constrain_angle and Color(120, 0, 120)) or Color(120, 255, 0)
+	local line_color = self.constrain_angle and Color(120, 0, 120) or Color(120, 255, 0)
 	local ball_color = Color(0, 155, 255)
 
-	for i = 1, num_joints - 1, 1 do
+	for i = 1, num_joints - 1 do
 		QuickDrawer:line(joints[i], joints[i + 1], line_color)
 		QuickDrawer:sphere(joints[i], 0.05 + i * 0.01, ball_color)
 	end
@@ -100,7 +100,7 @@ end
 IkChain.forward = function (self, joints, lengths, num_joints, start_pos)
 	joints[1] = start_pos
 
-	for i = 1, num_joints - 1, 1 do
+	for i = 1, num_joints - 1 do
 		local r = joints[i + 1] - joints[i]
 		local l = lengths[i] / Vector3.length(r)
 		local pos = (1 - l) * joints[i] + l * joints[i + 1]
@@ -118,7 +118,7 @@ IkChain.forward_constrained = function (self, joints, lengths, num_joints, start
 	joints[1] = start_pos
 	local cone_dir = Vector3.normalize(joints[2] - start_pos)
 
-	for i = 1, num_joints - 1, 1 do
+	for i = 1, num_joints - 1 do
 		local r = joints[i + 1] - joints[i]
 		local l = lengths[i] / Vector3.length(r)
 		local pos = (1 - l) * joints[i] + l * joints[i + 1]
@@ -161,7 +161,7 @@ IkChain.solve = function (self, t, dt)
 	local distance = Vector3.length(joints[1] - target_pos)
 
 	if self.totallength < distance then
-		for i = 1, num_joints - 1, 1 do
+		for i = 1, num_joints - 1 do
 			local r = Vector3.length(target_pos - joints[i])
 			local l = lengths[i] / r
 			joints[i + 1] = (1 - l) * joints[i] + l * target_pos
@@ -208,7 +208,7 @@ IkChain.solve_dragging = function (self, t, dt)
 	local distance = Vector3.length(joints[1] - target_pos)
 
 	if self.totallength < distance then
-		for i = 1, num_joints - 1, 1 do
+		for i = 1, num_joints - 1 do
 			local r = Vector3.length(target_pos - joints[i])
 			local l = lengths[i] / r
 			joints[i + 1] = (1 - l) * joints[i] + l * target_pos
@@ -221,5 +221,3 @@ IkChain.solve_dragging = function (self, t, dt)
 	self:debug_draw(joints, num_joints)
 	Debug.text("Solving tentacle dragging: %d iterations, %d joints", count, self.n)
 end
-
-return

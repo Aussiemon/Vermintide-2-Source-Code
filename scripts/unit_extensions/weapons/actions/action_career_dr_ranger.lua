@@ -132,5 +132,3 @@ ActionCareerDRRanger.finish = function (self, reason)
 
 	self.inventory_extension:wield_previous_non_level_slot()
 end
-
-return

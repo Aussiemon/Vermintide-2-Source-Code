@@ -27,5 +27,3 @@ end
 DecalManager.clear_all_of_type = function (self, pool_name)
 	EngineOptimizedManagers.decal_manager_clear_all_of_type(self._decal_system, pool_name)
 end
-
-return

@@ -210,5 +210,3 @@ wizards_trail_atlas = {
 		}
 	}
 }
-
-return

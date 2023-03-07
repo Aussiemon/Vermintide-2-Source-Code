@@ -1,5 +1,5 @@
 local window_frame_width = 22
-local platform_offset = (not IS_WINDOWS and 50) or 0
+local platform_offset = not IS_WINDOWS and 50 or 0
 local score_container_w = 1600
 local score_container_margin_w = 50
 local score_content_w = score_container_w - score_container_margin_w
@@ -638,11 +638,11 @@ end
 function create_leaderboard_button(scenegraph_id, size, frame_name, background_texture, background_icon)
 	background_texture = background_texture or "button_bg_01"
 	local background_texture_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_texture)
-	local frame_settings = (frame_name and UIFrameSettings[frame_name]) or UIFrameSettings.button_frame_01
+	local frame_settings = frame_name and UIFrameSettings[frame_name] or UIFrameSettings.button_frame_01
 	local frame_width = frame_settings.texture_sizes.corner[1]
 	background_icon = background_icon or "loot_chest_icon"
 	local background_icon_settings = UIAtlasHelper.get_atlas_settings_by_texture_name(background_icon)
-	local background_icon_size = (background_icon_settings and background_icon_settings.size) or {
+	local background_icon_size = background_icon_settings and background_icon_settings.size or {
 		50,
 		50
 	}
@@ -848,7 +848,7 @@ local function create_timer_bar(scenegraph_id, size, optional_detail_texture, op
 						local parent_style = style.parent
 						local bar_fill_style = parent_style.bar_fill
 						local start_offset = bar_fill_style.offset[1]
-						style.offset[1] = math.floor((bar_fill_style.size[1] + start_offset) - style.default_size[1] / 2)
+						style.offset[1] = math.floor(bar_fill_style.size[1] + start_offset - style.default_size[1] / 2)
 					end,
 					content_check_function = function (content)
 						return content.active
@@ -954,7 +954,7 @@ local function update_timer_bar_progress(widget, progress, t)
 	local pulse_rate = 0.5
 	local min_alpha = 150
 	local max_alpha = 255
-	local pulse_progress = math.ease_pulse((t * pulse_rate) % 1)
+	local pulse_progress = math.ease_pulse(t * pulse_rate % 1)
 	style.bar_edge.color[1] = min_alpha + (max_alpha - min_alpha) * pulse_progress
 end
 

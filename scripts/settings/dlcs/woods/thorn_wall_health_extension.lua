@@ -46,5 +46,3 @@ ThornWallHealthExtension.add_damage = function (self, attacker_unit, damage_amou
 		end
 	end
 end
-
-return

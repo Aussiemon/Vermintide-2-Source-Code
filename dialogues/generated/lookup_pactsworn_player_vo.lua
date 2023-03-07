@@ -112,5 +112,3 @@ DialogueLookup[DialogueLookup_n + 54] = "ewt_vw_attack_now"
 DialogueLookup[DialogueLookup_n + 55] = "ewt_vw_cover_me"
 DialogueLookup[DialogueLookup_n + 56] = "ewt_vw_go_here"
 DialogueLookup_n = DialogueLookup_n + 56
-
-return

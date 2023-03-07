@@ -85,7 +85,7 @@ BTPrepareJumpSlamAction.try_position = function (nav_world, pos, to_target_norma
 	local found_impact_pos = nil
 	local angle = 0
 
-	for i = 1, 4, 1 do
+	for i = 1, 4 do
 		local test_pos = pos - Quaternion.rotate(Quaternion(Vector3.up(), angle), to_target_normalized)
 		local success, z_height = GwNavQueries.triangle_from_position(nav_world, test_pos, 0.5, 0.5)
 
@@ -200,5 +200,3 @@ BTPrepareJumpSlamAction.test_trajectory_new = function (blackboard, p1, p2, segm
 
 	return in_los, velocity, time_of_flight, hit_pos
 end
-
-return

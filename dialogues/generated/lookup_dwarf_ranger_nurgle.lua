@@ -30,5 +30,3 @@ DialogueLookup[DialogueLookup_n + 13] = "pdr_nurgle_intro_a"
 DialogueLookup[DialogueLookup_n + 14] = "pdr_nurgle_intro_b"
 DialogueLookup[DialogueLookup_n + 15] = "pdr_nurgle_intro_c"
 DialogueLookup_n = DialogueLookup_n + 15
-
-return

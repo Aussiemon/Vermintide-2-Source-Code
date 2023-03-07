@@ -49,5 +49,3 @@ end
 ShowCursorStack.cursor_active = function ()
 	return ShowCursorStack.stack_depth > 0
 end
-
-return

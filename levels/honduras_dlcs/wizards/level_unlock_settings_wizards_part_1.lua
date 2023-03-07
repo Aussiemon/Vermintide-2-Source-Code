@@ -22,5 +22,3 @@ ActSettings.act_wizards = {
 	sorting = 2,
 	banner_texture = "menu_frame_bg_01"
 }
-
-return

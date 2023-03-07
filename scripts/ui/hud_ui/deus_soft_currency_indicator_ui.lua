@@ -90,5 +90,3 @@ DeusSoftCurrencyIndicatorUI._draw = function (self, dt, t)
 	UIRenderer.draw_widget(ui_renderer, self._coin_widget)
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

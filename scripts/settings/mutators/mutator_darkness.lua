@@ -34,7 +34,7 @@ return {
 			return
 		end
 
-		for i = 1, num_player_units, 1 do
+		for i = 1, num_player_units do
 			local inventory_extension = ScriptUnit.has_extension(player_units[i], "inventory_system")
 			local has_torch = inventory_extension and inventory_extension:has_inventory_item("slot_level_event", "mutator_torch")
 
@@ -54,7 +54,7 @@ return {
 		local init_idx = math.random(num_player_units)
 		local player_idx, player_unit, status_extension = nil
 
-		for i = 1, num_player_units, 1 do
+		for i = 1, num_player_units do
 			local player_idx = math.index_wrapper(init_idx + 47 * i, num_player_units)
 			player_unit = player_units[player_idx]
 			status_extension = ScriptUnit.extension(player_unit, "status_system")

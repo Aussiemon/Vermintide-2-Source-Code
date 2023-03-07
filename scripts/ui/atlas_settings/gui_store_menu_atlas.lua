@@ -3178,5 +3178,3 @@ store_menu_atlas = {
 		}
 	}
 }
-
-return

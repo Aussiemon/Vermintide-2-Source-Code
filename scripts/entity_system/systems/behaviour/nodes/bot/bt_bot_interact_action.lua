@@ -42,7 +42,7 @@ end
 BTBotInteractAction.run = function (self, unit, blackboard, t, dt)
 	local interaction_unit = blackboard.current_interaction_unit
 
-	if not unit_alive(interaction_unit) or (interaction_unit ~= blackboard.interaction_unit and blackboard.interaction_unit) then
+	if not unit_alive(interaction_unit) or interaction_unit ~= blackboard.interaction_unit and blackboard.interaction_unit then
 		return "failed"
 	end
 
@@ -61,7 +61,7 @@ BTBotInteractAction.run = function (self, unit, blackboard, t, dt)
 	end
 
 	if do_interaction then
-		local input = (action_data and action_data.input) or "interact"
+		local input = action_data and action_data.input or "interact"
 
 		if bb.wait_on_previous_interaction then
 			bb.wait_on_previous_interaction = false
@@ -88,5 +88,3 @@ BTBotInteractAction.run = function (self, unit, blackboard, t, dt)
 
 	return "running"
 end
-
-return

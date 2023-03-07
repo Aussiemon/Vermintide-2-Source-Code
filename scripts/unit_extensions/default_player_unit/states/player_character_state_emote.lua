@@ -170,5 +170,3 @@ PlayerCharacterStateEmote._update_emote = function (self)
 		self.cosmetic_extension:consume_queued_3p_emote()
 	end
 end
-
-return

@@ -19,7 +19,7 @@ BTMoveToGoalAction.enter = function (self, unit, blackboard, t)
 	blackboard.new_move_to_goal = nil
 	local network_manager = Managers.state.network
 	local breed = blackboard.breed
-	local passive_in_patrol = breed.passive_in_patrol == nil or (breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol)
+	local passive_in_patrol = breed.passive_in_patrol == nil or breed.passive_in_patrol and not blackboard.ignore_passive_on_patrol
 
 	if passive_in_patrol then
 		network_manager:anim_event(unit, "to_passive")
@@ -119,7 +119,7 @@ BTMoveToGoalAction.start_move_animation = function (self, unit, blackboard)
 
 	if passive_in_patrol and passive_in_patrol_start_anim then
 		blackboard.anim_cb_move = true
-		animation_name = (type(passive_in_patrol_start_anim) == "table" and passive_in_patrol_start_anim[math.random(1, #passive_in_patrol_start_anim)]) or passive_in_patrol_start_anim
+		animation_name = type(passive_in_patrol_start_anim) == "table" and passive_in_patrol_start_anim[math.random(1, #passive_in_patrol_start_anim)] or passive_in_patrol_start_anim
 		blackboard.skip_move_rotation = true
 	end
 
@@ -162,5 +162,3 @@ BTMoveToGoalAction.toggle_start_move_animation_lock = function (self, unit, shou
 		LocomotionUtils.set_animation_rotation_scale(unit, 1)
 	end
 end
-
-return

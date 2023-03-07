@@ -149,7 +149,7 @@ settings.proc_functions = {
 			local closest_ally = nil
 			local closest_distance = 500
 
-			for i = 1, #player_and_bot_units, 1 do
+			for i = 1, #player_and_bot_units do
 				local allied_unit = player_and_bot_units[i]
 
 				if allied_unit ~= healer_unit and Unit.alive(allied_unit) then
@@ -337,13 +337,13 @@ settings.buff_function_templates = {
 		}
 		local num_buffs = #buff_list
 
-		for i = 1, num_units, 1 do
+		for i = 1, num_units do
 			local unit = player_and_bot_units[i]
 
 			if Unit.alive(unit) then
-				for b = 1, num_buffs, 1 do
+				for b = 1, num_buffs do
 					local current_buff = buff_list[b]
-					local apply = current_buff.apply and ((unit == owner_unit and current_buff.apply_to_self) or (unit ~= owner_unit and current_buff.apply_to_party))
+					local apply = current_buff.apply and (unit == owner_unit and current_buff.apply_to_self or unit ~= owner_unit and current_buff.apply_to_party)
 					local buff_to_add = current_buff.buff_to_add
 					local unit_position = POSITION_LOOKUP[unit]
 					local distance_squared = Vector3.distance_squared(owner_position, unit_position)
@@ -409,5 +409,3 @@ settings.buff_function_templates = {
 		end
 	end
 }
-
-return

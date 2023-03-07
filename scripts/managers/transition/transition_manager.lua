@@ -47,7 +47,7 @@ TransitionManager.dump_multiplayer_data = function (self)
 	table.dump(self._multiplayer_tracking.start or {}, "MultiplayerRoundStart", 2, Application.warning)
 	Application.warning(" ")
 	Application.warning("############### END ##############")
-	table.dump(self._multiplayer_tracking.end or {}, "MultiplayerRoundEnd", 2, Application.warning)
+	table.dump(self._multiplayer_tracking["end"] or {}, "MultiplayerRoundEnd", 2, Application.warning)
 	Application.warning(" ")
 	Application.warning("############# STRINGS ############")
 	table.dump(self._multiplayer_tracking.string or {}, "Strings", 2, Application.warning)
@@ -346,5 +346,3 @@ TransitionManager.update = function (self, dt)
 		self:_render(dt)
 	end
 end
-
-return

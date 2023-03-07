@@ -22,5 +22,3 @@ settings.inventory_package_list = {
 	"units/beings/player/way_watcher_upgraded_skin_01/first_person_base/chr_first_person_mesh",
 	"units/beings/player/way_watcher_upgraded_skin_01/third_person_base/chr_third_person_mesh"
 }
-
-return

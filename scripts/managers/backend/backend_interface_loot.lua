@@ -139,5 +139,3 @@ end
 BackendInterfaceLoot.get_last_generated_loot_chest = function (self)
 	return self.last_generated_loot_chest
 end
-
-return

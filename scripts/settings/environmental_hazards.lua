@@ -194,5 +194,3 @@ EnvironmentalHazards = {
 		}
 	}
 }
-
-return

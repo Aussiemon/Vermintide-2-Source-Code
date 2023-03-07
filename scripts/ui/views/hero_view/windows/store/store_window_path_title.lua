@@ -62,7 +62,7 @@ StoreWindowPathTitle._sync_layout_path = function (self)
 	if path_length ~= saved_path_length then
 		path_differs = true
 	else
-		for i = 1, #path, 1 do
+		for i = 1, #path do
 			if path[i] ~= saved_path[i] then
 				path_differs = true
 
@@ -337,5 +337,3 @@ StoreWindowPathTitle._animate_breadcrumb_widget = function (self, widget, dt)
 
 	Colors.lerp_color_tables(default_text_color, select_text_color, combined_progress, text_color)
 end
-
-return

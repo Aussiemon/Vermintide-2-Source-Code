@@ -76,5 +76,3 @@ settings.missions = {
 		text = "mission_holly_escape_into_illusion_portal"
 	}
 }
-
-return

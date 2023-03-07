@@ -454,5 +454,3 @@ GenericTerrorEvents.geheimnisnacht_2021_event_beastmen_ungor = {
 		mission_name = "mission_geheimnisnacht_2021_event"
 	}
 }
-
-return

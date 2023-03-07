@@ -92,7 +92,7 @@ local function side_objective_picked_up()
 
 	mutator_handler:initialize_mutators(hard_mode_mutators)
 
-	for i = 1, #hard_mode_mutators, 1 do
+	for i = 1, #hard_mode_mutators do
 		mutator_handler:activate_mutator(hard_mode_mutators[i])
 	end
 end
@@ -105,7 +105,7 @@ local function side_objective_picked_dropped()
 
 	local mutator_handler = Managers.state.game_mode._mutator_handler
 
-	for i = 1, #hard_mode_mutators, 1 do
+	for i = 1, #hard_mode_mutators do
 		local mutator_name = hard_mode_mutators[i]
 		local mutator_active = mutator_handler:has_activated_mutator(mutator_name)
 
@@ -127,7 +127,7 @@ return {
 			local ritual_locations = settings.ritual_locations
 			local up = Vector3.up()
 
-			for i = 1, #ritual_locations, 1 do
+			for i = 1, #ritual_locations do
 				local location = ritual_locations[i]
 				local pos = Vector3(location[1], location[2], location[3])
 				local rot = Quaternion.axis_angle(up, math.rad(location[4]))
@@ -200,14 +200,14 @@ return {
 		local forward = Vector3.forward() * spread
 		local up = Vector3.up()
 		local rot_offset = Quaternion.axis_angle(up, math.pi)
-		local angle_increment = (math.pi * 2) / num_cultists
+		local angle_increment = math.pi * 2 / num_cultists
 		local group_data = {
 			template = "geheimnisnacht_2021_altar_cultists",
 			id = Managers.state.entity:system("ai_group_system"):generate_group_id(),
 			size = num_cultists
 		}
 
-		for i = 1, num_cultists, 1 do
+		for i = 1, num_cultists do
 			local breed = Breeds[spawn_list[i]]
 			local optional_data = table.shallow_copy(optional_data_base)
 			optional_data.idle_animation = idle_variations[math.random(#idle_variations)]

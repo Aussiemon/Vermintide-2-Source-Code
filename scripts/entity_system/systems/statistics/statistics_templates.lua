@@ -65,5 +65,3 @@ end
 for name, cat in pairs(StatisticsTemplateCategories) do
 	assert(StatisticsTemplates[name] == nil, "Statistics templates: Can't have category with the same name as a template")
 end
-
-return

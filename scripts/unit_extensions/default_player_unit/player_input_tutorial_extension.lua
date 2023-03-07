@@ -164,7 +164,7 @@ PlayerInputTutorialExtension.set_input_key_scale = function (self, input_key, sc
 
 	local start_scale = 1
 	local t = self._t
-	local lerp_end_t = (lerp_time and t + lerp_time) or nil
+	local lerp_end_t = lerp_time and t + lerp_time or nil
 	local input_key_scale_data = self.input_key_scale[input_key]
 
 	if input_key_scale_data then
@@ -271,7 +271,7 @@ PlayerInputTutorialExtension.get_buffer = function (self, input_key)
 end
 
 PlayerInputTutorialExtension.add_buffer = function (self, input_key, doubleclick_window)
-	if input_key == "action_one_hold" or (self.priority_input[self.buffer_key] and not self.priority_input[input_key]) then
+	if input_key == "action_one_hold" or self.priority_input[self.buffer_key] and not self.priority_input[input_key] then
 		return
 	elseif input_key == "action_two_hold" then
 		return
@@ -334,5 +334,3 @@ PlayerInputTutorialExtension.clear_input_buffer = function (self)
 	self.new_input_buffer = nil
 	self.new_buffer_key = nil
 end
-
-return

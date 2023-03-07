@@ -71,15 +71,15 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 
 	local weapon_template = inventory_extension:get_wielded_slot_item_template()
 	local aim_assist_settings = nil
-	aim_assist_settings = (not action_settings or not action_settings.aim_assist_settings or action_settings.aim_assist_settings) and weapon_template and weapon_template.aim_assist_settings
+	aim_assist_settings = action_settings and action_settings.aim_assist_settings and action_settings.aim_assist_settings or weapon_template and weapon_template.aim_assist_settings
 	local loaded_projectile_settings = inventory_extension:get_loaded_projectile_settings()
-	local projectile_speed = (loaded_projectile_settings and loaded_projectile_settings.speed) or 0
-	local drop_multiplier = (loaded_projectile_settings and loaded_projectile_settings.drop_multiplier) or 0
-	local debug_gui = (TARGETING_DEBUG and self._gui) or nil
+	local projectile_speed = loaded_projectile_settings and loaded_projectile_settings.speed or 0
+	local drop_multiplier = loaded_projectile_settings and loaded_projectile_settings.drop_multiplier or 0
+	local debug_gui = TARGETING_DEBUG and self._gui or nil
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local auto_aim_disabled = not Application.user_setting("gamepad_auto_aim_enabled")
 
-	if not aim_assist_settings or (gamepad_active and auto_aim_disabled) then
+	if not aim_assist_settings or gamepad_active and auto_aim_disabled then
 		return
 	end
 
@@ -109,7 +109,7 @@ PlayerUnitSmartTargetingExtension.update_opt2 = function (self, unit, input, dt,
 	local targets_within_range = false
 	local range_scalar_at_effective_max_range = 0.8
 
-	for i = 1, num_nearby_ai_units, 1 do
+	for i = 1, num_nearby_ai_units do
 		repeat
 			local unit = nearby_ai_units[i]
 
@@ -227,13 +227,13 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 	end
 
 	local aim_assist_settings = nil
-	aim_assist_settings = (not action_settings or not action_settings.aim_assist_settings or action_settings.aim_assist_settings) and weapon_template and weapon_template.aim_assist_settings
+	aim_assist_settings = action_settings and action_settings.aim_assist_settings and action_settings.aim_assist_settings or weapon_template and weapon_template.aim_assist_settings
 	local weapon_template = inventory_extension:get_wielded_slot_item_template()
 	local loaded_projectile_settings = inventory_extension:get_loaded_projectile_settings()
 	local gamepad_active = Managers.input:is_device_active("gamepad")
 	local auto_aim_disabled = not Application.user_setting("gamepad_auto_aim_enabled")
 
-	if not aim_assist_settings or (gamepad_active and auto_aim_disabled) then
+	if not aim_assist_settings or gamepad_active and auto_aim_disabled then
 		return
 	end
 
@@ -260,7 +260,7 @@ PlayerUnitSmartTargetingExtension.update = function (self, unit, input, dt, cont
 
 	local targets_within_range = false
 
-	for i = 1, num_nearby_ai_units, 1 do
+	for i = 1, num_nearby_ai_units do
 		repeat
 			local unit = nearby_ai_units[i]
 
@@ -429,5 +429,3 @@ end
 PlayerUnitSmartTargetingExtension.get_targeting_data = function (self)
 	return self.targeting_data
 end
-
-return

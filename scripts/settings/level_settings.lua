@@ -19,7 +19,7 @@ LevelSettings = LevelSettings or {}
 require("scripts/settings/dlc_settings")
 DLCUtils.dofile("level_settings")
 
-LevelSettingsDefaultStartLevel = (Development.parameter("gdc") and "magnus") or "inn_level"
+LevelSettingsDefaultStartLevel = Development.parameter("gdc") and "magnus" or "inn_level"
 LevelSettings.editor_level = {
 	conflict_settings = "level_editor",
 	no_terror_events = true,
@@ -1901,5 +1901,3 @@ for _, dlc in pairs(DLCSettings) do
 end
 
 dofile("scripts/settings/level_unlock_settings")
-
-return

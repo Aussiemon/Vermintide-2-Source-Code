@@ -49,10 +49,10 @@ ActionPushStagger.client_owner_start_action = function (self, new_action, t, cha
 	end
 
 	local action_hand = action_init_data and action_init_data.action_hand
-	local damage_profile_name_inner = (action_hand and new_action["damage_profile_inner_" .. action_hand]) or new_action.damage_profile_inner or "default"
+	local damage_profile_name_inner = action_hand and new_action["damage_profile_inner_" .. action_hand] or new_action.damage_profile_inner or "default"
 	self.damage_profile_inner_id = NetworkLookup.damage_profiles[damage_profile_name_inner]
 	self.damage_profile_inner = DamageProfileTemplates[damage_profile_name_inner]
-	local damage_profile_name_outer = (action_hand and new_action["damage_profile_outer_" .. action_hand]) or new_action.damage_profile_outer or "default"
+	local damage_profile_name_outer = action_hand and new_action["damage_profile_outer_" .. action_hand] or new_action.damage_profile_outer or "default"
 	self.damage_profile_outer_id = NetworkLookup.damage_profiles[damage_profile_name_outer]
 	self.damage_profile_outer = DamageProfileTemplates[damage_profile_name_outer]
 
@@ -157,7 +157,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 		local outer_push_half_angle = math.rad(buff_extension:apply_buffs_to_value(current_action.outer_push_angle or 0, "block_angle") * 0.5)
 		local total_hits = 0
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			repeat
 				local hit_actor = overlap_units[i]:unbox()
 
@@ -166,16 +166,6 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 				end
 
 				local hit_unit = Actor.unit(hit_actor)
-
-				if hit_units[hit_unit] == nil and AiUtils.unit_alive(hit_unit) then
-					hit_units[hit_unit] = true
-					local is_enemy = DamageUtils.is_enemy(owner_unit, hit_unit)
-
-					if not is_enemy then
-						break
-					end
-				end
-
 				local breed = Unit.get_data(hit_unit, "breed")
 
 				if not breed then
@@ -229,8 +219,8 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 				local hit_unit_id = network_manager:unit_game_object_id(hit_unit)
 				local hit_zone_id = NetworkLookup.hit_zones[info.hit_zone_name]
 				local power_level = self.power_level
-				local damage_profile_id_to_use = (info.inner_push and self.damage_profile_inner_id) or self.damage_profile_outer_id
-				local damage_profile_to_use = (info.inner_push and self.damage_profile_inner) or self.damage_profile_outer
+				local damage_profile_id_to_use = info.inner_push and self.damage_profile_inner_id or self.damage_profile_outer_id
+				local damage_profile_to_use = info.inner_push and self.damage_profile_inner or self.damage_profile_outer
 				local target_settings = damage_profile_to_use.default_target
 				local hit_position = Unit.world_position(hit_unit, info.node)
 				local hit_effect = current_action.impact_particle_effect or "fx/impact_block_push"
@@ -246,7 +236,7 @@ ActionPushStagger.client_owner_post_update = function (self, dt, t, world, can_d
 
 				if sound_event then
 					local attack_template = AttackTemplates[target_settings.attack_template]
-					local sound_type = (attack_template and attack_template.sound_type) or "stun_heavy"
+					local sound_type = attack_template and attack_template.sound_type or "stun_heavy"
 					local husk = self.bot_player
 
 					EffectHelper.play_melee_hit_effects(sound_event, world, hit_position, sound_type, husk, hit_unit)
@@ -321,7 +311,7 @@ ActionPushStagger.finish = function (self, reason)
 
 	if reason ~= "new_interupting_action" then
 		local reload_when_out_of_ammo_condition_func = current_action.reload_when_out_of_ammo_condition_func
-		local do_out_of_ammo_reload = (not reload_when_out_of_ammo_condition_func and true) or reload_when_out_of_ammo_condition_func(owner_unit, reason)
+		local do_out_of_ammo_reload = not reload_when_out_of_ammo_condition_func and true or reload_when_out_of_ammo_condition_func(owner_unit, reason)
 
 		if ammo_extension and current_action.reload_when_out_of_ammo and do_out_of_ammo_reload and ammo_extension:ammo_count() == 0 and ammo_extension:can_reload() then
 			local play_reload_animation = true
@@ -345,5 +335,3 @@ ActionPushStagger.finish = function (self, reason)
 	status_extension:set_blocking(false)
 	status_extension:set_has_blocked(false)
 end
-
-return

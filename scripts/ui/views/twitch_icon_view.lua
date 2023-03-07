@@ -30,7 +30,7 @@ TwitchIconView.update = function (self, dt)
 		lobby_has_twitch = lobby:lobby_data("twitch_enabled") == "true"
 	end
 
-	if lobby_has_twitch or (Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated())) then
+	if lobby_has_twitch or Managers.twitch and (Managers.twitch:is_connected() or Managers.twitch:is_activated()) then
 		self:_draw(dt)
 	end
 end
@@ -47,5 +47,3 @@ end
 TwitchIconView.destroy = function (self)
 	UIRenderer.destroy(self._ui_renderer, self._world)
 end
-
-return

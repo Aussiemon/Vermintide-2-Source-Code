@@ -225,11 +225,11 @@ ProgressionUnlocks = {
 		for _, act_levels in pairs(GameActs) do
 			local num_act_levels = #act_levels
 
-			for i = 1, num_act_levels, 1 do
+			for i = 1, num_act_levels do
 				local act_level_key = act_levels[i]
 				local completed_times = statistics_db:get_persistent_stat(stats_id, "completed_levels", act_level_key)
 
-				if completed_times == 0 or (level_key == act_level_key and completed_times > 1) then
+				if completed_times == 0 or level_key == act_level_key and completed_times > 1 then
 					quests_unlocked = false
 
 					break
@@ -1136,5 +1136,3 @@ local level_up_rewards = {
 		}
 	}
 }
-
-return

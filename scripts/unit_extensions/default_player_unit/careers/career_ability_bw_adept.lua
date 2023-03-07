@@ -210,7 +210,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 	local physics_world = World.get_data(world, "physics_world")
 	local direction, speed, hit_pos = get_leap_data(physics_world, POSITION_LOOKUP[owner_unit], landing_position)
 
-	if (local_player or (is_server and bot_player)) and not talent_extension:has_talent("sienna_adept_activated_ability_explosion") then
+	if (local_player or is_server and bot_player) and not talent_extension:has_talent("sienna_adept_activated_ability_explosion") then
 		local nav_world = Managers.state.entity:system("ai_system"):nav_world()
 		local unit_pos = POSITION_LOOKUP[owner_unit]
 		local above = 2
@@ -342,7 +342,7 @@ CareerAbilityBWAdept._run_ability = function (self)
 	}
 
 	if talent_extension:has_talent("sienna_adept_ability_trail_double") then
-		if local_player or (is_server and bot_player) then
+		if local_player or is_server and bot_player then
 			local buff_extension = self._buff_extension
 
 			if buff_extension then
@@ -374,5 +374,3 @@ CareerAbilityBWAdept._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

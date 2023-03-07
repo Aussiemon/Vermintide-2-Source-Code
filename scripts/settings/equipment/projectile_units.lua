@@ -49,5 +49,3 @@ ProjectileUnits.grenade_fire = {
 }
 
 DLCUtils.merge("projectile_units", ProjectileUnits)
-
-return

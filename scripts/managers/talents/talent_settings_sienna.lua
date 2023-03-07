@@ -1948,5 +1948,3 @@ Talents.bright_wizard = {
 
 BuffUtils.copy_talent_buff_names(TalentBuffTemplates.bright_wizard)
 BuffUtils.apply_buff_tweak_data(TalentBuffTemplates.bright_wizard, buff_tweak_data)
-
-return

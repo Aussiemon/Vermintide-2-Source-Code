@@ -116,5 +116,3 @@ HeroSpawnerHandler.rpc_to_client_spawn_player = function (self, channel_id, loca
 		self.hero_spawner_faded_in = false
 	end
 end
-
-return

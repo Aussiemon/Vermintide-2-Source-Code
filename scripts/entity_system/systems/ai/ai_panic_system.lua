@@ -63,7 +63,7 @@ AIPanicSystem.on_remove_extension = function (self, unit, extension_name)
 		local panic_units = self.panic_units
 		local panic_units_n = #panic_units
 
-		for i = 1, panic_units_n, 1 do
+		for i = 1, panic_units_n do
 			local ai_unit = panic_units[i]
 
 			if ai_unit == unit then
@@ -79,7 +79,7 @@ AIPanicSystem.on_remove_extension = function (self, unit, extension_name)
 		local fear_units = self.fear_units
 		local fear_units_n = #fear_units
 
-		for i = 1, fear_units_n, 1 do
+		for i = 1, fear_units_n do
 			local ai_unit = fear_units[i]
 
 			if ai_unit == unit then
@@ -134,7 +134,7 @@ AIPanicSystem.deregister_panic_zone = function (self, panic_zone_to_remove)
 	local panic_zones = self.panic_zones
 	local panic_zones_n = #panic_zones
 
-	for i = 1, panic_zones_n, 1 do
+	for i = 1, panic_zones_n do
 		local panic_zone = panic_zones[i]
 
 		if panic_zone == panic_zone_to_remove then
@@ -156,7 +156,7 @@ AIPanicSystem.inside_panic_zone = function (self, position)
 	local panic_zones = self.panic_zones
 	local panic_zones_n = #panic_zones
 
-	for i = 1, panic_zones_n, 1 do
+	for i = 1, panic_zones_n do
 		repeat
 			local panic_zone = panic_zones[i]
 			local panic_zone_position = panic_zone.position:unbox()
@@ -183,9 +183,9 @@ AIPanicSystem.update_fear_units = function (self)
 	end
 
 	local start_index = self.current_fear_unit_index
-	local end_index = math.min((start_index + FEAR_UNITS_UPDATES_PER_FRAME) - 1, fear_units_n)
+	local end_index = math.min(start_index + FEAR_UNITS_UPDATES_PER_FRAME - 1, fear_units_n)
 
-	for i = start_index, end_index, 1 do
+	for i = start_index, end_index do
 		repeat
 			local unit = fear_units[i]
 			local extension = self.unit_extension_data[unit]
@@ -215,9 +215,9 @@ AIPanicSystem.update_panic_units = function (self)
 	end
 
 	local start_index = self.current_panic_unit_index
-	local end_index = math.min((start_index + PANIC_UNITS_UPDATES_PER_FRAME) - 1, panic_units_n)
+	local end_index = math.min(start_index + PANIC_UNITS_UPDATES_PER_FRAME - 1, panic_units_n)
 
-	for i = start_index, end_index, 1 do
+	for i = start_index, end_index do
 		local unit = panic_units[i]
 		local position = POSITION_LOOKUP[unit]
 		local panic_zone = self:inside_panic_zone(position)
@@ -246,7 +246,7 @@ AIPanicSystem.debug_draw_panic_zones = function (self)
 	local panic_zones = self.panic_zones
 	local panic_zone_n = #panic_zones
 
-	for i = 1, panic_zone_n, 1 do
+	for i = 1, panic_zone_n do
 		local panic_zone = panic_zones[i]
 		local radius = panic_zone.radius
 		local position = panic_zone.position:unbox()
@@ -254,5 +254,3 @@ AIPanicSystem.debug_draw_panic_zones = function (self)
 		drawer:sphere(position, radius, Colors.get("red"))
 	end
 end
-
-return

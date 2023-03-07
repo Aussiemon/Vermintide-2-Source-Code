@@ -103,5 +103,3 @@ BreedBehaviors.skaven_poison_wind_globadier = {
 	},
 	name = "skaven_poison_wind_globadier"
 }
-
-return

@@ -116,5 +116,3 @@ settings.progression_unlocks = {
 		unlock_type = "career"
 	}
 }
-
-return

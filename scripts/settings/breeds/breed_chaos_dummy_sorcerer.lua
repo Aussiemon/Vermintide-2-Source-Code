@@ -164,5 +164,3 @@ local action_data = {
 	}
 }
 BreedActions.chaos_dummy_sorcerer = table.create_copy(BreedActions.chaos_dummy_sorcerer, action_data)
-
-return

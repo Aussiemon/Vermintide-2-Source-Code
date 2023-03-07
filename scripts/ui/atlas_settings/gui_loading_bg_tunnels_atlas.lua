@@ -28,5 +28,3 @@ loading_bg_tunnels_atlas = {
 		}
 	}
 }
-
-return

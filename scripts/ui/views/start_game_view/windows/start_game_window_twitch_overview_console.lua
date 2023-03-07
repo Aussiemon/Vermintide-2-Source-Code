@@ -148,7 +148,7 @@ StartGameWindowTwitchOverviewConsole._set_disconnect_button_text = function (sel
 	local disconnect_button_widget = self._widgets_by_name.button_2
 
 	if disconnect_button_widget then
-		local user_name = (Managers.twitch and Managers.twitch:user_name()) or "N/A"
+		local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
 		disconnect_button_widget.content.button_hotspot.text = string.format(Localize("start_game_window_twitch_disconnect"), user_name)
 	end
 end
@@ -319,7 +319,7 @@ StartGameWindowTwitchOverviewConsole._handle_input = function (self, dt, t)
 
 		local widgets_by_name = self._widgets_by_name
 
-		for i = 1, #selector_input_definition, 1 do
+		for i = 1, #selector_input_definition do
 			local widget_name = selector_input_definition[i]
 			local widget = widgets_by_name[widget_name]
 			local is_selected = widget.content.is_selected
@@ -474,7 +474,7 @@ StartGameWindowTwitchOverviewConsole.cb_connection_success_callback = function (
 end
 
 StartGameWindowTwitchOverviewConsole._setup_connected_status = function (self)
-	local user_name = (Managers.twitch and Managers.twitch:user_name()) or "N/A"
+	local user_name = Managers.twitch and Managers.twitch:user_name() or "N/A"
 	self._widgets_by_name.frame_widget.content.connected = Localize("start_game_window_twitch_connected_to") .. user_name
 end
 
@@ -572,7 +572,7 @@ StartGameWindowTwitchOverviewConsole._handle_new_selection = function (self, inp
 		return
 	end
 
-	for i = 1, #selector_input_definition, 1 do
+	for i = 1, #selector_input_definition do
 		local widget_name = selector_input_definition[i]
 		local widget = widgets_by_name[widget_name]
 
@@ -621,7 +621,7 @@ StartGameWindowTwitchOverviewConsole._update_button_animations = function (self,
 	local widgets_by_name = self._widgets_by_name
 	local widget_prefix = "button_"
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local widget_name = widget_prefix .. i
 		local widget = widgets_by_name[widget_name]
 
@@ -693,7 +693,7 @@ StartGameWindowTwitchOverviewConsole._draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -702,7 +702,7 @@ StartGameWindowTwitchOverviewConsole._draw = function (self, dt)
 	if self._show_additional_settings then
 		local additional_settings_widgets = self._additional_settings_widgets
 
-		for i = 1, #additional_settings_widgets, 1 do
+		for i = 1, #additional_settings_widgets do
 			local widget = additional_settings_widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -715,5 +715,3 @@ end
 StartGameWindowTwitchOverviewConsole._play_sound = function (self, event)
 	self._parent:play_sound(event)
 end
-
-return

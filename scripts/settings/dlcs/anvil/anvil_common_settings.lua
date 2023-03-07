@@ -22,5 +22,3 @@ settings.anim_lookup = {
 settings.material_effect_mappings_file_names = {
 	"scripts/settings/material_effect_mappings_anvil"
 }
-
-return

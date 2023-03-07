@@ -63,7 +63,7 @@ end
 
 local function check_single_condition(control, test)
 	if type(test) == "table" then
-		for i = 1, #test, 1 do
+		for i = 1, #test do
 			if test[i] == control then
 				return true
 			end
@@ -93,7 +93,7 @@ local function map_function(event, func, ...)
 	if type(event) == "table" then
 		local num_events = #event
 
-		for i = 1, num_events, 1 do
+		for i = 1, num_events do
 			func(event[i], ...)
 		end
 	else
@@ -155,7 +155,7 @@ GenericHitReactionExtension.extensions_ready = function (self, world, unit)
 	self.dialogue_extension = ScriptUnit.has_extension(unit, "dialogue_system") and ScriptUnit.extension(unit, "dialogue_system")
 	self.locomotion_extension = ScriptUnit.has_extension(unit, "locomotion_system") and ScriptUnit.extension(unit, "locomotion_system")
 	self.ai_extension = ScriptUnit.has_extension(unit, "ai_system") and ScriptUnit.extension(unit, "ai_system")
-	self._breed = (BLACKBOARDS[unit] and BLACKBOARDS[unit].breed) or nil
+	self._breed = BLACKBOARDS[unit] and BLACKBOARDS[unit].breed or nil
 end
 
 GenericHitReactionExtension.destroy = function (self)
@@ -220,8 +220,8 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local stride = DD_STRIDE
 
 	for i = 1, num_damages, stride do
-		local damage_amount = damages[(i + DD_DAMAGE_AMOUNT) - 1]
-		local damage_type = damages[(i + DD_DAMAGE_TYPE) - 1]
+		local damage_amount = damages[i + DD_DAMAGE_AMOUNT - 1]
+		local damage_type = damages[i + DD_DAMAGE_TYPE - 1]
 
 		if self.hit_reaction_template == "player" then
 			local hit = {}
@@ -293,7 +293,7 @@ GenericHitReactionExtension.update = function (self, unit, input, dt, context, t
 	local buff_extension = ScriptUnit.has_extension(attacker_unit, "buff_system")
 	parameters.force_dismember = buff_extension and buff_extension:has_buff_perk("bloody_mess")
 
-	for i = 1, num_effects, 1 do
+	for i = 1, num_effects do
 		self:_execute_effect(unit, hit_effects[i], biggest_hit, parameters, t, dt)
 	end
 end
@@ -306,7 +306,7 @@ GenericHitReactionExtension._resolve_effects = function (self, effect_conditions
 
 	local num_results = 0
 
-	for i = 1, #templates, 1 do
+	for i = 1, #templates do
 		local current_template = templates[i]
 
 		if check_conditions(effect_conditions, current_template) then
@@ -340,7 +340,7 @@ GenericHitReactionExtension._can_wall_nail = function (self, effect_template)
 	elseif flow_event and type(flow_event) == "table" then
 		local num_flow_events = #flow_event
 
-		for i = 1, num_flow_events, 1 do
+		for i = 1, num_flow_events do
 			local flow_event_string = flow_event[i]
 
 			if DismemberFlowEvents[flow_event_string] then
@@ -457,7 +457,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 	if hit_reaction_flow_event then
 		if type(hit_reaction_flow_event) == "table" then
-			for i = 1, #hit_reaction_flow_event, 1 do
+			for i = 1, #hit_reaction_flow_event do
 				flow_events[#flow_events + 1] = hit_reaction_flow_event[i]
 			end
 		else
@@ -468,7 +468,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 	end
 
 	local is_dismember_allowed = self:_is_dismembering_allowed(parameters)
-	local dismember = is_dismember_allowed and (effect_template.do_dismember or (parameters.force_dismember and parameters.death))
+	local dismember = is_dismember_allowed and (effect_template.do_dismember or parameters.force_dismember and parameters.death)
 
 	if dismember and (not death_ext or not death_ext:is_wall_nailed()) then
 		local event_table = Dismemberments[breed_data.name]
@@ -501,7 +501,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 
 			local temp_table = FrameTable.alloc_table()
 
-			for i = 1, #flow_events, 1 do
+			for i = 1, #flow_events do
 				temp_table[#temp_table + 1] = flow_events[i]
 			end
 
@@ -531,7 +531,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 			local found = false
 			local angle = (math.atan2(hit_direction_flat.y, hit_direction_flat.x) - math.atan2(flat_fwd.y, flat_fwd.x)) % (math.pi * 2)
 
-			for i = 1, #angles, 1 do
+			for i = 1, #angles do
 				local angle_data = angles[i]
 
 				if angle < angle_data.to then
@@ -585,7 +585,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 		else
 			local num_actors = #actors
 
-			for i = 1, num_actors, 1 do
+			for i = 1, num_actors do
 				local actor_name = actors[i]
 
 				if Unit.has_node(unit, actor_name) then
@@ -599,7 +599,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 				end
 			end
 
-			if not impact_position or (impact_position and not Vector3.is_valid(impact_position)) then
+			if not impact_position or impact_position and not Vector3.is_valid(impact_position) then
 				if Unit.has_node(unit, "c_hips") then
 					impact_position = Unit.world_position(unit, Unit.node(unit, "c_hips"))
 				elseif Unit.find_actor(unit, "c_hips") then
@@ -607,7 +607,7 @@ GenericHitReactionExtension._execute_effect = function (self, unit, effect_templ
 				end
 			end
 
-			if not impact_position or (impact_position and not Vector3.is_valid(impact_position)) then
+			if not impact_position or impact_position and not Vector3.is_valid(impact_position) then
 				hit_effect = nil
 				should_spawn_blood, sound_event = nil
 			end
@@ -689,7 +689,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local num_actors = #push_actors
 	local actor = nil
 
-	for i = 1, num_actors, 1 do
+	for i = 1, num_actors do
 		local actor_name = push_actors[i]
 		actor = Unit.actor(unit, push_actors[i]) or actor
 	end
@@ -743,7 +743,7 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 	local push_mass = Vector3.length(push_force) * 1
 	local push_mass_actor = push_mass / num_actors
 
-	for i = 1, num_actors, 1 do
+	for i = 1, num_actors do
 		actor = Unit.actor(unit, push_actors[i])
 
 		if actor then
@@ -753,5 +753,3 @@ GenericHitReactionExtension._do_push = function (self, unit, dt)
 
 	return true
 end
-
-return

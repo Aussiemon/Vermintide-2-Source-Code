@@ -41,5 +41,3 @@ EndZoneSystem.activate_end_zone_by_name = function (self, name)
 		end
 	end
 end
-
-return

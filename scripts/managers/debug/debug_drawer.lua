@@ -131,7 +131,7 @@ DebugDrawer.cylinder = function (self, pos1, pos2, radius, color, segments)
 
 	LineObject.add_circle(self._line_object, color, pos1, radius, normal, 20)
 
-	for i = 1, segments - 1, 1 do
+	for i = 1, segments - 1 do
 		pos = pos + step
 
 		LineObject.add_circle(self._line_object, color, pos, radius, normal, 20)
@@ -144,7 +144,7 @@ DebugDrawer.vector = function (self, position, vector, color)
 	local normalized = Vector3.normalize(vector)
 	local tip_scale = 0.2
 	local tip_length = length * tip_scale
-	local tip_width = (length * tip_scale) / 2
+	local tip_width = length * tip_scale / 2
 	local tip = position + vector
 	local x, y = Vector3.make_axes(normalized)
 	local aux = tip - normalized * tip_length
@@ -205,5 +205,3 @@ DebugDrawer.update = function (self, world)
 		self:reset()
 	end
 end
-
-return

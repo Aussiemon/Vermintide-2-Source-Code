@@ -228,7 +228,7 @@ DeusChestPreloadSystem.update = function (self, context, t)
 	num_deus_chests = math.min(num_deus_chests, self._deus_chest_preload_amount)
 	local deus_chest_to_extension = self._deus_chest_to_extension
 
-	for i = 1, num_deus_chests, 1 do
+	for i = 1, num_deus_chests do
 		local deus_chest_unit = DEUS_CHEST_FETCH_RESULTS[i]
 		local preload_extension = deus_chest_to_extension[deus_chest_unit]
 		local preload_packages = preload_extension:get_weapon_preload_packages()
@@ -337,5 +337,3 @@ DeusChestPreloadSystem.set_player_preload_packages = function (self, player, pre
 
 	self._shared_state:set_peer(peer_id, key, table.clone(preload_packages))
 end
-
-return

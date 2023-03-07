@@ -692,5 +692,3 @@ UpdateItemMasterList({
 	"dr_2h_pick",
 	"dr_2h_pick_magic_01"
 }, "dr_engineer")
-
-return

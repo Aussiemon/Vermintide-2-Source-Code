@@ -85,8 +85,7 @@ BTErraticFollowAction.run = function (self, unit, blackboard, t, dt)
 	local locomotion_extension = blackboard.locomotion_extension
 	local move_state = blackboard.move_state
 
-	if move_state == "jumping" then
-	else
+	if move_state ~= "jumping" then
 		self:follow(unit, t, dt, blackboard, locomotion_extension)
 	end
 
@@ -147,7 +146,7 @@ BTErraticFollowAction.follow = function (self, unit, t, dt, blackboard, locomoti
 
 	if breed.use_big_boy_turning and blackboard.move_state == "moving" then
 		local is_turning = blackboard.is_turning
-		local turning = (is_turning and "true") or "false"
+		local turning = is_turning and "true" or "false"
 
 		Debug.text("move_state:%s turning:%s", blackboard.move_state, turning)
 
@@ -253,7 +252,7 @@ BTErraticFollowAction.check_dir = function (self, p0, travel_dir, nav_world, tra
 	if success then
 		local j = math.random(num_fields)
 
-		for i = 1, num_fields, 1 do
+		for i = 1, num_fields do
 			local d = data[j]
 			local end_dir = Quaternion.rotate(Quaternion(Vector3.up(), d.ray_angle), jump_dir)
 			local end_dot = Vector3.dot(travel_dir, end_dir)
@@ -315,7 +314,7 @@ BTErraticFollowAction.investigate_jump = function (self, unit, t, blackboard, un
 
 		table.shuffle(random_dirs)
 
-		for i = 1, 3, 1 do
+		for i = 1, 3 do
 			jump_data = self:check_dir(unit_position, move_dir, nav_world, traverse_logic, random_dirs[i])
 
 			if jump_data then
@@ -418,5 +417,3 @@ BTErraticFollowAction.anim_cb_move_jump_finished = function (self, unit, blackbo
 
 	blackboard.move_state = "moving"
 end
-
-return

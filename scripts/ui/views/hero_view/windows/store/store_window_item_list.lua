@@ -391,10 +391,10 @@ StoreWindowItemList._sort_peddler_items_by_type = function (self, items)
 	local item_type = nil
 
 	for _, item_data in pairs(items) do
-		item_type = (item_data.data and item_data.data.item_type) or "unknown"
+		item_type = item_data.data and item_data.data.item_type or "unknown"
 
 		if item_type == "weapon_skin" then
-			item_type = (item_data.data and item_data.data.matching_item_key) or "unknown"
+			item_type = item_data.data and item_data.data.matching_item_key or "unknown"
 		end
 
 		TEMP_DATA[item_type] = TEMP_DATA[item_type] or {}
@@ -402,8 +402,8 @@ StoreWindowItemList._sort_peddler_items_by_type = function (self, items)
 	end
 
 	local function sort_func(a, b)
-		local a_rarity = (a.data and a.data.rarity and RARITY_SORTING[a.data.rarity]) or 1
-		local b_rarity = (b.data and b.data.rarity and RARITY_SORTING[b.data.rarity]) or 1
+		local a_rarity = a.data and a.data.rarity and RARITY_SORTING[a.data.rarity] or 1
+		local b_rarity = b.data and b.data.rarity and RARITY_SORTING[b.data.rarity] or 1
 
 		return a_rarity > b_rarity
 	end
@@ -419,8 +419,8 @@ end
 
 StoreWindowItemList._sort_peddler_items_by_price = function (self, items)
 	local function sort_func(a, b)
-		local a_price = (a.current_prices and a.current_prices.SM) or 0
-		local b_price = (b.current_prices and b.current_prices.SM) or 0
+		local a_price = a.current_prices and a.current_prices.SM or 0
+		local b_price = b.current_prices and b.current_prices.SM or 0
 
 		return a_price > b_price
 	end
@@ -803,5 +803,3 @@ StoreWindowItemList._get_scrollbar_percentage_by_index = function (self, index)
 
 	return 0
 end
-
-return

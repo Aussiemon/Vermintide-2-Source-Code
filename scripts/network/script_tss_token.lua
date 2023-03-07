@@ -32,5 +32,3 @@ end
 ScriptTssToken.close = function (self)
 	Tus.free(self._token)
 end
-
-return

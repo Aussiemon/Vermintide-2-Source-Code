@@ -319,7 +319,7 @@ StartGameWindowWeaveList._handle_gamepad_scrollbar = function (self, dt, t)
 		self._current_scroll_value = self._wanted_scrollbar_value
 		self._wanted_scrollbar_value = math.min(self._wanted_scrollbar_value + step * diff, 1)
 	elseif self._current_index < start_index + 2 then
-		local diff = (start_index + 2) - self._current_index
+		local diff = start_index + 2 - self._current_index
 		self._start_index = math.max(start_index - diff, 1)
 		self._current_scroll_value = self._wanted_scrollbar_value
 		self._wanted_scrollbar_value = math.max(self._wanted_scrollbar_value - step * diff, 0)
@@ -428,7 +428,7 @@ StartGameWindowWeaveList._draw = function (self, dt)
 
 	local start_index = self:_calculate_first_widget_to_draw()
 
-	for i = start_index, (start_index + num_visible_weave_entries) - 1, 1 do
+	for i = start_index, start_index + num_visible_weave_entries - 1 do
 		local widget = self._weave_entry_widgets[i]
 
 		if widget then
@@ -470,7 +470,7 @@ StartGameWindowWeaveList._populate_list = function (self)
 	local highest_consecutive_unlocked_weave = 1
 	local highest_consecutive_unlocked_weave_found = false
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local template = weave_templates[i]
 		local weave_completed = LevelUnlockUtils.weave_unlocked(statistics_db, stats_id, template.name, ignore_dlc_check)
 
@@ -709,7 +709,7 @@ StartGameWindowWeaveList._animate_list_entry = function (self, content, style, d
 	local symbol_frame_selected_default_offset = symbol_frame_selected.default_offset
 	symbol_frame_selected_size[1] = symbol_frame_selected_default_size[1] - size_increase + size_increase * selection_progress
 	symbol_frame_selected_size[2] = symbol_frame_selected_default_size[2] - size_increase + size_increase * selection_progress
-	symbol_frame_selected_offset[1] = (symbol_frame_selected_default_offset[1] + size_increase / 2) - size_increase / 2 * selection_progress
+	symbol_frame_selected_offset[1] = symbol_frame_selected_default_offset[1] + size_increase / 2 - size_increase / 2 * selection_progress
 	local symbol_frame_selected_glow = style.symbol_frame_selected_glow
 	local symbol_frame_selected_glow_size = symbol_frame_selected_glow.texture_size
 	local symbol_frame_selected_glow_default_size = symbol_frame_selected_glow.default_size
@@ -718,7 +718,7 @@ StartGameWindowWeaveList._animate_list_entry = function (self, content, style, d
 	local size_increase = 20
 	symbol_frame_selected_glow_size[1] = symbol_frame_selected_glow_default_size[1] - size_increase + size_increase * selection_progress
 	symbol_frame_selected_glow_size[2] = symbol_frame_selected_glow_default_size[2] - size_increase + size_increase * selection_progress
-	symbol_frame_selected_glow_offset[1] = (symbol_frame_selected_glow_default_offset[1] + size_increase / 2) - size_increase / 2 * selection_progress
+	symbol_frame_selected_glow_offset[1] = symbol_frame_selected_glow_default_offset[1] + size_increase / 2 - size_increase / 2 * selection_progress
 	local level_name_text_style = style.level_name
 	local level_name_text_color = level_name_text_style.text_color
 	local level_name_default_text_color = level_name_text_style.default_text_color
@@ -737,5 +737,3 @@ StartGameWindowWeaveList._animate_list_entry = function (self, content, style, d
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
 end
-
-return

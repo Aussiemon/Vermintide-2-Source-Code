@@ -168,7 +168,7 @@ StartGameWindowDeusJourneySelection._is_journey_presented = function (self, jour
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 
@@ -188,7 +188,7 @@ StartGameWindowDeusJourneySelection._select_journey = function (self, selected_j
 	local is_selected_journey_unlocked = unlocked_journeys[selected_journey_name]
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local is_selected = content.journey_name == selected_journey_name
@@ -403,7 +403,7 @@ StartGameWindowDeusJourneySelection._update_animations = function (self, dt)
 
 	local node_widgets = self._node_widgets
 
-	for i = 1, #node_widgets, 1 do
+	for i = 1, #node_widgets do
 		local node_widget = node_widgets[i]
 
 		self:_animate_node_widget(node_widget, dt)
@@ -522,7 +522,7 @@ StartGameWindowDeusJourneySelection._handle_input = function (self, dt, t)
 		parent:set_selected_level_id(self._selected_journey_name)
 		parent:set_layout_by_name(game_mode_layout_name)
 	elseif active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 			local content = widget.content
 			local journey_name = content.journey_name
@@ -553,7 +553,7 @@ StartGameWindowDeusJourneySelection.draw = function (self, dt)
 
 	local widgets = self._widgets
 
-	for i = 1, #widgets, 1 do
+	for i = 1, #widgets do
 		local widget = widgets[i]
 
 		UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -562,7 +562,7 @@ StartGameWindowDeusJourneySelection.draw = function (self, dt)
 	local active_node_widgets = self._active_node_widgets
 
 	if active_node_widgets then
-		for i = 1, #active_node_widgets, 1 do
+		for i = 1, #active_node_widgets do
 			local widget = active_node_widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -606,5 +606,3 @@ StartGameWindowDeusJourneySelection._animate_node_widget = function (self, widge
 	hotspot.selected_progress = selected_progress
 	content.unlock_guidance_progress = unlock_guidance_progress
 end
-
-return

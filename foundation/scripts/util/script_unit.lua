@@ -121,7 +121,7 @@ ScriptUnit.optimize = function (unit)
 		if disable_shadows then
 			local num_meshes = Unit.num_meshes(unit)
 
-			for i = 0, num_meshes - 1, 1 do
+			for i = 0, num_meshes - 1 do
 				Unit.set_mesh_visibility(unit, i, false, "shadow_caster")
 			end
 		end
@@ -131,7 +131,7 @@ ScriptUnit.optimize = function (unit)
 		if force_ssm then
 			local num_meshes = Unit.num_meshes(unit)
 
-			for i = 0, num_meshes - 1, 1 do
+			for i = 0, num_meshes - 1 do
 				Unit.set_mesh_ssm_visibility(unit, i, true)
 			end
 		end
@@ -141,7 +141,7 @@ ScriptUnit.optimize = function (unit)
 		if disable_physics then
 			local num_actors = Unit.num_actors(unit)
 
-			for i = 0, num_actors - 1, 1 do
+			for i = 0, num_actors - 1 do
 				Unit.destroy_actor(unit, i)
 			end
 		end
@@ -175,7 +175,7 @@ end
 ScriptUnit.save_scene_graph = function (unit)
 	local link_table = {}
 
-	for node_index = 0, Unit.num_scene_graph_items(unit) - 1, 1 do
+	for node_index = 0, Unit.num_scene_graph_items(unit) - 1 do
 		local parent_node = Unit.scene_graph_parent(unit, node_index)
 		local local_pose = Matrix4x4Box(Unit.local_pose(unit, node_index))
 		link_table[node_index] = {
@@ -195,5 +195,3 @@ ScriptUnit.restore_scene_graph = function (unit, link_table)
 		end
 	end
 end
-
-return

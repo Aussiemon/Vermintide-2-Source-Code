@@ -13,7 +13,7 @@ return {
 		local slot_name = pickup_settings.slot_name
 		local PLAYER_AND_BOT_UNITS = side.PLAYER_AND_BOT_UNITS
 
-		for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+		for i = 1, #PLAYER_AND_BOT_UNITS do
 			local player_unit = PLAYER_AND_BOT_UNITS[i]
 
 			if ALIVE[player_unit] then
@@ -117,7 +117,7 @@ return {
 					local hero_side = data.hero_side
 					local PLAYER_AND_BOT_UNITS = hero_side.PLAYER_AND_BOT_UNITS
 
-					for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+					for i = 1, #PLAYER_AND_BOT_UNITS do
 						local player_unit = PLAYER_AND_BOT_UNITS[i]
 
 						if ALIVE[player_unit] then

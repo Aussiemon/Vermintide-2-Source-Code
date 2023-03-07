@@ -28,5 +28,3 @@ HitEffectsChaosGreedPinata = {
 	}
 }
 HitEffectsChaosGreedPinata = table.create_copy(HitEffectsChaosGreedPinata, HitEffectsChaosGreedPinata)
-
-return

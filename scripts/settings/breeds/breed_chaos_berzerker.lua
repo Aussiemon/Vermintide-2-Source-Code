@@ -639,7 +639,7 @@ local action_data = {
 			local combo = blackboard.combo_attack_data
 
 			if combo and combo.aborted then
-				local berzerker_stagger_multiplier = (blackboard.stagger_type < stagger_types.heavy and math.clamp(blackboard.stagger_type - 1, 1, 1.5)) or 1
+				local berzerker_stagger_multiplier = blackboard.stagger_type < stagger_types.heavy and math.clamp(blackboard.stagger_type - 1, 1, 1.5) or 1
 
 				if blackboard.stagger_type ~= stagger_types.explosion and blackboard.stagger_type ~= stagger_types.heavy then
 					blackboard.stagger_ignore_anim_cb = true
@@ -1184,5 +1184,3 @@ action_data.frenzy_attack.combo_attacks.attack_1 = {
 	ignore_staggers = DEFAULT_ALLOWED_STAGGERS
 }
 BreedActions.chaos_berzerker = table.create_copy(BreedActions.chaos_berzerker, action_data)
-
-return

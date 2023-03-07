@@ -120,7 +120,7 @@ BTMoveToPlayersAction._evalute_targets = function (self, unit, blackboard, data,
 	local action = blackboard.action
 	local target_found = self[action.find_target_function_name](self, unit, blackboard, action, next_target_unit, t)
 
-	return (target_found and "done") or "running"
+	return target_found and "done" or "running"
 end
 
 BTMoveToPlayersAction._find_target_globadier = function (self, unit, blackboard, action, next_target_unit, t)
@@ -262,5 +262,3 @@ BTMoveToPlayersAction.start_move_animation = function (self, unit, blackboard)
 
 	blackboard.move_state = "moving"
 end
-
-return

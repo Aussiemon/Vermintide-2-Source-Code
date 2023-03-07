@@ -48,5 +48,3 @@ end
 Updator.clear = function (self)
 	table.clear(self._updators)
 end
-
-return

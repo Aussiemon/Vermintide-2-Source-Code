@@ -171,7 +171,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 		})
 	end
 
-	for i = 1, #buff_names, 1 do
+	for i = 1, #buff_names do
 		local buff_name = buff_names[i]
 		local unit_object_id = network_manager:unit_game_object_id(owner_unit)
 		local buff_template_name_id = NetworkLookup.buff_templates[buff_name]
@@ -186,7 +186,7 @@ CareerAbilityWHZealot._run_ability = function (self)
 		end
 	end
 
-	if local_player or (is_server and self._bot_player) then
+	if local_player or is_server and self._bot_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:play_hud_sound_event("Play_career_ability_victor_zealot_enter")
@@ -256,5 +256,3 @@ CareerAbilityWHZealot._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

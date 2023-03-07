@@ -119,5 +119,3 @@ DisconnectIndicatorView._draw = function (self, dt)
 	UIRenderer.draw_widget(ui_renderer, self._icon_text_widget)
 	UIRenderer.end_pass(ui_renderer)
 end
-
-return

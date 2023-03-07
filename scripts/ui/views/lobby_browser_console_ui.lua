@@ -154,7 +154,7 @@ LobbyBrowserConsoleUI.setup_filter_entries = function (self)
 	local game_mode_index = self._parent:get_selected_game_mode_index() or game_modes.adventure
 	local game_mode_data = game_mode_data[game_mode_index]
 	local game_mode_key = game_mode_data.game_mode_key
-	local unlockable_levels = (UnlockableLevelsByGameMode[game_mode_key] and table.clone(UnlockableLevelsByGameMode[game_mode_key])) or {}
+	local unlockable_levels = UnlockableLevelsByGameMode[game_mode_key] and table.clone(UnlockableLevelsByGameMode[game_mode_key]) or {}
 	local levels = game_mode_data.levels
 	local difficulties = game_mode_data.difficulties
 	local element_settings = definitions.element_settings
@@ -319,7 +319,7 @@ LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 	local mission_ids = NetworkLookup.mission_ids
 	local invalid = false
 
-	for i = 1, num_lobbies, 1 do
+	for i = 1, num_lobbies do
 		invalid = false
 		local lobby = lobbies[i]
 
@@ -327,25 +327,13 @@ LobbyBrowserConsoleUI._remove_invalid_lobbies = function (self, lobbies)
 			local selected_mission_id = lobby.selected_mission_id
 
 			if selected_mission_id then
-				if mission_ids[selected_mission_id] ~= nil then
-					if false then
-						invalid = false
-					end
-				else
-					invalid = true
-				end
+				invalid = mission_ids[selected_mission_id] == nil or invalid
 			end
 
 			local mission_id = lobby.mission_id
 
 			if mission_id then
-				if mission_ids[mission_id] ~= nil then
-					if false then
-						invalid = false
-					end
-				else
-					invalid = true
-				end
+				invalid = mission_ids[mission_id] == nil or invalid
 			end
 
 			if not invalid then
@@ -398,7 +386,7 @@ LobbyBrowserConsoleUI.populate_lobby_list = function (self, lobbies, ignore_scro
 		local amount = element_settings.num_visible_entries - self._num_lobbies
 		local create_empty_lobby_entry_func = definitions.create_empty_lobby_entry_func
 
-		for i = 1, amount, 1 do
+		for i = 1, amount do
 			offset_y = offset_y - element_settings.height - element_settings.spacing
 			local lobby_entry = create_empty_lobby_entry_func(offset_y)
 			local lobby_entry_widget = UIWidget.init(lobby_entry)
@@ -663,7 +651,7 @@ LobbyBrowserConsoleUI._handle_browser_input_mouse = function (self, input_servic
 	local widget = self._widgets.filter_frame
 	local widget_content = widget.content
 
-	for i = 1, #self._filter_functions, 1 do
+	for i = 1, #self._filter_functions do
 		local hotspot = widget_content["filter_hotspot_" .. i]
 
 		if hotspot.on_hover_enter then
@@ -839,7 +827,7 @@ LobbyBrowserConsoleUI._update_filter_index = function (self, index_change)
 	local frame_widget = self._widgets.filter_frame
 	local frame_widget_content = frame_widget.content
 	local new_filter_index = math.clamp(self._current_filter_index + index_change, 1, #self._filter_functions)
-	local end_point = (index_change > 0 and #self._filter_functions) or 1
+	local end_point = index_change > 0 and #self._filter_functions or 1
 
 	for i = new_filter_index, end_point, index_change do
 		local filter_hotspot = frame_widget_content["filter_hotspot_" .. i]
@@ -1013,7 +1001,7 @@ LobbyBrowserConsoleUI._handle_level_filter_input = function (self, input_service
 		end
 	end
 
-	for i = 1, #self._level_filter_widgets, 1 do
+	for i = 1, #self._level_filter_widgets do
 		if UIUtils.is_button_hover_enter(self._level_filter_widgets[i]) then
 			self._parent:play_sound("Play_hud_hover")
 
@@ -1658,7 +1646,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 	local level_name = nil
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
 	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
-	local matchmaking_type = matchmaking_type_id and ((IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
+	local matchmaking_type = matchmaking_type_id and (IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
 	local mechanism = lobby_data and lobby_data.mechanism
 
 	if selected_mission_id then
@@ -1684,13 +1672,13 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 	local level_image_widget = details_widgets.level_image
 	level_image_widget.content.texture_id = level_image
 	local level_name_widget = details_widgets.level_name
-	level_name_widget.content.text = (level_name and Localize(level_name)) or " "
+	level_name_widget.content.text = level_name and Localize(level_name) or " "
 	local occupied_profiles = {}
 
 	if lobby_data then
 		local num_profiles = #SPProfiles
 
-		for i = 1, num_profiles, 1 do
+		for i = 1, num_profiles do
 			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 				occupied_profiles[i] = true
 			end
@@ -1699,7 +1687,7 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 
 	local content = details_widgets.hero_tabs.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -1777,8 +1765,8 @@ LobbyBrowserConsoleUI._fill_details = function (self, lobby_data)
 		end
 
 		local level_setting = LevelSettings[level_key]
-		details_information_widget_content.game_type_id = (matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown")) or "lb_game_type_none"
-		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
+		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
+		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"
@@ -1830,7 +1818,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	local objective_spacing = 10
 	local largest_objective_width = 0
 
-	for i = 1, #objectives, 1 do
+	for i = 1, #objectives do
 		local objective = objectives[i]
 		local objective_display_name = objective.display_name
 		local objective_icon = objective.icon
@@ -1877,7 +1865,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 	if lobby_data then
 		local num_profiles = #SPProfiles
 
-		for i = 1, num_profiles, 1 do
+		for i = 1, num_profiles do
 			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 				occupied_profiles[i] = true
 			end
@@ -1886,7 +1874,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 
 	local content = details_widgets.hero_tabs.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -1935,7 +1923,7 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 		}
 		local mechanism = lobby_data.mechanism
 		local matchmaking_type_id = lobby_data.matchmaking_type
-		local matchmaking_type = (IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
+		local matchmaking_type = IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)]
 		local mission_id = lobby_data.mission_id
 		local level_key = mission_id
 
@@ -1954,8 +1942,8 @@ LobbyBrowserConsoleUI._fill_weave_details = function (self, lobby_data)
 		end
 
 		local level_setting = LevelSettings[level_key]
-		details_information_widget_content.game_type_id = (matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown")) or "lb_game_type_none"
-		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
+		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
+		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"
@@ -1984,7 +1972,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 	local level_name = nil
 	local selected_mission_id = lobby_data and (lobby_data.selected_mission_id or lobby_data.mission_id)
 	local matchmaking_type_id = lobby_data and lobby_data.matchmaking_type
-	local matchmaking_type = matchmaking_type_id and ((IS_PS4 and matchmaking_type_id) or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
+	local matchmaking_type = matchmaking_type_id and (IS_PS4 and matchmaking_type_id or NetworkLookup.matchmaking_types[tonumber(matchmaking_type_id)])
 	local mechanism = lobby_data and lobby_data.mechanism
 	local journey_name = selected_mission_id
 	local journey_data = DeusJourneySettings[journey_name]
@@ -2004,7 +1992,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 	if lobby_data then
 		local num_profiles = #SPProfiles
 
-		for i = 1, num_profiles, 1 do
+		for i = 1, num_profiles do
 			if not ProfileSynchronizer.is_free_in_lobby(i, lobby_data) then
 				occupied_profiles[i] = true
 			end
@@ -2013,7 +2001,7 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 
 	local content = details_widgets.hero_tabs.content
 
-	for i = 1, #ProfilePriority, 1 do
+	for i = 1, #ProfilePriority do
 		local profile_index = ProfilePriority[i]
 		local name_sufix = "_" .. tostring(i)
 		local hotspot_name = "hotspot" .. name_sufix
@@ -2076,8 +2064,8 @@ LobbyBrowserConsoleUI._fill_deus_details = function (self, lobby_data)
 		end
 
 		local level_setting = LevelSettings[level_key]
-		details_information_widget_content.game_type_id = (matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown")) or "lb_game_type_none"
-		details_information_widget_content.status_id = (level_setting.hub_level and "lb_in_inn") or "lb_playing"
+		details_information_widget_content.game_type_id = matchmaking_type and (matchmaking_type_lookup[matchmaking_type] or "lb_unknown") or "lb_game_type_none"
+		details_information_widget_content.status_id = level_setting.hub_level and "lb_in_inn" or "lb_playing"
 	else
 		details_information_widget_content.game_type_id = "lb_unknown"
 		details_information_widget_content.status_id = "lb_unknown"
@@ -2227,5 +2215,3 @@ end
 LobbyBrowserConsoleUI.destroy = function (self)
 	return
 end
-
-return

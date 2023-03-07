@@ -586,5 +586,3 @@ WeaveProperties.categories = {
 		"weave_movespeed"
 	}
 }
-
-return

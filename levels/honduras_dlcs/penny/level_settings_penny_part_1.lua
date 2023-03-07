@@ -126,5 +126,3 @@ LevelSettings.dlc_portals = {
 		0
 	}
 }
-
-return

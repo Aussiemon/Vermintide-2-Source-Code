@@ -110,5 +110,3 @@ settings.unlock_settings_ps4 = {
 		}
 	}
 }
-
-return

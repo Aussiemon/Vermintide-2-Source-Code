@@ -426,5 +426,3 @@ local action_data = {
 	}
 }
 BreedActions.skaven_warpfire_thrower = table.create_copy(BreedActions.skaven_warpfire_thrower, action_data)
-
-return

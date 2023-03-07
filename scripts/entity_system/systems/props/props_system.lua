@@ -93,5 +93,3 @@ PropsSystem.rpc_thorn_bush_trigger_despawn = function (self, channel_id, unit_id
 		script:despawn()
 	end
 end
-
-return

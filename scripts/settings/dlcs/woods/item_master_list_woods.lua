@@ -663,5 +663,3 @@ UpdateItemMasterList({
 	"we_deus_01",
 	"we_deus_01_magic"
 }, "we_thornsister")
-
-return

@@ -647,11 +647,11 @@ end
 
 StoreWelcomePopup._set_fullscreen_effect_enable_state = function (self, enabled, progress, world)
 	local shading_env = World.get_data(world, "shading_environment")
-	progress = progress or (enabled and 1) or 0
+	progress = progress or enabled and 1 or 0
 
 	if shading_env then
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", (enabled and 1) or 0)
-		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", (enabled and progress * 0.8) or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_enabled", enabled and 1 or 0)
+		ShadingEnvironment.set_scalar(shading_env, "fullscreen_blur_amount", enabled and progress * 0.8 or 0)
 		ShadingEnvironment.apply(shading_env)
 	end
 
@@ -1072,5 +1072,3 @@ StoreWelcomePopup._set_total_amount = function (self, total_amount)
 	local text_scenegraph_id = widget_currency_text.scenegraph_id
 	ui_scenegraph[text_scenegraph_id].size[1] = total_length
 end
-
-return

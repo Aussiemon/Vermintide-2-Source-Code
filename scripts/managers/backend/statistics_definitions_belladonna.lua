@@ -27,5 +27,3 @@ player.scorpion_slay_gors_warpfire_damage = {
 player.warpfire_killed_gors = {
 	value = 0
 }
-
-return

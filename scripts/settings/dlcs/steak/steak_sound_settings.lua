@@ -17,5 +17,3 @@ settings.dialogue_settings = {
 		"dialogues/generated/hero_conversation_crater"
 	}
 }
-
-return

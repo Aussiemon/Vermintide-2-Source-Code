@@ -21,14 +21,14 @@ local SHOOTING_HIT_EFFECT_ANIMS = {
 			}
 		},
 		{
-			to = (3 * math.pi) / 4,
+			to = 3 * math.pi / 4,
 			animations = {
 				"hit_reaction_shoot_left",
 				"hit_reaction_shoot_left_2"
 			}
 		},
 		{
-			to = (5 * math.pi) / 4,
+			to = 5 * math.pi / 4,
 			animations = {
 				"hit_reaction_shoot_bwd",
 				"hit_reaction_shoot_bwd_2",
@@ -36,7 +36,7 @@ local SHOOTING_HIT_EFFECT_ANIMS = {
 			}
 		},
 		{
-			to = (35 * math.pi) / 18,
+			to = 35 * math.pi / 18,
 			animations = {
 				"hit_reaction_shoot_right",
 				"hit_reaction_shoot_right_2"
@@ -2272,5 +2272,3 @@ HitEffectsRatlingGunner = {
 	}
 }
 HitEffectsRatlingGunner = table.create_copy(HitEffectsRatlingGunner, HitEffectsRatlingGunner)
-
-return

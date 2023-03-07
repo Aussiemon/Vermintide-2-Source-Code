@@ -127,7 +127,7 @@ SubtitleGui._remove_subtitle = function (self, unit)
 	local subtitle_list = self.subtitle_list
 	local num_subtitles = #subtitle_list
 
-	for i = 1, num_subtitles, 1 do
+	for i = 1, num_subtitles do
 		if unit == subtitle_list[i].unit then
 			table.remove(subtitle_list, i)
 
@@ -140,7 +140,7 @@ SubtitleGui._has_subtitle_for_unit = function (self, unit)
 	local subtitle_list = self.subtitle_list
 	local num_subtitles = #subtitle_list
 
-	for i = 1, num_subtitles, 1 do
+	for i = 1, num_subtitles do
 		if unit == subtitle_list[i].unit then
 			return true
 		end
@@ -225,7 +225,7 @@ SubtitleGui.update = function (self, dt)
 		local subtitle_list = self.subtitle_list
 		local num_subtitles = #subtitle_list
 
-		for i = 1, num_subtitles, 1 do
+		for i = 1, num_subtitles do
 			local entry = subtitle_list[i]
 			local entry_speaker = entry.speaker
 			local entry_text = entry.text
@@ -278,5 +278,3 @@ SubtitleGui.stop_subtitle = function (self, speaker_name)
 	self.subtitles_to_display[speaker_name] = nil
 	self._force_text_remake = true
 end
-
-return

@@ -41,7 +41,7 @@ CareerAbilityWEShadeDash.init = function (self, extension_init_context, unit, ex
 				network_transmit:send_rpc_server("rpc_add_buff", unit_object_id, buff_template_name_id, unit_object_id, 0, true)
 			end
 
-			if local_player or (is_server and bot_player) then
+			if local_player or is_server and bot_player then
 				local applying_stealth = status_extension:add_stealth_stacking()
 
 				status_extension:add_noclip_stacking()
@@ -201,7 +201,7 @@ CareerAbilityWEShadeDash._run_ability = function (self)
 	local status_extension = self._status_extension
 	local career_extension = self._career_extension
 
-	if (is_server and bot_player) or local_player then
+	if is_server and bot_player or local_player then
 		local first_person_extension = self._first_person_extension
 
 		first_person_extension:animation_event("shade_stealth_ability")
@@ -246,5 +246,3 @@ CareerAbilityWEShadeDash._play_vo = function (self)
 
 	dialogue_input:trigger_networked_dialogue_event("activate_ability", event_data)
 end
-
-return

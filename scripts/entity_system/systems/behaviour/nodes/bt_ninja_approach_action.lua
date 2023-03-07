@@ -59,6 +59,7 @@ end
 
 BTNinjaApproachAction.leave = function (self, unit, blackboard, t, reason, destroy)
 	if reason == "aborted" then
+		-- Nothing
 	end
 
 	blackboard.in_los = nil
@@ -367,7 +368,7 @@ BTNinjaApproachAction.in_crosshairs = function (self, unit, blackboard, t, data)
 	local side = blackboard.side
 	local units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #units, 1 do
+	for i = 1, #units do
 		local player_unit = units[i]
 		status_extension = ScriptUnit.extension(player_unit, "status_system")
 
@@ -452,7 +453,7 @@ end
 BTNinjaApproachAction.check_high_point_on_line = function (self, nav_world, from_pos, dir, dist_left_to_rat, base_z, height_advantage, above, below)
 	dist_left_to_rat = dist_left_to_rat or math.floor(Vector3.distance(p1, rat_pos))
 
-	for i = 2, dist_left_to_rat + 1, 1 do
+	for i = 2, dist_left_to_rat + 1 do
 		local check_height_pos = from_pos + dir * i
 		local success, z = GwNavQueries.triangle_from_position(nav_world, check_height_pos, above, below)
 
@@ -517,11 +518,9 @@ BTNinjaApproachAction.debug = function (self, unit, blackboard)
 		QuickDrawer:sphere(pos + Vector3(0, 0, 1.725), 0.125, Color(255, 144, 43, 207))
 	end
 
-	for i = 1, #test_points, 1 do
+	for i = 1, #test_points do
 		local pos = test_points[i]:unbox()
 
 		QuickDrawer:sphere(pos + Vector3(0, 0, 2), 0.5, Color(255, 43, 43, 207))
 	end
 end
-
-return

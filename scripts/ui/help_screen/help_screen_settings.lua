@@ -55,5 +55,3 @@ HelpScreens = {
 		}
 	}
 }
-
-return

@@ -19,7 +19,7 @@ local CONNECTION_TYPES = {
 local function create_indent_string(depth)
 	local ind = {}
 
-	for ii = 0, depth % 100, 1 do
+	for ii = 0, depth % 100 do
 		ind[#ind + 1] = " "
 	end
 
@@ -257,11 +257,11 @@ local function count_ancestors_in_straight_line(nodes, node_key)
 	local type = nodes[node_key].type
 	local is_traversed_node = type ~= "DUMMY" and type ~= "SHOP"
 
-	return ((is_traversed_node and 1) or 0) + count_ancestors_in_straight_line(nodes, prev_key)
+	return (is_traversed_node and 1 or 0) + count_ancestors_in_straight_line(nodes, prev_key)
 end
 
 local function is_crossing(from_1, to_1, from_2, to_2)
-	return (from_2 <= from_1 and to_1 < to_2) or (from_1 <= from_2 and to_2 < to_1)
+	return from_2 <= from_1 and to_1 < to_2 or from_1 <= from_2 and to_2 < to_1
 end
 
 local function get_paths_from(nodes, node_key)
@@ -744,7 +744,7 @@ function create_new_node_action(context, nodes, node_key, name_override)
 
 	local function executor()
 		local prev_node_count = context.node_count
-		context.node_count = (prev_node_count and prev_node_count + 1) or 1
+		context.node_count = prev_node_count and prev_node_count + 1 or 1
 		new_node_key = name_override or "node_" .. context.node_count
 		layer = node.layout_x + 1
 		local nodes_for_layer = context.nodes_per_layer[layer]
@@ -952,7 +952,7 @@ function create_connections_action(context, nodes, node_key)
 	local function executor()
 		local next_actions = {}
 
-		for i = 1, node.connected_to, 1 do
+		for i = 1, node.connected_to do
 			next_actions[i] = function ()
 				return create_random_connection_action(context, nodes, node_key)
 			end
@@ -978,7 +978,7 @@ function create_connect_action(context, nodes, node_key)
 	local function create_shuffled_connection_count()
 		local connection_count_array = {}
 
-		for i = 1, context.config.MAX_CONNECTIONS_PER_NODE, 1 do
+		for i = 1, context.config.MAX_CONNECTIONS_PER_NODE do
 			connection_count_array[#connection_count_array + 1] = i
 		end
 
@@ -1043,7 +1043,7 @@ function create_assign_node_label_action(context, nodes, node_key)
 				local found_unused_label = false
 				local unused_label_index = nil
 
-				for i = 1, context.config.LABELS_AVAILABLE[node_type], 1 do
+				for i = 1, context.config.LABELS_AVAILABLE[node_type] do
 					local found = false
 
 					for _, other_node in pairs(nodes) do
@@ -1281,5 +1281,3 @@ function deus_base_graph_generator(seed, config)
 		return done, error_message, nodes
 	end
 end
-
-return

@@ -66,7 +66,7 @@ BTSkulkIdleAction.run = function (self, unit, blackboard, t, dt)
 	local side = blackboard.side
 	local enemy_player_and_bot_positions = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-	for i = 1, #enemy_player_and_bot_positions, 1 do
+	for i = 1, #enemy_player_and_bot_positions do
 		local enemy_pos = enemy_player_and_bot_positions[i]
 
 		if Vector3.distance_squared(pos, enemy_pos) < move_distance_squared then
@@ -80,5 +80,3 @@ end
 BTSkulkIdleAction.pick_new_hiding_place = function (self, unit, blackboard, t, dt)
 	return
 end
-
-return

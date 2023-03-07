@@ -50,5 +50,3 @@ CameraStateFollowChaosSpawnGrabbed.update = function (self, unit, input, dt, con
 
 	CameraStateHelper.set_local_pose(unit, follow_unit, follow_node)
 end
-
-return

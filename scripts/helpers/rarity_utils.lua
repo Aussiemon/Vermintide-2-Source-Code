@@ -47,5 +47,3 @@ RarityUtils.get_higher_rarities = function (rarity)
 
 	return rarities
 end
-
-return

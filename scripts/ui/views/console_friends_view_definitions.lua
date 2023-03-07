@@ -200,7 +200,7 @@ local function create_party_entry(name, career, offset_y)
 				horizontal_alignment = "left",
 				word_wrap = true,
 				font_type = "hell_shark",
-				text_color = (career and Colors.get_color_table_with_alpha("white", 255)) or {
+				text_color = career and Colors.get_color_table_with_alpha("white", 255) or {
 					255,
 					80,
 					80,
@@ -229,7 +229,7 @@ local function create_party_entry(name, career, offset_y)
 		},
 		offset = {
 			0,
-			(offset_y and offset_y) or 0,
+			offset_y and offset_y or 0,
 			0
 		}
 	}
@@ -295,7 +295,7 @@ local function create_friend_entry(name, online, offset_y, friend)
 				horizontal_alignment = "left",
 				word_wrap = true,
 				font_type = "hell_shark_masked",
-				text_color = (online and Colors.get_color_table_with_alpha("font_title", 255)) or {
+				text_color = online and Colors.get_color_table_with_alpha("font_title", 255) or {
 					255,
 					80,
 					80,
@@ -308,12 +308,12 @@ local function create_friend_entry(name, online, offset_y, friend)
 				}
 			},
 			texture = {
-				color = (online and {
+				color = online and {
 					255,
 					0,
 					255,
 					0
-				}) or {
+				} or {
 					255,
 					255,
 					0,
@@ -378,12 +378,12 @@ local function create_friend_entry(name, online, offset_y, friend)
 					20,
 					20
 				},
-				color = (online and {
+				color = online and {
 					255,
 					0,
 					255,
 					0
-				}) or {
+				} or {
 					255,
 					255,
 					0,
@@ -398,7 +398,7 @@ local function create_friend_entry(name, online, offset_y, friend)
 		},
 		offset = {
 			0,
-			(offset_y and offset_y) or 0,
+			offset_y and offset_y or 0,
 			0
 		}
 	}
@@ -673,7 +673,7 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = (IS_PS4 and "matchmaking_join_game") or "menu_description_refresh"
+				description_text = IS_PS4 and "matchmaking_join_game" or "menu_description_refresh"
 			}
 		}
 	},
@@ -691,7 +691,7 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = (IS_PS4 and "matchmaking_join_game") or "menu_description_refresh"
+				description_text = IS_PS4 and "matchmaking_join_game" or "menu_description_refresh"
 			},
 			{
 				input_action = "confirm",
@@ -719,7 +719,7 @@ local generic_input_actions = {
 			{
 				input_action = "special_1",
 				priority = 1,
-				description_text = (IS_PS4 and "matchmaking_join_game") or "menu_description_refresh"
+				description_text = IS_PS4 and "matchmaking_join_game" or "menu_description_refresh"
 			},
 			{
 				input_action = "confirm",

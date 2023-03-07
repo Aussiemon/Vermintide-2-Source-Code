@@ -261,7 +261,7 @@ PlayerCharacterStateGrabbedByTentacle.get_drag_velocity = function (self, player
 	self.winding_dist = self.winding_dist - self.drag_speed * dt
 	local spline = self.tentacle_spline_extension.spline
 	local tentacle_data = self.tentacle_spline_extension.tentacle_data
-	local out_dist = (tentacle_data.portal_spawn_type == "floor" and 3.3) or 2.5
+	local out_dist = tentacle_data.portal_spawn_type == "floor" and 3.3 or 2.5
 	local spline_pos = spline:get_point_at_distance(self.winding_dist - out_dist)
 	local travel_to_node_index = self.tentacle_spline_extension.tentacle_data.travel_to_node_index
 	local to_portal_along_spline, swing_vec = nil
@@ -343,5 +343,3 @@ PlayerCharacterStateGrabbedByTentacle.update = function (self, unit, input, dt, 
 
 	CharacterStateHelper.look(input_extension, player.viewport_name, self.first_person_extension, status_extension, self.inventory_extension)
 end
-
-return

@@ -46,5 +46,3 @@ DialogueLookup[DialogueLookup_n + 21] = "pbw_wizard_trail_vista_two"
 DialogueLookup[DialogueLookup_n + 22] = "pbw_wizard_trail_sleigh_found"
 DialogueLookup[DialogueLookup_n + 23] = "pbw_wizard_trail_open_crate"
 DialogueLookup_n = DialogueLookup_n + 23
-
-return

@@ -15,7 +15,7 @@ return {
 		if #PLAYER_UNITS > 0 and not data.has_spawned_torches then
 			local player_unit = nil
 
-			for i = 1, #PLAYER_UNITS, 1 do
+			for i = 1, #PLAYER_UNITS do
 				local status_extension = ScriptUnit.extension(PLAYER_UNITS[i], "status_system")
 				local disabled = status_extension:is_disabled()
 

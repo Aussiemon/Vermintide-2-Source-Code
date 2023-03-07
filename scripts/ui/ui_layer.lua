@@ -28,5 +28,3 @@ UILayer = {
 	interaction = 100,
 	unit_frames = 55
 }
-
-return

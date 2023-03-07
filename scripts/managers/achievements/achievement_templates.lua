@@ -2540,11 +2540,11 @@ AchievementTemplates.achievements.complete_level_all = {
 			"witch_hunter"
 		}
 
-		for i = 1, #UnlockableLevels, 1 do
+		for i = 1, #UnlockableLevels do
 			local level_key = UnlockableLevels[i]
 			local all_heroes_completed_level = true
 
-			for j = 1, #heroes, 1 do
+			for j = 1, #heroes do
 				local hero = heroes[j]
 				local completed = statistics_db:get_persistent_stat(stats_id, "completed_levels_" .. hero, level_key)
 

@@ -76,11 +76,11 @@ PassiveAbilityThornsister.update = function (self, dt, t)
 		local num_stacks = self._num_stack_buffs
 
 		if num_stacks < extra_ability_uses then
-			for i = 1, extra_ability_uses - num_stacks, 1 do
+			for i = 1, extra_ability_uses - num_stacks do
 				stack_buffs[num_stacks + i] = buff_extension:add_buff("kerillian_thorn_sister_free_ability_stack")
 			end
 		elseif extra_ability_uses < num_stacks then
-			for i = 1, num_stacks - extra_ability_uses, 1 do
+			for i = 1, num_stacks - extra_ability_uses do
 				local index = num_stacks - i + 1
 
 				buff_extension:remove_buff(stack_buffs[index])
@@ -111,7 +111,7 @@ PassiveAbilityThornsister.on_talents_changed = function (self, unit, talent_exte
 		local stack_buffs = self._stack_buffs
 		local num_stacks = self._num_stack_buffs
 
-		for i = 1, num_stacks, 1 do
+		for i = 1, num_stacks do
 			local index = num_stacks - i + 1
 
 			buff_extension:remove_buff(stack_buffs[index])
@@ -152,5 +152,3 @@ PassiveAbilityThornsister._update_extra_abilities_info = function (self, talent_
 
 	career_ext:update_extra_ability_charge(cooldown)
 end
-
-return

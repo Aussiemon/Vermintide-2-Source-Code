@@ -192,5 +192,3 @@ settings.unit_variation_settings.beastmen_standard_bearer.material_variations.fu
 settings.unit_variation_settings.beastmen_standard_bearer.material_variations.fur_tint_set_1.max = 7
 settings.unit_variation_settings.beastmen_standard_bearer.material_variations.skin_tint_set_2.min = 6
 settings.unit_variation_settings.beastmen_standard_bearer.material_variations.skin_tint_set_2.max = 6
-
-return

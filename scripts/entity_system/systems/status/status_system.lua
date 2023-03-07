@@ -223,7 +223,7 @@ StatusSystem.rpc_status_change_int_and_unit = function (self, channel_id, status
 		local is_overpowered = status_int ~= 0
 		local overpowered_template = is_overpowered and NetworkLookup.overpowered_templates[status_int]
 
-		status_ext:set_overpowered(is_overpowered, (is_overpowered and overpowered_template) or status_int, other_unit)
+		status_ext:set_overpowered(is_overpowered, is_overpowered and overpowered_template or status_int, other_unit)
 	else
 		assert("Unhandled status %s", tostring(status))
 	end
@@ -390,5 +390,3 @@ StatusSystem.rpc_set_stagger = function (self, channel_id, game_object_id, stagg
 	fassert(status_extension.set_stagger_values)
 	status_extension:set_stagger_values(stagger_type, stagger_direction, stagger_length, accumulated_stagger, stagger_time, stagger_animation_scale, always_stagger_suffered, false)
 end
-
-return

@@ -128,5 +128,3 @@ TelemetryManager.cb_send = function (self, cb, success, _, _, error)
 		cb(success)
 	end
 end
-
-return

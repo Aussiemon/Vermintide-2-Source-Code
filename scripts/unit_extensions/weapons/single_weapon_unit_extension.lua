@@ -49,5 +49,3 @@ SingleWeaponUnitExtension.on_unwield = function (self, hand_name)
 		self:_weapon_unwield(hand_name)
 	end
 end
-
-return

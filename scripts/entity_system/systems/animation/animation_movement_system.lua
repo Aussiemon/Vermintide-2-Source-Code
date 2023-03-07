@@ -97,5 +97,3 @@ AnimationMovementSystem.rpc_enable_animation_movement_system = function (self, c
 		extension:set_enabled(enable)
 	end
 end
-
-return

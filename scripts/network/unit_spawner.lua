@@ -112,7 +112,7 @@ end
 UnitSpawner.breed_in_death_watch = function (self, breed_name)
 	local unit_death_watch_list = self.unit_death_watch_list
 
-	for i = 1, self.unit_death_watch_list_n, 1 do
+	for i = 1, self.unit_death_watch_list_n do
 		local death_data = unit_death_watch_list[i]
 		local unit = death_data.unit
 		local blackboard_data = BLACKBOARDS[unit]
@@ -150,7 +150,7 @@ UnitSpawner.update_death_watch_list = function (self)
 			units_to_remove = units_to_remove - min_num_ragdolls
 		end
 
-		for idx = 1, units_to_remove, 1 do
+		for idx = 1, units_to_remove do
 			local my_death_data = nil
 
 			if idx < self.unit_death_watch_list_n then
@@ -267,7 +267,7 @@ UnitSpawner.remove_units_marked_for_deletion = function (self)
 
 		entity_manager:unregister_units(temp_deleted_units_list, number_of_deleted_units)
 
-		for i = 1, number_of_deleted_units, 1 do
+		for i = 1, number_of_deleted_units do
 			call_destroy_listener(unit_destroy_listeners_post_cleanup, temp_deleted_units_list[i])
 		end
 
@@ -360,7 +360,7 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 	local unit_storage = self.unit_storage
 
 	if game_session then
-		for i = 1, units_list_n, 1 do
+		for i = 1, units_list_n do
 			local unit = units_list[i]
 			local unit_is_alive, unit_alive_name = Unit_alive(unit)
 			local go_id_to_remove = unit_storage:go_id(unit)
@@ -381,7 +381,7 @@ UnitSpawner.world_delete_units = function (self, world, units_list, units_list_n
 			World.destroy_unit(world, unit)
 		end
 	else
-		for i = 1, units_list_n, 1 do
+		for i = 1, units_list_n do
 			local unit = units_list[i]
 			local unit_is_alive, unit_alive_name = Unit_alive(unit)
 
@@ -442,7 +442,7 @@ UnitSpawner.destroy_game_object_unit = function (self, go_id, owner_id)
 end
 
 UnitSpawner.add_destroy_listener = function (self, unit, identifier, callback, post_cleanup_listener)
-	local destroy_listeners = (post_cleanup_listener and self.unit_destroy_listeners_post_cleanup) or self.unit_destroy_listeners
+	local destroy_listeners = post_cleanup_listener and self.unit_destroy_listeners_post_cleanup or self.unit_destroy_listeners
 	local listeners = destroy_listeners[unit]
 
 	if not listeners then
@@ -456,7 +456,7 @@ UnitSpawner.add_destroy_listener = function (self, unit, identifier, callback, p
 end
 
 UnitSpawner.remove_destroy_listener = function (self, unit, identifier, post_cleanup_listener)
-	local destroy_listeners = (post_cleanup_listener and self.unit_destroy_listeners_post_cleanup) or self.unit_destroy_listeners
+	local destroy_listeners = post_cleanup_listener and self.unit_destroy_listeners_post_cleanup or self.unit_destroy_listeners
 	local listeners = destroy_listeners[unit]
 
 	if listeners then
@@ -465,5 +465,3 @@ UnitSpawner.remove_destroy_listener = function (self, unit, identifier, post_cle
 		printf("[UnitSpawner] [%s] failed to remove listener [%s] from unit [%s]", self.identifier_tag, tostring(identifier), tostring(unit))
 	end
 end
-
-return

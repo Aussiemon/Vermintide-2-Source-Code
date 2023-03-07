@@ -46,5 +46,3 @@ PlayerHuskWeaveLoadoutExtension.hot_join_sync = function (self, sender)
 		RPC.rpc_add_weave_buffs(channel_id, unit_go_id, unpack(rpc_params))
 	end
 end
-
-return

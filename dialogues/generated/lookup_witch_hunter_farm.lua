@@ -18,5 +18,3 @@ DialogueLookup[DialogueLookup_n + 7] = "pwh_farm_intro"
 DialogueLookup[DialogueLookup_n + 8] = "pwh_farm_intro_b"
 DialogueLookup[DialogueLookup_n + 9] = "pwh_farm_intro_c"
 DialogueLookup_n = DialogueLookup_n + 9
-
-return

@@ -25,7 +25,7 @@ local function array_copy(a)
 		an
 	}
 
-	for i = 1, an, 1 do
+	for i = 1, an do
 		t[i] = at[i]
 	end
 
@@ -84,7 +84,7 @@ local function array_pop_index_ordered(a, index)
 	local t = a[1]
 	local n = a[2]
 
-	for i = index, n - 1, 1 do
+	for i = index, n - 1 do
 		t[i] = t[i + 1]
 	end
 
@@ -97,7 +97,7 @@ local function array_item_index(a, item)
 	local n = a[2]
 	local found_i = nil
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		if t[i] == item then
 			found_i = i
 
@@ -146,7 +146,7 @@ local function array_pop_index_ordered_value(a, index)
 	local n = a[2]
 	local return_value = t[index]
 
-	for i = index, n - 1, 1 do
+	for i = index, n - 1 do
 		t[i] = t[i + 1]
 	end
 
@@ -496,7 +496,7 @@ local function array_push_back_table(array, in_table, table_count)
 	if push_back_function then
 		f(array, in_table)
 	else
-		for i = 1, table_count, 1 do
+		for i = 1, table_count do
 			array_push_back(array, in_table[i])
 		end
 	end
@@ -552,7 +552,7 @@ local function array_insert_sorted(a, value, comp_function)
 	local at = a[1]
 	local n = a[2]
 
-	for i = 1, n, 1 do
+	for i = 1, n do
 		if comp_function(value, at[i]) then
 			array_insert_at(a, value, i)
 

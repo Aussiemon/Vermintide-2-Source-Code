@@ -2095,5 +2095,3 @@ HitEffectsGutterRunner = {
 	}
 }
 HitEffectsGutterRunner = table.create_copy(HitEffectsGutterRunner, HitEffectsGutterRunner)
-
-return

@@ -48,7 +48,7 @@ settings.buff_function_templates = {
 				local health_extension = ScriptUnit.extension(unit, "health_system")
 
 				if health_extension:is_alive() then
-					local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+					local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
 					local armor_type = buff.armor_type
 					local damage_type = "buff"
 					local damage = stored_damage
@@ -113,7 +113,7 @@ settings.buff_function_templates = {
 			health_extension:set_max_health(new_max_health)
 
 			health_extension._damage_cap_per_hit = new_max_health
-			local attacker_unit = (ALIVE[params.attacker_unit] and params.attacker_unit) or unit
+			local attacker_unit = ALIVE[params.attacker_unit] and params.attacker_unit or unit
 			local damage_type = "buff"
 			local damage = 1
 			local damage_source = buff.damage_source
@@ -123,5 +123,3 @@ settings.buff_function_templates = {
 		end
 	end
 }
-
-return

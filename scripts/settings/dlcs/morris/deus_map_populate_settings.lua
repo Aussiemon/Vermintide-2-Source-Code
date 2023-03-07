@@ -1184,5 +1184,3 @@ DEUS_MAP_POPULATE_SETTINGS.journey_citadel.LEVEL_AVAILABILITY = {
 		}
 	}
 }
-
-return

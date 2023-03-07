@@ -52,5 +52,3 @@ end
 SoundEffectSystem.hot_join_sync = function (self)
 	return
 end
-
-return

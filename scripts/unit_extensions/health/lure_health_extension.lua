@@ -26,7 +26,7 @@ LureHealthExtension.is_alive = function (self)
 end
 
 LureHealthExtension.current_health_percent = function (self)
-	return (self._is_dead and 0) or 1
+	return self._is_dead and 0 or 1
 end
 
 LureHealthExtension.current_health = function (self)
@@ -74,5 +74,3 @@ end
 LureHealthExtension.apply_client_predicted_damage = function (self, predicted_damage)
 	return
 end
-
-return

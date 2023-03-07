@@ -182,7 +182,7 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 
 	local thrown_state = blackboard.thrown_state
 	local action = blackboard.action
-	local speed = (thrown_state == "moving_towards_target" and action.throw_speed) or (thrown_state == "returning_to_owner" and action.return_speed)
+	local speed = thrown_state == "moving_towards_target" and action.throw_speed or thrown_state == "returning_to_owner" and action.return_speed
 	local unit_position = POSITION_LOOKUP[unit] + Vector3.up() * 2
 	local wanted_position = blackboard.throw_weapon_goal_position:unbox()
 	local current_position = Unit.local_position(thrown_unit, 0)
@@ -256,7 +256,7 @@ BTThrowWeaponAction.update_thrown_weapon = function (self, unit, blackboard, dt,
 	local side = blackboard.side
 	local enemy_player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #enemy_player_and_bot_units, 1 do
+	for i = 1, #enemy_player_and_bot_units do
 		local target_unit = enemy_player_and_bot_units[i]
 
 		if Unit.alive(target_unit) and not blackboard.ignore_thrown_weapon_overlap then
@@ -344,5 +344,3 @@ BTThrowWeaponAction.anim_cb_damage = function (self, unit, blackboard)
 	locomotion_extension:add_external_velocity(velocity)
 	AiUtils.damage_target(blackboard.close_attack_target, unit, blackboard.action, blackboard.action.close_attack_damage)
 end
-
-return

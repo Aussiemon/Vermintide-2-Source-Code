@@ -1413,7 +1413,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 						content.is_reloading = buff_ext and (buff_ext:has_buff_type("bardin_engineer_pump_buff_long") or buff_ext:has_buff_type("bardin_engineer_pump_buff"))
 						local _, dt = Managers.time:time_and_delta("game")
 						local time = content.time + dt
-						content.time = (content.is_reloading and time) or 0
+						content.time = content.is_reloading and time or 0
 						content.using_gamepad = Managers.input:is_device_active("gamepad")
 
 						return not content.using_career_skill_weapon and content.visible
@@ -1475,7 +1475,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 						return content.visible and content.is_reloading
 					end,
 					content_change_function = function (content, style)
-						content.reload_mask_id = (content.using_career_skill_weapon and "reload_icon_mask") or "minigun_icon_mask"
+						content.reload_mask_id = content.using_career_skill_weapon and "reload_icon_mask" or "minigun_icon_mask"
 					end
 				},
 				{
@@ -1514,7 +1514,7 @@ local function create_engineer_background(scenegraph_id, layer, retained)
 						local input_text = ""
 
 						if key_index ~= UNASSIGNED_KEY then
-							local device = (device_type == "mouse" and Mouse) or Keyboard
+							local device = device_type == "mouse" and Mouse or Keyboard
 							input_text = device.button_locale_name(key_index) or device.button_name(key_index) or Localize("lb_unknown")
 							input_text = Utf8.upper(input_text)
 						end
@@ -1831,7 +1831,7 @@ local ammo_widget_definitions = {
 local slots = InventorySettings.slots
 local slot_widget_definitions = {}
 
-for i = 1, #slots, 1 do
+for i = 1, #slots do
 	local slot = slots[i]
 	local console_hud_index = slot.console_hud_index
 
@@ -1843,7 +1843,7 @@ end
 local extra_storage_icons = 2
 local extra_storage_icon_definitions = {}
 
-for i = 1, extra_storage_icons, 1 do
+for i = 1, extra_storage_icons do
 	local bomb_slot_index = 2
 	local spacing = 0
 	local slot_width = slot_size[1]

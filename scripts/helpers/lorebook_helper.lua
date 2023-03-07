@@ -32,5 +32,3 @@ end
 LoreBookHelper.get_new_page_ids = function ()
 	return SaveData.new_lorebook_ids
 end
-
-return

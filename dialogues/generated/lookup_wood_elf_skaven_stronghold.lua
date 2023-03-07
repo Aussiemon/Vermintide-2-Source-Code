@@ -46,5 +46,3 @@ DialogueLookup[DialogueLookup_n + 21] = "pwe_gameplay_chieftain_tips_special_att
 DialogueLookup[DialogueLookup_n + 22] = "pwe_gameplay_chieftain_tips_special_lunge_attack_2"
 DialogueLookup[DialogueLookup_n + 23] = "pwe_level_skaven_stronghold_elevator"
 DialogueLookup_n = DialogueLookup_n + 23
-
-return

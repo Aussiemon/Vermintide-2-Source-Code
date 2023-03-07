@@ -15,5 +15,3 @@ end
 DeusArenaBelakorBigStatueExtension.update = function (self, unit, input, dt, context, t)
 	return
 end
-
-return

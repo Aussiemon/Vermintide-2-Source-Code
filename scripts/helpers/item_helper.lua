@@ -52,7 +52,7 @@ end
 ItemHelper.get_slot_type = function (slot)
 	local slots_n = #InventorySettings.slots
 
-	for i = 1, slots_n, 1 do
+	for i = 1, slots_n do
 		local slot_settings = InventorySettings[i]
 
 		if slot_settings.name == slot then
@@ -101,7 +101,7 @@ ItemHelper.has_new_sign_in_reward = function (reward_id)
 		local new_sign_in_rewards = PlayerData.new_sign_in_rewards
 		local reward_items = new_sign_in_rewards[reward_id]
 
-		return (reward_items and true) or false
+		return reward_items and true or false
 	else
 		local has_rewards = next(PlayerData.new_sign_in_rewards) ~= nil
 
@@ -493,7 +493,7 @@ local skip_items = {
 ItemHelper.create_tab_unseen_item_stars = function (tab_cat)
 	local menu_options = StoreLayoutConfig.menu_options
 
-	for i = 1, #menu_options, 1 do
+	for i = 1, #menu_options do
 		local key = menu_options[i]
 		tab_cat[key] = 0
 	end
@@ -529,7 +529,7 @@ ItemHelper.update_featured_unseen = function (featured_peddler_items, tab_cat)
 	local seen_items = PlayerData.seen_shop_items
 	tab_cat.featured = 0
 
-	for i = 1, #featured_peddler_items, 1 do
+	for i = 1, #featured_peddler_items do
 		local peddler_item = featured_peddler_items[i]
 		local seen_item = seen_items[peddler_item.key]
 
@@ -602,5 +602,3 @@ ItemHelper.has_unseen_shop_items = function ()
 
 	return false
 end
-
-return

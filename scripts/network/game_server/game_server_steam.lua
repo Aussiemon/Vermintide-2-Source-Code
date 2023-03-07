@@ -68,5 +68,3 @@ if DEDICATED_SERVER then
 		SteamGameServer.close_channel(game_server, channel)
 	end
 end
-
-return

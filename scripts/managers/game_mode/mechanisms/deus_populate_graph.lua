@@ -299,7 +299,7 @@ local MINOR_MODIFIER_VALIDATORS = {
 	prevent_modifier_on_curse_abundance_of_life = function (context, working_graph, node_key, modifier_group)
 		local node = working_graph[node_key]
 
-		return node.curse ~= "curse_abundance_of_life" or (not table.contains(modifier_group, "increased_grenades") and not table.contains(modifier_group, "increased_healing"))
+		return node.curse ~= "curse_abundance_of_life" or not table.contains(modifier_group, "increased_grenades") and not table.contains(modifier_group, "increased_healing")
 	end
 }
 
@@ -385,7 +385,7 @@ function create_process_connections_action(context, working_graph, node_key)
 		local connections = shuffle_array(table.clone(node.next), context.random_generator)
 		local next_actions = {}
 
-		for i = 1, #connections, 1 do
+		for i = 1, #connections do
 			next_actions[i] = function ()
 				return create_process_node_action(context, working_graph, connections[i])
 			end
@@ -473,8 +473,7 @@ function create_assign_level_and_path_action(context, working_graph, node_key)
 					else
 						local paths = get_available_paths(context, working_graph, node_key, level_to_try)
 
-						if #paths == 0 then
-						else
+						if #paths ~= 0 then
 							paths = shuffle_array(table.clone(paths), context.random_generator)
 							node.level = level_to_try
 							node.path = paths[1]
@@ -554,8 +553,8 @@ end
 local function apply_progress(working_graph, path, start_index, end_index)
 	local node_before = working_graph[path[start_index - 1]]
 	local node_after = working_graph[path[end_index + 1]]
-	local start_prog = (node_before and node_before.run_progress) or 0
-	local end_prog = (node_after and node_after.run_progress) or 0.9999
+	local start_prog = node_before and node_before.run_progress or 0
+	local end_prog = node_after and node_after.run_progress or 0.9999
 	local length_of_lerp = end_index - start_index
 	local index_offset = 0
 
@@ -568,7 +567,7 @@ local function apply_progress(working_graph, path, start_index, end_index)
 		length_of_lerp = length_of_lerp + 1
 	end
 
-	for index = start_index, end_index, 1 do
+	for index = start_index, end_index do
 		local lerp_index = index - start_index
 		local progress = math.lerp(start_prog, end_prog, (lerp_index + index_offset) / length_of_lerp)
 		working_graph[path[index]].run_progress = progress
@@ -681,7 +680,7 @@ local function spread_curse(context, working_graph)
 	local remaining_gods = {}
 	local available_gods = context.config.AVAILABLE_GODS
 
-	for i = 2, hot_spot_count, 1 do
+	for i = 2, hot_spot_count do
 		if #remaining_gods == 0 then
 			for _, god in ipairs(available_gods) do
 				if context.config.NO_DOMINANT_GOD or god ~= context.dominant_god then
@@ -764,7 +763,7 @@ local function spread_belakor(context, working_graph)
 	local first_playable_nodes = get_first_playable_descendants(working_graph, "start")
 	local belakor_paths = {}
 
-	for i = 1, #first_playable_nodes, 1 do
+	for i = 1, #first_playable_nodes do
 		local path_start_node = first_playable_nodes[i]
 
 		if belakor_node_map[path_start_node] then
@@ -774,7 +773,7 @@ local function spread_belakor(context, working_graph)
 			path[path_n] = first_playable_nodes[i]
 			local path_next = get_descendants(working_graph, path_start_node, 1)
 
-			for j = 1, #path_next, 1 do
+			for j = 1, #path_next do
 				if belakor_node_map[path_next[j]] then
 					path_n = path_n + 1
 					path[path_n] = path_next[j]
@@ -786,7 +785,7 @@ local function spread_belakor(context, working_graph)
 	local random_generator = context.random_generator
 	local belakor_nodes = {}
 
-	for path_id = 1, #belakor_paths, 1 do
+	for path_id = 1, #belakor_paths do
 		local path = belakor_paths[path_id]
 		local path_n = #path
 
@@ -795,13 +794,13 @@ local function spread_belakor(context, working_graph)
 			local rand_node_name = path[rand_node]
 			belakor_nodes[#belakor_nodes + 1] = rand_node_name
 
-			for next_path_id = path_id + 1, #belakor_paths, 1 do
+			for next_path_id = path_id + 1, #belakor_paths do
 				local next_path = belakor_paths[next_path_id]
 
 				if table.contains(next_path, rand_node_name) then
 					table.clear(next_path)
 				else
-					for i = 1, #path, 1 do
+					for i = 1, #path do
 						local overlapping_node_idx = table.find(next_path, path[i])
 
 						if overlapping_node_idx then
@@ -813,7 +812,7 @@ local function spread_belakor(context, working_graph)
 		end
 	end
 
-	for i = 1, #belakor_nodes, 1 do
+	for i = 1, #belakor_nodes do
 		local belakor_node_key = belakor_nodes[i]
 
 		assign_random_curse(context, working_graph[belakor_node_key], "belakor")
@@ -986,7 +985,7 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 	local error_message, result = nil
 	local process_count = 100000
 
-	for i = 1, process_count, 1 do
+	for i = 1, process_count do
 		result, error_message = generator()
 
 		if result then
@@ -1100,5 +1099,3 @@ function deus_populate_graph(base_graph, seed, config, dominant_god, with_belako
 
 	return complete_graph
 end
-
-return

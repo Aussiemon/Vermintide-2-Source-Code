@@ -117,16 +117,14 @@ BTCritterRatFleeAction._get_cover_point_flee_pos = function (self, unit, blackbo
 			local num_cover_units, cover_units = ConflictUtils.hidden_cover_points(current_position, avoid_pos_list, min_dist, max_dist)
 			blackboard.current_check_list = cover_units
 
-			for i = num_cover_units + 1, #cover_units, 1 do
+			for i = num_cover_units + 1, #cover_units do
 				cover_units[i] = nil
 			end
 
 			table.shuffle(blackboard.current_check_list)
 		end
 
-		slot10 = blackboard.move_check_index or 1
-
-		for index = slot10, #blackboard.current_check_list, 1 do
+		for index = blackboard.move_check_index or 1, #blackboard.current_check_list do
 			local cover_unit = blackboard.current_check_list[index]
 			local cover_pos = Unit.local_position(cover_unit, 0)
 			local distance_to_target = Vector3.distance_squared(cover_pos, target_position)
@@ -198,6 +196,7 @@ BTCritterRatFleeAction._get_random_flee_pos_in_front_of_target = function (self,
 	end
 
 	if not move_pos then
+		-- Nothing
 	end
 
 	blackboard.using_random_point_in_front_of_target = false
@@ -254,5 +253,3 @@ BTCritterRatFleeAction.at_destination = function (self, unit, blackboard, t)
 		blackboard.using_cover_points = true
 	end
 end
-
-return

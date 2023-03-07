@@ -15,15 +15,15 @@ TimedExplosionExtension.init = function (self, extension_init_context, unit, ext
 		local explosion_settings = wind_settings.timed_explosion_extension_settings
 		self._time_to_explode = explosion_settings.time_to_explode[difficulty_name][wind_strength]
 		self._follow_time = explosion_settings.follow_time and explosion_settings.follow_time[difficulty_name][wind_strength]
-		self._scale = (wind_settings.radius and wind_settings.radius[difficulty_name][wind_strength]) or 1
-		self._power = (wind_settings.power_level and wind_settings.power_level[difficulty_name][wind_strength]) or 0
-		self._buildup_effect_delay = (self._time_to_explode + self._follow_time) - (explosion_template.explosion.buildup_effect_time or 0)
+		self._scale = wind_settings.radius and wind_settings.radius[difficulty_name][wind_strength] or 1
+		self._power = wind_settings.power_level and wind_settings.power_level[difficulty_name][wind_strength] or 0
+		self._buildup_effect_delay = self._time_to_explode + self._follow_time - (explosion_template.explosion.buildup_effect_time or 0)
 	else
 		self._time_to_explode = explosion_template.time_to_explode or 0
 		self._scale = explosion_template.explosion.unit_scale or explosion_template.explosion.radius or 1
 		self._follow_time = explosion_template.follow_time or 0
 		self._power = explosion_template.explosion.power_level or 0
-		self._buildup_effect_delay = (self._time_to_explode + self._follow_time) - (explosion_template.explosion.buildup_effect_time or 0)
+		self._buildup_effect_delay = self._time_to_explode + self._follow_time - (explosion_template.explosion.buildup_effect_time or 0)
 	end
 
 	self._buildup_effect_offset = explosion_template.explosion.buildup_effect_offset
@@ -101,8 +101,7 @@ TimedExplosionExtension.update = function (self, unit, input, dt, context, t)
 
 			self._state = "waiting_for_deletion"
 		end
-	elseif state == "waiting_for_deletion" then
-	else
+	elseif state ~= "waiting_for_deletion" then
 		ferror("Unknown state (%s)", state)
 	end
 end
@@ -137,5 +136,3 @@ TimedExplosionExtension.add_on_explode_callback = function (self, callback)
 		table.insert(self._on_explode_callbacks, callback)
 	end
 end
-
-return

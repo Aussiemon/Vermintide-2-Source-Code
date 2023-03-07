@@ -428,5 +428,3 @@ settings.extra_loot_chest_score_types = {
 		coin_chests_collected = 0.5
 	}
 }
-
-return

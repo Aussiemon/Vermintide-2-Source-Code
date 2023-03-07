@@ -492,5 +492,3 @@ HeroWindowCraftingConsole._handle_tooltip_skip_input = function (self, input_ser
 		end
 	end
 end
-
-return

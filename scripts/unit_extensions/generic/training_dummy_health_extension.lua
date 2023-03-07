@@ -151,5 +151,3 @@ end
 TrainingDummyHealthExtension.recently_damaged = function (self)
 	return self._recent_damage_type, self._recent_hit_react_type
 end
-
-return

@@ -67,7 +67,7 @@ end
 PlayerBotInput.pre_update = function (self, unit, input, dt, context, t)
 	local position = POSITION_LOOKUP[unit]
 	local success, altitude = GwNavQueries.triangle_from_position(self._nav_world, position, 1.1, 0.5)
-	self._position_on_navmesh = (success and Vector3(position.x, position.y, altitude)) or position
+	self._position_on_navmesh = success and Vector3(position.x, position.y, altitude) or position
 end
 
 PlayerBotInput.update = function (self, unit, input, dt, context, t)
@@ -199,7 +199,7 @@ PlayerBotInput._update_actions = function (self)
 		local num_slots = #slots
 		local wield_input = nil
 
-		for i = 1, num_slots, 1 do
+		for i = 1, num_slots do
 			local slot_data = slots[i]
 
 			if slot_data.name == slot_to_wield then
@@ -235,7 +235,7 @@ end
 
 PlayerBotInput.set_aiming = function (self, aiming, soft, use_rotation)
 	self._aiming = aiming
-	self._aim_with_rotation = (use_rotation and aiming) or false
+	self._aim_with_rotation = use_rotation and aiming or false
 
 	if aiming and soft then
 		self._soft_aiming = true
@@ -426,7 +426,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 	local status_extension = self._status_extension
 	local on_ladder, ladder_unit = status_extension:get_is_on_ladder()
 	local transition_jump = nil
-	local look_at_player_unit = (ALIVE[self._look_at_player] and self._look_at_player) or nil
+	local look_at_player_unit = ALIVE[self._look_at_player] and self._look_at_player or nil
 	local look_at_player_has_moved = look_at_player_unit and ScriptUnit.extension(look_at_player_unit, "locomotion_system").has_moved_from_start_position
 	local cutscene_system = Managers.state.entity:system("cutscene_system")
 	local has_intro_cutscene_finished = cutscene_system:has_intro_cutscene_finished_playing()
@@ -513,7 +513,7 @@ PlayerBotInput._update_movement = function (self, dt, t)
 			local is_crouching = status_extension:is_crouching()
 			local lower_hit, upper_hit = self:_obstacle_check(position, current_speed_sq, goal_vector, goal_direction, up)
 
-			if (lower_hit and not upper_hit) or transition_jump then
+			if lower_hit and not upper_hit or transition_jump then
 				self._input.jump_only = true
 			elseif not lower_hit and upper_hit and (is_crouching or current_speed_sq <= STUCK_CROUCH_SPEED_THRESHOLD_SQ) then
 				self._input.crouching = true
@@ -638,7 +638,7 @@ PlayerBotInput.not_moving = function (self)
 end
 
 PlayerBotInput.move_towards = function (self, target_position)
-	self.target_position = (target_position and Vector3Box(target_position)) or nil
+	self.target_position = target_position and Vector3Box(target_position) or nil
 end
 
 PlayerBotInput.get_wield_cooldown = function (self)
@@ -668,5 +668,3 @@ end
 PlayerBotInput.force_release_input = function (self)
 	return true
 end
-
-return

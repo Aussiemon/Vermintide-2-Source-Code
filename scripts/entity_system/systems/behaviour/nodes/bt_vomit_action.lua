@@ -111,7 +111,7 @@ BTVomitAction.init_attack = function (self, unit, blackboard, action, t)
 	blackboard.attack_started_at_t = t
 	blackboard.puke_position = Vector3Box(puke_position)
 	blackboard.puke_direction = Vector3Box(puke_direction)
-	local bot_threats = action.bot_threats and (action.bot_threats[vomit_animation] or (action.bot_threats[1] and action.bot_threats))
+	local bot_threats = action.bot_threats and (action.bot_threats[vomit_animation] or action.bot_threats[1] and action.bot_threats)
 
 	if bot_threats then
 		local current_threat_index = 1
@@ -186,7 +186,7 @@ BTVomitAction.run = function (self, unit, blackboard, t, dt)
 			if blackboard.check_puke_time < t then
 				self.player_vomit_hit_check(unit, blackboard.puke_position:unbox(), blackboard.physics_world, blackboard)
 			end
-		elseif t < blackboard.rotation_time and (not target_unit_status_extension or (not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible())) and blackboard.update_puke_pos_at_t < t then
+		elseif t < blackboard.rotation_time and (not target_unit_status_extension or not target_unit_status_extension:get_is_dodging() and not target_unit_status_extension:is_invisible()) and blackboard.update_puke_pos_at_t < t then
 			local puke_position, puke_distance_sq, puke_direction = self:_get_vomit_position(unit, blackboard)
 
 			if puke_position and puke_direction then
@@ -246,7 +246,7 @@ BTVomitAction.player_vomit_hit_check = function (unit, puke_pos, physics_world, 
 	local troll_head_node = Unit.node(unit, "j_head")
 	local troll_head_pos = Unit.world_position(unit, troll_head_node)
 	local offset_dir = 2 * Vector3.normalize(puke_pos - POSITION_LOOKUP[unit]) + Vector3(0, 0, 1)
-	local to_puke = (puke_pos + offset_dir) - troll_head_pos
+	local to_puke = puke_pos + offset_dir - troll_head_pos
 	local puke_direction = Vector3.normalize(to_puke)
 	local puke_distance = Vector3.length(to_puke)
 	local result = PhysicsWorld.linear_sphere_sweep(physics_world, troll_head_pos, puke_pos, 0.5, 10, "collision_filter", "filter_enemy_ray_projectile", "report_initial_overlap")
@@ -255,7 +255,7 @@ BTVomitAction.player_vomit_hit_check = function (unit, puke_pos, physics_world, 
 		local num_hits = #result
 		local buff_system = Managers.state.entity:system("buff_system")
 
-		for i = 1, num_hits, 1 do
+		for i = 1, num_hits do
 			local hit = result[i]
 			local actor = hit.actor
 			local hit_unit = Actor.unit(actor)
@@ -285,7 +285,7 @@ BTVomitAction.create_aoe = function (self, unit, blackboard, action)
 		local extension_init_data = {
 			area_damage_system = {
 				flow_dir = dir,
-				liquid_template = (blackboard.near_vomit and "bile_troll_vomit_near") or "bile_troll_vomit",
+				liquid_template = blackboard.near_vomit and "bile_troll_vomit_near" or "bile_troll_vomit",
 				source_unit = unit
 			}
 		}
@@ -304,5 +304,3 @@ BTVomitAction.anim_cb_vomit = function (self, unit, blackboard)
 		BTVomitAction:create_aoe(unit, blackboard, blackboard.action)
 	end
 end
-
-return

@@ -84,5 +84,3 @@ DialogueLookup[DialogueLookup_n + 40] = "pdr_wizard_trail_conversation_ten_b_01"
 DialogueLookup[DialogueLookup_n + 41] = "pes_wizard_trail_conversation_ten_c_01"
 DialogueLookup[DialogueLookup_n + 42] = "pwe_wizard_trail_conversation_ten_d_01"
 DialogueLookup_n = DialogueLookup_n + 42
-
-return

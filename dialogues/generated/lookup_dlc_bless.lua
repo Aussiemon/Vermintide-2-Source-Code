@@ -268,5 +268,3 @@ DialogueLookup[DialogueLookup_n + 132] = "pdr_de_bless_conversation_twentynine_0
 DialogueLookup[DialogueLookup_n + 133] = "pwh_hub_prayer"
 DialogueLookup[DialogueLookup_n + 134] = "pwh_hub_prayer_distant"
 DialogueLookup_n = DialogueLookup_n + 134
-
-return

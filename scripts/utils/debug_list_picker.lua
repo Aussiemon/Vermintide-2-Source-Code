@@ -30,34 +30,34 @@ end
 
 DebugListPicker.setup = function (self)
 	local save_data = SaveData[self.save_data_name]
-	save_data = (type(save_data) == "table" and save_data) or {
+	save_data = type(save_data) == "table" and save_data or {
 		last_column_index = 1,
 		columns = {}
 	}
 	self.save_data = save_data
 	local columns = save_data.columns
-	self.column_index = (columns[save_data.last_column_index] and save_data.last_column_index) or 1
-	self.row_index = (columns[self.column_index] and columns[self.column_index].row_index) or 1
+	self.column_index = columns[save_data.last_column_index] and save_data.last_column_index or 1
+	self.row_index = columns[self.column_index] and columns[self.column_index].row_index or 1
 	local start_item = nil
 	local max_width = 0
 	local max_height = 0
 	local pick_list = self.pick_list
 	local max_rows = 0
-	self.column_index = (pick_list[self.column_index] and self.column_index) or 1
+	self.column_index = pick_list[self.column_index] and self.column_index or 1
 	self.column = pick_list[self.column_index]
-	self.row_index = (self.column[self.row_index] and self.row_index) or 1
+	self.row_index = self.column[self.row_index] and self.row_index or 1
 	self.item = self.column[self.row_index]
 
-	for i = 1, #pick_list, 1 do
+	for i = 1, #pick_list do
 		local column = pick_list[i]
-		column.last_row_index = (columns[i] and columns[i].row_index) or 1
+		column.last_row_index = columns[i] and columns[i].row_index or 1
 		local num_rows = #column
 
 		if max_rows < num_rows then
 			max_rows = num_rows
 		end
 
-		for j = 1, num_rows, 1 do
+		for j = 1, num_rows do
 			local item = column[j]
 			local text = item[1]
 			local min, max = Gui.text_extents(self.gui, text:upper(), self.font_mtrl, self.font_size)
@@ -91,7 +91,7 @@ DebugListPicker.activate = function (self)
 		save_data.columns = columns
 		save_data.last_column_index = self.column_index
 
-		for i = 1, #pick_list, 1 do
+		for i = 1, #pick_list do
 			local column = pick_list[i]
 			columns[i] = columns[i] or {}
 			columns[i].row_index = column.last_row_index
@@ -181,7 +181,7 @@ DebugListPicker.update = function (self, t, dt)
 		local text_position = Vector3.copy(upper_pos)
 		local curr_column = nil
 
-		for i = c1, c2, 1 do
+		for i = c1, c2 do
 			local column_i = pick_list[i]
 
 			if column == column_i then
@@ -207,7 +207,7 @@ DebugListPicker.update = function (self, t, dt)
 		local start_idx = math.clamp(self.row_index - max_display_items + 1, 1, #column)
 		local end_idx = math.min(#column, max_display_items) + start_idx - 1
 
-		for i = start_idx, end_idx, 1 do
+		for i = start_idx, end_idx do
 			local item_pos = upper_pos - Vector3(0, (i - start_idx + 1) * font_height, 0)
 			local item_text = column[i][1]
 
@@ -225,5 +225,3 @@ DebugListPicker.update = function (self, t, dt)
 		Gui.rect(self.gui, Vector3(5, res_y - height - 80, 899), Vector3(self.max_width, height, 899), Color(230 * opacity, 10, 10, 10))
 	end
 end
-
-return

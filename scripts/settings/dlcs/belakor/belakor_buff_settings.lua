@@ -22,13 +22,13 @@ end
 local function is_husk(unit)
 	local player = Managers.player:owner(unit)
 
-	return (player and (player.remote or player.bot_player)) or false
+	return player and (player.remote or player.bot_player) or false
 end
 
 local function teleport_validation_func(pos, validation_data)
 	local enemy_positions = validation_data.side.ENEMY_PLAYER_AND_BOT_POSITIONS
 
-	for i = 1, #enemy_positions, 1 do
+	for i = 1, #enemy_positions do
 		if Vector3.distance_squared(pos, enemy_positions[i]) < validation_data.min_dist_sqr then
 			return false
 		end
@@ -284,7 +284,7 @@ settings.proc_functions = {
 			local pickup_name = "belakor_crystal"
 			local override_unit_template_name = "belakor_crystal_throw"
 
-			for i = 1, buff.template.crystal_count, 1 do
+			for i = 1, buff.template.crystal_count do
 				local velocity = Vector3(2 * math.random() - 1, 2 * math.random() - 1, 1)
 
 				pickup_system:spawn_pickup(pickup_name, position, rotation, with_physics, spawn_type, velocity, override_unit_template_name)
@@ -747,5 +747,3 @@ settings.buff_templates = {
 		}
 	}
 }
-
-return

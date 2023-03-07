@@ -756,7 +756,7 @@ local wind_names = {
 for level_key, settings in pairs(weave_level_settings) do
 	LevelSettings["dlc_scorpion_" .. level_key] = settings
 
-	for i = 1, #wind_names, 1 do
+	for i = 1, #wind_names do
 		local wind_name = wind_names[i]
 		local settings_clone = table.clone(settings)
 		local name = "dlc_scorpion_" .. level_key .. "_" .. wind_name
@@ -771,5 +771,3 @@ for level_key, settings in pairs(weave_level_settings) do
 		LevelSettings[name] = settings_clone
 	end
 end
-
-return

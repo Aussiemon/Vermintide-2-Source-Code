@@ -166,7 +166,7 @@ HeroWindowCharacterSummary._handle_input = function (self, input_service, dt, t)
 		local hero_selection_button = widgets_by_name.hero_selection_button
 		local hero_button_pressed = self:_is_button_pressed(hero_selection_button)
 
-		if hero_button_pressed or input_service:get("special_1_press", swallow_input) or (self._draw_hero_selection and input_service:get("back_menu", swallow_input)) then
+		if hero_button_pressed or input_service:get("special_1_press", swallow_input) or self._draw_hero_selection and input_service:get("back_menu", swallow_input) then
 			input_handled = true
 
 			self:_set_career_selection_state(not self._draw_hero_selection)
@@ -212,7 +212,7 @@ HeroWindowCharacterSummary._handle_input = function (self, input_service, dt, t)
 			local scrollbar_widget = widgets_by_name.list_scrollbar
 			local scrollbar_hovered = scrollbar_widget.content.scroll_bar_info.is_hover
 
-			if (self:_is_button_pressed(window_button) and not scrollbar_hovered) or input_service:get("right_stick_press") then
+			if self:_is_button_pressed(window_button) and not scrollbar_hovered or input_service:get("right_stick_press") then
 				self:_toggle_statistics(not self._draw_statistics)
 			end
 		end
@@ -316,7 +316,7 @@ HeroWindowCharacterSummary._set_career_selection_state = function (self, enabled
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.summary_title.content.visible = not enabled
 	widgets_by_name.hero_selection_title.content.visible = enabled
-	widgets_by_name.list_scrollbar.content.visible = (not enabled and self._draw_statistics) or false
+	widgets_by_name.list_scrollbar.content.visible = not enabled and self._draw_statistics or false
 	self._params.changing_hero = enabled
 end
 
@@ -475,7 +475,7 @@ HeroWindowCharacterSummary._toggle_statistics = function (self, enabled)
 	local widgets_by_name = self._widgets_by_name
 	widgets_by_name.list_scrollbar.content.visible = enabled
 	local title_widget = widgets_by_name.summary_title
-	title_widget.content.selected_option = (enabled and 2) or 1
+	title_widget.content.selected_option = enabled and 2 or 1
 end
 
 HeroWindowCharacterSummary._update_hero_sync = function (self)
@@ -722,7 +722,7 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 	local width_spacing = 12
 	local layer_offset = 5
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local unlock_name = "talent_point_" .. i
 		local row_unlocked = ProgressionUnlocks.is_unlocked(unlock_name, hero_level)
 		local talent_unlock_level = TalentUnlockLevels[unlock_name]
@@ -737,14 +737,14 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 		slot_widget.content.locked = not row_unlocked
 		local row_widgets = {}
 
-		for j = 1, NumTalentColumns, 1 do
+		for j = 1, NumTalentColumns do
 			local widget = UIWidget.init(widget_definition)
 			row_widgets[#row_widgets + 1] = widget
 			local talent_name = tree[i][j]
 			local id = TalentIDLookup[talent_name]
 			local talent_data = all_talents[id]
 			local content = widget.content
-			content.icon = (talent_data and talent_data.icon) or "icons_placeholder"
+			content.icon = talent_data and talent_data.icon or "icons_placeholder"
 			content.talent = talent_data
 			content.talent_id = id
 			local offset = widget.offset
@@ -759,11 +759,11 @@ HeroWindowCharacterSummary._populate_talents = function (self, hero_name, career
 	self._talent_slot_widgets = slot_widgets
 	self._talent_widgets = talent_widgets
 
-	for i = 1, NumTalentRows, 1 do
+	for i = 1, NumTalentRows do
 		local selected_column = talents[i]
 		local no_talent_selected = not selected_column or selected_column == 0
 
-		for j = 1, NumTalentColumns, 1 do
+		for j = 1, NumTalentColumns do
 			local is_selected = selected_column == j
 
 			if is_selected then
@@ -781,7 +781,7 @@ HeroWindowCharacterSummary._populate_statistics = function (self, layout)
 	local widget_definition = create_stat_widget(scenegraph_id, masked)
 	local num_entries = #layout
 
-	for i = 1, num_entries, 1 do
+	for i = 1, num_entries do
 		local entry = layout[i]
 		local widget = UIWidget.init(widget_definition)
 		widgets[i] = widget
@@ -964,7 +964,7 @@ HeroWindowCharacterSummary._animate_title_button = function (self, dt)
 	local style = widget.style
 	local selected_option = content.selected_option
 
-	for i = 1, 2, 1 do
+	for i = 1, 2 do
 		local style_id = "title_text" .. i
 		local shadow_style_id = "title_text" .. i .. "_shadow"
 		local text_style = style[style_id]
@@ -1002,7 +1002,7 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 	local character_selection_image = career_settings.character_selection_image
 	local display_name = career_settings.display_name
 	local widgets_by_name = self._carrer_info_widgets_by_name
-	local career_color = (Colors.color_definitions[career_name] and Colors.get_color_table_with_alpha(career_name, 255)) or {
+	local career_color = Colors.color_definitions[career_name] and Colors.get_color_table_with_alpha(career_name, 255) or {
 		255,
 		255,
 		255,
@@ -1026,7 +1026,7 @@ HeroWindowCharacterSummary._populate_career_info = function (self, career_name)
 	local total_perks_height = 0
 	local perks_height_spacing = 0
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local widget = widgets_by_name["career_perk_" .. i]
 		local content = widget.content
 		local style = widget.style
@@ -1258,5 +1258,3 @@ HeroWindowCharacterSummary._animate_hero_icon_widget = function (self, widget, h
 	style.icon_highlight.color[1] = hover_alpha
 	content.animation_progress = animation_progress
 end
-
-return

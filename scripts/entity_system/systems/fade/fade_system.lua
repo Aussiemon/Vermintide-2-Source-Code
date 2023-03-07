@@ -73,5 +73,3 @@ FadeSystem.update = function (self, context, t)
 
 	EngineOptimizedExtensions.fade_update(self.fade_system, camera_position)
 end
-
-return

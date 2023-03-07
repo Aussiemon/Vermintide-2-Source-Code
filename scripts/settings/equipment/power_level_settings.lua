@@ -273,5 +273,3 @@ PowerLevelFromMagicLevel = {
 	max_power_level = 2000,
 	amulet_power_level_per_magic_level = 0
 }
-
-return

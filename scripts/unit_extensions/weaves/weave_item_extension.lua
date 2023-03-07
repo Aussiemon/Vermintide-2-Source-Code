@@ -60,5 +60,3 @@ end
 WeaveItemExtension.cb_game_session_disconnect = function (self)
 	return
 end
-
-return

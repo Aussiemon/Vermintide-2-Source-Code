@@ -36,7 +36,7 @@ BackendInterfaceCraftingBase._get_valid_recipe = function (self, item_backend_id
 		return
 	end
 
-	for i = 1, #crafting_recipes, 1 do
+	for i = 1, #crafting_recipes do
 		local recipe = crafting_recipes[i]
 		local validation_function = recipe.validation_function
 		local valid, item_backend_ids_and_amounts = self[validation_function](self, recipe, item_backend_ids)
@@ -55,7 +55,7 @@ BackendInterfaceCraftingBase.salvage_validation_func = function (self, recipe, i
 
 	table.clear(valid_item_ids)
 
-	for i = 1, #item_backend_ids, 1 do
+	for i = 1, #item_backend_ids do
 		local backend_id = item_backend_ids[i]
 		local masterlist_data = backend_items:get_item_masterlist_data(backend_id)
 		local slot_type = masterlist_data and masterlist_data.slot_type
@@ -86,7 +86,7 @@ BackendInterfaceCraftingBase.craft_validation_func = function (self, recipe, ite
 
 	table.clear(valid_item_ids)
 
-	for i = 1, #ingredients, 1 do
+	for i = 1, #ingredients do
 		local ingredient = ingredients[i]
 		local amount = ingredient.amount
 		local valid, ingredient_ids = self:_validate_ingredient(ingredient, cloned_backend_ids)
@@ -124,7 +124,7 @@ BackendInterfaceCraftingBase._validate_ingredient = function (self, ingredient, 
 
 	table.clear(ingredient_ids)
 
-	for i = 1, #item_backend_ids, 1 do
+	for i = 1, #item_backend_ids do
 		repeat
 			local item_backend_id = item_backend_ids[i]
 			local masterlist_data = backend_items:get_item_masterlist_data(item_backend_id)
@@ -167,7 +167,7 @@ BackendInterfaceCraftingBase._validate_ingredient = function (self, ingredient, 
 				}
 
 				if total_found_ingredients == amount then
-					for j = 1, #ingredient_ids, 1 do
+					for j = 1, #ingredient_ids do
 						local data = ingredient_ids[j]
 						local backend_id = data.backend_id
 						local index = table.find(item_backend_ids, backend_id)
@@ -193,7 +193,7 @@ BackendInterfaceCraftingBase.weapon_skin_application_validation_func = function 
 
 	local weapon_name, skin_name = nil
 
-	for i = 1, #cloned_backend_ids, 1 do
+	for i = 1, #cloned_backend_ids do
 		local backend_id = cloned_backend_ids[i]
 		local item = backend_items:get_item_from_id(backend_id)
 		local item_data = item.data
@@ -271,5 +271,3 @@ BackendInterfaceCraftingBase.check_has_skin = function (self, item_backend_ids)
 
 	return false
 end
-
-return

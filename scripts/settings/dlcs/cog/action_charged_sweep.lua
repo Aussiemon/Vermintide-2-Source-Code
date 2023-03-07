@@ -120,7 +120,7 @@ ActionChargedSweep._apply_discharge_effect = function (self, discharge_effect, d
 
 		if impact_explosion_template_name then
 			local spine_node = Unit.has_node(hit_unit, "c_spine") and Unit.node(hit_unit, "c_spine")
-			local explosion_position = (spine_node and Unit.world_position(hit_unit, spine_node)) or hit_position
+			local explosion_position = spine_node and Unit.world_position(hit_unit, spine_node) or hit_position
 			local world = self.world
 			local owner_unit = self.owner_unit
 			local rotation = self._stored_rotation:unbox()
@@ -157,5 +157,3 @@ ActionChargedSweep._get_damage_profile_name = function (self, action_hand, actio
 
 	return ActionChargedSweep.super._get_damage_profile_name(self, action_hand, action)
 end
-
-return

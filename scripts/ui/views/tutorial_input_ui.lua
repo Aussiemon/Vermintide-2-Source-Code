@@ -77,7 +77,7 @@ TutorialInputUI._create_ui_elements = function (self)
 	self._ui_scenegraph = UISceneGraph.init_scenegraph(definitions.scenegraph)
 	self._tutorial_tooltip_widget = UIWidget.init(definitions.widgets.tutorial_tooltip)
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		self._tutorial_tooltip_input_widgets[i] = UIWidget.init(definitions.tutorial_tooltip_input_widgets[i])
 	end
 
@@ -148,12 +148,12 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 	local widget_style = self._tutorial_tooltip_widget.style
 	local widget_content = self._tutorial_tooltip_widget.content
 	local text = active_template.text or "-no text assigned-"
-	local sub_text = (active_template.sub_text and Localize(active_template.sub_text)) or ""
+	local sub_text = active_template.sub_text and Localize(active_template.sub_text) or ""
 	local force_update = active_template.force_update
 	local texture_size_y = 0
 	local texture_size_x = 0
 	local gamepad_active = self._input_manager:is_device_active("gamepad")
-	local inputs = ((gamepad_active or IS_PS4) and active_template.tooltip_gamepad_inputs) or active_template.tooltip_inputs
+	local inputs = (gamepad_active or IS_PS4) and active_template.tooltip_gamepad_inputs or active_template.tooltip_inputs
 
 	if not active_tooltip_name then
 		self:fade_in()
@@ -176,7 +176,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 			end
 		end
 
-		local num_inputs = (inputs and #inputs) or 0
+		local num_inputs = inputs and #inputs or 0
 		widget_content.show_bg = num_inputs > 0
 		widget_content.description = text
 		widget_content.sub_description = sub_text
@@ -184,7 +184,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 		local total_width = 0
 		local num_widgets = 0
 
-		for i = 1, num_inputs, 1 do
+		for i = 1, num_inputs do
 			local widget = input_widgets[i]
 			local widget_content = widget.content
 			local widget_style = widget.style
@@ -235,7 +235,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 					local font, scaled_font_size = UIFontByResolution(widget_style.button_text)
 					local text_width, text_height, min = UIRenderer.text_size(ui_renderer, button_text, font[1], scaled_font_size)
 
-					for i = 1, #button_texture_data, 1 do
+					for i = 1, #button_texture_data do
 						textures[i] = button_texture_data[i].texture
 						sizes[i] = button_texture_data[i].size
 
@@ -266,7 +266,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 
 				ui_scenegraph["input_description_icon_" .. i].size[1] = texture_size_x
 				ui_scenegraph["input_description_icon_" .. i].size[2] = texture_size_y
-				widget_content.prefix_text = (input.prefix and input.prefix ~= "" and Localize(input.prefix)) or ""
+				widget_content.prefix_text = input.prefix and input.prefix ~= "" and Localize(input.prefix) or ""
 				widget_content.suffix_text = input.suffix
 				local prefix_font, prefix_scaled_font_size = UIFontByResolution(widget_style.prefix_text)
 				local suffix_font, suffix_scaled_font_size = UIFontByResolution(widget_style.suffix_text)
@@ -280,7 +280,7 @@ TutorialInputUI._update_tooltip = function (self, dt, t)
 			end
 		end
 
-		for i = num_widgets + 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+		for i = num_widgets + 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 			local widget = input_widgets[i]
 			widget.content.visible = false
 		end
@@ -299,7 +299,7 @@ TutorialInputUI._draw = function (self, dt, t)
 	UIRenderer.begin_pass(ui_renderer, ui_scenegraph, input_service, dt)
 	UIRenderer.draw_widget(ui_renderer, self._tutorial_tooltip_widget)
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		UIRenderer.draw_widget(ui_renderer, self._tutorial_tooltip_input_widgets[i])
 	end
 
@@ -336,7 +336,7 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 	local unassigned_shadow_style = widget_style.unassigned_shadow
 	local unassigned_background_style = widget_style.unassigned_background
 	local tutorial_tooltip_animations = self._tutorial_tooltip_animations
-	local wait_time = (completed and 0.5) or 0
+	local wait_time = completed and 0.5 or 0
 	self._tutorial_tooltip_widget.content.completed = completed
 
 	if completed then
@@ -360,7 +360,7 @@ TutorialInputUI._fade = function (self, from_alpha, to_alpha, duration, complete
 	tutorial_tooltip_animations.tooltip_sub_description_shadow_fade = UIAnimation.init(UIAnimation.wait, wait_time, UIAnimation.function_by_time, sub_description_shadow_style.text_color, 1, from_alpha, to_alpha, duration, math.easeInCubic)
 	local input_widgets = self._tutorial_tooltip_input_widgets
 
-	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS, 1 do
+	for i = 1, definitions.NUMBER_OF_TOOLTIP_INPUT_WIDGETS do
 		local widget = input_widgets[i]
 		local input_widget_style = widget.style
 		local prefix_text_style = input_widget_style.prefix_text
@@ -398,5 +398,3 @@ TutorialInputUI.set_visible = function (self, visible)
 
 	UIRenderer.set_element_visible(ui_renderer, self._tutorial_tooltip_widget.element, visible)
 end
-
-return

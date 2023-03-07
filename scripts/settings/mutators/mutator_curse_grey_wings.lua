@@ -74,7 +74,7 @@ return {
 			local side = Managers.state.side:get_side_from_name("heroes")
 			local players = side.PLAYER_AND_BOT_UNITS
 
-			for player_index = 1, #players, 1 do
+			for player_index = 1, #players do
 				local unit = players[player_index]
 				forbidden_position_list[#forbidden_position_list + 1] = POSITION_LOOKUP[unit]
 			end

@@ -55,7 +55,7 @@ ProximityMineExtension.update = function (self, unit, input, dt, context, t)
 		local player_and_bot_units = self.hero_side.PLAYER_AND_BOT_UNITS
 		local position = Unit.local_position(unit, 0)
 
-		for i = 1, #player_and_bot_units, 1 do
+		for i = 1, #player_and_bot_units do
 			local player_unit = player_and_bot_units[i]
 
 			if ALIVE[player_unit] then
@@ -100,5 +100,3 @@ end
 ProximityMineExtension.hot_join_sync = function (self, peer_id)
 	return
 end
-
-return

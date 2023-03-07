@@ -76,5 +76,3 @@ for shop_name, settings in pairs(DeusShopSettings.shop_types) do
 	TwitchVoteTemplates[new_vote_template_name] = new_vote_template
 	TwitchVoteDeusSelectLevelNames[shop_name] = new_vote_template_name
 end
-
-return

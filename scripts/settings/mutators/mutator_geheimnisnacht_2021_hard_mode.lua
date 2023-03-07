@@ -10,7 +10,7 @@ return {
 		local spawned_enemies = hero_side:enemy_units()
 		local num_enemies = #spawned_enemies
 
-		for i = 1, num_enemies, 1 do
+		for i = 1, num_enemies do
 			local unit = spawned_enemies[i]
 
 			if ALIVE[unit] then
@@ -31,7 +31,7 @@ return {
 		local spawned_enemies = hero_side:enemy_units()
 		local num_enemies = #spawned_enemies
 
-		for i = 1, num_enemies, 1 do
+		for i = 1, num_enemies do
 			local unit = spawned_enemies[i]
 
 			if ALIVE[unit] then
@@ -54,7 +54,7 @@ return {
 		local buff_system = Managers.state.entity:system("buff_system")
 		data.enemies_to_be_buffed = {}
 
-		for i = 1, num_enemies, 1 do
+		for i = 1, num_enemies do
 			local unit = spawned_enemies[i]
 
 			if ALIVE[unit] then

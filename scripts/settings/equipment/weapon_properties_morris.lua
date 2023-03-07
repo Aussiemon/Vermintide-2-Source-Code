@@ -1493,5 +1493,3 @@ for key, value in pairs(morris_weapon_properties.combinations) do
 
 	WeaponProperties.combinations[key] = value
 end
-
-return

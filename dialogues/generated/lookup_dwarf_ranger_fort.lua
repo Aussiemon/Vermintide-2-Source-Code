@@ -46,5 +46,3 @@ DialogueLookup[DialogueLookup_n + 21] = "pdr_level_fort_cannonballs"
 DialogueLookup[DialogueLookup_n + 22] = "pdr_level_fort_fire_cannon_final_hit"
 DialogueLookup[DialogueLookup_n + 23] = "pdr_level_fort_fire_cannon_final_fire"
 DialogueLookup_n = DialogueLookup_n + 23
-
-return

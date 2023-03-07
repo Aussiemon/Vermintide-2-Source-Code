@@ -6,5 +6,3 @@ WeaveLoadoutSettings.wh_zealot = {
 	properties = {},
 	traits = {}
 }
-
-return

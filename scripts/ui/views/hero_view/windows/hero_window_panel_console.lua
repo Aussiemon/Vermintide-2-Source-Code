@@ -360,7 +360,7 @@ HeroWindowPanelConsole._handle_input = function (self, dt, t)
 			local max_index = 5
 
 			if input_service:get(INPUT_ACTION_PREVIOUS) then
-				local next_index = (current_index > 1 and current_index - 1) or max_index
+				local next_index = current_index > 1 and current_index - 1 or max_index
 
 				self:_on_panel_button_selected(next_index)
 			elseif input_service:get(INPUT_ACTION_NEXT) then
@@ -421,7 +421,7 @@ HeroWindowPanelConsole._update_selected_option = function (self)
 
 	local widget = self._widgets_by_name.bot_customization_button
 	widget.content.button_hotspot.is_selected = selected_layout_name == "character_selection"
-	widget.content.button_hotspot.hover_progress = (widget.content.button_hotspot.is_selected and 1) or widget.content.button_hotspot.hover_progress
+	widget.content.button_hotspot.hover_progress = widget.content.button_hotspot.is_selected and 1 or widget.content.button_hotspot.hover_progress
 end
 
 HeroWindowPanelConsole.draw = function (self, dt)
@@ -751,5 +751,3 @@ HeroWindowPanelConsole._animate_back_button = function (self, widget, dt)
 	hotspot.input_progress = input_progress
 	hotspot.selection_progress = selection_progress
 end
-
-return

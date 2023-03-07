@@ -99,7 +99,7 @@ FriendsUIComponent.cb_refresh_friends_done = function (self, friend_list)
 	table.sort(online_friends, sort)
 	table.sort(offline_friends, sort)
 
-	for i = 1, #online_friends, 1 do
+	for i = 1, #online_friends do
 		local friend = online_friends[i]
 		playing_friends[#playing_friends + 1] = friend
 	end
@@ -260,7 +260,7 @@ FriendsUIComponent._update_list = function (self, active_tab)
 	local item_styles = list_style.item_styles
 	local num_draws = list_style.num_draws
 
-	for i = 1, num_draws, 1 do
+	for i = 1, num_draws do
 		local content = item_contents[i]
 		local style = item_styles[i]
 		local size = style.size
@@ -285,7 +285,7 @@ FriendsUIComponent._handle_list_input = function (self, active_tab)
 	local list_style = active_tab.style.list_style
 	local num_draws = list_style.num_draws
 
-	for i = 1, num_draws, 1 do
+	for i = 1, num_draws do
 		local content = item_contents[i]
 
 		if self:_button_pressed(content.invite_button) then
@@ -379,7 +379,7 @@ FriendsUIComponent._populate_tab = function (self, widget, list, allow_invite)
 	local allowed_to_initiate_join_lobby = Managers.matchmaking:allowed_to_initiate_join_lobby()
 	local num_friends = math.min(#list, definitions.list_info.friend_list_limit)
 
-	for i = 1, num_friends, 1 do
+	for i = 1, num_friends do
 		local friend = list[i]
 		local content = list_content[i]
 		content.name = UIRenderer.crop_text_width(self._ui_top_renderer, friend.name, 200, item_styles[i].name)
@@ -503,5 +503,3 @@ FriendsUIComponent._join_player = function (self, content)
 		self._join_lobby_data = lobby_data
 	end
 end
-
-return

@@ -5,13 +5,13 @@ MainPathSpawningGenerator = {
 		local to_remove = FrameTable.alloc_table()
 		local num_removed_dist_pairs = #removed_path_distances
 
-		for i = 1, num_main_zones, 1 do
+		for i = 1, num_main_zones do
 			local zone = zones[i]
 			local travel_dist = zone.travel_dist
 
 			fassert(zone.type ~= "island", "Zones badly stored")
 
-			for j = 1, num_removed_dist_pairs, 1 do
+			for j = 1, num_removed_dist_pairs do
 				local dist_pair = removed_path_distances[j]
 
 				if dist_pair[1] < travel_dist and travel_dist < dist_pair[2] then
@@ -40,7 +40,7 @@ MainPathSpawningGenerator = {
 			local total_travel_dist = 0
 			local p1 = first_path.nodes[1]:unbox()
 
-			for i = 1, #main_paths, 1 do
+			for i = 1, #main_paths do
 				local path = main_paths[i]
 				local nodes = path.nodes
 				local p2 = nodes[1]:unbox()
@@ -49,7 +49,7 @@ MainPathSpawningGenerator = {
 					total_travel_dist
 				}
 
-				for j = 2, #nodes, 1 do
+				for j = 2, #nodes do
 					p1 = nodes[j - 1]:unbox()
 					p2 = nodes[j]:unbox()
 					total_travel_dist = total_travel_dist + Vector3_distance(p1, p2)
@@ -64,7 +64,7 @@ MainPathSpawningGenerator = {
 	main_path_has_marker_type = function (path_markers, main_path_index, marker_type)
 		local has_marker_type = nil
 
-		for i = 1, #path_markers, 1 do
+		for i = 1, #path_markers do
 			local path_marker = path_markers[i]
 			local path_marker_main_path_index = path_marker.main_path_index
 			local path_marker_type = path_marker.marker_type
@@ -82,7 +82,7 @@ MainPathSpawningGenerator = {
 		local spawn_data = require(spawn_zone_path)
 		local path_markers = spawn_data.path_markers
 
-		for i = 1, #path_markers, 1 do
+		for i = 1, #path_markers do
 			local marker = path_markers[i]
 			local p = marker.pos
 			marker.pos = Vector3Box(p[1], p[2], p[3])
@@ -134,7 +134,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 			end
 		end
 
-		for k = 1, #main_paths, 1 do
+		for k = 1, #main_paths do
 			local main_path = main_paths[k]
 
 			if main_path.crossroads_id == crossroads_id and main_path.road_id ~= chosen_road_id then
@@ -177,7 +177,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 
 			local next_main_path_index = index + 1
 
-			for k = 1, #to_remove, 1 do
+			for k = 1, #to_remove do
 				local removed_main_path_index = to_remove[k]
 
 				if next_main_path_index == removed_main_path_index then
@@ -195,7 +195,7 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 		until true
 	end
 
-	for i = 1, #to_stitch, 1 do
+	for i = 1, #to_stitch do
 		repeat
 			local stitched_indices = to_stitch[i]
 
@@ -207,12 +207,12 @@ MainPathSpawningGenerator.remove_crossroads_extra_path_branches = function (cros
 			local wanted_main_path = main_paths[wanted_main_path_index]
 			local wanted_main_path_nodes = wanted_main_path.nodes
 
-			for k = 2, #stitched_indices, 1 do
+			for k = 2, #stitched_indices do
 				local stitch_index = stitched_indices[k]
 				local stitch_main_path = main_paths[stitch_index]
 				local stitch_main_path_nodes = stitch_main_path.nodes
 
-				for j = 1, #stitch_main_path_nodes, 1 do
+				for j = 1, #stitch_main_path_nodes do
 					local stiched_node = stitch_main_path_nodes[j]
 					wanted_main_path_nodes[#wanted_main_path_nodes + 1] = stiched_node
 				end
@@ -262,7 +262,7 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, m
 	local zone_mutator_list = {}
 	local current_director_name = conflict_director.name
 
-	for i = 1, num_main_zones, 1 do
+	for i = 1, num_main_zones do
 		local zone_layer = zones[i]
 		local mutators_updated = false
 
@@ -332,7 +332,7 @@ MainPathSpawningGenerator.generate_great_cycles = function (conflict_director, m
 			mutators = zone_mutator_list
 		}
 
-		for j = 2, #zone_layer.sub, 1 do
+		for j = 2, #zone_layer.sub do
 			local area = zone_layer.sub_areas[j]
 			total_zone_area = total_zone_area + (area or 0)
 			outer[#outer + 1] = {
@@ -368,7 +368,7 @@ MainPathSpawningGenerator.process_conflict_directors_zones = function (default_c
 			non_random_conflict_directors[default_conflict_director_name] = true
 		end
 
-		for i = 1, num_main_zones, 1 do
+		for i = 1, num_main_zones do
 			local zone_layer = zones[i]
 			local conflict_directors = zone_layer.roaming_set
 
@@ -392,5 +392,3 @@ MainPathSpawningGenerator.process_conflict_directors_zones = function (default_c
 
 	return non_random_conflict_directors, num_random, level_seed
 end
-
-return

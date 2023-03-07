@@ -897,9 +897,9 @@ local damage_templates = {
 				impact = 0.5
 			}
 		}
-	},
-	we_deus_01_special_charged = table.clone(damage_templates.we_deus_01_fast)
+	}
 }
+damage_templates.we_deus_01_special_charged = table.clone(damage_templates.we_deus_01_fast)
 damage_templates.we_deus_01_special_charged.default_target.dot_template_name = "we_deus_01_dot_special_charged"
 damage_templates.we_deus_01_charged = table.clone(damage_templates.we_deus_01_fast)
 damage_templates.we_deus_01_charged.default_target.dot_template_name = "we_deus_01_dot_charged"

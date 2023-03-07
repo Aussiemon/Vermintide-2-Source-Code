@@ -135,5 +135,3 @@ end
 GameObjectSystem.hot_join_sync = function (self, peer_id)
 	return
 end
-
-return

@@ -6,5 +6,3 @@ WeaveLoadoutSettings.es_huntsman = {
 	properties = {},
 	traits = {}
 }
-
-return

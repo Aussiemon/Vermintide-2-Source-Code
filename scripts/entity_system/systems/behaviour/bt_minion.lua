@@ -58,5 +58,3 @@ else
 		bt_node.name = bt_name
 	end
 end
-
-return

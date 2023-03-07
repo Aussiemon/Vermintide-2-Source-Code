@@ -128,7 +128,7 @@ BTChargeAttackAction.leave = function (self, unit, blackboard, t, reason, destro
 		StatusUtils.set_charged_network(blackboard.attacking_target, false)
 	end
 
-	if (blackboard.stagger and blackboard.charge_state == "charging") or blackboard.charge_state == "approaching" or (blackboard.charge_state == "lunge" and not blackboard.anim_cb_disable_charge_collision) then
+	if blackboard.stagger and blackboard.charge_state == "charging" or blackboard.charge_state == "approaching" or blackboard.charge_state == "lunge" and not blackboard.anim_cb_disable_charge_collision then
 		blackboard.charge_stagger = true
 	end
 
@@ -318,7 +318,7 @@ BTChargeAttackAction._start_impact = function (self, unit, blackboard, hit_targe
 		locomotion_extension:set_wanted_velocity(Vector3.zero())
 		locomotion_extension:set_rotation_speed(nil)
 	elseif hit_target or target_avoided_attack then
-		local wanted_animation = (hit_target_blocked and action.charge_blocked_animation) or action.impact_animation
+		local wanted_animation = hit_target_blocked and action.charge_blocked_animation or action.impact_animation
 		local impact_animation = randomize(wanted_animation)
 
 		Managers.state.network:anim_event(unit, impact_animation)
@@ -431,7 +431,7 @@ BTChargeAttackAction._check_overlap = function (self, unit, blackboard, action)
 	local side = blackboard.side
 	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #PLAYER_AND_BOT_UNITS, 1 do
+	for i = 1, #PLAYER_AND_BOT_UNITS do
 		local target_unit = PLAYER_AND_BOT_UNITS[i]
 		local pos = POSITION_LOOKUP[target_unit]
 		local to_target_dir = Vector3.normalize(pos - self_pos)
@@ -464,7 +464,7 @@ BTChargeAttackAction._check_overlap = function (self, unit, blackboard, action)
 	local hit_ai_radius = action.hit_ai_radius
 	local num_results = Broadphase.query(broadphase, self_pos, hit_ai_radius, broadphase_query_result)
 
-	for i = 1, num_results, 1 do
+	for i = 1, num_results do
 		local hit_unit = broadphase_query_result[i]
 		local pos = POSITION_LOOKUP[hit_unit]
 		local to_target_dir = Vector3.normalize(pos - self_pos)
@@ -953,7 +953,7 @@ BTChargeAttackAction._run_impact = function (self, unit, blackboard, t, dt)
 		end
 	end
 
-	local slow_down_speed = (blackboard.hit_target and blackboard.action.hit_target_slow_down_speed) or blackboard.action.slow_down_speed
+	local slow_down_speed = blackboard.hit_target and blackboard.action.hit_target_slow_down_speed or blackboard.action.slow_down_speed
 
 	self:_slow_down(unit, blackboard, slow_down_speed, t, dt)
 end
@@ -1104,5 +1104,3 @@ end
 BTChargeAttackAction.anim_cb_disable_charge_collision = function (self, unit, blackboard)
 	blackboard.anim_cb_disable_charge_collision = true
 end
-
-return

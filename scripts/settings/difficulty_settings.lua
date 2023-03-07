@@ -376,5 +376,3 @@ DefaultQuickPlayStartingDifficulty = "normal"
 DefaultAdventureModeStartingDifficulty = "normal"
 
 require("scripts/settings/difficulty_tweak")
-
-return

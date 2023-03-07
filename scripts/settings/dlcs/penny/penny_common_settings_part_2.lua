@@ -7,5 +7,3 @@ settings.husk_lookup = {
 	"units/weapons/projectile/insect_swarm_missile_drachenfels/insect_swarm_missile_drachenfels_01",
 	"units/fx/vfx_animation_light_spirit_01"
 }
-
-return

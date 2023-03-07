@@ -272,5 +272,3 @@ end
 RemotePlayer.set_observed_player_id = function (self, player_id)
 	self._observed_player_id = player_id
 end
-
-return

@@ -116,7 +116,7 @@ PriestResourceBarUI.update = function (self, dt, t, player)
 	local input_manager = self.input_manager
 	local input_service = input_manager:get_service("ingame_menu")
 	local gamepad_active = input_manager:is_device_active("gamepad")
-	local actual_player = (self._is_spectator and self._spectated_player) or player
+	local actual_player = self._is_spectator and self._spectated_player or player
 
 	if HudCustomizer.run(ui_renderer, ui_scenegraph, customizer_data) then
 		UISceneGraph.update_scenegraph(ui_scenegraph)
@@ -126,7 +126,7 @@ PriestResourceBarUI.update = function (self, dt, t, player)
 	local has_twitch = Managers.twitch:is_activated()
 
 	if has_twitch ~= self._has_twitch then
-		self.charge_bar.offset[2] = (has_twitch and 140) or 0
+		self.charge_bar.offset[2] = has_twitch and 140 or 0
 		self._has_twitch = has_twitch
 		is_dirty = true
 	end
@@ -280,5 +280,3 @@ PriestResourceBarUI.handle_active_passive_feedback = function (self, value)
 
 	Material.set_scalar(material, "detail_offset", value)
 end
-
-return

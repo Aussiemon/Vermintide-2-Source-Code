@@ -569,5 +569,3 @@ AchievementTemplates.achievements.holly_magnus_rune = {
 		return statistics_db:get_persistent_stat(stats_id, "holly_magnus_rune") > 0
 	end
 }
-
-return

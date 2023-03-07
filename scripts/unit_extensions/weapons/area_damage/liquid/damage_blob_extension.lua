@@ -177,7 +177,7 @@ DamageBlobExtension.destroy = function (self)
 	local ai_system = self.ai_system
 	local cost_map_id = self._nav_cost_map_id
 
-	for i = 1, num_blobs, 1 do
+	for i = 1, num_blobs do
 		local blob = blobs[i]
 		local ai_units_inside_blob = blob[5]
 
@@ -201,7 +201,7 @@ DamageBlobExtension.destroy = function (self)
 	local world = self.world
 	local fx_list = self.fx_list
 
-	for i = 1, #fx_list, 1 do
+	for i = 1, #fx_list do
 		local fx_id = fx_list[i].id
 
 		World.stop_spawning_particles(world, fx_id)
@@ -218,7 +218,7 @@ DamageBlobExtension.destroy = function (self)
 	local wwise_world = Managers.world:wwise_world(world)
 	local sfx_list = self.sfx_list
 
-	for i = 1, #sfx_list, 1 do
+	for i = 1, #sfx_list do
 		local sfx_id = sfx_list[i].source
 		local has_source = WwiseWorld.has_source(wwise_world, sfx_id)
 
@@ -456,7 +456,7 @@ DamageBlobExtension.update_blobs_fx_and_sfx = function (self, t, dt)
 	local WwiseWorld_has_source = WwiseWorld.has_source
 	local WwiseWorld_trigger_event = WwiseWorld.trigger_event
 
-	for i = 1, #sfx_list, 1 do
+	for i = 1, #sfx_list do
 		local sfx_entry = sfx_list[i]
 		local sfx_source = sfx_entry.source
 		local sfx_time = sfx_entry.time
@@ -492,7 +492,7 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 		local enemy_player_and_bot_units = self._source_side.ENEMY_PLAYER_AND_BOT_UNITS
 		local blob_radius = self.blob_radius
 
-		for i = 1, #enemy_player_and_bot_units, 1 do
+		for i = 1, #enemy_player_and_bot_units do
 			local target_unit = enemy_player_and_bot_units[i]
 
 			self:check_overlap(unit, target_unit, blob_radius, first_blob_position, last_blob_position, buff_system, num_blobs)
@@ -527,7 +527,7 @@ DamageBlobExtension.update_blob_overlaps = function (self, t)
 		else
 			local num_ai_units = AiUtils.broadphase_query(blob_position, blob_radius, ai_units)
 
-			for i = 1, num_ai_units, 1 do
+			for i = 1, num_ai_units do
 				local target_unit = ai_units[i]
 				local inside_blob = ai_units_inside[target_unit]
 
@@ -631,7 +631,7 @@ DamageBlobExtension.is_position_inside = function (self, position, nav_cost_map_
 	local template = self.template
 	local nav_cost_map_cost_type = template.nav_cost_map_cost_type
 
-	if nav_cost_map_cost_type == nil or (nav_cost_map_table and nav_cost_map_table[nav_cost_map_cost_type] == 1) then
+	if nav_cost_map_cost_type == nil or nav_cost_map_table and nav_cost_map_table[nav_cost_map_cost_type] == 1 then
 		return false
 	end
 
@@ -665,7 +665,7 @@ end
 DamageBlobExtension._debug_render_blobs = function (self)
 	local blobs = self.blobs
 
-	for i = 1, #blobs, 1 do
+	for i = 1, #blobs do
 		local blob = blobs[i]
 		local blob_pos = Vector3(blob[1], blob[2], blob[3])
 		local radius = blob[4]
@@ -686,7 +686,7 @@ DamageBlobExtension._debug_render_blobs = function (self)
 
 	local rim_nodes = self.rim_nodes
 
-	for i = 1, #rim_nodes, 1 do
+	for i = 1, #rim_nodes do
 		local position = rim_nodes[i]:unbox()
 
 		QuickDrawer:sphere(position, 0.05)
@@ -706,5 +706,3 @@ end
 DamageBlobExtension.get_source_attacker_unit = function (self)
 	return self._source_unit
 end
-
-return

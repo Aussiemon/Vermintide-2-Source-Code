@@ -83,7 +83,7 @@ math.round_to_closest_multiple = function (value, multiple)
 		return value - modulo
 	end
 
-	return (value + multiple) - modulo
+	return value + multiple - modulo
 end
 
 math.smoothstep = function (value, min, max)
@@ -166,7 +166,7 @@ math.point_is_inside_2d_triangle = function (pos, p1, p2, p3)
 	end
 
 	local pca_n = Vector3.cross(pc, pa)
-	local best_normal = (Vector3.dot(pbc_n, pbc_n) < Vector3.dot(pab_n, pab_n) and pab_n) or pbc_n
+	local best_normal = Vector3.dot(pbc_n, pbc_n) < Vector3.dot(pab_n, pab_n) and pab_n or pbc_n
 	local dot_product = Vector3.dot(best_normal, pca_n)
 
 	if dot_product < 0 then
@@ -243,8 +243,8 @@ math.circular_to_square_coordinates = function (v)
 	local sqrt = math.sqrt
 	local max = math.max
 	local sqrt_2 = sqrt(2)
-	local x = 0.5 * (sqrt(max((2 + 2 * u * sqrt_2 + uu) - vv, 0)) - sqrt(max((2 - 2 * u * sqrt_2 + uu) - vv, 0)))
-	local y = 0.5 * (sqrt(max((2 + 2 * v * sqrt_2) - uu + vv, 0)) - sqrt(max(2 - 2 * v * sqrt_2 - uu + vv, 0)))
+	local x = 0.5 * (sqrt(max(2 + 2 * u * sqrt_2 + uu - vv, 0)) - sqrt(max(2 - 2 * u * sqrt_2 + uu - vv, 0)))
+	local y = 0.5 * (sqrt(max(2 + 2 * v * sqrt_2 - uu + vv, 0)) - sqrt(max(2 - 2 * v * sqrt_2 - uu + vv, 0)))
 
 	return Vector3(x, y, 0)
 end
@@ -258,7 +258,7 @@ math.polar_to_cartesian = function (radius, theta)
 end
 
 math.catmullrom = function (t, p0, p1, p2, p3)
-	return 0.5 * (2 * p1 + (-p0 + p2) * t + ((2 * p0 - 5 * p1 + 4 * p2) - p3) * t * t + ((-p0 + 3 * p1) - 3 * p2 + p3) * t * t * t)
+	return 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t)
 end
 
 math.closest_position = function (p0, p1, p2)
@@ -300,7 +300,7 @@ Geometry.convex_hull = function (points, hull)
 
 	local num = 0
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		local pt = points[i]
 
 		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) do
@@ -340,7 +340,7 @@ Geometry.concave_hull = function (points, hull)
 
 	local num = 0
 
-	for i = 1, num_points, 1 do
+	for i = 1, num_points do
 		local pt = points[i]
 
 		while num >= 2 and not ccw(hull[num - 1], hull[num], pt) and dot2D(hull[num] - hull[num - 1], pt - hull[num]) <= 0.1 do
@@ -382,7 +382,7 @@ Geometry.is_point_inside_triangle = function (point_on_plane, tri_a, tri_b, tri_
 	end
 
 	local pca_n = Vector3.cross(pc, pa)
-	local best_normal = (Vector3.dot(pbc_n, pbc_n) < Vector3.dot(pab_n, pab_n) and pab_n) or pbc_n
+	local best_normal = Vector3.dot(pbc_n, pbc_n) < Vector3.dot(pab_n, pab_n) and pab_n or pbc_n
 	local dot_product = Vector3.dot(best_normal, pca_n)
 
 	if dot_product < 0 then
@@ -429,7 +429,7 @@ Geometry.closest_point_on_polyline = function (point, points, start_index, end_i
 	local shortest_distance = math.huge
 	local result_position, result_index = nil
 
-	for i = start_index, end_index - 1, 1 do
+	for i = start_index, end_index - 1 do
 		local p1 = points[i]
 		local p2 = points[i + 1]
 		local projected_point = closest_point_on_line(point, p1, p2)
@@ -594,7 +594,7 @@ math.ease_out_elastic = function (t)
 		s = p / (2 * math.pi) * math.asin(1 / a)
 	end
 
-	return a * math.pow(2, -10 * t) * math.sin(((t * 1 - s) * 2 * math.pi) / p) + 1
+	return a * math.pow(2, -10 * t) * math.sin((t * 1 - s) * 2 * math.pi / p) + 1
 end
 
 local function internal_rand_normal()
@@ -606,7 +606,7 @@ local function internal_rand_normal()
 		w = x1 * x1 + x2 * x2
 	until w < 1
 
-	w = math.sqrt((-2 * math.log(w)) / w)
+	w = math.sqrt(-2 * math.log(w) / w)
 	y1 = x1 * w
 	y2 = x2 * w
 
@@ -645,7 +645,7 @@ math.rand_utf8_string = function (string_length, ignore_chars)
 	}
 	local array = {}
 
-	for i = 1, string_length, 1 do
+	for i = 1, string_length do
 		local char = nil
 
 		while not char or table.contains(ignore_chars, char) do
@@ -708,5 +708,3 @@ end
 math.value_inside_range = function (value, min, max)
 	return min <= value and value <= max
 end
-
-return

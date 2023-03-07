@@ -87,7 +87,7 @@ StateIngame.on_enter = function (self)
 	local is_server = not not self._lobby_host
 	self.is_server = is_server
 
-	print("[Gamestate] Enter StateIngame", (is_server and "HOST") or "CLIENT")
+	print("[Gamestate] Enter StateIngame", is_server and "HOST" or "CLIENT")
 
 	local assert_on_leak = true
 
@@ -135,7 +135,7 @@ StateIngame.on_enter = function (self)
 	self._gm_event_end_conditions_met = false
 	self._gm_event_end_reason = nil
 
-	Managers.light_fx:set_lightfx_color_scheme((self.is_in_inn and "inn_level") or "ingame")
+	Managers.light_fx:set_lightfx_color_scheme(self.is_in_inn and "inn_level" or "ingame")
 
 	if IS_CONSOLE and self.is_in_tutorial then
 		Managers.backend:set_user_data("prologue_started", true)
@@ -233,7 +233,7 @@ StateIngame.on_enter = function (self)
 
 	Managers.state.difficulty:set_difficulty(difficulty, difficulty_tweak)
 
-	local num_players = (DEDICATED_SERVER and 0) or 1
+	local num_players = DEDICATED_SERVER and 0 or 1
 	self.num_local_human_players = num_players
 
 	if Managers.matchmaking then
@@ -278,7 +278,7 @@ StateIngame.on_enter = function (self)
 
 	local is_testify_session = script_data.testify
 	local engine_revision = script_data.build_identifier
-	local content_revision = (is_testify_session and script_data.content_revision) or script_data.settings.content_revision
+	local content_revision = is_testify_session and script_data.content_revision or script_data.settings.content_revision
 	local steam_branch = script_data.steam_branch
 	local svn_branch = script_data.svn_branch
 	local machine_name = script_data.machine_name
@@ -296,10 +296,10 @@ StateIngame.on_enter = function (self)
 
 	event_manager:register(self, "event_play_particle_effect", "event_play_particle_effect", "event_start_network_timer", "event_start_network_timer", "xbox_one_hack_start_game", "event_xbox_one_hack_start_game", "gm_event_end_conditions_met", "gm_event_end_conditions_met")
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		local viewport_name = "player_" .. i
 		self.viewport_name = viewport_name
-		slot29 = Managers.player:add_player(nil, viewport_name, self.world_name, i)
+		local player = Managers.player:add_player(nil, viewport_name, self.world_name, i)
 	end
 
 	local level = self.level
@@ -322,7 +322,7 @@ StateIngame.on_enter = function (self)
 
 			loading_context.checkpoint_data = nil
 		else
-			local override_seed = (Development.parameter("attract_mode") and BenchmarkSettings.game_seed) or level_seed
+			local override_seed = Development.parameter("attract_mode") and BenchmarkSettings.game_seed or level_seed
 
 			Managers.state.conflict.level_analysis:set_random_seed(checkpoint_data, override_seed)
 		end
@@ -343,7 +343,7 @@ StateIngame.on_enter = function (self)
 	local level_end_view_wrappers = loading_context.level_end_view_wrappers
 	local peer_id = Network.peer_id()
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		local viewport_name = "player_" .. i
 		self.viewport_name = viewport_name
 		local network_options = Managers.lobby:network_options()
@@ -367,7 +367,7 @@ StateIngame.on_enter = function (self)
 			network_server = self.network_server,
 			network_client = self.network_client,
 			network_transmit = self.network_transmit,
-			voip = (self.network_server and self.network_server.voip) or self.network_client.voip,
+			voip = self.network_server and self.network_server.voip or self.network_client.voip,
 			quickplay_bonus = loading_context.quickplay_bonus
 		}
 
@@ -568,7 +568,7 @@ StateIngame.on_enter = function (self)
 	local fullscreen = Application.user_setting("fullscreen")
 	local borderless_fullscreen = Application.user_setting("borderless_fullscreen")
 	local windowed = not fullscreen and not borderless_fullscreen
-	local screen_mode = (fullscreen and "fullscreen") or (borderless_fullscreen and "borderless_fullscreen") or (windowed and "windowed")
+	local screen_mode = fullscreen and "fullscreen" or borderless_fullscreen and "borderless_fullscreen" or windowed and "windowed"
 	local res_x, res_y = Application.resolution()
 	local resolution_string = string.format("%dx%d", res_x, res_y)
 	local graphics_quality = Application.user_setting("graphics_quality")
@@ -771,7 +771,7 @@ StateIngame._gather_backend_flow_events = function (self)
 		local flow_events = level_settings.level_flow_events
 
 		if flow_events then
-			for j = 1, #flow_events, 1 do
+			for j = 1, #flow_events do
 				local flow_event = flow_events[j]
 				level_flow_events[#level_flow_events + 1] = flow_event
 			end
@@ -939,7 +939,7 @@ StateIngame.update = function (self, dt, main_t)
 	if self._level_flow_events and #self._level_flow_events > 0 and not self._called_level_flow_events then
 		local flow_events = self._level_flow_events
 
-		for i = 1, #flow_events, 1 do
+		for i = 1, #flow_events do
 			local flow_event = flow_events[i]
 
 			LevelHelper:flow_event(self.world, flow_event)
@@ -1146,7 +1146,7 @@ StateIngame._check_exit = function (self, t)
 				Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 				Managers.transition:show_loading_icon()
 			end
-		elseif (lobby and lobby.state == LobbyState.FAILED) or (self.network_client and self.network_client.state == "lost_connection_to_host") then
+		elseif lobby and lobby.state == LobbyState.FAILED or self.network_client and self.network_client.state == "lost_connection_to_host" then
 			if self.network_client == nil or self.network_client.host_to_migrate_to == nil then
 				self.exit_type = "lobby_state_failed"
 			else
@@ -1375,6 +1375,7 @@ StateIngame._check_exit = function (self, t)
 			Managers.transition:fade_in(GameSettings.transition_fade_in_speed, nil)
 			Managers.transition:show_loading_icon()
 		elseif transition == "complete_level" then
+			-- Nothing
 		end
 
 		if self.exit_type then
@@ -1582,7 +1583,7 @@ StateIngame._check_exit = function (self, t)
 
 			return StateTitleScreen
 		elseif exit_type == "load_next_level" or exit_type == "reload_level" then
-			self.parent.loading_context.checkpoint_data = (self.is_server and Managers.level_transition_handler:get_checkpoint_data()) or nil
+			self.parent.loading_context.checkpoint_data = self.is_server and Managers.level_transition_handler:get_checkpoint_data() or nil
 			self.parent.loading_context.lobby_host = self._lobby_host
 			self.parent.loading_context.lobby_client = self._lobby_client
 			self.parent.loading_context.matchmaking_loading_context = Managers.matchmaking:loading_context()
@@ -2035,12 +2036,7 @@ StateIngame._check_and_add_end_game_telemetry = function (self, application_shut
 
 	if application_shutdown then
 		local controlled_exit = Boot.is_controlled_exit
-
-		if controlled_exit then
-			reason = "controlled_exit"
-		else
-			reason = "forced_exit"
-		end
+		reason = controlled_exit and "controlled_exit" or "forced_exit"
 	else
 		local level_related_reason = self.exit_type == "load_next_level" or self.exit_type == "reload_level"
 
@@ -2113,8 +2109,8 @@ StateIngame._setup_state_context = function (self, world, is_server, network_eve
 	GarbageLeakDetector.register_object(Managers.state.game_mode, "GameModeManager")
 	GarbageLeakDetector.register_object(Managers.state.conflict, "ConflictDirector")
 
-	local is_server = (self._lobby_host and true) or false
-	local is_client = (self._lobby_client and true) or false
+	local is_server = self._lobby_host and true or false
+	local is_client = self._lobby_client and true or false
 	Managers.state.camera = CameraManager:new(world)
 
 	GarbageLeakDetector.register_object(Managers.state.camera, "CameraManager")
@@ -2421,5 +2417,3 @@ StateIngame._handle_onclose_warning_result = function (self)
 		end
 	end
 end
-
-return

@@ -52,7 +52,7 @@ CareerSystem.server_reduce_activated_ability_cooldown = function (self, units, a
 	local unit_ids = {}
 	local unit_count = 0
 
-	for i = 1, #units, 1 do
+	for i = 1, #units do
 		local unit = units[i]
 
 		if ALIVE[unit] then
@@ -74,7 +74,7 @@ CareerSystem.rpc_server_reduce_activated_ability_cooldown = function (self, send
 		local unit_storage = self.unit_storage
 		local player_manager = self.player_manager
 
-		for i = 1, #unit_game_object_ids, 1 do
+		for i = 1, #unit_game_object_ids do
 			local unit_game_object_id = unit_game_object_ids[i]
 			local unit = unit_storage:unit(unit_game_object_id)
 
@@ -164,5 +164,3 @@ CareerSystem.rpc_ability_activated = function (self, channel_id, unit_game_objec
 		self.network_transmit:send_rpc_clients_except("rpc_ability_activated", peer_id, unit_game_object_id, ability_id)
 	end
 end
-
-return

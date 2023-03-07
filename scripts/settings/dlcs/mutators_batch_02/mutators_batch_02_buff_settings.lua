@@ -132,5 +132,3 @@ settings.buff_function_templates = {
 		return
 	end
 }
-
-return

@@ -203,5 +203,3 @@ BreedBehaviors.raider_tutorial = {
 	},
 	name = "horde"
 }
-
-return

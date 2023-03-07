@@ -19,5 +19,3 @@ end
 BTNilAction.run = function (self, unit, blackboard, t, dt, bt_name)
 	return "running"
 end
-
-return

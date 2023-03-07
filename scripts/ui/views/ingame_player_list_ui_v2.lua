@@ -144,7 +144,7 @@ IngamePlayerListUI._create_ui_elements = function (self)
 
 	local player_list_widgets = {}
 
-	for i = 1, 8, 1 do
+	for i = 1, 8 do
 		player_list_widgets[i] = UIWidget.init(definitions.player_widget_definition(i))
 	end
 
@@ -272,9 +272,9 @@ IngamePlayerListUI._setup_chaos_wastes_info = function (self)
 	end
 
 	if minor_modifier_group then
-		content_node_info.minor_modifier_1_section.text = (minor_modifier_group[1] and Localize("mutator_" .. minor_modifier_group[1] .. "_name")) or ""
-		content_node_info.minor_modifier_2_section.text = (minor_modifier_group[2] and Localize("mutator_" .. minor_modifier_group[2] .. "_name")) or ""
-		content_node_info.minor_modifier_3_section.text = (minor_modifier_group[3] and Localize("mutator_" .. minor_modifier_group[3] .. "_name")) or ""
+		content_node_info.minor_modifier_1_section.text = minor_modifier_group[1] and Localize("mutator_" .. minor_modifier_group[1] .. "_name") or ""
+		content_node_info.minor_modifier_2_section.text = minor_modifier_group[2] and Localize("mutator_" .. minor_modifier_group[2] .. "_name") or ""
+		content_node_info.minor_modifier_3_section.text = minor_modifier_group[3] and Localize("mutator_" .. minor_modifier_group[3] .. "_name") or ""
 	else
 		content_node_info.minor_modifier_1_section.text = ""
 		content_node_info.minor_modifier_2_section.text = ""
@@ -318,7 +318,7 @@ IngamePlayerListUI._setup_deed_reward_data = function (self, deed_reward_data)
 	local spacing = 20
 	local offset = 0
 
-	for i = 1, #deed_reward_data, 1 do
+	for i = 1, #deed_reward_data do
 		local reward_name = deed_reward_data[i]
 		local reward_item = ItemMasterList[reward_name]
 		local item = {
@@ -508,7 +508,7 @@ IngamePlayerListUI._setup_weave_objectives = function (self, weave_template)
 	local objective_size = scenegraph_definition[scenegraph_id].size
 	local objectives = weave_template.objectives
 
-	for i = 1, #objectives, 1 do
+	for i = 1, #objectives do
 		local widget_definition = definitions.create_weave_sub_objective_widget(scenegraph_id, objective_size)
 		local widget = UIWidget.init(widget_definition)
 		self._weave_objective_widgets[#self._weave_objective_widgets + 1] = widget
@@ -516,9 +516,9 @@ IngamePlayerListUI._setup_weave_objectives = function (self, weave_template)
 		local objective = objectives[i]
 		local conflict_settings = objective.conflict_settings
 		local is_end_objective = conflict_settings == "weave_disabled"
-		local title_text = (is_end_objective and "menu_weave_play_next_end_event_title") or "menu_weave_play_main_objective_title"
+		local title_text = is_end_objective and "menu_weave_play_next_end_event_title" or "menu_weave_play_main_objective_title"
 		local objective_display_name = objective.display_name
-		local objective_icon = (is_end_objective and "objective_icon_boss") or "objective_icon_general"
+		local objective_icon = is_end_objective and "objective_icon_boss" or "objective_icon_general"
 		local objective_height = self:_assign_objective(widget, title_text, objective_display_name, objective_icon, objective_spacing)
 		local offset = widget.offset
 		offset[2] = -total_objectives_height
@@ -655,7 +655,7 @@ IngamePlayerListUI._update_widgets = function (self)
 	local vote_kick_enabled = vote_manager:vote_kick_enabled()
 	local leader = Managers.party:leader()
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		local player_data = players[i]
 		local peer_id = player_data.peer_id
 		local is_local_player = player_data.is_local_player
@@ -701,7 +701,7 @@ IngamePlayerListUI._update_widgets = function (self)
 		end
 
 		local name = player_data.player_name
-		player_data.player_name = (PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self._ui_top_renderer, name, 370, widget.style.name)) or name
+		player_data.player_name = PLAYER_NAME_MAX_LENGTH < UTF8Utils.string_length(name) and UIRenderer.crop_text_width(self._ui_top_renderer, name, 370, widget.style.name) or name
 		player_data.widget = widget
 	end
 end
@@ -722,7 +722,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 	local total_height = widget_height * num_players + total_spacing
 	local cosmetic_system = Managers.state.entity:system("cosmetic_system")
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		local player_data = players[i]
 		local player = player_data.player
 		local widget = player_data.widget
@@ -731,8 +731,8 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 		local profile_index = player:profile_index()
 		local career_index = player:career_index()
 		local profile_settings = profiles[profile_index]
-		local display_name = (profile_settings and profile_settings.display_name) or "unspawned"
-		local ingame_display_name = (profile_settings and profile_settings.ingame_display_name) or "unspawned"
+		local display_name = profile_settings and profile_settings.display_name or "unspawned"
+		local ingame_display_name = profile_settings and profile_settings.ingame_display_name or "unspawned"
 		local style_name = widget.style.name
 		widget.content.name = UIRenderer.crop_text_width(self._ui_renderer, player_data.player_name, style_name.size[1], style_name)
 		local resync_player_level = player_data.resync_player_level
@@ -751,7 +751,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 		if career_settings then
 			local career_name = career_settings.name
 			local portrait_image = career_settings.portrait_image
-			local player_level_text = (player_data.is_bot_player and "BOT") or (player_data.level and tostring(player_data.level)) or "-"
+			local player_level_text = player_data.is_bot_player and "BOT" or player_data.level and tostring(player_data.level) or "-"
 			local portrait_frame, portrait_frame_name = nil
 			local player = player_data.player
 			local player_unit = player.player_unit
@@ -762,7 +762,7 @@ IngamePlayerListUI._update_player_information = function (self, dt, t)
 				portrait_frame = CosmeticUtils.get_cosmetic_slot(player, "slot_frame")
 			end
 
-			local portrait_frame_name = portrait_frame_name or (portrait_frame and portrait_frame.item_name) or "default"
+			local portrait_frame_name = portrait_frame_name or portrait_frame and portrait_frame.item_name or "default"
 
 			if player_data.career_index ~= career_index or display_name ~= player_data.hero_name or player_level_text ~= player_data.player_level_text or portrait_frame ~= player_data.portrait_frame then
 				player_data.career_index = career_index
@@ -1289,9 +1289,9 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local buff_extension = ScriptUnit.extension(player_unit, "buff_system")
 			local inventory_extension = ScriptUnit.extension(player_unit, "inventory_system")
 			local max_health = health_extension:get_max_health()
-			local total_health = (status_extension:is_dead() and 0) or health_extension:current_health()
-			local total_health_percent = (status_extension:is_dead() and 0) or health_extension:current_health_percent()
-			local health_percent = (status_extension:is_dead() and 0) or health_extension:current_permanent_health_percent()
+			local total_health = status_extension:is_dead() and 0 or health_extension:current_health()
+			local total_health_percent = status_extension:is_dead() and 0 or health_extension:current_health_percent()
+			local health_percent = status_extension:is_dead() and 0 or health_extension:current_permanent_health_percent()
 			local is_wounded = status_extension:is_wounded()
 			local is_knocked_down = (status_extension:is_knocked_down() or status_extension:get_is_ledge_hanging()) and total_health_percent > 0
 			local is_ready_for_assisted_respawn = status_extension:is_ready_for_assisted_respawn()
@@ -1334,7 +1334,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			local equipment = inventory_extension:equipment()
 			local is_build_visible = true
 
-			if player.local_player or (player.bot_player and player.is_server) then
+			if player.local_player or player.bot_player and player.is_server then
 				is_build_visible = true
 			else
 				local privacy_level = player:get_data("playerlist_build_privacy")
@@ -1350,7 +1350,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 			content.is_build_visible = is_build_visible
 
 			for slot_name, item in pairs(loadout) do
-				local rarity = item.rarity or (item.data and item.data.rarity) or "plentiful"
+				local rarity = item.rarity or item.data and item.data.rarity or "plentiful"
 				local inventory_icon = UIUtils.get_ui_information_from_item(item)
 
 				if not is_build_visible then
@@ -1373,7 +1373,7 @@ IngamePlayerListUI._update_dynamic_widget_information = function (self, dt, t)
 				local profile_name = player:profile_display_name()
 				local profile_talents = Talents[profile_name]
 
-				for i = 1, 6, 1 do
+				for i = 1, 6 do
 					local id = talent_ids[i]
 					local talent = profile_talents and profile_talents[id]
 					local talent_content = content["talent_" .. i]
@@ -1466,7 +1466,7 @@ IngamePlayerListUI._draw = function (self, dt)
 	local weave_objective_widgets = self._weave_objective_widgets
 
 	if weave_objective_widgets then
-		for i = 1, #weave_objective_widgets, 1 do
+		for i = 1, #weave_objective_widgets do
 			local widget = weave_objective_widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -1482,7 +1482,7 @@ IngamePlayerListUI._draw = function (self, dt)
 	local static_widgets = self._static_widgets
 
 	if static_widgets then
-		for i = 1, #static_widgets, 1 do
+		for i = 1, #static_widgets do
 			local widget = static_widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -1492,7 +1492,7 @@ IngamePlayerListUI._draw = function (self, dt)
 	local widgets = self._widgets
 
 	if widgets then
-		for i = 1, #widgets, 1 do
+		for i = 1, #widgets do
 			local widget = widgets[i]
 
 			UIRenderer.draw_widget(ui_top_renderer, widget)
@@ -1512,7 +1512,7 @@ IngamePlayerListUI._draw = function (self, dt)
 	local players = self._players
 	local num_players = self._num_players
 
-	for i = 1, num_players, 1 do
+	for i = 1, num_players do
 		local player = players[i]
 		local widget = player.widget
 
@@ -1595,7 +1595,7 @@ IngamePlayerListUI._has_client_duplicate = function (self, player_list, peer_id)
 		return false
 	end
 
-	for i = 1, #player_list, 1 do
+	for i = 1, #player_list do
 		local data = player_list[i]
 
 		if not data.is_server and not data.is_bot_player and not duplicate_found then
@@ -1610,7 +1610,7 @@ IngamePlayerListUI._has_client_duplicate = function (self, player_list, peer_id)
 			end
 		end
 
-		duplicate_index = (occurences < 2 and i) or 1
+		duplicate_index = occurences < 2 and i or 1
 	end
 
 	if duplicate_found then
@@ -1619,5 +1619,3 @@ IngamePlayerListUI._has_client_duplicate = function (self, player_list, peer_id)
 		return false
 	end
 end
-
-return

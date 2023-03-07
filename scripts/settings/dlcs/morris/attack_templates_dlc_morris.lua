@@ -37,5 +37,3 @@ AttackTemplates.belakor_arena_finish = {
 	sound_type = "medium",
 	damage_type = "belakor_arena_finish"
 }
-
-return

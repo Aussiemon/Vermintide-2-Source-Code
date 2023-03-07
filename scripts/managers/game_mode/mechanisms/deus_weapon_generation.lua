@@ -8,7 +8,7 @@ for difficulty, config in pairs(DeusDropRarityWeights) do
 	local normalized_config = {}
 	local count = #config.plentiful
 
-	for i = 1, count, 1 do
+	for i = 1, count do
 		local weight_sum = 0
 
 		for _, weights in pairs(config) do
@@ -84,12 +84,7 @@ local function get_random_slot(rarity, random_generator, weapon_pool, slot_chanc
 
 	if chance_melee > 0 and chance_ranged > 0 then
 		local slot_random = random_generator(0, chance_melee + chance_ranged)
-
-		if slot_random < chance_melee then
-			slot = "melee"
-		else
-			slot = "ranged"
-		end
+		slot = slot_random < chance_melee and "melee" or "ranged"
 	elseif chance_melee > 0 then
 		slot = "melee"
 	else
@@ -234,7 +229,7 @@ local function generate_item_from_item_key(item_key, difficulty, run_progress, r
 	end
 
 	local skins = get_possible_skins(item_key, rarity)
-	local skin = (skins and #skins > 0 and skins[random_generator(1, #skins)]) or nil
+	local skin = skins and #skins > 0 and skins[random_generator(1, #skins)] or nil
 
 	return create_item(item_key, properties, traits, skin, powerlevel, rarity)
 end
@@ -306,7 +301,7 @@ local function upgrade_item(item, difficulty, run_progress, target_rarity, rando
 	end
 
 	local skins = get_possible_skins(item_key, target_rarity)
-	local skin = (skins and #skins > 0 and skins[random_generator(1, #skins)]) or nil
+	local skin = skins and #skins > 0 and skins[random_generator(1, #skins)] or nil
 
 	return create_item(item_key, properties, traits, skin, powerlevel, target_rarity)
 end
@@ -399,7 +394,7 @@ DeusWeaponGeneration.get_possibilities_for_item_key = function (item_key, diffic
 		trait_combinations = get_possible_trait_combinations(item_key, rarity)
 	end
 
-	return powerlevel, archetypes, property_combinations, trait_combinations, (skins and #skins > 0 and skins) or nil
+	return powerlevel, archetypes, property_combinations, trait_combinations, skins and #skins > 0 and skins or nil
 end
 
 DeusWeaponGeneration.generate_item_from_item_key = function (item_key, difficulty, run_progress, rarity, seed)
@@ -493,5 +488,3 @@ DeusWeaponGeneration.get_weapon_pool_slot_amounts = function (base_weapon_pool, 
 
 	return slot_amounts
 end
-
-return

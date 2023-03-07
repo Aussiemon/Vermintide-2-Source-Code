@@ -281,5 +281,3 @@ GameModeTutorial.local_player_game_starts = function (self, player, loading_cont
 		end
 	end
 end
-
-return

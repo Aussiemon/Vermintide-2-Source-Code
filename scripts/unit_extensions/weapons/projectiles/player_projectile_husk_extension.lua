@@ -113,7 +113,7 @@ PlayerProjectileHuskExtension.initialize_projectile = function (self, projectile
 		local difficulty_level = Managers.state.difficulty:get_difficulty()
 		local cleave_power_level = ActionUtils.scale_power_levels(self.power_level, "cleave", owner_unit, difficulty_level)
 		local max_mass_attack, max_mass_impact = ActionUtils.get_max_targets(damage_profile, cleave_power_level)
-		self._max_mass = (max_mass_impact < max_mass_attack and max_mass_attack) or max_mass_impact
+		self._max_mass = max_mass_impact < max_mass_attack and max_mass_attack or max_mass_impact
 	end
 
 	local timed_data = self._timed_data
@@ -314,7 +314,7 @@ PlayerProjectileHuskExtension.hit_enemy = function (self, impact_data, hit_unit,
 
 	local grenade = impact_data.grenade
 
-	if grenade or (aoe_data and self._max_mass <= self._amount_of_mass_hit) then
+	if grenade or aoe_data and self._max_mass <= self._amount_of_mass_hit then
 		self:do_aoe(aoe_data, hit_position)
 
 		if grenade then
@@ -388,7 +388,7 @@ PlayerProjectileHuskExtension.hit_enemy_damage = function (self, damage_profile,
 	if was_alive then
 		local action_mass_override = action.hit_mass_count
 		local difficulty_rank = Managers.state.difficulty:get_difficulty_rank()
-		local hit_mass_total = (shield_blocked and ((breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank]) or breed.hit_mass_count_block)) or (breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank]) or breed.hit_mass_count or 1
+		local hit_mass_total = shield_blocked and (breed.hit_mass_counts_block and breed.hit_mass_counts_block[difficulty_rank] or breed.hit_mass_count_block) or breed.hit_mass_counts and breed.hit_mass_counts[difficulty_rank] or breed.hit_mass_count or 1
 
 		if self.ignore_mass_and_armour then
 			hit_mass_total = 1
@@ -823,5 +823,3 @@ PlayerProjectileHuskExtension.do_aoe = function (self, aoe_data, position)
 		end
 	end
 end
-
-return

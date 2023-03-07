@@ -123,5 +123,3 @@ ActionMeleeStart.finish = function (self, reason, data)
 
 	self:_play_additional_animation(action.custom_finish_anim_data)
 end
-
-return

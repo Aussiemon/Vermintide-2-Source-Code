@@ -75,7 +75,7 @@ AchievementManager.init = function (self, world, statistics_db)
 	local template_count = 0
 
 	for _, template in pairs(AchievementTemplates.achievements) do
-		if (self.platform == "steam" and template.ID_STEAM) or (IS_PS4 and template.ID_PS4) or (IS_XB1 and template.ID_XB1) or self.platform == "debug" then
+		if self.platform == "steam" and template.ID_STEAM or IS_PS4 and template.ID_PS4 or IS_XB1 and template.ID_XB1 or self.platform == "debug" then
 			local idx = template_count + 1
 			self._templates[idx] = template
 			template_count = idx
@@ -137,7 +137,12 @@ AchievementManager.trigger_event = function (self, event_name, ...)
 		if human_players then
 			for _, player in pairs(human_players) do
 				local profile_index = player._profile_index
-				profile_index = profile_index or (owner_player and owner_player:profile_index())
+
+				if not profile_index then
+					local player_unit = player.player_unit
+					local owner_player = player_unit and player_manager:owner(player_unit)
+					profile_index = owner_player and owner_player:profile_index()
+				end
 
 				if profile_index then
 					local profile = SPProfiles[profile_index]
@@ -214,7 +219,7 @@ AchievementManager._update_timed_events = function (self, dt, t)
 	local timed_events = self._timed_events
 	local canceled_timed_events = self._canceled_timed_events
 
-	for i = 1, self._canceled_timed_events_n, 1 do
+	for i = 1, self._canceled_timed_events_n do
 		timed_events[canceled_timed_events[i]] = nil
 		canceled_timed_events[i] = nil
 	end
@@ -394,7 +399,7 @@ AchievementManager._search_sub_categories = function (self, categories, in_categ
 		return
 	end
 
-	for i = 1, #categories, 1 do
+	for i = 1, #categories do
 		local category = categories[i]
 		local category_id = category.name
 
@@ -519,7 +524,7 @@ AchievementManager.claim_multiple_rewards = function (self, achievement_ids)
 end
 
 AchievementManager.polling_reward = function (self)
-	return (self._reward_poll_id and true) or false
+	return self._reward_poll_id and true or false
 end
 
 AchievementManager.has_any_unclaimed_achievement = function (self)
@@ -605,7 +610,7 @@ AchievementManager._check_initialized_achievements = function (self)
 		self._initialized_achievements = true
 		local unlocked, error_msg = nil
 
-		for i = 1, self._template_count, 1 do
+		for i = 1, self._template_count do
 			local template = self._templates[i]
 			local unlocked, error_msg = self._platform_functions.is_unlocked(template)
 
@@ -816,7 +821,7 @@ AchievementManager.debug_draw = function (self)
 
 	Gui.text(gui, header_text, font_mtrl, font_size, font, pos, header_color)
 
-	for i = 1, self._template_count, 1 do
+	for i = 1, self._template_count do
 		local template = self._templates[i]
 		local id = template.id
 		pos.y = pos.y - 20
@@ -833,5 +838,3 @@ AchievementManager.debug_draw = function (self)
 
 	Gui.rect(gui, Vector3(start_pos.x - 20, pos.y - 20, 100), Vector2(300, start_pos.y - pos.y + 40), bg_color)
 end
-
-return

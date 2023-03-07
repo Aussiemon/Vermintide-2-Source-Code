@@ -55,7 +55,7 @@ ActionCareerDREngineerCharge.client_owner_post_update = function (self, dt, t, w
 
 		WwiseWorld.set_global_parameter(wwise_world, "engineer_charge", num_stacks + recharge_instances)
 
-		for i = 1, recharge_instances, 1 do
+		for i = 1, recharge_instances do
 			buff_extension:add_buff(buff_to_add)
 		end
 	end
@@ -88,5 +88,3 @@ ActionCareerDREngineerCharge.start_audio_loop = function (self)
 	weapon_extension:add_looping_audio(self.audio_loop_id, start_charge_id, stop_charge_id, start_charge_husk_id, stop_charge_husk_id)
 	weapon_extension:start_looping_audio(self.audio_loop_id)
 end
-
-return

@@ -677,8 +677,8 @@ local scenegraph_definition = {
 
 local function create_vertical_edge_divider(scenegraph_id, size)
 	local scenegraph_definition = scenegraph_definition[scenegraph_id]
-	local horizontal_alignment = (scenegraph_definition.horizontal_alignment == "right" and "left") or "right"
-	local offset_multiplier = (horizontal_alignment == "left" and -1) or 1
+	local horizontal_alignment = scenegraph_definition.horizontal_alignment == "right" and "left" or "right"
+	local offset_multiplier = horizontal_alignment == "left" and -1 or 1
 	local widget = {
 		element = {
 			passes = {
@@ -1772,7 +1772,7 @@ local function player_widget_definition(index)
 					texture_id = "chat_button_texture",
 					pass_type = "texture",
 					content_change_function = function (content, style)
-						style.color[1] = (content.show_chat_button and 255) or 60
+						style.color[1] = content.show_chat_button and 255 or 60
 					end
 				},
 				{
@@ -1822,7 +1822,7 @@ local function player_widget_definition(index)
 					texture_id = "voice_button_texture",
 					pass_type = "texture",
 					content_change_function = function (content, style)
-						style.color[1] = (content.show_voice_button and 255) or 60
+						style.color[1] = content.show_voice_button and 255 or 60
 					end
 				},
 				{
@@ -1872,7 +1872,7 @@ local function player_widget_definition(index)
 					texture_id = "kick_button_texture",
 					pass_type = "texture",
 					content_change_function = function (content, style)
-						style.color[1] = (content.show_kick_button and 255) or 60
+						style.color[1] = content.show_kick_button and 255 or 60
 					end
 				},
 				{
@@ -1906,7 +1906,7 @@ local function player_widget_definition(index)
 					texture_id = "profile_button_texture",
 					pass_type = "texture",
 					content_change_function = function (content, style)
-						style.color[1] = (content.show_profile_button and 255) or 60
+						style.color[1] = content.show_profile_button and 255 or 60
 					end
 				},
 				{
@@ -3785,7 +3785,7 @@ local popup_widget_definition = {
 }
 local popup_buttons_n = #popup_buttons
 
-for i = 1, popup_buttons_n, 1 do
+for i = 1, popup_buttons_n do
 	local popup_button = popup_buttons[i]
 	local content = {
 		button_hotspot = {},

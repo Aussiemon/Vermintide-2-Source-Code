@@ -165,7 +165,7 @@ BTTargetPouncedAction.impact_pushback = function (pouncing_unit, impact_position
 	local side = Managers.state.side.side_by_unit[pouncing_unit]
 	local player_and_bot_units = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #player_and_bot_units, 1 do
+	for i = 1, #player_and_bot_units do
 		local player_unit = player_and_bot_units[i]
 
 		if player_unit ~= excluded_player_unit then
@@ -224,5 +224,3 @@ BTTargetPouncedAction.direct_damage = function (unit, blackboard)
 
 	AiUtils.damage_target(target_unit, unit, blackboard.action, base_damage)
 end
-
-return

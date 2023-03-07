@@ -172,5 +172,3 @@ local has_run = nil
 GarbageLeakDetector.run_leak_detection = function (do_assert)
 	return
 end
-
-return

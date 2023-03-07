@@ -44,7 +44,7 @@ BTClimbAction.enter = function (self, unit, blackboard, t)
 		if smart_object_data.ledge_position1 then
 			local ledge_position1 = Vector3Aux.unbox(smart_object_data.ledge_position1)
 			local ledge_position2 = Vector3Aux.unbox(smart_object_data.ledge_position2)
-			local closest_ledge_position = (Vector3.distance_squared(ledge_position1, entrance_pos) < Vector3.distance_squared(ledge_position2, entrance_pos) and ledge_position1) or ledge_position2
+			local closest_ledge_position = Vector3.distance_squared(ledge_position1, entrance_pos) < Vector3.distance_squared(ledge_position2, entrance_pos) and ledge_position1 or ledge_position2
 			blackboard.climb_jump_height = closest_ledge_position.z - entrance_pos.z
 
 			blackboard.ledge_position:store(closest_ledge_position)
@@ -123,7 +123,7 @@ BTClimbAction.leave = function (self, unit, blackboard, t, reason, destroy)
 		shield_extension:set_is_blocking(true)
 	end
 
-	slot9 = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
+	local success = navigation_extension:is_using_smart_object() and navigation_extension:use_smart_object(false)
 end
 
 local CLIMB_HEIGHT_OFFSET_THRESHOLD = 2.1
@@ -149,7 +149,7 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 			blackboard.climb_moving_to_enter_entrance_timeout = nil
 		end
 
-		if dist < 1 or (blackboard.climb_moving_to_enter_entrance_timeout and blackboard.climb_moving_to_enter_entrance_timeout < t) then
+		if dist < 1 or blackboard.climb_moving_to_enter_entrance_timeout and blackboard.climb_moving_to_enter_entrance_timeout < t then
 			locomotion_extension:set_wanted_velocity(Vector3.zero())
 			locomotion_extension:set_movement_type("script_driven")
 			navigation_extension:set_enabled(false)
@@ -214,18 +214,18 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 				local jump_anim_thresholds = smart_object_settings.jump_up_anim_thresholds
 				local climb_jump_height = blackboard.climb_jump_height
 
-				for i = 1, #jump_anim_thresholds, 1 do
+				for i = 1, #jump_anim_thresholds do
 					local jump_anim_threshold = jump_anim_thresholds[i]
 
 					if climb_jump_height < jump_anim_threshold.height_threshold then
-						local jump_anim_name = (is_on_edge and jump_anim_threshold.animation_edge) or jump_anim_threshold.animation_fence
+						local jump_anim_name = is_on_edge and jump_anim_threshold.animation_edge or jump_anim_threshold.animation_fence
 
 						Managers.state.network:anim_event(unit, randomize(jump_anim_name))
 
 						local fence_vertical_length = jump_anim_threshold.fence_vertical_length or jump_anim_threshold.vertical_length
 						local edge_vertical_length = jump_anim_threshold.vertical_length
-						local anim_distance = (is_on_edge and edge_vertical_length) or fence_vertical_length
-						animation_translation_scale = (animation_translation_scale * climb_jump_height) / anim_distance
+						local anim_distance = is_on_edge and edge_vertical_length or fence_vertical_length
+						animation_translation_scale = animation_translation_scale * climb_jump_height / anim_distance
 
 						break
 					end
@@ -239,11 +239,11 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 				local jump_anim_thresholds = smart_object_settings.jump_down_anim_thresholds
 				local climb_jump_height = math.abs(blackboard.climb_jump_height)
 
-				for i = 1, #jump_anim_thresholds, 1 do
+				for i = 1, #jump_anim_thresholds do
 					local jump_anim_threshold = jump_anim_thresholds[i]
 
 					if climb_jump_height < jump_anim_threshold.height_threshold then
-						local jump_anim_name = (is_on_edge and jump_anim_threshold.animation_edge) or jump_anim_threshold.animation_fence
+						local jump_anim_name = is_on_edge and jump_anim_threshold.animation_edge or jump_anim_threshold.animation_fence
 
 						Managers.state.network:anim_event(unit, randomize(jump_anim_name))
 
@@ -270,7 +270,7 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 		if blackboard.jump_climb_finished then
 			blackboard.jump_climb_finished = nil
 			local exit_pos = blackboard.climb_exit_pos:unbox()
-			local move_target = (is_on_edge and exit_pos) or blackboard.ledge_position:unbox()
+			local move_target = is_on_edge and exit_pos or blackboard.ledge_position:unbox()
 
 			if is_on_edge then
 				Managers.state.network:anim_event(unit, "move_fwd")
@@ -296,7 +296,7 @@ BTClimbAction.run = function (self, unit, blackboard, t, dt)
 				local jump_anim_thresholds = SmartObjectSettings.templates[blackboard.breed.smart_object_template].jump_down_anim_thresholds
 				local climb_jump_height = move_target.z - exit_pos.z
 
-				for i = 1, #jump_anim_thresholds, 1 do
+				for i = 1, #jump_anim_thresholds do
 					local jump_anim_threshold = jump_anim_thresholds[i]
 
 					if climb_jump_height < jump_anim_threshold.height_threshold then
@@ -439,7 +439,7 @@ BTClimbAction._catapult_players = function (self, unit, blackboard, data)
 	local PLAYER_AND_BOT_POSITIONS = side.ENEMY_PLAYER_AND_BOT_POSITIONS
 	local PLAYER_AND_BOT_UNITS = side.ENEMY_PLAYER_AND_BOT_UNITS
 
-	for i = 1, #PLAYER_AND_BOT_POSITIONS, 1 do
+	for i = 1, #PLAYER_AND_BOT_POSITIONS do
 		local player_pos = PLAYER_AND_BOT_POSITIONS[i]
 		local player_unit = PLAYER_AND_BOT_UNITS[i]
 		local offset = player_pos - pos
@@ -460,5 +460,3 @@ BTClimbAction._catapult_players = function (self, unit, blackboard, data)
 		end
 	end
 end
-
-return

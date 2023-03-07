@@ -151,5 +151,3 @@ end
 LiquidAreaDamageHuskExtension.get_source_attacker_unit = function (self)
 	return self._source_attacker_unit
 end
-
-return

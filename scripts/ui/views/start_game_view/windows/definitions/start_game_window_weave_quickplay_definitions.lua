@@ -185,7 +185,7 @@ local difficulty_description_text_style = {
 	horizontal_alignment = "center",
 	vertical_alignment = "top",
 	font_type = "hell_shark",
-	font_size = (not IS_WINDOWS and 28) or 20,
+	font_size = not IS_WINDOWS and 28 or 20,
 	text_color = Colors.get_color_table_with_alpha("font_default", 255),
 	offset = {
 		0,

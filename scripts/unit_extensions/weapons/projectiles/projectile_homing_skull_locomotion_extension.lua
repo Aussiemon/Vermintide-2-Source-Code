@@ -26,7 +26,7 @@ local function valid_position(position)
 	local pmin = NetworkConstants.position.min
 	local pmax = NetworkConstants.position.max
 
-	for i = 1, 3, 1 do
+	for i = 1, 3 do
 		local coord = position[i]
 
 		if coord < pmin or pmax < coord then
@@ -70,7 +70,7 @@ ProjectileHomingSkullLocomotionExtension.update = function (self, unit, input, d
 	local cross_vector = Vector3(target_direction.x, target_direction.y, math.abs(new_direction.z) + 1)
 	local u_vector = Vector3.cross(target_direction, cross_vector)
 	local v_vector = Vector3.cross(target_direction, u_vector)
-	local curve_func = (self._use_sin_for_vertical_trajectory and math.sin) or math.cos
+	local curve_func = self._use_sin_for_vertical_trajectory and math.sin or math.cos
 	local v_offset = Vector3.normalize(v_vector) * BelakorBalancing.homing_skulls_vertical_offset_multiplier * curve_func(lifetime * BelakorBalancing.homing_skulls_vertical_offset_frequency_multiplier)
 	local new_base_position = base_position + new_direction * speed * dt
 
@@ -126,5 +126,3 @@ end
 ProjectileHomingSkullLocomotionExtension.stop = function (self)
 	self.stopped = true
 end
-
-return

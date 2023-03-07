@@ -46,5 +46,3 @@ PowerLevelTemplates.default_target_pull_smiter_L = {
 	}
 }
 PowerLevelTemplates.targets_pull_smiter_L = {}
-
-return

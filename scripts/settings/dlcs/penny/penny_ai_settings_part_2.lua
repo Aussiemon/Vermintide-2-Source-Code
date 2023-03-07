@@ -15,5 +15,3 @@ settings.anim_lookup = {
 	"float_idle_nostaff",
 	"float_idle_bastion_outro"
 }
-
-return
