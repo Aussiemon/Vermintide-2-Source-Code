@@ -25,7 +25,7 @@ local dummy_wwise_world = {
 
 if GLOBAL_MUSIC_WORLD then
 	MUSIC_WORLD = Application.new_world("music_world", Application.DISABLE_PHYSICS, Application.DISABLE_RENDERING)
-	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD) or (Application.platform() == "ps4" and dummy_wwise_world) or "dedicated_server_no_wwise_dummy"
+	MUSIC_WWISE_WORLD = Wwise.wwise_world(MUSIC_WORLD) or Application.platform() == "ps4" and dummy_wwise_world or "dedicated_server_no_wwise_dummy"
 end
 
 BUILD = BUILD or Application.build()
@@ -187,5 +187,3 @@ if IS_WINDOWS and BUILD ~= "dev" and BUILD ~= "debug" and LAUNCH_MODE ~= "attrac
 	package.loaders[3] = nil
 	package.loaders[4] = nil
 end
-
-return

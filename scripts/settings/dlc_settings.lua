@@ -309,7 +309,8 @@ DLCSettings = DLCSettings or {
 		portrait_materials = {
 			"materials/ui/ui_1080p_wizards_trail_atlas"
 		}
+	},
+	crawl_2023 = {
+		localization = "localization/crawl_2023"
 	}
 }
-
-return

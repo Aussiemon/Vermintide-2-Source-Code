@@ -7,7 +7,7 @@ local daily_complete_quickplay_missions_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_quickplay_missions_mapping = daily_complete_quickplay_missions_mappings[1].played_levels_quickplay
 	complete_quickplay_missions_mapping[level_key] = true
@@ -252,7 +252,7 @@ local daily_complete_levels_hero_wood_elf_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_wood_elf_mapping = daily_complete_levels_hero_wood_elf_mappings[1].completed_levels_wood_elf
 	complete_levels_hero_wood_elf_mapping[level_key] = true
@@ -286,7 +286,7 @@ local daily_complete_levels_hero_witch_hunter_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_witch_hunter_mapping = daily_complete_levels_hero_witch_hunter_mappings[1].completed_levels_witch_hunter
 	complete_levels_hero_witch_hunter_mapping[level_key] = true
@@ -320,7 +320,7 @@ local daily_complete_levels_hero_dwarf_ranger_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_dwarf_ranger_mapping = daily_complete_levels_hero_dwarf_ranger_mappings[1].completed_levels_dwarf_ranger
 	complete_levels_hero_dwarf_ranger_mapping[level_key] = true
@@ -354,7 +354,7 @@ local daily_complete_levels_hero_bright_wizard_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_bright_wizard_mapping = daily_complete_levels_hero_bright_wizard_mappings[1].completed_levels_bright_wizard
 	complete_levels_hero_bright_wizard_mapping[level_key] = true
@@ -388,7 +388,7 @@ local daily_complete_levels_hero_empire_soldier_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_empire_soldier_mapping = daily_complete_levels_hero_empire_soldier_mappings[1].completed_levels_empire_soldier
 	complete_levels_hero_empire_soldier_mapping[level_key] = true
@@ -454,7 +454,7 @@ local event_weekly_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	event_quickplay_mappings[1].played_levels_quickplay[level_key] = true
 	event_weekly_mappings[1].played_levels_weekly_event[level_key] = true
@@ -799,6 +799,17 @@ quest_templates.quests.event_celebration_complete_2020 = {
 		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
 	end
 }
+quest_templates.quests.event_celebration_complete_2023 = {
+	name = "quest_celebration_01_name",
+	icon = "quest_book_event_celebration",
+	desc = "quest_celebration_01_desc",
+	stat_mappings = event_weekly_mappings,
+	completed = function (statistics_db, stats_id, quest_key)
+		local stat_name = QuestSettings.stat_mappings[quest_key][1]
+
+		return statistics_db:get_persistent_stat(stats_id, "quest_statistics", stat_name) > 0
+	end
+}
 local event_celebration_collected_painting_scraps_2019_mappings = {
 	{
 		collected_painting_scraps_unlimited = true
@@ -1121,7 +1132,7 @@ local weekly_complete_weekly_event_missions_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_quickplay_missions_mapping = weekly_complete_quickplay_missions_mappings[1].played_levels_quickplay
 	local complete_weekly_event_missions_mapping = weekly_complete_weekly_event_missions_mappings[1].played_levels_weekly_event
@@ -1152,7 +1163,7 @@ quest_templates.quests.weekly_complete_quickplay_missions = {
 	end
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_quickplay_missions" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_quickplay_missions_name",
@@ -1178,7 +1189,7 @@ for i = 1, 3, 1 do
 	}
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_weekly_event_missions" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_weekly_quest_missions_name",
@@ -1210,7 +1221,7 @@ local weekly_collect_tomes_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_collect_tomes" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_collect_tomes_name",
@@ -1242,7 +1253,7 @@ local weekly_collect_grimoires_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_collect_grimoires" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_collect_grimoires_name",
@@ -1274,7 +1285,7 @@ local weekly_collect_dice_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_collect_dice" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_collect_loot_die_name",
@@ -1306,7 +1317,7 @@ local weekly_collect_painting_scrap_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_collect_painting_scrap" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_collect_painting_scrap_name",
@@ -1338,7 +1349,7 @@ local weekly_kill_critter_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_kill_critters_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_weekly_kill_critters_name",
@@ -1383,7 +1394,7 @@ local weekly_kill_bosses_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_kill_bosses" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_kill_bosses_name",
@@ -1423,7 +1434,7 @@ for breed_name, _ in pairs(ELITES) do
 	assist_kill_elites_mapping[breed_name] = true
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_kill_elites" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_kill_elites_name",
@@ -1455,13 +1466,13 @@ local weekly_complete_levels_hero_wood_elf_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_wood_elf_mapping = weekly_complete_levels_hero_wood_elf_mappings[1].completed_levels_wood_elf
 	complete_levels_hero_wood_elf_mapping[level_key] = true
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_levels_hero_wood_elf" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_levels_hero_wood_elf_name",
@@ -1493,13 +1504,13 @@ local weekly_complete_levels_hero_witch_hunter_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_witch_hunter_mapping = weekly_complete_levels_hero_witch_hunter_mappings[1].completed_levels_witch_hunter
 	complete_levels_hero_witch_hunter_mapping[level_key] = true
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_levels_hero_witch_hunter" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_levels_hero_witch_hunter_name",
@@ -1531,13 +1542,13 @@ local weekly_complete_levels_hero_dwarf_ranger_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_dwarf_ranger_mapping = weekly_complete_levels_hero_dwarf_ranger_mappings[1].completed_levels_dwarf_ranger
 	complete_levels_hero_dwarf_ranger_mapping[level_key] = true
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_levels_hero_dwarf_ranger" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_levels_hero_dwarf_ranger_name",
@@ -1569,13 +1580,13 @@ local weekly_complete_levels_hero_bright_wizard_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_bright_wizard_mapping = weekly_complete_levels_hero_bright_wizard_mappings[1].completed_levels_bright_wizard
 	complete_levels_hero_bright_wizard_mapping[level_key] = true
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_levels_hero_bright_wizard" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_levels_hero_bright_wizard_name",
@@ -1607,13 +1618,13 @@ local weekly_complete_levels_hero_empire_soldier_mappings = {
 	}
 }
 
-for i = 1, #UnlockableLevels, 1 do
+for i = 1, #UnlockableLevels do
 	local level_key = UnlockableLevels[i]
 	local complete_levels_hero_empire_soldier_mapping = weekly_complete_levels_hero_empire_soldier_mappings[1].completed_levels_empire_soldier
 	complete_levels_hero_empire_soldier_mapping[level_key] = true
 end
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_complete_levels_hero_empire_soldier" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_complete_levels_hero_empire_soldier_name",
@@ -1645,7 +1656,7 @@ local weekly_score_headshots_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_score_headshots" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_daily_score_headshots_name",
@@ -1677,7 +1688,7 @@ local weekly_daily_quests_mappings = {
 	}
 }
 
-for i = 1, 3, 1 do
+for i = 1, 3 do
 	local id = "weekly_daily_quests" .. "_" .. i
 	quest_templates.quests[id] = {
 		name = "quest_weekly_daily_quests_name",

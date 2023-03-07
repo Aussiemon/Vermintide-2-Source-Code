@@ -13599,5 +13599,3 @@ ItemMasterList.we_spear_skin = {
 		"we_shade"
 	}
 }
-
-return

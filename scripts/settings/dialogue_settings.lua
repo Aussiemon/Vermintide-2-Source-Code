@@ -146,7 +146,7 @@ DialogueSettings.level_specific_load_files = {
 		"dialogues/generated/hub_conversations"
 	},
 	inn_level_celebrate = {
-		"dialogues/generated/hub_conversations"
+		"dialogues/generated/hub_conversations_crawl"
 	},
 	inn_level_halloween = {
 		"dialogues/generated/hub_conversations"
@@ -876,13 +876,14 @@ DialogueSettings.dialogue_category_config = {
 		}
 	},
 	casual_singing_03 = {
-		mutually_exclusive = true,
+		mutually_exclusive = false,
 		interrupted_by = {},
 		playable_during_category = {
 			default = true,
 			enemy_high_prio = true,
-			casual_singing_02 = true,
+			casual_singing_03 = true,
 			enemy_basic_prio = true,
+			casual_singing_02 = true,
 			story_talk_vce = true,
 			casual_singing_01 = true
 		}
@@ -1197,5 +1198,3 @@ DialogueSettings.speaker_color_lookup = {
 	grey_seer = HOSTILE_COLOR,
 	skaven_storm_vermin_warlord = HOSTILE_COLOR
 }
-
-return

@@ -7,9 +7,7 @@ settings.dialogue_settings = {
 	inn_level = {
 		"dialogues/generated/dlc_bless"
 	},
-	inn_level_celebrate = {
-		"dialogues/generated/dlc_bless"
-	},
+	inn_level_celebrate = {},
 	inn_level_halloween = {
 		"dialogues/generated/dlc_bless"
 	},
@@ -52,5 +50,3 @@ settings.network_sound_events = {
 	"career_priest_fury_smite_husk",
 	"career_priest_fury_ready"
 }
-
-return

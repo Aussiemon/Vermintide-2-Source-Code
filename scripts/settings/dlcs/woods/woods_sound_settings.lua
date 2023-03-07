@@ -7,9 +7,7 @@ settings.dialogue_settings = {
 	inn_level = {
 		"dialogues/generated/dlc_woods"
 	},
-	inn_level_celebrate = {
-		"dialogues/generated/dlc_woods"
-	},
+	inn_level_celebrate = {},
 	inn_level_halloween = {
 		"dialogues/generated/dlc_woods"
 	},
@@ -33,5 +31,3 @@ settings.network_sound_events = {
 	"career_ability_kerillian_sister_wall_disappear",
 	"career_ability_kerilian_thorngrasp"
 }
-
-return

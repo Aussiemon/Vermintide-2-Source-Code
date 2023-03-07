@@ -876,6 +876,12 @@ return function ()
 				"crawl_heard_us",
 				OP.ADD,
 				1
+			},
+			{
+				"faction_memory",
+				"crawl_cheers",
+				OP.NUMSET,
+				1
 			}
 		}
 	})
@@ -919,6 +925,12 @@ return function ()
 				"faction_memory",
 				"crawl_head_for_third_pub",
 				OP.ADD,
+				1
+			},
+			{
+				"faction_memory",
+				"crawl_cheers",
+				OP.NUMSET,
 				1
 			}
 		}
@@ -1584,633 +1596,531 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pes_level_crawl_intro_a = {
-			face_animations_n = 2,
+		pes_crawl_cheers = {
+			sound_events_n = 4,
+			face_animations_n = 4,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_crawl_intro_a_01",
-				[2.0] = "pes_level_crawl_intro_a_02"
-			},
+			category = "level_talk_must_play",
+			dialogue_animations_n = 4,
 			sound_events = {
-				[1.0] = "pes_level_crawl_intro_a_01",
-				[2.0] = "pes_level_crawl_intro_a_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				"pes_crawl_cheers_01",
+				"pes_crawl_cheers_02",
+				"pes_crawl_cheers_03",
+				"pes_crawl_cheers_04"
 			},
 			dialogue_animations = {
-				[1.0] = "dialogue_talk",
-				[2.0] = "dialogue_talk"
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
+			},
+			face_animations = {
+				"face_neutral",
+				"face_neutral",
+				"face_neutral",
+				"face_neutral"
 			},
 			sound_events_duration = {
-				[1.0] = 4.7459373474121,
-				[2.0] = 4.6240835189819
-			}
+				5.8998761177063,
+				5.0097708702087,
+				3.5391249656677,
+				6.3536770343781
+			},
+			localization_strings = {
+				"pes_crawl_cheers_01",
+				"pes_crawl_cheers_02",
+				"pes_crawl_cheers_03",
+				"pes_crawl_cheers_04"
+			},
+			randomize_indexes = {}
 		},
-		pes_level_crawl_intro_b = {
+		pes_crawl_heard_us = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_crawl_intro_b_01",
-				[2.0] = "pes_level_crawl_intro_b_02"
-			},
 			sound_events = {
-				[1.0] = "pes_level_crawl_intro_b_01",
-				[2.0] = "pes_level_crawl_intro_b_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm",
-				[2.0] = "face_calm"
+				[1.0] = "pes_crawl_heard_us_02",
+				[2.0] = "pes_crawl_heard_us_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 4.1999998092651,
-				[2.0] = 1.9932291507721
-			}
-		},
-		pes_crawl_get_into_third_pub = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_get_into_third_pub_02",
-				[2.0] = "pes_crawl_get_into_third_pub_03"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_get_into_third_pub_02",
-				[2.0] = "pes_crawl_get_into_third_pub_03"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
-				[1.0] = 7.4240832328796,
-				[2.0] = 4.2167291641235
-			}
+				[1.0] = 3.27308344841,
+				[2.0] = 5.8801665306091
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_heard_us_02",
+				[2.0] = "pes_crawl_heard_us_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_head_for_first_pub = {
+		pes_crawl_end_event_keep_quiet = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "cut_scene",
+			category = "level_talk_must_play",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_head_for_first_pub_02",
-				[2.0] = "pes_crawl_head_for_first_pub_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_head_for_first_pub_02",
-				[2.0] = "pes_crawl_head_for_first_pub_03"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
+				[1.0] = "pes_crawl_end_event_keep_quiet_01",
+				[2.0] = "pes_crawl_end_event_keep_quiet_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
 			sound_events_duration = {
-				[1.0] = 4.9991874694824,
-				[2.0] = 6.7519583702087
+				[1.0] = 5.4045209884644,
+				[2.0] = 4.3557500839233
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_end_event_keep_quiet_01",
+				[2.0] = "pes_crawl_end_event_keep_quiet_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_loud_crash_reply = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_crawl",
+			category = "cut_scene",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_crawl_loud_crash_reply_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.2838957309723
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_loud_crash_reply_01"
 			}
 		},
 		pes_crawl_spot_first_pub = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_spot_first_pub_01",
-				[2.0] = "pes_crawl_spot_first_pub_03"
-			},
 			sound_events = {
 				[1.0] = "pes_crawl_spot_first_pub_01",
 				[2.0] = "pes_crawl_spot_first_pub_03"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
 			sound_events_duration = {
-				[1.0] = 4.5192918777466,
-				[2.0] = 3.9707500934601
-			}
+				[1.0] = 4.5192708969116,
+				[2.0] = 4.176551938057
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_spot_first_pub_01",
+				[2.0] = "pes_crawl_spot_first_pub_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_mid_level_banter = {
+		pes_crawl_spot_third_pub = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_mid_level_banter_01",
-				[2.0] = "pes_crawl_mid_level_banter_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_mid_level_banter_01",
-				[2.0] = "pes_crawl_mid_level_banter_03"
+				[1.0] = "pes_crawl_spot_third_pub_03",
+				[2.0] = "pes_crawl_spot_third_pub_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
-				[1.0] = 6.4152498245239,
-				[2.0] = 6.034791469574
-			}
-		},
-		pes_crawl_end_event_tunnel = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
+				[1.0] = 4.6180834770203,
+				[2.0] = 6.9616875648499
+			},
 			localization_strings = {
-				[1.0] = "pes_crawl_end_event_tunnel_03",
-				[2.0] = "pes_crawl_end_event_tunnel_04"
+				[1.0] = "pes_crawl_spot_third_pub_03",
+				[2.0] = "pes_crawl_spot_third_pub_04"
 			},
-			sound_events = {
-				[1.0] = "pes_crawl_end_event_tunnel_03",
-				[2.0] = "pes_crawl_end_event_tunnel_04"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 1.9028750061989,
-				[2.0] = 2.8640208244324
-			}
-		},
-		pes_crawl_pub_horde_end = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_pub_horde_end_01",
-				[2.0] = "pes_crawl_pub_horde_end_04"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_pub_horde_end_01",
-				[2.0] = "pes_crawl_pub_horde_end_04"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 4.9799790382385,
-				[2.0] = 4.376437664032
-			}
-		},
-		pes_crawl_pub_door = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_pub_door_01",
-				[2.0] = "pes_crawl_pub_door_02"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_pub_door_01",
-				[2.0] = "pes_crawl_pub_door_02"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 4.2937707901001,
-				[2.0] = 4.4610624313355
-			}
+			randomize_indexes = {}
 		},
 		pes_crawl_spot_first_pub_closer = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_spot_first_pub_closer_02",
-				[2.0] = "pes_crawl_spot_first_pub_closer_03"
-			},
 			sound_events = {
 				[1.0] = "pes_crawl_spot_first_pub_closer_02",
 				[2.0] = "pes_crawl_spot_first_pub_closer_03"
 			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
 			},
 			sound_events_duration = {
 				[1.0] = 3.0250000953674,
 				[2.0] = 5.2533960342407
-			}
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_spot_first_pub_closer_02",
+				[2.0] = "pes_crawl_spot_first_pub_closer_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_level_crawl_intro_c = {
+		pes_crawl_end_event_find_good_beer = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_level_crawl_intro_c_01",
-				[2.0] = "pes_level_crawl_intro_c_02"
+			sound_events = {
+				[1.0] = "pes_crawl_end_event_find_good_beer_01",
+				[2.0] = "pes_crawl_end_event_find_good_beer_04"
 			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9093124866486,
+				[2.0] = 4.1677293777466
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_end_event_find_good_beer_01",
+				[2.0] = "pes_crawl_end_event_find_good_beer_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_level_crawl_intro_c = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
 			sound_events = {
 				[1.0] = "pes_level_crawl_intro_c_01",
 				[2.0] = "pes_level_crawl_intro_c_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_angry",
 				[2.0] = "face_angry"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
 				[1.0] = 3.7551875114441,
-				[2.0] = 4.5842499732971
+				[2.0] = 4.5842289924622
+			},
+			localization_strings = {
+				[1.0] = "pes_level_crawl_intro_c_01",
+				[2.0] = "pes_level_crawl_intro_c_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_loud_crash_interact = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "empire_soldier_crawl",
+			category = "cut_scene",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_crawl_loud_crash_interact_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.0344166755676
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_loud_crash_interact_01"
 			}
 		},
-		pes_crawl_end_event_find_good_beer = {
+		pes_crawl_get_into_third_pub = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_end_event_find_good_beer_01",
-				[2.0] = "pes_crawl_end_event_find_good_beer_04"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_end_event_find_good_beer_01",
-				[2.0] = "pes_crawl_end_event_find_good_beer_04"
+				[1.0] = "pes_crawl_get_into_third_pub_02",
+				[2.0] = "pes_crawl_get_into_third_pub_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
-				[1.0] = 2.9093332290649,
-				[2.0] = 4.1677498817444
-			}
+				[1.0] = 7.4240627288818,
+				[2.0] = 4.0682499408722
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_get_into_third_pub_02",
+				[2.0] = "pes_crawl_get_into_third_pub_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_tunnel_passage = {
+		pes_crawl_end_event_tunnel = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_tunnel_passage_02",
-				[2.0] = "pes_crawl_tunnel_passage_04"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_tunnel_passage_02",
-				[2.0] = "pes_crawl_tunnel_passage_04"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "pes_crawl_end_event_tunnel_03",
+				[2.0] = "pes_crawl_end_event_tunnel_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
-			sound_events_duration = {
-				[1.0] = 2.7903957366943,
-				[2.0] = 5.4598956108093
-			}
-		},
-		pes_crawl_end_event_keep_running = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_end_event_keep_running_03",
-				[2.0] = "pes_crawl_end_event_keep_running_04"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_end_event_keep_running_03",
-				[2.0] = "pes_crawl_end_event_keep_running_04"
-			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 1.9028750061989,
+				[2.0] = 2.864000082016
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_end_event_tunnel_03",
+				[2.0] = "pes_crawl_end_event_tunnel_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_level_crawl_intro_a = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_level_crawl_intro_a_01",
+				[2.0] = "pes_level_crawl_intro_a_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk",
+				[2.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7459168434143,
+				[2.0] = 4.624062538147
+			},
+			localization_strings = {
+				[1.0] = "pes_level_crawl_intro_a_01",
+				[2.0] = "pes_level_crawl_intro_a_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_head_for_third_pub = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_head_for_third_pub_02",
+				[2.0] = "pes_crawl_head_for_third_pub_03"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
 			sound_events_duration = {
-				[1.0] = 2.671041727066,
-				[2.0] = 2.8433332443237
-			}
+				[1.0] = 3.5973334312439,
+				[2.0] = 7.42733335495
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_head_for_third_pub_02",
+				[2.0] = "pes_crawl_head_for_third_pub_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_pub_destroyed = {
+		pes_crawl_pub_horde_end = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_pub_destroyed_01",
-				[2.0] = "pes_crawl_pub_destroyed_04"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_pub_destroyed_01",
-				[2.0] = "pes_crawl_pub_destroyed_04"
+				[1.0] = "pes_crawl_pub_horde_end_01",
+				[2.0] = "pes_crawl_pub_horde_end_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
-				[1.0] = 2.2061250209808,
-				[2.0] = 4.9464998245239
-			}
+				[1.0] = 4.9799585342407,
+				[2.0] = 4.68985414505
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_pub_horde_end_01",
+				[2.0] = "pes_crawl_pub_horde_end_04"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_heard_us = {
+		pes_level_crawl_intro_b = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_heard_us_02",
-				[2.0] = "pes_crawl_heard_us_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_heard_us_02",
-				[2.0] = "pes_crawl_heard_us_03"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "pes_level_crawl_intro_b_01",
+				[2.0] = "pes_level_crawl_intro_b_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
-			sound_events_duration = {
-				[1.0] = 3.27308344841,
-				[2.0] = 6.1093125343323
-			}
-		},
-		pes_crawl_upstairs = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_upstairs_01",
-				[2.0] = "pes_crawl_upstairs_04"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_upstairs_01",
-				[2.0] = "pes_crawl_upstairs_04"
-			},
 			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
+				[1.0] = "face_calm",
+				[2.0] = "face_calm"
 			},
 			sound_events_duration = {
-				[1.0] = 1.5808124542236,
-				[2.0] = 2.6798958778381
-			}
-		},
-		pes_crawl_loud_crash_end_reply = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
+				[1.0] = 4.1999998092651,
+				[2.0] = 1.9932082891464
+			},
 			localization_strings = {
-				[1.0] = "pes_crawl_loud_crash_end_reply_01",
-				[2.0] = "pes_crawl_loud_crash_end_reply_02"
+				[1.0] = "pes_level_crawl_intro_b_01",
+				[2.0] = "pes_level_crawl_intro_b_02"
 			},
-			sound_events = {
-				[1.0] = "pes_crawl_loud_crash_end_reply_01",
-				[2.0] = "pes_crawl_loud_crash_end_reply_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 2.3961458206177,
-				[2.0] = 3.0854375362396
-			}
-		},
-		pes_crawl_spot_third_pub = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_spot_third_pub_03",
-				[2.0] = "pes_crawl_spot_third_pub_04"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_spot_third_pub_03",
-				[2.0] = "pes_crawl_spot_third_pub_04"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 4.6181039810181,
-				[2.0] = 6.9617085456848
-			}
+			randomize_indexes = {}
 		},
 		pes_crawl_get_out_soon = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_get_out_soon_01",
-				[2.0] = "pes_crawl_get_out_soon_02"
-			},
 			sound_events = {
 				[1.0] = "pes_crawl_get_out_soon_01",
 				[2.0] = "pes_crawl_get_out_soon_02"
 			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			sound_events_duration = {
 				[1.0] = 2.6336040496826,
-				[2.0] = 2.511479139328
-			}
+				[2.0] = 2.6273853778839
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_get_out_soon_01",
+				[2.0] = "pes_crawl_get_out_soon_02"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_head_for_third_pub = {
+		pes_crawl_pub_door = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_head_for_third_pub_02",
-				[2.0] = "pes_crawl_head_for_third_pub_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_head_for_third_pub_02",
-				[2.0] = "pes_crawl_head_for_third_pub_03"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "pes_crawl_pub_door_01",
+				[2.0] = "pes_crawl_pub_door_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
 			sound_events_duration = {
-				[1.0] = 3.5973334312439,
-				[2.0] = 7.4273543357849
-			}
+				[1.0] = 4.2937498092651,
+				[2.0] = 4.4610414505005
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_pub_door_01",
+				[2.0] = "pes_crawl_pub_door_02"
+			},
+			randomize_indexes = {}
 		},
 		pes_crawl_pub_destroyed_reaction = {
+			sound_events_n = 8,
 			face_animations_n = 8,
 			database = "empire_soldier_crawl",
-			sound_events_n = 8,
 			randomize_indexes_n = 0,
 			category = "level_talk_must_play",
 			dialogue_animations_n = 8,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_curse_25",
-				"pes_curse_26",
-				"pes_curse_15",
-				"pes_curse_16",
-				"pes_curse_17",
-				"pes_curse_18",
-				"pes_curse_19",
-				"pes_curse_20"
-			},
 			sound_events = {
 				"pes_curse_25",
 				"pes_curse_26",
@@ -2220,6 +2130,16 @@ return function ()
 				"pes_curse_18",
 				"pes_curse_19",
 				"pes_curse_20"
+			},
+			dialogue_animations = {
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout",
+				"dialogue_shout"
 			},
 			face_animations = {
 				"face_angry",
@@ -2231,16 +2151,6 @@ return function ()
 				"face_angry",
 				"face_angry"
 			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
 			sound_events_duration = {
 				2.2906041145325,
 				1.0472291707993,
@@ -2250,409 +2160,511 @@ return function ()
 				1.2351458072662,
 				1.0828750133514,
 				1.4270208477974
-			}
+			},
+			localization_strings = {
+				"pes_curse_25",
+				"pes_curse_26",
+				"pes_curse_15",
+				"pes_curse_16",
+				"pes_curse_17",
+				"pes_curse_18",
+				"pes_curse_19",
+				"pes_curse_20"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_spot_second_pub = {
+		pes_crawl_old_path_blocked = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "cut_scene",
+			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_spot_second_pub_01",
-				[2.0] = "pes_crawl_spot_second_pub_02"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_spot_second_pub_01",
-				[2.0] = "pes_crawl_spot_second_pub_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "pes_crawl_old_path_blocked_01",
+				[2.0] = "pes_crawl_old_path_blocked_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
 			},
 			sound_events_duration = {
-				[1.0] = 6.8308749198914,
-				[2.0] = 5.1720209121704
-			}
+				[1.0] = 4.6226873397827,
+				[2.0] = 5.354416847229
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_old_path_blocked_01",
+				[2.0] = "pes_crawl_old_path_blocked_02"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_end_event_waystone = {
+		pes_crawl_pub_destroyed = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_end_event_waystone_01",
-				[2.0] = "pes_crawl_end_event_waystone_02"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_end_event_waystone_01",
-				[2.0] = "pes_crawl_end_event_waystone_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "pes_crawl_pub_destroyed_01",
+				[2.0] = "pes_crawl_pub_destroyed_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2061042785645,
+				[2.0] = 4.9464793205261
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_pub_destroyed_01",
+				[2.0] = "pes_crawl_pub_destroyed_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_head_for_second_pub = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_head_for_second_pub_01",
+				[2.0] = "pes_crawl_head_for_second_pub_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
+			sound_events_duration = {
+				[1.0] = 7.0247502326965,
+				[2.0] = 4.7900834083557
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_head_for_second_pub_01",
+				[2.0] = "pes_crawl_head_for_second_pub_03"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_end_event_waystone = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_end_event_waystone_01",
+				[2.0] = "pes_crawl_end_event_waystone_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			sound_events_duration = {
 				[1.0] = 2.5781874656677,
-				[2.0] = 5.1405210494995
-			}
-		},
-		pes_crawl_old_path_blocked = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
+				[2.0] = 4.6172811985016
+			},
 			localization_strings = {
-				[1.0] = "pes_crawl_old_path_blocked_01",
-				[2.0] = "pes_crawl_old_path_blocked_02"
+				[1.0] = "pes_crawl_end_event_waystone_01",
+				[2.0] = "pes_crawl_end_event_waystone_02"
 			},
-			sound_events = {
-				[1.0] = "pes_crawl_old_path_blocked_01",
-				[2.0] = "pes_crawl_old_path_blocked_02"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 4.6227083206177,
-				[2.0] = 5.3544373512268
-			}
-		},
-		pes_crawl_head_for_second_pub = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "cut_scene",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_head_for_second_pub_01",
-				[2.0] = "pes_crawl_head_for_second_pub_03"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_head_for_second_pub_01",
-				[2.0] = "pes_crawl_head_for_second_pub_03"
-			},
-			face_animations = {
-				[1.0] = "face_fear",
-				[2.0] = "face_fear"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 7.0247707366943,
-				[2.0] = 4.7900834083557
-			}
+			randomize_indexes = {}
 		},
 		pes_crawl_pub_district_sign = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_pub_district_sign_03",
-				[2.0] = "pes_crawl_pub_district_sign_04"
-			},
 			sound_events = {
 				[1.0] = "pes_crawl_pub_district_sign_03",
 				[2.0] = "pes_crawl_pub_district_sign_04"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
-			sound_events_duration = {
-				[1.0] = 4.6612915992737,
-				[2.0] = 7.3268332481384
-			}
-		},
-		pes_crawl_loud_crash_interact = {
-			face_animations_n = 1,
-			database = "empire_soldier_crawl",
-			sound_events_n = 1,
-			category = "cut_scene",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_crawl_loud_crash_interact_01"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_loud_crash_interact_01"
-			},
 			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			sound_events_duration = {
-				[1.0] = 3.034437417984
-			}
+				[1.0] = 4.6612706184387,
+				[2.0] = 7.3268122673035
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_pub_district_sign_03",
+				[2.0] = "pes_crawl_pub_district_sign_04"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_pub_brazers = {
+		pes_crawl_mid_level_banter = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_mid_level_banter_01",
+				[2.0] = "pes_crawl_mid_level_banter_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.5873854160309,
+				[2.0] = 6.0347709655762
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_mid_level_banter_01",
+				[2.0] = "pes_crawl_mid_level_banter_03"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_spot_second_pub = {
 			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_pub_brazers_01",
-				[2.0] = "pes_crawl_pub_brazers_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_pub_brazers_01",
-				[2.0] = "pes_crawl_pub_brazers_03"
+				[1.0] = "pes_crawl_spot_second_pub_01",
+				[2.0] = "pes_crawl_spot_second_pub_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8308539390564,
+				[2.0] = 5.1719999313355
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_spot_second_pub_01",
+				[2.0] = "pes_crawl_spot_second_pub_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_end_event_keep_running = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_end_event_keep_running_03",
+				[2.0] = "pes_crawl_end_event_keep_running_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.6710207462311,
+				[2.0] = 2.8433332443237
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_end_event_keep_running_03",
+				[2.0] = "pes_crawl_end_event_keep_running_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_loud_crash_end_reply = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_loud_crash_end_reply_01",
+				[2.0] = "pes_crawl_loud_crash_end_reply_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.3961250782013,
+				[2.0] = 3.0854165554047
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_loud_crash_end_reply_01",
+				[2.0] = "pes_crawl_loud_crash_end_reply_02"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_head_for_first_pub = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_head_for_first_pub_02",
+				[2.0] = "pes_crawl_head_for_first_pub_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
+			sound_events_duration = {
+				[1.0] = 4.9991664886475,
+				[2.0] = 6.7519373893738
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_head_for_first_pub_02",
+				[2.0] = "pes_crawl_head_for_first_pub_03"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_have_a_drink = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "cut_scene",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_have_a_drink_01",
+				[2.0] = "pes_crawl_have_a_drink_03"
+			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 5.2848958969116,
-				[2.0] = 7.1754374504089
-			}
-		},
-		pes_crawl_cheers = {
-			face_animations_n = 4,
-			database = "empire_soldier_crawl",
-			sound_events_n = 4,
-			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
-			dialogue_animations_n = 4,
-			randomize_indexes = {},
-			localization_strings = {
-				"pes_crawl_cheers_01",
-				"pes_crawl_cheers_02",
-				"pes_crawl_cheers_03",
-				"pes_crawl_cheers_04"
-			},
-			sound_events = {
-				"pes_crawl_cheers_01",
-				"pes_crawl_cheers_02",
-				"pes_crawl_cheers_03",
-				"pes_crawl_cheers_04"
-			},
-			face_animations = {
-				"face_neutral",
-				"face_neutral",
-				"face_neutral",
-				"face_neutral"
-			},
-			dialogue_animations = {
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout",
-				"dialogue_shout"
-			},
-			sound_events_duration = {
-				5.8998970985413,
-				5.0097708702087,
-				3.5391249656677,
-				6.3536875247955
-			}
-		},
-		pes_crawl_loud_crash_reply = {
-			face_animations_n = 1,
-			database = "empire_soldier_crawl",
-			sound_events_n = 1,
-			category = "cut_scene",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_crawl_loud_crash_reply_01"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_loud_crash_reply_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout"
-			},
-			sound_events_duration = {
-				[1.0] = 3.2838957309723
-			}
-		},
-		pes_crawl_slaughter = {
-			face_animations_n = 2,
-			database = "empire_soldier_crawl",
-			sound_events_n = 2,
-			randomize_indexes_n = 0,
-			category = "level_talk",
-			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_slaughter_02",
-				[2.0] = "pes_crawl_slaughter_04"
-			},
-			sound_events = {
-				[1.0] = "pes_crawl_slaughter_02",
-				[2.0] = "pes_crawl_slaughter_04"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
-				[1.0] = 7.0691251754761,
-				[2.0] = 4.0572290420532
-			}
+				[1.0] = 3.2798125743866,
+				[2.0] = 4.9051041603088
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_have_a_drink_01",
+				[2.0] = "pes_crawl_have_a_drink_03"
+			},
+			randomize_indexes = {}
 		},
 		pes_crawl_end_event_way_open = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_end_event_way_open_01",
-				[2.0] = "pes_crawl_end_event_way_open_02"
-			},
 			sound_events = {
 				[1.0] = "pes_crawl_end_event_way_open_01",
 				[2.0] = "pes_crawl_end_event_way_open_02"
 			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
 			},
 			sound_events_duration = {
 				[1.0] = 3.2476665973663,
 				[2.0] = 2.8533229827881
-			}
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_end_event_way_open_01",
+				[2.0] = "pes_crawl_end_event_way_open_02"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_end_event_keep_quiet = {
+		pes_crawl_slaughter = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "level_talk_must_play",
+			category = "level_talk",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_end_event_keep_quiet_01",
-				[2.0] = "pes_crawl_end_event_keep_quiet_02"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_end_event_keep_quiet_01",
-				[2.0] = "pes_crawl_end_event_keep_quiet_02"
-			},
-			face_animations = {
-				[1.0] = "face_neutral",
-				[2.0] = "face_neutral"
+				[1.0] = "pes_crawl_slaughter_02",
+				[2.0] = "pes_crawl_slaughter_04"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
 			sound_events_duration = {
-				[1.0] = 5.4045414924622,
-				[2.0] = 4.3557710647583
-			}
+				[1.0] = 7.0691041946411,
+				[2.0] = 4.0572290420532
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_slaughter_02",
+				[2.0] = "pes_crawl_slaughter_04"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_shortcut = {
+		pes_crawl_pub_brazers = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
-			category = "level_talk",
+			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_shortcut_02",
-				[2.0] = "pes_crawl_shortcut_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_shortcut_02",
-				[2.0] = "pes_crawl_shortcut_03"
+				[1.0] = "pes_crawl_pub_brazers_01",
+				[2.0] = "pes_crawl_pub_brazers_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_fear",
 				[2.0] = "face_fear"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_shout",
-				[2.0] = "dialogue_shout"
-			},
 			sound_events_duration = {
-				[1.0] = 4.2820625305176,
-				[2.0] = 4.2898960113525
-			}
+				[1.0] = 5.2848749160767,
+				[2.0] = 7.175416469574
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_pub_brazers_01",
+				[2.0] = "pes_crawl_pub_brazers_03"
+			},
+			randomize_indexes = {}
 		},
-		pes_crawl_have_a_drink = {
+		pes_crawl_upstairs = {
+			sound_events_n = 2,
 			face_animations_n = 2,
 			database = "empire_soldier_crawl",
-			sound_events_n = 2,
 			randomize_indexes_n = 0,
 			category = "cut_scene",
 			dialogue_animations_n = 2,
-			randomize_indexes = {},
-			localization_strings = {
-				[1.0] = "pes_crawl_have_a_drink_01",
-				[2.0] = "pes_crawl_have_a_drink_03"
-			},
 			sound_events = {
-				[1.0] = "pes_crawl_have_a_drink_01",
-				[2.0] = "pes_crawl_have_a_drink_03"
+				[1.0] = "pes_crawl_upstairs_01",
+				[2.0] = "pes_crawl_upstairs_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
 			},
 			face_animations = {
 				[1.0] = "face_neutral",
 				[2.0] = "face_neutral"
 			},
+			sound_events_duration = {
+				[1.0] = 1.5808124542236,
+				[2.0] = 2.6798748970032
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_upstairs_01",
+				[2.0] = "pes_crawl_upstairs_04"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_shortcut = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_shortcut_02",
+				[2.0] = "pes_crawl_shortcut_03"
+			},
 			dialogue_animations = {
 				[1.0] = "dialogue_shout",
 				[2.0] = "dialogue_shout"
 			},
+			face_animations = {
+				[1.0] = "face_fear",
+				[2.0] = "face_fear"
+			},
 			sound_events_duration = {
-				[1.0] = 3.279833316803,
-				[2.0] = 4.9051251411438
-			}
+				[1.0] = 4.2820625305176,
+				[2.0] = 4.2898960113525
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_shortcut_02",
+				[2.0] = "pes_crawl_shortcut_03"
+			},
+			randomize_indexes = {}
+		},
+		pes_crawl_tunnel_passage = {
+			sound_events_n = 2,
+			face_animations_n = 2,
+			database = "empire_soldier_crawl",
+			randomize_indexes_n = 0,
+			category = "level_talk",
+			dialogue_animations_n = 2,
+			sound_events = {
+				[1.0] = "pes_crawl_tunnel_passage_02",
+				[2.0] = "pes_crawl_tunnel_passage_04"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_shout",
+				[2.0] = "dialogue_shout"
+			},
+			face_animations = {
+				[1.0] = "face_neutral",
+				[2.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.790374994278,
+				[2.0] = 6.2507708072662
+			},
+			localization_strings = {
+				[1.0] = "pes_crawl_tunnel_passage_02",
+				[2.0] = "pes_crawl_tunnel_passage_04"
+			},
+			randomize_indexes = {}
 		}
 	})
 end

@@ -23,7 +23,7 @@ ManagersCreationOrder = ManagersCreationOrder or {
 local function destroy_manager_group(manager_group_name)
 	debug_print("Destroying manager group: ", manager_group_name)
 
-	local manager_group = (manager_group_name == "global" and Managers) or Managers[manager_group_name]
+	local manager_group = manager_group_name == "global" and Managers or Managers[manager_group_name]
 	local manager_group_order = ManagersCreationOrder[manager_group_name]
 
 	table.reverse(manager_group_order)
@@ -51,12 +51,12 @@ end
 local function call_on_managers(func_name, inverse_order, ...)
 	debug_print("Calling function on all managers:", func_name, "inverse_order:", inverse_order)
 
-	local iterator_type = (inverse_order and get_iterator_backwards) or get_iterator_forwards
+	local iterator_type = inverse_order and get_iterator_backwards or get_iterator_forwards
 	local group_id_start, group_id_end, group_id_direction = iterator_type(MANAGER_GROUP_ORDER)
 
 	for group_id = group_id_start, group_id_end, group_id_direction do
 		local manager_group_name = MANAGER_GROUP_ORDER[group_id]
-		local manager_group = (manager_group_name == "global" and Managers) or Managers[manager_group_name]
+		local manager_group = manager_group_name == "global" and Managers or Managers[manager_group_name]
 		local manager_names = ManagersCreationOrder[manager_group_name]
 		local manager_id_start, manager_id_end, manager_id_direction = iterator_type(manager_names)
 
@@ -190,5 +190,3 @@ local mt_state = {
 setmetatable(Managers, mt_global)
 setmetatable(Managers.venture, mt_venture)
 setmetatable(Managers.state, mt_state)
-
-return

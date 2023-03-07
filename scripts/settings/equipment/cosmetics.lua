@@ -2872,6 +2872,9 @@ Cosmetics = {
 	frame_celebration_03 = {
 		icon = "unit_frame_02"
 	},
+	frame_celebration_05 = {
+		icon = "unit_frame_02"
+	},
 	frame_scorpion_complete_all_helmgart_levels_cataclysm = {
 		icon = "unit_frame_02"
 	},
@@ -2987,5 +2990,3 @@ end)
 for name, cosmetic_data in pairs(Cosmetics) do
 	cosmetic_data.name = name
 end
-
-return

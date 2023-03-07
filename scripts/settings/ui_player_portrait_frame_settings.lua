@@ -1956,6 +1956,56 @@ UIPlayerPortraitFrameSettings = {
 			}
 		}
 	},
+	frame_celebration_05 = {
+		{
+			texture = "portrait_frame_celebration_05",
+			layer = 11,
+			color = {
+				255,
+				255,
+				255,
+				255
+			}
+		},
+		{
+			texture = "portrait_frame_celebration_05_glow",
+			layer = 12,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		},
+		{
+			texture = "portrait_frame_celebration_05_effect",
+			layer = 10,
+			color = {
+				255,
+				255,
+				255,
+				255
+			},
+			size = {
+				116,
+				136
+			},
+			offset = {
+				0,
+				-59,
+				0
+			}
+		}
+	},
 	frame_scorpion_complete_all_helmgart_levels_cataclysm = {
 		{
 			texture = "portrait_frame_helmgart_cataclysm",
@@ -2621,5 +2671,3 @@ local function get_color()
 end
 
 DLCUtils.merge("ui_portrait_frame_settings", UIPlayerPortraitFrameSettings)
-
-return

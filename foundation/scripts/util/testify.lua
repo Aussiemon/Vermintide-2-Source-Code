@@ -201,5 +201,3 @@ Testify._print = function (self, ...)
 		printf("[Testify] %s", string.format(...))
 	end
 end
-
-return

@@ -228,5 +228,3 @@ function find_playgo_package(element)
 
 	return false
 end
-
-return

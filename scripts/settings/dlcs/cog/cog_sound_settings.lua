@@ -7,9 +7,7 @@ settings.dialogue_settings = {
 	inn_level = {
 		"dialogues/generated/dlc_cog"
 	},
-	inn_level_celebrate = {
-		"dialogues/generated/dlc_cog"
-	},
+	inn_level_celebrate = {},
 	inn_level_halloween = {
 		"dialogues/generated/dlc_cog"
 	},
@@ -31,5 +29,3 @@ settings.network_sound_events = {
 	"Play_player_engineer_steam_loop_husk",
 	"Stop_player_engineer_steam_loop_husk"
 }
-
-return

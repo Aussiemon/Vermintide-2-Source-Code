@@ -209,7 +209,7 @@ Boot._init_localizer = function (self)
 	local language = nil
 
 	if IS_WINDOWS then
-		language = Application.user_setting("language_id") or (rawget(_G, "Steam") and Steam:language()) or default_language
+		language = Application.user_setting("language_id") or rawget(_G, "Steam") and Steam:language() or default_language
 	elseif IS_PS4 then
 		language = PS4.locale() or default_language
 	elseif IS_XB1 then
@@ -248,7 +248,7 @@ local function init_development_parameters()
 			local formatted_string = string.format("script_data.%%-%ds = {", max_param_string_length)
 			local output = string.format(formatted_string, param)
 
-			for i = 1, #value, 1 do
+			for i = 1, #value do
 				output = output .. ", " .. tostring(value[i])
 			end
 
@@ -266,7 +266,7 @@ local function init_development_parameters()
 	print("*****************************************************************")
 	print("**                Initial contents of script_data              **")
 
-	for i = 1, #sorted_params, 1 do
+	for i = 1, #sorted_params do
 		print(sorted_params[i])
 	end
 
@@ -385,7 +385,7 @@ Boot.booting_update = function (self, dt)
 		Crashify.print_property("platform", PLATFORM)
 		Crashify.print_property("dedicated_server", DEDICATED_SERVER)
 		Crashify.print_property("title_id", GameSettingsDevelopment.backend_settings.title_id)
-		Crashify.print_property("content_revision", (script_data.settings.content_revision == "" and Development.parameter("content_revision")) or script_data.settings.content_revision)
+		Crashify.print_property("content_revision", script_data.settings.content_revision == "" and Development.parameter("content_revision") or script_data.settings.content_revision)
 		Crashify.print_property("engine_revision", script_data.build_identifier or Development.parameter("engine_revision"))
 		Crashify.print_property("release_version", VersionSettings.version)
 		Crashify.print_property("rendering_backend", Renderer.render_device_string())
@@ -1392,7 +1392,7 @@ Game._handle_win32_graphics_quality = function (self)
 end
 
 Game._init_random = function (self)
-	local seed = (os.clock() * 10000) % 1000
+	local seed = os.clock() * 10000 % 1000
 
 	math.randomseed(seed)
 	math.random(5, 30000)
@@ -1505,7 +1505,7 @@ Game._init_backend = function (self)
 		local mechanism_settings = MechanismSettings[mechanism_name]
 		backend = "ScriptBackendPlayFab"
 		local playfab_mirror = mechanism_settings and mechanism_settings.playfab_mirror
-		mirror = (playfab_mirror and playfab_mirror) or "PlayFabMirrorAdventure"
+		mirror = playfab_mirror and playfab_mirror or "PlayFabMirrorAdventure"
 	end
 
 	Managers.backend = BackendManagerPlayFab:new(backend, mirror, "DataServerQueue")
@@ -1605,7 +1605,7 @@ Game.select_starting_state = function (self)
 		Application.argv()
 	}
 
-	for i = 1, #args, 1 do
+	for i = 1, #args do
 		if args[i] == "safe-mode" then
 			Game.safe_mode = true
 
@@ -1629,7 +1629,7 @@ Game.select_starting_state = function (self)
 
 		return StateDedicatedServer, {}
 	elseif GameSettingsDevelopment.start_state == "game" then
-		local ingame_package = (LEVEL_EDITOR_TEST and "resource_packages/ingame_light") or "resource_packages/ingame"
+		local ingame_package = LEVEL_EDITOR_TEST and "resource_packages/ingame_light" or "resource_packages/ingame"
 
 		Managers.package:load("resource_packages/menu", "boot")
 		Managers.package:load("resource_packages/menu_assets_common", "global")
@@ -1659,5 +1659,3 @@ Game.select_starting_state = function (self)
 
 	return StateSplashScreen, {}
 end
-
-return

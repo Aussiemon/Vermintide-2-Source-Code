@@ -89,7 +89,7 @@ BackendInterfaceItemPlayfab._refresh_loadouts = function (self)
 
 	for career_name, settings in pairs(CareerSettings) do
 		if settings.playfab_name then
-			for i = 1, #loadout_slots, 1 do
+			for i = 1, #loadout_slots do
 				local slot_name = loadout_slots[i]
 				local item_id = backend_mirror:get_character_data(career_name, slot_name)
 				loadouts[career_name] = loadouts[career_name] or {}
@@ -365,7 +365,7 @@ BackendInterfaceItemPlayfab.get_unseen_item_rewards = function (self)
 		end
 	end
 
-	if unseen_items and not script_data.dont_clear_unseen_rewards then
+	if unseen_items then
 		self._backend_mirror:set_user_data("unseen_rewards", cjson.encode(unseen_rewards))
 	end
 
@@ -459,7 +459,7 @@ BackendInterfaceItemPlayfab.has_bundle_contents = function (self, bundle_contain
 	local all_owned = true
 	local any_owned = false
 
-	for i = 1, #bundle_contains, 1 do
+	for i = 1, #bundle_contains do
 		local steam_itemdefid = bundle_contains[i]
 		local item_key = SteamitemdefidToMasterList[steam_itemdefid]
 
@@ -554,7 +554,7 @@ BackendInterfaceItemPlayfab.delete_marked_deeds = function (self, deeds_list, st
 	end)
 
 	if end_index < num_elements then
-		for i = DEEDS_CHUNK_LIMIT + 1, num_elements, 1 do
+		for i = DEEDS_CHUNK_LIMIT + 1, num_elements do
 			reduced_deeds_list[i] = nil
 		end
 	end
@@ -591,7 +591,7 @@ BackendInterfaceItemPlayfab.delete_marked_deeds_request_cb = function (self, dat
 	end
 
 	if item_revokes then
-		for i = 1, #item_revokes, 1 do
+		for i = 1, #item_revokes do
 			local revoke = item_revokes[i]
 			local item_instance_id = revoke.ItemInstanceId
 
@@ -647,5 +647,3 @@ BackendInterfaceItemPlayfab.can_delete_deeds = function (self, current_deeds, ma
 
 	return true, remaining_deeds, deletable_deeds
 end
-
-return

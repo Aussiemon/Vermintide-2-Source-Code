@@ -15,7 +15,7 @@ PackageManager.init = function (self)
 end
 
 PackageManager.load = function (self, package_name, reference_name, callback, asynchronous, prioritize)
-	debug_print("Load:  %s, %s, %s, %s", package_name, reference_name, (asynchronous and "async-read") or "sync-read", (prioritize and "prioritized") or "")
+	debug_print("Load:  %s, %s, %s, %s", package_name, reference_name, asynchronous and "async-read" or "sync-read", prioritize and "prioritized" or "")
 	assert(reference_name ~= nil, "No reference name passed when loading package")
 
 	if self._references[package_name] then
@@ -242,7 +242,7 @@ PackageManager.destroy = function (self)
 
 	for package_name, _ in pairs(self._packages) do
 		for reference_name, reference_count in pairs(self._references[package_name]) do
-			for i = 1, reference_count, 1 do
+			for i = 1, reference_count do
 				self:unload(package_name, reference_name)
 			end
 		end
@@ -250,7 +250,7 @@ PackageManager.destroy = function (self)
 
 	for package_name, _ in pairs(self._asynch_packages) do
 		for reference_name, reference_count in pairs(self._references[package_name]) do
-			for i = 1, reference_count, 1 do
+			for i = 1, reference_count do
 				self:unload(package_name, reference_name)
 			end
 		end
@@ -368,5 +368,3 @@ PackageManager.dump_reference_counter = function (self, reference_name)
 
 	printf("[PackageManager] Done!")
 end
-
-return
