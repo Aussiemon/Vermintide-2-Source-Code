@@ -10115,7 +10115,7 @@ return function ()
 			face_animations_n = 7,
 			database = "wood_elf_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 7,
 			sound_events = {
 				"pwe_gameplay_hearing_a_globadier_04",
@@ -16381,7 +16381,7 @@ return function ()
 			face_animations_n = 6,
 			database = "wood_elf_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pwe_gameplay_hearing_a_Skaven_warpfire_thrower_01",
@@ -17411,7 +17411,7 @@ return function ()
 			face_animations_n = 8,
 			database = "wood_elf_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pwe_gameplay_hearing_a_gutter_runner_07",

@@ -10678,7 +10678,7 @@ return function ()
 			face_animations_n = 9,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 9,
 			sound_events = {
 				"pes_gameplay_hearing_a_gutter_runner_03",
@@ -11241,7 +11241,7 @@ return function ()
 			face_animations_n = 8,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pes_gameplay_hearing_a_chaos_wizard_wind_01",
@@ -11921,7 +11921,7 @@ return function ()
 			face_animations_n = 12,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 12,
 			sound_events = {
 				"pes_gameplay_hearing_a_skaven_ratling_gun_04",
@@ -16843,7 +16843,7 @@ return function ()
 			face_animations_n = 8,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts_high",
+			category = "enemy_alerts",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pes_gameplay_hearing_a_chaos_wizard_leech_01",
@@ -17113,7 +17113,7 @@ return function ()
 			face_animations_n = 5,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 5,
 			sound_events = {
 				"pes_gameplay_hearing_a_globadier_07",
@@ -17403,7 +17403,7 @@ return function ()
 			face_animations_n = 6,
 			database = "empire_soldier_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pes_gameplay_hearing_a_Skaven_warpfire_thrower_01",

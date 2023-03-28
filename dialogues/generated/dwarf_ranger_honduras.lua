@@ -11116,7 +11116,7 @@ return function ()
 			face_animations_n = 8,
 			database = "dwarf_ranger_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pdr_gameplay_hearing_a_gutter_runner_07",
@@ -11783,7 +11783,7 @@ return function ()
 			face_animations_n = 8,
 			database = "dwarf_ranger_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pdr_gameplay_hearing_a_chaos_wizard_wind_01",
@@ -16386,7 +16386,7 @@ return function ()
 			face_animations_n = 8,
 			database = "dwarf_ranger_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pdr_gameplay_hearing_a_globadier_07",
@@ -19654,7 +19654,7 @@ return function ()
 			face_animations_n = 6,
 			database = "dwarf_ranger_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pdr_gameplay_hearing_a_Skaven_warpfire_thrower_01",

@@ -10384,7 +10384,7 @@ return function ()
 			face_animations_n = 6,
 			database = "witch_hunter_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pwh_gameplay_hearing_a_globadier_05",
@@ -11588,7 +11588,7 @@ return function ()
 			face_animations_n = 10,
 			database = "witch_hunter_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 10,
 			sound_events = {
 				"pwh_gameplay_hearing_a_Skaven_ratling_gun_08",
@@ -11794,7 +11794,7 @@ return function ()
 			face_animations_n = 8,
 			database = "witch_hunter_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 8,
 			sound_events = {
 				"pwh_gameplay_hearing_a_chaos_wizard_wind_01",
@@ -16955,7 +16955,7 @@ return function ()
 			face_animations_n = 6,
 			database = "witch_hunter_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pwh_gameplay_hearing_a_Skaven_warpfire_thrower_01",
@@ -18016,7 +18016,7 @@ return function ()
 			face_animations_n = 6,
 			database = "witch_hunter_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 6,
 			sound_events = {
 				"pwh_gameplay_hearing_a_gutter_runner_01",

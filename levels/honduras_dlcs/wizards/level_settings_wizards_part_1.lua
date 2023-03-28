@@ -1,4 +1,5 @@
 LevelSettings.dlc_wizards_trail = {
+	act_unlock_order = 0,
 	climate_type = "snow",
 	ambient_sound_event = "silent_default_world_sound",
 	environment_state = "exterior",

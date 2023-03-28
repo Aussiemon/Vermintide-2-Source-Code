@@ -11091,7 +11091,7 @@ return function ()
 			face_animations_n = 5,
 			database = "bright_wizard_honduras",
 			randomize_indexes_n = 0,
-			category = "enemy_alerts",
+			category = "enemy_alerts_high",
 			dialogue_animations_n = 5,
 			sound_events = {
 				"pbw_gameplay_hearing_a_Skaven_ratling_gun_combat_04",

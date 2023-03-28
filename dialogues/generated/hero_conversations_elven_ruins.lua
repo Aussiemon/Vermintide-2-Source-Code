@@ -2472,1192 +2472,1192 @@ return function ()
 		}
 	})
 	add_dialogues({
-		pbw_level_elven_ruins_story_eight_03 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_eight_03"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_eight_03"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.9850208759308
-			}
-		},
-		pes_level_elven_ruins_story_four_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_four_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_four_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.804229259491
-			}
-		},
-		pdr_level_elven_ruins_story_six_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_six_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_six_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.3347291946411
-			}
-		},
-		pdr_level_elven_ruins_story_three_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_three_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_three_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.4914164543152
-			}
-		},
-		pbw_level_elven_ruins_story_two_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_two_01"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_two_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4844374656677
-			}
-		},
-		pdr_level_elven_ruins_story_eleven_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 1.4435625076294
-			}
-		},
-		pwh_level_elven_ruins_story_nine_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_nine_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_nine_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0540623664856
-			}
-		},
-		pes_level_elven_ruins_story_twelve_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_twelve_01"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_twelve_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3752293586731
-			}
-		},
-		pwe_level_elven_ruins_story_eleven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_eleven_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_eleven_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.3473958969116
-			}
-		},
-		pdr_level_elven_ruins_story_eleven_04 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_04"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_04"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3024792671204
-			}
-		},
-		pwh_level_elven_ruins_story_ten_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_ten_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_ten_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.5592291355133
-			}
-		},
-		pwe_level_elven_ruins_story_four_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_four_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_four_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.7526249885559
-			}
-		},
-		pwh_level_elven_ruins_story_ten_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_ten_02"
-			},
-			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_ten_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.8910207748413
-			}
-		},
-		pes_level_elven_ruins_story_four_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_four_01"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_four_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.8480000495911
-			}
-		},
-		pes_level_elven_ruins_story_five_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_five_01"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_five_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.5272707939148
-			}
-		},
-		pdr_level_elven_ruins_story_one_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_one_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_one_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.3132500648499
-			}
-		},
-		pbw_level_elven_ruins_story_eight_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_eight_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_eight_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 0.94999998807907
-			}
-		},
-		pdr_level_elven_ruins_story_eight_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_eight_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_eight_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 8.8025207519531
-			}
-		},
-		pdr_level_elven_ruins_story_seven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_seven_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_seven_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 8.5593128204346
-			}
-		},
-		pdr_level_elven_ruins_story_five_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_five_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_five_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.0361874103546
-			}
-		},
-		pwe_level_elven_ruins_story_three_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_three_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_three_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 8.2994585037231
-			}
-		},
-		pes_level_elven_ruins_story_twelve_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_twelve_02"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_twelve_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 5.0324583053589
-			}
-		},
-		pes_level_elven_ruins_story_seven_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_seven_01"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_seven_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.581666469574
-			}
-		},
-		pbw_level_elven_ruins_story_twelve_03 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_twelve_03"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_twelve_03"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.4198331832886
-			}
-		},
 		pwe_level_elven_ruins_story_eleven_04 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_eleven_04"
-			},
 			sound_events = {
 				[1.0] = "pwe_level_elven_ruins_story_eleven_04"
 			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			sound_events_duration = {
 				[1.0] = 1.9796458482742
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_eleven_04"
 			}
 		},
-		pbw_level_elven_ruins_story_seven_01 = {
+		pbw_level_elven_ruins_story_eight_03 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_seven_01"
-			},
 			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_seven_01"
+				[1.0] = "pbw_level_elven_ruins_story_eight_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.9850208759308
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_eight_03"
+			}
+		},
+		pes_level_elven_ruins_story_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_four_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 3.7363541126251
+				[1.0] = 3.8480000495911
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_four_01"
 			}
 		},
-		pes_level_elven_ruins_story_nine_02 = {
+		pwe_level_elven_ruins_story_four_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_nine_02"
-			},
 			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_nine_02"
+				[1.0] = "pwe_level_elven_ruins_story_four_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 3.5850207805634
-			}
-		},
-		pwe_level_elven_ruins_story_one_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = 3.7526249885559
+			},
 			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_one_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_one_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 8.8853330612183
-			}
-		},
-		pwh_level_elven_ruins_story_nine_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_nine_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_nine_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.1801042556763
-			}
-		},
-		pwe_level_elven_ruins_story_four_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_four_01"
-			},
-			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_four_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.1950001716614
-			}
-		},
-		pbw_level_elven_ruins_story_eight_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_eight_01"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_eight_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.870374917984
-			}
-		},
-		pbw_level_elven_ruins_story_two_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_two_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_two_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.4205832481384
-			}
-		},
-		pwh_level_elven_ruins_story_six_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_six_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_six_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.8639376163483
-			}
-		},
-		pdr_level_elven_ruins_story_three_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_three_02"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_three_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.4912083148956
-			}
-		},
-		pbw_level_elven_ruins_story_seven_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_seven_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_seven_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.9451875686645
-			}
-		},
-		pwe_level_elven_ruins_story_three_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_three_02"
-			},
-			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_three_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.892541885376
+				[1.0] = "pwe_level_elven_ruins_story_four_02"
 			}
 		},
 		pwe_level_elven_ruins_story_eleven_03 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_eleven_03"
-			},
 			sound_events = {
 				[1.0] = "pwe_level_elven_ruins_story_eleven_03"
 			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			sound_events_duration = {
 				[1.0] = 3.6988542079926
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_eleven_03"
 			}
 		},
-		pes_level_elven_ruins_story_seven_02 = {
+		pdr_level_elven_ruins_story_eleven_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_seven_02"
-			},
 			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_seven_02"
+				[1.0] = "pdr_level_elven_ruins_story_eleven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 5.1917915344238
+				[1.0] = 1.4435625076294
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_eleven_02"
 			}
 		},
-		pwe_level_elven_ruins_story_six_01 = {
+		pbw_level_elven_ruins_story_two_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_six_01"
-			},
 			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_six_01"
+				[1.0] = "pbw_level_elven_ruins_story_two_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 5.2375416755676
+				[1.0] = 2.4205832481384
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_two_02"
 			}
 		},
-		pbw_level_elven_ruins_story_five_01 = {
+		pes_level_elven_ruins_story_nine_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_five_01"
-			},
 			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_five_01"
+				[1.0] = "pes_level_elven_ruins_story_nine_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 5.2618751525879
+				[1.0] = 3.5850207805634
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_nine_02"
 			}
 		},
-		pdr_level_elven_ruins_story_five_01 = {
+		pdr_level_elven_ruins_story_five_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_five_01"
-			},
 			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_five_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
+				[1.0] = "pdr_level_elven_ruins_story_five_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 7.528416633606
-			}
-		},
-		pbw_level_elven_ruins_story_twelve_02 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_twelve_02"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_twelve_02"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 7.2718544006348
+				[1.0] = 2.0361874103546
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_five_02"
 			}
 		},
-		pbw_level_elven_ruins_story_ten_02 = {
+		pdr_level_elven_ruins_story_seven_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_ten_02"
-			},
 			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_ten_02"
+				[1.0] = "pdr_level_elven_ruins_story_seven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 4.5434584617615
+				[1.0] = 8.5593128204346
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_seven_01"
 			}
 		},
-		pwe_level_elven_ruins_story_two_01 = {
+		pdr_level_elven_ruins_story_three_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_two_01"
-			},
 			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_two_01"
+				[1.0] = "pdr_level_elven_ruins_story_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 4.9800834655762
+				[1.0] = 3.4912083148956
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_three_02"
 			}
 		},
-		pwe_level_elven_ruins_story_two_02 = {
+		pbw_level_elven_ruins_story_seven_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_two_02"
-			},
 			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_two_02"
+				[1.0] = "pbw_level_elven_ruins_story_seven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
-				[1.0] = 9.1235418319702
-			}
-		},
-		pwh_level_elven_ruins_story_one_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
+				[1.0] = 3.9451875686645
+			},
 			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_one_01"
-			},
-			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_one_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 3.588770866394
-			}
-		},
-		pes_level_elven_ruins_story_nine_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_nine_01"
-			},
-			sound_events = {
-				[1.0] = "pes_level_elven_ruins_story_nine_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.2701354026794
-			}
-		},
-		pbw_level_elven_ruins_story_ten_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pbw_level_elven_ruins_story_ten_01"
-			},
-			sound_events = {
-				[1.0] = "pbw_level_elven_ruins_story_ten_01"
-			},
-			face_animations = {
-				[1.0] = "face_neutral"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 4.7380623817444
-			}
-		},
-		pdr_level_elven_ruins_story_eleven_03 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_03"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_03"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 2.8186874389648
-			}
-		},
-		pdr_level_elven_ruins_story_eight_01 = {
-			face_animations_n = 1,
-			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
-			category = "story_talk",
-			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_eight_01"
-			},
-			sound_events = {
-				[1.0] = "pdr_level_elven_ruins_story_eight_01"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
-			sound_events_duration = {
-				[1.0] = 6.8415207862854
+				[1.0] = "pbw_level_elven_ruins_story_seven_02"
 			}
 		},
 		pdr_level_elven_ruins_story_eleven_01 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pdr_level_elven_ruins_story_eleven_01"
-			},
 			sound_events = {
 				[1.0] = "pdr_level_elven_ruins_story_eleven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_neutral"
 			},
-			dialogue_animations = {
-				[1.0] = "dialogue_talk"
-			},
 			sound_events_duration = {
 				[1.0] = 6.3811874389648
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_eleven_01"
 			}
 		},
-		pwh_level_elven_ruins_story_one_02 = {
+		pes_level_elven_ruins_story_seven_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwh_level_elven_ruins_story_one_02"
-			},
 			sound_events = {
-				[1.0] = "pwh_level_elven_ruins_story_one_02"
+				[1.0] = "pes_level_elven_ruins_story_seven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
 			},
 			face_animations = {
 				[1.0] = "face_calm"
 			},
+			sound_events_duration = {
+				[1.0] = 5.1917915344238
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_seven_02"
+			}
+		},
+		pdr_level_elven_ruins_story_eleven_04 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_eleven_04"
+			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
 			sound_events_duration = {
-				[1.0] = 1.4946041107178
+				[1.0] = 5.3024792671204
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_eleven_04"
+			}
+		},
+		pwe_level_elven_ruins_story_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_two_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.9800834655762
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_two_01"
+			}
+		},
+		pwe_level_elven_ruins_story_four_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_four_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.1950001716614
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_four_01"
+			}
+		},
+		pbw_level_elven_ruins_story_twelve_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_twelve_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.4198331832886
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_twelve_03"
+			}
+		},
+		pes_level_elven_ruins_story_seven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_seven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.581666469574
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_seven_01"
+			}
+		},
+		pwh_level_elven_ruins_story_six_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_elven_ruins_story_six_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.8639376163483
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_six_01"
+			}
+		},
+		pwh_level_elven_ruins_story_nine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_elven_ruins_story_nine_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.1801042556763
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_nine_01"
+			}
+		},
+		pdr_level_elven_ruins_story_eleven_03 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_eleven_03"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.8186874389648
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_eleven_03"
+			}
+		},
+		pwh_level_elven_ruins_story_nine_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_elven_ruins_story_nine_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0540623664856
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_nine_02"
+			}
+		},
+		pwe_level_elven_ruins_story_three_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_three_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.892541885376
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_three_02"
+			}
+		},
+		pbw_level_elven_ruins_story_two_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_two_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.4844374656677
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_two_01"
+			}
+		},
+		pes_level_elven_ruins_story_nine_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_nine_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.2701354026794
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_nine_01"
+			}
+		},
+		pdr_level_elven_ruins_story_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_eight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 6.8415207862854
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_eight_01"
+			}
+		},
+		pwe_level_elven_ruins_story_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_one_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.8853330612183
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_one_01"
+			}
+		},
+		pbw_level_elven_ruins_story_seven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_seven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.7363541126251
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_seven_01"
+			}
+		},
+		pbw_level_elven_ruins_story_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_ten_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.7380623817444
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_ten_01"
+			}
+		},
+		pdr_level_elven_ruins_story_eight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_eight_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.8025207519531
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_eight_02"
+			}
+		},
+		pwe_level_elven_ruins_story_eleven_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_eleven_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3473958969116
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_eleven_01"
+			}
+		},
+		pwh_level_elven_ruins_story_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_elven_ruins_story_one_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 3.588770866394
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_one_01"
+			}
+		},
+		pwe_level_elven_ruins_story_six_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_six_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2375416755676
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_six_01"
+			}
+		},
+		pdr_level_elven_ruins_story_six_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_six_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.3347291946411
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_six_01"
+			}
+		},
+		pes_level_elven_ruins_story_twelve_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_twelve_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.3752293586731
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_twelve_01"
+			}
+		},
+		pbw_level_elven_ruins_story_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_ten_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5434584617615
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_ten_02"
+			}
+		},
+		pdr_level_elven_ruins_story_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 4.4914164543152
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_three_01"
+			}
+		},
+		pwe_level_elven_ruins_story_three_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_three_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 8.2994585037231
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_three_01"
+			}
+		},
+		pdr_level_elven_ruins_story_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_five_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 7.528416633606
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_five_01"
+			}
+		},
+		pbw_level_elven_ruins_story_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_five_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.2618751525879
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_five_01"
+			}
+		},
+		pwh_level_elven_ruins_story_ten_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_elven_ruins_story_ten_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.8910207748413
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_ten_02"
+			}
+		},
+		pwe_level_elven_ruins_story_two_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_two_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 9.1235418319702
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_two_02"
+			}
+		},
+		pbw_level_elven_ruins_story_twelve_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_twelve_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 7.2718544006348
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_twelve_02"
 			}
 		},
 		pes_level_elven_ruins_story_four_03 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pes_level_elven_ruins_story_four_03"
-			},
 			sound_events = {
 				[1.0] = "pes_level_elven_ruins_story_four_03"
 			},
-			face_animations = {
-				[1.0] = "face_calm"
-			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
 			},
 			sound_events_duration = {
 				[1.0] = 4.9957709312439
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_four_03"
 			}
 		},
-		pwe_level_elven_ruins_story_eleven_02 = {
+		pwh_level_elven_ruins_story_one_02 = {
+			sound_events_n = 1,
 			face_animations_n = 1,
 			database = "hero_conversations_elven_ruins",
-			sound_events_n = 1,
 			category = "story_talk",
 			dialogue_animations_n = 1,
-			localization_strings = {
-				[1.0] = "pwe_level_elven_ruins_story_eleven_02"
-			},
 			sound_events = {
-				[1.0] = "pwe_level_elven_ruins_story_eleven_02"
-			},
-			face_animations = {
-				[1.0] = "face_calm"
+				[1.0] = "pwh_level_elven_ruins_story_one_02"
 			},
 			dialogue_animations = {
 				[1.0] = "dialogue_talk"
 			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 1.4946041107178
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_one_02"
+			}
+		},
+		pbw_level_elven_ruins_story_eight_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_eight_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 0.94999998807907
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_eight_02"
+			}
+		},
+		pes_level_elven_ruins_story_four_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_four_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.804229259491
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_four_02"
+			}
+		},
+		pbw_level_elven_ruins_story_eight_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pbw_level_elven_ruins_story_eight_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_neutral"
+			},
+			sound_events_duration = {
+				[1.0] = 2.870374917984
+			},
+			localization_strings = {
+				[1.0] = "pbw_level_elven_ruins_story_eight_01"
+			}
+		},
+		pwe_level_elven_ruins_story_eleven_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwe_level_elven_ruins_story_eleven_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
 			sound_events_duration = {
 				[1.0] = 3.7037084102631
+			},
+			localization_strings = {
+				[1.0] = "pwe_level_elven_ruins_story_eleven_02"
+			}
+		},
+		pwh_level_elven_ruins_story_ten_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pwh_level_elven_ruins_story_ten_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 2.5592291355133
+			},
+			localization_strings = {
+				[1.0] = "pwh_level_elven_ruins_story_ten_01"
+			}
+		},
+		pes_level_elven_ruins_story_twelve_02 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_twelve_02"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.0324583053589
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_twelve_02"
+			}
+		},
+		pes_level_elven_ruins_story_five_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pes_level_elven_ruins_story_five_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 4.5272707939148
+			},
+			localization_strings = {
+				[1.0] = "pes_level_elven_ruins_story_five_01"
+			}
+		},
+		pdr_level_elven_ruins_story_one_01 = {
+			sound_events_n = 1,
+			face_animations_n = 1,
+			database = "hero_conversations_elven_ruins",
+			category = "story_talk",
+			dialogue_animations_n = 1,
+			sound_events = {
+				[1.0] = "pdr_level_elven_ruins_story_one_01"
+			},
+			dialogue_animations = {
+				[1.0] = "dialogue_talk"
+			},
+			face_animations = {
+				[1.0] = "face_calm"
+			},
+			sound_events_duration = {
+				[1.0] = 5.3132500648499
+			},
+			localization_strings = {
+				[1.0] = "pdr_level_elven_ruins_story_one_01"
 			}
 		}
 	})
